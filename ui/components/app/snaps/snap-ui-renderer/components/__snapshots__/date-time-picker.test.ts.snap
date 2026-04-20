@@ -22,21 +22,23 @@ exports[`SnapUIDateTimePicker can show an error 1`] = `
             Select date and time
           </label>
           <div
-            class="MuiFormControl-root MuiTextField-root makeStyles-root-9 snap-ui-renderer__date-time-picker--datetime"
-            format="D T"
+            class="MuiFormControl-root MuiTextField-root snap-ui-renderer__date-time-picker--datetime css-1ahj1is-MuiFormControl-root-MuiTextField-root"
           >
             <div
-              class="MuiInputBase-root MuiInput-root makeStyles-input-10 MuiInputBase-formControl MuiInput-formControl"
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1aa5qj0-MuiInputBase-root-MuiInput-root"
             >
               <input
                 aria-invalid="false"
-                class="MuiInputBase-input MuiInput-input"
+                aria-label="Choose date"
+                autocomplete="off"
+                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                id="mui-28"
+                inputmode="text"
                 readonly=""
                 type="text"
                 value=""
               />
             </div>
-            
           </div>
           <p
             class="mm-box mm-text mm-help-text mm-text--body-sm mm-box--margin-top-1 mm-box--color-error-default"
@@ -70,21 +72,23 @@ exports[`SnapUIDateTimePicker renders a date picker 1`] = `
           class="snap-ui-renderer__date-time-picker"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root makeStyles-root-3 snap-ui-renderer__date-time-picker--date"
-            format="D"
+            class="MuiFormControl-root MuiTextField-root snap-ui-renderer__date-time-picker--date css-1ahj1is-MuiFormControl-root-MuiTextField-root"
           >
             <div
-              class="MuiInputBase-root MuiInput-root makeStyles-input-4 MuiInputBase-formControl MuiInput-formControl"
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1aa5qj0-MuiInputBase-root-MuiInput-root"
             >
               <input
                 aria-invalid="false"
-                class="MuiInputBase-input MuiInput-input"
+                aria-label="Choose date"
+                autocomplete="off"
+                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                id="mui-10"
+                inputmode="text"
                 readonly=""
                 type="text"
                 value=""
               />
             </div>
-            
           </div>
         </div>
       </div>
@@ -113,21 +117,23 @@ exports[`SnapUIDateTimePicker renders a date time picker 1`] = `
           class="snap-ui-renderer__date-time-picker"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root makeStyles-root-1 snap-ui-renderer__date-time-picker--datetime"
-            format="D T"
+            class="MuiFormControl-root MuiTextField-root snap-ui-renderer__date-time-picker--datetime css-1ahj1is-MuiFormControl-root-MuiTextField-root"
           >
             <div
-              class="MuiInputBase-root MuiInput-root makeStyles-input-2 MuiInputBase-formControl MuiInput-formControl"
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1aa5qj0-MuiInputBase-root-MuiInput-root"
             >
               <input
                 aria-invalid="false"
-                class="MuiInputBase-input MuiInput-input"
+                aria-label="Choose date"
+                autocomplete="off"
+                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                id="mui-4"
+                inputmode="text"
                 readonly=""
                 type="text"
                 value=""
               />
             </div>
-            
           </div>
         </div>
       </div>
@@ -156,21 +162,23 @@ exports[`SnapUIDateTimePicker renders a time picker 1`] = `
           class="snap-ui-renderer__date-time-picker"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root makeStyles-root-5 snap-ui-renderer__date-time-picker--time"
-            format="T"
+            class="MuiFormControl-root MuiTextField-root snap-ui-renderer__date-time-picker--time css-1ahj1is-MuiFormControl-root-MuiTextField-root"
           >
             <div
-              class="MuiInputBase-root MuiInput-root makeStyles-input-6 MuiInputBase-formControl MuiInput-formControl"
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1aa5qj0-MuiInputBase-root-MuiInput-root"
             >
               <input
                 aria-invalid="false"
-                class="MuiInputBase-input MuiInput-input"
+                aria-label="Choose time"
+                autocomplete="off"
+                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                id="mui-16"
+                inputmode="text"
                 readonly=""
                 type="text"
                 value=""
               />
             </div>
-            
           </div>
         </div>
       </div>
@@ -205,21 +213,23 @@ exports[`SnapUIDateTimePicker renders inside a field 1`] = `
             Select date and time
           </label>
           <div
-            class="MuiFormControl-root MuiTextField-root makeStyles-root-7 snap-ui-renderer__date-time-picker--datetime"
-            format="D T"
+            class="MuiFormControl-root MuiTextField-root snap-ui-renderer__date-time-picker--datetime css-1ahj1is-MuiFormControl-root-MuiTextField-root"
           >
             <div
-              class="MuiInputBase-root MuiInput-root makeStyles-input-8 MuiInputBase-formControl MuiInput-formControl"
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1aa5qj0-MuiInputBase-root-MuiInput-root"
             >
               <input
                 aria-invalid="false"
-                class="MuiInputBase-input MuiInput-input"
+                aria-label="Choose date"
+                autocomplete="off"
+                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                id="mui-22"
+                inputmode="text"
                 readonly=""
                 type="text"
                 value=""
               />
             </div>
-            
           </div>
         </div>
       </div>

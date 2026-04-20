@@ -1,12 +1,12 @@
 import React, { FunctionComponent, useEffect } from 'react';
-import { DatePicker, DateTimePicker, TimePicker } from '@material-ui/pickers';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { Box } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { DateTime } from 'luxon';
-import { makeStyles } from '@material-ui/core/styles';
 import { HelpText, HelpTextSeverity, Label } from '../../../component-library';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 /**
  * The props for the SnapUIDateTimePicker component.
@@ -24,13 +24,11 @@ export type SnapUIDateTimePickerProps = {
 };
 
 /**
- * Styles for the SnapUIDateTimePicker component.
+ * Shared sx styles for the date/time picker input field.
  */
-const useStyle = makeStyles({
-  root: {
-    width: '100%',
-  },
-  input: {
+const pickerInputSx = {
+  width: '100%',
+  '& .MuiInputBase-root': {
     fontFamily: 'var(--font-family-default)',
     backgroundColor: 'var(--color-background-default)',
     border: '1px solid var(--color-border-muted)',
@@ -42,11 +40,11 @@ const useStyle = makeStyles({
     alignItems: 'center',
     borderRadius: '8px',
     fontSize: 'var(--typography-s-body-md-font-size)',
-    '& > input': {
-      padding: '0 16px',
-    },
   },
-});
+  '& .MuiInputBase-root input': {
+    padding: '0 16px',
+  },
+};
 
 /**
  * Normalizes the date based on the picker type.
@@ -101,7 +99,6 @@ export const SnapUIDateTimePicker: FunctionComponent<
   disablePast = false,
   disableFuture = false,
 }) => {
-  const t = useI18nContext();
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
   const initialValue = getValue(name, form) as string;
@@ -109,8 +106,6 @@ export const SnapUIDateTimePicker: FunctionComponent<
   const [value, setValue] = React.useState<DateTime | null>(
     initialValue ? DateTime.fromISO(initialValue) : null,
   );
-
-  const classes = useStyle();
 
   useEffect(() => {
     if (initialValue !== undefined && initialValue !== null) {
@@ -136,61 +131,67 @@ export const SnapUIDateTimePicker: FunctionComponent<
       {label && <Label htmlFor={name}>{label}</Label>}
       {type === 'datetime' && (
         <DateTimePicker
-          className={classnames(
-            classes.root,
-            'snap-ui-renderer__date-time-picker--datetime',
-          )}
+          className="snap-ui-renderer__date-time-picker--datetime"
           value={value}
           onChange={handleChange}
           disabled={disabled}
           disablePast={disablePast}
           disableFuture={disableFuture}
-          placeholder={placeholder}
-          clearable
-          InputProps={{ disableUnderline: true, className: classes.input }}
           format={'D T'}
-          clearLabel={t('clear')}
-          cancelLabel={t('cancel')}
-          okLabel={t('ok').toUpperCase()}
           ampm={false}
+          slotProps={{
+            textField: {
+              placeholder,
+              variant: 'standard',
+              InputProps: { disableUnderline: true },
+              sx: pickerInputSx,
+            },
+            actionBar: {
+              actions: ['clear', 'cancel', 'accept'],
+            },
+          }}
         />
       )}
       {type === 'date' && (
         <DatePicker
-          className={classnames(
-            classes.root,
-            'snap-ui-renderer__date-time-picker--date',
-          )}
+          className="snap-ui-renderer__date-time-picker--date"
           value={value}
           onChange={handleChange}
           disabled={disabled}
           disablePast={disablePast}
           disableFuture={disableFuture}
-          InputProps={{ disableUnderline: true, className: classes.input }}
-          clearable
-          placeholder={placeholder}
           format={'D'}
-          clearLabel={t('clear')}
-          cancelLabel={t('cancel')}
-          okLabel={t('ok').toUpperCase()}
+          slotProps={{
+            textField: {
+              placeholder,
+              variant: 'standard',
+              InputProps: { disableUnderline: true },
+              sx: pickerInputSx,
+            },
+            actionBar: {
+              actions: ['clear', 'cancel', 'accept'],
+            },
+          }}
         />
       )}
       {type === 'time' && (
         <TimePicker
-          className={classnames(
-            classes.root,
-            'snap-ui-renderer__date-time-picker--time',
-          )}
+          className="snap-ui-renderer__date-time-picker--time"
           value={value}
           onChange={handleChange}
           disabled={disabled}
-          InputProps={{ disableUnderline: true, className: classes.input }}
-          clearable
-          placeholder={placeholder}
-          clearLabel={t('clear')}
-          cancelLabel={t('cancel')}
-          okLabel={t('ok').toUpperCase()}
           ampm={false}
+          slotProps={{
+            textField: {
+              placeholder,
+              variant: 'standard',
+              InputProps: { disableUnderline: true },
+              sx: pickerInputSx,
+            },
+            actionBar: {
+              actions: ['clear', 'cancel', 'accept'],
+            },
+          }}
         />
       )}
       {error && (

@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
 
 import { isEqual } from 'lodash';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import LuxonUtils from '@date-io/luxon';
-import { ThemeProvider } from '@material-ui/core/styles';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { ThemeProvider } from '@mui/material/styles';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { getInterface } from '../../../../selectors';
 import { Box } from '../../../component-library';
@@ -147,7 +147,7 @@ const SnapUIRendererComponent = ({
       initialState={initialState}
     >
       <ThemeProvider theme={muiPickerTheme}>
-        <MuiPickersUtilsProvider utils={LuxonUtils} locale={locale}>
+        <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={locale}>
           <Box
             className="snap-ui-renderer__content"
             height={BlockSize.Full}
@@ -159,7 +159,7 @@ const SnapUIRendererComponent = ({
             <MetaMaskTemplateRenderer sections={sections} />
             {PERF_DEBUG && <PerformanceTracker />}
           </Box>
-        </MuiPickersUtilsProvider>
+        </LocalizationProvider>
       </ThemeProvider>
     </SnapInterfaceContextProvider>
   );
