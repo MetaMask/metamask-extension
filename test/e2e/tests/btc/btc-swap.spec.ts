@@ -62,7 +62,6 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
@@ -94,7 +93,6 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
@@ -135,7 +133,6 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
@@ -172,7 +169,6 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocksNoQuotes,
       },
       async ({ driver }) => {
@@ -210,7 +206,6 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
