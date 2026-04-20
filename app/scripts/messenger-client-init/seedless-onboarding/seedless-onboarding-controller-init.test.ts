@@ -2,7 +2,7 @@ import {
   SeedlessOnboardingController,
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getSeedlessOnboardingControllerInitMessenger,
   getSeedlessOnboardingControllerMessenger,
@@ -17,7 +17,7 @@ import { SeedlessOnboardingControllerInit } from './seedless-onboarding-controll
 jest.mock('@metamask/seedless-onboarding-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     SeedlessOnboardingControllerMessenger,
     SeedlessOnboardingControllerInitMessenger
   >
@@ -51,7 +51,7 @@ describe('SeedlessOnboardingControllerInit', () => {
   it('should return controller instance', () => {
     const requestMock = buildInitRequestMock();
     expect(
-      SeedlessOnboardingControllerInit(requestMock).controller,
+      SeedlessOnboardingControllerInit(requestMock).messengerClient,
     ).toBeInstanceOf(SeedlessOnboardingController);
   });
 

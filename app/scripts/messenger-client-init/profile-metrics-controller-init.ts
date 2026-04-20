@@ -2,7 +2,7 @@ import {
   ProfileMetricsController,
   ProfileMetricsControllerMessenger,
 } from '@metamask/profile-metrics-controller';
-import type { ControllerInitFunction } from './types';
+import type { MessengerClientInitFunction } from './types';
 
 const isTestEnvironment = Boolean(process.env.IN_TEST);
 
@@ -15,25 +15,25 @@ const initialDelayDuration = isTestEnvironment ? 1000 : 10 * 60 * 1000;
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state to use for the
  * controller.
- * @param request.getController - A function to get other initialized controllers.
+ * @param request.getMessengerClient - A function to get other initialized controllers.
  * @returns The initialized controller.
  */
-export const ProfileMetricsControllerInit: ControllerInitFunction<
+export const ProfileMetricsControllerInit: MessengerClientInitFunction<
   ProfileMetricsController,
   ProfileMetricsControllerMessenger
-> = ({ controllerMessenger, persistedState, getController }) => {
-  const remoteFeatureFlagController = getController(
+> = ({ controllerMessenger, persistedState, getMessengerClient }) => {
+  const remoteFeatureFlagController = getMessengerClient(
     'RemoteFeatureFlagController',
   );
-  const metaMetricsController = getController('MetaMetricsController');
-  const appStateController = getController('AppStateController');
+  const metaMetricsController = getMessengerClient('MetaMetricsController');
+  const appStateController = getMessengerClient('AppStateController');
   const assertUserOptedIn = () =>
     remoteFeatureFlagController.state.remoteFeatureFlags.extensionUxPna25 ===
       true &&
     appStateController.state.pna25Acknowledged === true &&
     metaMetricsController.state.participateInMetaMetrics === true;
 
-  const controller = new ProfileMetricsController({
+  const messengerClient = new ProfileMetricsController({
     messenger: controllerMessenger,
     state: persistedState.ProfileMetricsController,
     interval: isTestEnvironment ? 1000 : 10 * 1000,
@@ -43,6 +43,6 @@ export const ProfileMetricsControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

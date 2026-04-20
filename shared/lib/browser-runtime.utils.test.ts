@@ -187,4 +187,36 @@ describe('Browser Runtime Utils', () => {
       expect(result).toStrictEqual('Brave');
     });
   });
+
+  describe('isFirefoxBrowser', () => {
+    it('uses window.navigator defaults when called with no arguments', () => {
+      const getParserSpy = jest.spyOn(Bowser, 'getParser');
+      const explicit = BrowserRuntimeUtil.isFirefoxBrowser(
+        Bowser.getParser(window.navigator.userAgent),
+        window.navigator,
+      );
+      getParserSpy.mockClear();
+
+      const implicit = BrowserRuntimeUtil.isFirefoxBrowser();
+
+      expect(getParserSpy).toHaveBeenCalledTimes(1);
+      expect(getParserSpy).toHaveBeenCalledWith(window.navigator.userAgent);
+      expect(implicit).toBe(explicit);
+      getParserSpy.mockRestore();
+    });
+
+    it('returns true for Firefox user agent', () => {
+      const bowser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0',
+      );
+      expect(BrowserRuntimeUtil.isFirefoxBrowser(bowser)).toBe(true);
+    });
+
+    it('returns false for Chrome user agent', () => {
+      const bowser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      );
+      expect(BrowserRuntimeUtil.isFirefoxBrowser(bowser)).toBe(false);
+    });
+  });
 });

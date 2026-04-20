@@ -10,7 +10,7 @@ import { BigNumber } from 'bignumber.js';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import { useConfirmContext } from '../../context/confirm';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
-import { updateEventFragment } from '../../../../store/actions';
+import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
   useTransactionPayPrimaryRequiredToken,
@@ -112,7 +112,7 @@ export function useTransactionPayMetrics() {
 
   useEffect(() => {
     if (transactionId && Object.keys(properties).length > 0) {
-      updateEventFragment(transactionId, { properties });
+      upsertTransactionUIMetricsFragment(transactionId, { properties });
     }
   }, [transactionId, properties]);
 }

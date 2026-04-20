@@ -7,7 +7,7 @@ import {
 import { assert } from '@metamask/utils';
 import { SubjectType } from '@metamask/permission-controller';
 import { Duplex } from 'readable-stream';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import { setupMultiplex } from '../../lib/stream-utils';
 import {
@@ -28,7 +28,7 @@ import {
  * CAIP-25 communication.
  * @returns The initialized controller.
  */
-export const ExecutionServiceInit: ControllerInitFunction<
+export const ExecutionServiceInit: MessengerClientInitFunction<
   ExecutionService,
   ExecutionServiceMessenger
 > = ({
@@ -69,7 +69,7 @@ export const ExecutionServiceInit: ControllerInitFunction<
     return {
       memStateKey: null,
       persistedStateKey: null,
-      controller: new OffscreenExecutionService({
+      messengerClient: new OffscreenExecutionService({
         messenger: controllerMessenger,
         setupSnapProvider,
         offscreenPromise,
@@ -83,7 +83,7 @@ export const ExecutionServiceInit: ControllerInitFunction<
   return {
     memStateKey: null,
     persistedStateKey: null,
-    controller: new IframeExecutionService({
+    messengerClient: new IframeExecutionService({
       messenger: controllerMessenger,
       iframeUrl: new URL(iframeUrl),
       setupSnapProvider,

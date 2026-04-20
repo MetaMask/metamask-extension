@@ -17,6 +17,7 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../util';
+import { getIframeProperties } from '../../getIframeProperties';
 import type {
   GetAccounts,
   HandlerWrapper,
@@ -147,6 +148,17 @@ async function requestEthereumAccountsHandler<
     const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
       origin,
     );
+    const { mainFrameOrigin, frameId } = req as JsonRpcRequest<Params> & {
+      origin: OriginString;
+      mainFrameOrigin?: string;
+      frameId?: number;
+    };
+    const iframeProps = getIframeProperties({
+      frameId,
+      origin,
+      mainFrameOrigin,
+    });
+
     sendMetrics(
       {
         event: MetaMetricsEventName.DappViewed,
@@ -163,6 +175,7 @@ async function requestEthereumAccountsHandler<
           ).length,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           number_of_accounts_connected: ethAccounts.length,
+          ...iframeProps,
         },
       },
       {

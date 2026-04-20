@@ -74,7 +74,7 @@ import {
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
 import { PATCH_STORE_SUBSTREAM_METHODS } from '../../shared/constants/patch-store-substream-methods';
-import { getEnabledAdvancedPermissions } from '../../shared/lib/environment';
+import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
@@ -86,14 +86,23 @@ import {
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import MetaMaskController from './metamask-controller';
 
+// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
+// so these tests exercise the real feature-flag gating logic via state.
+jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () =>
+  jest.requireActual('../../shared/lib/assets-unify-state/remote-feature-flag'),
+);
+
 jest.mock('./messenger-client-init/perps-controller-init', () => ({
-  PerpsControllerInit: jest.fn().mockReturnValue({
-    controller: {
+  PerpsControllerInit: jest.fn().mockImplementation(() => ({
+    messengerClient: {
       state: {},
       name: 'PerpsController',
     },
-    api: {},
-  }),
+    api: {
+      perpsDisconnect: jest.fn().mockResolvedValue(undefined),
+      perpsGetConnectionState: jest.fn().mockReturnValue('disconnected'),
+    },
+  })),
 }));
 
 jest.mock('webextension-polyfill', () => ({
@@ -562,6 +571,9 @@ describe('MetaMaskController', () => {
 
     beforeEach(() => {
       jest.spyOn(MetaMaskController.prototype, 'resetStates');
+      jest
+        .spyOn(environment, 'getIsPerpsIncludedInBuild')
+        .mockReturnValue(false);
 
       jest
         .spyOn(
@@ -1179,6 +1191,77 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('_onLock', () => {
+      it('disconnects an active perps websocket', async () => {
+        jest
+          .spyOn(environment, 'getIsPerpsIncludedInBuild')
+          .mockReturnValue(true);
+        const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
+
+        metamaskController.messengerClientsByName.PerpsController = {};
+        jest
+          .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
+          .mockImplementation(perpsDisconnect);
+        jest
+          .spyOn(
+            metamaskController.messengerClientApi,
+            'perpsGetConnectionState',
+          )
+          .mockReturnValue('connected');
+
+        metamaskController._onLock();
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).toHaveBeenCalledTimes(1);
+      });
+
+      it('does not disconnect perps when no perps controller is available', async () => {
+        jest
+          .spyOn(environment, 'getIsPerpsIncludedInBuild')
+          .mockReturnValue(true);
+        const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
+
+        delete metamaskController.messengerClientsByName.PerpsController;
+        jest
+          .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
+          .mockImplementation(perpsDisconnect);
+        jest
+          .spyOn(
+            metamaskController.messengerClientApi,
+            'perpsGetConnectionState',
+          )
+          .mockReturnValue('connected');
+
+        metamaskController._onLock();
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).not.toHaveBeenCalled();
+      });
+
+      it('does not disconnect perps when connection is already disconnected', async () => {
+        jest
+          .spyOn(environment, 'getIsPerpsIncludedInBuild')
+          .mockReturnValue(true);
+        const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
+
+        metamaskController.messengerClientsByName.PerpsController = {};
+        jest
+          .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
+          .mockImplementation(perpsDisconnect);
+        jest
+          .spyOn(
+            metamaskController.messengerClientApi,
+            'perpsGetConnectionState',
+          )
+          .mockReturnValue('disconnected');
+
+        metamaskController._onLock();
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).not.toHaveBeenCalled();
+      });
+    });
+
     describe('#createNewVaultAndKeychain', () => {
       it('can only create new vault on keyringController once', async () => {
         const password = 'a-fake-password';
@@ -1652,7 +1735,7 @@ describe('MetaMaskController', () => {
     describe('wallet_requestExecutionPermissions (processRequestExecutionPermissions)', () => {
       beforeEach(() => {
         jest
-          .mocked(getEnabledAdvancedPermissions)
+          .mocked(environment.getEnabledAdvancedPermissions)
           .mockReturnValue(['erc20-token-revocation']);
         jest.mocked(forwardRequestToSnap).mockResolvedValue({});
       });
@@ -1783,6 +1866,150 @@ describe('MetaMaskController', () => {
         const response = await requestExecutionPermissions(params);
 
         expect(response.error).toBeUndefined();
+      });
+    });
+
+    describe('wallet_getSupportedExecutionPermissions (processGetSupportedExecutionPermissions)', () => {
+      beforeEach(() => {
+        jest
+          .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
+          .mockReturnValue({
+            remoteFeatureFlags: {
+              confirmations_eip_7702: {
+                supportedChains: ['0x1', '0x5'],
+              },
+            },
+            cacheTimestamp: 0,
+          });
+        jest
+          .mocked(environment.getEnabledAdvancedPermissions)
+          .mockReturnValue(['erc20-token-revocation']);
+      });
+
+      /**
+       * Run wallet_getSupportedExecutionPermissions through the controller's
+       * metamask middleware and return the JSON-RPC response.
+       * @returns The JSON-RPC response.
+       */
+      async function getSupportedExecutionPermissions() {
+        const engine = new JsonRpcEngine();
+        engine.push(metamaskController.metamaskMiddleware);
+        const request = {
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'wallet_getSupportedExecutionPermissions',
+          params: [],
+        };
+        return await engine.handle(request);
+      }
+
+      it('returns an empty object when the permissions kernel returns null', async () => {
+        jest.mocked(forwardRequestToSnap).mockResolvedValue(null);
+
+        const response = await getSupportedExecutionPermissions();
+
+        expect(response.error).toBeUndefined();
+        expect(response.result).toStrictEqual({});
+      });
+
+      it('returns an empty object when the permissions kernel returns undefined', async () => {
+        jest.mocked(forwardRequestToSnap).mockResolvedValue(undefined);
+
+        const response = await getSupportedExecutionPermissions();
+
+        expect(response.error).toBeUndefined();
+        expect(response.result).toStrictEqual({});
+      });
+
+      it('omits permission types that are not enabled in the environment', async () => {
+        jest.mocked(forwardRequestToSnap).mockResolvedValue({
+          'erc20-token-revocation': {
+            ruleTypes: ['a'],
+          },
+          'some-other-permission': {
+            ruleTypes: ['b'],
+          },
+        });
+
+        const response = await getSupportedExecutionPermissions();
+
+        expect(response.result).toStrictEqual({
+          'erc20-token-revocation': {
+            ruleTypes: ['a'],
+            chainIds: ['0x1', '0x5'],
+          },
+        });
+      });
+
+      it('fills chainIds from EIP-7702 supported chains when the kernel omits chainIds', async () => {
+        jest.mocked(forwardRequestToSnap).mockResolvedValue({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+          },
+        });
+
+        const response = await getSupportedExecutionPermissions();
+
+        expect(response.result).toStrictEqual({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+            chainIds: ['0x1', '0x5'],
+          },
+        });
+      });
+
+      it('lowercases and filters kernel chainIds to EIP-7702 supported chains', async () => {
+        jest.mocked(forwardRequestToSnap).mockResolvedValue({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+            chainIds: ['0x1', '0X5', '0x99', '0xAA'],
+          },
+        });
+
+        const response = await getSupportedExecutionPermissions();
+
+        expect(response.result).toStrictEqual({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+            chainIds: ['0x1', '0x5'],
+          },
+        });
+      });
+
+      it('keeps chainIds empty when the kernel sends an empty chainIds array', async () => {
+        jest.mocked(forwardRequestToSnap).mockResolvedValue({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+            chainIds: [],
+          },
+        });
+
+        const response = await getSupportedExecutionPermissions();
+
+        expect(response.result).toStrictEqual({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+            chainIds: [],
+          },
+        });
+      });
+
+      it('uses EIP-7702 supported chains when kernel chainIds is null', async () => {
+        jest.mocked(forwardRequestToSnap).mockResolvedValue({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+            chainIds: null,
+          },
+        });
+
+        const response = await getSupportedExecutionPermissions();
+
+        expect(response.result).toStrictEqual({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+            chainIds: ['0x1', '0x5'],
+          },
+        });
       });
     });
 
@@ -2930,10 +3157,11 @@ describe('MetaMaskController', () => {
         streamTest.end();
       });
 
-      it('adds a tabId, origin and networkClient to requests', async () => {
+      it('adds a tabId, frameId, origin and networkClient to requests', async () => {
         const messageSender = {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
+          frameId: 0,
         };
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
@@ -2969,6 +3197,10 @@ describe('MetaMaskController', () => {
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'tabId',
                   456,
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'frameId',
+                  0,
                 );
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'networkClientId',
@@ -3014,6 +3246,9 @@ describe('MetaMaskController', () => {
               setTimeout(() => {
                 expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
                   'tabId',
+                );
+                expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
+                  'frameId',
                 );
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'origin',
@@ -3138,10 +3373,11 @@ describe('MetaMaskController', () => {
         tearDownMockMiddlewareLog();
       });
 
-      it('adds a tabId and origin to requests', async () => {
+      it('adds a tabId, frameId and origin to requests', async () => {
         const messageSender = {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
+          frameId: 0,
         };
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk && chunk.method) {
@@ -3179,6 +3415,10 @@ describe('MetaMaskController', () => {
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'tabId',
                   456,
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'frameId',
+                  0,
                 );
                 resolve();
               });
@@ -3223,6 +3463,9 @@ describe('MetaMaskController', () => {
               setTimeout(() => {
                 expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
                   'tabId',
+                );
+                expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
+                  'frameId',
                 );
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'origin',
@@ -3436,6 +3679,48 @@ describe('MetaMaskController', () => {
         await testStreams[0].onFinishedCallbackPromise;
 
         expect(metamaskController.activeControllerConnections).toBe(0);
+      });
+
+      it('disconnects perps only after the final controller connection closes', async () => {
+        jest
+          .spyOn(environment, 'getIsPerpsIncludedInBuild')
+          .mockReturnValue(true);
+        const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
+
+        metamaskController.messengerClientsByName.PerpsController = {};
+        jest
+          .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
+          .mockImplementation(perpsDisconnect);
+        jest
+          .spyOn(
+            metamaskController.messengerClientApi,
+            'perpsGetConnectionState',
+          )
+          .mockReturnValue('connected');
+
+        const firstStream = createTestStream();
+        const secondStream = createTestStream();
+
+        metamaskController.setupTrustedCommunication(
+          firstStream.testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          secondStream.testStream,
+          {},
+        );
+
+        await firstStream.onStreamEndPromise;
+        firstStream.testStream.end();
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).not.toHaveBeenCalled();
+
+        await secondStream.onStreamEndPromise;
+        secondStream.testStream.end();
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).toHaveBeenCalledTimes(1);
       });
 
       // this test could be improved by testing for actual behavior of handlers,

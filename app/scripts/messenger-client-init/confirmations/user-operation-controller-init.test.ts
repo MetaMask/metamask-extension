@@ -1,5 +1,5 @@
 import { UserOperationController } from '@metamask/user-operation-controller';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getUserOperationControllerMessenger,
@@ -19,7 +19,7 @@ jest.mock('@metamask/user-operation-controller', () => ({
 }));
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     UserOperationControllerMessenger,
     UserOperationControllerInitMessenger
   >
@@ -33,7 +33,7 @@ function getInitRequestMock(): jest.Mocked<
   };
 
   // @ts-expect-error: Partial mock.
-  requestMock.getController.mockImplementation((name: string) => {
+  requestMock.getMessengerClient.mockImplementation((name: string) => {
     if (name === 'GasFeeController') {
       return {
         fetchGasFeeEstimates: jest.fn(),
@@ -47,8 +47,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('UserOperationControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = UserOperationControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(Object);
+    const { messengerClient } =
+      UserOperationControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(Object);
   });
 
   it('passes the proper arguments to the controller', () => {

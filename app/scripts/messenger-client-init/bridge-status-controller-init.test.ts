@@ -5,7 +5,7 @@ import {
 import { TransactionController } from '@metamask/transaction-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest, ControllerName } from './types';
+import { MessengerClientInitRequest, MessengerClientName } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import { getBridgeStatusControllerMessenger } from './messengers';
 import { BridgeStatusControllerInit } from './bridge-status-controller-init';
@@ -13,7 +13,7 @@ import { BridgeStatusControllerInit } from './bridge-status-controller-init';
 jest.mock('@metamask/bridge-status-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<BridgeStatusControllerMessenger>
+  MessengerClientInitRequest<BridgeStatusControllerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
@@ -28,8 +28,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('BridgeStatusControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = BridgeStatusControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(BridgeStatusController);
+    const { messengerClient } =
+      BridgeStatusControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(BridgeStatusController);
   });
 
   it('passes the proper arguments to the controller', () => {
@@ -65,7 +66,9 @@ describe('BridgeStatusControllerInit', () => {
               : undefined,
           ),
         );
-      requestMock.getController.mockImplementation(((name: ControllerName) => {
+      requestMock.getMessengerClient.mockImplementation(((
+        name: MessengerClientName,
+      ) => {
         if (name === 'TransactionController') {
           return {
             addTransaction: jest.fn(),
@@ -78,7 +81,7 @@ describe('BridgeStatusControllerInit', () => {
           return { getKeyringForAccount: mockGetKeyringForAccount };
         }
         return undefined;
-      }) as unknown as ControllerInitRequest<BridgeStatusControllerMessenger>['getController']);
+      }) as unknown as MessengerClientInitRequest<BridgeStatusControllerMessenger>['getMessengerClient']);
 
       BridgeStatusControllerInit(requestMock);
 

@@ -2,7 +2,7 @@ import {
   OnboardingController,
   OnboardingControllerMessenger,
 } from '../controllers/onboarding';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the onboarding controller.
@@ -12,16 +12,16 @@ import { ControllerInitFunction } from './types';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const OnboardingControllerInit: ControllerInitFunction<
+export const OnboardingControllerInit: MessengerClientInitFunction<
   OnboardingController,
   OnboardingControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new OnboardingController({
+  const messengerClient = new OnboardingController({
     state: persistedState.OnboardingController,
     messenger: controllerMessenger,
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

@@ -71,6 +71,9 @@
     },
     "AccountTreeController": {
       "accountGroupsMetadata": {},
+      "accountTree": {
+        "wallets": {}
+      },
       "accountWalletsMetadata": {},
       "hasAccountTreeSyncingSyncedAtLeastOnce": true,
       "selectedAccountGroup": "entropy:01KMMTZZ3ZEF3008S2RXXR2CXS/0"
@@ -171,7 +174,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 203,
+      "currentMigrationVersion": 204,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -914,6 +917,7 @@
         "gmx": {},
         "hyperliquid": {}
       },
+      "showSidePanelMigrationToast": false,
       "securityAlertsEnabled": true,
       "snapRegistryList": {},
       "snapsAddSnapAccountModalDismissed": false,
@@ -1076,6 +1080,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 203
+    "version": 204
   }
 }

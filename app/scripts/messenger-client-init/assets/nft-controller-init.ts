@@ -1,6 +1,6 @@
 import { NftController } from '@metamask/assets-controllers';
 import { AssetType } from '@metamask/bridge-controller';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   NftControllerMessenger,
   NftControllerInitMessenger,
@@ -19,12 +19,12 @@ import {
  * @param request.initMessenger - The messenger used for initialization.
  * @returns The initialized controller.
  */
-export const NftControllerInit: ControllerInitFunction<
+export const NftControllerInit: MessengerClientInitFunction<
   NftController,
   NftControllerMessenger,
   NftControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
-  const controller = new NftController({
+  const messengerClient = new NftController({
     state: persistedState.NftController,
     messenger: controllerMessenger,
     onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
@@ -53,6 +53,6 @@ export const NftControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

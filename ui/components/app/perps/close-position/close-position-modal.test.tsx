@@ -7,6 +7,25 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { mockPositions } from '../mocks';
 import { ClosePositionModal } from './close-position-modal';
 
+jest.mock('../../../../../shared/lib/perps-formatters', () => ({
+  PRICE_RANGES_UNIVERSAL: [],
+  formatPerpsFiat: (value: number | string) => {
+    const amount = Number(value);
+    return `$${amount
+      .toLocaleString('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 6,
+      })
+      .replace(/(\.\d*?[1-9])0+$/u, '$1')
+      .replace(/\.0+$/u, '')}`;
+  },
+  formatPositionSize: (value: number, decimals?: number) =>
+    Number(value).toLocaleString('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: decimals ?? 4,
+    }),
+}));
+
 jest.mock('@metamask/perps-controller', () => ({
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
@@ -80,6 +99,15 @@ jest.mock('../../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
+}));
+
 jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     CLOSE_FAILED: 'perpsToastCloseFailed',
@@ -105,6 +133,7 @@ const basePosition = mockPositions[0];
 describe('ClosePositionModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
   });
 
@@ -579,6 +608,71 @@ describe('ClosePositionModal', () => {
           screen.getByTestId('perps-close-position-modal-submit'),
         ).toBeDisabled();
       });
+    });
+  });
+
+  describe('geo-blocking', () => {
+    it('shows geo-block modal instead of closing when user is not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      const submitButton = screen.getByTestId(
+        'perps-close-position-modal-submit',
+      );
+      expect(submitButton).toBeEnabled();
+
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('receive amount calculation', () => {
+    it('computes "You\'ll receive" as margin minus fees without double-counting PnL', () => {
+      // Verify the formula: receive = round2(margin) - round2(fees), with no unrealizedPnl added.
+      // HyperLiquid's marginUsed already includes accumulated PnL, so adding unrealizedPnl
+      // would double-count it. We assert the relationship between the three displayed values
+      // rather than a hardcoded amount so the test stays valid as the fee rate changes.
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      const parseUsd = (el: HTMLElement) =>
+        parseFloat(el.textContent?.replace(/[^0-9.]/gu, '') ?? '0');
+
+      const marginValue = parseUsd(
+        screen.getByTestId('perps-close-summary-margin-value'),
+      );
+      const feesValue = parseUsd(
+        screen.getByTestId('perps-close-summary-fees-value'),
+      );
+      const receiveValue = parseUsd(
+        screen.getByTestId('perps-close-summary-receive-value'),
+      );
+
+      // displayed margin − displayed fees must equal displayed receive (additive breakdown)
+      expect(receiveValue).toBeCloseTo(marginValue - feesValue, 2);
+      // sanity: margin must be positive and must NOT include an extra pnl on top
+      // (basePosition: marginUsed=2375, unrealizedPnl=375 — receive should be ~2375-fees, not ~2750-fees)
+      expect(marginValue).toBe(2375);
     });
   });
 });
