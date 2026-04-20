@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Hesap simgesi"
   },
-  "accountIdenticonDescription": {
-    "message": "Hesapları bir bakışta tanımanıza yardımcı olabilecek üç farklı benzersiz simge stilinden seçim yapın."
-  },
   "accountIsntConnectedToastText": {
     "message": "$1 şuna bağlı değil: $2"
   },

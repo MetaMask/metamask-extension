@@ -1608,14 +1608,6 @@
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 1
     },
-    "ui/pages/settings/settings-tab/settings-tab.test.js": {
-      "React: Act warnings (component updates not wrapped)": 7,
-      "React: componentWill* lifecycle deprecations": 1
-    },
-    "ui/pages/settings/settings.test.js": {
-      "React: Act warnings (component updates not wrapped)": 2,
-      "React: componentWill* lifecycle deprecations": 1
-    },
     "ui/pages/settings/transaction-shield-tab/claims-form/claims-form.test.tsx": {
       "MetaMask: Background connection not initialized": 4,
       "React: Act warnings (component updates not wrapped)": 8

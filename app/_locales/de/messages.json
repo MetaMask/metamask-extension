@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Konto-Symbol"
   },
-  "accountIdenticonDescription": {
-    "message": "Wählen Sie aus drei verschiedenen Stilen einzigartiger Symbole, mit denen Sie Konten auf einen Blick erkennen können."
-  },
   "accountIsntConnectedToastText": {
     "message": "$1 ist nicht mit $2 verbunden"
   },
