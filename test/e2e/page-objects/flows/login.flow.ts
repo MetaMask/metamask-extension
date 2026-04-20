@@ -10,21 +10,12 @@ import { Ganache } from '../../seeder/ganache';
  * By default, validates the displayed balance. Use {@link localNode} or {@link expectedBalance}
  * for specific checks, or set {@link validateBalance} to false to skip validation entirely.
  *
- * **Assets unify state:** Default E2E mocks (`mock-e2e.js`) serve Tokens API + Accounts API v5
- * so balances load. The default mainnet native balance is **25 ETH**; aggregated fiat uses the
- * same `ethConversionInUsd` passed to `withFixtures` and the global `price.api` v3 mock for
- * `eip155:1/slip44:60`. If you assert a custom fiat string via `expectedBalance` (e.g. `'$85,000.00'`),
- * pass `withFixtures({ unifiedEvmAccountsApiBalances: { mainnetNativeEthHuman: '…' }, ethConversionInUsd })`
- * so v5 matches that total. Use `getUnifiedMainnetNativeEthHumanForFiatTotal(expectedUsd, ethConversionInUsd)`
- * from `test/e2e/helpers.js` to compute the native amount string.
- *
  * @param driver - The webdriver instance.
  * @param options - Optional configuration for the login flow.
  * @param options.expectedBalance - An expected balance string to verify on the homepage.
  * @param options.localNode - A local node instance whose balance should be verified.
  * @param options.password - The password used to unlock the wallet.
  * @param options.validateBalance - Whether to verify the balance is displayed. Defaults to true.
- * @param options.waitForNonEvmAccounts - Whether to wait for non-EVM accounts to load on the homepage. Defaults to true; set to false to skip.
  */
 export const login = async (
   driver: Driver,
@@ -33,7 +24,6 @@ export const login = async (
     localNode?: Ganache | Anvil;
     password?: string;
     validateBalance?: boolean;
-    waitForNonEvmAccounts?: boolean;
   },
 ) => {
   console.log('Navigate to unlock page and try to login with password');
@@ -44,19 +34,12 @@ export const login = async (
 
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
-  if (options?.waitForNonEvmAccounts !== false) {
-    await homePage.waitForNonEvmAccountsLoaded();
-  }
-
-  if (options?.validateBalance === false) {
-    return;
-  }
 
   if (options?.localNode) {
     await homePage.checkLocalNodeBalanceIsDisplayed(options.localNode);
-  } else if (typeof options?.expectedBalance === 'string') {
+  } else if (options?.expectedBalance !== undefined) {
     await homePage.checkExpectedBalanceIsDisplayed(options.expectedBalance);
-  } else {
+  } else if (options?.validateBalance !== false) {
     // defaults to 25 ETH
     await homePage.checkExpectedBalanceIsDisplayed();
   }

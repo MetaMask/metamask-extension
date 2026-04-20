@@ -790,6 +790,11 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
 }
 
 async function mockPriceSpotPricesV3(mockServer: Mockttp) {
+  const resolvedEthPrice =
+    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
+      ? ETH_CONVERSION_RATE_USD
+      : 1;
+
   const tokenEntry = (
     id: string,
     price: number,
@@ -826,25 +831,25 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
           ? {
               'eip155:1/slip44:60': tokenEntry(
                 'ethereum',
-                ETH_CONVERSION_RATE_USD,
+                resolvedEthPrice,
                 2.5,
               ),
               'eip155:59144/slip44:60': tokenEntry(
                 'ethereum',
-                ETH_CONVERSION_RATE_USD,
+                resolvedEthPrice,
                 2.5,
               ),
               'eip155:42161/slip44:60': tokenEntry(
                 'ethereum',
-                ETH_CONVERSION_RATE_USD,
+                resolvedEthPrice,
                 2.5,
               ),
               ...stablecoins,
             }
           : {
-              'eip155:1/slip44:60': tokenEntry('ethereum', 3010, 0),
-              'eip155:59144/slip44:60': tokenEntry('ethereum', 3010, 0),
-              'eip155:42161/slip44:60': tokenEntry('ethereum', 3010, 0),
+              'eip155:1/slip44:60': tokenEntry('ethereum', resolvedEthPrice, 0),
+              'eip155:59144/slip44:60': tokenEntry('ethereum', resolvedEthPrice, 0),
+              'eip155:42161/slip44:60': tokenEntry('ethereum', resolvedEthPrice, 0),
               ...stablecoins,
             };
 

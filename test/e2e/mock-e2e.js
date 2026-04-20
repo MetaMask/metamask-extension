@@ -159,7 +159,7 @@ const privateHostMatchers = [
  * @param {(server: Mockttp) => Promise<MockedEndpoint[]>} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
- * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
+ * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH. Defaults to 3010 when ASSETS_UNIFIED_STATE_ENABLED=true, otherwise 1700.
  * @param {object | undefined} [options.unifiedEvmAccountsApiBalances] - Overrides default Accounts API v5 balances (assets-unify-state).
  * @returns {Promise<SetupMockReturn>}
  */
@@ -168,7 +168,9 @@ async function setupMocking(
   testSpecificMock,
   {
     chainId,
-    ethConversionInUsd = 1700,
+    ethConversionInUsd = process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
+      ? 3010
+      : 1700,
     unifiedEvmAccountsApiBalances = {},
   } = {},
 ) {
