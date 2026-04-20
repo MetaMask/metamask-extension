@@ -3944,12 +3944,6 @@
   "mismatchedRpcUrl": {
     "message": "弊社の記録によると、送信されたRPC URLの値がこのチェーンIDの既知のプロバイダーと一致しません。"
   },
-  "missingSetting": {
-    "message": "設定が見つからない場合"
-  },
-  "missingSettingRequest": {
-    "message": "ここでリクエスト"
-  },
   "month": {
     "message": "月"
   },

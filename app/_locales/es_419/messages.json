@@ -3944,12 +3944,6 @@
   "mismatchedRpcUrl": {
     "message": "Según nuestros registros, el valor de la URL de RPC enviado no coincide con un proveedor conocido para este ID de cadena."
   },
-  "missingSetting": {
-    "message": "¿No puede encontrar un ajuste?"
-  },
-  "missingSettingRequest": {
-    "message": "Solicítelo aquí"
-  },
   "month": {
     "message": "mes"
   },

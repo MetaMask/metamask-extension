@@ -3944,12 +3944,6 @@
   "mismatchedRpcUrl": {
     "message": "Kayıtlarımıza göre, sunulan RPC URL adresi değeri bu zincir kimliğinin bilinen bir sağlayıcısı ile uyumlu değil."
   },
-  "missingSetting": {
-    "message": "Bir ayarı bulamıyor musun?"
-  },
-  "missingSettingRequest": {
-    "message": "Buradan talep et"
-  },
   "month": {
     "message": "ay"
   },

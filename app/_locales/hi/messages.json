@@ -3944,12 +3944,6 @@
   "mismatchedRpcUrl": {
     "message": "हमारे रिकॉर्ड के अनुसार, सबमिट किया गया RPC-URL वैल्यू इस चेन ID के लिए किसी ज्ञात प्रोवाइडर से मेल नहीं खाता।"
   },
-  "missingSetting": {
-    "message": "सेटिंग नहीं मिल रही है?"
-  },
-  "missingSettingRequest": {
-    "message": "यहां रिक्वेस्ट करें"
-  },
   "month": {
     "message": "महीना"
   },

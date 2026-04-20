@@ -3944,12 +3944,6 @@
   "mismatchedRpcUrl": {
     "message": "기록에 따르면 제출한 RPC URL 값이 이 체인 ID의 알려진 공급업체와 일치하지 않습니다."
   },
-  "missingSetting": {
-    "message": "설정을 찾으세요?"
-  },
-  "missingSettingRequest": {
-    "message": "여기에서 요청하세요"
-  },
   "month": {
     "message": "월"
   },

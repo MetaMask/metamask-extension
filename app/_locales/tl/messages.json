@@ -3944,12 +3944,6 @@
   "mismatchedRpcUrl": {
     "message": "Ayon sa aming mga talaan, ang isinumiteng RPC URL value ay hindi tumutugma sa isang kilalang provider para sa ID ng chain na ito."
   },
-  "missingSetting": {
-    "message": "Hindi makahanap ng setting?"
-  },
-  "missingSettingRequest": {
-    "message": "Humiling dito"
-  },
   "month": {
     "message": "buwan"
   },

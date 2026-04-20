@@ -3944,12 +3944,6 @@
   "mismatchedRpcUrl": {
     "message": "Menurut catatan kami, nilai URL RPC yang dikirimkan tidak sesuai dengan penyedia yang dikenal untuk ID chain ini."
   },
-  "missingSetting": {
-    "message": "Tidak dapat menemukan pengaturan?"
-  },
-  "missingSettingRequest": {
-    "message": "Minta di sini"
-  },
   "month": {
     "message": "bulan"
   },
