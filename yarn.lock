@@ -7552,12 +7552,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/perps-controller@npm:3.0.0"
+"@metamask/perps-controller@npm:3.1.1":
+  version: 3.1.1
+  resolution: "@metamask/perps-controller@npm:3.1.1"
   dependencies:
     "@metamask/abi-utils": "npm:^2.0.3"
-    "@metamask/base-controller": "npm:^9.0.1"
+    "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^11.20.0"
     "@metamask/messenger": "npm:^1.1.1"
     "@metamask/utils": "npm:^11.9.0"
@@ -7569,7 +7569,7 @@ __metadata:
   dependenciesMeta:
     "@myx-trade/sdk":
       optional: true
-  checksum: 10/77510382c82d15b36735d10ef8483938b056a89b44a9d5968d697e68ebe5eccda316faa80518138a23697b12effb2c00f33a0136b2a0c5c255438bff462d67a8
+  checksum: 10/685208f69c92e953163e686d2d03d4f1ebfdfdfdfd6e166a37012c409bffc9b41a2733103fd98556e5c213ca2b425deeecc610b00ea97527506a12daea19d4b0
   languageName: node
   linkType: hard
 
@@ -34233,7 +34233,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^12.2.1"
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.1.0"
-    "@metamask/perps-controller": "npm:^3.0.0"
+    "@metamask/perps-controller": "npm:^3.2.0"
     "@metamask/phishing-controller": "npm:^17.1.1"
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/polling-controller": "npm:^16.0.2"
