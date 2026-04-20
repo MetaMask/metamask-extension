@@ -51,6 +51,11 @@ type PerpsStreamBridgeOptions = {
 
 const REST_HYDRATION_STAGGER_MS = 200;
 
+// Deferred candle-teardown window. A quick deactivate → activate round-trip
+// (e.g. React re-mount) within this window cancels the teardown, avoiding a
+// needless unsubscribe/resubscribe burst on HyperLiquid.
+const CANDLE_TEARDOWN_DEFER_MS = 150;
+
 /**
  * Per-connection bridge between the background PerpsController's WebSocket
  * subscriptions and a single UI outStream.
@@ -205,14 +210,13 @@ export class PerpsStreamBridge {
         }
 
         if (this.#dynamicUnsubs[key]) {
-          return 'ok';
+          return;
         }
 
         await this.#initAndActivate();
         if (this.#isConnectionAlive()) {
           this.#activateCandleStream({ symbol, interval, duration });
         }
-        return 'ok';
       },
       perpsDeactivateCandleStream: ({
         symbol,
@@ -236,7 +240,7 @@ export class PerpsStreamBridge {
           setTimeout(() => {
             this.#pendingCandleTeardowns.delete(key);
             this.#tearDownDynamicKey(key);
-          }, 150),
+          }, CANDLE_TEARDOWN_DEFER_MS),
         );
       },
       perpsCheckHealth: () => {
