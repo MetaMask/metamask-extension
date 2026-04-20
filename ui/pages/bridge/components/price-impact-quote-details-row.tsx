@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
   ButtonIcon,
@@ -31,6 +31,16 @@ export const PriceImpactQuoteDetailsRow = ({
     shallowEqual,
   );
   const formattedPriceImpact = useSelector(getFormattedPriceImpactPercentage);
+
+  const priceImpactTextColor = useMemo(() => {
+    if (isPriceImpactWarning) {
+      return TextColor.WarningDefault;
+    }
+    if (isPriceImpactError) {
+      return TextColor.ErrorDefault;
+    }
+    return TextColor.TextAlternative;
+  }, [isPriceImpactWarning, isPriceImpactError]);
 
   if (!formattedPriceImpact) {
     return null;
@@ -71,13 +81,7 @@ export const PriceImpactQuoteDetailsRow = ({
         )}
         <Text
           variant={TextVariant.BodySm}
-          color={
-            isPriceImpactWarning
-              ? TextColor.WarningDefault
-              : isPriceImpactError
-                ? TextColor.ErrorDefault
-                : TextColor.TextAlternative
-          }
+          color={priceImpactTextColor}
         >
           {formattedPriceImpact}
         </Text>
