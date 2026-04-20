@@ -8,11 +8,33 @@ jobs:
   forward:
     runs-on: ubuntu-latest
     if: github.event.label.name == 'ta-needs-triage'
+    permissions:
+      id-token: write
     steps:
+      - name: Get OIDC Token
+        id: oidc
+        run: |
+          OIDC_TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r '.value')
+          echo "::add-mask::$OIDC_TOKEN"
+          echo "oidc_token=$OIDC_TOKEN" >> "$GITHUB_OUTPUT"
+
+      - name: Exchange for Installation Token
+        id: exchange
+        env:
+          OIDC_TOKEN: ${{ steps.oidc.outputs.oidc_token }}
+        run: |
+          RESPONSE=$(curl -sf -X POST "${{ vars.TOKEN_EXCHANGE_URL }}/api/v1/exchange" \
+            -H "Content-Type: application/json" \
+            -d "{\"token\": \"$OIDC_TOKEN\", \"repository\": \"MetaMask/triage-agent\"}")
+          TOKEN=$(echo "$RESPONSE" | jq -r '.token')
+          echo "::add-mask::$TOKEN"
+          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+
       - name: Dispatch to triage-agent
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.TRIAGE_AGENT_PAT }}
+          token: ${{ steps.exchange.outputs.token }}
           repository: MetaMask/triage-agent
           event-type: triage-issue
           client-payload: |-
