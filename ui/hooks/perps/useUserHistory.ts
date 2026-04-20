@@ -61,7 +61,9 @@ export function useUserHistory({
   // 10s TTL does not surface the previous session's data. Pipe-delimited:
   // perpsScopeKey and CaipAccountId use ':' internally but never '|', so the
   // fields are unambiguous without paying the cost of JSON.stringify on each
-  // render.
+  // render. Fields are fixed-position — do not reorder or add optional
+  // fields between existing ones, or an absent value could align with the
+  // empty-string fallback from a neighbouring field.
   const perpsScopeKey = usePerpsCacheKey();
   const cacheKey = `perpsGetUserHistory|${perpsScopeKey}|${accountId ?? ''}|${startTime ?? ''}|${endTime ?? ''}`;
 

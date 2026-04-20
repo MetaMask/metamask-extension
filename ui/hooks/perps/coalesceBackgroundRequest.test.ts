@@ -1,4 +1,5 @@
 import {
+  clearAllCoalescedRequests,
   coalesceBackgroundRequest,
   invalidateCoalescedRequest,
   resetCoalesceCacheForTests,
@@ -119,6 +120,34 @@ describe('coalesceBackgroundRequest', () => {
     const second = await coalesceBackgroundRequest('k', fn);
 
     expect(second).toBe('second');
+    expect(fn).toHaveBeenCalledTimes(2);
+  });
+
+  it('clearAllCoalescedRequests() drops in-flight promises so a scope-change fetch cannot await the old scope', async () => {
+    // Scope-change scenario (account switch / lock / sign-out): unlike
+    // invalidate(), which preserves the in-flight snapshot as the freshest
+    // data for the *same* scope, a scope change makes the in-flight response
+    // wrong, so it must be abandoned. The next caller issues a fresh
+    // request rather than coalescing with the old one.
+    let resolveFirst: ((v: string) => void) | undefined;
+    const firstPromise = new Promise<string>((resolve) => {
+      resolveFirst = resolve;
+    });
+    const fn = jest
+      .fn<Promise<string>, []>()
+      .mockReturnValueOnce(firstPromise)
+      .mockResolvedValueOnce('newScope');
+
+    const firstCall = coalesceBackgroundRequest('k', fn);
+    await Promise.resolve();
+    clearAllCoalescedRequests();
+
+    const secondCall = coalesceBackgroundRequest('k', fn);
+    resolveFirst?.('oldScope');
+
+    const [first, second] = await Promise.all([firstCall, secondCall]);
+    expect(first).toBe('oldScope');
+    expect(second).toBe('newScope');
     expect(fn).toHaveBeenCalledTimes(2);
   });
 

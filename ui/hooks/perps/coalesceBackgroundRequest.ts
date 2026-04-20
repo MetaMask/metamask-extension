@@ -10,11 +10,17 @@
  *
  * Two layers of dedup are provided: concurrent callers for the same key share
  * one in-flight Promise, and follow-up callers inside the TTL window get the
- * cached value without issuing a new request. 10 s matches the window where a
- * user could reasonably mount → unmount → re-mount the activity page from
- * rapid navigation without staleness being user-visible.
+ * cached value without issuing a new request. 10 s matches the staleness
+ * tolerance of the passive "Recent activity" preview on the perps home — the
+ * only path that actually reads the TTL cache today. Top-level consumers
+ * (`PerpsActivityPage`) pass `forceFreshOnMount` and bypass the cache
+ * entirely.
  *
  * Explicit refetch paths (pull-to-refresh) bypass the cache via invalidate().
+ * Scope-level teardown (account switch, testnet toggle, wallet lock,
+ * sign-out) uses clearAllCoalescedRequests() to drop both the cache and
+ * any in-flight promises so the next scope never awaits the previous
+ * scope's data.
  */
 
 const DEFAULT_TTL_MS = 10_000;
@@ -96,10 +102,24 @@ export function invalidateCoalescedRequest(key: string): void {
 }
 
 /**
+ * Drop every cached value and every in-flight promise.
+ *
+ * Called on scope boundaries where no previous-scope response should ever
+ * land — account switch, testnet toggle, provider swap, wallet lock, and
+ * sign-out. Unlike invalidateCoalescedRequest(), which preserves in-flight
+ * promises (the in-flight snapshot is still the freshest data for the
+ * same scope), a scope change makes the in-flight response definitionally
+ * wrong, so it must be abandoned too.
+ */
+export function clearAllCoalescedRequests(): void {
+  cache.clear();
+  inFlight.clear();
+}
+
+/**
  * Test-only reset. Clears both the cache and any in-flight entries so each
  * test starts from a clean state.
  */
 export function resetCoalesceCacheForTests(): void {
-  cache.clear();
-  inFlight.clear();
+  clearAllCoalescedRequests();
 }
