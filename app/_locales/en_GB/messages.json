@@ -1338,6 +1338,9 @@
   "bridgedToChain": {
     "message": "Bridged to $1"
   },
+  "bridgePriceDataUnavailableError": {
+    "message": "We couldn't get price information for this token. Make sure the amount received is what you expect before continuing."
+  },
   "bridging": {
     "message": "Bridging"
   },

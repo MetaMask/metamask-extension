@@ -84,6 +84,7 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
 import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
+import { BridgeQuoteBanner } from '../components/bridge-quote-banner';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -541,6 +542,10 @@ const PrepareBridgePage = ({
             }}
             isDestination={true}
           />
+        </Column>
+
+        <Column className="px-4">
+          <BridgeQuoteBanner />
         </Column>
 
         {/* Quote details - displayed below the swap form */}
