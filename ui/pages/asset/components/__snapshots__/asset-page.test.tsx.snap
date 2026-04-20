@@ -382,7 +382,7 @@ exports[`AssetPage should render a native asset 1`] = `
           </div>
         </div>
         <div
-          class="border-muted asset-page__divider"
+          class="asset-page__divider"
         />
         <div
           class="mb-4"
@@ -812,7 +812,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           </div>
         </div>
         <div
-          class="border-muted asset-page__divider"
+          class="asset-page__divider"
         />
         <div
           class="mb-4"
@@ -1269,7 +1269,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           </div>
         </div>
         <div
-          class="border-muted asset-page__divider"
+          class="asset-page__divider"
         />
         <div
           class="mb-4"
