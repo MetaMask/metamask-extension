@@ -104,6 +104,7 @@ import { getRequestSafeReload } from './lib/safe-reload';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
+import { getIframeProperties } from './lib/getIframeProperties';
 
 /**
  * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
@@ -192,6 +193,7 @@ const requestAccountTabIds = {};
 let controller;
 const senderOriginMapping = {};
 const tabOriginMapping = {};
+const frameIdMapping = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = persistenceManager.get.bind(
@@ -1031,8 +1033,7 @@ export async function loadStateFromPersistence(backup) {
     migrations,
     defaultVersion: process.env.WITH_STATE
       ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
-        require('../../test/e2e/fixtures/fixture-builder')
-          .FIXTURE_STATE_METADATA_VERSION
+        require('../../test/e2e/fixtures/default-fixture.json').meta.version
       : null,
   });
 
@@ -1201,8 +1202,10 @@ export async function loadStateFromPersistence(backup) {
  * which should only be tracked only after a user opts into metrics and connected to the dapp
  *
  * @param {string} origin - URL of visited dapp
+ * @param {string} [mainFrameOrigin] - The top-level frame origin (if sender is an iframe, this differs from origin)
+ * @param {number} [frameId] - The frame ID from chrome.runtime.MessageSender (0 = top-level, >0 = iframe)
  */
-function emitDappViewedMetricEvent(origin) {
+function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
   const { metaMetricsId } = controller.metaMetricsController.state;
   if (!shouldEmitDappViewedEvent(metaMetricsId)) {
     return;
@@ -1221,6 +1224,8 @@ function emitDappViewedMetricEvent(origin) {
     accountsState.internalAccounts.accounts,
   ).length;
 
+  const iframeProps = getIframeProperties({ frameId, origin, mainFrameOrigin });
+
   controller.metaMetricsController.trackEvent(
     {
       event: MetaMetricsEventName.DappViewed,
@@ -1232,6 +1237,7 @@ function emitDappViewedMetricEvent(origin) {
         is_first_visit: false,
         number_of_accounts: numberOfTotalAccounts,
         number_of_accounts_connected: numberOfConnectedAccounts,
+        ...iframeProps,
       },
     },
     {
@@ -1258,6 +1264,7 @@ function trackDappView(remotePort) {
   const { origin } = url;
   const tabUrl = new URL(remotePort.sender.tab.url);
   const { origin: tabOrigin } = tabUrl;
+  const { frameId } = remotePort.sender;
 
   // store the origin to corresponding tab so it can provide info for onActivated listener
   if (!Object.keys(senderOriginMapping).includes(tabId)) {
@@ -1266,6 +1273,9 @@ function trackDappView(remotePort) {
   // do the same for tab origin, which can be different to sender origin
   if (!(tabId in tabOriginMapping)) {
     tabOriginMapping[tabId] = tabOrigin;
+  }
+  if (!(tabId in frameIdMapping)) {
+    frameIdMapping[tabId] = frameId;
   }
 
   const isConnectedToDapp = controller.controllerMessenger.call(
@@ -1280,7 +1290,7 @@ function trackDappView(remotePort) {
   // - refresh the dapp
   // - open dapp in a new tab
   if (isConnectedToDapp && isTabLoaded) {
-    emitDappViewedMetricEvent(origin);
+    emitDappViewedMetricEvent(origin, tabOrigin, frameId);
   }
 }
 
@@ -2118,7 +2128,11 @@ function onNavigateToTab() {
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
-          emitDappViewedMetricEvent(currentOrigin);
+          emitDappViewedMetricEvent(
+            currentOrigin,
+            currentTabOrigin,
+            frameIdMapping[tabId],
+          );
         }
       }
 
