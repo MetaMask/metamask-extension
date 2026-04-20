@@ -24,7 +24,10 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { expectedBalance: '0' });
+        await login(driver, {
+          expectedBalance: '0',
+          waitForNonEvmAccounts: false,
+        });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
