@@ -360,7 +360,7 @@ describe('PerpsStreamBridge', () => {
       (
         api.perpsActivateStreaming as (
           p: Record<string, unknown>,
-        ) => Promise<string>
+        ) => Promise<void>
       )(params);
 
     it('activates static subscriptions if not yet activated', async () => {
@@ -593,7 +593,7 @@ describe('PerpsStreamBridge', () => {
       await (
         api.perpsActivatePriceStream as (p: {
           symbols: string[];
-        }) => Promise<string>
+        }) => Promise<void>
       )({
         symbols: ['ETH', 'BTC'],
       });
@@ -620,7 +620,7 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivatePriceStream as (p: {
           symbols: string[];
           includeMarketData?: boolean;
-        }) => Promise<string>
+        }) => Promise<void>
       )({
         symbols: ['ETH'],
         includeMarketData: true,
@@ -645,7 +645,7 @@ describe('PerpsStreamBridge', () => {
       await (
         api.perpsActivatePriceStream as (p: {
           symbols: string[];
-        }) => Promise<string>
+        }) => Promise<void>
       )({
         symbols: ['ETH'],
       });
@@ -674,7 +674,7 @@ describe('PerpsStreamBridge', () => {
       await (
         api.perpsActivateOrderBookStream as (p: {
           symbol: string;
-        }) => Promise<string>
+        }) => Promise<void>
       )({
         symbol: 'ETH',
       });
@@ -701,7 +701,7 @@ describe('PerpsStreamBridge', () => {
       await (
         api.perpsActivateOrderBookStream as (p: {
           symbol: string;
-        }) => Promise<string>
+        }) => Promise<void>
       )({
         symbol: 'ETH',
       });
@@ -722,7 +722,7 @@ describe('PerpsStreamBridge', () => {
       await (
         api.perpsActivateCandleStream as (
           p: Record<string, unknown>,
-        ) => Promise<string>
+        ) => Promise<void>
       )({ symbol: 'ETH', interval: '1h', duration: '1d' });
 
       expect(controller.subscribeToCandles).toHaveBeenCalledWith({
@@ -754,7 +754,7 @@ describe('PerpsStreamBridge', () => {
       await (
         api.perpsActivateCandleStream as (
           p: Record<string, unknown>,
-        ) => Promise<string>
+        ) => Promise<void>
       )({ symbol: 'ETH', interval: '1h' });
       (
         api.perpsDeactivateCandleStream as (p: {
@@ -789,12 +789,12 @@ describe('PerpsStreamBridge', () => {
       await (
         api.perpsActivateCandleStream as (
           p: Record<string, unknown>,
-        ) => Promise<string>
+        ) => Promise<void>
       )({ symbol: 'BTC', interval: '1h' });
       await (
         api.perpsActivateCandleStream as (
           p: Record<string, unknown>,
-        ) => Promise<string>
+        ) => Promise<void>
       )({ symbol: 'ETH', interval: '4h' });
 
       expect(controller.subscribeToCandles).toHaveBeenCalledTimes(2);
@@ -817,7 +817,7 @@ describe('PerpsStreamBridge', () => {
       const api = bridge.bridgeApi();
       const activate = api.perpsActivateCandleStream as (
         p: Record<string, unknown>,
-      ) => Promise<string>;
+      ) => Promise<void>;
 
       await activate({ symbol: 'BTC', interval: '5m' });
       await activate({ symbol: 'BTC', interval: '5m' });
@@ -844,7 +844,7 @@ describe('PerpsStreamBridge', () => {
       const api = bridge.bridgeApi();
       const activate = api.perpsActivateCandleStream as (
         p: Record<string, unknown>,
-      ) => Promise<string>;
+      ) => Promise<void>;
 
       const pending = activate({ symbol: 'BTC', interval: '5m' });
       // Let the activation queue behind init, then tear the bridge down.
@@ -874,7 +874,7 @@ describe('PerpsStreamBridge', () => {
       const api = bridge.bridgeApi();
       const activate = api.perpsActivateCandleStream as (
         p: Record<string, unknown>,
-      ) => Promise<string>;
+      ) => Promise<void>;
 
       const first = activate({ symbol: 'BTC', interval: '5m' });
       const second = activate({ symbol: 'BTC', interval: '5m' });
@@ -901,7 +901,7 @@ describe('PerpsStreamBridge', () => {
       const api = bridge.bridgeApi();
       const activate = api.perpsActivateCandleStream as (
         p: Record<string, unknown>,
-      ) => Promise<string>;
+      ) => Promise<void>;
       const deactivate = api.perpsDeactivateCandleStream as (p: {
         symbol: string;
         interval: string;
@@ -931,7 +931,7 @@ describe('PerpsStreamBridge', () => {
       const api = bridge.bridgeApi();
       const activate = api.perpsActivateCandleStream as (
         p: Record<string, unknown>,
-      ) => Promise<string>;
+      ) => Promise<void>;
       const deactivate = api.perpsDeactivateCandleStream as (p: {
         symbol: string;
         interval: string;
@@ -997,7 +997,7 @@ describe('PerpsStreamBridge', () => {
       await (
         bridge.bridgeApi().perpsActivateStreaming as (
           p: Record<string, unknown>,
-        ) => Promise<string>
+        ) => Promise<void>
       )({
         priceSymbols: ['ETH'],
         orderBookSymbol: 'BTC',
@@ -1027,7 +1027,7 @@ describe('PerpsStreamBridge', () => {
       await (
         api.perpsActivateStreaming as (
           p: Record<string, unknown>,
-        ) => Promise<string>
+        ) => Promise<void>
       )({ priceSymbols: ['ETH'] });
 
       expect(() => bridge.destroy()).not.toThrow();
@@ -1071,7 +1071,7 @@ describe('PerpsStreamBridge', () => {
       await (
         api.perpsActivateStreaming as (
           p: Record<string, unknown>,
-        ) => Promise<string>
+        ) => Promise<void>
       )({ priceSymbols: ['ETH'] });
 
       expect(() => {

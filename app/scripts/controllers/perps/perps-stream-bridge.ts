@@ -178,7 +178,6 @@ export class PerpsStreamBridge {
         if (this.#isConnectionAlive()) {
           this.#activateStreaming(params);
         }
-        return 'ok';
       },
       perpsActivatePriceStream: async ({
         symbols,
@@ -191,7 +190,6 @@ export class PerpsStreamBridge {
         if (this.#isConnectionAlive()) {
           this.#activatePriceStream(symbols, includeMarketData);
         }
-        return 'ok';
       },
       perpsDeactivatePriceStream: () => {
         this.#tearDownChannel('prices');
@@ -201,7 +199,6 @@ export class PerpsStreamBridge {
         if (this.#isConnectionAlive()) {
           this.#activateOrderBookStream(symbol);
         }
-        return 'ok';
       },
       perpsDeactivateOrderBookStream: () => {
         this.#tearDownChannel('orderBook');
