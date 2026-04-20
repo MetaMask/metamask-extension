@@ -24,38 +24,42 @@ import { isEqual } from 'lodash';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
 
 import { Tooltip } from 'react-tippy';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getPermissions } from '../../../selectors';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import {
   AvatarBase,
   AvatarBaseSize,
   AvatarFavicon,
   AvatarFaviconSize,
   Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxFlexDirection,
-  BoxJustifyContent,
   Button,
+  ButtonLink,
   ButtonSize,
   ButtonVariant,
   Icon,
-  IconColor,
   IconName,
   IconSize,
   Text,
-  TextButton,
-  TextColor,
-  TextVariant,
-} from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getPermissions } from '../../../selectors';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
+} from '../../../components/component-library';
 import {
   Content,
   Footer,
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import { BackgroundColor } from '../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  IconColor,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../shared/constants/network';
 import { Tab, Tabs } from '../../../components/ui/tabs';
 import {
@@ -548,37 +552,40 @@ export const MultichainAccountsConnectPage: React.FC<
     >
       <Header paddingTop={8} paddingBottom={4}>
         <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Center}
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
           marginBottom={8}
         >
           {targetSubjectMetadata.iconUrl ? (
             <AvatarFavicon
-              data-testid="multichain-connect-dapp-avatar"
-              className="bg-muted"
+              backgroundColor={BackgroundColor.backgroundMuted}
               size={AvatarFaviconSize.Lg}
               src={targetSubjectMetadata.iconUrl}
               name={title}
             />
           ) : (
             <AvatarBase
-              data-testid="multichain-connect-dapp-avatar"
               size={AvatarBaseSize.Lg}
-              className="border-0 bg-muted text-alternative"
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              color={TextColor.textAlternative}
+              style={{ borderWidth: '0px' }}
+              backgroundColor={BackgroundColor.backgroundMuted}
             >
               {isIpAddress(title) ? '?' : getAvatarFallbackLetter(title)}
             </AvatarBase>
           )}
         </Box>
         <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
           gap={2}
           marginBottom={1}
         >
           <Text
-            variant={TextVariant.HeadingLg}
+            variant={TextVariant.headingLg}
             style={{
               wordBreak: 'break-word',
               whiteSpace: 'normal',
@@ -594,7 +601,7 @@ export const MultichainAccountsConnectPage: React.FC<
             >
               <Icon
                 name={IconName.VerifiedFilled}
-                color={IconColor.SuccessDefault}
+                color={IconColor.successDefault}
                 size={IconSize.Sm}
               />
             </Tooltip>
@@ -607,17 +614,14 @@ export const MultichainAccountsConnectPage: React.FC<
             >
               <Icon
                 name={IconName.Danger}
-                color={IconColor.ErrorDefault}
+                color={IconColor.errorDefault}
                 size={IconSize.Sm}
               />
             </Tooltip>
           )}
         </Box>
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Center}
-        >
-          <Text color={TextColor.TextAlternative}>
+        <Box display={Display.Flex} justifyContent={JustifyContent.center}>
+          <Text color={TextColor.textAlternative}>
             {t('connectionDescription')}
           </Text>
         </Box>
@@ -636,55 +640,57 @@ export const MultichainAccountsConnectPage: React.FC<
           >
             <Box marginTop={4}>
               <Box
-                backgroundColor={BoxBackgroundColor.BackgroundDefault}
-                className="rounded-xl"
+                backgroundColor={BackgroundColor.backgroundDefault}
+                borderRadius={BorderRadius.XL}
               >
                 {selectedAccountGroupIds.map(renderAccountCell)}
               </Box>
               {selectedAccountGroupIds.length === 0 && (
                 <Box
-                  className="connect-page__accounts-empty rounded-xl"
-                  flexDirection={BoxFlexDirection.Row}
-                  justifyContent={BoxJustifyContent.Start}
-                  alignItems={BoxAlignItems.Center}
+                  className="connect-page__accounts-empty"
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.flexStart}
+                  alignItems={AlignItems.center}
+                  borderRadius={BorderRadius.XL}
                 >
-                  <TextButton
+                  <ButtonLink
                     onClick={setModeToEditAccounts}
                     data-testid="edit"
                   >
                     {t('selectAccountToConnect')}
-                  </TextButton>
+                  </ButtonLink>
                 </Box>
               )}
               {selectedAccountGroupIds.length > 0 && (
                 <Box
                   marginTop={4}
-                  flexDirection={BoxFlexDirection.Row}
-                  justifyContent={BoxJustifyContent.Start}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.flexStart}
                   padding={4}
                 >
                   <Box
-                    className="connect-page__edit-icon rounded-md"
+                    className="connect-page__edit-icon"
                     marginRight={4}
-                    flexDirection={BoxFlexDirection.Row}
-                    alignItems={BoxAlignItems.Center}
-                    justifyContent={BoxJustifyContent.Center}
-                    backgroundColor={BoxBackgroundColor.InfoMuted}
+                    display={Display.Flex}
+                    alignItems={AlignItems.center}
+                    justifyContent={JustifyContent.center}
+                    backgroundColor={BackgroundColor.infoMuted}
+                    borderRadius={BorderRadius.MD}
                     padding={2}
                   >
                     <Icon
                       name={IconName.Edit}
                       size={IconSize.Md}
-                      color={IconColor.InfoDefault}
+                      color={IconColor.infoDefault}
                     />
                   </Box>
-                  <TextButton
-                    color={TextColor.InfoDefault}
+                  <ButtonLink
+                    color={TextColor.infoDefault}
                     onClick={setModeToEditAccounts}
                     data-testid="edit"
                   >
                     {t('editAccounts')}
-                  </TextButton>
+                  </ButtonLink>
                 </Box>
               )}
             </Box>
@@ -712,10 +718,15 @@ export const MultichainAccountsConnectPage: React.FC<
         </Tabs>
       </Content>
       <Footer>
-        <Box className="w-full" flexDirection={BoxFlexDirection.Column} gap={4}>
-          <Box className="w-full" flexDirection={BoxFlexDirection.Row} gap={4}>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={4}
+          width={BlockSize.Full}
+        >
+          <Box display={Display.Flex} gap={4} width={BlockSize.Full}>
             <Button
-              isFullWidth
+              block
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
               data-testid="cancel-btn"
@@ -724,17 +735,17 @@ export const MultichainAccountsConnectPage: React.FC<
               {t('cancel')}
             </Button>
             <Button
-              isFullWidth
+              block
               data-testid="confirm-btn"
               size={ButtonSize.Lg}
               onClick={onConfirm}
-              isDanger={trustSignalState === TrustSignalDisplayState.Malicious}
+              danger={trustSignalState === TrustSignalDisplayState.Malicious}
               startIconName={
                 trustSignalState === TrustSignalDisplayState.Malicious
                   ? IconName.Danger
                   : undefined
               }
-              isDisabled={
+              disabled={
                 selectedAccountGroupIds.length === 0 ||
                 selectedChainIds.length === 0
               }
