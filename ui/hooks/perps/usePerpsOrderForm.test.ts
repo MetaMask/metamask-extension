@@ -59,7 +59,7 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.formState).toMatchObject({
         asset: 'BTC',
         direction: 'long',
-        amount: '',
+        amount: '10',
         leverage: 3,
         type: 'market',
         autoCloseEnabled: false,
@@ -339,6 +339,10 @@ describe('usePerpsOrderForm', () => {
         () => usePerpsOrderForm(defaultOptions),
         mockStateWithLocale,
       );
+
+      act(() => {
+        result.current.handleAmountChange('0');
+      });
 
       expect(result.current.calculations.positionSize).toBeNull();
       expect(result.current.calculations.marginRequired).toBeNull();

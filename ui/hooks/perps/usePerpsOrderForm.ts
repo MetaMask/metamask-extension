@@ -10,6 +10,7 @@ import {
 } from '../../../shared/lib/perps-formatters';
 
 import { mockOrderFormDefaults } from '../../components/app/perps/order-entry/order-entry.mocks';
+import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
 import { getDisplaySymbol } from '../../components/app/perps/utils';
 import type {
   OrderFormState,
@@ -219,6 +220,7 @@ export function usePerpsOrderForm({
       asset,
       direction: initialDirection,
       type: orderType,
+      amount: String(PERPS_MIN_MARKET_ORDER_USD),
       ...(initialLeverage !== undefined && { leverage: initialLeverage }),
     };
   });
@@ -297,6 +299,7 @@ export function usePerpsOrderForm({
         asset,
         direction: initialDirection,
         type: typeForReset,
+        amount: String(PERPS_MIN_MARKET_ORDER_USD),
         ...(initialLeverage !== undefined && { leverage: initialLeverage }),
       });
     }
