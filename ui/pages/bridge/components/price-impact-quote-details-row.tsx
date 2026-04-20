@@ -79,10 +79,7 @@ export const PriceImpactQuoteDetailsRow = ({
             data-testid="price-impact-warning-button"
           />
         )}
-        <Text
-          variant={TextVariant.BodySm}
-          color={priceImpactTextColor}
-        >
+        <Text variant={TextVariant.BodySm} color={priceImpactTextColor}>
           {formattedPriceImpact}
         </Text>
       </Row>
