@@ -27,6 +27,7 @@ export {
   filterMarketsByQuery,
   isHip3Market,
   isCryptoMarket,
+  hasVolume,
 } from './utils';
 
 // Edit Margin

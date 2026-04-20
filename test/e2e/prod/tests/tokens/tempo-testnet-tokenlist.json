@@ -1,0 +1,40 @@
+{
+  "keywords": ["tempo", "testnet", "tokens"],
+  "logoURI": "https://raw.githubusercontent.com/tempoxyz/tempo-apps/main/apps/tokenlist/data/logo.png",
+  "name": "Tempo Testnet Token List",
+  "tokens": [
+    {
+      "chainId": 42429,
+      "address": "0x20c0000000000000000000000000000000000000",
+      "name": "Path USD",
+      "symbol": "pathUSD",
+      "decimals": 18,
+      "logoURI": "https://raw.githubusercontent.com/tempoxyz/tempo-apps/main/apps/tokenlist/data/pathUSD.png"
+    },
+    {
+      "chainId": 42429,
+      "address": "0x20c0000000000000000000000000000000000001",
+      "name": "Alpha USD",
+      "symbol": "alphaUSD",
+      "decimals": 18,
+      "logoURI": "https://raw.githubusercontent.com/tempoxyz/tempo-apps/main/apps/tokenlist/data/alphaUSD.png"
+    },
+    {
+      "chainId": 42429,
+      "address": "0x20c0000000000000000000000000000000000002",
+      "name": "Beta USD",
+      "symbol": "betaUSD",
+      "decimals": 18,
+      "logoURI": "https://raw.githubusercontent.com/tempoxyz/tempo-apps/main/apps/tokenlist/data/betaUSD.png"
+    },
+    {
+      "chainId": 42429,
+      "address": "0x20c0000000000000000000000000000000000003",
+      "name": "Theta USD",
+      "symbol": "thetaUSD",
+      "decimals": 18,
+      "logoURI": "https://raw.githubusercontent.com/tempoxyz/tempo-apps/main/apps/tokenlist/data/thetaUSD.png"
+    }
+  ],
+  "version": "1.0.0"
+}

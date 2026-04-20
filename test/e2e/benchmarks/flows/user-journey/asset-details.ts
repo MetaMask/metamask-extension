@@ -11,8 +11,11 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import { Driver } from '../../../webdriver/driver';
-import { performanceTracker } from '../../utils/performance-tracker';
-import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import { collectTimerResults } from '../../utils/timer-helper';
+import {
+  measureStepWithLongTasks,
+  buildLongTaskTimerResults,
+} from '../../utils/long-task-helper';
 import {
   getTestSpecificMock,
   shouldUseMockedRequests,
@@ -24,13 +27,14 @@ import {
 } from '../../../../../shared/constants/benchmarks';
 import { WITH_STATE_POWER_USER } from '../../utils/constants';
 import { collectWebVitals } from '../../utils';
-import type { BenchmarkRunResult } from '../../utils/types';
+import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
 const ETH_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const testTitle = 'benchmark-asset-details-power-user';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
+  const steps: LongTaskStepResult[] = [];
   let webVitals: WebVitalsMetrics | undefined;
   try {
     await withFixtures(
@@ -51,8 +55,6 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         testSpecificMock: getTestSpecificMock(),
       },
       async ({ driver }: { driver: Driver }) => {
-        const timer = new TimerHelper('assetClickToPriceChart');
-
         // Login flow
         await login(driver, { validateBalance: false });
 
@@ -81,11 +83,16 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         await assetListPage.clickOnAsset('Ethereum');
 
         // Measure: Asset click to price chart loaded
-        await timer.measure(async () => {
-          await assetListPage.checkPriceChartIsShown();
-          await assetListPage.checkPriceChartLoaded(ETH_TOKEN_ADDRESS);
-        });
-        performanceTracker.addTimer(timer);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'assetClickToPriceChart',
+            async () => {
+              await assetListPage.checkPriceChartIsShown();
+              await assetListPage.checkPriceChartLoaded(ETH_TOKEN_ADDRESS);
+            },
+          ),
+        );
 
         try {
           webVitals = await collectWebVitals(driver);
@@ -96,14 +103,14 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
     );
 
     return {
-      timers: collectTimerResults(),
+      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
       webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
-      timers: collectTimerResults(),
+      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
       webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),

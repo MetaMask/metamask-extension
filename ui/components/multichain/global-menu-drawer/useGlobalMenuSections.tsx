@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import browser from 'webextension-polyfill';
 import {
   Box,
   BoxAlignItems,
@@ -32,7 +31,7 @@ import {
   setShowSupportDataConsentModal,
   showConfirmTurnOnMetamaskNotifications,
   toggleNetworkMenu,
-  setUseSidePanelAsDefault,
+  toggleDefaultView,
 } from '../../../store/actions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -242,57 +241,6 @@ export function useGlobalMenuSections(
     onClose,
   ]);
 
-  const toggleDefaultView = useCallback(async () => {
-    if (!isSidePanelEnabled) {
-      return;
-    }
-
-    try {
-      if (isSidepanel) {
-        await dispatch(setUseSidePanelAsDefault(false));
-        window.close();
-        return;
-      }
-
-      if (isPopup) {
-        const browserWithSidePanel = browser as typeof browser & {
-          sidePanel?: {
-            open: (options: { windowId: number }) => Promise<void>;
-          };
-        };
-
-        if (!browserWithSidePanel?.sidePanel?.open) {
-          return;
-        }
-
-        const tabs = await browser.tabs.query({
-          active: true,
-          currentWindow: true,
-        });
-
-        if (tabs && tabs.length > 0 && tabs[0].windowId) {
-          await browserWithSidePanel.sidePanel.open({
-            windowId: tabs[0].windowId,
-          });
-          await new Promise((resolve) => setTimeout(resolve, 500));
-
-          const contexts = await chrome.runtime.getContexts({
-            contextTypes: ['SIDE_PANEL' as chrome.runtime.ContextType],
-          });
-
-          if (!contexts || contexts.length === 0) {
-            return;
-          }
-
-          await dispatch(setUseSidePanelAsDefault(true));
-          window.close();
-        }
-      }
-    } catch (error) {
-      console.error('Error toggling default view:', error);
-    }
-  }, [isSidePanelEnabled, isSidepanel, isPopup, dispatch]);
-
   return useMemo(() => {
     const section1: GlobalMenuSection = {
       id: 'global-menu-section-1',
@@ -376,7 +324,7 @@ export function useGlobalMenuSections(
         iconName: isSidepanel ? IconName.PopUp : IconName.SidePanel,
         label: isSidepanel ? t('switchToPopup') : t('switchToSidePanel'),
         onClick: async () => {
-          await toggleDefaultView();
+          await dispatch(toggleDefaultView());
           trackEvent({
             event: MetaMetricsEventName.ViewportSwitched,
             category: MetaMetricsEventCategory.Navigation,
@@ -560,6 +508,5 @@ export function useGlobalMenuSections(
     supportText,
     handleNotificationsClick,
     handleSupportMenuClick,
-    toggleDefaultView,
   ]);
 }

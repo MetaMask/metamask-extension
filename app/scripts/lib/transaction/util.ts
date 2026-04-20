@@ -15,6 +15,8 @@ import type { Hex, JsonRpcRequest } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
 import { PPOMController } from '@metamask/ppom-validator';
 
+import { KeyringController } from '@metamask/keyring-controller';
+import log from 'loglevel';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -39,6 +41,13 @@ import {
   ScanAddressResponse,
 } from '../../../../shared/lib/trust-signals';
 import { getTransactionDataRecipient } from '../../../../shared/lib/transaction.utils';
+import { accountSupports7702 } from '../account-supports-7702';
+import {
+  getTempoEvmTransactionArgs,
+  getTempoTransactionBatchArgs,
+  isTempoChain,
+  isTempoTransactionType,
+} from './tempo-tx-utils';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -52,6 +61,7 @@ type BaseAddTransactionRequest = {
   selectedAccount: InternalAccount;
   transactionParams: TransactionParams;
   transactionController: TransactionController;
+  keyringController: KeyringController;
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
   userOperationController: UserOperationController;
   internalAccounts: InternalAccount[];
@@ -59,7 +69,7 @@ type BaseAddTransactionRequest = {
   addSecurityAlertResponse: AddAddressSecurityAlertResponse;
 };
 
-type FinalAddTransactionRequest = BaseAddTransactionRequest & {
+export type FinalAddTransactionRequest = BaseAddTransactionRequest & {
   transactionOptions: Partial<AddTransactionOptions>;
 };
 
@@ -78,6 +88,11 @@ const TRANSFER_TYPES = [
   TransactionType.tokenMethodTransferFrom,
   TransactionType.tokenMethodSafeTransferFrom,
 ];
+
+type AddTransactionResult = Promise<{
+  transactionMeta: TransactionMeta | undefined;
+  waitForHash: () => Promise<string | undefined>;
+}>;
 
 export async function addDappTransaction(
   request: AddDappTransactionRequest,
@@ -105,19 +120,79 @@ export async function addDappTransaction(
 
   endTrace({ name: TraceName.Middleware, id: actionId });
 
-  const { waitForHash } = await addTransactionOrUserOperation({
+  const addTransactionRequest: FinalAddTransactionRequest = {
     ...request,
     transactionOptions: {
       ...transactionOptions,
       traceContext,
     },
-  });
+  };
+
+  const { waitForHash } = await addTransactionOrUserOperation(
+    addTransactionRequest,
+  );
 
   const hash = (await waitForHash()) as string;
 
   endTrace({ name: TraceName.Transaction, id: actionId });
 
   return hash;
+}
+
+async function addTransactionOnTempo(
+  request: FinalAddTransactionRequest,
+): AddTransactionResult {
+  const { chainId, keyringController } = request;
+  const isEip7702SupportedByAccount = await accountSupports7702(
+    request.transactionParams.from,
+    keyringController as Parameters<typeof accountSupports7702>[1],
+  );
+
+  // Classic transaction, we simply set pathUSD as default
+  // and add excludeNativeTokenForFee to signal to ignore native.
+  if (!isTempoTransactionType(request.transactionParams)) {
+    if (!isEip7702SupportedByAccount) {
+      log.debug(
+        'addTransactionOnTempo: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
+      );
+      return addTransactionWithController(request);
+    }
+    return addTransactionWithController(
+      getTempoEvmTransactionArgs({ request, chainId }),
+    );
+    // Tempo transaction 0x76 + hardware wallet wont work for now.
+  } else if (!isEip7702SupportedByAccount) {
+    throw new Error('Wallet not supported for Tempo Transactions.');
+  }
+  // Checks and infer Tempo Transaction format for supported fields.
+  const { transactionController } = request;
+
+  const result = await transactionController.addTransactionBatch(
+    getTempoTransactionBatchArgs({ request, chainId }),
+  );
+  const { batchId } = result;
+  // We've got a batchId but we want to return a tx hash to the dApp
+  const transactionMeta = getTransactionByBatchId(
+    batchId,
+    transactionController,
+  );
+
+  if (!transactionMeta) {
+    log.debug(`Batch ${batchId}: No matching transaction found.`);
+    throw new Error(
+      `Tempo Transaction: Unable to determine if transaction was successful.`,
+    );
+  } else if (!transactionMeta.hash) {
+    log.debug(`Batch ${batchId}: Hash missing from transaction object.`);
+    throw new Error(
+      `Tempo Transaction: Unable to determine if transaction was successful.`,
+    );
+  }
+
+  return {
+    transactionMeta,
+    waitForHash: async () => transactionMeta.hash,
+  };
 }
 
 export async function addTransaction(
@@ -150,6 +225,10 @@ async function addTransactionOrUserOperation(
   request: FinalAddTransactionRequest,
 ) {
   const { selectedAccount } = request;
+  const isTempoChainId = isTempoChain(request.chainId);
+  if (isTempoChainId) {
+    return addTransactionOnTempo(request);
+  }
 
   const isSmartContractAccount =
     selectedAccount.type === EthAccountType.Erc4337;
@@ -250,6 +329,15 @@ function getTransactionByHash(
 ) {
   return transactionController.state.transactions.find(
     (tx) => tx.hash === transactionHash,
+  );
+}
+
+function getTransactionByBatchId(
+  batchId: string,
+  transactionController: TransactionController,
+) {
+  return transactionController.state.transactions.find(
+    (tx) => tx.batchId === batchId,
   );
 }
 

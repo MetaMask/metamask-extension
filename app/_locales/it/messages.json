@@ -858,10 +858,6 @@
   "personalAddressDetected": {
     "message": "Rilevato indirizzo personale. Inserisci l'indirizzo del contratto del token."
   },
-  "plusXMore": {
-    "message": "+ $1 elementi",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
-  },
   "prev": {
     "message": "Precedente"
   },

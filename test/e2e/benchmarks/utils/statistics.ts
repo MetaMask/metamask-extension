@@ -274,13 +274,18 @@ export const validateMetricValue = (
   maxDuration: number = MAX_METRIC_DURATION_MS,
   minDuration: number = MIN_METRIC_DURATION_MS,
 ): SanityCheckResult => {
-  // Check for zero or negative values
-  if (value <= 0) {
-    return { valid: false, reason: 'Metric is zero or negative' };
+  // Check for negative values (always invalid)
+  if (value < 0) {
+    return { valid: false, reason: 'Metric is negative' };
+  }
+
+  // Check for zero values (invalid unless minDuration allows it)
+  if (value === 0 && minDuration > 0) {
+    return { valid: false, reason: 'Metric is zero' };
   }
 
   // Check for suspiciously small values
-  if (value < minDuration) {
+  if (value > 0 && value < minDuration) {
     return {
       valid: false,
       reason: `Metric below minimum threshold (${minDuration}ms)`,
@@ -332,6 +337,8 @@ export const filterBySanityChecks = (
 export type TimerStatisticsOptions = {
   /** Override max duration (ms) for sanity check; used for per-run totals. */
   maxDurationMs?: number;
+  /** Override min duration (ms) for sanity check. Set to 0 for metrics that are legitimately zero (e.g. long task counts, TBT). */
+  minDurationMs?: number;
 };
 
 export const calculateTimerStatistics = (
@@ -340,7 +347,12 @@ export const calculateTimerStatistics = (
   options?: TimerStatisticsOptions,
 ): TimerStatistics => {
   const maxDuration = options?.maxDurationMs ?? MAX_METRIC_DURATION_MS;
-  const sanityResult = filterBySanityChecks(durations, maxDuration);
+  const minDuration = options?.minDurationMs ?? MIN_METRIC_DURATION_MS;
+  const sanityResult = filterBySanityChecks(
+    durations,
+    maxDuration,
+    minDuration,
+  );
   const { filtered, outlierCount } = detectOutliers(sanityResult.filtered);
   const sorted = [...filtered].sort((a, b) => a - b);
   const mean = calculateMean(filtered);
@@ -582,7 +594,7 @@ export const validateResultThresholds = (
   return { violations, passed };
 };
 
-const WEB_VITALS_NUMERIC_KEYS = ['inp', 'fcp', 'lcp', 'cls'] as const;
+export const WEB_VITALS_NUMERIC_KEYS = ['inp', 'fcp', 'lcp', 'cls'] as const;
 
 type WebVitalsNumericKey = (typeof WEB_VITALS_NUMERIC_KEYS)[number];
 
@@ -725,8 +737,9 @@ export function logThresholdResult(violations: ThresholdViolation[]): void {
     console.log('\n  Threshold Violations:');
     violations.forEach((v) => {
       const icon = v.severity === THRESHOLD_SEVERITY.Fail ? '🔺' : '🔼';
+      const unit = v.metricId === 'cls' ? '' : 'ms';
       console.log(
-        `    ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(2)}ms > ${v.threshold}ms`,
+        `    ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(2)}${unit} > ${v.threshold}${unit}`,
       );
     });
   } else {

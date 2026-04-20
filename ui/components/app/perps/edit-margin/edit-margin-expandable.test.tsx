@@ -192,7 +192,7 @@ describe('EditMarginExpandable', () => {
       });
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
         key: 'perpsToastMarginAddSuccess',
-        messageParams: ['100', 'ETH'],
+        messageParams: ['$100', 'ETH'],
       });
     });
 
@@ -246,7 +246,7 @@ describe('EditMarginExpandable', () => {
 
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
         key: 'perpsToastMarginRemoveSuccess',
-        messageParams: ['50', 'ETH'],
+        messageParams: ['$50', 'ETH'],
       });
     });
   });

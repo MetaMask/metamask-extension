@@ -89,7 +89,7 @@ describe('Remote feature flag', function (this: Suite) {
       },
 
       async ({ driver, mockedEndpoint }: TestSuiteArguments) => {
-        await login(driver);
+        await login(driver, { waitForNonEvmAccounts: false });
 
         // Intended delay to wait for any potential requests to be made
         await driver.delay(5_000);

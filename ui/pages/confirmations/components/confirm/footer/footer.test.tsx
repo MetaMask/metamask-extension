@@ -39,10 +39,7 @@ import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
-import {
-  useConfirmationNavigation,
-  useConfirmationNavigationOptions,
-} from '../../../hooks/useConfirmationNavigation';
+import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { useAddEthereumChain } from '../../../hooks/useAddEthereumChain';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import Footer from './footer';
@@ -99,13 +96,10 @@ jest.mock('../../../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(() => Promise.resolve()),
 }));
 jest.mock('../../../hooks/useConfirmationNavigation', () => ({
+  ...jest.requireActual('../../../hooks/useConfirmationNavigation'),
   useConfirmationNavigation: jest.fn(() => ({
     navigateNext: mockNavigateNext,
     navigateToId: mockNavigateToId,
-  })),
-  useConfirmationNavigationOptions: jest.fn(() => ({
-    loader: 'default',
-    returnTo: undefined,
   })),
 }));
 jest.mock(
@@ -1211,22 +1205,41 @@ describe('ConfirmFooter', () => {
     expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
   });
 
-  describe('returnTo navigation', () => {
-    const useConfirmationNavigationOptionsMock = jest.mocked(
-      useConfirmationNavigationOptions,
+  it('renders SingleActionFooter for perpsDeposit transaction type', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.perpsDeposit,
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
     );
 
-    it('does not call navigateNext when cancel is clicked and returnTo is defined', async () => {
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
+    );
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  describe('goBackTo navigation', () => {
+    it('does not call navigateNext when cancel is clicked and goBackTo is defined', async () => {
       const navigateNextMock = jest.fn();
       useConfirmationNavigationMock.mockReturnValue({
         navigateNext: navigateNextMock,
         navigateToId: jest.fn(),
       } as unknown as ReturnType<typeof useConfirmationNavigation>);
 
-      useConfirmationNavigationOptionsMock.mockReturnValue({
-        loader: undefined,
-        returnTo: '/asset/0x123',
-      });
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+        goBackTo: '/asset/0x123',
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
       const { getAllByRole } = render();
       const cancelButton = getAllByRole('button')[0];
@@ -1243,21 +1256,23 @@ describe('ConfirmFooter', () => {
         expect(rejectSpy).toHaveBeenCalled();
       });
 
-      // Should NOT call navigateNext when returnTo is defined (early return)
+      // Should NOT call navigateNext when goBackTo is defined (early return)
       expect(navigateNextMock).not.toHaveBeenCalled();
     });
 
-    it('calls navigateNext when cancel is clicked and returnTo is undefined', async () => {
+    it('calls navigateNext when cancel is clicked and goBackTo is undefined', async () => {
       const navigateNextMock = jest.fn();
       useConfirmationNavigationMock.mockReturnValue({
         navigateNext: navigateNextMock,
         navigateToId: jest.fn(),
       } as unknown as ReturnType<typeof useConfirmationNavigation>);
 
-      useConfirmationNavigationOptionsMock.mockReturnValue({
-        loader: undefined,
-        returnTo: undefined,
-      });
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+        goBackTo: undefined,
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
       const { getAllByRole } = render();
       const cancelButton = getAllByRole('button')[0];
@@ -1274,7 +1289,7 @@ describe('ConfirmFooter', () => {
         expect(rejectSpy).toHaveBeenCalled();
       });
 
-      // Should call navigateNext when returnTo is undefined
+      // Should call navigateNext when goBackTo is undefined
       await waitFor(() => {
         expect(navigateNextMock).toHaveBeenCalled();
       });

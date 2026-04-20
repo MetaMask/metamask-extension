@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "アカウントのアイデンティコン"
   },
-  "accountIdenticonDescription": {
-    "message": "アカウントを一目で見分けられるよう、3種類の異なるスタイルのアイコンからお選びください。"
-  },
   "accountIsntConnectedToastText": {
     "message": "$1は$2に接続されていません"
   },
@@ -2909,9 +2906,6 @@
   "from": {
     "message": "送り元"
   },
-  "fromTokenLists": {
-    "message": "トークンリストから: $1"
-  },
   "function": {
     "message": "機能: $1"
   },
@@ -3108,7 +3102,8 @@
     "message": "引き続き次のことを確認します:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Ledgerのロックが解除されていること"
+    "message": "$1のロックが解除されていること",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "イーサリアムアプリが開いていること"
@@ -3291,12 +3286,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "すべて無視"
-  },
-  "ignoreTokenWarning": {
-    "message": "トークンを非表示にするとウォレットに表示されなくなりますが、検索して追加することはできます。"
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3356,12 +3345,6 @@
   "importSecretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズをインポート"
   },
-  "importSelectedTokens": {
-    "message": "選択したトークンをインポートしますか？"
-  },
-  "importSelectedTokensDescription": {
-    "message": "選択したトークンだけがウォレットに表示されます。非表示のトークンは後でいつでも検索してインポートできます。"
-  },
   "importTokenQuestion": {
     "message": "トークンをインポートしますか？"
   },
@@ -3380,10 +3363,6 @@
   "importWalletSuccess": {
     "message": "$1ウォレットがインポートされました",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "$1をインポート",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "インポートされました",
@@ -4058,10 +4037,6 @@
   "musdBuyMusd": {
     "message": "mUSDを購入"
   },
-  "musdClaimClaimingTo": {
-    "message": "入金先:",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "ボーナスを請求する",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -4703,13 +4678,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "方法"
-  },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "$1 の新しいトークンがこのアカウントで見つかりました",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "1つの新しいトークンがこのアカウントで見つかりました"
   },
   "numberOfTokens": {
     "message": "トークンの数"
@@ -5360,9 +5328,6 @@
   "perpsCloseShort": {
     "message": "ショートをクローズ"
   },
-  "perpsClosedShort": {
-    "message": "ショートをクローズしました"
-  },
   "perpsConfirmCloseLong": {
     "message": "ロングをクローズ"
   },
@@ -5441,17 +5406,11 @@
   "perpsFundingRateTooltip": {
     "message": "価格を市場に合わせるためにトレーダー間で支払われる、1時間あたりの手数料です。資金調達率がプラスの場合はロングがショートに支払い、マイナスの場合はショートがロングに支払います。"
   },
-  "perpsGeoBlockedTooltip": {
-    "message": "お住まいの地域ではパーペチュアル取引は利用できません"
-  },
   "perpsGiveFeedback": {
     "message": "ご意見をお聞かせください"
   },
   "perpsIncludesPnl": {
     "message": "損益込み $1"
-  },
-  "perpsIncreasedPosition": {
-    "message": "拡大したポジション"
   },
   "perpsLearnBasics": {
     "message": "パーペチュアルの基本"
@@ -5531,9 +5490,6 @@
     "message": "$1のショートをオープン",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "ロングをオープンしました"
-  },
   "perpsOraclePrice": {
     "message": "オラクル価格"
   },
@@ -5597,30 +5553,6 @@
   },
   "perpsSize": {
     "message": "サイズ"
-  },
-  "perpsSortFundingRateHighToLow": {
-    "message": "資金調達率: 高い順"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "資金調達率: 低い順"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "取組高: 多い順"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "取組高: 少ない順"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "価格変動: 大きい順"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "価格変動: 小さい順"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "取引量: 多い順"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "取引量: 少ない順"
   },
   "perpsStartNewTrade": {
     "message": "新規取引を開始"
@@ -5757,10 +5689,6 @@
   },
   "pleaseConfirm": {
     "message": "ご確認ください"
-  },
-  "plusXMore": {
-    "message": "他$1件",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "ブログ記事をお読みください。"
@@ -8613,9 +8541,6 @@
   "tokenDetails": {
     "message": "トークンの詳細"
   },
-  "tokenFoundTitle": {
-    "message": "1 つの新しいトークンが見つかりました"
-  },
   "tokenId": {
     "message": "トークンID"
   },
@@ -8657,10 +8582,6 @@
   "tokensCount": {
     "message": "トークン",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1種類の新しいトークンが見つかりました",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "コレクションのトークン"
@@ -9220,12 +9141,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFTが危険にさらされている可能性があります"
-  },
-  "yourTransactionConfirmed": {
-    "message": "トランザクションはすでに確定済みです"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "ブロックチェーン上で確定しているため、トランザクションをキャンセルできませんでした。"
   },
   "yourWalletIsReady": {
     "message": "ウォレットの準備ができました"

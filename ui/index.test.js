@@ -81,7 +81,7 @@ describe('Index Tests', () => {
 
     expect(clm.sendBugReport).toStrictEqual(enMessages.sendBugReport);
 
-    result = await setupLocale('es');
+    result = await setupLocale('es_419');
 
     const { currentLocaleMessages: clm2, enLocaleMessages: elm2 } = result;
     expect(clm2).toBeDefined();

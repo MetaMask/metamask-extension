@@ -76,6 +76,7 @@ export const useTokenSearchResults = ({
         query,
         jwt,
         clientId: BridgeClientId.EXTENSION,
+        clientVersion: process.env.METAMASK_VERSION,
         signal: abortControllerRef.current?.signal,
         bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
         after: cursor,

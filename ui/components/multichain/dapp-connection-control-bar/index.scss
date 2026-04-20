@@ -1,7 +1,11 @@
+@use "design-system";
+
 .dapp-connection-control-bar {
   flex-shrink: 0;
   background-color: var(--color-background-default);
   border-top: 1px solid var(--color-border-muted);
+  z-index: design-system.$dapp-connection-bar-z-index;
+  view-transition-name: dapp-connection-bar;
 
   &__left-group {
     min-width: 0; // allow truncation

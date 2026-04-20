@@ -30,6 +30,19 @@ const LOAD_MORE_MIN = 50;
 /** Maximum candles to fetch on load-more */
 const LOAD_MORE_MAX = 500;
 
+/**
+ * Leading-edge debounce window for connect() -- coalesces React
+ * unmount/remount bursts at the UI channel layer.
+ *
+ * Intentionally shorter than the bridge-layer CANDLE_TEARDOWN_DEFER_MS (150
+ * ms) in app/scripts/controllers/perps/perps-stream-bridge.ts: the bridge's
+ * deferred teardown gives the UI a ~150 ms window to re-subscribe before the
+ * background actually disconnects, and a 30 ms margin keeps the UI
+ * resubscribe inside that window so the teardown is cancelled rather than
+ * re-racing a full reconnect.
+ */
+const CONNECT_DEBOUNCE_MS = 120;
+
 /** Per-subscriber state */
 type SubscriberEntry = {
   callback: (data: CandleData) => void;
@@ -46,6 +59,15 @@ type ChannelEntry = {
   isConnected: boolean;
   /** The duration used for the initial subscription */
   duration: TimeDuration | undefined;
+  /** Pending leading-edge debounce timer for connect() */
+  pendingConnectTimer?: ReturnType<typeof setTimeout>;
+  /**
+   * Timestamp of the most recent disconnect(). Used by connect() to coalesce
+   * the unsubscribe→resubscribe burst produced by rapid remounts. Measuring
+   * from the last connect time would make the debounce skip any stream that
+   * had been open longer than CONNECT_DEBOUNCE_MS (i.e. every real visit).
+   */
+  lastDisconnectAt?: number;
 };
 
 /**
@@ -294,12 +316,20 @@ export class CandleStreamChannel {
     for (const [key, entry] of this.channels.entries()) {
       // Only reconnect channels that have active subscribers
       if (entry.subscribers.size > 0) {
+        if (entry.pendingConnectTimer !== undefined) {
+          clearTimeout(entry.pendingConnectTimer);
+          entry.pendingConnectTimer = undefined;
+        }
         // Disconnect existing source
         if (entry.unsubscribeFromSource) {
           entry.unsubscribeFromSource();
           entry.unsubscribeFromSource = null;
         }
         entry.isConnected = false;
+        // WebSocket reconnect is authoritative — clear the last-disconnect
+        // timestamp so the follow-up connect() fires immediately instead of
+        // being debounced.
+        entry.lastDisconnectAt = undefined;
 
         // Re-activate background stream for this key
         this.connect(key, entry);
@@ -342,13 +372,51 @@ export class CandleStreamChannel {
       return;
     }
 
+    const now = Date.now();
+    // Measure from the most recent disconnect, not the last connect: the
+    // debounce exists to coalesce unsubscribe→resubscribe bursts, so it must
+    // fire on any stream that has just been torn down, regardless of how long
+    // the previous subscription was alive.
+    const elapsed = now - (entry.lastDisconnectAt ?? 0);
+
+    if (elapsed >= CONNECT_DEBOUNCE_MS) {
+      this.fireConnect(key, entry);
+      return;
+    }
+
+    if (entry.pendingConnectTimer !== undefined) {
+      clearTimeout(entry.pendingConnectTimer);
+    }
+
+    // Wait only the remaining slice of the debounce window, not another full
+    // CONNECT_DEBOUNCE_MS. The window is anchored to lastDisconnectAt, so a
+    // resubscribe arriving n ms after the disconnect still needs to fire at
+    // (lastDisconnectAt + CONNECT_DEBOUNCE_MS); adding another full window on
+    // top would push the UI reconnect past the bridge's 150 ms teardown
+    // defer, which would commit a disconnect and force a fresh
+    // perpsActivateCandleStream — the exact burst this debounce is meant to
+    // coalesce.
+    const remaining = Math.max(0, CONNECT_DEBOUNCE_MS - elapsed);
+    entry.pendingConnectTimer = setTimeout(() => {
+      entry.pendingConnectTimer = undefined;
+      if (entry.subscribers.size > 0 && !entry.isConnected) {
+        this.fireConnect(key, entry);
+      }
+    }, remaining);
+  }
+
+  /**
+   * Execute the actual background activate call.
+   * Extracted from connect() to support leading-edge debounce.
+   *
+   * @param key - Cache key
+   * @param entry - Channel entry
+   */
+  private fireConnect(key: string, entry: ChannelEntry): void {
     const { symbol, interval } = parseCacheKey(key);
 
     entry.isConnected = true;
 
-    // Tell the background to start emitting candle updates for this key.
-    // Data arrives via perpsStreamUpdate { channel: 'candles', symbol, interval, data }
-    // which is routed to CandleStreamChannel.pushFromBackground().
     submitRequestToBackground('perpsActivateCandleStream', [
       { symbol, interval, duration: entry.duration },
     ]).catch((err) => {
@@ -360,7 +428,6 @@ export class CandleStreamChannel {
       entry.isConnected = false;
     });
 
-    // Set a no-op unsubscribe (background handles cleanup on stream close)
     // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
     entry.unsubscribeFromSource = () => {};
   }
@@ -373,11 +440,20 @@ export class CandleStreamChannel {
    * @param entry - Channel entry
    */
   private disconnect(key: string, entry: ChannelEntry): void {
+    if (entry.pendingConnectTimer !== undefined) {
+      clearTimeout(entry.pendingConnectTimer);
+      entry.pendingConnectTimer = undefined;
+    }
+
     if (entry.unsubscribeFromSource) {
       entry.unsubscribeFromSource();
       entry.unsubscribeFromSource = null;
     }
     entry.isConnected = false;
+    // Stamp the disconnect moment so the next connect() call can measure the
+    // gap and debounce remount bursts. Without this, connect() would fall
+    // through to the immediate path on every resubscribe.
+    entry.lastDisconnectAt = Date.now();
     const { symbol, interval } = parseCacheKey(key);
     submitRequestToBackground('perpsDeactivateCandleStream', [
       { symbol, interval },

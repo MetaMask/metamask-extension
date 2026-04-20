@@ -16,7 +16,7 @@ import {
   IconName as IconNameDeprecated,
   Text,
 } from '../../component-library';
-import { MultichainHoveredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-hovered-list';
+import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
@@ -187,7 +187,7 @@ export const AppHeaderUnlockedContent = ({
             style={{ width: 'fit-content' }}
             data-testid="networks-subtitle-test-id"
           >
-            <MultichainHoveredAddressRowsList
+            <MultichainTriggeredAddressRowsList
               groupId={selectedMultichainAccountId}
               showAccountHeaderAndBalance={false}
               onViewAllClick={() => {
@@ -201,7 +201,7 @@ export const AppHeaderUnlockedContent = ({
               <MultichainAccountNetworkGroupWithCopyIcon
                 groupId={selectedMultichainAccountId}
               />
-            </MultichainHoveredAddressRowsList>
+            </MultichainTriggeredAddressRowsList>
           </BoxDeprecated>
         )}
       </BoxDeprecated>

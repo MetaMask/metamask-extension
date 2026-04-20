@@ -609,13 +609,8 @@
       "browser": "string",
       "os": "string"
     },
-    "cachedAccountState": "null",
-    "cachedMarketData": "null",
-    "cachedMarketDataTimestamp": "number",
-    "cachedOrders": "null",
-    "cachedPositions": "null",
-    "cachedUserDataAddress": "null",
-    "cachedUserDataTimestamp": "number",
+    "cachedMarketDataByProvider": "object",
+    "cachedUserDataByProvider": "object",
     "cacheTimestamp": "number",
     "canTrackWalletFundsObtained": "boolean",
     "claims": [],
@@ -763,6 +758,7 @@
       }
     },
     "ensResolutionsByAddress": {},
+    "error": "null",
     "estimatedGasFeeTimeBounds": {},
     "events": {
       "cronjob-npm:@metamask/tron-wallet-snap-0": {
@@ -1020,9 +1016,12 @@
       }
     ],
     "knownMethodData": {},
+    "lastCompletedWithdrawalTimestamp": "null",
+    "lastCompletedWithdrawalTxHashes": [],
     "lastDepositResult": "null",
     "lastDepositTransactionId": "null",
     "lastError": "null",
+    "lastFetchedAt": "null",
     "lastFetchedBlockNumbers": {},
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
@@ -1144,7 +1143,7 @@
       }
     },
     "networksWithTransactionActivity": {},
-    "newPrivacyPolicyToastClickedOrClosed": "null",
+    "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "nftsDetectionNoticeDismissed": "boolean",
     "nftsDropdownState": {},
@@ -1224,6 +1223,7 @@
     "quoteRequest": {
       "srcTokenAddress": "string"
     },
+    "quoteStreamComplete": "null",
     "quotes": [],
     "quotesInitialLoadTime": "null",
     "quotesLastFetched": "null",
@@ -1272,6 +1272,7 @@
       "*": "number"
     },
     "localOverrides": {},
+    "location": "string",
     "rewardsAccounts": {},
     "rewardsActiveAccount": "null",
     "rewardsPointsEstimateHistory": [],
@@ -1294,6 +1295,7 @@
     "showNetworkBanner": "boolean",
     "showPermissionsTour": "boolean",
     "showShieldEntryModalOnce": "null",
+    "showSidePanelMigrationToast": "boolean",
     "storageWriteErrorType": "null",
     "showTestnetMessageInDropdown": "boolean",
     "sidePanelGasPollTokens": [],
@@ -1355,6 +1357,7 @@
         }
       }
     },
+    "status": "string",
     "storageMetadata": [],
     "subjectMetadata": {
       "npm:@metamask/bitcoin-wallet-snap": {

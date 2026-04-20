@@ -238,6 +238,8 @@ const migrations = [
   require('./200'),
   require('./201'),
   require('./202'),
+  require('./203'),
+  require('./204'),
 ];
 
 export default migrations;

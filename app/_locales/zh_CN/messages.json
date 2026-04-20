@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "账户 Identicon"
   },
-  "accountIdenticonDescription": {
-    "message": "从三种不同风格的独特图标中选择，助您一目了然地识别账户。"
-  },
   "accountIsntConnectedToastText": {
     "message": "$1 未连接到 $2"
   },
@@ -2909,9 +2906,6 @@
   "from": {
     "message": "自"
   },
-  "fromTokenLists": {
-    "message": "从代币列表：$1"
-  },
   "function": {
     "message": "功能：$1"
   },
@@ -3108,7 +3102,8 @@
     "message": "继续以确保："
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "您的 Ledger 已解锁"
+    "message": "您的 $1 已解锁",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "以太坊应用已打开"
@@ -3291,12 +3286,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "忽略所有"
-  },
-  "ignoreTokenWarning": {
-    "message": "您隐藏的代币将不会显示在您的钱包中。但是，您仍然可以通过搜索将其添加。"
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3356,12 +3345,6 @@
   "importSecretRecoveryPhrase": {
     "message": "导入私钥助记词"
   },
-  "importSelectedTokens": {
-    "message": "要导入所选代币吗？"
-  },
-  "importSelectedTokensDescription": {
-    "message": "只有您选择的代币才会出现在您的钱包中。您可以随时使用搜索功能来导入隐藏的代币。"
-  },
   "importTokenQuestion": {
     "message": "导入代币？"
   },
@@ -3380,10 +3363,6 @@
   "importWalletSuccess": {
     "message": "钱包 $1 已导入",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "导入$1",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "已导入",
@@ -4058,10 +4037,6 @@
   "musdBuyMusd": {
     "message": "购买 mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "领取并存入",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "领取奖励",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -4703,13 +4678,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "了解操作方法"
-  },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "在此账户中发现 $1 新代币",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "在此账户中找到1枚新代币"
   },
   "numberOfTokens": {
     "message": "代币数量"
@@ -5360,9 +5328,6 @@
   "perpsCloseShort": {
     "message": "平仓空头仓位"
   },
-  "perpsClosedShort": {
-    "message": "平仓空头仓位"
-  },
   "perpsConfirmCloseLong": {
     "message": "平仓多头仓位"
   },
@@ -5441,17 +5406,11 @@
   "perpsFundingRateTooltip": {
     "message": "交易者之间为使价格与市场保持一致而支付的每小时费用。当费率为正时，多头向空头支付费用；为负时，空头向多头支付费用。"
   },
-  "perpsGeoBlockedTooltip": {
-    "message": "您所在的地区不支持永续合约交易"
-  },
   "perpsGiveFeedback": {
     "message": "向我们提供反馈"
   },
   "perpsIncludesPnl": {
     "message": "含盈亏 $1"
-  },
-  "perpsIncreasedPosition": {
-    "message": "已加仓"
   },
   "perpsLearnBasics": {
     "message": "了解永续合约的基础知识"
@@ -5531,9 +5490,6 @@
     "message": "开立空头仓位 $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "已开设多头仓位"
-  },
   "perpsOraclePrice": {
     "message": "预言机价格"
   },
@@ -5597,30 +5553,6 @@
   },
   "perpsSize": {
     "message": "规模"
-  },
-  "perpsSortFundingRateHighToLow": {
-    "message": "资金费率：从高到低"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "资金费率：从低到高"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "未平仓合约：从高到低"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "未平仓合约：从低到高"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "价格变化：从高到低"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "价格变化：从低到高"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "交易量：从高到低"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "交易量：从低到高"
   },
   "perpsStartNewTrade": {
     "message": "开始新交易"
@@ -5757,10 +5689,6 @@
   },
   "pleaseConfirm": {
     "message": "请确认"
-  },
-  "plusXMore": {
-    "message": "另外 $1 项",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "博客文章。"
@@ -8613,9 +8541,6 @@
   "tokenDetails": {
     "message": "代币详情"
   },
-  "tokenFoundTitle": {
-    "message": "找到1枚新代币"
-  },
   "tokenId": {
     "message": "代币ID"
   },
@@ -8657,10 +8582,6 @@
   "tokensCount": {
     "message": "代币",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "发现$1新代币",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "收藏品中的代币"
@@ -9220,12 +9141,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "您的 NFT 可能面临风险"
-  },
-  "yourTransactionConfirmed": {
-    "message": "交易已确认"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "在区块链上确认之前，我们无法取消您的交易。"
   },
   "yourWalletIsReady": {
     "message": "您的钱包已准备就绪"

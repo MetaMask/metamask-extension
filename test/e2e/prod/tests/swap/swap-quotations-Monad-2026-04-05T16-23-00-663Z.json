@@ -1,0 +1,448 @@
+{
+  "networkName": "Monad",
+  "chainId": 143,
+  "tokenlistUrl": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json",
+  "nativeTokenSymbol": "MON",
+  "timestamp": "2026-04-05T16:23:00.668Z",
+  "tokensImported": 3,
+  "totalTestCases": 6,
+  "passedTestCases": 6,
+  "failedTestCases": 0,
+  "testResults": [
+    {
+      "networkName": "Monad",
+      "tokenPair": "MON → AUSD",
+      "sourceTokenSymbol": "MON",
+      "destinationTokenSymbol": "AUSD",
+      "quotations": {
+        "sourceToken": {
+          "chainId": 143,
+          "address": "",
+          "name": "MON",
+          "symbol": "MON",
+          "decimals": 18
+        },
+        "destinationToken": {
+          "chainId": 143,
+          "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a",
+          "name": "AUSD",
+          "symbol": "AUSD",
+          "decimals": 6,
+          "extensions": {
+            "coinGeckoId": "agora-dollar",
+            "bridgeInfo": {
+              "protocol": "LayerZero OFT",
+              "bridgeAddress": "0x9CaB7Ede13dc56652E44D2404E969C212f22689b"
+            },
+            "crossChainAddresses": {
+              "1": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "56": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "137": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "8453": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "9745": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a",
+                "symbol": "AUSD0"
+              },
+              "42161": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "43114": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              }
+            }
+          },
+          "logoURI": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/AUSD/logo.svg",
+          "logoUri": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/AUSD/logo.svg"
+        },
+        "beforeSwitch": {
+          "fromAmount": "20",
+          "toAmount": "0.541",
+          "networkFeeSponsored": "Paid by MetaMask",
+          "slippageValue": "",
+          "priceImpact": "",
+          "minimumReceived": "0.531 AUSD",
+          "capturedAt": "2026-04-05T16:16:46.831Z"
+        },
+        "afterSwitch": {
+          "fromAmount": "0.541",
+          "toAmount": "19.64",
+          "networkFeeSponsored": "$0.004",
+          "slippageValue": "",
+          "priceImpact": "",
+          "minimumReceived": "19.25 MON",
+          "capturedAt": "2026-04-05T16:16:51.942Z"
+        },
+        "assertion": {
+          "expectedTokensSwitch": true,
+          "valuesChanged": true
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "networkName": "Monad",
+      "tokenPair": "MON → AZND",
+      "sourceTokenSymbol": "MON",
+      "destinationTokenSymbol": "AZND",
+      "quotations": {
+        "sourceToken": {
+          "chainId": 143,
+          "address": "",
+          "name": "MON",
+          "symbol": "MON",
+          "decimals": 18
+        },
+        "destinationToken": {
+          "chainId": 143,
+          "address": "0x4917a5ec9fCb5e10f47CBB197aBe6aB63be81fE8",
+          "name": "Asian Dollar",
+          "symbol": "AZND",
+          "decimals": 18,
+          "extensions": {
+            "coinGeckoId": "mu-digital-aznd"
+          },
+          "logoURI": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/AZND/logo.svg",
+          "logoUri": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/AZND/logo.svg"
+        },
+        "beforeSwitch": {
+          "fromAmount": "20",
+          "toAmount": "0.544",
+          "networkFeeSponsored": "Paid by MetaMask",
+          "slippageValue": "",
+          "priceImpact": "",
+          "minimumReceived": "0.533 AZND",
+          "capturedAt": "2026-04-05T16:17:44.569Z"
+        },
+        "afterSwitch": {
+          "fromAmount": "0.544",
+          "toAmount": "29.81",
+          "networkFeeSponsored": "$0.004",
+          "slippageValue": "",
+          "priceImpact": "",
+          "minimumReceived": "29.21 MON",
+          "capturedAt": "2026-04-05T16:17:49.666Z"
+        },
+        "assertion": {
+          "expectedTokensSwitch": true,
+          "valuesChanged": true
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "networkName": "Monad",
+      "tokenPair": "MON → BTC.b",
+      "sourceTokenSymbol": "MON",
+      "destinationTokenSymbol": "BTC.b",
+      "quotations": {
+        "sourceToken": {
+          "chainId": 143,
+          "address": "",
+          "name": "MON",
+          "symbol": "MON",
+          "decimals": 18
+        },
+        "destinationToken": {
+          "chainId": 143,
+          "address": "0xB0F70C0bD6FD87dbEb7C10dC692a2a6106817072",
+          "name": "Bitcoin",
+          "symbol": "BTC.b",
+          "decimals": 8,
+          "extensions": {
+            "coinGeckoId": "bitcoin-avalanche-bridged-btc-b",
+            "bridgeInfo": {
+              "protocol": "Chainlink CCIP",
+              "bridgeAddress": "0x33566fE5976AAa420F3d5C64996641Fc3858CaDB"
+            },
+            "crossChainAddresses": {
+              "1": {
+                "address": "0xB0F70C0bD6FD87dbEb7C10dC692a2a6106817072"
+              },
+              "43114": {
+                "address": "0x152b9d0FdC40C096757F570A51E494bd4b943E50"
+              }
+            }
+          },
+          "logoURI": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/BTC.b/logo.svg",
+          "logoUri": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/BTC.b/logo.svg"
+        },
+        "beforeSwitch": {
+          "fromAmount": "20",
+          "toAmount": "0.000008",
+          "networkFeeSponsored": "Paid by MetaMask",
+          "slippageValue": "",
+          "priceImpact": "",
+          "minimumReceived": "0.000008 BTC.B",
+          "capturedAt": "2026-04-05T16:18:42.208Z"
+        },
+        "afterSwitch": {
+          "fromAmount": "0.000008",
+          "toAmount": "19.51",
+          "networkFeeSponsored": "$0.004",
+          "slippageValue": "",
+          "priceImpact": "",
+          "minimumReceived": "19.12 MON",
+          "capturedAt": "2026-04-05T16:18:47.312Z"
+        },
+        "assertion": {
+          "expectedTokensSwitch": true,
+          "valuesChanged": true
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "networkName": "Monad",
+      "tokenPair": "AUSD → AZND",
+      "sourceTokenSymbol": "AUSD",
+      "destinationTokenSymbol": "AZND",
+      "quotations": {
+        "sourceToken": {
+          "chainId": 143,
+          "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a",
+          "name": "AUSD",
+          "symbol": "AUSD",
+          "decimals": 6,
+          "extensions": {
+            "coinGeckoId": "agora-dollar",
+            "bridgeInfo": {
+              "protocol": "LayerZero OFT",
+              "bridgeAddress": "0x9CaB7Ede13dc56652E44D2404E969C212f22689b"
+            },
+            "crossChainAddresses": {
+              "1": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "56": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "137": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "8453": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "9745": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a",
+                "symbol": "AUSD0"
+              },
+              "42161": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "43114": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              }
+            }
+          },
+          "logoURI": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/AUSD/logo.svg",
+          "logoUri": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/AUSD/logo.svg"
+        },
+        "destinationToken": {
+          "chainId": 143,
+          "address": "0x4917a5ec9fCb5e10f47CBB197aBe6aB63be81fE8",
+          "name": "Asian Dollar",
+          "symbol": "AZND",
+          "decimals": 18,
+          "extensions": {
+            "coinGeckoId": "mu-digital-aznd"
+          },
+          "logoURI": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/AZND/logo.svg",
+          "logoUri": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/AZND/logo.svg"
+        },
+        "beforeSwitch": {
+          "fromAmount": "20",
+          "toAmount": "19.88",
+          "networkFeeSponsored": "$0.004",
+          "slippageValue": "",
+          "priceImpact": "",
+          "minimumReceived": "19.48 AZND",
+          "capturedAt": "2026-04-05T16:19:39.686Z"
+        },
+        "afterSwitch": {
+          "fromAmount": "19.88",
+          "toAmount": "22.65",
+          "networkFeeSponsored": "$0.004",
+          "slippageValue": "",
+          "priceImpact": "",
+          "minimumReceived": "22.2 AUSD",
+          "capturedAt": "2026-04-05T16:20:04.883Z"
+        },
+        "assertion": {
+          "expectedTokensSwitch": true,
+          "valuesChanged": true
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "networkName": "Monad",
+      "tokenPair": "AUSD → BTC.b",
+      "sourceTokenSymbol": "AUSD",
+      "destinationTokenSymbol": "BTC.b",
+      "quotations": {
+        "sourceToken": {
+          "chainId": 143,
+          "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a",
+          "name": "AUSD",
+          "symbol": "AUSD",
+          "decimals": 6,
+          "extensions": {
+            "coinGeckoId": "agora-dollar",
+            "bridgeInfo": {
+              "protocol": "LayerZero OFT",
+              "bridgeAddress": "0x9CaB7Ede13dc56652E44D2404E969C212f22689b"
+            },
+            "crossChainAddresses": {
+              "1": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "56": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "137": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "8453": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "9745": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a",
+                "symbol": "AUSD0"
+              },
+              "42161": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              },
+              "43114": {
+                "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a"
+              }
+            }
+          },
+          "logoURI": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/AUSD/logo.svg",
+          "logoUri": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/AUSD/logo.svg"
+        },
+        "destinationToken": {
+          "chainId": 143,
+          "address": "0xB0F70C0bD6FD87dbEb7C10dC692a2a6106817072",
+          "name": "Bitcoin",
+          "symbol": "BTC.b",
+          "decimals": 8,
+          "extensions": {
+            "coinGeckoId": "bitcoin-avalanche-bridged-btc-b",
+            "bridgeInfo": {
+              "protocol": "Chainlink CCIP",
+              "bridgeAddress": "0x33566fE5976AAa420F3d5C64996641Fc3858CaDB"
+            },
+            "crossChainAddresses": {
+              "1": {
+                "address": "0xB0F70C0bD6FD87dbEb7C10dC692a2a6106817072"
+              },
+              "43114": {
+                "address": "0x152b9d0FdC40C096757F570A51E494bd4b943E50"
+              }
+            }
+          },
+          "logoURI": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/BTC.b/logo.svg",
+          "logoUri": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/BTC.b/logo.svg"
+        },
+        "beforeSwitch": {
+          "fromAmount": "20",
+          "toAmount": "0.000295",
+          "networkFeeSponsored": "$0.004",
+          "slippageValue": "",
+          "priceImpact": "",
+          "minimumReceived": "0.000289 BTC.B",
+          "capturedAt": "2026-04-05T16:20:57.569Z"
+        },
+        "afterSwitch": {
+          "fromAmount": "0.000295",
+          "toAmount": "19.69",
+          "networkFeeSponsored": "$0.004",
+          "slippageValue": "",
+          "priceImpact": "",
+          "minimumReceived": "19.3 AUSD",
+          "capturedAt": "2026-04-05T16:21:22.752Z"
+        },
+        "assertion": {
+          "expectedTokensSwitch": true,
+          "valuesChanged": true
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "networkName": "Monad",
+      "tokenPair": "AZND → BTC.b",
+      "sourceTokenSymbol": "AZND",
+      "destinationTokenSymbol": "BTC.b",
+      "quotations": {
+        "sourceToken": {
+          "chainId": 143,
+          "address": "0x4917a5ec9fCb5e10f47CBB197aBe6aB63be81fE8",
+          "name": "Asian Dollar",
+          "symbol": "AZND",
+          "decimals": 18,
+          "extensions": {
+            "coinGeckoId": "mu-digital-aznd"
+          },
+          "logoURI": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/AZND/logo.svg",
+          "logoUri": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/AZND/logo.svg"
+        },
+        "destinationToken": {
+          "chainId": 143,
+          "address": "0xB0F70C0bD6FD87dbEb7C10dC692a2a6106817072",
+          "name": "Bitcoin",
+          "symbol": "BTC.b",
+          "decimals": 8,
+          "extensions": {
+            "coinGeckoId": "bitcoin-avalanche-bridged-btc-b",
+            "bridgeInfo": {
+              "protocol": "Chainlink CCIP",
+              "bridgeAddress": "0x33566fE5976AAa420F3d5C64996641Fc3858CaDB"
+            },
+            "crossChainAddresses": {
+              "1": {
+                "address": "0xB0F70C0bD6FD87dbEb7C10dC692a2a6106817072"
+              },
+              "43114": {
+                "address": "0x152b9d0FdC40C096757F570A51E494bd4b943E50"
+              }
+            }
+          },
+          "logoURI": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/BTC.b/logo.svg",
+          "logoUri": "https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/mainnet/BTC.b/logo.svg"
+        },
+        "beforeSwitch": {
+          "fromAmount": "20",
+          "toAmount": "0.000337",
+          "networkFeeSponsored": "$0.004",
+          "slippageValue": "",
+          "priceImpact": "",
+          "minimumReceived": "0.00033 BTC.B",
+          "capturedAt": "2026-04-05T16:22:15.368Z"
+        },
+        "afterSwitch": {
+          "fromAmount": "0.000337",
+          "toAmount": "22.55",
+          "networkFeeSponsored": "$0.004",
+          "slippageValue": "",
+          "priceImpact": "",
+          "minimumReceived": "22.1 AZND",
+          "capturedAt": "2026-04-05T16:22:40.468Z"
+        },
+        "assertion": {
+          "expectedTokensSwitch": true,
+          "valuesChanged": true
+        }
+      },
+      "status": "passed"
+    }
+  ]
+}

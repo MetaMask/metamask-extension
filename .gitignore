@@ -98,6 +98,9 @@ html-report-multichain/
 /changed-files
 
 # UI Integration tests
+
+# E2E prod test reports
+test/e2e/prod/**/*.md
 test/integration/config/assets
 
 # webpack
@@ -113,4 +116,10 @@ temp-llm-workflow-*
 .cursor/hooks/
 
 # Local git worktrees
-.worktrees
+tests/coverage-systems/
+
+runway-artifacts/
+test-failures/
+test-artifacts/
+token-import-report-*.md
+test/e2e/.env.e2e

@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import {
   Box,
   Text,
@@ -32,15 +26,16 @@ import {
 } from '../../../../shared/constants/metametrics';
 import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
 import { Divider } from '../../settings-v2/shared';
+import { useBoolean } from '../../../hooks/useBoolean';
 
 export default function InfoTab(): React.ReactElement {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
 
-  const [
-    isVisitSupportDataConsentModalOpen,
-    setIsVisitSupportDataConsentModalOpen,
-  ] = useState(false);
+  const {
+    value: isVisitSupportDataConsentModalOpen,
+    toggle: toggleVisitSupportDataConsentModal,
+  } = useBoolean();
 
   const version = process.env.METAMASK_VERSION ?? '';
 
@@ -56,10 +51,6 @@ export default function InfoTab(): React.ReactElement {
   useEffect(() => {
     handleSettingsRefs(t, t('about'), settingsRefs);
   }, [t, settingsRefs]);
-
-  const toggleVisitSupportDataConsentModal = useCallback(() => {
-    setIsVisitSupportDataConsentModalOpen((prev) => !prev);
-  }, []);
 
   const handleContactUsClick = useCallback(() => {
     trackEvent(

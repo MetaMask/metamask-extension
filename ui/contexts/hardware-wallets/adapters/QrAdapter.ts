@@ -1,4 +1,5 @@
 import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import { isFirefoxBrowser } from '../../../../shared/lib/browser-runtime.utils';
 import { createHardwareWalletError, getDeviceEventForError } from '../errors';
 import { toHardwareWalletError } from '../rpcErrorUtils';
 import {
@@ -9,7 +10,11 @@ import {
   type HardwareWalletAdapterOptions,
 } from '../types';
 import { CameraPermissionState } from '../constants';
-import { checkCameraPermission } from '../webConnectionUtils';
+import {
+  checkCameraPermission,
+  openCameraVideoStream,
+  stopMediaStreamTracks,
+} from '../webConnectionUtils';
 
 /**
  * QR hardware wallet adapter.
@@ -75,11 +80,16 @@ export class QrAdapter implements HardwareWalletAdapter {
   }
 
   /**
-   * Ensures camera permission state allows QR scanning (via Permissions API probe).
-   * Rejects with `HardwareWalletError` when permission is denied, still prompt, or the probe fails.
+   * Ensures the browser allows camera access for QR scanning.
+   *
+   * Uses `permissions.query` first: if `denied`, fails without calling `getUserMedia`.
+   * If already `granted`, returns immediately — the actual camera stream will be
+   * opened later by `EnhancedReader` in the QR scanner popover.
+   * For `prompt`, calls `openCameraVideoStream` to trigger the browser permission
+   * dialog; `NotAllowedError` maps to dismissed vs blocked after re-querying.
    *
    * @param _options - Reserved for parity with other hardware adapters; ignored for QR.
-   * @returns True when camera permission is granted.
+   * @returns True when camera access is permitted.
    */
   async ensureDeviceReady(
     _options?: EnsureDeviceReadyOptions,
@@ -97,10 +107,6 @@ export class QrAdapter implements HardwareWalletAdapter {
       );
     }
 
-    if (permissionState === CameraPermissionState.Granted) {
-      return true;
-    }
-
     if (permissionState === CameraPermissionState.Denied) {
       return this.failEnsureDeviceReady(
         createHardwareWalletError(
@@ -110,11 +116,51 @@ export class QrAdapter implements HardwareWalletAdapter {
       );
     }
 
-    return this.failEnsureDeviceReady(
-      createHardwareWalletError(
-        ErrorCode.PermissionCameraPromptDismissed,
-        HardwareWalletType.Qr,
-      ),
-    );
+    // Skip getUserMedia when already granted — no need to open/close the camera
+    // just to prove access. The QR scanner will open it when it renders.
+    if (permissionState === CameraPermissionState.Granted) {
+      return true;
+    }
+
+    try {
+      const stream = await openCameraVideoStream();
+      stopMediaStreamTracks(stream);
+      return true;
+    } catch (error) {
+      const domError = error as { name?: string };
+      if (domError.name === 'NotAllowedError') {
+        let nextState: PermissionState;
+        try {
+          nextState = await checkCameraPermission();
+        } catch {
+          return this.failEnsureDeviceReady(
+            createHardwareWalletError(
+              ErrorCode.PermissionCameraPromptDismissed,
+              HardwareWalletType.Qr,
+            ),
+          );
+        }
+        if (
+          nextState === CameraPermissionState.Denied ||
+          (nextState === CameraPermissionState.Prompt && isFirefoxBrowser())
+        ) {
+          return this.failEnsureDeviceReady(
+            createHardwareWalletError(
+              ErrorCode.PermissionCameraDenied,
+              HardwareWalletType.Qr,
+            ),
+          );
+        }
+        return this.failEnsureDeviceReady(
+          createHardwareWalletError(
+            ErrorCode.PermissionCameraPromptDismissed,
+            HardwareWalletType.Qr,
+          ),
+        );
+      }
+      return this.failEnsureDeviceReady(
+        toHardwareWalletError(error, HardwareWalletType.Qr),
+      );
+    }
   }
 }

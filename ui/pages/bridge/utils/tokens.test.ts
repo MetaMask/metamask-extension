@@ -80,6 +80,7 @@ describe('Bridge token utils', () => {
         chainIds: ['eip155:1'] as CaipChainId[],
         signal: new AbortController().signal,
         clientId: 'test',
+        clientVersion: '1.0.0',
         bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       };
 
@@ -399,6 +400,7 @@ describe('Bridge token utils', () => {
         chainIds: ['eip155:1'] as CaipChainId[],
         query: 'USD',
         clientId: 'test',
+        clientVersion: '1.0.0',
         bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
         signal: new AbortController().signal,
       };

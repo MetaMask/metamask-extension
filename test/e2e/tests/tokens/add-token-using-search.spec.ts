@@ -7,7 +7,6 @@ import {
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
 
 const BSC_BAT_ADDRESS = '0x0d8775f648430679a709e98d2b0cb6250d2887ef';
@@ -125,9 +124,6 @@ describe('Add existing token using search', function () {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.waitForNonEvmAccountsLoaded();
 
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenAmountIsDisplayed('25 BNB');

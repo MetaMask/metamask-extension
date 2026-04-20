@@ -632,10 +632,15 @@ export class ManifestPlugin<Z extends boolean> {
         }
       }
 
+      // if we edit the real `manifest` we change the compilation hash
+      const manifestForEmit = this.options.setBuildId
+        ? { ...manifest, build_id: compilation.fullHash }
+        : manifest;
+
       // cache the resolved manifests as RawSource
       this.manifestSources.set(
         browser,
-        new RawSource(JSON.stringify(manifest, null, 2)),
+        new RawSource(JSON.stringify(manifestForEmit, null, 2)),
       );
     }
   }
