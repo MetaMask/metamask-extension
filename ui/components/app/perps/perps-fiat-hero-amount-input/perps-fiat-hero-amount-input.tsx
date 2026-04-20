@@ -92,6 +92,7 @@ export const PerpsFiatHeroAmountSkeleton: React.FC = () => (
     flexDirection={BoxFlexDirection.Row}
     justifyContent={BoxJustifyContent.Center}
     alignItems={BoxAlignItems.Center}
+    className="w-full"
     style={{ minHeight: '70px' }}
     data-testid="perps-fiat-hero-amount-skeleton"
   >

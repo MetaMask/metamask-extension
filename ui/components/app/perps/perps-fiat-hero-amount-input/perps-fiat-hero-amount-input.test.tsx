@@ -54,9 +54,9 @@ describe('PerpsFiatHeroAmountInput', () => {
       <PerpsFiatHeroAmountInput value="1" onChange={jest.fn()} isLoading />,
     );
 
-    expect(
-      screen.getByTestId('perps-fiat-hero-amount-skeleton'),
-    ).toBeInTheDocument();
+    const skeleton = screen.getByTestId('perps-fiat-hero-amount-skeleton');
+    expect(skeleton).toBeInTheDocument();
+    expect(skeleton.className).toContain('w-full');
     expect(
       screen.queryByTestId('perps-fiat-hero-amount-input'),
     ).not.toBeInTheDocument();
