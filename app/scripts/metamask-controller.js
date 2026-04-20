@@ -4352,9 +4352,13 @@ export default class MetamaskController extends EventEmitter {
     if (!isEnrolled) {
       throw new Error('Passkey is not enrolled');
     }
-    await this.passkeyController.retrieveVaultKeyWithPasskey(
+    const verified = await this.passkeyController.verifyPasskeyAuthentication(
       authenticationResponse,
     );
+    if (!verified) {
+      throw new Error('Passkey authentication verification failed');
+    }
+
     this.passkeyController.removePasskey();
   }
 
@@ -4384,26 +4388,30 @@ export default class MetamaskController extends EventEmitter {
     if (!getIsPasskeyFeatureEnabled()) {
       throw new Error('Passkey feature is not enabled');
     }
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-    if (isSocialLoginFlow) {
-      throw new Error(
-        'Passkey-based password change is not supported for this account type',
-      );
-    }
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new Error('Passkey is not enrolled');
+    }
+
+    // verify passkey authentication
+    const isVerified = await this.passkeyController.verifyPasskeyAuthentication(
+      authenticationResponse,
+    );
+    if (!isVerified) {
+      throw new Error('Passkey authentication verification failed');
     }
 
     const releaseLock = await this.seedlessOperationMutex.acquire();
     try {
       const vaultKeyBeforePasswordChange =
         await this.keyringController.exportEncryptionKey();
+
+      // change password
       await this.keyringController.changePassword(newPassword);
 
       try {
+        // renew vault key protection
         const vaultKeyAfterPasswordChange =
           await this.keyringController.exportEncryptionKey();
-
         await this.passkeyController.renewVaultKeyProtection({
           authenticationResponse,
           oldVaultKey: vaultKeyBeforePasswordChange,
