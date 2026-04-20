@@ -1516,6 +1516,11 @@
     "ui/pages/settings-v2/assets-tab/assets-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/pages/settings-v2/backup-and-sync-tab/backup-and-sync-tab.test.tsx": {
+      "MetaMask: Background connection not initialized": 1,
+      "React: componentWill* lifecycle deprecations": 1,
+      "Reselect: Input stability warnings": 1
+    },
     "ui/pages/settings-v2/developer-tools-tab/developer-tools-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
@@ -1572,11 +1577,6 @@
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "error: Warning: Received `true` for a": 1
-    },
-    "ui/pages/settings/backup-and-sync-tab/backup-and-sync-tab.test.tsx": {
-      "MetaMask: Background connection not initialized": 1,
-      "React: componentWill* lifecycle deprecations": 1,
-      "Reselect: Input stability warnings": 1
     },
     "ui/pages/settings/developer-options-tab/developer-options-tab.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 11,
