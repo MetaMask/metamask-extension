@@ -9149,3 +9149,10 @@
     "message": "Храните свою секретную фразу для восстановления в безопасности!"
   }
 }
+{
+  "menu_newTab": {
+    "message": "Новая вкладка",
+    "description": "Text for opening a new tab from the extension menu"
+  }
+}
+
