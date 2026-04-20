@@ -30,7 +30,17 @@ const LOAD_MORE_MIN = 50;
 /** Maximum candles to fetch on load-more */
 const LOAD_MORE_MAX = 500;
 
-/** Debounce window for connect() -- coalesces React unmount/remount bursts */
+/**
+ * Leading-edge debounce window for connect() -- coalesces React
+ * unmount/remount bursts at the UI channel layer.
+ *
+ * Intentionally shorter than the bridge-layer CANDLE_TEARDOWN_DEFER_MS (150
+ * ms) in app/scripts/controllers/perps/perps-stream-bridge.ts: the bridge's
+ * deferred teardown gives the UI a ~150 ms window to re-subscribe before the
+ * background actually disconnects, and a 30 ms margin keeps the UI
+ * resubscribe inside that window so the teardown is cancelled rather than
+ * re-racing a full reconnect.
+ */
 const CONNECT_DEBOUNCE_MS = 120;
 
 /** Per-subscriber state */

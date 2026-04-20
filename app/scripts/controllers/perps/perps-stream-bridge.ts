@@ -54,6 +54,10 @@ const REST_HYDRATION_STAGGER_MS = 200;
 // Deferred candle-teardown window. A quick deactivate → activate round-trip
 // (e.g. React re-mount) within this window cancels the teardown, avoiding a
 // needless unsubscribe/resubscribe burst on HyperLiquid.
+//
+// Kept 30 ms longer than the UI-layer CONNECT_DEBOUNCE_MS (120 ms) in
+// ui/providers/perps/CandleStreamChannel.ts so a UI resubscribe debounced
+// by 120 ms still arrives before the bridge commits the teardown.
 const CANDLE_TEARDOWN_DEFER_MS = 150;
 
 /**

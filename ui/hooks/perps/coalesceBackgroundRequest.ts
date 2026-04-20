@@ -54,10 +54,10 @@ export async function coalesceBackgroundRequest<TResult>(
   // committed by the time the body runs. Without this, a synchronous throw in
   // fn() runs the `finally` cleanup before the entry is inserted (no-op delete),
   // and the subsequent set stores a permanently-rejected promise that every
-  // future caller re-subscribes to.
-  let promise: Promise<TResult>;
-  // eslint-disable-next-line prefer-const -- promise is self-referenced inside its own body for identity checks, so the assignment must appear after the declaration.
-  promise = Promise.resolve().then(async () => {
+  // future caller re-subscribes to. The body captures `promise` by closure for
+  // the identity checks below — safe with `const` because the body runs on a
+  // later microtask, after the binding has been initialized.
+  const promise: Promise<TResult> = Promise.resolve().then(async () => {
     try {
       const value = await fn();
       // Only persist if this promise still owns the slot; invalidate() may
@@ -78,18 +78,21 @@ export async function coalesceBackgroundRequest<TResult>(
 }
 
 /**
- * Drop the cached entry and any in-flight promise for a key. Use before an
- * explicit refetch to force a fresh request (e.g. user-initiated pull-to-
- * refresh). Clearing the in-flight entry ensures the next caller issues a
- * new request instead of awaiting the older snapshot we are trying to bypass;
- * the older promise still runs to completion but will skip the cache write
- * and the in-flight cleanup because it no longer owns the slot.
+ * Evict the cached entry for a key. Use before an explicit refetch to force
+ * the next coalesceBackgroundRequest() to hit the backend instead of serving
+ * the previous cached value.
+ *
+ * Intentionally leaves any in-flight promise alone: an in-flight request is
+ * by definition the freshest server snapshot being computed right now, so
+ * concurrent callers (e.g. a `refetch()` racing with a sibling hook's mount
+ * fetch) should coalesce into the same request rather than fire a duplicate
+ * HL call. Dropping the in-flight entry here was the root cause of duplicate
+ * request bursts during rapid navigation.
  *
  * @param key - Key previously used with coalesceBackgroundRequest.
  */
 export function invalidateCoalescedRequest(key: string): void {
   cache.delete(key);
-  inFlight.delete(key);
 }
 
 /**

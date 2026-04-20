@@ -81,52 +81,45 @@ describe('coalesceBackgroundRequest', () => {
     expect(fn).toHaveBeenCalledTimes(2);
   });
 
-  it('invalidate() mid-flight drops the in-flight promise so the next caller issues a fresh request', async () => {
+  it('invalidate() mid-flight preserves the in-flight promise so concurrent callers coalesce into one request', async () => {
+    // Rapid-navigation scenario: hook A fires a request, then hook B's
+    // forceFreshOnMount refetch invalidates the cache while A is still
+    // in flight. B must share A's request rather than fire a duplicate HL
+    // call — the in-flight snapshot is the freshest data available.
     let resolveFirst: ((v: string) => void) | undefined;
     const firstPromise = new Promise<string>((resolve) => {
       resolveFirst = resolve;
     });
-    const fn = jest
-      .fn<Promise<string>, []>()
-      .mockReturnValueOnce(firstPromise)
-      .mockResolvedValueOnce('fresh');
+    const fn = jest.fn<Promise<string>, []>().mockReturnValueOnce(firstPromise);
 
     const firstCall = coalesceBackgroundRequest('k', fn);
-    // Flush microtasks so fn() runs and the in-flight entry is settled.
     await Promise.resolve();
     invalidateCoalescedRequest('k');
 
     const secondCall = coalesceBackgroundRequest('k', fn);
-    resolveFirst?.('stale');
+    resolveFirst?.('shared');
 
     const [first, second] = await Promise.all([firstCall, secondCall]);
-    expect(first).toBe('stale');
-    expect(second).toBe('fresh');
-    expect(fn).toHaveBeenCalledTimes(2);
+    expect(first).toBe('shared');
+    expect(second).toBe('shared');
+    expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  it('does not overwrite a newer cache entry when a previously-invalidated promise resolves late', async () => {
-    let resolveFirst: ((v: string) => void) | undefined;
-    const firstPromise = new Promise<string>((resolve) => {
-      resolveFirst = resolve;
-    });
+  it('invalidate() after resolution forces the next call to fetch fresh', async () => {
+    // Post-resolution invalidate (e.g. pull-to-refresh after a cached
+    // response) must drop the cached value so the next caller hits the
+    // backend again. Tests the cache-only-eviction contract.
     const fn = jest
       .fn<Promise<string>, []>()
-      .mockReturnValueOnce(firstPromise)
-      .mockResolvedValueOnce('fresh');
+      .mockResolvedValueOnce('first')
+      .mockResolvedValueOnce('second');
 
-    const firstCall = coalesceBackgroundRequest('k', fn);
-    await Promise.resolve();
+    await coalesceBackgroundRequest('k', fn);
     invalidateCoalescedRequest('k');
-    const secondCall = coalesceBackgroundRequest('k', fn);
-    // Resolve the newer call first so its value lands in the cache.
-    await secondCall;
-    // Now the older, evicted promise settles — it must not clobber the fresh cache.
-    resolveFirst?.('stale');
-    await firstCall;
+    const second = await coalesceBackgroundRequest('k', fn);
 
-    const third = await coalesceBackgroundRequest('k', fn);
-    expect(third).toBe('fresh');
+    expect(second).toBe('second');
+    expect(fn).toHaveBeenCalledTimes(2);
   });
 
   it('drops in-flight entry when fn throws synchronously so the next caller retries', async () => {

@@ -113,12 +113,18 @@ export function usePerpsTransactionHistory({
   // Keep the coalesce cache keys in one place so fetch and invalidate can
   // never drift; a mismatch would silently make `refetch()` bypass a stale
   // entry on one side while still serving it on the other.
+  //
+  // Pipe-delimited: CaipAccountId ("eip155:1:0x...") and perpsScopeKey
+  // ("hyperliquid:mainnet:0x...") both contain ':' internally but never '|',
+  // so fields remain unambiguous without paying JSON.stringify on every
+  // render. If a future field can contain '|', switch to a length-prefix
+  // encoder rather than re-introducing delimiter collisions.
   const coalesceKeys = useMemo(() => {
     const accountKey = accountId ?? '';
     return {
-      fills: `perpsGetOrderFills:${perpsScopeKey}:${accountKey}:false`,
-      orders: `perpsGetOrders:${perpsScopeKey}:${accountKey}`,
-      funding: `perpsGetFunding:${perpsScopeKey}:${accountKey}:${startTime ?? ''}:${endTime ?? ''}`,
+      fills: `perpsGetOrderFills|${perpsScopeKey}|${accountKey}|false`,
+      orders: `perpsGetOrders|${perpsScopeKey}|${accountKey}`,
+      funding: `perpsGetFunding|${perpsScopeKey}|${accountKey}|${startTime ?? ''}|${endTime ?? ''}`,
     };
   }, [accountId, startTime, endTime, perpsScopeKey]);
 
@@ -142,12 +148,20 @@ export function usePerpsTransactionHistory({
   // while the hook stays mounted — without this, switching accounts in-place
   // would render the previous session's transactions.
   const lastFetchedScopeRef = useRef<string | undefined>(undefined);
+  // Guards async state commits against scope-change races: if the user
+  // switches account / toggles testnet / changes time range while a fetch is
+  // mid-flight, its resolution must not overwrite state with the previous
+  // scope's data. Each fetch captures a generation at start and only commits
+  // if still current.
+  const fetchGenerationRef = useRef(0);
 
   useEffect(() => {
     userHistoryRef.current = userHistory;
   }, [userHistory]);
 
   const fetchAllTransactions = useCallback(async () => {
+    fetchGenerationRef.current += 1;
+    const generation = fetchGenerationRef.current;
     try {
       setIsLoading(true);
       setError(null);
@@ -167,6 +181,10 @@ export function usePerpsTransactionHistory({
           ]),
         ),
       ]);
+
+      if (fetchGenerationRef.current !== generation) {
+        return;
+      }
 
       const fills: OrderFill[] = Array.isArray(fillsResult) ? fillsResult : [];
       const orders: Order[] = Array.isArray(ordersResult) ? ordersResult : [];
@@ -208,6 +226,9 @@ export function usePerpsTransactionHistory({
 
       setTransactions(uniqueTransactions);
     } catch (err) {
+      if (fetchGenerationRef.current !== generation) {
+        return;
+      }
       const errorMessage =
         err instanceof Error
           ? err.message
@@ -215,7 +236,9 @@ export function usePerpsTransactionHistory({
       setError(errorMessage);
       setTransactions([]);
     } finally {
-      setIsLoading(false);
+      if (fetchGenerationRef.current === generation) {
+        setIsLoading(false);
+      }
     }
   }, [startTime, endTime, accountId, coalesceKeys]);
 
