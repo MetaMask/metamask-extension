@@ -34,9 +34,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('EncryptionPublicKeyControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } =
+    const { messengerClient } =
       EncryptionPublicKeyControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(EncryptionPublicKeyController);
+    expect(messengerClient).toBeInstanceOf(EncryptionPublicKeyController);
   });
 
   it('passes the proper arguments to the controller', () => {
@@ -44,7 +44,7 @@ describe('EncryptionPublicKeyControllerInit', () => {
     const request = getInitRequestMock();
 
     // @ts-expect-error: Partial mock.
-    request.getController.mockReturnValue(manager);
+    request.getMessengerClient.mockReturnValue(manager);
 
     EncryptionPublicKeyControllerInit(request);
 

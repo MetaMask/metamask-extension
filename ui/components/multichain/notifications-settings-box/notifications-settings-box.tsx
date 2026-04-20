@@ -40,7 +40,7 @@ export function NotificationsSettingsBox({
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Between}
-        className="notifications-settings-box w-full"
+        className="notifications-settings-box w-full min-w-0"
         gap={4}
       >
         {children}

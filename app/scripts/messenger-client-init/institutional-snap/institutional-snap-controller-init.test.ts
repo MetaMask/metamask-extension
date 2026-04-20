@@ -36,7 +36,7 @@ describe('InstitutionalSnapControllerInit', () => {
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
     expect(
-      InstitutionalSnapControllerInit(requestMock).controller,
+      InstitutionalSnapControllerInit(requestMock).messengerClient,
     ).toBeInstanceOf(InstitutionalSnapController);
   });
 

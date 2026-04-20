@@ -16,7 +16,7 @@ export const PhishingControllerInit: MessengerClientInitFunction<
   PhishingController,
   PhishingControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new PhishingController({
+  const messengerClient = new PhishingController({
     messenger: controllerMessenger,
     state: persistedState.PhishingController,
     hotlistRefreshInterval: process.env.IN_TEST
@@ -28,6 +28,6 @@ export const PhishingControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

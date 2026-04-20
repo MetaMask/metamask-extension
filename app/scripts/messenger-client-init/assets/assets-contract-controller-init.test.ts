@@ -80,9 +80,9 @@ describe('AssetsContractControllerInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(AssetsContractControllerInit(requestMock).controller).toBeInstanceOf(
-      AssetsContractController,
-    );
+    expect(
+      AssetsContractControllerInit(requestMock).messengerClient,
+    ).toBeInstanceOf(AssetsContractController);
   });
 
   it('initializes with correct messenger and state', () => {

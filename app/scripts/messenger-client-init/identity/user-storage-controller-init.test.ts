@@ -47,9 +47,9 @@ describe('UserStorageControllerInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(UserStorageControllerInit(requestMock).controller).toBeInstanceOf(
-      UserStorageController,
-    );
+    expect(
+      UserStorageControllerInit(requestMock).messengerClient,
+    ).toBeInstanceOf(UserStorageController);
   });
 
   it('initializes with correct messenger and state', () => {

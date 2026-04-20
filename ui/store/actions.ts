@@ -181,7 +181,6 @@ import {
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
-import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import {
   ClaimSubmitToastType,
@@ -1110,7 +1109,6 @@ export function importMnemonicToVault(
       .then(async (result) => {
         dispatch(hideLoadingIndication());
         dispatch(hideWarning());
-        dispatch(setShowNewSrpAddedToast(true));
         return result;
       })
       .catch((err) => {
@@ -3480,7 +3478,6 @@ export async function checkAndUpdateSingleNftOwnershipStatus(
 ) {
   await submitRequestToBackground('checkAndUpdateSingleNftOwnershipStatus', [
     nft,
-    false,
     networkClientId,
   ]);
 }
@@ -8216,4 +8213,13 @@ export function removeDeferredDeepLink(): ThunkAction<
       logErrorWithMessage(error);
     }
   };
+}
+
+export async function perpsToggleTestnet(): Promise<void> {
+  log.debug(`background.perpsToggleTestnet`);
+  try {
+    await submitRequestToBackground<void>('perpsToggleTestnet');
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
 }

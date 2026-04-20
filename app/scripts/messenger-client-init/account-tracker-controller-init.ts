@@ -10,15 +10,15 @@ export const AccountTrackerControllerInit: MessengerClientInitFunction<
   AccountTrackerController,
   AccountTrackerControllerMessenger,
   AccountTrackerControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, getController }) => {
+> = ({ controllerMessenger, initMessenger, getMessengerClient }) => {
   const getAssetsContractController = () =>
-    getController('AssetsContractController');
+    getMessengerClient('AssetsContractController');
 
-  const onboardingController = () => getController('OnboardingController');
+  const onboardingController = () => getMessengerClient('OnboardingController');
 
   // TODO: Fix AccountTrackerControllerMessenger type - add AccountTrackerControllerActions & AccountTrackerControllerEvents
   // TODO: Bump @metamask/network-controller, @metamask/accounts-controller to match assets-controllers
-  const controller = new AccountTrackerController({
+  const messengerClient = new AccountTrackerController({
     messenger: controllerMessenger,
     getStakedBalanceForChain: (
       addresses: string[],
@@ -57,6 +57,6 @@ export const AccountTrackerControllerInit: MessengerClientInitFunction<
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller,
+    messengerClient,
   };
 };

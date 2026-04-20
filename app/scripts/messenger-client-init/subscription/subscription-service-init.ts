@@ -9,14 +9,14 @@ export const SubscriptionServiceInit: MessengerClientInitFunction<
 > = (request) => {
   const { controllerMessenger, platform } = request;
 
-  const service = new SubscriptionService({
+  const messengerClient = new SubscriptionService({
     messenger: controllerMessenger,
     platform,
     webAuthenticator: webAuthenticatorFactory(),
   });
 
   return {
-    controller: service,
+    messengerClient,
     memStateKey: null,
     persistedStateKey: null,
   };

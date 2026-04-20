@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Konto-Symbol"
   },
-  "accountIdenticonDescription": {
-    "message": "Wählen Sie aus drei verschiedenen Stilen einzigartiger Symbole, mit denen Sie Konten auf einen Blick erkennen können."
-  },
   "accountIsntConnectedToastText": {
     "message": "$1 ist nicht mit $2 verbunden"
   },
@@ -5408,9 +5405,6 @@
   },
   "perpsFundingRateTooltip": {
     "message": "Eine zwischen Tradern entrichtete stündliche Gebühr, um die Preise marktgerecht zu halten. Ist der Kurs positiv, zahlen Longs die Short-Positionen. Bei negativem Kurs zahlen Shorts an Long-Positionen."
-  },
-  "perpsGeoBlockedTooltip": {
-    "message": "Das Trading mit unbefristeten Kontrakten ist in Ihrer Region nicht verfügbar"
   },
   "perpsGiveFeedback": {
     "message": "Geben Sie uns Feedback"

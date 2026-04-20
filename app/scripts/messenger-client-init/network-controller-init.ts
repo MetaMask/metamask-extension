@@ -254,7 +254,7 @@ export const NetworkControllerInit: MessengerClientInitFunction<
     };
   };
 
-  const controller = new NetworkController({
+  const messengerClient = new NetworkController({
     messenger: controllerMessenger,
     state: initialState,
     infuraProjectId,
@@ -319,10 +319,10 @@ export const NetworkControllerInit: MessengerClientInitFunction<
     (isRpcFailoverEnabled) => {
       if (isRpcFailoverEnabled) {
         console.log('Enabling RPC failover.');
-        controller.enableRpcFailover();
+        messengerClient.enableRpcFailover();
       } else {
         console.log('Disabling RPC failover.');
-        controller.disableRpcFailover();
+        messengerClient.disableRpcFailover();
       }
     },
     getIsRpcFailoverEnabled,
@@ -330,9 +330,9 @@ export const NetworkControllerInit: MessengerClientInitFunction<
 
   // Delay lookupNetwork until after onboarding to prevent network requests before the user can
   // update their RPC endpoints.
-  controller.initializeProvider({ lookupNetwork: false });
+  messengerClient.initializeProvider({ lookupNetwork: false });
 
   return {
-    controller,
+    messengerClient,
   };
 };

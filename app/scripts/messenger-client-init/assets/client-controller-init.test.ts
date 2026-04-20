@@ -16,7 +16,7 @@ describe('ClientControllerInit', () => {
 
     const result = ClientControllerInit(request);
 
-    expect(result.controller).toBeInstanceOf(ClientController);
+    expect(result.messengerClient).toBeInstanceOf(ClientController);
   });
 
   it('initializes with persisted state when provided', () => {
@@ -32,6 +32,6 @@ describe('ClientControllerInit', () => {
 
     const result = ClientControllerInit(request);
 
-    expect(result.controller.state.isUiOpen).toBe(true);
+    expect(result.messengerClient.state.isUiOpen).toBe(true);
   });
 });

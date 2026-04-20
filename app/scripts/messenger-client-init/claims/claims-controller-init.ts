@@ -11,11 +11,11 @@ export const ClaimsControllerInit: MessengerClientInitFunction<
   ClaimsControllerInitMessenger
 > = (request) => {
   const { controllerMessenger, persistedState } = request;
-  const controller = new ClaimsController({
+  const messengerClient = new ClaimsController({
     messenger: controllerMessenger,
     state: persistedState.ClaimsController,
   });
   return {
-    controller,
+    messengerClient,
   };
 };

@@ -269,6 +269,7 @@ import createRpcBlockingMiddleware, {
 } from './lib/rpcBlockingMiddleware';
 import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
+import createFrameIdMiddleware from './lib/createFrameIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
@@ -346,11 +347,13 @@ import {
 } from './messenger-client-init/assets';
 import { TransactionControllerInit } from './messenger-client-init/confirmations/transaction-controller-init';
 import { TransactionPayControllerInit } from './messenger-client-init/transaction-pay-controller-init';
+import { GeolocationApiServiceInit } from './messenger-client-init/geolocation-api-service-init';
+import { GeolocationControllerInit } from './messenger-client-init/geolocation-controller-init';
 import { PerpsControllerInit } from './messenger-client-init/perps-controller-init';
 import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
-import { initControllers } from './messenger-client-init/utils';
+import { initMessengerClients } from './messenger-client-init/utils';
 import {
   CronjobControllerInit,
   ExecutionServiceInit,
@@ -589,7 +592,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     /** @type {import('./messenger-client-init/utils').InitFunctions} */
-    const controllerInitFunctions = {
+    const messengerClientInitFunctions = {
       ApprovalController: ApprovalControllerInit,
       LoggingController: LoggingControllerInit,
       StorageService: StorageServiceInit,
@@ -629,6 +632,8 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
+      GeolocationApiService: GeolocationApiServiceInit,
+      GeolocationController: GeolocationControllerInit,
       ...(getIsPerpsIncludedInBuild()
         ? { PerpsController: PerpsControllerInit }
         : {}),
@@ -699,117 +704,130 @@ export default class MetamaskController extends EventEmitter {
     };
 
     const {
-      controllerApi,
+      messengerClientApi,
       controllerMemState,
       controllerPersistedState,
-      controllersByName,
-    } = this.#initControllers({
-      initFunctions: controllerInitFunctions,
+      messengerClientsByName,
+    } = this.#initMessengerClients({
+      initFunctions: messengerClientInitFunctions,
       initState,
     });
 
-    this.controllerApi = controllerApi;
+    this.messengerClientApi = messengerClientApi;
     this.controllerMemState = controllerMemState;
     this.controllerPersistedState = controllerPersistedState;
-    this.controllersByName = controllersByName;
+    this.messengerClientsByName = messengerClientsByName;
 
     // Backwards compatibility for existing references
-    this.approvalController = controllersByName.ApprovalController;
-    this.loggingController = controllersByName.LoggingController;
-    this.appMetadataController = controllersByName.AppMetadataController;
-    this.preferencesController = controllersByName.PreferencesController;
-    this.keyringController = controllersByName.KeyringController;
-    this.accountsController = controllersByName.AccountsController;
-    this.addressBookController = controllersByName.AddressBookController;
-    this.alertController = controllersByName.AlertController;
-    this.decryptMessageController = controllersByName.DecryptMessageController;
+    this.approvalController = messengerClientsByName.ApprovalController;
+    this.loggingController = messengerClientsByName.LoggingController;
+    this.appMetadataController = messengerClientsByName.AppMetadataController;
+    this.preferencesController = messengerClientsByName.PreferencesController;
+    this.keyringController = messengerClientsByName.KeyringController;
+    this.accountsController = messengerClientsByName.AccountsController;
+    this.addressBookController = messengerClientsByName.AddressBookController;
+    this.alertController = messengerClientsByName.AlertController;
+    this.decryptMessageController =
+      messengerClientsByName.DecryptMessageController;
     this.encryptionPublicKeyController =
-      controllersByName.EncryptionPublicKeyController;
-    this.signatureController = controllersByName.SignatureController;
-    this.permissionController = controllersByName.PermissionController;
-    this.permissionLogController = controllersByName.PermissionLogController;
+      messengerClientsByName.EncryptionPublicKeyController;
+    this.signatureController = messengerClientsByName.SignatureController;
+    this.permissionController = messengerClientsByName.PermissionController;
+    this.permissionLogController =
+      messengerClientsByName.PermissionLogController;
     this.subjectMetadataController =
-      controllersByName.SubjectMetadataController;
-    this.appStateController = controllersByName.AppStateController;
-    this.networkController = controllersByName.NetworkController;
-    this.metaMetricsController = controllersByName.MetaMetricsController;
-    this.dataDeletionService = controllersByName.DataDeletionService;
+      messengerClientsByName.SubjectMetadataController;
+    this.appStateController = messengerClientsByName.AppStateController;
+    this.networkController = messengerClientsByName.NetworkController;
+    this.metaMetricsController = messengerClientsByName.MetaMetricsController;
+    this.dataDeletionService = messengerClientsByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
-      controllersByName.MetaMetricsDataDeletionController;
+      messengerClientsByName.MetaMetricsDataDeletionController;
     this.remoteFeatureFlagController =
-      controllersByName.RemoteFeatureFlagController;
-    this.gasFeeController = controllersByName.GasFeeController;
-    this.userOperationController = controllersByName.UserOperationController;
-    this.cronjobController = controllersByName.CronjobController;
-    this.rateLimitController = controllersByName.RateLimitController;
+      messengerClientsByName.RemoteFeatureFlagController;
+    this.gasFeeController = messengerClientsByName.GasFeeController;
+    this.userOperationController =
+      messengerClientsByName.UserOperationController;
+    this.cronjobController = messengerClientsByName.CronjobController;
+    this.rateLimitController = messengerClientsByName.RateLimitController;
     this.selectedNetworkController =
-      controllersByName.SelectedNetworkController;
-    this.snapController = controllersByName.SnapController;
-    this.snapInsightsController = controllersByName.SnapInsightsController;
-    this.snapInterfaceController = controllersByName.SnapInterfaceController;
-    this.snapsRegistry = controllersByName.SnapRegistryController;
-    this.ppomController = controllersByName.PPOMController;
-    this.phishingController = controllersByName.PhishingController;
-    this.onboardingController = controllersByName.OnboardingController;
-    this.accountTrackerController = controllersByName.AccountTrackerController;
-    this.txController = controllersByName.TransactionController;
+      messengerClientsByName.SelectedNetworkController;
+    this.snapController = messengerClientsByName.SnapController;
+    this.snapInsightsController = messengerClientsByName.SnapInsightsController;
+    this.snapInterfaceController =
+      messengerClientsByName.SnapInterfaceController;
+    this.snapsRegistry = messengerClientsByName.SnapRegistryController;
+    this.ppomController = messengerClientsByName.PPOMController;
+    this.phishingController = messengerClientsByName.PhishingController;
+    this.onboardingController = messengerClientsByName.OnboardingController;
+    this.accountTrackerController =
+      messengerClientsByName.AccountTrackerController;
+    this.txController = messengerClientsByName.TransactionController;
     this.smartTransactionsController =
-      controllersByName.SmartTransactionsController;
-    this.bridgeController = controllersByName.BridgeController;
-    this.bridgeStatusController = controllersByName.BridgeStatusController;
-    this.backendWebSocketService = controllersByName.BackendWebSocketService;
-    this.accountActivityService = controllersByName.AccountActivityService;
-    this.nftController = controllersByName.NftController;
-    this.nftDetectionController = controllersByName.NftDetectionController;
-    this.assetsContractController = controllersByName.AssetsContractController;
-    this.assetsController = controllersByName.AssetsController;
+      messengerClientsByName.SmartTransactionsController;
+    this.bridgeController = messengerClientsByName.BridgeController;
+    this.bridgeStatusController = messengerClientsByName.BridgeStatusController;
+    this.backendWebSocketService =
+      messengerClientsByName.BackendWebSocketService;
+    this.accountActivityService = messengerClientsByName.AccountActivityService;
+    this.nftController = messengerClientsByName.NftController;
+    this.nftDetectionController = messengerClientsByName.NftDetectionController;
+    this.assetsContractController =
+      messengerClientsByName.AssetsContractController;
+    this.assetsController = messengerClientsByName.AssetsController;
     this.multichainAssetsController =
-      controllersByName.MultichainAssetsController;
+      messengerClientsByName.MultichainAssetsController;
     this.multichainBalancesController =
-      controllersByName.MultichainBalancesController;
+      messengerClientsByName.MultichainBalancesController;
     this.multichainTransactionsController =
-      controllersByName.MultichainTransactionsController;
+      messengerClientsByName.MultichainTransactionsController;
     this.multichainAssetsRatesController =
-      controllersByName.MultichainAssetsRatesController;
-    this.multichainAccountService = controllersByName.MultichainAccountService;
-    this.tokenBalancesController = controllersByName.TokenBalancesController;
-    this.staticAssetsController = controllersByName.StaticAssetsController;
-    this.tokenListController = controllersByName.TokenListController;
-    this.tokenDetectionController = controllersByName.TokenDetectionController;
-    this.tokensController = controllersByName.TokensController;
-    this.tokenRatesController = controllersByName.TokenRatesController;
-    this.currencyRateController = controllersByName.CurrencyRateController;
+      messengerClientsByName.MultichainAssetsRatesController;
+    this.multichainAccountService =
+      messengerClientsByName.MultichainAccountService;
+    this.tokenBalancesController =
+      messengerClientsByName.TokenBalancesController;
+    this.staticAssetsController = messengerClientsByName.StaticAssetsController;
+    this.tokenListController = messengerClientsByName.TokenListController;
+    this.tokenDetectionController =
+      messengerClientsByName.TokenDetectionController;
+    this.tokensController = messengerClientsByName.TokensController;
+    this.tokenRatesController = messengerClientsByName.TokenRatesController;
+    this.currencyRateController = messengerClientsByName.CurrencyRateController;
     this.multichainNetworkController =
-      controllersByName.MultichainNetworkController;
-    this.multichainRatesController = controllersByName.RatesController;
-    this.authenticationController = controllersByName.AuthenticationController;
-    this.userStorageController = controllersByName.UserStorageController;
-    this.delegationController = controllersByName.DelegationController;
+      messengerClientsByName.MultichainNetworkController;
+    this.multichainRatesController = messengerClientsByName.RatesController;
+    this.authenticationController =
+      messengerClientsByName.AuthenticationController;
+    this.userStorageController = messengerClientsByName.UserStorageController;
+    this.delegationController = messengerClientsByName.DelegationController;
     this.notificationServicesController =
-      controllersByName.NotificationServicesController;
+      messengerClientsByName.NotificationServicesController;
     this.notificationServicesPushController =
-      controllersByName.NotificationServicesPushController;
-    this.deFiPositionsController = controllersByName.DeFiPositionsController;
-    this.accountTreeController = controllersByName.AccountTreeController;
-    this.oauthService = controllersByName.OAuthService;
-    this.subscriptionService = controllersByName.SubscriptionService;
+      messengerClientsByName.NotificationServicesPushController;
+    this.deFiPositionsController =
+      messengerClientsByName.DeFiPositionsController;
+    this.accountTreeController = messengerClientsByName.AccountTreeController;
+    this.oauthService = messengerClientsByName.OAuthService;
+    this.subscriptionService = messengerClientsByName.SubscriptionService;
     this.seedlessOnboardingController =
-      controllersByName.SeedlessOnboardingController;
-    this.subscriptionController = controllersByName.SubscriptionController;
-    this.networkOrderController = controllersByName.NetworkOrderController;
+      messengerClientsByName.SeedlessOnboardingController;
+    this.subscriptionController = messengerClientsByName.SubscriptionController;
+    this.networkOrderController = messengerClientsByName.NetworkOrderController;
     this.networkEnablementController =
-      controllersByName.NetworkEnablementController;
-    this.shieldController = controllersByName.ShieldController;
+      messengerClientsByName.NetworkEnablementController;
+    this.shieldController = messengerClientsByName.ShieldController;
     this.gatorPermissionsController =
-      controllersByName.GatorPermissionsController;
-    this.ensController = controllersByName.EnsController;
-    this.nameController = controllersByName.NameController;
-    this.announcementController = controllersByName.AnnouncementController;
-    this.accountOrderController = controllersByName.AccountOrderController;
-    this.rewardsController = controllersByName.RewardsController;
-    this.claimsController = controllersByName.ClaimsController;
-    this.claimsService = controllersByName.ClaimsService;
-    this.profileMetricsController = controllersByName.ProfileMetricsController;
+      messengerClientsByName.GatorPermissionsController;
+    this.ensController = messengerClientsByName.EnsController;
+    this.nameController = messengerClientsByName.NameController;
+    this.announcementController = messengerClientsByName.AnnouncementController;
+    this.accountOrderController = messengerClientsByName.AccountOrderController;
+    this.rewardsController = messengerClientsByName.RewardsController;
+    this.claimsController = messengerClientsByName.ClaimsController;
+    this.claimsService = messengerClientsByName.ClaimsService;
+    this.profileMetricsController =
+      messengerClientsByName.ProfileMetricsController;
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -1613,9 +1631,11 @@ export default class MetamaskController extends EventEmitter {
       getIsPerpsIncludedInBuild() &&
       this.preferencesController.state.useExternalServices
     ) {
-      this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
-        console.error(error);
-      });
+      this.messengerClientApi
+        .perpsStartEligibilityMonitoring?.()
+        ?.catch((error) => {
+          console.error(error);
+        });
     }
   }
 
@@ -1651,9 +1671,11 @@ export default class MetamaskController extends EventEmitter {
       getIsPerpsIncludedInBuild() &&
       this.preferencesController.state.useExternalServices
     ) {
-      this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
-        console.error(error);
-      });
+      this.messengerClientApi
+        .perpsStartEligibilityMonitoring?.()
+        ?.catch((error) => {
+          console.error(error);
+        });
     }
   }
 
@@ -1664,9 +1686,41 @@ export default class MetamaskController extends EventEmitter {
       this.multichainRatesController.stop();
     }
     if (getIsPerpsIncludedInBuild()) {
-      this.controllerApi.perpsStopEligibilityMonitoring?.()?.catch((error) => {
+      this.messengerClientApi
+        .perpsStopEligibilityMonitoring?.()
+        ?.catch((error) => {
+          console.error(error);
+        });
+    }
+  }
+
+  /**
+   * Disconnect an active Perps session without affecting non-Perps users.
+   *
+   * Perps is an optional feature, so guard on build inclusion, controller
+   * presence, and active connection state before calling into the controller.
+   */
+  #disconnectPerpsIfActive() {
+    try {
+      if (
+        !getIsPerpsIncludedInBuild() ||
+        !this.messengerClientsByName.PerpsController ||
+        typeof this.messengerClientApi.perpsDisconnect !== 'function'
+      ) {
+        return;
+      }
+
+      if (
+        this.messengerClientApi.perpsGetConnectionState?.() === 'disconnected'
+      ) {
+        return;
+      }
+
+      this.messengerClientApi.perpsDisconnect().catch((error) => {
         console.error(error);
       });
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -1839,17 +1893,17 @@ export default class MetamaskController extends EventEmitter {
         if (
           getIsPerpsIncludedInBuild() &&
           prev !== curr &&
-          this.controllerApi.perpsStartEligibilityMonitoring &&
-          this.controllerApi.perpsStopEligibilityMonitoring
+          this.messengerClientApi.perpsStartEligibilityMonitoring &&
+          this.messengerClientApi.perpsStopEligibilityMonitoring
         ) {
           if (curr) {
-            this.controllerApi
+            this.messengerClientApi
               .perpsStartEligibilityMonitoring?.()
               ?.catch((error) => {
                 console.error(error);
               });
           } else {
-            this.controllerApi
+            this.messengerClientApi
               .perpsStopEligibilityMonitoring?.()
               ?.catch((error) => {
                 console.error(error);
@@ -6951,13 +7005,35 @@ export default class MetamaskController extends EventEmitter {
       outStream,
     );
 
-    const perpsController = this.controllersByName.PerpsController;
+    const perpsController = this.messengerClientsByName.PerpsController;
     const perpsStream = perpsController
       ? new PerpsStreamBridge({
           controller: perpsController,
-          perpsInit: this.controllerApi.perpsInit,
-          perpsDisconnect: this.controllerApi.perpsDisconnect,
-          perpsToggleTestnet: this.controllerApi.perpsToggleTestnet,
+          onControllerStateChange: (cb) => {
+            this.controllerMessenger.subscribe(
+              'PerpsController:stateChange',
+              cb,
+            );
+            return () =>
+              this.controllerMessenger.unsubscribe(
+                'PerpsController:stateChange',
+                cb,
+              );
+          },
+          onConnectivityChange: (cb) => {
+            this.controllerMessenger.subscribe(
+              'ConnectivityController:stateChange',
+              cb,
+            );
+            return () =>
+              this.controllerMessenger.unsubscribe(
+                'ConnectivityController:stateChange',
+                cb,
+              );
+          },
+          perpsInit: this.messengerClientApi.perpsInit,
+          perpsDisconnect: this.messengerClientApi.perpsDisconnect,
+          perpsToggleTestnet: this.messengerClientApi.perpsToggleTestnet,
           isConnectionAlive: () => !outStream.mmFinished,
           emit: (channel, data, extra) => {
             if (!perpsStream.isActive || !isStreamWritable(outStream)) {
@@ -6974,7 +7050,7 @@ export default class MetamaskController extends EventEmitter {
 
     const api = {
       ...this.getApi(),
-      ...this.controllerApi,
+      ...this.messengerClientApi,
       ...(perpsStream ? perpsStream.bridgeApi() : {}),
       messengerSubscribe: messengerSubscriptions.subscribe.bind(
         messengerSubscriptions,
@@ -7025,6 +7101,10 @@ export default class MetamaskController extends EventEmitter {
       );
       messengerSubscriptions.clear();
       perpsStream?.destroy();
+      if (this.activeControllerConnections === 0) {
+        // Destroy the UI bridge stream first, then disconnect the controller-owned Perps WS.
+        this.#disconnectPerpsIfActive();
+      }
     });
   }
 
@@ -7058,6 +7138,8 @@ export default class MetamaskController extends EventEmitter {
       tabId = sender.tab.id;
     }
 
+    const { frameId } = sender;
+
     let mainFrameOrigin = origin;
     if (sender.tab && sender.tab.url) {
       // If sender origin is an iframe, then get the top-level frame's origin
@@ -7069,6 +7151,7 @@ export default class MetamaskController extends EventEmitter {
       sender,
       subjectType,
       tabId,
+      frameId,
       mainFrameOrigin,
     });
 
@@ -7135,11 +7218,20 @@ export default class MetamaskController extends EventEmitter {
       tabId = sender.tab.id;
     }
 
+    const { frameId } = sender;
+
+    let mainFrameOrigin = origin;
+    if (sender.tab && sender.tab.url) {
+      mainFrameOrigin = new URL(sender.tab.url).origin;
+    }
+
     const engine = this.setupProviderEngineCaip({
       origin,
       sender,
       subjectType,
       tabId,
+      frameId,
+      mainFrameOrigin,
     });
 
     const dupeReqFilterStream = createDupeReqFilterStream();
@@ -7297,6 +7389,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender object.
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
+   * @param {number} [options.frameId] - The frame ID of the sender (0 = top-level, >0 = iframe)
    * @param {mainFrameOrigin} [options.mainFrameOrigin] - The origin of the main frame if the sender is an iframe
    */
   setupProviderEngineEip1193({
@@ -7304,6 +7397,7 @@ export default class MetamaskController extends EventEmitter {
     subjectType,
     sender,
     tabId,
+    frameId,
     mainFrameOrigin,
   }) {
     const engine = new JsonRpcEngine();
@@ -7338,6 +7432,11 @@ export default class MetamaskController extends EventEmitter {
     // Append tabId to each request if it exists
     if (tabId) {
       engine.push(createTabIdMiddleware({ tabId }));
+    }
+
+    // Append frameId to each request if provided, including 0 for top-level frames
+    if (typeof frameId === 'number') {
+      engine.push(createFrameIdMiddleware({ frameId }));
     }
 
     engine.push(createLoggerMiddleware({ origin }));
@@ -7796,16 +7895,35 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender object.
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
+   * @param {number} [options.frameId] - The frame ID of the sender (0 = top-level, >0 = iframe)
+   * @param {mainFrameOrigin} [options.mainFrameOrigin] - The origin of the main frame if the sender is an iframe
    */
-  setupProviderEngineCaip({ origin, sender, subjectType, tabId }) {
+  setupProviderEngineCaip({
+    origin,
+    sender,
+    subjectType,
+    tabId,
+    frameId,
+    mainFrameOrigin,
+  }) {
     const engine = new JsonRpcEngine();
 
     // Append origin to each request
     engine.push(createOriginMiddleware({ origin }));
 
+    // Append mainFrameOrigin to each request if present
+    if (mainFrameOrigin) {
+      engine.push(createMainFrameOriginMiddleware({ mainFrameOrigin }));
+    }
+
     // Append tabId to each request if it exists
     if (tabId) {
       engine.push(createTabIdMiddleware({ tabId }));
+    }
+
+    // Append frameId to each request if provided, including 0 for top-level frames
+    if (typeof frameId === 'number') {
+      engine.push(createFrameIdMiddleware({ frameId }));
     }
 
     engine.push(createLoggerMiddleware({ origin }));
@@ -8193,6 +8311,7 @@ export default class MetamaskController extends EventEmitter {
     // KeyringController event. Other controllers subscribe to the 'lock'
     // event of the MetaMaskController itself.
     this.emit('lock');
+    this.#disconnectPerpsIfActive();
   }
 
   /**
@@ -9219,7 +9338,6 @@ export default class MetamaskController extends EventEmitter {
       if (knownNft) {
         this.nftController.checkAndUpdateSingleNftOwnershipStatus(
           knownNft,
-          false,
           networkClientId,
           // TODO add networkClientId once it is available in the transactionMeta
           // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
@@ -9313,7 +9431,6 @@ export default class MetamaskController extends EventEmitter {
         const refreshOwnershipNFts = knownNFTs.map(async (singleNft) => {
           return this.nftController.checkAndUpdateSingleNftOwnershipStatus(
             singleNft,
-            false,
             networkClientId,
             // TODO add networkClientId once it is available in the transactionMeta
             // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
@@ -9515,7 +9632,7 @@ export default class MetamaskController extends EventEmitter {
     return createEnsureOnboardingCompleteCallback(this.controllerMessenger);
   }
 
-  #initControllers({ existingControllers, initFunctions, initState }) {
+  #initMessengerClients({ initFunctions, initState }) {
     const initRequest = {
       currentMigrationVersion: this.opts.currentMigrationVersion,
       encryptor: this.opts.encryptor,
@@ -9549,9 +9666,8 @@ export default class MetamaskController extends EventEmitter {
       trace,
     };
 
-    return initControllers({
+    return initMessengerClients({
       baseControllerMessenger: this.controllerMessenger,
-      existingControllers,
       initFunctions,
       initRequest,
     });

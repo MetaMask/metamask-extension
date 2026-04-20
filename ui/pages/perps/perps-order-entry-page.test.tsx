@@ -88,8 +88,9 @@ jest.mock('@metamask/perps-controller', () => ({
   },
 }));
 
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
-  usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
 jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
@@ -278,6 +279,7 @@ describe('PerpsOrderEntryPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     const { isNearLiquidationPrice: realIsNearLiquidation } =
       jest.requireActual(
         '../../components/app/perps/order-entry/limit-price-warnings',
@@ -338,6 +340,42 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(screen.getByText(messages.perpsLong.message)).toBeInTheDocument();
       expect(screen.getByText(messages.perpsShort.message)).toBeInTheDocument();
+    });
+
+    it('does not render direction tabs in modify mode', () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.queryByTestId('direction-tabs')).not.toBeInTheDocument();
+    });
+
+    it('does not render direction tabs in close mode', () => {
+      mockSearchParams.set('mode', 'close');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.queryByTestId('direction-tabs')).not.toBeInTheDocument();
+    });
+
+    it('hides the auto-close section in modify mode', () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.queryByTestId('auto-close-toggle')).not.toBeInTheDocument();
     });
   });
 
@@ -492,6 +530,55 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+    });
+
+    it('shows geo-block modal instead of depositing when user is not eligible and balance is zero', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
+
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      expect(mockTriggerDeposit).not.toHaveBeenCalled();
+      expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+    });
+
+    it('shows geo-block modal instead of placing order when user is not eligible and has balance', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
+
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
+      expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
     });
 
     it('disables submit while account state is still loading for a new order', () => {
@@ -728,15 +815,18 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastSubmitInProgress',
+          pendingOrderSymbol: 'ETH',
+          pendingOrderFilledDescription:
+            expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
+      });
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
-          key: 'perpsToastSubmitInProgress',
-        }),
-      );
-      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          key: 'perpsToastSubmitInProgress',
-          description: expect.any(String),
+          key: 'perpsToastOrderSubmitted',
+          autoHideTime: 3000,
         }),
       );
     });
@@ -824,17 +914,15 @@ describe('PerpsOrderEntryPage', () => {
           },
         ],
       );
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastCloseInProgress',
-        description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
-      });
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
-          perpsToastKey: 'perpsToastTradeSuccess',
-          perpsToastDescription: expect.stringMatching(
-            /^Your PnL is -?\d+\.\d{2}%$/u,
-          ),
+          perpsToastKey: 'perpsToastCloseInProgress',
+          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
         }),
+      });
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastTradeSuccess',
+        description: expect.stringMatching(/^Your PnL is -?\d+\.\d{2}%$/u),
       });
     });
 
@@ -869,17 +957,17 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
-        expect.objectContaining({
-          key: 'perpsToastPartialCloseInProgress',
-          description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
-        }),
-      );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
-          perpsToastKey: 'perpsToastPartialCloseSuccess',
+          perpsToastKey: 'perpsToastPartialCloseInProgress',
+          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
         }),
       });
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastPartialCloseSuccess',
+        }),
+      );
     });
 
     it('falls back to close subtitle when close PnL cannot be calculated', async () => {
@@ -905,9 +993,13 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
-          perpsToastKey: 'perpsToastTradeSuccess',
+          perpsToastKey: 'perpsToastCloseInProgress',
           perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
         }),
+      });
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastTradeSuccess',
+        description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
       });
     });
 
@@ -933,15 +1025,15 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastCloseInProgress',
-        description: expect.stringMatching(/^Short [^ ]+ ETH$/u),
-      });
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
-          perpsToastKey: 'perpsToastTradeSuccess',
+          perpsToastKey: 'perpsToastCloseInProgress',
           perpsToastDescription: expect.stringMatching(/^Short [^ ]+ ETH$/u),
         }),
+      });
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastTradeSuccess',
+        description: expect.stringMatching(/^Short [^ ]+ ETH$/u),
       });
     });
 
@@ -968,9 +1060,12 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
-          perpsToastKey: 'perpsToastTradeSuccess',
-          perpsToastDescription: 'Your PnL is 0.80%',
+          perpsToastKey: 'perpsToastCloseInProgress',
         }),
+      });
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastTradeSuccess',
+        description: 'Your PnL is 0.80%',
       });
     });
 
@@ -998,11 +1093,11 @@ describe('PerpsOrderEntryPage', () => {
       );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
-          perpsToastKey: 'perpsToastUpdateSuccess',
+          perpsToastKey: 'perpsToastUpdateInProgress',
         }),
       });
-      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
-        key: 'perpsToastUpdateInProgress',
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastUpdateSuccess',
       });
     });
 
@@ -1037,12 +1132,17 @@ describe('PerpsOrderEntryPage', () => {
       );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
-          perpsToastKey: 'perpsToastOrderPlaced',
+          perpsToastKey: 'perpsToastSubmitInProgress',
         }),
       });
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastOrderPlaced',
+        }),
+      );
     });
 
-    it('submits normalized TP/SL values when modified', async () => {
+    it('submits existing position TP/SL values unchanged in modify mode', async () => {
       mockSearchParams.set('mode', 'modify');
       mockLivePositions.mockReturnValue({
         positions: mockPositions,
@@ -1052,20 +1152,12 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      const tpContainer = screen.getByTestId('tp-price-input');
-      const tpInput = tpContainer.querySelector('input');
-      fireEvent.change(tpInput as HTMLInputElement, {
-        target: { value: '3300.1' },
-      });
-      fireEvent.blur(tpInput as HTMLInputElement);
+      // Auto-close section is hidden in modify mode; TP/SL inputs are not accessible
+      expect(screen.queryByTestId('tp-price-input')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('sl-price-input')).not.toBeInTheDocument();
 
-      const slContainer = screen.getByTestId('sl-price-input');
-      const slInput = slContainer.querySelector('input');
-      fireEvent.change(slInput as HTMLInputElement, {
-        target: { value: '2500' },
-      });
-      fireEvent.blur(slInput as HTMLInputElement);
-
+      // Submitting with no additional amount calls perpsUpdatePositionTPSL
+      // with the pre-loaded TP/SL values from the existing position
       await act(async () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
@@ -1075,15 +1167,23 @@ describe('PerpsOrderEntryPage', () => {
         [
           expect.objectContaining({
             symbol: 'ETH',
-            takeProfitPrice: '3300.1',
-            stopLossPrice: '2500',
+            takeProfitPrice: mockPositions[0].takeProfitPrice,
+            stopLossPrice: mockPositions[0].stopLossPrice,
           }),
         ],
       );
     });
 
-    it('submits undefined TP/SL values when fields are cleared', async () => {
+    it('does not disable submit in modify mode when pre-loaded TP has crossed market price', async () => {
       mockSearchParams.set('mode', 'modify');
+      // Market has run above the existing TP ($3,200) — stale TP is now on the wrong
+      // side of the current price for a long, which previously silently blocked submit.
+      mockLiveMarketData.mockReturnValue({
+        markets: mockCryptoMarkets.map((m) =>
+          m.symbol === 'ETH' ? { ...m, price: '$3,500.00' } : m,
+        ),
+        isInitialLoading: false,
+      });
       mockLivePositions.mockReturnValue({
         positions: mockPositions,
         isInitialLoading: false,
@@ -1092,37 +1192,8 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      const tpContainer = screen.getByTestId('tp-price-input');
-      const tpInput = tpContainer.querySelector('input');
-      fireEvent.change(tpInput as HTMLInputElement, {
-        target: { value: '' },
-      });
-      fireEvent.blur(tpInput as HTMLInputElement);
-
-      const slContainer = screen.getByTestId('sl-price-input');
-      const slInput = slContainer.querySelector('input');
-      fireEvent.change(slInput as HTMLInputElement, {
-        target: { value: '' },
-      });
-      fireEvent.blur(slInput as HTMLInputElement);
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('submit-order-button'));
-      });
-
-      const updateCall = mockSubmitRequestToBackground.mock.calls.find(
-        ([method]) => method === 'perpsUpdatePositionTPSL',
-      );
-      expect(updateCall).toBeDefined();
-
-      const payload = updateCall?.[1]?.[0] as {
-        symbol?: string;
-        takeProfitPrice?: string;
-        stopLossPrice?: string;
-      };
-      expect(payload.symbol).toBe('ETH');
-      expect(payload.takeProfitPrice).toBeUndefined();
-      expect(payload.stopLossPrice).toBeUndefined();
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
     });
 
     it('does not submit when currentPrice is 0', async () => {
@@ -1497,23 +1568,17 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
-        expect.objectContaining({
-          key: 'perpsToastSubmitInProgress',
-        }),
-      );
-      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          key: 'perpsToastSubmitInProgress',
-          description: expect.any(String),
-        }),
-      );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
-          perpsToastKey: 'perpsToastOrderPlaced',
-          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+          perpsToastKey: 'perpsToastSubmitInProgress',
         }),
       });
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastOrderPlaced',
+          autoHideTime: 3000,
+        }),
+      );
     });
 
     it('does not submit a limit order when locale-formatted limit price is entered', async () => {
@@ -1557,43 +1622,7 @@ describe('PerpsOrderEntryPage', () => {
       jest.useRealTimers();
     });
 
-    it('navigates back when position appears after market order', async () => {
-      const store = mockStore(createMockState());
-      const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const input = amountContainer.querySelector('input');
-      fireEvent.change(input as HTMLInputElement, {
-        target: { value: '1000' },
-      });
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('submit-order-button'));
-      });
-
-      mockLivePositions.mockReturnValue({
-        positions: [
-          {
-            ...mockPositions[0],
-            symbol: 'ETH',
-          },
-        ],
-        isInitialLoading: false,
-      });
-
-      await act(async () => {
-        rerender(<PerpsOrderEntryPage />);
-      });
-
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        state: expect.objectContaining({
-          perpsToastKey: 'perpsToastOrderFilled',
-          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
-        }),
-      });
-    });
-
-    it('navigates back after 15s timeout if position never appears', async () => {
+    it('navigates immediately to market detail with pendingOrderSymbol for market order', async () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
@@ -1607,12 +1636,14 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      await act(async () => {
-        jest.advanceTimersByTime(15000);
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastSubmitInProgress',
+          pendingOrderSymbol: 'ETH',
+          pendingOrderFilledDescription:
+            expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
       });
-
-      expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
   });
 });

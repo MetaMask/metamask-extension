@@ -35,7 +35,7 @@ describe('NftControllerInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(NftControllerInit(requestMock).controller).toBeInstanceOf(
+    expect(NftControllerInit(requestMock).messengerClient).toBeInstanceOf(
       NftController,
     );
   });

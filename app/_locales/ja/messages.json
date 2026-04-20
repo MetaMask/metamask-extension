@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "アカウントのアイデンティコン"
   },
-  "accountIdenticonDescription": {
-    "message": "アカウントを一目で見分けられるよう、3種類の異なるスタイルのアイコンからお選びください。"
-  },
   "accountIsntConnectedToastText": {
     "message": "$1は$2に接続されていません"
   },
@@ -5408,9 +5405,6 @@
   },
   "perpsFundingRateTooltip": {
     "message": "価格を市場に合わせるためにトレーダー間で支払われる、1時間あたりの手数料です。資金調達率がプラスの場合はロングがショートに支払い、マイナスの場合はショートがロングに支払います。"
-  },
-  "perpsGeoBlockedTooltip": {
-    "message": "お住まいの地域ではパーペチュアル取引は利用できません"
   },
   "perpsGiveFeedback": {
     "message": "ご意見をお聞かせください"
