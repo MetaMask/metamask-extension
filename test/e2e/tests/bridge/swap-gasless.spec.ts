@@ -33,7 +33,7 @@ describe('Gasless swap tests', function (this: Suite) {
         await bridgePage.waitForQuote();
         await bridgePage.checkGasIncludedIsDisplayed();
 
-        await bridgePage.submitQuote({ dismissStatusPage: true });
+        await bridgePage.submitQuoteAndDismiss();
 
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
@@ -68,7 +68,7 @@ describe('Gasless swap tests', function (this: Suite) {
         await bridgePage.waitForQuote();
         await bridgePage.checkGasIncludedIsDisplayed();
 
-        await bridgePage.submitQuote({ dismissStatusPage: true });
+        await bridgePage.submitQuoteAndDismiss();
 
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
@@ -108,7 +108,7 @@ describe('Gasless swap tests', function (this: Suite) {
         await bridgePage.waitForQuote();
         await bridgePage.checkGasSponsoredIsDisplayed();
 
-        await bridgePage.submitQuote({ dismissStatusPage: true });
+        await bridgePage.submitQuoteAndDismiss();
 
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);

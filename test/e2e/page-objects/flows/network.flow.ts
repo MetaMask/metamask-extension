@@ -1,5 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
+import AssetListPage from '../pages/home/asset-list';
 import NetworkManager from '../pages/network-manager';
 
 export const switchToNetworkFromNetworkSelect = async (
@@ -15,6 +16,9 @@ export const switchToNetworkFromNetworkSelect = async (
     await homePage.waitForNonEvmAccountsLoaded();
   }
   await networkManager.openNetworkManager();
+
+  const assetListPage = new AssetListPage(driver);
+  await assetListPage.openNetworksFilter();
   await networkManager.selectTab(networkCategory);
   await networkManager.selectNetworkByNameWithWait(networkName);
 };

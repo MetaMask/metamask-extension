@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Ikon akun"
   },
-  "accountIdenticonDescription": {
-    "message": "Pilih dari tiga gaya ikon unik berbeda yang dapat membantu Anda mengidentifikasi akun secara sekilas."
-  },
   "accountIsntConnectedToastText": {
     "message": "$1 tidak terhubung ke $2"
   },

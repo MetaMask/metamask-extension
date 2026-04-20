@@ -16,6 +16,7 @@ import { Ganache } from '../../seeder/ganache';
  * @param options.localNode - A local node instance whose balance should be verified.
  * @param options.password - The password used to unlock the wallet.
  * @param options.validateBalance - Whether to verify the balance is displayed. Defaults to true.
+ * @param options.waitForNonEvmAccounts - Whether to wait for non-EVM accounts to load on the homepage. Defaults to true; set to false to skip.
  */
 export const login = async (
   driver: Driver,
@@ -24,6 +25,7 @@ export const login = async (
     localNode?: Ganache | Anvil;
     password?: string;
     validateBalance?: boolean;
+    waitForNonEvmAccounts?: boolean;
   },
 ) => {
   console.log('Navigate to unlock page and try to login with password');
@@ -34,6 +36,9 @@ export const login = async (
 
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
+  if (options?.waitForNonEvmAccounts !== false) {
+    await homePage.waitForNonEvmAccountsLoaded();
+  }
 
   if (options?.localNode) {
     await homePage.checkLocalNodeBalanceIsDisplayed(options.localNode);

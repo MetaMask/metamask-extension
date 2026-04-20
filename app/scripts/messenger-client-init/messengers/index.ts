@@ -212,6 +212,7 @@ import { getGeolocationApiServiceMessenger } from './geolocation-api-service-mes
 import { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
+import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type {
@@ -540,6 +541,10 @@ export const MESSENGER_FACTORIES = {
   KeyringController: {
     getMessenger: getKeyringControllerMessenger,
     getInitMessenger: getKeyringControllerInitMessenger,
+  },
+  LegacyBackgroundApiService: {
+    getMessenger: getLegacyBackgroundApiServiceMessenger,
+    getInitMessenger: noop,
   },
   LoggingController: {
     getMessenger: getLoggingControllerMessenger,
