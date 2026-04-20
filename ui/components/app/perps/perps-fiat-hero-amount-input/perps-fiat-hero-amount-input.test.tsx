@@ -28,6 +28,14 @@ describe('isValidPartialFiatAmountInput', () => {
 });
 
 describe('PerpsFiatHeroAmountInput', () => {
+  it('renders the container with w-full class to ensure centering in narrow viewports', () => {
+    const { container } = render(
+      <PerpsFiatHeroAmountInput value="2.707414" onChange={jest.fn()} />,
+    );
+    const heroBox = container.firstChild as HTMLElement;
+    expect(heroBox.className).toContain('w-full');
+  });
+
   it('renders symbol and forwards input changes', () => {
     const onChange = jest.fn();
     render(<PerpsFiatHeroAmountInput value="" onChange={onChange} />);

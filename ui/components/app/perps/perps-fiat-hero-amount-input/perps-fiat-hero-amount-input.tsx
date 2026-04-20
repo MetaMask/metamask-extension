@@ -134,6 +134,7 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Center}
           alignItems={BoxAlignItems.Center}
+          className="w-full"
           style={{ minHeight: '70px' }}
         >
           <Text
