@@ -23,7 +23,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
 
 export const MetametricsToggleItem = () => {
