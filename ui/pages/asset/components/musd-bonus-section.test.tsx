@@ -5,12 +5,52 @@ import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { I18nContext } from '../../../contexts/i18n';
 import { getMessage } from '../../../helpers/utils/i18n-helper';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import { selectIsMerklClaimingEnabled } from '../../../selectors/musd';
 import { MusdBonusSection } from './musd-bonus-section';
+
+jest.mock('../../../contexts/metametrics', () => {
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
+  const _trackEvent = jest.fn();
+  const MetaMetricsContext = ReactActual.createContext({
+    trackEvent: _trackEvent,
+    bufferedTrace: jest.fn().mockResolvedValue(undefined),
+    bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
+    onboardingParentContext: { current: null },
+  });
+  MetaMetricsContext.Provider = (({
+    children,
+  }: {
+    children: React.ReactNode;
+  }) =>
+    ReactActual.createElement(
+      ReactActual.Fragment,
+      null,
+      children,
+    )) as unknown as typeof MetaMetricsContext.Provider;
+  return {
+    MetaMetricsContext,
+    LegacyMetaMetricsProvider: ({ children }: { children: React.ReactNode }) =>
+      ReactActual.createElement(ReactActual.Fragment, null, children),
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __mockTrackEvent: _trackEvent,
+  };
+});
+
+const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __mockTrackEvent: jest.Mock;
+}>('../../../contexts/metametrics');
+
+jest.mock('../../../selectors/multichain', () => ({
+  getMultichainNetworkConfigurationsByChainId: jest.fn(() => ({
+    '0x1': { name: 'Ethereum Mainnet' },
+  })),
+}));
 
 const mockRefetchRewards = jest.fn();
 const mockUseMerklRewards = jest.fn().mockReturnValue({
@@ -19,6 +59,8 @@ const mockUseMerklRewards = jest.fn().mockReturnValue({
   lifetimeClaimedFiat: 5,
   isLoading: false,
   isEligible: true,
+  claimableRewardDisplay: null,
+  hasClaimedBefore: false,
   refetch: mockRefetchRewards,
 });
 
@@ -32,6 +74,7 @@ const mockUseMerklClaim = jest.fn().mockReturnValue({
 let capturedOnConfirmed: (() => void) | null = null;
 const mockUseOnMerklClaimConfirmed = jest.fn((cb: () => void) => {
   capturedOnConfirmed = cb;
+  return { isClaimInFlight: false };
 });
 
 jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
@@ -88,13 +131,20 @@ describe('MusdBonusSection', () => {
   beforeEach(() => {
     (selectIsMerklClaimingEnabled as jest.Mock).mockReturnValue(true);
     capturedOnConfirmed = null;
+    mockUseOnMerklClaimConfirmed.mockImplementation((cb: () => void) => {
+      capturedOnConfirmed = cb;
+      return { isClaimInFlight: false };
+    });
     mockRefetchRewards.mockClear();
+    mockTrackEvent.mockClear();
     mockUseMerklRewards.mockReturnValue({
       hasClaimableReward: false,
       rewardAmountFiat: null,
       lifetimeClaimedFiat: 5,
       isLoading: false,
       isEligible: true,
+      claimableRewardDisplay: null,
+      hasClaimedBefore: false,
       refetch: mockRefetchRewards,
     });
     mockUseMerklClaim.mockReturnValue({
@@ -176,6 +226,9 @@ describe('MusdBonusSection', () => {
         lifetimeClaimedFiat: 5,
         isLoading: false,
         isEligible: true,
+        claimableRewardDisplay: '10.27',
+        hasClaimedBefore: false,
+        refetch: mockRefetchRewards,
       });
 
       renderWithProviders(
@@ -201,6 +254,9 @@ describe('MusdBonusSection', () => {
         lifetimeClaimedFiat: 0,
         isLoading: false,
         isEligible: true,
+        claimableRewardDisplay: '5.00',
+        hasClaimedBefore: false,
+        refetch: mockRefetchRewards,
       });
 
       renderWithProviders(
@@ -224,6 +280,9 @@ describe('MusdBonusSection', () => {
         lifetimeClaimedFiat: 0,
         isLoading: false,
         isEligible: true,
+        claimableRewardDisplay: null,
+        hasClaimedBefore: false,
+        refetch: mockRefetchRewards,
       });
 
       renderWithProviders(
@@ -248,6 +307,9 @@ describe('MusdBonusSection', () => {
         lifetimeClaimedFiat: 0,
         isLoading: false,
         isEligible: true,
+        claimableRewardDisplay: null,
+        hasClaimedBefore: false,
+        refetch: mockRefetchRewards,
       });
 
       renderWithProviders(
@@ -272,6 +334,9 @@ describe('MusdBonusSection', () => {
         lifetimeClaimedFiat: 0,
         isLoading: false,
         isEligible: true,
+        claimableRewardDisplay: null,
+        hasClaimedBefore: false,
+        refetch: mockRefetchRewards,
       });
 
       renderWithProviders(
@@ -330,6 +395,9 @@ describe('MusdBonusSection', () => {
         lifetimeClaimedFiat: 5,
         isLoading: false,
         isEligible: true,
+        claimableRewardDisplay: '10.00',
+        hasClaimedBefore: false,
+        refetch: mockRefetchRewards,
       });
       mockUseMerklClaim.mockReturnValue({
         claimRewards: mockClaimRewards,
@@ -349,6 +417,206 @@ describe('MusdBonusSection', () => {
 
       const button = screen.getByTestId('musd-claim-bonus-button');
       expect(button).toBeDisabled();
+    });
+
+    it('disables the button when a claim transaction is in-flight after remount', () => {
+      mockUseOnMerklClaimConfirmed.mockImplementation((cb: () => void) => {
+        capturedOnConfirmed = cb;
+        return { isClaimInFlight: true };
+      });
+      mockUseMerklRewards.mockReturnValue({
+        hasClaimableReward: true,
+        rewardAmountFiat: 5,
+        lifetimeClaimedFiat: 0,
+        isLoading: false,
+        isEligible: true,
+        claimableRewardDisplay: '5.00',
+        hasClaimedBefore: false,
+        refetch: mockRefetchRewards,
+      });
+
+      renderWithProviders(
+        <MusdBonusSection
+          chainId="0x1"
+          tokenAddress={MUSD_TOKEN_ADDRESS}
+          positionFiatValue={1000}
+          showFiat
+          hasPositiveBalance
+        />,
+      );
+
+      const button = screen.getByTestId('musd-claim-bonus-button');
+      expect(button).toBeDisabled();
+    });
+  });
+
+  describe('Merkl claim analytics', () => {
+    it('does not fire MusdClaimBonusCtaDisplayed when there is no claimable reward', () => {
+      renderWithProviders(
+        <MusdBonusSection
+          chainId="0x1"
+          tokenAddress={MUSD_TOKEN_ADDRESS}
+          positionFiatValue={1000}
+          showFiat
+          hasPositiveBalance
+        />,
+      );
+
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.MusdClaimBonusCtaDisplayed,
+        }),
+      );
+    });
+
+    it('fires MusdClaimBonusCtaDisplayed when claimable with location asset_overview and bonus_amount_range', () => {
+      mockUseMerklRewards.mockReturnValue({
+        hasClaimableReward: true,
+        rewardAmountFiat: 10.27,
+        lifetimeClaimedFiat: 5,
+        isLoading: false,
+        isEligible: true,
+        claimableRewardDisplay: '10.27',
+        hasClaimedBefore: false,
+        refetch: mockRefetchRewards,
+      });
+
+      renderWithProviders(
+        <MusdBonusSection
+          chainId="0x1"
+          tokenAddress={MUSD_TOKEN_ADDRESS}
+          positionFiatValue={1000}
+          showFiat
+          hasPositiveBalance
+        />,
+      );
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.MusdClaimBonusCtaDisplayed,
+          properties: expect.objectContaining({
+            location: 'asset_overview',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            view_trigger: 'component_mounted',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            network_chain_id: '0x1',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            network_name: 'Ethereum Mainnet',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            asset_symbol: messages.musdSymbol.message,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            bonus_amount_range: '10.00 - 99.99',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            has_claimed_before: false,
+          }),
+        }),
+      );
+    });
+
+    it('does not fire MusdClaimBonusCtaDisplayed while claim is in progress', () => {
+      mockUseMerklRewards.mockReturnValue({
+        hasClaimableReward: true,
+        rewardAmountFiat: 10,
+        lifetimeClaimedFiat: 5,
+        isLoading: false,
+        isEligible: true,
+        claimableRewardDisplay: '10.00',
+        hasClaimedBefore: false,
+        refetch: mockRefetchRewards,
+      });
+      mockUseMerklClaim.mockReturnValue({
+        claimRewards: mockClaimRewards,
+        isClaiming: true,
+        error: null,
+      });
+
+      renderWithProviders(
+        <MusdBonusSection
+          chainId="0x1"
+          tokenAddress={MUSD_TOKEN_ADDRESS}
+          positionFiatValue={1000}
+          showFiat
+          hasPositiveBalance
+        />,
+      );
+
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.MusdClaimBonusCtaDisplayed,
+        }),
+      );
+    });
+
+    it('does not fire MusdClaimBonusCtaDisplayed while a claim transaction is in-flight', () => {
+      mockUseOnMerklClaimConfirmed.mockImplementation((cb: () => void) => {
+        capturedOnConfirmed = cb;
+        return { isClaimInFlight: true };
+      });
+      mockUseMerklRewards.mockReturnValue({
+        hasClaimableReward: true,
+        rewardAmountFiat: 10,
+        lifetimeClaimedFiat: 5,
+        isLoading: false,
+        isEligible: true,
+        claimableRewardDisplay: '10.00',
+        hasClaimedBefore: false,
+        refetch: mockRefetchRewards,
+      });
+
+      renderWithProviders(
+        <MusdBonusSection
+          chainId="0x1"
+          tokenAddress={MUSD_TOKEN_ADDRESS}
+          positionFiatValue={1000}
+          showFiat
+          hasPositiveBalance
+        />,
+      );
+
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.MusdClaimBonusCtaDisplayed,
+        }),
+      );
+    });
+
+    it('fires MusdClaimBonusButtonClicked with location asset_overview when the claim button is clicked', () => {
+      mockUseMerklRewards.mockReturnValue({
+        hasClaimableReward: true,
+        rewardAmountFiat: 5,
+        lifetimeClaimedFiat: 0,
+        isLoading: false,
+        isEligible: true,
+        claimableRewardDisplay: '5.00',
+        hasClaimedBefore: false,
+        refetch: mockRefetchRewards,
+      });
+
+      renderWithProviders(
+        <MusdBonusSection
+          chainId="0x1"
+          tokenAddress={MUSD_TOKEN_ADDRESS}
+          positionFiatValue={1000}
+          showFiat
+          hasPositiveBalance
+        />,
+      );
+
+      fireEvent.click(screen.getByTestId('musd-claim-bonus-button'));
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.MusdClaimBonusButtonClicked,
+          properties: expect.objectContaining({
+            location: 'asset_overview',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            network_chain_id: '0x1',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            network_name: 'Ethereum Mainnet',
+          }),
+        }),
+      );
+      expect(mockClaimRewards).toHaveBeenCalledTimes(1);
     });
   });
 });

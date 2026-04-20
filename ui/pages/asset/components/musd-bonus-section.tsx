@@ -18,8 +18,18 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import type { Hex } from '@metamask/utils';
-import React from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { useSelector } from 'react-redux';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { PopoverPosition } from '../../../components/component-library';
 import {
   BackgroundColor,
@@ -30,11 +40,19 @@ import {
   MUSD_CONVERSION_APY,
   MUSD_CONVERSION_BONUS_TERMS_OF_USE,
 } from '../../../components/app/musd/constants';
+import { getBonusAmountRange } from '../../../components/app/musd/merkl-bonus-analytics';
+import {
+  ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS,
+  type MusdClaimBonusButtonClickedEventProperties,
+  type MusdClaimBonusCtaDisplayedEventProperties,
+} from '../../../components/app/musd/musd-events';
 import { useMerklClaim } from '../../../components/app/musd/hooks/useMerklClaim';
 import { useMerklRewards } from '../../../components/app/musd/hooks/useMerklRewards';
 import { useOnMerklClaimConfirmed } from '../../../components/app/musd/hooks/useOnMerklClaimConfirmed';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
 import {
   selectIsMerklClaimingEnabled,
   selectIsMusdConversionFlowEnabled,
@@ -44,6 +62,9 @@ import { InfoPopover } from '../../../components/app/musd/info-popover';
 
 const MUSD_SUPPORT_ARTICLE_URL =
   'https://support.metamask.io/manage-crypto/tokens/musd';
+
+const MERKL_CLAIM_ANALYTICS_LOCATION =
+  ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS.merklClaimBonus.location;
 
 export type MusdBonusSectionProps = {
   chainId: Hex;
@@ -92,9 +113,16 @@ export function MusdBonusSection({
 }: MusdBonusSectionProps) {
   const t = useI18nContext();
   const formatFiat = useFiatFormatter();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const hasFiredCtaDisplayedEvent = useRef(false);
   const isMusdFlowEnabled = useSelector(selectIsMusdConversionFlowEnabled);
   const isMerklClaimingEnabled = useSelector(selectIsMerklClaimingEnabled);
   const { isBlocked: isGeoBlocked } = useMusdGeoBlocking();
+  const networkConfigurationsByChainId = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+  const networkName =
+    networkConfigurationsByChainId[chainId]?.name ?? 'Unknown Network';
 
   const showMerklBadge =
     isMusdFlowEnabled && isMerklClaimingEnabled && !isGeoBlocked;
@@ -105,6 +133,8 @@ export function MusdBonusSection({
     lifetimeClaimedFiat,
     isLoading,
     isEligible,
+    claimableRewardDisplay,
+    hasClaimedBefore,
     refetch: refetchRewards,
   } = useMerklRewards({
     tokenAddress,
@@ -112,12 +142,21 @@ export function MusdBonusSection({
     showMerklBadge,
   });
 
-  useOnMerklClaimConfirmed(refetchRewards);
+  const { isClaimInFlight } = useOnMerklClaimConfirmed(refetchRewards);
 
-  const { claimRewards, isClaiming } = useMerklClaim({
+  const {
+    claimRewards,
+    isClaiming,
+    error: merklClaimError,
+  } = useMerklClaim({
     tokenAddress,
     chainId,
   });
+
+  const bonusAmountRange = useMemo(
+    () => getBonusAmountRange(claimableRewardDisplay ?? '< 0.01'),
+    [claimableRewardDisplay],
+  );
 
   const estimatedAnnualBonus =
     showFiat && positionFiatValue !== null && Number.isFinite(positionFiatValue)
@@ -140,7 +179,74 @@ export function MusdBonusSection({
     bonusButtonLabel = t('musdAssetBonusNoAccruing');
   }
 
-  const bonusButtonDisabled = !hasClaimable || isClaiming || isGeoBlocked;
+  const bonusButtonDisabled =
+    !hasClaimable || isClaiming || isClaimInFlight || isGeoBlocked;
+
+  useEffect(() => {
+    if (
+      hasFiredCtaDisplayedEvent.current ||
+      !showMerklBadge ||
+      !hasClaimable ||
+      isClaiming ||
+      isClaimInFlight ||
+      merklClaimError ||
+      !bonusAmountRange
+    ) {
+      return;
+    }
+    hasFiredCtaDisplayedEvent.current = true;
+
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const impressionProperties: MusdClaimBonusCtaDisplayedEventProperties = {
+      location: MERKL_CLAIM_ANALYTICS_LOCATION,
+      view_trigger: 'component_mounted',
+      button_text: bonusButtonLabel,
+      network_chain_id: chainId,
+      network_name: networkName,
+      asset_symbol: t('musdSymbol'),
+      bonus_amount_range: bonusAmountRange,
+      has_claimed_before: hasClaimedBefore,
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
+
+    trackEvent({
+      event: MetaMetricsEventName.MusdClaimBonusCtaDisplayed,
+      category: MetaMetricsEventCategory.MusdConversion,
+      properties: impressionProperties,
+    });
+  }, [
+    bonusAmountRange,
+    bonusButtonLabel,
+    chainId,
+    hasClaimable,
+    hasClaimedBefore,
+    merklClaimError,
+    isClaiming,
+    isClaimInFlight,
+    networkName,
+    showMerklBadge,
+    t,
+    trackEvent,
+  ]);
+
+  const handleClaimBonusClick = useCallback(() => {
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const clickProperties: MusdClaimBonusButtonClickedEventProperties = {
+      location: MERKL_CLAIM_ANALYTICS_LOCATION,
+      claim_amount: bonusButtonLabel,
+      network_chain_id: chainId,
+      network_name: networkName,
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
+
+    trackEvent({
+      event: MetaMetricsEventName.MusdClaimBonusButtonClicked,
+      category: MetaMetricsEventCategory.MusdConversion,
+      properties: clickProperties,
+    });
+
+    claimRewards();
+  }, [bonusButtonLabel, chainId, claimRewards, networkName, trackEvent]);
 
   if (!isMusdFlowEnabled) {
     return null;
@@ -310,9 +416,9 @@ export function MusdBonusSection({
           <Button
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
-            onClick={hasClaimable ? () => claimRewards() : undefined}
+            onClick={hasClaimable ? handleClaimBonusClick : undefined}
             disabled={bonusButtonDisabled}
-            isLoading={isClaiming}
+            isLoading={isClaiming || isClaimInFlight}
             data-testid="musd-claim-bonus-button"
             style={{ width: '100%' }}
           >
