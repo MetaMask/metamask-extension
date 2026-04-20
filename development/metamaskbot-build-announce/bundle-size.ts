@@ -16,14 +16,10 @@ const bundlePartLabels: Record<BundlePart, string> = {
   contentScripts: 'content scripts',
 };
 
-const zipLabel = 'zip';
 const bundleSizeTableHeader = [
   '| Status | Bundle | Total | Diff | Change |',
   '|:--:|---|---:|---:|---:|',
 ].join('\n');
-
-/** The threshold for whether to highlight a change in bundle size, in bytes. */
-const BUNDLE_SIZE_THRESHOLD = 1_000;
 
 /**
  * Converts a byte count to a human-readable string (e.g. "1.5 KiB").
@@ -40,13 +36,13 @@ export function getHumanReadableSize(bytes: number): string {
   const kibibyteSize = 1024;
   const magnitudes = ['Bytes', 'KiB', 'MiB'];
   let magnitudeIndex = 0;
-  if (absBytes > kibibyteSize ** 2) {
+  if (absBytes > Math.pow(kibibyteSize, 2)) {
     magnitudeIndex = 2;
   } else if (absBytes > kibibyteSize) {
     magnitudeIndex = 1;
   }
   return `${parseFloat(
-    (bytes / kibibyteSize ** magnitudeIndex).toFixed(2),
+    (bytes / Math.pow(kibibyteSize, magnitudeIndex)).toFixed(2),
   )} ${magnitudes[magnitudeIndex]}`;
 }
 
@@ -63,6 +59,9 @@ export function getPercentageChange(from: number, to: number): number {
   }
   return parseFloat((((to - from) / Math.abs(from)) * 100).toFixed(2));
 }
+
+/** The threshold for whether to highlight a change in bundle size, in bytes. */
+const BUNDLE_SIZE_THRESHOLD = 1_000;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -130,23 +129,6 @@ function buildBundlePartRow({
   });
 }
 
-function buildZipRow({
-  currentSize,
-  baselineSize,
-  status,
-}: {
-  currentSize: number;
-  baselineSize?: number;
-  status?: string;
-}): string {
-  return buildSizeRow({
-    label: zipLabel,
-    currentSize,
-    baselineSize,
-    status,
-  });
-}
-
 function buildSizeRow({
   label,
   currentSize,
@@ -198,7 +180,8 @@ function buildUnavailableComparisonContent(
     }),
   );
   currentSizeRows.push(
-    buildZipRow({
+    buildSizeRow({
+      label: 'zip',
       currentSize: currentZipSize,
     }),
   );
@@ -209,10 +192,6 @@ function buildUnavailableComparisonContent(
     bundleSizeTableHeader,
     ...currentSizeRows,
   ].join('\n');
-}
-
-function buildUnavailableBundleSizeContent(): string {
-  return 'Bundle size data unavailable.';
 }
 
 function buildCollapsibleSection(summary: string, body: string): string {
@@ -272,7 +251,7 @@ function buildBundleSizeSection({
   if (!currentSummary) {
     return buildCollapsibleSection(
       'Bundle Size Diffs',
-      buildUnavailableBundleSizeContent(),
+      'Bundle size data unavailable.',
     );
   }
 
@@ -291,7 +270,6 @@ function buildBundleSizeSection({
   }
 
   const baselineSizes = getBundlePartSizes(baselineSummary);
-  const baselineZipSize = baselineSummary.zip ?? 0;
   const diffs = mapBundleParts(
     (part) => currentSizes[part] - baselineSizes[part],
   );
@@ -308,7 +286,8 @@ function buildBundleSizeSection({
     }),
   );
   sizeDiffRows.push(
-    buildZipRow({
+    buildSizeRow({
+      label: 'zip',
       currentSize: currentZipSize,
       baselineSize: baselineSummary.zip,
       status: getRowStatus({
