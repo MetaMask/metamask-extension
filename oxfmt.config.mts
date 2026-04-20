@@ -39,4 +39,12 @@ export default defineConfig({
   singleQuote: true,
   sortPackageJson: false,
   endOfLine: os.platform() === 'win32' ? 'crlf' : 'lf',
+  overrides: [
+    {
+      files: ['*.jsonc'],
+      options: {
+        trailingComma: 'none',
+      },
+    },
+  ],
 });
