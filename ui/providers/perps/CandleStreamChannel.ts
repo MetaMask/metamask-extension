@@ -388,12 +388,21 @@ export class CandleStreamChannel {
       clearTimeout(entry.pendingConnectTimer);
     }
 
+    // Wait only the remaining slice of the debounce window, not another full
+    // CONNECT_DEBOUNCE_MS. The window is anchored to lastDisconnectAt, so a
+    // resubscribe arriving n ms after the disconnect still needs to fire at
+    // (lastDisconnectAt + CONNECT_DEBOUNCE_MS); adding another full window on
+    // top would push the UI reconnect past the bridge's 150 ms teardown
+    // defer, which would commit a disconnect and force a fresh
+    // perpsActivateCandleStream — the exact burst this debounce is meant to
+    // coalesce.
+    const remaining = Math.max(0, CONNECT_DEBOUNCE_MS - elapsed);
     entry.pendingConnectTimer = setTimeout(() => {
       entry.pendingConnectTimer = undefined;
       if (entry.subscribers.size > 0 && !entry.isConnected) {
         this.fireConnect(key, entry);
       }
-    }, CONNECT_DEBOUNCE_MS);
+    }, remaining);
   }
 
   /**
