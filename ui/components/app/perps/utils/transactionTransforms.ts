@@ -21,6 +21,7 @@ import {
   type PerpsTransaction,
 } from '../types/transactionHistory';
 import { getDisplaySymbol } from '../utils';
+import { formatOrderLabel } from './orderUtils';
 
 /**
  * Determines the close direction category for aggregation purposes.
@@ -190,53 +191,6 @@ export function aggregateFillsByTimestamp(fills: OrderFill[]): OrderFill[] {
   allFills.sort((a, b) => b.timestamp - a.timestamp);
 
   return allFills;
-}
-
-/**
- * Format an order label following the pattern: [Type] [Close?] [Direction]
- *
- * Examples:
- * - Market Long
- * - Market Close Long
- * - Limit Short
- * - Limit Close Short
- * - Stop Market Close Long
- * - Take Profit Limit Close Short
- *
- * @param order - The order object
- * @returns Formatted order label string
- */
-function formatOrderLabel(order: Order): string {
-  const { side, detailedOrderType, orderType, reduceOnly, isTrigger } = order;
-
-  // Determine if this is a closing order
-  const isClosing = Boolean(reduceOnly || isTrigger);
-
-  // Determine direction based on whether it's closing or not
-  let direction: string;
-  if (isClosing) {
-    // For closing orders: sell closes long, buy closes short
-    direction = side === 'sell' ? 'long' : 'short';
-  } else {
-    // For opening orders: buy is long, sell is short
-    direction = side === 'buy' ? 'long' : 'short';
-  }
-
-  // Get the order type string
-  // Use detailedOrderType if available (e.g., "Stop Market", "Take Profit Limit")
-  // Otherwise fall back to basic orderType
-  const typeString =
-    detailedOrderType || (orderType === 'limit' ? 'Limit' : 'Market');
-
-  // Build the label: [Type] [Close?] [Direction]
-  // Capitalize first letter
-  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
-  if (isClosing) {
-    return capitalize(`${typeString} close ${direction}`);
-  }
-
-  return capitalize(`${typeString} ${direction}`);
 }
 
 /**

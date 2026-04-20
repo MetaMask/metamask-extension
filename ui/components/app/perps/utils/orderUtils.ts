@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { capitalize } from 'lodash';
 import type { Order, Position } from '@metamask/perps-controller';
 
 const FULL_POSITION_SIZE_TOLERANCE = new BigNumber('0.00000001');
@@ -324,4 +325,42 @@ export const normalizeMarketDetailsOrders = ({
   return ordersWithSyntheticTpsl.filter((order) =>
     shouldDisplayOrderInMarketDetailsOrders(order, existingPosition),
   );
+};
+
+/**
+ * Formats an order label following the pattern: [Type] [close?] [direction]
+ * Matches the mobile canonical formatter in app/components/UI/Perps/utils/orderUtils.ts.
+ *
+ * Examples:
+ * - "Market long" / "Limit short"
+ * - "Limit close long" / "Market close short"
+ * - "Stop market close long" / "Take profit limit close short"
+ *
+ * Rules:
+ * - isClosing = reduceOnly || isTrigger
+ * - direction for closing: sell → long, buy → short
+ * - direction for opening: buy → long, sell → short
+ * - typeString = detailedOrderType if present, otherwise "Limit" or "Market"
+ * - lodash capitalize: uppercases first char, lowercases the rest
+ *
+ * @param order - The order to label
+ * @returns Formatted label string in sentence case
+ */
+export const formatOrderLabel = (order: Order): string => {
+  const { side, detailedOrderType, orderType, reduceOnly, isTrigger } = order;
+  const isClosing = Boolean(reduceOnly || isTrigger);
+
+  let direction: string;
+  if (isClosing) {
+    direction = side === 'sell' ? 'long' : 'short';
+  } else {
+    direction = side === 'buy' ? 'long' : 'short';
+  }
+
+  const typeString =
+    detailedOrderType || (orderType === 'limit' ? 'Limit' : 'Market');
+
+  return isClosing
+    ? capitalize(`${typeString} close ${direction}`)
+    : capitalize(`${typeString} ${direction}`);
 };

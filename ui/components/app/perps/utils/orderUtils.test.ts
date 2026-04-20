@@ -4,6 +4,7 @@ import {
   shouldDisplayOrderInMarketDetailsOrders,
   buildDisplayOrdersWithSyntheticTpsl,
   normalizeMarketDetailsOrders,
+  formatOrderLabel,
 } from './orderUtils';
 
 const makeOrder = (overrides: Partial<Order> = {}): Order => ({
@@ -328,6 +329,118 @@ describe('orderUtils', () => {
         orders: [limitOrder],
       });
       expect(result).toHaveLength(3);
+    });
+  });
+
+  describe('formatOrderLabel', () => {
+    it('returns "Limit long" for a plain buy limit order', () => {
+      const order = makeOrder({ side: 'buy', orderType: 'limit' });
+      expect(formatOrderLabel(order)).toBe('Limit long');
+    });
+
+    it('returns "Limit short" for a plain sell limit order', () => {
+      const order = makeOrder({ side: 'sell', orderType: 'limit' });
+      expect(formatOrderLabel(order)).toBe('Limit short');
+    });
+
+    it('returns "Market long" for a plain buy market order', () => {
+      const order = makeOrder({ side: 'buy', orderType: 'market' });
+      expect(formatOrderLabel(order)).toBe('Market long');
+    });
+
+    it('returns "Market short" for a plain sell market order', () => {
+      const order = makeOrder({ side: 'sell', orderType: 'market' });
+      expect(formatOrderLabel(order)).toBe('Market short');
+    });
+
+    it('returns "Limit close long" for a reduce-only sell limit order', () => {
+      const order = makeOrder({
+        side: 'sell',
+        orderType: 'limit',
+        reduceOnly: true,
+      });
+      expect(formatOrderLabel(order)).toBe('Limit close long');
+    });
+
+    it('returns "Limit close short" for a reduce-only buy limit order', () => {
+      const order = makeOrder({
+        side: 'buy',
+        orderType: 'limit',
+        reduceOnly: true,
+      });
+      expect(formatOrderLabel(order)).toBe('Limit close short');
+    });
+
+    it('returns "Market close long" for a reduce-only sell market order', () => {
+      const order = makeOrder({
+        side: 'sell',
+        orderType: 'market',
+        reduceOnly: true,
+      });
+      expect(formatOrderLabel(order)).toBe('Market close long');
+    });
+
+    it('returns "Market close short" for a reduce-only buy market order', () => {
+      const order = makeOrder({
+        side: 'buy',
+        orderType: 'market',
+        reduceOnly: true,
+      });
+      expect(formatOrderLabel(order)).toBe('Market close short');
+    });
+
+    it('returns "Take profit limit close long" for a TP trigger (sell)', () => {
+      const order = makeOrder({
+        side: 'sell',
+        orderType: 'limit',
+        isTrigger: true,
+        reduceOnly: true,
+        detailedOrderType: 'Take Profit Limit',
+      });
+      expect(formatOrderLabel(order)).toBe('Take profit limit close long');
+    });
+
+    it('returns "Take profit market close short" for a TP trigger (buy)', () => {
+      const order = makeOrder({
+        side: 'buy',
+        orderType: 'market',
+        isTrigger: true,
+        reduceOnly: true,
+        detailedOrderType: 'Take Profit Market',
+      });
+      expect(formatOrderLabel(order)).toBe('Take profit market close short');
+    });
+
+    it('returns "Stop limit close long" for a SL trigger (sell)', () => {
+      const order = makeOrder({
+        side: 'sell',
+        orderType: 'limit',
+        isTrigger: true,
+        reduceOnly: true,
+        detailedOrderType: 'Stop Limit',
+      });
+      expect(formatOrderLabel(order)).toBe('Stop limit close long');
+    });
+
+    it('returns "Stop market close short" for a SL trigger (buy)', () => {
+      const order = makeOrder({
+        side: 'buy',
+        orderType: 'market',
+        isTrigger: true,
+        reduceOnly: true,
+        detailedOrderType: 'Stop Market',
+      });
+      expect(formatOrderLabel(order)).toBe('Stop market close short');
+    });
+
+    it('treats isTrigger alone as closing (no reduceOnly)', () => {
+      const order = makeOrder({
+        side: 'sell',
+        orderType: 'market',
+        isTrigger: true,
+        detailedOrderType: 'Stop Market',
+      });
+      expect(formatOrderLabel(order)).toBe('Stop market close long');
     });
   });
 });

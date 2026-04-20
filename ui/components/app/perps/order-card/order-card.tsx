@@ -15,7 +15,8 @@ import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import { formatOrderType, getDisplayName } from '../utils';
+import { getDisplayName } from '../utils';
+import { formatOrderLabel } from '../utils/orderUtils';
 import type { Order } from '../types';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 
@@ -27,7 +28,7 @@ export type OrderCardProps = {
 
 /**
  * OrderCard component displays individual order information
- * Two rows: symbol/type/side + size on left, USD value + limit price on right
+ * Two rows: symbol + order label on left, USD value on right
  *
  * @param options0 - Component props
  * @param options0.order - The order data to display
@@ -42,7 +43,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   const navigate = useNavigate();
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const isBuy = order.side === 'buy';
   const displayName = getDisplayName(order.symbol);
 
   const handleClick = useCallback(() => {
@@ -107,7 +107,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         >
           <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {isBuy ? t('perpsLong') : t('perpsShort')}
+            {formatOrderLabel(order)}
           </Text>
         </Box>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
@@ -115,7 +115,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         </Text>
       </Box>
 
-      {/* Right side: USD value + limit price */}
+      {/* Right side: USD value */}
       <Box
         className="shrink-0"
         flexDirection={BoxFlexDirection.Column}
@@ -124,9 +124,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
       >
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
           {orderValueUsd ?? t('perpsMarket')}
-        </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {formatOrderType(order.orderType)}
         </Text>
       </Box>
     </ButtonBase>
