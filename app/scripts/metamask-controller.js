@@ -783,202 +783,223 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // -----------------------------------------------------------------------
-    // Bridge handlers: expose direct-call controller methods as Messenger
-    // action handlers so the wallet-services modules can invoke them via
-    // `messenger.call(...)`.  These will eventually move into the controllers
-    // themselves; the bridges exist only during the PoC transition.
+    // Bridge handlers: expose controller methods as Messenger action handlers
+    // so the wallet-services modules can invoke them via `messenger.call(...)`.
+    // These will eventually move into the controllers themselves; the bridges
+    // exist only during the PoC transition.
+    //
+    // forceRegister: unregisters any existing handler before registering the
+    // bridge.  In tests (MOCK_ANY_NAMESPACE messenger) this allows the bridge
+    // to override controllers' own bound handlers, so jest.spyOn() on instance
+    // methods continues to work.  In production the unregister throws a
+    // namespace-mismatch error (caught silently) and the subsequent register
+    // also throws (already registered) — the controller's own handler stays in
+    // place, which is the correct production behavior.
     // -----------------------------------------------------------------------
-    const tryRegister = (name, handler) => {
+    const forceRegister = (name, handler) => {
+      try {
+        this.controllerMessenger.unregisterActionHandler(name);
+      } catch (_) {
+        // Namespace mismatch in production — continue.
+      }
       try {
         this.controllerMessenger.registerActionHandler(name, handler);
       } catch (_) {
-        // Already registered by the controller — no bridge needed.
+        // Already registered and couldn't be unregistered (production) — no bridge needed.
       }
     };
 
-    // KeyringController (only signing + keyring-management actions are
-    // auto-registered; vault/lock operations are not)
-    tryRegister('KeyringController:setLocked', (...a) =>
+    // KeyringController
+    forceRegister('KeyringController:setLocked', (...a) =>
       this.keyringController.setLocked(...a),
     );
-    tryRegister('KeyringController:submitPassword', (...a) =>
+    forceRegister('KeyringController:submitPassword', (...a) =>
       this.keyringController.submitPassword(...a),
     );
-    tryRegister('KeyringController:verifyPassword', (...a) =>
+    forceRegister('KeyringController:verifyPassword', (...a) =>
       this.keyringController.verifyPassword(...a),
     );
-    tryRegister('KeyringController:changePassword', (...a) =>
+    forceRegister('KeyringController:changePassword', (...a) =>
       this.keyringController.changePassword(...a),
     );
-    tryRegister('KeyringController:exportSeedPhrase', (...a) =>
+    forceRegister('KeyringController:exportSeedPhrase', (...a) =>
       this.keyringController.exportSeedPhrase(...a),
     );
-    tryRegister('KeyringController:exportAccount', (...a) =>
+    forceRegister('KeyringController:exportAccount', (...a) =>
       this.keyringController.exportAccount(...a),
     );
-    tryRegister('KeyringController:submitEncryptionKey', (...a) =>
+    forceRegister('KeyringController:submitEncryptionKey', (...a) =>
       this.keyringController.submitEncryptionKey(...a),
     );
-    tryRegister('KeyringController:exportEncryptionKey', (...a) =>
+    forceRegister('KeyringController:exportEncryptionKey', (...a) =>
       this.keyringController.exportEncryptionKey(...a),
+    );
+    forceRegister('KeyringController:importAccountWithStrategy', (...a) =>
+      this.keyringController.importAccountWithStrategy(...a),
     );
 
     // MultichainAccountService (service class — no action handlers registered)
-    tryRegister('MultichainAccountService:createWallet', (...a) =>
+    forceRegister('MultichainAccountService:createWallet', (...a) =>
       this.multichainAccountService.createMultichainAccountWallet(...a),
     );
-    tryRegister('MultichainAccountService:init', (...a) =>
+    forceRegister('MultichainAccountService:init', (...a) =>
       this.multichainAccountService.init(...a),
     );
-    tryRegister(
+    forceRegister(
       'MultichainAccountService:createMultichainAccountWallet',
       (...a) =>
         this.multichainAccountService.createMultichainAccountWallet(...a),
     );
-    tryRegister(
+    forceRegister(
       'MultichainAccountService:removeMultichainAccountWallet',
       (...a) =>
         this.multichainAccountService.removeMultichainAccountWallet(...a),
     );
-    tryRegister(
+    forceRegister(
       'MultichainAccountService:discoverAndCreateAccounts',
       (...a) =>
         this.multichainAccountService.discoverAndCreateAccounts(...a),
     );
-    tryRegister('MultichainAccountService:addAccountsWithBalance', (...a) =>
+    forceRegister('MultichainAccountService:addAccountsWithBalance', (...a) =>
       this.multichainAccountService.addAccountsWithBalance(...a),
     );
 
     // SnapController
-    tryRegister('SnapController:clearState', (...a) =>
+    forceRegister('SnapController:clearState', (...a) =>
       this.snapController.clearState(...a),
     );
-
-    // ApprovalController
-    tryRegister('ApprovalController:accept', (...a) =>
-      this.approvalController.accept(...a),
+    forceRegister('SnapController:setClientActive', (...a) =>
+      this.snapController.setClientActive(...a),
     );
-    tryRegister('ApprovalController:reject', (...a) =>
+
+    // ApprovalController — real method is `acceptRequest`, not `accept`
+    forceRegister('ApprovalController:accept', (...a) =>
+      this.approvalController.acceptRequest(...a),
+    );
+    forceRegister('ApprovalController:reject', (...a) =>
       this.approvalController.reject(...a),
     );
 
     // SeedlessOnboardingController
-    tryRegister(
+    forceRegister(
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       (...a) =>
         this.seedlessOnboardingController.checkIsPasswordOutdated(...a),
     );
-    tryRegister('SeedlessOnboardingController:setLocked', (...a) =>
+    forceRegister('SeedlessOnboardingController:setLocked', (...a) =>
       this.seedlessOnboardingController.setLocked(...a),
     );
-    tryRegister('SeedlessOnboardingController:clearState', (...a) =>
+    forceRegister('SeedlessOnboardingController:clearState', (...a) =>
       this.seedlessOnboardingController.clearState(...a),
     );
 
     // PermissionController
-    tryRegister('PermissionController:clearState', (...a) =>
+    forceRegister('PermissionController:clearState', (...a) =>
       this.permissionController.clearState(...a),
     );
-    tryRegister('PermissionController:removeAllAccountPermissions', (...a) =>
+    forceRegister('PermissionController:removeAllAccountPermissions', (...a) =>
       this.permissionController.removeAllAccountPermissions(...a),
     );
 
     // TransactionController
-    tryRegister('TransactionController:wipeTransactions', (...a) =>
+    forceRegister('TransactionController:wipeTransactions', (...a) =>
       this.txController.wipeTransactions(...a),
     );
-    tryRegister(
+    forceRegister(
       'TransactionController:clearUnapprovedTransactions',
       (...a) => this.txController.clearUnapprovedTransactions(...a),
     );
 
     // AccountTreeController
-    tryRegister('AccountTreeController:clearState', (...a) =>
+    forceRegister('AccountTreeController:clearState', (...a) =>
       this.accountTreeController.clearState(...a),
     );
-    tryRegister('AccountTreeController:reinit', (...a) =>
+    forceRegister('AccountTreeController:reinit', (...a) =>
       this.accountTreeController.reinit(...a),
     );
-    tryRegister('AccountTreeController:init', (...a) =>
+    forceRegister('AccountTreeController:init', (...a) =>
       this.accountTreeController.init(...a),
     );
-    tryRegister('AccountTreeController:syncWithUserStorage', (...a) =>
+    forceRegister('AccountTreeController:syncWithUserStorage', (...a) =>
       this.accountTreeController.syncWithUserStorage(...a),
     );
 
     // AccountOrderController
-    tryRegister(
+    forceRegister(
       'AccountOrderController:updateHiddenAccountsList',
       (...a) => this.accountOrderController.updateHiddenAccountsList(...a),
     );
 
     // AppStateController
-    tryRegister(
+    forceRegister(
       'AppStateController:setIsWalletResetInProgress',
       (...a) => this.appStateController.setIsWalletResetInProgress(...a),
     );
-    tryRegister(
+    forceRegister(
       'AppStateController:getIsWalletResetInProgress',
       (...a) => this.appStateController.getIsWalletResetInProgress(...a),
     );
 
     // OnboardingController
-    tryRegister('OnboardingController:getIsSocialLoginFlow', (...a) =>
+    forceRegister('OnboardingController:getIsSocialLoginFlow', (...a) =>
       this.onboardingController.getIsSocialLoginFlow(...a),
     );
-    tryRegister('OnboardingController:resetOnboarding', (...a) =>
+    forceRegister('OnboardingController:resetOnboarding', (...a) =>
       this.onboardingController.resetOnboarding(...a),
     );
 
     // AuthenticationController
-    tryRegister('AuthenticationController:performSignOut', (...a) =>
+    forceRegister('AuthenticationController:performSignOut', (...a) =>
       this.authenticationController.performSignOut(...a),
     );
 
     // TokenDetectionController
-    tryRegister('TokenDetectionController:enable', (...a) =>
+    forceRegister('TokenDetectionController:enable', (...a) =>
       this.tokenDetectionController.enable(...a),
     );
 
     // SmartTransactionsController
-    tryRegister(
+    forceRegister(
       'SmartTransactionsController:wipeSmartTransactions',
       (...a) => this.smartTransactionsController.wipeSmartTransactions(...a),
     );
 
     // NetworkController
-    tryRegister('NetworkController:resetConnection', (...a) =>
+    forceRegister('NetworkController:resetConnection', (...a) =>
       this.networkController.resetConnection(...a),
     );
 
     // SubscriptionController
-    tryRegister('SubscriptionController:stopAllPolling', (...a) =>
+    forceRegister('SubscriptionController:stopAllPolling', (...a) =>
       this.subscriptionService.stopAllPolling(...a),
     );
-    tryRegister('SubscriptionController:clearState', (...a) =>
+    forceRegister('SubscriptionController:clearState', (...a) =>
       this.subscriptionService.clearState(...a),
     );
 
     // AddressBookController
-    tryRegister('AddressBookController:clear', (...a) =>
+    forceRegister('AddressBookController:clear', (...a) =>
       this.addressBookController.clear(...a),
     );
 
     // ShieldController
-    tryRegister('ShieldController:clearState', (...a) =>
+    forceRegister('ShieldController:clearState', (...a) =>
       this.shieldController.clearState(...a),
     );
 
     // ClaimsController
-    tryRegister('ClaimsController:clearState', (...a) =>
+    forceRegister('ClaimsController:clearState', (...a) =>
       this.claimsController.clearState(...a),
     );
 
     // PreferencesController
-    tryRegister('PreferencesController:resetState', (...a) =>
+    forceRegister('PreferencesController:setSelectedAddress', (...a) =>
+      this.preferencesController.setSelectedAddress(...a),
+    );
+    forceRegister('PreferencesController:resetState', (...a) =>
       this.preferencesController.resetState(...a),
     );
-    tryRegister('PreferencesController:setPasswordForgotten', (...a) =>
+    forceRegister('PreferencesController:setPasswordForgotten', (...a) =>
       this.preferencesController.setPasswordForgotten(...a),
     );
 
@@ -4095,11 +4116,21 @@ export default class MetamaskController extends EventEmitter {
    * @param {boolean} skipCache - whether to skip the cache
    * @returns {Promise<boolean | undefined>} true if the password is outdated, false otherwise, undefined if the flow is not seedless
    */
-  async checkIsSeedlessPasswordOutdated(skipCache = false) {
-    return this.controllerMessenger.call(
-      'VaultManagement:checkIsSeedlessPasswordOutdated',
-      skipCache,
-    );
+  async checkIsSeedlessPasswordOutdated({
+    skipCache = false,
+    captureSentryError = false,
+  } = {}) {
+    try {
+      return await this.controllerMessenger.call(
+        'VaultManagement:checkIsSeedlessPasswordOutdated',
+        skipCache,
+      );
+    } catch (error) {
+      if (captureSentryError) {
+        this.controllerMessenger.captureException(error);
+      }
+      throw error;
+    }
   }
 
   /**
@@ -7313,6 +7344,20 @@ export default class MetamaskController extends EventEmitter {
    * @param {boolean} options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
    */
   async setLocked(options = { skipSeedlessOperationLock: false }) {
+    const isSocialLoginFlow = this.controllerMessenger.call(
+      'OnboardingController:getIsSocialLoginFlow',
+    );
+    if (isSocialLoginFlow && !options.skipSeedlessOperationLock) {
+      const releaseLock = await this.seedlessOperationMutex.acquire();
+      try {
+        return await this.controllerMessenger.call(
+          'VaultManagement:setLocked',
+          options,
+        );
+      } finally {
+        releaseLock();
+      }
+    }
     return this.controllerMessenger.call('VaultManagement:setLocked', options);
   }
 
