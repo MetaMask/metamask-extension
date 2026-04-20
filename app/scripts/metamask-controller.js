@@ -197,7 +197,6 @@ import {
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
 import { ControllerRegistry } from './lib/ControllerRegistry';
-import ComposableObservableStore from './lib/ComposableObservableStore';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
@@ -471,13 +470,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger = controllerMessenger;
     this.currentMigrationVersion = opts.currentMigrationVersion;
-
-    // observable state store
-    this.store = new ComposableObservableStore({
-      state: initState,
-      controllerMessenger: this.controllerMessenger,
-      persist: true,
-    });
 
     // Register wallet-services modules as Messenger action handlers.
     // After this call, callers invoke module actions directly — MC is not in the
@@ -6997,21 +6989,12 @@ export default class MetamaskController extends EventEmitter {
    */
   _onUnlock() {
     this.unMarkPasswordForgotten();
-
-    // In the current implementation, this handler is triggered by a
-    // KeyringController event. Other controllers subscribe to the 'unlock'
-    // event of the MetaMaskController itself.
-    this.emit('unlock');
   }
 
   /**
    * Handle global application lock.
    */
   _onLock() {
-    // In the current implementation, this handler is triggered by a
-    // KeyringController event. Other controllers subscribe to the 'lock'
-    // event of the MetaMaskController itself.
-    this.emit('lock');
     this.#disconnectPerpsIfActive();
   }
 
