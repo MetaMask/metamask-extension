@@ -16,7 +16,7 @@ const mockUseMerklClaim = jest.fn().mockReturnValue({
   error: null,
 });
 
-const mockUseOnMerklClaimConfirmed = jest.fn(() => ({
+const mockUseOnMerklClaimConfirmed = jest.fn((_onConfirmed?: () => void) => ({
   isClaimInFlight: false,
 }));
 

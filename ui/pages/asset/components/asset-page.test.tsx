@@ -631,7 +631,7 @@ describe('AssetPage', () => {
         }),
       );
 
-      expect(getByText('Your balance')).toBeInTheDocument();
+      expect(getByText(messages.yourBalance.message)).toBeInTheDocument();
       expect(queryByTestId('musd-position-section')).not.toBeInTheDocument();
       expect(queryByTestId('musd-bonus-section')).not.toBeInTheDocument();
       expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
@@ -742,13 +742,13 @@ describe('AssetPage', () => {
     };
 
     afterEach(() => {
-      (getAssetsBySelectedAccountGroup as jest.Mock).mockImplementation(() =>
-        mockGetDefaultAssetsBySelectedAccountGroup(),
-      );
+      (
+        getAssetsBySelectedAccountGroup as unknown as jest.Mock
+      ).mockImplementation(() => mockGetDefaultAssetsBySelectedAccountGroup());
     });
 
     it('shows estimated annual bonus as 3% of combined Mainnet and Linea fiat when viewing Mainnet mUSD', () => {
-      (getAssetsBySelectedAccountGroup as jest.Mock).mockReturnValue(
+      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
         buildMusdAssetsByChain({
           mainnetFiat: 1000,
           lineaFiat: 500,
@@ -775,7 +775,7 @@ describe('AssetPage', () => {
     });
 
     it('shows the same estimated annual bonus when viewing Linea mUSD as when viewing Mainnet', () => {
-      (getAssetsBySelectedAccountGroup as jest.Mock).mockReturnValue(
+      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
         buildMusdAssetsByChain({
           mainnetFiat: 1000,
           lineaFiat: 500,
@@ -799,7 +799,7 @@ describe('AssetPage', () => {
     });
 
     it('shows Accruing next bonus on Linea when mUSD is only on Mainnet', () => {
-      (getAssetsBySelectedAccountGroup as jest.Mock).mockReturnValue(
+      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
         buildMusdAssetsByChain({
           mainnetFiat: 100,
           lineaFiat: 0,

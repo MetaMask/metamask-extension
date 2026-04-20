@@ -129,7 +129,9 @@ const renderWithProviders = (component: React.ReactElement) =>
 
 describe('MusdBonusSection', () => {
   beforeEach(() => {
-    (selectIsMerklClaimingEnabled as jest.Mock).mockReturnValue(true);
+    (selectIsMerklClaimingEnabled as unknown as jest.Mock).mockReturnValue(
+      true,
+    );
     capturedOnConfirmed = null;
     mockUseOnMerklClaimConfirmed.mockImplementation((cb: () => void) => {
       capturedOnConfirmed = cb;
@@ -156,7 +158,9 @@ describe('MusdBonusSection', () => {
   });
 
   it('returns null when Merkl claiming is disabled', () => {
-    (selectIsMerklClaimingEnabled as jest.Mock).mockReturnValue(false);
+    (selectIsMerklClaimingEnabled as unknown as jest.Mock).mockReturnValue(
+      false,
+    );
 
     renderWithProviders(
       <MusdBonusSection
