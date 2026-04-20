@@ -314,5 +314,144 @@ describe('ControllerRegistry', () => {
       expect(unsubs).toHaveLength(1);
       expect(typeof unsubs[0]).toBe('function');
     });
+
+    it('fires separately for events across async ticks', async () => {
+      const ctrl = makeMockController('A', {});
+      const registry = new ControllerRegistry(
+        messenger as never,
+        { A: ctrl },
+        {},
+      );
+      const callback = jest.fn();
+      registry.scheduleOnStateChange('ui', callback);
+
+      const [[, handler]] = messenger.subscribe.mock.calls;
+
+      handler({}, []);
+      await Promise.resolve();
+      expect(callback).toHaveBeenCalledTimes(1);
+
+      handler({}, []);
+      await Promise.resolve();
+      expect(callback).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // scheduleOnStateChangeWithKeys
+  // -------------------------------------------------------------------------
+
+  describe('scheduleOnStateChangeWithKeys', () => {
+    it('coalesces N synchronous events into one callback with all keys', async () => {
+      const ctrlA = makeMockController('A', {});
+      const ctrlB = makeMockController('B', {});
+      const ctrlC = makeMockController('C', {});
+      const registry = new ControllerRegistry(
+        messenger as never,
+        { A: ctrlA, B: ctrlB, C: ctrlC },
+        {},
+      );
+      const callback = jest.fn();
+      registry.scheduleOnStateChangeWithKeys('ui', callback);
+
+      const [[, handlerA], [, handlerB], [, handlerC]] =
+        messenger.subscribe.mock.calls;
+      handlerA({}, []);
+      handlerB({}, []);
+      handlerC({}, []);
+
+      expect(callback).not.toHaveBeenCalled();
+      await Promise.resolve();
+
+      expect(callback).toHaveBeenCalledTimes(1);
+      const keys = callback.mock.calls[0][0] as Set<string>;
+      expect(keys).toStrictEqual(new Set(['A', 'B', 'C']));
+    });
+
+    it('fires separately for events across async ticks', async () => {
+      const ctrlA = makeMockController('A', {});
+      const ctrlB = makeMockController('B', {});
+      const registry = new ControllerRegistry(
+        messenger as never,
+        { A: ctrlA, B: ctrlB },
+        {},
+      );
+      const callback = jest.fn();
+      registry.scheduleOnStateChangeWithKeys('ui', callback);
+
+      const [[, handlerA], [, handlerB]] = messenger.subscribe.mock.calls;
+
+      handlerA({}, []);
+      await Promise.resolve();
+      expect(callback).toHaveBeenCalledTimes(1);
+      expect(callback.mock.calls[0][0]).toStrictEqual(new Set(['A']));
+
+      handlerB({}, []);
+      await Promise.resolve();
+      expect(callback).toHaveBeenCalledTimes(2);
+      expect(callback.mock.calls[1][0]).toStrictEqual(new Set(['B']));
+    });
+
+    it('dirty key set clears between flushes', async () => {
+      const ctrlA = makeMockController('A', {});
+      const ctrlB = makeMockController('B', {});
+      const registry = new ControllerRegistry(
+        messenger as never,
+        { A: ctrlA, B: ctrlB },
+        {},
+      );
+      const callback = jest.fn();
+      registry.scheduleOnStateChangeWithKeys('ui', callback);
+
+      const [[, handlerA], [, handlerB]] = messenger.subscribe.mock.calls;
+
+      handlerA({}, []);
+      await Promise.resolve();
+
+      handlerB({}, []);
+      await Promise.resolve();
+
+      const secondKeys = callback.mock.calls[1][0] as Set<string>;
+      expect(secondKeys.has('A')).toBe(false);
+      expect(secondKeys.has('B')).toBe(true);
+    });
+
+    it('deduplicates the same key within one tick', async () => {
+      const ctrl = makeMockController('A', {});
+      const registry = new ControllerRegistry(
+        messenger as never,
+        { A: ctrl },
+        {},
+      );
+      const callback = jest.fn();
+      registry.scheduleOnStateChangeWithKeys('ui', callback);
+
+      const [[, handler]] = messenger.subscribe.mock.calls;
+      handler({}, []);
+      handler({}, []);
+      handler({}, []);
+
+      await Promise.resolve();
+
+      expect(callback).toHaveBeenCalledTimes(1);
+      const keys = callback.mock.calls[0][0] as Set<string>;
+      expect(keys.size).toBe(1);
+      expect(keys.has('A')).toBe(true);
+    });
+
+    it('returns one unsubscribe function per controller', () => {
+      const ctrlA = makeMockController('A', {});
+      const ctrlB = makeMockController('B', {});
+      const registry = new ControllerRegistry(
+        messenger as never,
+        { A: ctrlA, B: ctrlB },
+        {},
+      );
+      const unsubs = registry.scheduleOnStateChangeWithKeys(
+        'ui',
+        jest.fn(),
+      );
+      expect(unsubs).toHaveLength(2);
+    });
   });
 });

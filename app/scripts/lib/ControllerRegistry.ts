@@ -165,6 +165,37 @@ export class ControllerRegistry {
     });
   }
 
+  /**
+   * Microtask-coalesced variant of {@link subscribeAll} that tracks which
+   * controller keys changed within the coalescing window.
+   *
+   * The callback receives a `Set<string>` of controller config keys that
+   * fired `stateChange` since the last flush. Useful for persistence paths
+   * that need per-key granularity without per-event overhead.
+   * @param configName
+   * @param callback
+   */
+  scheduleOnStateChangeWithKeys(
+    configName: 'ui' | 'persist',
+    callback: (changedKeys: Set<string>) => void,
+  ): (() => void)[] {
+    let scheduled = false;
+    const dirtyKeys = new Set<string>();
+
+    return this.subscribeAll(configName, (controllerKey) => {
+      dirtyKeys.add(controllerKey);
+      if (!scheduled) {
+        scheduled = true;
+        queueMicrotask(() => {
+          scheduled = false;
+          const keys = new Set(dirtyKeys);
+          dirtyKeys.clear();
+          callback(keys);
+        });
+      }
+    });
+  }
+
   // ---------------------------------------------------------------------------
   // Internal
   // ---------------------------------------------------------------------------
