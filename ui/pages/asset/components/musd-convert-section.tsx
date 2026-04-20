@@ -31,7 +31,10 @@ import {
   TextColor as LegacyTextColor,
 } from '../../../helpers/constants/design-system';
 import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
-import { MUSD_CONVERSION_APY } from '../../../components/app/musd/constants';
+import {
+  MUSD_CONVERSION_APY,
+  MUSD_SUPPORT_ARTICLE_URL,
+} from '../../../components/app/musd/constants';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getImageForChainId,
@@ -45,10 +48,6 @@ import {
 } from '../../../hooks/musd';
 import type { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { useMusdGeoBlocking } from '../../../hooks/musd/useMusdGeoBlocking';
-
-/** mUSD Help Center article (same destination as bonus section learn-more links) */
-const MUSD_SUPPORT_ARTICLE_URL =
-  'https://support.metamask.io/manage-crypto/tokens/musd';
 
 /** Figma node 10049:41315 — Secondary list row Convert control */
 const MUSD_CONVERT_LIST_BUTTON_MIN_WIDTH_PX = 92;

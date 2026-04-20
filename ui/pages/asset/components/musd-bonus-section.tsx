@@ -39,6 +39,7 @@ import { Tag } from '../../../components/component-library/tag';
 import {
   MUSD_CONVERSION_APY,
   MUSD_CONVERSION_BONUS_TERMS_OF_USE,
+  MUSD_SUPPORT_ARTICLE_URL,
 } from '../../../components/app/musd/constants';
 import { getBonusAmountRange } from '../../../components/app/musd/merkl-bonus-analytics';
 import {
@@ -59,9 +60,6 @@ import {
 } from '../../../selectors/musd';
 import { useMusdGeoBlocking } from '../../../hooks/musd/useMusdGeoBlocking';
 import { InfoPopover } from '../../../components/app/musd/info-popover';
-
-const MUSD_SUPPORT_ARTICLE_URL =
-  'https://support.metamask.io/manage-crypto/tokens/musd';
 
 const MERKL_CLAIM_ANALYTICS_LOCATION =
   ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS.merklClaimBonus.location;
