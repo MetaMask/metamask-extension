@@ -18,6 +18,10 @@ import {
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import {
+  formatPerpsFiat,
+  PRICE_RANGES_MINIMAL_VIEW,
+} from '../../../../../shared/lib/perps-formatters';
+import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
@@ -27,7 +31,6 @@ import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import {
   usePerpsEligibility,
   usePerpsEventTracking,
@@ -91,7 +94,6 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 }) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();
   const { feeRate: closingFeeRate } = usePerpsOrderFees({
@@ -612,10 +614,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               color={getPnlDisplayColor(estimatedPnlAtTp)}
             >
               {estimatedPnlAtTp >= 0 ? '+' : '-'}
-              {formatCurrencyWithMinThreshold(
-                Math.abs(estimatedPnlAtTp),
-                'USD',
-              )}
+              {formatPerpsFiat(Math.abs(estimatedPnlAtTp), {
+                ranges: PRICE_RANGES_MINIMAL_VIEW,
+              })}
             </Text>
           </Box>
         )}
@@ -742,10 +743,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               color={getPnlDisplayColor(estimatedPnlAtSl)}
             >
               {estimatedPnlAtSl >= 0 ? '+' : '-'}
-              {formatCurrencyWithMinThreshold(
-                Math.abs(estimatedPnlAtSl),
-                'USD',
-              )}
+              {formatPerpsFiat(Math.abs(estimatedPnlAtSl), {
+                ranges: PRICE_RANGES_MINIMAL_VIEW,
+              })}
             </Text>
           </Box>
         )}

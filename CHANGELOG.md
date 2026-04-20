@@ -7,6 +7,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.27.0]
+
+### Added
+
+- Added improved gas-included metrics for send and transfer flows (#41581)
+- Added transaction metrics for smart transactions and submission method details (#41465)
+- Added clearer “no quotes available” messaging on the bridge and swap page for amount, slippage, and token support limits (#41412)
+- Added navigation to the Activity tab when the failed-transaction badge is clicked (#41531)
+- Added a fiat loss amount to the bridge high price impact warning in the user’s local currency (#41492)
+- Added a “See All” control for Recent Activity on the perps market detail page and fixed the activity back navigation (#41541)
+- Added Tempo support (7702 and gasless) when no native token is present on the extension (#40449)
+- Added cancel-order flow from the perps market detail entry point (#41484)
+- Added the updated mUSD claim modal design (#41158)
+- Added the perps first-time user experience (#41429)
+- Added a button-style control to re-fetch bridge quotes (#41379)
+- Enabled the extension side panel for social-login rehydration (#41491)
+
+### Changed
+
+- Changed default address font weight and icon sizing on the account list (#41580)
+- Updated extension typography and design-system dependencies for the v27 semibold migration (#41467)
+- Updated the default address row to open the multichain account menu on click instead of hover (#41540)
+- Removed the `es` locale and pointed `es-419` at `es` translations (#41506)
+
+### Fixed
+
+- Fixed TRC20 send confirmation details, including token icon sizing (#41547)
+- Fixed hover and active styles on the fullscreen Settings view (#41603)
+- Fixed incorrect margin on the perps order entry when leverage is applied (#41350)
+- Fixed the Perps Explore Markets section to rank markets by 24h volume (#41606)
+- Replaced the perps market list flat sort control with a two-section sort modal (#41385)
+- Updated margin toast copy on perps flows (#41562)
+- Fixed Perps deposit completion returning to the home page instead of the prior screen (#41517)
+- Fixed bridge token balances appearing slightly high due to double rounding in the amount formatter (#41505)
+- On gas-sponsored networks, allowed sending the full native balance using Max (#41299)
+- Fixed the perps market detail header staying visible while scrolling (#41555)
+- Fixed Activity tab speed-up and pending status using the wrong earliest nonce when completed local transactions remained in the list (#41444)
+- Fixed the welcome screen fox animation clipping or distorting when resizing the browser without reloading (#41499)
+- Replaced placeholder data in the perps Recent Activity section with real trade history (#41508)
+- Filtered inactive zero-volume markets out of the perpetuals market list (#41502)
+- Included `ClientVersion` in swap token endpoint requests (#41516)
+- Fixed dapp connection control bar flicker when switching home tabs (#41501)
+- Fixed gas handling reliability when canceling or speeding up a pending transaction (#41437)
+- Fixed a crash when selecting an external recipient during cross-chain bridge transactions (#41442)
+- Fixed order and funding transactions incorrectly appearing in perps Recent Activity (#41446)
+- Fixed cancel-all and close-all controls on perps (#41430)
+
 ## [13.26.0]
 
 ### Added
@@ -2061,7 +2108,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.26.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...HEAD
+[13.27.0]: https://github.com/MetaMask/metamask-extension/compare/v13.26.0...v13.27.0
 [13.26.0]: https://github.com/MetaMask/metamask-extension/compare/v13.25.0...v13.26.0
 [13.25.0]: https://github.com/MetaMask/metamask-extension/compare/v13.24.0...v13.25.0
 [13.24.0]: https://github.com/MetaMask/metamask-extension/compare/v13.23.0...v13.24.0

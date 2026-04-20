@@ -128,7 +128,7 @@ export const getBridgeAmountReceivedFormatted = ({
  * @returns Whether the bridge history item is delayed
  */
 export const getIsDelayed = (
-  status: StatusTypes,
+  status: string,
   bridgeHistoryItem?: BridgeHistoryItem,
 ) => {
   const tenMinutesInMs = 10 * MINUTE;

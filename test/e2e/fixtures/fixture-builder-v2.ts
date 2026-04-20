@@ -3,6 +3,7 @@ import { toHex } from '@metamask/controller-utils';
 import type { Hex, Json } from '@metamask/utils';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
+import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type {
   CurrencyRateState,
   MultichainAssetsRatesControllerState,
@@ -17,6 +18,7 @@ import type { KeyringControllerState } from '@metamask/keyring-controller';
 import { type NameControllerState, NameType } from '@metamask/name-controller';
 import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
   PermissionConstraint,
@@ -181,6 +183,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAnnouncementController(data: Partial<AnnouncementControllerState>): this {
+    merge(this.fixture.data.AnnouncementController, data);
+    return this;
+  }
+
   withAppStateController(data: Partial<AppStateControllerState>): this {
     merge(this.fixture.data.AppStateController, data);
     return this;
@@ -232,6 +239,13 @@ class FixtureBuilderV2 {
 
   withNftController(data: Partial<NftControllerState>): this {
     merge(this.fixture.data.NftController, data);
+    return this;
+  }
+
+  withNotificationServicesController(
+    data: Partial<NotificationServicesController.NotificationServicesControllerState>,
+  ): this {
+    merge(this.fixture.data.NotificationServicesController, data);
     return this;
   }
 

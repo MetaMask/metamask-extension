@@ -9,6 +9,10 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import React, { useCallback, useMemo, useState } from 'react';
+import {
+  formatPerpsFiat,
+  PRICE_RANGES_MINIMAL_VIEW,
+} from '../../../../../../../shared/lib/perps-formatters';
 
 import {
   BorderRadius,
@@ -16,7 +20,6 @@ import {
   TextVariant as TextVariantLegacy,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { usePerpsOrderFees } from '../../../../../../hooks/perps/usePerpsOrderFees';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
@@ -49,10 +52,10 @@ import { formatRoePercent, getPnlDisplayColor } from '../../../utils';
  * @param props.onStopLossPriceChange - Callback when SL price changes
  * @param props.direction - Current order direction
  * @param props.currentPrice - Current asset price (used as entry price for new orders)
- * @param props.entryPrice - Position entry price (modify mode). When provided, overrides limit/current price for % calc.
+ * @param props.entryPrice - Position entry price (modify mode - use for accurate % calc)
  * @param props.estimatedSize - Signed position size in asset units for estimated PnL
  * @param props.orderType - Order type ('market' | 'limit') for choosing the validation reference price
- * @param props.limitPrice - Limit price string; used as the baseline for both validation and % ↔ price conversions on limit orders
+ * @param props.limitPrice - Limit price string used as reference price for limit-order TP/SL validation
  * @param props.leverage - Leverage multiplier for RoE% calculation
  * @param props.asset - Asset symbol for fetching dynamic closing fee rates
  */
@@ -73,8 +76,6 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   asset,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
-
   const { feeRate: closingFeeRate } = usePerpsOrderFees({
     symbol: asset,
     orderType: 'market',
@@ -495,10 +496,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   color={getPnlDisplayColor(estimatedPnlAtTp)}
                 >
                   {estimatedPnlAtTp >= 0 ? '+' : '-'}
-                  {formatCurrencyWithMinThreshold(
-                    Math.abs(estimatedPnlAtTp),
-                    'USD',
-                  )}
+                  {formatPerpsFiat(Math.abs(estimatedPnlAtTp), {
+                    ranges: PRICE_RANGES_MINIMAL_VIEW,
+                  })}
                 </Text>
               </Box>
             )}
@@ -602,10 +602,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   color={getPnlDisplayColor(estimatedPnlAtSl)}
                 >
                   {estimatedPnlAtSl >= 0 ? '+' : '-'}
-                  {formatCurrencyWithMinThreshold(
-                    Math.abs(estimatedPnlAtSl),
-                    'USD',
-                  )}
+                  {formatPerpsFiat(Math.abs(estimatedPnlAtSl), {
+                    ranges: PRICE_RANGES_MINIMAL_VIEW,
+                  })}
                 </Text>
               </Box>
             )}
