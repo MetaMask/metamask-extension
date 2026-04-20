@@ -47,7 +47,6 @@ describe('BTC Account - Send', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new BitcoinHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
@@ -75,7 +74,6 @@ describe('BTC Account - Send', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new BitcoinHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
@@ -109,7 +107,6 @@ describe('BTC Account - Send', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new BitcoinHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
