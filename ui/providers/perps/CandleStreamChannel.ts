@@ -420,7 +420,10 @@ export class CandleStreamChannel {
       entry.unsubscribeFromSource = null;
     }
     entry.isConnected = false;
-    entry.lastConnectAt = undefined;
+    // Intentionally preserve entry.lastConnectAt so that the connect() debounce
+    // window spans the disconnect→connect burst produced by remounts. Clearing
+    // it here would make every subsequent connect() call fire immediately and
+    // the CONNECT_DEBOUNCE_MS coalescing would never engage.
     const { symbol, interval } = parseCacheKey(key);
     submitRequestToBackground('perpsDeactivateCandleStream', [
       { symbol, interval },

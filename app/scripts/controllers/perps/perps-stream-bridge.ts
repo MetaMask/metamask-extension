@@ -117,11 +117,13 @@ export class PerpsStreamBridge {
   #activated = false;
 
   /**
-   * Set by destroy(); short-circuits any in-flight candle activation that was
-   * awaiting init when destroy() ran, so it cannot issue a subscribe after
-   * the bridge's static unsubs have been torn down.
+   * Bumped by destroy(); any candle activation that captured a prior generation
+   * and was awaiting init when destroy() ran will see the mismatch and refuse
+   * to subscribe. A counter (rather than a boolean) means the flag self-resets
+   * on the next init — so perpsDisconnect/perpsToggleTestnet followed by a
+   * fresh perpsInit does not permanently suppress candle subscribes.
    */
-  #destroyed = false;
+  #destroyGeneration = 0;
 
   #wasDisconnected = false;
 
@@ -230,12 +232,15 @@ export class PerpsStreamBridge {
           return;
         }
 
+        const generationAtStart = this.#destroyGeneration;
         const activation = (async () => {
           await this.#initAndActivate();
           // destroy() may have fired during the await; never subscribe after
           // the bridge has been torn down (the subscribe would leak past the
-          // point where static/dynamic unsubs are cleared).
-          if (this.#destroyed) {
+          // point where static/dynamic unsubs are cleared). Using a generation
+          // counter rather than a latched boolean lets later init cycles
+          // re-enable subscribes without needing an explicit reset.
+          if (this.#destroyGeneration !== generationAtStart) {
             return;
           }
           // Another caller may have raced us through activation; re-check
@@ -303,7 +308,7 @@ export class PerpsStreamBridge {
   }
 
   destroy(): void {
-    this.#destroyed = true;
+    this.#destroyGeneration += 1;
 
     for (const unsub of this.#staticUnsubs) {
       this.#callAndClearUnsub(unsub);

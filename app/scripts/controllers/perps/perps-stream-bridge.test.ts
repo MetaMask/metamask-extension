@@ -890,6 +890,29 @@ describe('PerpsStreamBridge', () => {
       expect(controllerApi.perpsInit).toHaveBeenCalledTimes(1);
     });
 
+    it('resubscribes after destroy() when a later activate runs', async () => {
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+      const activate = api.perpsActivateCandleStream as (
+        p: Record<string, unknown>,
+      ) => Promise<void>;
+
+      await activate({ symbol: 'BTC', interval: '5m' });
+      expect(controller.subscribeToCandles).toHaveBeenCalledTimes(1);
+
+      // Simulate perpsDisconnect / perpsToggleTestnet tearing the bridge down.
+      bridge.destroy();
+
+      // A later activate (e.g. after user reconnects or flips testnet) must
+      // issue a fresh subscribe, not be permanently suppressed by a latched
+      // destroyed flag.
+      await activate({ symbol: 'BTC', interval: '5m' });
+      expect(controller.subscribeToCandles).toHaveBeenCalledTimes(2);
+    });
+
     it('cancels deferred teardown when matching activate arrives within 150ms', async () => {
       jest.useFakeTimers();
       const controller = createMockController();

@@ -196,14 +196,53 @@ describe('CandleStreamChannel', () => {
         [{ symbol: 'BTC', interval: CandlePeriod.OneHour }],
       );
 
-      // Re-subscribe — should activate streaming again (1 call)
+      // Re-subscribe inside the CONNECT_DEBOUNCE_MS window — activation is
+      // deferred rather than fired immediately, so only the deactivate is
+      // observed until the debounce timer expires.
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+
+      jest.advanceTimersByTime(200);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+      expect(mockSubmitRequestToBackground).toHaveBeenLastCalledWith(
+        'perpsActivateCandleStream',
+        expect.any(Array),
+      );
+    });
+
+    it('coalesces a rapid unsubscribe→resubscribe burst into a single activate', () => {
+      const unsubscribe = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      mockSubmitRequestToBackground.mockClear();
+
+      // Simulate remount: back-to-back unsubscribe + resubscribe within the
+      // debounce window — the second activate must be debounced, not fired.
+      unsubscribe();
       channel.subscribe({
         symbol: 'BTC',
         interval: CandlePeriod.OneHour,
         callback: jest.fn(),
       });
 
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+      const activateCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([name]) => name === 'perpsActivateCandleStream',
+      );
+      expect(activateCalls).toHaveLength(0);
+
+      jest.advanceTimersByTime(200);
+      const activateCallsAfter =
+        mockSubmitRequestToBackground.mock.calls.filter(
+          ([name]) => name === 'perpsActivateCandleStream',
+        );
+      expect(activateCallsAfter).toHaveLength(1);
     });
 
     it('does not re-activate when other subscribers remain', () => {
