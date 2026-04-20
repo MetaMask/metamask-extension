@@ -98,6 +98,7 @@ import {
   getInternalAccountBySelectedAccountGroupAndCaip,
   getSelectedAccountGroup,
 } from './multichain-accounts/account-tree';
+import { getIsAssetsUnifyStateEnabled } from './assets-unify-state';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -204,6 +205,7 @@ type AggregatedBalanceState = {
  */
 export const selectAggregatedBalanceForSelectedAccount = createSelector(
   [
+    getIsAssetsUnifyStateEnabled,
     getAssetsInfo,
     getAssetsBalance,
     getAssetsPrice,
@@ -236,6 +238,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
       )?.accounts,
   ],
   (
+    isAssetsUnifyStateEnabled,
     assetsInfo,
     assetsBalance,
     assetsPrice,
@@ -252,6 +255,9 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     accountWalletsMetadata,
     accountsById,
   ) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return null;
+    }
     if (!selectedInternalAccount) {
       return null;
     }
