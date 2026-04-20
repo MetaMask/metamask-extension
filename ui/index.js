@@ -464,8 +464,9 @@ function setupStateHooks(store) {
   }
 
   // Agentic dev hooks — curated surface for CDP automation.
-  // Gated on METAMASK_DEBUG; stripped from release builds by DefinePlugin.
-  if (process.env.METAMASK_DEBUG) {
+  // Requires METAMASK_DEBUG AND METAMASK_AGENTIC_HOOKS. Both are compile-time
+  // constants; DefinePlugin dead-code-eliminates this block in release builds.
+  if (process.env.METAMASK_DEBUG && process.env.METAMASK_AGENTIC_HOOKS) {
     // Background RPC methods allowlisted for agentic automation.
     // Additions require PR review — each entry should document its use case.
     const AGENTIC_BACKGROUND_METHODS = new Set([

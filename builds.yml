@@ -329,6 +329,10 @@ env:
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false
+  # Enables agentic/CDP automation hooks on `globalThis.stateHooks`
+  # (see `ui/index.js`). Requires `METAMASK_DEBUG=true` to take effect.
+  # Off by default so manual QA debug builds do not expose the automation surface.
+  - METAMASK_AGENTIC_HOOKS: false
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - IN_TEST
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables

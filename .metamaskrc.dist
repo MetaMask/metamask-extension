@@ -61,6 +61,11 @@ BLOCKAID_PUBLIC_KEY=
 ; Enables the Settings Page - Developer Options
 ; ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true
 
+; Enables agentic/CDP automation hooks on `globalThis.stateHooks` in debug builds.
+; Requires `METAMASK_DEBUG=true`. Only set this when running the CDP automation
+; harness — not needed for manual QA or general local development.
+; METAMASK_AGENTIC_HOOKS=true
+
 ; SENTRY CONFIGURATION
 ; SENTRY_DSN             - For production builds only (do NOT use in development)
 ; SENTRY_DSN_DEV         - For local dev and one-off QA testing (sends to 'test-metamask' project)
