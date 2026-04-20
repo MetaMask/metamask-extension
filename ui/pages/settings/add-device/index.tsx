@@ -17,10 +17,11 @@ import {
   QrCodeScan,
 } from './components';
 import { AddDeviceSettingsStep } from './constant';
-import { t } from 'shared/lib/translate';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const AddDeviceSettings = () => {
   const navigate = useNavigate();
+  const t = useI18nContext();
   const [step, setStep] = useState(AddDeviceSettingsStep.EnterPassword);
 
   const handleNextStep = (type: AddDeviceSettingsStep) => {
