@@ -148,13 +148,7 @@ export function logStats(err?: Error | null, stats?: Stats) {
   // orange for production builds, purple for development
   const colorFn = options.mode === 'production' ? toOrange : toPurple;
   stats.compilation.name = colorFn(`🦊 ${stats.compilation.compiler.name}`);
-  const isVerboseStatsEnabled =
-    typeof options.stats === 'object' &&
-    options.stats !== null &&
-    'preset' in options.stats &&
-    options.stats.preset === 'normal';
-
-  if (isVerboseStatsEnabled) {
+  if (options.stats === 'normal') {
     // log everything (computing stats is slow, so we only do it if asked).
     console.error(stats.toString({ colors }));
   } else if (stats.hasErrors() || stats.hasWarnings()) {
