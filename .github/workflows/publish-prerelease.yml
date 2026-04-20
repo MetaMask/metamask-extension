@@ -42,7 +42,7 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number }}
     steps:
       - name: Checkout and setup
-        uses: MetaMask/action-checkout-and-setup@mrtenz/retry-download
+        uses: MetaMask/action-checkout-and-setup@mrtenz/retry-download-2
         with:
           is-high-risk-environment: true
           skip-allow-scripts: true
@@ -129,7 +129,7 @@ jobs:
       TEST_PLAN_VERSION: ${{ needs.generate-test-plan.outputs.test_plan_version }}
     steps:
       - name: Checkout and setup high risk environment
-        uses: MetaMask/action-checkout-and-setup@mrtenz/retry-download
+        uses: MetaMask/action-checkout-and-setup@mrtenz/retry-download-2
         with:
           is-high-risk-environment: true
           skip-allow-scripts: true
