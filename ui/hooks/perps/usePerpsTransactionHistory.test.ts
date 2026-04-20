@@ -57,8 +57,13 @@ jest.mock('./useUserHistory', () => ({
     userHistory: [],
     isLoading: false,
     error: null,
+    fetch: jest.fn().mockResolvedValue([]),
     refetch: jest.fn().mockResolvedValue([]),
   }),
+}));
+
+jest.mock('./usePerpsCacheKey', () => ({
+  usePerpsCacheKey: () => 'test-scope',
 }));
 
 // Mock usePerpsLiveFills

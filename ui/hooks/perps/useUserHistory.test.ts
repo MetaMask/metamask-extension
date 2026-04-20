@@ -11,6 +11,10 @@ jest.mock('../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+jest.mock('./usePerpsCacheKey', () => ({
+  usePerpsCacheKey: () => 'test-scope',
+}));
+
 describe('useUserHistory', () => {
   beforeEach(() => {
     jest.clearAllMocks();

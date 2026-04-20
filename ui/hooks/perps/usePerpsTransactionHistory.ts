@@ -19,6 +19,7 @@ import {
   coalesceBackgroundRequest,
   invalidateCoalescedRequest,
 } from './coalesceBackgroundRequest';
+import { usePerpsCacheKey } from './usePerpsCacheKey';
 
 /**
  * Parameters for the usePerpsTransactionHistory hook
@@ -94,6 +95,11 @@ export function usePerpsTransactionHistory({
   const [isLoading, setIsLoading] = useState(!skipInitialFetch);
   const [error, setError] = useState<string | null>(null);
 
+  // Scope coalesce keys to the active perps context (provider + testnet +
+  // selected address) so switching accounts or toggling testnet inside the
+  // 10s TTL does not surface the previous session's orders/fills/funding.
+  const perpsScopeKey = usePerpsCacheKey();
+
   // Get user history (includes deposits/withdrawals) - single source of truth
   const {
     userHistory,
@@ -124,17 +130,21 @@ export function usePerpsTransactionHistory({
       const accountKey = accountId ?? '';
       const [fillsResult, ordersResult, funding] = await Promise.all([
         coalesceBackgroundRequest<OrderFill[]>(
-          `perpsGetOrderFills:${accountKey}:false`,
+          `perpsGetOrderFills:${perpsScopeKey}:${accountKey}:false`,
           () =>
             submitRequestToBackground<OrderFill[]>('perpsGetOrderFills', [
               { accountId, aggregateByTime: false },
             ]),
         ),
-        coalesceBackgroundRequest<Order[]>(`perpsGetOrders:${accountKey}`, () =>
-          submitRequestToBackground<Order[]>('perpsGetOrders', [{ accountId }]),
+        coalesceBackgroundRequest<Order[]>(
+          `perpsGetOrders:${perpsScopeKey}:${accountKey}`,
+          () =>
+            submitRequestToBackground<Order[]>('perpsGetOrders', [
+              { accountId },
+            ]),
         ),
         coalesceBackgroundRequest<Funding[]>(
-          `perpsGetFunding:${accountKey}:${startTime ?? ''}:${endTime ?? ''}`,
+          `perpsGetFunding:${perpsScopeKey}:${accountKey}:${startTime ?? ''}:${endTime ?? ''}`,
           () =>
             submitRequestToBackground<Funding[]>('perpsGetFunding', [
               { accountId, startTime, endTime },
@@ -191,7 +201,7 @@ export function usePerpsTransactionHistory({
     } finally {
       setIsLoading(false);
     }
-  }, [startTime, endTime, accountId]);
+  }, [startTime, endTime, accountId, perpsScopeKey]);
 
   const initialFetch = useCallback(async () => {
     // Cache-respecting path — lets rapid re-mounts within the 10s TTL hit the
@@ -206,15 +216,26 @@ export function usePerpsTransactionHistory({
     // keys fetchAllTransactions consumes (refetchUserHistory invalidates its
     // own key internally).
     const accountKey = accountId ?? '';
-    invalidateCoalescedRequest(`perpsGetOrderFills:${accountKey}:false`);
-    invalidateCoalescedRequest(`perpsGetOrders:${accountKey}`);
     invalidateCoalescedRequest(
-      `perpsGetFunding:${accountKey}:${startTime ?? ''}:${endTime ?? ''}`,
+      `perpsGetOrderFills:${perpsScopeKey}:${accountKey}:false`,
+    );
+    invalidateCoalescedRequest(
+      `perpsGetOrders:${perpsScopeKey}:${accountKey}`,
+    );
+    invalidateCoalescedRequest(
+      `perpsGetFunding:${perpsScopeKey}:${accountKey}:${startTime ?? ''}:${endTime ?? ''}`,
     );
     const freshUserHistory = await refetchUserHistory();
     userHistoryRef.current = freshUserHistory;
     await fetchAllTransactions();
-  }, [fetchAllTransactions, refetchUserHistory, accountId, startTime, endTime]);
+  }, [
+    fetchAllTransactions,
+    refetchUserHistory,
+    accountId,
+    startTime,
+    endTime,
+    perpsScopeKey,
+  ]);
 
   useEffect(() => {
     if (!skipInitialFetch && !initialFetchDone.current) {

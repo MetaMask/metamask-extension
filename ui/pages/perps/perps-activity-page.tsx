@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
@@ -56,7 +56,10 @@ const PerpsActivityPage: React.FC = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const [activeFilter, setActiveFilter] =
     useState<PerpsTransactionFilter>('trade');
-  // Fetch real transaction data from the Perps controller
+  // Fetch real transaction data from the Perps controller. The hook performs
+  // a cache-respecting initial fetch on mount internally (see usePerpsTransactionHistory),
+  // so a rapid revisit within the 10s TTL hits the coalesce cache instead of
+  // replaying the full user-history/fills/orders/funding burst.
   const { transactions, isLoading, error, refetch } =
     usePerpsTransactionHistory();
 
@@ -69,11 +72,6 @@ const PerpsActivityPage: React.FC = () => {
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
     },
   });
-
-  // Refetch on mount to ensure fresh data
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
 
   // Filter options for dropdown
   const filterOptions: DropdownOption<PerpsTransactionFilter>[] = useMemo(

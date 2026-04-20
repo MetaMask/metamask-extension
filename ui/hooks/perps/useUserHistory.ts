@@ -6,6 +6,7 @@ import {
   coalesceBackgroundRequest,
   invalidateCoalescedRequest,
 } from './coalesceBackgroundRequest';
+import { usePerpsCacheKey } from './usePerpsCacheKey';
 
 /**
  * Parameters for the useUserHistory hook
@@ -55,7 +56,11 @@ export function useUserHistory({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const cacheKey = `perpsGetUserHistory:${accountId ?? ''}:${startTime ?? ''}:${endTime ?? ''}`;
+  // Scope the coalesce key to the active perps context (provider + testnet +
+  // selected address) so switching accounts or toggling testnet inside the
+  // 10s TTL does not surface the previous session's data.
+  const perpsScopeKey = usePerpsCacheKey();
+  const cacheKey = `perpsGetUserHistory:${perpsScopeKey}:${accountId ?? ''}:${startTime ?? ''}:${endTime ?? ''}`;
 
   const fetchUserHistory = useCallback(async (): Promise<UserHistoryItem[]> => {
     try {
