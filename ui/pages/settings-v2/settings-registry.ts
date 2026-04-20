@@ -274,9 +274,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [EXPERIMENTAL_ROUTE]: {
     labelKey: 'experimental',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(
-      () => import('../settings/experimental-tab/experimental-tab.tsx'),
-    ),
+    component: mmLazy(() => import('./experimental-tab/experimental-tab.tsx')),
     isTab: true,
     iconName: IconName.Flask,
   },

@@ -1524,6 +1524,9 @@
     "ui/pages/settings-v2/developer-tools-tab/developer-tools-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/pages/settings-v2/experimental-tab/experimental-tab.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1
+    },
     "ui/pages/settings-v2/preferences-and-display-tab/account-identicon-item.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 4
     },
@@ -1583,9 +1586,6 @@
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings/developer-options-tab/developer-options-toggle-row-component.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1
-    },
-    "ui/pages/settings/experimental-tab/experimental-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings/info-tab/info-tab.test.tsx": {
