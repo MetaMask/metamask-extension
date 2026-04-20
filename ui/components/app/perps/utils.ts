@@ -482,6 +482,16 @@ export const isCryptoMarket = (market: PerpsMarketData): boolean => {
   return !market.marketSource;
 };
 
+export function getPnlDisplayColor(pnl: number): TextColor {
+  if (pnl > 0) {
+    return TextColor.SuccessDefault;
+  }
+  if (pnl < 0) {
+    return TextColor.ErrorDefault;
+  }
+  return TextColor.TextDefault;
+}
+
 /**
  * Format a RoE% value for display in TP/SL inputs.
  * Always returns the absolute value: integers with no decimal ("25"),

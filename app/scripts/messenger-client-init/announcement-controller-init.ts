@@ -16,7 +16,7 @@ export const AnnouncementControllerInit: MessengerClientInitFunction<
   AnnouncementController,
   AnnouncementControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new AnnouncementController({
+  const messengerClient = new AnnouncementController({
     messenger: controllerMessenger,
     allAnnouncements: UI_NOTIFICATIONS,
     // @ts-expect-error: Announcement controller does not accept partial state.
@@ -24,6 +24,6 @@ export const AnnouncementControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

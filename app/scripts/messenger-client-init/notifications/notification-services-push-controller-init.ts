@@ -36,8 +36,13 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
   NotificationServicesPushController,
   NotificationServicesPushControllerMessenger,
   NotificationServicesPushControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, persistedState, getController }) => {
-  const controller = new NotificationServicesPushController({
+> = ({
+  controllerMessenger,
+  initMessenger,
+  persistedState,
+  getMessengerClient,
+}) => {
+  const messengerClient = new NotificationServicesPushController({
     messenger: controllerMessenger,
     state: {
       ...defaultState,
@@ -69,7 +74,7 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
       },
       getLocale: () =>
         getNormalisedLocale(
-          getController('PreferencesController').state.currentLocale,
+          getMessengerClient('PreferencesController').state.currentLocale,
         ),
     },
   });
@@ -128,6 +133,6 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
   );
 
   return {
-    controller,
+    messengerClient,
   };
 };

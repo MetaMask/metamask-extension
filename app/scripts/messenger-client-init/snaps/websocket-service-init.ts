@@ -15,13 +15,13 @@ export const WebSocketServiceInit: MessengerClientInitFunction<
   WebSocketService,
   WebSocketServiceMessenger
 > = ({ controllerMessenger }) => {
-  const controller = new WebSocketService({
+  const messengerClient = new WebSocketService({
     messenger: controllerMessenger,
   });
 
   return {
     memStateKey: null,
     persistedStateKey: null,
-    controller,
+    messengerClient,
   };
 };

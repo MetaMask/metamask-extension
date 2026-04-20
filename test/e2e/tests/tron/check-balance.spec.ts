@@ -5,7 +5,6 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import HomePage from '../../page-objects/pages/home/homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import { mockTronApis } from './mocks/common-tron';
 
@@ -20,9 +19,6 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
-
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
@@ -45,9 +41,6 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
-
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
@@ -69,9 +62,6 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
-
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');

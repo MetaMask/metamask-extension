@@ -31,6 +31,12 @@ export {
 // Data Channel (building block for stream manager)
 export { PerpsDataChannel } from './PerpsDataChannel';
 
+// REST cache helpers (shared between hooks and PerpsStreamManager)
+export {
+  clearPerpsMarketInfoModuleCache,
+  clearPerpsMarketFillsModuleCache,
+} from './perps-cache';
+
 // Re-export commonly used types from the controller package
 export type {
   AccountState,

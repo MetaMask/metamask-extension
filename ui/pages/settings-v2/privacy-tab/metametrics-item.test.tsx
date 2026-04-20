@@ -133,4 +133,27 @@ describe('MetametricsToggleItem', () => {
     const toggle = screen.getByTestId('participate-in-meta-metrics-input');
     expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
   });
+
+  it('fires TurnOffMetaMetrics event when toggled off', async () => {
+    const mockTrackEvent = jest.fn();
+    const mockStore = createMockStore({ participateInMetaMetrics: true });
+
+    renderWithProvider(
+      <MetametricsToggleItem />,
+      mockStore,
+      '/',
+      undefined,
+      () => mockTrackEvent,
+    );
+
+    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-input'));
+
+    await waitFor(() => {
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: 'MetaMetrics Turned Off',
+        }),
+      );
+    });
+  });
 });

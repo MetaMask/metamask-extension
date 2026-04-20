@@ -13,11 +13,13 @@ export const DeFiPositionsControllerInit: MessengerClientInitFunction<
   DeFiPositionsController,
   DeFiPositionsControllerMessenger,
   DeFiPositionsControllerInitMessenger
-> = ({ initMessenger, controllerMessenger, getController }) => {
-  const getPreferencesController = () => getController('PreferencesController');
-  const getOnboardingController = () => getController('OnboardingController');
+> = ({ initMessenger, controllerMessenger, getMessengerClient }) => {
+  const getPreferencesController = () =>
+    getMessengerClient('PreferencesController');
+  const getOnboardingController = () =>
+    getMessengerClient('OnboardingController');
 
-  const controller = new DeFiPositionsController({
+  const messengerClient = new DeFiPositionsController({
     messenger: controllerMessenger,
     isEnabled: () => {
       const {
@@ -46,7 +48,7 @@ export const DeFiPositionsControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
     persistedStateKey: null,
   };
 };

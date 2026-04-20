@@ -24,7 +24,7 @@ export const CurrencyRateControllerInit: MessengerClientInitFunction<
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
   // TODO: Fix CurrencyRateControllerMessenger type - add CurrencyRateControllerActions & CurrencyRateControllerEvents
   // TODO: Bump @metamask/network-controller to match assets-controllers
-  const controller = new CurrencyRateController({
+  const messengerClient = new CurrencyRateController({
     // @ts-expect-error - CurrencyRateController is persisted as 'CurrencyController' but init pattern expects 'CurrencyRateController'
     state: persistedState.CurrencyController,
     messenger: controllerMessenger,
@@ -37,6 +37,6 @@ export const CurrencyRateControllerInit: MessengerClientInitFunction<
   return {
     memStateKey: 'CurrencyController',
     persistedStateKey: 'CurrencyController',
-    controller,
+    messengerClient,
   };
 };

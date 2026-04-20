@@ -11,6 +11,11 @@ import {
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import {
+  formatPerpsFiat,
+  formatPositionSize,
+  PRICE_RANGES_MINIMAL_VIEW,
+} from '../../../../../shared/lib/perps-formatters';
+import {
   Modal,
   ModalContent,
   ModalHeader,
@@ -35,6 +40,7 @@ import { getPositionDirection } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import type { Position } from '../types';
 
 export type ReversePositionModalProps = {
@@ -42,15 +48,9 @@ export type ReversePositionModalProps = {
   onClose: () => void;
   position: Position;
   currentPrice: number;
+  sizeDecimals?: number;
 };
 
-/**
- * Builds a position payload for `perpsFlipPosition`. The controller expects
- * `leverage.value`; normalize when the stream sent a primitive leverage.
- *
- * @param pos - UI position from props
- * @returns Position safe to pass to the background flip RPC
- */
 function toFlipPositionPayload(pos: Position): Position {
   if (typeof pos.leverage === 'object' && pos.leverage !== null) {
     return pos;
@@ -62,21 +62,12 @@ function toFlipPositionPayload(pos: Position): Position {
   };
 }
 
-/**
- * Modal to reverse a position (Long -> Short or Short -> Long).
- * Shows Direction, Est. size, Fees and Cancel/Save.
- * Save calls `perpsFlipPosition` (single venue order via PerpsController; not close+open).
- * @param options0
- * @param options0.isOpen
- * @param options0.onClose
- * @param options0.position
- * @param options0.currentPrice
- */
 export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   isOpen,
   onClose,
   position,
-  currentPrice: _currentPrice,
+  currentPrice,
+  sizeDecimals,
 }) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
@@ -109,7 +100,25 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       ? `${t('perpsLong')} → ${t('perpsShort')}`
       : `${t('perpsShort')} → ${t('perpsLong')}`;
   const sizeNum = Math.abs(parseFloat(position.size));
-  const estSizeLabel = `${sizeNum.toFixed(2)} ${position.symbol}`;
+  const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${position.symbol}`;
+
+  const {
+    feeRate,
+    isLoading: isFeeLoading,
+    hasError: hasFeeError,
+  } = usePerpsOrderFees({
+    symbol: position.symbol,
+    orderType: 'market',
+  });
+
+  const estimatedFees = useMemo(
+    () =>
+      feeRate === undefined ? undefined : 2 * sizeNum * currentPrice * feeRate,
+    [sizeNum, currentPrice, feeRate],
+  );
+
+  const shouldShowFeePlaceholder =
+    isFeeLoading || hasFeeError || estimatedFees === undefined;
 
   const positionForFlip = useMemo(
     () => toFlipPositionPayload(position),
@@ -121,6 +130,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       setIsGeoBlockModalOpen(true);
       return;
     }
+
     setIsSubmitting(true);
     setError(null);
 
@@ -217,6 +227,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
+                  data-testid="perps-reverse-est-size-value"
                 >
                   {estSizeLabel}
                 </Text>
@@ -235,8 +246,13 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
+                  data-testid="perps-reverse-fee-value"
                 >
-                  —
+                  {shouldShowFeePlaceholder
+                    ? '--'
+                    : formatPerpsFiat(estimatedFees, {
+                        ranges: PRICE_RANGES_MINIMAL_VIEW,
+                      })}
                 </Text>
               </Box>
               {error && (
@@ -265,7 +281,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
             }}
             submitButtonProps={{
               'data-testid': 'perps-reverse-position-modal-save',
-              children: isSubmitting ? t('perpsSubmitting') : t('save'),
+              children: isSubmitting ? t('perpsSubmitting') : t('confirm'),
               disabled: isSubmitting,
             }}
           />
