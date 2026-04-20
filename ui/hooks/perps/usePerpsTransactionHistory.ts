@@ -33,6 +33,14 @@ export type UsePerpsTransactionHistoryParams = {
   accountId?: CaipAccountId;
   /** Skip the initial fetch on mount (default: false) */
   skipInitialFetch?: boolean;
+  /**
+   * Force a fresh fetch on mount, bypassing the coalesce TTL cache.
+   * Intended for top-level activity surfaces where correctness beats dedup
+   * (e.g. opening the activity page must not surface a stale snapshot taken
+   * by another hook consumer). Defaults to false so passive previews (e.g.
+   * "Recent activity" on the perps home) keep sharing the cached snapshot.
+   */
+  forceFreshOnMount?: boolean;
 };
 
 /**
@@ -87,6 +95,7 @@ export function usePerpsTransactionHistory({
   endTime,
   accountId,
   skipInitialFetch = false,
+  forceFreshOnMount = false,
 }: UsePerpsTransactionHistoryParams = {}): UsePerpsTransactionHistoryResult {
   const [transactions, setTransactions] = useState<PerpsTransaction[]>([]);
   // Start in loading state when the hook will auto-fetch on mount so consumers
@@ -240,9 +249,17 @@ export function usePerpsTransactionHistory({
   useEffect(() => {
     if (!skipInitialFetch && !initialFetchDone.current) {
       initialFetchDone.current = true;
-      initialFetch();
+      // Activity surfaces that open on user intent (e.g. PerpsActivityPage)
+      // must force a fresh fetch so they never surface a stale snapshot held
+      // by a sibling consumer inside the TTL window. Passive previews (e.g.
+      // Recent Activity on the perps home) still share the cached snapshot.
+      if (forceFreshOnMount) {
+        refetch();
+      } else {
+        initialFetch();
+      }
     }
-  }, [skipInitialFetch, initialFetch]);
+  }, [skipInitialFetch, forceFreshOnMount, initialFetch, refetch]);
 
   // Combine loading states
   const combinedIsLoading = useMemo(

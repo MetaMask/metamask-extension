@@ -56,12 +56,14 @@ const PerpsActivityPage: React.FC = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const [activeFilter, setActiveFilter] =
     useState<PerpsTransactionFilter>('trade');
-  // Fetch real transaction data from the Perps controller. The hook performs
-  // a cache-respecting initial fetch on mount internally (see usePerpsTransactionHistory),
-  // so a rapid revisit within the 10s TTL hits the coalesce cache instead of
-  // replaying the full user-history/fills/orders/funding burst.
+  // Fetch real transaction data from the Perps controller.
+  // forceFreshOnMount: user opening the Activity page must see the latest
+  // orders/funding/deposits even if PerpsView ("Recent activity") grabbed a
+  // snapshot inside the 10s TTL. Orders/funding/userHistory do not update via
+  // the live-fills WebSocket merge, so without this the page could render a
+  // stale snapshot. The hook's in-flight dedup still suppresses bursts.
   const { transactions, isLoading, error, refetch } =
-    usePerpsTransactionHistory();
+    usePerpsTransactionHistory({ forceFreshOnMount: true });
 
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
