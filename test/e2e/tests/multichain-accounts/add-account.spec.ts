@@ -101,12 +101,7 @@ describe('Add account', function () {
       {
         title: this.test?.fullTitle(),
         privateKey: TEST_PRIVATE_KEY,
-        testSpecificMock: async (mockServer) => {
-          if (!process.env.ASSETS_UNIFIED_STATE_ENABLED) {
-            return mockPriceApi(mockServer, 1, '0x1');
-          }
-          return mockPriceApi(mockServer);
-        },
+        testSpecificMock: mockPriceApi,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);

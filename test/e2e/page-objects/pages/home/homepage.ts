@@ -9,7 +9,6 @@ import {
   BASE_ACCOUNT_SYNC_TIMEOUT,
   POST_UNLOCK_DELAY,
 } from '../../../tests/identity/account-syncing/helpers';
-import { resolveDefaultMultichainAggregatedFiatAssertion } from '../../../default-wallet-balance-profile';
 
 class HomePage {
   protected driver: Driver;
@@ -423,16 +422,13 @@ class HomePage {
     symbol: string = 'ETH',
     timeout: number = 30000,
   ): Promise<void> {
-    const resolvedBalance =
-      resolveDefaultMultichainAggregatedFiatAssertion(expectedBalance);
-
-    if (resolvedBalance === '0') {
+    if (expectedBalance === '0') {
       await this.driver.waitForSelector(this.fundYourWalletBanner, { timeout });
       return;
     }
     try {
       await this.driver.waitForSelector(
-        { css: this.balance, text: resolvedBalance },
+        { css: this.balance, text: expectedBalance },
         { timeout },
       );
     } catch (e) {
@@ -440,12 +436,12 @@ class HomePage {
         timeout,
       });
       const currentBalance = parseFloat(await balance.getText());
-      const errorMessage = `Expected balance ${resolvedBalance} ${symbol}, got balance ${currentBalance} ${symbol}`;
+      const errorMessage = `Expected balance ${expectedBalance} ${symbol}, got balance ${currentBalance} ${symbol}`;
       console.log(errorMessage, e);
       throw e;
     }
     console.log(
-      `Expected balance ${resolvedBalance} ${symbol} is displayed on homepage`,
+      `Expected balance ${expectedBalance} ${symbol} is displayed on homepage`,
     );
   }
 
