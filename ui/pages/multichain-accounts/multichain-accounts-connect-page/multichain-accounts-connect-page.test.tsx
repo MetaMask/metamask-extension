@@ -478,7 +478,7 @@ describe('MultichainConnectPage', () => {
   });
 
   it('renders fallback icon correctly', () => {
-    const { container } = render({
+    const { getByTestId } = render({
       props: {
         targetSubjectMetadata: {
           ...mockTargetSubjectMetadata,
@@ -487,14 +487,13 @@ describe('MultichainConnectPage', () => {
       },
     });
 
-    const divElement = container.querySelector(
-      'div.inline-flex.shrink-0.items-center.justify-center.rounded-full.h-10.w-10',
+    expect(getByTestId('multichain-connect-dapp-avatar')).toHaveTextContent(
+      'm',
     );
-    expect(divElement).toHaveTextContent('m');
   });
 
   it('renders fallback icon correctly for IP address as an origin', () => {
-    const { container } = render({
+    const { getByTestId } = render({
       props: {
         targetSubjectMetadata: {
           ...mockTargetSubjectMetadata,
@@ -504,10 +503,9 @@ describe('MultichainConnectPage', () => {
       },
     });
 
-    const divElement = container.querySelector(
-      'div.inline-flex.shrink-0.items-center.justify-center.rounded-full.h-10.w-10',
+    expect(getByTestId('multichain-connect-dapp-avatar')).toHaveTextContent(
+      '?',
     );
-    expect(divElement).toHaveTextContent('?');
   });
 
   it('renders title correctly', () => {

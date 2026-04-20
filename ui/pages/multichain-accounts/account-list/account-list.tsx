@@ -179,7 +179,7 @@ export const AccountList = () => {
             />
           ) : (
             <Box
-              className="flex h-full w-full items-center justify-center"
+              className="flex h-full w-full"
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Center}
               alignItems={BoxAlignItems.Center}

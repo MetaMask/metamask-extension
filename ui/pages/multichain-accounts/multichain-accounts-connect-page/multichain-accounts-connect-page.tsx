@@ -554,6 +554,7 @@ export const MultichainAccountsConnectPage: React.FC<
         >
           {targetSubjectMetadata.iconUrl ? (
             <AvatarFavicon
+              data-testid="multichain-connect-dapp-avatar"
               className="bg-muted"
               size={AvatarFaviconSize.Lg}
               src={targetSubjectMetadata.iconUrl}
@@ -561,6 +562,7 @@ export const MultichainAccountsConnectPage: React.FC<
             />
           ) : (
             <AvatarBase
+              data-testid="multichain-connect-dapp-avatar"
               size={AvatarBaseSize.Lg}
               className="border-0 bg-muted text-alternative"
             >

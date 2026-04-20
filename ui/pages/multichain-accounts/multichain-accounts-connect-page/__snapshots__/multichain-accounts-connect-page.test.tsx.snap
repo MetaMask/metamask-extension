@@ -24,6 +24,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
             >
               <div
                 class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
+                data-testid="multichain-connect-dapp-avatar"
               >
                 <img
                   alt="metamask.github.io"
@@ -213,11 +214,12 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                 </div>
                 <button
                   class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+                  color="text-info-default"
                   data-testid="edit"
                   role="button"
                 >
                   <span
-                    class="text-info-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                    class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                   >
                     Edit accounts
                   </span>
@@ -290,6 +292,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
             >
               <div
                 class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
+                data-testid="multichain-connect-dapp-avatar"
               >
                 <img
                   alt="metamask.github.io"
@@ -479,11 +482,12 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                 </div>
                 <button
                   class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+                  color="text-info-default"
                   data-testid="edit"
                   role="button"
                 >
                   <span
-                    class="text-info-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                    class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                   >
                     Edit accounts
                   </span>
@@ -556,6 +560,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
             >
               <div
                 class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
+                data-testid="multichain-connect-dapp-avatar"
               >
                 <img
                   alt="metamask.github.io"
@@ -745,11 +750,12 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                 </div>
                 <button
                   class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+                  color="text-info-default"
                   data-testid="edit"
                   role="button"
                 >
                   <span
-                    class="text-info-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                    class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                   >
                     Edit accounts
                   </span>
