@@ -9,7 +9,6 @@
 
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createInternalTransactionWithMaxAmount } from '../../page-objects/flows/transaction';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';

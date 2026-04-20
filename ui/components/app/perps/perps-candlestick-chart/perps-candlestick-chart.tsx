@@ -111,6 +111,14 @@ const PerpsCandlestickChart = forwardRef<
     // Track previous candle data for incremental update optimization
     const prevCandleCountRef = useRef<number>(0);
     const prevLastCandleTimeRef = useRef<number>(0);
+    // Track the symbol+interval the series was last filled with so we can
+    // force a full setData when the user switches markets or timeframes.
+    // Without this, rapid switches (e.g. xyz:AAPL → xyz:GOLD) can coincide
+    // with the new series having the same length as the old one, sending
+    // the new symbol's candle through the `.update()` path and triggering
+    // lightweight-charts' "Cannot update oldest data" crash.
+    const prevSymbolRef = useRef<string | null>(null);
+    const prevIntervalRef = useRef<string | null>(null);
 
     // Edge detection cooldown
     const lastLoadMoreTimeRef = useRef<number>(0);
@@ -370,18 +378,30 @@ const PerpsCandlestickChart = forwardRef<
       const periodChanged = previousPeriodRef.current !== selectedPeriod;
       previousPeriodRef.current = selectedPeriod;
 
+      // A symbol or interval switch means the series must be rebuilt from
+      // scratch — the new market's candle times are unrelated to the old
+      // market's, so an incremental update would violate lightweight-charts'
+      // monotonic-time invariant.
+      const symbolChanged = prevSymbolRef.current !== candleData.symbol;
+      const intervalChanged = prevIntervalRef.current !== candleData.interval;
+      const seriesIdentityChanged = symbolChanged || intervalChanged;
+
       // Determine update strategy:
       // 1. Same count + same last candle time = live tick update (replace last candle in-place)
       // 2. Count increased by 1 + previous last time still present = new candle appended
-      // 3. Otherwise = full replacement (period change, initial load, fetch-more merge)
+      // 3. Otherwise = full replacement (period change, symbol switch, initial load, fetch-more merge)
       const isLiveTick =
         !periodChanged &&
+        !seriesIdentityChanged &&
         prevCount > 0 &&
         currentCount === prevCount &&
         currentLastTime === prevLastTime;
 
       const isAppend =
-        !periodChanged && prevCount > 0 && currentCount === prevCount + 1;
+        !periodChanged &&
+        !seriesIdentityChanged &&
+        prevCount > 0 &&
+        currentCount === prevCount + 1;
 
       if (isLiveTick || isAppend) {
         // Incremental update — only update the last candle
@@ -426,10 +446,14 @@ const PerpsCandlestickChart = forwardRef<
 
           chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
 
-          // Handle period change: scroll to real time and notify parent
+          // Handle period change: scroll to real time and notify parent.
+          // Also scroll on symbol/interval switch so the new market renders
+          // at the live edge instead of whatever offset the prior series had.
           if (periodChanged) {
             chartRef.current.timeScale().scrollToRealTime();
             onPeriodDataRequest?.(selectedPeriod);
+          } else if (seriesIdentityChanged) {
+            chartRef.current.timeScale().scrollToRealTime();
           }
         }
       }
@@ -437,6 +461,8 @@ const PerpsCandlestickChart = forwardRef<
       // Update tracking refs
       prevCandleCountRef.current = currentCount;
       prevLastCandleTimeRef.current = currentLastTime;
+      prevSymbolRef.current = candleData.symbol;
+      prevIntervalRef.current = candleData.interval;
 
       // Clear flag after chart has applied updates (library may emit crosshair on next frame)
       const timeoutId = setTimeout(() => {

@@ -269,6 +269,7 @@ import createRpcBlockingMiddleware, {
 } from './lib/rpcBlockingMiddleware';
 import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
+import createFrameIdMiddleware from './lib/createFrameIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
@@ -7058,6 +7059,8 @@ export default class MetamaskController extends EventEmitter {
       tabId = sender.tab.id;
     }
 
+    const { frameId } = sender;
+
     let mainFrameOrigin = origin;
     if (sender.tab && sender.tab.url) {
       // If sender origin is an iframe, then get the top-level frame's origin
@@ -7069,6 +7072,7 @@ export default class MetamaskController extends EventEmitter {
       sender,
       subjectType,
       tabId,
+      frameId,
       mainFrameOrigin,
     });
 
@@ -7135,11 +7139,20 @@ export default class MetamaskController extends EventEmitter {
       tabId = sender.tab.id;
     }
 
+    const { frameId } = sender;
+
+    let mainFrameOrigin = origin;
+    if (sender.tab && sender.tab.url) {
+      mainFrameOrigin = new URL(sender.tab.url).origin;
+    }
+
     const engine = this.setupProviderEngineCaip({
       origin,
       sender,
       subjectType,
       tabId,
+      frameId,
+      mainFrameOrigin,
     });
 
     const dupeReqFilterStream = createDupeReqFilterStream();
@@ -7297,6 +7310,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender object.
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
+   * @param {number} [options.frameId] - The frame ID of the sender (0 = top-level, >0 = iframe)
    * @param {mainFrameOrigin} [options.mainFrameOrigin] - The origin of the main frame if the sender is an iframe
    */
   setupProviderEngineEip1193({
@@ -7304,6 +7318,7 @@ export default class MetamaskController extends EventEmitter {
     subjectType,
     sender,
     tabId,
+    frameId,
     mainFrameOrigin,
   }) {
     const engine = new JsonRpcEngine();
@@ -7338,6 +7353,11 @@ export default class MetamaskController extends EventEmitter {
     // Append tabId to each request if it exists
     if (tabId) {
       engine.push(createTabIdMiddleware({ tabId }));
+    }
+
+    // Append frameId to each request if provided, including 0 for top-level frames
+    if (typeof frameId === 'number') {
+      engine.push(createFrameIdMiddleware({ frameId }));
     }
 
     engine.push(createLoggerMiddleware({ origin }));
@@ -7796,16 +7816,35 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender object.
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
+   * @param {number} [options.frameId] - The frame ID of the sender (0 = top-level, >0 = iframe)
+   * @param {mainFrameOrigin} [options.mainFrameOrigin] - The origin of the main frame if the sender is an iframe
    */
-  setupProviderEngineCaip({ origin, sender, subjectType, tabId }) {
+  setupProviderEngineCaip({
+    origin,
+    sender,
+    subjectType,
+    tabId,
+    frameId,
+    mainFrameOrigin,
+  }) {
     const engine = new JsonRpcEngine();
 
     // Append origin to each request
     engine.push(createOriginMiddleware({ origin }));
 
+    // Append mainFrameOrigin to each request if present
+    if (mainFrameOrigin) {
+      engine.push(createMainFrameOriginMiddleware({ mainFrameOrigin }));
+    }
+
     // Append tabId to each request if it exists
     if (tabId) {
       engine.push(createTabIdMiddleware({ tabId }));
+    }
+
+    // Append frameId to each request if provided, including 0 for top-level frames
+    if (typeof frameId === 'number') {
+      engine.push(createFrameIdMiddleware({ frameId }));
     }
 
     engine.push(createLoggerMiddleware({ origin }));
@@ -9219,7 +9258,6 @@ export default class MetamaskController extends EventEmitter {
       if (knownNft) {
         this.nftController.checkAndUpdateSingleNftOwnershipStatus(
           knownNft,
-          false,
           networkClientId,
           // TODO add networkClientId once it is available in the transactionMeta
           // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
@@ -9313,7 +9351,6 @@ export default class MetamaskController extends EventEmitter {
         const refreshOwnershipNFts = knownNFTs.map(async (singleNft) => {
           return this.nftController.checkAndUpdateSingleNftOwnershipStatus(
             singleNft,
-            false,
             networkClientId,
             // TODO add networkClientId once it is available in the transactionMeta
             // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network

@@ -45,9 +45,10 @@ export default function useBridgeChainInfo({
     ),
   );
 
-  const isEvmSwapOrBridge =
-    transaction?.type &&
-    [TransactionType.bridge, TransactionType.swap].includes(transaction.type);
+  const isEvmSwapOrBridge = bridgeHistoryItem
+    ? true
+    : transaction?.type &&
+      [TransactionType.bridge, TransactionType.swap].includes(transaction.type);
 
   if (!isEvmSwapOrBridge && !nonEvmTransaction) {
     return {

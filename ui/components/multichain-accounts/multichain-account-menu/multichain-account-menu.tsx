@@ -1,14 +1,9 @@
 import React, { useCallback, useContext, useMemo, useRef } from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  IconName as DesignSystemIconName,
-  TextColor as DesignSystemTextColor,
-} from '@metamask/design-system-react';
+import { Icon, IconName, TextColor } from '@metamask/design-system-react';
 import {
   Box,
-  Icon,
-  IconName,
   ModalFocus,
   Popover,
   PopoverPosition,
@@ -201,31 +196,27 @@ export const MultichainAccountMenu = ({
     const baseMenuItems: MenuItemConfig[] = [
       {
         textKey: 'accountDetails',
-        iconName: DesignSystemIconName.Details,
+        iconName: IconName.Details,
         onClick: handleAccountDetailsClick,
       },
       {
         textKey: 'rename',
-        iconName: DesignSystemIconName.Edit,
+        iconName: IconName.Edit,
         onClick: handleAccountRenameClick,
       },
       {
         textKey: 'addresses',
-        iconName: DesignSystemIconName.QrCode,
+        iconName: IconName.QrCode,
         onClick: handleAccountAddressesClick,
       },
       {
         textKey: isPinned ? 'unpin' : 'pinToTop',
-        iconName: isPinned
-          ? DesignSystemIconName.Unpin
-          : DesignSystemIconName.Pin,
+        iconName: isPinned ? IconName.Unpin : IconName.Pin,
         onClick: handleAccountPinClick,
       },
       {
         textKey: isHidden ? 'showAccount' : 'hideAccount',
-        iconName: isHidden
-          ? DesignSystemIconName.Eye
-          : DesignSystemIconName.EyeSlash,
+        iconName: isHidden ? IconName.Eye : IconName.EyeSlash,
         onClick: handleAccountHideClick,
       },
     ];
@@ -233,9 +224,9 @@ export const MultichainAccountMenu = ({
     if (isRemovable) {
       baseMenuItems.push({
         textKey: 'remove',
-        iconName: DesignSystemIconName.Trash,
+        iconName: IconName.Trash,
         onClick: handleAccountRemoveClick,
-        textColor: DesignSystemTextColor.ErrorDefault,
+        textColor: TextColor.ErrorDefault,
       });
     }
 
