@@ -56,7 +56,6 @@ describe('RecipientInput', () => {
           {
             recipientConfusableCharacters: [],
             recipientError: null,
-            recipientErrorAllowAcknowledge: false,
             hasUnacknowledgedAlerts: false,
             recipientWarning: null,
             recipientResolvedLookup: undefined,
@@ -201,7 +200,6 @@ describe('RecipientInput', () => {
         recipientValidationResult: {
           recipientConfusableCharacters: [],
           recipientError: null,
-          recipientErrorAllowAcknowledge: false,
           hasUnacknowledgedAlerts: false,
           recipientWarning: null,
           recipientResolvedLookup: undefined,
@@ -210,10 +208,9 @@ describe('RecipientInput', () => {
       });
     };
 
-    it('marks the input as invalid when a hard recipient error is present', () => {
+    it('marks the input as invalid when a recipient error is present', () => {
       const { getByTestId } = renderWithValidation({
         recipientError: 'Invalid address',
-        recipientErrorAllowAcknowledge: false,
         hasUnacknowledgedAlerts: false,
       });
 
@@ -222,10 +219,9 @@ describe('RecipientInput', () => {
       expect(input.parentElement).not.toHaveClass('!border-warning-default');
     });
 
-    it('keeps error styling when a hard recipient error coexists with unacknowledged send alerts', () => {
+    it('keeps error styling when a recipient error coexists with unacknowledged send alerts', () => {
       const { getByTestId } = renderWithValidation({
         recipientError: 'Invalid address',
-        recipientErrorAllowAcknowledge: false,
         hasUnacknowledgedAlerts: true,
       });
 
@@ -234,22 +230,9 @@ describe('RecipientInput', () => {
       expect(input.parentElement).not.toHaveClass('!border-warning-default');
     });
 
-    it('applies warning styling when the recipient error is acknowledgeable', () => {
-      const { getByTestId } = renderWithValidation({
-        recipientError: 'Token contract',
-        recipientErrorAllowAcknowledge: true,
-        hasUnacknowledgedAlerts: false,
-      });
-
-      const input = getByTestId('recipient-address-input');
-      expect(input).not.toHaveAttribute('aria-invalid');
-      expect(input.parentElement).toHaveClass('!border-warning-default');
-    });
-
     it('applies warning styling when only unacknowledged send alerts are present', () => {
       const { getByTestId } = renderWithValidation({
         recipientError: null,
-        recipientErrorAllowAcknowledge: false,
         hasUnacknowledgedAlerts: true,
       });
 

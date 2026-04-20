@@ -106,9 +106,6 @@ describe('AmountRecipient', () => {
       recipientWarning: null,
       recipientResolvedLookup: null,
       recipientConfusableCharacters: [],
-      validateRecipient: jest.fn(),
-      recipientErrorAllowAcknowledge: false,
-      acknowledgeError: jest.fn(),
       alerts: [],
       hasUnacknowledgedAlerts: false,
       acknowledgeAlerts: jest.fn(),
@@ -286,9 +283,6 @@ describe('AmountRecipient', () => {
       recipientWarning: null,
       recipientResolvedLookup: null,
       recipientConfusableCharacters: [],
-      validateRecipient: jest.fn(),
-      recipientErrorAllowAcknowledge: false,
-      acknowledgeError: jest.fn(),
       alerts: [],
       hasUnacknowledgedAlerts: false,
       acknowledgeAlerts: jest.fn(),
@@ -372,9 +366,6 @@ describe('AmountRecipient', () => {
       recipientWarning: null,
       recipientResolvedLookup: null,
       recipientConfusableCharacters: [],
-      validateRecipient: jest.fn(),
-      recipientErrorAllowAcknowledge: false,
-      acknowledgeError: jest.fn(),
       alerts: [],
       hasUnacknowledgedAlerts: false,
       acknowledgeAlerts: jest.fn(),
@@ -436,9 +427,7 @@ describe('AmountRecipient', () => {
       jest
         .spyOn(RecipientValidation, 'useRecipientValidation')
         .mockReturnValue({
-          recipientError: 'tokenContractError',
-          recipientErrorAllowAcknowledge: true,
-          acknowledgeError: jest.fn(),
+          recipientError: undefined,
           recipientWarning: null,
           recipientResolvedLookup: null,
           recipientConfusableCharacters: [],
@@ -467,7 +456,6 @@ describe('AmountRecipient', () => {
     it('proceeds with submit after acknowledging in modal', async () => {
       const mockHandleSubmit = jest.fn();
       const mockAcknowledgeAlerts = jest.fn();
-      const mockAcknowledgeError = jest.fn();
       jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
         handleSubmit: mockHandleSubmit,
       } as unknown as ReturnType<typeof SendActions.useSendActions>);
@@ -506,9 +494,7 @@ describe('AmountRecipient', () => {
       jest
         .spyOn(RecipientValidation, 'useRecipientValidation')
         .mockReturnValue({
-          recipientError: 'tokenContractError',
-          recipientErrorAllowAcknowledge: true,
-          acknowledgeError: mockAcknowledgeError,
+          recipientError: undefined,
           recipientWarning: null,
           recipientResolvedLookup: null,
           recipientConfusableCharacters: [],
@@ -530,7 +516,6 @@ describe('AmountRecipient', () => {
 
       await waitFor(() => {
         expect(mockAcknowledgeAlerts).toHaveBeenCalled();
-        expect(mockAcknowledgeError).toHaveBeenCalled();
       });
       expect(mockHandleSubmit).toHaveBeenCalled();
     });
@@ -538,7 +523,6 @@ describe('AmountRecipient', () => {
     it('does not submit when acknowledging from icon-triggered modal', async () => {
       const mockHandleSubmit = jest.fn();
       const mockAcknowledgeAlerts = jest.fn();
-      const mockAcknowledgeError = jest.fn();
       jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
         handleSubmit: mockHandleSubmit,
       } as unknown as ReturnType<typeof SendActions.useSendActions>);
@@ -560,9 +544,7 @@ describe('AmountRecipient', () => {
       jest
         .spyOn(RecipientValidation, 'useRecipientValidation')
         .mockReturnValue({
-          recipientError: 'tokenContractError',
-          recipientErrorAllowAcknowledge: true,
-          acknowledgeError: mockAcknowledgeError,
+          recipientError: undefined,
           recipientWarning: null,
           recipientResolvedLookup: null,
           recipientConfusableCharacters: [],
@@ -584,7 +566,6 @@ describe('AmountRecipient', () => {
 
       await waitFor(() => {
         expect(mockAcknowledgeAlerts).toHaveBeenCalled();
-        expect(mockAcknowledgeError).toHaveBeenCalled();
       });
       expect(mockHandleSubmit).not.toHaveBeenCalled();
     });

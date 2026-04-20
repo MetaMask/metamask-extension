@@ -42,7 +42,6 @@ export const Recipient = ({
 }) => {
   const {
     recipientError,
-    recipientErrorAllowAcknowledge,
     hasUnacknowledgedAlerts,
     recipientWarning,
     recipientResolvedLookup,
@@ -121,13 +120,11 @@ export const Recipient = ({
         recipientInputRef={recipientInputRef}
         recipientValidationResult={recipientValidationResult}
       />
-      {to === toAddressValidated &&
-        recipientError &&
-        !recipientErrorAllowAcknowledge && (
-          <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
-            {recipientError}
-          </HelpText>
-        )}
+      {to === toAddressValidated && recipientError && (
+        <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
+          {recipientError}
+        </HelpText>
+      )}
       {to === toAddressValidated && recipientWarning && (
         <HelpText severity={HelpTextSeverity.Warning} marginTop={1}>
           {recipientWarning}

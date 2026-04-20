@@ -72,7 +72,6 @@ describe('Recipient', () => {
           {
             recipientConfusableCharacters: [],
             recipientError: null,
-            recipientErrorAllowAcknowledge: false,
             hasUnacknowledgedAlerts: false,
             recipientWarning: null,
             recipientResolvedLookup: undefined,
@@ -254,27 +253,8 @@ describe('Recipient', () => {
     });
   });
 
-  describe('acknowledge', () => {
+  describe('alerts', () => {
     const tokenContractAddress = '0x1234567890abcdef1234567890abcdef12345678';
-
-    it('hides inline error when recipientErrorAllowAcknowledge is true', () => {
-      mockUseSendContext.mockReturnValue({
-        to: tokenContractAddress,
-        updateTo: mockUpdateTo,
-        updateToResolved: jest.fn(),
-      } as unknown as ReturnType<typeof useSendContext>);
-
-      const { queryByText } = renderComponent({
-        recipientValidationResult: {
-          recipientError: 'Token contract error',
-          recipientErrorAllowAcknowledge: true,
-          hasUnacknowledgedAlerts: true,
-          toAddressValidated: tokenContractAddress,
-        },
-      });
-
-      expect(queryByText('Token contract error')).not.toBeInTheDocument();
-    });
 
     it('renders alert icon next to To label when there are unacknowledged alerts', () => {
       mockUseSendContext.mockReturnValue({
@@ -285,8 +265,7 @@ describe('Recipient', () => {
 
       const { getByTestId } = renderComponent({
         recipientValidationResult: {
-          recipientError: 'Token contract error',
-          recipientErrorAllowAcknowledge: true,
+          recipientError: undefined,
           hasUnacknowledgedAlerts: true,
           toAddressValidated: tokenContractAddress,
         },
@@ -306,8 +285,7 @@ describe('Recipient', () => {
 
       const { getByTestId } = renderComponent({
         recipientValidationResult: {
-          recipientError: 'Token contract error',
-          recipientErrorAllowAcknowledge: true,
+          recipientError: undefined,
           hasUnacknowledgedAlerts: true,
           toAddressValidated: tokenContractAddress,
         },
@@ -327,8 +305,7 @@ describe('Recipient', () => {
 
       const { queryByTestId } = renderComponent({
         recipientValidationResult: {
-          recipientError: 'Token contract error',
-          recipientErrorAllowAcknowledge: false,
+          recipientError: undefined,
           hasUnacknowledgedAlerts: false,
           toAddressValidated: tokenContractAddress,
         },
@@ -337,7 +314,7 @@ describe('Recipient', () => {
       expect(queryByTestId('recipient-alert-icon')).not.toBeInTheDocument();
     });
 
-    it('shows inline error for hard error even when first-time alert is active (Issue 2 regression)', () => {
+    it('shows inline error for hard error even when alert is active', () => {
       mockUseSendContext.mockReturnValue({
         to: tokenContractAddress,
         updateTo: mockUpdateTo,
@@ -347,7 +324,6 @@ describe('Recipient', () => {
       const { getByText } = renderComponent({
         recipientValidationResult: {
           recipientError: 'contractAddressError',
-          recipientErrorAllowAcknowledge: false,
           hasUnacknowledgedAlerts: true,
           toAddressValidated: tokenContractAddress,
         },

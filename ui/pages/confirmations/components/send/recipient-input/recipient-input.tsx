@@ -52,17 +52,12 @@ export const RecipientInput = ({
   const {
     recipientConfusableCharacters,
     recipientError,
-    recipientErrorAllowAcknowledge,
     hasUnacknowledgedAlerts,
     recipientResolvedLookup,
     toAddressValidated,
   } = recipientValidationResult;
-  const isHardError =
-    Boolean(recipientError) && !recipientErrorAllowAcknowledge;
-  const isWarning =
-    !isHardError &&
-    (Boolean(recipientErrorAllowAcknowledge) ||
-      Boolean(hasUnacknowledgedAlerts));
+  const isHardError = Boolean(recipientError);
+  const isWarning = !isHardError && Boolean(hasUnacknowledgedAlerts);
   const avatarSeedAddress =
     accountAddressSeedIconMap.get(to?.toLowerCase() as string) ||
     recipientResolvedLookup ||

@@ -4,7 +4,6 @@
 import { confusables } from 'unicode-confusables';
 
 import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
-import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
 
 import {
   findConfusablesInRecipient,
@@ -15,14 +14,8 @@ import {
 
 jest.mock('unicode-confusables');
 jest.mock('../../../../shared/lib/multichain/accounts');
-jest.mock('../../../store/actions', () => ({
-  getTokenStandardAndDetailsByChain: jest.fn(),
-}));
 
 const mockIsSolanaAddress = jest.mocked(isSolanaAddress);
-const mockGetTokenStandardAndDetailsByChain = jest.mocked(
-  getTokenStandardAndDetailsByChain,
-);
 
 describe('SendValidations', () => {
   describe('findConfusablesInRecipient', () => {
@@ -101,60 +94,28 @@ describe('SendValidations', () => {
   });
 
   describe('validateEvmHexAddress', () => {
-    it('validates valid hex address successfully', async () => {
+    it('validates valid hex address successfully', () => {
       expect(
-        await validateEvmHexAddress(
-          '0x1234567890123456789012345678901234567890',
-        ),
+        validateEvmHexAddress('0x1234567890123456789012345678901234567890'),
       ).toEqual({});
     });
 
-    it('rejects burn address', async () => {
+    it('rejects burn address', () => {
       expect(
-        await validateEvmHexAddress(
-          '0x0000000000000000000000000000000000000000',
-        ),
+        validateEvmHexAddress('0x0000000000000000000000000000000000000000'),
       ).toEqual({
         error: 'invalidAddress',
       });
     });
 
-    it('rejects ERC721 token address with allowAcknowledge', async () => {
-      mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
-        standard: 'ERC721',
-      });
-
+    it('rejects when sending to the same asset contract address', () => {
       expect(
-        await validateEvmHexAddress(
+        validateEvmHexAddress(
           '0x1234567890123456789012345678901234567890',
-          '0x1',
+          '0x1234567890123456789012345678901234567890',
         ),
       ).toEqual({
-        error: 'tokenContractError',
-        allowAcknowledge: true,
-      });
-
-      expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
-        '0x1234567890123456789012345678901234567890',
-        undefined,
-        undefined,
-        '0x1',
-      );
-    });
-
-    it('rejects ERC20 token address with allowAcknowledge', async () => {
-      mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
-        standard: 'ERC20',
-      });
-
-      expect(
-        await validateEvmHexAddress(
-          '0x1234567890123456789012345678901234567890',
-          '0x1',
-        ),
-      ).toEqual({
-        error: 'tokenContractError',
-        allowAcknowledge: true,
+        error: 'contractAddressError',
       });
     });
   });

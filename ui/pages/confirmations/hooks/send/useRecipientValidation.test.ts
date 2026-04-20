@@ -1,4 +1,4 @@
-import { act, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import {
@@ -63,8 +63,6 @@ describe('useRecipientValidation', () => {
     expect(result.current).toEqual({
       recipientConfusableCharacters: undefined,
       recipientError: undefined,
-      recipientErrorAllowAcknowledge: false,
-      acknowledgeError: expect.any(Function),
       recipientWarning: undefined,
       recipientResolvedLookup: undefined,
       resolutionProtocol: undefined,
@@ -95,7 +93,6 @@ describe('useRecipientValidation', () => {
         expect.objectContaining({
           recipientConfusableCharacters: undefined,
           recipientError: 'invalidAddress',
-          recipientErrorAllowAcknowledge: false,
           recipientResolvedLookup: undefined,
           recipientWarning: undefined,
           resolutionProtocol: undefined,
@@ -168,7 +165,6 @@ describe('useRecipientValidation', () => {
         expect.objectContaining({
           recipientConfusableCharacters: undefined,
           recipientError: undefined,
-          recipientErrorAllowAcknowledge: false,
           recipientResolvedLookup: undefined,
           recipientWarning: undefined,
           resolutionProtocol: undefined,
@@ -192,7 +188,6 @@ describe('useRecipientValidation', () => {
         expect.objectContaining({
           recipientConfusableCharacters: undefined,
           recipientError: undefined,
-          recipientErrorAllowAcknowledge: false,
           recipientResolvedLookup: undefined,
           recipientWarning: undefined,
           resolutionProtocol: undefined,
@@ -210,7 +205,7 @@ describe('useRecipientValidation', () => {
 
     const mockValidateHexAddress = jest
       .spyOn(SendValidationUtils, 'validateEvmHexAddress')
-      .mockResolvedValue({
+      .mockReturnValue({
         error: 'invalidAddress',
       });
 
@@ -437,7 +432,6 @@ describe('useRecipientValidation', () => {
           expect.objectContaining({
             recipientConfusableCharacters: undefined,
             recipientError: 'invalidAddress',
-            recipientErrorAllowAcknowledge: false,
             recipientResolvedLookup: undefined,
             recipientWarning: undefined,
             resolutionProtocol: undefined,
@@ -476,103 +470,11 @@ describe('useRecipientValidation', () => {
     });
   });
 
-  describe('acknowledgment', () => {
-    it('returns recipientErrorAllowAcknowledge when validation includes allowAcknowledge and not yet acknowledged', async () => {
-      jest
-        .spyOn(SendValidationUtils, 'validateEvmHexAddress')
-        .mockResolvedValue({
-          error: 'tokenContractError',
-          allowAcknowledge: true,
-        });
-
-      const { result } = renderHook();
-
-      await waitFor(() => {
-        expect(result.current.recipientError).toBe('tokenContractError');
-        expect(result.current.recipientErrorAllowAcknowledge).toBe(true);
+  describe('alerts passthrough', () => {
+    it('does not suppress a hard error when an unrelated alert is active', async () => {
+      jest.spyOn(SendValidationUtils, 'validateEvmHexAddress').mockReturnValue({
+        error: 'contractAddressError',
       });
-    });
-
-    it('clears recipientError when acknowledgeError is called', async () => {
-      jest
-        .spyOn(SendValidationUtils, 'validateEvmHexAddress')
-        .mockResolvedValue({
-          error: 'tokenContractError',
-          allowAcknowledge: true,
-        });
-
-      const { result } = renderHook();
-
-      await waitFor(() => {
-        expect(result.current.recipientError).toBe('tokenContractError');
-      });
-
-      act(() => {
-        result.current.acknowledgeError();
-      });
-
-      expect(result.current.recipientError).toBeUndefined();
-      expect(result.current.recipientErrorAllowAcknowledge).toBe(false);
-    });
-
-    it('resets acknowledgment when recipient address changes', async () => {
-      jest.useFakeTimers();
-      const validateSpy = jest
-        .spyOn(SendValidationUtils, 'validateEvmHexAddress')
-        .mockResolvedValue({
-          error: 'tokenContractError',
-          allowAcknowledge: true,
-        });
-
-      const { result, rerender } = renderHook();
-
-      await waitFor(() => {
-        expect(result.current.recipientError).toBe('tokenContractError');
-      });
-
-      act(() => {
-        result.current.acknowledgeError();
-      });
-
-      expect(result.current.recipientError).toBeUndefined();
-
-      mockUseSendContext.mockReturnValue({
-        asset: EVM_ASSET,
-        to: '0x9999999999999999999999999999999999999999',
-        chainId: '0x1',
-        from: '',
-        updateAsset: jest.fn(),
-        updateCurrentPage: jest.fn(),
-        updateTo: jest.fn(),
-        updateValue: jest.fn(),
-        value: '',
-      } as unknown as ReturnType<typeof useSendContext>);
-
-      validateSpy.mockResolvedValue({
-        error: 'tokenContractError',
-        allowAcknowledge: true,
-      });
-
-      rerender();
-      await act(async () => {
-        jest.advanceTimersByTime(500);
-      });
-
-      await waitFor(() => {
-        expect(result.current.recipientError).toBe('tokenContractError');
-        expect(result.current.recipientErrorAllowAcknowledge).toBe(true);
-      });
-
-      jest.useRealTimers();
-    });
-
-    it('does not suppress a hard error when an unrelated alert is active (Issue 2 regression)', async () => {
-      jest
-        .spyOn(SendValidationUtils, 'validateEvmHexAddress')
-        .mockResolvedValue({
-          error: 'contractAddressError',
-          allowAcknowledge: false,
-        });
 
       mockUseSendAlerts.mockReturnValue({
         alerts: [
@@ -590,30 +492,7 @@ describe('useRecipientValidation', () => {
 
       await waitFor(() => {
         expect(result.current.recipientError).toBe('contractAddressError');
-        expect(result.current.recipientErrorAllowAcknowledge).toBe(false);
         expect(result.current.hasUnacknowledgedAlerts).toBe(true);
-      });
-    });
-
-    it('does not auto-dismiss error during async loading when alerts are empty (Issue 1 regression)', async () => {
-      jest
-        .spyOn(SendValidationUtils, 'validateEvmHexAddress')
-        .mockResolvedValue({
-          error: 'tokenContractError',
-          allowAcknowledge: true,
-        });
-
-      mockUseSendAlerts.mockReturnValue({
-        alerts: [],
-        hasUnacknowledgedAlerts: false,
-        acknowledgeAlerts: mockAcknowledgeAlerts,
-      });
-
-      const { result } = renderHook();
-
-      await waitFor(() => {
-        expect(result.current.recipientError).toBe('tokenContractError');
-        expect(result.current.recipientErrorAllowAcknowledge).toBe(true);
       });
     });
   });

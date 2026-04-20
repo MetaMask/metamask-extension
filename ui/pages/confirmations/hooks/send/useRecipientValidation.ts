@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { debounce } from 'lodash';
 
 import {
@@ -30,7 +30,6 @@ export const useRecipientValidation = () => {
     useSendType();
   const { validateName } = useNameValidation();
   const [result, setResult] = useState<RecipientValidationResult>({});
-  const [acknowledged, setAcknowledged] = useState(false);
   const prevAddressValidated = useRef<string>();
   const prevChainIdValidated = useRef<string>();
   const unmountedRef = useRef(false);
@@ -68,7 +67,7 @@ export const useRecipientValidation = () => {
       }
 
       if (isEvmSendType && isValidHexAddress(toAddress)) {
-        return await validateEvmHexAddress(toAddress, chainId, asset?.address);
+        return validateEvmHexAddress(toAddress, asset?.address);
       }
 
       if (isSolanaSendType && isSolanaAddress(toAddress)) {
@@ -147,26 +146,12 @@ export const useRecipientValidation = () => {
     };
   }, [debouncedValidateRecipient]);
 
-  useEffect(() => {
-    setAcknowledged(false);
-  }, [to]);
-
-  const acknowledgeError = useCallback(() => {
-    setAcknowledged(true);
-  }, []);
-
   const { alerts, hasUnacknowledgedAlerts, acknowledgeAlerts } =
     useSendAlerts();
 
-  const isAcknowledgeable = result?.allowAcknowledge === true;
-  const errorDismissed = isAcknowledgeable && acknowledged;
-
   return {
     recipientConfusableCharacters: result?.confusableCharacters,
-    recipientError:
-      result?.error && !errorDismissed ? t(result?.error) : undefined,
-    recipientErrorAllowAcknowledge: isAcknowledgeable && !acknowledged,
-    acknowledgeError,
+    recipientError: result?.error ? t(result?.error) : undefined,
     recipientResolvedLookup: result?.resolvedLookup,
     recipientWarning: result?.warning ? t(result?.warning) : undefined,
     resolutionProtocol: result?.protocol,
