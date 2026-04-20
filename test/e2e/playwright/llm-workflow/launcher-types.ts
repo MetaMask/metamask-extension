@@ -63,6 +63,7 @@ export type ScreenName =
   | 'onboarding-password'
   | 'onboarding-complete'
   | 'onboarding-metametrics'
+  | 'onboarding-privacy'
   | 'settings'
   | 'send'
   | 'swap'
@@ -84,6 +85,11 @@ export type ExtensionState = {
   networkName: string | null;
   chainId: number | null;
   balance: string | null;
+  activeTab?: {
+    role: string;
+    url: string;
+    title?: string;
+  };
 };
 
 export type LauncherContext = {

@@ -4,6 +4,19 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  DEFAULT_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_CONFIRM_SRP_ROUTE,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ONBOARDING_HELP_US_IMPROVE_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_METAMETRICS,
+  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  ONBOARDING_REVEAL_SRP_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
+  ONBOARDING_ROUTE,
+  ONBOARDING_UNLOCK_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
   PREPARE_SWAP_ROUTE,
   SEND_ROUTE,
   SETTINGS_ROUTE,
@@ -63,7 +76,7 @@ export async function detectCurrentScreen(
   for (const { screen, selector } of screenSelectors) {
     const isVisible = await page
       .locator(selector)
-      .isVisible({ timeout: 500 })
+      .isVisible({ timeout: 200 })
       .catch(() => false);
     if (isVisible) {
       return screen;
@@ -115,8 +128,61 @@ export function detectScreenFromUrl(
     },
     { matcher: (path) => hasRoutePrefix(path, UNLOCK_ROUTE), screen: 'unlock' },
     {
+      matcher: (path) => hasRoutePrefix(path, ONBOARDING_WELCOME_ROUTE),
+      screen: 'onboarding-welcome',
+    },
+    {
+      matcher: (path) => hasRoutePrefix(path, ONBOARDING_CREATE_PASSWORD_ROUTE),
+      screen: 'onboarding-password',
+    },
+    {
+      matcher: (path) => hasRoutePrefix(path, ONBOARDING_IMPORT_WITH_SRP_ROUTE),
+      screen: 'onboarding-import',
+    },
+    {
+      matcher: (path) => hasRoutePrefix(path, ONBOARDING_REVEAL_SRP_ROUTE),
+      screen: 'onboarding-srp',
+    },
+    {
+      matcher: (path) => hasRoutePrefix(path, ONBOARDING_REVIEW_SRP_ROUTE),
+      screen: 'onboarding-srp',
+    },
+    {
+      matcher: (path) => hasRoutePrefix(path, ONBOARDING_CONFIRM_SRP_ROUTE),
+      screen: 'onboarding-srp',
+    },
+    {
+      matcher: (path) => hasRoutePrefix(path, ONBOARDING_COMPLETION_ROUTE),
+      screen: 'onboarding-complete',
+    },
+    {
+      matcher: (path) => hasRoutePrefix(path, ONBOARDING_METAMETRICS),
+      screen: 'onboarding-metametrics',
+    },
+    {
+      matcher: (path) => hasRoutePrefix(path, ONBOARDING_HELP_US_IMPROVE_ROUTE),
+      screen: 'onboarding-metametrics',
+    },
+    {
+      matcher: (path) =>
+        hasRoutePrefix(path, ONBOARDING_PRIVACY_SETTINGS_ROUTE),
+      screen: 'onboarding-privacy',
+    },
+    {
+      matcher: (path) => hasRoutePrefix(path, ONBOARDING_UNLOCK_ROUTE),
+      screen: 'unlock',
+    },
+    {
+      matcher: (path) => hasRoutePrefix(path, ONBOARDING_ROUTE),
+      screen: 'onboarding-welcome',
+    },
+    {
       matcher: (path) => /notification\.html/u.test(path),
       screen: 'notification',
+    },
+    {
+      matcher: (path) => path === DEFAULT_ROUTE || path === '',
+      screen: 'home',
     },
   ];
 
@@ -133,6 +199,47 @@ function hasRoutePrefix(path: string, route: string): boolean {
   return path === route || path.startsWith(`${route}/`);
 }
 
+export async function detectUnlockState(
+  page: Page,
+  currentScreen: ExtensionState['currentScreen'],
+): Promise<boolean> {
+  const UNLOCKED_SCREENS: Set<ExtensionState['currentScreen']> = new Set([
+    'home',
+    'send',
+    'swap',
+    'settings',
+    'confirm-transaction',
+    'confirm-signature',
+    'confirmation',
+    'connect',
+    'bridge',
+  ]);
+
+  const LOCKED_SCREENS: Set<ExtensionState['currentScreen']> = new Set([
+    'unlock',
+    'onboarding-welcome',
+    'onboarding-import',
+    'onboarding-create',
+    'onboarding-srp',
+    'onboarding-password',
+    'onboarding-complete',
+    'onboarding-metametrics',
+    'onboarding-privacy',
+  ]);
+
+  if (UNLOCKED_SCREENS.has(currentScreen)) {
+    return true;
+  }
+  if (LOCKED_SCREENS.has(currentScreen)) {
+    return false;
+  }
+
+  return page
+    .locator('[data-testid="account-menu-icon"]')
+    .isVisible()
+    .catch(() => false);
+}
+
 export async function getExtensionState(
   page: Page | undefined,
   options: {
@@ -145,12 +252,8 @@ export async function getExtensionState(
   }
 
   const currentUrl = page.url();
-  const isUnlocked = await page
-    .locator('[data-testid="account-menu-icon"]')
-    .isVisible()
-    .catch(() => false);
-
   const currentScreen = await detectCurrentScreen(page);
+  const isUnlocked = await detectUnlockState(page, currentScreen);
 
   let accountAddress: string | null = null;
   let networkName: string | null = null;

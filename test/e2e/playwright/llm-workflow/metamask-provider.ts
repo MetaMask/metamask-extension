@@ -316,10 +316,33 @@ export class MetaMaskSessionManager implements ISessionManager {
     const chainId = this.workflowContext?.config?.defaultChainId ?? 1337;
     const extensionPage = this.activeSession.launcher.getPage();
 
-    return stateSnapshot.getState(extensionPage, {
+    const baseState = await stateSnapshot.getState(extensionPage, {
       extensionId: this.activeSession.state.extensionId,
       chainId,
     });
+
+    const activePage = this.getPage();
+    const activeRole = this.classifyPageRole(
+      activePage,
+      this.activeSession.state.extensionId,
+    );
+    const activeUrl = activePage.url();
+
+    let activeTitle: string | undefined;
+    try {
+      activeTitle = await activePage.title();
+    } catch {
+      // Non-fatal: page may have been closed while collecting metadata.
+    }
+
+    return {
+      ...baseState,
+      activeTab: {
+        role: activeRole,
+        url: activeUrl,
+        title: activeTitle,
+      },
+    };
   }
 
   setRefMap(map: Map<string, string>): void {
