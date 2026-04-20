@@ -263,3 +263,7 @@ development/generate-lavamoat-policies.js             @MetaMask/extension-platfo
 # Background Process
 app/scripts/lib/createMetaRPCHandler.js              @MetaMask/extension-platform
 app/scripts/lib/metaRPCClientFactory.ts              @MetaMask/extension-platform
+app/scripts/lib/setup-initial-state-hooks.*          @MetaMask/extension-platform
+
+# UI Bootstrap
+/ui/index.js                                         @MetaMask/extension-platform
