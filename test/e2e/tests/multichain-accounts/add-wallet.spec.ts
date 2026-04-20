@@ -16,7 +16,6 @@ import {
 } from '../identity/account-syncing/mock-data';
 import { mockPriceApi } from '../tokens/utils/mocks';
 import { mockIdentityServices } from '../identity/mocks';
-import { withMultichainAccountsDesignEnabled } from './common';
 
 const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,025.00';
 
@@ -88,18 +87,29 @@ describe('Add wallet', function () {
   it('Add wallet using SRP', async function () {
     const E2E_SRP =
       'bench top weekend buyer spoon side resist become detect gauge eye feed';
-    await withMultichainAccountsDesignEnabled(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withKeyringControllerMultiSRP()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockPriceApi,
       },
-      async (driver: Driver) => {
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
-        await accountListPage.startImportSecretPhrase(E2E_SRP);
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
+
+        const accountListPage = new AccountListPage(driver);
+        // Extended timeout: AccountTreeController sync (triggered by the
+        // multi-SRP vault) can take longer than the default 10s on Firefox CI.
+        // The button label stays "Syncing…" until sync resolves; only then
+        // does the locator's "Add account" text match.
+        await accountListPage.checkPageIsLoaded(30000);
+        await accountListPage.startImportSecretPhrase(E2E_SRP);
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkPageIsLoaded(30000);
         await accountListPage.checkNumberOfAvailableAccounts(3);
       },
     );

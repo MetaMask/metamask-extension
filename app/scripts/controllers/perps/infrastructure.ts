@@ -22,12 +22,13 @@ import type {
   PerpsTraceName,
   PerpsTraceValue,
   InvalidateCacheParams,
+  FiatRangeConfig,
 } from '@metamask/perps-controller';
 import {
-  formatPerpsPrice,
+  formatPerpsFiat,
+  formatPercentage,
   PRICE_RANGES_UNIVERSAL,
-  type PerpsPriceRange,
-} from '../../../../shared/lib/perps-formatters';
+} from '@metamask/perps-controller';
 import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
 import {
   MetaMetricsEventCategory,
@@ -41,6 +42,12 @@ import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature
  */
 export type InfrastructureDeps = {
   trackEvent: (payload: MetaMetricsEventPayload) => void;
+  getStorageItem: (key: string) => Promise<{
+    result?: unknown;
+    error?: Error;
+  }>;
+  setStorageItem: (key: string, value: string) => Promise<void>;
+  removeStorageItem: (key: string) => Promise<void>;
 };
 
 const debugLog = createProjectLogger('perps');
@@ -184,13 +191,13 @@ function createTracer(): PerpsTracer {
     setMeasurement: (name: string, value: number, unit: string) => {
       globalThis.sentry?.setMeasurement?.(name, value, unit);
     },
-    addBreadcrumb: (_breadcrumb: {
+    addBreadcrumb: (breadcrumb: {
       category: string;
       message: string;
       level: 'fatal' | 'error' | 'warning' | 'log' | 'info' | 'debug';
       data?: Record<string, unknown>;
     }) => {
-      // TODO: Integrate with Sentry breadcrumbs when ready
+      globalThis.sentry?.addBreadcrumb?.(breadcrumb);
     },
   };
 }
@@ -223,25 +230,17 @@ function createMarketDataFormatters(): MarketDataFormatters {
     maximumFractionDigits: 1,
   });
 
-  const percentFormatter = new Intl.NumberFormat('en-US', {
-    style: 'percent',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
   return {
     formatVolume: (value: number) => compactFormatter.format(value),
-    formatPerpsFiat: (value: number, options?: { ranges?: unknown[] }) => {
-      const customRanges = options?.ranges as PerpsPriceRange[] | undefined;
-      // When ranges are provided they are applied; otherwise the default
-      // PRICE_RANGES_UNIVERSAL inside formatPerpsPrice is used.
-      if (customRanges) {
-        return formatPerpsPrice(value, 'en-US', customRanges);
-      }
-      return formatPerpsPrice(value);
-    },
-    formatPercentage: (percent: number) =>
-      percentFormatter.format(percent / 100),
+    formatPerpsFiat: (
+      value: number,
+      options?: { ranges?: unknown[] },
+    ): string =>
+      formatPerpsFiat(value, {
+        ...options,
+        ranges: options?.ranges as FiatRangeConfig[] | undefined,
+      }),
+    formatPercentage: (percent: number) => formatPercentage(percent),
     priceRangesUniversal: PRICE_RANGES_UNIVERSAL,
   };
 }
@@ -253,6 +252,43 @@ function createCacheInvalidator(): PerpsCacheInvalidator {
     },
     invalidateAll: () => {
       // TODO: Wire to React Query or custom cache when ready
+    },
+  };
+}
+
+const PERPS_DISK_CACHE_KEY_PREFIX = 'diskCache:';
+
+function getDiskCacheStorageKey(key: string): string {
+  return `${PERPS_DISK_CACHE_KEY_PREFIX}${key}`;
+}
+
+function createDiskCache(
+  deps: InfrastructureDeps,
+): PerpsPlatformDependencies['diskCache'] {
+  const memoryCache = new Map<string, string>();
+
+  return {
+    getItem: async (key: string) => {
+      if (memoryCache.has(key)) {
+        return memoryCache.get(key) ?? null;
+      }
+
+      const { result, error } = await deps.getStorageItem(
+        getDiskCacheStorageKey(key),
+      );
+      if (error || typeof result !== 'string') {
+        return null;
+      }
+      memoryCache.set(key, result);
+      return result;
+    },
+    setItem: async (key: string, value: string) => {
+      await deps.setStorageItem(getDiskCacheStorageKey(key), value);
+      memoryCache.set(key, value);
+    },
+    removeItem: async (key: string) => {
+      await deps.removeStorageItem(getDiskCacheStorageKey(key));
+      memoryCache.delete(key);
     },
   };
 }
@@ -276,6 +312,7 @@ export function createPerpsInfrastructure(
     featureFlags: createFeatureFlags(),
     marketDataFormatters: createMarketDataFormatters(),
     cacheInvalidator: createCacheInvalidator(),
+    diskCache: createDiskCache(deps),
     rewards: {
       getPerpsDiscountForAccount: async (
         _caipAccountId: `${string}:${string}:${string}`,
