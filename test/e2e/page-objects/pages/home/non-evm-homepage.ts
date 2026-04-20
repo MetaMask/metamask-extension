@@ -15,17 +15,20 @@ class NonEvmHomepage extends HomePage {
 
   protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
 
-  async checkPageIsLoaded({ amount }: { amount?: string } = {}): Promise<void> {
+  async checkPageIsLoaded({
+    amount,
+    timeout = 60000,
+  }: { amount?: string; timeout?: number } = {}): Promise<void> {
     await super.checkPageIsLoaded();
     await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
     if (amount) {
       await this.driver.wait(async () => {
-        await this.driver.waitForSelector({
-          text: `${amount}`,
-          tag: 'span',
-        });
+        await this.driver.waitForSelector(
+          { text: `${amount}`, tag: 'span' },
+          { timeout },
+        );
         return true;
-      }, 60000);
+      }, timeout);
     }
   }
 
