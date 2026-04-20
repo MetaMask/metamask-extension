@@ -1,9 +1,5 @@
 {
   "files": {
-    "app/offscreen/hardware-wallets/ledger.test.ts": {
-      "warn: Ledger clearSignTransaction failed; falling back": 1,
-      "error: Ledger action ledger-sign-transaction failed: Error:": 1
-    },
     "app/scripts/controllers/metametrics-controller.test.ts": {
       "MetaMask: MetaMetrics invalid trait types": 4,
       "warn: MetaMetricsController#_identify: No userTraits found": 1
