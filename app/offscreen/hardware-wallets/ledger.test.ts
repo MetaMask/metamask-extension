@@ -556,6 +556,9 @@ describe('Ledger Offscreen', () => {
       });
 
       it('falls back to blind signTransaction when clearSignTransaction fails (GH 41602)', async () => {
+        const consoleWarnSpy = jest
+          .spyOn(console, 'warn')
+          .mockImplementation(() => undefined);
         const blindSignature = {
           v: '1c',
           r: 'deadbeef',
@@ -579,9 +582,17 @@ describe('Ledger Offscreen', () => {
         );
         expect(response.success).toBe(true);
         expect(response.payload).toEqual(blindSignature);
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          expect.stringContaining('clearSignTransaction failed'),
+          expect.any(Error),
+        );
+        consoleWarnSpy.mockRestore();
       });
 
       it('does not fall back when the device rejects the transaction (0x6985)', async () => {
+        const consoleErrorSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
         const rejection = Object.assign(
           new Error('CONDITIONS_OF_USE_NOT_SATISFIED'),
           {
@@ -596,8 +607,15 @@ describe('Ledger Offscreen', () => {
           tx: '0xdeadbeef',
         });
 
-        expect(response.success).toBe(false);
         expect(mockSignTransaction).not.toHaveBeenCalled();
+        expect(response.success).toBe(false);
+        expect(response.payload).toEqual({
+          error: expect.objectContaining({
+            message: 'CONDITIONS_OF_USE_NOT_SATISFIED',
+            statusCode: 0x6985,
+          }),
+        });
+        consoleErrorSpy.mockRestore();
       });
     });
 
