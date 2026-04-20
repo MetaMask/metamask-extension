@@ -2,7 +2,7 @@ import type { Patch } from 'immer';
 import { PatchBuffer } from './PatchBuffer';
 
 const patch = (value: unknown): Patch =>
-  ({ op: 'replace', path: ['x'], value } as Patch);
+  ({ op: 'replace', path: ['x'], value }) as Patch;
 
 describe('PatchBuffer', () => {
   let buffer: PatchBuffer;

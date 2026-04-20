@@ -32,7 +32,9 @@ const MetamaskController = require('./metamask-controller').default;
 // Shared setup
 // ---------------------------------------------------------------------------
 
-function makeContext(returnValue: Promise<unknown> = Promise.resolve('result')) {
+function makeContext(
+  returnValue: Promise<unknown> = Promise.resolve('result'),
+) {
   const call = jest.fn().mockReturnValue(returnValue);
   return { controllerMessenger: { call } };
 }
@@ -54,7 +56,10 @@ describe('MetamaskController vault-management delegation stubs', () => {
 
     it('returns the result from the messenger', async () => {
       const ctx = makeContext(Promise.resolve('ok'));
-      const result = await MetamaskController.prototype.verifyPassword.call(ctx, 'p');
+      const result = await MetamaskController.prototype.verifyPassword.call(
+        ctx,
+        'p',
+      );
       expect(result).toBe('ok');
     });
   });
@@ -62,7 +67,10 @@ describe('MetamaskController vault-management delegation stubs', () => {
   describe('createNewVaultAndKeychain', () => {
     it('calls VaultManagement:createNewVaultAndKeychain with the password', async () => {
       const ctx = makeContext();
-      await MetamaskController.prototype.createNewVaultAndKeychain.call(ctx, 'pass');
+      await MetamaskController.prototype.createNewVaultAndKeychain.call(
+        ctx,
+        'pass',
+      );
       expect(ctx.controllerMessenger.call).toHaveBeenCalledWith(
         'VaultManagement:createNewVaultAndKeychain',
         'pass',
@@ -74,7 +82,11 @@ describe('MetamaskController vault-management delegation stubs', () => {
     it('calls VaultManagement:createNewVaultAndRestore with password and seed phrase', async () => {
       const ctx = makeContext();
       const seed = new Uint8Array([1, 2, 3]);
-      await MetamaskController.prototype.createNewVaultAndRestore.call(ctx, 'pass', seed);
+      await MetamaskController.prototype.createNewVaultAndRestore.call(
+        ctx,
+        'pass',
+        seed,
+      );
       expect(ctx.controllerMessenger.call).toHaveBeenCalledWith(
         'VaultManagement:createNewVaultAndRestore',
         'pass',
@@ -103,7 +115,11 @@ describe('MetamaskController account-management delegation stubs', () => {
   describe('setAccountLabel', () => {
     it('calls AccountManagement:setAccountLabel with address and label', async () => {
       const ctx = makeContext(Promise.resolve());
-      await MetamaskController.prototype.setAccountLabel.call(ctx, '0xabc', 'My Account');
+      await MetamaskController.prototype.setAccountLabel.call(
+        ctx,
+        '0xabc',
+        'My Account',
+      );
       expect(ctx.controllerMessenger.call).toHaveBeenCalledWith(
         'AccountManagement:setAccountLabel',
         '0xabc',
@@ -138,12 +154,13 @@ describe('MetamaskController token-resolution delegation stubs', () => {
     it('returns the token details from the messenger', async () => {
       const expected = { standard: 'ERC721', decimals: 0 };
       const ctx = makeContext(Promise.resolve(expected));
-      const result = await MetamaskController.prototype.getTokenStandardAndDetails.call(
-        ctx,
-        '0xtoken',
-        '0xuser',
-        '1',
-      );
+      const result =
+        await MetamaskController.prototype.getTokenStandardAndDetails.call(
+          ctx,
+          '0xtoken',
+          '0xuser',
+          '1',
+        );
       expect(result).toStrictEqual(expected);
     });
   });
@@ -158,7 +175,10 @@ describe('MetamaskController permission-management delegation stubs', () => {
     it('calls PermissionManagement:removePermissionsFor with subjects', async () => {
       const subjects = { 'https://example.com': ['eth_accounts'] };
       const ctx = makeContext(Promise.resolve());
-      await MetamaskController.prototype.removePermissionsFor.call(ctx, subjects);
+      await MetamaskController.prototype.removePermissionsFor.call(
+        ctx,
+        subjects,
+      );
       expect(ctx.controllerMessenger.call).toHaveBeenCalledWith(
         'PermissionManagement:removePermissionsFor',
         subjects,
@@ -170,7 +190,11 @@ describe('MetamaskController permission-management delegation stubs', () => {
     it('calls PermissionManagement:rejectPendingApproval with id and error', async () => {
       const ctx = makeContext(Promise.resolve());
       const error = new Error('User rejected');
-      await MetamaskController.prototype.rejectPendingApproval.call(ctx, 'approval-id', error);
+      await MetamaskController.prototype.rejectPendingApproval.call(
+        ctx,
+        'approval-id',
+        error,
+      );
       expect(ctx.controllerMessenger.call).toHaveBeenCalledWith(
         'PermissionManagement:rejectPendingApproval',
         'approval-id',
@@ -208,7 +232,11 @@ describe('MetamaskController snap-management delegation stubs', () => {
     it('calls SnapController:install with origin and requestedSnaps', () => {
       const ctx = makeContext();
       const requestedSnaps = { 'npm:my-snap': {} };
-      MetamaskController.prototype.updateSnap.call(ctx, 'https://dapp.io', requestedSnaps);
+      MetamaskController.prototype.updateSnap.call(
+        ctx,
+        'https://dapp.io',
+        requestedSnaps,
+      );
       expect(ctx.controllerMessenger.call).toHaveBeenCalledWith(
         'SnapController:install',
         'https://dapp.io',

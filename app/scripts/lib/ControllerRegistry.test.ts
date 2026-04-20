@@ -42,11 +42,7 @@ describe('ControllerRegistry', () => {
   describe('uiConfig / persistConfig', () => {
     it('exposes the uiConfig passed at construction', () => {
       const uiConfig = { A: makeMockController('A', { x: 1 }) };
-      const registry = new ControllerRegistry(
-        messenger as never,
-        uiConfig,
-        {},
-      );
+      const registry = new ControllerRegistry(messenger as never, uiConfig, {});
       expect(registry.uiConfig).toBe(uiConfig);
     });
 
@@ -82,8 +78,14 @@ describe('ControllerRegistry', () => {
 
     it('returns each controller\'s live state keyed by config key for "persist"', () => {
       const ctrlA = makeMockController('ControllerA', { value: 1 });
-      const registry = new ControllerRegistry(messenger as never, {}, { A: ctrlA });
-      expect(registry.getKeyedState('persist')).toStrictEqual({ A: { value: 1 } });
+      const registry = new ControllerRegistry(
+        messenger as never,
+        {},
+        { A: ctrlA },
+      );
+      expect(registry.getKeyedState('persist')).toStrictEqual({
+        A: { value: 1 },
+      });
     });
 
     it('reflects state mutations made after construction', () => {
@@ -110,16 +112,32 @@ describe('ControllerRegistry', () => {
 
   describe('getPersistedState', () => {
     it('includes properties whose metadata has persist: true', () => {
-      const ctrl = makeMockController('C', { a: 1, b: 2 }, { a: true, b: true });
-      const registry = new ControllerRegistry(messenger as never, {}, { C: ctrl });
+      const ctrl = makeMockController(
+        'C',
+        { a: 1, b: 2 },
+        { a: true, b: true },
+      );
+      const registry = new ControllerRegistry(
+        messenger as never,
+        {},
+        { C: ctrl },
+      );
       const persisted = registry.getPersistedState();
       expect(persisted.C).toHaveProperty('a', 1);
       expect(persisted.C).toHaveProperty('b', 2);
     });
 
     it('excludes properties whose metadata has persist: false', () => {
-      const ctrl = makeMockController('C', { keep: 1, drop: 2 }, { keep: true, drop: false });
-      const registry = new ControllerRegistry(messenger as never, {}, { C: ctrl });
+      const ctrl = makeMockController(
+        'C',
+        { keep: 1, drop: 2 },
+        { keep: true, drop: false },
+      );
+      const registry = new ControllerRegistry(
+        messenger as never,
+        {},
+        { C: ctrl },
+      );
       const persisted = registry.getPersistedState();
       expect(persisted.C).toHaveProperty('keep', 1);
       expect(persisted.C).not.toHaveProperty('drop');
