@@ -677,7 +677,7 @@ export const MultichainAccountsConnectPage: React.FC<
                     />
                   </Box>
                   <TextButton
-                    textProps={{ color: TextColor.InfoDefault }}
+                    color={TextColor.InfoDefault}
                     onClick={setModeToEditAccounts}
                     data-testid="edit"
                   >

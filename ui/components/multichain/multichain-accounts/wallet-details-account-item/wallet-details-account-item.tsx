@@ -55,7 +55,7 @@ const WalletDetailsAccountItem = ({
       <button
         type="button"
         onClick={() => onClick(account)}
-        className="w-full cursor-pointer border-none bg-transparent p-0 text-left"
+        className="w-full cursor-pointer border-none bg-transparent text-left"
         data-testid={`wallet-details-account-item-${account.id}`}
       >
         <Box
