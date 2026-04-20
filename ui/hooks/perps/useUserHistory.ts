@@ -29,7 +29,9 @@ export type UseUserHistoryResult = {
   isLoading: boolean;
   /** Error message if fetching failed, null otherwise */
   error: string | null;
-  /** Function to manually refetch the user history */
+  /** Cache-respecting fetch — initial mount / re-mount within TTL reuses cached data */
+  fetch: () => Promise<UserHistoryItem[]>;
+  /** Invalidate cache then fetch — explicit user refresh */
   refetch: () => Promise<UserHistoryItem[]>;
 };
 
@@ -90,6 +92,7 @@ export function useUserHistory({
     userHistory,
     isLoading,
     error,
+    fetch: fetchUserHistory,
     refetch,
   };
 }

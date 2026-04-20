@@ -99,6 +99,7 @@ export function usePerpsTransactionHistory({
     userHistory,
     isLoading: userHistoryLoading,
     error: userHistoryError,
+    fetch: fetchUserHistoryCached,
     refetch: refetchUserHistory,
   } = useUserHistory({ startTime, endTime, accountId });
 
@@ -192,6 +193,14 @@ export function usePerpsTransactionHistory({
     }
   }, [startTime, endTime, accountId]);
 
+  const initialFetch = useCallback(async () => {
+    // Cache-respecting path — lets rapid re-mounts within the 10s TTL hit the
+    // coalesce cache instead of re-firing HL calls.
+    const freshUserHistory = await fetchUserHistoryCached();
+    userHistoryRef.current = freshUserHistory;
+    await fetchAllTransactions();
+  }, [fetchAllTransactions, fetchUserHistoryCached]);
+
   const refetch = useCallback(async () => {
     // Pull-to-refresh must bypass the short-TTL coalesce cache. Drop the three
     // keys fetchAllTransactions consumes (refetchUserHistory invalidates its
@@ -210,9 +219,9 @@ export function usePerpsTransactionHistory({
   useEffect(() => {
     if (!skipInitialFetch && !initialFetchDone.current) {
       initialFetchDone.current = true;
-      refetch();
+      initialFetch();
     }
-  }, [skipInitialFetch, refetch]);
+  }, [skipInitialFetch, initialFetch]);
 
   // Combine loading states
   const combinedIsLoading = useMemo(
