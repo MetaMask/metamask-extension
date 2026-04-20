@@ -19,6 +19,11 @@ export const isAssetsUnifyStateFeatureEnabled = (
   featureFlag: AssetsUnifyStateFeatureFlag | undefined | null,
   featureVersion: string,
 ): boolean => {
+  console.log('process.env.IN_TEST +++++++', process.env.IN_TEST);
+  console.log(
+    'process.env.METAMASK_ENVIRONMENT +++++++',
+    process.env.METAMASK_ENVIRONMENT,
+  );
   if (
     process.env.IN_TEST &&
     process.env.METAMASK_ENVIRONMENT === 'development'
