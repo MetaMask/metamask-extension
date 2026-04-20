@@ -179,3 +179,4 @@ mm launch --state custom --preset withMultipleAccounts
 
 - **Agent Skill**: `.claude/skills/metamask-visual-testing/SKILL.md` - Concise command reference for agents.
 - **Core Package**: `@metamask/client-mcp-core` - Generic daemon infrastructure.
+- **Migrating from MCP?** If you previously configured an MCP server for MetaMask, see [mcp-cli-migration.md](./mcp-cli-migration.md).
