@@ -904,6 +904,18 @@ export default class MetamaskController {
     overrideActionHandler('SeedlessOnboardingController:clearState', (...a) =>
       this.seedlessOnboardingController.clearState(...a),
     );
+    overrideActionHandler(
+      'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
+      (...a) =>
+        this.seedlessOnboardingController.createToprfKeyAndBackupSeedPhrase(
+          ...a,
+        ),
+    );
+    overrideActionHandler(
+      'SeedlessOnboardingController:getSecretDataBackupState',
+      (...a) =>
+        this.seedlessOnboardingController.getSecretDataBackupState(...a),
+    );
 
     // PermissionController
     overrideActionHandler('PermissionController:clearState', (...a) =>
@@ -4028,7 +4040,7 @@ export default class MetamaskController {
       password,
     );
     // Return the primary keyring so callers can read its metadata.id.
-    return this.keyringController.state.keyrings[0];
+    return this.keyringController?.state?.keyrings[0];
   }
 
   async createNewVaultAndRestore(password, encodedSeedPhrase) {
@@ -4037,8 +4049,10 @@ export default class MetamaskController {
       password,
       encodedSeedPhrase,
     );
-    const { completedOnboarding } = this.onboardingController.state;
-    const { useExternalServices } = this.preferencesController.state;
+    const completedOnboarding =
+      this.onboardingController?.state?.completedOnboarding;
+    const useExternalServices =
+      this.preferencesController?.state?.useExternalServices;
     if (completedOnboarding && useExternalServices) {
       // Fire-and-forget: discovery runs in background, same as importMnemonicToVault.
       // eslint-disable-next-line no-void
@@ -4528,7 +4542,12 @@ export default class MetamaskController {
     return this.controllerMessenger.call(
       'AccountManagement:getBalance',
       address,
-      provider,
+      {
+        chainId: this.#getGlobalChainId(),
+        getAccountTrackerState: () => this.accountTrackerController.state,
+        provider,
+        toChecksumHexAddress,
+      },
     );
   }
 

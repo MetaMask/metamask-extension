@@ -27,7 +27,7 @@ async function runImportScripts() {
 
   const startImportScriptsTime = performance.now();
 
-  await import('./scripts/background');
+  await import('./scripts/background.js');
 
   const endImportScriptsTime = performance.now();
 
