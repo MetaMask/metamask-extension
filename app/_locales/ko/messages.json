@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "계정 식별 아이콘"
   },
-  "accountIdenticonDescription": {
-    "message": "세 가지 고유한 아이콘 스타일 중 하나를 선택하면 계정을 한눈에 식별할 수 있습니다."
-  },
   "accountIsntConnectedToastText": {
     "message": "$1은(는) $2에 연결되지 않았습니다"
   },

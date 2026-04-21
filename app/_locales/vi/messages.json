@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Biểu tượng tài khoản"
   },
-  "accountIdenticonDescription": {
-    "message": "Chọn trong số ba kiểu biểu tượng độc đáo khác nhau để giúp bạn nhận diện tài khoản một cách nhanh chóng."
-  },
   "accountIsntConnectedToastText": {
     "message": "$1 không được kết nối với $2"
   },

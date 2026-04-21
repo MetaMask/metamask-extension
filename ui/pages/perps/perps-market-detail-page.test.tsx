@@ -227,6 +227,7 @@ jest.mock('../../hooks/perps', () => ({
   usePerpsTransactionHistory: jest.fn(),
   usePerpsMarginCalculations: jest.fn(),
   usePerpsMarketFills: (...args: unknown[]) => mockUsePerpsMarketFills(...args),
+  usePerpsMarketInfo: jest.fn(),
 }));
 jest.mock(
   '../../components/app/perps/hooks/usePerpsDepositConfirmation',

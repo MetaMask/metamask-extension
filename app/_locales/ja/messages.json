@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "アカウントのアイデンティコン"
   },
-  "accountIdenticonDescription": {
-    "message": "アカウントを一目で見分けられるよう、3種類の異なるスタイルのアイコンからお選びください。"
-  },
   "accountIsntConnectedToastText": {
     "message": "$1は$2に接続されていません"
   },

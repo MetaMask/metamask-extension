@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "अकाउंट आइकॉन"
   },
-  "accountIdenticonDescription": {
-    "message": "तीन अलग-अलग शैली के अनोखे आइकॉन में से चुनें, जो आपको एकाउंट्स को एक नजर में पहचानने में मदद कर सकते हैं।"
-  },
   "accountIsntConnectedToastText": {
     "message": "$2 से $1 कनेक्टेड नहीं है"
   },

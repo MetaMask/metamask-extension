@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Εικονίδιο λογαριασμού"
   },
-  "accountIdenticonDescription": {
-    "message": "Επιλέξτε ανάμεσα σε τρία διαφορετικά στυλ μοναδικών εικονιδίων που σας βοηθούν να αναγνωρίζετε τους λογαριασμούς σας με μια ματιά."
-  },
   "accountIsntConnectedToastText": {
     "message": "Το $1 δεν συνδέεται με το $2"
   },

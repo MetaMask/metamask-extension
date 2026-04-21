@@ -161,6 +161,14 @@ describe('requestEthereumAccountsHandler', () => {
             number_of_accounts: 3,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             number_of_accounts_connected: 2,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_iframe: false,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_cross_origin_iframe: false,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            iframe_origin: null,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            top_level_origin: null,
           },
           referrer: {
             url: 'http://test.com',

@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "账户 Identicon"
   },
-  "accountIdenticonDescription": {
-    "message": "从三种不同风格的独特图标中选择，助您一目了然地识别账户。"
-  },
   "accountIsntConnectedToastText": {
     "message": "$1 未连接到 $2"
   },
