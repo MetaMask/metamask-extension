@@ -190,7 +190,7 @@ describe('Messenger Client Init Utils', () => {
       );
 
       const { messengerClientApi } = initMessengerClients({
-        baseControllerMessenger: buildControllerMessenger(),
+        baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
           [CONTROLLER_NAME_2_MOCK]: init2Mock,
