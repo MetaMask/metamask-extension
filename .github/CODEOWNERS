@@ -242,10 +242,6 @@ app/scripts/lib/setupSentry.js                        @MetaMask/extension-platfo
 app/scripts/sentry-install.js                         @MetaMask/extension-platform
 shared/lib/trace.ts                                   @MetaMask/extension-platform
 
-# Documentation
-/CHANGELOG.md                                         @MetaMask/extension-platform
-/README.md                                            @MetaMask/extension-platform
-
 # Dependencies
 /.depcheckrc.yml                                      @MetaMask/extension-platform
 /crowdin.yml                                          @MetaMask/extension-platform
