@@ -1,0 +1,75 @@
+# Required for CI: gh resolves PR file lists; repo slug must match GitHub.
+repo: MetaMask/metamask-extension
+
+critical:
+  files:
+    - package.json
+    - yarn.lock
+    - babel.config.js
+    - tsconfig.json
+    - builds.yml
+    - app/manifest/v2/_base.json
+    - app/manifest/v3/_base.json
+    - app/scripts/metamask-controller.js
+    - app/scripts/background.js
+    - app/service-worker.ts
+    - app/scripts/ui.js
+    - app/scripts/contentscript.js
+    - app/scripts/inpage.js
+    - app/scripts/migrations/index.js
+
+  keywords:
+    - Controller
+    - Keyring
+    - Permission
+    - Middleware
+    - Migration
+
+  paths:
+    # Security surface
+    - app/scripts/controllers/permissions/
+    - app/scripts/lib/snap-keyring/
+    - app/scripts/lib/encryptor-factory.ts
+    - app/scripts/lib/state-corruption/
+    - app/scripts/lib/ppom/
+    - app/scripts/lib/trust-signals/
+    # Core wiring
+    - app/scripts/messenger-client-init/
+    - app/scripts/streams/
+    - app/scripts/lib/rpc-method-middleware/
+    - app/scripts/lib/transaction/
+    # Network / RPC
+    - app/scripts/lib/createMetamaskMiddleware.ts
+    - app/scripts/lib/network-controller/
+    # Build system
+    - development/build/
+    - development/webpack/
+    - lavamoat/
+    # State management
+    - ui/store/
+    - ui/ducks/
+    - ui/selectors/
+    - shared/lib/selectors/
+    # CI / workflows
+    - .github/workflows/
+    - .github/scripts/
+
+searchDirs:
+  - app/
+  - ui/
+  - shared/
+  - development/
+  - test/
+  - .github/
+
+models:
+  default: azure/grok-4-fast-reasoning
+  escalation: anthropic/claude-sonnet-4-6
+  escalationThreshold: 2
+
+  criticalFileThreshold: 5
+  fileCountThreshold: 10
+  largeDiffThreshold: 300
+
+modes:
+  - pr-risk-analysis

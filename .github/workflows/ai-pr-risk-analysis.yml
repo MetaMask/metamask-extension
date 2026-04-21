@@ -1,0 +1,50 @@
+name: AI PR risk analysis
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - ready_for_review
+
+concurrency:
+  group: ai-pr-risk-analysis-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze
+    if: >-
+      github.event_name == 'pull_request'
+      && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+      && github.event.pull_request.draft == false
+      && (github.event.pull_request.base.ref == 'main' || startsWith(github.event.pull_request.base.ref, 'release/'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # https://github.com/MetaMask/ai-analyzer/releases
+      - name: Checkout AI Analyzer
+        uses: actions/checkout@v4
+        with:
+          repository: MetaMask/ai-analyzer
+          ref: v1
+          path: .ai-analyzer-action
+          token: ${{ secrets.AI_ANALYZER_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Run AI PR Analysis
+        uses: ./.ai-analyzer-action
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          mode: pr-risk-analysis
+          add-comment: true
+          add-label: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          litellm-api-key: ${{ secrets.LITELLM_API_KEY }}
