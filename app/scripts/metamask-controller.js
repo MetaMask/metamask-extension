@@ -5745,6 +5745,7 @@ export default class MetamaskController extends EventEmitter {
     const patchBuffer = new PatchBuffer();
     let uiReady = false;
     let flushScheduled = false;
+    let drainPending = false;
     const messengerUnsubscribers = [];
 
     const sendPendingPatches = () => {
@@ -5760,15 +5761,28 @@ export default class MetamaskController extends EventEmitter {
       // Flatten keyed patches to flat Patch[] for UI compatibility
       const flatPatches = Object.values(keyedPatches).flat();
 
-      outStream.write({
+      const canContinue = outStream.write({
         jsonrpc: '2.0',
         method: 'sendUpdate',
         params: [flatPatches],
       });
+
+      if (!canContinue) {
+        // Stream buffer is full — pause flushing until drained. Patches
+        // arriving while paused accumulate in patchBuffer and flush on
+        // the next scheduleFlush after drain.
+        drainPending = true;
+        outStream.once('drain', () => {
+          drainPending = false;
+          if (patchBuffer.hasPending) {
+            scheduleFlush();
+          }
+        });
+      }
     };
 
     const scheduleFlush = () => {
-      if (!flushScheduled) {
+      if (!flushScheduled && !drainPending) {
         flushScheduled = true;
         queueMicrotask(() => {
           flushScheduled = false;
