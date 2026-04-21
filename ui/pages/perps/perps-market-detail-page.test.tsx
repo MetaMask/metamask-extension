@@ -909,6 +909,31 @@ describe('PerpsMarketDetailPage', () => {
       );
     });
 
+    it('shows cross-margin toast and does not navigate when Add exposure is clicked on a cross-margin position', async () => {
+      const crossPosition = {
+        ...mockPositions[0],
+        leverage: { type: 'cross' as const, value: 5 },
+      };
+      mockLivePositions.mockReturnValue({
+        positions: [crossPosition, ...mockPositions.slice(1)],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+      fireEvent.click(screen.getByTestId('perps-modify-menu-add-exposure'));
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsCrossMarginNotSupportedTitle',
+        description: messages.perpsCrossMarginNotSupportedDescription.message,
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(
+        expect.stringContaining('mode=modify'),
+      );
+    });
+
     it('opens Close position modal when Reduce exposure is clicked', async () => {
       const store = mockStore(createMockState(true));
 

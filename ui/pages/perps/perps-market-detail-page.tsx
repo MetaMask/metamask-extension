@@ -820,9 +820,24 @@ const PerpsMarketDetailPage: React.FC = () => {
         PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
     });
     setIsModifyMenuOpen(false);
+    if (position.leverage?.type === 'cross') {
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.INCREASE_POSITION_CROSS_MARGIN_BLOCKED,
+        description: t('perpsCrossMarginNotSupportedDescription'),
+      });
+      return;
+    }
     const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
     navigate(buildOrderEntryUrl(direction, 'modify'));
-  }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
+  }, [
+    position,
+    decodedSymbol,
+    navigate,
+    buildOrderEntryUrl,
+    track,
+    replacePerpsToastByKey,
+    t,
+  ]);
 
   const handleReduceExposure = useCallback(() => {
     if (!isEligible) {
