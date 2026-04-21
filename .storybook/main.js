@@ -1,6 +1,7 @@
 const path = require('path');
 const { ProvidePlugin } = require('webpack');
 const loadTailwindPostcss = require('../development/lib/load-tailwind-postcss.cjs');
+const autoprefixer = require('autoprefixer');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const dotenv = require('dotenv');
 dotenv.config({ path: path.resolve(__dirname, '../.metamaskrc') });
@@ -79,7 +80,8 @@ module.exports = {
           options: {
             postcssOptions: {
               // Use repo bridge so `base` matches webpack/gulp (Tailwind `@source` scanning).
-              plugins: [loadTailwindPostcss()],
+              // Include autoprefixer so non-Tailwind CSS also gets vendor prefixes.
+              plugins: [loadTailwindPostcss(), autoprefixer()],
             },
           },
         },

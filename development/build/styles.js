@@ -9,7 +9,7 @@ const postcss = require('gulp-postcss');
 const pipeline = pify(require('readable-stream').pipeline);
 const sass = require('sass-embedded');
 const gulpSass = require('gulp-sass')(sass);
-const tailwindPostcss = require('@tailwindcss/postcss');
+const loadTailwindPostcss = require('../lib/load-tailwind-postcss.cjs');
 const { TASKS } = require('./constants');
 const { createTask } = require('./task');
 
@@ -83,7 +83,7 @@ async function buildScssPipeline(src, dest, devMode) {
         // consistently in this gulp/PostCSS pipeline instead of depending on
         // process.cwd(). Tailwind docs:
         // https://tailwindcss.com/docs/detecting-classes-in-source-files
-        tailwindPostcss({ base: repoRoot }),
+        loadTailwindPostcss({ base: repoRoot }),
         rtlcss(),
         discardFonts(['woff2']),
       ]),
