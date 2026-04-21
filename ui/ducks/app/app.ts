@@ -4,19 +4,15 @@ import type {
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { Action, AnyAction } from 'redux';
-import { ModalType } from '@metamask/subscription-controller';
 import {
   HardwareTransportStates,
   WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
-import {
-  PasswordChangeToastType,
-  ClaimSubmitToastType,
-} from '../../../shared/constants/app-state';
 
 type AppState = {
   customNonceValue: string;
+  isAccountMenuOpen: boolean;
   isNetworkMenuOpen: boolean;
   nextNonce: string | null;
   pendingTokens: {
@@ -54,7 +50,6 @@ type AppState = {
   };
   showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
-  showSupportDataConsentModal: boolean;
   keyringRemovalSnapModal: {
     snapName: string;
     result: 'success' | 'failure' | 'none';
@@ -90,6 +85,7 @@ type AppState = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
+  showWhatsNewPopup: boolean;
   showTermsOfUsePopup: boolean;
   singleExceptions: {
     testKey: string | null;
@@ -110,7 +106,6 @@ type AppState = {
         nickname?: string;
         editCompleted?: boolean;
         newNetwork?: boolean;
-        trackRpcUpdateFromBanner?: boolean;
       }
     | undefined;
   newNetworkAddedConfigurationId: string;
@@ -127,23 +122,9 @@ type AppState = {
   snapsInstallPrivacyWarningShown: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
-  isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
-  showNewSrpAddedToast: number | false;
-  showPasswordChangeToast: PasswordChangeToastType | null;
-  showCopyAddressToast: boolean;
-  showClaimSubmitToast: ClaimSubmitToastType | null;
-  showInfuraSwitchToast: boolean;
-  shieldEntryModal?: {
-    show: boolean;
-    shouldSubmitEvents: boolean;
-    modalType?: ModalType;
-    triggeringCohort?: string;
-    /**
-     * Whether the user has interacted with the modal.
-     */
-    hasUserInteractedWithModal?: boolean;
-  };
+  showNewSrpAddedToast: boolean;
+  accountDisconnectedToast: { accountType: string; accountName: string } | null;
 };
 
 export type AppSliceState = {
@@ -153,6 +134,7 @@ export type AppSliceState = {
 // default state
 const initialState: AppState = {
   customNonceValue: '',
+  isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
   nextNonce: null,
   pendingTokens: {},
@@ -209,6 +191,7 @@ const initialState: AppState = {
   requestAccountTabs: {},
   openMetaMaskTabs: {},
   currentWindowTab: {},
+  showWhatsNewPopup: true,
   showTermsOfUsePopup: true,
   singleExceptions: {
     testKey: null,
@@ -237,14 +220,9 @@ const initialState: AppState = {
   snapsInstallPrivacyWarningShown: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
-  isAccessedFromDappConnectedSitePopover: false,
   errorInSettings: null,
   showNewSrpAddedToast: false,
-  showPasswordChangeToast: null,
-  showCopyAddressToast: false,
-  showClaimSubmitToast: null,
-  showInfuraSwitchToast: false,
-  showSupportDataConsentModal: false,
+  accountDisconnectedToast: null,
 };
 
 export default function reduceApp(
@@ -261,6 +239,12 @@ export default function reduceApp(
       return {
         ...appState,
         customNonceValue: action.value,
+      };
+
+    case actionConstants.TOGGLE_ACCOUNT_MENU:
+      return {
+        ...appState,
+        isAccountMenuOpen: !appState.isAccountMenuOpen,
       };
 
     case actionConstants.SET_NEXT_NONCE: {
@@ -417,6 +401,13 @@ export default function reduceApp(
         alertOpen: false,
         alertMessage: null,
       };
+
+    case actionConstants.SET_ACCOUNT_DETAILS_ADDRESS: {
+      return {
+        ...appState,
+        accountDetailsAddress: action.payload,
+      };
+    }
 
     // qr scanner methods
     case actionConstants.QR_CODE_DETECTED:
@@ -651,6 +642,12 @@ export default function reduceApp(
         openMetaMaskTabs: action.payload,
       };
 
+    case actionConstants.HIDE_WHATS_NEW_POPUP:
+      return {
+        ...appState,
+        showWhatsNewPopup: false,
+      };
+
     case actionConstants.CAPTURE_SINGLE_EXCEPTION:
       return {
         ...appState,
@@ -697,15 +694,7 @@ export default function reduceApp(
         ...appState,
         isAddingNewNetwork: Boolean(action.payload?.isAddingNewNetwork),
         isMultiRpcOnboarding: Boolean(action.payload?.isMultiRpcOnboarding),
-        isAccessedFromDappConnectedSitePopover: Boolean(
-          action.payload?.isAccessedFromDappConnectedSitePopover,
-        ),
         isNetworkMenuOpen: !appState.isNetworkMenuOpen,
-      };
-    case actionConstants.CLOSE_NETWORK_MENU:
-      return {
-        ...appState,
-        isNetworkMenuOpen: false,
       };
     case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
       return {
@@ -737,6 +726,7 @@ export default function reduceApp(
         ...appState,
         errorInSettings: null,
       };
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
         ...appState,
@@ -754,42 +744,17 @@ export default function reduceApp(
           result: 'none',
         },
       };
+    ///: END:ONLY_INCLUDE_IF
     case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
       return {
         ...appState,
         showNewSrpAddedToast: action.payload,
       };
 
-    case actionConstants.SET_SHOW_COPY_ADDRESS_TOAST:
+    case actionConstants.SET_ACCOUNT_DISCONNECTED_TOAST:
       return {
         ...appState,
-        showCopyAddressToast: action.payload,
-      };
-
-    case actionConstants.SET_SHOW_CLAIM_SUBMIT_TOAST:
-      return {
-        ...appState,
-        showClaimSubmitToast: action.payload,
-      };
-
-    case actionConstants.SET_SHOW_INFURA_SWITCH_TOAST:
-      return {
-        ...appState,
-        showInfuraSwitchToast: action.payload,
-      };
-
-    case actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL:
-      return {
-        ...appState,
-        showSupportDataConsentModal: action.payload,
-      };
-
-    case actionConstants.SET_SHIELD_ENTRY_MODAL_STATUS:
-      return {
-        ...appState,
-        shieldEntryModal: {
-          ...action.payload,
-        },
+        accountDisconnectedToast: action.payload,
       };
 
     default:
@@ -798,6 +763,12 @@ export default function reduceApp(
 }
 
 // Action Creators
+export function hideWhatsNewPopup(): Action {
+  return {
+    type: actionConstants.HIDE_WHATS_NEW_POPUP,
+  };
+}
+
 export function openBasicFunctionalityModal(): Action {
   return {
     type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN,
@@ -850,12 +821,6 @@ export function setOnBoardedInThisUISession(
   return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, payload };
 }
 
-export function setShowCopyAddressToast(
-  payload: boolean,
-): PayloadAction<boolean> {
-  return { type: actionConstants.SET_SHOW_COPY_ADDRESS_TOAST, payload };
-}
-
 export function setCustomTokenAmount(payload: string): PayloadAction<string> {
   return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, payload };
 }
@@ -901,14 +866,6 @@ export function getLedgerWebHidConnectedStatus(
 
 export function getLedgerTransportStatus(state: AppSliceState): string | null {
   return state.appState.ledgerTransportStatus;
-}
-
-export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
-  return state.appState.showSupportDataConsentModal;
-}
-
-export function getShowCopyAddressToast(state: AppSliceState): boolean {
-  return state.appState.showCopyAddressToast;
 }
 
 export function openDeleteMetaMetricsDataModal(): Action {
