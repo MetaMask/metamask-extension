@@ -17,9 +17,9 @@ const mockRemovePermissionsFor = jest.fn(
 const mockHidePermittedNetworkToast = jest.fn(() => ({
   type: 'SHOW_PERMITTED_NETWORK_TOAST_CLOSE',
 }));
-const mockSetActiveNetwork = jest.fn(
-  (_networkClientId: string) => ({ type: 'SET_ACTIVE_NETWORK' }),
-);
+const mockSetActiveNetwork = jest.fn((_networkClientId: string) => ({
+  type: 'SET_ACTIVE_NETWORK',
+}));
 const mockSetNetworkClientIdForDomain = jest.fn(
   (_origin: string, _networkClientId: string) => Promise.resolve(),
 );
