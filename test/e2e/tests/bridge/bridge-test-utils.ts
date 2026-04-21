@@ -848,8 +848,16 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
             }
           : {
               'eip155:1/slip44:60': tokenEntry('ethereum', resolvedEthPrice, 0),
-              'eip155:59144/slip44:60': tokenEntry('ethereum', resolvedEthPrice, 0),
-              'eip155:42161/slip44:60': tokenEntry('ethereum', resolvedEthPrice, 0),
+              'eip155:59144/slip44:60': tokenEntry(
+                'ethereum',
+                resolvedEthPrice,
+                0,
+              ),
+              'eip155:42161/slip44:60': tokenEntry(
+                'ethereum',
+                resolvedEthPrice,
+                0,
+              ),
               ...stablecoins,
             };
 

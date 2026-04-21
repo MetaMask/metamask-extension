@@ -55,8 +55,7 @@ export const mockSpotPrices = async (
  * Mocks Price API v3 spot-prices (native ETH for the given chain) and v1 exchange-rates.
  *
  * @param mockServer - Mockttp instance.
- * @param ethPrice - Spot price for native ETH on that chain (USD). Defaults to
- *   `MOCK_ETH_CONVERSION_RATE` when assets-unify is enabled, `1` otherwise.
+ * @param ethPrice - Spot price for native ETH on that chain (USD). Defaults to `MOCK_ETH_CONVERSION_RATE` when assets-unify is enabled, `1` otherwise.
  * @param chainId - EVM chain id in hex (e.g. `0x1`, `0x539`); used to build `eip155:<n>/slip44:60`.
  */
 export async function mockPriceApi(
@@ -65,7 +64,10 @@ export async function mockPriceApi(
   chainId: `0x${string}` = '0x1',
 ) {
   const resolvedEthPrice =
-    ethPrice ?? (process.env.ASSETS_UNIFIED_STATE_ENABLED==='true' ? MOCK_ETH_CONVERSION_RATE : 1);
+    ethPrice ??
+    (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
+      ? MOCK_ETH_CONVERSION_RATE
+      : 1);
   const chainIdDecimal = Number.parseInt(chainId, 16);
   const nativeAssetId = `eip155:${chainIdDecimal}/slip44:60`;
 
