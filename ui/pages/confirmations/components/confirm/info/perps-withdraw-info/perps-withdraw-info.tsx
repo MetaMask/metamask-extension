@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
+import { useTransactionPayPostQuote } from '../../../../hooks/pay/useTransactionPayPostQuote';
 import { CustomAmountInfo } from '../../../info/custom-amount-info';
 import { PerpsWithdrawBalance } from '../../../perps-confirmations/perps-withdraw-balance';
 import { PERPS_CURRENCY, ARBITRUM_USDC } from '../../../../constants/perps';
@@ -11,6 +12,8 @@ export const PerpsWithdrawInfo = () => {
     symbol: ARBITRUM_USDC.symbol,
     tokenAddress: ARBITRUM_USDC.address,
   });
+
+  useTransactionPayPostQuote();
 
   return (
     // Percentage buttons (25/50/75/Max) are intentionally hidden for MVP —

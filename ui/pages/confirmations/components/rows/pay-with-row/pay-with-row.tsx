@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useCallback, useMemo, useState } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
 import {
   Box,
@@ -48,6 +52,7 @@ type PayWithRowContentProps = {
   canEdit: boolean;
   from: string | undefined;
   onOpenModal: () => void;
+  isWithdraw: boolean;
 };
 
 type PayWithRowPillProps = PayWithRowContentProps & {
@@ -98,6 +103,10 @@ export function PayWithRow({
 
   const canEdit = fromAccount ? !isHardwareAccount(fromAccount) : true;
 
+  const isWithdraw = hasTransactionType(currentConfirmation, [
+    TransactionType.perpsWithdraw,
+  ]);
+
   const handleOpenModal = useCallback(() => {
     if (canEdit) {
       setIsModalOpen(true);
@@ -131,6 +140,7 @@ export function PayWithRow({
     canEdit,
     from,
     onOpenModal: handleOpenModal,
+    isWithdraw,
   };
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
@@ -161,6 +171,7 @@ function PayWithRowInline({
   from,
   onOpenModal,
   ownerId,
+  isWithdraw,
 }: PayWithRowContentProps & { ownerId: string }) {
   const t = useI18nContext();
 
@@ -169,7 +180,7 @@ function PayWithRowInline({
       alertKey={RowAlertKey.PayWith}
       ownerId={ownerId}
       data-testid="pay-with-row"
-      label={t('payWith')}
+      label={isWithdraw ? t('withdrawTo') : t('payWith')}
       rowVariant={ConfirmInfoRowSize.Default}
     >
       <Box
@@ -219,6 +230,7 @@ function PayWithRowPill({
   canEdit,
   from,
   onOpenModal,
+  isWithdraw,
 }: PayWithRowPillProps) {
   const t = useI18nContext();
 
@@ -250,7 +262,7 @@ function PayWithRowPill({
         color={TextColor.textDefault}
         data-testid="pay-with-symbol"
       >
-        {`${t('payWith')} ${displayToken.symbol}`}
+        {`${isWithdraw ? t('withdrawTo') : t('payWith')} ${displayToken.symbol}`}
       </Text>
       <Text
         variant={TextVariant.bodyMdMedium}

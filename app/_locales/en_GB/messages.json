@@ -5318,6 +5318,10 @@
     "message": "Pay with",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "withdrawTo": {
+    "message": "Receive",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "payWithModalTitle": {
     "message": "Pay with",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
