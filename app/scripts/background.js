@@ -1979,7 +1979,7 @@ export function setupController(
 
     // Defer showing the failure badge until the notification closes
     if (failedTxCount > 0 && !isOnlyNotificationOpen()) {
-      label = '\u200B';
+      label = getBadgeLabel(failedTxCount, BADGE_MAX_COUNT);
       badgeColor = BADGE_COLOR_FAILED;
     } else if (pendingApprovalCount > 0) {
       label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
