@@ -1,9 +1,18 @@
 name: Persist skills from `@metamaskbot /remember`
 
 # Captures a team skill into the configured upstream skills repo when a
-# trusted reviewer posts `@metamaskbot /remember <capture>` on a PR.
+# reviewer posts `@metamaskbot /remember <capture>` on a PR.
+#
+# Trust tiers:
+#   direct → @MetaMask/extension-platform team members — committed straight to
+#            `domains/inbox/` on the skills repo.
+#   pr     → other org members, collaborators, and contributors — opens a PR
+#            against the skills repo with the team pinged in the body.
+#   reject → drive-by commenters (author_association == NONE) — rejection
+#            reply on the PR, no write.
+#
 # Upstream source + ref come from `.skills/CONFIG` on the default branch,
-# so migrating the source repo is a one-line change.
+# so migrating the skills repo is a one-line change.
 
 on:
   issue_comment:
@@ -13,18 +22,17 @@ concurrency:
   group: skills-remember-${{ github.event.comment.id }}
   cancel-in-progress: false
 
+env:
+  TEAM_SLUG: MetaMask/extension-platform
+
 jobs:
   capture:
-    # Gate: PR comment, starts with the command, authored by a trusted role.
+    # Gate at the workflow level: PR comment that starts with the command.
+    # Finer-grained trust is resolved in the `trust` step below.
     if: >-
       ${{
         github.event.issue.pull_request &&
-        startsWith(github.event.comment.body, '@metamaskbot /remember') &&
-        (
-          github.event.comment.author_association == 'OWNER' ||
-          github.event.comment.author_association == 'MEMBER' ||
-          github.event.comment.author_association == 'COLLABORATOR'
-        )
+        startsWith(github.event.comment.body, '@metamaskbot /remember')
       }}
     runs-on: ubuntu-latest
     environment: default-branch
@@ -32,7 +40,48 @@ jobs:
       issues: write
       pull-requests: write
     steps:
+      - name: Parse capture text from comment body
+        id: parse
+        env:
+          # Untrusted input — passed via env, never interpolated into script text.
+          BODY: ${{ github.event.comment.body }}
+        run: |
+          set -euo pipefail
+          CAPTURE=$(printf '%s' "$BODY" \
+            | sed -E '1 s/^@metamaskbot[[:space:]]+\/remember[[:space:]]*//i' \
+            | sed -E 's/^[[:space:]]+|[[:space:]]+$//g')
+          if [[ -z "$CAPTURE" ]]; then
+            echo "empty=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          printf '%s' "$CAPTURE" > "${RUNNER_TEMP}/capture.txt"
+          echo "empty=false" >> "$GITHUB_OUTPUT"
+
+      - name: Determine trust tier
+        if: steps.parse.outputs.empty == 'false'
+        id: trust
+        env:
+          GH_TOKEN: ${{ secrets.METAMASKBOT_ORG_READ_TOKEN }}
+          USER: ${{ github.event.comment.user.login }}
+          ASSOC: ${{ github.event.comment.author_association }}
+        run: |
+          set -euo pipefail
+          # Team membership is the definitive direct-commit signal.
+          STATE=$(gh api "orgs/${TEAM_SLUG%%/*}/teams/${TEAM_SLUG##*/}/memberships/${USER}" --jq '.state' 2>/dev/null || echo "")
+          if [[ "$STATE" == "active" ]]; then
+            echo "tier=direct" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Other trusted roles get the PR path — human review before merge.
+          case "$ASSOC" in
+            OWNER|MEMBER|COLLABORATOR|CONTRIBUTOR|FIRST_TIME_CONTRIBUTOR)
+              echo "tier=pr" >> "$GITHUB_OUTPUT" ;;
+            *)
+              echo "tier=reject" >> "$GITHUB_OUTPUT" ;;
+          esac
+
       - name: Resolve upstream skills repo from `.skills/CONFIG`
+        if: steps.trust.outputs.tier == 'direct' || steps.trust.outputs.tier == 'pr'
         id: config
         env:
           GH_TOKEN: ${{ github.token }}
@@ -51,36 +100,19 @@ jobs:
           echo "ref=$SKILLS_REF" >> "$GITHUB_OUTPUT"
 
       - name: Checkout skills repo at pinned ref
+        if: steps.trust.outputs.tier == 'direct' || steps.trust.outputs.tier == 'pr'
         uses: actions/checkout@v4
         with:
           repository: ${{ steps.config.outputs.owner }}/${{ steps.config.outputs.repo }}
           ref: ${{ steps.config.outputs.ref }}
           token: ${{ secrets.METAMASKBOT_SKILLS_TOKEN }}
           path: skills-repo
-          persist-credentials: false
+          # persist-credentials: true — required for the PR tier's `git push`.
+          # Direct tier doesn't use git, only `gh api` via remember.sh.
 
-      - name: Parse capture text from comment body
-        id: parse
-        env:
-          # Pass untrusted input through env, never interpolate into script text.
-          BODY: ${{ github.event.comment.body }}
-        run: |
-          set -euo pipefail
-          # Strip "@metamaskbot /remember" prefix from first line, then trim.
-          CAPTURE=$(printf '%s' "$BODY" \
-            | sed -E '1 s/^@metamaskbot[[:space:]]+\/remember[[:space:]]*//i' \
-            | sed -E 's/^[[:space:]]+|[[:space:]]+$//g')
-          if [[ -z "$CAPTURE" ]]; then
-            echo "empty=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          # Write capture to tmpfile so multiline bodies don't need GITHUB_ENV heredoc.
-          printf '%s' "$CAPTURE" > "${RUNNER_TEMP}/capture.txt"
-          echo "empty=false" >> "$GITHUB_OUTPUT"
-
-      - name: Run `remember.sh`
-        if: steps.parse.outputs.empty == 'false'
-        id: capture
+      - name: Capture — direct commit
+        if: steps.trust.outputs.tier == 'direct'
+        id: capture-direct
         working-directory: skills-repo
         env:
           GH_TOKEN: ${{ secrets.METAMASKBOT_SKILLS_TOKEN }}
@@ -96,32 +128,110 @@ jobs:
             --audit-url  "$AUDIT_URL" \
             -- "$CAPTURE")
           echo "$OUTPUT"
-          # `✓ <path> — <sha> — <url>`
           CAPTURE_PATH=$(echo "$OUTPUT" | awk -F' — ' '/^✓/ { sub(/^✓ /, "", $1); print $1 }')
           CAPTURE_URL=$(echo "$OUTPUT"  | awk -F' — ' '/^✓/ { print $3 }')
           echo "path=$CAPTURE_PATH" >> "$GITHUB_OUTPUT"
           echo "url=$CAPTURE_URL"   >> "$GITHUB_OUTPUT"
 
+      - name: Capture — branch and open PR
+        if: steps.trust.outputs.tier == 'pr'
+        id: capture-pr
+        working-directory: skills-repo
+        env:
+          GH_TOKEN: ${{ secrets.METAMASKBOT_SKILLS_TOKEN }}
+          CAPTURED_BY: ${{ github.event.comment.user.login }}
+          SOURCE_REPO: ${{ github.event.repository.name }}
+          AUDIT_URL: ${{ github.event.comment.html_url }}
+          OWNER: ${{ steps.config.outputs.owner }}
+          REPO:  ${{ steps.config.outputs.repo }}
+          BASE:  ${{ steps.config.outputs.ref }}
+        run: |
+          set -euo pipefail
+          CAPTURE=$(cat "${RUNNER_TEMP}/capture.txt")
+
+          # Write skill file locally, no network write from remember.sh.
+          DRY=$(bash tools/remember.sh \
+            --mode local \
+            --out-dir "$(pwd)" \
+            --captured-by "$CAPTURED_BY" \
+            --source-repo "$SOURCE_REPO" \
+            --audit-url  "$AUDIT_URL" \
+            -- "$CAPTURE")
+          echo "$DRY"
+
+          SKILL_PATH=$(echo        "$DRY" | grep '^SKILL_PATH='        | cut -d= -f2-)
+          SKILL_SLUG=$(echo        "$DRY" | grep '^SKILL_SLUG='        | cut -d= -f2-)
+          SKILL_DESCRIPTION=$(echo "$DRY" | grep '^SKILL_DESCRIPTION=' | cut -d= -f2-)
+
+          BRANCH="capture/${SKILL_SLUG}"
+
+          git config user.name  "metamaskbot"
+          git config user.email "metamaskbot@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git add "$SKILL_PATH"
+          git commit -m "capture(inbox/${SKILL_SLUG}): ${SKILL_DESCRIPTION}"
+          git push origin "$BRANCH"
+
+          # PR body pings the team; cross-org reviewer assignment can't be set
+          # via the API when the skills repo lives outside MetaMask, so the
+          # mention is the primary notification mechanism.
+          {
+            printf 'Captured via `@metamaskbot /remember` from `%s`.\n\n' "$SOURCE_REPO"
+            printf -- '- Captured by: @%s\n'   "$CAPTURED_BY"
+            printf -- '- Audit: %s\n'          "$AUDIT_URL"
+            printf -- '- Tier: external (requires review before merge)\n\n'
+            printf 'cc @%s\n\n---\n\n' "$TEAM_SLUG"
+            printf '%s\n' "$CAPTURE"
+          } > "${RUNNER_TEMP}/pr-body.md"
+
+          PR_URL=$(gh pr create \
+            --repo "${OWNER}/${REPO}" \
+            --head "${BRANCH}" \
+            --base "${BASE}" \
+            --title "capture(inbox/${SKILL_SLUG}): ${SKILL_DESCRIPTION}" \
+            --body-file "${RUNNER_TEMP}/pr-body.md")
+
+          # Best-effort team review request; silently skipped cross-org.
+          gh pr edit "${PR_URL}" --add-reviewer "${TEAM_SLUG}" 2>/dev/null || true
+
+          echo "path=$SKILL_PATH" >> "$GITHUB_OUTPUT"
+          echo "url=$PR_URL"      >> "$GITHUB_OUTPUT"
+
       - name: Reply on PR
-        if: always()
+        if: always() && steps.parse.outcome == 'success'
         uses: actions/github-script@v7
         env:
           EMPTY: ${{ steps.parse.outputs.empty }}
+          TIER: ${{ steps.trust.outputs.tier }}
           STATUS: ${{ job.status }}
-          CAPTURE_PATH: ${{ steps.capture.outputs.path }}
-          CAPTURE_URL: ${{ steps.capture.outputs.url }}
+          DIRECT_PATH: ${{ steps.capture-direct.outputs.path }}
+          DIRECT_URL:  ${{ steps.capture-direct.outputs.url }}
+          PR_PATH: ${{ steps.capture-pr.outputs.path }}
+          PR_URL:  ${{ steps.capture-pr.outputs.url }}
+          USER: ${{ github.event.comment.user.login }}
         with:
           github-token: ${{ github.token }}
           script: |
-            const { EMPTY, STATUS, CAPTURE_PATH, CAPTURE_URL } = process.env;
+            const {
+              EMPTY, TIER, STATUS,
+              DIRECT_PATH, DIRECT_URL, PR_PATH, PR_URL, USER,
+            } = process.env;
+
             let body;
             if (EMPTY === 'true') {
               body = '⚠ `@metamaskbot /remember` needs capture text after the command.';
-            } else if (STATUS === 'success' && CAPTURE_URL) {
-              body = `✓ Captured as [\`${CAPTURE_PATH}\`](${CAPTURE_URL}).`;
-            } else {
+            } else if (TIER === 'reject') {
+              body = `⚠ @${USER} — \`@metamaskbot /remember\` requires org membership or a merged contribution to this repo.`;
+            } else if (STATUS !== 'success') {
               const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
               body = `✗ Capture failed. See the [workflow run](${runUrl}) for details.`;
+            } else if (TIER === 'direct' && DIRECT_URL) {
+              body = `✓ Captured as [\`${DIRECT_PATH}\`](${DIRECT_URL}).`;
+            } else if (TIER === 'pr' && PR_URL) {
+              body = `✓ Opened [capture PR](${PR_URL}) against the skills repo — pending review before merge.`;
+            } else {
+              const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+              body = `✗ Capture finished in an unexpected state. See the [workflow run](${runUrl}).`;
             }
             await github.rest.issues.createComment({
               owner: context.repo.owner,
