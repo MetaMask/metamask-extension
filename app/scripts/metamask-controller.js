@@ -8,7 +8,7 @@ import {
 import { asLegacyMiddleware } from '@metamask/json-rpc-engine/v2';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { uniq } from 'lodash';
+import { debounce, uniq } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
@@ -61,7 +61,11 @@ import {
   BtcAccountType,
 } from '@metamask/keyring-api';
 import {
+  hasProperty,
   hexToBigInt,
+  isJsonRpcNotification,
+  isJsonRpcRequest,
+  isObject,
   toCaipChainId,
   parseCaipAccountId,
   parseCaipAssetType,
@@ -129,7 +133,7 @@ import {
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
-import { MINUTE, SECOND } from '../../shared/constants/time';
+import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
@@ -147,7 +151,9 @@ import {
   setStorageItem,
 } from '../../shared/lib/storage-helpers';
 
+import { PATCH_STORE_SUBSTREAM_METHODS } from '../../shared/constants/patch-store-substream-methods';
 import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
+import { onStreamClosed } from '../../shared/lib/stream-utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { convertNetworkId } from '../../shared/lib/network.utils';
 import {
@@ -5855,7 +5861,12 @@ export default class MetamaskController {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
     // connect features
-    this.setupControllerConnection(mux.createStream('controller'));
+    const { initializePatchStore } = this.setupPatchStoreConnection(
+      mux.createStream('patch-store'),
+    );
+    this.setupControllerConnection(mux.createStream('controller'), {
+      initializePatchStore,
+    });
     this.setupProviderConnectionEip1193(
       mux.createStream('provider'),
       sender,
@@ -5946,87 +5957,138 @@ export default class MetamaskController {
   }
 
   /**
-   * A method for providing our API over a stream using JSON-RPC.
+   * Sets up the patch-store substream that delivers state-change patches to UI.
    *
-   * Subscribes directly to each controller's `stateChange` messenger event,
-   * buffers keyed patches via {@link PatchBuffer}, and flushes them as a
-   * flat `Patch[]` to the UI in a single port write per microtask.
+   * Uses per-controller subscriptions via {@link PatchBuffer} instead of the
+   * legacy memStore/ComposableObservableStore. Flush frequency is governed by
+   * a tunable debounce (default 200 ms, max-wait 1 s).
    *
-   * @param {*} outStream - The stream to provide our API over.
+   * @param {Substream} outStream - The 'patch-store' substream.
+   * @returns {{ initializePatchStore: () => void }}
    */
-  setupControllerConnection(outStream) {
+  setupPatchStoreConnection(outStream) {
     const patchBuffer = new PatchBuffer();
-    let uiReady = false;
-    let flushScheduled = false;
-    let drainPending = false;
+    let isUiReady = false;
     const messengerUnsubscribers = [];
 
-    // Function declarations (not const arrows) because sendPendingPatches
-    // and scheduleFlush are mutually recursive — hoisting is required.
-    function sendPendingPatches() {
-      if (!uiReady || !isStreamWritable(outStream)) {
+    const handleUpdate = () => {
+      if (!isStreamWritable(outStream)) {
+        return;
+      }
+
+      if (!isUiReady) {
+        log.debug(
+          "'startSendingPatches' has not been called yet, not calling 'sendUpdate'.",
+        );
         return;
       }
 
       const keyedPatches = patchBuffer.flush();
-      if (!keyedPatches) {
-        return;
-      }
+      const patches = keyedPatches ? Object.values(keyedPatches).flat() : [];
 
-      // Flatten keyed patches to flat Patch[] for UI compatibility
-      const flatPatches = Object.values(keyedPatches).flat();
-
-      const canContinue = outStream.write({
+      outStream.write({
         jsonrpc: '2.0',
-        method: 'sendUpdate',
-        params: [flatPatches],
+        method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
+        params: [patches],
       });
+    };
 
-      if (!canContinue) {
-        // Stream buffer is full — pause flushing until drained. Patches
-        // arriving while paused accumulate in patchBuffer and flush on
-        // the next scheduleFlush after drain.
-        drainPending = true;
-        outStream.once('drain', () => {
-          drainPending = false;
-          if (patchBuffer.hasPending) {
-            scheduleFlush();
-          }
-        });
-      }
-    }
+    // Tunable debounce: coalesce rapid state changes before sending to UI.
+    // Adjust MILLISECOND * 200 (wait) and SECOND (maxWait) as needed.
+    const debouncedHandleUpdate = debounce(handleUpdate, MILLISECOND * 200, {
+      maxWait: SECOND,
+    });
 
-    function scheduleFlush() {
-      if (!flushScheduled && !drainPending) {
-        flushScheduled = true;
-        queueMicrotask(() => {
-          flushScheduled = false;
-          sendPendingPatches();
-        });
-      }
-    }
-
-    const subscribeToControllers = () => {
+    const initializePatchStore = () => {
+      // Subscribe to per-controller stateChange events and start
+      // accumulating patches. Subscriptions are set up once, at
+      // startUISync time, so we don't miss any patches.
       const unsubs = this.registry.subscribeAll(
         'ui',
         (controllerKey, _state, patches) => {
           const sanitized = sanitizePatches(patches);
           if (sanitized.length > 0) {
             patchBuffer.add(controllerKey, sanitized);
-            scheduleFlush();
+            debouncedHandleUpdate();
           }
         },
       );
       messengerUnsubscribers.push(...unsubs);
     };
 
+    const handleIncomingMessage = (message) => {
+      if (!isStreamWritable(outStream)) {
+        log.debug('Stream is closed, ignoring incoming message.');
+        return;
+      }
+
+      if (
+        !(
+          (isJsonRpcRequest(message) && typeof message.id === 'number') ||
+          isJsonRpcNotification(message)
+        )
+      ) {
+        outStream.write({
+          id:
+            isObject(message) && hasProperty(message, 'id') ? message.id : null,
+          jsonrpc: '2.0',
+          error: rpcErrors.invalidRequest(),
+        });
+        return;
+      }
+
+      const { method } = message;
+
+      if (method === PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches) {
+        isUiReady = true;
+        handleUpdate();
+      } else if (method === PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches) {
+        const keyedPatches = patchBuffer.flush();
+        const patches = keyedPatches ? Object.values(keyedPatches).flat() : [];
+        outStream.write({
+          id: message.id,
+          jsonrpc: '2.0',
+          result: patches,
+        });
+      } else if (message.id === undefined) {
+        console.error(
+          `Unrecognized patch-store substream notification method: ${method}`,
+        );
+      } else {
+        outStream.write({
+          id: message.id,
+          jsonrpc: '2.0',
+          error: rpcErrors.methodNotFound({
+            message: `${method} not found`,
+          }),
+        });
+      }
+    };
+
+    outStream.on('data', handleIncomingMessage);
+
+    onStreamClosed(outStream, () => {
+      outStream.removeListener('data', handleIncomingMessage);
+      debouncedHandleUpdate.cancel();
+      messengerUnsubscribers.forEach((unsub) => unsub());
+      patchBuffer.destroy();
+    });
+
+    return { initializePatchStore };
+  }
+
+  /**
+   * A method for providing our API over a stream using JSON-RPC.
+   *
+   * @param {Substream} outStream - The stream to provide our API over.
+   * @param {object} args - Additional arguments.
+   * @param {() => void} args.initializePatchStore - Function to call after
+   *   retrieving initial state to begin tracking patches.
+   */
+  setupControllerConnection(outStream, { initializePatchStore }) {
     const api = {
       ...this.getApi(),
       ...this.messengerClientApi,
-      startSendingPatches: () => {
-        uiReady = true;
-        sendPendingPatches();
-      },
     };
 
     // report new active controller connection
@@ -6040,10 +6102,12 @@ export default class MetamaskController {
       if (!isStreamWritable(outStream)) {
         return;
       }
-      // Subscribe to per-controller stateChange events before retrieving
-      // initial state to ensure we don't miss any patches.
-      subscribeToControllers();
+
       const initialState = this.getState();
+      // Start tracking patches immediately after retrieving initial state for
+      // this UI connection (to include with the `startUISync` notification) to
+      // ensure we don't miss any patches or include extra patches.
+      initializePatchStore();
 
       // send notification to client-side
       outStream.write({
@@ -6064,10 +6128,7 @@ export default class MetamaskController {
         this.activeControllerConnections -= 1;
         this._onControllerConnectionChanged();
         outStream.mmFinished = true;
-        messengerUnsubscribers.forEach((unsub) => unsub());
-        patchBuffer.destroy();
         if (this.activeControllerConnections === 0) {
-          // Destroy the UI bridge stream first, then disconnect the controller-owned Perps WS.
           this.#disconnectPerpsIfActive();
         }
       }
