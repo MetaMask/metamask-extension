@@ -239,14 +239,8 @@ class BridgeQuotePage {
   };
 
   checkPriceImpactModalIsDisplayed = async () => {
-    const priceImpactButton = await this.driver.waitForSelector(
-      this.priceImpactQuoteCardButton,
-      {
-        timeout: 30000,
-      },
-    );
-    await priceImpactButton.click();
-    await this.driver.waitForSelector(this.warningModal, { timeout: 2000 });
+    await this.driver.clickElement(this.priceImpactQuoteCardButton);
+    await this.driver.waitForSelector(this.warningModal);
     await this.driver.clickElementAndWaitToDisappear(
       this.warningModalCancelButton,
     );
@@ -255,13 +249,9 @@ class BridgeQuotePage {
   dismissTokenAlert = async (expectedNumberOfAlerts?: number) => {
     await this.closeModal();
     if (expectedNumberOfAlerts) {
-      const tokenAlerts = await this.driver.findElements(
+      await this.driver.elementCountBecomesN(
         this.tokenWarningAlert,
-      );
-      assert.equal(
-        tokenAlerts.length,
         expectedNumberOfAlerts,
-        `Expected ${expectedNumberOfAlerts} token alerts, but found ${tokenAlerts.length}`,
       );
     }
   };
@@ -274,7 +264,7 @@ class BridgeQuotePage {
       );
     }
     await this.submitQuote();
-    await this.driver.waitForSelector(this.warningModal, { timeout: 2000 });
+    await this.driver.waitForSelector(this.warningModal);
   };
 
   approveModal = async () => {
