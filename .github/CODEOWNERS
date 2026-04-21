@@ -219,6 +219,11 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 # config files, dotfiles, and core platform files require approval,
 # as they affect build and release outcomes and developer experience.
 
+# Repository Administration
+/.github/guidelines/                                   @MetaMask/extension-platform
+/.github/ISSUE_TEMPLATE/                               @MetaMask/extension-platform
+/.github/pull-request-template.md                      @MetaMask/extension-platform
+
 # Lint
 /.editorconfig                                        @MetaMask/extension-platform
 /.eslintrc.js                                         @MetaMask/extension-platform
@@ -233,15 +238,14 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 /jest.*.config.js                                     @MetaMask/extension-platform
 
 # Development Environment
-/.env.yarn                                            @MetaMask/extension-platform
-/.git-blame-ignore-revs                              @MetaMask/extension-platform
 /.metamaskrc.dist                                     @MetaMask/extension-platform
-/.nvmrc                                                @MetaMask/extension-platform
+/.nvmrc                                               @MetaMask/extension-platform
+/.vscode/                                             @MetaMask/extension-platform
 /.gitattributes                                       @MetaMask/extension-platform
 /.gitignore                                           @MetaMask/extension-platform
 /.husky/                                              @MetaMask/extension-platform
-/.vscode/                                             @MetaMask/extension-platform
 /.yarn/                                               @MetaMask/extension-platform
+/.env.yarn                                            @MetaMask/extension-platform
 /.yarnrc.yml                                          @MetaMask/extension-platform
 
 # Release
