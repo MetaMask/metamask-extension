@@ -50,10 +50,7 @@ export const BridgeAlertModal = ({
     useSubmitBridgeTransaction();
   const isTxSubmittable = useIsTxSubmittable();
 
-  // repareBridgePage also calls useSecurityAlerts()
-  // too many selectors  + useRamps() + useSecurityAlerts() + useMemo() ~ 2-3x selector subscriopton?
-  // this component is renderened even when modal is closed
-  const { confirmationAlerts, alertsById } = {confirmationAlerts: [], alertsById: {}} as never// useBridgeAlerts();
+  const { confirmationAlerts, alertsById } = useBridgeAlerts();
 
   const { isStockMarketClosed, isQuoteExpired } = useSelector(
     (state: BridgeAppState) => getValidationErrors(state, Date.now()),
