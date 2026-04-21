@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Biểu tượng tài khoản"
   },
-  "accountIsntConnectedToastText": {
-    "message": "$1 không được kết nối với $2"
-  },
   "accountName": {
     "message": "Tên tài khoản"
   },
@@ -1689,9 +1686,6 @@
   },
   "connect": {
     "message": "Kết nối"
-  },
-  "connectAccount": {
-    "message": "Kết nối tài khoản"
   },
   "connectAccounts": {
     "message": "Kết nối tài khoản"

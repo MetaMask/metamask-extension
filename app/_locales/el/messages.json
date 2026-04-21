@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Εικονίδιο λογαριασμού"
   },
-  "accountIsntConnectedToastText": {
-    "message": "Το $1 δεν συνδέεται με το $2"
-  },
   "accountName": {
     "message": "Όνομα λογαριασμού"
   },
@@ -1689,9 +1686,6 @@
   },
   "connect": {
     "message": "Σύνδεση"
-  },
-  "connectAccount": {
-    "message": "Σύνδεση λογαριασμού"
   },
   "connectAccounts": {
     "message": "Σύνδεση λογαριασμών"

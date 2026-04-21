@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "账户 Identicon"
   },
-  "accountIsntConnectedToastText": {
-    "message": "$1 未连接到 $2"
-  },
   "accountName": {
     "message": "账户名称"
   },
@@ -1689,9 +1686,6 @@
   },
   "connect": {
     "message": "连接"
-  },
-  "connectAccount": {
-    "message": "连接账户"
   },
   "connectAccounts": {
     "message": "连接账户"

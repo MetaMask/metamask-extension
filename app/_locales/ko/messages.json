@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "계정 식별 아이콘"
   },
-  "accountIsntConnectedToastText": {
-    "message": "$1은(는) $2에 연결되지 않았습니다"
-  },
   "accountName": {
     "message": "계정 이름"
   },
@@ -1689,9 +1686,6 @@
   },
   "connect": {
     "message": "연결"
-  },
-  "connectAccount": {
-    "message": "계정 연결"
   },
   "connectAccounts": {
     "message": "계정 연결"

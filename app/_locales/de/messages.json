@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Konto-Symbol"
   },
-  "accountIsntConnectedToastText": {
-    "message": "$1 ist nicht mit $2 verbunden"
-  },
   "accountName": {
     "message": "Kontoname"
   },
@@ -1689,9 +1686,6 @@
   },
   "connect": {
     "message": "Verbinden"
-  },
-  "connectAccount": {
-    "message": "Konto verbinden"
   },
   "connectAccounts": {
     "message": "Konten verbinden"

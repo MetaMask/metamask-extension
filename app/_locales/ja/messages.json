@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "アカウントのアイデンティコン"
   },
-  "accountIsntConnectedToastText": {
-    "message": "$1は$2に接続されていません"
-  },
   "accountName": {
     "message": "アカウント名"
   },
@@ -1689,9 +1686,6 @@
   },
   "connect": {
     "message": "接続"
-  },
-  "connectAccount": {
-    "message": "アカウントの接続"
   },
   "connectAccounts": {
     "message": "アカウントの接続"

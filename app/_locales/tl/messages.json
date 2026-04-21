@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Identicon ng Account"
   },
-  "accountIsntConnectedToastText": {
-    "message": "Hindi nakakoneka ang $1 sa $2"
-  },
   "accountName": {
     "message": "Pangalan ng account"
   },
@@ -1689,9 +1686,6 @@
   },
   "connect": {
     "message": "Kumonekta"
-  },
-  "connectAccount": {
-    "message": "Ikonekta ang account"
   },
   "connectAccounts": {
     "message": "Ikonekta ang mga account"

@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Ikon akun"
   },
-  "accountIsntConnectedToastText": {
-    "message": "$1 tidak terhubung ke $2"
-  },
   "accountName": {
     "message": "Nama akun"
   },
@@ -1689,9 +1686,6 @@
   },
   "connect": {
     "message": "Hubungkan"
-  },
-  "connectAccount": {
-    "message": "Hubungkan akun"
   },
   "connectAccounts": {
     "message": "Hubungkan akun"

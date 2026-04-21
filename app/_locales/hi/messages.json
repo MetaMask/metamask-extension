@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "अकाउंट आइकॉन"
   },
-  "accountIsntConnectedToastText": {
-    "message": "$2 से $1 कनेक्टेड नहीं है"
-  },
   "accountName": {
     "message": "अकाउंट का नाम"
   },
@@ -1689,9 +1686,6 @@
   },
   "connect": {
     "message": "कनेक्ट करें"
-  },
-  "connectAccount": {
-    "message": "खाता कनेक्ट करें"
   },
   "connectAccounts": {
     "message": "खातों को कनेक्ट करें"

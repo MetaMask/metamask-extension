@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Hesap simgesi"
   },
-  "accountIsntConnectedToastText": {
-    "message": "$1 şuna bağlı değil: $2"
-  },
   "accountName": {
     "message": "Hesap adı"
   },
@@ -1689,9 +1686,6 @@
   },
   "connect": {
     "message": "Bağla"
-  },
-  "connectAccount": {
-    "message": "Hesabı bağla"
   },
   "connectAccounts": {
     "message": "Hesapları bağla"
