@@ -13,8 +13,8 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import { PerpsTokenLogo } from '../perps-token-logo';
+import { formatPerpsFiatMinimal } from '../utils/formatPerpsDisplayPrice';
 import { formatOrderType, getDisplayName } from '../utils';
 import type { Order } from '../types';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
@@ -41,7 +41,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
   const isBuy = order.side === 'buy';
   const displayName = getDisplayName(order.symbol);
 
@@ -61,10 +60,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     const size = parseFloat(order.size) || 0;
     const price = parseFloat(order.price) || 0;
     if (size > 0 && price > 0) {
-      return formatCurrencyWithMinThreshold(size * price, 'USD');
+      return formatPerpsFiatMinimal(size * price);
     }
     return null;
-  }, [order.size, order.price, formatCurrencyWithMinThreshold]);
+  }, [order.size, order.price]);
 
   const baseStyles = 'cursor-pointer pt-2 pb-2 px-4 h-[62px]';
   const variantStyles =

@@ -1,22 +1,4 @@
-import {
-  formatAmountInputFromNumber,
-  stripInsignificantFractionZeros,
-} from './perps-withdraw-amount-format';
-
-describe('stripInsignificantFractionZeros', () => {
-  it('trims trailing zeros after the decimal', () => {
-    expect(stripInsignificantFractionZeros('123.450000')).toBe('123.45');
-    expect(stripInsignificantFractionZeros('0.100000')).toBe('0.1');
-  });
-
-  it('removes the decimal point when the fraction is all zeros', () => {
-    expect(stripInsignificantFractionZeros('123.000000')).toBe('123');
-  });
-
-  it('returns the string unchanged when there is no decimal point', () => {
-    expect(stripInsignificantFractionZeros('42')).toBe('42');
-  });
-});
+import { formatAmountInputFromNumber } from './perps-withdraw-amount-format';
 
 describe('formatAmountInputFromNumber', () => {
   it('returns empty string for non-positive or non-finite values', () => {
@@ -25,9 +7,16 @@ describe('formatAmountInputFromNumber', () => {
     expect(formatAmountInputFromNumber(Number.NaN)).toBe('');
   });
 
-  it('floors to six decimals and strips insignificant zeros', () => {
-    expect(formatAmountInputFromNumber(12.3456789)).toBe('12.345678');
-    expect(formatAmountInputFromNumber(100)).toBe('100');
-    expect(formatAmountInputFromNumber(0.5)).toBe('0.5');
+  it('formats values >= $0.01 with exactly 2 decimals (mobile parity)', () => {
+    expect(formatAmountInputFromNumber(100)).toBe('100.00');
+    expect(formatAmountInputFromNumber(0.5)).toBe('0.50');
+    expect(formatAmountInputFromNumber(12.3456789)).toBe('12.35');
+    expect(formatAmountInputFromNumber(1124.532)).toBe('1124.53');
+    expect(formatAmountInputFromNumber(11245.320509509998)).toBe('11245.32');
+  });
+
+  it('formats values < $0.01 with 6 decimals', () => {
+    expect(formatAmountInputFromNumber(0.001)).toBe('0.001000');
+    expect(formatAmountInputFromNumber(0.0001234567)).toBe('0.000123');
   });
 });

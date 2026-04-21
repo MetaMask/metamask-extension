@@ -86,8 +86,20 @@ describe('OrderCard', () => {
     });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    // formatCurrencyWithMinThreshold formats with commas
-    expect(screen.getByText('$3,500.00')).toBeInTheDocument();
+    // formatPerpsFiatMinimal strips .00 for whole-dollar amounts (mobile parity)
+    expect(screen.getByText('$3,500')).toBeInTheDocument();
+  });
+
+  it('keeps meaningful decimals for limit order USD values', () => {
+    const order = createMockOrder({
+      orderType: 'limit',
+      size: '1.0',
+      price: '3500.10',
+    });
+    renderWithProvider(<OrderCard order={order} />, mockStore);
+
+    // fiatStyleStripping preserves .10 (only .00 is stripped)
+    expect(screen.getByText('$3,500.10')).toBeInTheDocument();
   });
 
   it('displays Market label when order value is zero', () => {
