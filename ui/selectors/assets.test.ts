@@ -305,7 +305,9 @@ describe('selectAggregatedBalanceForSelectedAccount', () => {
       mockGetAggregatedBalanceForAccount.mockReturnValue(null);
 
       // Use a distinct state so the selector recomputes (avoids memoization from previous test)
-      const stateWithAssetsInfo = cloneDeep(baseState) as AssetSelectorTestState;
+      const stateWithAssetsInfo = cloneDeep(
+        baseState,
+      ) as AssetSelectorTestState;
       (stateWithAssetsInfo.metamask as Record<string, unknown>).assetsInfo = {
         'eip155:0x1/slip44:60': {},
       };
