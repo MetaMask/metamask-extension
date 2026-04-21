@@ -22,6 +22,7 @@ import { trace } from '../../../../shared/lib/trace';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
+import { isEnforcedSimulationsEligible } from '../../../../shared/lib/transaction/enforced-simulations';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   getSmartTransactionCommonParams,
@@ -44,12 +45,12 @@ import {
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
 import { getTransactionById } from '../../lib/transaction/util';
 import { accountSupports7702 } from '../../lib/account-supports-7702';
-import { ControllerFlatState } from '../controller-list';
+import { MessengerClientFlatState } from '../controller-list';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import {
-  ControllerInitFunction,
-  ControllerInitRequest,
-  ControllerInitResult,
+  MessengerClientInitFunction,
+  MessengerClientInitRequest,
+  MessengerClientInitResult,
 } from '../types';
 
 const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
@@ -70,7 +71,7 @@ const TRANSACTION_SUBMISSION_METHOD = {
   SENTINEL_RELAY: 'sentinel_relay',
 };
 
-export const TransactionControllerInit: ControllerInitFunction<
+export const TransactionControllerInit: MessengerClientInitFunction<
   TransactionController,
   TransactionControllerMessenger,
   TransactionControllerInitMessenger
@@ -93,7 +94,7 @@ export const TransactionControllerInit: ControllerInitFunction<
     smartTransactionsController,
   } = getControllers(request);
 
-  const controller: TransactionController = new TransactionController({
+  const messengerClient: TransactionController = new TransactionController({
     getCurrentNetworkEIP1559Compatibility: () =>
       // @ts-expect-error Controller type does not support undefined return value
       initMessenger.call('NetworkController:getEIP1559Compatibility'),
@@ -188,9 +189,6 @@ export const TransactionControllerInit: ControllerInitFunction<
           },
         };
       },
-      afterSimulate: new EnforceSimulationHook({
-        messenger: initMessenger,
-      }).getAfterSimulateHook(),
       beforePublish: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
           'InstitutionalSnapController:publishHook',
@@ -200,6 +198,11 @@ export const TransactionControllerInit: ControllerInitFunction<
       },
       beforeSign: new EnforceSimulationHook({
         messenger: initMessenger,
+        isEligible: (transactionMeta) =>
+          isEnforcedSimulationsEligible(
+            transactionMeta,
+            initMessenger.call('AppStateController:getState'),
+          ),
       }).getBeforeSignHook(),
       beforeCheckPendingTransactions: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
@@ -218,12 +221,12 @@ export const TransactionControllerInit: ControllerInitFunction<
           keyringController,
           signedTx,
           smartTransactionsController: smartTransactionsController(),
-          transactionController: controller,
+          transactionController: messengerClient,
           transactionMeta,
         }),
       publishBatch: async (_request: PublishBatchHookRequest) => {
         const result = await publishBatchHook({
-          transactionController: controller,
+          transactionController: messengerClient,
           smartTransactionsController: smartTransactionsController(),
           hookControllerMessenger:
             initMessenger as SmartTransactionHookMessenger,
@@ -265,53 +268,58 @@ export const TransactionControllerInit: ControllerInitFunction<
     getTransactionMetricsRequest,
   );
 
-  const api = getApi(controller);
+  const api = getApi(messengerClient);
 
-  return { controller, api, memStateKey: 'TxController' };
+  return { messengerClient, api, memStateKey: 'TxController' };
 };
 
 function getApi(
-  controller: TransactionController,
-): ControllerInitResult<TransactionController>['api'] {
+  messengerClient: TransactionController,
+): MessengerClientInitResult<TransactionController>['api'] {
   return {
     abortTransactionSigning:
-      controller.abortTransactionSigning.bind(controller),
-    getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
-    getTransactions: controller.getTransactions.bind(controller),
-    isAtomicBatchSupported: controller.isAtomicBatchSupported.bind(controller),
+      messengerClient.abortTransactionSigning.bind(messengerClient),
+    getLayer1GasFee: messengerClient.getLayer1GasFee.bind(messengerClient),
+    getTransactions: messengerClient.getTransactions.bind(messengerClient),
+    isAtomicBatchSupported:
+      messengerClient.isAtomicBatchSupported.bind(messengerClient),
     startIncomingTransactionPolling:
-      controller.startIncomingTransactionPolling.bind(controller),
+      messengerClient.startIncomingTransactionPolling.bind(messengerClient),
     stopIncomingTransactionPolling:
-      controller.stopIncomingTransactionPolling.bind(controller),
-    updateAtomicBatchData: controller.updateAtomicBatchData.bind(controller),
+      messengerClient.stopIncomingTransactionPolling.bind(messengerClient),
+    updateAtomicBatchData:
+      messengerClient.updateAtomicBatchData.bind(messengerClient),
     updateBatchTransactions:
-      controller.updateBatchTransactions.bind(controller),
-    updateEditableParams: controller.updateEditableParams.bind(controller),
+      messengerClient.updateBatchTransactions.bind(messengerClient),
+    updateEditableParams:
+      messengerClient.updateEditableParams.bind(messengerClient),
     updatePreviousGasParams:
-      controller.updatePreviousGasParams.bind(controller),
+      messengerClient.updatePreviousGasParams.bind(messengerClient),
     updateSelectedGasFeeToken:
-      controller.updateSelectedGasFeeToken.bind(controller),
+      messengerClient.updateSelectedGasFeeToken.bind(messengerClient),
     updateTransactionGasFees:
-      controller.updateTransactionGasFees.bind(controller),
+      messengerClient.updateTransactionGasFees.bind(messengerClient),
   };
 }
 
 function getControllers(
-  request: ControllerInitRequest<
+  request: MessengerClientInitRequest<
     TransactionControllerMessenger,
     TransactionControllerInitMessenger
   >,
 ) {
   return {
-    gasFeeController: () => request.getController('GasFeeController'),
-    keyringController: () => request.getController('KeyringController'),
-    networkController: () => request.getController('NetworkController'),
-    onboardingController: () => request.getController('OnboardingController'),
-    preferencesController: () => request.getController('PreferencesController'),
+    gasFeeController: () => request.getMessengerClient('GasFeeController'),
+    keyringController: () => request.getMessengerClient('KeyringController'),
+    networkController: () => request.getMessengerClient('NetworkController'),
+    onboardingController: () =>
+      request.getMessengerClient('OnboardingController'),
+    preferencesController: () =>
+      request.getMessengerClient('PreferencesController'),
     smartTransactionsController: () =>
-      request.getController('SmartTransactionsController'),
+      request.getMessengerClient('SmartTransactionsController'),
     institutionalSnapController: () =>
-      request.getController('InstitutionalSnapController'),
+      request.getMessengerClient('InstitutionalSnapController'),
   };
 }
 
@@ -390,7 +398,7 @@ function addTransactionControllerListeners(
   );
 }
 
-function getUIState(flatState: ControllerFlatState) {
+function getUIState(flatState: MessengerClientFlatState) {
   return { metamask: flatState };
 }
 
@@ -404,7 +412,7 @@ export async function publishHook({
   transactionController,
   transactionMeta,
 }: {
-  flatState: ControllerFlatState;
+  flatState: MessengerClientFlatState;
   getTransactionMetricsRequest: () => TransactionMetricsRequest;
   initMessenger: TransactionControllerInitMessenger;
   keyringController: Parameters<typeof accountSupports7702>[1];
@@ -515,7 +523,7 @@ export function publishBatchHook({
   transactionController: TransactionController;
   smartTransactionsController: SmartTransactionsController;
   hookControllerMessenger: SmartTransactionHookMessenger;
-  flatState: ControllerFlatState;
+  flatState: MessengerClientFlatState;
   transactions: PublishBatchHookTransaction[];
 }) {
   // Get transactionMeta based on the last transaction ID

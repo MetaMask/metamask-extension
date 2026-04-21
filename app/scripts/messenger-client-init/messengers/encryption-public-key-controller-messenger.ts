@@ -1,15 +1,12 @@
-import { Messenger } from '@metamask/messenger';
-import { KeyringControllerGetEncryptionPublicKeyAction } from '@metamask/keyring-controller';
 import {
-  AllowedActions,
-  AllowedEvents,
-} from '../../controllers/encryption-public-key';
-import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { KeyringControllerGetEncryptionPublicKeyAction } from '@metamask/keyring-controller';
+import { EncryptionPublicKeyControllerMessenger } from '../../controllers/encryption-public-key';
+import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
-
-export type EncryptionPublicKeyControllerMessenger = ReturnType<
-  typeof getEncryptionPublicKeyControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -19,17 +16,16 @@ export type EncryptionPublicKeyControllerMessenger = ReturnType<
  * messenger.
  */
 export function getEncryptionPublicKeyControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<
+    MessengerActions<EncryptionPublicKeyControllerMessenger>,
+    MessengerEvents<EncryptionPublicKeyControllerMessenger>
+  >,
 ) {
-  const controllerMessenger = new Messenger<
-    'EncryptionPublicKeyController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
-    namespace: 'EncryptionPublicKeyController',
-    parent: messenger,
-  });
+  const controllerMessenger: EncryptionPublicKeyControllerMessenger =
+    new Messenger({
+      namespace: 'EncryptionPublicKeyController',
+      parent: messenger,
+    });
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [

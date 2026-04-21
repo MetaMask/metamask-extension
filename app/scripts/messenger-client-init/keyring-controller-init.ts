@@ -21,7 +21,7 @@ import { encryptorFactory } from '../lib/encryptor-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-bridge';
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import {
   KeyringControllerMessenger,
   KeyringControllerInitMessenger,
@@ -39,10 +39,10 @@ import {
  * @param request.keyringOverrides - Optional overrides for keyring classes and
  * bridges.
  * @param request.encryptor - Optional encryptor to use for the controller.
- * @param request.getController - Function to get other controllers.
+ * @param request.getMessengerClient - Function to get other controllers.
  * @returns The initialized controller.
  */
-export const KeyringControllerInit: ControllerInitFunction<
+export const KeyringControllerInit: MessengerClientInitFunction<
   KeyringController,
   KeyringControllerMessenger,
   KeyringControllerInitMessenger
@@ -52,7 +52,7 @@ export const KeyringControllerInit: ControllerInitFunction<
   initMessenger,
   keyringOverrides,
   encryptor,
-  getController,
+  getMessengerClient,
 }) => {
   const additionalKeyrings = [
     qrKeyringBuilderFactory(
@@ -102,12 +102,12 @@ export const KeyringControllerInit: ControllerInitFunction<
     );
   }
 
-  const snapKeyringBuilder = getController('SnapKeyringBuilder');
+  const snapKeyringBuilder = getMessengerClient('SnapKeyringBuilder');
 
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
   additionalKeyrings.push(snapKeyringBuilder);
 
-  const controller = new KeyringController({
+  const messengerClient = new KeyringController({
     state: persistedState.KeyringController,
     messenger: controllerMessenger,
     keyringBuilders: additionalKeyrings,
@@ -115,6 +115,6 @@ export const KeyringControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

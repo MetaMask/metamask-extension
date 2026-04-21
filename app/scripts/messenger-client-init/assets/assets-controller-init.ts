@@ -10,12 +10,13 @@ import {
   type AssetsUnifyStateFeatureFlag,
   ASSETS_UNIFY_STATE_FLAG,
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { type ControllerInitFunction } from '../types';
+import { type MessengerClientInitFunction } from '../types';
 import {
   type AssetsControllerMessenger,
   type AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
+import type { OnboardingControllerState } from '../../controllers/onboarding';
 
 /**
  * Cached API client instance.
@@ -60,6 +61,8 @@ function safeGetTokenDetectionEnabled(
 /**
  * Returns a getter for basic functionality (use external services) from preferences.
  * When true, token/price APIs are used; when false, only RPC is used.
+ * Also returns false during onboarding (before the user has completed setup),
+ * matching the behavior of the UI polling hooks (useCurrencyRatePolling, useTokenRatesPolling).
  *
  * @param initMessenger - The initialization messenger.
  * @returns Getter that returns whether basic functionality is enabled (defaults to true on error).
@@ -69,6 +72,12 @@ function getIsBasicFunctionality(
 ): () => boolean {
   return (): boolean => {
     try {
+      const { completedOnboarding } = initMessenger.call(
+        'OnboardingController:getState',
+      );
+      if (!completedOnboarding) {
+        return false;
+      }
       const preferencesState = initMessenger.call(
         'PreferencesController:getState',
       ) as { useExternalServices?: boolean } | undefined;
@@ -104,14 +113,19 @@ function getApiClient(
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.initMessenger - The init messenger to use for the controller.
- * @param request.getController - Function to get a controller by name.
+ * @param request.getMessengerClient - Function to get a controller by name.
  * @returns The initialized controller.
  */
-export const AssetsControllerInit: ControllerInitFunction<
+export const AssetsControllerInit: MessengerClientInitFunction<
   AssetsController,
   AssetsControllerMessenger,
   AssetsControllerInitMessenger
-> = ({ controllerMessenger, persistedState, initMessenger, getController }) => {
+> = ({
+  controllerMessenger,
+  persistedState,
+  initMessenger,
+  getMessengerClient,
+}) => {
   /**
    * Check if the AssetsController feature is enabled based on the remote feature flag.
    *
@@ -119,7 +133,7 @@ export const AssetsControllerInit: ControllerInitFunction<
    */
   const isEnabled = (): boolean => {
     try {
-      const remoteFeatureFlagController = getController(
+      const remoteFeatureFlagController = getMessengerClient(
         'RemoteFeatureFlagController',
       );
       const featureFlag = remoteFeatureFlagController.state.remoteFeatureFlags[
@@ -148,18 +162,30 @@ export const AssetsControllerInit: ControllerInitFunction<
   ): void => {
     controllerMessenger.subscribe(
       'PreferencesController:stateChange',
-      (useExternalServices: boolean) => {
-        onChange(useExternalServices);
+      (_useExternalServices: boolean) => {
+        onChange(isBasicFunctionality());
       },
       (state: PreferencesState) =>
         (state as PreferencesState & { useExternalServices?: boolean })
           .useExternalServices ?? true,
     );
+    // When onboarding completes, re-evaluate basic functionality so price
+    // subscriptions start (or stay stopped) based on the current preference.
+    // This mirrors how useCurrencyRatePolling and useTokenRatesPolling gate on completedOnboarding.
+    initMessenger.subscribe(
+      'OnboardingController:stateChange',
+      (completedOnboarding: boolean) => {
+        if (completedOnboarding) {
+          onChange(isBasicFunctionality());
+        }
+      },
+      (state: OnboardingControllerState) => state.completedOnboarding,
+    );
   };
 
   // Create the controller - it now creates all data sources internally.
   // queryApiClient is cast to the package's type to avoid duplicate @metamask/core-backend type conflicts.
-  const controller = new AssetsController({
+  const messengerClient = new AssetsController({
     messenger: controllerMessenger,
     state: persistedState.AssetsController,
     isEnabled,
@@ -179,7 +205,17 @@ export const AssetsControllerInit: ControllerInitFunction<
       enabled: false,
     },
     trace: traceAsControllerCallback,
+    isOnboarded: () => {
+      try {
+        const { completedOnboarding } = initMessenger.call(
+          'OnboardingController:getState',
+        );
+        return completedOnboarding;
+      } catch {
+        return false;
+      }
+    },
   });
 
-  return { controller };
+  return { messengerClient };
 };

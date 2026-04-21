@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { PerpsToastProvider } from '../../components/app/perps';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
+import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
+import { submitRequestToBackground } from '../../store/background-connection';
+
+const MIN_HIDDEN_DURATION_MS = 30_000;
 
 /**
  * Layout wrapper for all Perps pages.
@@ -16,6 +20,38 @@ import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive'
  */
 export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
+  usePerpsLifecycleBreadcrumbs();
+
+  // Nudge background perps WebSocket health when the tab becomes visible after
+  // being hidden for a while. Offline→online is handled in PerpsStreamBridge.
+  useEffect(() => {
+    let hiddenAt: number | null = null;
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        hiddenAt = Date.now();
+        return;
+      }
+
+      const wasHiddenAt = hiddenAt;
+      hiddenAt = null;
+
+      if (
+        wasHiddenAt !== null &&
+        Date.now() - wasHiddenAt < MIN_HIDDEN_DURATION_MS
+      ) {
+        return;
+      }
+
+      submitRequestToBackground('perpsCheckHealth').catch(() => {
+        // fire-and-forget
+      });
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () =>
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
 
   return (
     <PerpsToastProvider>

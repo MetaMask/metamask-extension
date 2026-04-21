@@ -2,7 +2,12 @@ import { act } from '@testing-library/react-hooks';
 
 import mockState from '../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsOrderForm } from './usePerpsOrderForm';
+
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn(),
+}));
 
 describe('usePerpsOrderForm', () => {
   const defaultOptions = {
@@ -17,6 +22,32 @@ describe('usePerpsOrderForm', () => {
       ...mockState.metamask,
     },
   };
+
+  beforeEach(() => {
+    jest.mocked(submitRequestToBackground).mockImplementation((method) => {
+      const immediate = <ResolvedValue>(
+        value: ResolvedValue,
+      ): Promise<ResolvedValue> =>
+        ({
+          then(onFulfilled: (resolved: ResolvedValue) => unknown) {
+            const result = onFulfilled(value);
+            return immediate(result as ResolvedValue);
+          },
+          catch() {
+            return immediate(value);
+          },
+          finally(onFinally: () => void) {
+            onFinally();
+            return immediate(value);
+          },
+        }) as Promise<ResolvedValue>;
+
+      if (method === 'perpsCalculateLiquidationPrice') {
+        return immediate('40000');
+      }
+      return immediate(undefined);
+    });
+  });
 
   describe('initialization', () => {
     it('initializes with default form state', () => {
@@ -357,7 +388,74 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.calculations.liquidationPrice).toBeNull();
     });
 
-    it('calculates margin as size divided by leverage', () => {
+    it('uses markPrice (oracle) for margin calculation when provided', () => {
+      // amount=$15, leverage=3x, currentPrice=$24.95, markPrice=$25.65, szDecimals=1
+      // positionSize = round(15/24.95, 1) = 0.6, but 0.6 * 24.95 = 14.97 < 15,
+      // so calculatePositionSize bumps up to 0.7.
+      // notional = 0.7 × 25.65 = $17.955, margin = $17.955 / 3 ≈ $5.98 (float truncation)
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            currentPrice: 24.95, // mid/candle price — different from oracle
+            markPrice: 25.65, // oracle price — what mobile uses for margin
+            szDecimals: 1,
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('15');
+        result.current.handleLeverageChange(3);
+      });
+
+      // Assertion verified: '5.98' matches the bumped-position-size calculation above.
+      expect(result.current.calculations.marginRequired).toContain('5.98');
+    });
+
+    it('falls back to currentPrice for margin when markPrice is not provided', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            currentPrice: 45000,
+            // markPrice omitted — should fall back
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('9000');
+        result.current.handleLeverageChange(3);
+      });
+
+      // margin = 9000 / 3 = $3,000 using currentPrice as fallback
+      expect(result.current.calculations.marginRequired).toContain('3,000');
+    });
+
+    it('uses limit price (not markPrice) for margin on limit orders', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            currentPrice: 45000,
+            markPrice: 44000, // oracle — should be ignored for limit orders
+            orderType: 'limit',
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('9000');
+        result.current.handleLimitPriceChange('45000');
+        result.current.handleLeverageChange(3);
+      });
+
+      // margin = 9000 / 3 = $3,000 using the limit price, not markPrice
+      expect(result.current.calculations.marginRequired).toContain('3,000');
+    });
+
+    it('calculates margin as notional divided by leverage (no fee included)', () => {
       const { result } = renderHookWithProvider(
         () => usePerpsOrderForm(defaultOptions),
         mockStateWithLocale,
@@ -368,8 +466,8 @@ describe('usePerpsOrderForm', () => {
         result.current.handleLeverageChange(10);
       });
 
-      // Size = $10000, leverage = 10x → margin = $1000
-      // marginRequired should NOT equal the amount (size) when leverage > 1
+      // Size = $10,000, leverage = 10x → margin = $10,000 / 10 = $1,000
+      // Fees are a separate line item and are NOT included in margin
       expect(result.current.calculations.marginRequired).not.toBeNull();
       expect(result.current.calculations.marginRequired).toContain('1,000');
       expect(result.current.calculations.marginRequired).not.toContain(
@@ -469,7 +567,7 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.calculations.positionSize).toContain('BTC');
       // Amount is treated as notional position size (TAT-2684 fix), so
       // orderValue equals the entered amount ($1000) regardless of leverage.
-      expect(result.current.calculations.orderValue).toBe('$1,000.00');
+      expect(result.current.calculations.orderValue).toBe('$1,000');
     });
   });
 

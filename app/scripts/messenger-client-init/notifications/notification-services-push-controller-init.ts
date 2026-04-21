@@ -8,7 +8,7 @@ import {
   createSubscribeToPushNotifications,
 } from '@metamask/notification-services-controller/push-services/web';
 import { hasProperty } from '@metamask/utils';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import type {
   NotificationServicesPushControllerMessenger,
   NotificationServicesPushControllerInitMessenger,
@@ -32,12 +32,17 @@ import {
 export const getNormalisedLocale = (locale: string): string =>
   locale.replace('_', '-');
 
-export const NotificationServicesPushControllerInit: ControllerInitFunction<
+export const NotificationServicesPushControllerInit: MessengerClientInitFunction<
   NotificationServicesPushController,
   NotificationServicesPushControllerMessenger,
   NotificationServicesPushControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, persistedState, getController }) => {
-  const controller = new NotificationServicesPushController({
+> = ({
+  controllerMessenger,
+  initMessenger,
+  persistedState,
+  getMessengerClient,
+}) => {
+  const messengerClient = new NotificationServicesPushController({
     messenger: controllerMessenger,
     state: {
       ...defaultState,
@@ -69,7 +74,7 @@ export const NotificationServicesPushControllerInit: ControllerInitFunction<
       },
       getLocale: () =>
         getNormalisedLocale(
-          getController('PreferencesController').state.currentLocale,
+          getMessengerClient('PreferencesController').state.currentLocale,
         ),
     },
   });
@@ -128,6 +133,6 @@ export const NotificationServicesPushControllerInit: ControllerInitFunction<
   );
 
   return {
-    controller,
+    messengerClient,
   };
 };

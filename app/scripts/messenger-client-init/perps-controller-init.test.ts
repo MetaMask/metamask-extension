@@ -1,12 +1,20 @@
 import {
   PerpsController,
   type PerpsControllerState,
+  type PerpsPlatformDependencies,
 } from '@metamask/perps-controller';
-import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import {
+  createPerpsInfrastructure,
+  type InfrastructureDeps,
+} from '../controllers/perps/infrastructure';
 import { buildControllerInitRequestMock } from './test/utils';
 import { PerpsControllerInit } from './perps-controller-init';
 import type { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
-import type { ControllerInitRequest } from './types';
+import type { MessengerClientInitRequest } from './types';
 
 jest.mock('@metamask/perps-controller', () => ({
   getDefaultPerpsControllerState: jest.fn().mockReturnValue({
@@ -39,13 +47,8 @@ jest.mock('@metamask/perps-controller', () => ({
     marketFilterPreferences: { optionId: 'volume', direction: 'desc' },
     hip3ConfigVersion: 0,
     selectedPaymentToken: null,
-    cachedMarketData: null,
-    cachedMarketDataTimestamp: 0,
-    cachedPositions: null,
-    cachedOrders: null,
-    cachedAccountState: null,
-    cachedUserDataTimestamp: 0,
-    cachedUserDataAddress: null,
+    cachedMarketDataByProvider: {},
+    cachedUserDataByProvider: {},
   }),
   PerpsController: jest.fn().mockImplementation(() => ({
     state: { initializationState: 'uninitialized' },
@@ -78,6 +81,7 @@ jest.mock('@metamask/perps-controller', () => ({
     getHistoricalPortfolio: jest.fn(),
     fetchHistoricalCandles: jest.fn(),
     calculateFees: jest.fn(),
+    calculateLiquidationPrice: jest.fn(),
     getAvailableDexs: jest.fn(),
     refreshEligibility: jest.fn(),
     startEligibilityMonitoring: jest.fn(),
@@ -110,6 +114,8 @@ jest.mock('@metamask/perps-controller', () => ({
     getWatchlistMarkets: jest.fn(),
     toggleWatchlistMarket: jest.fn(),
     isWatchlistMarket: jest.fn(),
+    reconnect: jest.fn().mockResolvedValue(undefined),
+    getWebSocketConnectionState: jest.fn().mockReturnValue('connected'),
   })),
 }));
 
@@ -118,13 +124,15 @@ jest.mock('../controllers/perps/infrastructure', () => ({
 }));
 
 type InitRequest = jest.Mocked<
-  ControllerInitRequest<PerpsControllerMessenger, undefined>
+  MessengerClientInitRequest<PerpsControllerMessenger, undefined>
 >;
 
 function getInitRequestMock(): InitRequest {
   return {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: {} as PerpsControllerMessenger,
+    controllerMessenger: {
+      call: jest.fn(),
+    } as unknown as PerpsControllerMessenger,
     initMessenger: undefined as never,
   };
 }
@@ -144,6 +152,8 @@ describe('PerpsControllerInit', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     delete process.env.MM_PERPS_BLOCKED_REGIONS;
+    delete process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET;
+    delete process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET;
   });
 
   describe('controller instantiation', () => {
@@ -151,7 +161,7 @@ describe('PerpsControllerInit', () => {
       const request = getInitRequestMock();
       const result = PerpsControllerInit(request);
 
-      expect(result.controller).toBeDefined();
+      expect(result.messengerClient).toBeDefined();
       expect(result.api).toBeDefined();
     });
 
@@ -165,7 +175,7 @@ describe('PerpsControllerInit', () => {
         infrastructure: expect.any(Object),
         clientConfig: {
           fallbackHip3Enabled: true,
-          fallbackHip3AllowlistMarkets: [],
+          fallbackHip3AllowlistMarkets: ['xyz:*'],
           fallbackBlockedRegions: [],
         },
         deferEligibilityCheck: true,
@@ -253,9 +263,90 @@ describe('PerpsControllerInit', () => {
       expect(constructorCall.state).toBe(persistedState);
     });
 
-    it('calls createPerpsInfrastructure', () => {
+    it('calls createPerpsInfrastructure with trackEvent', () => {
       PerpsControllerInit(getInitRequestMock());
-      expect(createPerpsInfrastructure).toHaveBeenCalled();
+      expect(createPerpsInfrastructure).toHaveBeenCalledWith({
+        trackEvent: expect.any(Function),
+        getStorageItem: expect.any(Function),
+        setStorageItem: expect.any(Function),
+        removeStorageItem: expect.any(Function),
+      });
+    });
+
+    it('trackEvent from createPerpsInfrastructure delegates to MetaMetricsController:trackEvent', () => {
+      const call = jest.fn();
+      const request = getInitRequestMock();
+      request.controllerMessenger = {
+        call,
+      } as unknown as PerpsControllerMessenger;
+
+      jest
+        .mocked(createPerpsInfrastructure)
+        .mockImplementationOnce((deps: InfrastructureDeps) => {
+          deps.trackEvent({
+            event: MetaMetricsEventName.PerpsScreenViewed,
+            category: MetaMetricsEventCategory.Perps,
+            properties: {},
+          });
+          return {} as PerpsPlatformDependencies;
+        });
+
+      PerpsControllerInit(request);
+
+      expect(call).toHaveBeenCalledWith(
+        'MetaMetricsController:trackEvent',
+        expect.objectContaining({
+          event: MetaMetricsEventName.PerpsScreenViewed,
+          category: MetaMetricsEventCategory.Perps,
+        }),
+      );
+    });
+
+    it('storage helpers from createPerpsInfrastructure delegate to StorageService', async () => {
+      const call = jest.fn().mockResolvedValue({ result: 'cached-value' });
+      const request = getInitRequestMock();
+      request.controllerMessenger = {
+        call,
+      } as unknown as PerpsControllerMessenger;
+      let capturedDeps: InfrastructureDeps | undefined;
+
+      jest
+        .mocked(createPerpsInfrastructure)
+        .mockImplementationOnce((deps: InfrastructureDeps) => {
+          capturedDeps = deps;
+          return {} as PerpsPlatformDependencies;
+        });
+
+      PerpsControllerInit(request);
+      expect(capturedDeps).toBeDefined();
+      const deps = capturedDeps as InfrastructureDeps;
+
+      await deps.getStorageItem('diskCache:PERPS_DISK_CACHE_MARKETS');
+      await deps.setStorageItem(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+        'cached-value',
+      );
+      await deps.removeStorageItem('diskCache:PERPS_DISK_CACHE_MARKETS');
+
+      expect(call).toHaveBeenNthCalledWith(
+        1,
+        'StorageService:getItem',
+        'PerpsController',
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
+      expect(call).toHaveBeenNthCalledWith(
+        2,
+        'StorageService:setItem',
+        'PerpsController',
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+        'cached-value',
+      );
+      expect(call).toHaveBeenNthCalledWith(
+        3,
+        'StorageService:removeItem',
+        'PerpsController',
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
     });
   });
 
@@ -303,6 +394,80 @@ describe('PerpsControllerInit', () => {
     });
   });
 
+  describe('getHyperLiquidBuilderAddresses', () => {
+    it('returns undefined when no env vars are set', () => {
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toBeUndefined();
+    });
+
+    it('passes mainnet builder address from env var', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET = '0xabc123';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toEqual({
+        builderAddressMainnet: '0xabc123',
+      });
+    });
+
+    it('passes testnet builder address from env var', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET = '0xdef456';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toEqual({
+        builderAddressTestnet: '0xdef456',
+      });
+    });
+
+    it('passes both builder addresses when both env vars are set', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET = '0xabc123';
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET = '0xdef456';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toEqual({
+        builderAddressMainnet: '0xabc123',
+        builderAddressTestnet: '0xdef456',
+      });
+    });
+
+    it('trims whitespace from builder addresses', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET = ' 0xabc123 ';
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET = ' 0xdef456 ';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toEqual({
+        builderAddressMainnet: '0xabc123',
+        builderAddressTestnet: '0xdef456',
+      });
+    });
+
+    it('omits whitespace-only builder addresses so package defaults still apply', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET = '   ';
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET = '\t';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toBeUndefined();
+    });
+  });
+
   describe('api method delegation', () => {
     const apiToController: [string, string][] = [
       ['perpsInit', 'init'],
@@ -333,6 +498,7 @@ describe('PerpsControllerInit', () => {
       ['perpsGetHistoricalPortfolio', 'getHistoricalPortfolio'],
       ['perpsFetchHistoricalCandles', 'fetchHistoricalCandles'],
       ['perpsCalculateFees', 'calculateFees'],
+      ['perpsCalculateLiquidationPrice', 'calculateLiquidationPrice'],
       ['perpsGetAvailableDexs', 'getAvailableDexs'],
       ['perpsRefreshEligibility', 'refreshEligibility'],
       ['perpsStartEligibilityMonitoring', 'startEligibilityMonitoring'],
@@ -370,13 +536,13 @@ describe('PerpsControllerInit', () => {
     ];
 
     for (const [apiMethod, controllerMethod] of apiToController) {
-      it(`${apiMethod} delegates to controller.${controllerMethod}`, async () => {
-        const { api, controller } = initWithApi();
+      it(`${apiMethod} delegates to messengerClient.${controllerMethod}`, async () => {
+        const { api, messengerClient } = initWithApi();
 
         await (api as Record<string, CallableFunction>)[apiMethod]();
 
         expect(
-          (controller as unknown as Record<string, jest.Mock>)[
+          (messengerClient as unknown as Record<string, jest.Mock>)[
             controllerMethod
           ],
         ).toHaveBeenCalled();
@@ -384,41 +550,137 @@ describe('PerpsControllerInit', () => {
     }
 
     it('perpsDepositWithConfirmation returns lastDepositTransactionId', async () => {
-      const { api, controller } = initWithApi();
+      const { api, messengerClient } = initWithApi();
       (
-        controller.state as unknown as Record<string, string>
+        messengerClient.state as unknown as Record<string, string>
       ).lastDepositTransactionId = 'tx-123';
 
       const result = await api.perpsDepositWithConfirmation(
         ...([] as unknown as Parameters<
-          typeof controller.depositWithConfirmation
+          typeof messengerClient.depositWithConfirmation
         >),
       );
 
-      expect(controller.depositWithConfirmation).toHaveBeenCalled();
+      expect(messengerClient.depositWithConfirmation).toHaveBeenCalled();
       expect(result).toBe('tx-123');
     });
 
     it('perpsGetUserHistory calls provider.getUserHistory', async () => {
-      const { api, controller } = initWithApi();
+      const { api, messengerClient } = initWithApi();
       const params = { startTime: 0 };
 
       await api.perpsGetUserHistory(params);
 
       expect(
-        controller.getActiveProvider().getUserHistory,
+        messengerClient.getActiveProvider().getUserHistory,
       ).toHaveBeenCalledWith(params);
     });
 
     it('perpsGetUserNonFundingLedgerUpdates calls provider.getUserNonFundingLedgerUpdates', async () => {
-      const { api, controller } = initWithApi();
+      const { api, messengerClient } = initWithApi();
       const params = { startTime: 0 };
 
       await api.perpsGetUserNonFundingLedgerUpdates(params);
 
       expect(
-        controller.getActiveProvider().getUserNonFundingLedgerUpdates,
+        messengerClient.getActiveProvider().getUserNonFundingLedgerUpdates,
       ).toHaveBeenCalledWith(params);
+    });
+  });
+
+  describe('withAutoInit recovery', () => {
+    it('retries after CLIENT_NOT_INITIALIZED and succeeds', async () => {
+      const { api, messengerClient } = initWithApi();
+      const getPositions = messengerClient.getPositions as jest.Mock;
+      getPositions
+        .mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'))
+        .mockResolvedValueOnce([{ symbol: 'ETH' }]);
+
+      const result = await api.perpsGetPositions();
+
+      expect(messengerClient.init).toHaveBeenCalledTimes(1);
+      expect(getPositions).toHaveBeenCalledTimes(2);
+      expect(result).toEqual([{ symbol: 'ETH' }]);
+    });
+
+    it('retries after CLIENT_REINITIALIZING and succeeds', async () => {
+      const { api, messengerClient } = initWithApi();
+      const getMarkets = messengerClient.getMarkets as jest.Mock;
+      getMarkets
+        .mockRejectedValueOnce(new Error('CLIENT_REINITIALIZING'))
+        .mockResolvedValueOnce([{ market: 'BTC' }]);
+
+      const result = await api.perpsGetMarkets();
+
+      expect(messengerClient.init).toHaveBeenCalledTimes(1);
+      expect(getMarkets).toHaveBeenCalledTimes(2);
+      expect(result).toEqual([{ market: 'BTC' }]);
+    });
+
+    it('does not retry for unrelated errors', async () => {
+      const { api, messengerClient } = initWithApi();
+      const getPositions = messengerClient.getPositions as jest.Mock;
+      getPositions.mockRejectedValueOnce(new Error('NETWORK_ERROR'));
+
+      await expect(api.perpsGetPositions()).rejects.toThrow('NETWORK_ERROR');
+      expect(messengerClient.init).not.toHaveBeenCalled();
+      expect(getPositions).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not wrap lifecycle methods (perpsInit)', async () => {
+      const { api, messengerClient } = initWithApi();
+      const init = messengerClient.init as jest.Mock;
+      init.mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'));
+
+      // perpsInit should NOT auto-retry — it IS the init
+      await expect(api.perpsInit()).rejects.toThrow('CLIENT_NOT_INITIALIZED');
+      expect(init).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not wrap preference methods (perpsSaveTradeConfiguration)', async () => {
+      const { api, messengerClient } = initWithApi();
+      const save = messengerClient.saveTradeConfiguration as jest.Mock;
+      save.mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'));
+
+      // Preferences are state-only — should NOT auto-retry
+      await expect(
+        api.perpsSaveTradeConfiguration(
+          ...([] as unknown as Parameters<
+            typeof messengerClient.saveTradeConfiguration
+          >),
+        ),
+      ).rejects.toThrow('CLIENT_NOT_INITIALIZED');
+      expect(messengerClient.init).not.toHaveBeenCalled();
+    });
+
+    it('recovers provider passthrough (perpsGetUserHistory)', async () => {
+      const { api, messengerClient } = initWithApi();
+      const getUserHistory = messengerClient.getActiveProvider()
+        .getUserHistory as jest.Mock;
+      getUserHistory
+        .mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'))
+        .mockResolvedValueOnce([{ id: 'h1' }]);
+
+      const result = await api.perpsGetUserHistory({ startTime: 0 });
+
+      expect(messengerClient.init).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([{ id: 'h1' }]);
+    });
+
+    it('recovers trading mutations (perpsPlaceOrder)', async () => {
+      const { api, messengerClient } = initWithApi();
+      const placeOrder = messengerClient.placeOrder as jest.Mock;
+      placeOrder
+        .mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'))
+        .mockResolvedValueOnce({ orderId: '123' });
+
+      const result = await api.perpsPlaceOrder(
+        ...([] as unknown as Parameters<typeof messengerClient.placeOrder>),
+      );
+
+      expect(messengerClient.init).toHaveBeenCalledTimes(1);
+      expect(placeOrder).toHaveBeenCalledTimes(2);
+      expect(result).toEqual({ orderId: '123' });
     });
   });
 });

@@ -16,10 +16,10 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-// Mock usePerpsLiveMarketData hook to avoid controller dependency
-const mockUsePerpsLiveMarketData = jest.fn();
+const mockUsePerpsLiveMarketListData = jest.fn();
 jest.mock('../../../hooks/perps/stream', () => ({
-  usePerpsLiveMarketData: () => mockUsePerpsLiveMarketData(),
+  usePerpsLiveMarketListData: () => mockUsePerpsLiveMarketListData(),
+  usePerpsLiveAccount: () => ({ account: null }),
 }));
 
 const mockStore = configureStore({
@@ -35,9 +35,13 @@ describe('MarketListView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Default mock returns loaded state with markets
-    mockUsePerpsLiveMarketData.mockReturnValue({
+    mockUsePerpsLiveMarketListData.mockReturnValue({
       markets: [...mockCryptoMarkets, ...mockHip3Markets],
+      cryptoMarkets: mockCryptoMarkets,
+      hip3Markets: mockHip3Markets,
       isInitialLoading: false,
+      error: null,
+      refresh: jest.fn(),
     });
   });
 
@@ -71,14 +75,45 @@ describe('MarketListView', () => {
 
       expect(screen.getByTestId('back-button')).toBeInTheDocument();
     });
+
+    it('renders live price and change values from the list hook', async () => {
+      const [firstMarket] = mockCryptoMarkets;
+      mockUsePerpsLiveMarketListData.mockReturnValue({
+        markets: [
+          {
+            ...firstMarket,
+            price: '$99,999',
+            change24hPercent: '+9.9%',
+          },
+          ...mockCryptoMarkets.slice(1),
+          ...mockHip3Markets,
+        ],
+        cryptoMarkets: mockCryptoMarkets,
+        hip3Markets: mockHip3Markets,
+        isInitialLoading: false,
+        error: null,
+        refresh: jest.fn(),
+      });
+
+      renderWithProvider(<MarketListView />, mockStore);
+
+      await waitFor(() => {
+        expect(screen.getByText('$99,999')).toBeInTheDocument();
+        expect(screen.getByText('+9.9%')).toBeInTheDocument();
+      });
+    });
   });
 
   describe('loading state', () => {
     it('shows loading skeletons initially', () => {
       // Override mock to return loading state
-      mockUsePerpsLiveMarketData.mockReturnValue({
+      mockUsePerpsLiveMarketListData.mockReturnValue({
         markets: [],
+        cryptoMarkets: [],
+        hip3Markets: [],
         isInitialLoading: true,
+        error: null,
+        refresh: jest.fn(),
       });
 
       renderWithProvider(<MarketListView />, mockStore);

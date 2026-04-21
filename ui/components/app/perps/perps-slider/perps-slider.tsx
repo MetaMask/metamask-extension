@@ -10,8 +10,12 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
 } from '@metamask/design-system-react';
-import InfoTooltip from '../../../ui/info-tooltip/info-tooltip';
+import Tooltip from '../../../ui/tooltip';
 
 /**
  * Material UI styles for the slider - uses CSS variables for theming.
@@ -38,35 +42,35 @@ const sliderStyles = {
     height: 6,
   },
   thumb: {
-    height: 20,
-    width: 20,
-    marginTop: -7,
-    marginLeft: -7,
+    height: 16,
+    width: 16,
+    marginTop: -5,
+    marginLeft: -5,
     backgroundColor: 'var(--color-icon-muted)',
     border: '2px solid var(--color-text-default)',
     boxSizing: 'border-box' as const,
     boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     '&:focus, &$active': {
-      height: 20,
-      width: 20,
-      marginTop: -7,
-      marginLeft: -7,
+      height: 16,
+      width: 16,
+      marginTop: -5,
+      marginLeft: -5,
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },
     '&:hover': {
-      height: 22,
-      width: 22,
-      marginTop: -8,
-      marginLeft: -8,
+      height: 18,
+      width: 18,
+      marginTop: -6,
+      marginLeft: -6,
       backgroundColor: 'var(--color-icon-muted)',
       border: '2px solid var(--color-text-default)',
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },
     '&$disabled': {
-      height: 20,
-      width: 20,
-      marginTop: -7,
-      marginLeft: -7,
+      height: 16,
+      width: 16,
+      marginTop: -5,
+      marginLeft: -5,
       backgroundColor: 'var(--color-icon-muted)',
       border: '2px solid var(--color-text-default)',
       boxSizing: 'border-box' as const,
@@ -77,6 +81,17 @@ const sliderStyles = {
     },
   },
   active: {},
+  mark: {
+    width: 2,
+    height: 2,
+    borderRadius: '50%',
+    backgroundColor: 'var(--color-text-default)',
+    marginTop: 2,
+  },
+  markActive: {
+    backgroundColor: 'var(--color-text-default)',
+    opacity: 1,
+  },
 };
 
 const StyledMaterialSlider = withStyles(sliderStyles)(MaterialSlider);
@@ -90,8 +105,13 @@ export type PerpsSliderProps = {
   step: number;
   /** Current value */
   value: number;
-  /** Change handler */
+  /** Change handler - fires continuously during drag */
   onChange: (
+    event: React.ChangeEvent<unknown>,
+    value: number | number[],
+  ) => void;
+  /** Committed change handler - fires only when drag ends or a discrete click occurs */
+  onChangeCommitted?: (
     event: React.ChangeEvent<unknown>,
     value: number | number[],
   ) => void;
@@ -113,6 +133,8 @@ export type PerpsSliderProps = {
   'data-testid'?: string;
   /** When true, the slider is non-interactive */
   disabled?: boolean;
+  /** Show tick marks at every Nth step (e.g. 5 = tick every 5 steps) */
+  markInterval?: number;
 };
 
 export const PerpsSlider: React.FC<PerpsSliderProps> = ({
@@ -121,6 +143,7 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
   step,
   value,
   onChange,
+  onChangeCommitted,
   editText = 'Edit',
   infoText,
   onEdit,
@@ -130,9 +153,21 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
   valueText,
   'data-testid': dataTestId,
   disabled = false,
+  markInterval,
 }) => {
   const hasHeader = titleText || tooltipText || valueText || titleDetail;
   const hasFooter = infoText || onEdit;
+
+  const marks = React.useMemo(() => {
+    if (!markInterval || markInterval * step <= 0) {
+      return undefined;
+    }
+    const result: { value: number }[] = [];
+    for (let i = min; i <= max; i += markInterval * step) {
+      result.push({ value: i });
+    }
+    return result;
+  }, [markInterval, min, max, step]);
 
   return (
     <Box className="w-full inline-block">
@@ -154,7 +189,13 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
               </Text>
             )}
             {tooltipText && typeof tooltipText === 'string' && (
-              <InfoTooltip position="top" contentText={tooltipText} />
+              <Tooltip position="top" html={tooltipText} interactive>
+                <Icon
+                  name={IconName.Info}
+                  size={IconSize.Sm}
+                  color={IconColor.IconAlternative}
+                />
+              </Tooltip>
             )}
             {valueText && (
               <Text
@@ -183,7 +224,9 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
         step={step}
         value={value}
         onChange={onChange}
+        onChangeCommitted={onChangeCommitted}
         disabled={disabled}
+        marks={marks}
         data-testid={dataTestId}
       />
 

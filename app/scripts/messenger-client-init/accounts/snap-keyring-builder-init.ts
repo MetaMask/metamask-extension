@@ -1,4 +1,4 @@
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   SnapKeyringBuilderInitMessenger,
   SnapKeyringBuilderMessenger,
@@ -18,7 +18,7 @@ import {
  * @param request.removeAccount
  * @returns The initialized controller.
  */
-export const SnapKeyringBuilderInit: ControllerInitFunction<
+export const SnapKeyringBuilderInit: MessengerClientInitFunction<
   SnapKeyringBuilder,
   SnapKeyringBuilderMessenger,
   SnapKeyringBuilderInitMessenger
@@ -40,6 +40,6 @@ export const SnapKeyringBuilderInit: ControllerInitFunction<
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller: builder,
+    messengerClient: builder,
   };
 };
