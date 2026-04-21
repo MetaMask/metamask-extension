@@ -17,6 +17,7 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 
 import {
   ABOUT_US_ROUTE,
+  ADD_DEVICE_ROUTE,
   ADVANCED_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
   GENERAL_ROUTE,
@@ -49,6 +50,7 @@ import { CLAIMS_TAB_KEYS } from './transaction-shield-tab/types';
 
 const ROUTES_TO_I18N_KEYS = {
   [ABOUT_US_ROUTE]: 'about',
+  [ADD_DEVICE_ROUTE]: 'addDevice',
   [ADD_NETWORK_ROUTE]: 'networks',
   [ADD_POPULAR_CUSTOM_NETWORK]: 'addNetwork',
   [ADVANCED_ROUTE]: 'advanced',

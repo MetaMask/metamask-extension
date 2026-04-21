@@ -111,6 +111,10 @@ export const ABOUT_ITEMS = {
   'contact-us': 'contactUs',
 } as const;
 
+export const ADD_DEVICE_ITEMS = {
+  'add-device': 'addDevice',
+} as const;
+
 // ── Registry (auto-derived) ─────────────────────────────────────────────
 
 export const SETTINGS_V2_SEARCH_CONFIG: TabSearchConfig[] = [
@@ -145,4 +149,5 @@ export const SETTINGS_V2_SEARCH_CONFIG: TabSearchConfig[] = [
     items: createSearchItemMeta(DEVELOPER_TOOLS_ITEMS),
   },
   { tabId: 'about-us', items: createSearchItemMeta(ABOUT_ITEMS) },
+  { tabId: 'add-device', items: createSearchItemMeta(ADD_DEVICE_ITEMS) },
 ];

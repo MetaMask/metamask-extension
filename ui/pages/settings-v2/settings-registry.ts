@@ -29,6 +29,7 @@ import {
   THEME_ROUTE,
   PRIVACY_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
+  ADD_DEVICE_ROUTE,
 } from '../../helpers/constants/routes';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import { CLAIMS_TAB_KEYS } from '../settings/transaction-shield-tab/types';
@@ -72,6 +73,7 @@ export const SETTINGS_V2_ROOT_SECTIONS: readonly {
       DEVELOPER_OPTIONS_ROUTE,
       DEVELOPER_TOOLS_ROUTE,
       ABOUT_US_ROUTE,
+      ADD_DEVICE_ROUTE,
     ],
   },
 ] as const;
@@ -312,6 +314,15 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     iconName: IconName.Info,
   },
 
+  // --- Add Device tab ---
+  [ADD_DEVICE_ROUTE]: {
+    labelKey: 'addDevice',
+    parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(() => import('./add-device-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.Mobile,
+  },
+
   // --- Snap settings (navigated via URL, not shown as a tab) ---
   [SNAP_SETTINGS_ROUTE]: {
     labelKey: 'snaps',
@@ -350,6 +361,8 @@ export function getSettingsV2RouteMeta(
         ),
       ),
     );
+
+  console.log('matchingRoute', matchingRoute);
 
   return matchingRoute ? SETTINGS_V2_ROUTES[matchingRoute] : null;
 }

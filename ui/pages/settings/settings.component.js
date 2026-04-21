@@ -77,7 +77,7 @@ import ChangePassword from './security-tab/change-password';
 import ClaimsArea from './transaction-shield-tab/claims-area';
 import TransactionShield from './transaction-shield-tab';
 import ManageShieldPlan from './transaction-shield-tab/manage-shield-plan';
-import AddDevice from './add-device';
+import AddDevice from './add-device-tab';
 
 // Helper component for network routes that need side effects
 const NetworkRouteHandler = ({ onMount }) => {
@@ -417,13 +417,18 @@ class SettingsPage extends PureComponent {
       },
       {
         content: t('experimental'),
-        icon: <Icon name={IconName.Flask} />,
+        icon: <Icon name={IconName.Mobile} />,
         key: EXPERIMENTAL_ROUTE,
       },
       {
         content: t('about'),
         icon: <Icon name={IconName.Info} />,
         key: ABOUT_US_ROUTE,
+      },
+      {
+        content: t('addDevice'),
+        icon: <Icon name={IconName.Mobile} />,
+        key: ADD_DEVICE_ROUTE,
       },
     ];
 
@@ -500,6 +505,10 @@ class SettingsPage extends PureComponent {
           element={<InfoTab />}
         />
         <Route
+          path={toRelativeRoutePath(ADD_DEVICE_ROUTE, SETTINGS_ROUTE)}
+          element={<InfoTab />}
+        />
+        <Route
           path={toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_ROUTE)}
           element={<SnapSettingsRenderer />}
         />
@@ -567,11 +576,11 @@ class SettingsPage extends PureComponent {
         />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
           process.env.IN_TEST) && (
-          <Route
-            path={toRelativeRoutePath(DEVELOPER_OPTIONS_ROUTE, SETTINGS_ROUTE)}
-            element={<DeveloperOptionsTab />}
-          />
-        )}
+            <Route
+              path={toRelativeRoutePath(DEVELOPER_OPTIONS_ROUTE, SETTINGS_ROUTE)}
+              element={<DeveloperOptionsTab />}
+            />
+          )}
         <Route
           path={toRelativeRoutePath(
             NOTIFICATIONS_SETTINGS_ROUTE,
