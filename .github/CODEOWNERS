@@ -280,7 +280,6 @@ app/build-types/                                     @MetaMask/extension-platfor
 # These codeowners will review this analysis, and review the policy changes in
 # further detail if warranted.
 lavamoat/                            @MetaMask/policy-reviewers
-development/build/index.js           @MetaMask/policy-reviewers @MetaMask/extension-platform
 
 # The privacy-snapshot.json file includes a list of all hosts that the
 # extension communicates with during the E2E test suite runs. It is not a
