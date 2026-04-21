@@ -4,3 +4,4 @@
 /* Match prior tailwind.config content: only JS/TS templates under ui/ */
 @source "../**/*.{js,jsx,ts,tsx}";
 @source "../../node_modules/@metamask/design-system-react";
+@source "../../node_modules/@metamask-previews/design-system-shared";
