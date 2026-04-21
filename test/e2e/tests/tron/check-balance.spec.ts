@@ -48,6 +48,7 @@ describe('Check balance', function (this: Suite) {
 
         const nonEvmHomePage = new NonEvmHomepage(driver);
         // TRX_BALANCE = 6072392 SUN = ~6.07 TRX * $0.29469 = ~$1.79
+        // Total Fiat = TRX $1.79, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $10.18
         await nonEvmHomePage.checkPageIsLoaded({ amount: '$10.18' });
       },
     );
