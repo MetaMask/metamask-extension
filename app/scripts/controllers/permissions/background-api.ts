@@ -25,6 +25,7 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { NetworkState } from '@metamask/network-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
+import log from 'loglevel';
 import { getNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 
 export type PermissionBackgroundApiOptions = {
@@ -283,10 +284,17 @@ export function getPermissionBackgroundApiMethods({
     setPermittedAccounts(origin, updatedAccountIds);
 
     if (newCaipAccountIds.length > 0) {
-      onPermittedAccountsAdded?.({
-        origin,
-        newCaipAccountIds,
-      });
+      try {
+        onPermittedAccountsAdded?.({
+          origin,
+          newCaipAccountIds,
+        });
+      } catch (error) {
+        log.error(
+          'PermissionBackgroundApi onPermittedAccountsAdded callback threw:',
+          error,
+        );
+      }
     }
   };
 
