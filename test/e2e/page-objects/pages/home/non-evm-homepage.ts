@@ -17,15 +17,14 @@ class NonEvmHomepage extends HomePage {
 
   async checkPageIsLoaded({ amount }: { amount?: string } = {}): Promise<void> {
     await super.checkPageIsLoaded();
-    await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
     if (amount) {
-      await this.driver.wait(async () => {
-        await this.driver.waitForSelector({
+      await this.driver.waitForSelector(
+        {
           text: `${amount}`,
           tag: 'span',
-        });
-        return true;
-      }, 60000);
+        },
+        { timeout: 60000 },
+      );
     }
   }
 
