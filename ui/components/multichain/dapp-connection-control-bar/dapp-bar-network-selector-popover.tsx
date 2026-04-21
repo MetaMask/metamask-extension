@@ -1,10 +1,16 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
+import {
+  type CaipChainId,
+  type Hex,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
 import {
   type MultichainNetworkConfiguration,
   NON_EVM_TESTNET_IDS,
 } from '@metamask/multichain-network-controller';
+import { toHex } from '@metamask/controller-utils';
 import {
   AlignItems,
   BlockSize,
@@ -167,10 +173,10 @@ export const DappBarNetworkSelectorPopover: React.FC<
         const { namespace, reference } = parseCaipChainId(
           chainId as CaipChainId,
         );
-        if (namespace !== 'eip155') {
+        if (namespace !== KnownCaipNamespace.Eip155) {
           return chainId;
         }
-        return `0x${parseInt(reference, 10).toString(16)}`;
+        return toHex(reference);
       };
       return normalize(a) === normalize(b);
     } catch {
