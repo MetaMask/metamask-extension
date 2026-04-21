@@ -129,9 +129,14 @@ jobs:
             -- "$CAPTURE")
           echo "$OUTPUT"
           CAPTURE_PATH=$(echo "$OUTPUT" | awk -F' — ' '/^✓/ { sub(/^✓ /, "", $1); print $1 }')
-          CAPTURE_URL=$(echo "$OUTPUT"  | awk -F' — ' '/^✓/ { print $3 }')
+          CAPTURE_SHA=$(echo  "$OUTPUT" | awk -F' — ' '/^✓/ { print $2 }')
+          CAPTURE_URL=$(echo  "$OUTPUT" | awk -F' — ' '/^✓/ { print $3 }')
+          # Slug is the directory name under `domains/inbox/skills/`.
+          CAPTURE_SLUG=$(echo "$CAPTURE_PATH" | sed -E 's|^domains/inbox/skills/([^/]+)/.*|\1|')
           echo "path=$CAPTURE_PATH" >> "$GITHUB_OUTPUT"
+          echo "sha=$CAPTURE_SHA"   >> "$GITHUB_OUTPUT"
           echo "url=$CAPTURE_URL"   >> "$GITHUB_OUTPUT"
+          echo "slug=$CAPTURE_SLUG" >> "$GITHUB_OUTPUT"
 
       - name: Capture — branch and open PR
         if: steps.trust.outputs.tier == 'pr'
@@ -194,8 +199,13 @@ jobs:
           # Best-effort team review request; silently skipped cross-org.
           gh pr edit "${PR_URL}" --add-reviewer "${TEAM_SLUG}" 2>/dev/null || true
 
-          echo "path=$SKILL_PATH" >> "$GITHUB_OUTPUT"
-          echo "url=$PR_URL"      >> "$GITHUB_OUTPUT"
+          PR_NUMBER=$(basename "$PR_URL")
+
+          echo "path=$SKILL_PATH"     >> "$GITHUB_OUTPUT"
+          echo "slug=$SKILL_SLUG"     >> "$GITHUB_OUTPUT"
+          echo "url=$PR_URL"          >> "$GITHUB_OUTPUT"
+          echo "number=$PR_NUMBER"    >> "$GITHUB_OUTPUT"
+          echo "branch=$BRANCH"       >> "$GITHUB_OUTPUT"
 
       - name: Reply on PR
         if: always() && steps.parse.outcome == 'success'
@@ -204,33 +214,110 @@ jobs:
           EMPTY: ${{ steps.parse.outputs.empty }}
           TIER: ${{ steps.trust.outputs.tier }}
           STATUS: ${{ job.status }}
+          SKILLS_OWNER: ${{ steps.config.outputs.owner }}
+          SKILLS_REPO:  ${{ steps.config.outputs.repo }}
           DIRECT_PATH: ${{ steps.capture-direct.outputs.path }}
           DIRECT_URL:  ${{ steps.capture-direct.outputs.url }}
-          PR_PATH: ${{ steps.capture-pr.outputs.path }}
-          PR_URL:  ${{ steps.capture-pr.outputs.url }}
+          DIRECT_SHA:  ${{ steps.capture-direct.outputs.sha }}
+          DIRECT_SLUG: ${{ steps.capture-direct.outputs.slug }}
+          PR_PATH:   ${{ steps.capture-pr.outputs.path }}
+          PR_URL:    ${{ steps.capture-pr.outputs.url }}
+          PR_NUMBER: ${{ steps.capture-pr.outputs.number }}
+          PR_SLUG:   ${{ steps.capture-pr.outputs.slug }}
+          PR_BRANCH: ${{ steps.capture-pr.outputs.branch }}
           USER: ${{ github.event.comment.user.login }}
         with:
           github-token: ${{ github.token }}
           script: |
+            const fs = require('fs');
             const {
               EMPTY, TIER, STATUS,
-              DIRECT_PATH, DIRECT_URL, PR_PATH, PR_URL, USER,
+              SKILLS_OWNER, SKILLS_REPO,
+              DIRECT_PATH, DIRECT_URL, DIRECT_SHA, DIRECT_SLUG,
+              PR_PATH, PR_URL, PR_NUMBER, PR_SLUG, PR_BRANCH,
+              USER,
             } = process.env;
+            const TEAM_SLUG = process.env.TEAM_SLUG;
+
+            // Quote the original capture text from the tmpfile (workflow-scoped).
+            const capturePath = `${process.env.RUNNER_TEMP}/capture.txt`;
+            const rawCapture = fs.existsSync(capturePath)
+              ? fs.readFileSync(capturePath, 'utf8').trim()
+              : '';
+            const MAX = 600;
+            const truncated = rawCapture.length > MAX
+              ? rawCapture.slice(0, MAX) + '…'
+              : rawCapture;
+            const quoted = truncated
+              ? truncated.split('\n').map((l) => `> ${l}`).join('\n')
+              : '';
+
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const sourceSlug = `${context.repo.owner}/${context.repo.repo}#${context.payload.issue.number}`;
 
             let body;
             if (EMPTY === 'true') {
-              body = '⚠ `@metamaskbot /remember` needs capture text after the command.';
+              body = [
+                '⚠ `@metamaskbot /remember` needs capture text after the command.',
+                '',
+                '**Example:**',
+                '```',
+                '@metamaskbot /remember When investigating file moves, prefer `git log --follow` over `git blame`.',
+                '```',
+              ].join('\n');
             } else if (TIER === 'reject') {
-              body = `⚠ @${USER} — \`@metamaskbot /remember\` requires org membership or a merged contribution to this repo.`;
+              const orgName = TEAM_SLUG.split('/')[0];
+              body = [
+                `⚠ @${USER} — \`@metamaskbot /remember\` is available to:`,
+                '',
+                `- Members of the \`@${orgName}\` org`,
+                '- Collaborators on this repo',
+                '- Contributors with merged PRs to this repo',
+                '',
+                `External contributors can still propose skills by opening a PR directly on [\`${SKILLS_OWNER}/${SKILLS_REPO}\`](${context.serverUrl}/${SKILLS_OWNER}/${SKILLS_REPO}).`,
+              ].join('\n');
             } else if (STATUS !== 'success') {
-              const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-              body = `✗ Capture failed. See the [workflow run](${runUrl}) for details.`;
+              body = `✗ \`@metamaskbot /remember\` capture failed. See the [workflow run](${runUrl}) for details.`;
             } else if (TIER === 'direct' && DIRECT_URL) {
-              body = `✓ Captured as [\`${DIRECT_PATH}\`](${DIRECT_URL}).`;
+              const rows = [
+                ['Skill',       `[\`${DIRECT_PATH}\`](${DIRECT_URL})`],
+                ['Slug',        `\`${DIRECT_SLUG}\``],
+                ['Commit',      `\`${DIRECT_SHA}\` on \`${SKILLS_OWNER}/${SKILLS_REPO}\``],
+                ['Tier',        `direct — \`@${TEAM_SLUG}\` member`],
+                ['Captured by', `@${USER}`],
+                ['Source',      sourceSlug],
+              ];
+              body = [
+                '✓ Crystallized as an experimental skill.',
+                '',
+                '| | |',
+                '|---|---|',
+                ...rows.map(([k, v]) => `| **${k}** | ${v} |`),
+                '',
+                quoted,
+                '',
+                `Awaiting curation by \`@${TEAM_SLUG}\`. Skills sync into consumer repos once promoted out of \`domains/inbox/\`.`,
+              ].join('\n');
             } else if (TIER === 'pr' && PR_URL) {
-              body = `✓ Opened [capture PR](${PR_URL}) against the skills repo — pending review before merge.`;
+              const rows = [
+                ['PR',             `[\`${SKILLS_OWNER}/${SKILLS_REPO}#${PR_NUMBER}\`](${PR_URL})`],
+                ['Proposed path',  `\`${PR_PATH}\``],
+                ['Slug',           `\`${PR_SLUG}\``],
+                ['Branch',         `\`${PR_BRANCH}\``],
+                ['Tier',           `external — pending review by \`@${TEAM_SLUG}\``],
+                ['Captured by',    `@${USER}`],
+                ['Source',         sourceSlug],
+              ];
+              body = [
+                '✓ Opened capture PR for review.',
+                '',
+                '| | |',
+                '|---|---|',
+                ...rows.map(([k, v]) => `| **${k}** | ${v} |`),
+                '',
+                quoted,
+              ].join('\n');
             } else {
-              const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
               body = `✗ Capture finished in an unexpected state. See the [workflow run](${runUrl}).`;
             }
             await github.rest.issues.createComment({
