@@ -322,6 +322,7 @@ ui/pages/index.js                                     @MetaMask/extension-platfo
 ui/pages/routes/routes.component.tsx                  @MetaMask/extension-platform @MetaMask/core-extension-ux
 ui/store/store.ts                                     @MetaMask/extension-platform
 ui/store/background-connection.ts                     @MetaMask/extension-platform
+ui/store/patch-store-substream-connection.ts         @MetaMask/extension-platform
 
 # Manifest: Extension manifest, build targets, and supported browsers.
 # Changes affect what APIs the extension accesses and what ships to users.
