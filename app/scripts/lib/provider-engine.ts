@@ -28,8 +28,10 @@
  * builds an engine, ConnectionManager pipes a port stream through it.
  */
 
-import type { GenericPermissionController } from '@metamask/permission-controller';
-import type { SubjectMetadataController } from '@metamask/permission-controller';
+import type {
+  GenericPermissionController,
+  SubjectMetadataController,
+} from '@metamask/permission-controller';
 import type { NetworkController } from '@metamask/network-controller';
 import type { AccountsController } from '@metamask/accounts-controller';
 import type { SelectedNetworkController } from '@metamask/selected-network-controller';
