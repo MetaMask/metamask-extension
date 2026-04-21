@@ -78,6 +78,11 @@ async function buildScssPipeline(src, dest, devMode) {
         },
       }).on('error', gulpSass.logError),
       postcss([
+        // Pin Tailwind's source-detection base to the repo root so the
+        // explicit @source entries in ui/css/tailwind.css resolve
+        // consistently in this gulp/PostCSS pipeline instead of depending on
+        // process.cwd(). Tailwind docs:
+        // https://tailwindcss.com/docs/detecting-classes-in-source-files
         tailwindPostcss({ base: repoRoot }),
         rtlcss(),
         discardFonts(['woff2']),
