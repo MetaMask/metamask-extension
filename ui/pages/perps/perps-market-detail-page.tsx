@@ -29,10 +29,9 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
-  ButtonBase,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
-import type { Position, PriceUpdate } from '@metamask/perps-controller';
+import type { PriceUpdate } from '@metamask/perps-controller';
 import {
   formatFundingRate,
   formatPerpsFiat,
@@ -44,7 +43,6 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../shared/constants/perps-events';
-import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -52,7 +50,6 @@ import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
-  PERPS_ACTIVITY_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   usePerpsLivePositions,
@@ -63,7 +60,6 @@ import {
 } from '../../hooks/perps/stream';
 import {
   usePerpsEligibility,
-  usePerpsMarketFills,
   usePerpsEventTracking,
   usePerpsMarketInfo,
 } from '../../hooks/perps';
@@ -71,7 +67,7 @@ import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
 import { OrderCard } from '../../components/app/perps/order-card';
-import { TransactionCard } from '../../components/app/perps/transaction-card';
+import { PerpsMarketRecentActivity } from '../../components/app/perps/perps-market-recent-activity';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
   PerpsCandlestickChart,
@@ -95,7 +91,6 @@ import {
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
-import { transformFillsToTransactions } from '../../components/app/perps/utils/transactionTransforms';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import { Skeleton } from '../../components/component-library/skeleton';
@@ -460,8 +455,8 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [position]);
 
   // Filter and sort open orders for this market, then normalize for display.
-  // Normalization adds synthetic TP/SL rows for parent orders and filters out
-  // full-position TP/SL (those stay on the position card / auto-close section).
+  // Normalization adds synthetic TP/SL rows for parent orders when no matching
+  // real trigger exists; full-position TP/SL also appear in this Orders list.
   const orders = useMemo(() => {
     if (!decodedSymbol) {
       return [];
@@ -499,21 +494,9 @@ const PerpsMarketDetailPage: React.FC = () => {
     throttleMs: 1000,
   });
 
-  // Fetch market-specific fills (WebSocket + REST) for Recent Activity
-  const { fills: marketFills, isInitialLoading: fillsLoading } =
-    usePerpsMarketFills({
-      symbol: decodedSymbol ?? '',
-      throttleMs: 0,
-    });
-
-  const recentActivityTransactions = useMemo(() => {
-    const transactions = transformFillsToTransactions(marketFills);
-    return transactions.slice(0, PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT);
-  }, [marketFills]);
-
   usePerpsMeasurement(
     'PerpsMarketDetailLoaded',
-    !marketsLoading && !isCandleLoading && !fillsLoading,
+    !marketsLoading && !isCandleLoading,
   );
 
   // OHLCV bar state: the candle currently hovered by crosshair (null = no hover)
@@ -1012,47 +995,6 @@ const PerpsMarketDetailPage: React.FC = () => {
         onNeedMoreHistory={fetchMoreHistory}
         // onCrosshairMove={setHoveredCandle}
       />
-    );
-  };
-
-  const renderRecentActivityContent = () => {
-    if (fillsLoading && recentActivityTransactions.length === 0) {
-      return (
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          className="overflow-hidden rounded-xl"
-        >
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-[72px] w-full rounded-none" />
-          ))}
-        </Box>
-      );
-    }
-
-    if (recentActivityTransactions.length === 0) {
-      return (
-        <Box paddingBottom={4}>
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('perpsNoTransactions')}
-          </Text>
-        </Box>
-      );
-    }
-
-    return (
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        className="overflow-hidden rounded-xl"
-      >
-        {recentActivityTransactions.map((transaction, index) => (
-          <TransactionCard
-            key={transaction.id}
-            transaction={transaction}
-            variant="muted"
-            showTopBorder={index > 0}
-          />
-        ))}
-      </Box>
     );
   };
 
@@ -1752,35 +1694,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         {/* Recent Activity Section - always visible */}
         <Box paddingLeft={4} paddingRight={4}>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-            alignItems={BoxAlignItems.Center}
-            paddingTop={4}
-            paddingBottom={2}
-          >
-            <Text
-              variant={TextVariant.HeadingSm}
-              fontWeight={FontWeight.Medium}
-            >
-              {t('perpsRecentActivity')}
-            </Text>
-            {recentActivityTransactions.length > 0 && (
-              <ButtonBase
-                onClick={() => navigate(PERPS_ACTIVITY_ROUTE)}
-                className="bg-transparent hover:bg-transparent active:bg-transparent p-0 min-w-0 h-auto"
-                data-testid="perps-market-detail-view-all-activity"
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
-                >
-                  {t('perpsSeeAll')}
-                </Text>
-              </ButtonBase>
-            )}
-          </Box>
-          {renderRecentActivityContent()}
+          <PerpsMarketRecentActivity symbol={decodedSymbol} />
 
           {/* Learn Section */}
           <Box
