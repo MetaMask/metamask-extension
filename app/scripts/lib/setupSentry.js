@@ -31,6 +31,8 @@ const RELEASE = getSentryRelease(
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 const SENTRY_DSN_PERFORMANCE = process.env.SENTRY_DSN_PERFORMANCE;
+const SENTRY_DISTRIBUTED_TRACING_PILOT =
+  process.env.SENTRY_DISTRIBUTED_TRACING_PILOT;
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
@@ -170,6 +172,14 @@ function getTracesSampleRate(sentryTarget) {
 
   if (METAMASK_DEBUG) {
     return 1.0;
+  }
+
+  // Distributed tracing pilot: very low rate to keep span volume within quota
+  // while new RPC + messenger wrappers are validated in production.
+  // Projected fan-out: ~33–93× per transaction; 0.0001 keeps ingest ≤ current baseline.
+  // Step up to 0.0005 after 1 week of clean data.
+  if (SENTRY_DISTRIBUTED_TRACING_PILOT) {
+    return 0.0001;
   }
 
   return 0.0075;
