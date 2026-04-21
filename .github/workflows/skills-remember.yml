@@ -81,6 +81,21 @@ jobs:
               echo "tier=reject" >> "$GITHUB_OUTPUT" ;;
           esac
 
+      - name: Acknowledge command with `eyes` reaction
+        if: steps.trust.outputs.tier == 'direct' || steps.trust.outputs.tier == 'pr'
+        id: react-start
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const res = await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              content: 'eyes',
+            });
+            core.setOutput('id', res.data.id);
+
       - name: Resolve upstream skills repo from `.skills/CONFIG`
         if: steps.trust.outputs.tier == 'direct' || steps.trust.outputs.tier == 'pr'
         id: config
@@ -349,4 +364,27 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.payload.issue.number,
               body,
+            });
+
+      - name: Replace `eyes` with final result reaction
+        if: always() && steps.react-start.outputs.id
+        uses: actions/github-script@v7
+        env:
+          REACTION_ID: ${{ steps.react-start.outputs.id }}
+          STATUS: ${{ job.status }}
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const { REACTION_ID, STATUS } = process.env;
+            await github.rest.reactions.deleteForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              reaction_id: Number(REACTION_ID),
+            });
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              content: STATUS === 'success' ? '+1' : '-1',
             });
