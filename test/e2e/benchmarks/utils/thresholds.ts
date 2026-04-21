@@ -6,6 +6,20 @@ import { type ThresholdConfig } from '../../../../shared/constants/benchmarks';
  */
 export const DEFAULT_CI_MULTIPLIER = 1.5;
 
+/**
+ * CLS (Cumulative Layout Shift) canary thresholds.
+ * Extension pages should produce CLS ≈ 0; any measurable shift is a real
+ * signal (lazy-loaded component, dynamic banner, skeleton screen).
+ * Unitless — no CI multiplier needed. Uses Google's standard CWV boundaries:
+ * p75 ≤ 0.1 "good" / ≤ 0.25 "needs-improvement" / > 0.25 "poor".
+ */
+const CLS_THRESHOLDS = {
+  cls: {
+    p75: { warn: 0.1, fail: 0.25 },
+    p95: { warn: 0.1, fail: 0.25 },
+  },
+} satisfies ThresholdConfig;
+
 const ONBOARDING_IMPORT_WALLET: ThresholdConfig = {
   importWalletToSocialScreen: {
     p75: { warn: 1800, fail: 2400 },
@@ -42,6 +56,7 @@ const ONBOARDING_IMPORT_WALLET: ThresholdConfig = {
     p95: { warn: 50000, fail: 60000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
   // Baseline: p75=485ms, p95=559ms (2026-04-07 – 2026-04-20, ci.branch:main)
   tbt: {
     p75: { warn: 575, fail: 625 },
@@ -81,6 +96,7 @@ const ONBOARDING_NEW_WALLET: ThresholdConfig = {
     p95: { warn: 16000, fail: 21000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
   // Baseline: p75=326ms, p95=377ms (2026-04-07 – 2026-04-20, ci.branch:main)
   tbt: {
     p75: { warn: 400, fail: 425 },
@@ -105,6 +121,7 @@ const IMPORT_SRP_HOME: ThresholdConfig = {
     p95: { warn: 32000, fail: 40000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
   // Baseline: p75=3354ms, p95=3552ms (2026-04-07 – 2026-04-20, ci.branch:main)
   tbt: {
     p75: { warn: 4000, fail: 4350 },
@@ -124,6 +141,7 @@ const SWAP: ThresholdConfig = {
     p95: { warn: 3500, fail: 6000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
   // Baseline: p75=438ms, p95=483ms (2026-04-07 – 2026-04-20, ci.branch:main)
   tbt: {
     p75: { warn: 525, fail: 575 },
@@ -148,6 +166,7 @@ const SEND_TRANSACTIONS: ThresholdConfig = {
     p95: { warn: 5000, fail: 7000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
   // Baseline: p75=151ms, p95=151ms (2026-04-07 – 2026-04-20, ci.branch:main)
   tbt: {
     p75: { warn: 200, fail: 225 },
@@ -162,6 +181,7 @@ const ASSET_DETAILS: ThresholdConfig = {
     p95: { warn: 1500, fail: 3000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
   // Baseline: p75=95ms, p95=127ms (2026-04-07 – 2026-04-20, ci.branch:main)
   tbt: {
     p75: { warn: 125, fail: 150 },
@@ -176,6 +196,7 @@ const SOLANA_ASSET_DETAILS: ThresholdConfig = {
     p95: { warn: 1500, fail: 3000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
   // Baseline: p75≈1ms, p95≈1ms — floor applied (2026-04-07 – 2026-04-20, ci.branch:main)
   tbt: {
     p75: { warn: 50, fail: 75 },
@@ -200,6 +221,7 @@ const STANDARD_HOME: ThresholdConfig = {
     p95: { warn: 1800, fail: 2400 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
   // Baseline: p75=313ms, p95=351ms (2026-04-07 – 2026-04-20, ci.branch:main)
   tbt: {
     p75: { warn: 375, fail: 425 },
@@ -224,6 +246,7 @@ const POWER_USER_HOME: ThresholdConfig = {
     p95: { warn: 2800, fail: 3800 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
   // Baseline: p75=1189ms, p95=1367ms (2026-04-07 – 2026-04-20, ci.branch:main)
   tbt: {
     p75: { warn: 1425, fail: 1550 },
