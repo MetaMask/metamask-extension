@@ -1,4 +1,3 @@
-import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import {
@@ -426,19 +425,22 @@ const API_TYPE = {
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 
-export default class MetamaskController extends EventEmitter {
+export default class MetamaskController {
+  /**
+   * Callbacks waiting for the startUISync signal (before login completes).
+   *
+   * @type {Array<() => void>}
+   */
+  #startUISyncCallbacks = [];
+
   /**
    * @param {object} opts
    */
   constructor(opts) {
-    super();
-
     const {
       isFirstMetaMaskControllerSetup,
       controllerMessenger = getRootMessenger(),
     } = opts;
-
-    this.defaultMaxListeners = 20;
 
     this.opts = opts;
     this.requestSafeReload =
@@ -507,27 +509,8 @@ export default class MetamaskController extends EventEmitter {
     this.multichainMiddlewareManager = new MultichainMiddlewareManager();
     this.deprecatedNetworkVersions = {};
 
-    // start and stop polling for balances based on activeControllerConnections
-    this.on('controllerConnectionChanged', (activeControllerConnections) => {
-      const { completedOnboarding } = this.onboardingController.state;
-      if (activeControllerConnections > 0 && completedOnboarding) {
-        this.triggerNetworkrequests();
-      } else {
-        this.stopNetworkRequests();
-      }
-    });
-
-    // Monitor for first wallet funding event based on activeControllerConnections
-    this.on('controllerConnectionChanged', (activeControllerConnections) => {
-      const { completedOnboarding } = this.onboardingController.state;
-      if (
-        activeControllerConnections > 0 &&
-        completedOnboarding &&
-        this.appStateController.state.canTrackWalletFundsObtained
-      ) {
-        this.walletFundsObtainedMonitor.setupMonitoring();
-      }
-    });
+    // Connection-change handling is now a direct method call (no EventEmitter).
+    // See _onControllerConnectionChanged() below.
 
     /** @type {import('./messenger-client-init/utils').InitFunctions} */
     const messengerClientInitFunctions = {
@@ -1782,6 +1765,23 @@ export default class MetamaskController extends EventEmitter {
         return await this.networkController.lookupNetwork(networkClientId);
       }),
     ]);
+  }
+
+  _onControllerConnectionChanged() {
+    const { completedOnboarding } = this.onboardingController.state;
+    if (this.activeControllerConnections > 0 && completedOnboarding) {
+      this.triggerNetworkrequests();
+    } else {
+      this.stopNetworkRequests();
+    }
+
+    if (
+      this.activeControllerConnections > 0 &&
+      completedOnboarding &&
+      this.appStateController.state.canTrackWalletFundsObtained
+    ) {
+      this.walletFundsObtainedMonitor.setupMonitoring();
+    }
   }
 
   triggerNetworkrequests() {
@@ -4431,8 +4431,11 @@ export default class MetamaskController extends EventEmitter {
   _startUISync() {
     // Sending this message after login ensures incomplete state without
     // account details is not flushed to UI.
-    this.emit('startUISync');
     this.startUISync = true;
+    for (const fn of this.#startUISyncCallbacks) {
+      fn();
+    }
+    this.#startUISyncCallbacks = [];
   }
 
   /**
@@ -5717,7 +5720,7 @@ export default class MetamaskController extends EventEmitter {
 
     // report new active controller connection
     this.activeControllerConnections += 1;
-    this.emit('controllerConnectionChanged', this.activeControllerConnections);
+    this._onControllerConnectionChanged();
 
     // set up postStream transport
     outStream.on('data', createMetaRPCHandler(api, outStream));
@@ -5742,16 +5745,13 @@ export default class MetamaskController extends EventEmitter {
     if (this.startUISync) {
       startUISync();
     } else {
-      this.once('startUISync', startUISync);
+      this.#startUISyncCallbacks.push(startUISync);
     }
 
     const outstreamEndHandler = () => {
       if (!outStream.mmFinished) {
         this.activeControllerConnections -= 1;
-        this.emit(
-          'controllerConnectionChanged',
-          this.activeControllerConnections,
-        );
+        this._onControllerConnectionChanged();
         outStream.mmFinished = true;
         messengerUnsubscribers.forEach((unsub) => unsub());
         patchBuffer.destroy();
