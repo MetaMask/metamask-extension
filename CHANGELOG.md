@@ -9,19 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.28.0]
 
-### Uncategorized
-
-- chore: Bulk register actions in `MetaMetricsController` (#41607)
-- chore: Bulk register actions in `OAuthService` (#41613)
-- chore: Bulk register actions in `DataDeletionService` (#41652)
-- chore: Bulk register actions in `SubscriptionService` (#41616)
-- chore: Bulk register actions in `NetworkOrderController` (#41608)
-- chore: Bulk register actions in `EncryptionPublicKeyController` (#41604)
-- chore: Bulk register actions in `PreferencesController` (#41611)
-- chore: Bulk register actions in `OnboardingController` (#41609)
-- chore: Bulk register actions in `AppStateController` (#41559)
-- chore: Bulk register actions in `DecryptMessageController` (#41560)
-
 ### Added
 
 - Extended notification account toggles to all wallet keyrings (#40762)
