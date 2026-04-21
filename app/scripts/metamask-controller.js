@@ -184,6 +184,7 @@ import {
   ASSETS_UNIFY_STATE_VERSION_1,
 } from '../../shared/lib/assets-unify-state/remote-feature-flag';
 import { toAssetId } from '../../shared/lib/asset-utils';
+import { getEip7702SupportedChains } from '../../shared/lib/eip7702-support-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
@@ -1369,8 +1370,25 @@ export default class MetamaskController {
           throw rpcErrors.methodNotSupported('No permission type provided');
         }
 
-        for (const param of params) {
-          const permissionType = param?.permission?.type;
+        const supportedChains = getEip7702SupportedChains(
+          this.remoteFeatureFlagController.state,
+        ).map((chainId) => chainId.toLowerCase());
+
+        const unsupportedChains = params
+          .filter(
+            ({ chainId }) => !supportedChains.includes(chainId?.toLowerCase()),
+          )
+          .map(({ chainId }) => chainId);
+
+        if (unsupportedChains.length > 0) {
+          throw rpcErrors.methodNotSupported(
+            `wallet_requestExecutionPermissions is not supported on chains '${unsupportedChains.join(', ')}'`,
+          );
+        }
+
+        for (const { permission } of params) {
+          const permissionType = permission?.type;
+
           if (!enabledTypes.includes(permissionType)) {
             throw rpcErrors.methodNotSupported(
               `Permission type '${permissionType ?? 'unknown'}' is not enabled`,
@@ -1396,8 +1414,11 @@ export default class MetamaskController {
       },
       processGetSupportedExecutionPermissions: async (req, context) => {
         const enabledTypes = getEnabledAdvancedPermissions();
+        const supportedChains = getEip7702SupportedChains(
+          this.remoteFeatureFlagController.state,
+        ).map((chainId) => chainId.toLowerCase());
 
-        const result = await forwardRequestToSnap(
+        const permissionsSupportedByKernel = await forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
             handleRequest: this.handleSnapRequest.bind(this),
@@ -1407,13 +1428,34 @@ export default class MetamaskController {
           context,
         );
 
-        // Filter the result to only include permission types that are enabled
-        if (!result || typeof result !== 'object') {
-          return result;
+        if (
+          !permissionsSupportedByKernel ||
+          typeof permissionsSupportedByKernel !== 'object'
+        ) {
+          return {};
         }
 
+        const enabledPermissionEntries = Object.entries(
+          permissionsSupportedByKernel,
+        ).filter(([permissionKey]) => enabledTypes.includes(permissionKey));
+
+        const supportedPermissionsWithResolvedChainIdsEntries =
+          enabledPermissionEntries.map(([permissionKey, specification]) => {
+            return [
+              permissionKey,
+              {
+                ...specification,
+                chainIds: specification.chainIds
+                  ?.map((chainId) => chainId.toLowerCase())
+                  .filter((chainId) => supportedChains.includes(chainId)) || [
+                  ...supportedChains,
+                ],
+              },
+            ];
+          });
+
         return Object.fromEntries(
-          Object.entries(result).filter(([key]) => enabledTypes.includes(key)),
+          supportedPermissionsWithResolvedChainIdsEntries,
         );
       },
       processGetGrantedExecutionPermissions: async (req, context) => {
