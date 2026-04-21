@@ -156,6 +156,7 @@ import {
   TraceOperation,
 } from '../../shared/lib/trace';
 import { createSentryError } from '../../shared/lib/error';
+import { createEnsureOnboardingCompleteCallback } from '../../shared/lib/metamask-controller-utils';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
@@ -975,6 +976,14 @@ export default class MetamaskController {
     // ClaimsController
     forceRegister('ClaimsController:clearState', (...a) =>
       this.claimsController.clearState(...a),
+    );
+
+    // TokensController / NftController (watch asset path)
+    forceRegister('TokensController:watchAsset', (...a) =>
+      this.tokensController.watchAsset(...a),
+    );
+    forceRegister('NftController:watchNft', (...a) =>
+      this.nftController.watchNft(...a),
     );
 
     // PreferencesController
@@ -2226,6 +2235,20 @@ export default class MetamaskController {
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
       (groupId) => {
+        const authorizationsByOrigin = getAuthorizedScopesByOrigin(
+          this.permissionController.state,
+        );
+
+        // TODO: Remove this setTimeout once https://github.com/MetaMask/core/pull/8261 is released
+        setTimeout(() => {
+          for (const [
+            origin,
+            authorization,
+          ] of authorizationsByOrigin.entries()) {
+            this._notifyAuthorizationChange(origin, authorization);
+          }
+        }, 1000);
+
         // TODO: Move this logic to the SnapKeyring directly.
         // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
         // eslint-disable-next-line no-void
@@ -4292,6 +4315,23 @@ export default class MetamaskController {
   async _importAccountsWithBalances() {
     return this.controllerMessenger.call(
       'AccountManagement:importAccountsWithBalances',
+      {
+        getKeyrings: () => this.keyringController.state.keyrings,
+        isHdKeyring: (id) =>
+          this.keyringController.withKeyring(
+            { id },
+            async ({ keyring }) => keyring.type === KeyringTypes.hd,
+          ),
+        isMultichainAccountsFeatureState2Enabled: () =>
+          this.isMultichainAccountsFeatureState2Enabled(),
+        ensureSnapKeyringInitialized: () => this.getSnapKeyring(),
+        syncAccountTreeWithUserStorage: () =>
+          this.accountTreeController.syncWithUserStorageAtLeastOnce(),
+        discoverAndCreateAccountsForKeyring: (id) =>
+          this.discoverAndCreateAccounts(id),
+        addAccountsWithBalanceForKeyring: (id) =>
+          this._addAccountsWithBalance(id),
+      },
     );
   }
 
@@ -4913,7 +4953,7 @@ export default class MetamaskController {
     }
 
     // Only continue if there is no pending approval
-    const hasPendingApproval = this.approvalController.has({
+    const hasPendingApproval = this.approvalController.hasRequest({
       origin: partner.origin,
       type: partner.approvalType,
     });
@@ -6314,7 +6354,7 @@ export default class MetamaskController {
           origin,
         ),
         hasApprovalRequestsForOrigin: () =>
-          this.approvalController.has({ origin }),
+          this.approvalController.hasRequest({ origin }),
       }),
     );
 
@@ -7870,6 +7910,9 @@ export default class MetamaskController {
     const initRequest = {
       currentMigrationVersion: this.opts.currentMigrationVersion,
       encryptor: this.opts.encryptor,
+      ensureOnboardingComplete: createEnsureOnboardingCompleteCallback(
+        this.controllerMessenger,
+      ),
       extension: this.extension,
       platform: this.platform,
       getCronjobControllerStorageManager: () =>

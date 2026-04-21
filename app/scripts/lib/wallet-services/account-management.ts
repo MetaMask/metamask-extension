@@ -394,18 +394,18 @@ export function getDiscoveryCountByProvider(
     bitcoinAccountTypes: string[];
     tronAccountTypes?: string[];
   },
-): { bitcoin: number; solana: number; tron: number } {
-  const counts = { bitcoin: 0, solana: 0, tron: 0 };
+): { Bitcoin: number; Solana: number; Tron: number } {
+  const counts = { Bitcoin: 0, Solana: 0, Tron: 0 };
 
   for (const account of accounts) {
     if (opts.solanaAccountTypes.includes(account.type)) {
-      counts.solana += 1;
+      counts.Solana += 1;
     }
     if (opts.bitcoinAccountTypes.includes(account.type)) {
-      counts.bitcoin += 1;
+      counts.Bitcoin += 1;
     }
     if (opts.tronAccountTypes?.includes(account.type)) {
-      counts.tron += 1;
+      counts.Tron += 1;
     }
   }
 
@@ -452,7 +452,7 @@ export async function discoverAndCreateAccounts(
       tronAccountTypes?: string[];
     };
   },
-): Promise<{ bitcoin: number; solana: number; tron: number }> {
+): Promise<{ Bitcoin: number; Solana: number; Tron: number }> {
   try {
     const keyringIdToDiscover =
       opts.keyringId ?? (await opts.getFirstKeyringId());
@@ -471,7 +471,7 @@ export async function discoverAndCreateAccounts(
       opts.getDiscoveryCountByProviderOpts,
     );
   } catch {
-    return { bitcoin: 0, solana: 0, tron: 0 };
+    return { Bitcoin: 0, Solana: 0, Tron: 0 };
   }
 }
 

@@ -53,7 +53,7 @@ function makeModuleMessenger(
     registerActionHandler: (
       name: string,
       handler: (...args: never[]) => unknown,
-    ) => child.registerActionHandler(name as never, handler),
+    ) => child.registerActionHandler(name as never, handler as never),
   } as never;
 }
 

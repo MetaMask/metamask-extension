@@ -1,4 +1,5 @@
 import type { Patch } from 'immer';
+import type { BaseControllerInstance } from '@metamask/base-controller';
 import { ControllerRegistry } from './ControllerRegistry';
 
 // ---------------------------------------------------------------------------
@@ -14,7 +15,7 @@ function makeMockController(
   for (const [key] of Object.entries(state)) {
     metadata[key] = { persist: persistFlags[key] ?? true, anonymous: false };
   }
-  return { name, state, metadata } as never;
+  return { name, state, metadata } as unknown as BaseControllerInstance;
 }
 
 function makeMockMessenger() {
