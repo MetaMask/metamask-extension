@@ -1907,9 +1907,36 @@ const MOCK_TOKEN_API_TRON_NATIVE_ASSET_ID = 'tron:728126428/slip44:195';
  * (chain 1337), Solana native, USD Coin on Solana, Bitcoin, and Tron native —
  * matching requested `assetIds` query params.
  *
+ * When `ASSETS_UNIFIED_STATE_ENABLED` is not `'true'`, reverts to the
+ * pre-unified behavior used on main: a static USDC-only response on the exact
+ * URL match. Keeps legacy specs (e.g. send-spl-token) behaving identically to
+ * main while the unified path's filtered regex response stays intact.
+ *
  * @param mockServer - The mockttp server instance.
  */
 export async function mockTokenApiAssets(mockServer: Mockttp) {
+  const isUnifiedAssetsEnabled =
+    Boolean(process.env.ASSETS_UNIFIED_STATE_ENABLED) ?? false;
+
+  if (!isUnifiedAssetsEnabled) {
+    return await mockServer
+      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [
+          {
+            assetId: USDC_CAIP19,
+            name: 'USD Coin',
+            symbol: 'USDC',
+            decimals: 6,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+          },
+        ],
+      }));
+  }
+
   return await mockServer
     .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
     .always()
