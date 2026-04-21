@@ -3120,7 +3120,7 @@ describe('Bridge selectors', () => {
         bridgeStateOverrides: { quotes: [] },
       });
       const result = getFormattedPriceImpactPercentage(state as never);
-      expect(result).toBe('0%');
+      expect(result).toBe(null);
     });
   });
 
