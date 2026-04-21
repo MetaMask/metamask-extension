@@ -242,7 +242,6 @@ export const getAssetIconUrls = (symbol: string): AssetIconUrls | null => {
   };
 };
 
-
 /**
  * Safely decode a URI component, returning undefined if decoding fails
  * Handles malformed percent-encoding sequences that would throw URIError
