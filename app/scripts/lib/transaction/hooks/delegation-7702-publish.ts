@@ -1,5 +1,6 @@
 import { Interface } from '@ethersproject/abi';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
+import { type SentinelMeta } from '@metamask/smart-transactions-controller';
 import {
   GasFeeToken,
   IsAtomicBatchSupportedRequest,
@@ -171,7 +172,7 @@ export class Delegation7702PublishHook {
       data,
       to,
       metadata: {
-        txType: transactionMeta.type,
+        txType: transactionMeta.type as SentinelMeta['txType'],
         client: getClientForTransactionMetadata(),
         origin: sanitizeOrigin(transactionMeta.origin),
       },

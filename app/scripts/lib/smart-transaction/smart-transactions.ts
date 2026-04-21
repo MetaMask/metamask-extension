@@ -14,6 +14,7 @@ import {
   type SmartTransaction,
   type SmartTransactionsNetworkConfig,
   type SignedTransactionWithMetadata,
+  type SentinelMeta,
 } from '@metamask/smart-transactions-controller';
 import {
   TransactionController,
@@ -479,7 +480,7 @@ class SmartTransactionHook {
           const signedTx: SignedTransactionWithMetadata = { tx: tx.signedTx };
           if (transactionMeta) {
             signedTx.metadata = {
-              txType: transactionMeta.type,
+              txType: transactionMeta.type as SentinelMeta['txType'],
               client: getClientForTransactionMetadata(),
               origin: sanitizeOrigin(transactionMeta.origin),
             };
@@ -492,7 +493,7 @@ class SmartTransactionHook {
         {
           tx: this.#signedTransactionInHex,
           metadata: {
-            txType: this.#transactionMeta.type,
+            txType: this.#transactionMeta.type as SentinelMeta['txType'],
             client: getClientForTransactionMetadata(),
             origin: sanitizeOrigin(this.#transactionMeta.origin),
           },
@@ -507,7 +508,7 @@ class SmartTransactionHook {
       signedTransactionsWithMetadata = signed.map((signedTx) => ({
         tx: signedTx,
         metadata: {
-          txType: this.#transactionMeta.type,
+          txType: this.#transactionMeta.type as SentinelMeta['txType'],
           client: getClientForTransactionMetadata(),
           origin: sanitizeOrigin(this.#transactionMeta.origin),
         },
@@ -520,6 +521,8 @@ class SmartTransactionHook {
       signedTransactionsWithMetadata,
       signedCanceledTransactions: [],
       txParams: this.#txParams,
+      // @ts-expect-error Root @metamask/transaction-controller v64 includes TransactionType.batch
+      // not present in the v63 copy nested inside @metamask/smart-transactions-controller.
       transactionMeta: this.#transactionMeta,
       networkClientId: this.#transactionMeta.networkClientId,
     });
