@@ -1,0 +1,64 @@
+import React from 'react';
+import { screen } from '@testing-library/react';
+import { RpcEndpointType } from '@metamask/network-controller';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../store/store';
+import mockState from '../../../../test/data/mock-state.json';
+import { NetworksPage } from './networks-page';
+
+const mockNetworkConfigurations = {
+  '0x1': {
+    chainId: '0x1',
+    name: 'Ethereum',
+    rpcEndpoints: [
+      {
+        url: 'https://mainnet.infura.io/v3/123',
+        type: RpcEndpointType.Infura,
+        networkClientId: 'mainnet',
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://etherscan.io'],
+    defaultBlockExplorerUrlIndex: 0,
+    nativeCurrency: 'ETH',
+  },
+};
+
+describe('NetworksPage', () => {
+  const renderNetworksPage = (pathname = '/settings/networks') => {
+    const store = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networkConfigurationsByChainId: mockNetworkConfigurations,
+        selectedNetworkClientId: 'mainnet',
+        providerConfig: {
+          chainId: '0x1',
+          rpcUrl: 'https://mainnet.infura.io/v3/123',
+          type: 'rpc',
+          ticker: 'ETH',
+        },
+        enabledNetworkMap: {
+          eip155: {
+            '0x1': true,
+          },
+        },
+      },
+    });
+
+    return renderWithProvider(<NetworksPage />, store, pathname);
+  };
+
+  it('renders the sectioned networks view on the root route', () => {
+    renderNetworksPage();
+
+    expect(screen.getByText('Enabled networks')).toBeInTheDocument();
+    expect(screen.getByText('Add a custom network')).toBeInTheDocument();
+  });
+
+  it('renders the add network flow from the query param', () => {
+    renderNetworksPage('/settings/networks?view=add');
+
+    expect(screen.getByText('Add network')).toBeInTheDocument();
+  });
+});
