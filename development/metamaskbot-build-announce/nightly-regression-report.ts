@@ -238,6 +238,7 @@ async function main(): Promise<void> {
   );
 
   const webhook = new IncomingWebhook(SLACK_BENCHMARK_WEBHOOK_URL);
+  // @ts-expect-error SlackBlock is structurally compatible but narrower than @slack/types Block
   await webhook.send({ blocks: payload.blocks });
 
   console.log(
