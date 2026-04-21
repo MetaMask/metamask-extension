@@ -1980,7 +1980,7 @@ export function setupController(
     let badgeColor = BADGE_COLOR_APPROVAL;
 
     if (failedTxCount > 0) {
-      label = getBadgeLabel(failedTxCount, BADGE_MAX_COUNT);
+      label = '\u200B';
       badgeColor = BADGE_COLOR_FAILED;
     } else if (pendingApprovalCount > 0) {
       label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
