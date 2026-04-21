@@ -233,6 +233,7 @@ app/scripts/lib/setup-initial-state-hooks.js          @MetaMask/extension-platfo
 
 # Release
 /.metamaskrc.dist                                     @MetaMask/extension-platform
+/attribution.txt                                      @MetaMask/extension-platform
 /builds.yml                                           @MetaMask/extension-platform
 development/attributions-check.sh                     @MetaMask/extension-platform
 development/generate-attributions.sh                  @MetaMask/extension-platform
