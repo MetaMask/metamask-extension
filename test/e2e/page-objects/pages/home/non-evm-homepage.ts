@@ -19,15 +19,15 @@ class NonEvmHomepage extends HomePage {
     timeout = 60000,
   }: { amount?: string; timeout?: number } = {}): Promise<void> {
     await super.checkPageIsLoaded();
-    if (amount) {                                                                                     
-      await this.driver.wait(async () => {                                                            
+    if (amount) {
+      await this.driver.wait(async () => {
         await this.driver.waitForSelector(
           { text: `${amount}`, tag: 'span' },
-          { timeout },                                                                                  
+          { timeout },
         );
-        return true;                                                                                    
-      }, timeout);                                                                                    
-    }   
+        return true;
+      }, timeout);
+    }
   }
 
   /**
