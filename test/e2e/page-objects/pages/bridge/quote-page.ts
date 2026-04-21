@@ -272,9 +272,20 @@ class BridgeQuotePage {
   };
 
   approveModalIfPresent = async () => {
-    const modals = await this.driver.findElements(this.warningModal);
-    if (modals.length > 0) {
+    try {
+      // Use a short timeout — the modal renders synchronously after CTA click
+      await this.driver.waitForSelector(this.warningModal, { timeout: 3000 });
+    } catch {
+      return; // No confirmation modal present
+    }
+
+    try {
+      // Click proceed if the button is enabled (transaction not yet submitted)
       await this.driver.clickElement(this.warningModalProceedButton);
+    } catch {
+      // Proceed button not interactable (e.g. tx already in-flight and button is
+      // disabled). Cancel the modal so it doesn't block dismissStatusPageIfPresent.
+      await this.driver.clickElement(this.warningModalCancelButton);
     }
   };
 
