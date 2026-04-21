@@ -9,11 +9,6 @@
 # follows all policies or without full understanding of the impact of
 # those changes on build, release and publishing outcomes.
 
-# Repository Administration
-/.github/guidelines/                                   @MetaMask/extension-platform
-/.github/ISSUE_TEMPLATE/                               @MetaMask/extension-platform
-/.github/pull-request-template.md                      @MetaMask/extension-platform
-
 # The offscreen.ts script file that is included in the offscreen document html
 # file is responsible, at present, for loading the snaps execution environment
 # for MV3. Any changes to this file should require at least one member of the
