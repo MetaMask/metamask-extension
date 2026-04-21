@@ -93,7 +93,8 @@ export const PerpsView: React.FC = () => {
   } = usePerpsTransactionHistory();
 
   // Recent Activity shows only trade executions, deposits, and withdrawals.
-  // Open orders (including TP/SL triggers) are listed in PerpsPositionsOrders above.
+  // Open limit/market orders (excluding TP/SL triggers) are in PerpsPositionsOrders;
+  // TP/SL trigger rows are listed on the per-asset market detail page only.
   // Funding payments belong on the full activity page.
   const recentActivityTransactions = useMemo(
     () =>
@@ -106,12 +107,15 @@ export const PerpsView: React.FC = () => {
     [allRecentActivityTransactions],
   );
 
-  // Open orders for this account: resting limits and TP/SL trigger orders.
-  // Excludes isSynthetic display-only rows (those are derived for market detail UI).
+  // Open orders on the Perps tab: user-placed limits/markets on the book only.
+  // Excludes TP/SL (isTrigger / isPositionTpsl — those list on market detail) and synthetics.
   const orders = useMemo(() => {
     return allOrders.filter(
       (order) =>
-        order.status === 'open' && !order.isSynthetic,
+        order.status === 'open' &&
+        !order.isTrigger &&
+        order.isPositionTpsl !== true &&
+        !order.isSynthetic,
     );
   }, [allOrders]);
 
