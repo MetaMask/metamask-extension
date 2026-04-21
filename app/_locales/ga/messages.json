@@ -108,9 +108,6 @@
   "accountIdenticon": {
     "message": "Deilbhín cuntais"
   },
-  "accountIdenticonDescription": {
-    "message": "Roghnaigh as trí stíl éagsúla de dheilbhíní uathúla a chabhróidh leat cuntais a aithint go tapa."
-  },
   "accountIsntConnectedToastText": {
     "message": "Níl $1 ceangailte le $2"
   },

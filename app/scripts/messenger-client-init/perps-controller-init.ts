@@ -4,6 +4,7 @@ import {
   type RawLedgerUpdate,
   type UserHistoryItem,
 } from '@metamask/perps-controller';
+import { SERVICE_NAME as STORAGE_SERVICE_NAME } from '@metamask/storage-service';
 import type { MetaMetricsEventPayload } from '../../../shared/constants/metametrics';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
 import { MessengerClientInitFunction } from './types';
@@ -48,10 +49,32 @@ export const PerpsControllerInit: MessengerClientInitFunction<
   PerpsController,
   PerpsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
+  const storageNamespace = 'PerpsController';
   const trackEvent = (payload: MetaMetricsEventPayload) => {
     controllerMessenger.call('MetaMetricsController:trackEvent', payload);
   };
-  const infrastructure = createPerpsInfrastructure({ trackEvent });
+  const infrastructure = createPerpsInfrastructure({
+    trackEvent,
+    getStorageItem: (key: string) =>
+      controllerMessenger.call(
+        `${STORAGE_SERVICE_NAME}:getItem`,
+        storageNamespace,
+        key,
+      ),
+    setStorageItem: (key: string, value: string) =>
+      controllerMessenger.call(
+        `${STORAGE_SERVICE_NAME}:setItem`,
+        storageNamespace,
+        key,
+        value,
+      ),
+    removeStorageItem: (key: string) =>
+      controllerMessenger.call(
+        `${STORAGE_SERVICE_NAME}:removeItem`,
+        storageNamespace,
+        key,
+      ),
+  });
   const fallbackBlockedRegions = getFallbackBlockedRegions();
   const hyperLiquidBuilderAddresses = getHyperLiquidBuilderAddresses();
   const completedOnboarding =
@@ -69,7 +92,8 @@ export const PerpsControllerInit: MessengerClientInitFunction<
     infrastructure,
     clientConfig: {
       fallbackHip3Enabled: true,
-      fallbackHip3AllowlistMarkets: [],
+      // this is meant to align fallback behavior with the production default and prevent partial HIP-3 market hydration
+      fallbackHip3AllowlistMarkets: ['xyz:*'],
       fallbackBlockedRegions,
       ...(hyperLiquidBuilderAddresses
         ? {
@@ -122,6 +146,7 @@ type PerpsActionName =
   | 'perpsGetHistoricalPortfolio'
   | 'perpsFetchHistoricalCandles'
   | 'perpsCalculateFees'
+  | 'perpsCalculateLiquidationPrice'
   | 'perpsGetAvailableDexs'
   | 'perpsRefreshEligibility'
   | 'perpsStartEligibilityMonitoring'
@@ -150,7 +175,9 @@ type PerpsActionName =
   | 'perpsIsFirstTimeUserOnCurrentNetwork'
   | 'perpsGetWatchlistMarkets'
   | 'perpsToggleWatchlistMarket'
-  | 'perpsIsWatchlistMarket';
+  | 'perpsIsWatchlistMarket'
+  | 'perpsReconnect'
+  | 'perpsGetConnectionState';
 
 // TODO: These methods have custom signatures that don't match their controller
 // counterparts. Once the controller package is updated to return the deposit
@@ -159,7 +186,8 @@ type PerpsActionName =
 type PerpsCustomApiNames =
   | 'perpsDepositWithConfirmation'
   | 'perpsGetUserHistory'
-  | 'perpsGetUserNonFundingLedgerUpdates';
+  | 'perpsGetUserNonFundingLedgerUpdates'
+  | 'perpsGetConnectionState';
 
 type PerpsBackgroundApi = {
   [ActionName in Exclude<
@@ -184,6 +212,7 @@ type PerpsBackgroundApi = {
     endTime?: number;
     accountId?: string;
   }) => Promise<RawLedgerUpdate[]>;
+  perpsGetConnectionState: () => string;
 };
 
 /**
@@ -303,6 +332,9 @@ function getApi(messengerClient: PerpsController): PerpsBackgroundApi {
     perpsCalculateFees: guard(
       messengerClient.calculateFees.bind(messengerClient),
     ),
+    perpsCalculateLiquidationPrice: guard(
+      messengerClient.calculateLiquidationPrice.bind(messengerClient),
+    ),
     perpsGetAvailableDexs: guard(
       messengerClient.getAvailableDexs.bind(messengerClient),
     ),
@@ -389,5 +421,10 @@ function getApi(messengerClient: PerpsController): PerpsBackgroundApi {
       messengerClient.toggleWatchlistMarket.bind(messengerClient),
     perpsIsWatchlistMarket:
       messengerClient.isWatchlistMarket.bind(messengerClient),
+
+    // -- Connection health --
+    perpsReconnect: messengerClient.reconnect.bind(messengerClient),
+    perpsGetConnectionState: () =>
+      messengerClient.getWebSocketConnectionState(),
   };
 }
