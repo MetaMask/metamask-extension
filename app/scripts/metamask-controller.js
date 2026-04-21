@@ -43,7 +43,7 @@ import {
   createSnapsMethodMiddleware,
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
-import { toHex } from '@metamask/controller-utils';
+import { ERC1155, ERC20, ERC721, toHex } from '@metamask/controller-utils';
 
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
@@ -771,8 +771,8 @@ export default class MetamaskController {
     });
 
     // -----------------------------------------------------------------------
-    // Bridge handlers: expose controller methods as Messenger action handlers
-    // so the wallet-services modules can invoke them via `messenger.call(...)`.
+    // Temporary getApi forwards: expose controller methods as Messenger action
+    // handlers so the wallet-services modules can invoke them via `messenger.call(...)`.
     // These will eventually move into the controllers themselves; the bridges
     // exist only during the PoC transition.
     //
