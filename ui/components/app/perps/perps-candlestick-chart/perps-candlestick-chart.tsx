@@ -366,7 +366,7 @@ const PerpsCandlestickChart = forwardRef<
       // Add resize listener
       window.addEventListener('resize', handleResize);
 
-      // Cleanup on unmount
+      // Cleanup on unmount / before effect re-runs (e.g. theme change)
       return () => {
         window.removeEventListener('resize', handleResize);
         if (chartRef.current) {
@@ -375,6 +375,13 @@ const PerpsCandlestickChart = forwardRef<
           seriesRef.current = null;
           volumeSeriesRef.current = null;
         }
+        // Reset data-tracking refs so the data-update effect issues a full
+        // setData() on the new chart rather than a single-candle update().
+        prevCandleCountRef.current = 0;
+        prevLastCandleTimeRef.current = 0;
+        prevSymbolRef.current = null;
+        prevIntervalRef.current = null;
+        dataLengthRef.current = 0;
       };
     }, [
       height,
