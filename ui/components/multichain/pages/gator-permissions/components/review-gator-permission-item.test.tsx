@@ -9,7 +9,10 @@ import {
 } from '@metamask/gator-permissions-controller';
 import { fireEvent } from '@testing-library/react';
 import { Settings } from 'luxon';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import {
+  en as messages,
+  renderWithProvider,
+} from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
@@ -241,11 +244,11 @@ describe('Permission List Item', () => {
             store,
           );
           expect(
-            getByRole('button', { name: 'Revoke' }),
+            getByRole('button', { name: messages.gatorPermissionsRevoke.message }),
           ).toBeInTheDocument();
         });
 
-        it('shows Remove when permission status is Expired', () => {
+        it('shows Revoke when permission status is Expired', () => {
           const { getByRole } = renderWithProvider(
             <ReviewGatorPermissionItem
               networkName={mockNetworkName}
@@ -258,7 +261,7 @@ describe('Permission List Item', () => {
             store,
           );
           expect(
-            getByRole('button', { name: 'Remove' }),
+            getByRole('button', { name: messages.gatorPermissionsRevoke.message }),
           ).toBeInTheDocument();
         });
 
@@ -275,7 +278,7 @@ describe('Permission List Item', () => {
             store,
           );
           expect(
-            getByRole('button', { name: 'Remove' }),
+            getByRole('button', { name: messages.remove.message }),
           ).toBeInTheDocument();
         });
 
@@ -293,7 +296,9 @@ describe('Permission List Item', () => {
             store,
           );
           expect(
-            getByRole('button', { name: 'Revocation pending' }),
+            getByRole('button', {
+              name: messages.gatorPermissionsRevocationPending.message,
+            }),
           ).toBeInTheDocument();
         });
 
@@ -316,7 +321,9 @@ describe('Permission List Item', () => {
             store,
           );
           expect(
-            getByRole('button', { name: 'Revocation pending' }),
+            getByRole('button', {
+              name: messages.gatorPermissionsRevocationPending.message,
+            }),
           ).toBeInTheDocument();
         });
       });
