@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
   TransactionMeta,
@@ -22,14 +23,22 @@ import {
   useMusdPaymentToken,
 } from '../../../../../hooks/musd';
 import { useConfirmContext } from '../../../context/confirm';
+import {
+  addToken,
+  findNetworkClientIdByChainId,
+} from '../../../../../store/actions';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
 export type PayWithModalProps = {
   isOpen: boolean;
   onClose: () => void;
 };
 
+const WITHDRAW_TRANSACTION_TYPES = [TransactionType.perpsWithdraw];
+
 export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
@@ -42,12 +51,17 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const { onPaymentTokenChange: onMusdPaymentTokenChange } =
     useMusdPaymentToken();
 
+  const isWithdraw = hasTransactionType(
+    currentConfirmation,
+    WITHDRAW_TRANSACTION_TYPES,
+  );
+
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
 
   const handleTokenSelect = useCallback(
-    (token: AssetType) => {
+    async (token: AssetType) => {
       if (token.disabled) {
         return;
       }
@@ -64,15 +78,48 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         return;
       }
 
-      // Default behavior for other transaction types
+      // Withdraw flows (e.g. Perps Withdraw) let the user pick a destination
+      // token they don't necessarily hold. TransactionPayController requires
+      // the token to be tracked by TokensController before `updatePaymentToken`
+      // can resolve its metadata, otherwise it throws "Payment token not
+      // found" and the selection silently fails. Ensure the token is imported
+      // first, then update the pay token.
+      if (
+        isWithdraw &&
+        !token.isNative &&
+        (token.rawBalance === '0x0' || !token.rawBalance)
+      ) {
+        try {
+          const networkClientId = await findNetworkClientIdByChainId(
+            tokenSelection.chainId,
+          );
+          await dispatch(
+            addToken(
+              {
+                address: tokenSelection.address,
+                symbol: token.symbol,
+                decimals: Number(token.decimals ?? 18),
+                networkClientId,
+                image: token.image,
+              },
+              true,
+            ),
+          );
+        } catch (error) {
+          console.error('Failed to import withdraw destination token', error);
+        }
+      }
+
       setPayToken(tokenSelection);
       handleClose();
     },
     [
-      handleClose,
-      setPayToken,
-      onMusdPaymentTokenChange,
       currentConfirmation?.type,
+      dispatch,
+      handleClose,
+      isWithdraw,
+      onMusdPaymentTokenChange,
+      setPayToken,
     ],
   );
 
