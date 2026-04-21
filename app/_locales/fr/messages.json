@@ -69,6 +69,9 @@
   "about": {
     "message": "À propos"
   },
+  "aboutMetaMask": {
+    "message": "À propos de MetaMask"
+  },
   "accept": {
     "message": "Accepter"
   },
@@ -339,8 +342,17 @@
   "addWallet": {
     "message": "Ajouter un portefeuille"
   },
+  "addedProtectionDescription": {
+    "message": "Vous interagissez avec une adresse inconnue. Cela permet d’éviter les transactions malveillantes."
+  },
   "addedProtectionOptionalBadge": {
     "message": "Facultatif"
+  },
+  "addedProtectionTitle": {
+    "message": "Protection renforcée"
+  },
+  "addedProtectionTooltip": {
+    "message": "Si la transaction finale ne correspond pas à cet aperçu, elle ne sera pas validée. Seuls les frais de réseau resteront à votre charge."
   },
   "additionalNetworks": {
     "message": "Réseaux supplémentaires"
@@ -1077,6 +1089,9 @@
   "bridgeGasFeesSplit": {
     "message": "Les frais de réseau indiqués sur l’écran précédent comprennent les deux transactions et seront divisés."
   },
+  "bridgeGetNewQuote": {
+    "message": "Obtenir une nouvelle cotation"
+  },
   "bridgeLowestCost": {
     "message": "Coût le moins élevé"
   },
@@ -1132,6 +1147,9 @@
   "bridgePriceImpact": {
     "message": "Impact sur les prix"
   },
+  "bridgePriceImpactFiatAlert": {
+    "message": "Vous perdrez $1 en effectuant cette transaction"
+  },
   "bridgePriceImpactHigh": {
     "message": "Impact élevé sur le prix"
   },
@@ -1155,6 +1173,33 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Avertissement d’impact sur les prix"
+  },
+  "bridgeQuoteStreamCompleteAmountTooHigh": {
+    "message": "Aucun devis disponible. Essayez avec un montant inférieur."
+  },
+  "bridgeQuoteStreamCompleteAmountTooLow": {
+    "message": "Aucun devis disponible. Essayez avec un montant supérieur."
+  },
+  "bridgeQuoteStreamCompleteRetry": {
+    "message": "Impossible d’obtenir un devis pour le moment. Veuillez réessayer."
+  },
+  "bridgeQuoteStreamCompleteRwaGeoRestricted": {
+    "message": "Cet échange n’est pas disponible dans votre région."
+  },
+  "bridgeQuoteStreamCompleteRwaMarketUnavailable": {
+    "message": "Le marché lié à cet actif est actuellement indisponible. Veuillez réessayer plus tard."
+  },
+  "bridgeQuoteStreamCompleteRwaNativeTokenUnsupported": {
+    "message": "Les échanges entre ce jeton et des actifs réels ne sont pas encore pris en charge. Essayez d’utiliser un autre jeton."
+  },
+  "bridgeQuoteStreamCompleteSlippageTooHigh": {
+    "message": "Le slippage est trop élevé. Essayez de réduire votre paramètre de slippage."
+  },
+  "bridgeQuoteStreamCompleteSlippageTooLow": {
+    "message": "Le slippage est trop faible. Essayez d’augmenter votre paramètre de slippage."
+  },
+  "bridgeQuoteStreamCompleteTokenNotSupported": {
+    "message": "Ce jeton n’est pas pris en charge. Essayez d’utiliser un autre jeton."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Les cotations sont triées par coût total estimé, qui comprend le taux de change et les frais de réseau."
@@ -1329,8 +1374,17 @@
   "cancel": {
     "message": "Annuler"
   },
+  "cancelSpeedupAlreadyConfirmedDescription": {
+    "message": "Nous n’avons pas pu mettre à jour votre transaction, car elle avait déjà été confirmée sur la blockchain."
+  },
+  "cancelSpeedupFailedDescription": {
+    "message": "Une erreur s’est produite lors de la mise à jour de votre transaction."
+  },
   "cancelTransactionDescription": {
     "message": "Cette transaction sera annulée et ces frais de réseau remplaceront les frais initiaux."
+  },
+  "cancelTransactionFailed": {
+    "message": "Échec de l’annulation de la transaction"
   },
   "cancelTransactionTitle": {
     "message": "Annuler la transaction"
@@ -1436,6 +1490,10 @@
   "comboNoOptions": {
     "message": "Aucune option trouvée",
     "description": "Default text shown in the combo field dropdown if no options."
+  },
+  "communityContributedLanguagesSectionTitle": {
+    "message": "Contribution de la communauté",
+    "description": "Section heading on the language settings screen for locales maintained by community contributors."
   },
   "completed": {
     "message": "Terminé"
@@ -2023,6 +2081,12 @@
   "dappConnections": {
     "message": "Connexions aux dapps"
   },
+  "dappScanMaliciousTitle": {
+    "message": "Site web malveillant détecté"
+  },
+  "dappScanMaliciousWarning": {
+    "message": "Ce site web est signalé comme potentiellement dangereux. Si vous divulguez votre phrase secrète de récupération, vous pourriez mettre vos fonds en danger."
+  },
   "dappSuggested": {
     "message": "Suggéré par le site"
   },
@@ -2083,6 +2147,9 @@
   },
   "debitCreditPurchaseOptions": {
     "message": "Options d’achat par carte de débit ou de crédit"
+  },
+  "debug": {
+    "message": "Déboguer"
   },
   "decimal": {
     "message": "Nombre de décimales du jeton"
@@ -2180,6 +2247,12 @@
   "deepLink_theOnboardingPage": {
     "message": "la page d’inscription"
   },
+  "deepLink_thePerpsMarketDetailPage": {
+    "message": "la page du marché des contrats à terme perpétuels"
+  },
+  "deepLink_thePerpsMarketListPage": {
+    "message": "la liste des actifs pouvant être négociés sur le marché de contrats à terme perpétuels"
+  },
   "deepLink_thePerpsPage": {
     "message": "la page des contrats à terme perpétuels"
   },
@@ -2235,6 +2308,9 @@
   },
   "delete": {
     "message": "Supprimer"
+  },
+  "deleteActivityAndNonceData": {
+    "message": "Supprimer les données d’activité et les données de nonce"
   },
   "deleteMetaMetricsData": {
     "message": "Supprimer les données MetaMetrics"
@@ -2316,6 +2392,9 @@
   },
   "developerOptions": {
     "message": "Options pour les développeurs"
+  },
+  "developerTools": {
+    "message": "Outils pour les développeurs"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "« $1 » est désactivé, car l’augmentation minimale de 10 % par rapport aux frais de gaz initiaux n’est pas respectée.",
@@ -3101,11 +3180,15 @@
   "hardwareWalletErrorRecoveryConnection3": {
     "message": "Redémarrez votre appareil et essayez de vous reconnecter"
   },
+  "hardwareWalletErrorRecoveryConnection4": {
+    "message": "Votre appareil $1 est déverrouillé",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletErrorRecoveryTitle": {
     "message": "Continuez à vérifier que :"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Votre $1 est déverrouillé",
+    "message": "Votre appareil $1 est déverrouillé",
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
@@ -3141,6 +3224,10 @@
   "hardwareWalletLegacyDescription": {
     "message": "(hérité)",
     "description": "Text representing the MEW path"
+  },
+  "hardwareWalletLookingForDevice": {
+    "message": "À la recherche de votre $1…",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "Assurez-vous que votre $1 est branché et sélectionnez l'application Ethereum."
@@ -3966,6 +4053,9 @@
     "message": "+ $1 comptes supplémentaires",
     "description": "$1 is the number of accounts"
   },
+  "moreCapital": {
+    "message": "Plus"
+  },
   "moreNetworks": {
     "message": "+ $1 réseaux supplémentaires",
     "description": "$1 is the number of networks"
@@ -4033,12 +4123,32 @@
     "message": "$1 veut utiliser $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBonusExplanation": {
+    "message": "Convertissez vos stablecoins en mUSD et gagnez\njusqu’à $1 % de bonus annualisé que vous pouvez\nréclamer quotidiennement. $2",
+    "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
+  },
+  "musdBonusPoweredByRelay": {
+    "message": "Propulsé par Relay",
+    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
+  },
+  "musdBoostDescription": {
+    "message": "Convertissez vos stablecoins en mUSD et obtenez un bonus annualisé de $1 %.",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
   "musdBoostTitle": {
     "message": "Obtenez un bonus de $1 % sur vos stablecoins",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdBuyMusd": {
     "message": "Acheter des mUSD"
+  },
+  "musdClaimSendingTo": {
+    "message": "Envoyer à",
+    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
+  },
+  "musdClaimSendingToWallet": {
+    "message": "Envoyer à $1",
+    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
   },
   "musdClaimTitle": {
     "message": "Réclamer le bonus",
@@ -4049,12 +4159,24 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "Le bonus annualisé que vous avez gagné en détenant des mUSD. Vous pouvez réclamer votre bonus quotidiennement sur Linea. $1",
+    "message": "Le bonus annualisé que vous avez gagné pour avoir détenu des mUSD. Vous pouvez réclamer votre bonus quotidiennement sur Linea. $1",
     "description": "$1 is the 'Terms apply' link"
+  },
+  "musdClaimableBonusTooltipAria": {
+    "message": "Détails du bonus pouvant être réclamé",
+    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
   "musdConversionActivityTitle": {
     "message": "Convertir des $1 en mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
+  },
+  "musdConversionBonusTooltipAria": {
+    "message": "Détails du bonus",
+    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
+  },
+  "musdConversionFeeTooltipDescription": {
+    "message": "Les frais de conversion en mUSD comprennent les coûts de réseau et peuvent inclure des frais de fournisseur. Aucuns frais MetaMask ne s’appliquent lorsque vous effectuez un échange contre des mUSD.",
+    "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
   },
   "musdConversionTitle": {
     "message": "Converti en mUSD",
@@ -4067,6 +4189,12 @@
     "message": "Conversion de $1 → mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
+  "musdConversionToastSuccess": {
+    "message": "Conversion en mUSD effectuée avec succès"
+  },
+  "musdConversionToastSuccessDescription": {
+    "message": "Le bonus pourra être réclamé dans un délai d’un jour."
+  },
   "musdConvert": {
     "message": "Convertir"
   },
@@ -4074,11 +4202,15 @@
     "message": "Convertissez et obtenez un bonus de $1 %",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
+  "musdEarnBonusPercentage": {
+    "message": "Obtenez un bonus de $1 %",
+    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
+  },
   "musdEducationGetStarted": {
     "message": "Commencer"
   },
   "musdEducationHeadline": {
-    "message": "OBTENEZ UN BONUS DE $1 % SUR LES STABLECOINS",
+    "message": "OBTENEZ UN BONUS DE $1 % SUR\nLES STABLECOINS",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -4090,6 +4222,10 @@
   },
   "musdGetMusd": {
     "message": "Obtenir des mUSD"
+  },
+  "musdMetaMaskUsd": {
+    "message": "MetaMask USD",
+    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdTermsApply": {
     "message": "Des conditions s’appliquent."
@@ -4456,11 +4592,18 @@
   "nickname": {
     "message": "Pseudonyme"
   },
+  "no": {
+    "message": "Non"
+  },
   "noAccountsFound": {
     "message": "Aucun compte trouvé pour la demande de recherche effectuée"
   },
   "noConnectionDescription": {
     "message": "Pour vous connecter à un site, trouvez et sélectionnez le bouton « connecter ». N’oubliez pas que MetaMask ne peut se connecter qu’à des sites Web3"
+  },
+  "noDefaultAddress": {
+    "message": "Aucune adresse $1",
+    "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "Aucune résolution n’a été fournie pour le domaine."
@@ -4844,6 +4987,9 @@
   },
   "openInBlockExplorer": {
     "message": "Ouvrir dans l’explorateur de blocs"
+  },
+  "openMultichainAccountAddressMenu": {
+    "message": "Ouvrir le menu des adresses de compte multichaînes"
   },
   "openSettings": {
     "message": "Ouvrir « Settings » (Paramètres)"
@@ -5306,15 +5452,45 @@
     "message": "disponible",
     "description": "is the available balance amount"
   },
+  "perpsAvailableBalance": {
+    "message": "Solde disponible sur le compte de trading de contrats à terme perpétuels : "
+  },
+  "perpsAvailableToAdd": {
+    "message": "Pouvant être ajoutés"
+  },
   "perpsAvailableToClose": {
     "message": "Disponible pour clôturer"
+  },
+  "perpsAvailableToSubtract": {
+    "message": "Pouvant être soustraits"
   },
   "perpsAvailableToTrade": {
     "message": "Disponible pour le trading",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBatchCancelFailed": {
+    "message": "Échec de l’annulation d’un ou plusieurs ordres. Veuillez réessayer."
+  },
+  "perpsBatchCloseFailed": {
+    "message": "Échec de la clôture d’une ou plusieurs positions. Veuillez réessayer."
+  },
   "perpsCancelAllOrders": {
     "message": "Tout annuler"
+  },
+  "perpsCancelOrder": {
+    "message": "Annuler l’ordre"
+  },
+  "perpsCandleIntervals": {
+    "message": "Intervalles de bougies"
+  },
+  "perpsCandlePeriodDays": {
+    "message": "Jours"
+  },
+  "perpsCandlePeriodHours": {
+    "message": "Heures"
+  },
+  "perpsCandlePeriodMinutes": {
+    "message": "Minutes"
   },
   "perpsCloseAll": {
     "message": "Tout fermer"
@@ -5324,6 +5500,9 @@
   },
   "perpsCloseLong": {
     "message": "Fermer la position longue"
+  },
+  "perpsClosePartialMinNotional": {
+    "message": "Les clôtures partielles doivent avoir une valeur d’au moins $1 USD. Augmentez le montant de clôture ou réglez le curseur sur 100 %."
   },
   "perpsClosePosition": {
     "message": "Fermer la position"
@@ -5337,6 +5516,9 @@
   "perpsConfirmCloseShort": {
     "message": "Fermer la position courte"
   },
+  "perpsConnectionTimeout": {
+    "message": "Le délai de connexion a expiré. Veuillez réessayer."
+  },
   "perpsContactSupport": {
     "message": "Contacter le service d’assistance"
   },
@@ -5349,8 +5531,32 @@
   "perpsDepositActivityTitle": {
     "message": "Contrats à terme perpétuels financés"
   },
+  "perpsDepositFailed": {
+    "message": "Le dépôt n’a pas pu être effectué. Veuillez réessayer."
+  },
+  "perpsDepositFundsTitle": {
+    "message": "Déposer des fonds sur le compte de trading de contrats à terme perpétuels"
+  },
   "perpsDepositTitle": {
     "message": "Compte de trading de contrats à terme financé"
+  },
+  "perpsDepositToastErrorDescription": {
+    "message": "Les fonds n’ont pas été ajoutés à votre compte de trading de contrats à terme perpétuels. Veuillez réessayer."
+  },
+  "perpsDepositToastErrorTitle": {
+    "message": "Échec du dépôt sur le compte de trading de contrats à terme perpétuels"
+  },
+  "perpsDepositToastPendingDescription": {
+    "message": "Vos fonds seront bientôt disponibles pour le trading."
+  },
+  "perpsDepositToastPendingTitle": {
+    "message": "Ajouter des fonds à votre compte de trading de contrats à terme perpétuels"
+  },
+  "perpsDepositToastSuccessDescription": {
+    "message": "Vos fonds sont disponibles pour le trading."
+  },
+  "perpsDepositToastSuccessTitle": {
+    "message": "Fonds ajoutés au compte de trading de contrats à terme perpétuels"
   },
   "perpsDeposits": {
     "message": "Dépôts"
@@ -5362,7 +5568,7 @@
     "message": "Direction"
   },
   "perpsDisclaimer": {
-    "message": "Le trading de contrats perpétuels comporte des risques importants. Vous pouvez perdre plus que votre investissement initial. Il ne s’agit pas d’un conseil financier."
+    "message": "Le trading de contrats à terme perpétuels est très risqué et vous pourriez perdre soudainement et sans préavis la totalité de votre investissement. Vous tradez entièrement à vos propres risques. Données de marché fournies par Hyperliquid. Graphique des cours fourni par TradingView."
   },
   "perpsEmptyDescription": {
     "message": "Tradez des contrats perpétuels avec effet de levier. Ouvrez votre première position pour commencer."
@@ -5372,6 +5578,14 @@
   },
   "perpsEstSize": {
     "message": "Taille estimée"
+  },
+  "perpsEstimatedPnlAtStopLoss": {
+    "message": "Estimation des pertes et profits au stop loss",
+    "description": "Label for estimated profit or loss when stop loss is hit"
+  },
+  "perpsEstimatedPnlAtTakeProfit": {
+    "message": "Estimation des pertes et profits au take profit",
+    "description": "Label for estimated profit or loss when take profit is hit"
   },
   "perpsExploreMarkets": {
     "message": "Explorer les marchés"
@@ -5409,11 +5623,20 @@
   "perpsFundingRateTooltip": {
     "message": "Des frais horaires versés par les traders à d’autres traders afin d’aligner les prix sur ceux appliqués par le marché. Si le taux est positif, les acheteurs paient les vendeurs. S’il est négatif, les vendeurs paient les acheteurs."
   },
+  "perpsGeoBlockedDescription": {
+    "message": "Le trading de contrats à terme perpétuels (perps) n’est pas disponible dans votre région en raison de restrictions ou de sanctions locales."
+  },
+  "perpsGeoBlockedTitle": {
+    "message": "Contrats à terme perpétuels (perps) non disponibles dans votre région"
+  },
   "perpsGiveFeedback": {
     "message": "Donnez-nous votre avis"
   },
   "perpsIncludesPnl": {
     "message": "comprend les profits et pertes $1"
+  },
+  "perpsInsufficientMargin": {
+    "message": "Marge insuffisante pour passer cet ordre."
   },
   "perpsLearnBasics": {
     "message": "Apprenez les bases des contrats perpétuels"
@@ -5430,8 +5653,17 @@
   "perpsLimitPrice": {
     "message": "Prix limite"
   },
+  "perpsLimitPriceAboveCurrentPrice": {
+    "message": "Le prix limite est supérieur au prix actuel"
+  },
+  "perpsLimitPriceBelowCurrentPrice": {
+    "message": "Le prix limite est inférieur au prix actuel"
+  },
+  "perpsLimitPriceNearLiquidation": {
+    "message": "Le prix actuel est proche du prix de liquidation estimé"
+  },
   "perpsLiquidationDistance": {
-    "message": "Distance du prix de liquidation"
+    "message": "Distance de liquidation"
   },
   "perpsLiquidationPrice": {
     "message": "Prix de liquidation"
@@ -5470,6 +5702,9 @@
   "perpsMore": {
     "message": "Plus"
   },
+  "perpsNetworkError": {
+    "message": "Une erreur réseau s’est produite. Veuillez réessayer."
+  },
   "perpsNoMarketsFound": {
     "message": "Aucun marché trouvé"
   },
@@ -5499,6 +5734,24 @@
   "perpsOraclePriceTooltip": {
     "message": "Médiane des prix externes communiqués par les validateurs, utilisée pour calculer le taux de financement"
   },
+  "perpsOrderDate": {
+    "message": "Date"
+  },
+  "perpsOrderFailed": {
+    "message": "Impossible de passer l’ordre. Veuillez réessayer."
+  },
+  "perpsOrderOriginalSize": {
+    "message": "Taille originale"
+  },
+  "perpsOrderRejected": {
+    "message": "Votre ordre a été rejeté. Veuillez réessayer."
+  },
+  "perpsOrderStatus": {
+    "message": "Statut"
+  },
+  "perpsOrderValue": {
+    "message": "Valeur de l’ordre"
+  },
   "perpsOrders": {
     "message": "Ordres"
   },
@@ -5511,6 +5764,9 @@
   "perpsPositions": {
     "message": "Positions"
   },
+  "perpsRateLimitExceeded": {
+    "message": "Trop de demandes. Veuillez patienter et réessayer."
+  },
   "perpsRecentActivity": {
     "message": "Activité récente"
   },
@@ -5522,6 +5778,12 @@
   },
   "perpsReduceExposureDescriptionShort": {
     "message": "Réduisez la taille de votre position courte"
+  },
+  "perpsReduceOnly": {
+    "message": "Réduire uniquement"
+  },
+  "perpsRemoveFromFavorites": {
+    "message": "Supprimer des favoris"
   },
   "perpsRemoveMargin": {
     "message": "Supprimer la marge"
@@ -5551,11 +5813,41 @@
   "perpsSeeAll": {
     "message": "Tout afficher"
   },
+  "perpsServiceUnavailable": {
+    "message": "Le service est temporairement indisponible. Veuillez réessayer plus tard."
+  },
   "perpsShort": {
     "message": "Vendre"
   },
   "perpsSize": {
     "message": "Taille"
+  },
+  "perpsSlippageExceeded": {
+    "message": "Slippage dépassé. Ajustez votre tolérance au slippage et réessayez."
+  },
+  "perpsSortByFundingRate": {
+    "message": "Taux de financement"
+  },
+  "perpsSortByHighToLow": {
+    "message": "Du plus élevé au plus bas"
+  },
+  "perpsSortByLowToHigh": {
+    "message": "Du plus bas au plus élevé"
+  },
+  "perpsSortByOpenInterest": {
+    "message": "Intérêts ouverts"
+  },
+  "perpsSortByPriceChange": {
+    "message": "Variation du prix"
+  },
+  "perpsSortBySection": {
+    "message": "Trier par"
+  },
+  "perpsSortByTitle": {
+    "message": "Trier"
+  },
+  "perpsSortByVolume": {
+    "message": "Volume"
   },
   "perpsStartNewTrade": {
     "message": "Commencez un nouveau trade"
@@ -5591,6 +5883,10 @@
     "message": "Stop Loss",
     "description": "Label for stop loss price input"
   },
+  "perpsStopLossInvalidPrice": {
+    "message": "Le stop loss doit être $1 à $2",
+    "description": "Validation error when stop loss price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
   "perpsSubmitting": {
     "message": "En train d’envoyer la demande…",
     "description": "Loading text shown while an order is being submitted"
@@ -5598,6 +5894,114 @@
   "perpsTakeProfit": {
     "message": "Take Profit",
     "description": "Label for take profit price input"
+  },
+  "perpsTakeProfitInvalidPrice": {
+    "message": "Le take profit doit être $1 à $2",
+    "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderFailed": {
+    "message": "Échec de l’annulation de l’ordre",
+    "description": "Error toast text shown when cancelling a perps limit order fails"
+  },
+  "perpsToastCancelOrderSuccess": {
+    "message": "Commande annulée",
+    "description": "Success toast text shown when a perps limit order is successfully cancelled"
+  },
+  "perpsToastCloseFailed": {
+    "message": "Échec de la fermeture de la position",
+    "description": "Error toast text shown when closing a perps position fails"
+  },
+  "perpsToastCloseInProgress": {
+    "message": "Fermeture de la position",
+    "description": "In-progress toast text shown while closing a perps position"
+  },
+  "perpsToastClosePnlSubtitle": {
+    "message": "Le montant total de vos gains/pertes est de $1",
+    "description": "$1 is the formatted PnL percentage for a closed position"
+  },
+  "perpsToastMarginAddSuccess": {
+    "message": "Ajout d’une marge de $1 à la position sur le $2",
+    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
+  },
+  "perpsToastMarginAdjustmentFailed": {
+    "message": "Échec de l’ajustement de la marge",
+    "description": "Error toast text shown when adding or removing margin fails"
+  },
+  "perpsToastMarginAdjustmentFailedDescriptionFallback": {
+    "message": "Impossible d’ajuster la marge. Veuillez réessayer.",
+    "description": "Fallback description shown when margin adjustment fails without a usable error message."
+  },
+  "perpsToastMarginRemoveSuccess": {
+    "message": "Suppression d’une marge de $1 de la position sur le $2",
+    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin removal"
+  },
+  "perpsToastOrderFailed": {
+    "message": "L’exécution de l’ordre a échoué",
+    "description": "Error toast text shown when placing a perps order fails"
+  },
+  "perpsToastOrderFailedDescriptionFallback": {
+    "message": "Vos fonds vous ont été restitués",
+    "description": "Fallback order failure subtitle shown when no specific order error is available"
+  },
+  "perpsToastOrderFilled": {
+    "message": "Ordre exécuté",
+    "description": "Success toast text shown when a perps market order is filled"
+  },
+  "perpsToastOrderPlaced": {
+    "message": "Ordre passé",
+    "description": "Success toast text shown when a perps limit order is accepted"
+  },
+  "perpsToastOrderSubmitted": {
+    "message": "Ordre envoyé",
+    "description": "In-progress toast text shown while a perps order is being submitted"
+  },
+  "perpsToastPartialCloseFailed": {
+    "message": "Échec de la fermeture partielle de la position",
+    "description": "Error toast text shown when a perps position is partially closed and fails"
+  },
+  "perpsToastPartialCloseInProgress": {
+    "message": "Fermeture partielle de la position",
+    "description": "In-progress toast text shown while a perps position is being partially closed"
+  },
+  "perpsToastPartialCloseSuccess": {
+    "message": "Position partiellement fermée",
+    "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPositionStillActive": {
+    "message": "Votre position est toujours active",
+    "description": "Subtitle shown in perps close failure toasts when the position remains open"
+  },
+  "perpsToastReverseFailed": {
+    "message": "Impossible d’inverser la position",
+    "description": "Error toast text shown when reversing a perps position fails"
+  },
+  "perpsToastReverseInProgress": {
+    "message": "Inversion de la position",
+    "description": "In-progress toast text shown while reversing a perps position"
+  },
+  "perpsToastReverseSuccess": {
+    "message": "Position inversée",
+    "description": "Success toast text shown when a perps position is reversed"
+  },
+  "perpsToastSubmitInProgress": {
+    "message": "Soumettre votre ordre",
+    "description": "In-progress toast text shown while a perps trade is being submitted"
+  },
+  "perpsToastTradeSuccess": {
+    "message": "Position fermée",
+    "description": "Success toast text shown when a perps position is closed"
+  },
+  "perpsToastUpdateFailed": {
+    "message": "Échec de la mise à jour du TP/SL",
+    "description": "Error toast text shown when updating TP/SL settings fails"
+  },
+  "perpsToastUpdateInProgress": {
+    "message": "Mise à jour du TP/SL...",
+    "description": "In-progress toast text shown while updating TP/SL settings"
+  },
+  "perpsToastUpdateSuccess": {
+    "message": "TP/SL mis à jour avec succès",
+    "description": "Success toast text shown when TP/SL settings are updated"
   },
   "perpsTotalBalance": {
     "message": "Solde total"
@@ -5668,6 +6072,57 @@
   "perpsWithdraw": {
     "message": "Retirer"
   },
+  "perpsWithdrawEstimatedTime": {
+    "message": "Délai estimé"
+  },
+  "perpsWithdrawFailed": {
+    "message": "Le retrait n’a pas pu être effectué. Veuillez réessayer."
+  },
+  "perpsWithdrawFee": {
+    "message": "Commission du fournisseur"
+  },
+  "perpsWithdrawFundsTitle": {
+    "message": "Retirer"
+  },
+  "perpsWithdrawInsufficient": {
+    "message": "Le montant dépasse le solde de votre compte de trading de contrats à terme perpétuels."
+  },
+  "perpsWithdrawInvalidAddress": {
+    "message": "Veuillez saisir une adresse de destination valide."
+  },
+  "perpsWithdrawInvalidAmount": {
+    "message": "Veuillez saisir un montant valide."
+  },
+  "perpsWithdrawMinNotice": {
+    "message": "Retrait minimum : $1 USDC",
+    "description": "$1 is the minimum amount (e.g. 1.01)"
+  },
+  "perpsWithdrawMinutesApprox": {
+    "message": "~$1 min",
+    "description": "$1 is the estimated number of minutes"
+  },
+  "perpsWithdrawNoAccount": {
+    "message": "Aucun compte sélectionné. Sélectionnez un compte et réessayez."
+  },
+  "perpsWithdrawReceive": {
+    "message": "Recevoir"
+  },
+  "perpsWithdrawRoutesError": {
+    "message": "Impossible de charger les limites de retrait. Veuillez réessayer plus tard."
+  },
+  "perpsWithdrawToastErrorTitle": {
+    "message": "Le retrait a échoué"
+  },
+  "perpsWithdrawToastSuccessDescription": {
+    "message": "Nous sommes en train de traiter la demande de retrait de $1. Les fonds arrivent généralement en quelques minutes.",
+    "description": "$1 is the formatted withdrawal amount"
+  },
+  "perpsWithdrawToastSuccessTitle": {
+    "message": "Demande de retrait envoyée avec succès"
+  },
+  "perpsYouReceive": {
+    "message": "Vous recevez"
+  },
   "perpsYouWillReceive": {
     "message": "Vous recevrez"
   },
@@ -5709,7 +6164,7 @@
     "message": "Confidentialité et mises à jour des produits"
   },
   "popularNetworkAddToolTip": {
-    "message": "Certains de ces réseaux dépendent de services tiers. Ils peuvent être moins fiables ou permettre à des tiers de suivre l’activité des utilisateurs. $1",
+    "message": "Certains de ces réseaux dépendent de services tiers. Les connexions peuvent être moins fiables ou permettre à des tiers de suivre l’activité des utilisateurs.",
     "description": "Learn more link"
   },
   "popularNetworks": {
@@ -5939,6 +6394,38 @@
   "qr": {
     "message": "QR",
     "description": "Hardware device name"
+  },
+  "qrCameraAccessBlockedBody": {
+    "message": "Pour continuer, autorisez l’accès à l’appareil photo dans les paramètres de votre navigateur.",
+    "description": "Body text when the browser has persistently blocked camera access for the QR hardware wallet scanner (Chromium, Firefox, etc.)."
+  },
+  "qrCameraAccessBlockedChromiumHint": {
+    "message": "Cliquez sur l’icône de l’appareil photo dans les paramètres et sélectionnez « Autoriser »",
+    "description": "Instruction shown on the Chromium blocked-camera screen for QR scanning."
+  },
+  "qrCameraAccessBlockedFirefoxStep1": {
+    "message": "Allez dans Paramètres → Confidentialité et sécurité → Autorisations → Appareil photo",
+    "description": "Firefox camera recovery step 1."
+  },
+  "qrCameraAccessBlockedFirefoxStep2": {
+    "message": "Recherchez $1",
+    "description": "$1 is the truncated moz-extension:// origin for this install."
+  },
+  "qrCameraAccessBlockedFirefoxStep3": {
+    "message": "Sélectionnez « Autoriser »",
+    "description": "Firefox camera recovery step 3."
+  },
+  "qrCameraAccessBlockedTitle": {
+    "message": "L’accès à l’appareil photo est bloqué",
+    "description": "Title when camera access is persistently blocked for QR scanning."
+  },
+  "qrCameraAccessNeededBody": {
+    "message": "MetaMask a besoin d’accéder à l’appareil photo pour scanner le code QR sur votre appareil.",
+    "description": "Body when the user dismissed the camera permission prompt but it can be requested again."
+  },
+  "qrCameraAccessNeededTitle": {
+    "message": "L’accès à l’appareil photo est requis",
+    "description": "Title when the camera permission dialog was dismissed without a choice."
   },
   "queued": {
     "message": "En attente"
@@ -6652,8 +7139,15 @@
   "settings": {
     "message": "Paramètres"
   },
+  "settingsSearchCantFindSetting": {
+    "message": "Vous ne trouvez pas un paramètre ? $1",
+    "description": "$1 is a link to request a setting"
+  },
   "settingsSearchMatchingNotFound": {
     "message": "Aucun résultat correspondant trouvé."
+  },
+  "settingsSearchRequestHere": {
+    "message": "Demander ici"
   },
   "shieldClaim": {
     "message": "Soumettre une réclamation"
@@ -7328,6 +7822,10 @@
   "showTestnetNetworksDescription": {
     "message": "Sélectionnez ceci pour afficher les réseaux de test dans la liste des réseaux"
   },
+  "sidePanelMigrationToast": {
+    "message": "MetaMask s’ouvre désormais par défaut dans le panneau latéral. Vous pouvez $1 à tout moment depuis le menu.",
+    "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
+  },
   "sign": {
     "message": "Signer"
   },
@@ -7721,7 +8219,7 @@
     "message": "Un problème est survenu. Essayez de recharger la page."
   },
   "somethingWentWrong": {
-    "message": "Oups !  Quelque chose a mal tourné. "
+    "message": "Nous n’avons pas pu charger cette page."
   },
   "sortBy": {
     "message": "Trier par"
@@ -7762,6 +8260,9 @@
   },
   "speedUpTransactionDescription": {
     "message": "Ces frais de réseau remplaceront les frais initiaux."
+  },
+  "speedUpTransactionFailed": {
+    "message": "Échec de l’accélération de la transaction"
   },
   "speedUpTransactionTitle": {
     "message": "Accélérer la transaction"
@@ -8120,6 +8621,10 @@
   "supportMultiRpcInformation": {
     "message": "Nous prenons désormais en charge plusieurs RPC pour un même réseau. Votre RPC le plus récent a été sélectionné par défaut afin de résoudre les problèmes liés à des informations contradictoires."
   },
+  "supportedLanguagesSectionTitle": {
+    "message": "Langues prises en charge",
+    "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
+  },
   "surveyConversion": {
     "message": "Répondez à notre sondage"
   },
@@ -8415,6 +8920,9 @@
   "switchBack": {
     "message": "Rétablir"
   },
+  "switchBackToPopup": {
+    "message": "revenir à la fenêtre contextuelle"
+  },
   "switchEthereumChainConfirmationDescription": {
     "message": "Ceci permet de remplacer le réseau sélectionné dans MetaMask par un réseau précédemment ajouté :"
   },
@@ -8601,6 +9109,9 @@
   "transaction": {
     "message": "transaction"
   },
+  "transactionConfirmed": {
+    "message": "La transaction a été confirmée"
+  },
   "transactionDataFunction": {
     "message": "Fonction"
   },
@@ -8612,6 +9123,9 @@
   },
   "transactionErrorNoContract": {
     "message": "Tentative d’appel de fonction sur une adresse qui n’apparaît pas dans le contrat."
+  },
+  "transactionFailed": {
+    "message": "La transaction a échoué"
   },
   "transactionFee": {
     "message": "Frais de transaction"
@@ -8653,12 +9167,18 @@
   "transactionShield": {
     "message": "Protection des transactions"
   },
+  "transactionSubmitted": {
+    "message": "Transaction soumise"
+  },
   "transactionTotalGasFee": {
     "message": "Montant total des frais de gaz",
     "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Transactions"
+  },
+  "transactionsAndAssets": {
+    "message": "Transactions et actifs"
   },
   "transfer": {
     "message": "Transférer"
@@ -9053,7 +9573,7 @@
     "message": "Vous voulez ajouter ce réseau ?"
   },
   "wantsToAddThisAsset": {
-    "message": "$1 veut ajouter cet actif à votre portefeuille."
+    "message": "Cela permet d’ajouter l’actif suivant à votre portefeuille."
   },
   "warning": {
     "message": "Attention"

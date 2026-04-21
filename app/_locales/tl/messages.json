@@ -69,6 +69,9 @@
   "about": {
     "message": "Tungkol Dito"
   },
+  "aboutMetaMask": {
+    "message": "Tungkol sa MetaMask"
+  },
   "accept": {
     "message": "Tanggapin"
   },
@@ -339,8 +342,17 @@
   "addWallet": {
     "message": "Magdagdag ng wallet"
   },
+  "addedProtectionDescription": {
+    "message": "Nakikipag-ugnayan ka sa hindi kilalang address. Nakakatulong ito na maiwasan ang mga mapaminsalang transaksyon."
+  },
   "addedProtectionOptionalBadge": {
     "message": "Opsyonal"
+  },
+  "addedProtectionTitle": {
+    "message": "Idinagdag na proteksyon"
+  },
+  "addedProtectionTooltip": {
+    "message": "Kung ang panghuling transaksyon ay hindi tumutugma sa preview na ito, hindi ito magpapatuloy. Magbabayad ka lamang para sa network."
   },
   "additionalNetworks": {
     "message": "Mga karagdagang network"
@@ -1077,6 +1089,9 @@
   "bridgeGasFeesSplit": {
     "message": "Saklaw ng anumang na-quote na bayad sa network sa nakaraang screen ang parehong transaksyon at hahatiin ito."
   },
+  "bridgeGetNewQuote": {
+    "message": "Kumuha ng bagong quote"
+  },
   "bridgeLowestCost": {
     "message": "Pinakamababang halaga"
   },
@@ -1132,6 +1147,9 @@
   "bridgePriceImpact": {
     "message": "Epekto ng presyo"
   },
+  "bridgePriceImpactFiatAlert": {
+    "message": "Mawawalan ka ng $1 sa trade na ito"
+  },
   "bridgePriceImpactHigh": {
     "message": "Matinding epekto sa presyo"
   },
@@ -1155,6 +1173,33 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Babala sa epekto ng presyo"
+  },
+  "bridgeQuoteStreamCompleteAmountTooHigh": {
+    "message": "Walang mga quote na available. Subukan ang mas maliit na halaga."
+  },
+  "bridgeQuoteStreamCompleteAmountTooLow": {
+    "message": "Walang mga quote na available. Subukan ang mas mataas na halaga."
+  },
+  "bridgeQuoteStreamCompleteRetry": {
+    "message": "Hindi makakuha ng quote sa ngayon. Subukan muli."
+  },
+  "bridgeQuoteStreamCompleteRwaGeoRestricted": {
+    "message": "Hindi available ang swap na ito sa iyong rehiyon."
+  },
+  "bridgeQuoteStreamCompleteRwaMarketUnavailable": {
+    "message": "Ang market para sa asset na ito ay hindi available sa kasalukuyan. Subukan muli mamaya."
+  },
+  "bridgeQuoteStreamCompleteRwaNativeTokenUnsupported": {
+    "message": "Ang mga swap sa tokean na ito at sa mga asset sa totoong mundo ay hindi pa sinusuportahan. Subukang gumamit ng ibang token."
+  },
+  "bridgeQuoteStreamCompleteSlippageTooHigh": {
+    "message": "Sobrang taas ng slippage. Subukang babaan ang setting ng iyong slippage."
+  },
+  "bridgeQuoteStreamCompleteSlippageTooLow": {
+    "message": "Sobrang baba ng slippage. Subukang taasan ang setting ng iyong slippage."
+  },
+  "bridgeQuoteStreamCompleteTokenNotSupported": {
+    "message": "Hindi sinusuportahan ang token na ito. Subukang gumagamit ng ibang token."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Nakaayos ang mga quote ayon sa tinatayang kabuuang halaga, kasama ang rate ng palitan at bayad sa network."
@@ -1329,8 +1374,17 @@
   "cancel": {
     "message": "Kanselahin"
   },
+  "cancelSpeedupAlreadyConfirmedDescription": {
+    "message": "Hindi namin na-update ang iyong transaksyon dahil nakumpirma na ito sa blockchain."
+  },
+  "cancelSpeedupFailedDescription": {
+    "message": "Nagkaproblema habang ina-update ang iyong transaksyon."
+  },
   "cancelTransactionDescription": {
     "message": "Makakansela ang transaksyong ito at papalitan ng bayad sa network na ito ang orihinal."
+  },
+  "cancelTransactionFailed": {
+    "message": "Pumalya ang pagkansela ng transaksyon"
   },
   "cancelTransactionTitle": {
     "message": "Kanselahin ang transaksyon"
@@ -1405,7 +1459,7 @@
     "message": "I-clear ang data ng tab ng aktibidad"
   },
   "clearActivityDescription": {
-    "message": "Nire-reset nito ang nonce ng account at binubura ang data mula sa tab ng aktibidad sa iyong wallet. Tanging ang kasalukuyang account at network lamang ang maaapektuhan. Ang iyong mga balanse at mga papasok na transaksyon ay hindi magbabago."
+    "message": "Nire-reset ang nonce ng account at binubura ang data mula sa tab ng aktibidad sa iyong wallet. Tanging ang kasalukuyang account at network lamang ang maaapektuhan. Ang iyong mga balanse at mga papasok na transaksyon ay hindi magbabago."
   },
   "clearFilters": {
     "message": "I-clear ang mga filter"
@@ -1436,6 +1490,10 @@
   "comboNoOptions": {
     "message": "Walang opsyon na nahanap",
     "description": "Default text shown in the combo field dropdown if no options."
+  },
+  "communityContributedLanguagesSectionTitle": {
+    "message": "Nag-ambag ang komunidad",
+    "description": "Section heading on the language settings screen for locales maintained by community contributors."
   },
   "completed": {
     "message": "Nakumpleto"
@@ -2023,6 +2081,12 @@
   "dappConnections": {
     "message": "Mga koneksyon ng Dapp"
   },
+  "dappScanMaliciousTitle": {
+    "message": "Natukoy ang mapanganib na website"
+  },
+  "dappScanMaliciousWarning": {
+    "message": "Na-flag ang website na ito bilang potensyal na mapanganib. Kapag ipinakita mo ang iyong Secret Recovery Phrase, maaari mong mailagay sa panganib ang mga pondo mo."
+  },
   "dappSuggested": {
     "message": "Iminungkahing site"
   },
@@ -2083,6 +2147,9 @@
   },
   "debitCreditPurchaseOptions": {
     "message": "Mga opsyon sa pagbili gamit ang debit o credit card"
+  },
+  "debug": {
+    "message": "I-debug"
   },
   "decimal": {
     "message": "Decimal na token"
@@ -2180,6 +2247,12 @@
   "deepLink_theOnboardingPage": {
     "message": "ang page para sa onboarding"
   },
+  "deepLink_thePerpsMarketDetailPage": {
+    "message": "ang page ng perps market"
+  },
+  "deepLink_thePerpsMarketListPage": {
+    "message": "ang listahan ng page ng perps market"
+  },
   "deepLink_thePerpsPage": {
     "message": "pahina ng perps"
   },
@@ -2235,6 +2308,9 @@
   },
   "delete": {
     "message": "Tanggalin"
+  },
+  "deleteActivityAndNonceData": {
+    "message": "Tanggalin ang aktibidad at data ng nonce"
   },
   "deleteMetaMetricsData": {
     "message": "Tanggalin ang data ng MetaMetrics"
@@ -2316,6 +2392,9 @@
   },
   "developerOptions": {
     "message": "Mga Opsyon ng Developer"
+  },
+  "developerTools": {
+    "message": "Mga tool ng developer"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "Ang “$1” ay hindi pinagagana dahil hindi nito naabot ang pinakamababang 10% na dagdag mula sa orihinal na bayad sa gas.",
@@ -3101,11 +3180,15 @@
   "hardwareWalletErrorRecoveryConnection3": {
     "message": "I-restart ang device mo at subukang kumonekta muli"
   },
+  "hardwareWalletErrorRecoveryConnection4": {
+    "message": "Na-unlock ang iyong $1 na device",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletErrorRecoveryTitle": {
     "message": "Patuloy na tiyaking:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Naka-unlock ang $1 mo",
+    "message": "Na-unlock ang iyong $1 na device",
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
@@ -3141,6 +3224,10 @@
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",
     "description": "Text representing the MEW path"
+  },
+  "hardwareWalletLookingForDevice": {
+    "message": "Hinahanap ang iyong $1...",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "Tiyaking naka-plug in ang iyong $1 at piliin ang Ethereum app."
@@ -3966,6 +4053,9 @@
     "message": "+ $1 pang mga account",
     "description": "$1 is the number of accounts"
   },
+  "moreCapital": {
+    "message": "Higit pa"
+  },
   "moreNetworks": {
     "message": "+ $1 pa na mga network",
     "description": "$1 is the number of networks"
@@ -4033,12 +4123,32 @@
     "message": "Si $1 ay gustong gumamit ng $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBonusExplanation": {
+    "message": "I-convert ang mga stablecoin mo sa mUSD at kumita\nng hanggang $1% taunang bonus na puwede mong\nma-claim araw-araw. $2",
+    "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
+  },
+  "musdBonusPoweredByRelay": {
+    "message": "Pinapagana ng Relay",
+    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
+  },
+  "musdBoostDescription": {
+    "message": "I-convert ang mga stablecoin mo sa mUSD at makakuha ng $1% taunang bonus.",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
   "musdBoostTitle": {
     "message": "Makakuha ng $1% sa mga stablecoin mo",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdBuyMusd": {
     "message": "Bumili ng mUSD"
+  },
+  "musdClaimSendingTo": {
+    "message": "Ipinapadala sa",
+    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
+  },
+  "musdClaimSendingToWallet": {
+    "message": "Ipinapadala sa $1",
+    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
   },
   "musdClaimTitle": {
     "message": "I-claim ang bonus",
@@ -4049,12 +4159,24 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "Ang taunang bonus na kinita mo sa pagho-hold ng mUSD. Pwedeng i-claim ang bonus mo sa Linea araw-araw. $1",
+    "message": "Ang kinita mong taunang bonus para sa pag-hold ng mUSD. Puwedeng ma-claim ang bonus mo sa Linea araw-araw.$1",
     "description": "$1 is the 'Terms apply' link"
+  },
+  "musdClaimableBonusTooltipAria": {
+    "message": "Mga detalye ng bonus na pwedeng i-claim",
+    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
   "musdConversionActivityTitle": {
     "message": "I-convert ang $1 sa mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
+  },
+  "musdConversionBonusTooltipAria": {
+    "message": "Mga detalye ng bonus",
+    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
+  },
+  "musdConversionFeeTooltipDescription": {
+    "message": "Kasama sa mga bayarin sa pag-convert ng mUSD ang mga bayad sa network at posible ring kasama ang mga bayarin sa provider. Walang hihinging bayad sa MetaMask kapag nag-convert ka sa mUSD.",
+    "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
   },
   "musdConversionTitle": {
     "message": "Na-convert sa mUSD",
@@ -4067,6 +4189,12 @@
     "message": "Ikino-convert ang $1 → mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
+  "musdConversionToastSuccess": {
+    "message": "Matagumpay ang pag-convert ng mUSD"
+  },
+  "musdConversionToastSuccessDescription": {
+    "message": "Puwedeng ma-claim ang bonus sa loob ng isang araw."
+  },
   "musdConvert": {
     "message": "I-convert"
   },
@@ -4074,11 +4202,15 @@
     "message": "I-convert at makakuha ng $1%",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
+  "musdEarnBonusPercentage": {
+    "message": "Kumita ng $1% bonus",
+    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
+  },
   "musdEducationGetStarted": {
     "message": "Magsimula"
   },
   "musdEducationHeadline": {
-    "message": "MAKAKUHA NG $1% SA MGA STABLECOIN",
+    "message": "MAKAKUHA NG $1% SA\nMGA STABLECOIN",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -4090,6 +4222,10 @@
   },
   "musdGetMusd": {
     "message": "Kumuha ng mUSD"
+  },
+  "musdMetaMaskUsd": {
+    "message": "MetaMask USD",
+    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdTermsApply": {
     "message": "Nalalapat ang mga tuntunin."
@@ -4456,11 +4592,18 @@
   "nickname": {
     "message": "Palayaw"
   },
+  "no": {
+    "message": "Hindi"
+  },
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
   },
   "noConnectionDescription": {
     "message": "Para kumonekta sa site, hanapin at piliin ang \"connect\" button. Tandaan na ang MetaMask ay maaari lamang kumonekta sa mga site sa web3"
+  },
+  "noDefaultAddress": {
+    "message": "Walang $1 address",
+    "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "Walang resolusyon para sa ibinigay na domain."
@@ -4844,6 +4987,9 @@
   },
   "openInBlockExplorer": {
     "message": "Buksan sa block explorer"
+  },
+  "openMultichainAccountAddressMenu": {
+    "message": "Buksan ang address menu ng multichain account"
   },
   "openSettings": {
     "message": "Buksan ang mga setting"
@@ -5306,15 +5452,45 @@
     "message": "available",
     "description": "is the available balance amount"
   },
+  "perpsAvailableBalance": {
+    "message": "Available na balanse sa Perps: "
+  },
+  "perpsAvailableToAdd": {
+    "message": "Available para idagdag"
+  },
   "perpsAvailableToClose": {
     "message": "Available para isara"
+  },
+  "perpsAvailableToSubtract": {
+    "message": "Available para ibawas"
   },
   "perpsAvailableToTrade": {
     "message": "Available para i-trade",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBatchCancelFailed": {
+    "message": "Nabigong kanselahin ang isa o higit pang mga order. Subukan muli."
+  },
+  "perpsBatchCloseFailed": {
+    "message": "Nabigong isara ang isa o higit pang mga posisyon. Subukan muli."
+  },
   "perpsCancelAllOrders": {
     "message": "Kanselahin lahat"
+  },
+  "perpsCancelOrder": {
+    "message": "Kanselahin ang order"
+  },
+  "perpsCandleIntervals": {
+    "message": "Mga candle interval"
+  },
+  "perpsCandlePeriodDays": {
+    "message": "Araw"
+  },
+  "perpsCandlePeriodHours": {
+    "message": "Oras"
+  },
+  "perpsCandlePeriodMinutes": {
+    "message": "Minuto"
   },
   "perpsCloseAll": {
     "message": "Isara lahat"
@@ -5324,6 +5500,9 @@
   },
   "perpsCloseLong": {
     "message": "Isara ang Long"
+  },
+  "perpsClosePartialMinNotional": {
+    "message": "Ang mga bahagyang pagsasara ay dapat na hindi bababa sa $1 sa halaga ng USD. Dagdagan ang halaga ng pagsasara o itakda ang slider sa 100%."
   },
   "perpsClosePosition": {
     "message": "Isara ang posisyon"
@@ -5337,6 +5516,9 @@
   "perpsConfirmCloseShort": {
     "message": "Isara ang Short"
   },
+  "perpsConnectionTimeout": {
+    "message": "Nag-time out ang koneksyon. Subukan ulit."
+  },
   "perpsContactSupport": {
     "message": "Kontakin ang suporta"
   },
@@ -5349,8 +5531,32 @@
   "perpsDepositActivityTitle": {
     "message": "Mga Pinondohang Perp"
   },
+  "perpsDepositFailed": {
+    "message": "Hindi makumpleto ang pagdedeposito. Subukan muli."
+  },
+  "perpsDepositFundsTitle": {
+    "message": "Magdeposito ng mga pondo sa Perps"
+  },
   "perpsDepositTitle": {
     "message": "Pinondohang perps account"
+  },
+  "perpsDepositToastErrorDescription": {
+    "message": "Hindi naidagdag sa Perps ang mga pondo mo. Subukan ulit."
+  },
+  "perpsDepositToastErrorTitle": {
+    "message": "Pumalya ang pagdeposito ng Perps"
+  },
+  "perpsDepositToastPendingDescription": {
+    "message": "Malapit nang maging available na i-trade ang iyong mga pondo."
+  },
+  "perpsDepositToastPendingTitle": {
+    "message": "Nagdadagdag ng mga pondo sa Perps"
+  },
+  "perpsDepositToastSuccessDescription": {
+    "message": "Handa nang mai-trade ang iyong mga pondo."
+  },
+  "perpsDepositToastSuccessTitle": {
+    "message": "Mga pondong naidagdag sa Perps"
   },
   "perpsDeposits": {
     "message": "Mga deposito"
@@ -5362,7 +5568,7 @@
     "message": "Direksyon"
   },
   "perpsDisclaimer": {
-    "message": "Ang mga perpetual na pagti-trade ay may kasamang malaking panganib. Maaari kang malugi nang higit sa paunang puhunan mo. Hindi ito payong pinansyal."
+    "message": "Napakamapanganib ng mga perpetual contract, at maaaring mawala sa iyo ang buong pamumuhunan sa isang iglap nang walang abiso. Nagti-trade ka sa sarili mong pananagutan. Pinapagana ng Hyperliquid. Ang presyo ng chart ay pinapagana ng TradingView."
   },
   "perpsEmptyDescription": {
     "message": "Mag-trade ng mga perpetual na may leverage. Buksan ang una mong posisyon para magsimula."
@@ -5372,6 +5578,14 @@
   },
   "perpsEstSize": {
     "message": "Tinatayang laki"
+  },
+  "perpsEstimatedPnlAtStopLoss": {
+    "message": "Tinatayang P&L sa stop loss",
+    "description": "Label for estimated profit or loss when stop loss is hit"
+  },
+  "perpsEstimatedPnlAtTakeProfit": {
+    "message": "Tinatayang P&L sa take profit",
+    "description": "Label for estimated profit or loss when take profit is hit"
   },
   "perpsExploreMarkets": {
     "message": "Suriin ang mga market"
@@ -5409,11 +5623,20 @@
   "perpsFundingRateTooltip": {
     "message": "Bayad kada oras na ibinabayad ng mga trader para mapanatiling naaayon ang mga presyo sa market. Kung positibo ang rate, magbabayad ang mga nag-long sa mga nag-short. Kung negatibo, magbabayad ang mga nag-short sa mga nag-long."
   },
+  "perpsGeoBlockedDescription": {
+    "message": "Hindi available ang perps trading sa iyong lokasyon dahil sa mga lokal na paghihigpit o pagbabawal."
+  },
+  "perpsGeoBlockedTitle": {
+    "message": "Hindi available ang perps sa iyong rehiyon"
+  },
   "perpsGiveFeedback": {
     "message": "Bigyan kami ng feedback"
   },
   "perpsIncludesPnl": {
     "message": "kasama ang P&L $1"
+  },
+  "perpsInsufficientMargin": {
+    "message": "Hindi sapat ang margin para mailagay ang order na ito."
   },
   "perpsLearnBasics": {
     "message": "Matutunan ang mga pangunahing kaalaman tungkol sa perps"
@@ -5430,8 +5653,17 @@
   "perpsLimitPrice": {
     "message": "Limit Price"
   },
+  "perpsLimitPriceAboveCurrentPrice": {
+    "message": "Ang limit price ay mataas sa kasalukuyang presyo"
+  },
+  "perpsLimitPriceBelowCurrentPrice": {
+    "message": "Ang limit price ay mababa sa kasalukuyang presyo"
+  },
+  "perpsLimitPriceNearLiquidation": {
+    "message": "Ang kasalukuyang presyo ay malapit sa tinatayang liquidation price"
+  },
   "perpsLiquidationDistance": {
-    "message": "Distansya ng liq."
+    "message": "Layo sa liquidation"
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
@@ -5470,6 +5702,9 @@
   "perpsMore": {
     "message": "Higit pa"
   },
+  "perpsNetworkError": {
+    "message": "Nagkaroon ng error sa network. Pakisubukan muli."
+  },
   "perpsNoMarketsFound": {
     "message": "Walang mga market na nahanap"
   },
@@ -5499,6 +5734,24 @@
   "perpsOraclePriceTooltip": {
     "message": "Ang panggitna ng mga panlabas na presyong iniulat ng mga nagpapatibay, na ginagamit para sa pagkukuwenta ng rate ng pagpopondo"
   },
+  "perpsOrderDate": {
+    "message": "Petsa"
+  },
+  "perpsOrderFailed": {
+    "message": "Hindi mailagay ang order. Subukan muli."
+  },
+  "perpsOrderOriginalSize": {
+    "message": "Orihinal na laki"
+  },
+  "perpsOrderRejected": {
+    "message": "Tinanggihan ang order mo. Subukan muli."
+  },
+  "perpsOrderStatus": {
+    "message": "Status"
+  },
+  "perpsOrderValue": {
+    "message": "Halaga ng order"
+  },
   "perpsOrders": {
     "message": "Mga Order"
   },
@@ -5511,6 +5764,9 @@
   "perpsPositions": {
     "message": "Mga Posisyon"
   },
+  "perpsRateLimitExceeded": {
+    "message": "Masyado nang maraming kahilingan. Pakihintayin at subukang muli."
+  },
   "perpsRecentActivity": {
     "message": "Kamakailang Aktibidad"
   },
@@ -5522,6 +5778,12 @@
   },
   "perpsReduceExposureDescriptionShort": {
     "message": "Bawasan ang laki ng short na posisyon mo"
+  },
+  "perpsReduceOnly": {
+    "message": "Reduce only"
+  },
+  "perpsRemoveFromFavorites": {
+    "message": "Alisin sa mga paborito"
   },
   "perpsRemoveMargin": {
     "message": "Alisin ang margin"
@@ -5551,11 +5813,41 @@
   "perpsSeeAll": {
     "message": "Tingnan Lahat"
   },
+  "perpsServiceUnavailable": {
+    "message": "Pansamantalang hindi available ang serbisyo. Pakisubukan muli mamaya."
+  },
   "perpsShort": {
     "message": "Short"
   },
   "perpsSize": {
     "message": "Laki"
+  },
+  "perpsSlippageExceeded": {
+    "message": "Lumampas ang slippage. Ayusin ang slippage tolerance at subukan muli."
+  },
+  "perpsSortByFundingRate": {
+    "message": "Rate ng pagpopondo"
+  },
+  "perpsSortByHighToLow": {
+    "message": "Mataas Pababa"
+  },
+  "perpsSortByLowToHigh": {
+    "message": "Mababa Pataas"
+  },
+  "perpsSortByOpenInterest": {
+    "message": "Bukas na interes"
+  },
+  "perpsSortByPriceChange": {
+    "message": "Pagbabago ng presyo"
+  },
+  "perpsSortBySection": {
+    "message": "I-sort ayon sa"
+  },
+  "perpsSortByTitle": {
+    "message": "Isaayos"
+  },
+  "perpsSortByVolume": {
+    "message": "Volume"
   },
   "perpsStartNewTrade": {
     "message": "Magsimula ng bagong trade"
@@ -5591,6 +5883,10 @@
     "message": "Stop Loss",
     "description": "Label for stop loss price input"
   },
+  "perpsStopLossInvalidPrice": {
+    "message": "Ang stop loss ay dapat na $1 $2 ang presyo",
+    "description": "Validation error when stop loss price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
   "perpsSubmitting": {
     "message": "Isinusumite...",
     "description": "Loading text shown while an order is being submitted"
@@ -5599,8 +5895,116 @@
     "message": "Take Profit",
     "description": "Label for take profit price input"
   },
+  "perpsTakeProfitInvalidPrice": {
+    "message": "Ang take profit ay dapat na $1 $2 ang presyo",
+    "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderFailed": {
+    "message": "Nabigong kanselahin ang order",
+    "description": "Error toast text shown when cancelling a perps limit order fails"
+  },
+  "perpsToastCancelOrderSuccess": {
+    "message": "Kinansela ang order",
+    "description": "Success toast text shown when a perps limit order is successfully cancelled"
+  },
+  "perpsToastCloseFailed": {
+    "message": "Hindi naisara ang posisyon",
+    "description": "Error toast text shown when closing a perps position fails"
+  },
+  "perpsToastCloseInProgress": {
+    "message": "Isinasara ang posisyon",
+    "description": "In-progress toast text shown while closing a perps position"
+  },
+  "perpsToastClosePnlSubtitle": {
+    "message": "Ang iyong PnL ay $1",
+    "description": "$1 is the formatted PnL percentage for a closed position"
+  },
+  "perpsToastMarginAddSuccess": {
+    "message": "Nagdagdag ng $1 na margin sa $2 na posisyon",
+    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
+  },
+  "perpsToastMarginAdjustmentFailed": {
+    "message": "Nabigong isaayos ang margin",
+    "description": "Error toast text shown when adding or removing margin fails"
+  },
+  "perpsToastMarginAdjustmentFailedDescriptionFallback": {
+    "message": "Hindi maisaayos ang margin. Pakisubukan muli.",
+    "description": "Fallback description shown when margin adjustment fails without a usable error message."
+  },
+  "perpsToastMarginRemoveSuccess": {
+    "message": "Inalis ang $1 na margin mula sa $2 na posisyon",
+    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin removal"
+  },
+  "perpsToastOrderFailed": {
+    "message": "Nabigo ang order",
+    "description": "Error toast text shown when placing a perps order fails"
+  },
+  "perpsToastOrderFailedDescriptionFallback": {
+    "message": "Naibalik na ang iyong mga pondo sa iyo",
+    "description": "Fallback order failure subtitle shown when no specific order error is available"
+  },
+  "perpsToastOrderFilled": {
+    "message": "Na-fill ang order",
+    "description": "Success toast text shown when a perps market order is filled"
+  },
+  "perpsToastOrderPlaced": {
+    "message": "Nailagay ang oder",
+    "description": "Success toast text shown when a perps limit order is accepted"
+  },
+  "perpsToastOrderSubmitted": {
+    "message": "Naisumite ang order",
+    "description": "In-progress toast text shown while a perps order is being submitted"
+  },
+  "perpsToastPartialCloseFailed": {
+    "message": "Nabigo ang bahagyang pagsasara ng posisyon",
+    "description": "Error toast text shown when a perps position is partially closed and fails"
+  },
+  "perpsToastPartialCloseInProgress": {
+    "message": "Bahagyang isinasara ang posisyon",
+    "description": "In-progress toast text shown while a perps position is being partially closed"
+  },
+  "perpsToastPartialCloseSuccess": {
+    "message": "Bahagyang naisara ang posisyon",
+    "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPositionStillActive": {
+    "message": "Aktibo pa rin ang iyong posisyon",
+    "description": "Subtitle shown in perps close failure toasts when the position remains open"
+  },
+  "perpsToastReverseFailed": {
+    "message": "Nabigong ibalik ang posisyon",
+    "description": "Error toast text shown when reversing a perps position fails"
+  },
+  "perpsToastReverseInProgress": {
+    "message": "Ibinabalik ang posisyon",
+    "description": "In-progress toast text shown while reversing a perps position"
+  },
+  "perpsToastReverseSuccess": {
+    "message": "Naibalik ang posisyon",
+    "description": "Success toast text shown when a perps position is reversed"
+  },
+  "perpsToastSubmitInProgress": {
+    "message": "Isinusumite ang trade mo",
+    "description": "In-progress toast text shown while a perps trade is being submitted"
+  },
+  "perpsToastTradeSuccess": {
+    "message": "Naisara ang posisyon",
+    "description": "Success toast text shown when a perps position is closed"
+  },
+  "perpsToastUpdateFailed": {
+    "message": "Hindi na-update ang TP/SL",
+    "description": "Error toast text shown when updating TP/SL settings fails"
+  },
+  "perpsToastUpdateInProgress": {
+    "message": "Ina-update ang TP/SL...",
+    "description": "In-progress toast text shown while updating TP/SL settings"
+  },
+  "perpsToastUpdateSuccess": {
+    "message": "Matagumpay na na-update ang TP/SL",
+    "description": "Success toast text shown when TP/SL settings are updated"
+  },
   "perpsTotalBalance": {
-    "message": "Kabuuang Balanse"
+    "message": "Kabuuang balanse"
   },
   "perpsTradePerps": {
     "message": "Mag-trade ng perps"
@@ -5668,6 +6072,57 @@
   "perpsWithdraw": {
     "message": "Mag-withdraw"
   },
+  "perpsWithdrawEstimatedTime": {
+    "message": "Tinatayang oras"
+  },
+  "perpsWithdrawFailed": {
+    "message": "Hindi makumpleto ang pagwi-withdraw. Subukan muli."
+  },
+  "perpsWithdrawFee": {
+    "message": "Bayad sa Provider"
+  },
+  "perpsWithdrawFundsTitle": {
+    "message": "Mag-withdraw"
+  },
+  "perpsWithdrawInsufficient": {
+    "message": "Lumampas ang halaga sa available na balanse ng iyong Perps."
+  },
+  "perpsWithdrawInvalidAddress": {
+    "message": "Ilagay ang wastong address ng destinasyon."
+  },
+  "perpsWithdrawInvalidAmount": {
+    "message": "Ilagay ang wastong halaga."
+  },
+  "perpsWithdrawMinNotice": {
+    "message": "Minimum na withdrawal: $1 USDC",
+    "description": "$1 is the minimum amount (e.g. 1.01)"
+  },
+  "perpsWithdrawMinutesApprox": {
+    "message": "~$1 min",
+    "description": "$1 is the estimated number of minutes"
+  },
+  "perpsWithdrawNoAccount": {
+    "message": "Walang piniling account. Pumili ng account at subukan muli."
+  },
+  "perpsWithdrawReceive": {
+    "message": "Tumanggap"
+  },
+  "perpsWithdrawRoutesError": {
+    "message": "Hindi mai-load ang mga limit sa pagwi-withdraw. Subukan muli mamaya."
+  },
+  "perpsWithdrawToastErrorTitle": {
+    "message": "Pumalya ang pag-withdraw"
+  },
+  "perpsWithdrawToastSuccessDescription": {
+    "message": "Pinoproseso namin ang $1. Ang mga pondo ay kadalasang dumadating sa loob ng ilang minuto.",
+    "description": "$1 is the formatted withdrawal amount"
+  },
+  "perpsWithdrawToastSuccessTitle": {
+    "message": "Naisumite ang pagwi-withdraw"
+  },
+  "perpsYouReceive": {
+    "message": "Nakatanggap ka ng"
+  },
   "perpsYouWillReceive": {
     "message": "Makakatanggap ka ng"
   },
@@ -5709,7 +6164,7 @@
     "message": "Mga update sa pagkapribado at produkto"
   },
   "popularNetworkAddToolTip": {
-    "message": "Ang ilan sa mga network na ito ay umaasa sa mga third party. Ang koneksyon na ito ay maaaring hindi gaanong maaasahan o binibigyang-daan ang mga third-party na mag-track ng aktibidad. $1",
+    "message": "Umaasa sa mga third party ang ilan sa mga network na ito. Ang mga koneksyong ito ay maaaring hindi gaanong maaasahan o nagbibigay-daan sa mga third-party na sumubaybay ng aktibidad.",
     "description": "Learn more link"
   },
   "popularNetworks": {
@@ -5939,6 +6394,38 @@
   "qr": {
     "message": "QR",
     "description": "Hardware device name"
+  },
+  "qrCameraAccessBlockedBody": {
+    "message": "Para magpatuloy, payagan ang access sa camera sa mga setting ng browser mo.",
+    "description": "Body text when the browser has persistently blocked camera access for the QR hardware wallet scanner (Chromium, Firefox, etc.)."
+  },
+  "qrCameraAccessBlockedChromiumHint": {
+    "message": "I-click ang icon ng camera sa mga setting at itakda ito sa \"Payagan\"",
+    "description": "Instruction shown on the Chromium blocked-camera screen for QR scanning."
+  },
+  "qrCameraAccessBlockedFirefoxStep1": {
+    "message": "Pumunta sa Mga Setting → Privacy at Seguridad → Mga Pahintulot → Camera",
+    "description": "Firefox camera recovery step 1."
+  },
+  "qrCameraAccessBlockedFirefoxStep2": {
+    "message": "Hanapin ang $1",
+    "description": "$1 is the truncated moz-extension:// origin for this install."
+  },
+  "qrCameraAccessBlockedFirefoxStep3": {
+    "message": "Itakda sa \"Payagan\"",
+    "description": "Firefox camera recovery step 3."
+  },
+  "qrCameraAccessBlockedTitle": {
+    "message": "Na-block ang access sa camera",
+    "description": "Title when camera access is persistently blocked for QR scanning."
+  },
+  "qrCameraAccessNeededBody": {
+    "message": "Kailangan ng MetaMask ng access sa camera para i-scan ang QR code sa device mo.",
+    "description": "Body when the user dismissed the camera permission prompt but it can be requested again."
+  },
+  "qrCameraAccessNeededTitle": {
+    "message": "Kailangan ang access sa camera",
+    "description": "Title when the camera permission dialog was dismissed without a choice."
   },
   "queued": {
     "message": "Naka-queue"
@@ -6652,8 +7139,15 @@
   "settings": {
     "message": "Mga Setting"
   },
+  "settingsSearchCantFindSetting": {
+    "message": "Hindi makahanap ng setting? $1",
+    "description": "$1 is a link to request a setting"
+  },
   "settingsSearchMatchingNotFound": {
     "message": "Walang nakitang katugmang resulta."
+  },
+  "settingsSearchRequestHere": {
+    "message": "Humiling dito"
   },
   "shieldClaim": {
     "message": "Magsumite ng claim"
@@ -7328,6 +7822,10 @@
   "showTestnetNetworksDescription": {
     "message": "Piliin ito upang ipakita ang mga test network sa listahan ng network"
   },
+  "sidePanelMigrationToast": {
+    "message": "Nagbubukas na ngayon ang MetaMask sa panel sa gilid nang default. $1 anumang oras mula sa menu.",
+    "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
+  },
   "sign": {
     "message": "Pumirma"
   },
@@ -7721,7 +8219,7 @@
     "message": "May nangyaring mali. Subukang muling i-load ang pahina."
   },
   "somethingWentWrong": {
-    "message": "Oops! Nagkaproblema."
+    "message": "Hindi namin mai-load ang page na ito."
   },
   "sortBy": {
     "message": "I-sort ayon sa"
@@ -7762,6 +8260,9 @@
   },
   "speedUpTransactionDescription": {
     "message": "Papalitan ng bayad sa network na ito ang orihinal."
+  },
+  "speedUpTransactionFailed": {
+    "message": "Pumalya ang pagpapabilis ng transaksyon"
   },
   "speedUpTransactionTitle": {
     "message": "Pabilisin ang transaksyon"
@@ -8120,6 +8621,10 @@
   "supportMultiRpcInformation": {
     "message": "Sinusuportahan na namin ngayon ang maramihang RPC para sa isang network. Pinili ang pinakabago mong RPC bilang ang default para lutasin ang magkakasalungat na impormasyon."
   },
+  "supportedLanguagesSectionTitle": {
+    "message": "Mga sinusuportahang wika",
+    "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
+  },
   "surveyConversion": {
     "message": "Sagutan ang aming survey"
   },
@@ -8415,6 +8920,9 @@
   "switchBack": {
     "message": "Lumipat pabalik"
   },
+  "switchBackToPopup": {
+    "message": "Bumalik sa popup"
+  },
   "switchEthereumChainConfirmationDescription": {
     "message": "Ililipat nito ang napiling network sa loob ng MetaMask sa dating idinagdag na network:"
   },
@@ -8601,6 +9109,9 @@
   "transaction": {
     "message": "transaksyong"
   },
+  "transactionConfirmed": {
+    "message": "Nakumpirma ang transaksyon"
+  },
   "transactionDataFunction": {
     "message": "Tungkulin"
   },
@@ -8612,6 +9123,9 @@
   },
   "transactionErrorNoContract": {
     "message": "Sinusubukang i-call ang isang function sa isang address na hindi kontrata."
+  },
+  "transactionFailed": {
+    "message": "Nabigo ang transaksyon"
   },
   "transactionFee": {
     "message": "Bayad sa transaksyon"
@@ -8653,12 +9167,18 @@
   "transactionShield": {
     "message": "Transaction Shield"
   },
+  "transactionSubmitted": {
+    "message": "Naisumite ang transaksyon"
+  },
   "transactionTotalGasFee": {
     "message": "Kabuuang bayad sa gas",
     "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Mga Transaksyon"
+  },
+  "transactionsAndAssets": {
+    "message": "Mga transaksyon at mga asset"
   },
   "transfer": {
     "message": "Maglipat"
@@ -9053,7 +9573,7 @@
     "message": "Gusto mo bang idagdag ang network na ito?"
   },
   "wantsToAddThisAsset": {
-    "message": "Gustong idagdag ng $1 ang asset na ito sa iyong wallet"
+    "message": "Dahil dito, maidaragdag na ang sumusunod na asset sa wallet mo."
   },
   "warning": {
     "message": "Babala"
