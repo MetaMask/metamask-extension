@@ -2,12 +2,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
 import BigNumber from 'bignumber.js';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import {
   getAllTokens,
+  getCurrencyRates,
   getKnownMethodData,
+  getMarketData,
+  getNativeTokenInfo,
   getSelectedAddress,
   selectERC20TokensByChain,
 } from '../selectors';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
+import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
   getStatusKey,
   getTransactionTypeTitle,
@@ -105,6 +111,11 @@ export function useTransactionDisplayData(transactionGroup) {
   const selectedAddress = useSelector(getSelectedAddress);
   const knownNfts = useSelector(getNfts);
   const tokenListAllChains = useSelector(selectERC20TokensByChain);
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+  const marketData = useSelector(getMarketData);
+  const currencyRates = useSelector(getCurrencyRates);
   const fiatFormatter = useFiatFormatter();
 
   const t = useI18nContext();
@@ -400,8 +411,15 @@ export function useTransactionDisplayData(transactionGroup) {
     secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
   } else if (PAY_TRANSACTION_TYPES.includes(type)) {
     const { metamaskPay } = initialTransaction;
-    const sourceTokenAddress = metamaskPay?.tokenAddress?.toLowerCase();
-    const sourceChainId = metamaskPay?.chainId;
+    const isPostQuote = metamaskPay?.isPostQuote === true;
+
+    // For post-quote flows (e.g. perpsWithdraw) `metamaskPay.tokenAddress` +
+    // `metamaskPay.chainId` describe the DESTINATION token the user receives,
+    // not the source. For regular pay flows they describe the source token.
+    const sourceTokenAddress = isPostQuote
+      ? undefined
+      : metamaskPay?.tokenAddress?.toLowerCase();
+    const sourceChainId = isPostQuote ? undefined : metamaskPay?.chainId;
     const sourceToken =
       sourceTokenAddress &&
       sourceChainId &&
@@ -410,7 +428,7 @@ export function useTransactionDisplayData(transactionGroup) {
     if (type === TransactionType.perpsDeposit) {
       title = t('perpsDepositActivityTitle');
     } else if (type === TransactionType.perpsWithdraw) {
-      title = t('perpsWithdrawFundsTitle');
+      title = t('perpsWithdrawActivityTitle');
     } else if (type === TransactionType.musdClaim) {
       title = t('musdClaimTitle');
     } else {
@@ -420,21 +438,99 @@ export function useTransactionDisplayData(transactionGroup) {
     }
 
     prefix = '';
-    const targetTokenAddress = to?.toLowerCase();
 
-    const targetToken =
-      targetTokenAddress &&
-      tokenListAllChains?.[initialTransaction.chainId]?.data?.[
-        targetTokenAddress
-      ];
+    // For post-quote flows, resolve the destination token via metamaskPay
+    // (the tx's own `to` field is a placeholder ERC-20 transfer used purely
+    // to drive the confirmation UI). Otherwise fall back to the legacy
+    // `to` + initialTransaction.chainId lookup used by deposit flows.
+    const targetLookupAddress = isPostQuote
+      ? metamaskPay?.tokenAddress?.toLowerCase()
+      : to?.toLowerCase();
+    const targetLookupChainId = isPostQuote
+      ? metamaskPay?.chainId
+      : initialTransaction.chainId;
 
-    if (targetToken?.symbol) {
-      primarySuffix = targetToken.symbol;
+    let targetTokenSymbol;
+
+    // Detect native destinations first (e.g. BNB on BNB chain) — they are not
+    // in the ERC-20 token list keyed by address, so look up the native ticker
+    // from the network config instead.
+    const nativeAddressForTargetChain =
+      targetLookupChainId &&
+      getNativeTokenAddress(targetLookupChainId).toLowerCase();
+    const isNativeTarget =
+      targetLookupChainId &&
+      targetLookupAddress &&
+      targetLookupAddress === nativeAddressForTargetChain;
+
+    if (isNativeTarget) {
+      const nativeInfo = getNativeTokenInfo(
+        networkConfigurationsByChainId,
+        targetLookupChainId,
+      );
+      targetTokenSymbol = nativeInfo?.symbol;
+    } else if (targetLookupAddress && targetLookupChainId) {
+      const targetToken =
+        tokenListAllChains?.[targetLookupChainId]?.data?.[targetLookupAddress];
+      targetTokenSymbol = targetToken?.symbol;
     }
 
-    if (metamaskPay?.targetFiat) {
-      primaryDisplayValue = metamaskPay.targetFiat;
-      secondaryDisplayValue = fiatFormatter(Number(metamaskPay.targetFiat));
+    if (isPostQuote) {
+      // Post-quote withdrawals (e.g. Perps Withdraw): the completed tx does
+      // not carry a destination-token amount; derive it from targetFiat /
+      // destinationTokenUsdRate, the same way mobile's
+      // `getPostQuoteDisplay` (app/components/UI/TransactionElement/utils.js)
+      // renders the Activity row.
+      const fiatUsd = parseFloat(metamaskPay?.targetFiat ?? '');
+      const nativeCurrency =
+        networkConfigurationsByChainId?.[targetLookupChainId]?.nativeCurrency;
+      const nativeUsdRate =
+        currencyRates?.[nativeCurrency]?.usdConversionRate ?? 0;
+
+      let tokenUsdRate = nativeUsdRate;
+      if (!isNativeTarget && targetLookupAddress && targetLookupChainId) {
+        let checksumAddress;
+        try {
+          checksumAddress = toChecksumHexAddress(targetLookupAddress);
+        } catch {
+          checksumAddress = undefined;
+        }
+        const tokenPrice =
+          checksumAddress &&
+          marketData?.[targetLookupChainId]?.[checksumAddress]?.price;
+        tokenUsdRate = tokenPrice ? tokenPrice * nativeUsdRate : 0;
+      }
+
+      const hasValidInputs =
+        Number.isFinite(fiatUsd) && fiatUsd > 0 && tokenUsdRate > 0;
+      const receivedAmount = hasValidInputs
+        ? fiatUsd / tokenUsdRate
+        : undefined;
+
+      if (targetTokenSymbol) {
+        primarySuffix = targetTokenSymbol;
+      }
+
+      if (receivedAmount !== undefined) {
+        primaryDisplayValue =
+          receivedAmount >= 1
+            ? receivedAmount.toFixed(2)
+            : receivedAmount.toPrecision(4);
+      } else if (metamaskPay?.targetFiat) {
+        primaryDisplayValue = metamaskPay.targetFiat;
+      }
+
+      if (metamaskPay?.targetFiat) {
+        secondaryDisplayValue = fiatFormatter(fiatUsd);
+      }
+    } else {
+      if (targetTokenSymbol) {
+        primarySuffix = targetTokenSymbol;
+      }
+      if (metamaskPay?.targetFiat) {
+        primaryDisplayValue = metamaskPay.targetFiat;
+        secondaryDisplayValue = fiatFormatter(Number(metamaskPay.targetFiat));
+      }
     }
   } else {
     dispatch(

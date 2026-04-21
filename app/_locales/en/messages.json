@@ -5321,6 +5321,10 @@
     "message": "Pay with",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Perps withdraw",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "payWithModalTitle": {
     "message": "Pay with",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
