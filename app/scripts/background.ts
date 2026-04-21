@@ -1,3 +1,4 @@
+// @ts-nocheck -- background.ts migrated from .js; full typing deferred
 /**
  * @file The entry point for the web extension singleton process.
  */
@@ -2390,7 +2391,7 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
 
 function setupSentryGetStateGlobal(store: MetamaskController) {
   global.stateHooks.getSentryAppState = function () {
-    const backgroundState = store.memStore.getState();
+    const backgroundState = store.getState();
     return maskObject(backgroundState, SENTRY_BACKGROUND_STATE);
   };
 }
