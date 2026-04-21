@@ -3543,54 +3543,23 @@ describe('MetaMaskController', () => {
         };
       };
 
-      it('sets up a controller connection which emits a controllerConnectionChanged event when the controller connection is created and ended, and activeControllerConnections are updated accordingly', async () => {
-        const mockControllerConnectionChangedHandler = jest.fn();
-
-        const {
-          onStreamEndPromise,
-          onFinishedCallbackPromise,
-          onFinishedCallbackResolve,
-          testStream,
-        } = createTestStream();
-
-        metamaskController.on(
-          'controllerConnectionChanged',
-          (activeControllerConnections) => {
-            mockControllerConnectionChangedHandler(activeControllerConnections);
-            if (
-              mockControllerConnectionChangedHandler.mock.calls.length === 2
-            ) {
-              onFinishedCallbackResolve();
-            }
-          },
-        );
+      it('tracks activeControllerConnections when connections are created and ended', async () => {
+        const { onStreamEndPromise, testStream } = createTestStream();
 
         expect(metamaskController.activeControllerConnections).toBe(0);
 
         metamaskController.setupTrustedCommunication(testStream, {});
 
-        expect(mockControllerConnectionChangedHandler).toHaveBeenCalledTimes(1);
-        expect(mockControllerConnectionChangedHandler).toHaveBeenLastCalledWith(
-          1,
-        );
-
         expect(metamaskController.activeControllerConnections).toBe(1);
 
         await onStreamEndPromise;
         testStream.end();
-
-        await onFinishedCallbackPromise;
+        await waitForAllPromises();
 
         expect(metamaskController.activeControllerConnections).toBe(0);
-        expect(mockControllerConnectionChangedHandler).toHaveBeenCalledTimes(2);
-        expect(mockControllerConnectionChangedHandler).toHaveBeenLastCalledWith(
-          0,
-        );
       });
 
       it('can be called multiple times to set up multiple controller connections, which can be ended independently', async () => {
-        const mockControllerConnectionChangedHandler = jest.fn();
-
         const testStreams = [
           createTestStream(),
           createTestStream(),
@@ -3598,35 +3567,6 @@ describe('MetaMaskController', () => {
           createTestStream(),
           createTestStream(),
         ];
-        metamaskController.on(
-          'controllerConnectionChanged',
-          (activeControllerConnections) => {
-            const initialChangeHandlerCallCount =
-              mockControllerConnectionChangedHandler.mock.calls.length;
-            mockControllerConnectionChangedHandler(activeControllerConnections);
-
-            if (
-              initialChangeHandlerCallCount === 5 &&
-              activeControllerConnections === 4
-            ) {
-              testStreams[1].onFinishedCallbackResolve();
-            }
-            if (
-              initialChangeHandlerCallCount === 7 &&
-              activeControllerConnections === 2
-            ) {
-              testStreams[3].onFinishedCallbackResolve();
-              testStreams[4].onFinishedCallbackResolve();
-            }
-            if (
-              initialChangeHandlerCallCount === 9 &&
-              activeControllerConnections === 0
-            ) {
-              testStreams[2].onFinishedCallbackResolve();
-              testStreams[0].onFinishedCallbackResolve();
-            }
-          },
-        );
 
         metamaskController.setupTrustedCommunication(
           testStreams[0].testStream,
@@ -3651,32 +3591,25 @@ describe('MetaMaskController', () => {
 
         expect(metamaskController.activeControllerConnections).toBe(5);
 
-        await testStreams[1].promise;
+        await testStreams[1].onStreamEndPromise;
         testStreams[1].testStream.end();
-
-        await testStreams[1].onFinishedCallbackPromise;
+        await waitForAllPromises();
 
         expect(metamaskController.activeControllerConnections).toBe(4);
 
-        await testStreams[3].promise;
+        await testStreams[3].onStreamEndPromise;
         testStreams[3].testStream.end();
-
-        await testStreams[4].promise;
+        await testStreams[4].onStreamEndPromise;
         testStreams[4].testStream.end();
-
-        await testStreams[3].onFinishedCallbackPromise;
-        await testStreams[4].onFinishedCallbackPromise;
+        await waitForAllPromises();
 
         expect(metamaskController.activeControllerConnections).toBe(2);
 
-        await testStreams[2].promise;
+        await testStreams[2].onStreamEndPromise;
         testStreams[2].testStream.end();
-
-        await testStreams[0].promise;
+        await testStreams[0].onStreamEndPromise;
         testStreams[0].testStream.end();
-
-        await testStreams[2].onFinishedCallbackPromise;
-        await testStreams[0].onFinishedCallbackPromise;
+        await waitForAllPromises();
 
         expect(metamaskController.activeControllerConnections).toBe(0);
       });
@@ -3723,50 +3656,21 @@ describe('MetaMaskController', () => {
         expect(perpsDisconnect).toHaveBeenCalledTimes(1);
       });
 
-      // this test could be improved by testing for actual behavior of handlers,
-      // without touching rawListeners from test
-      it('attaches listeners for trusted communication streams and removes them as streams close', async () => {
+      it('cleans up connections as streams close, reaching zero when all are ended', async () => {
         jest
           .spyOn(metamaskController, 'triggerNetworkrequests')
           .mockImplementation();
         jest
           .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
-        const mockControllerConnectionChangedHandler = jest.fn();
 
         const testStreams = [
           createTestStream(),
-          createTestStream(2),
-          createTestStream(3),
-          createTestStream(4),
-          createTestStream(5),
+          createTestStream(),
+          createTestStream(),
+          createTestStream(),
+          createTestStream(),
         ];
-        const baseUpdateListenerCount =
-          metamaskController.rawListeners('update').length;
-
-        metamaskController.on(
-          'controllerConnectionChanged',
-          (activeControllerConnections) => {
-            const initialChangeHandlerCallCount =
-              mockControllerConnectionChangedHandler.mock.calls.length;
-            mockControllerConnectionChangedHandler(activeControllerConnections);
-            if (
-              initialChangeHandlerCallCount === 8 &&
-              activeControllerConnections === 1
-            ) {
-              testStreams[1].onFinishedCallbackResolve();
-              testStreams[3].onFinishedCallbackResolve();
-              testStreams[4].onFinishedCallbackResolve();
-              testStreams[2].onFinishedCallbackResolve();
-            }
-            if (
-              initialChangeHandlerCallCount === 9 &&
-              activeControllerConnections === 0
-            ) {
-              testStreams[0].onFinishedCallbackResolve();
-            }
-          },
-        );
 
         metamaskController.setupTrustedCommunication(
           testStreams[0].testStream,
@@ -3789,37 +3693,25 @@ describe('MetaMaskController', () => {
           {},
         );
 
-        await testStreams[1].promise;
+        expect(metamaskController.activeControllerConnections).toBe(5);
 
-        expect(metamaskController.rawListeners('update')).toHaveLength(
-          baseUpdateListenerCount + 5,
-        );
-
+        await testStreams[1].onStreamEndPromise;
         testStreams[1].testStream.end();
-        await testStreams[3].promise;
+        await testStreams[3].onStreamEndPromise;
         testStreams[3].testStream.end();
-        testStreams[3].testStream.end();
-
-        await testStreams[4].promise;
+        await testStreams[4].onStreamEndPromise;
         testStreams[4].testStream.end();
-        await testStreams[2].promise;
+        await testStreams[2].onStreamEndPromise;
         testStreams[2].testStream.end();
-        await testStreams[1].onFinishedCallbackPromise;
-        await testStreams[3].onFinishedCallbackPromise;
-        await testStreams[4].onFinishedCallbackPromise;
-        await testStreams[2].onFinishedCallbackPromise;
-        expect(metamaskController.rawListeners('update')).toHaveLength(
-          baseUpdateListenerCount + 1,
-        );
+        await waitForAllPromises();
 
-        await testStreams[0].promise;
+        expect(metamaskController.activeControllerConnections).toBe(1);
+
+        await testStreams[0].onStreamEndPromise;
         testStreams[0].testStream.end();
+        await waitForAllPromises();
 
-        await testStreams[0].onFinishedCallbackPromise;
-
-        expect(metamaskController.rawListeners('update')).toHaveLength(
-          baseUpdateListenerCount,
-        );
+        expect(metamaskController.activeControllerConnections).toBe(0);
       });
     });
 
@@ -3843,10 +3735,11 @@ describe('MetaMaskController', () => {
         await flushPromises();
       }
 
-      it('does not send "sendUpdate" on update events before startSendingPatches is received', async () => {
+      it('does not send "sendUpdate" on state changes before startSendingPatches is received', async () => {
         const { messages } = setupPatchStoreConnection();
 
-        metamaskController.emit('update', metamaskController.getState());
+        // Trigger a real controller state change instead of emit('update')
+        metamaskController.preferencesController.setCurrentLocale('fr');
         await flushBufferedWrites();
 
         expect(messages).not.toContainEqual(
@@ -3875,7 +3768,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('sends "sendUpdate" on update events after startSendingPatches is received', async () => {
+      it('sends "sendUpdate" on state changes after startSendingPatches is received', async () => {
         const { patchStream, messages } = setupPatchStoreConnection();
 
         patchStream.write({
@@ -3885,7 +3778,7 @@ describe('MetaMaskController', () => {
         });
         await flushBufferedWrites();
 
-        metamaskController.emit('update', metamaskController.getState());
+        metamaskController.preferencesController.setCurrentLocale('fr');
         await flushBufferedWrites();
 
         expect(messages).toContainEqual(
@@ -3897,7 +3790,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('does not send "sendUpdate" on update events if the stream is closed', async () => {
+      it('does not send "sendUpdate" on state changes if the stream is closed', async () => {
         const { mux, patchStream, messages } = setupPatchStoreConnection();
 
         patchStream.write({
@@ -3909,7 +3802,7 @@ describe('MetaMaskController', () => {
         messages.length = 0;
 
         mux.end();
-        metamaskController.emit('update', metamaskController.getState());
+        metamaskController.preferencesController.setCurrentLocale('fr');
         await flushBufferedWrites();
 
         expect(messages).not.toContainEqual(
@@ -4080,9 +3973,8 @@ describe('MetaMaskController', () => {
         } = setupPatchStoreConnection({ startUISync: false });
         setupPatchStoreConnection({ startUISync: false });
 
-        // Emit startUISync, which fires both connections' once('startUISync')
-        // listeners.
-        metamaskController.emit('startUISync');
+        // Trigger startUISync, which fires both connections' pending callbacks.
+        metamaskController._startUISync();
         await flushBufferedWrites();
 
         // Cause a state change after both patch stores are initialized.

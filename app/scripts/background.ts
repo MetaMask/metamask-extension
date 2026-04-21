@@ -106,9 +106,8 @@ import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageM
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import { getIframeProperties } from './lib/getIframeProperties';
 
-/**
- * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
- */
+import type { Backup } from '../../shared/lib/stores/persistence-manager';
+import type { Runtime } from 'webextension-polyfill';
 
 // MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
 // but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners,
@@ -160,15 +159,11 @@ const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 const POPUP_LAUNCH_FILE = isFirefox ? POPUP_FILE : POPUP_INIT_FILE;
 
-/**
- * Parses port connection info for routing decisions.
- * Determines if the port is from the MetaMask UI (popup, notification, fullscreen)
- * vs a contentscript injected into a regular web page.
- *
- * @param {browser.Runtime.Port} port - The port to parse.
- * @returns {{ processName: string, senderUrl: URL | null, isMetaMaskUIPort: boolean }} Parsed port info.
- */
-function parsePortInfo(port) {
+function parsePortInfo(port: Runtime.Port): {
+  processName: string;
+  senderUrl: URL | null;
+  isMetaMaskUIPort: boolean;
+} {
   const processName = port.name;
   const senderUrl = port.sender?.url ? new URL(port.sender.url) : null;
 
@@ -188,12 +183,12 @@ let notificationIsOpen = false;
 let uiIsTriggering = false;
 let openSidePanelCount = 0;
 let failedTxCount = 0;
-const openMetamaskTabsIDs = {};
-const requestAccountTabIds = {};
-let controller;
-const senderOriginMapping = {};
-const tabOriginMapping = {};
-const frameIdMapping = {};
+const openMetamaskTabsIDs: Record<number, boolean> = {};
+const requestAccountTabIds: Record<string, number> = {};
+let controller: MetamaskController;
+const senderOriginMapping: Record<number, string> = {};
+const tabOriginMapping: Record<number, string> = {};
+const frameIdMapping: Record<number, number> = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = persistenceManager.get.bind(
@@ -223,18 +218,9 @@ lazyListener.once('runtime', 'onInstalled').then((details) => {
  * called once initialization has completed, and that `rejectInitialization` is
  * called if initialization fails in an unrecoverable way.
  */
-/**
- * @type {Promise<void>}
- */
-let isInitialized;
-/**
- * @type {() => void}
- */
-let resolveInitialization;
-/**
- * @type {() => void}
- */
-let rejectInitialization;
+let isInitialized: Promise<void>;
+let resolveInitialization: (value?: void | PromiseLike<void>) => void;
+let rejectInitialization: (reason?: unknown) => void;
 
 /**
  * Creates a deferred Promise and sets the global variables to track the
@@ -327,7 +313,7 @@ const sendReadyMessageToTabs = async () => {
  *
  * @param {MetamaskController} theController
  */
-function maybeDetectPhishing(theController) {
+function maybeDetectPhishing(theController: MetamaskController) {
   /**
    * Redirects a tab to the phishing warning page.
    *
@@ -336,7 +322,7 @@ function maybeDetectPhishing(theController) {
    * @returns {Promise<boolean>} Returns true if the redirect was successful, false otherwise.
    *   Returns false for Google pre-fetch requests or if the redirect fails.
    */
-  async function redirectTab(tabId, url) {
+  async function redirectTab(tabId: number, url: string): Promise<boolean> {
     try {
       const tab = await browser.tabs.get(tabId);
 
@@ -551,7 +537,7 @@ const corruptionHandler = new CorruptionHandler();
  *
  * @param {browser.Runtime.Port} port - The port provided by a new context.
  */
-const handleOnConnect = async (port) => {
+const handleOnConnect = async (port: Runtime.Port) => {
   if (inTest) {
     const simulatedDelay =
       getManifestFlags().testing?.simulateDelayedBackgroundResponse;
@@ -726,7 +712,7 @@ function saveTimestamp() {
  * @param {Backup | null} backup
  * @returns {Promise} Setup complete.
  */
-async function initialize(backup) {
+async function initialize(backup: Backup | null) {
   // Initialize install type early so it's cached for MetaMetrics user traits
   // This is fire-and-forget - we don't await it to avoid blocking initialization
   initInstallType();
@@ -963,14 +949,9 @@ async function loadPhishingWarningPage() {
 // State and Persistence
 //
 
-/**
- * Loads any stored data, prioritizing the latest storage strategy.
- * Migrates that data schema in case it was last loaded on an older version.
- *
- * @param {Backup | null} backup
- * @returns {Promise<{data: MetaMaskState meta: {version: number}}>} Last data emitted from previous instance of MetaMask.
- */
-export async function loadStateFromPersistence(backup) {
+export async function loadStateFromPersistence(
+  backup: Backup | null,
+): Promise<{ data: Record<string, unknown>; meta: { version: number } }> {
   if (process.env.WITH_STATE) {
     const withState = JSON.parse(process.env.WITH_STATE);
 
@@ -1205,7 +1186,7 @@ export async function loadStateFromPersistence(backup) {
  * @param {string} [mainFrameOrigin] - The top-level frame origin (if sender is an iframe, this differs from origin)
  * @param {number} [frameId] - The frame ID from chrome.runtime.MessageSender (0 = top-level, >0 = iframe)
  */
-function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
+function emitDappViewedMetricEvent(origin: string, mainFrameOrigin: string, frameId: number) {
   const { metaMetricsId } = controller.metaMetricsController.state;
   if (!shouldEmitDappViewedEvent(metaMetricsId)) {
     return;
@@ -1251,7 +1232,7 @@ function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
  *
  * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
  */
-function trackDappView(remotePort) {
+function trackDappView(remotePort: Runtime.Port) {
   if (
     !remotePort.sender?.tab ||
     !remotePort.sender?.url ||
@@ -1299,7 +1280,7 @@ function trackDappView(remotePort) {
  *
  * @param {string} environmentType - The environment type where the app is opening
  */
-function emitAppOpenedMetricEvent(environmentType) {
+function emitAppOpenedMetricEvent(environmentType: string) {
   const { metaMetricsId, participateInMetaMetrics } =
     controller.metaMetricsController.state;
 
@@ -1321,7 +1302,7 @@ function emitAppOpenedMetricEvent(environmentType) {
  *
  * @param {string} environment - The environment type where the app is opening
  */
-function trackAppOpened(environment) {
+function trackAppOpened(environment: string) {
   // List of valid environment types to track
   const environmentTypeList = [
     ENVIRONMENT_TYPE_POPUP,
@@ -1352,7 +1333,7 @@ function trackAppOpened(environment) {
  * @param {number} [windowId] - If provided, queries the active tab in this
  * specific window. Otherwise queries the active tab in the current window.
  */
-const refreshAppActiveTab = async (windowId) => {
+const refreshAppActiveTab = async (windowId?: number) => {
   await isInitialized;
   if (!controller) {
     return;
@@ -1415,24 +1396,16 @@ const refreshAppActiveTab = async (windowId) => {
  * Streams emitted state updates to platform-specific storage strategy.
  * Creates platform listeners for new Dapps/Contexts, and sets up their data connections to the controller.
  *
- * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
- * @param {string} initLangCode - The region code for the language preferred by the current user.
- * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic
- * @param isFirstMetaMaskControllerSetup
- * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
- * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
- * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
- * @param {CronjobControllerStorageManager} cronjobControllerStorageManager - A storage manager for the CronjobController.
  */
 export function setupController(
-  initState,
-  initLangCode,
-  overrides,
-  isFirstMetaMaskControllerSetup,
-  stateMetadata,
-  offscreenPromise,
-  preinstalledSnaps,
-  cronjobControllerStorageManager,
+  initState: Record<string, unknown>,
+  initLangCode: string,
+  overrides: Record<string, unknown>,
+  isFirstMetaMaskControllerSetup: boolean,
+  stateMetadata: { version: number },
+  offscreenPromise: Promise<void> | null,
+  preinstalledSnaps: unknown[],
+  cronjobControllerStorageManager: CronjobControllerStorageManager,
 ) {
   //
   // MetaMask Controller
@@ -2085,7 +2058,7 @@ const addAppInstalledEvent = async () => {
  *
  * @param {[chrome.runtime.InstalledDetails]} params - Array containing a single installation details object.
  */
-async function handleOnInstalled([details]) {
+async function handleOnInstalled([details]: [Runtime.OnInstalledDetailsType]) {
   if (details.reason === 'install') {
     await onInstall();
   } else if (details.reason === 'update') {
@@ -2114,7 +2087,7 @@ async function onInstall() {
  *
  * @param {object} details - Event details from runtime.onUpdateAvailable (e.g. details.version)
  */
-async function onUpdateAvailable(details) {
+async function onUpdateAvailable(details: Runtime.OnUpdateAvailableDetailsType) {
   await isInitialized;
   log.info('An update is available', details?.version);
   controller.appStateController.setPendingExtensionVersion(
@@ -2397,7 +2370,7 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
   await refreshAppActiveTab(windowId);
 });
 
-function setupSentryGetStateGlobal(store) {
+function setupSentryGetStateGlobal(store: MetamaskController) {
   global.stateHooks.getSentryAppState = function () {
     const backgroundState = store.memStore.getState();
     return maskObject(backgroundState, SENTRY_BACKGROUND_STATE);
@@ -2408,7 +2381,7 @@ function setupSentryGetStateGlobal(store) {
  *
  * @param {Backup | null} backup
  */
-async function initBackground(backup) {
+async function initBackground(backup: Backup | null) {
   onNavigateToTab();
   try {
     await initialize(backup);
