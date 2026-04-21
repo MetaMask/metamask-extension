@@ -11,35 +11,136 @@ import { getMockAssetsPrice } from '../bridge/constants';
 
 const ETH_CONVERSION_RATE_USD = 1700;
 
-async function mockPriceFetch(mockServer: Mockttp) {
-  const nativeEthPrice =
-    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true' ? 1700 : 1;
+const SPOT_PRICES_V3_URL =
+  /^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u;
+const EXCHANGE_RATES_V1_URL =
+  'https://price.api.cx.metamask.io/v1/exchange-rates';
+
+/**
+ * v1 exchange-rates for ETH/USD, aligned with {@link ETH_CONVERSION_RATE_USD}.
+ *
+ * @param mockServer - Mockttp instance.
+ */
+async function mockEthExchangeRates(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(EXCHANGE_RATES_V1_URL)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        eth: {
+          name: 'Ether',
+          ticker: 'eth',
+          value: 1 / ETH_CONVERSION_RATE_USD,
+          currencyType: 'crypto',
+        },
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+      },
+    }));
+}
+
+/**
+ * Spot payload for native ETH when unified assets are on — USD price is normalized
+ * against conversionRate in selectors (`shared/lib/selectors/assets-migration.ts`).
+ */
+const NATIVE_ETH_SPOT_ENTRY_USD = {
+  id: 'ethereum',
+  price: ETH_CONVERSION_RATE_USD,
+  marketCap: 112500000,
+  totalVolume: 4500000,
+  dilutedMarketCap: 120000000,
+  pricePercentChange1d: 0,
+};
+
+/**
+ * Legacy path (unified assets off): `getEvmExchangeRates` multiplies
+ * `currencyRates.conversionRate` × TokenRates `marketData[native].price`.
+ * Fiat conversion already lives in CurrencyController (~1700 from exchange-rates),
+ * so spot native `price` must be 1 — otherwise fiat shows as ~rate² (e.g. 1700×1700).
+ * Same pattern as `show-native-as-main-balance.spec.ts` mockPriceApi.
+ */
+const NATIVE_ETH_SPOT_ENTRY_LEGACY = {
+  ...NATIVE_ETH_SPOT_ENTRY_USD,
+  price: 1,
+};
+
+/**
+ * When unified assets state is off: mock v3 spot-prices + v1 exchange-rates only.
+ *
+ * @param mockServer - Mockttp instance.
+ */
+async function mockNonUnifiedStateSpotAndExchangeRates(mockServer: Mockttp) {
+  const spotPricesMock = await mockServer
+    .forGet(SPOT_PRICES_V3_URL)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:1/slip44:60': NATIVE_ETH_SPOT_ENTRY_LEGACY,
+        'eip155:59144/slip44:60': NATIVE_ETH_SPOT_ENTRY_LEGACY,
+        'eip155:8453/slip44:60': NATIVE_ETH_SPOT_ENTRY_LEGACY,
+      },
+    }));
+  const exchangeRatesMock = await mockEthExchangeRates(mockServer);
+  return [spotPricesMock, exchangeRatesMock];
+}
+
+/**
+ * Shared HTTP mocks for all import-token tests (both unified and legacy price paths).
+ * Token metadata (`tokens.api` v3 assets + token list + bridge) is required for both
+ * branches so paste-by-address can resolve symbol/decimals via `fetchAssetMetadata`.
+ *
+ * @param mockServer - Mockttp instance.
+ */
+async function importTokensTestMock(mockServer: Mockttp) {
+  const sharedTokenMocks = [
+    await mockAssetsV3(mockServer),
+    ...(await mockTokens(mockServer)),
+    ...(await mockPolygonBridgeApi(mockServer)),
+  ];
+
+  if (!process.env.ASSETS_UNIFIED_STATE_ENABLED) {
+    const priceMocks =
+      await mockNonUnifiedStateSpotAndExchangeRates(mockServer);
+    return [...priceMocks, ...sharedTokenMocks];
+  }
+
   return [
-    await mockServer
-      .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-      .always()
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            'eip155:1/slip44:60': {
-              price: nativeEthPrice,
-            },
-            'eip155:59144/slip44:60': {
-              price: nativeEthPrice,
-            },
-            'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215': {
-              price: 0.0002,
-            },
-            'eip155:1/erc20:0x514910771af9ca656af840dff83e8264ecf986ca': {
-              price: 0.0003,
-            },
-            'eip155:1/erc20:0x7d4b8cce0591c9044a22ee543533b72e976e36c3': {
-              price: 0.0001,
-            },
+    await mockPriceFetch(mockServer),
+    ...sharedTokenMocks,
+    await mockSpotPricesV3(mockServer),
+  ];
+}
+
+async function mockPriceFetch(mockServer: Mockttp) {
+  return [
+    await mockServer.forGet(SPOT_PRICES_V3_URL).thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          'eip155:1/slip44:60': {
+            price: ETH_CONVERSION_RATE_USD,
           },
-        };
-      }),
+          'eip155:59144/slip44:60': {
+            price: ETH_CONVERSION_RATE_USD,
+          },
+          'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215': {
+            price: 0.0002 * ETH_CONVERSION_RATE_USD,
+          },
+          'eip155:1/erc20:0x514910771af9ca656af840dff83e8264ecf986ca': {
+            price: 0.0003 * ETH_CONVERSION_RATE_USD,
+          },
+          'eip155:1/erc20:0x7d4b8cce0591c9044a22ee543533b72e976e36c3': {
+            price: 0.0001 * ETH_CONVERSION_RATE_USD,
+          },
+        },
+      };
+    }),
   ];
 }
 
@@ -65,44 +166,34 @@ async function mockSpotPricesV3(mockServer: Mockttp) {
     },
   };
 
-  return await mockServer
-    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-    .always()
-    .thenCallback((request) => {
-      const url = new URL(request.url);
-      const assetIds = (url.searchParams.get('assetIds') ?? '').toLowerCase();
+  return await mockServer.forGet(SPOT_PRICES_V3_URL).thenCallback((request) => {
+    const url = new URL(request.url);
+    const assetIds = (url.searchParams.get('assetIds') ?? '').toLowerCase();
 
-      const json: Record<string, Record<string, unknown>> = {};
+    const json: Record<string, Record<string, unknown>> = {};
 
-      for (const [id, name] of Object.entries(nativeAssets)) {
-        if (assetIds.includes(id)) {
-          json[id] = {
-            id: name,
-            price:
-              process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
-                ? ETH_CONVERSION_RATE_USD
-                : 1,
-            marketCap: 112500000,
-            totalVolume: 4500000,
-            dilutedMarketCap: 120000000,
-            pricePercentChange1d: 0,
-          };
-        }
+    for (const [id, name] of Object.entries(nativeAssets)) {
+      if (assetIds.includes(id)) {
+        json[id] = {
+          ...NATIVE_ETH_SPOT_ENTRY_USD,
+          id: name,
+        };
       }
+    }
 
-      for (const [id, { symbol }] of Object.entries(erc20Assets)) {
-        if (assetIds.includes(id)) {
-          json[id] = {
-            id: symbol,
-            price: 0,
-            marketCap: 0,
-            pricePercentChange1d: 0,
-          };
-        }
+    for (const [id, { symbol }] of Object.entries(erc20Assets)) {
+      if (assetIds.includes(id)) {
+        json[id] = {
+          id: symbol,
+          price: 0,
+          marketCap: 0,
+          pricePercentChange1d: 0,
+        };
       }
+    }
 
-      return { statusCode: 200, json };
-    });
+    return { statusCode: 200, json };
+  });
 }
 
 async function mockTokens(mockServer: Mockttp) {
@@ -302,15 +393,6 @@ async function mockAssetsV3(mockServer: Mockttp) {
     });
 }
 
-async function mockTokensAndPrices(mockServer: Mockttp) {
-  return [
-    await mockPriceFetch(mockServer),
-    await mockAssetsV3(mockServer),
-    ...(await mockTokens(mockServer)),
-    ...(await mockPolygonBridgeApi(mockServer)),
-    await mockSpotPricesV3(mockServer),
-  ];
-}
 describe('Import flow', function () {
   it('allows importing multiple tokens from search', async function () {
     await withFixtures(
@@ -409,10 +491,10 @@ describe('Import flow', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTokensAndPrices,
+        testSpecificMock: importTokensTestMock,
       },
       async ({ driver }) => {
-        await login(driver, { expectedBalance: '$127,500.00' });
+        await login(driver, { expectedBalance: '$85,000.00' });
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -514,10 +596,10 @@ describe('Import flow', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTokensAndPrices,
+        testSpecificMock: importTokensTestMock,
       },
       async ({ driver }) => {
-        await login(driver, { expectedBalance: '$127,500.00' });
+        await login(driver, { expectedBalance: '$85,000.00' });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
