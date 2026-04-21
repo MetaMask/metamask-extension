@@ -94,7 +94,6 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": "object"
   },
-  "AssetsController": "object",
   "AuthenticationController": {
     "isSignedIn": "boolean",
     "srpSessionData": "object"
@@ -123,9 +122,9 @@
   "CurrencyController": {
     "currencyRates": {
       "ETH": {
-        "conversionDate": "object",
+        "conversionDate": "number",
         "conversionRate": 1700,
-        "usdConversionRate": null
+        "usdConversionRate": 1700
       }
     },
     "currentCurrency": "usd"
