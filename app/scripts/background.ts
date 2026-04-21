@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck -- background.ts migrated from .js; full typing deferred
+/* eslint-enable @typescript-eslint/ban-ts-comment */
 /**
  * @file The entry point for the web extension singleton process.
  */
