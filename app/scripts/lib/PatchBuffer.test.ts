@@ -101,6 +101,28 @@ describe('PatchBuffer', () => {
     });
   });
 
+  describe('burst accumulation', () => {
+    it('accumulates N rapid adds without loss across multiple keys', () => {
+      const N = 500;
+      const KEYS = 10;
+
+      for (let i = 0; i < N; i++) {
+        buffer.add(`Controller${i % KEYS}`, [patch(i)]);
+      }
+
+      const result = buffer.flush();
+      expect(result).not.toBeNull();
+
+      const totalPatches = Object.values(result!).flat().length;
+      expect(totalPatches).toBe(N);
+
+      // Each key should have N/KEYS patches
+      for (let k = 0; k < KEYS; k++) {
+        expect(result![`Controller${k}`]).toHaveLength(N / KEYS);
+      }
+    });
+  });
+
   describe('destroy', () => {
     it('discards all pending patches', () => {
       buffer.add('A', [patch(1)]);
