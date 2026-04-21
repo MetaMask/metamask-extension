@@ -1,4 +1,3 @@
-import { regularDelayMs } from '../../../helpers';
 import HomePage from './homepage';
 
 class NonEvmHomepage extends HomePage {
@@ -20,16 +19,15 @@ class NonEvmHomepage extends HomePage {
     timeout = 60000,
   }: { amount?: string; timeout?: number } = {}): Promise<void> {
     await super.checkPageIsLoaded();
-    await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
-    if (amount) {
-      await this.driver.wait(async () => {
+    if (amount) {                                                                                     
+      await this.driver.wait(async () => {                                                            
         await this.driver.waitForSelector(
           { text: `${amount}`, tag: 'span' },
-          { timeout },
+          { timeout },                                                                                  
         );
-        return true;
-      }, timeout);
-    }
+        return true;                                                                                    
+      }, timeout);                                                                                    
+    }   
   }
 
   /**
