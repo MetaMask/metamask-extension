@@ -2685,7 +2685,7 @@ export function lockMetamask(
 
     return backgroundSetLocked()
       .then(() => {
-        // Background may set AppStateController.skipPasskeyAutoUnlock on lock; forceUpdate
+        // Background may set AppStateController.passkeyAutoUnlockSuppressed on lock; forceUpdate
         // so UnlockPage sees it before paint.
         return forceUpdateMetamaskState(dispatch);
       })

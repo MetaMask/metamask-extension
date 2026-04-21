@@ -1190,39 +1190,44 @@ describe('MetaMaskController', () => {
         ).toStrictEqual(false);
       });
 
-      it('sets skipPasskeyAutoUnlock on lock and clears after 3s', async () => {
+      it('sets passkeyAutoUnlockSuppressed on lock and clears after 3s', async () => {
         jest.useFakeTimers({ legacyFakeTimers: true });
         try {
           await metamaskController.createNewVaultAndKeychain('password');
           await metamaskController.setLocked();
           expect(
-            metamaskController.appStateController.state.skipPasskeyAutoUnlock,
+            metamaskController.appStateController.state
+              .passkeyAutoUnlockSuppressed,
           ).toStrictEqual(true);
           jest.advanceTimersByTime(3000);
           expect(
-            metamaskController.appStateController.state.skipPasskeyAutoUnlock,
+            metamaskController.appStateController.state
+              .passkeyAutoUnlockSuppressed,
           ).toStrictEqual(false);
         } finally {
           jest.useRealTimers();
         }
       });
 
-      it('keeps skipPasskeyAutoUnlock true until 3s after lock even if user unlocks sooner', async () => {
+      it('keeps passkeyAutoUnlockSuppressed true until 3s after lock even if user unlocks sooner', async () => {
         jest.useFakeTimers({ legacyFakeTimers: true });
         try {
           const password = 'password';
           await metamaskController.createNewVaultAndKeychain(password);
           await metamaskController.setLocked();
           expect(
-            metamaskController.appStateController.state.skipPasskeyAutoUnlock,
+            metamaskController.appStateController.state
+              .passkeyAutoUnlockSuppressed,
           ).toStrictEqual(true);
           await metamaskController.submitPasswordOrEncryptionKey({ password });
           expect(
-            metamaskController.appStateController.state.skipPasskeyAutoUnlock,
+            metamaskController.appStateController.state
+              .passkeyAutoUnlockSuppressed,
           ).toStrictEqual(true);
           jest.advanceTimersByTime(3000);
           expect(
-            metamaskController.appStateController.state.skipPasskeyAutoUnlock,
+            metamaskController.appStateController.state
+              .passkeyAutoUnlockSuppressed,
           ).toStrictEqual(false);
         } finally {
           jest.useRealTimers();

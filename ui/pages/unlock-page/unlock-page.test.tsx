@@ -316,7 +316,7 @@ describe('Unlock Page', () => {
     });
   });
 
-  it('does not start passkey unlock on mount when skipPasskeyAutoUnlock is set', async () => {
+  it('does not start passkey unlock on mount when passkeyAutoUnlockSuppressed is set', async () => {
     const mockForceUpdateMetamaskState = jest.fn().mockResolvedValue(undefined);
     const store = configureMockStore([thunk])({
       metamask: {
@@ -326,7 +326,7 @@ describe('Unlock Page', () => {
           wrappedEncryptionKey: 'e30',
           iv: 'e30',
         },
-        skipPasskeyAutoUnlock: true,
+        passkeyAutoUnlockSuppressed: true,
       },
     });
 

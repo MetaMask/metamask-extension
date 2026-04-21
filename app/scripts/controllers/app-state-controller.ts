@@ -184,10 +184,10 @@ export type AppStateControllerState = {
   storageWriteErrorType: StorageWriteErrorType | null;
 
   /**
-   * When true, unlock UI must not auto-start WebAuthn passkey unlock (cross-surface).
-   * Set on lock; cleared after a short delay (see MetamaskController).
+   * When true, unlock UI must not auto-start biometrics unlock (cross-surface).
+   * Used to avoid immediately re-prompting biometrics after the user manually locks the wallet.
    */
-  skipPasskeyAutoUnlock: boolean;
+  passkeyAutoUnlockSuppressed: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -327,7 +327,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
-  skipPasskeyAutoUnlock: false,
+  passkeyAutoUnlockSuppressed: false,
   ...getInitialStateOverrides(),
 });
 
@@ -719,7 +719,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  skipPasskeyAutoUnlock: {
+  passkeyAutoUnlockSuppressed: {
     includeInStateLogs: true,
     persist: false,
     includeInDebugSnapshot: true,
@@ -990,11 +990,11 @@ export class AppStateController extends BaseController<
   /**
    * Sets whether the unlock screen should suppress automatic passkey WebAuthn.
    *
-   * @param skip - When true, auto passkey unlock is suppressed.
+   * @param suppressed - When true, auto passkey unlock is suppressed.
    */
-  setSkipPasskeyAutoUnlock(skip: boolean): void {
+  setPasskeyAutoUnlockSuppressed(suppressed: boolean): void {
     this.update((state) => {
-      state.skipPasskeyAutoUnlock = skip;
+      state.passkeyAutoUnlockSuppressed = suppressed;
     });
   }
 

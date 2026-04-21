@@ -50,14 +50,20 @@ const extensionMock = {
 } as unknown as jest.Mocked<Browser>;
 
 describe('AppStateController', () => {
-  describe('setSkipPasskeyAutoUnlock', () => {
-    it('updates skipPasskeyAutoUnlock', async () => {
+  describe('setPasskeyAutoUnlockSuppressed', () => {
+    it('updates passkeyAutoUnlockSuppressed', async () => {
       await withController(({ controller }) => {
-        expect(controller.state.skipPasskeyAutoUnlock).toStrictEqual(false);
-        controller.setSkipPasskeyAutoUnlock(true);
-        expect(controller.state.skipPasskeyAutoUnlock).toStrictEqual(true);
-        controller.setSkipPasskeyAutoUnlock(false);
-        expect(controller.state.skipPasskeyAutoUnlock).toStrictEqual(false);
+        expect(controller.state.passkeyAutoUnlockSuppressed).toStrictEqual(
+          false,
+        );
+        controller.setPasskeyAutoUnlockSuppressed(true);
+        expect(controller.state.passkeyAutoUnlockSuppressed).toStrictEqual(
+          true,
+        );
+        controller.setPasskeyAutoUnlockSuppressed(false);
+        expect(controller.state.passkeyAutoUnlockSuppressed).toStrictEqual(
+          false,
+        );
       });
     });
   });
@@ -826,6 +832,7 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "passkeyAutoUnlockSuppressed": false,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
@@ -920,6 +927,7 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "passkeyAutoUnlockSuppressed": false,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
@@ -1095,6 +1103,7 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "passkeyAutoUnlockSuppressed": false,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,

@@ -142,13 +142,6 @@ import {
 import { createEIP7702UpgradeTransaction } from '../../shared/lib/eip7702-utils';
 import { captureException } from '../../shared/lib/sentry';
 import {
-  getIsPasskeyFeatureEnabled,
-  getIsSeedlessOnboardingFeatureEnabled,
-  getEnabledAdvancedPermissions,
-  getIsPerpsIncludedInBuild,
-  getIsAssetsUnifiedStateIncludedInBuild,
-} from '../../shared/lib/environment';
-import {
   CHAIN_IDS,
   CHAIN_SPEC_URL,
   NetworkStatus,
@@ -219,6 +212,13 @@ import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
+import {
+  getIsPasskeyFeatureEnabled,
+  getIsSeedlessOnboardingFeatureEnabled,
+  getEnabledAdvancedPermissions,
+  getIsPerpsIncludedInBuild,
+  getIsAssetsUnifiedStateIncludedInBuild,
+} from '../../shared/lib/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
@@ -552,7 +552,7 @@ export default class MetamaskController extends EventEmitter {
     this.seedlessOperationMutex = new Mutex();
 
     /** @type {ReturnType<typeof setTimeout> | null} */
-    this.skipPasskeyAutoUnlockResetTimeoutId = null;
+    this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
 
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
@@ -9004,24 +9004,24 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Clears the timer that resets {@link AppStateController} `skipPasskeyAutoUnlock`.
+   * Clears the timer that resets {@link AppStateController} `passkeyAutoUnlockSuppressed`.
    */
-  clearSkipPasskeyAutoUnlockResetTimeout() {
-    if (this.skipPasskeyAutoUnlockResetTimeoutId !== null) {
-      clearTimeout(this.skipPasskeyAutoUnlockResetTimeoutId);
-      this.skipPasskeyAutoUnlockResetTimeoutId = null;
+  clearPasskeyAutoUnlockSuppressedResetTimeout() {
+    if (this.passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
+      clearTimeout(this.passkeyAutoUnlockSuppressedResetTimeoutId);
+      this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
     }
   }
 
   /**
    * After any lock, suppress auto passkey unlock briefly (cross-surface), then clear.
    */
-  scheduleSkipPasskeyAutoUnlockResetAfterLock() {
-    this.clearSkipPasskeyAutoUnlockResetTimeout();
-    this.appStateController.setSkipPasskeyAutoUnlock(true);
-    this.skipPasskeyAutoUnlockResetTimeoutId = setTimeout(() => {
-      this.skipPasskeyAutoUnlockResetTimeoutId = null;
-      this.appStateController.setSkipPasskeyAutoUnlock(false);
+  schedulePasskeyAutoUnlockSuppressedResetAfterLock() {
+    this.clearPasskeyAutoUnlockSuppressedResetTimeout();
+    this.appStateController.setPasskeyAutoUnlockSuppressed(true);
+    this.passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
+      this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
+      this.appStateController.setPasskeyAutoUnlockSuppressed(false);
     }, 3000);
   }
 
@@ -9057,7 +9057,7 @@ export default class MetamaskController extends EventEmitter {
         this.authenticationController.performSignOut();
       }
 
-      this.scheduleSkipPasskeyAutoUnlockResetAfterLock();
+      this.schedulePasskeyAutoUnlockSuppressedResetAfterLock();
     } catch (error) {
       log.error('Error setting locked state', error);
       throw error;

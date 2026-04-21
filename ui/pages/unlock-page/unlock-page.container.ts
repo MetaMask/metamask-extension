@@ -28,7 +28,7 @@ import {
   getCompletedOnboarding,
   getIsPasskeyRegistered,
   getIsWalletResetInProgress,
-  getSkipPasskeyAutoUnlock,
+  getPasskeyAutoUnlockSuppressed,
 } from '../../ducks/metamask/metamask';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
@@ -52,7 +52,7 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     isPasskeyFeatureAvailable: getIsPasskeyFeatureAvailable(state),
     firstTimeFlowType: getFirstTimeFlowType(state),
     isWalletResetInProgress: getIsWalletResetInProgress(state),
-    skipPasskeyAutoUnlock: getSkipPasskeyAutoUnlock(state),
+    passkeyAutoUnlockSuppressed: getPasskeyAutoUnlockSuppressed(state),
   };
 };
 

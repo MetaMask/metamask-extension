@@ -658,6 +658,6 @@ export function getIsPasskeyRegistered(state) {
  * @param {object} state - Redux root state
  * @returns {boolean}
  */
-export function getSkipPasskeyAutoUnlock(state) {
-  return Boolean(state.metamask.skipPasskeyAutoUnlock);
+export function getPasskeyAutoUnlockSuppressed(state) {
+  return Boolean(state.metamask.passkeyAutoUnlockSuppressed);
 }

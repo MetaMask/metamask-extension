@@ -98,7 +98,7 @@ type UnlockPageProps = {
   isWalletResetInProgress: boolean;
   isPasskeyRegistered: boolean;
   isPasskeyFeatureAvailable: boolean;
-  skipPasskeyAutoUnlock: boolean;
+  passkeyAutoUnlockSuppressed: boolean;
 };
 
 type UnlockPageState = {
@@ -225,7 +225,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     /**
      * When true, do not auto-start WebAuthn (after UI-initiated lock; background + timer).
      */
-    skipPasskeyAutoUnlock: PropTypes.bool,
+    passkeyAutoUnlockSuppressed: PropTypes.bool,
   };
 
   private isUnlockViewMounted = true;
@@ -317,12 +317,12 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
    * background requests suppression (e.g. shortly after a UI-initiated lock).
    */
   maybeAutoPasskeyUnlock() {
-    const { skipPasskeyAutoUnlock } = this.props;
+    const { passkeyAutoUnlockSuppressed } = this.props;
 
     if (!this.isPasskeyActive) {
       return;
     }
-    if (skipPasskeyAutoUnlock) {
+    if (passkeyAutoUnlockSuppressed) {
       return;
     }
     Promise.resolve().then(() => this.handlePasskeyUnlock());
@@ -357,7 +357,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     }
 
     // Auto WebAuthn when the unlock screen loads and a passkey is registered,
-    // unless background skipPasskeyAutoUnlock is set (cross-surface).
+    // unless background passkeyAutoUnlockSuppressed is set (cross-surface).
     if (this.isPasskeyActive) {
       this.maybeAutoPasskeyUnlock();
     }
