@@ -4,6 +4,11 @@ ignores:
   # webapp deps
   #
 
+  # Used by ComposableObservableStore which was removed by the MC decomposition
+  # PoC. Remove this entry and @metamask/obs-store from package.json once the
+  # branch lands and yarn.lock is regenerated.
+  - '@metamask/obs-store'
+
   - '@lavamoat/snow'
   - '@lavamoat/webpack'
   - '@lavamoat/allow-scripts'
