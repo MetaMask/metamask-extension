@@ -289,7 +289,12 @@ app/scripts/runtime-cjs.ts                            @MetaMask/extension-platfo
 app/scripts/start-with-wallet-state.mjs               @MetaMask/extension-platform
 
 # Platform - Infrastructure
+app/scripts/lib/migrator/                             @MetaMask/extension-platform
+app/scripts/lib/state-corruption/                     @MetaMask/extension-platform
+app/scripts/lib/state-utils.ts                        @MetaMask/extension-platform
+app/scripts/lib/stores/                               @MetaMask/extension-platform
 app/scripts/load/                                     @MetaMask/extension-platform
+app/scripts/migrations/                               @MetaMask/extension-platform
 app/scripts/platforms/                                @MetaMask/extension-platform
 app/scripts/streams/                                  @MetaMask/extension-platform
 
