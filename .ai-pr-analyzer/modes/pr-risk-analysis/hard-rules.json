@@ -12,19 +12,5 @@
       "risk_level": "high",
       "summary": "- More than 10 critical files changed — treat as high risk and prioritize manual review."
     }
-  },
-  {
-    "name": "controller-version-bump",
-    "description": "MetaMask controller package version changed",
-    "trigger": {
-      "file": "package.json",
-      "diffPattern": "@metamask/.*-controller"
-    },
-
-    "result": {
-      "merge_safe": false,
-      "risk_level": "high",
-      "summary": "- One or more @metamask/*-controller package versions were changed — controller upgrades can alter core behavior."
-    }
   }
 ]
