@@ -25693,7 +25693,7 @@ authors: undefined
 ******************************
 
 @metamask/perps-controller
-3.0.0 <https://github.com/MetaMask/core>
+3.1.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2026 MetaMask
@@ -26033,7 +26033,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/profile-metrics-controller
-3.0.3 <https://github.com/MetaMask/core>
+3.0.4 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -29359,7 +29359,7 @@ SOFTWARE.
 ******************************
 
 protobufjs
-7.4.0 <https://github.com/protobufjs/protobuf.js>
+7.5.5 <https://github.com/protobufjs/protobuf.js>
 This license applies to all parts of protobuf.js except those files
 either explicitly including or referencing a different license or
 located in a directory containing a different LICENSE file.

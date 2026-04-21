@@ -377,7 +377,7 @@ const PerpsWithdrawPage: React.FC = () => {
       },
       {
         label: t('perpsWithdrawEstimatedTime'),
-        value: t('perpsWithdrawMinutesApprox', [String(estimatedMinutes)]),
+        value: t('perpsWithdrawMinutesApprox', [estimatedMinutes]),
         'data-testid': 'perps-withdraw-summary-time',
       },
       {

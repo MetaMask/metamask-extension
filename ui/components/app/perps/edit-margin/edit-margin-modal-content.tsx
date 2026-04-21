@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -18,6 +17,10 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
+import {
+  formatPerpsFiat,
+  PRICE_RANGES_UNIVERSAL,
+} from '../../../../../shared/lib/perps-formatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../component-library';
 import {
@@ -26,8 +29,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import { useFormatters } from '../../../../hooks/useFormatters';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
 import {
   usePerpsEligibility,
   usePerpsEventTracking,
@@ -43,7 +44,6 @@ import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Position, AccountState, PerpsBackgroundResult } from '../types';
 import { PerpsSlider } from '../perps-slider';
 import { getDisplayName } from '../utils';
-import { formatPerpsPrice } from '../utils/formatPerpsPrice';
 
 const MARGIN_PRESETS = [25, 50, 100] as const;
 const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
@@ -96,8 +96,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   onSavingChange,
 }) => {
   const t = useI18nContext();
-  const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
-  const locale = useSelector(getIntlLocale);
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();
   const { track } = usePerpsEventTracking();
@@ -154,7 +152,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           className="max-w-[65%] flex-wrap justify-end"
         >
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {formatPerpsPrice(anchorLiquidationPrice, locale)}
+            {formatPerpsFiat(anchorLiquidationPrice, {
+              ranges: PRICE_RANGES_UNIVERSAL,
+            })}
           </Text>
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             →
@@ -163,8 +163,11 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
             variant={TextVariant.BodySm}
             color={TextColor.TextDefault}
             fontWeight={FontWeight.Medium}
+            data-testid="perps-edit-margin-liquidation-price-value"
           >
-            {formatPerpsPrice(estimatedLiquidationPrice ?? 0, locale)}
+            {formatPerpsFiat(estimatedLiquidationPrice ?? 0, {
+              ranges: PRICE_RANGES_UNIVERSAL,
+            })}
           </Text>
         </Box>
       );
@@ -174,10 +177,13 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         variant={TextVariant.BodySm}
         color={TextColor.TextDefault}
         fontWeight={FontWeight.Medium}
+        data-testid="perps-edit-margin-liquidation-price-value"
       >
-        {formatPerpsPrice(
+        {formatPerpsFiat(
           estimatedLiquidationPrice ?? anchorLiquidationPrice ?? 0,
-          locale,
+          {
+            ranges: PRICE_RANGES_UNIVERSAL,
+          },
         )}
       </Text>
     );
@@ -185,7 +191,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     anchorLiquidationPrice,
     estimatedLiquidationPrice,
     showLiquidationComparison,
-    locale,
   ]);
 
   const marginPercent = useMemo(() => {
@@ -195,6 +200,14 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     const n = Number.parseFloat(marginAmount.replaceAll(',', '')) || 0;
     return Math.min(100, Math.round((n / maxAmount) * 100));
   }, [marginAmount, maxAmount]);
+
+  const formatLiquidationDistance = useCallback((distance: number) => {
+    if (!Number.isFinite(distance)) {
+      return '-';
+    }
+    // Match mobile's adjust-margin view: liquidation distance is rounded to a whole percent.
+    return `${distance.toFixed(0)}%`;
+  }, []);
 
   const handleAmountChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -394,8 +407,11 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
           color={TextColor.TextAlternative}
+          data-testid="perps-edit-margin-available-value"
         >
-          {`${formatCurrencyWithMinThreshold(maxAmount, 'USD')} USDC`}
+          {`${formatPerpsFiat(maxAmount, {
+            ranges: PRICE_RANGES_UNIVERSAL,
+          })} USDC`}
         </Text>
       </Box>
 
@@ -484,11 +500,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
                 variant={TextVariant.BodySm}
                 color={TextColor.TextAlternative}
               >
-                {formatNumber(anchorLiquidationDistance, {
-                  minimumFractionDigits: 1,
-                  maximumFractionDigits: 1,
-                })}
-                %
+                {formatLiquidationDistance(anchorLiquidationDistance)}
               </Text>
               <Text
                 variant={TextVariant.BodySm}
@@ -500,12 +512,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
                 variant={TextVariant.BodySm}
                 color={TextColor.TextDefault}
                 fontWeight={FontWeight.Medium}
+                data-testid="perps-edit-margin-liquidation-distance-value"
               >
-                {formatNumber(estimatedLiquidationDistance, {
-                  minimumFractionDigits: 1,
-                  maximumFractionDigits: 1,
-                })}
-                %
+                {formatLiquidationDistance(estimatedLiquidationDistance)}
               </Text>
             </Box>
           ) : (
@@ -513,12 +522,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               variant={TextVariant.BodySm}
               color={TextColor.TextDefault}
               fontWeight={FontWeight.Medium}
+              data-testid="perps-edit-margin-liquidation-distance-value"
             >
-              {formatNumber(anchorLiquidationDistance, {
-                minimumFractionDigits: 1,
-                maximumFractionDigits: 1,
-              })}
-              %
+              {formatLiquidationDistance(anchorLiquidationDistance)}
             </Text>
           )}
         </Box>
