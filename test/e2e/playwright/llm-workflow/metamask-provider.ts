@@ -21,11 +21,6 @@ import {
   knowledgeStore,
   MockServerCapability,
 } from '@metamask/client-mcp-core';
-import { MetaMaskExtensionLauncher } from '.';
-import {
-  createMetaMaskE2EContext,
-  createMetaMaskProdContext,
-} from './capabilities/factory';
 import type {
   CreateMetaMaskContextOptions,
   CreateMetaMaskProdContextOptions,
@@ -34,6 +29,11 @@ import type { LauncherLaunchOptions } from './launcher-types';
 import type { AnvilSeederWrapper } from './anvil-seeder-wrapper';
 import { MetaMaskFixtureCapability } from './capabilities/fixture';
 import { MetaMaskContractSeedingCapability } from './capabilities/seeding';
+import {
+  createMetaMaskE2EContext,
+  createMetaMaskProdContext,
+} from './capabilities/factory';
+import { MetaMaskExtensionLauncher } from '.';
 
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
