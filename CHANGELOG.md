@@ -9,14 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.28.0]
 
-### Changed
-
-- Bumped `@metamask/assets-controllers` to v6.0.0 (#41818)
-- Bumped `@metamask/assets-controllers` to v5.0.0 (#41575)
-- Added hover state styles to the default address row in the account list and app header (#41766)
-- Bumped the institutional Snap to v1.5.0 (#39652)
-- Added a caching layer for Perps fills and market info (#41797)
-
 ### Added
 
 - Extended notification account toggles to all wallet keyrings (#40762)
@@ -32,6 +24,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Wired up Sentry events for Perps (#41528)
 - Added percentage input to the mUSD conversion flow (#41624)
 - Added validation when TP/SL triggers are set on the wrong side of the market price (#41615)
+
+### Changed
+
+- Bumped `@metamask/assets-controllers` to v6.0.0 (#41818)
+- Bumped `@metamask/assets-controllers` to v5.0.0 (#41575)
+- Added hover state styles to the default address row in the account list and app header (#41766)
+- Bumped the institutional Snap to v1.5.0 (#39652)
+- Added a caching layer for Perps fills and market info (#41797)
 
 ### Fixed
 
