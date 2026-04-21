@@ -1,0 +1,92 @@
+name: Sync agent skills from upstream
+
+# Runs `scripts/skills-sync.sh` to refresh `.agents/skills/`, `.claude/skills/`,
+# and `.cursor/rules/` from the upstream skills repo configured in
+# `.skills/CONFIG`. Opens (or updates) a single PR on a stable branch so
+# Cursor BugBot and other agents see new skills after merge.
+#
+# Triggered:
+#   - Weekly schedule (Mondays 08:00 UTC) as a safety net
+#   - `workflow_dispatch`, including the automatic dispatch from
+#     `skills-remember.yml` when a direct-tier capture lands upstream
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8 * * 1'
+
+concurrency:
+  group: skills-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    environment: default-branch
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout default branch
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PR_TOKEN }}
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Run `scripts/skills-sync.sh`
+        run: bash scripts/skills-sync.sh
+
+      - name: Detect skill changes
+        id: diff
+        run: |
+          if git diff --quiet -- .agents .claude .cursor .skills; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git diff --stat -- .agents .claude .cursor .skills
+          fi
+
+      - name: Open or update skills-sync PR
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.PR_TOKEN }}
+        run: |
+          set -euo pipefail
+          BRANCH="skills-sync/auto"
+
+          git config user.name  "metamaskbot"
+          git config user.email "metamaskbot@users.noreply.github.com"
+          git switch -C "$BRANCH"
+          git add .agents .claude .cursor .skills/VERSION
+          git commit -m "Sync agent skills from upstream"
+
+          EXISTING=$(gh pr list \
+            --repo "${GITHUB_REPOSITORY}" \
+            --head "${BRANCH}" \
+            --state open \
+            --json number \
+            --jq '.[0].number // ""')
+
+          if [[ -n "$EXISTING" ]]; then
+            git push --force-with-lease origin "$BRANCH"
+            echo "Refreshed existing PR #${EXISTING} on \`${BRANCH}\`."
+          else
+            git push --force origin "$BRANCH"
+            SYNCED_REF=$(grep '^synced_ref=' .skills/VERSION | cut -d= -f2-)
+            SYNCED_SHA=$(grep '^synced_sha=' .skills/VERSION | cut -d= -f2-)
+            {
+              printf 'Refreshes agent skills from the upstream configured in `.skills/CONFIG`.\n\n'
+              printf -- '- **Ref:** `%s`\n'  "$SYNCED_REF"
+              printf -- '- **SHA:** `%s`\n'  "$SYNCED_SHA"
+              printf '\nMerging this PR propagates new skills into `.cursor/rules/`, where Cursor BugBot picks them up on subsequent reviews.\n'
+            } > "${RUNNER_TEMP}/pr-body.md"
+
+            gh pr create \
+              --repo "${GITHUB_REPOSITORY}" \
+              --head "${BRANCH}" \
+              --base "${{ github.event.repository.default_branch }}" \
+              --title "Sync agent skills from upstream" \
+              --body-file "${RUNNER_TEMP}/pr-body.md" \
+              --label skills-sync
+          fi

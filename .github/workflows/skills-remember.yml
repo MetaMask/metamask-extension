@@ -39,6 +39,7 @@ jobs:
     permissions:
       issues: write
       pull-requests: write
+      actions: write
     steps:
       - name: Parse capture text from comment body
         id: parse
@@ -137,6 +138,18 @@ jobs:
           echo "sha=$CAPTURE_SHA"   >> "$GITHUB_OUTPUT"
           echo "url=$CAPTURE_URL"   >> "$GITHUB_OUTPUT"
           echo "slug=$CAPTURE_SLUG" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger `skills-sync` to propagate new skill to consumer repos
+        if: steps.capture-direct.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run skills-sync.yml \
+            --repo "${GITHUB_REPOSITORY}" \
+            --ref  "${{ github.event.repository.default_branch }}" || {
+              echo "::warning::Failed to dispatch skills-sync — will be picked up by the next scheduled run."
+            }
 
       - name: Capture — branch and open PR
         if: steps.trust.outputs.tier == 'pr'
