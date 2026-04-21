@@ -68,27 +68,40 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
    *
    * @param method - Background API method to invoke. `getGeolocation`
    * respects the controller's cache; `refreshGeolocation` bypasses it.
+   * @param options.isCancelled - When this returns true, state updates are
+   * skipped (e.g. after the hook unmounts while the request is in flight).
    */
   const fetchGeolocation = useCallback(
     async (
       method: 'getGeolocation' | 'refreshGeolocation',
+      options?: { isCancelled?: () => boolean },
     ): Promise<string | null> => {
-      setIsLoading(true);
-      setError(null);
+      const shouldCommit = () => !options?.isCancelled?.();
+
+      if (shouldCommit()) {
+        setIsLoading(true);
+        setError(null);
+      }
 
       try {
         const location = await submitRequestToBackground<string>(method);
         const resolved = location === UNKNOWN_LOCATION ? null : location;
-        setUserCountry(resolved);
+        if (shouldCommit()) {
+          setUserCountry(resolved);
+        }
         return resolved;
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'Failed to fetch geolocation';
-        setError(errorMessage);
-        setUserCountry(null);
+        if (shouldCommit()) {
+          setError(errorMessage);
+          setUserCountry(null);
+        }
         return null;
       } finally {
-        setIsLoading(false);
+        if (shouldCommit()) {
+          setIsLoading(false);
+        }
       }
     },
     [],
@@ -99,32 +112,14 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
   useEffect(() => {
     let cancelled = false;
 
-    (async () => {
-      try {
-        const location =
-          await submitRequestToBackground<string>('getGeolocation');
-        if (cancelled) {
-          return;
-        }
-        setUserCountry(location === UNKNOWN_LOCATION ? null : location);
-      } catch (err) {
-        if (cancelled) {
-          return;
-        }
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to fetch geolocation';
-        setError(errorMessage);
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      }
-    })();
+    void fetchGeolocation('getGeolocation', {
+      isCancelled: () => cancelled,
+    });
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [fetchGeolocation]);
 
   const refreshGeolocation = useCallback(async (): Promise<void> => {
     await fetchGeolocation('refreshGeolocation');
