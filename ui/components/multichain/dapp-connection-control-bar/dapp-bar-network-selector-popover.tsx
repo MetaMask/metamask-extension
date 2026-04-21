@@ -1,10 +1,6 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  type CaipChainId,
-  type Hex,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
 import {
   type MultichainNetworkConfiguration,
   NON_EVM_TESTNET_IDS,
@@ -77,6 +73,13 @@ const POPOVER_WIDTH = 280;
  * Inline popover anchored to the Dapp Connection Control Bar's network
  * selector. Lists the user's enabled EVM networks and switches the dapp's
  * active network on selection, preserving per-origin permissions behavior.
+ *
+ * @param props - The component props.
+ * @param props.referenceElement - The DOM element the popover anchors to
+ * (typically the network button in the Dapp Connection Control Bar).
+ * @param props.isOpen - Whether the popover is currently open.
+ * @param props.onClose - Callback fired when the popover should close
+ * (click-outside, Esc key, or after a network is selected).
  */
 export const DappBarNetworkSelectorPopover: React.FC<
   DappBarNetworkSelectorPopoverProps
@@ -148,35 +151,32 @@ export const DappBarNetworkSelectorPopover: React.FC<
     return orderedNetworks;
   }, [orderedNetworks, testEvmNetworks, showTestnets, currentlyOnTestnet]);
 
-  const isSameChain = useCallback(
-    (a?: string, b?: string) => {
-      if (!a || !b) {
-        return false;
-      }
-      if (a === b) {
-        return true;
-      }
-      // Handle cases where one side is CAIP (eip155:1) and the other is hex (0x1).
-      try {
-        const normalize = (chainId: string) => {
-          if (chainId.startsWith('0x')) {
-            return chainId.toLowerCase();
-          }
-          const { namespace, reference } = parseCaipChainId(
-            chainId as CaipChainId,
-          );
-          if (namespace !== 'eip155') {
-            return chainId;
-          }
-          return `0x${parseInt(reference, 10).toString(16)}`;
-        };
-        return normalize(a) === normalize(b);
-      } catch {
-        return false;
-      }
-    },
-    [],
-  );
+  const isSameChain = useCallback((a?: string, b?: string) => {
+    if (!a || !b) {
+      return false;
+    }
+    if (a === b) {
+      return true;
+    }
+    // Handle cases where one side is CAIP (eip155:1) and the other is hex (0x1).
+    try {
+      const normalize = (chainId: string) => {
+        if (chainId.startsWith('0x')) {
+          return chainId.toLowerCase();
+        }
+        const { namespace, reference } = parseCaipChainId(
+          chainId as CaipChainId,
+        );
+        if (namespace !== 'eip155') {
+          return chainId;
+        }
+        return `0x${parseInt(reference, 10).toString(16)}`;
+      };
+      return normalize(a) === normalize(b);
+    } catch {
+      return false;
+    }
+  }, []);
 
   const handleSelectNetwork = useCallback(
     async (network: MultichainNetworkConfiguration) => {
@@ -315,7 +315,7 @@ export const DappBarNetworkSelectorPopover: React.FC<
                 ) : undefined
               }
               onClick={() => {
-                void handleSelectNetwork(network);
+                handleSelectNetwork(network);
               }}
             />
           );

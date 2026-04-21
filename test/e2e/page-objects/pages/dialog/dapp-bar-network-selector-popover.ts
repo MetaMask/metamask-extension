@@ -8,7 +8,8 @@ import { Driver } from '../../../webdriver/driver';
 class DappBarNetworkSelectorPopover {
   private driver: Driver;
 
-  private readonly popover = '[data-testid="dapp-bar-network-selector-popover"]';
+  private readonly popover =
+    '[data-testid="dapp-bar-network-selector-popover"]';
 
   private readonly popoverList =
     '[data-testid="dapp-bar-network-selector-popover__list"]';
