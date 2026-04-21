@@ -36,6 +36,11 @@ package
 .cursor/cache/
 .cursor/logs/
 
+# Agent scratch dirs and local overrides
+.task/
+.agent/
+CLAUDE.local.md
+
 *.bak
 
 # VIM
