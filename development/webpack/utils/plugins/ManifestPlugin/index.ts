@@ -279,35 +279,33 @@ export class ManifestPlugin<Z extends boolean> {
     const assetSizeMap = new Map<string, number>();
     const debugEntrypoints: Record<string, BundleSizeDebugEntrypoint> = {};
 
-    Array.from(compilation.entrypoints)
-      .toSorted(([left], [right]) => left.localeCompare(right))
-      .forEach(([name, entrypoint]) => {
-        const category = statsOptions.classifyEntrypoint(name);
+    Array.from(compilation.entrypoints).forEach(([name, entrypoint]) => {
+      const category = statsOptions.classifyEntrypoint(name);
 
-        if (!category) {
-          return;
-        }
+      if (!category) {
+        return;
+      }
 
-        const files = getEntrypointAssets(
-          compilation,
-          entrypoint,
-          this.options.browsers,
-        );
+      const files = getEntrypointAssets(
+        compilation,
+        entrypoint,
+        this.options.browsers,
+      );
 
-        if (files.initialFiles.length === 0 && files.asyncFiles.length === 0) {
-          return;
-        }
+      if (files.initialFiles.length === 0 && files.asyncFiles.length === 0) {
+        return;
+      }
 
-        debugEntrypoints[name] = {
-          category,
-          ...files,
-        };
+      debugEntrypoints[name] = {
+        category,
+        ...files,
+      };
 
-        for (const file of [...files.initialFiles, ...files.asyncFiles]) {
-          categoryAssets[category].add(file.name);
-          assetSizeMap.set(file.name, file.size);
-        }
-      });
+      for (const file of [...files.initialFiles, ...files.asyncFiles]) {
+        categoryAssets[category].add(file.name);
+        assetSizeMap.set(file.name, file.size);
+      }
+    });
 
     const commonAssets = getSetDifference(
       getSetIntersection(categoryAssets.background, categoryAssets.ui),
