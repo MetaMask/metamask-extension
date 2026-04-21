@@ -40,12 +40,12 @@ npx mm cleanup --shutdown  # Stop browser + daemon
 
 ## 3. What changed
 
-| Before (MCP)                                         | After (CLI)                                   |
-| ---------------------------------------------------- | --------------------------------------------- |
-| MCP server over stdio                                | HTTP daemon + CLI                             |
-| Configured in `claude_desktop_config.json` / Cursor  | No configuration needed                       |
-| Tool names: `mm_launch`, `mm_click`, `mm_type`       | CLI commands: `mm launch`, `mm click`, `mm type` |
-| Always-on subprocess                                 | Auto-starts on `mm launch`, idle timeout 30m  |
-| Required `tsx` to run the server entry point         | `npx mm` (project dependency)                 |
+| Before (MCP)                                        | After (CLI)                                      |
+| --------------------------------------------------- | ------------------------------------------------ |
+| MCP server over stdio                               | HTTP daemon + CLI                                |
+| Configured in `claude_desktop_config.json` / Cursor | No configuration needed                          |
+| Tool names: `mm_launch`, `mm_click`, `mm_type`      | CLI commands: `mm launch`, `mm click`, `mm type` |
+| Always-on subprocess                                | Auto-starts on `mm launch`, idle timeout 30m     |
+| Required `tsx` to run the server entry point        | `npx mm` (project dependency)                    |
 
 For the full command reference, see the [SKILL.md](/.claude/skills/metamask-visual-testing/SKILL.md) or the [README](./README.md).
