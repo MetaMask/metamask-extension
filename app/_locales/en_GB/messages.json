@@ -6092,6 +6092,9 @@
   "perpsTrades": {
     "message": "Trades"
   },
+  "perpsTriggerPrice": {
+    "message": "Trigger price"
+  },
   "perpsTutorialChooseLeverageDescription": {
     "message": "Leverage amplifies both gains and losses. With 40x leverage, a 1% price move equals a 40% gain or loss on your margin."
   },

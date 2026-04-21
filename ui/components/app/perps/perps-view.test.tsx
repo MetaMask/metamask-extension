@@ -177,6 +177,15 @@ describe('PerpsView', () => {
       expect(screen.getByTestId('order-card-order-001')).toBeInTheDocument();
     });
 
+    it('filters TP/SL trigger orders from Open orders on the Perps tab', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('order-card-order-001')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('order-card-order-004'),
+      ).not.toBeInTheDocument();
+    });
+
     it('displays position section header', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
