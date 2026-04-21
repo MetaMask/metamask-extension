@@ -10,6 +10,11 @@ SEEDLESS_ONBOARDING_ENABLED='false'
 ; Set this to `true` to enable Metamask Shield
 METAMASK_SHIELD_ENABLED='false'
 
+; Set this to `true` to force enforced simulations to apply whenever a
+; transaction has balance changes, bypassing the trust signal check.
+; Intended for local development and QA only.
+;FORCE_ENABLE_SIMULATIONS='true'
+
 ; Set to `true` to include PerpsController and perps features.
 ; main and experimental builds have this enabled by default; beta and flask do not.
 PERPS_ENABLED='true'

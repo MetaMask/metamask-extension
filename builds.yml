@@ -433,6 +433,11 @@ env:
   # Enforce simulation balance changes by converting external transactions to delegations.
   - ENABLE_ENFORCED_SIMULATIONS: false
 
+  # Force enforced simulations to apply whenever a transaction has balance
+  # changes, bypassing the trust signal check. Intended for local
+  # development and QA only; must remain false for production builds.
+  - FORCE_ENABLE_SIMULATIONS: false
+
   # OAuth (Social login)
   - GOOGLE_CLIENT_ID_REF
   - APPLE_CLIENT_ID_REF
