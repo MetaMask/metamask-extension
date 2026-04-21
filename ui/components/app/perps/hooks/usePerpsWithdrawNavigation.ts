@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { getSelectedInternalAccount } from '../../../../selectors';
 import { PERPS_WITHDRAW_ROUTE } from '../../../../helpers/constants/routes';
+import { getRemoteFeatureFlags } from '../../../../selectors/remote-feature-flags';
+import { usePerpsWithdrawConfirmation } from './usePerpsWithdrawConfirmation';
 
 export type PerpsWithdrawNavigationResponse = {
   /** Route opened (or that would be opened) for the withdraw flow */
@@ -39,9 +41,21 @@ export function usePerpsWithdrawNavigation(
   const { navigateOnTrigger = true, onNavigated } = options;
   const navigate = useNavigate();
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const [isLoading, setIsLoading] = useState(false);
 
   const isInFlightRef = useRef(false);
+
+  const { trigger: triggerWithdrawConfirmation } = usePerpsWithdrawConfirmation(
+    { navigateOnCreate: navigateOnTrigger },
+  );
+
+  // Remote feature flag that gates the new Perps Withdraw confirmation flow
+  // (mm-pay + custom amount + HyperLiquid -> Relay). When disabled, the legacy
+  // standalone `/perps/withdraw` page is used as before.
+  const useConfirmationFlow = Boolean(
+    remoteFeatureFlags?.perpsWithdrawConfirmation,
+  );
 
   const trigger = useCallback(async () => {
     if (isInFlightRef.current || isLoading) {
@@ -57,6 +71,15 @@ export function usePerpsWithdrawNavigation(
     setIsLoading(true);
 
     try {
+      if (useConfirmationFlow) {
+        const result = await triggerWithdrawConfirmation();
+        if (!result) {
+          return null;
+        }
+        onNavigated?.(`${PERPS_WITHDRAW_ROUTE}#confirmation`);
+        return { route: `${PERPS_WITHDRAW_ROUTE}#confirmation` };
+      }
+
       if (navigateOnTrigger) {
         navigate(PERPS_WITHDRAW_ROUTE);
       }
@@ -77,6 +100,8 @@ export function usePerpsWithdrawNavigation(
     navigateOnTrigger,
     onNavigated,
     selectedAccount?.address,
+    triggerWithdrawConfirmation,
+    useConfirmationFlow,
   ]);
 
   return {
