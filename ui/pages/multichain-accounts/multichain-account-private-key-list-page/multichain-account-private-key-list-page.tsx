@@ -6,6 +6,8 @@ import {
   type Location as RouterLocation,
 } from 'react-router-dom';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   BoxFlexDirection,
   ButtonIcon,
@@ -25,8 +27,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainPrivateKeyList } from '../../../components/multichain-accounts/multichain-private-key-list';
 import {
-  BannerAlert,
-  BannerAlertSeverity,
   ButtonLink,
   ButtonLinkSize,
 } from '../../../components/component-library';
