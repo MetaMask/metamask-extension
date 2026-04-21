@@ -188,6 +188,8 @@ let notificationIsOpen = false;
 let uiIsTriggering = false;
 let openSidePanelCount = 0;
 let failedTxCount = 0;
+let hasDeferredFailureNotification = false;
+let lastFailedNonce;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -1703,6 +1705,7 @@ export function setupController(
 
         finished(portStream, () => {
           notificationIsOpen = false;
+          flushDeferredNotificationFailures();
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
           onCloseEnvironmentInstances(
@@ -1713,6 +1716,7 @@ export function setupController(
       }
 
       if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
+        clearFailedTxBadge();
         const tabId = remotePort.sender.tab.id;
         openMetamaskTabsIDs[tabId] = true;
 
@@ -1871,13 +1875,13 @@ export function setupController(
   );
 
   controller.controllerMessenger.subscribe(
-    'TransactionController:transactionFailed',
-    onTransactionFailed,
-  );
-
-  controller.controllerMessenger.subscribe(
-    'TransactionController:transactionDropped',
-    onTransactionFailed,
+    'TransactionController:transactionStatusUpdated',
+    ({ transactionMeta }) => {
+      const { status, txParams } = transactionMeta ?? {};
+      if (status === 'failed' || status === 'dropped') {
+        onTransactionFailed({ txParams });
+      }
+    },
   );
 
   function setClientOpenOptions(tab) {
@@ -1896,8 +1900,29 @@ export function setupController(
     }
   }
 
-  function onTransactionFailed() {
-    if (isClientOpenStatus()) {
+  function onTransactionFailed({ txParams }) {
+    const { nonce } = txParams ?? {};
+    if (nonce !== undefined && nonce === lastFailedNonce) {
+      return;
+    }
+    lastFailedNonce = nonce;
+
+    const onlyNotificationOpen =
+      notificationIsOpen &&
+      openPopupCount === 0 &&
+      openSidePanelCount === 0 &&
+      Object.keys(openMetamaskTabsIDs).length === 0;
+
+    const isClientOpen = isClientOpenStatus();
+
+    if (onlyNotificationOpen) {
+      // Defer showing the badge until the notification closes
+      failedTxCount += 1;
+      hasDeferredFailureNotification = true;
+      return;
+    }
+
+    if (isClientOpen) {
       return;
     }
 
@@ -1906,11 +1931,22 @@ export function setupController(
     updateBadge();
   }
 
+  function flushDeferredNotificationFailures() {
+    if (!hasDeferredFailureNotification) {
+      return;
+    }
+    hasDeferredFailureNotification = false;
+    setClientOpenOptions('activity');
+    updateBadge();
+  }
+
   function clearFailedTxBadge() {
-    if (!failedTxCount) {
+    lastFailedNonce = undefined;
+    if (failedTxCount <= 0) {
       return;
     }
 
+    hasDeferredFailureNotification = false;
     failedTxCount = 0;
     setClientOpenOptions();
     updateBadge();
@@ -1929,7 +1965,8 @@ export function setupController(
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
-   * The number reflects the current number of pending transactions or message signatures needing user approval.
+   * Failed transactions take priority and show a red count badge.
+   * Pending approvals show the standard blue count badge.
    */
   function updateBadge() {
     const pendingApprovalCount = getPendingApprovalCount();
@@ -1937,11 +1974,11 @@ export function setupController(
     let label = '';
     let badgeColor = BADGE_COLOR_APPROVAL;
 
-    if (pendingApprovalCount) {
-      label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
-    } else if (failedTxCount) {
+    if (failedTxCount > 0) {
       label = getBadgeLabel(failedTxCount, BADGE_MAX_COUNT);
       badgeColor = BADGE_COLOR_FAILED;
+    } else if (pendingApprovalCount > 0) {
+      label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
     }
 
     try {
