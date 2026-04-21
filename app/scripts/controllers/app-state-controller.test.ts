@@ -199,6 +199,36 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setLastVisitedPerpsRoute', () => {
+    it('stores the path and the current timestamp', async () => {
+      await withController(({ controller }) => {
+        const before = Date.now();
+        controller.setLastVisitedPerpsRoute('/perps/market/BTC');
+        const after = Date.now();
+
+        expect(controller.state.lastVisitedPerpsRoute).not.toBeNull();
+        expect(controller.state.lastVisitedPerpsRoute?.path).toBe(
+          '/perps/market/BTC',
+        );
+        const { timestamp } = controller.state.lastVisitedPerpsRoute ?? {
+          timestamp: 0,
+        };
+        expect(timestamp).toBeGreaterThanOrEqual(before);
+        expect(timestamp).toBeLessThanOrEqual(after);
+      });
+    });
+
+    it('clears the stored route when passed null', async () => {
+      await withController(({ controller }) => {
+        controller.setLastVisitedPerpsRoute('/perps/trade/ETH');
+        expect(controller.state.lastVisitedPerpsRoute).not.toBeNull();
+
+        controller.setLastVisitedPerpsRoute(null);
+        expect(controller.state.lastVisitedPerpsRoute).toBeNull();
+      });
+    });
+  });
+
   describe('setConnectedStatusPopoverHasBeenShown', () => {
     it('sets connected status popover as shown', async () => {
       await withController(({ controller }) => {
@@ -805,6 +835,7 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "lastVisitedPerpsRoute": null,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -899,6 +930,7 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "lastVisitedPerpsRoute": null,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -988,6 +1020,7 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "lastVisitedPerpsRoute": null,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1072,6 +1105,7 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "lastVisitedPerpsRoute": null,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "networkConnectionBanner": {

@@ -91,6 +91,11 @@ function buildDefaultProps(overrides: Record<string, unknown> = {}) {
     clearPendingRedirectRoute: jest.fn(),
     redirectAfterDefaultPage: null,
     clearRedirectAfterDefaultPage: jest.fn(),
+    lastVisitedPerpsRoute: null as {
+      path: string;
+      timestamp: number;
+    } | null,
+    clearLastVisitedPerpsRoute: jest.fn(),
     ...overrides,
   };
 }
@@ -208,5 +213,71 @@ describe('Home — checkPendingRedirectRoute', () => {
       path: '/shield-plan',
     });
     expect(clearPendingRedirectRoute).toHaveBeenCalled();
+  });
+});
+
+describe('Home — checkLastVisitedPerpsRoute', () => {
+  const FRESH_ENOUGH_OFFSET_MS = 60_000;
+  const TTL_MS = 5 * 60_000;
+
+  it('does nothing when lastVisitedPerpsRoute is null', () => {
+    const { props } = renderHome({ lastVisitedPerpsRoute: null });
+
+    expect(props.setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+    expect(props.clearLastVisitedPerpsRoute).not.toHaveBeenCalled();
+  });
+
+  it('redirects to the persisted perps path when within the TTL', () => {
+    const { props } = renderHome({
+      lastVisitedPerpsRoute: {
+        path: '/perps/market/BTC',
+        timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
+      },
+    });
+
+    expect(props.setRedirectAfterDefaultPage).toHaveBeenCalledWith({
+      path: '/perps/market/BTC',
+    });
+    expect(props.clearLastVisitedPerpsRoute).toHaveBeenCalled();
+  });
+
+  it('does not redirect but still clears when TTL has expired', () => {
+    const { props } = renderHome({
+      lastVisitedPerpsRoute: {
+        path: '/perps/market/BTC',
+        timestamp: Date.now() - (TTL_MS + 1_000),
+      },
+    });
+
+    expect(props.setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+    expect(props.clearLastVisitedPerpsRoute).toHaveBeenCalled();
+  });
+
+  it('ignores persisted path that does not start with /perps', () => {
+    const { props } = renderHome({
+      lastVisitedPerpsRoute: {
+        path: '/settings',
+        timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
+      },
+    });
+
+    expect(props.setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+    expect(props.clearLastVisitedPerpsRoute).toHaveBeenCalled();
+  });
+
+  it('defers to pendingRedirectRoute when both are set', () => {
+    const { props } = renderHome({
+      pendingRedirectRoute: { path: '/shield-plan' },
+      lastVisitedPerpsRoute: {
+        path: '/perps/market/BTC',
+        timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
+      },
+    });
+
+    expect(props.setRedirectAfterDefaultPage).toHaveBeenCalledWith({
+      path: '/shield-plan',
+    });
+    expect(props.setRedirectAfterDefaultPage).toHaveBeenCalledTimes(1);
+    expect(props.clearLastVisitedPerpsRoute).not.toHaveBeenCalled();
   });
 });

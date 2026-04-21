@@ -3945,6 +3945,16 @@ export function getPendingRedirectRoute(state) {
 }
 
 /**
+ * Get the last visited Perps route and the timestamp it was recorded.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state
+ * @returns {{ path: string, timestamp: number } | null} The last visited Perps route, or null if none.
+ */
+export function getLastVisitedPerpsRoute(state) {
+  return state.metamask?.lastVisitedPerpsRoute ?? null;
+}
+
+/**
  * Retrieves the deferred deep link from the MetaMask state.
  *
  * @param {MetaMaskReduxState} state - The Redux state object.

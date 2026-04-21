@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { PerpsToastProvider } from '../../components/app/perps';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
 import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { setLastVisitedPerpsRoute } from '../../store/actions';
 
 const MIN_HIDDEN_DURATION_MS = 30_000;
 
@@ -21,6 +22,25 @@ const MIN_HIDDEN_DURATION_MS = 30_000;
 export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
   usePerpsLifecycleBreadcrumbs();
+
+  const { pathname, search } = useLocation();
+
+  // Persist the active Perps path so that closing and reopening the extension
+  // within PERPS_REOPEN_TTL_MS returns the user to this screen instead of the
+  // wallet home. The cleanup clears the entry on intentional in-app navigation
+  // out of Perps; a popup close kills the page before cleanup fires, so the
+  // persisted value survives and home mount picks it up.
+  useEffect(() => {
+    const fullPath = search ? `${pathname}${search}` : pathname;
+    setLastVisitedPerpsRoute(fullPath).catch(() => {
+      // fire-and-forget — persistence failure should not break Perps
+    });
+    return () => {
+      setLastVisitedPerpsRoute(null).catch(() => {
+        // fire-and-forget
+      });
+    };
+  }, [pathname, search]);
 
   // Nudge background perps WebSocket health when the tab becomes visible after
   // being hidden for a while. Offline→online is handled in PerpsStreamBridge.

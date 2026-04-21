@@ -157,6 +157,13 @@ export type AppStateControllerState = {
    * If this is set, next time default page is loaded, the redirect will be applied.
    */
   pendingRedirectRoute: PendingRedirectRoute | null;
+  /**
+   * The last visited Perps route together with the timestamp it was recorded.
+   * Used to resume the Perps session when the user briefly closes and reopens
+   * the extension within {@link PERPS_REOPEN_TTL_MS}. Cleared when the user
+   * navigates out of Perps in-app.
+   */
+  lastVisitedPerpsRoute: { path: string; timestamp: number } | null;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
@@ -316,6 +323,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   musdConversionDismissedCtaKeys: [],
   showShieldEntryModalOnce: null,
   pendingRedirectRoute: null,
+  lastVisitedPerpsRoute: null,
   pendingShieldCohort: null,
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
@@ -670,6 +678,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  lastVisitedPerpsRoute: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   pendingShieldCohort: {
     includeInStateLogs: true,
     persist: true,
@@ -759,6 +773,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setLastUpdatedAt',
   'setLastUpdatedFromVersion',
   'setLastViewedUserSurvey',
+  'setLastVisitedPerpsRoute',
   'setMusdConversionEducationSeen',
   'setNewPrivacyPolicyToastClickedOrClosed',
   'setNewPrivacyPolicyToastShownDate',
@@ -1739,6 +1754,22 @@ export class AppStateController extends BaseController<
   setPendingRedirectRoute(route: PendingRedirectRoute | null): void {
     this.update((state) => {
       state.pendingRedirectRoute = route;
+    });
+  }
+
+  /**
+   * Records the last visited Perps route with the current timestamp, or
+   * clears it. The UI reads this on home page mount to resume a recent
+   * Perps session if the user reopens the extension within
+   * {@link PERPS_REOPEN_TTL_MS}.
+   *
+   * @param path - The perps route path to persist, or `null` to clear.
+   */
+  setLastVisitedPerpsRoute(path: string | null): void {
+    this.update((state) => {
+      state.lastVisitedPerpsRoute = path
+        ? { path, timestamp: Date.now() }
+        : null;
     });
   }
 

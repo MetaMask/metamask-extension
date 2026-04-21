@@ -4320,6 +4320,16 @@ export async function setDefaultHomeActiveTabName(
   }
 }
 
+export async function setLastVisitedPerpsRoute(
+  path: string | null,
+): Promise<void> {
+  try {
+    await submitRequestToBackground('setLastVisitedPerpsRoute', [path]);
+  } catch {
+    // noop
+  }
+}
+
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
   return setPreference('showNativeTokenAsMainBalance', value);
 }

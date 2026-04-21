@@ -520,6 +520,19 @@ export type AppStateControllerSetPendingRedirectRouteAction = {
   handler: AppStateController['setPendingRedirectRoute'];
 };
 
+/**
+ * Records the last visited Perps route with the current timestamp, or
+ * clears it. The UI reads this on home page mount to resume a recent
+ * Perps session if the user reopens the extension within
+ * {@link PERPS_REOPEN_TTL_MS}.
+ *
+ * @param path - The perps route path to persist, or `null` to clear.
+ */
+export type AppStateControllerSetLastVisitedPerpsRouteAction = {
+  type: `AppStateController:setLastVisitedPerpsRoute`;
+  handler: AppStateController['setLastVisitedPerpsRoute'];
+};
+
 export type AppStateControllerSetPendingShieldCohortAction = {
   type: `AppStateController:setPendingShieldCohort`;
   handler: AppStateController['setPendingShieldCohort'];
@@ -660,6 +673,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerClearAppActiveTabAction
   | AppStateControllerSetShowShieldEntryModalOnceAction
   | AppStateControllerSetPendingRedirectRouteAction
+  | AppStateControllerSetLastVisitedPerpsRouteAction
   | AppStateControllerSetPendingShieldCohortAction
   | AppStateControllerSetCanTrackWalletFundsObtainedAction
   | AppStateControllerSetIsWalletResetInProgressAction

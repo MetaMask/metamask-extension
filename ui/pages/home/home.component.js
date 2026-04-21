@@ -50,6 +50,8 @@ import {
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
+  PERPS_ROUTE,
+  PERPS_REOPEN_TTL_MS,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
@@ -160,6 +162,11 @@ export default class Home extends PureComponent {
     envType: PropTypes.string,
     pendingRedirectRoute: PropTypes.object,
     clearPendingRedirectRoute: PropTypes.func,
+    lastVisitedPerpsRoute: PropTypes.shape({
+      path: PropTypes.string.isRequired,
+      timestamp: PropTypes.number.isRequired,
+    }),
+    clearLastVisitedPerpsRoute: PropTypes.func,
   };
 
   state = {
@@ -231,10 +238,41 @@ export default class Home extends PureComponent {
     }
   }
 
+  /**
+   * Resume a recent Perps session if the user reopened the extension within
+   * {@link PERPS_REOPEN_TTL_MS}. Explicit `pendingRedirectRoute` always wins
+   * to avoid overriding a route set by a background flow. The persisted entry
+   * is cleared after inspection so it never hijacks a later home mount.
+   */
+  checkLastVisitedPerpsRoute() {
+    const {
+      lastVisitedPerpsRoute,
+      pendingRedirectRoute,
+      setRedirectAfterDefaultPage,
+      clearLastVisitedPerpsRoute,
+    } = this.props;
+
+    if (pendingRedirectRoute || !lastVisitedPerpsRoute) {
+      return;
+    }
+
+    const { path, timestamp } = lastVisitedPerpsRoute;
+    const isFresh = Date.now() - timestamp < PERPS_REOPEN_TTL_MS;
+    const isPerpsPath =
+      typeof path === 'string' && path.startsWith(PERPS_ROUTE);
+
+    if (isFresh && isPerpsPath) {
+      setRedirectAfterDefaultPage({ path });
+    }
+
+    clearLastVisitedPerpsRoute?.();
+  }
+
   componentDidMount() {
     this.props.fetchBuyableChains();
 
     this.checkPendingRedirectRoute();
+    this.checkLastVisitedPerpsRoute();
     this.checkRedirectAfterDefaultPage();
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
@@ -310,6 +348,11 @@ export default class Home extends PureComponent {
     // Only process pendingRedirectRoute when the prop first transitions from null to non-null
     if (this.props.pendingRedirectRoute && !prevProps.pendingRedirectRoute) {
       this.checkPendingRedirectRoute();
+    }
+
+    // Same one-shot pattern: only react when lastVisitedPerpsRoute hydrates from null to a value.
+    if (this.props.lastVisitedPerpsRoute && !prevProps.lastVisitedPerpsRoute) {
+      this.checkLastVisitedPerpsRoute();
     }
 
     // clearRedirectAfterDefaultPage is a synchronous Redux action, so the guard condition flips before the next render.

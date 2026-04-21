@@ -85,18 +85,67 @@ describe('PerpsLayout', () => {
   it('signals perpsViewActive on mount and unmount', () => {
     const { unmount } = renderWithProvider(<PerpsLayout />, store);
 
-    expect(mockSubmitRequestToBackground).toHaveBeenNthCalledWith(
-      1,
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsViewActive',
       [true],
     );
 
     unmount();
 
-    expect(mockSubmitRequestToBackground).toHaveBeenNthCalledWith(
-      2,
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsViewActive',
       [false],
     );
+  });
+
+  it('persists the active perps path on mount and clears it on unmount', () => {
+    const { unmount } = renderWithProvider(
+      <PerpsLayout />,
+      store,
+      '/perps/market/BTC',
+    );
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'setLastVisitedPerpsRoute',
+      ['/perps/market/BTC'],
+    );
+
+    unmount();
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'setLastVisitedPerpsRoute',
+      [null],
+    );
+  });
+
+  it('includes the search query when persisting the path', () => {
+    renderWithProvider(
+      <PerpsLayout />,
+      store,
+      '/perps/market/BTC?source=toast',
+    );
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'setLastVisitedPerpsRoute',
+      ['/perps/market/BTC?source=toast'],
+    );
+  });
+
+  it('does not fail when the background rejects setLastVisitedPerpsRoute', () => {
+    mockSubmitRequestToBackground.mockImplementation((method: string) => {
+      if (method === 'setLastVisitedPerpsRoute') {
+        return Promise.reject(new Error('boom'));
+      }
+      return Promise.resolve(undefined);
+    });
+
+    expect(() => {
+      const { unmount } = renderWithProvider(
+        <PerpsLayout />,
+        store,
+        '/perps/market/BTC',
+      );
+      unmount();
+    }).not.toThrow();
   });
 });
