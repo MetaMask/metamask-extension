@@ -3912,7 +3912,6 @@ describe('MetaMaskController', () => {
           'Unrecognized patch-store substream notification method: unknownMethod',
         );
       });
-
     });
 
     describe('#markPasswordForgotten', () => {
