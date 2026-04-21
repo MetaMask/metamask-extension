@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.28.0]
 
+### Uncategorized
+
+- chore: Bulk register actions in `MetaMetricsController` (#41607)
+- chore: Bulk register actions in `OAuthService` (#41613)
+- chore: Bulk register actions in `DataDeletionService` (#41652)
+- chore: Bulk register actions in `SubscriptionService` (#41616)
+- chore: Bulk register actions in `NetworkOrderController` (#41608)
+- chore: Bulk register actions in `EncryptionPublicKeyController` (#41604)
+- chore: Bulk register actions in `PreferencesController` (#41611)
+- chore: Bulk register actions in `OnboardingController` (#41609)
+- chore: Bulk register actions in `AppStateController` (#41559)
+- chore: Bulk register actions in `DecryptMessageController` (#41560)
+
 ### Added
 
 - Extended notification account toggles to all wallet keyrings (#40762)
@@ -35,6 +48,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Https://consensyssoftware.atlassian.net/browse/TAT-2891 (#41734)
+- N/a (#41634)
+- N/a (#41576)
 - Fixed Perps geo-blocking using the GeolocationController so user location resolves correctly (#41831)
 - Fixed navigation from Manage Wallet Recovery when the SRP is not backed up (#41832)
 - Fixed Perps market prices and related data stopping updates while the popup stayed open (#41802)
