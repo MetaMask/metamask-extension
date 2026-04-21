@@ -51,7 +51,6 @@ import { SurveyToast } from '../../ui/survey-toast';
 import { PerpsDepositToast } from '../perps/perps-deposit-toast';
 import {
   ClaimSubmitToastType,
-  PasskeySettingsToastType,
   StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
 import { MerklClaimToast, MusdConversionToast } from '../musd';
@@ -94,7 +93,6 @@ import {
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
   selectNewSrpAdded,
-  selectPasskeySettingsToast,
   selectShowCopyAddressToast,
   selectShowConnectAccountGroupToast,
   selectClaimSubmitToast,
@@ -111,7 +109,6 @@ import {
   setShowNftDetectionEnablementToast,
   setSurveyLinkLastClickedOrClosed,
   setShowNewSrpAddedToast,
-  setShowPasskeySettingsToast,
   setShowCopyAddressToast,
   setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
@@ -163,7 +160,6 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         {storageErrorToast}
-        <PasskeySettingsToast />
         <ClaimSubmitToast />
       </ToastContainer>
     );
@@ -505,48 +501,6 @@ function InfuraSwitchToast() {
     )
   );
 }
-
-const PasskeySettingsToast = () => {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const passkeySettingsToast = useSelector(selectPasskeySettingsToast);
-  const autoHideToastDelay = 5 * SECOND;
-
-  return (
-    passkeySettingsToast !== null && (
-      <Toast
-        key="passkey-settings-toast"
-        dataTestId={
-          passkeySettingsToast === PasskeySettingsToastType.TurnedOn
-            ? 'passkey-settings-toast-on'
-            : 'passkey-settings-toast-off'
-        }
-        text={
-          passkeySettingsToast === PasskeySettingsToastType.TurnedOn
-            ? t('passkeySettingsToastTurnedOn')
-            : t('passkeySettingsToastTurnedOff')
-        }
-        startAdornment={
-          <Icon
-            name={IconName.CheckBold}
-            color={IconColor.SuccessDefault}
-            size={IconSize.Md}
-          />
-        }
-        borderRadius={BorderRadius.LG}
-        textClassName="text-base"
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() => {
-          dispatch(setShowPasskeySettingsToast(null));
-        }}
-        onClose={() => {
-          dispatch(setShowPasskeySettingsToast(null));
-        }}
-      />
-    )
-  );
-};
 
 function CopyAddressToast() {
   const t = useI18nContext();

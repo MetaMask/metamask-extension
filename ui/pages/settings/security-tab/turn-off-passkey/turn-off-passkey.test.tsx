@@ -4,9 +4,16 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
-import * as actionConstants from '../../../../store/actionConstants';
-import { PasskeySettingsToastType } from '../../../../../shared/constants/app-state';
+import { SECOND } from '../../../../../shared/constants/time';
+import { toast } from '../../../../components/ui/toast/toast';
 import TurnOffPasskey from './turn-off-passkey';
+
+jest.mock('../../../../components/ui/toast/toast', () => ({
+  toast: {
+    success: jest.fn(),
+  },
+  ToastContent: ({ title }: { title: string }) => title,
+}));
 
 const mockUseNavigate = jest.fn();
 const mockDispatch = jest.fn();
@@ -37,6 +44,7 @@ jest.mock('../../../../store/actions', () => ({
 
 describe('TurnOffPasskey', () => {
   const mockStore = configureMockStore()(mockState);
+  const mockToastSuccess = jest.mocked(toast.success);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -45,10 +53,7 @@ describe('TurnOffPasskey', () => {
   });
 
   it('submits password and navigates to security on success', async () => {
-    const { getByTestId } = renderWithProvider(
-      <TurnOffPasskey />,
-      mockStore,
-    );
+    const { getByTestId } = renderWithProvider(<TurnOffPasskey />, mockStore);
 
     fireEvent.change(getByTestId('turn-off-passkey-password-input'), {
       target: { value: 'correct-password' },
@@ -60,9 +65,9 @@ describe('TurnOffPasskey', () => {
         'correct-password',
       );
       expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: actionConstants.SET_SHOW_PASSKEY_SETTINGS_TOAST,
-        payload: PasskeySettingsToastType.TurnedOff,
+      expect(mockToastSuccess).toHaveBeenCalledTimes(1);
+      expect(mockToastSuccess.mock.calls[0][1]).toStrictEqual({
+        duration: 5 * SECOND,
       });
       expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
     });

@@ -13,7 +13,6 @@ import * as actionConstants from '../../store/actionConstants';
 import {
   PasswordChangeToastType,
   ClaimSubmitToastType,
-  PasskeySettingsToastType,
 } from '../../../shared/constants/app-state';
 
 type AppState = {
@@ -132,7 +131,6 @@ type AppState = {
   errorInSettings: string | null;
   showNewSrpAddedToast: number | false;
   showPasswordChangeToast: PasswordChangeToastType | null;
-  showPasskeySettingsToast: PasskeySettingsToastType | null;
   showCopyAddressToast: boolean;
   showClaimSubmitToast: ClaimSubmitToastType | null;
   showInfuraSwitchToast: boolean;
@@ -243,7 +241,6 @@ const initialState: AppState = {
   errorInSettings: null,
   showNewSrpAddedToast: false,
   showPasswordChangeToast: null,
-  showPasskeySettingsToast: null,
   showCopyAddressToast: false,
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
@@ -761,12 +758,6 @@ export default function reduceApp(
       return {
         ...appState,
         showNewSrpAddedToast: action.payload,
-      };
-
-    case actionConstants.SET_SHOW_PASSKEY_SETTINGS_TOAST:
-      return {
-        ...appState,
-        showPasskeySettingsToast: action.payload,
       };
 
     case actionConstants.SET_SHOW_COPY_ADDRESS_TOAST:

@@ -1,26 +1,19 @@
 import { browserSupportsWebAuthn } from '@simplewebauthn/browser';
 
 /**
- * Synchronous check: does this browser support WebAuthn?
- * Use for feature gating (show/hide UI). For full capability
- * detection (PRF support), use {@link isPasskeyPRFSupported}.
- *
- * @returns Whether the browser supports the WebAuthn API.
+ * Whether WebAuthn is available (sync gate for UI).
+ * For PRF specifically, use {@link isPasskeyPRFSupported}.
  */
 export function isWebAuthnSupported(): boolean {
   return browserSupportsWebAuthn();
 }
 
 /**
- * Checks whether the browser/platform supports the WebAuthn PRF extension.
+ * Whether the WebAuthn PRF extension is supported (`extension:prf` via
+ * `PublicKeyCredential.getClientCapabilities()` when present).
  *
- * Uses `PublicKeyCredential.getClientCapabilities()` (Baseline 2025).
- * When that API is unavailable, returns `undefined` -- callers should
- * include PRF optimistically and let the post-ceremony fallback in
- * `key-derivation.ts` handle the result.
- *
- * @returns `true` when PRF is confirmed available, `false` when confirmed
- * unavailable, `undefined` when detection is not possible.
+ * @returns `true` / `false` when known, or `undefined` if that API is missing
+ * (callers may still attempt PRF and handle failure after the ceremony).
  */
 export async function isPasskeyPRFSupported(): Promise<boolean | undefined> {
   if (!browserSupportsWebAuthn()) {

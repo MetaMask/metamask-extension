@@ -4,9 +4,16 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
-import * as actionConstants from '../../../../store/actionConstants';
-import { PasskeySettingsToastType } from '../../../../../shared/constants/app-state';
+import { SECOND } from '../../../../../shared/constants/time';
+import { toast } from '../../../../components/ui/toast/toast';
 import RegisterPasskey from './register-passkey';
+
+jest.mock('../../../../components/ui/toast/toast', () => ({
+  toast: {
+    success: jest.fn(),
+  },
+  ToastContent: ({ title }: { title: string }) => title,
+}));
 
 const mockUseNavigate = jest.fn();
 const mockDispatch = jest.fn();
@@ -67,6 +74,7 @@ jest.mock('../../../../store/actions', () => ({
 
 describe('RegisterPasskey', () => {
   const mockStore = configureMockStore()(mockState);
+  const mockToastSuccess = jest.mocked(toast.success);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -142,9 +150,9 @@ describe('RegisterPasskey', () => {
       expect(mockGeneratePasskeyRegistrationOptions).toHaveBeenCalled();
       expect(mockProtectVaultKeyWithPasskey).toHaveBeenCalled();
       expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: actionConstants.SET_SHOW_PASSKEY_SETTINGS_TOAST,
-        payload: PasskeySettingsToastType.TurnedOn,
+      expect(mockToastSuccess).toHaveBeenCalledTimes(1);
+      expect(mockToastSuccess.mock.calls[0][1]).toStrictEqual({
+        duration: 5 * SECOND,
       });
       expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE, {
         replace: true,

@@ -22,7 +22,8 @@ import {
   IPFS_DEFAULT_GATEWAY_URL,
   IPFS_FORBIDDEN_GATEWAY,
 } from '../../../../shared/constants/network';
-import { PasskeySettingsToastType } from '../../../../shared/constants/app-state';
+import { SECOND } from '../../../../shared/constants/time';
+import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import {
   AUTO_DETECT_TOKEN_LEARN_MORE_LINK,
   COINGECKO_LINK,
@@ -140,7 +141,6 @@ export default class SecurityTab extends PureComponent {
     isPasskeyRegistered: PropTypes.bool,
     isPasskeyFeatureAvailable: PropTypes.bool,
     forceUpdateMetamaskState: PropTypes.func.isRequired,
-    setShowPasskeySettingsToast: PropTypes.func.isRequired,
   };
 
   state = {
@@ -243,13 +243,9 @@ export default class SecurityTab extends PureComponent {
     if (this.state.passkeyToggleBusy) {
       return;
     }
-    const { trackEvent } = this.context;
-    const {
-      isPasskeyRegistered,
-      navigate,
-      forceUpdateMetamaskState,
-      setShowPasskeySettingsToast,
-    } = this.props;
+    const { trackEvent, t } = this.context;
+    const { isPasskeyRegistered, navigate, forceUpdateMetamaskState } =
+      this.props;
     const wantsOn = !currentValue;
 
     if (wantsOn) {
@@ -266,7 +262,10 @@ export default class SecurityTab extends PureComponent {
         const registrationResponse = await startPasskeyRegistration(options);
         await protectVaultKeyWithPasskey(registrationResponse);
         await forceUpdateMetamaskState();
-        setShowPasskeySettingsToast(PasskeySettingsToastType.TurnedOn);
+        toast.success(
+          <ToastContent title={t('passkeySettingsToastTurnedOn')} />,
+          { duration: 5 * SECOND },
+        );
         trackEvent({
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.SettingsUpdated,
@@ -294,7 +293,10 @@ export default class SecurityTab extends PureComponent {
         await startPasskeyAuthentication(authOptions);
       await removePasskeyWithPasskeyVerification(authenticationResponse);
       await forceUpdateMetamaskState();
-      setShowPasskeySettingsToast(PasskeySettingsToastType.TurnedOff);
+      toast.success(
+        <ToastContent title={t('passkeySettingsToastTurnedOff')} />,
+        { duration: 5 * SECOND },
+      );
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,

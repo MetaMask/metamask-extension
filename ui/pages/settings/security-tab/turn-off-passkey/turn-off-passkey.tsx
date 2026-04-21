@@ -23,12 +23,14 @@ import {
   SECURITY_TURN_OFF_PASSKEY_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { PasskeySettingsToastType } from '../../../../../shared/constants/app-state';
-import { setShowPasskeySettingsToast } from '../../../../components/app/toast-master/utils';
 import {
   forceUpdateMetamaskState,
   removePasskeyWithPasswordVerification,
 } from '../../../../store/actions';
+import { toast, ToastContent } from '../../../../components/ui/toast/toast';
+import { SECOND } from '../../../../../shared/constants/time';
+
+const passkeySettingsToastDurationMs = 5 * SECOND;
 
 export default function TurnOffPasskey() {
   const t = useI18nContext();
@@ -53,7 +55,10 @@ export default function TurnOffPasskey() {
     try {
       await removePasskeyWithPasswordVerification(password);
       await forceUpdateMetamaskState(dispatch);
-      dispatch(setShowPasskeySettingsToast(PasskeySettingsToastType.TurnedOff));
+      toast.success(
+        <ToastContent title={t('passkeySettingsToastTurnedOff')} />,
+        { duration: passkeySettingsToastDurationMs },
+      );
       navigate(SECURITY_ROUTE);
     } catch {
       setIsIncorrectPasswordError(true);

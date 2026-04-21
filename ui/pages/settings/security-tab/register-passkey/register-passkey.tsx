@@ -24,18 +24,20 @@ import {
   startPasskeyRegistration,
   cancelPasskeyCeremony,
 } from '../../../../../shared/lib/passkey';
-import { PasskeySettingsToastType } from '../../../../../shared/constants/app-state';
-import { setShowPasskeySettingsToast } from '../../../../components/app/toast-master/utils';
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
   forceUpdateMetamaskState,
 } from '../../../../store/actions';
+import { toast, ToastContent } from '../../../../components/ui/toast/toast';
+import { SECOND } from '../../../../../shared/constants/time';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+
+const passkeySettingsToastDurationMs = 5 * SECOND;
 
 export default function RegisterPasskey() {
   const navigate = useNavigate();
@@ -66,7 +68,10 @@ export default function RegisterPasskey() {
       const registrationResponse = await startPasskeyRegistration(options);
       await protectVaultKeyWithPasskey(registrationResponse);
       await forceUpdateMetamaskState(dispatch);
-      dispatch(setShowPasskeySettingsToast(PasskeySettingsToastType.TurnedOn));
+      toast.success(
+        <ToastContent title={t('passkeySettingsToastTurnedOn')} />,
+        { duration: passkeySettingsToastDurationMs },
+      );
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,

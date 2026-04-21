@@ -210,8 +210,10 @@ export default function CreatePassword({
 
     if (isFirefox || isSocialLoginFlow || !isPasskeyFeatureAvailable) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
-    } else {
+    } else if (isPasskeyFeatureAvailable) {
       navigate(ONBOARDING_BIOMETRICS_ROUTE, { replace: true });
+    } else {
+      navigate(ONBOARDING_METAMETRICS, { replace: true });
     }
   };
 
