@@ -1750,6 +1750,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                 onClick={() => navigate(PERPS_ACTIVITY_ROUTE)}
                 className="bg-transparent hover:bg-transparent active:bg-transparent p-0 min-w-0 h-auto"
                 data-testid="perps-market-detail-view-all-activity"
+                aria-label={t('perpsSeeAll')}
               >
                 <Icon
                   name={IconName.ArrowRight}

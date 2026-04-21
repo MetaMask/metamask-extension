@@ -144,6 +144,7 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
           onClick={handleSeeAll}
           className="bg-transparent hover:bg-transparent active:bg-transparent p-0 min-w-0 h-auto"
           data-testid="perps-recent-activity-see-all"
+          aria-label={t('perpsSeeAll')}
         >
           <Icon
             name={IconName.ArrowRight}
