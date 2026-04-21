@@ -1926,6 +1926,11 @@ export function setupController(
       return;
     }
 
+    // Skip if a persistent UI is open, transaction status is in the Activity tab
+    if (hasPersistentUiOpen()) {
+      return;
+    }
+
     if (nonceKey) {
       if (seenFailedNonces.size >= maxSeenFailedNonces) {
         seenFailedNonces.clear();
@@ -1933,22 +1938,18 @@ export function setupController(
       seenFailedNonces.add(nonceKey);
     }
 
-    // Skip if a persistent UI is open, transaction status is in the Activity tab
-    if (hasPersistentUiOpen()) {
-      return;
+    failedTxCount += 1;
+
+    // Defer landing page until notification closes; close handler re-applies
+    if (!isOnlyNotificationOpen()) {
+      setClientOpenOptions('activity');
     }
 
-    failedTxCount += 1;
-    setClientOpenOptions('activity');
     updateBadge();
   }
 
   function clearFailedTxBadge() {
     seenFailedNonces.clear();
-    if (failedTxCount <= 0) {
-      return;
-    }
-
     failedTxCount = 0;
     setClientOpenOptions();
     updateBadge();
