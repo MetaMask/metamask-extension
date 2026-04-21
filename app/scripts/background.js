@@ -189,7 +189,7 @@ let uiIsTriggering = false;
 let openSidePanelCount = 0;
 let failedTxCount = 0;
 let hasDeferredFailureNotification = false;
-let lastFailedNonce;
+const seenFailedNonces = new Set();
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -1705,7 +1705,7 @@ export function setupController(
 
         finished(portStream, () => {
           notificationIsOpen = false;
-          flushDeferredNotificationFailures();
+          flushDeferredFailureNotification();
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
           onCloseEnvironmentInstances(
@@ -1876,12 +1876,7 @@ export function setupController(
 
   controller.controllerMessenger.subscribe(
     'TransactionController:transactionStatusUpdated',
-    ({ transactionMeta }) => {
-      const { status, txParams } = transactionMeta ?? {};
-      if (status === 'failed' || status === 'dropped') {
-        onTransactionFailed({ txParams });
-      }
-    },
+    onTransactionStatusUpdated,
   );
 
   function setClientOpenOptions(tab) {
@@ -1900,20 +1895,30 @@ export function setupController(
     }
   }
 
-  function onTransactionFailed({ txParams }) {
-    const { nonce } = txParams ?? {};
-    if (nonce !== undefined && nonce === lastFailedNonce) {
+  function onTransactionStatusUpdated({ transactionMeta }) {
+    const { status, txParams, chainId } = transactionMeta ?? {};
+    if (status !== 'failed' && status !== 'dropped') {
       return;
     }
-    lastFailedNonce = nonce;
+
+    const { from, nonce } = txParams ?? {};
+    const nonceKey =
+      from && nonce !== undefined && chainId
+        ? `${chainId}:${from.toLowerCase()}:${nonce}`
+        : undefined;
+    if (nonceKey && seenFailedNonces.has(nonceKey)) {
+      return;
+    }
+
+    if (nonceKey) {
+      seenFailedNonces.add(nonceKey);
+    }
 
     const onlyNotificationOpen =
       notificationIsOpen &&
       openPopupCount === 0 &&
       openSidePanelCount === 0 &&
       Object.keys(openMetamaskTabsIDs).length === 0;
-
-    const isClientOpen = isClientOpenStatus();
 
     if (onlyNotificationOpen) {
       // Defer showing the badge until the notification closes
@@ -1922,7 +1927,7 @@ export function setupController(
       return;
     }
 
-    if (isClientOpen) {
+    if (isClientOpenStatus()) {
       return;
     }
 
@@ -1931,7 +1936,7 @@ export function setupController(
     updateBadge();
   }
 
-  function flushDeferredNotificationFailures() {
+  function flushDeferredFailureNotification() {
     if (!hasDeferredFailureNotification) {
       return;
     }
@@ -1941,7 +1946,7 @@ export function setupController(
   }
 
   function clearFailedTxBadge() {
-    lastFailedNonce = undefined;
+    seenFailedNonces.clear();
     if (failedTxCount <= 0) {
       return;
     }
