@@ -29,6 +29,8 @@ const WAIT_AFTER_FIRST_REQUEST_MS = SECOND * 10;
 export enum ReferralTriggerType {
   NewConnection = 'new_connection',
   OnNavigateConnectedTab = 'on_navigate_connected_tab',
+  /** User switched account and permitted a dapp connection for the selected address */
+  PermittedAccountAdded = 'permitted_account_added',
 }
 
 function isExtendedJSONRPCRequest(
