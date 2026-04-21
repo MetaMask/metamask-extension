@@ -96,9 +96,11 @@ jobs:
           [[ -z "$SKILLS_REF"  ]] && SKILLS_REF="main"
           OWNER=$(echo "$SKILLS_REPO" | sed -E 's|https://github.com/([^/]+)/.*|\1|')
           REPO=$(echo  "$SKILLS_REPO" | sed -E 's|https://github.com/[^/]+/([^./]+).*|\1|')
-          echo "owner=$OWNER" >> "$GITHUB_OUTPUT"
-          echo "repo=$REPO"   >> "$GITHUB_OUTPUT"
-          echo "ref=$SKILLS_REF" >> "$GITHUB_OUTPUT"
+          {
+            echo "owner=$OWNER"
+            echo "repo=$REPO"
+            echo "ref=$SKILLS_REF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Checkout skills repo at pinned ref
         if: steps.trust.outputs.tier == 'direct' || steps.trust.outputs.tier == 'pr'
@@ -134,10 +136,12 @@ jobs:
           CAPTURE_URL=$(echo  "$OUTPUT" | awk -F' — ' '/^✓/ { print $3 }')
           # Slug is the directory name under `domains/inbox/skills/`.
           CAPTURE_SLUG=$(echo "$CAPTURE_PATH" | sed -E 's|^domains/inbox/skills/([^/]+)/.*|\1|')
-          echo "path=$CAPTURE_PATH" >> "$GITHUB_OUTPUT"
-          echo "sha=$CAPTURE_SHA"   >> "$GITHUB_OUTPUT"
-          echo "url=$CAPTURE_URL"   >> "$GITHUB_OUTPUT"
-          echo "slug=$CAPTURE_SLUG" >> "$GITHUB_OUTPUT"
+          {
+            echo "path=$CAPTURE_PATH"
+            echo "sha=$CAPTURE_SHA"
+            echo "url=$CAPTURE_URL"
+            echo "slug=$CAPTURE_SLUG"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Trigger `skills-sync` to propagate new skill to consumer repos
         if: steps.capture-direct.outcome == 'success'
@@ -194,12 +198,17 @@ jobs:
           # via the API when the skills repo lives outside MetaMask, so the
           # mention is the primary notification mechanism.
           {
-            printf 'Captured via `@metamaskbot /remember` from `%s`.\n\n' "$SOURCE_REPO"
-            printf -- '- Captured by: @%s\n'   "$CAPTURED_BY"
-            printf -- '- Audit: %s\n'          "$AUDIT_URL"
-            printf -- '- Tier: external (requires review before merge)\n\n'
-            printf 'cc @%s\n\n---\n\n' "$TEAM_SLUG"
-            printf '%s\n' "$CAPTURE"
+            echo "Captured via \`@metamaskbot /remember\` from \`$SOURCE_REPO\`."
+            echo
+            echo "- Captured by: @$CAPTURED_BY"
+            echo "- Audit: $AUDIT_URL"
+            echo "- Tier: external (requires review before merge)"
+            echo
+            echo "cc @$TEAM_SLUG"
+            echo
+            echo "---"
+            echo
+            echo "$CAPTURE"
           } > "${RUNNER_TEMP}/pr-body.md"
 
           PR_URL=$(gh pr create \
@@ -214,11 +223,13 @@ jobs:
 
           PR_NUMBER=$(basename "$PR_URL")
 
-          echo "path=$SKILL_PATH"     >> "$GITHUB_OUTPUT"
-          echo "slug=$SKILL_SLUG"     >> "$GITHUB_OUTPUT"
-          echo "url=$PR_URL"          >> "$GITHUB_OUTPUT"
-          echo "number=$PR_NUMBER"    >> "$GITHUB_OUTPUT"
-          echo "branch=$BRANCH"       >> "$GITHUB_OUTPUT"
+          {
+            echo "path=$SKILL_PATH"
+            echo "slug=$SKILL_SLUG"
+            echo "url=$PR_URL"
+            echo "number=$PR_NUMBER"
+            echo "branch=$BRANCH"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Reply on PR
         if: always() && steps.parse.outcome == 'success'

@@ -76,10 +76,12 @@ jobs:
             SYNCED_REF=$(grep '^synced_ref=' .skills/VERSION | cut -d= -f2-)
             SYNCED_SHA=$(grep '^synced_sha=' .skills/VERSION | cut -d= -f2-)
             {
-              printf 'Refreshes agent skills from the upstream configured in `.skills/CONFIG`.\n\n'
-              printf -- '- **Ref:** `%s`\n'  "$SYNCED_REF"
-              printf -- '- **SHA:** `%s`\n'  "$SYNCED_SHA"
-              printf '\nMerging this PR propagates new skills into `.cursor/rules/`, where Cursor BugBot picks them up on subsequent reviews.\n'
+              echo "Refreshes agent skills from the upstream configured in \`.skills/CONFIG\`."
+              echo
+              echo "- **Ref:** \`$SYNCED_REF\`"
+              echo "- **SHA:** \`$SYNCED_SHA\`"
+              echo
+              echo "Merging this PR propagates new skills into \`.cursor/rules/\`, where Cursor BugBot picks them up on subsequent reviews."
             } > "${RUNNER_TEMP}/pr-body.md"
 
             gh pr create \
