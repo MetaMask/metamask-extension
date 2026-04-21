@@ -520,8 +520,6 @@ const PerpsCandlestickChart = forwardRef<
       candleData,
       selectedPeriod,
       onPeriodDataRequest,
-      upColor,
-      downColor,
       volumeUpColor,
       volumeDownColor,
     ]);
