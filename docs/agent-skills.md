@@ -4,9 +4,9 @@ Shared engineering patterns, rules, and conventions that AI coding agents use wh
 
 Two tiers:
 
-| Tier | Location | Purpose | Who maintains |
-|---|---|---|---|
-| **Repo skills** | `.agents/skills/<slug>/` | MetaMask-specific patterns (A/B testing, E2E tests, etc.) | Core contributors, via PR |
+| Tier                   | Location                                | Purpose                                                             | Who maintains              |
+| ---------------------- | --------------------------------------- | ------------------------------------------------------------------- | -------------------------- |
+| **Repo skills**        | `.agents/skills/<slug>/`                | MetaMask-specific patterns (A/B testing, E2E tests, etc.)           | Core contributors, via PR  |
 | **Engineering skills** | Synced from `metamask-extension-skills` | Cross-repo patterns (commit conventions, tooling preferences, etc.) | Captured live by engineers |
 
 ## Capturing a new skill

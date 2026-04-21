@@ -86,9 +86,9 @@ To get feedback from fitness functions before commits **and to auto-refresh [age
 
 Active hooks after install:
 
-| Hook | What it does |
-|---|---|
-| `pre-commit` | Runs `yarn fitness-functions pre-commit-hook` |
+| Hook         | What it does                                                 |
+| ------------ | ------------------------------------------------------------ |
+| `pre-commit` | Runs `yarn fitness-functions pre-commit-hook`                |
 | `post-merge` | Refreshes agent skills if `.skills/VERSION` is >7 days stale |
 
 Set `SKILLS_SKIP_AUTOSYNC=1` in your shell to disable the skills refresh. See [agent skills docs](./docs/agent-skills.md) for manual sync and capture commands.
