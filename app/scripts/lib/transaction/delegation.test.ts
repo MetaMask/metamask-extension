@@ -498,6 +498,54 @@ describe('delegation', () => {
       expect(signEip7702AuthorizationMock).not.toHaveBeenCalled();
     });
 
+    it('returns minimal authorization list with only address when minimal is true', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValue([
+        {
+          chainId: '0x1',
+          isSupported: false,
+          upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        },
+      ]);
+
+      const result = await convertTransactionToRedeemDelegations({
+        transaction: TRANSACTION_META_MOCK,
+        messenger,
+        authorization: { minimal: true },
+      });
+
+      expect(result.authorizationList).toEqual([
+        { address: UPGRADE_CONTRACT_ADDRESS_MOCK },
+      ]);
+      expect(getNonceLockMock).not.toHaveBeenCalled();
+      expect(signEip7702AuthorizationMock).not.toHaveBeenCalled();
+    });
+
+    it('returns setCode transaction type when authorization list is present', async () => {
+      const result = await convertTransactionToRedeemDelegations({
+        transaction: TRANSACTION_META_MOCK,
+        messenger,
+        authorization: {
+          upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        },
+      });
+
+      expect(result.type).toBe('0x4');
+    });
+
+    it('returns original transaction type when no authorization list', async () => {
+      const transaction = {
+        ...TRANSACTION_META_MOCK,
+        txParams: { ...TRANSACTION_META_MOCK.txParams, type: '0x2' },
+      } as unknown as TransactionMeta;
+
+      const result = await convertTransactionToRedeemDelegations({
+        transaction,
+        messenger,
+      });
+
+      expect(result.type).toBe('0x2');
+    });
+
     it('resolves authorization via messenger isAtomicBatchSupported', async () => {
       isAtomicBatchSupportedMock.mockResolvedValue([
         {
