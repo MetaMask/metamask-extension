@@ -84,6 +84,7 @@ async function mockNonUnifiedStateSpotAndExchangeRates(mockServer: Mockttp) {
         'eip155:1/slip44:60': NATIVE_ETH_SPOT_ENTRY_LEGACY,
         'eip155:59144/slip44:60': NATIVE_ETH_SPOT_ENTRY_LEGACY,
         'eip155:8453/slip44:60': NATIVE_ETH_SPOT_ENTRY_LEGACY,
+        'eip155:42161/slip44:60': NATIVE_ETH_SPOT_ENTRY_LEGACY,
       },
     }));
   const exchangeRatesMock = await mockEthExchangeRates(mockServer);
@@ -104,7 +105,7 @@ async function importTokensTestMock(mockServer: Mockttp) {
     ...(await mockPolygonBridgeApi(mockServer)),
   ];
 
-  if (!process.env.ASSETS_UNIFIED_STATE_ENABLED) {
+  if (process.env.ASSETS_UNIFIED_STATE_ENABLED !== 'true') {
     const priceMocks =
       await mockNonUnifiedStateSpotAndExchangeRates(mockServer);
     return [...priceMocks, ...sharedTokenMocks];
@@ -494,7 +495,7 @@ describe('Import flow', function () {
         testSpecificMock: importTokensTestMock,
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -599,7 +600,7 @@ describe('Import flow', function () {
         testSpecificMock: importTokensTestMock,
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
