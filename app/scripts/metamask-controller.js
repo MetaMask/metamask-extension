@@ -5876,10 +5876,10 @@ export default class MetamaskController extends EventEmitter {
    * If the origin is Hyperliquid and the globally selected account is EVM and included
    * among the newly permitted accounts, it triggers the DeFi referral flow.
    *
-   * @param {{ origin: string; newlyAddedCaipAccountIds: string[] }} details - Added accounts payload.
+   * @param {{ origin: string; newCaipAccountIds: import('@metamask/utils').CaipAccountId[] }} details - Added accounts payload.
    */
   _handleDefiReferralOnPermittedAccountsAdded(details) {
-    const { origin, newlyAddedCaipAccountIds } = details;
+    const { origin, newCaipAccountIds } = details;
 
     // Only run for Hyperliquid
     const partner = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
@@ -5894,16 +5894,14 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    const selectedMatchesNewPermit = newlyAddedCaipAccountIds.some(
-      (caipAccountId) => {
-        try {
-          const { address } = parseCaipAccountId(caipAccountId);
-          return isEqualCaseInsensitive(address, selectedAccount.address);
-        } catch {
-          return false;
-        }
-      },
-    );
+    const selectedMatchesNewPermit = newCaipAccountIds.some((caipAccountId) => {
+      try {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return isEqualCaseInsensitive(address, selectedAccount.address);
+      } catch {
+        return false;
+      }
+    });
 
     if (!selectedMatchesNewPermit) {
       return;

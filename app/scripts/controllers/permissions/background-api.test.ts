@@ -371,7 +371,7 @@ describe('permission background API methods', () => {
 
       expect(onPermittedAccountsAdded).toHaveBeenCalledWith({
         origin: 'foo.com',
-        newlyAddedCaipAccountIds: ['eip155:1:0x2'],
+        newCaipAccountIds: ['eip155:1:0x2'],
       });
     });
 

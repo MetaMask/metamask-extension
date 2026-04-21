@@ -31,7 +31,7 @@ export type PermissionBackgroundApiOptions = {
   // Invoked after permitted accounts are extended for an origin
   onPermittedAccountsAdded?: (payload: {
     origin: string;
-    newlyAddedCaipAccountIds: CaipAccountId[];
+    newCaipAccountIds: CaipAccountId[];
   }) => void;
   permissionController: {
     getCaveat(
@@ -276,16 +276,16 @@ export function getPermissionBackgroundApiMethods({
       ]),
     );
 
-    const newlyAddedCaipAccountIds = caipAccountIds.filter(
+    const newCaipAccountIds = caipAccountIds.filter(
       (id) => !existingPermittedAccountIds.includes(id),
     );
 
     setPermittedAccounts(origin, updatedAccountIds);
 
-    if (newlyAddedCaipAccountIds.length > 0) {
+    if (newCaipAccountIds.length > 0) {
       onPermittedAccountsAdded?.({
         origin,
-        newlyAddedCaipAccountIds,
+        newCaipAccountIds,
       });
     }
   };

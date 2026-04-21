@@ -6133,7 +6133,7 @@ describe('MetaMaskController', () => {
       it('calls handleDefiReferral when the selected EVM account matches a new permitted CAIP id and appActiveTab matches', () => {
         metamaskController._handleDefiReferralOnPermittedAccountsAdded({
           origin: HL_ORIGIN,
-          newlyAddedCaipAccountIds: [mockCaipAccountId],
+          newCaipAccountIds: [mockCaipAccountId],
         });
 
         expect(handleDefiReferralSpy).toHaveBeenCalledTimes(1);
@@ -6150,7 +6150,7 @@ describe('MetaMaskController', () => {
       it('does nothing when origin is not Hyperliquid', () => {
         metamaskController._handleDefiReferralOnPermittedAccountsAdded({
           origin: DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].origin,
-          newlyAddedCaipAccountIds: [mockCaipAccountId],
+          newCaipAccountIds: [mockCaipAccountId],
         });
 
         expect(handleDefiReferralSpy).not.toHaveBeenCalled();
@@ -6169,7 +6169,7 @@ describe('MetaMaskController', () => {
 
         metamaskController._handleDefiReferralOnPermittedAccountsAdded({
           origin: HL_ORIGIN,
-          newlyAddedCaipAccountIds: [mockCaipAccountId],
+          newCaipAccountIds: [mockCaipAccountId],
         });
 
         expect(handleDefiReferralSpy).not.toHaveBeenCalled();
@@ -6184,7 +6184,7 @@ describe('MetaMaskController', () => {
 
         metamaskController._handleDefiReferralOnPermittedAccountsAdded({
           origin: HL_ORIGIN,
-          newlyAddedCaipAccountIds: [otherCaipId],
+          newCaipAccountIds: [otherCaipId],
         });
 
         expect(handleDefiReferralSpy).not.toHaveBeenCalled();
@@ -6205,7 +6205,7 @@ describe('MetaMaskController', () => {
 
         metamaskController._handleDefiReferralOnPermittedAccountsAdded({
           origin: HL_ORIGIN,
-          newlyAddedCaipAccountIds: [mockCaipAccountId],
+          newCaipAccountIds: [mockCaipAccountId],
         });
 
         expect(handleDefiReferralSpy).not.toHaveBeenCalled();
@@ -6226,7 +6226,7 @@ describe('MetaMaskController', () => {
 
         metamaskController._handleDefiReferralOnPermittedAccountsAdded({
           origin: HL_ORIGIN,
-          newlyAddedCaipAccountIds: [mockCaipAccountId],
+          newCaipAccountIds: [mockCaipAccountId],
         });
 
         expect(handleDefiReferralSpy).not.toHaveBeenCalled();
@@ -6239,7 +6239,7 @@ describe('MetaMaskController', () => {
 
         metamaskController._handleDefiReferralOnPermittedAccountsAdded({
           origin: HL_ORIGIN,
-          newlyAddedCaipAccountIds: [mockCaipAccountId],
+          newCaipAccountIds: [mockCaipAccountId],
         });
 
         expect(handleDefiReferralSpy).not.toHaveBeenCalled();
