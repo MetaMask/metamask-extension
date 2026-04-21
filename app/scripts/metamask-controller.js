@@ -54,7 +54,12 @@ import {
 } from '@metamask/bridge-controller';
 
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import {
+  isEvmAccountType,
+  SolAccountType,
+  TrxAccountType,
+  BtcAccountType,
+} from '@metamask/keyring-api';
 import {
   hexToBigInt,
   toCaipChainId,
@@ -145,7 +150,11 @@ import {
 import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { convertNetworkId } from '../../shared/lib/network.utils';
-import { getIsSmartTransaction } from '../../shared/lib/selectors';
+import {
+  getIsSmartTransaction,
+  getSmartTransactionsPreferenceEnabled,
+  getSmartTransactionsEnabled,
+} from '../../shared/lib/selectors';
 
 import { getProviderConfig } from '../../shared/lib/selectors/networks';
 import { selectAllEnabledNetworkClientIds } from '../../shared/lib/selectors/multichain';
@@ -4273,7 +4282,21 @@ export default class MetamaskController {
   async discoverAndCreateAccounts(id) {
     return this.controllerMessenger.call(
       'AccountManagement:discoverAndCreateAccounts',
-      id,
+      {
+        keyringId: id,
+        getFirstKeyringId: async () =>
+          this.keyringController.state.keyrings[0]?.metadata.id,
+        ensureSnapKeyringInitialized: () => this.getSnapKeyring(),
+        discoverAccountsForWallet: (entropySource) =>
+          this.multichainAccountService
+            .getMultichainAccountWallet({ entropySource })
+            .discoverAccounts(),
+        getDiscoveryCountByProviderOpts: {
+          solanaAccountTypes: Object.values(SolAccountType),
+          bitcoinAccountTypes: Object.values(BtcAccountType),
+          tronAccountTypes: Object.values(TrxAccountType),
+        },
+      },
     );
   }
 
@@ -5384,6 +5407,7 @@ export default class MetamaskController {
         transactionParams.from,
       ),
       transactionController: this.txController,
+      keyringController: this.keyringController,
       transactionOptions,
       transactionParams,
       userOperationController: this.userOperationController,
@@ -7282,6 +7306,12 @@ export default class MetamaskController {
         this.txController.state.transactions.find((tx) => tx.id === id),
       getIsSmartTransaction: (chainId) => {
         return getIsSmartTransaction(this._getMetaMaskState(), chainId);
+      },
+      getSmartTransactionsPreferenceEnabled: () => {
+        return getSmartTransactionsPreferenceEnabled(this._getMetaMaskState());
+      },
+      getSmartTransactionsEnabled: (chainId) => {
+        return getSmartTransactionsEnabled(this._getMetaMaskState(), chainId);
       },
       getSmartTransactionByMinedTxHash: (txHash) => {
         return this.smartTransactionsController.getSmartTransactionByMinedTxHash(
