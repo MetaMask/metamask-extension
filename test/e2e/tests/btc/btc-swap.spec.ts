@@ -62,13 +62,11 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
         await login(driver);
         const homePage = new BitcoinHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
@@ -94,13 +92,11 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
         await login(driver);
         const homePage = new BitcoinHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
@@ -135,13 +131,11 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
         await login(driver);
         const homePage = new BitcoinHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
@@ -172,13 +166,11 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocksNoQuotes,
       },
       async ({ driver }) => {
         await login(driver);
         const homePage = new BitcoinHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
@@ -210,13 +202,11 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
         await login(driver);
         const homePage = new BitcoinHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(

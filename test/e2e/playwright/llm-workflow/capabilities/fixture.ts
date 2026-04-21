@@ -2,7 +2,7 @@ import { fetchWithTimeout, retryUntil } from '@metamask/client-mcp-core';
 import type { FixtureCapability, WalletState } from '@metamask/client-mcp-core';
 
 import FixtureServerClass from '../../../fixtures/fixture-server';
-import { FIXTURE_STATE_METADATA_VERSION } from '../../../fixtures/default-fixture';
+import { FIXTURE_STATE_METADATA_VERSION } from '../../../constants';
 import {
   FixturePresets,
   buildDefaultFixture,

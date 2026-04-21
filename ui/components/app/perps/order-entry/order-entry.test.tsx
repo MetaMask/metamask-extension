@@ -5,6 +5,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import { OrderEntry } from './order-entry';
 
 jest.mock('../../../../hooks/perps/useUserHistory', () => ({
@@ -33,6 +34,10 @@ jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
   usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
 }));
 
+jest.mock('../../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn(),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -50,6 +55,31 @@ describe('OrderEntry', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.mocked(submitRequestToBackground).mockImplementation((method) => {
+      function immediate<ResolvedValue>(
+        value: ResolvedValue,
+      ): Promise<ResolvedValue> {
+        return {
+          then(onFulfilled: (resolved: ResolvedValue) => unknown) {
+            const result = onFulfilled(value);
+            return immediate(result as ResolvedValue);
+          },
+          catch() {
+            return immediate(value);
+          },
+          finally(onFinally: () => void) {
+            onFinally();
+            return immediate(value);
+          },
+        } as Promise<ResolvedValue>;
+      }
+
+      if (method === 'perpsCalculateLiquidationPrice') {
+        return immediate('40000') as Promise<never>;
+      }
+
+      return immediate(undefined) as Promise<never>;
+    });
   });
 
   describe('rendering', () => {

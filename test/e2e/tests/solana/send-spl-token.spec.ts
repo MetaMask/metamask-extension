@@ -302,7 +302,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
@@ -385,7 +384,9 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await login(driver);
 
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
+        if (isUnifiedAssetsEnabled) {
+          await homePage.waitForNonEvmAccountsLoaded();
+        }
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
