@@ -134,6 +134,8 @@
     "test-storybook": "test-storybook -c .storybook",
     "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn storybook:build && yarn http-server storybook-build --port 6006 \" \"wait-on tcp:6006 && echo 'Build done. Running storybook tests...' && yarn test-storybook\"",
     "githooks:install": "husky install",
+    "skills:sync": "bash scripts/skills-sync.sh",
+    "skills:sync:pinned": "bash scripts/skills-sync.sh --ref",
     "messenger-action-types:check": "messenger-action-types app/ --check",
     "messenger-action-types:generate": "messenger-action-types app/ --generate",
     "fitness-functions": "tsx development/fitness-functions/index.ts",
