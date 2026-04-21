@@ -80,11 +80,20 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
 
 ## Git Hooks
 
-To get quick feedback from our shared code quality fitness functions before committing the code, you can install our git hooks with Husky.
+To get feedback from fitness functions before commits **and to auto-refresh [agent skills](./docs/agent-skills.md) when you `git pull`**, install our git hooks with Husky:
 
 `$ yarn githooks:install`
 
-You can read more about them in our [testing documentation](./docs/testing.md#fitness-functions-measuring-progress-in-code-quality-and-preventing-regressions-using-custom-git-hooks).
+Active hooks after install:
+
+| Hook | What it does |
+|---|---|
+| `pre-commit` | Runs `yarn fitness-functions pre-commit-hook` |
+| `post-merge` | Refreshes agent skills if `.skills/VERSION` is >7 days stale |
+
+Set `SKILLS_SKIP_AUTOSYNC=1` in your shell to disable the skills refresh. See [agent skills docs](./docs/agent-skills.md) for manual sync and capture commands.
+
+You can read more about fitness functions in our [testing documentation](./docs/testing.md#fitness-functions-measuring-progress-in-code-quality-and-preventing-regressions-using-custom-git-hooks).
 
 If you are using VS Code and are unable to make commits from the source control sidebar due to a "command not found" error, try these steps from the [Husky docs](https://typicode.github.io/husky/troubleshooting.html#command-not-found).
 
