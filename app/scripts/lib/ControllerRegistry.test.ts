@@ -447,10 +447,7 @@ describe('ControllerRegistry', () => {
         { A: ctrlA, B: ctrlB },
         {},
       );
-      const unsubs = registry.scheduleOnStateChangeWithKeys(
-        'ui',
-        jest.fn(),
-      );
+      const unsubs = registry.scheduleOnStateChangeWithKeys('ui', jest.fn());
       expect(unsubs).toHaveLength(2);
     });
   });

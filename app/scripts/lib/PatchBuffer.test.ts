@@ -113,12 +113,12 @@ describe('PatchBuffer', () => {
       const result = buffer.flush();
       expect(result).not.toBeNull();
 
-      const totalPatches = Object.values(result!).flat().length;
+      const totalPatches = Object.values(result ?? {}).flat().length;
       expect(totalPatches).toBe(N);
 
       // Each key should have N/KEYS patches
       for (let k = 0; k < KEYS; k++) {
-        expect(result![`Controller${k}`]).toHaveLength(N / KEYS);
+        expect(result?.[`Controller${k}`]).toHaveLength(N / KEYS);
       }
     });
   });
