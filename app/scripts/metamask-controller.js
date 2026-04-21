@@ -6582,8 +6582,6 @@ export default class MetamaskController {
         ),
       rejectApprovalRequestsForOrigin: () =>
         this.rejectOriginPendingApprovals(origin),
-      sortAccountIdsByLastSelected:
-        this.sortAccountIdsByLastSelected.bind(this),
     };
   }
 
