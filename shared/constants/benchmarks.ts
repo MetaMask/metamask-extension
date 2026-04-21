@@ -165,6 +165,18 @@ export type ThresholdViolation = {
   value: number;
   threshold: number;
   severity: ThresholdSeverity;
+  /**
+   * Multiplicative factor applied to the base threshold because the observed
+   * CV for this metric fell in the adaptive-widening band (25% ≤ CV ≤ 50%).
+   * Undefined when no CV adjustment was applied.
+   */
+  cvAdjustment?: number;
+  /**
+   * Effective threshold after CI multiplier AND CV adjustment have been applied.
+   * Only emitted when `cvAdjustment` is present; otherwise the `threshold`
+   * field already carries the full effective value.
+   */
+  adjustedThreshold?: number;
 };
 
 /**
