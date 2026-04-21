@@ -2762,19 +2762,6 @@ export default class MetamaskController extends EventEmitter {
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
       ),
-      // @deprecated Use setAvatarType instead
-      setUseBlockie: preferencesController.setUseBlockie.bind(
-        preferencesController,
-      ),
-      setAvatarType: (avatarType) =>
-        preferencesController.setPreference('avatarType', avatarType),
-      setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
-        preferencesController,
-      ),
-      setUseMultiAccountBalanceChecker:
-        preferencesController.setUseMultiAccountBalanceChecker.bind(
-          preferencesController,
-        ),
       setUseSafeChainsListValidation:
         preferencesController.setUseSafeChainsListValidation.bind(
           preferencesController,
@@ -2783,16 +2770,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setUseNftDetection: preferencesController.setUseNftDetection.bind(
-        preferencesController,
-      ),
-      setUse4ByteResolution: preferencesController.setUse4ByteResolution.bind(
-        preferencesController,
-      ),
-      setUseCurrencyRateCheck:
-        preferencesController.setUseCurrencyRateCheck.bind(
-          preferencesController,
-        ),
-      setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
       getProviderConfig: () =>
@@ -2812,22 +2789,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setSecurityAlertsEnabled.bind(
           preferencesController,
         ),
-      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-      setAddSnapAccountEnabled:
-        preferencesController.setAddSnapAccountEnabled.bind(
-          preferencesController,
-        ),
-      ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
-      setWatchEthereumAccountEnabled:
-        preferencesController.setWatchEthereumAccountEnabled.bind(
-          preferencesController,
-        ),
-      ///: END:ONLY_INCLUDE_IF
-      setUseExternalNameSources:
-        preferencesController.setUseExternalNameSources.bind(
-          preferencesController,
-        ),
       setUseTransactionSimulations:
         preferencesController.setUseTransactionSimulations.bind(
           preferencesController,
@@ -2837,10 +2798,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       setIsIpfsGatewayEnabled:
         preferencesController.setIsIpfsGatewayEnabled.bind(
-          preferencesController,
-        ),
-      setUseAddressBarEnsResolution:
-        preferencesController.setUseAddressBarEnsResolution.bind(
           preferencesController,
         ),
       setParticipateInMetaMetrics:
@@ -2854,13 +2811,6 @@ export default class MetamaskController extends EventEmitter {
       setMarketingCampaignCookieId:
         metaMetricsController.setMarketingCampaignCookieId.bind(
           metaMetricsController,
-        ),
-      setCurrentLocale: preferencesController.setCurrentLocale.bind(
-        preferencesController,
-      ),
-      setServiceWorkerKeepAlivePreference:
-        preferencesController.setServiceWorkerKeepAlivePreference.bind(
-          preferencesController,
         ),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
@@ -2876,8 +2826,6 @@ export default class MetamaskController extends EventEmitter {
       resetAccount: this.resetAccount.bind(this),
       removeAccount: this.removeAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
-      getNextAvailableAccountName:
-        accountsController.getNextAvailableAccountName.bind(accountsController),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       getAccountsBySnapId: (snapId) =>
         getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId),
@@ -2965,9 +2913,6 @@ export default class MetamaskController extends EventEmitter {
         this.rewardsController.validateReferralCode.bind(
           this.rewardsController,
         ),
-      getRewardsGeoMetadata: this.rewardsController.getRewardsGeoMetadata.bind(
-        this.rewardsController,
-      ),
       rewardsOptIn: this.rewardsController.optIn.bind(this.rewardsController),
       rewardsIsOptInSupported: this.rewardsController.isOptInSupported.bind(
         this.rewardsController,
@@ -3086,36 +3031,6 @@ export default class MetamaskController extends EventEmitter {
       setFeatureFlag: preferencesController.setFeatureFlag.bind(
         preferencesController,
       ),
-      setPreference: preferencesController.setPreference.bind(
-        preferencesController,
-      ),
-
-      addKnownMethodData: preferencesController.addKnownMethodData.bind(
-        preferencesController,
-      ),
-      setDismissSeedBackUpReminder:
-        preferencesController.setDismissSeedBackUpReminder.bind(
-          preferencesController,
-        ),
-      setOverrideContentSecurityPolicyHeader:
-        preferencesController.setOverrideContentSecurityPolicyHeader.bind(
-          preferencesController,
-        ),
-      setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
-        preferencesController,
-      ),
-      setTheme: preferencesController.setTheme.bind(preferencesController),
-      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-      setSnapsAddSnapAccountModalDismissed:
-        preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
-          preferencesController,
-        ),
-      ///: END:ONLY_INCLUDE_IF
-
-      setManageInstitutionalWallets:
-        preferencesController.setManageInstitutionalWallets.bind(
-          preferencesController,
-        ),
 
       // AccountsController
       setSelectedInternalAccount: (id) => {
@@ -3259,8 +3174,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setOutdatedBrowserWarningLastShown.bind(
           appStateController,
         ),
-      setIsUpdateAvailable:
-        appStateController.setIsUpdateAvailable.bind(appStateController),
       setUpdateModalLastDismissedAt:
         appStateController.setUpdateModalLastDismissedAt.bind(
           appStateController,
@@ -3297,18 +3210,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       updateSlides: appStateController.updateSlides.bind(appStateController),
       removeSlide: appStateController.removeSlide.bind(appStateController),
-      setEnableEnforcedSimulations:
-        appStateController.setEnableEnforcedSimulations.bind(
-          appStateController,
-        ),
-      setEnableEnforcedSimulationsForTransaction:
-        appStateController.setEnableEnforcedSimulationsForTransaction.bind(
-          appStateController,
-        ),
-      setEnforcedSimulationsSlippageForTransaction:
-        appStateController.setEnforcedSimulationsSlippageForTransaction.bind(
-          appStateController,
-        ),
       setHasShownMultichainAccountsIntroModal:
         appStateController.setHasShownMultichainAccountsIntroModal.bind(
           appStateController,
