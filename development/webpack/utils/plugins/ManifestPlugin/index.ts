@@ -128,15 +128,10 @@ function emitJsonAsset(
   value: unknown,
 ): void {
   const source = new RawSource(JSON.stringify(value, null, 2));
-
-  if (compilation.getAsset(assetPath)) {
-    compilation.updateAsset(assetPath, source);
-  } else {
-    compilation.emitAsset(assetPath, source, {
-      javascriptModule: false,
-      contentType: 'application/json',
-    });
-  }
+  compilation.emitAsset(assetPath, source, {
+    javascriptModule: false,
+    contentType: 'application/json',
+  });
 }
 
 /**
