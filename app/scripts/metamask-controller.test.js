@@ -6048,7 +6048,7 @@ describe('MetaMaskController', () => {
         entropySource: primaryId,
       });
       expect(wallet.discoverAccounts).toHaveBeenCalledTimes(1);
-      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1, Tron: 0 });
+      expect(result).toStrictEqual({ bitcoin: 0, solana: 1, tron: 0 });
     });
 
     it('passes provided keyring id to wallet getter', async () => {
@@ -6076,7 +6076,7 @@ describe('MetaMaskController', () => {
         entropySource: providedId,
       });
 
-      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1, Tron: 0 });
+      expect(result).toStrictEqual({ bitcoin: 0, solana: 1, tron: 0 });
     });
 
     it('returns zero counts and warns when no HD keyring can be derived (no keyring id provided or HD keyring found)', async () => {
@@ -6089,7 +6089,7 @@ describe('MetaMaskController', () => {
 
       const result = await metamaskController.discoverAndCreateAccounts();
 
-      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0, Tron: 0 });
+      expect(result).toStrictEqual({ bitcoin: 0, solana: 0, tron: 0 });
       expect(warnSpy).toHaveBeenCalledWith(
         'Failed to add accounts with balance. Error: No keyring id to discover accounts for',
       );
@@ -6115,7 +6115,7 @@ describe('MetaMaskController', () => {
       const warnSpy = jest.spyOn(log, 'warn');
 
       const result = await metamaskController.discoverAndCreateAccounts();
-      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0, Tron: 0 });
+      expect(result).toStrictEqual({ bitcoin: 0, solana: 0, tron: 0 });
       expect(warnSpy).toHaveBeenCalledWith(
         'Failed to add accounts with balance. Error: boom',
       );

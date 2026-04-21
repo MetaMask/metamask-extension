@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/unified-signatures */
+import log from 'loglevel';
+
 /**
  * account-management
  *
@@ -394,18 +396,18 @@ export function getDiscoveryCountByProvider(
     bitcoinAccountTypes: string[];
     tronAccountTypes?: string[];
   },
-): { Bitcoin: number; Solana: number; Tron: number } {
-  const counts = { Bitcoin: 0, Solana: 0, Tron: 0 };
+): { bitcoin: number; solana: number; tron: number } {
+  const counts = { bitcoin: 0, solana: 0, tron: 0 };
 
   for (const account of accounts) {
     if (opts.solanaAccountTypes.includes(account.type)) {
-      counts.Solana += 1;
+      counts.solana += 1;
     }
     if (opts.bitcoinAccountTypes.includes(account.type)) {
-      counts.Bitcoin += 1;
+      counts.bitcoin += 1;
     }
     if (opts.tronAccountTypes?.includes(account.type)) {
-      counts.Tron += 1;
+      counts.tron += 1;
     }
   }
 
@@ -452,7 +454,7 @@ export async function discoverAndCreateAccounts(
       tronAccountTypes?: string[];
     };
   },
-): Promise<{ Bitcoin: number; Solana: number; Tron: number }> {
+): Promise<{ bitcoin: number; solana: number; tron: number }> {
   try {
     const keyringIdToDiscover =
       opts.keyringId ?? (await opts.getFirstKeyringId());
@@ -470,8 +472,9 @@ export async function discoverAndCreateAccounts(
       result,
       opts.getDiscoveryCountByProviderOpts,
     );
-  } catch {
-    return { Bitcoin: 0, Solana: 0, Tron: 0 };
+  } catch (error) {
+    log.warn(`Failed to add accounts with balance. ${error}`);
+    return { bitcoin: 0, solana: 0, tron: 0 };
   }
 }
 
