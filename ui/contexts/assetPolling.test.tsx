@@ -86,14 +86,15 @@ describe('AssetPollingProvider', () => {
       renderProvider(true);
     });
 
-    it('does not call any polling hooks', () => {
+    it('calls only AssetsControllerPolling hooks', () => {
+      expect(mockUseTokenListPolling).toHaveBeenCalledTimes(1);
+      expect(mockUseDeFiPolling).toHaveBeenCalledTimes(1);
+      expect(mockUseStaticTokensPollingHook).toHaveBeenCalledTimes(1);
+
       expect(mockUseCurrencyRatePolling).not.toHaveBeenCalled();
       expect(mockUseTokenRatesPolling).not.toHaveBeenCalled();
       expect(mockUseTokenDetectionPolling).not.toHaveBeenCalled();
-      expect(mockUseTokenListPolling).not.toHaveBeenCalled();
-      expect(mockUseDeFiPolling).not.toHaveBeenCalled();
       expect(mockUseMultichainAssetsRatesPolling).not.toHaveBeenCalled();
-      expect(mockUseStaticTokensPollingHook).not.toHaveBeenCalled();
     });
   });
 });

@@ -13,6 +13,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
 import {
   IPFS_DEFAULT_GATEWAY_URL,
@@ -54,7 +55,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   ADD_POPULAR_CUSTOM_NETWORK,
-  REVEAL_SRP_LIST_ROUTE,
+  MANAGE_WALLET_RECOVERY_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
@@ -190,8 +191,8 @@ export default class SecurityTab extends PureComponent {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          is_metrics_opted_in: true,
-          has_marketing_consent: Boolean(value),
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(value),
           location: 'Settings',
         },
       });
@@ -289,7 +290,7 @@ export default class SecurityTab extends PureComponent {
                       location: 'Settings',
                     },
                   });
-                  navigate(REVEAL_SRP_LIST_ROUTE);
+                  navigate(MANAGE_WALLET_RECOVERY_ROUTE);
                 }}
               >
                 {getButtonText()}

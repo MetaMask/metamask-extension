@@ -7,6 +7,161 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.27.0]
+
+### Added
+
+- Added improved gas-included metrics for send and transfer flows (#41581)
+- Added transaction metrics for smart transactions and submission method details (#41465)
+- Added clearer “no quotes available” messaging on the bridge and swap page for amount, slippage, and token support limits (#41412)
+- Added navigation to the Activity tab when the failed-transaction badge is clicked (#41531)
+- Added a fiat loss amount to the bridge high price impact warning in the user’s local currency (#41492)
+- Added a “See All” control for Recent Activity on the perps market detail page and fixed the activity back navigation (#41541)
+- Added Tempo support (7702 and gasless) when no native token is present on the extension (#40449)
+- Added cancel-order flow from the perps market detail entry point (#41484)
+- Added the updated mUSD claim modal design (#41158)
+- Added the perps first-time user experience (#41429)
+- Added a button-style control to re-fetch bridge quotes (#41379)
+- Enabled the extension side panel for social-login rehydration (#41491)
+
+### Changed
+
+- Changed default address font weight and icon sizing on the account list (#41580)
+- Updated extension typography and design-system dependencies for the v27 semibold migration (#41467)
+- Updated the default address row to open the multichain account menu on click instead of hover (#41540)
+- Removed the `es` locale and pointed `es-419` at `es` translations (#41506)
+
+### Fixed
+
+- Fixed TRC20 send confirmation details, including token icon sizing (#41547)
+- Fixed hover and active styles on the fullscreen Settings view (#41603)
+- Fixed incorrect margin on the perps order entry when leverage is applied (#41350)
+- Fixed the Perps Explore Markets section to rank markets by 24h volume (#41606)
+- Replaced the perps market list flat sort control with a two-section sort modal (#41385)
+- Updated margin toast copy on perps flows (#41562)
+- Fixed Perps deposit completion returning to the home page instead of the prior screen (#41517)
+- Fixed bridge token balances appearing slightly high due to double rounding in the amount formatter (#41505)
+- On gas-sponsored networks, allowed sending the full native balance using Max (#41299)
+- Fixed the perps market detail header staying visible while scrolling (#41555)
+- Fixed Activity tab speed-up and pending status using the wrong earliest nonce when completed local transactions remained in the list (#41444)
+- Fixed the welcome screen fox animation clipping or distorting when resizing the browser without reloading (#41499)
+- Replaced placeholder data in the perps Recent Activity section with real trade history (#41508)
+- Filtered inactive zero-volume markets out of the perpetuals market list (#41502)
+- Included `ClientVersion` in swap token endpoint requests (#41516)
+- Fixed dapp connection control bar flicker when switching home tabs (#41501)
+- Fixed gas handling reliability when canceling or speeding up a pending transaction (#41437)
+- Fixed a crash when selecting an external recipient during cross-chain bridge transactions (#41442)
+- Fixed order and funding transactions incorrectly appearing in perps Recent Activity (#41446)
+- Fixed cancel-all and close-all controls on perps (#41430)
+
+## [13.26.0]
+
+### Added
+
+- Added warnings for outdated Chrome, Edge, Firefox, and Opera to update before support ends, and announced that official Firefox support on Windows 7–8.1 and macOS 10.12–10.14 will end in the next release (#41063)
+- Added transaction toast notification (#40886)
+- Added settings v2 to replace legacy settings (#41194)
+- Added banners localization (#41387)
+- Defaulted perpetuals leverage to 3x for new users and added per-market leverage memory so the order form starts at the last-used leverage (#41394)
+- Added missing support links into the perps tab (#41286)
+- Added warnings when setting a perps limit price above/below current price or near the liquidation price (#41230)
+- Added Perps withdrawal flow (#41214)
+- Added legacy transaction support to the new cancel/speedup (#40925)
+- Added Enter key navigation, migrated to design-system-react and a unit test suite for the password form (#41296)
+- Added real-time dapp scanning warning with acknowledgment checkbox on the SRP reveal page for malicious websites (#40209)
+- Added dapp connection control bar (#40617)
+- Added asset verified badge in swaps asset picker (#41169)
+- Added export data button (#41427)
+- Added ability to close all positions and cancel all open orders (#41287)
+
+### Changed
+
+- Removed useBlockie (#40544)
+- Updated survey banner (#41403)
+- Removed deprecated Snap methods `snap_getCurrencyRate` and `snap_experimentalProviderRequest` (#41313)
+- Adjusted dapp connection control bar styling (#41390)
+- Filtered out native token transfers (#41164)
+
+### Fixed
+
+- Fixed a bug that was causing issues with TRC20 token transfers (#41103)
+- Fixed design and estimate calculation for add/remove margin flows (#41285)
+- Fixed Bitcoin PSBT build errors to include the underlying cause for better diagnostics (#41422)
+- Fixed an issue where choosing Try again on some error screens could show the browser’s default page inside the MetaMask window instead of restarting the extension (#41364)
+- Fixed a crash that could occur for users with corrupted wallet state after a password reset or Snap keyring usage (#41405)
+- Localized `Looking for your <device>` message (#41417)
+- Fixed Review Permissions screen incorrectly showing non-EVM networks instead of the requested testnet during chain switch (#41236)
+- Fixed tooltip icon in claimable bonus row for Firefox compatibility (#41404)
+- Fixed asset list and select quotes list behavior (#41155)
+- Fixed bridge page inputs not resetting after submitting a transaction (#41222)
+- Fixed close position modal design and partial-close behavior (#41279)
+- Fixed position size display to show USD value instead of token units (#41380)
+- Fixed TP/SL form reset bug (#41283)
+
+## [13.25.0]
+
+### Added
+
+- Recent Activity on the Perps tab and related UI improvements (#41174)
+- Default address shown by default with a hoverable network group (optional default address) below each account name on the account list (#41138)
+- Perps watchlist (#40991)
+- Deep links for Perps: open the Perps tab, a specific market, or the market list with a pre-selected filter (#41143)
+- Search in Settings V2 (#41080)
+- Logos for Stable network and its native token (#40879)
+- Bridging from EVM chains to other wallet addresses (#40990)
+- Perps live stream hooks in the UI (#40779)
+- "Paid by MetaMask" on the Activity "Total gas fee" row when the transaction was a gas-sponsored swap (#40757)
+
+### Changed
+
+- mUSD conversion education and confirmation copy: clearer bonus layout, Relay attribution in the header, wider info popover, accessible bonus tooltip labels, aligned home mUSD CTA with the asset overview CTA, and removed unused `musdEarnBonusPercentage` locale keys (#41233)
+- Migrated stock and market closure components to the design-system-react library and adjusted styling to design guidelines (#41059)
+- Migrated to historical prices v3 (#41112)
+- Multichain network avatars remain visible when default address mode is enabled (#41238)
+- Reverted the asset verified badge in the swaps asset picker (#41163)
+- mUSD education splash screen no longer shows extra empty space at the bottom on shorter screens (#41077)
+
+### Fixed
+
+- Activity tab error state (#41266)
+- NFT detail page in fullscreen (#41210)
+- Gas editor from cancel or speed-up flow aligned with the main transaction confirmation flow (#40734)
+- Order exposure increase bug (#41028)
+- Perps positions and balance not updating when switching between accounts (#41168)
+- Order entry header visuals and persisted order values (#41025)
+- Canceling Solana transactions no longer leaves the wallet loading indefinitely (#41055)
+- Translation error on the Reveal Secret Recovery Phrase page that could crash the extension for the Irish (ga) locale (#41047)
+
+## [13.24.0]
+
+### Added
+
+- Added check for hiding Cancel and Speed up in the activity list when the user has selected another token to pay for gas (#40804)
+- Added Security & Password page to the redesigned settings (#40959)
+- Authenticate transaction submission to sentinel and transaction API (#40667)
+- Enable hardware wallet error management in send and dapp flow. (#40836)
+
+### Changed
+
+- Updates wording and styles in basic functionality modal (#40954)
+- Use design-system-react components on shield confirmation screens (#40832)
+
+### Fixed
+
+- Fixed banner display in sidebar view (#40988)
+- Fixed EIP-712 typed data signing for Ledger Nano S devices (#41017)
+- Fixed MegaETH explorer button to display "View on Megaeth Explorer" instead of "View on MEGA Mainnet Explorer" (#41003)
+- Fixed non-EVM account changed notifications not selecting the correct account on page reload for Tron and Solana (#40927)
+- Fixed "Proposed nicknames" appearing as a non-functional result in Settings search (#40772)
+- Swap activity history details (#40993)
+- Refresh token list immediately after import when assetsUnifyState is enabled (#40919)
+- (import-tokens) validate duplicate token checks by selected network (#40969)
+- Resolve slip44 key mismatch for native tokens in assets-unify-state selectors (#40964)
+- Fixed a Sentry error during startup for users upgrading from older versions without TransactionController state (#40765)
+- Fixed a crash on the contacts page when an internal account had corrupted or missing metadata. (#40955)
+- Fixed an issue with Snaps links (#40950)
+- Fix missing locale. (#40923)
+
 ## [13.23.0]
 
 ### Added
@@ -1953,7 +2108,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.23.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...HEAD
+[13.27.0]: https://github.com/MetaMask/metamask-extension/compare/v13.26.0...v13.27.0
+[13.26.0]: https://github.com/MetaMask/metamask-extension/compare/v13.25.0...v13.26.0
+[13.25.0]: https://github.com/MetaMask/metamask-extension/compare/v13.24.0...v13.25.0
+[13.24.0]: https://github.com/MetaMask/metamask-extension/compare/v13.23.0...v13.24.0
 [13.23.0]: https://github.com/MetaMask/metamask-extension/compare/v13.22.0...v13.23.0
 [13.22.0]: https://github.com/MetaMask/metamask-extension/compare/v13.21.0...v13.22.0
 [13.21.0]: https://github.com/MetaMask/metamask-extension/compare/v13.20.1...v13.21.0

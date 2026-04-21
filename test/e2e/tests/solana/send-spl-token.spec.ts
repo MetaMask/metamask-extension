@@ -87,13 +87,13 @@ describe('Send flow - SPL Token', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
+        const homePage = new NonEvmHomepage(driver);
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.clickOnSendButton();
 
@@ -142,12 +142,12 @@ describe('Send flow - SPL Token', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
 
+        const homePage = new NonEvmHomepage(driver);
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.clickOnSendButton();
 

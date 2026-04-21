@@ -1,25 +1,24 @@
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
 import SettingsPage from '../pages/settings/settings-page';
-import GeneralSettings from '../pages/settings/general-settings';
-import AdvancedSettings from '../pages/settings/advanced-settings';
+import PreferencesAndDisplaySettings from '../pages/settings/preferences-and-display-settings';
+import SelectNetwork from '../pages/dialog/select-network';
+import HeaderNavbar from '../pages/header-navbar';
 
 /**
- * Enable test networks (testnets) from settings
+ * Enable test networks (testnets) from Settings → Networks (opens the network
+ * list menu; toggles “Show test networks”).
  *
  * @param driver - The WebDriver instance
  */
 export const enableTestNetworks = async (driver: Driver): Promise<void> => {
-  const homePage = new HomePage(driver);
-  await homePage.headerNavbar.openSettingsPage();
+  const headerNavbar = new HeaderNavbar(driver);
+  await headerNavbar.openGlobalNetworksMenu();
 
-  const settingsPage = new SettingsPage(driver);
-  await settingsPage.clickAdvancedTab();
-
-  const advancedSettings = new AdvancedSettings(driver);
-  await advancedSettings.checkPageIsLoaded();
-  await advancedSettings.toggleShowTestnets();
-  await settingsPage.closeSettingsPage();
+  const selectNetworkDialog = new SelectNetwork(driver);
+  await selectNetworkDialog.checkPageIsLoaded();
+  await selectNetworkDialog.toggleShowTestNetwork();
+  await selectNetworkDialog.clickCloseButton();
 };
 
 /**
@@ -33,10 +32,13 @@ export const enableNativeTokenAsMainBalance = async (
   const homePage = new HomePage(driver);
   await homePage.headerNavbar.openSettingsPage();
 
-  const generalSettings = new GeneralSettings(driver);
-  await generalSettings.checkPageIsLoaded();
-  await generalSettings.toggleShowNativeTokenAsMainBalance();
-
   const settingsPage = new SettingsPage(driver);
-  await settingsPage.closeSettingsPage();
+  await settingsPage.checkPageIsLoaded();
+  await settingsPage.goToAssetsSettings();
+
+  const assetsSettings = new PreferencesAndDisplaySettings(driver);
+  await assetsSettings.checkAssetsPageIsLoaded();
+  await assetsSettings.toggleShowNativeTokenAsMainBalance();
+
+  await settingsPage.clickBackButton();
 };

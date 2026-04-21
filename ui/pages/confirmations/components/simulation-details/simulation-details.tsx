@@ -467,7 +467,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     return null;
   }
 
-  if (error && !hasStaticData) {
+  if (
+    error &&
+    (error.code === SimulationErrorCode.Reverted || !hasStaticData)
+  ) {
     const inHeaderProp = error.code !== SimulationErrorCode.Reverted && {
       inHeader: <ErrorContent error={error} />,
     };

@@ -397,6 +397,86 @@ describe('SimulationDetails', () => {
     );
   });
 
+  it('renders error instead of static rows when simulation is reverted', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: [],
+    });
+
+    const staticRows: StaticRow[] = [
+      {
+        label: 'Approve',
+        balanceChanges: [
+          {
+            asset: {
+              address: '0x123',
+              chainId: '0x321',
+              standard: TokenStandard.ERC20,
+            },
+            amount: new BigNumber(123),
+            fiatAmount: 456,
+            usdAmount: 789,
+          },
+        ],
+      },
+    ];
+
+    renderSimulationDetails(
+      { error: { code: SimulationErrorCode.Reverted, message: '' } },
+      false,
+      staticRows,
+    );
+
+    expect(
+      screen.getByText(/transaction is likely to fail/u),
+    ).toBeInTheDocument();
+    expect(BalanceChangeList).not.toHaveBeenCalled();
+  });
+
+  it('renders static rows when simulation error is chain not supported', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: [],
+    });
+
+    const staticRows: StaticRow[] = [
+      {
+        label: 'Approve',
+        balanceChanges: [
+          {
+            asset: {
+              address: '0x123',
+              chainId: '0x321',
+              standard: TokenStandard.ERC20,
+            },
+            amount: new BigNumber(123),
+            fiatAmount: 456,
+            usdAmount: 789,
+          },
+        ],
+      },
+    ];
+
+    renderSimulationDetails(
+      {
+        error: {
+          code: SimulationErrorCode.ChainNotSupported,
+          message: 'Chain is not supported',
+        },
+      },
+      false,
+      staticRows,
+    );
+
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: 'Approve',
+        balanceChanges: staticRows[0].balanceChanges,
+      }),
+      {},
+    );
+  });
+
   it('indicates that simulation details are enforced', () => {
     (useBalanceChanges as jest.Mock).mockReturnValue({
       pending: false,

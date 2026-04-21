@@ -13,7 +13,6 @@ import {
   IconColor,
   Text,
   TextVariant,
-  BoxBackgroundColor,
 } from '@metamask/design-system-react';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { setTheme } from '../../../store/actions';
@@ -57,12 +56,11 @@ const ThemeSubPage = () => {
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
             alignItems={BoxAlignItems.Center}
-            backgroundColor={
+            className={`w-full cursor-pointer border-0 p-4 ${
               isSelected
-                ? BoxBackgroundColor.BackgroundMuted
-                : BoxBackgroundColor.BackgroundDefault
-            }
-            className="w-full cursor-pointer border-0 p-4"
+                ? 'bg-muted hover:bg-muted-hover'
+                : 'bg-background-default hover:bg-background-default-hover'
+            }`}
             onClick={() => handleSelect(value)}
           >
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>

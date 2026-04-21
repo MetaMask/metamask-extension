@@ -228,11 +228,8 @@ describe('perps-controller selectors', () => {
       ).toBe(value);
     });
 
-    it('defaults to both true', () => {
-      expect(selectPerpsIsFirstTimeUser(buildState())).toEqual({
-        testnet: true,
-        mainnet: true,
-      });
+    it('returns undefined when absent', () => {
+      expect(selectPerpsIsFirstTimeUser(buildState())).toBeUndefined();
     });
   });
 
@@ -339,7 +336,27 @@ describe('perps-controller selectors', () => {
     it('returns value from state', () => {
       const data = [{ market: 'ETH' }];
       expect(
-        selectPerpsCachedMarketData(buildState({ cachedMarketData: data })),
+        selectPerpsCachedMarketData(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedMarketDataByProvider: {
+              hyperliquid: { data, timestamp: 0 },
+            },
+          }),
+        ),
+      ).toBe(data);
+    });
+
+    it('falls back to hyperliquid data when activeProvider is absent', () => {
+      const data = [{ market: 'ETH' }];
+      expect(
+        selectPerpsCachedMarketData(
+          buildState({
+            cachedMarketDataByProvider: {
+              hyperliquid: { data, timestamp: 0 },
+            },
+          }),
+        ),
       ).toBe(data);
     });
 
@@ -352,7 +369,39 @@ describe('perps-controller selectors', () => {
     it('returns value from state', () => {
       const positions = [{ market: 'ETH', size: 1 }];
       expect(
-        selectPerpsCachedPositions(buildState({ cachedPositions: positions })),
+        selectPerpsCachedPositions(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions,
+                orders: [],
+                accountState: null,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
+      ).toBe(positions);
+    });
+
+    it('falls back to hyperliquid positions when activeProvider is absent', () => {
+      const positions = [{ market: 'ETH', size: 1 }];
+      expect(
+        selectPerpsCachedPositions(
+          buildState({
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions,
+                orders: [],
+                accountState: null,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
       ).toBe(positions);
     });
 
@@ -365,7 +414,39 @@ describe('perps-controller selectors', () => {
     it('returns value from state', () => {
       const orders = [{ id: 'o1' }];
       expect(
-        selectPerpsCachedOrders(buildState({ cachedOrders: orders })),
+        selectPerpsCachedOrders(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions: [],
+                orders,
+                accountState: null,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
+      ).toBe(orders);
+    });
+
+    it('falls back to hyperliquid orders when activeProvider is absent', () => {
+      const orders = [{ id: 'o1' }];
+      expect(
+        selectPerpsCachedOrders(
+          buildState({
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions: [],
+                orders,
+                accountState: null,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
       ).toBe(orders);
     });
 
@@ -379,7 +460,37 @@ describe('perps-controller selectors', () => {
       const account = { balance: '100' };
       expect(
         selectPerpsCachedAccountState(
-          buildState({ cachedAccountState: account }),
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions: [],
+                orders: [],
+                accountState: account,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
+      ).toBe(account);
+    });
+
+    it('falls back to hyperliquid account state when activeProvider is absent', () => {
+      const account = { balance: '100' };
+      expect(
+        selectPerpsCachedAccountState(
+          buildState({
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions: [],
+                orders: [],
+                accountState: account,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
         ),
       ).toBe(account);
     });

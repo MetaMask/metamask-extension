@@ -343,9 +343,9 @@ export default function AwaitingSwap({
             isSwapsDefaultTokenSymbol(destinationTokenSymbol, chainId) ||
             swapComplete
           ) {
-            navigate(DEFAULT_ROUTE);
-          } else {
             navigate(`${DEFAULT_ROUTE}?tab=activity`);
+          } else {
+            navigate(DEFAULT_ROUTE);
           }
         }}
         onCancel={async () =>

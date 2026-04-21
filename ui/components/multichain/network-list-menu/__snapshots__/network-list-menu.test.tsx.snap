@@ -905,6 +905,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       />
                     </div>
                     <input
+                      data-testid="network-menu-show-test-networks"
                       style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                       type="checkbox"
                       value="false"
@@ -2132,6 +2133,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       />
                     </div>
                     <input
+                      data-testid="network-menu-show-test-networks"
                       style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                       type="checkbox"
                       value="false"

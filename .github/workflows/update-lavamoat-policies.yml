@@ -398,7 +398,7 @@ jobs:
       - name: Post comment (policies updated)
         if: ${{ env.UPSTREAM_SUCCESS == 'true' && steps.policy-changes.outputs.HAS_CHANGES == 'true' }}
         run: |
-          echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n🧠 Learn how: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt | gh pr comment "${PR_NUMBER}" --body-file -
+          echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n> [!TIP]  \n> Follow the policy review process outlined in the [LavaMoat Policy Review Process doc](https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md) before expecting an approval from Policy Reviewers.  \n🧠 Learn how to read policy diffs: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt | gh pr comment "${PR_NUMBER}" --body-file -
 
       - name: Post comment (no policy changes)
         if: ${{ env.UPSTREAM_SUCCESS == 'true' && steps.policy-changes.outputs.HAS_CHANGES == 'false' }}

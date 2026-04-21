@@ -13,7 +13,7 @@ export const triggerCrash = async (driver: Driver): Promise<void> => {
   await headerNavbar.openSettingsPage();
   const settingsPage = new SettingsPage(driver);
   await settingsPage.checkPageIsLoaded();
-  await settingsPage.goToDeveloperOptions();
+  await settingsPage.goToDebugSettings();
 
   const developOptionsPage = new DevelopOptions(driver);
   await developOptionsPage.checkPageIsLoaded();

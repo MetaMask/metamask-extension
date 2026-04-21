@@ -206,6 +206,60 @@ describe('CancelSpeedup Component', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
+  it('renders loading skeleton when previousGas is not set', async () => {
+    const transactionWithoutPreviousGas = {
+      ...mockTransaction,
+      previousGas: undefined,
+    } as unknown as TransactionMeta;
+
+    const store = configureStore({
+      appState: { isLoading: false },
+      metamask: {
+        ...mockState.metamask,
+        isInitialized: true,
+        accounts: {
+          [mockSelectedInternalAccount.address]: {
+            address: mockSelectedInternalAccount.address,
+            balance: '0x1F4',
+          },
+        },
+        preferences: { showFiatInTestnets: true },
+        featureFlags: { advancedInlineGas: true },
+        gasFeeEstimates:
+          mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+        gasFeeEstimatesByChainId: {
+          ...mockState.metamask.gasFeeEstimatesByChainId,
+          '0x5': {
+            ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+            gasFeeEstimates:
+              mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+          },
+        },
+      },
+    });
+
+    renderWithProvider(
+      <CancelSpeedup
+        transaction={transactionWithoutPreviousGas}
+        editGasMode={EditGasModes.cancel}
+      />,
+      store,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-section-loading'),
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByTestId('cancel-speedup-section'),
+    ).not.toBeInTheDocument();
+
+    const confirmButton = screen.getByTestId('cancel-speedup-confirm-button');
+    expect(confirmButton).toBeDisabled();
+  });
+
   it('renders correctly in Speed Up mode', async () => {
     render({ editGasMode: EditGasModes.speedUp });
 
@@ -271,6 +325,77 @@ describe('CancelSpeedup Component', () => {
     await waitFor(() => {
       expect(createCancelTransaction).toHaveBeenCalledTimes(1);
       expect(mockCloseModal).toHaveBeenCalledWith(['cancelSpeedUpTransaction']);
+    });
+  });
+
+  it('renders error toast when cancelTransaction rejects', async () => {
+    (createCancelTransaction as jest.Mock).mockImplementation(
+      () => () =>
+        Promise.reject(new Error('Previous transaction is already confirmed')),
+    );
+
+    render({ editGasMode: EditGasModes.cancel });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-confirm-button'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('cancel-speedup-confirm-button'));
+
+    (useTransactionModalContext as jest.Mock).mockReturnValue({
+      currentModal: 'none',
+      closeModal: mockCloseModal,
+      openModal: mockOpenModal,
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-error-toast'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('cancelTransactionFailed') as string),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          tEn('cancelSpeedupAlreadyConfirmedDescription') as string,
+        ),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('renders error toast when speedUpTransaction rejects', async () => {
+    (createSpeedUpTransaction as jest.Mock).mockImplementation(
+      () => () => Promise.reject(new Error('gas estimation failed')),
+    );
+
+    render({ editGasMode: EditGasModes.speedUp });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-confirm-button'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('cancel-speedup-confirm-button'));
+
+    (useTransactionModalContext as jest.Mock).mockReturnValue({
+      currentModal: 'none',
+      closeModal: mockCloseModal,
+      openModal: mockOpenModal,
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-error-toast'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('speedUpTransactionFailed') as string),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('cancelSpeedupFailedDescription') as string),
+      ).toBeInTheDocument();
     });
   });
 

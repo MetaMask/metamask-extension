@@ -22,7 +22,6 @@ describe('Capability Integration', () => {
     it('creates a context with all MetaMask capabilities', () => {
       const context = createMetaMaskE2EContext();
 
-      expect(context.build).toBeDefined();
       expect(context.fixture).toBeDefined();
       expect(context.chain).toBeDefined();
       expect(context.contractSeeding).toBeDefined();
@@ -58,7 +57,6 @@ describe('Capability Integration', () => {
       const context = createMetaMaskE2EContext();
       sessionManager.setWorkflowContext(context as unknown as WorkflowContext);
 
-      expect(sessionManager.getBuildCapability()).toBe(context.build);
       expect(sessionManager.getFixtureCapability()).toBe(context.fixture);
       expect(sessionManager.getChainCapability()).toBe(context.chain);
       expect(sessionManager.getContractSeedingCapability()).toBe(
@@ -70,7 +68,6 @@ describe('Capability Integration', () => {
     });
 
     it('returns undefined when no context is set', () => {
-      expect(sessionManager.getBuildCapability()).toBeUndefined();
       expect(sessionManager.getFixtureCapability()).toBeUndefined();
       expect(sessionManager.getChainCapability()).toBeUndefined();
       expect(sessionManager.getContractSeedingCapability()).toBeUndefined();
@@ -81,6 +78,8 @@ describe('Capability Integration', () => {
   describe('Tool registry', () => {
     it('provides handlers for all mm_* tools', () => {
       const expectedTools = [
+        // mm_build is registered by @metamask/client-mcp-core and will be used
+        // for mobile client support. No MetaMask Extension implementation needed.
         'mm_build',
         'mm_launch',
         'mm_cleanup',
@@ -121,44 +120,6 @@ describe('Capability Integration', () => {
     });
   });
 
-  describe('Capability-injected tool handlers', () => {
-    beforeEach(() => {
-      const context = createMetaMaskE2EContext();
-      sessionManager.setWorkflowContext(context as unknown as WorkflowContext);
-    });
-
-    afterEach(() => {
-      sessionManager.setWorkflowContext(
-        undefined as unknown as WorkflowContext,
-      );
-    });
-
-    it('mm_build handler uses BuildCapability from context', async () => {
-      const handler = getToolHandler('mm_build');
-      expect(handler).toBeDefined();
-      if (!handler) {
-        throw new Error('Handler not found');
-      }
-
-      const buildCapability = sessionManager.getBuildCapability();
-      expect(buildCapability).toBeDefined();
-      if (!buildCapability) {
-        throw new Error('BuildCapability not found');
-      }
-
-      const isBuiltSpy = jest
-        .spyOn(buildCapability, 'isBuilt')
-        .mockResolvedValue(true);
-
-      const result = await handler({ force: false }, {});
-
-      expect(isBuiltSpy).toHaveBeenCalled();
-      expect(result.ok).toBe(true);
-
-      isBuiltSpy.mockRestore();
-    });
-  });
-
   describe('Backward compatibility', () => {
     it('tools work even when context is not set (legacy mode)', async () => {
       sessionManager.setWorkflowContext(
@@ -182,7 +143,6 @@ describe('Capability Integration', () => {
         undefined as unknown as WorkflowContext,
       );
 
-      expect(sessionManager.getBuildCapability()).toBeUndefined();
       expect(sessionManager.getStateSnapshotCapability()).toBeUndefined();
     });
   });
@@ -224,19 +184,6 @@ describe('Capability Integration', () => {
     it('prod context reports environment as prod', () => {
       const context = sessionManager.getWorkflowContext();
       expect(context?.config?.environment).toBe('prod');
-    });
-
-    describe('with includeBuild option', () => {
-      beforeEach(() => {
-        const prodContext = createMetaMaskProdContext({ includeBuild: true });
-        sessionManager.setWorkflowContext(
-          prodContext as unknown as WorkflowContext,
-        );
-      });
-
-      it('includes build capability when includeBuild is true', () => {
-        expect(sessionManager.getBuildCapability()).toBeDefined();
-      });
     });
 
     describe('with remoteChain option', () => {

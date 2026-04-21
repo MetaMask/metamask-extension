@@ -106,6 +106,7 @@ describe('useGasFeeEstimateLevelOptions', () => {
     mockUseConfirmContext.mockReturnValue({
       currentConfirmation: {
         id: '1',
+        chainId: '0x1',
         networkClientId: 'mainnet',
         userFeeLevel: 'medium',
         gasLimitNoBuffer: '0x5208',
@@ -155,6 +156,8 @@ describe('useGasFeeEstimateLevelOptions', () => {
     expect(result.current[1].key).toBe(GasFeeEstimateLevel.Medium);
     expect(result.current[2].key).toBe(GasFeeEstimateLevel.High);
     expect(result.current[1].isSelected).toBe(true);
+    // networkConfigurationsByChainId is empty in mockState; fallback ticker must not be the string "undefined"
+    expect(result.current[0].value).toBe('0.001 ETH');
   });
 
   it('skips high option when it has the same fees as medium for FeeMarket type', () => {

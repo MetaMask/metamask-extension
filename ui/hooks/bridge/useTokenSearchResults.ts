@@ -37,7 +37,7 @@ export const useTokenSearchResults = ({
     getAccountGroupsByAddress(state, [accountAddress]),
   );
   const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
-    getBridgeAssetsByAssetId(state, accountGroup.id),
+    getBridgeAssetsByAssetId(state, accountGroup?.id),
   );
 
   const abortControllerRef = useRef<AbortController>(new AbortController());
@@ -76,6 +76,7 @@ export const useTokenSearchResults = ({
         query,
         jwt,
         clientId: BridgeClientId.EXTENSION,
+        clientVersion: process.env.METAMASK_VERSION,
         signal: abortControllerRef.current?.signal,
         bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
         after: cursor,

@@ -29,6 +29,9 @@ class SelectNetwork {
     testId: 'network-list-item-options-discover',
   };
 
+  private readonly drawerOverlay =
+    'div[class*="bg-[var(--color-overlay-default)]"]';
+
   private readonly editNetworkButton =
     '[data-testid="network-list-item-options-edit"]';
 
@@ -52,7 +55,7 @@ class SelectNetwork {
     tag: 'h4',
   };
 
-  private readonly toggleButton = '.toggle-button > div';
+  private readonly showTestNetworksToggle = '.toggle-button';
 
   private readonly addPopularNetworkByChainIdIcon = (chainId: string) =>
     `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"] button`;
@@ -123,6 +126,10 @@ class SelectNetwork {
     await this.openNetworkListOptions(chainId);
     await this.driver.clickElementAndWaitToDisappear(this.deleteNetworkButton);
     await this.driver.waitForSelector(this.confirmDeleteNetworkModal);
+    // Ensure drawer overlay is not present to avoid ElementClickInterceptedError
+    await this.driver.assertElementNotPresent(this.drawerOverlay, {
+      waitAtLeastGuard: 200,
+    });
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmDeleteNetworkButton,
     );
@@ -185,7 +192,8 @@ class SelectNetwork {
 
   async toggleShowTestNetwork(): Promise<void> {
     console.log('Toggle show test network in select network dialog');
-    await this.driver.clickElement(this.toggleButton);
+    await this.driver.clickElement(this.showTestNetworksToggle);
+    await this.driver.waitForElementToStopMoving(this.showTestNetworksToggle);
   }
 
   /**

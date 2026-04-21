@@ -14,6 +14,7 @@ export type SelectItemConfig = {
   /** Optional formatter to transform the value. Receives translation function for i18n. */
   formatValue?: (value: string, t: TranslateFunction) => string | ReactNode;
   route: string;
+  dataTestId?: string;
 };
 
 /**
@@ -36,6 +37,7 @@ export const createSelectItem = (
         label={t(config.titleKey)}
         value={displayValue}
         to={config.route}
+        dataTestId={config.dataTestId}
       />
     );
   };

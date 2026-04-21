@@ -9,7 +9,7 @@ on:
 
 permissions:
   contents: read # publish-release uses EXTENSION_PUBLISH_TOKEN for write operations
-  checks: read # Required to verify CI check-runs on the SHA
+  statuses: read # Required by verify-ci-checks.sh to read commit statuses
   actions: read # Required to download artifacts from build jobs
   id-token: write # Required for OIDC authentication in S3 uploads
 

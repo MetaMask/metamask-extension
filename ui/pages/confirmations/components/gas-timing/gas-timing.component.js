@@ -8,7 +8,6 @@ import {
   PriorityLevels,
 } from '../../../../../shared/constants/gas';
 import { Box, Text } from '../../../../components/component-library';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   getGasEstimateType,
@@ -26,8 +25,6 @@ import {
 import { GAS_FORM_ERRORS } from '../../../../helpers/constants/gas';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
-import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
-
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
 
@@ -59,9 +56,6 @@ export default function GasTiming({
   const gasFeeEstimates = chainGasFeeEstimates || gasFeeEstimatesFromRoot;
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
   const t = useContext(I18nContext);
-  const estimateUsed = useGasFeeContext()?.estimateUsed;
-
-  const transactionData = useDraftTransactionWithTxParams();
 
   // If the user has chosen a value lower than the low gas fee estimate,
   // We'll need to use the useEffect hook below to make a call to calculate
@@ -148,11 +142,7 @@ export default function GasTiming({
 
   const { low = {}, medium = {}, high = {} } = gasFeeEstimates;
 
-  const estimateToUse =
-    userFeeLevelOverride ??
-    estimateUsed ??
-    transactionData?.userFeeLevel ??
-    'medium';
+  const estimateToUse = userFeeLevelOverride ?? 'medium';
 
   const isPresetEstimate = PRESET_ESTIMATES.has(estimateToUse);
   const textTKey = estimateToUse === 'low' ? 'gasTimingLow' : estimateToUse;

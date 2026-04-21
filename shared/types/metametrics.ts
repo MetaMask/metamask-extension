@@ -54,6 +54,8 @@ export type TransactionMetricsRequest = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trackEvent: (payload: any) => void;
   getIsSmartTransaction: (chainId: Hex) => boolean;
+  getSmartTransactionsPreferenceEnabled: () => boolean;
+  getSmartTransactionsEnabled: (chainId: Hex) => boolean;
   getSmartTransactionByMinedTxHash: (
     txhash: string | undefined,
   ) => SmartTransaction;

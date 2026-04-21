@@ -10,12 +10,61 @@ describe('getReactCompilerLoader', () => {
     target: '17',
     verbose: false,
     debug: 'none',
+    threadLoaderEnabled: false,
   };
 
-  describe('when verbose is false', () => {
+  describe('when threadLoaderEnabled is true', () => {
+    it('returns wrapper loader', () => {
+      const loader = getReactCompilerLoader({
+        ...baseConfig,
+        threadLoaderEnabled: true,
+      });
+
+      assert.ok(
+        (loader as { loader: string }).loader.includes(
+          'reactCompilerLoaderWrapper',
+        ),
+      );
+    });
+
+    it('passes __verbose option when verbose is true', () => {
+      const loader = getReactCompilerLoader({
+        ...baseConfig,
+        threadLoaderEnabled: true,
+        verbose: true,
+      });
+
+      const opts = (
+        loader as {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          options: { __verbose?: boolean };
+        }
+      ).options;
+      assert.strictEqual(opts.__verbose, true);
+    });
+
+    it('passes __verbose: false when verbose is false', () => {
+      const loader = getReactCompilerLoader({
+        ...baseConfig,
+        threadLoaderEnabled: true,
+        verbose: false,
+      });
+
+      const opts = (
+        loader as {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          options: { __verbose?: boolean };
+        }
+      ).options;
+      assert.strictEqual(opts.__verbose, false);
+    });
+  });
+
+  describe('when threadLoaderEnabled is false and verbose is false', () => {
     it('returns direct react-compiler-loader (not wrapper)', () => {
       const loader = getReactCompilerLoader({
         ...baseConfig,
+        threadLoaderEnabled: false,
         verbose: false,
       });
 
@@ -27,6 +76,7 @@ describe('getReactCompilerLoader', () => {
     it('does not include __verbose in options', () => {
       const loader = getReactCompilerLoader({
         ...baseConfig,
+        threadLoaderEnabled: false,
         verbose: false,
       });
 
@@ -35,10 +85,11 @@ describe('getReactCompilerLoader', () => {
     });
   });
 
-  describe('when verbose is true', () => {
+  describe('when threadLoaderEnabled is false but verbose is true', () => {
     it('uses wrapper loader for verbose logging', () => {
       const loader = getReactCompilerLoader({
         ...baseConfig,
+        threadLoaderEnabled: false,
         verbose: true,
       });
 
@@ -52,6 +103,7 @@ describe('getReactCompilerLoader', () => {
     it('passes __verbose option', () => {
       const loader = getReactCompilerLoader({
         ...baseConfig,
+        threadLoaderEnabled: false,
         verbose: true,
       });
 

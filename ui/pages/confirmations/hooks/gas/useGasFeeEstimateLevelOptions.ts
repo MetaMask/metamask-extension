@@ -17,6 +17,7 @@ import { type GasOption } from '../../types/gas';
 import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { toHumanEstimatedTimeRange } from '../../utils/time';
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
+import { CURRENCY_SYMBOLS } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 
 const HEX_ZERO = '0x0';
@@ -43,11 +44,12 @@ export const useGasFeeEstimateLevelOptions = ({
     useConfirmContext<TransactionMeta>();
   const effectiveTransactionMeta = transactionMeta ?? DUMMY_TRANSACTION_META;
 
-  const nativeTicker = useSelector(
-    (state: Parameters<typeof getNetworkConfigurationsByChainId>[0]) =>
-      getNetworkConfigurationsByChainId(state)?.[transactionMeta?.chainId]
-        ?.nativeCurrency,
-  );
+  const nativeTicker =
+    useSelector(
+      (state: Parameters<typeof getNetworkConfigurationsByChainId>[0]) =>
+        getNetworkConfigurationsByChainId(state)?.[transactionMeta?.chainId]
+          ?.nativeCurrency,
+    ) ?? CURRENCY_SYMBOLS.ETH;
   const { calculateGasEstimate } = useFeeCalculations(effectiveTransactionMeta);
   const { gasFeeEstimates: networkGasFeeEstimates } = useGasFeeEstimates(
     transactionMeta?.networkClientId,

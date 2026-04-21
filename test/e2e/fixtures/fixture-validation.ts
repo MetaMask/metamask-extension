@@ -42,7 +42,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.SnapController.snaps',
   'data.SnapController.snapStates',
   'data.SnapController.unencryptedSnapStates',
-  'data.SnapsRegistry',
+  'data.SnapRegistryController',
   // Subject Metadata
   'data.SubjectMetadataController.subjectMetadata',
   // Locale-related keys
@@ -52,6 +52,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AppMetadataController.firstTimeInfo.date',
   'data.AppMetadataController.firstTimeInfo.version',
   'data.AppStateController.lastUpdatedAt',
+  'data.AppStateController.newPrivacyPolicyToastClickedOrClosed',
   'data.AppStateController.newPrivacyPolicyToastShownDate',
   'data.AppStateController.onboardingDate',
   'data.AppStateController.recoveryPhraseReminderLastShown',
@@ -69,6 +70,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.RemoteFeatureFlagController.thresholdCache',
   'data.RemoteFeatureFlagController.rawRemoteFeatureFlags',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
+  'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',
   'data.AuthenticationController',
   'data.MetaMetricsController',
@@ -78,6 +80,9 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.TokenBalancesController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
+  // E2E runs in full-screen / toolbar-popup flows, not the extension side panel.
+  // Dist builds still persist `useSidePanelAsDefault: true` while fixtures use `false`.
+  'data.PreferencesController.preferences.useSidePanelAsDefault',
   // Version that changes on every release
   'data.AppMetadataController.currentAppVersion',
   // Random ids

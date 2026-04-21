@@ -23,6 +23,9 @@ const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 const {
   getProductionRemoteFlagApiResponse,
 } = require('./feature-flags/feature-flag-registry');
+const {
+  setupSnapRegistryMocks,
+} = require('./mock-response-data/snaps/snap-registry-mocks');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -86,6 +89,7 @@ const blocklistedHosts = [
   'linea-sepolia.infura.io',
   'mainnet.infura.io',
   'optimism-mainnet.infura.io',
+  'polygon-mainnet.infura.io',
   'sei-mainnet.infura.io',
   'sepolia.infura.io',
   'testnet-rpc.monad.xyz',
@@ -198,6 +202,9 @@ async function setupMocking(
 
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
+
+  // Snaps execution ACL registry
+  await setupSnapRegistryMocks(server);
 
   // remote feature flags — production-accurate defaults from the registry
   // FF will apply to all environments: rc, prod and dev
@@ -1176,10 +1183,12 @@ async function setupMocking(
       };
     });
 
-  // On Ramp: Geolocation
-  await server
-    .forGet('https://on-ramp.api.cx.metamask.io/geolocation')
-    .thenCallback(() => {
+  // On Ramp: Geolocation (production and dev environments)
+  for (const host of [
+    'on-ramp.api.cx.metamask.io',
+    'on-ramp.dev-api.cx.metamask.io',
+  ]) {
+    await server.forGet(`https://${host}/geolocation`).thenCallback(() => {
       return {
         statusCode: 200,
         body: 'US-TX',
@@ -1188,6 +1197,7 @@ async function setupMocking(
         },
       };
     });
+  }
 
   // Snaps: Execution environment html
   await server

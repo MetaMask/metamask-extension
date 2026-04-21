@@ -1,6 +1,8 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
+import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../../../shared/constants/metametrics';
+import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
@@ -37,10 +39,7 @@ import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
-import {
-  useConfirmationNavigation,
-  useConfirmationNavigationOptions,
-} from '../../../hooks/useConfirmationNavigation';
+import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { useAddEthereumChain } from '../../../hooks/useAddEthereumChain';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import Footer from './footer';
@@ -68,6 +67,10 @@ const mockGetEnvironmentType = jest.fn();
 const mockNavigateNext = jest.fn();
 const mockNavigateToId = jest.fn();
 
+const mockTrackHardwareWalletRecoveryConnectCtaClicked = jest.mocked(
+  trackHardwareWalletRecoveryConnectCtaClicked,
+);
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockStore: any = null;
 
@@ -93,13 +96,10 @@ jest.mock('../../../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(() => Promise.resolve()),
 }));
 jest.mock('../../../hooks/useConfirmationNavigation', () => ({
+  ...jest.requireActual('../../../hooks/useConfirmationNavigation'),
   useConfirmationNavigation: jest.fn(() => ({
     navigateNext: mockNavigateNext,
     navigateToId: mockNavigateToId,
-  })),
-  useConfirmationNavigationOptions: jest.fn(() => ({
-    loader: 'default',
-    returnTo: undefined,
   })),
 }));
 jest.mock(
@@ -114,7 +114,9 @@ jest.mock(
 );
 
 jest.mock('../../../hooks/useOriginThrottling');
-
+jest.mock(
+  '../../../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked',
+);
 jest.mock('../../../../../hooks/subscription/useSubscription');
 jest.mock(
   '../../../../../contexts/hardware-wallets/HardwareWalletContext',
@@ -176,7 +178,18 @@ jest.mock('../../../hooks/useConfirmSendNavigation', () => ({
 }));
 
 const mockUseNavigate = jest.fn();
-const mockUseLocation = jest.fn();
+
+/** Default `useLocation()` shape for `useHardwareWalletRecoveryLocation` */
+function getDefaultFooterTestLocation() {
+  return {
+    pathname: '/confirm-transaction',
+    search: '',
+    hash: '',
+    state: null,
+  };
+}
+
+const mockUseLocation = jest.fn(getDefaultFooterTestLocation);
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
@@ -185,11 +198,24 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-const render = (args?: Record<string, unknown>) => {
+const render = (
+  args?: Record<string, unknown>,
+  options?: {
+    pathname?: string;
+    confirmationId?: string;
+    getMockTrackEvent?: () => jest.Mock;
+  },
+) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
   mockStore = store;
 
-  return renderWithConfirmContextProvider(<Footer />, store);
+  return renderWithConfirmContextProvider(
+    <Footer />,
+    store,
+    options?.pathname ?? DEFAULT_ROUTE,
+    options?.confirmationId,
+    options?.getMockTrackEvent,
+  );
 };
 
 const ALERT_MOCK = [
@@ -229,6 +255,7 @@ describe('ConfirmFooter', () => {
     mockUseHardwareWalletError.mockReset();
     mockIsHardwareWalletError.mockReset();
     mockIsUserRejectedHardwareWalletError.mockReset();
+    mockTrackHardwareWalletRecoveryConnectCtaClicked.mockReset();
 
     mockOnTransactionConfirm.mockResolvedValue(undefined);
     ensureDeviceReadyMock.mockResolvedValue(true);
@@ -265,12 +292,7 @@ describe('ConfirmFooter', () => {
       isGaslessLoading: false,
     });
 
-    mockUseLocation.mockReturnValue({
-      pathname: '/confirm-transaction',
-      search: '',
-      hash: '',
-      state: null,
-    });
+    mockUseLocation.mockImplementation(getDefaultFooterTestLocation);
     useUserSubscriptionsMock.mockReturnValue({
       trialedProducts: [],
       loading: false,
@@ -704,6 +726,43 @@ describe('ConfirmFooter', () => {
         getByTestId('reconnect-hardware-wallet-button'),
       ).toBeInTheDocument();
       expect(queryByTestId('confirm-footer-button')).not.toBeInTheDocument();
+    });
+
+    it('tracks hardware wallet recovery CTA when reconnect is clicked', async () => {
+      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+      const connectionState = {
+        status: ConnectionStatus.Disconnected as const,
+      };
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState,
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isDeviceConnected: false,
+      });
+
+      const { getByTestId } = render(undefined, {
+        getMockTrackEvent: () => mockTrackEvent,
+      });
+
+      fireEvent.click(getByTestId('reconnect-hardware-wallet-button'));
+
+      await waitFor(() => {
+        expect(
+          mockTrackHardwareWalletRecoveryConnectCtaClicked,
+        ).toHaveBeenCalledWith(mockTrackEvent, {
+          location: MetaMetricsHardwareWalletRecoveryLocation.Send,
+          walletType: HardwareWalletType.Ledger,
+          connectionState,
+        });
+      });
+      expect(ensureDeviceReadyMock).toHaveBeenCalled();
     });
 
     it('does not confirm when hardware wallet preflight fails', async () => {
@@ -1146,22 +1205,41 @@ describe('ConfirmFooter', () => {
     expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
   });
 
-  describe('returnTo navigation', () => {
-    const useConfirmationNavigationOptionsMock = jest.mocked(
-      useConfirmationNavigationOptions,
+  it('renders SingleActionFooter for perpsDeposit transaction type', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.perpsDeposit,
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
     );
 
-    it('does not call navigateNext when cancel is clicked and returnTo is defined', async () => {
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
+    );
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  describe('goBackTo navigation', () => {
+    it('does not call navigateNext when cancel is clicked and goBackTo is defined', async () => {
       const navigateNextMock = jest.fn();
       useConfirmationNavigationMock.mockReturnValue({
         navigateNext: navigateNextMock,
         navigateToId: jest.fn(),
       } as unknown as ReturnType<typeof useConfirmationNavigation>);
 
-      useConfirmationNavigationOptionsMock.mockReturnValue({
-        loader: undefined,
-        returnTo: '/asset/0x123',
-      });
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+        goBackTo: '/asset/0x123',
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
       const { getAllByRole } = render();
       const cancelButton = getAllByRole('button')[0];
@@ -1178,21 +1256,23 @@ describe('ConfirmFooter', () => {
         expect(rejectSpy).toHaveBeenCalled();
       });
 
-      // Should NOT call navigateNext when returnTo is defined (early return)
+      // Should NOT call navigateNext when goBackTo is defined (early return)
       expect(navigateNextMock).not.toHaveBeenCalled();
     });
 
-    it('calls navigateNext when cancel is clicked and returnTo is undefined', async () => {
+    it('calls navigateNext when cancel is clicked and goBackTo is undefined', async () => {
       const navigateNextMock = jest.fn();
       useConfirmationNavigationMock.mockReturnValue({
         navigateNext: navigateNextMock,
         navigateToId: jest.fn(),
       } as unknown as ReturnType<typeof useConfirmationNavigation>);
 
-      useConfirmationNavigationOptionsMock.mockReturnValue({
-        loader: undefined,
-        returnTo: undefined,
-      });
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+        goBackTo: undefined,
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
       const { getAllByRole } = render();
       const cancelButton = getAllByRole('button')[0];
@@ -1209,7 +1289,7 @@ describe('ConfirmFooter', () => {
         expect(rejectSpy).toHaveBeenCalled();
       });
 
-      // Should call navigateNext when returnTo is undefined
+      // Should call navigateNext when goBackTo is undefined
       await waitFor(() => {
         expect(navigateNextMock).toHaveBeenCalled();
       });

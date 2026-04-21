@@ -408,4 +408,95 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.amountFiat).toBe('50');
     });
   });
+
+  describe('infinite loop prevention', () => {
+    it('does not trigger infinite updates when updateTokenAmount callback is recreated', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result, rerender } = runHook({
+        disableUpdate: false,
+        updateTokenAmountMock,
+      });
+
+      // User types amount
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      // Fast-forward through debounce
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      // Should have been called once
+      expect(updateTokenAmountMock).toHaveBeenCalledTimes(1);
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('50');
+
+      // Clear the mock to track new calls
+      updateTokenAmountMock.mockClear();
+
+      // Simulate callback recreation (as would happen from Redux updates)
+      // by creating a new mock and rerendering
+      const newUpdateTokenAmountMock = jest.fn();
+      jest
+        .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
+        .mockReturnValue({
+          updateTokenAmount: newUpdateTokenAmountMock,
+          isUpdating: false,
+        });
+
+      // Rerender to trigger the effect that recreates the debounced function
+      rerender();
+
+      // Fast-forward to ensure no debounced calls are pending
+      act(() => {
+        jest.advanceTimersByTime(1000);
+      });
+
+      // The new callback should NOT have been called automatically
+      // (this was the bug - callback recreation was triggering the effect)
+      expect(newUpdateTokenAmountMock).not.toHaveBeenCalled();
+    });
+
+    it('only calls updateTokenAmount when amountHuman actually changes, not when callback recreates', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result, rerender } = runHook({
+        disableUpdate: false,
+        tokenFiatRate: 2,
+        isMaxAmount: true,
+        requiredTokens: [{ amountUsd: '100', skipIfBalance: false }],
+        updateTokenAmountMock,
+      });
+
+      // Initial render - amountHuman is 50 (100 / 2)
+      // Fast-forward to clear any initial debounce calls
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      const initialCallCount = updateTokenAmountMock.mock.calls.length;
+
+      // Simulate multiple callback recreations without amountHuman changing
+      for (let i = 0; i < 5; i++) {
+        const newMock = jest.fn();
+        jest
+          .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
+          .mockReturnValue({
+            updateTokenAmount: newMock,
+            isUpdating: false,
+          });
+
+        rerender();
+
+        act(() => {
+          jest.advanceTimersByTime(500);
+        });
+
+        // Should not have triggered additional calls
+        expect(newMock).not.toHaveBeenCalled();
+      }
+
+      // Verify no additional calls were made
+      expect(updateTokenAmountMock).toHaveBeenCalledTimes(initialCallCount);
+    });
+  });
 });

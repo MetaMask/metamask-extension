@@ -61,7 +61,6 @@ jobs:
 
   test-e2e-firefox-webpack:
     uses: ./.github/workflows/run-e2e.yml
-    if: ${{ github.event_name != 'merge_group' }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
@@ -78,9 +77,8 @@ jobs:
 
   test-e2e-firefox-flask-webpack:
     uses: ./.github/workflows/run-e2e.yml
-    if: ${{ github.event_name != 'merge_group' }}
     strategy:
-      fail-fast: false
+      fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-firefox-flask-webpack'] }}
     with:
       test-suite-name: test-e2e-firefox-flask-webpack
@@ -92,7 +90,8 @@ jobs:
       matrix-total: ${{ strategy.job-total }}
 
   test-e2e-firefox-dist-webpack:
-    if: ${{ github.event_name != 'merge_group' && !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
+    # This if statement is equivalent to !IS_FORK
+    if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: test-e2e-firefox-dist-webpack
