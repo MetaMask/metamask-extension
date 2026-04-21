@@ -1923,7 +1923,7 @@ const MOCK_TOKEN_API_TRON_NATIVE_ASSET_ID = 'tron:728126428/slip44:195';
  */
 export async function mockTokenApiAssets(mockServer: Mockttp) {
   const isUnifiedAssetsEnabled =
-    Boolean(process.env.ASSETS_UNIFIED_STATE_ENABLED) ?? false;
+    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true';
 
   if (!isUnifiedAssetsEnabled) {
     return await mockServer

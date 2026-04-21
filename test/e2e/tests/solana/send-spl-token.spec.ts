@@ -36,7 +36,7 @@ import {
 import succeededSplTokenTransaction from './mocks/succeededSplTokenTransaction.json';
 
 const isUnifiedAssetsEnabled =
-  Boolean(process.env.ASSETS_UNIFIED_STATE_ENABLED) ?? false;
+  process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true';
 
 const SOL_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
 const SOL_CAIP_ASSET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
