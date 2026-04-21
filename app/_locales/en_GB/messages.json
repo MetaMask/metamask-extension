@@ -5322,6 +5322,10 @@
     "message": "Receive",
     "description": "Label for pay with row in withdrawal flows showing the destination token"
   },
+  "youllReceive": {
+    "message": "You'll receive",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
+  },
   "payWithModalTitle": {
     "message": "Pay with",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"

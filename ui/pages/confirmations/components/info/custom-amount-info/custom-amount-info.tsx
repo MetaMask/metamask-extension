@@ -1,5 +1,6 @@
 import React, { ReactNode, useCallback } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   Display,
@@ -30,6 +31,8 @@ import {
   PercentageButtons,
   PercentageButtonsSkeleton,
 } from '../../percentage-buttons';
+import { ReceiveRow } from '../../rows/receive-row/receive-row';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
@@ -132,7 +135,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
         >
           {children}
         </CenterContainer>
-        {overrideBottomContent ?? <BottomContainer />}
+        {overrideBottomContent ?? <BottomContainer amountFiat={amountFiat} />}
       </Box>
     );
   },
@@ -246,9 +249,17 @@ function CenterContainerSkeleton() {
   );
 }
 
-function BottomContainer() {
+const WITHDRAW_TRANSACTION_TYPES = [TransactionType.perpsWithdraw];
+
+function BottomContainer({ amountFiat }: { amountFiat: string }) {
   const isResultReady = useIsResultReady();
   const { hideResults } = useTransactionCustomAmountAlerts();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+
+  const isWithdraw = hasTransactionType(
+    currentConfirmation,
+    WITHDRAW_TRANSACTION_TYPES,
+  );
 
   if (!isResultReady || hideResults) {
     return null;
@@ -263,7 +274,14 @@ function BottomContainer() {
     >
       <BridgeFeeRow variant={ConfirmInfoRowSize.Small} />
       <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
-      <TotalRow variant={ConfirmInfoRowSize.Small} />
+      {isWithdraw ? (
+        <ReceiveRow
+          inputAmountUsd={amountFiat}
+          variant={ConfirmInfoRowSize.Small}
+        />
+      ) : (
+        <TotalRow variant={ConfirmInfoRowSize.Small} />
+      )}
     </Box>
   );
 }
