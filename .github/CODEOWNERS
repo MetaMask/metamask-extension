@@ -234,12 +234,12 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 
 # Development Environment
 /.env.yarn                                            @MetaMask/extension-platform
-/.git-blame-ignore-revs                               @MetaMask/extension-platform
+/.git-blame-ignore-revs                              @MetaMask/extension-platform
+/.metamaskrc.dist                                     @MetaMask/extension-platform
+/.nvmrc                                                @MetaMask/extension-platform
 /.gitattributes                                       @MetaMask/extension-platform
 /.gitignore                                           @MetaMask/extension-platform
 /.husky/                                              @MetaMask/extension-platform
-/.metamaskrc.dist                                     @MetaMask/extension-platform
-/.nvmrc                                               @MetaMask/extension-platform
 /.vscode/                                             @MetaMask/extension-platform
 /.yarn/                                               @MetaMask/extension-platform
 /.yarnrc.yml                                          @MetaMask/extension-platform
