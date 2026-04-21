@@ -473,7 +473,7 @@ export async function discoverAndCreateAccounts(
       opts.getDiscoveryCountByProviderOpts,
     );
   } catch (error) {
-    log.warn(`Failed to add accounts with balance. ${error}`);
+    log.warn(`Failed to add accounts with balance. ${String(error)}`);
     return { bitcoin: 0, solana: 0, tron: 0 };
   }
 }

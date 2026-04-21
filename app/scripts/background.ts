@@ -201,6 +201,7 @@ if (inTest || process.env.METAMASK_DEBUG) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL!);
 
 // normalized (adds a trailing slash to the end of the domain if it's missing)
@@ -2258,8 +2259,11 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
     }
 
     // Update the app active tab state
+    if (id === undefined) {
+      return {};
+    }
     controller.appStateController.setAppActiveTab({
-      id: id!,
+      id,
       title: title ?? '',
       origin,
       protocol,
@@ -2358,10 +2362,14 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     }
 
     // Only update if URL changed and it's the active tab, or if status is complete and it's the active tab
-    if ((urlChanged || statusComplete) && isActuallyActive) {
+    if (
+      (urlChanged || statusComplete) &&
+      isActuallyActive &&
+      id !== undefined
+    ) {
       // Update the app active tab state
       controller.appStateController.setAppActiveTab({
-        id: id!,
+        id,
         title: title ?? '',
         origin,
         protocol,

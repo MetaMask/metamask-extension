@@ -877,7 +877,15 @@ export default class MetamaskController {
       this.approvalController.rejectRequest(...a),
     );
 
+    // AccountsController — forceRegister so jest.spyOn on the instance intercepts
+    forceRegister('AccountsController:updateAccounts', (...a) =>
+      this.accountsController.updateAccounts(...a),
+    );
+
     // SeedlessOnboardingController
+    forceRegister('SeedlessOnboardingController:fetchAllSecretData', (...a) =>
+      this.seedlessOnboardingController.fetchAllSecretData(...a),
+    );
     forceRegister('SeedlessOnboardingController:submitPassword', (...a) =>
       this.seedlessOnboardingController.submitPassword(...a),
     );
@@ -4519,10 +4527,18 @@ export default class MetamaskController {
    * @param {string} params.encryptionKey - The user's encryption key.
    */
   async submitPasswordOrEncryptionKey({ password, encryptionKey }) {
-    return this.controllerMessenger.call(
+    await this.controllerMessenger.call(
       'VaultManagement:submitPasswordOrEncryptionKey',
       { password, encryptionKey },
     );
+
+    // TODO: Move into VaultManagement once resyncAccounts + alignWallets have messenger actions.
+    // Run asynchronously on purpose — same as main MC behaviour.
+    // eslint-disable-next-line no-void
+    void (async () => {
+      await this.multichainAccountService.resyncAccounts();
+      await this.multichainAccountService.alignWallets();
+    })();
   }
 
   async _loginUser(password) {
