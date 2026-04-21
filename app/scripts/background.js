@@ -1522,27 +1522,35 @@ export function setupController(
       });
     }
 
-    controller.registry.subscribeAll(
+    controller.registry.scheduleOnStateChangeWithKeys(
       'persist',
-      async (controllerKey, fullState, _patches) => {
-        // subscribeAll receives the full controller state from the messenger
-        // stateChange event — filter to persisted properties only.
-        const ctrl = controller.registry.persistConfig[controllerKey];
-        const newState = deriveStateFromMetadata(
-          fullState,
-          ctrl.metadata,
-          'persist',
-        );
-        persistenceManager.update(controllerKey, newState);
+      async (changedKeys) => {
+        // Project and update each changed controller's persisted state.
+        // State is read at flush time (latest) rather than from the event
+        // payload — safe because state progresses monotonically.
+        for (const controllerKey of changedKeys) {
+          const ctrl = controller.registry.persistConfig[controllerKey];
+          const fullState = controller.controllerMessenger.call(
+            `${controllerKey}:getState`,
+          );
+          const newState = deriveStateFromMetadata(
+            fullState,
+            ctrl.metadata,
+            'persist',
+          );
+          persistenceManager.update(controllerKey, newState);
+        }
 
-        // if this key is one of the `backedUpStateKeys` we must always
-        // re-persist all of the other `backedUpStateKeys`, as they must always
-        // stored in the backup DB together.
-        if (backedUpStateKeys.includes(controllerKey)) {
-          backedUpStateKeys.forEach((key) => {
-            if (key === controllerKey) {
-              // already updated this one
-              return;
+        // if any changed key is one of the `backedUpStateKeys` we must
+        // re-persist all of the other `backedUpStateKeys`, as they must
+        // always be stored in the backup DB together.
+        const needsBackup = [...changedKeys].some((k) =>
+          backedUpStateKeys.includes(k),
+        );
+        if (needsBackup) {
+          for (const key of backedUpStateKeys) {
+            if (changedKeys.has(key)) {
+              continue; // already updated above
             }
             const backupCtrl = controller.registry.persistConfig[key];
             if (!backupCtrl?.metadata) {
@@ -1560,8 +1568,9 @@ export function setupController(
               'persist',
             );
             persistenceManager.update(key, state);
-          });
+          }
         }
+
         try {
           await safePersist();
         } catch (error) {
