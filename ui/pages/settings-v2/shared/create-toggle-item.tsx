@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { Json } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SettingsToggleItem } from '../../settings/settings-toggle-item';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -10,6 +9,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import type { SettingItemProps } from '../types';
+import { SettingsToggleItem } from './settings-toggle-item';
 
 const selectAlwaysFalse = (): boolean => false;
 
