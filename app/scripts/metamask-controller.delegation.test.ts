@@ -36,7 +36,21 @@ function makeContext(
   returnValue: Promise<unknown> = Promise.resolve('result'),
 ) {
   const call = jest.fn().mockReturnValue(returnValue);
-  return { controllerMessenger: { call } };
+  return {
+    controllerMessenger: { call },
+    // Required by createNewVaultAndKeychain / createNewVaultAndRestore
+    getSnapKeyring: jest.fn().mockResolvedValue(null),
+    forwardSelectedAccountGroupToSnapKeyring: jest
+      .fn()
+      .mockResolvedValue(undefined),
+    accountTreeController: {
+      getSelectedAccountGroup: jest.fn().mockReturnValue(null),
+    },
+    onboardingController: { state: { completedOnboarding: false } },
+    preferencesController: { state: { useExternalServices: false } },
+    discoverAndCreateAccounts: jest.fn(),
+    keyringController: { state: { keyrings: [] } },
+  };
 }
 
 // ---------------------------------------------------------------------------
