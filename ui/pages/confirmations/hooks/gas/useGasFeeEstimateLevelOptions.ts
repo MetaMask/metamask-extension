@@ -52,7 +52,7 @@ export const useGasFeeEstimateLevelOptions = ({
           ?.nativeCurrency,
     ) ?? CURRENCY_SYMBOLS.ETH;
   const { calculateGasEstimate } = useFeeCalculations(effectiveTransactionMeta);
-  const { gasLimit: displayGas } = useTransactionGasLimit(
+  const { modalGasLimit: displayGas } = useTransactionGasLimit(
     effectiveTransactionMeta,
   );
   const { gasFeeEstimates: networkGasFeeEstimates } = useGasFeeEstimates(

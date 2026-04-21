@@ -132,4 +132,42 @@ describe('useTransactionGasLimit', () => {
 
     expect(result.current.gasLimit).toBe('0x1fbd0');
   });
+
+  describe('modalGasLimit', () => {
+    it('prefers gasLimitNoBuffer and ignores gasUsed when no container types are set', () => {
+      const { result } = renderHook(() =>
+        useTransactionGasLimit({
+          ...BASE_TRANSACTION_META,
+          gasUsed: '0x7530',
+          gasLimitNoBuffer: '0x6000',
+        } as unknown as TransactionMeta),
+      );
+
+      expect(result.current.modalGasLimit).toBe('0x6000');
+    });
+
+    it('returns 0x0 when gasLimitNoBuffer is missing and no container types are set', () => {
+      const { result } = renderHook(() =>
+        useTransactionGasLimit({
+          ...BASE_TRANSACTION_META,
+          gasUsed: '0x7530',
+        } as unknown as TransactionMeta),
+      );
+
+      expect(result.current.modalGasLimit).toBe('0x0');
+    });
+
+    it('prefers wrapped txParams.gas when container types are set', () => {
+      const { result } = renderHook(() =>
+        useTransactionGasLimit({
+          ...BASE_TRANSACTION_META,
+          containerTypes: ['EnforcedSimulations'],
+          gasLimitNoBuffer: '0x6000',
+          txParams: { gas: '0x1fbd0' },
+        } as unknown as TransactionMeta),
+      );
+
+      expect(result.current.modalGasLimit).toBe('0x1fbd0');
+    });
+  });
 });
