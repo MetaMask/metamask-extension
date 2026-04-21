@@ -4,6 +4,8 @@ import type { ControllerInitFunction } from './types';
 
 const PASSKEY_RP_ID = 'metamask.io';
 const PASSKEY_RP_NAME = 'MetaMask';
+const PASSKEY_USER_NAME = 'MetaMask Wallet';
+const PASSKEY_USER_DISPLAY_NAME = 'MetaMask Wallet';
 
 export const PasskeyControllerInit: ControllerInitFunction<
   PasskeyController,
@@ -18,6 +20,8 @@ export const PasskeyControllerInit: ControllerInitFunction<
     rpID: PASSKEY_RP_ID,
     rpName: PASSKEY_RP_NAME,
     expectedOrigin,
+    userName: PASSKEY_USER_NAME,
+    userDisplayName: PASSKEY_USER_DISPLAY_NAME,
   });
 
   return {
