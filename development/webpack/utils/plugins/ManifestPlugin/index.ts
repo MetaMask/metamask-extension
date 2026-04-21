@@ -143,20 +143,42 @@ function getBundleSizeDebugFilePath(outFile: string): string {
   return path.posix.join(parsed.dir, `${baseName}.debug${extension}`);
 }
 
-function getSetIntersection<T>(left: Set<T>, right: Set<T>): Set<T> {
-  return (
-    left as Set<T> & {
-      intersection: (other: Set<T>) => Set<T>;
+function sumAssetSizes(
+  assetNames: Iterable<string>,
+  assetSizeMap: ReadonlyMap<string, number>,
+): number {
+  let total = 0;
+
+  for (const assetName of assetNames) {
+    const size = assetSizeMap.get(assetName);
+
+    if (size === undefined) {
+      throw new Error(
+        `Missing size for normalized emitted asset "${assetName}"`,
+      );
     }
-  ).intersection(right);
+
+    total += size;
+  }
+
+  return total;
 }
 
-function getSetDifference<T>(left: Set<T>, right: Set<T>): Set<T> {
-  return (
-    left as Set<T> & {
-      difference: (other: Set<T>) => Set<T>;
-    }
-  ).difference(right);
+function emitJsonAsset(
+  compilation: Compilation,
+  assetPath: string,
+  value: unknown,
+): void {
+  const source = new RawSource(JSON.stringify(value, null, 2));
+
+  if (compilation.getAsset(assetPath)) {
+    compilation.updateAsset(assetPath, source);
+  } else {
+    compilation.emitAsset(assetPath, source, {
+      javascriptModule: false,
+      contentType: 'application/json',
+    });
+  }
 }
 
 /**
@@ -276,125 +298,91 @@ export class ManifestPlugin<Z extends boolean> {
     const categoryAssets = Object.fromEntries(
       bundleSizeCategories.map((category) => [category, new Set<string>()]),
     ) as Record<BundleSizeCategory, Set<string>>;
-    const assetSizeMap = new Map<string, number>();
-    const debugEntrypoints: Record<string, BundleSizeDebugEntrypoint> = {};
+    const assetSizes = new Map<string, number>();
+    const debugEntrypoints:
+      | Record<string, BundleSizeDebugEntrypoint>
+      | undefined = statsOptions.debug ? {} : undefined;
 
-    Array.from(compilation.entrypoints).forEach(([name, entrypoint]) => {
+    for (const [name, entrypoint] of compilation.entrypoints) {
       const category = statsOptions.classifyEntrypoint(name);
 
       if (!category) {
-        return;
+        continue;
       }
 
-      const files = getEntrypointAssets(
+      const entrypointFiles = getEntrypointAssets(
         compilation,
         entrypoint,
         this.options.browsers,
       );
+      const files = [
+        ...entrypointFiles.initialFiles,
+        ...entrypointFiles.asyncFiles,
+      ];
 
-      if (files.initialFiles.length === 0 && files.asyncFiles.length === 0) {
-        return;
-      }
-
-      debugEntrypoints[name] = {
-        category,
-        ...files,
-      };
-
-      for (const file of [...files.initialFiles, ...files.asyncFiles]) {
-        categoryAssets[category].add(file.name);
-        assetSizeMap.set(file.name, file.size);
-      }
-    });
-
-    const commonAssets = getSetDifference(
-      getSetIntersection(categoryAssets.background, categoryAssets.ui),
-      categoryAssets.contentScripts,
-    );
-    const backgroundAssets = getSetDifference(
-      getSetDifference(categoryAssets.background, commonAssets),
-      categoryAssets.contentScripts,
-    );
-    const uiAssets = getSetDifference(
-      getSetDifference(categoryAssets.ui, commonAssets),
-      categoryAssets.contentScripts,
-    );
-    const otherAssets = getSetDifference(
-      getSetDifference(
-        getSetDifference(
-          getSetDifference(categoryAssets.other, categoryAssets.contentScripts),
-          commonAssets,
-        ),
-        backgroundAssets,
-      ),
-      uiAssets,
-    );
-    const sumAssetSizes = (assetNames: Iterable<string>): number => {
-      let total = 0;
-
-      for (const assetName of assetNames) {
-        const size = assetSizeMap.get(assetName);
-
-        if (size === undefined) {
-          throw new Error(
-            `Missing size for normalized emitted asset "${assetName}"`,
-          );
-        }
-
-        total += size;
-      }
-
-      return total;
-    };
-    const partSizes = {
-      background: sumAssetSizes(backgroundAssets),
-      ui: sumAssetSizes(uiAssets),
-      common: sumAssetSizes(commonAssets),
-      other: sumAssetSizes(otherAssets),
-      contentScripts: sumAssetSizes(categoryAssets.contentScripts),
-    };
-    const timestamp = Date.now();
-    for (const browser of this.options.browsers) {
-      const summaryAssetPath = path.posix.join(browser, statsOptions.outFile);
-      const summarySource = new RawSource(
-        JSON.stringify(
-          createBundleSizeSummary(partSizes, {
-            zip: this.getBundleZipSize(compilation, browser),
-            timestamp,
-          }),
-          null,
-          2,
-        ),
-      );
-
-      if (compilation.getAsset(summaryAssetPath)) {
-        compilation.updateAsset(summaryAssetPath, summarySource);
-      } else {
-        compilation.emitAsset(summaryAssetPath, summarySource, {
-          javascriptModule: false,
-          contentType: 'application/json',
-        });
-      }
-
-      if (!statsOptions.debug) {
+      if (files.length === 0) {
         continue;
       }
 
-      const debugFilePath = getBundleSizeDebugFilePath(statsOptions.outFile);
-      const debugAssetPath = path.posix.join(browser, debugFilePath);
-      const debugArtifact: BundleSizeDebugArtifact = {
-        entrypoints: debugEntrypoints,
-      };
-      const debugSource = new RawSource(JSON.stringify(debugArtifact, null, 2));
-
-      if (compilation.getAsset(debugAssetPath)) {
-        compilation.updateAsset(debugAssetPath, debugSource);
-      } else {
-        compilation.emitAsset(debugAssetPath, debugSource, {
-          javascriptModule: false,
-          contentType: 'application/json',
-        });
+      if (debugEntrypoints) {
+        debugEntrypoints[name] = {
+          category,
+          ...entrypointFiles,
+        };
       }
+
+      for (const file of files) {
+        categoryAssets[category].add(file.name);
+        assetSizes.set(file.name, file.size);
+      }
+    }
+
+    const commonAssets = categoryAssets.background
+      // @ts-expect-error - Node types need to be updated.
+      .intersection(categoryAssets.ui)
+      .difference(categoryAssets.contentScripts) as Set<string>;
+    const backgroundAssets = categoryAssets.background
+      // @ts-expect-error - Node types need to be updated.
+      .difference(categoryAssets.ui)
+      .difference(categoryAssets.contentScripts) as Set<string>;
+    const uiAssets = categoryAssets.ui
+      // @ts-expect-error - Node types need to be updated.
+      .difference(categoryAssets.background)
+      .difference(categoryAssets.contentScripts) as Set<string>;
+    const otherAssets = categoryAssets.other
+      // @ts-expect-error - Node types need to be updated.
+      .difference(categoryAssets.background)
+      .difference(categoryAssets.ui)
+      .difference(categoryAssets.contentScripts) as Set<string>;
+    const partSizes = {
+      background: sumAssetSizes(backgroundAssets, assetSizes),
+      ui: sumAssetSizes(uiAssets, assetSizes),
+      common: sumAssetSizes(commonAssets, assetSizes),
+      other: sumAssetSizes(otherAssets, assetSizes),
+      contentScripts: sumAssetSizes(categoryAssets.contentScripts, assetSizes),
+    };
+    const timestamp = Date.now();
+    const debugFilePath = statsOptions.debug
+      ? getBundleSizeDebugFilePath(statsOptions.outFile)
+      : undefined;
+
+    for (const browser of this.options.browsers) {
+      emitJsonAsset(
+        compilation,
+        path.posix.join(browser, statsOptions.outFile),
+        createBundleSizeSummary(partSizes, {
+          zip: this.getBundleZipSize(compilation, browser),
+          timestamp,
+        }),
+      );
+
+      if (!debugFilePath || !debugEntrypoints) {
+        continue;
+      }
+
+      emitJsonAsset(compilation, path.posix.join(browser, debugFilePath), {
+        entrypoints: debugEntrypoints,
+      } satisfies BundleSizeDebugArtifact);
     }
   }
 
