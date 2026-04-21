@@ -1,3 +1,4 @@
+import path from 'node:path';
 import type { BundleSizeCategory } from './types';
 
 export const BUNDLE_SIZE_SUMMARY_FILE = 'bundle_size_stats.json';
@@ -38,6 +39,81 @@ export type BundleSizeDebugEntrypoint = {
 export type BundleSizeDebugArtifact = {
   entrypoints: Record<string, BundleSizeDebugEntrypoint>;
 };
+
+type BundleSizeCategoryAssets = Record<BundleSizeCategory, Set<string>>;
+
+const bundleSizeCategories = [
+  'background',
+  'ui',
+  'other',
+  'contentScripts',
+] as const satisfies readonly BundleSizeCategory[];
+
+function sumAssetSizes(
+  assetNames: Iterable<string>,
+  assetSizes: ReadonlyMap<string, number>,
+): number {
+  let total = 0;
+
+  for (const assetName of assetNames) {
+    const size = assetSizes.get(assetName);
+
+    if (size === undefined) {
+      throw new Error(
+        `Missing size for normalized emitted asset "${assetName}"`,
+      );
+    }
+
+    total += size;
+  }
+
+  return total;
+}
+
+export function createBundleSizeCategoryAssets(): BundleSizeCategoryAssets {
+  return Object.fromEntries(
+    bundleSizeCategories.map((category) => [category, new Set<string>()]),
+  ) as BundleSizeCategoryAssets;
+}
+
+export function getBundlePartSizes(
+  categoryAssets: BundleSizeCategoryAssets,
+  assetSizes: ReadonlyMap<string, number>,
+): Record<BundlePart, number> {
+  const commonAssets = categoryAssets.background
+    // @ts-expect-error - Node types need to be updated.
+    .intersection(categoryAssets.ui)
+    .difference(categoryAssets.contentScripts) as Set<string>;
+  const backgroundAssets = categoryAssets.background
+    // @ts-expect-error - Node types need to be updated.
+    .difference(categoryAssets.ui)
+    .difference(categoryAssets.contentScripts) as Set<string>;
+  const uiAssets = categoryAssets.ui
+    // @ts-expect-error - Node types need to be updated.
+    .difference(categoryAssets.background)
+    .difference(categoryAssets.contentScripts) as Set<string>;
+  const otherAssets = categoryAssets.other
+    // @ts-expect-error - Node types need to be updated.
+    .difference(categoryAssets.background)
+    .difference(categoryAssets.ui)
+    .difference(categoryAssets.contentScripts) as Set<string>;
+
+  return {
+    background: sumAssetSizes(backgroundAssets, assetSizes),
+    ui: sumAssetSizes(uiAssets, assetSizes),
+    common: sumAssetSizes(commonAssets, assetSizes),
+    other: sumAssetSizes(otherAssets, assetSizes),
+    contentScripts: sumAssetSizes(categoryAssets.contentScripts, assetSizes),
+  };
+}
+
+export function getBundleSizeDebugFilePath(outFile: string): string {
+  const parsed = path.posix.parse(outFile);
+  const baseName = parsed.ext ? parsed.name : parsed.base;
+  const extension = parsed.ext || '.json';
+
+  return path.posix.join(parsed.dir, `${baseName}.debug${extension}`);
+}
 
 export function mapBundleParts<TResult>(
   mapPart: (part: BundlePart) => TResult,

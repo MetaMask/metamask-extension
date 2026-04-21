@@ -16,13 +16,15 @@ import {
   type Browser,
 } from '../../helpers';
 import {
+  createBundleSizeCategoryAssets,
   createBundleSizeSummary,
+  getBundlePartSizes,
+  getBundleSizeDebugFilePath,
   type BundleSizeAssetStat,
   type BundleSizeDebugEntrypoint,
 } from './stats';
 import { schema } from './schema';
 import type {
-  BundleSizeCategory,
   EntryDescriptionNormalized,
   ManifestPluginOptions,
 } from './types';
@@ -37,12 +39,6 @@ export type { EntryDescriptionNormalized } from './types';
 
 const NAME = 'ManifestPlugin';
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
-const bundleSizeCategories = [
-  'background',
-  'ui',
-  'other',
-  'contentScripts',
-] as const satisfies readonly BundleSizeCategory[];
 
 function isJavaScriptAsset(assetName: string): boolean {
   return (
@@ -124,35 +120,6 @@ function getEntrypointAssets(
       browsers,
     ),
   };
-}
-
-function getBundleSizeDebugFilePath(outFile: string): string {
-  const parsed = path.posix.parse(outFile);
-  const baseName = parsed.ext ? parsed.name : parsed.base;
-  const extension = parsed.ext || '.json';
-
-  return path.posix.join(parsed.dir, `${baseName}.debug${extension}`);
-}
-
-function sumAssetSizes(
-  assetNames: Iterable<string>,
-  assetSizeMap: ReadonlyMap<string, number>,
-): number {
-  let total = 0;
-
-  for (const assetName of assetNames) {
-    const size = assetSizeMap.get(assetName);
-
-    if (size === undefined) {
-      throw new Error(
-        `Missing size for normalized emitted asset "${assetName}"`,
-      );
-    }
-
-    total += size;
-  }
-
-  return total;
 }
 
 function emitJsonAsset(
@@ -286,9 +253,7 @@ export class ManifestPlugin<Z extends boolean> {
       return;
     }
 
-    const categoryAssets = Object.fromEntries(
-      bundleSizeCategories.map((category) => [category, new Set<string>()]),
-    ) as Record<BundleSizeCategory, Set<string>>;
+    const categoryAssets = createBundleSizeCategoryAssets();
     const assetSizes = new Map<string, number>();
     const debugEntrypoints:
       | Record<string, BundleSizeDebugEntrypoint>
@@ -328,30 +293,7 @@ export class ManifestPlugin<Z extends boolean> {
       }
     }
 
-    const commonAssets = categoryAssets.background
-      // @ts-expect-error - Node types need to be updated.
-      .intersection(categoryAssets.ui)
-      .difference(categoryAssets.contentScripts) as Set<string>;
-    const backgroundAssets = categoryAssets.background
-      // @ts-expect-error - Node types need to be updated.
-      .difference(categoryAssets.ui)
-      .difference(categoryAssets.contentScripts) as Set<string>;
-    const uiAssets = categoryAssets.ui
-      // @ts-expect-error - Node types need to be updated.
-      .difference(categoryAssets.background)
-      .difference(categoryAssets.contentScripts) as Set<string>;
-    const otherAssets = categoryAssets.other
-      // @ts-expect-error - Node types need to be updated.
-      .difference(categoryAssets.background)
-      .difference(categoryAssets.ui)
-      .difference(categoryAssets.contentScripts) as Set<string>;
-    const partSizes = {
-      background: sumAssetSizes(backgroundAssets, assetSizes),
-      ui: sumAssetSizes(uiAssets, assetSizes),
-      common: sumAssetSizes(commonAssets, assetSizes),
-      other: sumAssetSizes(otherAssets, assetSizes),
-      contentScripts: sumAssetSizes(categoryAssets.contentScripts, assetSizes),
-    };
+    const partSizes = getBundlePartSizes(categoryAssets, assetSizes);
     const timestamp = Date.now();
     const debugFilePath = statsOptions.debug
       ? getBundleSizeDebugFilePath(statsOptions.outFile)
