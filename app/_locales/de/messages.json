@@ -3944,12 +3944,6 @@
   "mismatchedRpcUrl": {
     "message": "Laut unseren Aufzeichnungen stimmt der angegebene RPC-URL-Wert nicht mit einem bekannten Anbieter für diese Chain-ID überein."
   },
-  "missingSetting": {
-    "message": "Können Sie eine Einstellung nicht finden?"
-  },
-  "missingSettingRequest": {
-    "message": "Hier anfordern"
-  },
   "month": {
     "message": "Monat"
   },

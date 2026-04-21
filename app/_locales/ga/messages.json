@@ -3168,12 +3168,6 @@
   "mismatchedRpcUrl": {
     "message": "De réir ár dtaifead, ní hionann luach URL an RPC a cuireadh isteach agus soláthraí aitheanta don ID slabhra seo."
   },
-  "missingSetting": {
-    "message": "Ní féidir leat socrú a aimsiú?"
-  },
-  "missingSettingRequest": {
-    "message": "Iarratas anseo"
-  },
   "month": {
     "message": "mí"
   },

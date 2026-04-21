@@ -3944,12 +3944,6 @@
   "mismatchedRpcUrl": {
     "message": "Согласно нашим записям, отправленное значение URL RPC не соответствует известному поставщику для этого ID блокчейна."
   },
-  "missingSetting": {
-    "message": "Не удается найти настройки?"
-  },
-  "missingSettingRequest": {
-    "message": "Запросить здесь"
-  },
   "month": {
     "message": "месяц"
   },

@@ -3944,12 +3944,6 @@
   "mismatchedRpcUrl": {
     "message": "Selon nos informations, la valeur de l’URL RPC soumise ne correspond pas à un fournisseur connu pour cet ID de chaîne."
   },
-  "missingSetting": {
-    "message": "Vous ne trouvez pas un paramètre ?"
-  },
-  "missingSettingRequest": {
-    "message": "Demandez ici"
-  },
   "month": {
     "message": "mois"
   },

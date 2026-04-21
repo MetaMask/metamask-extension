@@ -3944,12 +3944,6 @@
   "mismatchedRpcUrl": {
     "message": "Theo hồ sơ của chúng tôi, giá trị RPC URL đã gửi không khớp với một nhà cung cấp đã biết cho ID chuỗi này."
   },
-  "missingSetting": {
-    "message": "Không tìm thấy chế độ cài đặt?"
-  },
-  "missingSettingRequest": {
-    "message": "Yêu cầu tại đây"
-  },
   "month": {
     "message": "tháng"
   },

@@ -3944,12 +3944,6 @@
   "mismatchedRpcUrl": {
     "message": "根据我们的记录，所提交的RPC URL值与此链 ID 的已知提供者不匹配。"
   },
-  "missingSetting": {
-    "message": "找不到设置吗？"
-  },
-  "missingSettingRequest": {
-    "message": "在这里请求"
-  },
   "month": {
     "message": "月"
   },
