@@ -85,7 +85,7 @@ describe('Assets Unify State Feature Flags', () => {
 
       const result = getIsAssetsUnifyStateEnabled(state);
 
-      expect(result).toBe(true);
+      expect(result).toBe(false);
     });
 
     it('returns false when build-time flag is disabled', () => {

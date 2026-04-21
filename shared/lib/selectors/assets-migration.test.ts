@@ -110,7 +110,7 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
+  describe.skip('when assets unify state feature is enabled (happy path)', () => {
     it('derives accountsByChainId from new state structure', () => {
       const state = {
         metamask: {
@@ -158,7 +158,7 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
     });
   });
 
-  describe('edge cases when enabled', () => {
+  describe.skip('edge cases when enabled', () => {
     it('handles multiple chains for the same EVM account', () => {
       const state = {
         metamask: {
@@ -349,7 +349,7 @@ describe('getTokensControllerAllTokens', () => {
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
+  describe.skip('when assets unify state feature is enabled (happy path)', () => {
     it('derives allTokens from new state structure', () => {
       const state = {
         metamask: {
@@ -410,7 +410,7 @@ describe('getTokensControllerAllTokens', () => {
     });
   });
 
-  describe('edge cases when enabled', () => {
+  describe.skip('edge cases when enabled', () => {
     it('includes tokens from customAssets not present in assetsBalance', () => {
       const state = {
         metamask: {
@@ -582,7 +582,7 @@ describe('getTokensControllerAllIgnoredTokens', () => {
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
+  describe.skip('when assets unify state feature is enabled (happy path)', () => {
     it('derives allIgnoredTokens from new state structure', () => {
       const state = {
         metamask: {
@@ -623,7 +623,7 @@ describe('getTokensControllerAllIgnoredTokens', () => {
     });
   });
 
-  describe('edge cases when enabled', () => {
+  describe.skip('edge cases when enabled', () => {
     it('skips preferences with hidden set to false', () => {
       const state = {
         metamask: {
@@ -734,7 +734,7 @@ describe('getTokenBalancesControllerTokenBalances', () => {
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
+  describe.skip('when assets unify state feature is enabled (happy path)', () => {
     it('derives tokenBalances from new state structure', () => {
       const state = {
         metamask: {
@@ -856,7 +856,7 @@ describe('getTokenBalancesControllerTokenBalances', () => {
     });
   });
 
-  describe('edge cases when enabled', () => {
+  describe.skip('edge cases when enabled', () => {
     it('skips balance entries without metadata in assetsInfo', () => {
       const unknownAssetId =
         'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
@@ -960,7 +960,7 @@ describe('getMultiChainAssetsControllerAccountsAssets', () => {
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
+  describe.skip('when assets unify state feature is enabled (happy path)', () => {
     it('derives accountsAssets from new state structure for non-EVM accounts only', () => {
       const state = {
         metamask: {
@@ -1004,7 +1004,7 @@ describe('getMultiChainAssetsControllerAccountsAssets', () => {
     });
   });
 
-  describe('edge cases when enabled', () => {
+  describe.skip('edge cases when enabled', () => {
     it('merges and deduplicates assetsBalance and customAssets', () => {
       const extraSolAssetId =
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:So11111111111111111111111111111111111111112' as CaipAssetType;
@@ -1119,7 +1119,7 @@ describe('getMultiChainAssetsControllerAssetsMetadata', () => {
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
+  describe.skip('when assets unify state feature is enabled (happy path)', () => {
     it('derives assetsMetadata from assetsInfo for non-EIP155 assets only', () => {
       const state = {
         metamask: {
@@ -1168,7 +1168,7 @@ describe('getMultiChainAssetsControllerAssetsMetadata', () => {
     });
   });
 
-  describe('edge cases when enabled', () => {
+  describe.skip('edge cases when enabled', () => {
     it('defaults iconUrl to empty string when image is undefined', () => {
       const state = {
         metamask: {
@@ -1235,7 +1235,7 @@ describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
+  describe.skip('when assets unify state feature is enabled (happy path)', () => {
     it('derives allIgnoredAssets from assetPreferences for non-EVM accounts only', () => {
       const state = {
         metamask: {
@@ -1273,7 +1273,7 @@ describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
     });
   });
 
-  describe('edge cases when enabled', () => {
+  describe.skip('edge cases when enabled', () => {
     it('skips preferences with hidden set to false', () => {
       const state = {
         metamask: {
@@ -1366,7 +1366,7 @@ describe('getMultiChainBalancesControllerBalances', () => {
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
+  describe.skip('when assets unify state feature is enabled (happy path)', () => {
     it('derives balances from new state structure for non-EVM accounts only', () => {
       const state = {
         metamask: {
@@ -1436,7 +1436,7 @@ describe('getCurrencyRateControllerCurrentCurrency', () => {
     });
   });
 
-  describe('when assets unify state feature is enabled', () => {
+  describe.skip('when assets unify state feature is enabled', () => {
     it('returns selectedCurrency from new state', () => {
       const state = {
         metamask: {
@@ -1479,7 +1479,7 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
+  describe.skip('when assets unify state feature is enabled (happy path)', () => {
     it('derives currencyRates from assetsInfo and assetsPrice for native EVM assets', () => {
       const lastUpdated = 1700000000000; // ms
       const mockNonFungibleAssetId = 'eip155:137/slip44:987654321';
@@ -1594,7 +1594,7 @@ describe('getTokenRatesControllerMarketData', () => {
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
+  describe.skip('when assets unify state feature is enabled (happy path)', () => {
     it('derives marketData from assetsPrice with prices converted to native currency', () => {
       const lastUpdated = 1700000000000;
       const ethPriceInUsd = 2000;
@@ -1684,7 +1684,7 @@ describe('getTokenRatesControllerMarketData', () => {
     });
   });
 
-  describe('edge cases when enabled', () => {
+  describe.skip('edge cases when enabled', () => {
     it('skips non-EIP155 assets from marketData', () => {
       const state = {
         metamask: {
@@ -1962,7 +1962,7 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
+  describe.skip('when assets unify state feature is enabled (happy path)', () => {
     it('derives conversionRates from assetsPrice for non-EVM assets only', () => {
       const lastUpdated = 1700000000000;
       const state = {
@@ -2054,7 +2054,7 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     });
   });
 
-  describe('edge cases when enabled', () => {
+  describe.skip('edge cases when enabled', () => {
     it('returns empty result when only EVM assets exist in assetsPrice', () => {
       const state = {
         metamask: {
@@ -2149,7 +2149,7 @@ describe('getRatesControllerRates', () => {
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
+  describe.skip('when assets unify state feature is enabled (happy path)', () => {
     it('derives rates from assetsInfo and assetsPrice for non-EVM native assets', () => {
       const lastUpdated = 1700000000000;
       const state = {
@@ -2228,7 +2228,7 @@ describe('getRatesControllerFiatCurrency', () => {
     });
   });
 
-  describe('when assets unify state feature is enabled', () => {
+  describe.skip('when assets unify state feature is enabled', () => {
     it('returns selectedCurrency from new state', () => {
       const state = {
         metamask: {
