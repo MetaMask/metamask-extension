@@ -1,3 +1,5 @@
+import type { BundleSizeCategory } from './types';
+
 export const BUNDLE_SIZE_SUMMARY_FILE = 'bundle_size_stats.json';
 
 export const bundleParts = [
@@ -21,6 +23,21 @@ export type BundleSizeSummary = {
 };
 
 export type StoredBundleSizeData = Record<string, BundleSizeSummary>;
+
+export type BundleSizeAssetStat = {
+  name: string;
+  size: number;
+};
+
+export type BundleSizeDebugEntrypoint = {
+  category: BundleSizeCategory;
+  initialFiles: BundleSizeAssetStat[];
+  asyncFiles: BundleSizeAssetStat[];
+};
+
+export type BundleSizeDebugArtifact = {
+  entrypoints: Record<string, BundleSizeDebugEntrypoint>;
+};
 
 export function mapBundleParts<TResult>(
   mapPart: (part: BundlePart) => TResult,
