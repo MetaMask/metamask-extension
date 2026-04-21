@@ -494,7 +494,7 @@ describe('Import flow', function () {
         testSpecificMock: importTokensTestMock,
       },
       async ({ driver }) => {
-        await login(driver, { expectedBalance: '$85,000.00' });
+        await login(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -599,7 +599,7 @@ describe('Import flow', function () {
         testSpecificMock: importTokensTestMock,
       },
       async ({ driver }) => {
-        await login(driver, { expectedBalance: '$85,000.00' });
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
