@@ -243,6 +243,7 @@ development/generate-attributions.sh                  @MetaMask/extension-platfo
 
 # Observability
 app/scripts/constants/sentry-state.ts                 @MetaMask/extension-platform
+app/scripts/lib/segment/                              @MetaMask/extension-platform
 app/scripts/lib/setupSentry.js                        @MetaMask/extension-platform
 app/scripts/sentry-install.js                         @MetaMask/extension-platform
 shared/lib/trace.ts                                   @MetaMask/extension-platform
