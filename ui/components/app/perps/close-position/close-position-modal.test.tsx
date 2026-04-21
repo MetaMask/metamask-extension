@@ -7,6 +7,25 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { mockPositions } from '../mocks';
 import { ClosePositionModal } from './close-position-modal';
 
+jest.mock('../../../../../shared/lib/perps-formatters', () => ({
+  PRICE_RANGES_UNIVERSAL: [],
+  formatPerpsFiat: (value: number | string) => {
+    const amount = Number(value);
+    return `$${amount
+      .toLocaleString('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 6,
+      })
+      .replace(/(\.\d*?[1-9])0+$/u, '$1')
+      .replace(/\.0+$/u, '')}`;
+  },
+  formatPositionSize: (value: number, decimals?: number) =>
+    Number(value).toLocaleString('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: decimals ?? 4,
+    }),
+}));
+
 jest.mock('@metamask/perps-controller', () => ({
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
