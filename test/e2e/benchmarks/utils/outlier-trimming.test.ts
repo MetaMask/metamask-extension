@@ -79,7 +79,9 @@ describe('trimOutliers (IQR-based)', () => {
   describe('realistic benchmark scenario (n=15)', () => {
     it('removes 0-3 outliers from a 15-sample benchmark run', () => {
       // Simulates 15 independent browser-load sessions with 1-2 JIT/GC spikes
-      const normal = [320, 330, 315, 325, 318, 322, 328, 316, 319, 324, 321, 323, 317];
+      const normal = [
+        320, 330, 315, 325, 318, 322, 328, 316, 319, 324, 321, 323, 317,
+      ];
       const withSpikes = [...normal, 900, 850]; // two cold-start spikes
       const result = trimOutliers(withSpikes);
       expect(result.trimmedCount).toBeGreaterThanOrEqual(1);
@@ -88,7 +90,10 @@ describe('trimOutliers (IQR-based)', () => {
     });
 
     it('does not over-trim a low-variance run', () => {
-      const stable = [300, 302, 298, 301, 299, 303, 300, 301, 302, 298, 300, 301, 299, 302, 300];
+      const stable = [
+        300, 302, 298, 301, 299, 303, 300, 301, 302, 298, 300, 301, 299, 302,
+        300,
+      ];
       const result = trimOutliers(stable);
       expect(result.trimmedCount).toBe(0);
       expect(result.samples).toHaveLength(stable.length);

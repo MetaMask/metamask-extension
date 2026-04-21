@@ -372,7 +372,7 @@ export const calculateTimerStatistics = (
   );
   const iqrResult = detectOutliersIQR(sanityResult.filtered);
   const zScoreResult = detectOutliersZScore(iqrResult.filtered);
-  const filtered = zScoreResult.filtered;
+  const { filtered } = zScoreResult;
   const totalExcluded =
     sanityResult.excludedCount +
     iqrResult.outlierCount +
