@@ -169,7 +169,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed cancel-all and close-all controls on perps (#41430)
 ### Fixed
 
-- Fixed EIP-712 typed data signing on Ledger devices for large payloads, which previously failed with a misleading "Blind signing is not enabled" error even when blind signing was enabled; the signer now retries via hashed signing when clear signing is rejected, and verifies the returned signature against the expected address (#TBD)
+- Fixed EIP-712 typed data signing on Ledger devices for large payloads, which previously failed with a misleading "Blind signing is not enabled" error even when blind signing was enabled; the signer now retries via hashed signing when clear signing is rejected, and verifies the returned signature against the expected address (#42010)
 
 ## [13.26.0]
 
