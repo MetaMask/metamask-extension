@@ -6,7 +6,7 @@ import {
 import { cloneDeep } from 'lodash';
 import { createProjectLogger } from '@metamask/utils';
 import type { Hex } from 'viem';
-import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
 import { enforceSimulations } from './enforced-simulations';
 
 const log = createProjectLogger('transaction-containers');
@@ -112,7 +112,7 @@ export async function applyTransactionContainersExisting({
 
   updateEditableParams(transactionId, {
     containerTypes,
-    data: newTransactionMeta.txParams.data,
+    data: newTransactionMeta.txParams.data ?? '0x',
     gas: newTransactionMeta.txParams.gas,
     gasPrice: transactionMeta.txParams.gasPrice,
     maxFeePerGas: transactionMeta.txParams.maxFeePerGas,

@@ -8,10 +8,6 @@ const pending = (id: string): Tx => ({
   id,
   status: TransactionStatus.submitted,
 });
-const approved = (id: string): Tx => ({
-  id,
-  status: TransactionStatus.approved,
-});
 const confirmed = (id: string): Tx => ({
   id,
   status: TransactionStatus.confirmed,
@@ -30,21 +26,6 @@ describe('useTransactionLifecycle', () => {
     const { rerender } = renderHook(
       ({ txs }) => useTransactionLifecycle(txs, { onPending }),
       { initialProps: { txs: [] as Tx[] } },
-    );
-
-    act(() => {
-      rerender({ txs: [pending('1')] });
-    });
-
-    expect(onPending).toHaveBeenCalledTimes(1);
-    expect(onPending).toHaveBeenCalledWith(pending('1'));
-  });
-
-  it('fires onPending when a known tx transitions into pending (unapproved → submitted)', () => {
-    const onPending = jest.fn();
-    const { rerender } = renderHook(
-      ({ txs }) => useTransactionLifecycle(txs, { onPending }),
-      { initialProps: { txs: [approved('1')] } },
     );
 
     act(() => {
@@ -99,11 +80,11 @@ describe('useTransactionLifecycle', () => {
     expect(onPending).not.toHaveBeenCalled();
   });
 
-  it('does not fire handlers for a tx that was already confirmed in the first snapshot', () => {
+  it('does not fire onSuccess when a tx first appears already confirmed', () => {
     const onSuccess = jest.fn();
     const { rerender } = renderHook(
       ({ txs }) => useTransactionLifecycle(txs, { onSuccess }),
-      { initialProps: { txs: [confirmed('1')] } },
+      { initialProps: { txs: [] as Tx[] } },
     );
 
     act(() => {
@@ -118,14 +99,16 @@ describe('useTransactionLifecycle', () => {
     const onSuccess = jest.fn();
     const { rerender } = renderHook(
       ({ txs }) => useTransactionLifecycle(txs, { onPending, onSuccess }),
-      { initialProps: { txs: [pending('1'), approved('2')] } },
+      { initialProps: { txs: [pending('1'), pending('2')] } },
     );
 
     act(() => {
-      rerender({ txs: [confirmed('1'), pending('2')] });
+      rerender({ txs: [confirmed('1'), confirmed('2')] });
     });
 
+    expect(onSuccess).toHaveBeenCalledTimes(2);
     expect(onSuccess).toHaveBeenCalledWith(confirmed('1'));
-    expect(onPending).toHaveBeenCalledWith(pending('2'));
+    expect(onSuccess).toHaveBeenCalledWith(confirmed('2'));
+    expect(onPending).not.toHaveBeenCalled();
   });
 });

@@ -29,7 +29,7 @@ export const PRIVACY_ROUTE = '/settings/privacy';
 export const THIRD_PARTY_APIS_ROUTE = '/settings/privacy/third-party-apis';
 export const SECURITY_AND_PASSWORD_ROUTE = '/settings/security-and-password';
 export const AUTO_LOCK_ROUTE = '/settings/security-and-password/auto-lock';
-export const MANAGE_WALLET_RECOVERY_V2_ROUTE =
+export const MANAGE_WALLET_RECOVERY_ROUTE =
   '/settings/security-and-password/manage-wallet-recovery';
 export const SECURITY_PASSWORD_CHANGE_V2_ROUTE =
   '/settings/security-and-password/password';
@@ -78,8 +78,6 @@ export const CONTACTS_ADD_ROUTE = '/contacts/add';
 export const CONTACTS_VIEW_ROUTE = '/contacts/view';
 export const CONTACTS_EDIT_ROUTE = '/contacts/edit';
 export const SNAP_SETTINGS_ROUTE = '/settings/snap';
-export const REVEAL_SRP_LIST_ROUTE =
-  '/settings/security-and-privacy/reveal-srp-list';
 export const SECURITY_PASSWORD_CHANGE_ROUTE =
   '/settings/security-and-privacy/password-change';
 export const BACKUPANDSYNC_ROUTE =
@@ -252,7 +250,7 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: MANAGE_WALLET_RECOVERY_V2_ROUTE,
+    path: MANAGE_WALLET_RECOVERY_ROUTE,
     label: 'Manage Wallet Recovery Settings Page',
     trackInAnalytics: true,
   },
@@ -355,11 +353,6 @@ export const ROUTES = [
   {
     path: SNAP_SETTINGS_ROUTE,
     label: 'Snap Settings Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: REVEAL_SRP_LIST_ROUTE,
-    label: 'Reveal Secret Recovery Phrase List Page',
     trackInAnalytics: true,
   },
   {

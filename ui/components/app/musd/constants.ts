@@ -144,6 +144,13 @@ export const MUSD_CONVERSION_BONUS_TERMS_OF_USE =
   'https://metamask.io/musd-bonus-terms-of-use';
 
 /**
+ * URL for the mUSD Help Center article
+ * Linked from the asset details bonus and convert sections
+ */
+export const MUSD_SUPPORT_ARTICLE_URL =
+  'https://support.metamask.io/manage-crypto/tokens/musd';
+
+/**
  * Minimum asset balance required in USD for a token to be eligible for conversion
  * Default is $0.01 (1 cent) if not configured via feature flag
  */
@@ -181,6 +188,16 @@ export const isMusdToken = (address?: string | null): boolean => {
   }
   return address.toLowerCase() === MUSD_TOKEN_ADDRESS.toLowerCase();
 };
+
+/**
+ * Chain IDs where mUSD is Merkl-eligible (derived from {@link ELIGIBLE_TOKENS}).
+ * Used to aggregate projected bonus fiat across the same chains that earn the reward.
+ */
+export const MERKL_ELIGIBLE_MUSD_CHAIN_IDS: Hex[] = Object.entries(
+  ELIGIBLE_TOKENS,
+)
+  .filter(([, addrs]) => addrs.some((a) => isMusdToken(a)))
+  .map(([chainId]) => chainId as Hex);
 
 /**
  * Get the mUSD token address for a specific chain

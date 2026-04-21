@@ -24,9 +24,6 @@ describe.skip('Ledger Swap', function () {
         localNodeOptions: {
           loadState: './test/e2e/seeder/network-states/with50Dai.json',
         },
-        manifestFlags: {
-          testing: { disableSmartTransactionsOverride: true },
-        },
         title: this.test?.fullTitle(),
         testSpecificMock: mockLedgerTransactionRequests,
       },
@@ -36,7 +33,10 @@ describe.skip('Ledger Swap', function () {
           '0x1158e460913d00000',
         )) ?? console.error('localNodes is undefined or empty');
 
-        await login(driver, { expectedBalance: '20' });
+        await login(driver, {
+          expectedBalance: '20',
+          waitForNonEvmAccounts: false,
+        });
 
         const homePage = new HomePage(driver);
         await homePage.checkIfSwapButtonIsClickable();

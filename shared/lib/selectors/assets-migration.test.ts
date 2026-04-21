@@ -22,6 +22,12 @@ import {
   getRatesControllerFiatCurrency,
 } from './assets-migration';
 
+// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
+// so these selector tests exercise the real feature-flag gating logic.
+jest.mock('../assets-unify-state/remote-feature-flag', () =>
+  jest.requireActual('../assets-unify-state/remote-feature-flag'),
+);
+
 const mockAccountId = 'mock-account-id-1';
 const mockAccountId2 = 'mock-account-id-2';
 
@@ -334,7 +340,6 @@ describe('getTokensControllerAllTokens', () => {
         metamask: {
           allTokens: legacyAllTokens,
           allIgnoredTokens: {},
-          allDetectedTokens: {},
         },
       };
       const result = getTokensControllerAllTokens(state);
@@ -356,7 +361,6 @@ describe('getTokensControllerAllTokens', () => {
           },
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 18 },
             [erc20AssetId]: {
@@ -413,7 +417,6 @@ describe('getTokensControllerAllTokens', () => {
           ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {
             [erc20AssetId]: {
               type: 'erc20',
@@ -457,7 +460,6 @@ describe('getTokensControllerAllTokens', () => {
           ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {
             [erc20AssetId]: {
               type: 'erc20',
@@ -498,7 +500,6 @@ describe('getTokensControllerAllTokens', () => {
           ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {},
           assetsBalance: {
             [mockAccountId]: {
@@ -528,7 +529,6 @@ describe('getTokensControllerAllTokens', () => {
           ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {
             [nativeEthAssetId]: {
               type: 'native',
@@ -573,7 +573,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
         metamask: {
           allIgnoredTokens: legacyAllIgnoredTokens,
           allTokens: {},
-          allDetectedTokens: {},
         },
       };
       const result = getTokensControllerAllIgnoredTokens(state);
@@ -595,7 +594,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
           },
           allIgnoredTokens: {},
           allTokens: {},
-          allDetectedTokens: {},
           assetPreferences: {
             [erc20AssetId]: { hidden: true },
             [solanaTokenAssetId]: { hidden: true },
@@ -632,7 +630,7 @@ describe('getTokensControllerAllIgnoredTokens', () => {
           ...enabledFlags,
           allIgnoredTokens: {},
           allTokens: {},
-          allDetectedTokens: {},
+
           assetPreferences: {
             [erc20AssetId]: { hidden: false },
           },
@@ -658,7 +656,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
           ...enabledFlags,
           allIgnoredTokens: {},
           allTokens: {},
-          allDetectedTokens: {},
           assetPreferences: {
             [erc20AssetId]: { hidden: true },
           },

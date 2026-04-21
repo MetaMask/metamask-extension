@@ -8,7 +8,6 @@ import { useConfirmActions } from './useConfirmActions';
 
 const mockDispatch = jest.fn();
 const mockNavigate = jest.fn();
-const mockReturnTo = jest.fn<string | undefined, []>(() => undefined);
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -23,14 +22,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock('./useConfirmationNavigation', () => ({
-  ...jest.requireActual('./useConfirmationNavigation'),
-  useConfirmationNavigationOptions: () => ({
-    returnTo: mockReturnTo(),
-  }),
-}));
-
-function renderHook() {
+function renderHook(pathname = '/') {
   const transactionMeta = genUnapprovedTokenTransferConfirmation({
     amountHex:
       '0000000000000000000000000000000000000000000000000000000000011170',
@@ -39,6 +31,7 @@ function renderHook() {
   const { result } = renderHookWithConfirmContextProvider(
     () => useConfirmActions(),
     getMockConfirmStateForTransaction(transactionMeta),
+    pathname,
   );
   return result.current;
 }
@@ -88,10 +81,9 @@ describe('useConfirmActions', () => {
     expect(mockNavigateBackIfSend).not.toHaveBeenCalled();
   });
 
-  it('navigates to returnTo when navigateBackToPreviousPage is true', async () => {
-    mockReturnTo.mockReturnValue('/asset/0x1/0xabc');
+  it('navigates to goBackTo when navigateBackToPreviousPage is true', async () => {
     mockDispatch.mockResolvedValue(undefined);
-    const result = renderHook();
+    const result = renderHook('/?goBackTo=%2Fasset%2F0x1%2F0xabc');
     await result.onCancel({
       location: 'dummy',
       navigateBackToPreviousPage: true,
@@ -99,8 +91,7 @@ describe('useConfirmActions', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/asset/0x1/0xabc');
   });
 
-  it('navigates to DEFAULT_ROUTE when navigateBackToPreviousPage is true but no returnTo', async () => {
-    mockReturnTo.mockReturnValue(undefined);
+  it('navigates to DEFAULT_ROUTE when navigateBackToPreviousPage is true but no goBackTo', async () => {
     mockDispatch.mockResolvedValue(undefined);
     const result = renderHook();
     await result.onCancel({
@@ -111,9 +102,8 @@ describe('useConfirmActions', () => {
   });
 
   it('does not navigate back by default', async () => {
-    mockReturnTo.mockReturnValue('/some-page');
     mockDispatch.mockResolvedValue(undefined);
-    const result = renderHook();
+    const result = renderHook('/?goBackTo=%2Fsome-page');
     await result.onCancel({ location: 'dummy' });
     expect(mockNavigate).not.toHaveBeenCalled();
   });

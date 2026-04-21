@@ -9,7 +9,19 @@ import type {
 
 export type TimerResult = {
   id: string;
+  /** Numeric value: duration in ms, or a count when unit is 'count'. */
+  value: number;
+  /** Defaults to 'ms'. Non-duration entries (e.g. counts) use 'count'. */
+  unit?: 'ms' | 'count';
+};
+
+export type LongTaskStepResult = {
+  id: string;
   duration: number;
+  longTaskCount: number;
+  longTaskTotalDuration: number;
+  longTaskMaxDuration: number;
+  tbt: number;
 };
 
 export type PageLoadBenchmarkOptions = {
@@ -37,6 +49,10 @@ export type Metrics = {
   'Load Scripts': number;
   'Setup Store': number;
   numNetworkReqs: number;
+  longTaskCount?: number;
+  longTaskTotalDuration?: number;
+  longTaskMaxDuration?: number;
+  tbt?: number;
 };
 
 export type MeasurePageResult = {

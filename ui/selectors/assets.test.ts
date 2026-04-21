@@ -328,6 +328,7 @@ describe('selectAggregatedBalanceForSelectedAccount', () => {
       }),
       undefined,
       expect.any(Object),
+      expect.any(Function),
     );
   });
 });
