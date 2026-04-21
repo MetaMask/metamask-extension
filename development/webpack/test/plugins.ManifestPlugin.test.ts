@@ -6,7 +6,7 @@ import { sources, type Compilation } from 'webpack';
 import {
   BUNDLE_SIZE_SUMMARY_FILE,
   type BundleSizeSummary,
-} from '../utils/bundle-size';
+} from '../utils/plugins/ManifestPlugin/stats';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { createBrowserZipBuilder } from '../utils/plugins/ManifestPlugin/zip';
 import { ZipOptions } from '../utils/plugins/ManifestPlugin/types';

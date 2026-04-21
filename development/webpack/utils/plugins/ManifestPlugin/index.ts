@@ -16,7 +16,7 @@ import {
   type Manifest,
   type Browser,
 } from '../../helpers';
-import { createBundleSizeSummary } from '../../bundle-size';
+import { createBundleSizeSummary } from './stats';
 import { schema } from './schema';
 import type { BundleSizeCategory, ManifestPluginOptions } from './types';
 import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip';
