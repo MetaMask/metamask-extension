@@ -280,9 +280,6 @@ app/scripts/lockdown-run.js                           @MetaMask/extension-platfo
 app/scripts/use-snow.js                               @MetaMask/extension-platform
 
 # Platform - Boot, Runtime
-app/scripts/detect-multiple-instances.js              @MetaMask/extension-platform
-app/scripts/disable-console.js                        @MetaMask/extension-platform
-app/scripts/first-time-state.js                       @MetaMask/extension-platform
 app/scripts/init-globals.js                           @MetaMask/extension-platform
 app/scripts/lib/setup-initial-state-hooks.js          @MetaMask/extension-platform
 app/scripts/on-update.ts                              @MetaMask/extension-platform
