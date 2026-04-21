@@ -9,19 +9,19 @@ import {
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import { ChainId } from '@metamask/controller-utils';
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import {
   AvatarNetwork,
-  AvatarNetworkSize,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
   Button,
   ButtonIcon,
+  ButtonIconSize,
   ButtonVariant,
   FontWeight,
   IconColor,
@@ -31,6 +31,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { AvatarNetworkSize as LegacyAvatarNetworkSize } from '../../../components/component-library/avatar-network';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNetworkFormState } from '../../settings/networks-tab/networks-form/networks-form-state';
 import {
@@ -45,7 +46,10 @@ import AddBlockExplorerModal from '../../../components/multichain/network-list-m
 import AddRpcUrlModal from '../../../components/multichain/network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from '../../../components/multichain/network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
 import { AddNetwork } from '../../../components/multichain/network-manager/components/add-network';
-import { SETTINGS_V2_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  SETTINGS_V2_ROUTE,
+} from '../../../helpers/constants/routes';
 import { useNetworkManagerState } from '../../../components/multichain/network-manager/hooks/useNetworkManagerState';
 import {
   getFilteredFeaturedNetworks,
@@ -76,6 +80,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { SettingsV2Header } from '../shared/settings-v2-header';
 
 const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
   const t = useI18nContext();
@@ -92,19 +97,14 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Start}
       onClick={() => dispatch(addNetwork(network))}
-      width="100%"
       paddingTop={4}
       paddingBottom={4}
       gap={4}
-      className="network-manager__additional-network-item px-4"
+      className="network-manager__additional-network-item w-full px-4"
       key={network.chainId}
       data-testid={`networks-page-additional-network-${network.chainId}`}
     >
-      <AvatarNetwork
-        name={network.name}
-        size={AvatarNetworkSize.Md}
-        src={networkImageUrl}
-      />
+      <AvatarNetwork name={network.name} size="md" src={networkImageUrl} />
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
@@ -118,14 +118,13 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
           {network.name}
         </Text>
         {isNetworkGasSponsored ? (
-          <SuccessPill label={t('noNetworkFee')} display="inline-flex" />
+          <SuccessPill label={t('noNetworkFee')} />
         ) : null}
       </Box>
       <ButtonIcon
-        size={IconSize.Md}
+        size={ButtonIconSize.Md}
         color={IconColor.IconDefault}
         iconName={IconName.Add}
-        padding={0}
         className="ml-auto"
         ariaLabel={t('addNetwork')}
       />
@@ -133,7 +132,30 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
   );
 };
 
-const NetworksPageList = () => {
+const filterNetworks = <
+  NetworkRecord extends {
+    name?: string;
+    chainId?: string;
+    nativeCurrency?: string;
+  },
+>(
+  networks: NetworkRecord[],
+  query: string,
+) => {
+  const normalizedQuery = query.trim().toLowerCase();
+
+  if (!normalizedQuery) {
+    return networks;
+  }
+
+  return networks.filter((network) =>
+    [network.name, network.chainId, network.nativeCurrency]
+      .filter(Boolean)
+      .some((value) => value?.toLowerCase().includes(normalizedQuery)),
+  );
+};
+
+const NetworksPageList = ({ searchQuery }: { searchQuery: string }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -156,8 +178,12 @@ const NetworksPageList = () => {
   const { handleNetworkChange } = useNetworkChangeHandlers();
 
   const orderedNetworks = useMemo(
-    () => sortNetworks(nonTestNetworks, orderedNetworksList),
-    [nonTestNetworks, orderedNetworksList],
+    () =>
+      filterNetworks(
+        sortNetworks(nonTestNetworks, orderedNetworksList),
+        searchQuery,
+      ),
+    [nonTestNetworks, orderedNetworksList, searchQuery],
   );
 
   const featuredNetworksNotYetEnabled = useMemo(() => {
@@ -165,19 +191,21 @@ const NetworksPageList = () => {
       ({ chainId }) => !evmNetworks[chainId],
     );
 
-    return getFilteredFeaturedNetworks(
-      blacklistedChainIds,
-      availableNetworks,
-    ).sort((networkA, networkB) => networkA.name.localeCompare(networkB.name));
-  }, [evmNetworks, blacklistedChainIds]);
+    return getFilteredFeaturedNetworks(blacklistedChainIds, availableNetworks)
+      .sort((networkA, networkB) => networkA.name.localeCompare(networkB.name))
+      .filter((network) => filterNetworks([network], searchQuery).length > 0);
+  }, [evmNetworks, blacklistedChainIds, searchQuery]);
 
   const sortedTestNetworks = useMemo(
     () =>
-      sortNetworksByPrioity(Object.values(testNetworks), [
-        toEvmCaipChainId(ChainId.sepolia),
-        toEvmCaipChainId(ChainId['linea-sepolia']),
-      ]),
-    [testNetworks],
+      filterNetworks(
+        sortNetworksByPrioity(Object.values(testNetworks), [
+          toEvmCaipChainId(ChainId.sepolia),
+          toEvmCaipChainId(ChainId['linea-sepolia']),
+        ]),
+        searchQuery,
+      ),
+    [testNetworks, searchQuery],
   );
 
   const renderNetworkListItem = useCallback(
@@ -191,7 +219,7 @@ const NetworksPageList = () => {
           chainId={network.chainId}
           name={network.name}
           iconSrc={getNetworkIcon(network)}
-          iconSize={AvatarNetworkSize.Md}
+          iconSize={LegacyAvatarNetworkSize.Md}
           focus={false}
           selected={false}
           rpcEndpoint={
@@ -270,10 +298,10 @@ const NetworksPageList = () => {
           <Box
             paddingBottom={4}
             paddingTop={4}
-            paddingInline={4}
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
             alignItems={BoxAlignItems.Center}
+            className="px-4"
           >
             <Text color={TextColor.TextAlternative}>
               {t('showTestnetNetworks')}
@@ -291,11 +319,10 @@ const NetworksPageList = () => {
         ) : null}
       </Box>
 
-      <Box padding={4} className="border-t border-border-muted">
+      <Box padding={4}>
         <Button
+          className="w-full"
           variant={ButtonVariant.Secondary}
-          startIconName={IconName.Add}
-          width="100%"
           onClick={() => setSearchParams({ view: 'add' })}
         >
           {t('addACustomNetwork')}
@@ -311,6 +338,8 @@ export const NetworksPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const view = searchParams.get('view') ?? '';
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const handleNewNetwork = useCallback(() => {
     setSearchParams({ view: 'add' });
   }, [setSearchParams]);
@@ -403,9 +432,32 @@ export const NetworksPage = () => {
     setSearchParams({ view: 'add' });
   }, [setSearchParams]);
 
+  const handleRootBack = useCallback(() => {
+    navigate(
+      searchParams.get('drawerOpen') === 'true'
+        ? `${DEFAULT_ROUTE}?drawerOpen=true`
+        : DEFAULT_ROUTE,
+    );
+  }, [navigate, searchParams]);
+
   return (
     <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden">
-      {view === '' ? <NetworksPageList /> : null}
+      {view === '' ? (
+        <>
+          <SettingsV2Header
+            title={t('networks')}
+            onClose={handleRootBack}
+            isSearchOpen={isSearchOpen}
+            onOpenSearch={() => setIsSearchOpen(true)}
+            onCloseSearch={() => setIsSearchOpen(false)}
+            searchValue={searchValue}
+            onSearchChange={setSearchValue}
+            onSearchClear={() => setSearchValue('')}
+            showSearchBorder={false}
+          />
+          <NetworksPageList searchQuery={searchValue} />
+        </>
+      ) : null}
       {view === 'add' && (
         <>
           <ModalHeader onClose={handleClose} onBack={handleGoHome}>
