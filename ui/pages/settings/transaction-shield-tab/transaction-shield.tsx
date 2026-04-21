@@ -431,7 +431,7 @@ const TransactionShield = () => {
   if (!loading && hasApiError) {
     return (
       <Box
-        className="transaction-shield-page w-full"
+        className="transaction-shield-page w-full pb-4 overflow-y-auto"
         data-testid="transaction-shield-page"
       >
         <ApiErrorHandler
@@ -446,7 +446,7 @@ const TransactionShield = () => {
 
   return (
     <Box
-      className="transaction-shield-page flex flex-col w-full"
+      className="transaction-shield-page flex flex-col w-full pb-4 overflow-y-auto"
       data-testid="transaction-shield-page"
     >
       {currentShieldSubscription?.cancelAtPeriodEnd && (

@@ -166,7 +166,7 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
   if (!loading && hasApiError) {
     return (
       <Box
-        className="transaction-shield-page w-full"
+        className="transaction-shield-page w-full pb-4 overflow-y-auto"
         data-testid="transaction-shield-page"
         padding={4}
       >
