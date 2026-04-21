@@ -19,6 +19,7 @@ import {
   type CaipChainId,
   parseCaipAccountId,
   parseCaipChainId,
+  toCaipAccountId,
 } from '@metamask/utils';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
@@ -258,7 +259,10 @@ export function getPermissionBackgroundApiMethods({
     // setPermittedAccounts currently sets accounts on all matching
     // namespaces, not just the exact CaipChainId.
     const caipAccountIds = internalAccounts.map((internalAccount) => {
-      return `${internalAccount.scopes[0]}:${internalAccount.address}`;
+      const { namespace, reference } = parseCaipChainId(
+        internalAccount.scopes[0],
+      );
+      return toCaipAccountId(namespace, reference, internalAccount.address);
     });
 
     const existingPermittedAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
@@ -266,14 +270,17 @@ export function getPermissionBackgroundApiMethods({
     );
 
     const updatedAccountIds = Array.from(
-      new Set([...existingPermittedAccountIds, ...caipAccountIds]),
+      new Set<CaipAccountId>([
+        ...existingPermittedAccountIds,
+        ...caipAccountIds,
+      ]),
     );
 
     const newlyAddedCaipAccountIds = caipAccountIds.filter(
       (id) => !existingPermittedAccountIds.includes(id),
-    ) as CaipAccountId[];
+    );
 
-    setPermittedAccounts(origin, updatedAccountIds as CaipAccountId[]);
+    setPermittedAccounts(origin, updatedAccountIds);
 
     if (newlyAddedCaipAccountIds.length > 0) {
       onPermittedAccountsAdded?.({
