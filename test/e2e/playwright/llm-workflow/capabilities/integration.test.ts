@@ -1,7 +1,7 @@
 /* eslint-disable import-x/extensions */
 import { toolRegistry } from '@metamask/client-mcp-core';
 /* eslint-enable import-x/extensions */
-import type { WorkflowContext } from '@metamask/client-mcp-core';
+import type { ToolContext, WorkflowContext } from '@metamask/client-mcp-core';
 import { metaMaskSessionManager as sessionManager } from '../metamask-provider';
 import { createMetaMaskE2EContext, createMetaMaskProdContext } from './factory';
 
@@ -123,7 +123,7 @@ describe('Capability Integration', () => {
         throw new Error('Handler not found');
       }
 
-      const result = await handler({ limit: 5 }, {});
+      const result = await handler({ limit: 5 }, {} as ToolContext);
 
       expect(result).toBeDefined();
       expect(typeof result.ok).toBe('boolean');
