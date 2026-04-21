@@ -5652,7 +5652,9 @@ export default class MetamaskController {
     let drainPending = false;
     const messengerUnsubscribers = [];
 
-    const sendPendingPatches = () => {
+    // Function declarations (not const arrows) because sendPendingPatches
+    // and scheduleFlush are mutually recursive — hoisting is required.
+    function sendPendingPatches() {
       if (!uiReady || !isStreamWritable(outStream)) {
         return;
       }
@@ -5683,9 +5685,9 @@ export default class MetamaskController {
           }
         });
       }
-    };
+    }
 
-    const scheduleFlush = () => {
+    function scheduleFlush() {
       if (!flushScheduled && !drainPending) {
         flushScheduled = true;
         queueMicrotask(() => {
@@ -5693,7 +5695,7 @@ export default class MetamaskController {
           sendPendingPatches();
         });
       }
-    };
+    }
 
     const subscribeToControllers = () => {
       const unsubs = this.registry.subscribeAll(
