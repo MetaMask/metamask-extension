@@ -10,9 +10,9 @@
 # those changes on build, release and publishing outcomes.
 
 # Repository Administration
-/.github/guidelines/                                   @MetaMask/extension-platform @MetaMask/extension-admins
-/.github/ISSUE_TEMPLATE/                               @MetaMask/extension-platform @MetaMask/extension-admins
-/.github/pull-request-template.md                      @MetaMask/extension-platform @MetaMask/extension-admins
+/.github/guidelines/                                   @MetaMask/extension-platform
+/.github/ISSUE_TEMPLATE/                               @MetaMask/extension-platform
+/.github/pull-request-template.md                      @MetaMask/extension-platform
 
 # The offscreen.ts script file that is included in the offscreen document html
 # file is responsible, at present, for loading the snaps execution environment
