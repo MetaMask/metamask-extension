@@ -91,6 +91,7 @@ import {
   isValidStopLossPrice,
 } from '../../components/app/perps/utils/tpslValidation';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
+import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
 import {
   OrderEntry,
   DirectionTabs,
@@ -541,6 +542,18 @@ const PerpsOrderEntryPage: React.FC = () => {
     return marginRequired > availableBalance;
   }, [orderFormState, orderMode, availableBalance]);
 
+  // For new market orders, require an amount meeting the $10 market-order minimum
+  // so submit stays disabled (and the button advertises the minimum) while the
+  // user has not entered a valid size.
+  const isBelowMinOrderSize = useMemo(() => {
+    if (!orderFormState || orderMode !== 'new' || orderType !== 'market') {
+      return false;
+    }
+    const amount =
+      Number.parseFloat(orderFormState.amount.replace(/,/gu, '')) || 0;
+    return amount < PERPS_MIN_MARKET_ORDER_USD;
+  }, [orderFormState, orderMode, orderType]);
+
   const isSubmitDisabled =
     !selectedAddress ||
     isDepositLoading ||
@@ -552,6 +565,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         isNearLiquidation ||
         hasInvalidTPSL ||
         isInsufficientFunds ||
+        isBelowMinOrderSize ||
         currentPrice <= 0 ||
         (orderMode === 'close' &&
           (orderFormState?.closePercent ?? FULL_CLOSE_PERCENT) <= 0)));
@@ -1117,6 +1131,19 @@ const PerpsOrderEntryPage: React.FC = () => {
     triggerDeposit,
   ]);
 
+  const handleFormSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      if (isSubmitDisabled) {
+        return;
+      }
+      handlePrimaryAction().catch(() => {
+        // Errors are surfaced via the page's submit-error state / toast system.
+      });
+    },
+    [handlePrimaryAction, isSubmitDisabled],
+  );
+
   useEffect(() => {
     if (!pendingOrderSymbol) {
       return;
@@ -1211,15 +1238,22 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
   })();
 
-  const resolvedButtonText =
-    isPrimaryTradeAction && isInsufficientFunds
-      ? t('insufficientFundsSend')
-      : submitButtonText;
+  let resolvedButtonText = submitButtonText;
+  if (isPrimaryTradeAction) {
+    if (isInsufficientFunds) {
+      resolvedButtonText = t('insufficientFundsSend');
+    } else if (isBelowMinOrderSize) {
+      resolvedButtonText = t('perpsMinOrderSize', [
+        `$${PERPS_MIN_MARKET_ORDER_USD}`,
+      ]);
+    }
+  }
 
   return (
-    <Box
+    <form
       className="main-container asset__container"
       data-testid="perps-order-entry-page"
+      onSubmit={handleFormSubmit}
     >
       {/* Header: Back (left) + Asset symbol, price, % gain (centered) + spacer (right) */}
       <Box
@@ -1318,6 +1352,8 @@ const PerpsOrderEntryPage: React.FC = () => {
           onOrderTypeChange={setOrderType}
           onAddFunds={triggerDeposit}
           initialLeverage={initialLeverage}
+          autoFocusUsd={orderMode !== 'close'}
+          autoFocusLimitPrice={orderMode !== 'close'}
         />
       </Box>
 
@@ -1348,9 +1384,9 @@ const PerpsOrderEntryPage: React.FC = () => {
           </Text>
         )}
         <Button
+          type="submit"
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
-          onClick={handlePrimaryAction}
           disabled={isSubmitDisabled}
           className={twMerge(
             'w-full',
@@ -1365,7 +1401,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         isOpen={isGeoBlockModalOpen}
         onClose={() => setIsGeoBlockModalOpen(false)}
       />
-    </Box>
+    </form>
   );
 };
 

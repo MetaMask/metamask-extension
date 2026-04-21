@@ -19,6 +19,7 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import { getDisplaySymbol } from '../utils';
+import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
@@ -60,6 +61,8 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.onAddFunds
  * @param props.initialLeverage
  * @param props.markPrice
+ * @param props.autoFocusUsd
+ * @param props.autoFocusLimitPrice
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -80,6 +83,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   onAddFunds,
   initialLeverage,
   markPrice,
+  autoFocusUsd = false,
+  autoFocusLimitPrice = false,
 }) => {
   const t = useI18nContext();
 
@@ -159,6 +164,27 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     handleOrderTypeChange(type);
     onOrderTypeChange?.(type);
   };
+
+  // Refocus the USD size input whenever the user switches back to market mode,
+  // so the keyboard-first flow stays consistent across order-type toggles.
+  const usdInputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    if (
+      autoFocusUsd &&
+      mode !== 'close' &&
+      formState.type === 'market' &&
+      usdInputRef.current
+    ) {
+      usdInputRef.current.focus();
+    }
+  }, [autoFocusUsd, mode, formState.type]);
+
+  const usdSizePlaceholder = useMemo(() => {
+    if (mode !== 'new') {
+      return '0.00';
+    }
+    return t('perpsSizePlaceholderMin', [`$${PERPS_MIN_MARKET_ORDER_USD}`]);
+  }, [mode, t]);
 
   // Determine submit button text based on mode
   const submitButtonText = useMemo(() => {
@@ -309,6 +335,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             midPrice={midPrice}
             direction={formState.direction}
             liquidationPrice={calculations.liquidationPriceRaw}
+            autoFocus={autoFocusLimitPrice}
           />
         )}
 
@@ -324,6 +351,9 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             asset={asset}
             currentPrice={currentPrice}
             onAddFunds={onAddFunds}
+            autoFocus={autoFocusUsd && formState.type === 'market'}
+            usdPlaceholder={usdSizePlaceholder}
+            usdInputRef={usdInputRef}
           />
         )}
 

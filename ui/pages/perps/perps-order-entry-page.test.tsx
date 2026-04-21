@@ -325,9 +325,25 @@ describe('PerpsOrderEntryPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders the submit button with Open Long text by default', () => {
+    it('renders the submit button with min-order-size copy when amount is empty', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
+        'Minimum order size $10',
+      );
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+    });
+
+    it('renders the submit button with Open Long text once a valid amount is entered', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
 
       expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
         'Open Long ETH',
@@ -428,6 +444,12 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
       expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
         'Open Long',
       );
@@ -437,6 +459,12 @@ describe('PerpsOrderEntryPage', () => {
       mockSearchParams.set('direction', 'short');
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
 
       expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
         'Open Short',
@@ -760,6 +788,63 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
         messages.insufficientFundsSend.message,
       );
+    });
+
+    it('disables submit and shows min-order-size copy when amount is below $10', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '5' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
+        'Minimum order size $10',
+      );
+    });
+
+    it('enables submit once amount reaches $10 minimum', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '10' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
+      expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
+        'Minimum order size $10',
+      );
+    });
+
+    it('does not apply min-order-size gate to limit orders', () => {
+      mockSearchParams.set('orderType', 'limit');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '5' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
+        'Minimum order size $10',
+      );
+    });
+
+    it('renders contextual placeholder "min $10" on the size input', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      expect(amountInput).toHaveAttribute('placeholder', 'min $10');
     });
 
     it('disables submit when auto-close take profit is invalid', async () => {
@@ -1197,6 +1282,82 @@ describe('PerpsOrderEntryPage', () => {
 
       await act(async () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
+    });
+  });
+
+  describe('form submission (Enter key)', () => {
+    beforeEach(() => {
+      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
+    });
+
+    it('renders the page as a form so browsers trigger Enter-to-submit natively', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const root = screen.getByTestId('perps-order-entry-page');
+      expect(root.tagName).toBe('FORM');
+
+      const submitButton = screen.getByTestId(
+        'submit-order-button',
+      ) as HTMLButtonElement;
+      expect(submitButton.type).toBe('submit');
+      expect(submitButton.form).toBe(root);
+    });
+
+    it('submits the order when the form is submitted with a valid amount', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input') as HTMLInputElement;
+      fireEvent.change(input, { target: { value: '1000' } });
+
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('perps-order-entry-page'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+            isBuy: true,
+            orderType: 'market',
+          }),
+        ],
+      );
+    });
+
+    it('does not submit when the form is submitted with an amount below the minimum', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input') as HTMLInputElement;
+      fireEvent.change(input, { target: { value: '5' } });
+
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('perps-order-entry-page'));
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
+    });
+
+    it('does not submit when the form is submitted with an empty amount', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('perps-order-entry-page'));
       });
 
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(

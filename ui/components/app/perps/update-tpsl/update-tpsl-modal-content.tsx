@@ -313,10 +313,14 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     [percentToPriceForEdit],
   );
 
-  const handleTpPercentFocus = useCallback(() => {
-    setRawTpPercent(tpPresetPercent ?? editingTpPercent);
-    setIsTpPercentFocused(true);
-  }, [tpPresetPercent, editingTpPercent]);
+  const handleTpPercentFocus = useCallback(
+    (event: React.FocusEvent<HTMLInputElement>) => {
+      setRawTpPercent(tpPresetPercent ?? editingTpPercent);
+      setIsTpPercentFocused(true);
+      event.target.select();
+    },
+    [tpPresetPercent, editingTpPercent],
+  );
 
   const handleTpPercentBlur = useCallback(() => {
     setIsTpPercentFocused(false);
@@ -342,10 +346,14 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     [percentToPriceForEdit],
   );
 
-  const handleSlPercentFocus = useCallback(() => {
-    setRawSlPercent(slPresetPercent ?? editingSlPercent);
-    setIsSlPercentFocused(true);
-  }, [slPresetPercent, editingSlPercent]);
+  const handleSlPercentFocus = useCallback(
+    (event: React.FocusEvent<HTMLInputElement>) => {
+      setRawSlPercent(slPresetPercent ?? editingSlPercent);
+      setIsSlPercentFocused(true);
+      event.target.select();
+    },
+    [slPresetPercent, editingSlPercent],
+  );
 
   const handleSlPercentBlur = useCallback(() => {
     setIsSlPercentFocused(false);
@@ -492,14 +500,34 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     track,
   ]);
 
+  const isSubmitDisabled = isSaving || hasInvalidTPSL;
+
   useLayoutEffect(() => {
     onSubmitStateChange?.({
       onSubmit: handleSave,
       isSaving,
-      submitDisabled: isSaving || hasInvalidTPSL,
+      submitDisabled: isSubmitDisabled,
       submitButtonTitle: undefined,
     });
-  }, [onSubmitStateChange, handleSave, isSaving, hasInvalidTPSL, t]);
+  }, [onSubmitStateChange, handleSave, isSaving, isSubmitDisabled, t]);
+
+  const handleInputEnterKey = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (
+        event.key !== 'Enter' ||
+        event.shiftKey ||
+        event.nativeEvent.isComposing ||
+        isSubmitDisabled
+      ) {
+        return;
+      }
+      event.preventDefault();
+      handleSave().catch(() => {
+        // Errors are surfaced via the perps toast system.
+      });
+    },
+    [handleSave, isSubmitDisabled],
+  );
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4}>
@@ -548,6 +576,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
                   setTpPresetPercent(null);
                 }
               }}
+              onFocus={(event: React.FocusEvent<HTMLInputElement>) =>
+                event.target.select()
+              }
               onBlur={handleTpPriceBlur}
               placeholder="0.00"
               borderRadius={BorderRadius.MD}
@@ -555,6 +586,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              autoFocus
+              data-testid="perps-update-tpsl-tp-price-input"
+              inputProps={{ onKeyDown: handleInputEnterKey }}
               startAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -582,6 +616,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              inputProps={{ onKeyDown: handleInputEnterKey }}
               endAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -678,6 +713,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
                   setSlPresetPercent(null);
                 }
               }}
+              onFocus={(event: React.FocusEvent<HTMLInputElement>) =>
+                event.target.select()
+              }
               onBlur={handleSlPriceBlur}
               placeholder="0.00"
               borderRadius={BorderRadius.MD}
@@ -685,6 +723,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              data-testid="perps-update-tpsl-sl-price-input"
+              inputProps={{ onKeyDown: handleInputEnterKey }}
               startAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -712,6 +752,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              inputProps={{ onKeyDown: handleInputEnterKey }}
               endAccessory={
                 <Text
                   variant={TextVariant.BodyMd}

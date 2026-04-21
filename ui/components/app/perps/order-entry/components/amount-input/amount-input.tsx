@@ -25,6 +25,12 @@ import { getDisplaySymbol } from '../../../utils';
 import type { AmountInputProps } from '../../order-entry.types';
 import { isDigitsOnlyInput, isUnsignedDecimalInput } from '../../utils';
 
+const handleNumericFocusSelectAll = (
+  event: React.FocusEvent<HTMLInputElement>,
+) => {
+  event.target.select();
+};
+
 /**
  * AmountInput - Size section with dual USD/token inputs and percentage slider
  *
@@ -40,6 +46,9 @@ import { isDigitsOnlyInput, isUnsignedDecimalInput } from '../../utils';
  * @param options0.asset
  * @param options0.currentPrice
  * @param options0.onAddFunds
+ * @param options0.autoFocus
+ * @param options0.usdPlaceholder
+ * @param options0.usdInputRef
  */
 export const AmountInput: React.FC<AmountInputProps> = ({
   amount,
@@ -51,6 +60,9 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   asset,
   currentPrice,
   onAddFunds,
+  autoFocus = false,
+  usdPlaceholder = '0.00',
+  usdInputRef,
 }) => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold, formatNumber } = useFormatters();
@@ -287,13 +299,16 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             size={TextFieldSize.Md}
             value={amount}
             onChange={handleAmountChange}
+            onFocus={handleNumericFocusSelectAll}
             onBlur={handleAmountBlur}
-            placeholder="0.00"
+            placeholder={usdPlaceholder}
             borderRadius={BorderRadius.MD}
             borderWidth={0}
             backgroundColor={BackgroundColor.backgroundMuted}
             className="w-full"
             data-testid="amount-input-field"
+            autoFocus={autoFocus}
+            inputRef={usdInputRef}
             inputProps={{ inputMode: 'decimal' }}
             startAccessory={
               <Text
@@ -310,6 +325,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             size={TextFieldSize.Md}
             value={tokenDisplayValue}
             onChange={handleTokenAmountChange}
+            onFocus={handleNumericFocusSelectAll}
             onBlur={handleTokenBlur}
             placeholder="0"
             borderRadius={BorderRadius.MD}
@@ -349,6 +365,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             size={TextFieldSize.Sm}
             value={percentInputValue}
             onChange={handlePercentInputChange}
+            onFocus={handleNumericFocusSelectAll}
             onBlur={handlePercentInputBlur}
             borderRadius={BorderRadius.MD}
             borderWidth={0}
