@@ -8,7 +8,11 @@ import {
   LedgerSignTypedDataParams,
   NFT_ONLY_SELECTORS,
 } from '@metamask/eth-ledger-bridge-keyring';
-import { TypedDataUtils, SignTypedDataVersion } from '@metamask/eth-sig-util';
+import {
+  recoverTypedSignature,
+  SignTypedDataVersion,
+  TypedDataUtils,
+} from '@metamask/eth-sig-util';
 import {
   Category,
   ErrorCode,
@@ -321,9 +325,17 @@ export class LedgerOffscreenHandler {
 
   /**
    * Signs EIP-712 typed data. Tries clear signing first (signEIP712Message), which
-   * shows human-readable data on the device. If that fails with INS_NOT_SUPPORTED (e.g.
-   * Ledger Nano S), falls back to hashed signing (signEIP712HashedMessage) which shows
-   * only the domain and message hashes.
+   * shows human-readable data on the device. Falls back to hashed signing
+   * (signEIP712HashedMessage) — which shows only the domain and message hashes —
+   * in two situations:
+   *
+   * 1. The device rejects clear signing with a status code that indicates the
+   *    payload cannot be parsed/displayed (INS_NOT_SUPPORTED on older firmware
+   *    like Nano S; 0x6808 / 0x6a80 / 0x6985 on newer firmware rejecting
+   *    oversized or unparseable payloads).
+   * 2. The clear-sign call returns a signature that does not recover to the
+   *    expected address for the HD path. This guards against firmware that
+   *    silently signs a truncated representation of an oversized EIP-712 payload.
    *
    * Matches Ledger Live's approach:
    * https://github.com/LedgerHQ/ledger-live/blob/c49f4d4d34f82ac74a4237cfe3b31ce3c0f73403/libs/coin-modules/coin-evm/src/hw-signMessage.ts#L80-L113
@@ -337,23 +349,50 @@ export class LedgerOffscreenHandler {
     params: LedgerSignTypedDataParams,
   ): Promise<{ v: number; r: string; s: string }> {
     const app = await this.ensureApp();
+    const { address: expectedAddress } = await app.getAddress(
+      params.hdPath,
+      false,
+    );
 
     try {
-      return await app.signEIP712Message(params.hdPath, params.message);
+      const sig = await app.signEIP712Message(params.hdPath, params.message);
+      if (
+        this.#verifyTypedDataSignature(params.message, sig, expectedAddress)
+      ) {
+        return sig;
+      }
+      // Clear-sign succeeded on-device but the returned signature does not
+      // recover to the expected address. Observed on firmware that silently
+      // signs a truncated representation of an oversized EIP-712 payload.
+      // Fall through to hashed signing.
     } catch (error) {
-      if (!this.#isInsNotSupported(error)) {
+      if (!this.#shouldFallBackToHashedSigning(error)) {
         throw error;
       }
-
-      const { domainSeparatorHex, hashStructMessageHex } =
-        this.#computeEIP712Hashes(params.message);
-
-      return app.signEIP712HashedMessage(
-        params.hdPath,
-        domainSeparatorHex,
-        hashStructMessageHex,
-      );
+      // Device rejected clear signing (e.g. INS_NOT_SUPPORTED on Nano S, or
+      // 0x6808 on newer firmware with oversized payloads). Fall through to
+      // hashed signing, where the device shows only domain/message hashes
+      // and cannot misinterpret the payload.
     }
+
+    const { domainSeparatorHex, hashStructMessageHex } =
+      this.#computeEIP712Hashes(params.message);
+    const sig = await app.signEIP712HashedMessage(
+      params.hdPath,
+      domainSeparatorHex,
+      hashStructMessageHex,
+    );
+    if (!this.#verifyTypedDataSignature(params.message, sig, expectedAddress)) {
+      const message =
+        'Ledger signature does not match the expected address for the HD path.';
+      throw new HardwareWalletError(message, {
+        code: ErrorCode.Unknown,
+        severity: Severity.Err,
+        category: Category.Unknown,
+        userMessage: message,
+      });
+    }
+    return sig;
   }
 
   // Computes EIP-712 domain separator and message struct hashes.
@@ -382,12 +421,57 @@ export class LedgerOffscreenHandler {
     return { domainSeparatorHex, hashStructMessageHex };
   }
 
-  // Checks if an error is a Ledger 'INS_NOT_SUPPORTED' error.
-  #isInsNotSupported(error: unknown): boolean {
-    return (
-      error instanceof Error &&
-      (error as { statusText?: string }).statusText === 'INS_NOT_SUPPORTED'
+  // Recovers the signer from a Ledger EIP-712 signature and checks it matches
+  // the expected address for the HD path. Guards against devices that silently
+  // return a signature for a truncated payload when blind-signing an oversized
+  // message.
+  #verifyTypedDataSignature(
+    message: LedgerSignTypedDataParams['message'],
+    sig: { v: number; r: string; s: string },
+    expectedAddress: string,
+  ): boolean {
+    const signature = add0x(
+      sig.r.replace(/^0x/u, '').padStart(64, '0') +
+        sig.s.replace(/^0x/u, '').padStart(64, '0') +
+        sig.v.toString(16).padStart(2, '0'),
     );
+    const recovered = recoverTypedSignature({
+      data: message as Parameters<typeof recoverTypedSignature>[0]['data'],
+      signature,
+      version: SignTypedDataVersion.V4,
+    });
+    return recovered.toLowerCase() === expectedAddress.toLowerCase();
+  }
+
+  // Clear-signing errors that indicate the device cannot parse/display the
+  // payload and that we should retry via hashed signing.
+  //
+  // - INS_NOT_SUPPORTED: older firmware (e.g. Nano S) that has no EIP-712
+  //   clear-signing support at all.
+  // - 0x6808 / 0x6a80 / 0x6985: newer firmware rejecting an oversized or
+  //   unparseable payload. These bubble up to the UI as "Blind signing is not
+  //   enabled" via LEDGER_ERROR_MAPPINGS, even when blind signing IS enabled
+  //   on the device.
+  #shouldFallBackToHashedSigning(error: unknown): boolean {
+    if (!(error instanceof Error)) {
+      return false;
+    }
+    const { statusText, statusCode } = error as {
+      statusText?: string;
+      statusCode?: number;
+    };
+    if (statusText === 'INS_NOT_SUPPORTED') {
+      return true;
+    }
+    const CLEAR_SIGN_REJECTION_CODES = new Set([0x6808, 0x6a80, 0x6985]);
+    if (
+      typeof statusCode === 'number' &&
+      CLEAR_SIGN_REJECTION_CODES.has(statusCode)
+    ) {
+      return true;
+    }
+    // Some transports surface the status code only in the message string.
+    return /0x(?:6808|6a80|6985)\b/iu.test(error.message);
   }
 
   // Ledger status 0x6985 (CONDITIONS_OF_USE_NOT_SATISFIED) is the device

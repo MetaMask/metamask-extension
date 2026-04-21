@@ -1,4 +1,10 @@
 import { serialize } from '@ethersproject/transactions';
+import type { MessageTypes, TypedMessage } from '@metamask/eth-sig-util';
+import {
+  signTypedData,
+  SignTypedDataVersion,
+} from '@metamask/eth-sig-util';
+import { privateToAddress } from 'ethereumjs-util';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
@@ -654,14 +660,47 @@ describe('Ledger Offscreen', () => {
         message: { value: 'test' },
       };
 
-      const defaultSignature = {
-        v: 28,
-        r: 'abcd1234',
-        s: 'efgh5678',
+      const testPrivateKey = Buffer.from(
+        '4af1bceebf7f3634ec3cff8a2c38e51178d5d4ce585c52d6043e5e2cc3418bb0',
+        'hex',
+      );
+      const testAddress = `0x${privateToAddress(testPrivateKey).toString('hex')}`;
+
+      const splitSignatureHex = (
+        hex: string,
+      ): { v: number; r: string; s: string } => {
+        const unprefixed = hex.startsWith('0x') ? hex.slice(2) : hex;
+        return {
+          r: unprefixed.slice(0, 64),
+          s: unprefixed.slice(64, 128),
+          v: parseInt(unprefixed.slice(128, 130), 16),
+        };
       };
 
+      const validSignature = splitSignatureHex(
+        signTypedData({
+          privateKey: testPrivateKey,
+          data: typedDataMessage as TypedMessage<MessageTypes>,
+          version: SignTypedDataVersion.V4,
+        }),
+      );
+
+      const garbageSignature = {
+        v: 28,
+        r: 'aa'.repeat(32),
+        s: 'bb'.repeat(32),
+      };
+
+      beforeEach(() => {
+        mockGetAddress.mockResolvedValue({
+          publicKey: '04abcd1234',
+          address: testAddress,
+          chainCode: 'chaincode123',
+        });
+      });
+
       it('signs EIP-712 typed data via clear signing', async () => {
-        mockSignEIP712Message.mockResolvedValue(defaultSignature);
+        mockSignEIP712Message.mockResolvedValue(validSignature);
 
         const response = await sendAction(LedgerAction.signTypedData, {
           hdPath: "m/44'/60'/0'/0/0",
@@ -681,7 +720,7 @@ describe('Ledger Offscreen', () => {
         (insError as Error & { statusText: string }).statusText =
           'INS_NOT_SUPPORTED';
         mockSignEIP712Message.mockRejectedValue(insError);
-        mockSignEIP712HashedMessage.mockResolvedValue(defaultSignature);
+        mockSignEIP712HashedMessage.mockResolvedValue(validSignature);
 
         const response = await sendAction(LedgerAction.signTypedData, {
           hdPath: "m/44'/60'/0'/0/0",
@@ -689,7 +728,7 @@ describe('Ledger Offscreen', () => {
         });
 
         expect(response.success).toBe(true);
-        expect(response.payload).toEqual(defaultSignature);
+        expect(response.payload).toEqual(validSignature);
         expect(mockSignEIP712HashedMessage).toHaveBeenCalledWith(
           "m/44'/60'/0'/0/0",
           expect.any(String),
@@ -697,7 +736,7 @@ describe('Ledger Offscreen', () => {
         );
       });
 
-      it('re-throws non-INS_NOT_SUPPORTED errors without falling back', async () => {
+      it('re-throws errors that do not indicate clear-signing rejection', async () => {
         const consoleSpy = jest
           .spyOn(console, 'error')
           .mockImplementation(() => undefined);
@@ -715,6 +754,66 @@ describe('Ledger Offscreen', () => {
           }),
         });
         expect(mockSignEIP712HashedMessage).not.toHaveBeenCalled();
+        consoleSpy.mockRestore();
+      });
+
+      it('falls back to hashed signing when device rejects with 0x6808', async () => {
+        const statusError = new Error(
+          'Ledger device: Condition of use not satisfied (0x6808)',
+        );
+        (statusError as Error & { statusCode: number }).statusCode = 0x6808;
+        mockSignEIP712Message.mockRejectedValue(statusError);
+        mockSignEIP712HashedMessage.mockResolvedValue(validSignature);
+
+        const response = await sendAction(LedgerAction.signTypedData, {
+          hdPath: "m/44'/60'/0'/0/0",
+          message: typedDataMessage,
+        });
+
+        expect(response.success).toBe(true);
+        expect(response.payload).toEqual(validSignature);
+        expect(mockSignEIP712HashedMessage).toHaveBeenCalledWith(
+          "m/44'/60'/0'/0/0",
+          expect.any(String),
+          expect.any(String),
+        );
+      });
+
+      it('falls back to hashed signing when clear-signed signature does not recover to the expected address', async () => {
+        mockSignEIP712Message.mockResolvedValue(garbageSignature);
+        mockSignEIP712HashedMessage.mockResolvedValue(validSignature);
+
+        const response = await sendAction(LedgerAction.signTypedData, {
+          hdPath: "m/44'/60'/0'/0/0",
+          message: typedDataMessage,
+        });
+
+        expect(response.success).toBe(true);
+        expect(response.payload).toEqual(validSignature);
+        expect(mockSignEIP712Message).toHaveBeenCalled();
+        expect(mockSignEIP712HashedMessage).toHaveBeenCalled();
+      });
+
+      it('throws HardwareWalletError when hashed signature also fails verification', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+        mockSignEIP712Message.mockResolvedValue(garbageSignature);
+        mockSignEIP712HashedMessage.mockResolvedValue(garbageSignature);
+
+        const response = await sendAction(LedgerAction.signTypedData, {
+          hdPath: "m/44'/60'/0'/0/0",
+          message: typedDataMessage,
+        });
+
+        expect(response.success).toBe(false);
+        expect(response.payload).toEqual({
+          error: expect.objectContaining({
+            message: expect.stringContaining(
+              'does not match the expected address',
+            ),
+          }),
+        });
         consoleSpy.mockRestore();
       });
     });
