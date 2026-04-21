@@ -126,7 +126,13 @@ jobs:
           token: ${{ secrets.METAMASKBOT_SKILLS_TOKEN }}
           path: skills-repo
           # persist-credentials: true — required for the PR tier's `git push`.
-          # Direct tier doesn't use git, only `gh api` via remember.sh.
+          # Direct tier doesn't use git, only `gh api` via remember.ts.
+
+      - name: Set up Node for `remember.ts`
+        if: steps.trust.outputs.tier == 'direct' || steps.trust.outputs.tier == 'pr'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
 
       - name: Capture — direct commit
         if: steps.trust.outputs.tier == 'direct'
@@ -140,7 +146,7 @@ jobs:
         run: |
           set -euo pipefail
           CAPTURE=$(cat "${RUNNER_TEMP}/capture.txt")
-          OUTPUT=$(bash tools/remember.sh \
+          OUTPUT=$(node tools/remember.ts \
             --captured-by "$CAPTURED_BY" \
             --source-repo "$SOURCE_REPO" \
             --audit-url  "$AUDIT_URL" \
@@ -186,8 +192,8 @@ jobs:
           set -euo pipefail
           CAPTURE=$(cat "${RUNNER_TEMP}/capture.txt")
 
-          # Write skill file locally, no network write from remember.sh.
-          DRY=$(bash tools/remember.sh \
+          # Write skill file locally, no network write from remember.ts.
+          DRY=$(node tools/remember.ts \
             --mode local \
             --out-dir "$(pwd)" \
             --captured-by "$CAPTURED_BY" \
