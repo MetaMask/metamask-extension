@@ -213,6 +213,10 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/metamask-earn
 /jest.*.config.js                                     @MetaMask/extension-platform
 
 # AI
+# Agent instructions and editor rules that apply repo-wide. These files shape
+# the behavior of automated coding assistants (Claude Code, Cursor, Codex,
+# etc.) across the codebase; per-directory AGENTS.md files remain with the
+# teams that own those directories.
 /AGENTS.md                                            @MetaMask/extension-platform
 /CLAUDE.md                                            @MetaMask/extension-platform
 /.cursor/BUGBOT.md                                    @MetaMask/extension-platform
@@ -265,6 +269,9 @@ app/scripts/lib/createMetaRPCHandler.js              @MetaMask/extension-platfor
 app/scripts/lib/metaRPCClientFactory.ts              @MetaMask/extension-platform
 
 # Platform - Entry Points
+# Entry scripts loaded by manifest.json into each execution context
+# (background service worker, UI document, content script, inpage script,
+# offscreen document). Changes affect how the extension boots.
 app/scripts/app-init.js                               @MetaMask/extension-platform
 app/scripts/background.js                             @MetaMask/extension-platform
 app/scripts/contentscript.js                          @MetaMask/extension-platform
@@ -274,6 +281,9 @@ app/scripts/ui.js                                     @MetaMask/extension-platfo
 app/service-worker.ts                                 @MetaMask/extension-platform
 
 # Platform - Lockdown
+# SES lockdown and Snow hardening establish the JavaScript security boundary
+# around the wallet runtime. Changes can have broad compatibility and
+# security impact across all execution contexts.
 app/scripts/lockdown-install.js                       @MetaMask/extension-platform
 app/scripts/lockdown-more.js                          @MetaMask/extension-platform
 app/scripts/lockdown-run.js                           @MetaMask/extension-platform
