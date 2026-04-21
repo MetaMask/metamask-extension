@@ -7,7 +7,6 @@ import {
   type Compiler,
   type Asset,
   type Chunk,
-  type EntryOptions,
 } from 'webpack';
 import { validate } from 'schema-utils';
 import {
@@ -16,9 +15,17 @@ import {
   type Manifest,
   type Browser,
 } from '../../helpers';
-import { createBundleSizeSummary } from './stats';
+import {
+  createBundleSizeSummary,
+  type BundleSizeAssetStat,
+  type BundleSizeDebugEntrypoint,
+} from './stats';
 import { schema } from './schema';
-import type { BundleSizeCategory, ManifestPluginOptions } from './types';
+import type {
+  BundleSizeCategory,
+  EntryDescriptionNormalized,
+  ManifestPluginOptions,
+} from './types';
 import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip';
 
 const { CachedSource, RawSource } = sources;
@@ -26,23 +33,7 @@ const { CachedSource, RawSource } = sources;
 type Assets = Compilation['assets'];
 type Entrypoint =
   Compilation['entrypoints'] extends Map<string, infer T> ? T : never;
-type BundleSizeAssetStat = {
-  name: string;
-  size: number;
-};
-type BundleSizeDebugEntrypoint = {
-  category: BundleSizeCategory;
-  initialFiles: BundleSizeAssetStat[];
-  asyncFiles: BundleSizeAssetStat[];
-};
-type BundleSizeDebugArtifact = {
-  entrypoints: Record<string, BundleSizeDebugEntrypoint>;
-};
-
-export type EntryDescriptionNormalized = { import?: string[] } & Omit<
-  EntryOptions,
-  'name'
->;
+export type { EntryDescriptionNormalized } from './types';
 
 const NAME = 'ManifestPlugin';
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
@@ -382,7 +373,7 @@ export class ManifestPlugin<Z extends boolean> {
 
       emitJsonAsset(compilation, path.posix.join(browser, debugFilePath), {
         entrypoints: debugEntrypoints,
-      } satisfies BundleSizeDebugArtifact);
+      });
     }
   }
 
