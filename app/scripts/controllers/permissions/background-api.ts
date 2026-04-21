@@ -27,6 +27,11 @@ import type { MultichainNetworkControllerState } from '@metamask/multichain-netw
 import { getNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 
 export type PermissionBackgroundApiOptions = {
+  // Invoked after permitted accounts are extended for an origin
+  onPermittedAccountsAdded?: (payload: {
+    origin: string;
+    newlyAddedCaipAccountIds: CaipAccountId[];
+  }) => void;
   permissionController: {
     getCaveat(
       origin: string,
@@ -80,6 +85,7 @@ export function getPermissionBackgroundApiMethods({
   accountsController,
   networkController,
   multichainNetworkController,
+  onPermittedAccountsAdded,
 }: PermissionBackgroundApiOptions) {
   // Returns the CAIP-25 caveat or undefined if it does not exist
   const getCaip25Caveat = (
@@ -263,7 +269,18 @@ export function getPermissionBackgroundApiMethods({
       new Set([...existingPermittedAccountIds, ...caipAccountIds]),
     );
 
+    const newlyAddedCaipAccountIds = caipAccountIds.filter(
+      (id) => !existingPermittedAccountIds.includes(id),
+    ) as CaipAccountId[];
+
     setPermittedAccounts(origin, updatedAccountIds as CaipAccountId[]);
+
+    if (newlyAddedCaipAccountIds.length > 0) {
+      onPermittedAccountsAdded?.({
+        origin,
+        newlyAddedCaipAccountIds,
+      });
+    }
   };
 
   const addMoreChains = (origin: string, chainIds: string[]): void => {

@@ -331,6 +331,89 @@ describe('permission background API methods', () => {
         },
       );
     });
+
+    it('invokes onPermittedAccountsAdded when a new CAIP account id is added', () => {
+      const onPermittedAccountsAdded = jest.fn();
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {
+              'eip155:1': {
+                accounts: ['eip155:1:0x1'],
+              },
+            },
+            optionalScopes: {},
+            isMultichainOrigin: false,
+          },
+        }),
+        updateCaveat: jest.fn(),
+      };
+
+      const accountsController = {
+        getAccountByAddress: jest.fn().mockReturnValue({
+          address: '0x2',
+          scopes: ['eip155:1'],
+        }),
+        state: {
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
+        },
+      };
+
+      MockNetworkSelectors.getNetworkConfigurationsByCaipChainId.mockReturnValue(
+        { 'eip155:1': MOCK_NETWORK_CONFIG },
+      );
+
+      setupPermissionBackgroundApiMethods({
+        permissionController,
+        accountsController,
+        onPermittedAccountsAdded,
+      }).addPermittedAccount('foo.com', '0x2');
+
+      expect(onPermittedAccountsAdded).toHaveBeenCalledWith({
+        origin: 'foo.com',
+        newlyAddedCaipAccountIds: ['eip155:1:0x2'],
+      });
+    });
+
+    it('does not invoke onPermittedAccountsAdded when the account was already permitted', () => {
+      const onPermittedAccountsAdded = jest.fn();
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {
+              'eip155:1': {
+                accounts: ['eip155:1:0x2'],
+              },
+            },
+            optionalScopes: {},
+            isMultichainOrigin: false,
+          },
+        }),
+        updateCaveat: jest.fn(),
+      };
+
+      const accountsController = {
+        getAccountByAddress: jest.fn().mockReturnValue({
+          address: '0x2',
+          scopes: ['eip155:1'],
+        }),
+        state: {
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
+        },
+      };
+
+      MockNetworkSelectors.getNetworkConfigurationsByCaipChainId.mockReturnValue(
+        { 'eip155:1': MOCK_NETWORK_CONFIG },
+      );
+
+      setupPermissionBackgroundApiMethods({
+        permissionController,
+        accountsController,
+        onPermittedAccountsAdded,
+      }).addPermittedAccount('foo.com', '0x2');
+
+      expect(onPermittedAccountsAdded).not.toHaveBeenCalled();
+    });
   });
 
   describe('addPermittedAccounts', () => {
