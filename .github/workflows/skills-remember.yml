@@ -5,11 +5,15 @@ name: Persist skills from `@metamaskbot /remember`
 #
 # Trust tiers:
 #   direct → @MetaMask/extension-platform team members — committed straight to
-#            `domains/inbox/` on the skills repo.
+#            `domains/<domain>/` on the skills repo.
 #   pr     → other org members, collaborators, and contributors — opens a PR
 #            against the skills repo with the team pinged in the body.
 #   reject → drive-by commenters (author_association == NONE) — rejection
 #            reply on the PR, no write.
+#
+# Comment form: `@metamaskbot /remember [--domain <name>] <capture text>`
+# When --domain is omitted, the skill falls back to `domains/inbox/`, which
+# has no curator — prefer picking a domain at capture.
 #
 # Upstream source + ref come from `.skills/CONFIG` on the default branch,
 # so migrating the skills repo is a one-line change.
@@ -51,12 +55,22 @@ jobs:
           CAPTURE=$(printf '%s' "$BODY" \
             | sed -E '1 s/^@metamaskbot[[:space:]]+\/remember[[:space:]]*//i' \
             | sed -E 's/^[[:space:]]+|[[:space:]]+$//g')
+          # Extract leading `--domain <name>` if present. Domain names are
+          # lowercase [a-z0-9-]; anything else falls through as capture text.
+          DOMAIN=""
+          if [[ "$CAPTURE" =~ ^--domain[[:space:]]+([a-z0-9-]+)[[:space:]]+(.*)$ ]]; then
+            DOMAIN="${BASH_REMATCH[1]}"
+            CAPTURE="${BASH_REMATCH[2]}"
+          fi
           if [[ -z "$CAPTURE" ]]; then
             echo "empty=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           printf '%s' "$CAPTURE" > "${RUNNER_TEMP}/capture.txt"
-          echo "empty=false" >> "$GITHUB_OUTPUT"
+          {
+            echo "empty=false"
+            echo "domain=$DOMAIN"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Determine trust tier
         if: steps.parse.outputs.empty == 'false'
@@ -143,25 +157,33 @@ jobs:
           CAPTURED_BY: ${{ github.event.comment.user.login }}
           SOURCE_REPO: ${{ github.event.repository.name }}
           AUDIT_URL: ${{ github.event.comment.html_url }}
+          DOMAIN: ${{ steps.parse.outputs.domain }}
         run: |
           set -euo pipefail
           CAPTURE=$(cat "${RUNNER_TEMP}/capture.txt")
+          DOMAIN_ARGS=()
+          if [[ -n "$DOMAIN" ]]; then
+            DOMAIN_ARGS=(--domain "$DOMAIN")
+          fi
           OUTPUT=$(node tools/remember.ts \
             --captured-by "$CAPTURED_BY" \
             --source-repo "$SOURCE_REPO" \
             --audit-url  "$AUDIT_URL" \
+            "${DOMAIN_ARGS[@]}" \
             -- "$CAPTURE")
           echo "$OUTPUT"
           CAPTURE_PATH=$(echo "$OUTPUT" | awk -F' — ' '/^✓/ { sub(/^✓ /, "", $1); print $1 }')
           CAPTURE_SHA=$(echo  "$OUTPUT" | awk -F' — ' '/^✓/ { print $2 }')
           CAPTURE_URL=$(echo  "$OUTPUT" | awk -F' — ' '/^✓/ { print $3 }')
-          # Slug is the directory name under `domains/inbox/skills/`.
-          CAPTURE_SLUG=$(echo "$CAPTURE_PATH" | sed -E 's|^domains/inbox/skills/([^/]+)/.*|\1|')
+          # Slug is the directory name under `domains/<domain>/skills/`.
+          CAPTURE_SLUG=$(echo   "$CAPTURE_PATH" | sed -E 's|^domains/[^/]+/skills/([^/]+)/.*|\1|')
+          CAPTURE_DOMAIN=$(echo "$CAPTURE_PATH" | sed -E 's|^domains/([^/]+)/skills/.*|\1|')
           {
             echo "path=$CAPTURE_PATH"
             echo "sha=$CAPTURE_SHA"
             echo "url=$CAPTURE_URL"
             echo "slug=$CAPTURE_SLUG"
+            echo "domain=$CAPTURE_DOMAIN"
           } >> "$GITHUB_OUTPUT"
 
       - name: Trigger `skills-sync` to propagate new skill to consumer repos
@@ -188,9 +210,14 @@ jobs:
           OWNER: ${{ steps.config.outputs.owner }}
           REPO: ${{ steps.config.outputs.repo }}
           BASE: ${{ steps.config.outputs.ref }}
+          DOMAIN: ${{ steps.parse.outputs.domain }}
         run: |
           set -euo pipefail
           CAPTURE=$(cat "${RUNNER_TEMP}/capture.txt")
+          DOMAIN_ARGS=()
+          if [[ -n "$DOMAIN" ]]; then
+            DOMAIN_ARGS=(--domain "$DOMAIN")
+          fi
 
           # Write skill file locally, no network write from remember.ts.
           DRY=$(node tools/remember.ts \
@@ -199,12 +226,14 @@ jobs:
             --captured-by "$CAPTURED_BY" \
             --source-repo "$SOURCE_REPO" \
             --audit-url  "$AUDIT_URL" \
+            "${DOMAIN_ARGS[@]}" \
             -- "$CAPTURE")
           echo "$DRY"
 
           SKILL_PATH=$(echo        "$DRY" | grep '^SKILL_PATH='        | cut -d= -f2-)
           SKILL_SLUG=$(echo        "$DRY" | grep '^SKILL_SLUG='        | cut -d= -f2-)
           SKILL_DESCRIPTION=$(echo "$DRY" | grep '^SKILL_DESCRIPTION=' | cut -d= -f2-)
+          SKILL_DOMAIN=$(echo "$SKILL_PATH" | sed -E 's|^domains/([^/]+)/skills/.*|\1|')
 
           BRANCH="capture/${SKILL_SLUG}"
 
@@ -212,7 +241,7 @@ jobs:
           git config user.email "metamaskbot@users.noreply.github.com"
           git switch -c "$BRANCH"
           git add "$SKILL_PATH"
-          git commit -m "capture(inbox/${SKILL_SLUG}): ${SKILL_DESCRIPTION}"
+          git commit -m "capture(${SKILL_DOMAIN}/${SKILL_SLUG}): ${SKILL_DESCRIPTION}"
           git push origin "$BRANCH"
 
           # PR body pings the team; cross-org reviewer assignment can't be set
@@ -236,7 +265,7 @@ jobs:
             --repo "${OWNER}/${REPO}" \
             --head "${BRANCH}" \
             --base "${BASE}" \
-            --title "capture(inbox/${SKILL_SLUG}): ${SKILL_DESCRIPTION}" \
+            --title "capture(${SKILL_DOMAIN}/${SKILL_SLUG}): ${SKILL_DESCRIPTION}" \
             --body-file "${RUNNER_TEMP}/pr-body.md")
 
           # Best-effort team review request; silently skipped cross-org.
@@ -247,6 +276,7 @@ jobs:
           {
             echo "path=$SKILL_PATH"
             echo "slug=$SKILL_SLUG"
+            echo "domain=$SKILL_DOMAIN"
             echo "url=$PR_URL"
             echo "number=$PR_NUMBER"
             echo "branch=$BRANCH"
@@ -265,10 +295,12 @@ jobs:
           DIRECT_URL: ${{ steps.capture-direct.outputs.url }}
           DIRECT_SHA: ${{ steps.capture-direct.outputs.sha }}
           DIRECT_SLUG: ${{ steps.capture-direct.outputs.slug }}
+          DIRECT_DOMAIN: ${{ steps.capture-direct.outputs.domain }}
           PR_PATH: ${{ steps.capture-pr.outputs.path }}
           PR_URL: ${{ steps.capture-pr.outputs.url }}
           PR_NUMBER: ${{ steps.capture-pr.outputs.number }}
           PR_SLUG: ${{ steps.capture-pr.outputs.slug }}
+          PR_DOMAIN: ${{ steps.capture-pr.outputs.domain }}
           PR_BRANCH: ${{ steps.capture-pr.outputs.branch }}
           USER: ${{ github.event.comment.user.login }}
         with:
@@ -278,8 +310,8 @@ jobs:
             const {
               EMPTY, TIER, STATUS,
               SKILLS_OWNER, SKILLS_REPO,
-              DIRECT_PATH, DIRECT_URL, DIRECT_SHA, DIRECT_SLUG,
-              PR_PATH, PR_URL, PR_NUMBER, PR_SLUG, PR_BRANCH,
+              DIRECT_PATH, DIRECT_URL, DIRECT_SHA, DIRECT_SLUG, DIRECT_DOMAIN,
+              PR_PATH, PR_URL, PR_NUMBER, PR_SLUG, PR_DOMAIN, PR_BRANCH,
               USER,
             } = process.env;
             const TEAM_SLUG = process.env.TEAM_SLUG;
@@ -305,9 +337,11 @@ jobs:
               body = [
                 '⚠ `@metamaskbot /remember` needs capture text after the command.',
                 '',
+                '**Form:** `@metamaskbot /remember [--domain <name>] <capture text>`',
+                '',
                 '**Example:**',
                 '```',
-                '@metamaskbot /remember When investigating file moves, prefer `git log --follow` over `git blame`.',
+                '@metamaskbot /remember --domain pr-workflow When investigating file moves, prefer `git log --follow` over `git blame`.',
                 '```',
               ].join('\n');
             } else if (TIER === 'reject') {
@@ -326,14 +360,18 @@ jobs:
             } else if (TIER === 'direct' && DIRECT_URL) {
               const rows = [
                 ['Skill',       `[\`${DIRECT_PATH}\`](${DIRECT_URL})`],
+                ['Domain',      `\`${DIRECT_DOMAIN}\``],
                 ['Slug',        `\`${DIRECT_SLUG}\``],
                 ['Commit',      `\`${DIRECT_SHA}\` on \`${SKILLS_OWNER}/${SKILLS_REPO}\``],
                 ['Tier',        `direct — \`@${TEAM_SLUG}\` member`],
                 ['Captured by', `@${USER}`],
                 ['Source',      sourceSlug],
               ];
+              const trailer = DIRECT_DOMAIN === 'inbox'
+                ? `⚠ Landed in \`domains/inbox/\` because no \`--domain\` was specified. Inbox has no curator — re-capture with \`--domain <name>\` to ship this skill to the bundle.`
+                : `Synced to consumer repos on the next \`skills-sync\` run.`;
               body = [
-                '✓ Crystallized as an experimental skill.',
+                '✓ Captured as an experimental skill.',
                 '',
                 '| | |',
                 '|---|---|',
@@ -341,12 +379,13 @@ jobs:
                 '',
                 quoted,
                 '',
-                `Awaiting curation by \`@${TEAM_SLUG}\`. Skills sync into consumer repos once promoted out of \`domains/inbox/\`.`,
+                trailer,
               ].join('\n');
             } else if (TIER === 'pr' && PR_URL) {
               const rows = [
                 ['PR',             `[\`${SKILLS_OWNER}/${SKILLS_REPO}#${PR_NUMBER}\`](${PR_URL})`],
                 ['Proposed path',  `\`${PR_PATH}\``],
+                ['Domain',         `\`${PR_DOMAIN}\``],
                 ['Slug',           `\`${PR_SLUG}\``],
                 ['Branch',         `\`${PR_BRANCH}\``],
                 ['Tier',           `external — pending review by \`@${TEAM_SLUG}\``],
