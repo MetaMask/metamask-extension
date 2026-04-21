@@ -35,9 +35,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Https://consensyssoftware.atlassian.net/browse/TAT-2891 (#41734)
-- N/a (#41634)
-- N/a (#41576)
 - Fixed Perps geo-blocking using the GeolocationController so user location resolves correctly (#41831)
 - Fixed navigation from Manage Wallet Recovery when the SRP is not backed up (#41832)
 - Fixed Perps market prices and related data stopping updates while the popup stayed open (#41802)
