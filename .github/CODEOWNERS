@@ -304,6 +304,13 @@ app/scripts/load/                                     @MetaMask/extension-platfo
 app/scripts/platforms/                                @MetaMask/extension-platform
 app/scripts/streams/                                  @MetaMask/extension-platform
 
+# Platform - UI
+ui/index.js                                           @MetaMask/extension-platform
+ui/pages/index.js                                     @MetaMask/extension-platform @MetaMask/core-extension-ux
+ui/pages/routes/routes.component.tsx                  @MetaMask/extension-platform @MetaMask/core-extension-ux
+ui/store/store.ts                                     @MetaMask/extension-platform
+ui/store/background-connection.ts                     @MetaMask/extension-platform
+
 # Manifest
 /.browserslistrc                                     @MetaMask/extension-platform
 app/manifest/                                        @MetaMask/extension-platform
