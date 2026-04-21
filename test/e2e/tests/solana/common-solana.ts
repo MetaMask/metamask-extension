@@ -936,11 +936,18 @@ export async function mockSendSwapSolanaTransaction(
     });
 }
 
+/**
+ * `getTransaction` response for USDC → SOL swaps. Uses a captured Jupiter-style
+ * tx so activity shows the USDC leg (e.g. -1 USDC) instead of a bare SOL send.
+ *
+ * @param mockServer - Mockttp server.
+ * @param signatureHolder - Optional; live signature from `sendTransaction` overrides the mock.
+ */
 export async function mockGetUSDCSOLTransaction(
   mockServer: Mockttp,
   signatureHolder?: SignatureHolder,
 ) {
-  const resp = await readResponseJsonFile('succeededTransaction.json');
+  const resp = await readResponseJsonFile('usdcSolTransaction.json');
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
