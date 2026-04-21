@@ -1224,10 +1224,6 @@ export function unlockWithPasskey(
   ]);
 }
 
-export function isPasskeyEnrolled(): Promise<boolean> {
-  return submitRequestToBackground<boolean>('isPasskeyEnrolled', []);
-}
-
 /**
  * Settings: after WebAuthn assertion, remove passkey unlock credential (no keyring submit).
  *

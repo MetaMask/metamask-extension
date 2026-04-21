@@ -2949,9 +2949,6 @@ export default class MetamaskController extends EventEmitter {
         this.generatePasskeyAuthenticationOptions.bind(this),
       protectVaultKeyWithPasskey: this.protectVaultKeyWithPasskey.bind(this),
       unlockWithPasskey: this.unlockWithPasskey.bind(this),
-      isPasskeyEnrolled: this.passkeyController.isPasskeyEnrolled.bind(
-        this.passkeyController,
-      ),
       removePasskeyWithPasskeyVerification:
         this.removePasskeyWithPasskeyVerification.bind(this),
       removePasskeyWithPasswordVerification:

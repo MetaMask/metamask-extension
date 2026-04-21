@@ -5,12 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import {
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
   AvatarNetwork,
-  TextVariant,
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
@@ -22,7 +17,11 @@ import {
   PRIVACY_POLICY_LINK,
   SURVEY_LINK,
 } from '../../../../shared/lib/ui-utils';
-import { BorderRadius } from '../../../helpers/constants/design-system';
+import {
+  BorderRadius,
+  IconColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
   REVEAL_SEED_ROUTE,
@@ -45,6 +44,7 @@ import {
   hidePermittedNetworkToast,
   toggleDefaultView,
 } from '../../../store/actions';
+import { Icon, IconName, IconSize } from '../../component-library';
 import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
@@ -281,11 +281,7 @@ function SurveyToastMayDelete() {
       <Toast
         key="survey-toast"
         startAdornment={
-          <Icon
-            name={IconName.Heart}
-            color={IconColor.ErrorDefault}
-            size={IconSize.Md}
-          />
+          <Icon name={IconName.Heart} color={IconColor.errorDefault} />
         }
         text={t('surveyTitle')}
         actionText={t('surveyConversion')}
@@ -319,11 +315,7 @@ function PrivacyPolicyToast() {
       <Toast
         key="privacy-policy-toast"
         startAdornment={
-          <Icon
-            name={IconName.Info}
-            color={IconColor.IconDefault}
-            size={IconSize.Md}
-          />
+          <Icon name={IconName.Info} color={IconColor.iconDefault} />
         }
         text={t('newPrivacyPolicyTitle')}
         actionText={t('newPrivacyPolicyActionButton')}
@@ -354,11 +346,7 @@ function NftEnablementToast() {
       <Toast
         key="enabled-nft-auto-detection"
         startAdornment={
-          <Icon
-            name={IconName.CheckBold}
-            color={IconColor.IconDefault}
-            size={IconSize.Md}
-          />
+          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
         }
         text={t('nftAutoDetectionEnabled')}
         borderRadius={BorderRadius.LG}
@@ -460,11 +448,7 @@ function NewSrpAddedToast() {
         key="new-srp-added-toast"
         text={t('importWalletSuccess', [walletNumber])}
         startAdornment={
-          <Icon
-            name={IconName.CheckBold}
-            color={IconColor.IconDefault}
-            size={IconSize.Md}
-          />
+          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
         }
         onClose={() => dispatch(setShowNewSrpAddedToast(false))}
         autoHideTime={autoHideDelay}
@@ -488,11 +472,7 @@ function InfuraSwitchToast() {
         dataTestId="infura-switch-toast"
         text={t('updatedToMetaMaskDefault')}
         startAdornment={
-          <Icon
-            name={IconName.CheckBold}
-            color={IconColor.IconDefault}
-            size={IconSize.Md}
-          />
+          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
         }
         onClose={() => dispatch(setShowInfuraSwitchToast(false))}
         autoHideTime={autoHideDelay}
@@ -515,11 +495,7 @@ function CopyAddressToast() {
         key="copy-address-toast"
         text={t('addressCopied')}
         startAdornment={
-          <Icon
-            name={IconName.CopySuccess}
-            color={IconColor.IconDefault}
-            size={IconSize.Md}
-          />
+          <Icon name={IconName.CopySuccess} color={IconColor.iconDefault} />
         }
         onClose={() => dispatch(setShowCopyAddressToast(false))}
         autoHideTime={autoHideToastDelay}
@@ -645,10 +621,9 @@ const ClaimSubmitToast = () => {
             }
             color={
               isSuccess || isDraftSaved || isDraftDeleted
-                ? IconColor.SuccessDefault
-                : IconColor.ErrorDefault
+                ? IconColor.successDefault
+                : IconColor.errorDefault
             }
-            size={IconSize.Md}
           />
         }
         autoHideTime={autoHideToastDelay}
@@ -742,7 +717,7 @@ function ShieldPausedToast() {
         startAdornment={
           <Icon
             name={IconName.CircleX}
-            color={IconColor.ErrorDefault}
+            color={IconColor.errorDefault}
             size={IconSize.Lg}
           />
         }
@@ -785,7 +760,7 @@ function ShieldEndingToast() {
         startAdornment={
           <Icon
             name={IconName.Clock}
-            color={IconColor.WarningDefault}
+            color={IconColor.warningDefault}
             size={IconSize.Lg}
           />
         }
@@ -860,7 +835,7 @@ function StorageErrorToast() {
         startAdornment={
           <Icon
             name={IconName.Danger}
-            color={IconColor.ErrorDefault}
+            color={IconColor.errorDefault}
             size={IconSize.Lg}
           />
         }
