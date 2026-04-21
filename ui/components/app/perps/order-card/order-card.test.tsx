@@ -113,6 +113,43 @@ describe('OrderCard', () => {
       ).toBeInTheDocument();
     });
 
+    it('shows market symbol only after size for TP/SL, not before the label', () => {
+      const order = createMockOrder({
+        side: 'sell',
+        orderType: 'limit',
+        symbol: 'ETH',
+        size: '1.5',
+        isTrigger: true,
+        reduceOnly: true,
+        detailedOrderType: 'Take Profit Limit',
+        triggerPrice: '3200',
+        price: '3200',
+      });
+      renderWithProvider(<OrderCard order={order} />, mockStore);
+
+      expect(
+        screen.getByText('Take profit limit close long'),
+      ).toBeInTheDocument();
+      expect(screen.getByText('1.5 ETH')).toBeInTheDocument();
+      expect(screen.queryByText(/^ETH$/u)).not.toBeInTheDocument();
+    });
+
+    it('shows "Trigger price" subtitle for TP/SL orders', () => {
+      const order = createMockOrder({
+        side: 'sell',
+        isTrigger: true,
+        reduceOnly: true,
+        detailedOrderType: 'Take Profit Limit',
+        triggerPrice: '3200',
+        price: '3200',
+      });
+      renderWithProvider(<OrderCard order={order} />, mockStore);
+
+      expect(
+        screen.getByText(messages.perpsTriggerPrice.message),
+      ).toBeInTheDocument();
+    });
+
     it('displays "Stop market close short" for a SL trigger (buy side)', () => {
       const order = createMockOrder({
         side: 'buy',
