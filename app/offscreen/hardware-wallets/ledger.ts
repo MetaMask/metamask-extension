@@ -8,6 +8,7 @@ import {
   LedgerSignTypedDataParams,
   NFT_ONLY_SELECTORS,
 } from '@metamask/eth-ledger-bridge-keyring';
+import type { MessageTypes, TypedMessage } from '@metamask/eth-sig-util';
 import {
   recoverTypedSignature,
   SignTypedDataVersion,
@@ -437,7 +438,7 @@ export class LedgerOffscreenHandler {
           sig.v.toString(16).padStart(2, '0'),
       );
       const recovered = recoverTypedSignature({
-        data: message as Parameters<typeof recoverTypedSignature>[0]['data'],
+        data: message as TypedMessage<MessageTypes>,
         signature,
         version: SignTypedDataVersion.V4,
       });
