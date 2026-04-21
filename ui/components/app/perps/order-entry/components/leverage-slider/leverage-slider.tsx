@@ -74,8 +74,8 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
       const { value } = event.target;
       if (value === '' || isDigitsOnlyInput(value)) {
         setInputValue(value);
-        const num = parseInt(value, 10);
-        if (!isNaN(num) && num >= minLeverage && num <= maxLeverage) {
+        const num = Number.parseInt(value, 10);
+        if (!Number.isNaN(num) && num >= minLeverage && num <= maxLeverage) {
           onLeverageChange(num);
         }
       }
@@ -84,8 +84,8 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
   );
 
   const handleInputBlur = useCallback(() => {
-    const num = parseInt(inputValue, 10);
-    if (isNaN(num) || num < minLeverage) {
+    const num = Number.parseInt(inputValue, 10);
+    if (Number.isNaN(num) || num < minLeverage) {
       onLeverageChange(minLeverage);
       setInputValue(String(minLeverage));
     } else if (num > maxLeverage) {
@@ -96,6 +96,29 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
       setInputValue(String(num));
     }
   }, [inputValue, onLeverageChange, minLeverage, maxLeverage]);
+
+  const handleInputFocus = useCallback(
+    (event: React.FocusEvent<HTMLInputElement>) => {
+      event.target.select();
+    },
+    [],
+  );
+
+  const handleInputKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') {
+        return;
+      }
+      event.preventDefault();
+      const step = event.key === 'ArrowUp' ? 1 : -1;
+      const current = Number.parseInt(inputValue, 10);
+      const base = Number.isNaN(current) ? minLeverage : current;
+      const next = Math.min(maxLeverage, Math.max(minLeverage, base + step));
+      setInputValue(String(next));
+      onLeverageChange(next);
+    },
+    [inputValue, onLeverageChange, minLeverage, maxLeverage],
+  );
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2}>
@@ -123,6 +146,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
             value={inputValue}
             onChange={handleInputChange}
             onBlur={handleInputBlur}
+            onFocus={handleInputFocus}
             borderRadius={BorderRadius.MD}
             borderWidth={0}
             backgroundColor={BackgroundColor.backgroundMuted}
@@ -131,6 +155,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
             inputProps={{
               inputMode: 'numeric',
               style: { textAlign: 'center' },
+              onKeyDown: handleInputKeyDown,
             }}
             endAccessory={
               <Text

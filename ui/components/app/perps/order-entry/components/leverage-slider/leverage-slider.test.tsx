@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
@@ -48,6 +48,78 @@ describe('LeverageSlider', () => {
       renderWithProvider(<LeverageSlider {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('leverage-slider')).toBeInTheDocument();
+    });
+  });
+
+  describe('keyboard interaction', () => {
+    const getInput = () =>
+      screen
+        .getByTestId('leverage-input')
+        .querySelector('input') as HTMLInputElement;
+
+    it('selects the existing value when the input is focused', () => {
+      renderWithProvider(
+        <LeverageSlider {...defaultProps} leverage={7} />,
+        mockStore,
+      );
+      const input = getInput();
+      input.focus();
+      expect(input.selectionStart).toBe(0);
+      expect(input.selectionEnd).toBe(String(7).length);
+    });
+
+    it('increments leverage by 1 on ArrowUp and clamps at maxLeverage', () => {
+      const onLeverageChange = jest.fn();
+      renderWithProvider(
+        <LeverageSlider
+          {...defaultProps}
+          leverage={3}
+          maxLeverage={5}
+          onLeverageChange={onLeverageChange}
+        />,
+        mockStore,
+      );
+      const input = getInput();
+      fireEvent.keyDown(input, { key: 'ArrowUp' });
+      expect(onLeverageChange).toHaveBeenLastCalledWith(4);
+      fireEvent.keyDown(input, { key: 'ArrowUp' });
+      expect(onLeverageChange).toHaveBeenLastCalledWith(5);
+      fireEvent.keyDown(input, { key: 'ArrowUp' });
+      expect(onLeverageChange).toHaveBeenLastCalledWith(5);
+    });
+
+    it('decrements leverage by 1 on ArrowDown and clamps at minLeverage', () => {
+      const onLeverageChange = jest.fn();
+      renderWithProvider(
+        <LeverageSlider
+          {...defaultProps}
+          leverage={2}
+          minLeverage={1}
+          onLeverageChange={onLeverageChange}
+        />,
+        mockStore,
+      );
+      const input = getInput();
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+      expect(onLeverageChange).toHaveBeenLastCalledWith(1);
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+      expect(onLeverageChange).toHaveBeenLastCalledWith(1);
+    });
+
+    it('ignores non-arrow keys', () => {
+      const onLeverageChange = jest.fn();
+      renderWithProvider(
+        <LeverageSlider
+          {...defaultProps}
+          leverage={3}
+          onLeverageChange={onLeverageChange}
+        />,
+        mockStore,
+      );
+      const input = getInput();
+      fireEvent.keyDown(input, { key: 'Enter' });
+      fireEvent.keyDown(input, { key: 'a' });
+      expect(onLeverageChange).not.toHaveBeenCalled();
     });
   });
 });
