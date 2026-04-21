@@ -91,6 +91,9 @@ export enum TraceName {
   EvmDiscoverAccounts = 'EVM Discover Accounts',
   BackgroundRpc = 'Background RPC',
   MessengerCall = 'Messenger Call',
+  MusdConversionNavigation = 'mUSD Conversion Navigation',
+  MusdConversionQuote = 'mUSD Conversion Quote',
+  MusdConversionConfirm = 'mUSD Conversion Confirm',
 }
 
 /**
@@ -105,6 +108,8 @@ export enum TraceOperation {
   AccountCreate = 'account.create',
   AccountUi = 'account.ui',
   AccountDiscover = 'account.discover',
+  MusdConversionOperation = 'musd.conversion.operation',
+  MusdConversionDataFetch = 'musd.conversion.data_fetch',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
