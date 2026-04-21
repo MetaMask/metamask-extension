@@ -33,6 +33,7 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import {
@@ -191,26 +192,26 @@ export default function OnboardingMetametrics() {
       }
 
       if (isParticipateInMetaMetricsChecked) {
-        dispatch(
-          setDataCollectionForMarketing(isDataCollectionForMarketingChecked),
-        );
-        dispatch(setParticipateInMetaMetrics(true));
-
         await trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.AppInstalled,
         });
+
         await trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.AnalyticsPreferenceSelected,
           properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_metrics_opted_in: true,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            has_marketing_consent: Boolean(isDataCollectionForMarketingChecked),
+            [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+            [MetaMetricsUserTrait.HasMarketingConsent]:
+              isDataCollectionForMarketingChecked,
             location: 'onboarding_metametrics',
           },
         });
+
+        dispatch(
+          setDataCollectionForMarketing(isDataCollectionForMarketingChecked),
+        );
+        dispatch(setParticipateInMetaMetrics(true));
       } else {
         dispatch(setParticipateInMetaMetrics(false));
         dispatch(setDataCollectionForMarketing(false));

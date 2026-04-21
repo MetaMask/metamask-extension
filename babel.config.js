@@ -9,7 +9,7 @@ module.exports = function (api) {
       strictMode: true,
     },
     targets: {
-      browsers: ['chrome >= 89', 'firefox >= 89'],
+      browsers: ['chrome >= 113', 'firefox >= 115'],
     },
     overrides: [
       {
@@ -22,9 +22,12 @@ module.exports = function (api) {
     ],
     plugins: [
       // `browserify` is old and busted, and doesn't support `??=` (and other
-      // logical assignment operators). This plugin lets us target es2020-level
-      // browsers (except we do still end up with transpiled logical assignment
-      // operators 😭)
+      // logical assignment operators) or private class features. Keep these
+      // syntax transforms enabled even when our browser support floor is high
+      // enough to run them natively.
+      '@babel/plugin-transform-class-properties',
+      '@babel/plugin-transform-private-methods',
+      '@babel/plugin-transform-private-property-in-object',
       '@babel/plugin-transform-logical-assignment-operators',
       [
         path.resolve(

@@ -6,7 +6,7 @@ import {
   TRIGGER_TYPES,
   defaultState,
 } from '@metamask/notification-services-controller/notification-services';
-import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
+import { createParameterizedSelector } from '../../../shared/lib/selectors/selector-creators';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
@@ -54,21 +54,18 @@ export const getMetamaskNotifications = createSelector(
 );
 
 /**
- * Factory function to create a selector that retrieves a specific MetaMask notification by ID.
+ * Selector to retrieve a specific MetaMask notification by its ID.
  *
- * This function returns a selector that is tailored to fetch a notification by its ID.
- *
- * @param id - The ID of the notification to retrieve.
- * @returns A selector function that takes the AppState and returns the notification.
+ * @param _state - The current state of the Redux store.
+ * @param id - The unique identifier of the notification to retrieve.
+ * @returns The notification matching the given ID, or undefined if not found.
  */
-export const getMetamaskNotificationById = (id: string) => {
-  return createDeepEqualSelector(
-    [getMetamaskNotifications],
-    (notifications: Notification[]): Notification | undefined => {
-      return notifications.find((notification) => notification.id === id);
-    },
-  );
-};
+export const getMetamaskNotificationById = createParameterizedSelector(20)(
+  [getMetamaskNotifications, (_state: NotificationAppState, id: string) => id],
+  (notifications: Notification[], id: string): Notification | undefined => {
+    return notifications.find((notification) => notification.id === id);
+  },
+);
 
 /**
  * Selector to get the list of read MetaMask notifications.

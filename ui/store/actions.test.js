@@ -19,7 +19,12 @@ import MetaMaskController from '../../app/scripts/metamask-controller';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
-import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsNetworkEventSource,
+  MetaMetricsUserTrait,
+} from '../../shared/constants/metametrics';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
@@ -28,16 +33,23 @@ import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+import { getStatePatches } from './patch-store-substream-connection';
 
-jest.mock('../../app/scripts/controller-init/perps-controller-init', () => ({
-  PerpsControllerInit: jest.fn().mockReturnValue({
-    controller: {
-      state: {},
-      name: 'PerpsController',
-    },
-    api: {},
+jest.mock(
+  '../../app/scripts/messenger-client-init/perps-controller-init',
+  () => ({
+    PerpsControllerInit: jest.fn().mockReturnValue({
+      messengerClient: {
+        state: {},
+        name: 'PerpsController',
+      },
+      api: {},
+    }),
   }),
-}));
+);
+jest.mock('./patch-store-substream-connection');
+
+const getStatePatchesMock = jest.mocked(getStatePatches);
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -123,7 +135,6 @@ describe('Actions', () => {
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
-    background.getStatePatches = sinon.stub().resolves([]);
     background.removePermittedChain = sinon.stub();
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
@@ -190,29 +201,74 @@ describe('Actions', () => {
     });
   });
 
-  describe('#restoreAndGetSeedPhrase', () => {
+  describe('#restoreSocialBackupAndGetSeedPhrase', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('fetches all seed phrases from the metadata store, restores the vault and updates the SocialbackupMetadata state', async () => {
+    it('returns the seed phrase and syncs marketing consent', async () => {
       const store = mockStore();
+      const mnemonic = 'seed phrase';
 
       const restoreSocialBackupAndGetSeedPhraseStub =
-        background.restoreSocialBackupAndGetSeedPhrase.resolves();
+        background.restoreSocialBackupAndGetSeedPhrase.resolves(mnemonic);
+      background.getMarketingConsent = sinon.stub().resolves(true);
+      background.setDataCollectionForMarketing = sinon.stub().resolves();
+
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.restoreSocialBackupAndGetSeedPhrase('password'),
+      );
+
+      expect(result).toStrictEqual(mnemonic);
+      expect(
+        restoreSocialBackupAndGetSeedPhraseStub.calledOnceWith('password'),
+      ).toStrictEqual(true);
+      expect(background.getMarketingConsent.calledOnce).toStrictEqual(true);
+      expect(
+        background.setDataCollectionForMarketing.calledOnceWith(true),
+      ).toStrictEqual(true);
+      expect(getStatePatchesMock).toHaveBeenCalled();
+      expect(store.getActions()).toStrictEqual([
+        {
+          type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+          value: true,
+        },
+        {
+          type: actionConstants.HIDE_WARNING,
+        },
+      ]);
+    });
+
+    it('tracks the onboarding analytics preference event when a tracking function is provided', async () => {
+      const store = mockStore();
+      const trackEventStub = sinon.stub().resolves();
+
+      background.restoreSocialBackupAndGetSeedPhrase.resolves('seed phrase');
+      background.getMarketingConsent = sinon.stub().resolves(false);
+      background.setDataCollectionForMarketing = sinon.stub().resolves();
 
       setBackgroundConnection(background);
 
       await store.dispatch(
-        actions.restoreSocialBackupAndGetSeedPhrase('password'),
+        actions.restoreSocialBackupAndGetSeedPhrase('password', trackEventStub),
       );
 
-      expect(restoreSocialBackupAndGetSeedPhraseStub.callCount).toStrictEqual(
-        1,
-      );
+      expect(
+        trackEventStub.calledOnceWith({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          properties: {
+            [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+            [MetaMetricsUserTrait.HasMarketingConsent]: false,
+            location: 'onboarding_social_login_rehydration',
+          },
+        }),
+      ).toStrictEqual(true);
     });
 
-    it('errors when fetchAndRestoreSeedPhrase throws', async () => {
+    it('displays a warning when restoring the social backup fails', async () => {
       const store = mockStore();
 
       background.restoreSocialBackupAndGetSeedPhrase.rejects(
@@ -318,6 +374,12 @@ describe('Actions', () => {
       );
       expect(result).toStrictEqual(true);
       expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdated.firstCall.args).toStrictEqual([
+        {
+          skipCache: true,
+          captureSentryError: true,
+        },
+      ]);
     });
 
     it('should return false if the password is not outdated', async () => {
@@ -339,6 +401,34 @@ describe('Actions', () => {
       );
       expect(result).toStrictEqual(false);
       expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+    });
+
+    it('passes skipCache and captureSentryError to the background check', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+
+      const checkIsSeedlessPasswordOutdated =
+        background.checkIsSeedlessPasswordOutdated.resolves(true);
+
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.checkIsSeedlessPasswordOutdated(false, false),
+      );
+
+      expect(result).toStrictEqual(true);
+      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdated.firstCall.args).toStrictEqual([
+        {
+          skipCache: false,
+          captureSentryError: false,
+        },
+      ]);
     });
 
     it('should not throw an error if the checkIsSeedlessPasswordOutdated fails', async () => {
@@ -867,12 +957,22 @@ describe('Actions', () => {
   });
 
   describe('#connectHardware', () => {
+    const translateHardwareMessage = (key, substitutions = []) =>
+      key === 'hardwareWalletLookingForDevice'
+        ? enLocale.hardwareWalletLookingForDevice.message.replace(
+            '$1',
+            substitutions[0],
+          )
+        : `translated_${key}`;
+
     afterEach(() => {
       sinon.restore();
     });
 
     it('calls connectHardware in background', async () => {
       const store = mockStore();
+      const page = 0;
+      const hdPath = `m/44'/60'/0'/0`;
 
       const connectHardware = background.connectHardware.resolves();
 
@@ -881,15 +981,25 @@ describe('Actions', () => {
       await store.dispatch(
         actions.connectHardware(
           HardwareDeviceNames.ledger,
-          0,
-          `m/44'/60'/0'/0`,
+          page,
+          hdPath,
+          false,
+          translateHardwareMessage,
         ),
       );
-      expect(connectHardware.callCount).toStrictEqual(1);
+      expect(
+        connectHardware.calledOnceWith(
+          HardwareDeviceNames.ledger,
+          page,
+          hdPath,
+        ),
+      ).toStrictEqual(true);
     });
 
     it('shows loading indicator and displays error', async () => {
       const store = mockStore();
+      const page = 0;
+      const hdPath = `m/44'/60'/0'/0`;
 
       background.connectHardware.rejects(new Error('error'));
 
@@ -905,7 +1015,15 @@ describe('Actions', () => {
       ];
 
       await expect(
-        store.dispatch(actions.connectHardware(HardwareDeviceNames.ledger)),
+        store.dispatch(
+          actions.connectHardware(
+            HardwareDeviceNames.ledger,
+            page,
+            hdPath,
+            false,
+            translateHardwareMessage,
+          ),
+        ),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
@@ -953,7 +1071,7 @@ describe('Actions', () => {
           0,
           `m/44'/60'/0'/0`,
           true,
-          (key) => `translated_${key}`,
+          translateHardwareMessage,
         ),
       );
 
@@ -998,8 +1116,6 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      const mockTranslation = (key) => `translated_${key}`;
-
       await expect(
         store.dispatch(
           actions.connectHardware(
@@ -1007,7 +1123,7 @@ describe('Actions', () => {
             0,
             `m/44'/60'/0'/0`,
             true,
-            mockTranslation,
+            translateHardwareMessage,
           ),
         ),
       ).rejects.toThrow('translated_ledgerWebHIDNotConnectedErrorMessage');
@@ -1056,7 +1172,7 @@ describe('Actions', () => {
           0,
           `m/44'/60'/0'/0`,
           false,
-          (key) => `translated_${key}`,
+          translateHardwareMessage,
         ),
       );
 
@@ -1105,8 +1221,6 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      const mockTranslation = (key) => `translated_${key}`;
-
       await expect(
         store.dispatch(
           actions.connectHardware(
@@ -1114,7 +1228,7 @@ describe('Actions', () => {
             0,
             `m/44'/60'/0'/0`,
             true,
-            mockTranslation,
+            translateHardwareMessage,
           ),
         ),
       ).rejects.toThrow('translated_ledgerDeviceOpenFailureMessage');
@@ -1157,7 +1271,7 @@ describe('Actions', () => {
           0,
           `m/44'/60'/0'/0`,
           true,
-          (key) => `translated_${key}`,
+          translateHardwareMessage,
         ),
       );
 
@@ -1189,6 +1303,30 @@ describe('Actions', () => {
         ),
       );
       expect(unlockHardwareWalletAccount.callCount).toStrictEqual(1);
+    });
+
+    it('forwards a null hd path to the background handler', async () => {
+      const store = mockStore();
+      const unlockHardwareWalletAccount =
+        background.unlockHardwareWalletAccount.resolves();
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.unlockHardwareWalletAccounts(
+          [0],
+          HardwareDeviceNames.trezor,
+          null,
+          '',
+        ),
+      );
+
+      expect(unlockHardwareWalletAccount.firstCall.args).toStrictEqual([
+        0,
+        HardwareDeviceNames.trezor,
+        null,
+        '',
+      ]);
     });
 
     it('shows loading indicator and displays error', async () => {
@@ -1318,7 +1456,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         updateTransaction: updateTransactionStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1341,7 +1478,6 @@ describe('Actions', () => {
         updateTransaction: () => {
           throw new Error('error');
         },
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1669,7 +1805,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1698,7 +1833,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1733,7 +1867,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         ignoreTokens: ignoreTokensStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1749,7 +1882,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         ignoreTokens: sinon.stub().rejects(new Error('error')),
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1782,7 +1914,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         hideAsset: hideAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1801,7 +1932,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         hideAsset: sinon.stub().rejects(error),
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1833,7 +1963,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addCustomAsset: addCustomAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1853,7 +1982,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addCustomAsset: sinon.stub().rejects(error),
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1880,7 +2008,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         unhideAsset: unhideAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1899,7 +2026,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         unhideAsset: sinon.stub().rejects(error),
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1927,7 +2053,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         removeCustomAsset: removeCustomAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1949,7 +2074,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         removeCustomAsset: sinon.stub().rejects(error),
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1977,7 +2101,6 @@ describe('Actions', () => {
       background.getApi.returns({
         unhideAsset: unhideAssetStub,
         addCustomAsset: addCustomAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2023,7 +2146,6 @@ describe('Actions', () => {
       background.getApi.returns({
         unhideAsset: sinon.stub().rejects(new Error('unhide failed')),
         addCustomAsset: addCustomAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2403,7 +2525,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         setAddressBook: setAddressBookStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -2762,37 +2883,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setUseBlockie', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setUseBlockie in background', async () => {
-      const store = mockStore();
-      const setUseBlockieStub = sinon.stub().resolves();
-      setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
-
-      await store.dispatch(actions.setUseBlockie());
-      expect(setUseBlockieStub.callCount).toStrictEqual(1);
-    });
-
-    it('errors when setUseBlockie in background throws', async () => {
-      const store = mockStore();
-      const setUseBlockieStub = sinon.stub().rejects(new Error('error'));
-
-      setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await store.dispatch(actions.setUseBlockie());
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#setUsePhishDetect', () => {
     afterEach(() => {
       sinon.restore();
@@ -3061,7 +3151,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         rejectPendingApproval: sinon.stub().resolves(),
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -3095,7 +3184,7 @@ describe('Actions', () => {
   });
 
   describe('#createCancelTransaction', () => {
-    it('shows TRANSACTION_ALREADY_CONFIRMED modal if createCancelTransaction throws with an error', async () => {
+    it('dispatches DISPLAY_WARNING and rethrows when createCancelTransaction fails', async () => {
       const store = mockStore();
 
       const createCancelTransactionStub = sinon
@@ -3107,20 +3196,19 @@ describe('Actions', () => {
 
       const txId = '123-456';
 
-      try {
-        await store.dispatch(actions.createCancelTransaction(txId));
-      } catch (error) {
-        /* eslint-disable-next-line jest/no-conditional-expect */
-        expect(error.message).toBe('Previous transaction is already confirmed');
-      }
+      await expect(
+        store.dispatch(actions.createCancelTransaction(txId)),
+      ).rejects.toThrow('Previous transaction is already confirmed');
 
       const resultantActions = store.getActions();
-      const expectedAction = resultantActions.find(
-        (action) => action.type === actionConstants.MODAL_OPEN,
+      const warningAction = resultantActions.find(
+        (action) => action.type === actionConstants.DISPLAY_WARNING,
       );
 
-      expect(expectedAction.payload.name).toBe('TRANSACTION_ALREADY_CONFIRMED');
-      expect(expectedAction.payload.originalTransactionId).toBe(txId);
+      expect(warningAction).toBeDefined();
+      expect(warningAction.payload).toBe(
+        'Previous transaction is already confirmed',
+      );
     });
   });
 
@@ -4554,7 +4642,6 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'HIDE_WARNING' },
-        { type: 'SET_SHOW_NEW_SRP_ADDED_TOAST', payload: true },
       ];
 
       await store.dispatch(actions.importMnemonicToVault(mnemonic));
@@ -4755,6 +4842,19 @@ describe('Actions', () => {
     });
   });
 
+  describe('#perpsToggleTestnet', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls perpsToggleTestnet in the background', async () => {
+      background.perpsToggleTestnet = sinon.stub().resolves();
+      setBackgroundConnection(background);
+      await actions.perpsToggleTestnet();
+      expect(background.perpsToggleTestnet.callCount).toStrictEqual(1);
+    });
+  });
+
   describe('#setPendingRedirectRoute', () => {
     afterEach(() => {
       sinon.restore();
@@ -4763,7 +4863,6 @@ describe('Actions', () => {
     it('calls background setPendingRedirectRoute with a route', async () => {
       const store = mockStore();
       background.setPendingRedirectRoute = sinon.stub().resolves();
-      background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
       const route = { path: '/shield-plan' };
@@ -4777,7 +4876,6 @@ describe('Actions', () => {
     it('calls background setPendingRedirectRoute with null', async () => {
       const store = mockStore();
       background.setPendingRedirectRoute = sinon.stub().resolves();
-      background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
       await store.dispatch(actions.setPendingRedirectRoute(null));
@@ -4792,7 +4890,6 @@ describe('Actions', () => {
       background.setPendingRedirectRoute = sinon
         .stub()
         .rejects(new Error('error'));
-      background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
       const expectedActions = [{ type: 'DISPLAY_WARNING', payload: 'error' }];

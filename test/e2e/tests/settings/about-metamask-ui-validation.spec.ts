@@ -34,7 +34,7 @@ describe('Setting - About MetaMask :', function (this: Suite) {
         await aboutPage.checkMetaMaskVersionNumber(version);
 
         // click on `close` button
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
 
         // wait for home page and validate the balance
         const homePage = new HomePage(driver);

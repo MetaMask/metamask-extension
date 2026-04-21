@@ -13,7 +13,6 @@ import {
   IconColor,
   Text,
   TextVariant,
-  BoxBackgroundColor,
 } from '@metamask/design-system-react';
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -55,7 +54,10 @@ const CurrencySubPage = () => {
   };
 
   return (
-    <Box>
+    <Box
+      data-testid="currency-select-list"
+      className="h-full min-h-0 overflow-y-auto"
+    >
       {currencyOptions.map(({ value, label }) => {
         const isSelected = value.toLowerCase() === currentCurrency;
         return (
@@ -64,12 +66,11 @@ const CurrencySubPage = () => {
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
             alignItems={BoxAlignItems.Center}
-            backgroundColor={
+            className={`w-full cursor-pointer border-0 p-4 ${
               isSelected
-                ? BoxBackgroundColor.BackgroundMuted
-                : BoxBackgroundColor.BackgroundDefault
-            }
-            className="w-full cursor-pointer border-0 p-4"
+                ? 'bg-muted hover:bg-muted-hover'
+                : 'bg-background-default hover:bg-background-default-hover'
+            }`}
             onClick={() => handleSelect(value)}
           >
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>

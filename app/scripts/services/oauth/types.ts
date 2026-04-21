@@ -14,60 +14,26 @@ import type {
   EndTraceRequest,
 } from '../../../../shared/lib/trace';
 import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
+import { OAuthServiceMethodActions } from './oauth-service-method-action-types';
 
 export const SERVICE_NAME = 'OAuthService';
 
 export type ServiceName = typeof SERVICE_NAME;
 
-/**
- * Start the OAuth login process for the given social login type.
- */
-export type OAuthServiceStartOAuthLoginAction = {
-  type: `${ServiceName}:startOAuthLogin`;
-  handler: (authConnection: AuthConnection) => Promise<OAuthLoginResult>;
-};
-
-/**
- * Get a new refresh token from the Web3Auth Authentication Server.
- */
-export type OAuthServiceGetNewRefreshTokenAction = {
-  type: `${ServiceName}:getNewRefreshToken`;
-  handler: (options: {
-    connection: AuthConnection;
-    refreshToken: string;
-  }) => Promise<OAuthRefreshTokenResult>;
-};
-
-/**
- * Revoke the current refresh token and get a new refresh token.
- */
-export type OAuthServiceRevokeRefreshTokenAction = {
-  type: `${ServiceName}:revokeRefreshToken`;
-  handler: (options: {
-    connection: AuthConnection;
-    revokeToken: string;
-  }) => Promise<void>;
-};
-
-/**
- * Revoke the current refresh token and get a new refresh token.
- */
-export type OAuthServiceRenewRefreshTokenAction = {
-  type: `${ServiceName}:renewRefreshToken`;
-  handler: (options: {
-    connection: AuthConnection;
-    revokeToken: string;
-  }) => Promise<{ newRevokeToken: string; newRefreshToken: string }>;
-};
+export type {
+  OAuthServiceStartOAuthLoginAction,
+  OAuthServiceGetNewRefreshTokenAction,
+  OAuthServiceRenewRefreshTokenAction,
+  OAuthServiceRevokeRefreshTokenAction,
+  OAuthServiceGetMarketingConsentAction,
+  OAuthServiceSetMarketingConsentAction,
+} from './oauth-service-method-action-types';
 
 /**
  * All possible actions for the OAuthService.
  */
 export type OAuthServiceAction =
-  | OAuthServiceStartOAuthLoginAction
-  | OAuthServiceGetNewRefreshTokenAction
-  | OAuthServiceRevokeRefreshTokenAction
-  | OAuthServiceRenewRefreshTokenAction
+  | OAuthServiceMethodActions
   | SeedlessOnboardingControllerGetStateAction
   | SeedlessOnboardingControllerGetAccessTokenAction
   | OnboardingControllerGetStateAction;

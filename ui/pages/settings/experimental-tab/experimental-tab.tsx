@@ -17,7 +17,7 @@ import { EXPERIMENTAL_ITEMS } from '../../settings-v2/search-config';
 
 const NotificationsItem = createToggleItem({
   name: 'NotificationsItem',
-  titleKey: EXPERIMENTAL_ITEMS.notifications,
+  titleKey: 'notificationsFeatureToggle',
   descriptionKey: 'notificationsFeatureToggleDescription',
   selector: getFeatureNotificationsEnabled,
   action: setFeatureNotificationsEnabled,

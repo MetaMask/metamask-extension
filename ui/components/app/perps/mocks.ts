@@ -51,7 +51,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '2400.00',
     maxLeverage: 20,
-    returnOnEquity: '15.79',
+    returnOnEquity: '0.1579',
     cumulativeFunding: {
       allTime: '12.50',
       sinceOpen: '8.30',
@@ -75,7 +75,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '48000.00',
     maxLeverage: 20,
-    returnOnEquity: '-16.67',
+    returnOnEquity: '-0.1667',
     cumulativeFunding: {
       allTime: '-5.20',
       sinceOpen: '-3.10',
@@ -100,7 +100,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '85.00',
     maxLeverage: 20,
-    returnOnEquity: '26.32',
+    returnOnEquity: '0.2632',
     cumulativeFunding: {
       allTime: '2.50',
       sinceOpen: '1.80',
@@ -124,7 +124,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '1.08',
     maxLeverage: 20,
-    returnOnEquity: '-41.67',
+    returnOnEquity: '-0.4167',
     cumulativeFunding: {
       allTime: '-1.20',
       sinceOpen: '-0.80',
@@ -149,7 +149,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '0.80',
     maxLeverage: 20,
-    returnOnEquity: '26.67',
+    returnOnEquity: '0.2667',
     cumulativeFunding: {
       allTime: '3.50',
       sinceOpen: '2.20',
@@ -175,7 +175,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '216.00',
     maxLeverage: 10,
-    returnOnEquity: '22.92',
+    returnOnEquity: '0.2292',
     cumulativeFunding: {
       allTime: '4.80',
       sinceOpen: '2.40',
@@ -199,7 +199,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '528.00',
     maxLeverage: 10,
-    returnOnEquity: '-10.42',
+    returnOnEquity: '-0.1042',
     cumulativeFunding: {
       allTime: '-2.10',
       sinceOpen: '-1.50',
@@ -225,7 +225,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '1930.00',
     maxLeverage: 20,
-    returnOnEquity: '15.27',
+    returnOnEquity: '0.1527',
     cumulativeFunding: {
       allTime: '1.20',
       sinceOpen: '0.80',
@@ -250,7 +250,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '1.0600',
     maxLeverage: 20,
-    returnOnEquity: '13.86',
+    returnOnEquity: '0.1386',
     cumulativeFunding: {
       allTime: '8.50',
       sinceOpen: '5.20',

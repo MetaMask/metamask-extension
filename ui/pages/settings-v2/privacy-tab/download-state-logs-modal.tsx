@@ -56,7 +56,7 @@ export default function DownloadStateLogsModal({
   };
 
   return (
-    <Modal isOpen onClose={onClose}>
+    <Modal isOpen onClose={onClose} data-testid="download-state-logs-modal">
       <ModalOverlay />
       <ModalContent
         alignItems={AlignItems.center}

@@ -169,6 +169,9 @@ export const MOCK_BITCOIN_ACCOUNT = {
   },
 };
 
+export const MOCK_EXTERNAL_SOLANA_ADDRESS =
+  '8sKQHfjNhvmAw94PhfvfMcytmqW6jmxvwieYyzXCCPu';
+
 export const createBridgeMockStore = ({
   featureFlagOverrides = { bridgeConfig: {} },
   bridgeSliceOverrides = {},
@@ -405,6 +408,9 @@ export const createBridgeMockStore = ({
         ...marketDataOverrides,
       },
       slides: [],
+      selectedAccountGroup:
+        accountTreeOverrides?.selectedAccountGroup ??
+        'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       accountTree: {
         wallets: {
           'entropy:01K2FF18CTTXJYD34R78X4N1N1': {
@@ -427,6 +433,7 @@ export const createBridgeMockStore = ({
                   entropy: {
                     groupIndex: 0,
                   },
+                  lastSelected: 0,
                 },
                 accounts: [
                   MOCK_EVM_ACCOUNT.id,
@@ -444,6 +451,7 @@ export const createBridgeMockStore = ({
                   entropy: {
                     groupIndex: 1,
                   },
+                  lastSelected: 0,
                 },
                 accounts: [MOCK_EVM_ACCOUNT_2.id],
               },
@@ -468,15 +476,13 @@ export const createBridgeMockStore = ({
                     name: 'Ledger Account 1',
                     pinned: false,
                     hidden: false,
+                    lastSelected: 0,
                   },
                   accounts: [MOCK_LEDGER_ACCOUNT.id],
                 },
             },
           },
         },
-        selectedAccountGroup:
-          accountTreeOverrides?.selectedAccountGroup ??
-          'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       },
       ...tokenData,
       ...metamaskStateOverridesWithoutAccounts,

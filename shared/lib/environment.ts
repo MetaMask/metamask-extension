@@ -60,6 +60,15 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
   );
 };
 
+/**
+ * Compile-time gate (`NEW_HARDWARE_WALLET_ONBOARDING`): when true the
+ * extension uses the redesigned hardware-wallet onboarding flows (device
+ * discovery and error handling).
+ */
+export const getIsNewHardwareWalletOnboardingEnabled = (): boolean => {
+  return process.env.NEW_HARDWARE_WALLET_ONBOARDING?.toString() === 'true';
+};
+
 export const getIsSidePanelFeatureEnabled = (): boolean => {
   // In browser context, check if the API exists (Firefox doesn't have it)
   if (

@@ -2,14 +2,14 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { Json } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SettingsToggleItem } from '../../settings/settings-toggle-item';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
-  type MetaMetricsEventName,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import type { SettingItemProps } from '../types';
+import { SettingsToggleItem } from './settings-toggle-item';
 
 const selectAlwaysFalse = (): boolean => false;
 
@@ -32,6 +32,9 @@ export type ToggleItemConfig = {
   dataTestId: string;
   containerDataTestId?: string;
   disabledSelector?: (state: MetaMaskReduxState) => boolean;
+  // Simple metric property name for tracking Settings Updated events.
+  trackEventProperty?: string;
+  // Full tracking config for complex cases. Takes precedence over trackEventProperty.
   trackEvent?: ToggleEventConfig;
 };
 
@@ -51,7 +54,6 @@ export const createToggleItem = (
 
     const handleToggle = (currentValue: boolean) => {
       const newValue = !currentValue;
-      dispatch(config.action(newValue));
 
       if (config.trackEvent) {
         trackEvent({
@@ -59,6 +61,19 @@ export const createToggleItem = (
           event: config.trackEvent.event,
           properties: config.trackEvent.properties(newValue),
         });
+      } else if (config.trackEventProperty) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.SettingsUpdated,
+          properties: {
+            [config.trackEventProperty]: newValue,
+          },
+        });
+      }
+
+      const result = config.action(newValue);
+      if (result !== undefined) {
+        dispatch(result);
       }
     };
 

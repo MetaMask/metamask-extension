@@ -87,7 +87,7 @@ export function createMemoryRouterWrapper(options = {}) {
   return Wrapper;
 }
 
-function createProviderWrapper(
+export function createProviderWrapper(
   store,
   pathname = '/',
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
@@ -133,8 +133,13 @@ export function renderWithProvider(
   store,
   pathname = '/',
   renderer = render,
+  getMockTrackEvent,
 ) {
-  const wrapper = createProviderWrapper(store, pathname);
+  const wrapper = createProviderWrapper(
+    store,
+    pathname,
+    getMockTrackEvent ?? (() => jest.fn().mockResolvedValue(undefined)),
+  );
 
   return renderer(component, { wrapper });
 }

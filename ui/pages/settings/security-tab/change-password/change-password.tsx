@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { useContext, useEffect, useRef, useState, useMemo } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
@@ -45,16 +45,15 @@ import {
 } from '../../../../store/actions';
 import PasswordForm from '../../../../components/app/password-form/password-form';
 import {
-  SECURITY_ROUTE,
-  SECURITY_REGISTER_PASSKEY_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
+  SECURITY_REGISTER_PASSKEY_ROUTE,
+  SECURITY_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { setShowPasswordChangeToast } from '../../../../components/app/toast-master/utils';
-import { PasswordChangeToastType } from '../../../../../shared/constants/app-state';
+import { toast, ToastContent } from '../../../../components/ui/toast/toast';
 import {
+  getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,
-  getIsPasskeyFeatureAvailable,
 } from '../../../../selectors';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -62,9 +61,11 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { SettingsToggleItem } from '../../settings-toggle-item';
-import { applyChangePasswordBiometricsToggle } from './change-password-biometrics';
+import { useBoolean } from '../../../../hooks/useBoolean';
+import { SECOND } from '../../../../../shared/constants/time';
+import { SettingsToggleItem } from '../../../settings-v2/shared/settings-toggle-item';
 import ChangePasswordWarning from './change-password-warning';
+import { applyChangePasswordBiometricsToggle } from './change-password-biometrics';
 
 const ChangePasswordSteps = {
   VerifyCurrentPassword: 1,
@@ -72,7 +73,15 @@ const ChangePasswordSteps = {
   ChangePasswordLoading: 3,
 };
 
-const ChangePassword = () => {
+const autoHideToastDelay = 5 * SECOND;
+
+type ChangePasswordProps = {
+  redirectRoute?: string;
+};
+
+const ChangePassword = ({
+  redirectRoute = SECURITY_ROUTE,
+}: ChangePasswordProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -101,7 +110,7 @@ const ChangePassword = () => {
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
     useState(false);
 
-  const [termsChecked, setTermsChecked] = useState(false);
+  const { value: termsChecked, toggle } = useBoolean();
   const [newPassword, setNewPassword] = useState('');
   const [showChangePasswordWarning, setShowChangePasswordWarning] =
     useState(false);
@@ -221,13 +230,18 @@ const ChangePassword = () => {
       });
 
       // upon successful password change, go back to the settings page
-      navigate(SECURITY_ROUTE);
-      dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Success));
+      navigate(redirectRoute);
+      toast.success(
+        <ToastContent title={t('securityChangePasswordToastSuccess')} />,
+        { duration: autoHideToastDelay },
+      );
     } catch (error) {
       console.error(error);
       setStep(ChangePasswordSteps.ChangePassword);
-      setPasskeyAuthenticationResponse(null);
-      dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Errored));
+      toast.error(
+        <ToastContent title={t('securityChangePasswordToastError')} />,
+        { duration: autoHideToastDelay },
+      );
     }
   };
 
@@ -445,41 +459,22 @@ const ChangePassword = () => {
                 className="flex min-h-0 flex-1 flex-col"
                 data-testid="change-password-passkey-verifying"
               >
-                <Box
-                  flexDirection={BoxFlexDirection.Row}
-                  alignItems={BoxAlignItems.Center}
-                  gap={3}
-                  className="shrink-0"
-                >
-                  <Box className="flex h-6 w-6 shrink-0 items-center justify-center">
-                    <Spinner />
-                  </Box>
-                  <Text
-                    variant={TextVariant.BodyMd}
-                    color={TextColor.TextAlternative}
-                  >
-                    {t('changePasswordVerifyingPasskey')}
-                  </Text>
-                </Box>
-                {isPasskeyVerificationLayout &&
-                getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL ? (
-                  <button
-                    type="button"
-                    data-testid="change-password-trouble-continue-full-screen"
-                    onClick={openChangePasswordInFullScreen}
-                    className="mt-4 w-full shrink-0 cursor-pointer border-0 bg-transparent p-0 text-left outline-none hover:bg-transparent hover:shadow-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-primary-default focus-visible:ring-offset-2"
-                  >
-                    <Text
-                      variant={TextVariant.BodySm}
-                      color={TextColor.PrimaryDefault}
-                      asChild
-                    >
-                      <span className="block w-full text-center no-underline hover:no-underline">
-                        {t('passkeyTroubleContinueFullScreen')}
-                      </span>
-                    </Text>
-                  </button>
-                ) : null}
+                <Checkbox
+                  id="change-password-terms"
+                  data-testid="change-password-terms"
+                  isSelected={termsChecked}
+                  onChange={toggle}
+                  label={
+                    <>
+                      {isSocialLoginFlow
+                        ? t('passwordTermsWarningSocial')
+                        : t('passwordTermsWarning')}
+                      &nbsp;
+                      {createPasswordLink}
+                    </>
+                  }
+                  className="items-start flex"
+                />
               </Box>
             ) : (
               <>
@@ -548,7 +543,7 @@ const ChangePassword = () => {
                       data-testid="change-password-terms"
                       isSelected={termsChecked}
                       onChange={() => {
-                        setTermsChecked(!termsChecked);
+                        toggle();
                       }}
                       label={
                         <>

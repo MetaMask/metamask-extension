@@ -1,89 +1,41 @@
 import React from 'react';
-import { act, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { GasEstimateTypes } from '../../../../../shared/constants/gas';
-
-import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import mockEstimates from '../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 
-import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import TransactionDetail from './transaction-detail.component';
 
-jest.mock('../../../../store/actions', () => ({
-  gasFeeStartPollingByNetworkClientId: jest
-    .fn()
-    .mockResolvedValue('pollingToken'),
-  gasFeeStopPollingByPollingToken: jest.fn(),
-  getNetworkConfigurationByNetworkClientId: jest
-    .fn()
-    .mockResolvedValue({ chainId: '0x5' }),
-  createTransactionEventFragment: jest.fn(),
-}));
-
-const mockSelectedInternalAccount =
-  getSelectedInternalAccountFromMockState(mockState);
-
-const render = async ({ componentProps, contextProps } = {}) => {
+const render = ({ componentProps } = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
-      accounts: {
-        [mockSelectedInternalAccount.address]: {
-          address: mockSelectedInternalAccount.address,
-          balance: '0x1F4',
-        },
-      },
-      gasFeeEstimates:
-        mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
-      gasFeeEstimatesByChainId: {
-        ...mockState.metamask.gasFeeEstimatesByChainId,
-        '0x5': {
-          ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
-          gasFeeEstimates:
-            mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
-        },
-      },
     },
   });
 
-  let result;
-
-  await act(
-    async () =>
-      (result = renderWithProvider(
-        <GasFeeContextProvider {...contextProps}>
-          <TransactionDetail
-            onEdit={() => {
-              console.log('on edit');
-            }}
-            rows={[]}
-            userAcknowledgedGasMissing
-            {...componentProps}
-          />
-        </GasFeeContextProvider>,
-        store,
-      )),
+  return renderWithProvider(
+    <TransactionDetail
+      onEdit={() => {
+        console.log('on edit');
+      }}
+      rows={[]}
+      userAcknowledgedGasMissing
+      {...componentProps}
+    />,
+    store,
   );
-
-  return result;
 };
 
 describe('TransactionDetail', () => {
-  it('should render edit link with text edit for legacy transactions', async () => {
-    await render({
-      contextProps: {
-        transaction: {
-          userFeeLevel: 'low',
-          txParams: { type: TransactionEnvelopeType.legacy },
-        },
-      },
-    });
-    expect(screen.queryByText('🐢')).not.toBeInTheDocument();
+  it('should render edit link when onEdit is provided', () => {
+    render();
     expect(screen.queryByText(messages.edit.message)).toBeInTheDocument();
+  });
+
+  it('should not render edit link when onEdit is not provided', () => {
+    render({ componentProps: { onEdit: undefined } });
+    expect(screen.queryByText(messages.edit.message)).not.toBeInTheDocument();
   });
 });

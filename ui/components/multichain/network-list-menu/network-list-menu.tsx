@@ -716,6 +716,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                     {t('showTestnetNetworks')}
                   </Text>
                   <ToggleButton
+                    dataTestId="network-menu-show-test-networks"
                     value={showTestnets || currentlyOnTestnet}
                     disabled={currentlyOnTestnet}
                     onToggle={(value: boolean) => {

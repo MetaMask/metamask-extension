@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { AccountWalletType } from '@metamask/account-api';
 
+import { Box } from '@metamask/design-system-react';
 import { getWalletIdsByType } from '../../../../selectors/multichain-accounts/account-tree';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../../ducks/metamask/metamask';
-import { Box } from '../../../component-library';
 import { SrpCard } from './srp-card';
 
 export const SrpList = ({

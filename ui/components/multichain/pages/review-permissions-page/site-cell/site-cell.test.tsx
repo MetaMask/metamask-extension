@@ -6,9 +6,7 @@ import { SiteCell } from './site-cell';
 
 describe('SiteCell', () => {
   const store = configureStore({
-    metamask: {
-      useBlockie: false,
-    },
+    metamask: {},
   });
 
   describe('toast handling', () => {

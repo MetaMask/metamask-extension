@@ -8,6 +8,8 @@ import {
   Box,
   BoxBackgroundColor,
   ButtonIcon,
+  Icon,
+  IconColor,
   IconName,
   IconSize,
   Text,
@@ -75,10 +77,10 @@ export const BridgeAsset = React.forwardRef(
         backgroundColor={
           selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
         }
-        className={`bridge-asset${selected ? '--selected' : ''}`}
+        className={`cursor-pointer bridge-asset${selected ? '--selected' : ''}`}
         height={BlockSize.Max}
         width={BlockSize.Full}
-        data-testid={'bridge-asset'}
+        data-testid={`bridge-asset--${asset.assetId}`}
       >
         {selected && (
           <Box
@@ -128,6 +130,14 @@ export const BridgeAsset = React.forwardRef(
               <Text ellipsis data-testid="bridge-asset-symbol">
                 {asset.symbol}
               </Text>
+              {asset.isVerified && (
+                <Icon
+                  data-testid="bridge-asset-verified-badge"
+                  name={IconName.VerifiedFilled}
+                  size={IconSize.Sm}
+                  color={IconColor.InfoDefault}
+                />
+              )}
               {asset.accountType && ACCOUNT_TYPE_LABELS[asset.accountType] && (
                 <Tag label={ACCOUNT_TYPE_LABELS[asset.accountType]} />
               )}
@@ -182,6 +192,7 @@ export const BridgeAsset = React.forwardRef(
           iconProps={{
             size: IconSize.Sm,
           }}
+          data-testid={`bridge-asset-info-icon-${asset.assetId}`}
         />
       </Row>
     );

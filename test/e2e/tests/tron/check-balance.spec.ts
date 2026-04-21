@@ -19,14 +19,13 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Tron');
 
-        const homePage = new NonEvmHomepage(driver);
-        await homePage.checkPageIsLoaded({ amount: '0 TRX' });
+        const nonEvmHomePage = new NonEvmHomepage(driver);
+        await nonEvmHomePage.checkPageIsLoaded({ amount: '0 TRX' });
       },
     );
   });
@@ -42,15 +41,14 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Tron');
 
-        const homePage = new NonEvmHomepage(driver);
+        const nonEvmHomePage = new NonEvmHomepage(driver);
         // TRX_BALANCE = 6072392 SUN = ~6.07 TRX * $0.29469 = ~$1.79
-        await homePage.checkPageIsLoaded({ amount: '$10.18' });
+        await nonEvmHomePage.checkPageIsLoaded({ amount: '$10.18' });
       },
     );
   });
@@ -64,15 +62,14 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Tron');
 
-        const homePage = new NonEvmHomepage(driver);
+        const nonEvmHomePage = new NonEvmHomepage(driver);
         // TRX_BALANCE = 6072392 SUN = ~6.07 TRX
-        await homePage.checkPageIsLoaded({ amount: '6.072 TRX' });
+        await nonEvmHomePage.checkPageIsLoaded({ amount: '6.072 TRX' });
       },
     );
   });

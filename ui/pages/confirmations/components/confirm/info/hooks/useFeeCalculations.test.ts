@@ -187,6 +187,23 @@ describe('useFeeCalculations', () => {
     expect(result.current.maxFeeNative).toBe('0.0046');
   });
 
+  it('displays "< 0.0001" for very small non-zero estimated and max fees', () => {
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+    }) as TransactionMeta;
+
+    transactionMeta.txParams.gas = '0x1';
+    transactionMeta.gasLimitNoBuffer = undefined;
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useFeeCalculations(transactionMeta),
+      mockState,
+    );
+
+    expect(result.current.estimatedFeeNative).toBe('< 0.0001');
+    expect(result.current.maxFeeNative).toBe('< 0.0001');
+  });
+
   it('returns the correct estimate if quoted swap is displayed in info', () => {
     jest.spyOn(DappSwapContext, 'useDappSwapContextOptional').mockReturnValue({
       selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponse,

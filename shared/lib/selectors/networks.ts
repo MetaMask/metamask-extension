@@ -127,7 +127,7 @@ export const getNetworkConfigurationsByCaipChainId = ({
 
   // For now we need to filter out networkConfigurations/scopes without accounts because
   // the `endowment:caip25` caveat validator will throw if there are no supported accounts for the given scope
-  // due to how the `MultichainRouter.isSupportedScope()` method is implemented
+  // due to how the `MultichainRoutingService.isSupportedScope()` method is implemented
   Object.entries(multichainNetworkConfigurationsByChainId).forEach(
     ([caipChainId, networkConfig]) => {
       const matchesAccount = Object.values(internalAccounts.accounts).some(

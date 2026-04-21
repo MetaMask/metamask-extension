@@ -537,7 +537,7 @@ export function transformFundingToTransactions(
         isPositive,
         fee: amountUSDC,
         feeNumber: parseFloat(amountUsd),
-        rate: `${new BigNumber(rate).times(100).toString()}%`,
+        rate: `${new BigNumber(rate ?? '0').times(100).toString()}%`,
       },
     };
   });
@@ -635,9 +635,10 @@ export function transformWithdrawalRequestsToTransactions(
       const amountBN = new BigNumber(amount);
       const displayAmount = `-$${amountBN.toFixed(2)}`;
 
-      // For completed withdrawals, status is always positive (green)
+      // Completion status is separate from amount polarity.
+      // Withdrawals are outflows, so they are always negative for styling.
       const statusText = 'Completed';
-      const isPositive = true;
+      const isPositive = false;
 
       return {
         id: `withdrawal-${id}`,

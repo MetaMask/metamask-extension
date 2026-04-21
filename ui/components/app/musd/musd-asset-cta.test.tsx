@@ -56,10 +56,13 @@ const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
 
 // Mock useMusdConversion
 const mockStartConversionFlow = jest.fn();
+let mockEducationSeen = false;
 jest.mock('../../../hooks/musd', () => ({
   useMusdConversion: () => ({
     startConversionFlow: mockStartConversionFlow,
-    educationSeen: false,
+    get educationSeen() {
+      return mockEducationSeen;
+    },
   }),
   useMusdGeoBlocking: () => ({
     isBlocked: false,
@@ -110,6 +113,7 @@ const mockToken = {
 describe('MusdAssetCta', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockEducationSeen = false;
   });
 
   describe('card variant', () => {
@@ -177,9 +181,35 @@ describe('MusdAssetCta', () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             cta_type: 'musd_conversion_tertiary_cta',
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: '0x1',
+            redirects_to: 'conversion_education_screen',
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            token_symbol: 'USDC',
+            network_chain_id: '0x1',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            network_name: 'Ethereum Mainnet',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            asset_symbol: 'USDC',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            cta_click_target: 'cta_button',
+          }),
+        }),
+      );
+    });
+
+    it('tracks redirects_to custom_amount_screen when conversion education was seen', () => {
+      mockEducationSeen = true;
+      const store = createMockStore();
+      renderWithProvider(
+        <MusdAssetCta token={mockToken} variant="card" />,
+        store,
+      );
+
+      fireEvent.click(screen.getByTestId('musd-asset-cta'));
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            redirects_to: 'custom_amount_screen',
           }),
         }),
       );

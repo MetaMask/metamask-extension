@@ -123,19 +123,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('useBlockie', () => {
-    it('defaults useBlockie to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.useBlockie).toStrictEqual(false);
-    });
-
-    it('setUseBlockie to true', () => {
-      const { controller } = setupController({});
-      controller.setUseBlockie(true);
-      expect(controller.state.useBlockie).toStrictEqual(true);
-    });
-  });
-
   describe('setCurrentLocale', () => {
     it('checks the default currentLocale', () => {
       const { controller } = setupController({});
@@ -467,7 +454,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        useSidePanelAsDefault: false,
+        useSidePanelAsDefault: true,
         showDefaultAddress: true,
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
@@ -498,7 +485,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        useSidePanelAsDefault: false,
+        useSidePanelAsDefault: true,
         showDefaultAddress: true,
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
@@ -516,6 +503,46 @@ describe('preferences controller', () => {
         },
         tokenNetworkFilter: {},
       });
+    });
+
+    it('disables side panel default when enabling full screen view', () => {
+      const { controller } = setupController({});
+      controller.setPreference('showExtensionInFullSizeView', true);
+      expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
+        true,
+      );
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(false);
+    });
+
+    it('disables full screen default when enabling side panel default', () => {
+      const { controller } = setupController({});
+      controller.setPreference('showExtensionInFullSizeView', true);
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(false);
+      controller.setPreference('useSidePanelAsDefault', true);
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(true);
+      expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
+        false,
+      );
+    });
+
+    it('enables side panel default when disabling full screen view', () => {
+      const { controller: defaultController } = setupController({});
+      const { controller } = setupController({
+        state: {
+          preferences: {
+            ...defaultController.getPreferences(),
+            showExtensionInFullSizeView: true,
+            useSidePanelAsDefault: false,
+          },
+        },
+      });
+
+      controller.setPreference('showExtensionInFullSizeView', false);
+
+      expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
+        false,
+      );
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(true);
     });
   });
 
@@ -670,12 +697,11 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useMultiAccountBalanceChecker": true,
           "useNftDetection": true,
@@ -740,7 +766,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "asterdex": {},
@@ -754,7 +780,6 @@ describe('preferences controller', () => {
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useExternalNameSources": true,
           "useExternalServices": true,
@@ -823,7 +848,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "asterdex": {},
@@ -831,13 +856,13 @@ describe('preferences controller', () => {
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
+          "showSidePanelMigrationToast": false,
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useExternalNameSources": true,
           "useExternalServices": true,
@@ -906,7 +931,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "asterdex": {},
@@ -914,13 +939,13 @@ describe('preferences controller', () => {
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
+          "showSidePanelMigrationToast": false,
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useExternalNameSources": true,
           "useExternalServices": true,
@@ -1194,7 +1219,6 @@ describe('preferences controller', () => {
       const { controller } = setupController({
         state: {
           currentLocale: 'ja',
-          useBlockie: true,
           theme: ThemeType.dark,
           knownMethodData: { '0x12345678': 'transfer' },
           advancedGasFee: { '0x1': { maxBaseFee: '100', priorityFee: '10' } },
@@ -1230,14 +1254,12 @@ describe('preferences controller', () => {
 
       // Verify state was customized
       expect(controller.state.currentLocale).toBe('ja');
-      expect(controller.state.useBlockie).toBe(true);
       expect(controller.state.theme).toBe(ThemeType.dark);
 
       controller.resetState();
 
       // Verify state was reset to defaults
       expect(controller.state.currentLocale).toBe(FALLBACK_LOCALE);
-      expect(controller.state.useBlockie).toBe(false);
       expect(controller.state.theme).toBe(ThemeType.os);
       expect(controller.state.knownMethodData).toStrictEqual({});
       expect(controller.state.advancedGasFee).toStrictEqual({});

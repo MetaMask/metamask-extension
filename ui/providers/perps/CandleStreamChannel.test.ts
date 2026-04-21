@@ -196,14 +196,126 @@ describe('CandleStreamChannel', () => {
         [{ symbol: 'BTC', interval: CandlePeriod.OneHour }],
       );
 
-      // Re-subscribe — should activate streaming again (1 call)
+      // Re-subscribe inside the CONNECT_DEBOUNCE_MS window — activation is
+      // deferred rather than fired immediately, so only the deactivate is
+      // observed until the debounce timer expires.
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+
+      jest.advanceTimersByTime(200);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+      expect(mockSubmitRequestToBackground).toHaveBeenLastCalledWith(
+        'perpsActivateCandleStream',
+        expect.any(Array),
+      );
+    });
+
+    it('coalesces a rapid unsubscribe→resubscribe burst into a single activate', () => {
+      const unsubscribe = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      mockSubmitRequestToBackground.mockClear();
+
+      // Simulate remount: back-to-back unsubscribe + resubscribe within the
+      // debounce window — the second activate must be debounced, not fired.
+      unsubscribe();
       channel.subscribe({
         symbol: 'BTC',
         interval: CandlePeriod.OneHour,
         callback: jest.fn(),
       });
 
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+      const activateCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([name]) => name === 'perpsActivateCandleStream',
+      );
+      expect(activateCalls).toHaveLength(0);
+
+      jest.advanceTimersByTime(200);
+      const activateCallsAfter =
+        mockSubmitRequestToBackground.mock.calls.filter(
+          ([name]) => name === 'perpsActivateCandleStream',
+        );
+      expect(activateCallsAfter).toHaveLength(1);
+    });
+
+    it('debounces resubscribe even when the prior stream was long-lived', () => {
+      const unsubscribe = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+
+      // Let the stream stay open well past the debounce window — this is the
+      // normal case for any real market visit. Measuring from the last
+      // connect would put us past CONNECT_DEBOUNCE_MS and skip debouncing;
+      // measuring from the last disconnect keeps the burst coalesced.
+      jest.advanceTimersByTime(60_000);
+      mockSubmitRequestToBackground.mockClear();
+
+      unsubscribe();
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      const activateCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([name]) => name === 'perpsActivateCandleStream',
+      );
+      expect(activateCalls).toHaveLength(0);
+
+      jest.advanceTimersByTime(200);
+      const activateCallsAfter =
+        mockSubmitRequestToBackground.mock.calls.filter(
+          ([name]) => name === 'perpsActivateCandleStream',
+        );
+      expect(activateCallsAfter).toHaveLength(1);
+    });
+
+    it('waits only the remaining debounce budget when resubscribe arrives partway through the window', () => {
+      const unsubscribe = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      mockSubmitRequestToBackground.mockClear();
+
+      unsubscribe();
+      // Resubscribe 50 ms after disconnect — CONNECT_DEBOUNCE_MS is 120 ms,
+      // so the reconnect must fire at (disconnect + 120) = 70 ms from here,
+      // not (subscribe + 120) = 170 ms. Waiting another full window would
+      // push the UI reconnect past the bridge's 150 ms teardown defer and
+      // surface the exact unsubscribe/resubscribe burst this coalesces.
+      jest.advanceTimersByTime(50);
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      // At +69 ms from resubscribe (119 ms from disconnect) the activate
+      // must not have fired yet.
+      jest.advanceTimersByTime(69);
+      const preCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([name]) => name === 'perpsActivateCandleStream',
+      );
+      expect(preCalls).toHaveLength(0);
+
+      // One more ms crosses the 120 ms anchor — activate must fire.
+      jest.advanceTimersByTime(2);
+      const postCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([name]) => name === 'perpsActivateCandleStream',
+      );
+      expect(postCalls).toHaveLength(1);
     });
 
     it('does not re-activate when other subscribers remain', () => {

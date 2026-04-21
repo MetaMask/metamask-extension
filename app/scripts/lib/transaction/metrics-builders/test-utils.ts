@@ -28,6 +28,8 @@ export const createBuilderRequest = (
     snapAndHardwareMessenger: {} as any,
     trackEvent: jest.fn(),
     getIsSmartTransaction: jest.fn().mockReturnValue(false),
+    getSmartTransactionsPreferenceEnabled: jest.fn().mockReturnValue(false),
+    getSmartTransactionsEnabled: jest.fn().mockReturnValue(false),
     getSmartTransactionByMinedTxHash: jest.fn(),
     getMethodData: jest.fn().mockResolvedValue({ name: 'transfer' }),
     getIsConfirmationAdvancedDetailsOpen: jest.fn().mockReturnValue(false),

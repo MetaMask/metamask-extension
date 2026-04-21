@@ -3,11 +3,6 @@ import { Driver } from '../../../webdriver/driver';
 class AboutPage {
   private readonly driver: Driver;
 
-  private readonly aboutPageTitle = {
-    text: 'About',
-    tag: 'h4',
-  };
-
   private readonly metaMaskLogo = '.info-tab__logo';
 
   private readonly metaMaskVersionNumber = '.info-tab__version-number';
@@ -19,7 +14,6 @@ class AboutPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.aboutPageTitle,
         this.metaMaskLogo,
         this.metaMaskVersionNumber,
       ]);

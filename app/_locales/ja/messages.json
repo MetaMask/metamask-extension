@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "アカウントのアイデンティコン"
   },
-  "accountIdenticonDescription": {
-    "message": "アカウントを一目で見分けられるよう、3種類の異なるスタイルのアイコンからお選びください。"
-  },
   "accountIsntConnectedToastText": {
     "message": "$1は$2に接続されていません"
   },
@@ -389,9 +386,6 @@
   "advanced": {
     "message": "高度な設定"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "トランザクションがブロックに含まれた場合、最大基本料金と実際の基本料金の差が返金されます。合計金額は、最大基本料金 (Gwei単位) * ガスリミットで計算されます。"
-  },
   "advancedDetailsDataDesc": {
     "message": "データ"
   },
@@ -407,10 +401,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "詳細なネットワーク手数料"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "これらの値を$1ネットワークのデフォルトとして保存する",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "詳細なネットワーク手数料"
   },
@@ -422,9 +412,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "高度なアクセス許可"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
   },
   "airDropPatternDescription": {
     "message": "トークンのオンチェーン履歴で、不審なエアドロップアクティビティの以前のインスタンスを確認できます。"
@@ -1080,9 +1067,6 @@
   "bridgeFee": {
     "message": "ブリッジ手数料"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "新しいものを取得しますか？"
-  },
   "bridgeFromTo": {
     "message": "$1 $2を$3にブリッジ",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1168,9 +1152,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "プライスインパクトに関する警告"
-  },
-  "bridgeQuoteExpired": {
-    "message": "クォートがタイムアウトしました。"
   },
   "bridgeQuotesSortedByCost": {
     "message": "クォートは、為替レートとネットワーク手数料を含む推定総コストで並べ替えられています。"
@@ -1344,9 +1325,6 @@
   },
   "cancel": {
     "message": "キャンセル"
-  },
-  "cancelPopoverTitle": {
-    "message": "トランザクションのキャンセル"
   },
   "cancelTransactionDescription": {
     "message": "このトランザクションはキャンセルされ、このネットワーク手数料が元の手数料に代わって適用されます。"
@@ -1999,9 +1977,6 @@
   "currentQuestion": {
     "message": "問題 $1 / 2"
   },
-  "currentTitle": {
-    "message": "現在:"
-  },
   "currentlyUnavailable": {
     "message": "このネットワークでは利用できません"
   },
@@ -2054,12 +2029,6 @@
   },
   "dappSuggestedHigh": {
     "message": "おすすめのサイト"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "サイト (高)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "サイト"
   },
   "dappSwapAdvantage": {
     "message": "MetaMaskスワップで貯めて収益化"
@@ -2425,9 +2394,6 @@
   "dontShowThisAgain": {
     "message": "今後表示しない"
   },
-  "downArrow": {
-    "message": "下矢印"
-  },
   "download": {
     "message": "ダウンロード"
   },
@@ -2520,22 +2486,6 @@
   "editGasLimitOutOfBounds": {
     "message": "ガスリミットは$1以上にする必要があります"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "ガスリミットは$1より大きく、$2未満でなければなりません",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "ガスリミットは、使用しても構わないガスの最大単位数です。ガスの単位数は、「最大優先手数料」および「最大手数料」の乗数になります。"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "最大基本料金を優先手数料よりも低くすることはできません"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "最大基本料金が必要以上です"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "現在のネットワーク状況に対して最大基本料金が低いです"
-  },
   "editGasMaxFeeHigh": {
     "message": "最大手数料が必要以上です"
   },
@@ -2548,29 +2498,14 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "最大優先手数料は0gweiより高くなければなりません"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "優先手数料は0より高くなければなりません。"
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "最大優先手数料が必要以上です。必要以上の額が支払われる可能性があります。"
-  },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "優先手数料が必要以上です。必要以上の額が支払われる可能性があります。"
   },
   "editGasMaxPriorityFeeLow": {
     "message": "現在のネットワーク状況に対して最大優先手数料が低いです"
   },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "現在のネットワーク状況に対して優先手数料が低いです"
-  },
   "editGasPriceTooLow": {
     "message": "ガス価格は0より高くなければなりません"
-  },
-  "editGasPriceTooltip": {
-    "message": "このネットワークは、トランザクションの送信時に「ガス価格」フィールドが必要です。ガス価格は、ガス1単位あたりに支払う金額です。"
-  },
-  "editGasTitle": {
-    "message": "優先度を編集"
   },
   "editGasTooLow": {
     "message": "処理時間不明"
@@ -2971,9 +2906,6 @@
   "from": {
     "message": "送り元"
   },
-  "fromTokenLists": {
-    "message": "トークンリストから: $1"
-  },
   "function": {
     "message": "機能: $1"
   },
@@ -2984,24 +2916,11 @@
   "gas": {
     "message": "ガス"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "推奨ガス代を編集"
-  },
-  "gasDisplayDappWarning": {
-    "message": "このガス代は$1により推奨されています。これを上書きすると、トランザクションに問題が発生する可能性があります。ご質問がございましたら、$1 にお問い合わせください。",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "ガスリミット"
   },
-  "gasLimitRecommended": {
-    "message": "ガス代上限の推奨値は$1です。それ未満の場合は失敗する可能性があります。"
-  },
   "gasLimitTooLow": {
     "message": "ガスリミットは21000以上にする必要があります"
-  },
-  "gasLimitV2": {
-    "message": "ガスリミット"
   },
   "gasPrice": {
     "message": "ガス価格 (gwei)"
@@ -3183,7 +3102,8 @@
     "message": "引き続き次のことを確認します:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Ledgerのロックが解除されていること"
+    "message": "$1のロックが解除されていること",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "イーサリアムアプリが開いていること"
@@ -3366,12 +3286,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "すべて無視"
-  },
-  "ignoreTokenWarning": {
-    "message": "トークンを非表示にするとウォレットに表示されなくなりますが、検索して追加することはできます。"
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3431,12 +3345,6 @@
   "importSecretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズをインポート"
   },
-  "importSelectedTokens": {
-    "message": "選択したトークンをインポートしますか？"
-  },
-  "importSelectedTokensDescription": {
-    "message": "選択したトークンだけがウォレットに表示されます。非表示のトークンは後でいつでも検索してインポートできます。"
-  },
   "importTokenQuestion": {
     "message": "トークンをインポートしますか？"
   },
@@ -3455,10 +3363,6 @@
   "importWalletSuccess": {
     "message": "$1ウォレットがインポートされました",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "$1をインポート",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "インポートされました",
@@ -3762,9 +3666,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledgerデバイスが接続されていません。Ledgerに接続する場合は、もう一度「続行」をクリックして、HID接続を承認してください。",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "水平矢印"
   },
   "lightTheme": {
     "message": "ライト"
@@ -4136,10 +4037,6 @@
   "musdBuyMusd": {
     "message": "mUSDを購入"
   },
-  "musdClaimClaimingTo": {
-    "message": "入金先:",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "ボーナスを請求する",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -4149,8 +4046,8 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "mUSDを保有することで獲得した年換算$1%のボーナスです。ボーナスはLineaで毎日請求できます。Powered by Relay。$2",
-    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+    "message": "mUSDを保有することで獲得した年換算のボーナスです。ボーナスはLineaで毎日請求できます。$1",
+    "description": "$1 is the 'Terms apply' link"
   },
   "musdConversionActivityTitle": {
     "message": "$1をmUSDに変換",
@@ -4174,16 +4071,12 @@
     "message": "換金して$1%獲得",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdEarnBonusPercentage": {
-    "message": "$1%のボーナスを獲得",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEducationGetStarted": {
     "message": "利用を開始する"
   },
   "musdEducationHeadline": {
     "message": "ステーブルコインで$1%をゲット",
-    "description": "$1 is the bonus APY percentage"
+    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
     "message": "後で"
@@ -4785,13 +4678,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "方法"
-  },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "$1 の新しいトークンがこのアカウントで見つかりました",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "1つの新しいトークンがこのアカウントで見つかりました"
   },
   "numberOfTokens": {
     "message": "トークンの数"
@@ -5417,9 +5303,6 @@
     "message": "使用可能",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "利用可能残高"
-  },
   "perpsAvailableToClose": {
     "message": "クローズに利用可能"
   },
@@ -5444,9 +5327,6 @@
   },
   "perpsCloseShort": {
     "message": "ショートをクローズ"
-  },
-  "perpsClosedShort": {
-    "message": "ショートをクローズしました"
   },
   "perpsConfirmCloseLong": {
     "message": "ロングをクローズ"
@@ -5526,17 +5406,11 @@
   "perpsFundingRateTooltip": {
     "message": "価格を市場に合わせるためにトレーダー間で支払われる、1時間あたりの手数料です。資金調達率がプラスの場合はロングがショートに支払い、マイナスの場合はショートがロングに支払います。"
   },
-  "perpsGeoBlockedTooltip": {
-    "message": "お住まいの地域ではパーペチュアル取引は利用できません"
-  },
   "perpsGiveFeedback": {
     "message": "ご意見をお聞かせください"
   },
   "perpsIncludesPnl": {
     "message": "損益込み $1"
-  },
-  "perpsIncreasedPosition": {
-    "message": "拡大したポジション"
   },
   "perpsLearnBasics": {
     "message": "パーペチュアルの基本"
@@ -5581,12 +5455,6 @@
   "perpsMarkets": {
     "message": "市場"
   },
-  "perpsMax": {
-    "message": "最大額"
-  },
-  "perpsMaxRemovable": {
-    "message": "減額可能額 (上限)"
-  },
   "perpsMid": {
     "message": "中間値"
   },
@@ -5622,9 +5490,6 @@
     "message": "$1のショートをオープン",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "ロングをオープンしました"
-  },
   "perpsOraclePrice": {
     "message": "オラクル価格"
   },
@@ -5639,9 +5504,6 @@
   },
   "perpsPosition": {
     "message": "ポジション"
-  },
-  "perpsPositionSize": {
-    "message": "ポジションサイズ"
   },
   "perpsPositions": {
     "message": "ポジション"
@@ -5691,30 +5553,6 @@
   },
   "perpsSize": {
     "message": "サイズ"
-  },
-  "perpsSortFundingRateHighToLow": {
-    "message": "資金調達率: 高い順"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "資金調達率: 低い順"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "取組高: 多い順"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "取組高: 少ない順"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "価格変動: 大きい順"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "価格変動: 小さい順"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "取引量: 多い順"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "取引量: 少ない順"
   },
   "perpsStartNewTrade": {
     "message": "新規取引を開始"
@@ -5851,10 +5689,6 @@
   },
   "pleaseConfirm": {
     "message": "ご確認ください"
-  },
-  "plusXMore": {
-    "message": "他$1件",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "ブログ記事をお読みください。"
@@ -7923,15 +7757,6 @@
   "speedUpCancellation": {
     "message": "このキャンセルを高速化"
   },
-  "speedUpExplanation": {
-    "message": "現在のネットワーク状況に基づきガス代を更新し、10%以上 (ネットワークによる要件) 増額させました。"
-  },
-  "speedUpPopoverTitle": {
-    "message": "トランザクションを高速化"
-  },
-  "speedUpTooltipText": {
-    "message": "新しいガス代"
-  },
   "speedUpTransactionDescription": {
     "message": "このネットワーク手数料が元の手数料に代わって適用されます。"
   },
@@ -8540,9 +8365,6 @@
   "swapSource": {
     "message": "流動性の供給源"
   },
-  "swapSuggested": {
-    "message": "スワップが提案されました"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "スワップは複雑で急を要するトランザクションです。コストとスワップの確実な成功のバランスが取れたこのガス代をお勧めします。"
   },
@@ -8719,9 +8541,6 @@
   "tokenDetails": {
     "message": "トークンの詳細"
   },
-  "tokenFoundTitle": {
-    "message": "1 つの新しいトークンが見つかりました"
-  },
   "tokenId": {
     "message": "トークンID"
   },
@@ -8764,21 +8583,11 @@
     "message": "トークン",
     "description": "is the count of tokens used for token transfers (plural form)"
   },
-  "tokensFoundTitle": {
-    "message": "$1種類の新しいトークンが見つかりました",
-    "description": "$1 is the number of new tokens detected"
-  },
   "tokensInCollection": {
     "message": "コレクションのトークン"
   },
-  "tooltipSatusConnected": {
-    "message": "接続済み"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "接続済み"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "未接続"
   },
   "total": {
     "message": "合計"
@@ -8968,9 +8777,6 @@
   "tutorial": {
     "message": "チュートリアル"
   },
-  "twelveHrTitle": {
-    "message": "12時間:"
-  },
   "txAlertTitle": {
     "message": "このトランザクションは組み戻しされます"
   },
@@ -9056,9 +8862,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "トークン価格が不安定です"
-  },
-  "upArrow": {
-    "message": "上矢印"
   },
   "update": {
     "message": "更新"
@@ -9319,9 +9122,6 @@
   "youApprove": {
     "message": "以下を承認します"
   },
-  "youDeclinedTheTransaction": {
-    "message": "トランザクションを拒否しました。"
-  },
   "youNeedToAllowCameraAccess": {
     "message": "この機能を使用するには、カメラへのアクセスを許可する必要があります。"
   },
@@ -9341,12 +9141,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFTが危険にさらされている可能性があります"
-  },
-  "yourTransactionConfirmed": {
-    "message": "トランザクションはすでに確定済みです"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "ブロックチェーン上で確定しているため、トランザクションをキャンセルできませんでした。"
   },
   "yourWalletIsReady": {
     "message": "ウォレットの準備ができました"

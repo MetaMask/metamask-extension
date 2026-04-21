@@ -49,7 +49,6 @@ const mockAccountTree = {
       },
     },
   },
-  selectedAccountGroup: mockGroupId,
 };
 
 const mockBalanceForAllWallets = {
@@ -81,6 +80,7 @@ const mockDefaultState = {
         [mockSnapAccount.id]: mockSnapAccount,
       },
     },
+    selectedAccountGroup: mockGroupId,
     accountTree: mockAccountTree,
     keyrings: [
       {

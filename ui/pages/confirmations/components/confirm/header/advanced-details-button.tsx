@@ -45,7 +45,9 @@ export const AdvancedDetailsButton = () => {
       // hiding through visibility instead of rendering conditionally so the
       // header layout is not affected
       style={
-        currentConfirmation?.type === TransactionType.shieldSubscriptionApprove
+        currentConfirmation?.type ===
+          TransactionType.shieldSubscriptionApprove ||
+        currentConfirmation?.type === TransactionType.perpsDeposit
           ? { visibility: 'hidden' }
           : {}
       }

@@ -41,11 +41,8 @@ import {
   TransactionModalContextProvider,
   useTransactionModalContext,
 } from '../../../contexts/transaction-modal';
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
-import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import CancelButton from '../cancel-button';
-import EditGasPopover from '../../../pages/confirmations/components/edit-gas-popover';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain/activity-list-item';
 import { abortTransactionSigning } from '../../../store/actions';
@@ -70,15 +67,11 @@ function TransactionListItemInner({
   setEditGasMode,
   isEarliestNonce = false,
   chainId,
-  supportsEIP1559,
 }) {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { hasCancelled } = transactionGroup;
   const [showDetails, setShowDetails] = useState(false);
-  const [showCancelEditGasPopover, setShowCancelEditGasPopover] =
-    useState(false);
-  const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
   const { openModal } = useTransactionModalContext();
   const dispatch = useDispatch();
 
@@ -136,14 +129,10 @@ function TransactionListItemInner({
           legacy_event: true,
         },
       });
-      if (supportsEIP1559) {
-        setEditGasMode(EditGasModes.speedUp);
-        openModal('cancelSpeedUpTransaction');
-      } else {
-        setShowRetryEditGasPopover(true);
-      }
+      setEditGasMode(EditGasModes.speedUp);
+      openModal('cancelSpeedUpTransaction');
     },
-    [openModal, setEditGasMode, trackEvent, supportsEIP1559],
+    [openModal, setEditGasMode, trackEvent],
   );
 
   const cancelTransaction = useCallback(
@@ -159,22 +148,12 @@ function TransactionListItemInner({
       });
       if (status === TransactionStatus.approved) {
         dispatch(abortTransactionSigning(id));
-      } else if (supportsEIP1559) {
+      } else {
         setEditGasMode(EditGasModes.cancel);
         openModal('cancelSpeedUpTransaction');
-      } else {
-        setShowCancelEditGasPopover(true);
       }
     },
-    [
-      trackEvent,
-      openModal,
-      setEditGasMode,
-      supportsEIP1559,
-      status,
-      dispatch,
-      id,
-    ],
+    [trackEvent, openModal, setEditGasMode, status, dispatch, id],
   );
 
   const shouldShowSpeedUp = useShouldShowSpeedUp(
@@ -428,20 +407,6 @@ function TransactionListItemInner({
             chainId={chainId}
           />
         ))}
-      {!supportsEIP1559 && showRetryEditGasPopover && (
-        <EditGasPopover
-          onClose={() => setShowRetryEditGasPopover(false)}
-          mode={EditGasModes.speedUp}
-          transaction={transactionGroup.primaryTransaction}
-        />
-      )}
-      {!supportsEIP1559 && showCancelEditGasPopover && (
-        <EditGasPopover
-          onClose={() => setShowCancelEditGasPopover(false)}
-          mode={EditGasModes.cancel}
-          transaction={transactionGroup.primaryTransaction}
-        />
-      )}
     </>
   );
 }
@@ -451,7 +416,6 @@ TransactionListItemInner.propTypes = {
   isEarliestNonce: PropTypes.bool,
   setEditGasMode: PropTypes.func,
   chainId: PropTypes.string,
-  supportsEIP1559: PropTypes.bool,
 };
 
 const TransactionListItem = (props) => {
@@ -459,20 +423,10 @@ const TransactionListItem = (props) => {
   const [editGasMode, setEditGasMode] = useState();
   const transaction = transactionGroup.primaryTransaction;
 
-  const supportsEIP1559 =
-    useSelector(checkNetworkAndAccountSupports1559) &&
-    !isLegacyTransaction(transaction?.txParams);
-
   return (
     <TransactionModalContextProvider>
-      <TransactionListItemInner
-        {...props}
-        setEditGasMode={setEditGasMode}
-        supportsEIP1559={supportsEIP1559}
-      />
-      {supportsEIP1559 && (
-        <CancelSpeedup transaction={transaction} editGasMode={editGasMode} />
-      )}
+      <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
+      <CancelSpeedup transaction={transaction} editGasMode={editGasMode} />
     </TransactionModalContextProvider>
   );
 };

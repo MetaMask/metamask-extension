@@ -24,6 +24,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
+import { useBoolean } from '../../hooks/useBoolean';
 
 type CreatePasswordFormProps = {
   isSocialLoginFlow: boolean;
@@ -40,7 +41,7 @@ const CreatePasswordForm = ({
 }: CreatePasswordFormProps) => {
   const t = useI18nContext();
   const [password, setPassword] = useState('');
-  const [termsChecked, setTermsChecked] = useState(false);
+  const { value: termsChecked, toggle } = useBoolean();
 
   const { trackEvent } = useContext(MetaMetricsContext);
 
@@ -148,9 +149,7 @@ const CreatePasswordForm = ({
               className="items-start"
               isSelected={termsChecked}
               isDisabled={loading}
-              onChange={() => {
-                setTermsChecked(!termsChecked);
-              }}
+              onChange={toggle}
               label={
                 <Text
                   asChild

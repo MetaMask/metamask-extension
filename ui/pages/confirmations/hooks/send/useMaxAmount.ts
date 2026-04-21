@@ -9,6 +9,7 @@ import { useAsyncResult } from '../../../../hooks/useAsync';
 import { Asset } from '../../types/send';
 import { getLayer1GasFees, toTokenMinimalUnit } from '../../utils/send';
 import { useSendContext } from '../../context/send';
+import { useIsNetworkGasSponsored } from '../../../../hooks/useIsNetworkGasSponsored';
 import { useBalance } from './useBalance';
 import { useSendType } from './useSendType';
 
@@ -44,6 +45,7 @@ type GetMaxAmountArgs = {
   isEvmNativeSendType?: boolean;
   gasFeeEstimates?: GasFeeEstimatesType;
   rawBalanceNumeric: Numeric;
+  isNetworkGasSponsored: boolean;
 };
 
 const getMaxAmountFn = ({
@@ -52,6 +54,7 @@ const getMaxAmountFn = ({
   gasFeeEstimates,
   isEvmNativeSendType,
   rawBalanceNumeric,
+  isNetworkGasSponsored,
 }: GetMaxAmountArgs) => {
   if (!asset) {
     return '0';
@@ -59,7 +62,7 @@ const getMaxAmountFn = ({
 
   let estimatedTotalGas = new Numeric('0', 10);
 
-  if (isEvmNativeSendType) {
+  if (isEvmNativeSendType && !isNetworkGasSponsored) {
     estimatedTotalGas = getEstimatedTotalGas(layer1GasFees, gasFeeEstimates);
   }
 
@@ -74,6 +77,7 @@ export const useMaxAmount = () => {
   const { asset, chainId, from, value } = useSendContext();
   const { isEvmSendType, isEvmNativeSendType } = useSendType();
   const { rawBalanceNumeric } = useBalance();
+  const { isNetworkGasSponsored } = useIsNetworkGasSponsored(chainId);
 
   const gasFeeEstimates = useSelector((state) => {
     if (chainId && isEvmSendType) {
@@ -106,6 +110,7 @@ export const useMaxAmount = () => {
       isEvmNativeSendType,
       layer1GasFees: layer1GasFees ?? '0x0',
       rawBalanceNumeric,
+      isNetworkGasSponsored,
     });
   }, [
     asset,
@@ -113,6 +118,7 @@ export const useMaxAmount = () => {
     isEvmNativeSendType,
     layer1GasFees,
     rawBalanceNumeric,
+    isNetworkGasSponsored,
   ]);
 
   return {

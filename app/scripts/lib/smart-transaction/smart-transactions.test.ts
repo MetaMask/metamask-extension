@@ -903,7 +903,7 @@ describe('submitSmartTransactionHook', () => {
     });
   });
 
-  describe('extensionSkipSTXStatusPage feature flag', () => {
+  describe('extensionSkipTransactionStatusPage feature flag', () => {
     const baseFeatureFlags = {
       extensionActive: true,
       mobileActive: false,
@@ -936,7 +936,7 @@ describe('submitSmartTransactionHook', () => {
             options: {
               featureFlags: {
                 ...baseFeatureFlags,
-                extensionSkipSmartTransactionStatusPage: flag,
+                extensionSkipTransactionStatusPage: flag,
               },
             },
           },
@@ -973,7 +973,7 @@ describe('submitSmartTransactionHook', () => {
           options: {
             featureFlags: {
               ...baseFeatureFlags,
-              extensionSkipSmartTransactionStatusPage: true,
+              extensionSkipTransactionStatusPage: true,
             },
             transactions: [
               {

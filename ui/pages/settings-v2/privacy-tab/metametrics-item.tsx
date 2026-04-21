@@ -21,8 +21,9 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
 
 export const MetametricsToggleItem = () => {
@@ -64,7 +65,6 @@ export const MetametricsToggleItem = () => {
         dispatch(setDataCollectionForMarketing(false));
       }
 
-      await disableMetametrics();
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.TurnOffMetaMetrics,
@@ -79,12 +79,14 @@ export const MetametricsToggleItem = () => {
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
           /* eslint-disable @typescript-eslint/naming-convention */
-          is_metrics_opted_in: false,
-          has_marketing_consent: false,
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
+          [MetaMetricsUserTrait.HasMarketingConsent]: false,
           /* eslint-enable @typescript-eslint/naming-convention */
           location: 'Settings',
         },
       });
+
+      await disableMetametrics();
     }
   };
 
@@ -95,7 +97,8 @@ export const MetametricsToggleItem = () => {
         description={t('participateInMetaMetricsDescription')}
         value={participateInMetaMetrics}
         onToggle={handleToggle}
-        dataTestId="participate-in-meta-metrics-toggle"
+        dataTestId="participate-in-meta-metrics-input"
+        containerDataTestId="participate-in-meta-metrics-toggle"
         disabled={!useExternalServices}
       />
       {error && (

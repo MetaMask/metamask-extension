@@ -16,11 +16,11 @@ import {
   BorderColor,
   BorderRadius,
   Display,
-  OverflowWrap,
 } from '../../../../../helpers/constants/design-system';
 import { BridgeToken } from '../../../../../ducks/bridge/types';
 import {
   IconName,
+  Label,
   SelectButton,
 } from '../../../../../components/component-library';
 import {
@@ -38,6 +38,7 @@ export const SelectedAssetButton = ({
 
   return (
     <SelectButton
+      className="bridge-selected-asset-button"
       borderRadius={BorderRadius.pill}
       backgroundColor={BackgroundColor.backgroundDefault}
       borderColor={BorderColor.borderMuted}
@@ -48,31 +49,28 @@ export const SelectedAssetButton = ({
       }}
       size={SelectButtonSize.Lg}
       alignItems={AlignItems.center}
-      descriptionProps={{
-        overflowWrap: OverflowWrap.BreakWord,
-        ellipsis: false,
-      }}
       caretIconProps={{
         name: IconName.ArrowDown,
         style: { display: Display.None },
       }}
-      label={asset.symbol}
       startAccessory={
-        <BadgeWrapper
-          key={asset.assetId}
-          style={{ marginRight: 2 }}
-          badge={
-            <AvatarNetwork
-              name={NETWORK_TO_SHORT_NETWORK_NAME_MAP[caipChainId]}
-              src={BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[caipChainId]}
-              size={AvatarNetworkSize.Xs}
-              style={{ borderWidth: 1, borderRadius: 6 }}
-              hasBorder
-            />
-          }
-        >
-          <AvatarToken src={asset.iconUrl ?? undefined} name={asset.symbol} />
-        </BadgeWrapper>
+        <div className="flex items-center gap-2">
+          <BadgeWrapper
+            key={asset.assetId}
+            badge={
+              <AvatarNetwork
+                name={NETWORK_TO_SHORT_NETWORK_NAME_MAP[caipChainId]}
+                src={BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[caipChainId]}
+                size={AvatarNetworkSize.Xs}
+                style={{ borderWidth: 1, borderRadius: 6 }}
+                hasBorder
+              />
+            }
+          >
+            <AvatarToken src={asset.iconUrl ?? undefined} name={asset.symbol} />
+          </BadgeWrapper>
+          <Label className="cursor-pointer">{asset.symbol}</Label>
+        </div>
       }
       {...props}
     />

@@ -49,7 +49,7 @@ class SwapPage {
   private readonly assetPickerSearchInput =
     '[data-testid="bridge-asset-picker-search-input"]';
 
-  private readonly bridgeAsset = '[data-testid="bridge-asset"]';
+  private readonly bridgeAsset = '[data-testid^="bridge-asset--"]';
 
   private readonly moreQuotesButton = '[aria-label="More quotes"]';
 
@@ -81,7 +81,7 @@ class SwapPage {
     '[data-testid="swap-smart-transaction-status-description"]';
 
   private readonly swapButton = {
-    tag: 'button',
+    css: '[data-testid="bridge-cta-button"]',
     text: 'Swap',
   };
 

@@ -820,6 +820,7 @@ export enum MetaMetricsEventName {
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
   MusdClaimBonusButtonClicked = 'MUSD Claim Bonus Button Clicked',
+  MusdClaimBonusCtaDisplayed = 'mUSD Claim Bonus CTA Displayed',
   MusdClaimBonusStatusUpdated = 'MUSD Claim Bonus Status Updated',
   MusdConversionCompleted = 'MUSD Conversion Completed',
   MusdConversionCtaClicked = 'MUSD Conversion CTA Clicked',
@@ -918,6 +919,7 @@ export enum MetaMetricsEventName {
   SrpHoldToRevealClickStarted = 'Reveal SRP Click Started',
   SrpHoldToRevealCloseClicked = 'Closes Hold To Reveal SRP',
   SrpHoldToRevealCompleted = 'Reveal SRP Completed',
+  SrpRevealMaliciousSiteDetected = 'Reveal SRP Malicious Site Detected',
   SrpViewsSrpQR = 'Views SRP QR Code',
   SrpViewSrpText = 'Views SRP',
   SrpCopiedToClipboard = 'Copies SRP to clipboard',
@@ -957,6 +959,7 @@ export enum MetaMetricsEventName {
   RehydrationCompleted = 'Rehydration Completed',
   RehydrationPasswordFailed = 'Rehydration Password Failed',
   UseDifferentLoginMethodClicked = 'Use Different Login Method Clicked',
+  PasswordOutdatedModalViewed = 'Password Outdated Modal Viewed',
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
@@ -970,7 +973,14 @@ export enum MetaMetricsEventName {
   DeFiScreenOpened = 'DeFi Screen Opened',
   DeFiDetailsOpened = 'DeFi Details Opened',
   ActivityScreenOpened = 'Activity Screen Opened',
-  PerpsScreenOpened = 'Perps Screen Opened',
+  PerpsScreenViewed = 'Perp Screen Viewed',
+  PerpsUiInteraction = 'Perp UI Interaction',
+  PerpsTradeTransaction = 'Perp Trade Transaction',
+  PerpsPositionCloseTransaction = 'Perp Position Close Transaction',
+  PerpsOrderCancelTransaction = 'Perp Order Cancel Transaction',
+  PerpsWithdrawalTransaction = 'Perp Withdrawal Transaction',
+  PerpsRiskManagement = 'Perp Risk Management',
+  PerpsError = 'Perp Error',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
   PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',
@@ -1062,6 +1072,9 @@ export enum MetaMetricsEventName {
   HardwareWalletForgotten = 'Hardware Wallet Forgotten',
   HardwareWalletMarketingButtonClicked = 'Hardware Wallet Marketing Button Clicked',
   HardwareWalletConnectionFailed = 'Hardware Wallet Connection Failed',
+  HardwareWalletRecoveryModalViewed = 'Hardware Wallet Recovery Modal Viewed',
+  HardwareWalletRecoverySuccessModalViewed = 'Hardware Wallet Recovery Success Modal Viewed',
+  HardwareWalletRecoveryCtaClicked = 'Hardware Wallet Recovery CTA Clicked',
   ViewportSwitched = 'Viewport Switched',
   // Rewards
   RewardsOptInStarted = 'REWARDS_OPT_IN_STARTED',
@@ -1098,6 +1111,41 @@ export enum MetaMetricsEventName {
   ContactUpdated = 'Contact Updated',
   DeleteContactClicked = 'Delete Contact Clicked',
   ContactDeleted = 'Contact Deleted',
+}
+
+/**
+ * Segment `location` for hardware wallet recovery.
+ * String values must match `segment-schema/libraries/properties/metamask-hardware-wallet-recovery-globals.yaml` (`location` enum).
+ */
+export enum MetaMetricsHardwareWalletRecoveryLocation {
+  Connection = 'Connection',
+  Transaction = 'Transaction',
+  Message = 'Message',
+  Swaps = 'Swaps',
+  Send = 'Send',
+}
+
+/**
+ * Segment `error_type` for hardware wallet recovery.
+ * String values must match `metamask-hardware-wallet-recovery-globals` / `metamask-hardware-wallet-recovery-error-globals` enums in segment-schema.
+ */
+export enum MetaMetricsHardwareWalletRecoveryErrorType {
+  DeviceLocked = 'Device Locked',
+  DeviceDisconnected = 'Device Disconnected',
+  EthereumAppNotOpened = 'Ethereum App Not Opened',
+  BlindSigningNotEnabled = 'Blind Signing Not Enabled',
+  GenericError = 'Generic Error',
+}
+
+/**
+ * Segment `device_type` (manufacturer) for hardware wallet events.
+ * String values must match `segment-schema/libraries/properties/metamask-hardware-wallet-globals.yaml` (`device_type` enum).
+ */
+export enum MetaMetricsHardwareWalletDeviceType {
+  Ledger = 'Ledger',
+  Trezor = 'Trezor',
+  QrHardware = 'QR Hardware',
+  Lattice = 'Lattice',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -1147,6 +1195,7 @@ export enum MetaMetricsEventCategory {
   Petnames = 'Petnames',
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Permissions = 'Permissions',
+  Perps = 'Perps',
   Phishing = 'Phishing',
   Referrals = 'Referrals',
   BackupAndSync = 'Backup And Sync',

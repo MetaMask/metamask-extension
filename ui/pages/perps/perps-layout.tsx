@@ -1,9 +1,11 @@
-import React, { type ReactNode } from 'react';
+import React, { useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
+import { PerpsToastProvider } from '../../components/app/perps';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
+import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
+import { submitRequestToBackground } from '../../store/background-connection';
 
-type PerpsLayoutProps = {
-  children: ReactNode;
-};
+const MIN_HIDDEN_DURATION_MS = 30_000;
 
 /**
  * Layout wrapper for all Perps pages.
@@ -15,12 +17,45 @@ type PerpsLayoutProps = {
  * It is the single point that gates background stream emission: mounting
  * signals the background to start forwarding WebSocket data to this connection,
  * and unmounting signals it to stop.
- *
- * @param options0 - Component props
- * @param options0.children - Child elements to render inside the layout
  */
-export default function PerpsLayout({ children }: PerpsLayoutProps) {
+export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
+  usePerpsLifecycleBreadcrumbs();
 
-  return <>{children}</>;
+  // Nudge background perps WebSocket health when the tab becomes visible after
+  // being hidden for a while. Offline→online is handled in PerpsStreamBridge.
+  useEffect(() => {
+    let hiddenAt: number | null = null;
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        hiddenAt = Date.now();
+        return;
+      }
+
+      const wasHiddenAt = hiddenAt;
+      hiddenAt = null;
+
+      if (
+        wasHiddenAt !== null &&
+        Date.now() - wasHiddenAt < MIN_HIDDEN_DURATION_MS
+      ) {
+        return;
+      }
+
+      submitRequestToBackground('perpsCheckHealth').catch(() => {
+        // fire-and-forget
+      });
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () =>
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
+
+  return (
+    <PerpsToastProvider>
+      <Outlet />
+    </PerpsToastProvider>
+  );
 }

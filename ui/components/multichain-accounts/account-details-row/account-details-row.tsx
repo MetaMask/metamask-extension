@@ -1,14 +1,17 @@
+import type { ComponentProps } from 'react';
 import React from 'react';
 import classnames from 'clsx';
-import { Box, Text } from '../../component-library';
 import {
-  BackgroundColor,
-  Display,
-  JustifyContent,
-  AlignItems,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 
 type AccountDetailsRowProps = {
   label: string;
@@ -16,7 +19,7 @@ type AccountDetailsRowProps = {
   endAccessory: React.ReactNode;
   onClick?: () => void;
   style?: React.CSSProperties;
-  labelColor?: TextColor;
+  labelColor?: ComponentProps<typeof Text>['color'];
 };
 
 export const AccountDetailsRow = ({
@@ -34,13 +37,13 @@ export const AccountDetailsRow = ({
 
   return (
     <Box
-      backgroundColor={BackgroundColor.backgroundSection}
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
+      backgroundColor={BoxBackgroundColor.BackgroundSection}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
       style={style}
       paddingLeft={4}
       paddingRight={2}
-      alignItems={AlignItems.center}
+      alignItems={BoxAlignItems.Center}
       onClick={onClick}
       className={rowClassName}
       data-testid={`account-details-row-${label
@@ -48,20 +51,22 @@ export const AccountDetailsRow = ({
         .replaceAll(' ', '-')}`}
     >
       <Text
-        color={labelColor ?? TextColor.textDefault}
-        variant={TextVariant.bodyMdMedium}
+        color={labelColor ?? TextColor.TextDefault}
+        variant={TextVariant.BodyMd}
+        fontWeight={FontWeight.Medium}
         className="multichain-account-details__label"
       >
         {label}
       </Text>
       <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         className="multichain-account-details__value-container"
       >
         <Text
-          color={TextColor.textAlternative}
-          variant={TextVariant.bodyMdMedium}
+          color={TextColor.TextAlternative}
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
           ellipsis
           className="multichain-account-details__value"
           data-testid={`account-details-row-value-${label

@@ -317,6 +317,7 @@ const MusdEducationScreen: React.FC = () => {
               textAlign={TextAlign.Center}
               color={TextColor.TextDefault}
               textTransform={TextTransform.Uppercase}
+              style={{ whiteSpace: 'pre-line' }}
             >
               {t('musdEducationHeadline', [String(MUSD_CONVERSION_APY)])}
             </Text>
@@ -328,6 +329,7 @@ const MusdEducationScreen: React.FC = () => {
               variant={TextVariant.BodyMd}
               textAlign={TextAlign.Center}
               color={TextColor.TextAlternative}
+              style={{ whiteSpace: 'pre-line' }}
             >
               {t('musdBonusExplanation', [
                 String(MUSD_CONVERSION_APY),

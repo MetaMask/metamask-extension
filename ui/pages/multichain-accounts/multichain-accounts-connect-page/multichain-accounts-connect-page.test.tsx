@@ -321,6 +321,7 @@ const mockAccountTreeState = {
             entropy: { groupIndex: 0 },
             pinned: false,
             hidden: false,
+            lastSelected: 0,
           },
         },
       },
@@ -330,9 +331,9 @@ const mockAccountTreeState = {
       },
     },
   },
-  selectedAccountGroup:
-    'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId,
 };
+const mockSelectedAccountGroup =
+  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
 
 const mockInternalAccountsState = {
   accounts: {
@@ -408,6 +409,7 @@ const render = (
     mockAccountTreeState,
     mockInternalAccountsState,
     mockNetworkConfigurations,
+    mockSelectedAccountGroup,
   );
 
   const store = configureStore({
