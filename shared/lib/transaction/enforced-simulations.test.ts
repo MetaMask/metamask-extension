@@ -4,6 +4,7 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 import { CachedScanAddressResponse, ResultType } from '../trust-signals';
 import {
   EnforcedSimulationsState,
@@ -11,8 +12,8 @@ import {
   isEnforcedSimulationsEligible,
 } from './enforced-simulations';
 
-const ETHEREUM_CHAIN_ID = '0x1';
-const UNSUPPORTED_CHAIN_ID = '0xdeadbeef';
+const ETHEREUM_CHAIN_ID: Hex = '0x1';
+const UNSUPPORTED_CHAIN_ID: Hex = '0xdeadbeef';
 const TO_ADDRESS = '0xRecipientAddress';
 const NESTED_ADDRESS_A = '0xNestedAddressA';
 const NESTED_ADDRESS_B = '0xNestedAddressB';

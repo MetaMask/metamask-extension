@@ -39,8 +39,12 @@ const TX_PARAMS_MOCK: TransactionParams = {
   to: '0xabcdef1234567890abcdef1234567890abcdef12' as Hex,
 };
 
+const DELEGATION_ADDRESS_MOCK =
+  '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B' as Hex;
+
 const TRANSACTION_META_MOCK: TransactionMeta = {
   chainId: CHAIN_ID_MOCK,
+  delegationAddress: DELEGATION_ADDRESS_MOCK,
   id: '123-456',
   simulationData: SIMULATION_DATA_MOCK,
   txParams: TX_PARAMS_MOCK,
