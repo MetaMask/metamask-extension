@@ -447,10 +447,18 @@ const config = {
             options: {
               postcssOptions: {
                 plugins: [
-                  // Keep Tailwind options aligned with the Browserify/gulp pipeline
-                  // (`development/build/styles.js` uses `tailwindcss()` with defaults).
-                  // Forcing `{ optimize: false }` on `--test` builds caused divergent CSS
-                  // vs `yarn build:test` and E2E flakes (e.g. overlapping header controls).
+                  // Webpack applies loaders right-to-left, so `sass-loader` turns
+                  // SCSS into CSS before Tailwind runs as a PostCSS plugin. In v4,
+                  // Tailwind documents `@tailwindcss/postcss` as the PostCSS
+                  // integration and no longer needs a separate `autoprefixer`
+                  // plugin; it also defaults source detection from `process.cwd()`,
+                  // so we pin `base` to the repo root to keep `@source` paths in
+                  // `ui/css/tailwind.css` stable across webpack and gulp builds.
+                  // References:
+                  // https://tailwindcss.com/docs/installation/using-postcss
+                  // https://tailwindcss.com/docs/compatibility
+                  // https://tailwindcss.com/docs/detecting-classes-in-source-files
+                  // https://webpack.js.org/api/loaders/overview/
                   loadTailwindPostcss(),
                   rtlCss({ processEnv: false }),
                   discardFonts(['woff2']), // keep woff2 fonts
