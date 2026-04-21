@@ -17,11 +17,28 @@ const mockRemovePermissionsFor = jest.fn(
 const mockHidePermittedNetworkToast = jest.fn(() => ({
   type: 'SHOW_PERMITTED_NETWORK_TOAST_CLOSE',
 }));
+const mockSetActiveNetwork = jest.fn(
+  (_networkClientId: string) => ({ type: 'SET_ACTIVE_NETWORK' }),
+);
+const mockSetNetworkClientIdForDomain = jest.fn(
+  (_origin: string, _networkClientId: string) => Promise.resolve(),
+);
+const mockToggleNetworkMenu = jest.fn(() => ({ type: 'TOGGLE_NETWORK_MENU' }));
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   removePermissionsFor: (subjects: Record<string, string[]>) =>
     mockRemovePermissionsFor(subjects),
   hidePermittedNetworkToast: () => mockHidePermittedNetworkToast(),
+  setActiveNetwork: (id: string) => mockSetActiveNetwork(id),
+  setNetworkClientIdForDomain: (origin: string, id: string) =>
+    mockSetNetworkClientIdForDomain(origin, id),
+  toggleNetworkMenu: () => mockToggleNetworkMenu(),
+  updateCustomNonce: () => ({ type: 'UPDATE_CUSTOM_NONCE' }),
+  setNextNonce: () => ({ type: 'SET_NEXT_NONCE' }),
+  detectNfts: () => () => Promise.resolve(),
+  setTokenNetworkFilter: () => ({ type: 'SET_TOKEN_NETWORK_FILTER' }),
+  addPermittedChain: () => () => Promise.resolve(),
+  showPermittedNetworkToast: () => ({ type: 'SHOW_PERMITTED_NETWORK_TOAST' }),
 }));
 
 const ACCOUNT_1_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -184,6 +201,37 @@ describe('DappConnectionControlBar', () => {
       expect(
         getByTestId('dapp-connection-control-bar__network-button'),
       ).toBeInTheDocument();
+    });
+
+    it('does not render the network selector popover by default', () => {
+      const { queryByTestId } = renderConnected();
+      expect(
+        queryByTestId('dapp-bar-network-selector-popover'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('opens the inline popover when the network button is clicked (does not open the full-screen menu)', () => {
+      const { getByTestId } = renderConnected();
+      fireEvent.click(
+        getByTestId('dapp-connection-control-bar__network-button'),
+      );
+      expect(
+        getByTestId('dapp-bar-network-selector-popover'),
+      ).toBeInTheDocument();
+      expect(mockToggleNetworkMenu).not.toHaveBeenCalled();
+    });
+
+    it('closes the inline popover on a second click of the network button', () => {
+      const { getByTestId, queryByTestId } = renderConnected();
+      const button = getByTestId('dapp-connection-control-bar__network-button');
+      fireEvent.click(button);
+      expect(
+        getByTestId('dapp-bar-network-selector-popover'),
+      ).toBeInTheDocument();
+      fireEvent.click(button);
+      expect(
+        queryByTestId('dapp-bar-network-selector-popover'),
+      ).not.toBeInTheDocument();
     });
 
     it('displays the permissions button', () => {

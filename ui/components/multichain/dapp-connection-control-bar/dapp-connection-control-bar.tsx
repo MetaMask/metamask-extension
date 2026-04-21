@@ -37,12 +37,12 @@ import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   hidePermittedNetworkToast,
   removePermissionsFor,
-  toggleNetworkMenu,
 } from '../../../store/actions';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { getURLHost } from '../../../helpers/utils/util';
 import { DisconnectAllModal } from '../disconnect-all-modal/disconnect-all-modal';
+import { DappBarNetworkSelectorPopover } from './dapp-bar-network-selector-popover';
 
 /**
  * DappConnectionControlBar - A contextual bar shown only during active dapp
@@ -58,6 +58,9 @@ export const DappConnectionControlBar: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showDisconnectModal, setShowDisconnectModal] = useState(false);
+  const [isNetworkPopoverOpen, setIsNetworkPopoverOpen] = useState(false);
+  const [networkButtonElement, setNetworkButtonElement] =
+    useState<HTMLButtonElement | null>(null);
 
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const subjectMetadata = useSelector(getSubjectMetadata);
@@ -174,14 +177,12 @@ export const DappConnectionControlBar: React.FC = () => {
     : undefined;
 
   const handleNetworkClick = useCallback(() => {
-    dispatch(
-      toggleNetworkMenu({
-        isAccessedFromDappConnectedSitePopover: true,
-        isAddingNewNetwork: false,
-        isMultiRpcOnboarding: false,
-      }),
-    );
-  }, [dispatch]);
+    setIsNetworkPopoverOpen((prev) => !prev);
+  }, []);
+
+  const handleCloseNetworkPopover = useCallback(() => {
+    setIsNetworkPopoverOpen(false);
+  }, []);
 
   const handlePermissionsClick = useCallback(() => {
     if (activeTabOrigin) {
@@ -292,9 +293,12 @@ export const DappConnectionControlBar: React.FC = () => {
           {/* Network selector (icon-only, same size as action icons) */}
           {dappActiveNetwork && (
             <button
+              ref={setNetworkButtonElement}
               className="dapp-connection-control-bar__network-button flex items-center gap-1"
               onClick={handleNetworkClick}
               data-testid="dapp-connection-control-bar__network-button"
+              aria-haspopup="dialog"
+              aria-expanded={isNetworkPopoverOpen}
               type="button"
             >
               <AvatarNetwork
@@ -364,6 +368,13 @@ export const DappConnectionControlBar: React.FC = () => {
           onClick={handleDisconnect}
         />
       )}
+
+      {/* Inline network selector popover anchored to the network button */}
+      <DappBarNetworkSelectorPopover
+        referenceElement={networkButtonElement}
+        isOpen={isNetworkPopoverOpen}
+        onClose={handleCloseNetworkPopover}
+      />
     </>
   );
 };
