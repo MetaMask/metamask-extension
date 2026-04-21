@@ -53,7 +53,7 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
         ...snapAccountProviderConfig,
         createAccounts: {
           ...snapAccountProviderConfig.createAccounts,
-          batched: true,
+          batched: false,
         },
       },
       [BTC_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
