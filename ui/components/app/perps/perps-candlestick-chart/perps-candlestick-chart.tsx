@@ -17,6 +17,7 @@ import { brandColor } from '@metamask/design-tokens';
 import { Box } from '@metamask/design-system-react';
 import type { CandleData, CandleStick } from '@metamask/perps-controller';
 import { CandlePeriod, ZOOM_CONFIG } from '../constants/chartConfig';
+import { useTheme } from '../../../../hooks/useTheme';
 import {
   formatCandleDataForChart,
   formatVolumeDataForChart,
@@ -101,6 +102,22 @@ const PerpsCandlestickChart = forwardRef<
     },
     ref,
   ) => {
+    const theme = useTheme();
+    const isDark = theme === 'dark';
+
+    // Theme-aware colors matching mobile semantic tokens
+    const upColor = isDark ? brandColor.lime100 : brandColor.lime500;
+    const downColor = isDark ? brandColor.red300 : brandColor.red500;
+    const textColor = isDark
+      ? 'rgba(255, 255, 255, 0.4)'
+      : 'rgba(0, 0, 0, 0.4)';
+    const gridColor = isDark
+      ? 'rgba(255, 255, 255, 0.06)'
+      : 'rgba(0, 0, 0, 0.06)';
+    const crosshairColor = isDark
+      ? 'rgba(255, 255, 255, 0.4)'
+      : 'rgba(0, 0, 0, 0.4)';
+
     const containerRef = useRef<HTMLDivElement>(null);
     const chartRef = useRef<IChartApi | null>(null);
     const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
@@ -198,7 +215,7 @@ const PerpsCandlestickChart = forwardRef<
         height,
         layout: {
           background: { color: 'transparent' },
-          textColor: 'rgba(255, 255, 255, 0.4)',
+          textColor,
           attributionLogo: false,
           panes: {
             separatorColor: 'transparent',
@@ -207,8 +224,8 @@ const PerpsCandlestickChart = forwardRef<
           },
         },
         grid: {
-          vertLines: { color: 'rgba(255, 255, 255, 0.06)' },
-          horzLines: { color: 'rgba(255, 255, 255, 0.06)' },
+          vertLines: { color: gridColor },
+          horzLines: { color: gridColor },
         },
         crosshair: {
           mode: 1, // Normal crosshair mode
@@ -217,14 +234,14 @@ const PerpsCandlestickChart = forwardRef<
             labelVisible: true,
             width: 1,
             style: 3, // Dotted line
-            color: 'rgba(255, 255, 255, 0.4)',
+            color: crosshairColor,
           },
           horzLine: {
             visible: true,
             labelVisible: true,
             width: 1,
             style: 3,
-            color: 'rgba(255, 255, 255, 0.4)',
+            color: crosshairColor,
           },
         },
         timeScale: {
@@ -248,11 +265,11 @@ const PerpsCandlestickChart = forwardRef<
 
       // Create candlestick series (pane 0 - top)
       const candlestickSeries = chart.addSeries(CandlestickSeries, {
-        upColor: brandColor.lime100,
-        downColor: brandColor.red300,
+        upColor,
+        downColor,
         borderVisible: false,
-        wickUpColor: brandColor.lime100,
-        wickDownColor: brandColor.red300,
+        wickUpColor: upColor,
+        wickDownColor: downColor,
         priceLineVisible: false,
         lastValueVisible: false,
       });
@@ -263,7 +280,7 @@ const PerpsCandlestickChart = forwardRef<
       const volumeSeries = chart.addSeries(
         HistogramSeries,
         {
-          color: brandColor.lime100, // Default green
+          color: upColor, // Default to bullish color
           priceFormat: { type: 'volume' },
           priceScaleId: '', // Independent price scale
           lastValueVisible: false,
@@ -356,7 +373,16 @@ const PerpsCandlestickChart = forwardRef<
           volumeSeriesRef.current = null;
         }
       };
-    }, [height, handleResize]);
+    }, [
+      height,
+      handleResize,
+      theme,
+      upColor,
+      downColor,
+      textColor,
+      gridColor,
+      crosshairColor,
+    ]);
 
     // Update chart data when candleData or selectedPeriod changes
     useEffect(() => {
@@ -407,7 +433,11 @@ const PerpsCandlestickChart = forwardRef<
         // Incremental update — only update the last candle
         const lastCandle = candles[currentCount - 1];
         const formattedCandle = formatSingleCandleForChart(lastCandle);
-        const formattedVolume = formatSingleVolumeForChart(lastCandle);
+        const formattedVolume = formatSingleVolumeForChart(
+          lastCandle,
+          upColor,
+          downColor,
+        );
 
         if (formattedCandle && seriesRef.current) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -430,7 +460,11 @@ const PerpsCandlestickChart = forwardRef<
 
           // Update volume data
           if (volumeSeriesRef.current) {
-            const volumeData = formatVolumeDataForChart(candleData);
+            const volumeData = formatVolumeDataForChart(
+              candleData,
+              upColor,
+              downColor,
+            );
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             volumeSeriesRef.current.setData(volumeData as any);
           }
@@ -470,7 +504,7 @@ const PerpsCandlestickChart = forwardRef<
       }, 0);
 
       return () => clearTimeout(timeoutId);
-    }, [candleData, selectedPeriod, onPeriodDataRequest]);
+    }, [candleData, selectedPeriod, onPeriodDataRequest, upColor, downColor]);
 
     // Manage price lines (TP, Entry, SL, etc.)
     useEffect(() => {

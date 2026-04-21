@@ -48,6 +48,7 @@ import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
@@ -263,6 +264,8 @@ const parsePerpsToastRouteState = (
  */
 const PerpsMarketDetailPage: React.FC = () => {
   const t = useI18nContext();
+  const theme = useTheme();
+  const isDark = theme === 'dark';
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -587,7 +590,8 @@ const PerpsMarketDetailPage: React.FC = () => {
       lines.push({
         price: chartCurrentPrice,
         label: '',
-        color: 'rgba(255, 255, 255, 0.3)',
+        // Matches mobile `background.muted`: dark=#ffffff0a (~4%), light=#b4b4b528 (~16%)
+        color: isDark ? '#ffffff0a' : '#b4b4b528',
         lineStyle: 2,
         lineWidth: 2,
       });
@@ -595,40 +599,55 @@ const PerpsMarketDetailPage: React.FC = () => {
 
     // Position-specific lines (only when user has an open position)
     if (position) {
-      // Take Profit line (green/lime, dashed)
+      // Take Profit line — matches mobile `success.default`
       if (position.takeProfitPrice) {
         const tpPrice = parsePerpsDisplayPrice(position.takeProfitPrice);
         if (!isNaN(tpPrice) && tpPrice > 0) {
           lines.push({
             price: tpPrice,
             label: 'TP',
-            color: brandColor.lime100,
+            color: isDark ? brandColor.lime100 : brandColor.lime500,
             lineStyle: 2,
           });
         }
       }
 
-      // Entry price line (gray, dashed)
+      // Entry price line — matches mobile `text.muted`
       if (position.entryPrice) {
         const entryPrice = parsePerpsDisplayPrice(position.entryPrice);
         if (!isNaN(entryPrice) && entryPrice > 0) {
           lines.push({
             price: entryPrice,
             label: 'Entry',
-            color: 'rgba(255, 255, 255, 0.5)',
+            color: isDark ? brandColor.grey600 : brandColor.grey200,
             lineStyle: 2,
           });
         }
       }
 
-      // Stop Loss line (red, dashed)
+      // Stop Loss line — matches mobile `background.alternative`
+      // Intentionally subtle: SL is a reference marker, not a danger indicator like Liq.
       if (position.stopLossPrice) {
         const slPrice = parsePerpsDisplayPrice(position.stopLossPrice);
         if (!isNaN(slPrice) && slPrice > 0) {
           lines.push({
             price: slPrice,
             label: 'SL',
-            color: brandColor.red300,
+            color: isDark ? brandColor.grey1000 : brandColor.grey050,
+            lineStyle: 2,
+          });
+        }
+      }
+
+      // Liquidation price line — matches mobile `error.default`
+      // Same as down candles so traders immediately recognise the danger level.
+      if (position.liquidationPrice) {
+        const liqPrice = parsePerpsDisplayPrice(position.liquidationPrice);
+        if (!isNaN(liqPrice) && liqPrice > 0) {
+          lines.push({
+            price: liqPrice,
+            label: 'Liq',
+            color: isDark ? brandColor.red300 : brandColor.red500,
             lineStyle: 2,
           });
         }
@@ -636,7 +655,7 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
 
     return lines;
-  }, [position, chartCurrentPrice]);
+  }, [position, chartCurrentPrice, isDark]);
 
   // Handle candle period change
   //
