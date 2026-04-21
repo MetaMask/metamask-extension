@@ -65,7 +65,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-04-14
+ * Production defaults last synced: 2026-04-21
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
@@ -939,9 +939,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'confirmations_incoming_transactions',
     type: FeatureFlagType.Remote,
     inProd: true,
-    productionDefault: {
-      useBackendWebSocketService: true,
-    },
+    productionDefault: {},
     status: FeatureFlagStatus.Active,
   },
 
@@ -2186,7 +2184,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     productionDefault: {
       enabled: false,
-      minimumVersion: '13.15.0',
+      minimumVersion: '13.28.0',
     },
     status: FeatureFlagStatus.Active,
   },
@@ -2365,8 +2363,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {
-      minimumVersion: '13.26.0',
       enabled: true,
+      minimumVersion: '13.27.0',
     },
     status: FeatureFlagStatus.Active,
   },
@@ -2473,6 +2471,113 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: 'variation 2',
+    status: FeatureFlagStatus.Active,
+  },
+  extensionTransactionLabels: {
+    name: 'extensionTransactionLabels',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
+  stxMigrationBatchStatus: {
+    name: 'stxMigrationBatchStatus',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [
+      {
+        name: 'sentinel on',
+        scope: {
+          type: 'threshold',
+          value: 0,
+        },
+        value: true,
+      },
+      {
+        name: 'sentinel off',
+        scope: {
+          value: 1,
+          type: 'threshold',
+        },
+        value: false,
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+  },
+
+  stxMigrationCancel: {
+    name: 'stxMigrationCancel',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [
+      {
+        scope: {
+          value: 0,
+          type: 'threshold',
+        },
+        value: true,
+        name: 'sentinel on',
+      },
+      {
+        scope: {
+          value: 1,
+          type: 'threshold',
+        },
+        value: false,
+        name: 'sentinel off',
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+  },
+
+  stxMigrationGetFees: {
+    name: 'stxMigrationGetFees',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [
+      {
+        scope: {
+          type: 'threshold',
+          value: 0,
+        },
+        value: true,
+        name: 'sentinel on',
+      },
+      {
+        name: 'sentinel off',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+        value: false,
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+  },
+
+  stxMigrationSubmitTransactions: {
+    name: 'stxMigrationSubmitTransactions',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [
+      {
+        name: 'sentinel on',
+        scope: {
+          value: 0,
+          type: 'threshold',
+        },
+        value: true,
+      },
+      {
+        name: 'sentinel off',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+        value: false,
+      },
+    ],
     status: FeatureFlagStatus.Active,
   },
 };
