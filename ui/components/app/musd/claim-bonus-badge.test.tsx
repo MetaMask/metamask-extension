@@ -16,15 +16,17 @@ const mockUseMerklClaim = jest.fn().mockReturnValue({
   error: null,
 });
 
-const mockUseOnMerklClaimConfirmed = jest.fn();
+const mockUseOnMerklClaimConfirmed = jest.fn((_onConfirmed?: () => void) => ({
+  isClaimInFlight: false,
+}));
 
 jest.mock('./hooks/useMerklClaim', () => ({
   useMerklClaim: (...args: unknown[]) => mockUseMerklClaim(...args),
 }));
 
 jest.mock('./hooks/useOnMerklClaimConfirmed', () => ({
-  useOnMerklClaimConfirmed: (...args: unknown[]) =>
-    mockUseOnMerklClaimConfirmed(...args),
+  useOnMerklClaimConfirmed: (onConfirmed: () => void) =>
+    mockUseOnMerklClaimConfirmed(onConfirmed),
 }));
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -85,6 +87,9 @@ const defaultProps = {
 describe('ClaimBonusBadge', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseOnMerklClaimConfirmed.mockImplementation(() => ({
+      isClaimInFlight: false,
+    }));
     mockUseMerklClaim.mockReturnValue({
       claimRewards: mockClaimRewards,
       isClaiming: false,
@@ -188,18 +193,29 @@ describe('ClaimBonusBadge', () => {
     );
   });
 
-  it('renders spinner when isClaiming is true', () => {
+  it('renders nothing when isClaiming is true', () => {
     mockUseMerklClaim.mockReturnValue({
       claimRewards: mockClaimRewards,
       isClaiming: true,
       error: null,
     });
 
-    render(<ClaimBonusBadge {...defaultProps} />);
+    const { container } = render(<ClaimBonusBadge {...defaultProps} />);
 
-    expect(screen.getByTestId('claim-bonus-spinner')).toBeInTheDocument();
+    expect(container.firstChild).toBeNull();
     expect(screen.queryByTestId('claim-bonus-badge')).not.toBeInTheDocument();
     expect(screen.queryByTestId('claim-bonus-error')).not.toBeInTheDocument();
+  });
+
+  it('renders nothing when a Merkl claim transaction is in flight', () => {
+    mockUseOnMerklClaimConfirmed.mockImplementation(() => ({
+      isClaimInFlight: true,
+    }));
+
+    const { container } = render(<ClaimBonusBadge {...defaultProps} />);
+
+    expect(container.firstChild).toBeNull();
+    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 
   it('renders error message when error is set', () => {
