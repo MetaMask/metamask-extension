@@ -5907,6 +5907,10 @@
   "perpsSearchMarkets": {
     "message": "Search markets"
   },
+  "perpsSeeAll": {
+    "message": "See all",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
   "perpsServiceUnavailable": {
     "message": "Service temporarily unavailable. Please try again later."
   },
