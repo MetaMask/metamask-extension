@@ -267,7 +267,7 @@ export const DappBarNetworkSelectorPopover: React.FC<
 
   return (
     <Popover
-      referenceElement={referenceElement ?? undefined}
+      referenceElement={referenceElement}
       isOpen={isOpen}
       onClickOutside={onClose}
       onPressEscKey={onClose}
