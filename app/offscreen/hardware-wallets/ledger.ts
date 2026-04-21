@@ -332,8 +332,10 @@ export class LedgerOffscreenHandler {
    *
    * 1. The device rejects clear signing with a status code that indicates the
    *    payload cannot be parsed/displayed (INS_NOT_SUPPORTED on older firmware
-   *    like Nano S; 0x6808 / 0x6a80 / 0x6985 on newer firmware rejecting
-   *    oversized or unparseable payloads).
+   *    like Nano S; 0x6808 / 0x6a80 on newer firmware rejecting oversized or
+   *    unparseable payloads). 0x6985 is explicitly NOT treated as a fallback
+   *    trigger — it is Ledger's standard user-rejection code and must
+   *    propagate to the caller.
    * 2. The clear-sign call returns a signature that does not recover to the
    *    expected address for the HD path. This guards against firmware that
    *    silently signs a truncated representation of an oversized EIP-712 payload.
@@ -458,10 +460,15 @@ export class LedgerOffscreenHandler {
   //
   // - INS_NOT_SUPPORTED: older firmware (e.g. Nano S) that has no EIP-712
   //   clear-signing support at all.
-  // - 0x6808 / 0x6a80 / 0x6985: newer firmware rejecting an oversized or
-  //   unparseable payload. These bubble up to the UI as "Blind signing is not
-  //   enabled" via LEDGER_ERROR_MAPPINGS, even when blind signing IS enabled
-  //   on the device.
+  // - 0x6808 / 0x6a80: newer firmware rejecting an oversized or unparseable
+  //   payload. These bubble up to the UI as "Blind signing is not enabled"
+  //   via LEDGER_ERROR_MAPPINGS, even when blind signing IS enabled on the
+  //   device.
+  //
+  // 0x6985 (CONDITIONS_OF_USE_NOT_SATISFIED) is deliberately excluded: it is
+  // the standard Ledger code for the user pressing reject on-device. Treating
+  // it as a fallback trigger would mask an intentional rejection behind a
+  // second, unexpected hashed-signing prompt.
   #shouldFallBackToHashedSigning(error: unknown): boolean {
     if (!(error instanceof Error)) {
       return false;
@@ -473,7 +480,7 @@ export class LedgerOffscreenHandler {
     if (statusText === 'INS_NOT_SUPPORTED') {
       return true;
     }
-    const CLEAR_SIGN_REJECTION_CODES = new Set([0x6808, 0x6a80, 0x6985]);
+    const CLEAR_SIGN_REJECTION_CODES = new Set([0x6808, 0x6a80]);
     if (
       typeof statusCode === 'number' &&
       CLEAR_SIGN_REJECTION_CODES.has(statusCode)
@@ -481,7 +488,7 @@ export class LedgerOffscreenHandler {
       return true;
     }
     // Some transports surface the status code only in the message string.
-    return /0x(?:6808|6a80|6985)\b/iu.test(error.message);
+    return /0x(?:6808|6a80)\b/iu.test(error.message);
   }
 
   // Ledger status 0x6985 (CONDITIONS_OF_USE_NOT_SATISFIED) is the device

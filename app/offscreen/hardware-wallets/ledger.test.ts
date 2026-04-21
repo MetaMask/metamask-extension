@@ -779,6 +779,55 @@ describe('Ledger Offscreen', () => {
         );
       });
 
+      it('propagates user rejection (0x6985) without falling back to hashed signing', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+        const rejectionError = new Error(
+          'Ledger device: Condition of use not satisfied (0x6985)',
+        );
+        (rejectionError as Error & { statusCode: number }).statusCode = 0x6985;
+        mockSignEIP712Message.mockRejectedValue(rejectionError);
+
+        const response = await sendAction(LedgerAction.signTypedData, {
+          hdPath: "m/44'/60'/0'/0/0",
+          message: typedDataMessage,
+        });
+
+        expect(response.success).toBe(false);
+        expect(response.payload).toEqual({
+          error: expect.objectContaining({
+            message: 'Ledger device: Condition of use not satisfied (0x6985)',
+            statusCode: 0x6985,
+          }),
+        });
+        expect(mockSignEIP712HashedMessage).not.toHaveBeenCalled();
+        consoleSpy.mockRestore();
+      });
+
+      it('propagates user rejection when 0x6985 appears only in the error message', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+        mockSignEIP712Message.mockRejectedValue(
+          new Error('Ledger device: Condition of use not satisfied (0x6985)'),
+        );
+
+        const response = await sendAction(LedgerAction.signTypedData, {
+          hdPath: "m/44'/60'/0'/0/0",
+          message: typedDataMessage,
+        });
+
+        expect(response.success).toBe(false);
+        expect(response.payload).toEqual({
+          error: expect.objectContaining({
+            message: 'Ledger device: Condition of use not satisfied (0x6985)',
+          }),
+        });
+        expect(mockSignEIP712HashedMessage).not.toHaveBeenCalled();
+        consoleSpy.mockRestore();
+      });
+
       it('falls back to hashed signing when clear-signed signature does not recover to the expected address', async () => {
         mockSignEIP712Message.mockResolvedValue(garbageSignature);
         mockSignEIP712HashedMessage.mockResolvedValue(validSignature);
