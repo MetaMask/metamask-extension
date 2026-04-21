@@ -166,7 +166,16 @@ jobs:
       # in the wrong suite — one the merge queue doesn't monitor. Commit
       # statuses have no suites, so they always work reliably.
       - name: Post commit status
-        if: ${{ !cancelled() && steps.retry-gate.outputs.skip-status != 'true' }}
+        # Fork PRs receive a read-only token — createCommitStatus would throw
+        # "Resource not accessible by integration". Commit statuses are for
+        # the merge queue and branch protection; fork PRs don't need them.
+        # On non-PR events (merge_group, push) the fork check is irrelevant.
+        if: >-
+          ${{
+            !cancelled() &&
+            steps.retry-gate.outputs.skip-status != 'true' &&
+            (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+          }}
         uses: actions/github-script@v8
         env:
           STATUS_STATE: ${{ steps.check.outputs.checkResult || 'failure' }}
