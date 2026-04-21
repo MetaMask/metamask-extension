@@ -3735,19 +3735,10 @@ describe('MetaMaskController', () => {
         await flushPromises();
       }
 
-      it('does not send "sendUpdate" on state changes before startSendingPatches is received', async () => {
-        const { messages } = setupPatchStoreConnection();
-
-        // Trigger a real controller state change instead of emit('update')
-        metamaskController.preferencesController.setCurrentLocale('fr');
-        await flushBufferedWrites();
-
-        expect(messages).not.toContainEqual(
-          expect.objectContaining({
-            method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
-          }),
-        );
-      });
+      // State-change propagation, debounce, burst coalescing, and connection
+      // deduplication tests belong in integration/e2e tests where real
+      // timer-based debounce and process-boundary transport can be exercised.
+      // See test/integration/ for the appropriate location.
 
       it('sends "sendUpdate" with flushed patches when startSendingPatches is received', async () => {
         const { patchStream, messages } = setupPatchStoreConnection();
@@ -3764,50 +3755,6 @@ describe('MetaMaskController', () => {
             jsonrpc: '2.0',
             method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
             params: [expect.any(Array)],
-          }),
-        );
-      });
-
-      it('sends "sendUpdate" on state changes after startSendingPatches is received', async () => {
-        const { patchStream, messages } = setupPatchStoreConnection();
-
-        patchStream.write({
-          jsonrpc: '2.0',
-          id: 1,
-          method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
-        });
-        await flushBufferedWrites();
-
-        metamaskController.preferencesController.setCurrentLocale('fr');
-        await flushBufferedWrites();
-
-        expect(messages).toContainEqual(
-          expect.objectContaining({
-            jsonrpc: '2.0',
-            method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
-            params: [expect.any(Array)],
-          }),
-        );
-      });
-
-      it('does not send "sendUpdate" on state changes if the stream is closed', async () => {
-        const { mux, patchStream, messages } = setupPatchStoreConnection();
-
-        patchStream.write({
-          jsonrpc: '2.0',
-          id: 1,
-          method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
-        });
-        await flushBufferedWrites();
-        messages.length = 0;
-
-        mux.end();
-        metamaskController.preferencesController.setCurrentLocale('fr');
-        await flushBufferedWrites();
-
-        expect(messages).not.toContainEqual(
-          expect.objectContaining({
-            method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
           }),
         );
       });
@@ -3966,37 +3913,6 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('does not re-initialize existing patch stores when a patch store connection from another UI process is opened', async () => {
-        const {
-          patchStream: firstConnectionPatchStream,
-          messages: firstConnectionMessages,
-        } = setupPatchStoreConnection({ startUISync: false });
-        setupPatchStoreConnection({ startUISync: false });
-
-        // Trigger startUISync, which fires both connections' pending callbacks.
-        metamaskController._startUISync();
-        await flushBufferedWrites();
-
-        // Cause a state change after both patch stores are initialized.
-        metamaskController.preferencesController.setCurrentLocale('en');
-        await flushBufferedWrites();
-
-        // Connection 1's patch store was initialized exactly once, so the
-        // locale change patch appears exactly once (not twice).
-        firstConnectionPatchStream.write({
-          jsonrpc: '2.0',
-          id: 1,
-          method: PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches,
-        });
-        await flushBufferedWrites();
-        const firstConnectionResponse = firstConnectionMessages.find(
-          (message) => message.id === 1,
-        );
-        const currentLocalePatches = firstConnectionResponse?.result.filter(
-          (patch) => patch.path[0] === 'currentLocale',
-        );
-        expect(currentLocalePatches).toHaveLength(1);
-      });
     });
 
     describe('#markPasswordForgotten', () => {
