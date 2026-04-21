@@ -9,6 +9,7 @@ import {
   Caip25EndowmentPermissionName,
   setNonSCACaipAccountIdsInCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
+  isCaipAccountIdInPermittedAccountIds,
   isInternalAccountInPermittedAccountIds,
   getAllScopesFromCaip25CaveatValue,
   setChainIdsInCaip25CaveatValue,
@@ -278,7 +279,8 @@ export function getPermissionBackgroundApiMethods({
     );
 
     const newCaipAccountIds = caipAccountIds.filter(
-      (id) => !existingPermittedAccountIds.includes(id),
+      (id) =>
+        !isCaipAccountIdInPermittedAccountIds(id, existingPermittedAccountIds),
     );
 
     setPermittedAccounts(origin, updatedAccountIds);

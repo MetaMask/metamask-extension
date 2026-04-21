@@ -414,6 +414,48 @@ describe('permission background API methods', () => {
 
       expect(onPermittedAccountsAdded).not.toHaveBeenCalled();
     });
+
+    it('does not invoke onPermittedAccountsAdded when caveat address casing differs from internal account', () => {
+      const onPermittedAccountsAdded = jest.fn();
+      const mixedCaseAddress = '0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed';
+      const lowerCasePermittedId = `eip155:1:${mixedCaseAddress.toLowerCase()}`;
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {
+              'eip155:1': {
+                accounts: [lowerCasePermittedId],
+              },
+            },
+            optionalScopes: {},
+            isMultichainOrigin: false,
+          },
+        }),
+        updateCaveat: jest.fn(),
+      };
+
+      const accountsController = {
+        getAccountByAddress: jest.fn().mockReturnValue({
+          address: mixedCaseAddress,
+          scopes: ['eip155:1'],
+        }),
+        state: {
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
+        },
+      };
+
+      MockNetworkSelectors.getNetworkConfigurationsByCaipChainId.mockReturnValue(
+        { 'eip155:1': MOCK_NETWORK_CONFIG },
+      );
+
+      setupPermissionBackgroundApiMethods({
+        permissionController,
+        accountsController,
+        onPermittedAccountsAdded,
+      }).addPermittedAccount('foo.com', mixedCaseAddress);
+
+      expect(onPermittedAccountsAdded).not.toHaveBeenCalled();
+    });
   });
 
   describe('addPermittedAccounts', () => {
