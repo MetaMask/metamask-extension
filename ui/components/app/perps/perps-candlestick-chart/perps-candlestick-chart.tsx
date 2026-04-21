@@ -108,6 +108,9 @@ const PerpsCandlestickChart = forwardRef<
     // Theme-aware colors matching mobile semantic tokens
     const upColor = isDark ? brandColor.lime100 : brandColor.lime500;
     const downColor = isDark ? brandColor.red300 : brandColor.red500;
+    // Volume bars use the same hue but at ~37% opacity so they don't overpower the candles
+    const volumeUpColor = `${upColor}60`;
+    const volumeDownColor = `${downColor}60`;
     const textColor = isDark
       ? 'rgba(255, 255, 255, 0.4)'
       : 'rgba(0, 0, 0, 0.4)';
@@ -280,7 +283,7 @@ const PerpsCandlestickChart = forwardRef<
       const volumeSeries = chart.addSeries(
         HistogramSeries,
         {
-          color: upColor, // Default to bullish color
+          color: volumeUpColor, // Default to bullish color (semi-transparent)
           priceFormat: { type: 'volume' },
           priceScaleId: '', // Independent price scale
           lastValueVisible: false,
@@ -379,6 +382,8 @@ const PerpsCandlestickChart = forwardRef<
       theme,
       upColor,
       downColor,
+      volumeUpColor,
+      volumeDownColor,
       textColor,
       gridColor,
       crosshairColor,
@@ -435,8 +440,8 @@ const PerpsCandlestickChart = forwardRef<
         const formattedCandle = formatSingleCandleForChart(lastCandle);
         const formattedVolume = formatSingleVolumeForChart(
           lastCandle,
-          upColor,
-          downColor,
+          volumeUpColor,
+          volumeDownColor,
         );
 
         if (formattedCandle && seriesRef.current) {
@@ -462,8 +467,8 @@ const PerpsCandlestickChart = forwardRef<
           if (volumeSeriesRef.current) {
             const volumeData = formatVolumeDataForChart(
               candleData,
-              upColor,
-              downColor,
+              volumeUpColor,
+              volumeDownColor,
             );
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             volumeSeriesRef.current.setData(volumeData as any);
@@ -504,7 +509,15 @@ const PerpsCandlestickChart = forwardRef<
       }, 0);
 
       return () => clearTimeout(timeoutId);
-    }, [candleData, selectedPeriod, onPeriodDataRequest, upColor, downColor]);
+    }, [
+      candleData,
+      selectedPeriod,
+      onPeriodDataRequest,
+      upColor,
+      downColor,
+      volumeUpColor,
+      volumeDownColor,
+    ]);
 
     // Manage price lines (TP, Entry, SL, etc.)
     useEffect(() => {
