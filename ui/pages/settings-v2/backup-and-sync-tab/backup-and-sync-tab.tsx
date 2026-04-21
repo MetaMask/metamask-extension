@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import { BackupAndSyncFeaturesToggles } from '../../../components/app/identity/backup-and-sync-features-toggles/backup-and-sync-features-toggles';
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
-import { SettingItemConfig } from '../../settings-v2/types';
-import { SettingsTab } from '../../settings-v2/shared';
+import { SettingItemConfig } from '../types';
+import { SettingsTab } from '../shared';
 
 const BackupAndSyncTab = () => {
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
