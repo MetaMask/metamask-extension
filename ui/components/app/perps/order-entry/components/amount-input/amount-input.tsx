@@ -29,7 +29,11 @@ import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
 import { getDisplaySymbol } from '../../../utils';
 import type { AmountInputProps } from '../../order-entry.types';
-import { isDigitsOnlyInput, isUnsignedDecimalInput } from '../../utils';
+import {
+  formatNumberForInput,
+  isDigitsOnlyInput,
+  isUnsignedDecimalInput,
+} from '../../utils';
 
 /**
  * AmountInput - Size section with dual USD/token inputs and percentage slider
@@ -76,17 +80,14 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     return currentPrice > 0 ? numAmount / currentPrice : null;
   }, [amount, currentPrice]);
 
-  // Un-grouped so the string is always editable by isUnsignedDecimalInput (no commas).
+  // Uses a locale-neutral formatter (always ".") so the value is always
+  // editable by isUnsignedDecimalInput regardless of the user's locale.
   const unGroupedTokenDisplay = useMemo(() => {
     if (tokenAmount === null || tokenAmount === 0) {
       return '';
     }
-    return formatNumber(tokenAmount, {
-      useGrouping: false,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 6,
-    });
-  }, [tokenAmount, formatNumber]);
+    return formatNumberForInput(tokenAmount);
+  }, [tokenAmount]);
 
   // Local draft for the token input so intermediate values (e.g. "0", "0.") are
   // preserved while the user is actively typing.
