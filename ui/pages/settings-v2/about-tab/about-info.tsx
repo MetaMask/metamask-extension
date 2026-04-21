@@ -25,10 +25,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
-import { Divider } from '../../settings-v2/shared';
+import { Divider } from '../shared';
 import { useBoolean } from '../../../hooks/useBoolean';
 
-export default function InfoTab(): React.ReactElement {
+export default function AboutInfo(): React.ReactElement {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
 
