@@ -271,6 +271,13 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.warningModalProceedButton);
   };
 
+  approveModalIfPresent = async () => {
+    const modals = await this.driver.findElements(this.warningModal);
+    if (modals.length > 0) {
+      await this.driver.clickElement(this.warningModalProceedButton);
+    }
+  };
+
   rejectModal = async () => {
     await this.driver.clickElement(this.warningModalCancelButton);
   };
@@ -281,6 +288,10 @@ class BridgeQuotePage {
 
   submitQuoteAndDismiss = async () => {
     await this.submitQuote();
+
+    // If no price data is available a confirmation modal appears before submission.
+    // Dismiss it so the transaction can proceed to the status page.
+    await this.approveModalIfPresent();
 
     await this.dismissStatusPageIfPresent();
   };
