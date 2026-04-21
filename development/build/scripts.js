@@ -210,6 +210,8 @@ function createScriptTasks({
               return './app/vendor/trezor/content-script.js';
             case 'offscreen':
               return './app/offscreen/offscreen.ts';
+            case 'background':
+              return './app/scripts/background.ts';
             default:
               return `./app/scripts/${label}.js`;
           }
