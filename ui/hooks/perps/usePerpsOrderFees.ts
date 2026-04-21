@@ -3,6 +3,7 @@ import type {
   FeeCalculationResult,
   OrderType,
 } from '@metamask/perps-controller';
+
 import { submitRequestToBackground } from '../../store/background-connection';
 
 type UsePerpsOrderFeesOptions = {
@@ -35,6 +36,24 @@ type UsePerpsOrderFeesReturn = {
   /** True when the calculateFees call failed at the RPC/controller level */
   hasError: boolean;
 };
+
+const FALLBACK_FEE_RATES = {
+  feeRate: 0.00145,
+  protocolFeeRate: 0.00045,
+  metamaskFeeRate: 0.001,
+} as const;
+
+function createFallbackFeeResult(amount?: string): FeeCalculationResult {
+  const parsedAmount = Number.parseFloat(amount ?? '');
+  const notional = Number.isFinite(parsedAmount) ? parsedAmount : 0;
+
+  return {
+    ...FALLBACK_FEE_RATES,
+    feeAmount: notional * FALLBACK_FEE_RATES.feeRate,
+    protocolFeeAmount: notional * FALLBACK_FEE_RATES.protocolFeeRate,
+    metamaskFeeAmount: notional * FALLBACK_FEE_RATES.metamaskFeeRate,
+  };
+}
 
 /**
  * Fetches dynamic fee rates from the controller's calculateFees pipeline.
@@ -77,6 +96,12 @@ export function usePerpsOrderFees({
     requestIdRef.current += 1;
     const currentRequestId = requestIdRef.current;
     let cancelled = false;
+    const fallbackTimeout = window.setTimeout(() => {
+      if (!cancelled && currentRequestId === requestIdRef.current) {
+        setFeeResult(createFallbackFeeResult(amount));
+        setIsLoading(false);
+      }
+    }, 1500);
 
     setFeeResult(undefined);
     setIsLoading(true);
@@ -87,13 +112,15 @@ export function usePerpsOrderFees({
     ])
       .then((result) => {
         if (!cancelled && currentRequestId === requestIdRef.current) {
+          window.clearTimeout(fallbackTimeout);
           setFeeResult(result);
           setIsLoading(false);
         }
       })
       .catch(() => {
         if (!cancelled && currentRequestId === requestIdRef.current) {
-          setFeeResult(undefined);
+          window.clearTimeout(fallbackTimeout);
+          setFeeResult(createFallbackFeeResult(amount));
           setHasError(true);
           setIsLoading(false);
         }
@@ -101,6 +128,7 @@ export function usePerpsOrderFees({
 
     return () => {
       cancelled = true;
+      window.clearTimeout(fallbackTimeout);
     };
   }, [symbol, orderType, amount, isMaker]);
 

@@ -6,6 +6,7 @@ Instructions for AI coding agents working on E2E tests in the MetaMask Browser E
 
 ## Canonical Testing Docs
 
+- **Creating new E2E tests (agent skill / workflow):** [.cursor/skills/creating-e2e-tests/SKILL.md](../../.cursor/skills/creating-e2e-tests/SKILL.md) (symlinked from `.claude/skills/` and `.agents/skills/` — edit the `.cursor` copy only)
 - **E2E testing:** [.cursor/rules/e2e-testing-guidelines/RULE.md](../../.cursor/rules/e2e-testing-guidelines/RULE.md)
 - **E2E deprecated patterns:** [.cursor/BUGBOT.md](../../.cursor/BUGBOT.md)
 - **Testing philosophy:** [docs/testing.md](../../docs/testing.md)

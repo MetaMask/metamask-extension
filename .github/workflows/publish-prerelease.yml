@@ -41,10 +41,10 @@ jobs:
       BRANCH: ${{ github.head_ref || github.ref_name }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
     steps:
-      - name: Checkout and setup
+      - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
-          is-high-risk-environment: true
+          is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
 
       - name: Find the associated PR
@@ -128,10 +128,10 @@ jobs:
       BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
       TEST_PLAN_VERSION: ${{ needs.generate-test-plan.outputs.test_plan_version }}
     steps:
-      - name: Checkout and setup high risk environment
+      - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
-          is-high-risk-environment: true
+          is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
           fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
 
