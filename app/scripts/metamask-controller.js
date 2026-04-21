@@ -3399,7 +3399,7 @@ export default class MetamaskController extends EventEmitter {
         networkController,
         multichainNetworkController,
         onPermittedAccountsAdded:
-          this._onPermittedAccountsAddedViaBackgroundApi.bind(this),
+          this._handleDefiReferralOnPermittedAccountsAdded.bind(this),
       }),
 
       // Snaps
@@ -5878,7 +5878,7 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {{ origin: string; newlyAddedCaipAccountIds: string[] }} details - Added accounts payload.
    */
-  _onPermittedAccountsAddedViaBackgroundApi(details) {
+  _handleDefiReferralOnPermittedAccountsAdded(details) {
     const { origin, newlyAddedCaipAccountIds } = details;
 
     // Only run for Hyperliquid
