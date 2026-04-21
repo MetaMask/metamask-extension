@@ -112,11 +112,7 @@
     "announcements": "object",
     "approvalFlows": "object",
     "assetExchangeRates": "object",
-    "assetPreferences": "object",
-    "assetsBalance": "object",
-    "assetsInfo": "object",
     "assetsMetadata": "object",
-    "assetsPrice": "object",
     "balances": "object",
     "browserEnvironment": { "browser": "string", "os": "string" },
     "cacheTimestamp": "number",
@@ -132,9 +128,19 @@
     "coverageResults": "object",
     "cryptocurrencies": ["btc", "sol"],
     "currencyRates": {
+      "BNB": {
+        "conversionDate": null,
+        "conversionRate": null,
+        "usdConversionRate": null
+      },
       "ETH": {
-        "conversionDate": "object",
+        "conversionDate": "number",
         "conversionRate": 1700,
+        "usdConversionRate": 1700
+      },
+      "POL": {
+        "conversionDate": null,
+        "conversionRate": null,
         "usdConversionRate": null
       }
     },
@@ -143,7 +149,6 @@
     "currentExtensionPopupId": "number",
     "currentLocale": "en",
     "currentMigrationVersion": "number",
-    "customAssets": "object",
     "dappSwapComparisonData": "object",
     "dataCollectionForMarketing": "boolean",
     "database": "object",
@@ -353,7 +358,6 @@
     "seedPhraseBackedUp": null,
     "segmentApiCalls": "object",
     "selectedAccountGroup": "string",
-    "selectedCurrency": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedNetworkClientId": "string",
     "selectedPaymentToken": null,

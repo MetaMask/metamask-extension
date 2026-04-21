@@ -8,7 +8,6 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import { mockEthPrices } from '../tokens/utils/mocks';
 import { getMockAssetsPrice } from '../bridge/constants';
 import { login } from '../../page-objects/flows/login.flow';
 
@@ -32,6 +31,48 @@ async function mockInfura(mockServer: Mockttp): Promise<void> {
       },
     }));
 }
+const ETH_CONVERSION_RATE_USD = 1700;
+
+async function mockPriceApi(mockServer: Mockttp) {
+  const price =
+    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
+      ? ETH_CONVERSION_RATE_USD
+      : 1;
+  await mockServer
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:1/slip44:60': {
+          price,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+  await mockServer
+    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        eth: {
+          name: 'Ether',
+          ticker: 'eth',
+          value: 1 / ETH_CONVERSION_RATE_USD,
+          currencyType: 'crypto',
+        },
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+      },
+    }));
+}
+
 describe('Settings', function () {
   it('Should match the value of token list item and account list item for eth conversion', async function () {
     await withFixtures(
@@ -44,7 +85,7 @@ describe('Settings', function () {
           })
           .build(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockEthPrices(mockServer, 1700, ['0x1']);
+          await mockPriceApi(mockServer);
         },
 
         title: this.test?.fullTitle(),
@@ -74,7 +115,7 @@ describe('Settings', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
-          await mockEthPrices(mockServer, 1700, ['0x1']);
+          await mockPriceApi(mockServer);
           await mockInfura(mockServer);
         },
       },
@@ -122,7 +163,7 @@ describe('Settings', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
-          await mockEthPrices(mockServer, 1700);
+          await mockPriceApi(mockServer);
           await mockInfura(mockServer);
         },
       },

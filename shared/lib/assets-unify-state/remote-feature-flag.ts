@@ -18,4 +18,4 @@ export type AssetsUnifyStateFeatureFlag = {
 export const isAssetsUnifyStateFeatureEnabled = (
   featureFlag: AssetsUnifyStateFeatureFlag | undefined | null,
   featureVersion: string,
-): boolean => true;
+): boolean => false;

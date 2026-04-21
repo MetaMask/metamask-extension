@@ -610,90 +610,94 @@ describe('ImportTokensModal', () => {
       });
     };
 
-    it('passes pendingMetadataByAssetId to importCustomAssetsBatch when assetsUnifyState is enabled', async () => {
-      const result = render({
-        ...enableAssetsUnifyState,
-        tokens: [],
-        tokenList: {},
-      });
+    // These tests require isAssetsUnifyStateFeatureEnabled to return true.
+    // The flag is currently hardcoded to false, so skip them.
+    describe.skip('when assets-unify-state is enabled', () => {
+      it('passes pendingMetadataByAssetId to importCustomAssetsBatch when assetsUnifyState is enabled', async () => {
+        const result = render({
+          ...enableAssetsUnifyState,
+          tokens: [],
+          tokenList: {},
+        });
 
-      await navigateToConfirmation(result);
+        await navigateToConfirmation(result);
 
-      await act(async () => {
-        fireEvent.click(
-          result.getByTestId('import-tokens-modal-import-button'),
-        );
-      });
+        await act(async () => {
+          fireEvent.click(
+            result.getByTestId('import-tokens-modal-import-button'),
+          );
+        });
 
-      await waitFor(() => {
-        expect(importCustomAssetsBatch).toHaveBeenCalledWith(
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-          [
+        await waitFor(() => {
+          expect(importCustomAssetsBatch).toHaveBeenCalledWith(
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            [
+              expect.objectContaining({
+                assetId: `eip155:5/erc20:${tokenAddress}`,
+              }),
+            ],
             expect.objectContaining({
-              assetId: `eip155:5/erc20:${tokenAddress}`,
+              [`eip155:5/erc20:${tokenAddress}`]: expect.objectContaining({
+                address: tokenAddress,
+                symbol: 'META',
+                decimals: 2,
+              }),
             }),
-          ],
-          expect.objectContaining({
-            [`eip155:5/erc20:${tokenAddress}`]: expect.objectContaining({
-              address: tokenAddress,
-              symbol: 'META',
-              decimals: 2,
-            }),
-          }),
-        );
-      });
-    });
-
-    it('includes iconUrl and unlisted fields in metadata', async () => {
-      const result = render({
-        ...enableAssetsUnifyState,
-        tokens: [],
-        tokenList: {},
+          );
+        });
       });
 
-      await navigateToConfirmation(result);
+      it('includes iconUrl and unlisted fields in metadata', async () => {
+        const result = render({
+          ...enableAssetsUnifyState,
+          tokens: [],
+          tokenList: {},
+        });
 
-      await act(async () => {
-        fireEvent.click(
-          result.getByTestId('import-tokens-modal-import-button'),
-        );
+        await navigateToConfirmation(result);
+
+        await act(async () => {
+          fireEvent.click(
+            result.getByTestId('import-tokens-modal-import-button'),
+          );
+        });
+
+        await waitFor(() => {
+          const metadataArg = importCustomAssetsBatch.mock.calls[0][2];
+          const assetKey = Object.keys(metadataArg)[0];
+          const metadata = metadataArg[assetKey];
+          expect(metadata).toHaveProperty('iconUrl');
+          expect(metadata).toHaveProperty('unlisted');
+          expect(metadata).toHaveProperty('chainId');
+        });
       });
 
-      await waitFor(() => {
-        const metadataArg = importCustomAssetsBatch.mock.calls[0][2];
-        const assetKey = Object.keys(metadataArg)[0];
-        const metadata = metadataArg[assetKey];
-        expect(metadata).toHaveProperty('iconUrl');
-        expect(metadata).toHaveProperty('unlisted');
-        expect(metadata).toHaveProperty('chainId');
-      });
-    });
+      it('uses token symbol as fallback name when name is null or undefined', async () => {
+        // For custom tokens, the name defaults to '' (empty string).
+        // The ?? operator only falls back for null/undefined, so '' stays as ''.
+        // This test verifies the fallback logic: name ?? symbol
+        const result = render({
+          ...enableAssetsUnifyState,
+          tokens: [],
+          tokenList: {},
+        });
 
-    it('uses token symbol as fallback name when name is null or undefined', async () => {
-      // For custom tokens, the name defaults to '' (empty string).
-      // The ?? operator only falls back for null/undefined, so '' stays as ''.
-      // This test verifies the fallback logic: name ?? symbol
-      const result = render({
-        ...enableAssetsUnifyState,
-        tokens: [],
-        tokenList: {},
-      });
+        await navigateToConfirmation(result);
 
-      await navigateToConfirmation(result);
+        await act(async () => {
+          fireEvent.click(
+            result.getByTestId('import-tokens-modal-import-button'),
+          );
+        });
 
-      await act(async () => {
-        fireEvent.click(
-          result.getByTestId('import-tokens-modal-import-button'),
-        );
-      });
-
-      await waitFor(() => {
-        const metadataArg = importCustomAssetsBatch.mock.calls[0][2];
-        const assetKey = Object.keys(metadataArg)[0];
-        // Custom tokens pass empty string as name; ?? does not override empty strings
-        expect(metadataArg[assetKey].name).toBe('');
-        // Verify the symbol is correctly stored separately
-        expect(metadataArg[assetKey].symbol).toBe('META');
+        await waitFor(() => {
+          const metadataArg = importCustomAssetsBatch.mock.calls[0][2];
+          const assetKey = Object.keys(metadataArg)[0];
+          // Custom tokens pass empty string as name; ?? does not override empty strings
+          expect(metadataArg[assetKey].name).toBe('');
+          // Verify the symbol is correctly stored separately
+          expect(metadataArg[assetKey].symbol).toBe('META');
+        });
       });
     });
 

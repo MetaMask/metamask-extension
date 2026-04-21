@@ -18,6 +18,8 @@ import {
   mockGetMinimumBalanceForRentExemption,
   mockGetMintAccountInfo,
   mockGetMultipleAccounts,
+  mockGetSuccessSignaturesForAddress,
+  mockGetSuccessSplTokenTransaction,
   mockGetFailedSignaturesForAddress,
   mockGetFailedTransaction,
   mockGetTokenAccountsUSDCOnly,
@@ -27,10 +29,14 @@ import {
   mockPriceApiSpotPriceSwap,
   mockSendSolanaTransaction,
   mockSolanaBalanceQuote,
+  mockTokenApiAssets,
   simulateSolanaTransaction,
   buildSolanaTestSpecificMock,
 } from './common-solana';
 import succeededSplTokenTransaction from './mocks/succeededSplTokenTransaction.json';
+
+const isUnifiedAssetsEnabled =
+  process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true';
 
 const SOL_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
 const SOL_CAIP_ASSET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
@@ -40,6 +46,8 @@ const SOL_PRICE = 168.88;
 const USDC_PRICE = 0.999761;
 const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 const SOLANA_WALLET_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
+
+// --- Unified-assets-only helpers ---
 
 async function mockAccountsApiV2WithSolana(
   mockServer: Mockttp,
@@ -193,31 +201,56 @@ async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
     });
 }
 
-const mockSendWithUSDCVisible = buildSolanaTestSpecificMock({
-  mockGetTransactionSuccess: true,
-  mockTokenAccountAccountInfo: false,
-  withCustomMocks: async (mockServer) => [
-    await mockSolanaTokenApiAssets(mockServer),
-    await mockGetTokenAccountBalance(mockServer),
-    await mockServer
-      .forPost(/https:\/\/solana-mainnet\.infura\.io/u)
-      .withBodyIncluding('getTransaction')
-      .always()
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: succeededSplTokenTransaction,
-      })),
-    await mockGetTokenAccountsUSDCOnly(mockServer),
-    await mockGetMintAccountInfo(mockServer),
-  ],
-});
+// --- Mock builders ---
+
+const mockSendWithUSDCVisible = isUnifiedAssetsEnabled
+  ? buildSolanaTestSpecificMock({
+      mockGetTransactionSuccess: true,
+      mockTokenAccountAccountInfo: false,
+      withCustomMocks: async (mockServer) => [
+        await mockSolanaTokenApiAssets(mockServer),
+        await mockGetTokenAccountBalance(mockServer),
+        await mockServer
+          .forPost(/https:\/\/solana-mainnet\.infura\.io/u)
+          .withBodyIncluding('getTransaction')
+          .always()
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: succeededSplTokenTransaction,
+          })),
+        await mockGetTokenAccountsUSDCOnly(mockServer),
+        await mockGetMintAccountInfo(mockServer),
+      ],
+    })
+  : async (mockServer: Mockttp): Promise<MockedEndpoint[]> => [
+      await mockGetTokenAccountsUSDCOnly(mockServer),
+      await mockGetTokenAccountBalance(mockServer),
+      await simulateSolanaTransaction(mockServer),
+      await mockSolanaBalanceQuote({ mockServer }),
+      await mockGetFeeForMessage(mockServer),
+      await mockGetLatestBlockhash(mockServer),
+      await mockGetMinimumBalanceForRentExemption(mockServer),
+      await mockMultiCoinPrice(mockServer),
+      await mockPriceApiSpotPriceSwap(mockServer),
+      await mockPriceApiExchangeRates(mockServer),
+      await mockGetMultipleAccounts(mockServer),
+      await mockSendSolanaTransaction(mockServer),
+      await mockGetSuccessSignaturesForAddress(mockServer),
+      await mockGetSuccessSplTokenTransaction(mockServer),
+      await mockGetMintAccountInfo(mockServer),
+      await mockTokenApiAssets(mockServer),
+    ];
 
 async function mockSendSPLTokenFailed(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> {
   return [
-    await mockAccountsApiV2WithSolana(mockServer),
-    await mockAccountsApiV5WithSolana(mockServer),
+    ...(isUnifiedAssetsEnabled
+      ? [
+          await mockAccountsApiV2WithSolana(mockServer),
+          await mockAccountsApiV5WithSolana(mockServer),
+        ]
+      : []),
     await mockGetTokenAccountsUSDCOnly(mockServer),
     await mockGetTokenAccountBalance(mockServer),
     await simulateSolanaTransaction(mockServer),
@@ -233,7 +266,9 @@ async function mockSendSPLTokenFailed(
     await mockGetFailedSignaturesForAddress(mockServer),
     await mockGetFailedTransaction(mockServer),
     await mockGetMintAccountInfo(mockServer),
-    await mockSolanaTokenApiAssets(mockServer),
+    isUnifiedAssetsEnabled
+      ? await mockSolanaTokenApiAssets(mockServer)
+      : await mockTokenApiAssets(mockServer),
   ];
 }
 
@@ -242,6 +277,9 @@ describe('Send flow - SPL Token', function (this: Suite) {
     await withFixtures(
       {
         fixtures: (() => {
+          if (!isUnifiedAssetsEnabled) {
+            return new FixtureBuilderV2().build();
+          }
           const fixture = new FixtureBuilderV2()
             .withAssetsController(SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE)
             .build();
@@ -302,10 +340,16 @@ describe('Send flow - SPL Token', function (this: Suite) {
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkTxAction({ action: 'Sent' });
-        await driver.waitForSelector({
-          css: '[data-testid="transaction-list-item-primary-currency"]',
-          text: '0.1',
-        });
+
+        if (isUnifiedAssetsEnabled) {
+          await driver.waitForSelector({
+            css: '[data-testid="transaction-list-item-primary-currency"]',
+            text: '0.1',
+          });
+        } else {
+          await activityList.checkTxAmountInActivity('-0.1 USDC', 1);
+        }
+
         await activityList.checkNoFailedTransactions();
       },
     );
@@ -315,6 +359,9 @@ describe('Send flow - SPL Token', function (this: Suite) {
     await withFixtures(
       {
         fixtures: (() => {
+          if (!isUnifiedAssetsEnabled) {
+            return new FixtureBuilderV2().build();
+          }
           const fixture = new FixtureBuilderV2()
             .withAssetsController(SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE)
             .build();
@@ -337,6 +384,10 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await login(driver);
 
         const homePage = new NonEvmHomepage(driver);
+        if (isUnifiedAssetsEnabled) {
+          await homePage.waitForNonEvmAccountsLoaded();
+        }
+
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
