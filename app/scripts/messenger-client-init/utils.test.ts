@@ -7,7 +7,7 @@ import { PPOMController } from '@metamask/ppom-validator';
 
 import { buildControllerInitRequestMock } from './test/utils';
 import { MessengerClientApi, MessengerClientName } from './types';
-import { initMessengerClients } from './utils';
+import { initMessengerClients, TaggedApiMethod } from './utils';
 
 type InitFunctions = Parameters<
   typeof initMessengerClients
@@ -198,15 +198,15 @@ describe('Messenger Client Init Utils', () => {
         initRequest: requestMock,
       });
 
-      expect(messengerClientApi.test1._controllerName).toBe(
-        CONTROLLER_NAME_MOCK,
-      );
-      expect(messengerClientApi.test2._controllerName).toBe(
-        CONTROLLER_NAME_MOCK,
-      );
-      expect(messengerClientApi.test3._controllerName).toBe(
-        CONTROLLER_NAME_2_MOCK,
-      );
+      expect(
+        (messengerClientApi.test1 as TaggedApiMethod)._controllerName,
+      ).toBe(CONTROLLER_NAME_MOCK);
+      expect(
+        (messengerClientApi.test2 as TaggedApiMethod)._controllerName,
+      ).toBe(CONTROLLER_NAME_MOCK);
+      expect(
+        (messengerClientApi.test3 as TaggedApiMethod)._controllerName,
+      ).toBe(CONTROLLER_NAME_2_MOCK);
     });
 
     it('returns all persisted state entries', () => {
