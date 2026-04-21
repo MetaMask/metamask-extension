@@ -430,17 +430,26 @@ export class LedgerOffscreenHandler {
     sig: { v: number; r: string; s: string },
     expectedAddress: string,
   ): boolean {
-    const signature = add0x(
-      sig.r.replace(/^0x/u, '').padStart(64, '0') +
-        sig.s.replace(/^0x/u, '').padStart(64, '0') +
-        sig.v.toString(16).padStart(2, '0'),
-    );
-    const recovered = recoverTypedSignature({
-      data: message as Parameters<typeof recoverTypedSignature>[0]['data'],
-      signature,
-      version: SignTypedDataVersion.V4,
-    });
-    return recovered.toLowerCase() === expectedAddress.toLowerCase();
+    try {
+      const signature = add0x(
+        sig.r.replace(/^0x/u, '').padStart(64, '0') +
+          sig.s.replace(/^0x/u, '').padStart(64, '0') +
+          sig.v.toString(16).padStart(2, '0'),
+      );
+      const recovered = recoverTypedSignature({
+        data: message as Parameters<typeof recoverTypedSignature>[0]['data'],
+        signature,
+        version: SignTypedDataVersion.V4,
+      });
+      return recovered.toLowerCase() === expectedAddress.toLowerCase();
+    } catch {
+      // A signature we cannot recover from is, for our purposes, a signature
+      // that does not match the expected address — both route to the hashed-
+      // signing fallback. Catching here also prevents a malformed clear-sign
+      // response from escaping into the caller's catch block, where it would
+      // be misclassified as a non-Ledger error and re-thrown.
+      return false;
+    }
   }
 
   // Clear-signing errors that indicate the device cannot parse/display the
