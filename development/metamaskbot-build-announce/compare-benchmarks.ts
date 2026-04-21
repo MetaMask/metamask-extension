@@ -86,6 +86,13 @@ export function runComparison(
 
   for (const { name, data } of benchmarks) {
     for (const [entryName, results] of Object.entries(data)) {
+      if (!results.p75 || !results.p95) {
+        console.warn(
+          `Skipping "${entryName}" in "${name}": missing p75/p95 (benchmark likely failed).`,
+        );
+        continue;
+      }
+
       const thresholdConfig = THRESHOLD_REGISTRY[entryName];
 
       if (!thresholdConfig) {
@@ -191,6 +198,8 @@ export function buildMetricLines(
     let displayIcon: string = COMPARISON_SEVERITY.Pass.icon;
     let hasIssue = false;
     const details: string[] = [];
+    const formatValue = (value: number): string =>
+      metric === 'cls' ? value.toFixed(3) : `${value.toFixed(0)}ms`;
 
     for (const pKey of percentiles) {
       const key = `${metric}:${pKey}`;
@@ -228,7 +237,7 @@ export function buildMetricLines(
 
         if (isIssue) {
           const delta = formatDeltaPercent(rel.deltaPercent);
-          details.push(`${pKey}: ${rel.current.toFixed(0)}ms (${delta})`);
+          details.push(`${pKey}: ${formatValue(rel.current)} (${delta})`);
           hasIssue = true;
           displayIcon = updateDisplayIcon(icon, displayIcon);
         }
@@ -240,7 +249,7 @@ export function buildMetricLines(
           icon = violationIcon(violation.severity);
           isIssue = true;
           details.push(
-            `${pKey}: ${violation.value.toFixed(0)}ms (no baseline)`,
+            `${pKey}: ${formatValue(violation.value)} (no baseline)`,
           );
           hasIssue = true;
           displayIcon = updateDisplayIcon(icon, displayIcon);

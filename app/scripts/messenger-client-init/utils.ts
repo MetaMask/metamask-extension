@@ -55,6 +55,8 @@ export type MessengerClientsToInitialize =
   | 'SnapController'
   | 'SnapInsightsController'
   | 'SnapInterfaceController'
+  | 'GeolocationApiService'
+  | 'GeolocationController'
   | 'PerpsController'
   | 'PPOMController'
   | 'TransactionController'
@@ -92,7 +94,7 @@ export function initMessengerClients({
   initFunctions: InitFunctions;
   initRequest: Omit<
     BaseMessengerClientInitRequest,
-    'controllerMessenger' | 'getController' | 'initMessenger'
+    'controllerMessenger' | 'getMessengerClient' | 'initMessenger'
   >;
 }): InitMessengerClientsResult {
   log('Initializing messenger clients', Object.keys(initFunctions).length);
@@ -103,7 +105,7 @@ export function initMessengerClients({
   const controllerMemState: Record<string, MessengerClient> = {};
   let messengerClientApi = {};
 
-  const getController = <Name extends MessengerClientName>(
+  const getMessengerClient = <Name extends MessengerClientName>(
     name: Name,
   ): MessengerClientByName[Name] =>
     getMessengerClientOrThrow(
@@ -131,7 +133,7 @@ export function initMessengerClients({
     const finalInitRequest: BaseMessengerClientInitRequest = {
       ...initRequest,
       controllerMessenger,
-      getController,
+      getMessengerClient,
       initMessenger,
     };
 
@@ -141,7 +143,7 @@ export function initMessengerClients({
     });
 
     const {
-      controller,
+      messengerClient,
       persistedStateKey: persistedStateKeyRaw,
       memStateKey: memStateKeyRaw,
     } = result;
@@ -159,7 +161,7 @@ export function initMessengerClients({
         : (memStateKeyRaw ?? messengerClientName);
 
     // @ts-expect-error: Union too complex.
-    partialMessengerClientsByName[messengerClientName] = controller;
+    partialMessengerClientsByName[messengerClientName] = messengerClient;
 
     messengerClientApi = {
       ...messengerClientApi,
@@ -167,11 +169,11 @@ export function initMessengerClients({
     };
 
     if (persistedStateKey) {
-      controllerPersistedState[persistedStateKey] = controller;
+      controllerPersistedState[persistedStateKey] = messengerClient;
     }
 
     if (memStateKey) {
-      controllerMemState[memStateKey] = controller;
+      controllerMemState[memStateKey] = messengerClient;
     }
 
     log('Initialized messenger client', messengerClientName, {

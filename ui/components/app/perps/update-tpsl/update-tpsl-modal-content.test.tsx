@@ -28,6 +28,14 @@ jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
+jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({
+    feeRate: 0.00145,
+    isLoading: false,
+    hasError: false,
+  }),
+}));
+
 jest.mock('../perps-toast', () => ({
   usePerpsToast: () => ({
     replacePerpsToastByKey: mockReplacePerpsToastByKey,

@@ -16,12 +16,12 @@ export const MultichainAssetsControllerInit: MessengerClientInitFunction<
   MultichainAssetsController,
   MultichainAssetsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new MultichainAssetsController({
+  const messengerClient = new MultichainAssetsController({
     messenger: controllerMessenger,
     state: persistedState.MultichainAssetsController,
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

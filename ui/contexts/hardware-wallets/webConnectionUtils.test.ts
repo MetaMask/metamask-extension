@@ -8,6 +8,8 @@ import {
   isWebHidAvailable,
   isWebUsbAvailable,
   isCameraAvailable,
+  openCameraVideoStream,
+  stopMediaStreamTracks,
   checkHardwareWalletPermission,
   checkWebHidPermission,
   checkWebUsbPermission,
@@ -379,6 +381,40 @@ describe('webConnectionUtils', () => {
     });
   });
 
+  describe('openCameraVideoStream', () => {
+    it('throws when camera APIs are unavailable', async () => {
+      Object.defineProperty(window.navigator, 'mediaDevices', {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
+
+      await expect(openCameraVideoStream()).rejects.toThrow(
+        'Camera capture is not available in this context',
+      );
+    });
+
+    it('returns the stream from getUserMedia', async () => {
+      const mockStream = { getTracks: () => [] } as unknown as MediaStream;
+      getMockedMediaDevices().getUserMedia.mockResolvedValue(mockStream);
+
+      await expect(openCameraVideoStream()).resolves.toBe(mockStream);
+      expect(getMockedMediaDevices().getUserMedia).toHaveBeenCalledWith({
+        video: true,
+      });
+    });
+  });
+
+  describe('stopMediaStreamTracks', () => {
+    it('stops every track', () => {
+      const stop = jest.fn();
+      stopMediaStreamTracks({
+        getTracks: () => [{ stop }],
+      } as unknown as MediaStream);
+      expect(stop).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('camera permission helpers', () => {
     it('checkCameraPermissionState returns Granted when camera permission is granted', async () => {
       getMockedPermissions().query.mockResolvedValue({
@@ -397,6 +433,16 @@ describe('webConnectionUtils', () => {
 
       await expect(checkCameraPermissionState()).resolves.toBe(
         HardwareConnectionPermissionState.Denied,
+      );
+    });
+
+    it('checkCameraPermissionState returns Prompt when permission state is prompt', async () => {
+      getMockedPermissions().query.mockResolvedValue({
+        state: CameraPermissionState.Prompt,
+      });
+
+      await expect(checkCameraPermissionState()).resolves.toBe(
+        HardwareConnectionPermissionState.Prompt,
       );
     });
 
@@ -1164,6 +1210,30 @@ describe('webConnectionUtils', () => {
 
       expect(mockOnConnect).toHaveBeenCalledWith(trezorDevice);
       expect(mockOnConnect).toHaveBeenCalledTimes(1);
+    });
+
+    it('propagates synchronous errors from onConnect', () => {
+      const thrownError = new Error('connect failed');
+      mockOnConnect.mockImplementation(() => {
+        throw thrownError;
+      });
+
+      unsubscribe = subscribeToWebUsbEvents(
+        HardwareWalletType.Trezor,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
+      const trezorDevice = createMockUSBDevice() as USBDevice;
+
+      const connectHandler = getMockEventHandler(
+        getMockedUsb().addEventListener.mock.calls,
+        'connect',
+      );
+
+      expect(() => connectHandler({ device: trezorDevice })).toThrow(
+        thrownError,
+      );
+      expect(mockOnConnect).toHaveBeenCalledWith(trezorDevice);
     });
 
     it('ignores non-Trezor devices on connect', () => {

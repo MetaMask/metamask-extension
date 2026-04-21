@@ -11,7 +11,7 @@ import { EncryptionPublicKeyControllerInitMessenger } from '../messengers';
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.initMessenger - The messenger to use for initialization.
- * @param request.getController - Function to get other initialized controllers.
+ * @param request.getMessengerClient - Function to get other initialized controllers.
  * @param request.getUIState - Function to get the UI state.
  * @returns The initialized controller.
  */
@@ -19,11 +19,16 @@ export const EncryptionPublicKeyControllerInit: MessengerClientInitFunction<
   EncryptionPublicKeyController,
   EncryptionPublicKeyControllerMessenger,
   EncryptionPublicKeyControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, getController, getUIState }) => {
-  const manager = getController('EncryptionPublicKeyManager');
-  const keyringController = getController('KeyringController');
+> = ({
+  controllerMessenger,
+  initMessenger,
+  getMessengerClient,
+  getUIState,
+}) => {
+  const manager = getMessengerClient('EncryptionPublicKeyManager');
+  const keyringController = getMessengerClient('KeyringController');
 
-  const controller = new EncryptionPublicKeyController({
+  const messengerClient = new EncryptionPublicKeyController({
     messenger: controllerMessenger,
     manager,
     getState: getUIState,
@@ -45,6 +50,6 @@ export const EncryptionPublicKeyControllerInit: MessengerClientInitFunction<
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller,
+    messengerClient,
   };
 };

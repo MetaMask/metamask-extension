@@ -7,8 +7,6 @@ import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-perm
 import {
   AvatarNetwork,
   AvatarNetworkSize,
-  TextButton,
-  TextButtonSize,
 } from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
@@ -50,6 +48,7 @@ import { Icon, IconName, IconSize } from '../../component-library';
 import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
+import { PerpsDepositToast } from '../perps/perps-deposit-toast';
 import {
   ClaimSubmitToastType,
   StorageWriteErrorType,
@@ -146,6 +145,7 @@ export function ToastMaster() {
         <NewSrpAddedToast />
         <InfuraSwitchToast />
         <CopyAddressToast />
+        <PerpsDepositToast />
         <MerklClaimToast />
         <MusdConversionToast />
         <PerpsWithdrawToast />
@@ -878,16 +878,14 @@ function SidePanelMigrationToast() {
           <Icon name={IconName.Info} color={IconColor.iconDefault} />
         }
         text={t('sidePanelMigrationToast', [
-          <TextButton
+          <button
             key="side-panel-migration-switch-back"
-            size={TextButtonSize.BodyMd}
+            type="button"
             onClick={handleSwitchBackToPopup}
-            className="inline h-auto min-h-0 p-0 align-baseline text-inherit no-underline bg-transparent hover:bg-transparent hover:text-inherit active:bg-transparent active:text-inherit focus-visible:outline-none"
+            className="inline h-auto min-h-0 cursor-pointer bg-transparent p-0 align-baseline text-inherit underline underline-offset-[0.25em]"
           >
-            <span className="text-inherit underline underline-offset-[0.5em] [text-decoration-skip-ink:none]">
-              {t('switchBackToPopup')}
-            </span>
-          </TextButton>,
+            {t('switchBackToPopup')}
+          </button>,
         ])}
         borderRadius={BorderRadius.LG}
         textVariant={TextVariant.bodyMd}

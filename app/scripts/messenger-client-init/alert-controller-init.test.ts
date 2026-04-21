@@ -26,8 +26,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('AlertControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = AlertControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(AlertController);
+    const { messengerClient } = AlertControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(AlertController);
   });
 
   it('passes the proper arguments to the controller', () => {

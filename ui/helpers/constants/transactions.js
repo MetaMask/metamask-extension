@@ -38,6 +38,8 @@ export const TOAST_EXCLUDED_TRANSACTION_TYPES = new Set([
   TransactionType.shieldSubscriptionApprove,
   TransactionType.musdConversion,
   TransactionType.musdClaim,
+  TransactionType.perpsDeposit,
+  TransactionType.perpsDepositAndOrder,
 ]);
 
 // Non-EVM transaction types excluded from toast notifications.
