@@ -5,7 +5,6 @@ on:
     types: [opened, reopened, synchronize, edited]
     branches:
       - 'release/*'
-  merge_group:
 
 jobs:
   check-branch:

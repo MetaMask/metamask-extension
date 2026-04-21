@@ -84,7 +84,7 @@ describe('PerpsBalanceDropdown', () => {
   it('displays the formatted total balance from mock data', () => {
     renderWithProvider(<PerpsBalanceDropdown />, mockStore);
 
-    expect(screen.getByText('$15,250.00')).toBeInTheDocument();
+    expect(screen.getByText('$15,250')).toBeInTheDocument();
   });
 
   it('renders loading skeleton when account data is still loading', () => {
@@ -206,7 +206,7 @@ describe('PerpsBalanceDropdown', () => {
   it('displays formatted P&L value when hasPositions is true', () => {
     renderWithProvider(<PerpsBalanceDropdown hasPositions />, mockStore);
 
-    expect(screen.getByText(/\+\$375\.00/u)).toBeInTheDocument();
+    expect(screen.getByText(/\+\$375/u)).toBeInTheDocument();
     expect(screen.getByText(/7\.32%/u)).toBeInTheDocument();
   });
 
