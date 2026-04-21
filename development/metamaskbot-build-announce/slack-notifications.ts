@@ -14,6 +14,7 @@
  */
 
 import { promises as fs } from 'fs';
+import os from 'os';
 import path from 'path';
 import { IncomingWebhook } from '@slack/webhook';
 import type {
@@ -57,8 +58,29 @@ type SlackBlock = Record<string, unknown>;
 const SEVERE_DELTA_THRESHOLD = 0.5; // 50% regression
 const SEVERE_FAIL_MULTIPLIER = 2.0; // >2x the fail threshold
 
-const BATCH_FILE = '/tmp/benchmark-slack-batch.json';
 const BATCH_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+
+let batchDirPromise: Promise<string> | null = null;
+let batchFilePathPromise: Promise<string> | null = null;
+
+async function getBatchFilePath(): Promise<string> {
+  if (!batchDirPromise) {
+    batchDirPromise = fs
+      .mkdtemp(path.join(os.tmpdir(), 'benchmark-slack-batch-'))
+      .then(async (dir) => {
+        await fs.chmod(dir, 0o700);
+        return dir;
+      });
+  }
+
+  if (!batchFilePathPromise) {
+    batchFilePathPromise = batchDirPromise.then((dir) =>
+      path.join(dir, 'batch.json'),
+    );
+  }
+
+  return await batchFilePathPromise;
+}
 
 // ---------------------------------------------------------------------------
 // Ownership config (Phase 2 fallback to PR author; Phase 4 uses #6841 map)
@@ -566,7 +588,8 @@ export function formatBaselineReset(data: BaselineResetData): {
 
 async function loadBatch(): Promise<BatchEntry[]> {
   try {
-    const raw = await fs.readFile(BATCH_FILE, 'utf-8');
+    const batchFile = await getBatchFilePath();
+    const raw = await fs.readFile(batchFile, 'utf-8');
     return JSON.parse(raw) as BatchEntry[];
   } catch {
     return [];
@@ -574,12 +597,16 @@ async function loadBatch(): Promise<BatchEntry[]> {
 }
 
 async function saveBatch(entries: BatchEntry[]): Promise<void> {
-  await fs.writeFile(BATCH_FILE, JSON.stringify(entries, null, 2));
+  const batchFile = await getBatchFilePath();
+  await fs.writeFile(batchFile, JSON.stringify(entries, null, 2), {
+    mode: 0o600,
+  });
 }
 
 async function clearBatch(): Promise<void> {
   try {
-    await fs.unlink(BATCH_FILE);
+    const batchFile = await getBatchFilePath();
+    await fs.unlink(batchFile);
   } catch {
     // file doesn't exist — fine
   }
