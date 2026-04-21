@@ -1,8 +1,29 @@
-import { isBundleSizeSummary } from '../webpack/utils/bundle-size';
 import type { ArtifactLinks } from './artifacts';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
+}
+
+function isBundleSizeSummary(value: unknown): value is {
+  background: number;
+  ui: number;
+  common: number;
+  other?: number;
+  contentScripts?: number;
+  zip?: number;
+  timestamp: number;
+} {
+  return (
+    isRecord(value) &&
+    typeof value.timestamp === 'number' &&
+    typeof value.background === 'number' &&
+    typeof value.ui === 'number' &&
+    typeof value.common === 'number' &&
+    (value.other === undefined || typeof value.other === 'number') &&
+    (value.contentScripts === undefined ||
+      typeof value.contentScripts === 'number') &&
+    (value.zip === undefined || typeof value.zip === 'number')
+  );
 }
 
 /**
