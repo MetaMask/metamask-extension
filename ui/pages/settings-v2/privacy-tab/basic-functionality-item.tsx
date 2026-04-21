@@ -4,7 +4,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getUseExternalServices } from '../../../selectors';
 import { toggleExternalServices } from '../../../store/actions';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
-import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,

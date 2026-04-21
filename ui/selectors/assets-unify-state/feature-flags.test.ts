@@ -5,6 +5,14 @@ import {
   getIsAssetsUnifyStateEnabled,
 } from './feature-flags';
 
+// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
+// so these selector tests exercise the real feature-flag gating logic.
+jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () =>
+  jest.requireActual(
+    '../../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+);
+
 jest.mock('../../../shared/lib/environment', () => ({
   ...jest.requireActual('../../../shared/lib/environment'),
   getIsAssetsUnifiedStateIncludedInBuild: jest.fn(),

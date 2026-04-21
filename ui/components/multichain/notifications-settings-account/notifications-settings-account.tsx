@@ -33,17 +33,21 @@ export function NotificationsSettingsAccount({
       gap={3}
       paddingTop={2}
       paddingBottom={2}
+      className="min-w-0"
     >
       <PreferredAvatar address={checksumAddress} />
       <Box
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Start}
         justifyContent={BoxJustifyContent.Between}
+        className="min-w-0"
       >
         <Text
           variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
           textAlign={TextAlign.Left}
+          ellipsis
+          className="w-full"
         >
           {name ?? checksumAddress}
         </Text>

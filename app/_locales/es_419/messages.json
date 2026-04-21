@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Ícono de cuenta"
   },
-  "accountIdenticonDescription": {
-    "message": "Elige entre tres estilos diferentes de íconos únicos que pueden ayudarte a identificar cuentas rápidamente."
-  },
   "accountName": {
     "message": "Nombre de la cuenta"
   },
