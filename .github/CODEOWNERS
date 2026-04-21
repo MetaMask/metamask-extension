@@ -240,6 +240,7 @@ development/generate-attributions.sh                  @MetaMask/extension-platfo
 
 # Observability
 app/scripts/lib/setupSentry.js                        @MetaMask/extension-platform
+app/scripts/sentry-install.js                         @MetaMask/extension-platform
 shared/lib/trace.ts                                   @MetaMask/extension-platform
 
 # CI
