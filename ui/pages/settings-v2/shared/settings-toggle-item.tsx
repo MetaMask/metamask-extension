@@ -9,7 +9,7 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
 } from '@metamask/design-system-react';
-import ToggleButton from '../../components/ui/toggle-button';
+import ToggleButton from '../../../components/ui/toggle-button';
 
 export type SettingsToggleItemProps = {
   title: string;

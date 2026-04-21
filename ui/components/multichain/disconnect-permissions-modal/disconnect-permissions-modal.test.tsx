@@ -61,6 +61,7 @@ describe('DisconnectPermissionsModal', () => {
             delegationManager: '0x1234567890123456789012345678901234567890',
           },
           siteOrigin: 'portfolio.metamask.io',
+          status: 'Active',
         },
         chainId: '0x1',
         permissionType: 'native-token-stream',

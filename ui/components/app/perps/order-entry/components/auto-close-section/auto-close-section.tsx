@@ -9,6 +9,10 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import React, { useCallback, useMemo, useState } from 'react';
+import {
+  formatPerpsFiat,
+  PRICE_RANGES_MINIMAL_VIEW,
+} from '../../../../../../../shared/lib/perps-formatters';
 
 import {
   BorderRadius,
@@ -16,7 +20,6 @@ import {
   TextVariant as TextVariantLegacy,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { usePerpsOrderFees } from '../../../../../../hooks/perps/usePerpsOrderFees';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
@@ -73,15 +76,25 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   asset,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
-
   const { feeRate: closingFeeRate } = usePerpsOrderFees({
     symbol: asset,
     orderType: 'market',
   });
 
-  // In modify mode use position's entry price; otherwise use current price
-  const entryPrice = entryPriceProp ?? currentPrice;
+  // Priority: explicit entry price (modify mode) > limit price (limit orders) > current price.
+  // This ensures % ↔ price conversions are anchored to the price the user will actually fill at.
+  const entryPrice = useMemo(() => {
+    if (entryPriceProp !== undefined) {
+      return entryPriceProp;
+    }
+    if (orderType === 'limit' && limitPrice?.trim()) {
+      const parsed = Number.parseFloat(limitPrice.replaceAll(/[$,]/gu, ''));
+      if (Number.isFinite(parsed) && parsed > 0) {
+        return parsed;
+      }
+    }
+    return currentPrice;
+  }, [entryPriceProp, orderType, limitPrice, currentPrice]);
 
   // Raw percent strings preserved while the user is actively typing in percent fields.
   // When focused, these strings are shown verbatim to prevent mid-keystroke reformatting.
@@ -483,10 +496,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   color={getPnlDisplayColor(estimatedPnlAtTp)}
                 >
                   {estimatedPnlAtTp >= 0 ? '+' : '-'}
-                  {formatCurrencyWithMinThreshold(
-                    Math.abs(estimatedPnlAtTp),
-                    'USD',
-                  )}
+                  {formatPerpsFiat(Math.abs(estimatedPnlAtTp), {
+                    ranges: PRICE_RANGES_MINIMAL_VIEW,
+                  })}
                 </Text>
               </Box>
             )}
@@ -590,10 +602,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   color={getPnlDisplayColor(estimatedPnlAtSl)}
                 >
                   {estimatedPnlAtSl >= 0 ? '+' : '-'}
-                  {formatCurrencyWithMinThreshold(
-                    Math.abs(estimatedPnlAtSl),
-                    'USD',
-                  )}
+                  {formatPerpsFiat(Math.abs(estimatedPnlAtSl), {
+                    ranges: PRICE_RANGES_MINIMAL_VIEW,
+                  })}
                 </Text>
               </Box>
             )}

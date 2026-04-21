@@ -60,6 +60,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.onCalculationsChange
  * @param props.onAddFunds
  * @param props.initialLeverage
+ * @param props.sizeDecimals
  * @param props.markPrice
  * @param props.autoFocusUsd
  * @param props.autoFocusLimitPrice
@@ -82,6 +83,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   onOrderTypeChange,
   onAddFunds,
   initialLeverage,
+  sizeDecimals,
   markPrice,
   autoFocusUsd = false,
   autoFocusLimitPrice = false,
@@ -123,6 +125,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     onSubmit,
     orderType,
     initialLeverage,
+    sizeDecimals,
     maxLeverage,
     szDecimals: marketInfo?.szDecimals,
     markPrice,
@@ -323,6 +326,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onClosePercentChange={handleClosePercentChange}
             asset={asset}
             currentPrice={currentPrice}
+            sizeDecimals={sizeDecimals}
           />
         )}
 
