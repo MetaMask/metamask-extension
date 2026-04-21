@@ -2,11 +2,10 @@
  * @file The entry point for the web extension singleton process.
  */
 
-// Disabled to allow setting up initial state hooks first
+/* eslint-disable import-x/order -- side-effect imports must run before other modules */
 
 // This import sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
-// eslint-disable-next-line import-x/order -- intentional first import for Sentry
 import { persistenceManager } from './lib/setup-initial-state-hooks';
 
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
@@ -269,8 +268,8 @@ const sendReadyMessageToTabs = async () => {
        * You might be wondering, how does the "url" param work without the "tabs" permission?
        *
        * @see {@link https://bugs.chromium.org/p/chromium/issues/detail?id=661311#c1}
-       *  "If the extension has access to inject scripts into Tab, then we can return the url
-       *   of Tab (because the extension could just inject a script to message the location.href)."
+       * "If the extension has access to inject scripts into Tab, then we can return the url
+       * of Tab (because the extension could just inject a script to message the location.href)."
        */
       url: '<all_urls>',
       windowType: 'normal',
@@ -311,16 +310,16 @@ const sendReadyMessageToTabs = async () => {
  * This detection works even if the phishing page is now a redirect to a new
  * domain that our phishing detection system is not aware of.
  *
- * @param {MetamaskController} theController
+ * @param theController
  */
 function maybeDetectPhishing(theController: MetamaskController) {
   /**
    * Redirects a tab to the phishing warning page.
    *
-   * @param {number} tabId - The ID of the tab to redirect
-   * @param {string} url - The URL to redirect to (phishing warning page)
-   * @returns {Promise<boolean>} Returns true if the redirect was successful, false otherwise.
-   *   Returns false for Google pre-fetch requests or if the redirect fails.
+   * @param tabId - The ID of the tab to redirect
+   * @param url - The URL to redirect to (phishing warning page)
+   * @returns Returns true if the redirect was successful, false otherwise.
+   * Returns false for Google pre-fetch requests or if the redirect fails.
    */
   async function redirectTab(tabId: number, url: string): Promise<boolean> {
     try {
@@ -535,7 +534,7 @@ const corruptionHandler = new CorruptionHandler();
 /**
  * Handles the onConnect event.
  *
- * @param {browser.Runtime.Port} port - The port provided by a new context.
+ * @param port - The port provided by a new context.
  */
 const handleOnConnect = async (port: Runtime.Port) => {
   if (inTest) {
@@ -547,7 +546,7 @@ const handleOnConnect = async (port: Runtime.Port) => {
       await new Promise((resolve) => setTimeout(resolve, simulatedDelay));
     } else if (simulatedDelay !== undefined) {
       log.error(
-        `Unrecognized value for 'simulateDelayedBackgroundResponse': '${simulatedDelay}'`,
+        `Unrecognized value for 'simulateDelayedBackgroundResponse': '${String(simulatedDelay)}'`,
       );
     }
   }
@@ -709,8 +708,8 @@ function saveTimestamp() {
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  *
- * @param {Backup | null} backup
- * @returns {Promise} Setup complete.
+ * @param backup
+ * @returns Setup complete.
  */
 async function initialize(backup: Backup | null) {
   // Initialize install type early so it's cached for MetaMetrics user traits
@@ -1048,8 +1047,8 @@ export async function loadStateFromPersistence(
    * These are captured via the critical error page's "Send error report" checkbox
    * flow (see ui/helpers/utils/display-critical-error.ts).
    *
-   * @param {string} message - The error message
-   * @returns {Promise<Error>} Error object with sentryTags property
+   * @param message - The error message
+   * @returns Error object with sentryTags property
    */
   const createMigrationError = async (message) => {
     const preMigrationVersion = preMigrationVersionedData?.meta?.version;
@@ -1169,7 +1168,7 @@ export async function loadStateFromPersistence(
     await persistenceManager.persist();
   } else {
     throw new Error(
-      `MetaMask - persistenceManager has invalid storageKind '${persistenceManager.storageKind}'`,
+      `MetaMask - persistenceManager has invalid storageKind '${String(persistenceManager.storageKind)}'`,
     );
   }
   log.debug('[Split State]: Load complete.');
@@ -1182,11 +1181,15 @@ export async function loadStateFromPersistence(
  * Emit event of DappViewed,
  * which should only be tracked only after a user opts into metrics and connected to the dapp
  *
- * @param {string} origin - URL of visited dapp
- * @param {string} [mainFrameOrigin] - The top-level frame origin (if sender is an iframe, this differs from origin)
- * @param {number} [frameId] - The frame ID from chrome.runtime.MessageSender (0 = top-level, >0 = iframe)
+ * @param origin - URL of visited dapp
+ * @param [mainFrameOrigin] - The top-level frame origin (if sender is an iframe, this differs from origin)
+ * @param [frameId] - The frame ID from chrome.runtime.MessageSender (0 = top-level, >0 = iframe)
  */
-function emitDappViewedMetricEvent(origin: string, mainFrameOrigin: string, frameId: number) {
+function emitDappViewedMetricEvent(
+  origin: string,
+  mainFrameOrigin: string,
+  frameId: number,
+) {
   const { metaMetricsId } = controller.metaMetricsController.state;
   if (!shouldEmitDappViewedEvent(metaMetricsId)) {
     return;
@@ -1214,12 +1217,14 @@ function emitDappViewedMetricEvent(origin: string, mainFrameOrigin: string, fram
       referrer: {
         url: origin,
       },
+      /* eslint-disable @typescript-eslint/naming-convention -- analytics schema */
       properties: {
         is_first_visit: false,
         number_of_accounts: numberOfTotalAccounts,
         number_of_accounts_connected: numberOfConnectedAccounts,
         ...iframeProps,
       },
+      /* eslint-enable @typescript-eslint/naming-convention */
     },
     {
       excludeMetaMetricsId: true,
@@ -1230,7 +1235,7 @@ function emitDappViewedMetricEvent(origin: string, mainFrameOrigin: string, fram
 /**
  * Track dapp connection when loaded and permissioned
  *
- * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
+ * @param remotePort - The port provided by a new context.
  */
 function trackDappView(remotePort: Runtime.Port) {
   if (
@@ -1278,7 +1283,7 @@ function trackDappView(remotePort: Runtime.Port) {
 /**
  * Emit App Opened event
  *
- * @param {string} environmentType - The environment type where the app is opening
+ * @param environmentType - The environment type where the app is opening
  */
 function emitAppOpenedMetricEvent(environmentType: string) {
   const { metaMetricsId, participateInMetaMetrics } =
@@ -1300,7 +1305,7 @@ function emitAppOpenedMetricEvent(environmentType: string) {
  * This function checks if the app is being opened
  * and emits an event only if no other UI instances are currently open.
  *
- * @param {string} environment - The environment type where the app is opening
+ * @param environment - The environment type where the app is opening
  */
 function trackAppOpened(environment: string) {
   // List of valid environment types to track
@@ -1330,7 +1335,7 @@ function trackAppOpened(environment: string) {
  * This is used when the sidepanel opens to ensure it has the current tab info,
  * and when the focused window changes to keep appActiveTab in sync.
  *
- * @param {number} [windowId] - If provided, queries the active tab in this
+ * @param [windowId] - If provided, queries the active tab in this
  * specific window. Otherwise queries the active tab in the current window.
  */
 const refreshAppActiveTab = async (windowId?: number) => {
@@ -1396,6 +1401,15 @@ const refreshAppActiveTab = async (windowId?: number) => {
  * Streams emitted state updates to platform-specific storage strategy.
  * Creates platform listeners for new Dapps/Contexts, and sets up their data connections to the controller.
  *
+ * @param initState
+ * @param initLangCode
+ * @param overrides
+ * @param isFirstMetaMaskControllerSetup
+ * @param stateMetadata
+ * @param stateMetadata.version
+ * @param offscreenPromise
+ * @param preinstalledSnaps
+ * @param cronjobControllerStorageManager
  */
 export function setupController(
   initState: Record<string, unknown>,
@@ -1630,7 +1644,8 @@ export function setupController(
       /**
        * send event to sentry with details about the event
        *
-       * @param {import("extension-port-stream").MessageTooLargeEventData} details
+       * @param details
+       * @param details.chunkSize
        */
       const handleMessageTooLarge = function ({ chunkSize }) {
         /**
@@ -1902,9 +1917,9 @@ export function setupController(
   /**
    * Formats a count for display as a badge label.
    *
-   * @param {number} count - The count to be formatted.
-   * @param {number} maxCount - The maximum count to display before using the '+' suffix.
-   * @returns {string} The formatted badge label.
+   * @param count - The count to be formatted.
+   * @param maxCount - The maximum count to display before using the '+' suffix.
+   * @returns The formatted badge label.
    */
   function getBadgeLabel(count, maxCount) {
     return count > maxCount ? `${maxCount}+` : String(count);
@@ -2056,7 +2071,8 @@ const addAppInstalledEvent = async () => {
 /**
  * Handles the onInstalled event.
  *
- * @param {[chrome.runtime.InstalledDetails]} params - Array containing a single installation details object.
+ * @param params - Array containing a single installation details object.
+ * @param params."0"
  */
 async function handleOnInstalled([details]: [Runtime.OnInstalledDetailsType]) {
   if (details.reason === 'install') {
@@ -2085,9 +2101,11 @@ async function onInstall() {
 /**
  * Trigger actions that should happen only when an update is available
  *
- * @param {object} details - Event details from runtime.onUpdateAvailable (e.g. details.version)
+ * @param details - Event details from runtime.onUpdateAvailable (e.g. details.version)
  */
-async function onUpdateAvailable(details: Runtime.OnUpdateAvailableDetailsType) {
+async function onUpdateAvailable(
+  details: Runtime.OnUpdateAvailableDetailsType,
+) {
   await isInitialized;
   log.info('An update is available', details?.version);
   controller.appStateController.setPendingExtensionVersion(
@@ -2379,7 +2397,7 @@ function setupSentryGetStateGlobal(store: MetamaskController) {
 
 /**
  *
- * @param {Backup | null} backup
+ * @param backup
  */
 async function initBackground(backup: Backup | null) {
   onNavigateToTab();
