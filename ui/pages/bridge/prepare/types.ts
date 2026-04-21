@@ -56,7 +56,8 @@ export type MinimalBridgeAlert = {
     | 'tx-alert'
     | 'market-closed'
     | 'no-quotes'
-    | 'insufficient-gas';
+    | 'insufficient-gas'
+    | 'price-data-unavailable';
   title?: string;
   description: string;
   severity: 'warning' | 'danger';

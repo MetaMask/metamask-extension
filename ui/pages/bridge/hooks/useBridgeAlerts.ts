@@ -2,6 +2,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import {
   type BridgeAppState,
+  getActiveQuotePriceData,
   getBridgeUnavailableQuoteReason,
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
@@ -51,6 +52,8 @@ export const useBridgeAlerts = () => {
 
   const { tokenAlerts, txAlert } = useSecurityAlerts();
   const { openBuyCryptoInPdapp } = useRamps();
+
+  const activeQuotePriceData = useSelector(getActiveQuotePriceData);
 
   const { isLoading, activeQuote: unvalidatedQuote } =
     useSelector(getBridgeQuotes);
@@ -133,6 +136,19 @@ export const useBridgeAlerts = () => {
       });
     }
 
+    if (unvalidatedQuote && !activeQuotePriceData) {
+      categorizeAlert({
+        id: 'price-data-unavailable',
+        severity: 'danger',
+        title: t('bridgeNoPriceInfoTitle'),
+        description: t('bridgePriceDataUnavailableError'),
+        isConfirmationAlert: true,
+        bannerAlertProps: {
+          severity: BannerAlertSeverity.Danger,
+        },
+      });
+    }
+
     if (
       !isLoading &&
       activeQuote &&
@@ -194,6 +210,8 @@ export const useBridgeAlerts = () => {
     };
   }, [
     activeQuote,
+    unvalidatedQuote,
+    activeQuotePriceData,
     bridgeUnavailableQuotesReason,
     formattedPriceImpactPercentage,
     formattedPriceImpactFiat,

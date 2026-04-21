@@ -84,7 +84,6 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
 import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
-import { BridgeQuoteBanner } from '../components/bridge-quote-banner';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -135,9 +134,6 @@ const PrepareBridgePage = ({
   const wasTxDeclined = useSelector(getWasTxDeclined);
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
   const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
-  const bridgeUnavailableQuotesReason = useSelector(
-    getBridgeUnavailableQuoteReason,
-  );
 
   const { isInsufficientBalance } = useSelector(getValidationErrors);
   const { securityWarnings } = useSecurityAlerts();
@@ -544,9 +540,8 @@ const PrepareBridgePage = ({
           />
         </Column>
 
-        <Column className="px-4">
-          <BridgeQuoteBanner />
-        </Column>
+        {/** Alert banners */}
+        {quoteParams && <BridgeAlertBannerList quoteParams={quoteParams} />}
 
         {/* Quote details - displayed below the swap form */}
         {(isInitialQuoteLoading || (!wasTxDeclined && unvalidatedQuote)) && (
@@ -572,9 +567,6 @@ const PrepareBridgePage = ({
             )}
           </Column>
         )}
-
-        {/** Alert banners */}
-        {quoteParams && <BridgeAlertBannerList quoteParams={quoteParams} />}
 
         {!isInitialQuoteLoading && (
           <Column

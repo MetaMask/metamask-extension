@@ -47,7 +47,9 @@ export const BridgeAlertBannerList = ({
   // Alert banners
   return (
     <Column
-      paddingInline={4}
+      paddingLeft={4}
+      paddingRight={4}
+      paddingBottom={4}
       gap={4}
       backgroundColor={BackgroundColor.backgroundDefault}
       data-testid="bridge-banner-alerts"
