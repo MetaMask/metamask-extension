@@ -301,13 +301,14 @@ app/scripts/on-update.ts                              @MetaMask/extension-platfo
 app/scripts/runtime-cjs.ts                            @MetaMask/extension-platform
 app/scripts/start-with-wallet-state.mjs               @MetaMask/extension-platform
 
-# Platform - Persistence: Wallet state stores, migrations, and corruption
-# recovery. Wrong changes here can silently corrupt or lose user wallet state.
+# Platform - Persistence: Wallet state stores and corruption recovery.
+# Wrong changes here can silently corrupt or lose user wallet state.
+# Individual migration scripts under `app/scripts/migrations/` are owned by
+# the teams contributing them.
 app/scripts/lib/migrator/                             @MetaMask/extension-platform
 app/scripts/lib/state-corruption/                     @MetaMask/extension-platform
 app/scripts/lib/state-utils.ts                        @MetaMask/extension-platform
 app/scripts/lib/stores/                               @MetaMask/extension-platform
-app/scripts/migrations/                               @MetaMask/extension-platform
 
 # Platform - Runtime Infrastructure
 app/scripts/load/                                     @MetaMask/extension-platform
