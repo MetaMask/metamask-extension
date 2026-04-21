@@ -14,10 +14,10 @@ import CopyPlugin from 'copy-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 
 const requireIntegrationConfig = createRequire(__filename);
-// Tailwind v4 + LavaMoat compatibility: use the shared shim.
-const loadTailwindPostcss = requireIntegrationConfig(
-  join(__dirname, '../lib/load-tailwind-postcss.cjs'),
-);
+const tailwindPostcss = requireIntegrationConfig('@tailwindcss/postcss');
+const repoRoot = join(__dirname, '../..');
+const loadTailwindPostcss = (options = {}) =>
+  tailwindPostcss({ base: repoRoot, ...options });
 
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');

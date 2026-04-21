@@ -1,3 +1,4 @@
+const { join } = require('path');
 const pify = require('pify');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
@@ -8,9 +9,11 @@ const postcss = require('gulp-postcss');
 const pipeline = pify(require('readable-stream').pipeline);
 const sass = require('sass-embedded');
 const gulpSass = require('gulp-sass')(sass);
-const loadTailwindPostcss = require('../lib/load-tailwind-postcss.cjs');
+const tailwindPostcss = require('@tailwindcss/postcss');
 const { TASKS } = require('./constants');
 const { createTask } = require('./task');
+
+const repoRoot = join(__dirname, '../..');
 
 // scss compilation and autoprefixing tasks
 module.exports = createStyleTasks;
@@ -74,7 +77,11 @@ async function buildScssPipeline(src, dest, devMode) {
           '-mm-fa-path()': () => new sass.SassString('./fonts/fontawesome'),
         },
       }).on('error', gulpSass.logError),
-      postcss([loadTailwindPostcss(), rtlcss(), discardFonts(['woff2'])]),
+      postcss([
+        tailwindPostcss({ base: repoRoot }),
+        rtlcss(),
+        discardFonts(['woff2']),
+      ]),
       devMode && sourcemaps.write(),
       gulp.dest(dest),
     ].filter(Boolean),

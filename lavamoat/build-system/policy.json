@@ -798,18 +798,18 @@
         "nock>debug": true
       }
     },
-    "lavamoat>lavamoat-tofu>@babel/traverse": {
+    "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/traverse": {
       "globals": {
         "console.log": true
       },
       "packages": {
         "@babel/code-frame": true,
         "@babel/core>@babel/generator": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/parser": true,
+        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/parser": true,
         "@babel/core>@babel/template": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
+        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "nock>debug": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
+        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/traverse>globals": true
       }
     },
     "@babel/core>@babel/types": {
@@ -822,7 +822,7 @@
         "@babel/code-frame>@babel/helper-validator-identifier": true
       }
     },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
+    "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/types": {
       "globals": {
         "console.warn": true,
         "process.env.BABEL_TYPES_8_BREAKING": true
@@ -950,6 +950,15 @@
         "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
+    "@tailwindcss/postcss>@tailwindcss/node>@jridgewell/remapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true
+      }
+    },
     "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
       "globals": {
         "define": true
@@ -998,10 +1007,39 @@
         "node:path.sep": true
       },
       "packages": {
-        "lavamoat>@lavamoat/aa>resolve": true
+        "depcheck>resolve": true
       }
     },
     "@lavamoat/lavapack": {
+      "builtin": {
+        "node:assert": true,
+        "node:buffer.Buffer.from": true,
+        "node:fs.promises.readFile": true,
+        "node:fs.promises.writeFile": true,
+        "node:fs.readFileSync": true,
+        "node:path.join": true,
+        "node:path.relative": true
+      },
+      "globals": {
+        "__dirname": true,
+        "__filename.slice": true,
+        "console.error": true,
+        "console.warn": true,
+        "process.cwd": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>JSONStream": true,
+        "@lavamoat/lavapack>combine-source-map": true,
+        "eslint>espree": true,
+        "@lavamoat/webpack>json-stable-stringify": true,
+        "@lavamoat/lavapack>lavamoat-core": true,
+        "readable-stream": true,
+        "through2": true,
+        "@lavamoat/lavapack>umd": true
+      }
+    },
+    "lavamoat-browserify>@lavamoat/lavapack": {
       "builtin": {
         "node:assert": true,
         "node:buffer.Buffer.from": true,
@@ -1061,10 +1099,12 @@
       }
     },
     "@noble/hashes": {
+      "builtin": {
+        "node:crypto": true
+      },
       "globals": {
         "TextDecoder": true,
-        "TextEncoder": true,
-        "crypto": true
+        "TextEncoder": true
       }
     },
     "eslint>@nodelib/fs.walk>@nodelib/fs.scandir": {
@@ -1130,6 +1170,86 @@
         "TextEncoder": true
       }
     },
+    "@tailwindcss/postcss>@tailwindcss/node": {
+      "builtin": {
+        "fs": true,
+        "fs/promises": true,
+        "module": true,
+        "path": true,
+        "url.pathToFileURL": true
+      },
+      "globals": {
+        "Buffer.from": true,
+        "Features": true,
+        "Instrumentation": true,
+        "Polyfills": true,
+        "__tw_load": true,
+        "__tw_resolve": true,
+        "__unstable__loadDesignSystem": true,
+        "clearRequireCache": true,
+        "compile": true,
+        "compileAst": true,
+        "console.warn": true,
+        "env": true,
+        "loadModule": true,
+        "normalizePath": true,
+        "optimize": true,
+        "process.env.DEBUG": true,
+        "process.env.FEATURES_ENV": true,
+        "process.env.NODE_PATH": true,
+        "process.hrtime.bigint": true,
+        "process.stderr.write": true,
+        "process.versions.bun": true,
+        "toSourceMap": true
+      },
+      "packages": {
+        "@tailwindcss/postcss>@tailwindcss/node>@jridgewell/remapping": true,
+        "webpack>enhanced-resolve": true,
+        "addons-linter>eslint>jiti": true,
+        "@tailwindcss/postcss>@tailwindcss/node>lightningcss": true,
+        "depcheck>@vue/compiler-sfc>magic-string": true,
+        "postcss>source-map-js": true,
+        "tailwindcss": true
+      }
+    },
+    "@tailwindcss/postcss>@tailwindcss/oxide": {
+      "builtin": {
+        "child_process.execSync": true,
+        "node:fs.readFileSync": true
+      },
+      "globals": {
+        "process.arch": true,
+        "process.config.variables.node_target_type": true,
+        "process.config.variables.shlib_suffix": true,
+        "process.env.NAPI_RS_ENFORCE_VERSION_CHECK": true,
+        "process.env.NAPI_RS_FORCE_WASI": true,
+        "process.env.NAPI_RS_NATIVE_LIBRARY_PATH": true,
+        "process.platform": true,
+        "process.report.excludeNetwork": true,
+        "process.report.getReport": true
+      },
+      "packages": {
+        "@tailwindcss/postcss>@tailwindcss/oxide>@tailwindcss/oxide-darwin-arm64": true
+      }
+    },
+    "@tailwindcss/postcss": {
+      "builtin": {
+        "fs": true,
+        "path": true
+      },
+      "globals": {
+        "SuppressedError": true,
+        "console.error": true,
+        "process.cwd": true,
+        "process.env.FEATURES_ENV": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "@tailwindcss/postcss>@alloc/quick-lru": true,
+        "@tailwindcss/postcss>@tailwindcss/node": true,
+        "@tailwindcss/postcss>@tailwindcss/oxide": true
+      }
+    },
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "addEventListener": false,
@@ -1165,6 +1285,41 @@
         "eslint-plugin-jest>@typescript-eslint/experimental-utils>eslint-utils": true
       }
     },
+    "@typescript-eslint/parser": {
+      "packages": {
+        "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
+        "@typescript-eslint/parser>@typescript-eslint/typescript-estree": true,
+        "@typescript-eslint/parser>@typescript-eslint/visitor-keys": true,
+        "nock>debug": true,
+        "typescript": true
+      }
+    },
+    "@typescript-eslint/parser>@typescript-eslint/typescript-estree>@typescript-eslint/project-service": {
+      "globals": {
+        "clearImmediate": true,
+        "clearTimeout": true,
+        "performance.now": true,
+        "setImmediate": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@typescript-eslint/parser>@typescript-eslint/typescript-estree>@typescript-eslint/tsconfig-utils": true,
+        "nock>debug": true,
+        "typescript": true
+      }
+    },
+    "@typescript-eslint/parser>@typescript-eslint/scope-manager": {
+      "packages": {
+        "@typescript-eslint/parser>@typescript-eslint/types": true,
+        "@typescript-eslint/parser>@typescript-eslint/visitor-keys": true
+      }
+    },
+    "eslint-plugin-import-x>@typescript-eslint/utils>@typescript-eslint/scope-manager": {
+      "packages": {
+        "eslint-plugin-import-x>@typescript-eslint/utils>@typescript-eslint/types": true,
+        "eslint-plugin-import-x>@typescript-eslint/utils>@typescript-eslint/scope-manager>@typescript-eslint/visitor-keys": true
+      }
+    },
     "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager": {
       "builtin": {
         "path": true
@@ -1172,6 +1327,15 @@
       "packages": {
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager>@typescript-eslint/visitor-keys": true
+      }
+    },
+    "@typescript-eslint/parser>@typescript-eslint/typescript-estree>@typescript-eslint/tsconfig-utils": {
+      "builtin": {
+        "node:fs": true,
+        "node:path": true
+      },
+      "globals": {
+        "process.cwd": true
       }
     },
     "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": {
@@ -1182,6 +1346,31 @@
         "eslint>debug": true,
         "nock>debug": true,
         "@typescript-eslint/eslint-plugin>tsutils": true,
+        "typescript": true
+      }
+    },
+    "@typescript-eslint/parser>@typescript-eslint/typescript-estree": {
+      "builtin": {
+        "node:fs": true,
+        "node:path": true,
+        "node:util": true
+      },
+      "globals": {
+        "console.log": true,
+        "console.warn": true,
+        "performance.now": true,
+        "process": true
+      },
+      "packages": {
+        "@typescript-eslint/parser>@typescript-eslint/typescript-estree>@typescript-eslint/project-service": true,
+        "@typescript-eslint/parser>@typescript-eslint/typescript-estree>@typescript-eslint/tsconfig-utils": true,
+        "@typescript-eslint/parser>@typescript-eslint/types": true,
+        "@typescript-eslint/parser>@typescript-eslint/visitor-keys": true,
+        "nock>debug": true,
+        "@typescript-eslint/parser>@typescript-eslint/typescript-estree>minimatch": true,
+        "semver": true,
+        "copy-webpack-plugin>tinyglobby": true,
+        "@typescript-eslint/eslint-plugin>ts-api-utils": true,
         "typescript": true
       }
     },
@@ -1196,6 +1385,14 @@
         "eslint": true,
         "webpack>eslint-scope": true,
         "eslint-plugin-mocha>eslint-utils": true
+      }
+    },
+    "eslint-plugin-import-x>@typescript-eslint/utils": {
+      "packages": {
+        "eslint>@eslint-community/eslint-utils": true,
+        "eslint-plugin-import-x>@typescript-eslint/utils>@typescript-eslint/scope-manager": true,
+        "eslint-plugin-import-x>@typescript-eslint/utils>@typescript-eslint/types": true,
+        "eslint": true
       }
     },
     "eslint-plugin-jest>@typescript-eslint/utils": {
@@ -1220,6 +1417,16 @@
         "webpack>eslint-scope": true,
         "eslint-plugin-mocha>eslint-utils": true,
         "semver": true
+      }
+    },
+    "@typescript-eslint/parser>@typescript-eslint/visitor-keys": {
+      "packages": {
+        "@typescript-eslint/parser>@typescript-eslint/visitor-keys>eslint-visitor-keys": true
+      }
+    },
+    "eslint-plugin-import-x>@typescript-eslint/utils>@typescript-eslint/scope-manager>@typescript-eslint/visitor-keys": {
+      "packages": {
+        "eslint>eslint-visitor-keys": true
       }
     },
     "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager>@typescript-eslint/visitor-keys": {
@@ -1729,7 +1936,7 @@
       },
       "packages": {
         "browserslist>baseline-browser-mapping": true,
-        "browserslist>caniuse-lite": true,
+        "autoprefixer>caniuse-lite": true,
         "browserslist>electron-to-chromium": true,
         "browserslist>node-releases": true
       }
@@ -1953,13 +2160,13 @@
         "buffer.Buffer": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep": {
+    "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep": {
       "packages": {
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": true,
+        "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep>for-own": true,
         "@babel/register>clone-deep>is-plain-object": true,
-        "lavamoat>lavamoat-core>merge-deep>kind-of": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true
+        "@lavamoat/lavapack>lavamoat-core>merge-deep>kind-of": true,
+        "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep>lazy-cache": true,
+        "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep>shallow-clone": true
       }
     },
     "vinyl>clone-stats": {
@@ -2350,6 +2557,22 @@
         "process.env": true
       }
     },
+    "sharp>detect-libc": {
+      "builtin": {
+        "child_process.exec": true,
+        "child_process.execSync": true,
+        "fs.close": true,
+        "fs.open": true,
+        "fs.openSync": true,
+        "fs.read": true,
+        "fs.readSync": true
+      },
+      "globals": {
+        "Buffer.alloc": true,
+        "process.platform": true,
+        "process.report": true
+      }
+    },
     "browserify>module-deps>detective": {
       "packages": {
         "browserify>syntax-error>acorn-node": true,
@@ -2608,6 +2831,7 @@
         "path.isAbsolute": true,
         "path.join": true,
         "path.normalize": true,
+        "path.parse": true,
         "path.posix.join": true,
         "path.relative": true,
         "path.resolve": true,
@@ -2740,6 +2964,7 @@
         "process.hrtime": true
       },
       "packages": {
+        "eslint-plugin-import-x>@typescript-eslint/utils": true,
         "nock>debug": true,
         "eslint>doctrine": true,
         "eslint": true,
@@ -2817,6 +3042,7 @@
         "eslint-plugin-n>globrex": true,
         "eslint>ignore": true,
         "semver": true,
+        "eslint-plugin-n>ts-declaration-location": true,
         "typescript": true
       }
     },
@@ -3227,7 +3453,7 @@
         "gulp>vinyl-fs>lead>flush-write-stream>readable-stream": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": {
+    "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep>for-own": {
       "packages": {
         "gulp>undertaker>object.reduce>for-own>for-in": true
       }
@@ -4115,6 +4341,57 @@
         "string.prototype.matchall>set-function-name": true
       }
     },
+    "addons-linter>eslint>jiti": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "module": true,
+        "node:assert": true,
+        "node:crypto": true,
+        "node:fs": true,
+        "node:module.Module": true,
+        "node:module.builtinModules": true,
+        "node:module.createRequire": true,
+        "node:os.platform": true,
+        "node:os.tmpdir": true,
+        "node:path": true,
+        "node:perf_hooks.performance.now": true,
+        "node:process": true,
+        "node:tty.WriteStream.prototype.hasColors": true,
+        "node:url": true,
+        "node:util.format": true,
+        "node:util.inspect": true,
+        "node:v8": true,
+        "node:vm": true,
+        "os": true,
+        "path": true,
+        "process": true,
+        "tty": true,
+        "url": true,
+        "util": true,
+        "v8": true
+      },
+      "globals": {
+        "Buffer": true,
+        "Bun": true,
+        "Deno": true,
+        "EdgeRuntime": true,
+        "Netlify": true,
+        "TextDecoder": true,
+        "URL": true,
+        "__env__": true,
+        "atob": true,
+        "btoa": true,
+        "console": true,
+        "document": true,
+        "fastly": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true,
+        "structuredClone": true,
+        "value": true
+      }
+    },
     "postcss-discard-font-face>postcss>js-base64": {
       "globals": {
         "Base64": "write",
@@ -4210,7 +4487,7 @@
         "browserify>insert-module-globals>is-buffer": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>kind-of": {
+    "@lavamoat/lavapack>lavamoat-core>merge-deep>kind-of": {
       "packages": {
         "browserify>insert-module-globals>is-buffer": true
       }
@@ -4225,7 +4502,7 @@
         "browserify>insert-module-globals>is-buffer": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": {
+    "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": {
       "globals": {
         "Buffer": true
       },
@@ -4276,13 +4553,32 @@
       },
       "packages": {
         "lavamoat>@lavamoat/aa": true,
-        "@lavamoat/lavapack": true,
+        "lavamoat-browserify>@lavamoat/lavapack": true,
         "browserify>browser-resolve": true,
         "lavamoat-browserify>concat-stream": true,
         "duplexify": true,
         "lavamoat>lavamoat-core": true,
         "readable-stream": true,
         "through2": true
+      }
+    },
+    "@lavamoat/lavapack>lavamoat-core": {
+      "builtin": {
+        "node:events": true,
+        "node:fs.readFileSync": true,
+        "node:path.extname": true,
+        "node:path.join": true
+      },
+      "globals": {
+        "__dirname": true,
+        "console.error": true,
+        "console.warn": true,
+        "define": true
+      },
+      "packages": {
+        "@lavamoat/webpack>json-stable-stringify": true,
+        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu": true,
+        "@lavamoat/lavapack>lavamoat-core>merge-deep": true
       }
     },
     "lavamoat>lavamoat-core": {
@@ -4300,8 +4596,7 @@
       },
       "packages": {
         "@lavamoat/webpack>json-stable-stringify": true,
-        "lavamoat>lavamoat-tofu": true,
-        "lavamoat>lavamoat-core>merge-deep": true
+        "lavamoat>lavamoat-tofu": true
       }
     },
     "lavamoat>lavamoat-tofu": {
@@ -4309,17 +4604,26 @@
         "console.log": true
       },
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse": true
+        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/traverse": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
+    "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/parser": true,
+        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/traverse": true
+      }
+    },
+    "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
       "globals": {
         "process.env.TRAVIS": true,
         "process.env.UNLAZY": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": {
+    "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": {
       "globals": {
         "process.env.UNLAZY": true
       }
@@ -4344,6 +4648,15 @@
       "packages": {
         "eslint>levn>prelude-ls": true,
         "eslint>levn>type-check": true
+      }
+    },
+    "@tailwindcss/postcss>@tailwindcss/node>lightningcss": {
+      "globals": {
+        "process.arch": true,
+        "process.platform": true
+      },
+      "packages": {
+        "sharp>detect-libc": true
       }
     },
     "gulp-postcss>postcss-load-config>lilconfig": {
@@ -4413,6 +4726,16 @@
         "resolve-url-loader>es6-iterator>es5-ext": true
       }
     },
+    "depcheck>@vue/compiler-sfc>magic-string": {
+      "globals": {
+        "Buffer": true,
+        "btoa": true,
+        "console.warn": true
+      },
+      "packages": {
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+      }
+    },
     "gulp>undertaker>arr-map>make-iterator": {
       "packages": {
         "@babel/register>clone-deep>kind-of": true
@@ -4454,11 +4777,11 @@
         "gulp-sourcemaps>debug-fabulous>memoizee>timers-ext": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep": {
+    "@lavamoat/lavapack>lavamoat-core>merge-deep": {
       "packages": {
         "gulp-zip>plugin-error>arr-union": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep": true,
-        "lavamoat>lavamoat-core>merge-deep>kind-of": true
+        "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep": true,
+        "@lavamoat/lavapack>lavamoat-core>merge-deep>kind-of": true
       }
     },
     "globby>merge2": {
@@ -4526,6 +4849,15 @@
         "gulp-watch>anymatch>micromatch>regex-cache": true
       }
     },
+    "@typescript-eslint/parser>@typescript-eslint/typescript-estree>minimatch": {
+      "globals": {
+        "console.error": true,
+        "process": true
+      },
+      "packages": {
+        "mocha>minimatch>brace-expansion": true
+      }
+    },
     "eslint>minimatch": {
       "builtin": {
         "path": true
@@ -4552,9 +4884,9 @@
         "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>mixin-deep>is-extendable": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": {
+    "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": {
       "packages": {
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object>for-in": true,
+        "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object>for-in": true,
         "gulp-watch>anymatch>micromatch>object.omit>is-extendable": true
       }
     },
@@ -4941,6 +5273,12 @@
       }
     },
     "copy-webpack-plugin>tinyglobby>picomatch": {
+      "globals": {
+        "navigator": true,
+        "process": true
+      }
+    },
+    "eslint-plugin-n>ts-declaration-location>picomatch": {
       "globals": {
         "navigator": true,
         "process": true
@@ -6102,36 +6440,6 @@
         "gulp>vinyl-fs>value-or-function": true
       }
     },
-    "lavamoat>@lavamoat/aa>resolve": {
-      "builtin": {
-        "fs.readFileSync": true,
-        "fs.realpathSync": true,
-        "fs.statSync": true,
-        "os.homedir": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.parse": true,
-        "path.relative": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "process.env.HOME": true,
-        "process.env.HOMEDRIVE": true,
-        "process.env.HOMEPATH": true,
-        "process.env.LNAME": true,
-        "process.env.LOGNAME": true,
-        "process.env.USER": true,
-        "process.env.USERNAME": true,
-        "process.env.USERPROFILE": true,
-        "process.getuid": true,
-        "process.platform": true,
-        "process.versions.pnp": true
-      },
-      "packages": {
-        "depcheck>is-core-module": true,
-        "depcheck>resolve>path-parse": true
-      }
-    },
     "depcheck>resolve": {
       "builtin": {
         "fs.readFile": true,
@@ -6162,6 +6470,7 @@
         "process.versions.pnp": true
       },
       "packages": {
+        "string.prototype.matchall>es-errors": true,
         "depcheck>is-core-module": true,
         "depcheck>resolve>path-parse": true
       }
@@ -6579,12 +6888,12 @@
         "gulp>gulp-cli>matchdep>micromatch>braces>split-string": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": {
+    "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep>shallow-clone": {
       "packages": {
         "gulp-watch>anymatch>micromatch>object.omit>is-extendable": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": true
+        "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": true,
+        "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": true,
+        "@lavamoat/lavapack>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": true
       }
     },
     "browserify>shasum-object": {
@@ -7076,6 +7385,13 @@
         "browserify>syntax-error>acorn-node": true
       }
     },
+    "tailwindcss": {
+      "globals": {
+        "Intl.ListFormat": true,
+        "console.warn": true,
+        "structuredClone": true
+      }
+    },
     "webpack>tapable": {
       "builtin": {
         "util.deprecate": true
@@ -7424,6 +7740,20 @@
         "gulp>vinyl-fs>to-through>through2": true
       }
     },
+    "@typescript-eslint/eslint-plugin>ts-api-utils": {
+      "packages": {
+        "typescript": true
+      }
+    },
+    "eslint-plugin-n>ts-declaration-location": {
+      "builtin": {
+        "node:path": true
+      },
+      "packages": {
+        "eslint-plugin-n>ts-declaration-location>picomatch": true,
+        "typescript": true
+      }
+    },
     "ts-node": {
       "builtin": {
         "assert": true,
@@ -7611,7 +7941,7 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "eslint-import-resolver-typescript>unrs-resolver>@unrs/resolver-binding-linux-x64-gnu": true
+        "eslint-import-resolver-typescript>unrs-resolver>@unrs/resolver-binding-darwin-arm64": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>unset-value": {

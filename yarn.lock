@@ -132,18 +132,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/code-frame@npm:7.27.1":
-  version: 7.27.1
-  resolution: "@babel/code-frame@npm:7.27.1"
-  dependencies:
-    "@babel/helper-validator-identifier": "npm:^7.27.1"
-    js-tokens: "npm:^4.0.0"
-    picocolors: "npm:^1.1.1"
-  checksum: 10/721b8a6e360a1fa0f1c9fe7351ae6c874828e119183688b533c477aa378f1010f37cc9afbfc4722c686d1f5cdd00da02eab4ba7278a0c504fa0d7a321dcd4fdf
-  languageName: node
-  linkType: hard
-
-"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.25.9, @babel/code-frame@npm:^7.27.1, @babel/code-frame@npm:^7.28.6, @babel/code-frame@npm:^7.29.0":
+"@babel/code-frame@npm:7.29.0, @babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.25.9, @babel/code-frame@npm:^7.27.1, @babel/code-frame@npm:^7.28.6, @babel/code-frame@npm:^7.29.0":
   version: 7.29.0
   resolution: "@babel/code-frame@npm:7.29.0"
   dependencies:
@@ -500,18 +489,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:7.28.3":
-  version: 7.28.3
-  resolution: "@babel/parser@npm:7.28.3"
-  dependencies:
-    "@babel/types": "npm:^7.28.2"
-  bin:
-    parser: ./bin/babel-parser.js
-  checksum: 10/9fa08282e345b9d892a6757b2789a9a53a00f7b7b34d6254a4ee0bf32c5eb275919091ea96d6f136a948d5de9c8219235957d04a36ab7378a9d93a4cf0799155
-  languageName: node
-  linkType: hard
-
-"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.0, @babel/parser@npm:^7.24.4, @babel/parser@npm:^7.25.3, @babel/parser@npm:^7.25.9, @babel/parser@npm:^7.26.7, @babel/parser@npm:^7.27.3, @babel/parser@npm:^7.28.6, @babel/parser@npm:^7.29.0":
+"@babel/parser@npm:7.29.2, @babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.0, @babel/parser@npm:^7.24.4, @babel/parser@npm:^7.25.3, @babel/parser@npm:^7.25.9, @babel/parser@npm:^7.26.7, @babel/parser@npm:^7.27.3, @babel/parser@npm:^7.28.6, @babel/parser@npm:^7.29.0":
   version: 7.29.2
   resolution: "@babel/parser@npm:7.29.2"
   dependencies:
@@ -1648,7 +1626,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/traverse@npm:^7.12.5, @babel/traverse@npm:^7.18.9, @babel/traverse@npm:^7.23.2, @babel/traverse@npm:^7.25.9, @babel/traverse@npm:^7.27.1, @babel/traverse@npm:^7.28.5, @babel/traverse@npm:^7.28.6, @babel/traverse@npm:^7.4.5":
+"@babel/traverse@npm:7.29.0, @babel/traverse@npm:^7.12.5, @babel/traverse@npm:^7.18.9, @babel/traverse@npm:^7.23.2, @babel/traverse@npm:^7.25.9, @babel/traverse@npm:^7.27.1, @babel/traverse@npm:^7.28.5, @babel/traverse@npm:^7.28.6, @babel/traverse@npm:^7.4.5":
   version: 7.29.0
   resolution: "@babel/traverse@npm:7.29.0"
   dependencies:
@@ -1673,7 +1651,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.0.0, @babel/types@npm:^7.18.9, @babel/types@npm:^7.20.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.22.5, @babel/types@npm:^7.23.0, @babel/types@npm:^7.25.9, @babel/types@npm:^7.26.0, @babel/types@npm:^7.27.1, @babel/types@npm:^7.27.3, @babel/types@npm:^7.28.2, @babel/types@npm:^7.28.5, @babel/types@npm:^7.28.6, @babel/types@npm:^7.29.0, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
+"@babel/types@npm:7.29.0, @babel/types@npm:^7.0.0, @babel/types@npm:^7.18.9, @babel/types@npm:^7.20.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.22.5, @babel/types@npm:^7.23.0, @babel/types@npm:^7.25.9, @babel/types@npm:^7.26.0, @babel/types@npm:^7.27.1, @babel/types@npm:^7.27.3, @babel/types@npm:^7.28.2, @babel/types@npm:^7.28.5, @babel/types@npm:^7.28.6, @babel/types@npm:^7.29.0, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
   version: 7.29.0
   resolution: "@babel/types@npm:7.29.0"
   dependencies:
@@ -1822,16 +1800,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emnapi/runtime@npm:^1.4.3":
-  version: 1.4.3
-  resolution: "@emnapi/runtime@npm:1.4.3"
-  dependencies:
-    tslib: "npm:^2.4.0"
-  checksum: 10/4f90852a1a5912982cc4e176b6420556971bcf6a85ee23e379e2455066d616219751367dcf43e6a6eaf41ea7e95ba9dc830665a52b5d979dfe074237d19578f8
-  languageName: node
-  linkType: hard
-
-"@emnapi/runtime@npm:^1.8.1":
+"@emnapi/runtime@npm:^1.4.3, @emnapi/runtime@npm:^1.8.1":
   version: 1.10.0
   resolution: "@emnapi/runtime@npm:1.10.0"
   dependencies:
@@ -4704,14 +4673,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jridgewell/sourcemap-codec@npm:^1.4.10, @jridgewell/sourcemap-codec@npm:^1.4.14, @jridgewell/sourcemap-codec@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "@jridgewell/sourcemap-codec@npm:1.5.0"
-  checksum: 10/4ed6123217569a1484419ac53f6ea0d9f3b57e5b57ab30d7c267bdb27792a27eb0e4b08e84a2680aa55cc2f2b411ffd6ec3db01c44fdc6dc43aca4b55f8374fd
-  languageName: node
-  linkType: hard
-
-"@jridgewell/sourcemap-codec@npm:^1.5.5":
+"@jridgewell/sourcemap-codec@npm:^1.4.10, @jridgewell/sourcemap-codec@npm:^1.4.14, @jridgewell/sourcemap-codec@npm:^1.5.0, @jridgewell/sourcemap-codec@npm:^1.5.5":
   version: 1.5.5
   resolution: "@jridgewell/sourcemap-codec@npm:1.5.5"
   checksum: 10/5d9d207b462c11e322d71911e55e21a4e2772f71ffe8d6f1221b8eb5ae6774458c1d242f897fb0814e8714ca9a6b498abfa74dfe4f434493342902b1a48b33a5
@@ -4974,7 +4936,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/aa@npm:^4.3.4, @lavamoat/aa@npm:^4.3.6":
+"@lavamoat/aa@npm:^4.3.6":
   version: 4.3.6
   resolution: "@lavamoat/aa@npm:4.3.6"
   dependencies:
@@ -4985,14 +4947,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/aa@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@lavamoat/aa@npm:5.0.0"
+"@lavamoat/aa@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@lavamoat/aa@npm:5.0.1"
   dependencies:
-    resolve: "npm:1.22.11"
+    resolve: "npm:1.22.12"
   bin:
     lavamoat-ls: src/cli.js
-  checksum: 10/eb2d7649998866e52071b7090617dd5a751d5ab2af739e5aab7013f5471277c3bccae80a188f56df96fe26edc434308cbb0b1a304f099f61fc8e551f84057207
+  checksum: 10/a93db450b850dde46e5ae12383086bc85244c00c2e380fe04f5c59d1d064a6329c3d7eed3d3e15c926a72c6d72976716d2164fee8c8b00254b03a68ce9c9963f
   languageName: node
   linkType: hard
 
@@ -5034,7 +4996,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@npm:^7.0.18, @lavamoat/lavapack@npm:^7.0.22":
+"@lavamoat/lavapack@npm:^7.0.22":
   version: 7.0.22
   resolution: "@lavamoat/lavapack@npm:7.0.22"
   dependencies:
@@ -5047,6 +5009,22 @@ __metadata:
     through2: "npm:4.0.2"
     umd: "npm:3.0.3"
   checksum: 10/189a90f87d11ff9f5ee5ad9686457446b019ef0bd4f0f3009583fb258cc952272da531bf991eb7e605523778a44bc4a4b534d5060f7f9d6df31685c8546d4b1d
+  languageName: node
+  linkType: hard
+
+"@lavamoat/lavapack@npm:^8.0.2":
+  version: 8.0.2
+  resolution: "@lavamoat/lavapack@npm:8.0.2"
+  dependencies:
+    JSONStream: "npm:1.3.5"
+    combine-source-map: "npm:0.8.0"
+    espree: "npm:9.6.1"
+    json-stable-stringify: "npm:1.3.0"
+    lavamoat-core: "npm:^18.0.2"
+    readable-stream: "npm:4.7.0"
+    through2: "npm:4.0.2"
+    umd: "npm:3.0.3"
+  checksum: 10/51af963570ddee588ee90c75d1d0bb712830e3d11d9074f741f2a375c92d354312e6ea4c6824070d63c96a6f5d0e8357fbb9227e6b54fb506777bcf60c9ef7a5
   languageName: node
   linkType: hard
 
@@ -5084,29 +5062,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/types@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@lavamoat/types@npm:1.0.0"
+"@lavamoat/types@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@lavamoat/types@npm:1.0.1"
   dependencies:
-    "@babel/types": "npm:7.27.3"
-  checksum: 10/43b293409870176ed82161b11c606228acb8933c922f1798d20c6397ce3989368570aa6e00e465c906c8fb9e80701014a62f9449fcfc470f3200bf9b82bc5d4e
+    "@babel/types": "npm:7.29.0"
+  checksum: 10/51d7a1346ad4ba980e9c713bdd7178d6925522d35f35788c39181d0e17a5440250e5525211bd87f618691a0e46dc05f61191a425fb44147dffcb6443233186fa
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@npm:2.1.1":
-  version: 2.1.1
-  resolution: "@lavamoat/webpack@npm:2.1.1"
+"@lavamoat/webpack@npm:2.1.3":
+  version: 2.1.3
+  resolution: "@lavamoat/webpack@npm:2.1.3"
   dependencies:
-    "@babel/parser": "npm:7.28.3"
-    "@lavamoat/aa": "npm:^5.0.0"
-    "@lavamoat/types": "npm:^1.0.0"
+    "@babel/parser": "npm:7.29.2"
+    "@lavamoat/aa": "npm:^5.0.1"
+    "@lavamoat/types": "npm:^1.0.1"
     browser-resolve: "npm:2.0.0"
     json-stable-stringify: "npm:1.3.0"
-    lavamoat-core: "npm:^18.0.1"
+    lavamoat-core: "npm:^18.0.2"
     ses: "npm:1.15.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/90e343c99b55f1aba45bf6aba3e3500bd0678bc9be53c96373c5f26d9eadf65fc09ad003196e5b6d6d65be374ea978aa7ca1207118f2e1faff2f33477452cc58
+  checksum: 10/e8a66ace70d2638f180ffbe6c08ee43ab076abed88b21e3badcee455252ac8c7d99e04f3cc91de1ddee1736d6cc6874348d6103d5bc6f041816b464fa05b8a01
   languageName: node
   linkType: hard
 
@@ -22686,16 +22664,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"corepack@npm:0.33.0":
-  version: 0.33.0
-  resolution: "corepack@npm:0.33.0"
+"corepack@npm:0.34.6":
+  version: 0.34.6
+  resolution: "corepack@npm:0.34.6"
   bin:
     corepack: ./dist/corepack.js
     pnpm: ./dist/pnpm.js
     pnpx: ./dist/pnpx.js
     yarn: ./dist/yarn.js
     yarnpkg: ./dist/yarnpkg.js
-  checksum: 10/0cd590e26b84515974d67e44f3119e577f3118c137978354177659e94b985d7fee82d61412388964065ff3141d52fea29bcc13615e7170480edfcef12e457812
+  checksum: 10/1f840e248a1f74b53f25c49a7b823d6db825f4c33a0f297575f9004cef46a7f7f617fae987377094512ffdb7db3e251a422d552ea5896876594695dc7c1cbd26
   languageName: node
   linkType: hard
 
@@ -23876,17 +23854,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-libc@npm:^2.0.3":
+"detect-libc@npm:^2.0.3, detect-libc@npm:^2.0.4":
   version: 2.1.2
   resolution: "detect-libc@npm:2.1.2"
   checksum: 10/b736c8d97d5d46164c0d1bed53eb4e6a3b1d8530d460211e2d52f1c552875e706c58a5376854e4e54f8b828c9cada58c855288c968522eb93ac7696d65970766
-  languageName: node
-  linkType: hard
-
-"detect-libc@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "detect-libc@npm:2.0.4"
-  checksum: 10/136e995f8c5ffbc515955b0175d441b967defd3d5f2268e89fa695e9c7170d8bed17993e31a34b04f0fad33d844a3a598e0fd519a8e9be3cad5f67662d96fee0
   languageName: node
   linkType: hard
 
@@ -24700,17 +24671,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:>=5.7.0, enhanced-resolve@npm:^5.16.0, enhanced-resolve@npm:^5.17.1, enhanced-resolve@npm:^5.17.4, enhanced-resolve@npm:^5.18.0":
-  version: 5.19.0
-  resolution: "enhanced-resolve@npm:5.19.0"
-  dependencies:
-    graceful-fs: "npm:^4.2.4"
-    tapable: "npm:^2.3.0"
-  checksum: 10/b537d52173bf1ba903c623f96a43ea3b51466ee2b606b2fcca30d73d453fd79c8683dccbb83523de27cd02763c906f11486e2591a4335e6afe49fa5ad6e67b83
-  languageName: node
-  linkType: hard
-
-"enhanced-resolve@npm:^5.19.0":
+"enhanced-resolve@npm:>=5.7.0, enhanced-resolve@npm:^5.16.0, enhanced-resolve@npm:^5.17.1, enhanced-resolve@npm:^5.17.4, enhanced-resolve@npm:^5.18.0, enhanced-resolve@npm:^5.19.0":
   version: 5.20.1
   resolution: "enhanced-resolve@npm:5.20.1"
   dependencies:
@@ -33117,27 +33078,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@npm:^19.0.2":
-  version: 19.0.2
-  resolution: "lavamoat-browserify@npm:19.0.2"
+"lavamoat-browserify@npm:^20.0.3":
+  version: 20.0.3
+  resolution: "lavamoat-browserify@npm:20.0.3"
   dependencies:
-    "@lavamoat/aa": "npm:^4.3.4"
-    "@lavamoat/lavapack": "npm:^7.0.18"
+    "@lavamoat/aa": "npm:^5.0.1"
+    "@lavamoat/lavapack": "npm:^8.0.2"
     "@lavamoat/sourcemap-validator": "npm:2.1.1"
     browser-resolve: "npm:2.0.0"
     concat-stream: "npm:2.0.0"
     convert-source-map: "npm:2.0.0"
     duplexify: "npm:4.1.3"
-    lavamoat-core: "npm:^17.0.1"
+    lavamoat-core: "npm:^18.0.2"
     pify: "npm:5.0.0"
     readable-stream: "npm:4.7.0"
     source-map: "npm:0.7.4"
     through2: "npm:4.0.2"
-  checksum: 10/6d2cac266ceb627650a88b08b46fd3771bc6861a305ab952362af2d1f23bd35d874aec85b945116de1c8749216558771cac24d9c03b86fcae33c15c641444e57
+  checksum: 10/7d79c49c038eeb621b03bf83ef9632169f37bdae4339140e751f3b2bc48b9bc6460ac52ca19f887319cdd869a58adb01f2b716749df02e04abc6e8797dbee55c
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^17.0.1, lavamoat-core@npm:^17.1.2, lavamoat-core@npm:^17.1.3":
+"lavamoat-core@npm:^17.1.3":
   version: 17.1.3
   resolution: "lavamoat-core@npm:17.1.3"
   dependencies:
@@ -33153,22 +33114,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^18.0.1":
-  version: 18.0.1
-  resolution: "lavamoat-core@npm:18.0.1"
+"lavamoat-core@npm:^18.0.2":
+  version: 18.0.2
+  resolution: "lavamoat-core@npm:18.0.2"
   dependencies:
-    "@babel/types": "npm:7.27.3"
-    "@lavamoat/types": "npm:^1.0.0"
+    "@babel/types": "npm:7.29.0"
+    "@lavamoat/types": "npm:^1.0.1"
     json-stable-stringify: "npm:1.3.0"
-    lavamoat-tofu: "npm:^9.0.0"
+    lavamoat-tofu: "npm:^9.0.1"
     ses: "npm:1.15.0"
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/84bc6a9926cc12f558c3545d3781aeb2181443445a4a6321cb1c9baa3ba461cf8e5c224919e8aa54f54ee8b0d06770cdeccff3de2a9ad909a4708f8b40ca25c6
+  checksum: 10/3a0114a65421ed32d9087de3a908865c453dbef4236e1ead1e4cf8cd1676ac4236b200526317fa1c7378804d946e80aee68fa0ba4f40323cf32eb78b9a582811
   languageName: node
   linkType: hard
 
-"lavamoat-tofu@npm:^8.1.0, lavamoat-tofu@npm:^8.1.1":
+"lavamoat-tofu@npm:^8.1.1":
   version: 8.1.1
   resolution: "lavamoat-tofu@npm:8.1.1"
   dependencies:
@@ -33184,41 +33145,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-tofu@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "lavamoat-tofu@npm:9.0.0"
+"lavamoat-tofu@npm:^9.0.1":
+  version: 9.0.1
+  resolution: "lavamoat-tofu@npm:9.0.1"
   dependencies:
-    "@babel/parser": "npm:7.27.3"
-    "@babel/traverse": "npm:7.27.3"
-    "@babel/types": "npm:7.27.3"
-    "@lavamoat/types": "npm:^1.0.0"
+    "@babel/parser": "npm:7.29.2"
+    "@babel/traverse": "npm:7.29.0"
+    "@babel/types": "npm:7.29.0"
+    "@lavamoat/types": "npm:^1.0.1"
     "@types/babel__traverse": "npm:7.28.0"
     type-fest: "npm:4.41.0"
   peerDependencies:
     lavamoat-core: ">15.4.0"
-  checksum: 10/8359abd166f358fae93152cb00bdadffd608564ca7c9034c8bef737abc2c63327323ff78ae70942f836ede44aba324c90134538f61f5c9c96ce9e914787c4ee2
+  checksum: 10/ec323dd154bd42159a05c47ffe3dff6568166edde6a366ea9de33caf4a6ce58d0b777cf717e60634da7d40e2cbc2e824611fb07229608d839e2f343b93c6f0cb
   languageName: node
   linkType: hard
 
-"lavamoat@npm:10.0.5":
-  version: 10.0.5
-  resolution: "lavamoat@npm:10.0.5"
+"lavamoat@npm:11.1.1":
+  version: 11.1.1
+  resolution: "lavamoat@npm:11.1.1"
   dependencies:
-    "@babel/code-frame": "npm:7.27.1"
+    "@babel/code-frame": "npm:7.29.0"
     "@babel/highlight": "npm:7.25.9"
-    "@lavamoat/aa": "npm:^4.3.4"
+    "@lavamoat/aa": "npm:^5.0.1"
     bindings: "npm:1.5.0"
-    corepack: "npm:0.33.0"
+    corepack: "npm:0.34.6"
     htmlescape: "npm:1.1.1"
-    lavamoat-core: "npm:^17.1.2"
-    lavamoat-tofu: "npm:^8.1.0"
+    lavamoat-core: "npm:^18.0.2"
+    lavamoat-tofu: "npm:^9.0.1"
     node-gyp-build: "npm:4.8.4"
-    resolve: "npm:1.22.10"
+    resolve: "npm:1.22.12"
     yargs: "npm:17.7.2"
   bin:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
-  checksum: 10/b5f980ebe8a09e0b75bbf3663a0d4643521b4864aaccd158fc0f9ddb5c98ae6e34a41fc3ba97f19993665e7a06762fd76b4734dd8fffad8ca5578b2eac4aa2c6
+  checksum: 10/02c883f8b5c8832fa918cc6a1e2f99d2b253a21573234d49199cd9ebb7f67ee968a32197d262c3046c955b5d08289ed3d254806ea4dd5ebcba45c24233fcca69
   languageName: node
   linkType: hard
 
@@ -34009,16 +33970,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"magic-string@npm:^0.30.11, magic-string@npm:^0.30.3, magic-string@npm:^0.30.5":
-  version: 0.30.17
-  resolution: "magic-string@npm:0.30.17"
-  dependencies:
-    "@jridgewell/sourcemap-codec": "npm:^1.5.0"
-  checksum: 10/2f71af2b0afd78c2e9012a29b066d2c8ba45a9cd0c8070f7fd72de982fb1c403b4e3afdb1dae00691d56885ede66b772ef6bedf765e02e3a7066208fe2fec4aa
-  languageName: node
-  linkType: hard
-
-"magic-string@npm:^0.30.21":
+"magic-string@npm:^0.30.11, magic-string@npm:^0.30.21, magic-string@npm:^0.30.3, magic-string@npm:^0.30.5":
   version: 0.30.21
   resolution: "magic-string@npm:0.30.21"
   dependencies:
@@ -34494,7 +34446,7 @@ __metadata:
     "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^7.0.22"
     "@lavamoat/snow": "npm:^2.0.4"
-    "@lavamoat/webpack": "npm:2.1.1"
+    "@lavamoat/webpack": "npm:2.1.3"
     "@ledgerhq/errors": "npm:^6.21.0"
     "@ledgerhq/hw-app-eth": "npm:^6.42.0"
     "@ledgerhq/hw-transport": "npm:^6.31.0"
@@ -34848,8 +34800,8 @@ __metadata:
     jsonwebtoken: "npm:^9.0.2"
     koa: "npm:^3.1.1"
     labeled-stream-splicer: "npm:^2.0.2"
-    lavamoat: "npm:10.0.5"
-    lavamoat-browserify: "npm:^19.0.2"
+    lavamoat: "npm:11.1.1"
+    lavamoat-browserify: "npm:^20.0.3"
     level: "npm:^8.0.1"
     lightweight-charts: "npm:^5.1.0"
     localforage: "npm:^1.9.0"
@@ -38149,18 +38101,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.3.0, postcss@npm:^8.4.21, postcss@npm:^8.4.32, postcss@npm:^8.4.33, postcss@npm:^8.4.4, postcss@npm:^8.4.40, postcss@npm:^8.4.48":
-  version: 8.5.6
-  resolution: "postcss@npm:8.5.6"
-  dependencies:
-    nanoid: "npm:^3.3.11"
-    picocolors: "npm:^1.1.1"
-    source-map-js: "npm:^1.2.1"
-  checksum: 10/9e4fbe97574091e9736d0e82a591e29aa100a0bf60276a926308f8c57249698935f35c5d2f4e80de778d0cbb8dcffab4f383d85fd50c5649aca421c3df729b86
-  languageName: node
-  linkType: hard
-
-"postcss@npm:^8.5.6":
+"postcss@npm:^8.3.0, postcss@npm:^8.4.21, postcss@npm:^8.4.32, postcss@npm:^8.4.33, postcss@npm:^8.4.4, postcss@npm:^8.4.40, postcss@npm:^8.4.48, postcss@npm:^8.5.6":
   version: 8.5.10
   resolution: "postcss@npm:8.5.10"
   dependencies:
@@ -40559,16 +40500,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:1.22.11, resolve@npm:^1.1.4, resolve@npm:^1.1.6, resolve@npm:^1.1.7, resolve@npm:^1.10.0, resolve@npm:^1.14.2, resolve@npm:^1.17.0, resolve@npm:^1.18.1, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.22.1, resolve@npm:^1.22.4, resolve@npm:^1.22.8, resolve@npm:^1.4.0":
-  version: 1.22.11
-  resolution: "resolve@npm:1.22.11"
+"resolve@npm:1.22.12, resolve@npm:^1.1.4, resolve@npm:^1.1.6, resolve@npm:^1.1.7, resolve@npm:^1.10.0, resolve@npm:^1.14.2, resolve@npm:^1.17.0, resolve@npm:^1.18.1, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.22.1, resolve@npm:^1.22.4, resolve@npm:^1.22.8, resolve@npm:^1.4.0":
+  version: 1.22.12
+  resolution: "resolve@npm:1.22.12"
   dependencies:
+    es-errors: "npm:^1.3.0"
     is-core-module: "npm:^2.16.1"
     path-parse: "npm:^1.0.7"
     supports-preserve-symlinks-flag: "npm:^1.0.0"
   bin:
     resolve: bin/resolve
-  checksum: 10/e1b2e738884a08de03f97ee71494335eba8c2b0feb1de9ae065e82c48997f349f77a2b10e8817e147cf610bfabc4b1cb7891ee8eaf5bf80d4ad514a34c4fab0a
+  checksum: 10/1d2a081e4b7198e2a70abd7bbbf8aea5380c2d074b6c870035aab50ebfb7312b6492b3588e752faef83a75147862a3d3e09b222bc9afd536804181fd3a515ef9
   languageName: node
   linkType: hard
 
@@ -40598,16 +40540,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@npm%3A1.22.11#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.1.4#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.1.6#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.1.7#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.10.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.14.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.17.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.18.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.19.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.20.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.4#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.8#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.4.0#optional!builtin<compat/resolve>":
-  version: 1.22.11
-  resolution: "resolve@patch:resolve@npm%3A1.22.11#optional!builtin<compat/resolve>::version=1.22.11&hash=c3c19d"
+"resolve@patch:resolve@npm%3A1.22.12#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.1.4#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.1.6#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.1.7#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.10.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.14.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.17.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.18.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.19.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.20.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.4#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.8#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.4.0#optional!builtin<compat/resolve>":
+  version: 1.22.12
+  resolution: "resolve@patch:resolve@npm%3A1.22.12#optional!builtin<compat/resolve>::version=1.22.12&hash=c3c19d"
   dependencies:
+    es-errors: "npm:^1.3.0"
     is-core-module: "npm:^2.16.1"
     path-parse: "npm:^1.0.7"
     supports-preserve-symlinks-flag: "npm:^1.0.0"
   bin:
     resolve: bin/resolve
-  checksum: 10/fd342cad25e52cd6f4f3d1716e189717f2522bfd6641109fe7aa372f32b5714a296ed7c238ddbe7ebb0c1ddfe0b7f71c9984171024c97cf1b2073e3e40ff71a8
+  checksum: 10/f80ad2c2b6820331cbe079198a184ffce322cfeca140065118066276bc08b03d5fa2c1ce652aeb584ec74050d1f656f46f034cc0dd9300452c5ab7866907f8c0
   languageName: node
   linkType: hard
 

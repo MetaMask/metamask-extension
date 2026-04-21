@@ -39,10 +39,8 @@ import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
 
 const requireWebpackConfig = createRequire(__filename);
-// Tailwind v4 + LavaMoat compatibility: use the shared shim.
-const loadTailwindPostcss = requireWebpackConfig(
-  join(__dirname, '../lib/load-tailwind-postcss.cjs'),
-);
+const tailwindPostcss = requireWebpackConfig('@tailwindcss/postcss');
+const repoRoot = join(__dirname, '../..');
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -64,6 +62,9 @@ const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : [];
+
+const loadTailwindPostcss = (options = {}) =>
+  tailwindPostcss({ base: repoRoot, ...options });
 
 // #region cache
 const cache = args.cache
