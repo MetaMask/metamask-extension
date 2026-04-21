@@ -137,6 +137,7 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
       delegationManager: mockDelegationManagerAddress,
     },
     siteOrigin: 'example.com',
+    status: 'Active',
   };
 
   const mockPermission2: PermissionInfoWithMetadata = {
@@ -154,6 +155,7 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
       delegationManager: mockDelegationManagerAddress,
     },
     siteOrigin: 'example.com',
+    status: 'Active',
   };
 
   const mockTransactionMeta1: TransactionMeta = {

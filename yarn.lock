@@ -6843,6 +6843,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/gator-permissions-controller@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/gator-permissions-controller@npm:4.0.0"
+  dependencies:
+    "@metamask/7715-permission-types": "npm:^0.5.0"
+    "@metamask/abi-utils": "npm:^2.0.3"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/delegation-core": "npm:^0.2.0"
+    "@metamask/delegation-deployments": "npm:^0.12.0"
+    "@metamask/messenger": "npm:^1.1.1"
+    "@metamask/network-controller": "npm:^30.0.1"
+    "@metamask/snaps-controllers": "npm:^19.0.0"
+    "@metamask/snaps-sdk": "npm:^11.0.0"
+    "@metamask/snaps-utils": "npm:^12.1.2"
+    "@metamask/transaction-controller": "npm:^64.2.0"
+    "@metamask/utils": "npm:^11.9.0"
+  checksum: 10/98401a07fe70a494e5d87abfce8db85569d0f964e3a687e98f18bfa9301d57b9ed5409ee2a448f88f99210b2b60208299337ab08f99eedb60a7e7f9d7ad31d1a
+  languageName: node
+  linkType: hard
+
 "@metamask/gator-permissions-snap@npm:^1.3.1":
   version: 1.3.1
   resolution: "@metamask/gator-permissions-snap@npm:1.3.1"
@@ -34199,7 +34219,7 @@ __metadata:
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/foundryup": "npm:^1.0.1"
     "@metamask/gas-fee-controller": "npm:^26.1.0"
-    "@metamask/gator-permissions-controller": "npm:^3.0.0"
+    "@metamask/gator-permissions-controller": "npm:^4.0.0"
     "@metamask/gator-permissions-snap": "npm:^1.3.1"
     "@metamask/geolocation-controller": "npm:^0.1.1"
     "@metamask/hw-wallet-sdk": "npm:^0.8.0"

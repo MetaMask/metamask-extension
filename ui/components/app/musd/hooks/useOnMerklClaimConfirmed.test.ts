@@ -52,6 +52,42 @@ describe('useOnMerklClaimConfirmed', () => {
     jest.clearAllMocks();
   });
 
+  describe('isClaimInFlight', () => {
+    it('returns true when a Merkl claim is submitted', () => {
+      useSelector.mockReturnValue([
+        createMockTransaction('tx1', TransactionStatus.submitted),
+      ]);
+
+      const { result } = renderHook(() => useOnMerklClaimConfirmed(jest.fn()));
+
+      expect(result.current.isClaimInFlight).toBe(true);
+    });
+
+    it('returns false when Merkl claim is confirmed', () => {
+      useSelector.mockReturnValue([
+        createMockTransaction('tx1', TransactionStatus.confirmed),
+      ]);
+
+      const { result } = renderHook(() => useOnMerklClaimConfirmed(jest.fn()));
+
+      expect(result.current.isClaimInFlight).toBe(false);
+    });
+
+    it('returns false for in-flight non-Merkl transaction', () => {
+      useSelector.mockReturnValue([
+        createMockTransaction(
+          'tx1',
+          TransactionStatus.submitted,
+          '0xOtherAddress',
+        ),
+      ]);
+
+      const { result } = renderHook(() => useOnMerklClaimConfirmed(jest.fn()));
+
+      expect(result.current.isClaimInFlight).toBe(false);
+    });
+  });
+
   it('fires callback when pending claim becomes confirmed', () => {
     const onConfirmed = jest.fn();
 
