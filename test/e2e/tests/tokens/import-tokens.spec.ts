@@ -12,27 +12,30 @@ import { getMockAssetsPrice } from '../bridge/constants';
 const ETH_CONVERSION_RATE_USD = 1700;
 
 async function mockPriceFetch(mockServer: Mockttp) {
+  const nativeEthPrice =
+    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true' ? 1700 : 1;
   return [
     await mockServer
       .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+      .always()
       .thenCallback(() => {
         return {
           statusCode: 200,
           json: {
             'eip155:1/slip44:60': {
-              price: 1700,
+              price: nativeEthPrice,
             },
             'eip155:59144/slip44:60': {
-              price: 1700,
+              price: nativeEthPrice,
             },
             'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215': {
-              price: 0.0002 * 1700,
+              price: 0.0002,
             },
             'eip155:1/erc20:0x514910771af9ca656af840dff83e8264ecf986ca': {
-              price: 0.0003 * 1700,
+              price: 0.0003,
             },
             'eip155:1/erc20:0x7d4b8cce0591c9044a22ee543533b72e976e36c3': {
-              price: 0.0001 * 1700,
+              price: 0.0001,
             },
           },
         };
@@ -64,6 +67,7 @@ async function mockSpotPricesV3(mockServer: Mockttp) {
 
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
       const assetIds = (url.searchParams.get('assetIds') ?? '').toLowerCase();
@@ -74,7 +78,10 @@ async function mockSpotPricesV3(mockServer: Mockttp) {
         if (assetIds.includes(id)) {
           json[id] = {
             id: name,
-            price: ETH_CONVERSION_RATE_USD,
+            price:
+              process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
+                ? ETH_CONVERSION_RATE_USD
+                : 1,
             marketCap: 112500000,
             totalVolume: 4500000,
             dilutedMarketCap: 120000000,

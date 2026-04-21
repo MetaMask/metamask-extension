@@ -72,9 +72,12 @@ describe('Token Details', function () {
       marketCap: 12,
     };
 
-    const expectedPrice = formatCurrency(`${marketData.price}`, 'USD');
+    const expectedPrice = formatCurrency(
+      `${marketData.price * ethConversionInUsd}`,
+      'USD',
+    );
 
-    const expectedMarketCap = '$12.00';
+    const expectedMarketCap = '$120.00K';
 
     await withFixtures(
       {
@@ -84,7 +87,10 @@ describe('Token Details', function () {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
-              price: 10000,
+              price:
+                process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
+                  ? ethConversionInUsd
+                  : 1,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
@@ -137,7 +143,8 @@ describe('Token Details', function () {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
-              price: 1700,
+              price:
+                process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true' ? 1700 : 1,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
