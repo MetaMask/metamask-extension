@@ -120,6 +120,7 @@ const lazyListener =
 const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
 const BADGE_MAX_COUNT = 9;
+const maxSeenFailedNonces = 99;
 
 const inTest = process.env.IN_TEST;
 
@@ -188,7 +189,6 @@ let notificationIsOpen = false;
 let uiIsTriggering = false;
 let openSidePanelCount = 0;
 let failedTxCount = 0;
-let hasDeferredFailureNotification = false;
 const seenFailedNonces = new Set();
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
@@ -1610,6 +1610,18 @@ export function setupController(
     );
   };
 
+  const hasPersistentUiOpen = () => {
+    return (
+      openPopupCount > 0 ||
+      openSidePanelCount > 0 ||
+      Object.keys(openMetamaskTabsIDs).length > 0
+    );
+  };
+
+  const isOnlyNotificationOpen = () => {
+    return notificationIsOpen && !hasPersistentUiOpen();
+  };
+
   const onCloseEnvironmentInstances = (isClientOpen, environmentType) => {
     // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
     if (isClientOpen === false) {
@@ -1705,7 +1717,11 @@ export function setupController(
 
         finished(portStream, () => {
           notificationIsOpen = false;
-          flushDeferredFailureNotification();
+          // Render any failure badge that was suppressed while the notification was open
+          if (failedTxCount > 0) {
+            setClientOpenOptions('activity');
+          }
+          updateBadge();
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
           onCloseEnvironmentInstances(
@@ -1911,36 +1927,18 @@ export function setupController(
     }
 
     if (nonceKey) {
+      if (seenFailedNonces.size >= maxSeenFailedNonces) {
+        seenFailedNonces.clear();
+      }
       seenFailedNonces.add(nonceKey);
     }
 
-    const onlyNotificationOpen =
-      notificationIsOpen &&
-      openPopupCount === 0 &&
-      openSidePanelCount === 0 &&
-      Object.keys(openMetamaskTabsIDs).length === 0;
-
-    if (onlyNotificationOpen) {
-      // Defer showing the badge until the notification closes
-      failedTxCount += 1;
-      hasDeferredFailureNotification = true;
-      return;
-    }
-
-    if (isClientOpenStatus()) {
+    // Skip if a persistent UI is open, transaction status is in the Activity tab
+    if (hasPersistentUiOpen()) {
       return;
     }
 
     failedTxCount += 1;
-    setClientOpenOptions('activity');
-    updateBadge();
-  }
-
-  function flushDeferredFailureNotification() {
-    if (!hasDeferredFailureNotification) {
-      return;
-    }
-    hasDeferredFailureNotification = false;
     setClientOpenOptions('activity');
     updateBadge();
   }
@@ -1951,7 +1949,6 @@ export function setupController(
       return;
     }
 
-    hasDeferredFailureNotification = false;
     failedTxCount = 0;
     setClientOpenOptions();
     updateBadge();
@@ -1979,7 +1976,8 @@ export function setupController(
     let label = '';
     let badgeColor = BADGE_COLOR_APPROVAL;
 
-    if (failedTxCount > 0) {
+    // Defer showing the failure badge until the notification closes
+    if (failedTxCount > 0 && !isOnlyNotificationOpen()) {
       label = '\u200B';
       badgeColor = BADGE_COLOR_FAILED;
     } else if (pendingApprovalCount > 0) {
