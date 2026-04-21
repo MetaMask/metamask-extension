@@ -1,9 +1,10 @@
-import { PPOMController } from '@metamask/ppom-validator';
 import {
   MOCK_ANY_NAMESPACE,
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
+import { PPOMController } from '@metamask/ppom-validator';
+
 import { buildControllerInitRequestMock } from './test/utils';
 import { MessengerClientApi, MessengerClientName } from './types';
 import { initMessengerClients } from './utils';
@@ -188,7 +189,7 @@ describe('Messenger Client Init Utils', () => {
         buildControllerInitResultMock({ api: { test3: jest.fn() } }),
       );
 
-      const { controllerApi } = initControllers({
+      const { messengerClientApi } = initMessengerClients({
         baseControllerMessenger: buildControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
@@ -197,9 +198,15 @@ describe('Messenger Client Init Utils', () => {
         initRequest: requestMock,
       });
 
-      expect(controllerApi.test1._controllerName).toBe(CONTROLLER_NAME_MOCK);
-      expect(controllerApi.test2._controllerName).toBe(CONTROLLER_NAME_MOCK);
-      expect(controllerApi.test3._controllerName).toBe(CONTROLLER_NAME_2_MOCK);
+      expect(messengerClientApi.test1._controllerName).toBe(
+        CONTROLLER_NAME_MOCK,
+      );
+      expect(messengerClientApi.test2._controllerName).toBe(
+        CONTROLLER_NAME_MOCK,
+      );
+      expect(messengerClientApi.test3._controllerName).toBe(
+        CONTROLLER_NAME_2_MOCK,
+      );
     });
 
     it('returns all persisted state entries', () => {
