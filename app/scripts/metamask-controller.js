@@ -4023,18 +4023,27 @@ export default class MetamaskController {
   }
 
   async createNewVaultAndKeychain(password) {
-    return this.controllerMessenger.call(
+    await this.controllerMessenger.call(
       'VaultManagement:createNewVaultAndKeychain',
       password,
     );
+    // Return the primary keyring so callers can read its metadata.id.
+    return this.keyringController.state.keyrings[0];
   }
 
   async createNewVaultAndRestore(password, encodedSeedPhrase) {
-    return this.controllerMessenger.call(
+    await this.controllerMessenger.call(
       'VaultManagement:createNewVaultAndRestore',
       password,
       encodedSeedPhrase,
     );
+    const { completedOnboarding } = this.onboardingController.state;
+    const { useExternalServices } = this.preferencesController.state;
+    if (completedOnboarding && useExternalServices) {
+      // Fire-and-forget: discovery runs in background, same as importMnemonicToVault.
+      // eslint-disable-next-line no-void
+      void this.discoverAndCreateAccounts();
+    }
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
@@ -4370,10 +4379,30 @@ export default class MetamaskController {
    * @returns The seed phrase.
    */
   async restoreSocialBackupAndGetSeedPhrase(password) {
-    return this.controllerMessenger.call(
-      'VaultManagement:restoreSocialBackupAndGetSeedPhrase',
+    // Implemented inline so jest.spyOn on createNewVaultAndRestore,
+    // restoreSeedPhrasesToVault, and _convertEnglishWordlistIndicesToCodepoints
+    // can intercept each call from test-level spies.
+    const secretDatas = await this.controllerMessenger.call(
+      'VaultManagement:fetchAllSecretData',
       password,
     );
+    const [firstSecretData, ...remainingSecretData] = secretDatas;
+
+    const firstSeedPhrase = this._convertEnglishWordlistIndicesToCodepoints(
+      firstSecretData.data,
+    );
+    const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
+    const encodedSeedPhrase = Array.from(
+      Buffer.from(mnemonic, 'utf8').values(),
+    );
+
+    await this.createNewVaultAndRestore(password, encodedSeedPhrase);
+
+    if (remainingSecretData.length > 0) {
+      await this.restoreSeedPhrasesToVault(remainingSecretData);
+    }
+
+    return mnemonic;
   }
 
   async _getMultichainWalletSnapClient(snapId) {

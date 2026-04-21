@@ -249,7 +249,7 @@ type VaultManagementMessenger = {
   call(
     action: 'VaultManagement:createNewVaultAndRestore',
     password: string,
-    encodedSeedPhrase: number[],
+    encodedSeedPhrase: number[] | string | Uint8Array,
   ): Promise<void>;
 
   // registerActionHandler — used in registerActions
@@ -321,7 +321,11 @@ export async function createNewVaultAndKeychain(
 export async function createNewVaultAndRestore(
   deps: VaultDependencies,
   password: string,
-  encodedSeedPhrase: Uint8Array,
+  // Accepts number[] (UTF-8 bytes from restoreSocialBackupAndGetSeedPhrase),
+  // string (plain mnemonic from MC wrapper / tests), or Uint8Array.
+  // Normalised to BIP-39 word-index Uint8Array before passing to
+  // MultichainAccountService:createWallet.
+  encodedSeedPhrase: number[] | string | Uint8Array,
 ): Promise<void> {
   const { completedOnboarding } = deps.messenger.call(
     'OnboardingController:getState',
@@ -337,10 +341,19 @@ export async function createNewVaultAndRestore(
     deps.messenger.call('TokenDetectionController:enable');
   }
 
+  // Normalise to a Uint8Array of BIP-39 word indices so
+  // MultichainAccountService.createMultichainAccountWallet receives the
+  // same shape as importMnemonicToVault produces.
+  const mnemonicBuffer =
+    typeof encodedSeedPhrase === 'string'
+      ? Buffer.from(encodedSeedPhrase, 'utf8')
+      : Buffer.from(encodedSeedPhrase as number[]);
+  const mnemonic = convertMnemonicToWordlistIndices(mnemonicBuffer);
+
   await deps.messenger.call('MultichainAccountService:createWallet', {
     type: 'restore',
     password,
-    mnemonic: encodedSeedPhrase,
+    mnemonic,
   });
 
   deps.messenger.call('AppStateController:setIsWalletResetInProgress', false);
