@@ -1,14 +1,16 @@
 {
   "data": {
     "AccountOrderController": {
-      "hiddenAccountList": {},
-      "pinnedAccountList": {}
+      "hiddenAccountList": "object",
+      "pinnedAccountList": "object"
     },
     "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
+      "accountTree": "object",
       "accountWalletsMetadata": "object",
-      "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean"
+      "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
+      "selectedAccountGroup": "string"
     },
     "AccountsController": {
       "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
@@ -43,7 +45,8 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
-      "newPrivacyPolicyToastClickedOrClosed": null,
+      "newPrivacyPolicyToastClickedOrClosed": "boolean",
+      "newPrivacyPolicyToastShownDate": "number",
       "nftsDetectionNoticeDismissed": false,
       "outdatedBrowserWarningLastShown": "object",
       "pendingShieldCohort": null,
@@ -152,15 +155,7 @@
       "nativeAssetIdentifiers": "object"
     },
     "NetworkOrderController": {
-      "orderedNetworkList": {
-        "0": "object",
-        "1": "object",
-        "2": "object",
-        "3": "object",
-        "4": "object",
-        "5": "object",
-        "6": "object"
-      }
+      "orderedNetworkList": "object"
     },
     "NftController": {
       "allNftContracts": "object",
@@ -184,7 +179,7 @@
       "firstTimeFlowType": "import",
       "seedPhraseBackedUp": null
     },
-    "PPOMController": { "storageMetadata": {} },
+    "PPOMController": { "storageMetadata": "object" },
     "PermissionController": {},
     "PermissionLogController": { "permissionHistory": "object" },
     "PerpsController": "object",
@@ -232,12 +227,12 @@
       },
       "referrals": "object",
       "securityAlertsEnabled": "boolean",
+      "showSidePanelMigrationToast": "boolean",
       "snapRegistryList": "object",
       "snapsAddSnapAccountModalDismissed": "boolean",
       "theme": "os",
       "use4ByteResolution": true,
       "useAddressBarEnsResolution": true,
-      "useBlockie": false,
       "useCurrencyRateCheck": true,
       "useExternalNameSources": "boolean",
       "useExternalServices": "boolean",

@@ -1,6 +1,4 @@
-const nodeCrypto = require('crypto');
 const fs = require('fs');
-const { execFileSync } = require('child_process');
 const os = require('os');
 const path = require('path');
 const {
@@ -12,6 +10,7 @@ const {
 const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
+const { getOrBuildXpi } = require('../helpers/xpi');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -97,10 +96,10 @@ class FirefoxDriver {
     const driver = builder.build();
     const fxDriver = new FirefoxDriver(driver);
 
-    // Pre-build a compressed XPI and cache it across test runs.
+    // Pre-build an XPI and cache it across test runs.
     // Without this, installAddon() zips the 348MB unpacked dir on every call,
     // adding ~10s of overhead per test.
-    const xpiPath = FirefoxDriver._getOrBuildXpi('dist/firefox');
+    const xpiPath = await getOrBuildXpi('dist/firefox');
     const installedExtensionId = await fxDriver.installExtension(xpiPath);
     const internalExtensionId = await fxDriver.getInternalId();
 
@@ -113,150 +112,6 @@ class FirefoxDriver {
       extensionId: installedExtensionId,
       extensionUrl: `moz-extension://${internalExtensionId}`,
     };
-  }
-
-  /**
-   * Returns the SHA-256 hash of manifest.json content for cache invalidation.
-   *
-   * @param {string} absDir - Absolute path to the unpacked extension directory
-   * @returns {string} Hex-encoded SHA-256 hash
-   */
-  static _getManifestSha256(absDir) {
-    const manifestContent = fs.readFileSync(path.join(absDir, 'manifest.json'));
-    return nodeCrypto
-      .createHash('sha256')
-      .update(manifestContent)
-      .digest('hex');
-  }
-
-  /**
-   * Returns the path to a cached XPI for the given unpacked extension directory.
-   * Builds the XPI on first call; reuses it as long as no file in the directory
-   * is newer than the cached XPI. The cache filename is derived from the
-   * directory path so different addon dirs get independent caches.
-   *
-   * @param {string} addonDir - Path to the unpacked extension directory
-   * @returns {string} Path to the XPI file
-   */
-  static _getOrBuildXpi(addonDir) {
-    const absDir = path.resolve(addonDir);
-    const dirHash = nodeCrypto
-      .createHash('sha256')
-      .update(absDir)
-      .digest('hex')
-      .slice(0, 12);
-    const xpiPath = path.join(os.tmpdir(), `metamask-e2e-${dirHash}.xpi`);
-    const manifestHashPath = `${xpiPath}.manifest-sha256`;
-
-    let needsRebuild = true;
-    let manifestHashForStorage = null;
-
-    try {
-      const xpiMtime = fs.statSync(xpiPath).mtimeMs;
-
-      // manifest.json is excluded from mtime checks because setManifestFlags()
-      // rewrites it before every test even when content is identical. Instead
-      // we compare its content hash to detect real changes.
-      const manifestHash = FirefoxDriver._getManifestSha256(absDir);
-      manifestHashForStorage = manifestHash;
-
-      const cachedManifestHash = fs
-        .readFileSync(manifestHashPath, 'utf8')
-        .trim();
-
-      const manifestChanged = manifestHash !== cachedManifestHash;
-      const filesChanged = FirefoxDriver._hasNewerFile(
-        absDir,
-        xpiMtime,
-        'manifest.json',
-      );
-
-      needsRebuild = manifestChanged || filesChanged;
-    } catch {
-      // XPI or hash file doesn't exist yet — first run or cache invalid
-      console.log('[Firefox E2E] Cache cold, building XPI');
-    }
-
-    if (needsRebuild) {
-      try {
-        fs.unlinkSync(xpiPath);
-      } catch (err) {
-        console.warn(
-          '[Firefox E2E] Pre-rebuild unlink of XPI failed:',
-          err.message,
-        );
-      }
-      try {
-        execFileSync('zip', ['-r', '-1', '-q', xpiPath, '.'], { cwd: absDir });
-      } catch {
-        // `zip` failed or not installed — fall back to unpacked directory.
-        // Clean up any partial/corrupted XPI and stale hash so we don't reuse
-        // them on the next run (which would cause hard-to-diagnose install failures).
-        try {
-          fs.unlinkSync(xpiPath);
-        } catch (err) {
-          console.warn(
-            '[Firefox E2E] Cleanup of partial XPI failed:',
-            err.message,
-          );
-        }
-        try {
-          fs.unlinkSync(manifestHashPath);
-        } catch (err) {
-          console.warn(
-            '[Firefox E2E] Cleanup of manifest hash failed:',
-            err.message,
-          );
-        }
-        // If unlink failed, overwrite with sentinel so next run won't treat
-        // a corrupted XPI as valid (manifestHash will never match '').
-        try {
-          fs.writeFileSync(manifestHashPath, '');
-        } catch (err) {
-          console.warn(
-            '[Firefox E2E] Failed to invalidate manifest hash:',
-            err.message,
-          );
-        }
-        console.warn(
-          '[Firefox E2E] zip not installed or failed, using unpacked directory (slower)',
-        );
-        return addonDir;
-      }
-      console.log('[Firefox E2E] Built cached XPI');
-
-      const hashToStore =
-        manifestHashForStorage ?? FirefoxDriver._getManifestSha256(absDir);
-      fs.writeFileSync(manifestHashPath, hashToStore);
-    }
-
-    return xpiPath;
-  }
-
-  /**
-   * Checks whether any file inside `dir` has an mtime newer than `thresholdMs`.
-   * Returns early on the first match for speed.
-   *
-   * @param {string} dir - Directory to scan
-   * @param {number} thresholdMs - mtime threshold in milliseconds
-   * @param {string} [skipFile] - Filename to skip (checked at top-level only)
-   * @returns {boolean} true if at least one file is newer
-   */
-  static _hasNewerFile(dir, thresholdMs, skipFile) {
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      if (skipFile && entry.name === skipFile) {
-        continue;
-      }
-      const fullPath = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (FirefoxDriver._hasNewerFile(fullPath, thresholdMs)) {
-          return true;
-        }
-      } else if (fs.statSync(fullPath).mtimeMs > thresholdMs) {
-        return true;
-      }
-    }
-    return false;
   }
 
   /**

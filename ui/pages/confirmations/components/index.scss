@@ -1,12 +1,4 @@
 /** Please import your files in alphabetical order **/
-@import 'advanced-gas-controls/index';
-@import 'advanced-gas-fee-popover/index';
-@import 'advanced-gas-fee-popover/advanced-gas-fee-gas-limit/index';
-@import 'advanced-gas-fee-popover/advanced-gas-fee-defaults/index';
-@import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/index';
-@import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/base-fee-input/index';
-@import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/priority-fee-input/index';
-@import 'advanced-gas-fee-popover/advanced-gas-fee-input-subtext/index';
 @import 'confirmation-warning-modal/index';
 @import 'confirm/dapp-swap-comparison-banner/index';
 @import 'confirm/footer';
@@ -16,13 +8,10 @@
 @import 'confirm/info/shared/gas-fee-token-toast/index';
 @import 'confirm/scroll-to-bottom';
 @import 'confirm/nav/nav.scss';
-@import 'edit-gas-display/index';
 @import 'edit-gas-fee-popover/index';
-@import 'edit-gas-fee-popover/edit-gas-item/index';
 @import 'edit-gas-fee-popover/network-statistics/index';
 @import 'edit-gas-fee-popover/network-statistics/status-slider/index';
 @import 'edit-gas-fee-popover/edit-gas-tooltip/index';
-@import 'edit-gas-popover/index';
 @import 'set-approval-for-all-warning/index';
 @import 'transaction-detail/index';
 @import 'transaction-detail-item/index';

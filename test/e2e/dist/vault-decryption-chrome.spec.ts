@@ -181,18 +181,18 @@ describe('Vault Decryptor Page', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
-          // go to privacy settings page
+          // go to security and password settings page
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           await homePage.checkBalanceEmptyStateIsDisplayed();
           await new HeaderNavbar(driver).openSettingsPage();
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
-          await settingsPage.goToPrivacySettings();
+          await settingsPage.goToSecurityAndPasswordSettings();
 
           // fill password to reveal SRP and get the SRP
           const privacySettings = new PrivacySettings(driver);
-          await privacySettings.checkPageIsLoaded();
+          await privacySettings.checkSecurityAndPasswordPageIsLoaded();
           await privacySettings.openRevealSrpQuiz();
           await privacySettings.completeRevealSrpQuiz();
           await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
@@ -240,18 +240,18 @@ describe('Vault Decryptor Page', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // go to privacy settings page
+        // go to security and password settings page
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkBalanceEmptyStateIsDisplayed();
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToSecurityAndPasswordSettings();
 
         // fill password to reveal SRP and get the SRP
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
+        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
         await privacySettings.openRevealSrpQuiz();
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);

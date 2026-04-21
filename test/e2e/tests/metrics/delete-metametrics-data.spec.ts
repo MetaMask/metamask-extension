@@ -101,9 +101,8 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
         await privacySettings.deleteMetaMetrics();
-        assert.equal(
-          await privacySettings.checkDeleteMetaMetricsDataButtonEnabled(),
-          false,
+        await privacySettings.waitForDeleteMetaMetricsDataButtonState(
+          'enabled',
         );
 
         const events = await getEventPayloads(
@@ -122,17 +121,16 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
           environment_type: 'fullscreen',
         });
 
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
         await new HomePage(driver).checkPageIsLoaded();
         await headerNavbar.openSettingsPage();
         await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
-        // check MetaMetrics data button is enabled when user goes back to privacy settings page
+        // check MetaMetrics data button remains enabled when user goes back to privacy settings page
         await privacySettings.checkPageIsLoaded();
-        assert.equal(
-          await privacySettings.checkDeleteMetaMetricsDataButtonEnabled(),
-          true,
+        await privacySettings.waitForDeleteMetaMetricsDataButtonState(
+          'enabled',
         );
       },
     );
@@ -160,9 +158,8 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
 
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
-        assert.equal(
-          await privacySettings.checkDeleteMetaMetricsDataButtonEnabled(),
-          false,
+        await privacySettings.waitForDeleteMetaMetricsDataButtonState(
+          'disabled',
         );
       },
     );
@@ -185,9 +182,8 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
 
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
-        assert.equal(
-          await privacySettings.checkDeleteMetaMetricsDataButtonEnabled(),
-          false,
+        await privacySettings.waitForDeleteMetaMetricsDataButtonState(
+          'disabled',
         );
       },
     );

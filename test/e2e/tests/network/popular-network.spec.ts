@@ -217,7 +217,7 @@ describe('Popular Networks', function (this: Suite) {
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleNetworkDetailsCheck();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
 
         // return to the home screen
         const homepage = new Homepage(driver);

@@ -8,8 +8,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { SettingsToggleItem } from '../../settings/settings-toggle-item';
 import { ASSET_ITEMS } from '../search-config';
+import { SettingsToggleItem } from './settings-toggle-item';
 
 export const AutodetectNftsToggleItem = () => {
   const t = useI18nContext();
@@ -38,7 +38,8 @@ export const AutodetectNftsToggleItem = () => {
         }
         dispatch(setUseNftDetection(!value));
       }}
-      dataTestId="use-nft-detection"
+      dataTestId="use-nft-detection-input"
+      containerDataTestId="use-nft-detection"
     />
   );
 };

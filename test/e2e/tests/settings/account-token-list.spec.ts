@@ -148,7 +148,7 @@ describe('Settings', function () {
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
         await settingsPage.toggleBalanceSetting();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
         await homePage.checkExpectedBalanceIsDisplayed('25', 'SepoliaETH');
       },
     );

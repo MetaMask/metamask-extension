@@ -163,6 +163,7 @@ describe('Send NFT', function () {
             await tokenTransferConfirmation.clickScrollToBottomButton();
             await tokenTransferConfirmation.clickFooterConfirmButton();
 
+            await homePage.goToActivityList();
             await activityListPage.checkConfirmedTxNumberDisplayedInActivity(2);
           },
           erc721Mocks,
@@ -298,6 +299,7 @@ describe('Send NFT', function () {
             await tokenTransferConfirmation.clickScrollToBottomButton();
             await tokenTransferConfirmation.clickFooterConfirmButton();
 
+            await homePage.goToActivityList();
             await activityListPage.checkConfirmedTxNumberDisplayedInActivity(2);
           },
           erc1155Mocks,

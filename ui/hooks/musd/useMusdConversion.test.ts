@@ -34,6 +34,9 @@ jest.mock('../../selectors/transactions', () => ({
 const mockAddTransaction = jest.fn();
 const mockFindNetworkClientIdByChainId = jest.fn();
 const mockSetMusdConversionEducationSeen = jest.fn();
+const mockEnsureMusdTokenImportedForChain = jest.fn(
+  (_chainId: unknown, _dispatch: unknown) => Promise.resolve(),
+);
 
 jest.mock('../../store/actions', () => ({
   addTransaction: (...args: unknown[]) => mockAddTransaction(...args),
@@ -58,6 +61,8 @@ jest.mock('../../components/app/musd/utils', () => ({
     mockBuildMusdConversionTx(...args),
   isMatchingMusdConversion: (...args: unknown[]) =>
     mockIsMatchingMusdConversion(...args),
+  ensureMusdTokenImportedForChain: (chainId: unknown, dispatch: unknown) =>
+    mockEnsureMusdTokenImportedForChain(chainId, dispatch),
 }));
 
 jest.mock('../../components/app/musd/constants', () => ({
@@ -308,6 +313,32 @@ describe('useMusdConversion', () => {
       );
     });
 
+    it('adds mUSD token to token list before navigating', async () => {
+      const invocationOrder: string[] = [];
+
+      mockEnsureMusdTokenImportedForChain.mockImplementationOnce(async () => {
+        invocationOrder.push('ensureMusdToken');
+      });
+
+      mockNavigate.mockImplementationOnce(() => {
+        invocationOrder.push('navigate');
+      });
+
+      const { result } = renderHook(() => useMusdConversion());
+
+      await act(async () => {
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
+      });
+
+      expect(mockEnsureMusdTokenImportedForChain).toHaveBeenCalledWith(
+        '0x1',
+        mockDispatch,
+      );
+      expect(invocationOrder).toEqual(['ensureMusdToken', 'navigate']);
+    });
+
     it('creates a new transaction and navigates to confirm', async () => {
       const { result } = renderHook(() => useMusdConversion());
 
@@ -330,7 +361,7 @@ describe('useMusdConversion', () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         expect.objectContaining({
           pathname: `/confirm-transaction/${MOCK_TX_ID}`,
-          search: 'loader=customAmount&returnTo=%2Fasset%2F0x1%2F0xtest',
+          search: 'loader=customAmount&goBackTo=%2Fasset%2F0x1%2F0xtest',
         }),
       );
     });

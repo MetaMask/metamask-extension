@@ -39,7 +39,6 @@ import {
   getIsSocialLoginFlow,
   getSocialLoginType,
   getParticipateInMetaMetrics,
-  getPreferences,
   getDeferredDeepLink,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -92,8 +91,6 @@ export default function CreationSuccessful() {
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
   const isSidePanelEnabled = useSidePanelEnabled();
-  const preferences = useSelector(getPreferences);
-  const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const deferredDeepLink: DeferredDeepLink | null =
@@ -321,14 +318,6 @@ export default function CreationSuccessful() {
 
     // Side Panel - only if feature flag is enabled
     if (isSidePanelEnabled) {
-      // If useSidePanelAsDefault is already true, side panel is already set up
-      // Just complete onboarding and redirect to home page
-      if (isSidePanelSetAsDefault) {
-        await dispatch(setCompletedOnboarding());
-        navigate(DEFAULT_ROUTE);
-        return;
-      }
-
       try {
         // Type assertion needed as webextension-polyfill doesn't include sidePanel API types yet
         const browserWithSidePanel = browser as BrowserWithSidePanel;
@@ -385,7 +374,6 @@ export default function CreationSuccessful() {
     isFromSettingsSecurity,
     firstTimeFlowType,
     trackEvent,
-    isSidePanelSetAsDefault,
     participateInMetaMetrics,
     handleOnDoneNavigation,
   ]);

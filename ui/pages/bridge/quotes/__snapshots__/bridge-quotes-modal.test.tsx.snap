@@ -67,11 +67,11 @@ exports[`BridgeQuotesModal should render gasIncluded quotes 1`] = `
           </div>
           <div
             class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-            style="overflow: scroll;"
+            style="overflow: auto;"
           >
             <div
-              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full mm-box--background-color-primary-muted"
-              style="position: relative;"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-quote-option bridge-quote-option--selected mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full mm-box--background-color-primary-muted"
+              style="position: relative; cursor: pointer;"
             >
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-primary-default"
@@ -125,8 +125,8 @@ exports[`BridgeQuotesModal should render gasIncluded quotes 1`] = `
               </div>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full"
-              style="position: relative;"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-quote-option mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full"
+              style="position: relative; cursor: pointer;"
             >
               <div
                 class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
@@ -245,11 +245,11 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
           </div>
           <div
             class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-            style="overflow: scroll;"
+            style="overflow: auto;"
           >
             <div
-              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full mm-box--background-color-primary-muted"
-              style="position: relative;"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-quote-option bridge-quote-option--selected mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full mm-box--background-color-primary-muted"
+              style="position: relative; cursor: pointer;"
             >
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-primary-default"
@@ -303,8 +303,8 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
               </div>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full"
-              style="position: relative;"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-quote-option mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full"
+              style="position: relative; cursor: pointer;"
             >
               <div
                 class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
@@ -423,11 +423,11 @@ exports[`BridgeQuotesModal should render the modal when exchange rates are not a
           </div>
           <div
             class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-            style="overflow: scroll;"
+            style="overflow: auto;"
           >
             <div
-              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full mm-box--background-color-primary-muted"
-              style="position: relative;"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-quote-option bridge-quote-option--selected mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full mm-box--background-color-primary-muted"
+              style="position: relative; cursor: pointer;"
             >
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-primary-default"
@@ -479,8 +479,8 @@ exports[`BridgeQuotesModal should render the modal when exchange rates are not a
               </div>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full"
-              style="position: relative;"
+              class="mm-box mm-container mm-container--max-width-undefined bridge-quote-option mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--width-full"
+              style="position: relative; cursor: pointer;"
             >
               <div
                 class="mm-box mm-container mm-container--max-width-full mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"

@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { Driver } from '../../webdriver/driver';
 import {
@@ -66,9 +66,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
       const triggerServer = new MockttpNotificationTriggerServer();
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true })
-            .withMetaMetricsController()
-            .build(),
+          fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
             await mockNotificationServices(server, triggerServer);
@@ -99,7 +97,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
             await mockNotificationServices(server, triggerServer);

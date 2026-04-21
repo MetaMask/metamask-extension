@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -9,6 +9,7 @@ import { Mockttp } from '../../mock-e2e';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import SendPage from '../../page-objects/pages/send/send-page';
 import HomePage from '../../page-objects/pages/home/homepage';
+import { NETWORK_CLIENT_ID } from '../../constants';
 
 const NETWORK_NAME_MAINNET = 'Ethereum';
 
@@ -38,8 +39,8 @@ async function mockSetup(mockServer: Mockttp) {
 }
 function buildFixtures(title: string) {
   return {
-    fixtures: new FixtureBuilder()
-      .withNetworkControllerOnPolygon()
+    fixtures: new FixtureBuilderV2()
+      .withSelectedNetwork(NETWORK_CLIENT_ID.POLYGON_MAINNET)
       .withEnabledNetworks({
         eip155: {
           [CHAIN_IDS.POLYGON]: true,
@@ -71,8 +72,8 @@ describe('Multichain Asset List', function (this: Suite) {
   it('allows clicking into the asset details page of native token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
         const assetListPage = new AssetListPage(driver);
         await switchToNetworkFromNetworkSelect(
           driver,
@@ -90,8 +91,8 @@ describe('Multichain Asset List', function (this: Suite) {
   it('validate the tokens appear on send given network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         const sendPage = new SendPage(driver);

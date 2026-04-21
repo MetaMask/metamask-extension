@@ -1,15 +1,15 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { CaipChainId, Hex } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 
 import { sumHexes } from '../../../../shared/lib/conversion.utils';
-import {
-  getMultichainNetworkConfigurationsByChainId,
-  getNativeTokenCachedBalanceByChainIdSelector,
-} from '../../../selectors';
+import { getNativeTokenCachedBalanceByChainIdSelector } from '../../../selectors';
 import { useConfirmContext } from '../context/confirm';
 import { isBalanceSufficient } from '../send-utils/send.utils';
 import { useFeeCalculations } from '../components/confirm/info/hooks/useFeeCalculations';
+import { useNativeCurrencySymbol } from '../components/confirm/info/hooks/useNativeCurrencySymbol';
+
+const NO_NATIVE_ASSET_CHAIN_IDS = new Set(['0x1079', '0xa5bf']);
 
 const ZERO_HEX_FALLBACK = '0x0';
 
@@ -20,6 +20,7 @@ export function useHasInsufficientBalance(): {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const {
     chainId,
+    excludeNativeTokenForFee,
     txParams: { value = ZERO_HEX_FALLBACK, from: fromAddress = '' } = {},
   } = currentConfirmation ?? {};
 
@@ -42,19 +43,24 @@ export function useHasInsufficientBalance(): {
       : ({ txParams: {} } as TransactionMeta),
   );
 
-  const [multichainNetworks, evmNetworks] = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
-  );
+  const { nativeCurrencySymbol } = useNativeCurrencySymbol(chainId);
+  const hasNoNativeAsset = NO_NATIVE_ASSET_CHAIN_IDS.has(chainId);
+  /**
+   * Tempo (7702) special case: Force "enough native balance" in legacy flow
+   * (when `excludeNativeTokenForFee` is false) to restore old MetaMask behavior.
+   * New MM reports "0" balance, breaking legacy flow. Temporary fix until HW
+   * supports gasless/7702.
+   */
+  const hasInsufficientBalance = hasNoNativeAsset
+    ? Boolean(excludeNativeTokenForFee)
+    : !isBalanceSufficient({
+        amount: totalValue,
+        gasTotal: maxFeeHex,
+        balance,
+      });
 
-  const nativeCurrency = (
-    multichainNetworks[chainId as CaipChainId] ?? evmNetworks[chainId]
-  )?.nativeCurrency;
-
-  const insufficientBalance = !isBalanceSufficient({
-    amount: totalValue,
-    gasTotal: maxFeeHex,
-    balance,
-  });
-
-  return { hasInsufficientBalance: insufficientBalance, nativeCurrency };
+  return {
+    hasInsufficientBalance,
+    nativeCurrency: nativeCurrencySymbol,
+  };
 }

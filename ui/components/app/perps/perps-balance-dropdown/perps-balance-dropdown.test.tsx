@@ -1,10 +1,13 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockAccountState } from '../mocks';
-import { PerpsBalanceDropdown } from './perps-balance-dropdown';
+import {
+  PerpsBalanceDropdown,
+  invokePerpsBalanceAction,
+} from './perps-balance-dropdown';
 
 jest.mock('../../../../hooks/useFormatters', () => ({
   useFormatters: () => ({
@@ -18,23 +21,51 @@ jest.mock('../../../../hooks/useFormatters', () => ({
   }),
 }));
 
+const mockUsePerpsLiveAccount = jest.fn().mockReturnValue({
+  account: mockAccountState,
+  isInitialLoading: false,
+});
+
 jest.mock('../../../../hooks/perps/stream', () => ({
-  usePerpsLiveAccount: () => ({
-    account: mockAccountState,
-    isInitialLoading: false,
-  }),
+  usePerpsLiveAccount: (...args: unknown[]) => mockUsePerpsLiveAccount(...args),
 }));
 
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../../hooks/perps', () => ({
-  usePerpsEligibility: () => ({
-    isEligible: true,
-  }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
   },
+});
+
+describe('invokePerpsBalanceAction', () => {
+  it('logs when callback returns a rejected promise', async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    invokePerpsBalanceAction(() => Promise.reject(new Error('fail')));
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith(expect.any(Error));
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('does nothing when callback is undefined', () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    invokePerpsBalanceAction(undefined);
+
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+    consoleErrorSpy.mockRestore();
+  });
 });
 
 describe('PerpsBalanceDropdown', () => {
@@ -53,7 +84,23 @@ describe('PerpsBalanceDropdown', () => {
   it('displays the formatted total balance from mock data', () => {
     renderWithProvider(<PerpsBalanceDropdown />, mockStore);
 
-    expect(screen.getByText('$15,625.00')).toBeInTheDocument();
+    expect(screen.getByText('$15,250')).toBeInTheDocument();
+  });
+
+  it('renders loading skeleton when account data is still loading', () => {
+    mockUsePerpsLiveAccount.mockReturnValueOnce({
+      account: null,
+      isInitialLoading: true,
+    });
+
+    renderWithProvider(<PerpsBalanceDropdown />, mockStore);
+
+    expect(
+      screen.getByTestId('perps-control-bar-skeleton'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('perps-balance-dropdown-balance'),
+    ).not.toBeInTheDocument();
   });
 
   it('toggles dropdown when balance row is clicked', () => {
@@ -109,6 +156,28 @@ describe('PerpsBalanceDropdown', () => {
     expect(onWithdraw).toHaveBeenCalledTimes(1);
   });
 
+  it('logs when onWithdraw returns a rejected promise', async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    const onWithdraw = jest
+      .fn()
+      .mockImplementation(() => Promise.reject(new Error('withdraw failed')));
+
+    renderWithProvider(
+      <PerpsBalanceDropdown onWithdraw={onWithdraw} />,
+      mockStore,
+    );
+
+    fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
+    fireEvent.click(screen.getByTestId('perps-balance-dropdown-withdraw'));
+
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalledWith(expect.any(Error));
+    });
+    consoleErrorSpy.mockRestore();
+  });
+
   it('does not show P&L row when hasPositions is false', () => {
     renderWithProvider(
       <PerpsBalanceDropdown hasPositions={false} />,
@@ -137,7 +206,24 @@ describe('PerpsBalanceDropdown', () => {
   it('displays formatted P&L value when hasPositions is true', () => {
     renderWithProvider(<PerpsBalanceDropdown hasPositions />, mockStore);
 
-    expect(screen.getByText(/\+\$375\.00/u)).toBeInTheDocument();
+    expect(screen.getByText(/\+\$375/u)).toBeInTheDocument();
     expect(screen.getByText(/7\.32%/u)).toBeInTheDocument();
+  });
+
+  describe('geo-blocking', () => {
+    it('shows geo-block modal and does not call onAddFunds when user is not eligible', () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      const onAddFunds = jest.fn();
+      renderWithProvider(
+        <PerpsBalanceDropdown onAddFunds={onAddFunds} />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
+      fireEvent.click(screen.getByTestId('perps-balance-dropdown-add-funds'));
+
+      expect(onAddFunds).not.toHaveBeenCalled();
+      expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+    });
   });
 });

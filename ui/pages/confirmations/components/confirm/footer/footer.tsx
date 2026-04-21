@@ -26,10 +26,7 @@ import {
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  useConfirmationNavigation,
-  useConfirmationNavigationOptions,
-} from '../../../hooks/useConfirmationNavigation';
+import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
@@ -54,7 +51,10 @@ import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
 import { SingleActionFooter } from './single-action-footer';
 
-const SINGLE_ACTION_FOOTER_TYPES = [TransactionType.musdConversion];
+const SINGLE_ACTION_FOOTER_TYPES = [
+  TransactionType.musdConversion,
+  TransactionType.perpsDeposit,
+];
 
 export type OnCancelHandler = ({
   location,
@@ -239,7 +239,7 @@ const Footer = () => {
   const { navigateNext } = useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
-  const { currentConfirmation, isScrollToBottomCompleted } =
+  const { currentConfirmation, isScrollToBottomCompleted, goBackTo } =
     useConfirmContext<TransactionMeta>();
   const currentConfirmationId = currentConfirmation?.id;
   const t = useI18nContext();
@@ -249,7 +249,6 @@ const Footer = () => {
   const { shouldThrottleOrigin } = useOriginThrottling();
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
   const { onCancel, resetTransactionState } = useConfirmActions();
-  const { returnTo } = useConfirmationNavigationOptions();
   const { hasUnconfirmedDangerAlerts } = useAlerts(
     currentConfirmation?.id ?? '',
   );
@@ -310,6 +309,10 @@ const Footer = () => {
     shouldRunHardwareWalletPreflight &&
     !isHardwareWalletReady &&
     !hasUnconfirmedDangerAlerts;
+
+  const onReconnectHardwareWalletCta = useCallback(async () => {
+    await onSubmitPreflightCheck({ trackConnectCta: true });
+  }, [onSubmitPreflightCheck]);
 
   const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {
@@ -391,13 +394,13 @@ const Footer = () => {
 
     await onCancel({
       location: MetaMetricsEventLocation.Confirmation,
-      navigateBackToPreviousPage: Boolean(returnTo),
+      navigateBackToPreviousPage: Boolean(goBackTo),
     });
 
     onDappSwapCompleted();
     dismissErrorModal();
 
-    if (returnTo) {
+    if (goBackTo) {
       return;
     }
 
@@ -412,7 +415,7 @@ const Footer = () => {
   }, [
     navigateNext,
     onCancel,
-    returnTo,
+    goBackTo,
     shouldThrottleOrigin,
     currentConfirmationId,
     isAddEthereumChain,
@@ -464,7 +467,7 @@ const Footer = () => {
             <Button
               block
               data-testid="reconnect-hardware-wallet-button"
-              onClick={onSubmitPreflightCheck}
+              onClick={onReconnectHardwareWalletCta}
               size={ButtonSize.Lg}
             >
               {walletType

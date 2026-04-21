@@ -68,6 +68,7 @@ import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
+import { AppStateControllerMethodActions } from './app-state-controller-method-action-types';
 
 export type DappSwapComparisonData = {
   quotes?: QuoteResponse[];
@@ -193,47 +194,12 @@ export type AppStateControllerGetStateAction = ControllerGetStateAction<
   AppStateControllerState
 >;
 
-export type AppStateControllerGetUnlockPromiseAction = {
-  type: 'AppStateController:getUnlockPromise';
-  handler: (shouldShowUnlockRequest: boolean) => Promise<void>;
-};
-
-export type AppStateControllerRequestQrCodeScanAction = {
-  type: 'AppStateController:requestQrCodeScan';
-  handler: (request: QrScanRequest) => Promise<SerializedUR>;
-};
-
-export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
-  type: 'AppStateController:setCanTrackWalletFundsObtained';
-  handler: AppStateController['setCanTrackWalletFundsObtained'];
-};
-
-export type AppStateControllerSetPendingShieldCohortAction = {
-  type: 'AppStateController:setPendingShieldCohort';
-  handler: AppStateController['setPendingShieldCohort'];
-};
-
-export type AppStateControllerSetPendingRedirectRouteAction = {
-  type: 'AppStateController:setPendingRedirectRoute';
-  handler: AppStateController['setPendingRedirectRoute'];
-};
-
-export type AppStateControllerSetShieldSubscriptionErrorAction = {
-  type: 'AppStateController:setShieldSubscriptionError';
-  handler: AppStateController['setShieldSubscriptionError'];
-};
-
 /**
  * Actions exposed by the {@link AppStateController}.
  */
 export type AppStateControllerActions =
   | AppStateControllerGetStateAction
-  | AppStateControllerGetUnlockPromiseAction
-  | AppStateControllerRequestQrCodeScanAction
-  | AppStateControllerSetCanTrackWalletFundsObtainedAction
-  | AppStateControllerSetPendingShieldCohortAction
-  | AppStateControllerSetPendingRedirectRouteAction
-  | AppStateControllerSetShieldSubscriptionErrorAction;
+  | AppStateControllerMethodActions;
 
 /**
  * Actions that this controller is allowed to call.
@@ -754,6 +720,80 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   },
 };
 
+const MESSENGER_EXPOSED_METHODS = [
+  'addAddressSecurityAlertResponse',
+  'addMusdConversionDismissedCtaKey',
+  'addPollingToken',
+  'addSignatureSecurityAlertResponse',
+  'cancelQrCodeScan',
+  'clearAppActiveTab',
+  'clearPollingTokens',
+  'completeQrCodeScan',
+  'deleteDappSwapComparisonData',
+  'getAddressSecurityAlertResponse',
+  'getCurrentPopupId',
+  'getDappSwapComparisonData',
+  'getIsWalletResetInProgress',
+  'getLastInteractedConfirmationInfo',
+  'getSignatureSecurityAlertResponse',
+  'getThrottledOriginState',
+  'getUnlockPromise',
+  'removeDeferredDeepLink',
+  'removePollingToken',
+  'removeSlide',
+  'requestQrCodeScan',
+  'setAppActiveTab',
+  'setBrowserEnvironment',
+  'setCanTrackWalletFundsObtained',
+  'setConnectedStatusPopoverHasBeenShown',
+  'setCurrentExtensionPopupId',
+  'setCurrentPopupId',
+  'setDappSwapComparisonData',
+  'setDefaultHomeActiveTabName',
+  'setDefaultSubscriptionPaymentOptions',
+  'setDeferredDeepLink',
+  'setHasShownMultichainAccountsIntroModal',
+  'setIsWalletResetInProgress',
+  'setLastActiveTime',
+  'setLastInteractedConfirmationInfo',
+  'setLastUpdatedAt',
+  'setLastUpdatedFromVersion',
+  'setLastViewedUserSurvey',
+  'setMusdConversionEducationSeen',
+  'setNewPrivacyPolicyToastClickedOrClosed',
+  'setNewPrivacyPolicyToastShownDate',
+  'setOnboardingDate',
+  'setOutdatedBrowserWarningLastShown',
+  'setPendingExtensionVersion',
+  'setPendingRedirectRoute',
+  'setPendingShieldCohort',
+  'setPna25Acknowledged',
+  'setProductTour',
+  'setRampCardClosed',
+  'setRecoveryPhraseReminderHasBeenShown',
+  'setRecoveryPhraseReminderLastShown',
+  'setShieldEndingToastLastClickedOrClosed',
+  'setShieldPausedToastLastClickedOrClosed',
+  'setShieldSubscriptionError',
+  'setShieldSubscriptionMetricsProps',
+  'setShowAccountBanner',
+  'setShowBetaHeader',
+  'setShowNetworkBanner',
+  'setShowPermissionsTour',
+  'setShowShieldEntryModalOnce',
+  'setShowTestnetMessageInDropdown',
+  'setSnapsInstallPrivacyWarningShownStatus',
+  'setStorageWriteErrorType',
+  'setSurveyLinkLastClickedOrClosed',
+  'setTermsOfUseLastAgreed',
+  'setTrezorModel',
+  'setUpdateModalLastDismissedAt',
+  'updateNetworkConnectionBanner',
+  'updateNftDropDownState',
+  'updateSlides',
+  'updateThrottledOriginState',
+] as const;
+
 export class AppStateController extends BaseController<
   typeof controllerName,
   AppStateControllerState,
@@ -819,34 +859,9 @@ export class AppStateController extends BaseController<
       this.#setInactiveTimeout(preferences.autoLockTimeLimit);
     }
 
-    this.messenger.registerActionHandler(
-      'AppStateController:getUnlockPromise',
-      this.getUnlockPromise.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'AppStateController:requestQrCodeScan',
-      this.#requestQrCodeScan.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'AppStateController:setCanTrackWalletFundsObtained',
-      this.setCanTrackWalletFundsObtained.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'AppStateController:setPendingShieldCohort',
-      this.setPendingShieldCohort.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'AppStateController:setPendingRedirectRoute',
-      this.setPendingRedirectRoute.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'AppStateController:setShieldSubscriptionError',
-      this.setShieldSubscriptionError.bind(this),
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
 
     this.#approvalRequestId = null;
@@ -1665,7 +1680,7 @@ export class AppStateController extends BaseController<
    * @param request - The QR code scan request.
    * @returns The scanned QR code data.
    */
-  #requestQrCodeScan(request: QrScanRequest): Promise<SerializedUR> {
+  requestQrCodeScan(request: QrScanRequest): Promise<SerializedUR> {
     if (this.#qrCodeScanPromise) {
       return this.#qrCodeScanPromise.promise;
     }

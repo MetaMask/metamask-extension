@@ -27,6 +27,7 @@ const NetworkDetailsCheckToggleItem = createToggleItem({
     state.metamask.useSafeChainsListValidation,
   action: setUseSafeChainsListValidation,
   dataTestId: 'network-details-check-toggle',
+  containerDataTestId: 'useSafeChainsListValidation',
 });
 
 const ShowENSDomainsToggleItem = createToggleItem({
@@ -46,6 +47,8 @@ const ShowENSDomainsToggleItem = createToggleItem({
     state.metamask.useAddressBarEnsResolution,
   action: setUseAddressBarEnsResolution,
   dataTestId: 'ens-domains-toggle',
+  containerDataTestId: 'ipfs-gateway-resolution-container',
+  trackEventProperty: 'use_address_bar_ens_resolution',
 });
 
 const MakeSmartContractsEasierToggleItem = createToggleItem({
@@ -55,6 +58,7 @@ const MakeSmartContractsEasierToggleItem = createToggleItem({
   selector: (state: MetaMaskReduxState) => state.metamask.use4ByteResolution,
   action: setUse4ByteResolution,
   dataTestId: 'make-smart-contracts-easier-toggle',
+  trackEventProperty: 'use_4byte_resolution',
 });
 
 const ProposedNicknamesToggleItem = createToggleItem({
@@ -65,6 +69,7 @@ const ProposedNicknamesToggleItem = createToggleItem({
     state.metamask.useExternalNameSources,
   action: setUseExternalNameSources,
   dataTestId: 'proposed-nicknames-toggle',
+  trackEventProperty: 'use_external_name_sources',
 });
 
 /** Registry of setting items for the Third-party APIs sub-page */

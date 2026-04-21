@@ -81,6 +81,13 @@ class AssetListPage {
   private readonly tokenFiatAmount =
     '[data-testid="multichain-token-list-item-secondary-value"]';
 
+  private readonly selectedNetwork = (networkName: string) => {
+    return {
+      testId: 'test-import-tokens-drop-down-custom-import',
+      text: networkName,
+    };
+  };
+
   private readonly sendButton = '[data-testid="eth-overview-send"]';
 
   private readonly tokenAddressInput =
@@ -337,12 +344,19 @@ class AssetListPage {
     await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
   }
 
-  async importTokenBySearch(tokenName: string) {
+  async importTokenBySearch({
+    tokenName,
+    networkName,
+  }: {
+    tokenName: string;
+    networkName: string;
+  }) {
     console.log(`Import token ${tokenName} on homepage by search`);
     await this.driver.waitForSelector(this.multichainTokenListButton);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
+    await this.driver.waitForSelector(this.selectedNetwork(networkName));
     await this.driver.fill(this.tokenSearchInput, tokenName);
     // Wait until the token search matches 1 result to prevent flakiness with token result re-renders
     await this.waitUntilTokenSearchMatch(1);

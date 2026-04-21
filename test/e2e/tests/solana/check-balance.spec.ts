@@ -18,7 +18,6 @@ describe('Check balance', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '0 SOL' });
       },
@@ -37,7 +36,6 @@ describe('Check balance', function (this: Suite) {
         // Balance is $0 as conversion on testnets is disabled
         await login(driver, { expectedBalance: '$0.00' });
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '$0' });
       },
@@ -56,7 +54,6 @@ describe('Check balance', function (this: Suite) {
         // Balance is $0 as conversion on testnets is disabled
         await login(driver, { expectedBalance: '$0.00' });
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '$5,643.50' });
       },
@@ -72,7 +69,6 @@ describe('Check balance', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '50 SOL' });
       },

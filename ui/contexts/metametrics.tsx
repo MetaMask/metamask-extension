@@ -37,7 +37,7 @@ import {
   type MetaMetricsEventPayload,
 } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
-import { getParticipateInMetaMetrics } from '../selectors';
+import { getMetaMetricsId, getParticipateInMetaMetrics } from '../selectors';
 import {
   generateActionId,
   submitRequestToBackground,
@@ -145,6 +145,9 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const location = useLocation();
   const context = useSegmentContext();
   const isMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  // Buffer events until the background has minted the MetaMetrics ID used to submit them.
+  const canTrackImmediately = isMetricsEnabled && Boolean(metaMetricsId);
 
   const onboardingParentContext = useRef<TraceParentContext>(null);
 
@@ -177,7 +180,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
       };
 
       if (
-        isMetricsEnabled ||
+        canTrackImmediately ||
         payload.event === MetaMetricsEventName.MetricsOptOut // We wanna track the MetricsOptOut event when user opts out of metrics and basic functionality is not "DISABLED"
       ) {
         // If metrics are enabled, track immediately
@@ -189,7 +192,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
         ]);
       }
     },
-    [addContextPropsIntoEventProperties, context, isMetricsEnabled],
+    [addContextPropsIntoEventProperties, canTrackImmediately, context],
   );
 
   const bufferedTrace: UITraceMethod = useCallback((request, fn) => {

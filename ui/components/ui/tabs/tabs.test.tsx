@@ -163,4 +163,47 @@ describe('Tabs', () => {
 
     expect(onTabClick).not.toHaveBeenCalled();
   });
+
+  it('clamps to last tab when activeTab key does not exist', () => {
+    const { getByText } = render(
+      <Tabs activeTab={'nonexistent' as string} onTabClick={() => null}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+        <Tab tabKey="tab2" name="Tab 2">
+          Tab 2 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    expect(getByText('Tab 1 Content')).toBeInTheDocument();
+  });
+
+  it('does not crash when children are removed and activeTabIndex is out of bounds', () => {
+    const { rerender, getByText } = render(
+      <Tabs activeTab="tab3" onTabClick={() => null}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+        <Tab tabKey="tab2" name="Tab 2">
+          Tab 2 Content
+        </Tab>
+        <Tab tabKey="tab3" name="Tab 3">
+          Tab 3 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    expect(getByText('Tab 3 Content')).toBeInTheDocument();
+
+    rerender(
+      <Tabs activeTab="tab3" onTabClick={() => null}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    expect(getByText('Tab 1 Content')).toBeInTheDocument();
+  });
 });

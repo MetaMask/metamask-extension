@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 import { promises as fs } from 'fs';
 import { strict as assert } from 'assert';
-import { get, has, set, unset, cloneDeep } from 'lodash';
+import { cloneDeep, get, has, set, unset } from 'lodash';
 import { Browser } from 'selenium-webdriver';
 import prettier from 'prettier';
 import { isObject, Json, JsonRpcResponse } from '@metamask/utils';

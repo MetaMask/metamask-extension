@@ -47,7 +47,7 @@ describe('InfoTab', () => {
       });
       expect(attributionsLink).toHaveAttribute(
         'href',
-        `https://raw.githubusercontent.com/MetaMask/metamask-extension/vMOCK_VERSION/attribution.txt`,
+        'https://raw.githubusercontent.com/MetaMask/metamask-extension/main/attribution.txt',
       );
     });
 
@@ -72,7 +72,7 @@ describe('InfoTab', () => {
       });
       expect(contactUsLink).toHaveAttribute(
         'href',
-        'https://support.metamask.io',
+        'https://support.metamask.io/?utm_source=extension',
       );
     });
   });

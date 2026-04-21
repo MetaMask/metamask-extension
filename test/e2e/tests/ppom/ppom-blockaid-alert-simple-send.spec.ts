@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { WINDOW_TITLES } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -143,11 +143,8 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
-          })
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -159,7 +156,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
       },
 
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, { expectedBalance: '20 ETH' });
         const homePage = new HomePage(driver);
 
         // We validate custom balance as it doesn't come from the local node but it's mocked
@@ -190,13 +187,11 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
       // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
-          })
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+            chainIds: [1],
           })
           .withEnabledNetworks({
             eip155: {
@@ -209,7 +204,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
       },
 
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, { expectedBalance: '20 ETH' });
 
         // We validate custom balance as it doesn't come from the local node but it's mocked
         await new HomePage(driver).checkExpectedBalanceIsDisplayed('20 ETH');
@@ -235,11 +230,8 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
-          })
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -251,7 +243,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
       },
 
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, { expectedBalance: '20 ETH' });
         const homePage = new HomePage(driver);
 
         // We validate custom balance as it doesn't come from the local node but it's mocked

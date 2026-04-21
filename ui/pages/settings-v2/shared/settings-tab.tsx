@@ -56,12 +56,12 @@ export const SettingsTab = ({
   }, [hash, items, settingsRefs]);
 
   return (
-    <Box paddingHorizontal={4} paddingBottom={4} className="overflow-y-auto">
+    <Box paddingBottom={4} className="overflow-y-auto">
       {subHeader && (
         <Text
           variant={TextVariant.BodyMd}
           color={TextColor.TextAlternative}
-          className="py-2"
+          className="py-2 px-4"
         >
           {subHeader}
         </Text>

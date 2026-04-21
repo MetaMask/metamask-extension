@@ -18,9 +18,9 @@ import type {
   ApprovalControllerStartFlowAction,
 } from '@metamask/approval-controller';
 import {
-  GetSnap,
-  HandleSnapRequest,
-  IsMinimumPlatformVersion,
+  SnapControllerGetSnapAction,
+  SnapControllerHandleRequestAction,
+  SnapControllerIsMinimumPlatformVersionAction,
 } from '@metamask/snaps-controllers';
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
@@ -42,16 +42,15 @@ export type SnapKeyringBuilderAllowActions =
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerSetAccountNameAction
   | AccountsControllerListMultichainAccountsAction
-  | HandleSnapRequest
-  | GetSnap
+  | SnapControllerHandleRequestAction
+  | SnapControllerGetSnapAction
   | PreferencesControllerGetStateAction
-  | IsMinimumPlatformVersion
+  | SnapControllerIsMinimumPlatformVersionAction
   | RemoteFeatureFlagControllerGetStateAction;
 
 export type SnapKeyringBuilderMessenger = Messenger<
   'SnapKeyring',
-  SnapKeyringBuilderAllowActions,
-  never
+  SnapKeyringBuilderAllowActions
 >;
 
 /**

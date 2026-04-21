@@ -2,6 +2,7 @@ import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import { AddNetworkFields } from '@metamask/network-controller';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
@@ -55,13 +56,70 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getOrderedNetworksList,
   getMultichainNetworkConfigurationsByChainId,
-  getGasFeesSponsoredNetworkEnabled,
   getUseExternalServices,
-  isHardwareWallet,
 } from '../../../../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
+import { useIsNetworkGasSponsored } from '../../../../../hooks/useIsNetworkGasSponsored';
+
+const AdditionalNetwork = ({ network }: { network: AddNetworkFields }) => {
+  const t = useI18nContext();
+  const networkImageUrl =
+    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+      network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+    ];
+
+  // Use the additional network handlers hook
+  const { handleAdditionalNetworkClick } = useAdditionalNetworkHandlers();
+  const { isNetworkGasSponsored } = useIsNetworkGasSponsored(network.chainId);
+
+  return (
+    <Box
+      display={Display.Flex}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.flexStart}
+      width={BlockSize.Full}
+      onClick={() => handleAdditionalNetworkClick(network)}
+      paddingLeft={4}
+      paddingRight={4}
+      paddingTop={4}
+      paddingBottom={4}
+      gap={4}
+      data-testid="additional-network-item"
+      className="network-manager__additional-network-item"
+      key={network.chainId}
+    >
+      <AvatarNetwork
+        name={network.name}
+        size={AvatarNetworkSize.Md}
+        src={networkImageUrl}
+        borderRadius={BorderRadius.LG}
+      />
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        alignItems={AlignItems.center}
+        gap={2}
+      >
+        <Text variant={TextVariant.bodyMdMedium} color={TextColor.textDefault}>
+          {network.name}
+        </Text>
+        {isNetworkGasSponsored && (
+          <SuccessPill label={t('noNetworkFee')} display={Display.InlineFlex} />
+        )}
+      </Box>
+      <ButtonIcon
+        size={ButtonIconSize.Md}
+        color={IconColor.iconDefault}
+        iconName={IconName.Add}
+        padding={0}
+        marginLeft={'auto'}
+        ariaLabel={t('addNetwork')}
+      />
+    </Box>
+  );
+};
 
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
@@ -78,9 +136,6 @@ const DefaultNetworks = memo(() => {
 
   // Use the shared network change handlers hook
   const { handleNetworkChange } = useNetworkChangeHandlers();
-
-  // Use the additional network handlers hook
-  const { handleAdditionalNetworkClick } = useAdditionalNetworkHandlers();
 
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
 
@@ -114,29 +169,6 @@ const DefaultNetworks = memo(() => {
   // Get blacklisted chain IDs from feature flag
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
-  );
-
-  // This selector provides the indication if the "Gas sponsored" label
-  // is enabled based on the remote feature flag.
-  const isGasFeesSponsoredNetworkEnabled = useSelector(
-    getGasFeesSponsoredNetworkEnabled,
-  );
-  const isHardwareWalletAccount = useSelector(isHardwareWallet);
-
-  // Check if a network has gas sponsorship enabled
-  const isNetworkGasSponsored = useCallback(
-    (chainId: string | undefined): boolean => {
-      if (!chainId || isHardwareWalletAccount) {
-        return false;
-      }
-
-      return Boolean(
-        isGasFeesSponsoredNetworkEnabled?.[
-          chainId as keyof typeof isGasFeesSponsoredNetworkEnabled
-        ],
-      );
-    },
-    [isGasFeesSponsoredNetworkEnabled, isHardwareWalletAccount],
   );
 
   // Use the shared state hook
@@ -338,70 +370,13 @@ const DefaultNetworks = memo(() => {
 
   // Memoize the additional network list items
   const additionalNetworkListItems = useMemo(() => {
-    return featuredNetworksNotYetEnabled.map((network) => {
-      const networkImageUrl =
-        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-          network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-        ];
-
-      return (
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.flexStart}
-          width={BlockSize.Full}
-          onClick={() => handleAdditionalNetworkClick(network)}
-          paddingLeft={4}
-          paddingRight={4}
-          paddingTop={4}
-          paddingBottom={4}
-          gap={4}
-          data-testid="additional-network-item"
-          className="network-manager__additional-network-item"
-          key={network.chainId}
-        >
-          <AvatarNetwork
-            name={network.name}
-            size={AvatarNetworkSize.Md}
-            src={networkImageUrl}
-            borderRadius={BorderRadius.LG}
-          />
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            alignItems={AlignItems.center}
-            gap={2}
-          >
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textDefault}
-            >
-              {network.name}
-            </Text>
-            {isNetworkGasSponsored(network.chainId) && (
-              <SuccessPill
-                label={t('noNetworkFee')}
-                display={Display.InlineFlex}
-              />
-            )}
-          </Box>
-          <ButtonIcon
-            size={ButtonIconSize.Md}
-            color={IconColor.iconDefault}
-            iconName={IconName.Add}
-            padding={0}
-            marginLeft={'auto'}
-            ariaLabel={t('addNetwork')}
-          />
-        </Box>
-      );
-    });
-  }, [
-    featuredNetworksNotYetEnabled,
-    handleAdditionalNetworkClick,
-    t,
-    isNetworkGasSponsored,
-  ]);
+    return featuredNetworksNotYetEnabled.map((network) => (
+      <AdditionalNetwork
+        key={`additionnal-network-${network.chainId}`}
+        network={network}
+      ></AdditionalNetwork>
+    ));
+  }, [featuredNetworksNotYetEnabled]);
 
   return (
     <>

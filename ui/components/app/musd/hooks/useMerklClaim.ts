@@ -123,7 +123,7 @@ export const useMerklClaim = ({
       navigate({
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionMeta.id}`,
         search: new URLSearchParams({
-          returnTo: location.pathname + location.search,
+          goBackTo: location.pathname + location.search,
         }).toString(),
       });
     } catch (e) {
