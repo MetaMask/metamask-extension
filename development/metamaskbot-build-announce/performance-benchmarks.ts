@@ -1,16 +1,19 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import {
-  ENTRY_BENCHMARK_PLATFORMS,
-  ENTRY_BENCHMARK_BUILD_TYPES,
-  BENCHMARK_PLATFORMS,
-  BENCHMARK_BUILD_TYPES,
   ALL_BENCHMARK_COMBOS,
-  STAT_KEY,
+  BENCHMARK_ANNOUNCE_SECTIONS,
+  BENCHMARK_BUILD_TYPES,
+  BENCHMARK_PLATFORMS,
   DEFAULT_RELATIVE_THRESHOLDS,
+  ENTRY_BENCHMARK_BUILD_TYPES,
+  ENTRY_BENCHMARK_PLATFORMS,
+  STAT_KEY,
   THRESHOLD_SEVERITY,
 } from '../../shared/constants/benchmarks';
 import type {
+  BenchmarkAnnounceSamples,
+  BenchmarkAnnounceSection,
   BenchmarkResults,
   ComparisonKey,
   StatisticalResult,
@@ -20,8 +23,9 @@ import {
   STARTUP_PRESETS,
   INTERACTION_PRESETS,
   USER_JOURNEY_PRESETS,
-  THRESHOLD_REGISTRY,
+  DAPP_PAGE_LOAD_PRESETS,
 } from '../../test/e2e/benchmarks/utils/constants';
+import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics';
 import {
   compareMetric,
@@ -35,6 +39,7 @@ import type {
 } from './historical-comparison';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import {
+  EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL,
   resolveBaseline,
   buildEntryKey,
   buildCombo,
@@ -94,7 +99,7 @@ const USER_JOURNEY_BENCHMARK_PLATFORMS = [BENCHMARK_PLATFORMS.CHROME] as const;
 
 /**
  * Build types to fetch for user-journey presets in this workflow run.
- * Mirrors whether `benchmarks-webpack-perf` runs (push to main/release only).
+ * Mirrors whether webpack user-journey matrix rows run (push to main/release only;
  */
 export function getUserJourneyBenchmarkBuildTypesForCurrentRun(): readonly string[] {
   const eventName = process.env.GITHUB_EVENT_NAME;
@@ -109,6 +114,22 @@ export function getUserJourneyBenchmarkBuildTypesForCurrentRun(): readonly strin
 
   return [BENCHMARK_BUILD_TYPES.BROWSERIFY];
 }
+
+const STARTUP_BENCHMARK_PLATFORMS = [
+  BENCHMARK_PLATFORMS.CHROME,
+  BENCHMARK_PLATFORMS.FIREFOX,
+] as const;
+const STARTUP_BENCHMARK_BUILD_TYPES = [
+  BENCHMARK_BUILD_TYPES.BROWSERIFY,
+  BENCHMARK_BUILD_TYPES.WEBPACK,
+] as const;
+
+const DAPP_PAGE_LOAD_BENCHMARK_PLATFORMS = [
+  BENCHMARK_PLATFORMS.CHROME,
+] as const;
+const DAPP_PAGE_LOAD_BENCHMARK_BUILD_TYPES = [
+  BENCHMARK_BUILD_TYPES.BROWSERIFY,
+] as const;
 
 /**
  * Fetches benchmark JSON artifact for a given preset/platform/buildType.
@@ -484,19 +505,30 @@ function countHealthEntries(
 }
 
 /**
- * Formats timer details from StatisticalResult into a readable HTML list with traffic lights.
- * Only returns timer breakdown if entry has multiple timers (user journey benchmarks).
+ * Converts a camelCase benchmark name to its snake_case metric-key form
+ * (e.g. `loadNewAccount` → `load_new_account`). Used to detect per-metric
+ * tags that would be redundant with the row label.
+ *
+ * @param name - camelCase benchmark name
+ * @returns snake_case metric key
+ */
+function toSnakeCase(name: string): string {
+  return name.replace(/([a-z0-9])([A-Z])/gu, '$1_$2').toLowerCase();
+}
+
+/**
+ * Returns a compact inline annotation listing per-metric threshold issues for
+ * a multi-timer benchmark entry (e.g. ` · 🟡 <code>cls</code>`). Returns an
+ * empty string when the entry has a single timer, no per-metric issues, or
+ * the only firing metric is the benchmark's primary timer (in which case the
+ * row-level icon already conveys the status).
+ *
+ * The result is meant to be appended to the row-level cell, not to replace it.
  *
  * @param entry - Benchmark entry with all stats (mean, p75, p95)
- * @param baselineMetrics - Historical baseline for comparison (optional)
- * @param logHref
- * @returns HTML string with timer breakdown, or empty string if single timer
+ * @returns HTML string with per-metric issue tags, or empty string
  */
-function formatTimerDetails(
-  entry: BenchmarkEntry,
-  baselineMetrics: HistoricalBaselineReference[string] | undefined,
-  logHref?: string,
-): string {
+function formatTimerIssueTags(entry: BenchmarkEntry): string {
   const timerCount = Object.keys(entry.mean).length;
 
   if (timerCount <= 1) {
@@ -504,60 +536,53 @@ function formatTimerDetails(
   }
 
   const thresholdConfig = THRESHOLD_REGISTRY[entry.benchmarkName];
+  if (!thresholdConfig) {
+    return '';
+  }
 
-  const entries = Object.entries(entry.mean)
-    .map(([metricName]) => {
-      let icon = HEALTH_ICON[EntryHealth.Pass];
-      let hasIssue = false;
+  const primaryMetricKey = toSnakeCase(entry.benchmarkName);
 
-      if (thresholdConfig?.[metricName]) {
-        const metricResult = {
-          p75: { [metricName]: entry.p75[metricName] },
-          p95: { [metricName]: entry.p95[metricName] },
-        } as BenchmarkResults;
-
-        const { violations } = validateResultThresholds(metricResult, {
-          [metricName]: thresholdConfig[metricName],
-        });
-
-        const hasFail = violations.some(
-          (v) => v.severity === THRESHOLD_SEVERITY.Fail,
-        );
-        const hasWarn = violations.some(
-          (v) => v.severity === THRESHOLD_SEVERITY.Warn,
-        );
-
-        if (hasFail) {
-          icon = HEALTH_ICON[EntryHealth.Fail];
-          hasIssue = true;
-        } else if (hasWarn) {
-          icon = HEALTH_ICON[EntryHealth.Warn];
-          hasIssue = true;
-        }
-      }
-
-      if (!hasIssue) {
+  const tags = Object.keys(entry.mean)
+    .map((metricName) => {
+      if (!thresholdConfig[metricName] || metricName === primaryMetricKey) {
         return null;
       }
 
-      const logsLine = logHref
-        ? `<br><a href="${logHref}">[Show logs]</a>`
-        : '';
-      return `<div>${icon} <code>${metricName}</code>${logsLine}</div>`;
-    })
-    .filter((item) => item !== null)
-    .join('');
+      const metricResult = {
+        p75: { [metricName]: entry.p75[metricName] },
+        p95: { [metricName]: entry.p95[metricName] },
+      } as BenchmarkResults;
 
-  return entries
-    ? `<div style="text-align: left; margin: 4px 0 8px 0; padding-left: 8px;">${entries}</div>`
-    : '';
+      const { violations } = validateResultThresholds(metricResult, {
+        [metricName]: thresholdConfig[metricName],
+      });
+
+      const hasFail = violations.some(
+        (v) => v.severity === THRESHOLD_SEVERITY.Fail,
+      );
+      const hasWarn = violations.some(
+        (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+      );
+
+      if (!hasFail && !hasWarn) {
+        return null;
+      }
+
+      const icon = hasFail
+        ? HEALTH_ICON[EntryHealth.Fail]
+        : HEALTH_ICON[EntryHealth.Warn];
+      return `${icon} <code>${metricName}</code>`;
+    })
+    .filter((tag): tag is string => tag !== null);
+
+  return tags.length > 0 ? ` · ${tags.join(' · ')}` : '';
 }
 
 /**
- * Builds an outer collapsible section (e.g. 'Interaction Benchmarks').
+ * Builds an outer collapsible benchmark subsection.
  *
  * @param result - Fetched entries and missing preset descriptions.
- * @param summary - The collapsible header text.
+ * @param section - `BENCHMARK_ANNOUNCE_SECTIONS.*` or a plain title string (no announced samples).
  * @param baseline - Historical baseline for relative delta annotations.
  * @param runUrl - GitHub Actions run URL for "Show logs" links (optional).
  * @returns HTML string or empty string if no data.
@@ -565,6 +590,56 @@ function formatTimerDetails(
 
 /** Minimum absolute delta (%) to include a metric in the relative summary. */
 const RELATIVE_DELTA_MIN_PCT = 0.1;
+
+export type {
+  BenchmarkAnnounceSamples,
+  BenchmarkAnnounceSection,
+} from '../../shared/constants/benchmarks';
+export { BENCHMARK_ANNOUNCE_SECTIONS };
+
+/**
+ * User journey benchmarks use the real API on `main` and `release/*` branches; other
+ * branches use a mock API. Aligns with `BRANCH` / `GITHUB_HEAD_REF` in prerelease publish.
+ */
+export function getUserJourneyBenchmarkApiModeFromBranch(): 'mock' | 'real' {
+  const branch = (
+    process.env.BRANCH ??
+    process.env.GITHUB_HEAD_REF ??
+    process.env.GITHUB_REF_NAME ??
+    ''
+  ).trim();
+  if (branch === 'main' || branch.startsWith('release/')) {
+    return 'real';
+  }
+  return 'mock';
+}
+
+type SectionSamplesLabelOptions = {
+  /** When set (User Journey section only), appends ` · mock API` or ` · real API`. */
+  userJourneyApi?: 'mock' | 'real';
+};
+
+/**
+ * Collapsible section title suffix: ` · Samples: N` (and User Journey API mode when applicable).
+ *
+ * @param announceSamples - When set (named announce sections), appends the Samples line.
+ * @param options - User Journey subsection only: mock vs real API from branch env.
+ */
+function formatSectionSamplesLabel(
+  announceSamples?: BenchmarkAnnounceSamples,
+  options?: SectionSamplesLabelOptions,
+): string {
+  if (!announceSamples) {
+    return '';
+  }
+  let label = ` · Samples: ${announceSamples.sampleQuantity}`;
+  if (options?.userJourneyApi === 'real') {
+    label += ' · real API';
+  } else if (options?.userJourneyApi === 'mock') {
+    label += ' · mock API';
+  }
+  return label;
+}
 
 /**
  * Builds a bullet-point summary of notable relative deltas vs the 5-commit baseline.
@@ -669,10 +744,14 @@ function buildCwvSection(entries: BenchmarkEntry[]): string {
 
 export function buildBenchmarkSection(
   result: FetchBenchmarkResult,
-  summary: string,
+  section: string | BenchmarkAnnounceSection,
   baseline?: HistoricalBaselineReference,
   runUrl?: string,
 ): string {
+  const summary = typeof section === 'string' ? section : section.title;
+  const announceSamples =
+    typeof section === 'string' ? undefined : section.announceSamples;
+
   try {
     const { entries, missingPresets } = result;
     if (entries.length === 0 && missingPresets.length === 0) {
@@ -685,6 +764,13 @@ export function buildBenchmarkSection(
         : '';
 
     const sectionCounts = countHealthEntries(entries, baseline);
+    const isUserJourneySection =
+      summary === BENCHMARK_ANNOUNCE_SECTIONS.userJourney.title;
+    const samplesLabel = formatSectionSamplesLabel(announceSamples, {
+      userJourneyApi: isUserJourneySection
+        ? getUserJourneyBenchmarkApiModeFromBranch()
+        : undefined,
+    });
     const sectionBadge =
       sectionCounts.failures > 0
         ? ` ${HEALTH_ICON[EntryHealth.Fail]} ${sectionCounts.failures}`
@@ -725,27 +811,14 @@ export function buildBenchmarkSection(
               const icon = HEALTH_ICON[health];
               const logHref = entry.artifactUrl ?? runUrl;
 
-              const timerDetails = formatTimerDetails(
-                entry,
-                baselineMetrics,
-                logHref,
-              );
-
+              const timerIssueTags = formatTimerIssueTags(entry);
               const logsLink = logHref
                 ? `<a href="${logHref}">[Show logs]</a>`
                 : '';
 
-              let cell: string;
-              switch (true) {
-                case Boolean(timerDetails):
-                  cell = timerDetails;
-                  break;
-                case Boolean(logHref):
-                  cell = `${icon} ${logsLink}`;
-                  break;
-                default:
-                  cell = icon;
-              }
+              const cell = logHref
+                ? `${icon} ${logsLink}${timerIssueTags}`
+                : `${icon}${timerIssueTags}`;
               return `<td align="left">${cell}</td>`;
             })
             .join('');
@@ -764,7 +837,7 @@ export function buildBenchmarkSection(
     const sectionContent =
       warningHtml + sectionBody + deltaSection + cwvSection;
     return sectionContent
-      ? `<details><summary><b>${summary}${sectionBadge}</b></summary>\n${sectionContent}</details>\n`
+      ? `<details><summary><b>${summary}${samplesLabel}${sectionBadge}</b></summary>\n${sectionContent}</details>\n`
       : '';
   } catch (error: unknown) {
     console.log(`Failed to build ${summary}: ${String(error)}`);
@@ -985,28 +1058,39 @@ export async function buildPerformanceBenchmarksSection(
       ? `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${benchmarkRunId}`
       : undefined;
 
-  const [interactionResult, startupResult, userJourneyResult, baselineResult] =
-    await Promise.all([
-      fetchBenchmarkEntries(
-        hostUrl,
-        Object.values(INTERACTION_PRESETS),
-        ENTRY_BENCHMARK_PLATFORMS,
-        ENTRY_BENCHMARK_BUILD_TYPES,
-      ),
-      fetchBenchmarkEntries(
-        hostUrl,
-        Object.values(STARTUP_PRESETS),
-        Object.values(BENCHMARK_PLATFORMS),
-        Object.values(BENCHMARK_BUILD_TYPES),
-      ),
-      fetchBenchmarkEntries(
-        hostUrl,
-        Object.values(USER_JOURNEY_PRESETS),
-        USER_JOURNEY_BENCHMARK_PLATFORMS,
-        getUserJourneyBenchmarkBuildTypesForCurrentRun(),
-      ),
-      fetchHistoricalPerformanceDataFromMain(),
-    ]);
+  const [
+    interactionResult,
+    startupResult,
+    userJourneyResult,
+    dappPageLoadResult,
+    baselineResult,
+  ] = await Promise.all([
+    fetchBenchmarkEntries(
+      hostUrl,
+      Object.values(INTERACTION_PRESETS),
+      ENTRY_BENCHMARK_PLATFORMS,
+      ENTRY_BENCHMARK_BUILD_TYPES,
+    ),
+    fetchBenchmarkEntries(
+      hostUrl,
+      Object.values(STARTUP_PRESETS),
+      STARTUP_BENCHMARK_PLATFORMS,
+      STARTUP_BENCHMARK_BUILD_TYPES,
+    ),
+    fetchBenchmarkEntries(
+      hostUrl,
+      Object.values(USER_JOURNEY_PRESETS),
+      USER_JOURNEY_BENCHMARK_PLATFORMS,
+      getUserJourneyBenchmarkBuildTypesForCurrentRun(),
+    ),
+    fetchBenchmarkEntries(
+      hostUrl,
+      Object.values(DAPP_PAGE_LOAD_PRESETS),
+      DAPP_PAGE_LOAD_BENCHMARK_PLATFORMS,
+      DAPP_PAGE_LOAD_BENCHMARK_BUILD_TYPES,
+    ),
+    fetchHistoricalPerformanceDataFromMain(),
+  ]);
 
   const resolvedBaseline = baselineResult?.baseline ?? undefined;
   const baselineCommit = baselineResult?.latestCommit;
@@ -1016,32 +1100,40 @@ export async function buildPerformanceBenchmarksSection(
     ...startupResult.entries,
     ...interactionResult.entries,
     ...userJourneyResult.entries,
+    ...dappPageLoadResult.entries,
   ];
 
   if (
     allEntries.length === 0 &&
     interactionResult.missingPresets.length === 0 &&
     startupResult.missingPresets.length === 0 &&
-    userJourneyResult.missingPresets.length === 0
+    userJourneyResult.missingPresets.length === 0 &&
+    dappPageLoadResult.missingPresets.length === 0
   ) {
     return '';
   }
 
   const interactionHtml = buildBenchmarkSection(
     interactionResult,
-    'Interaction Benchmarks',
+    BENCHMARK_ANNOUNCE_SECTIONS.interaction,
     resolvedBaseline,
     runUrl,
   );
   const startupHtml = buildBenchmarkSection(
     startupResult,
-    'Startup Benchmarks',
+    BENCHMARK_ANNOUNCE_SECTIONS.startup,
     resolvedBaseline,
     runUrl,
   );
   const userJourneyHtml = buildBenchmarkSection(
     userJourneyResult,
-    'User Journey Benchmarks',
+    BENCHMARK_ANNOUNCE_SECTIONS.userJourney,
+    resolvedBaseline,
+    runUrl,
+  );
+  const dappPageLoadHtml = buildBenchmarkSection(
+    dappPageLoadResult,
+    BENCHMARK_ANNOUNCE_SECTIONS.dappPageLoad,
     resolvedBaseline,
     runUrl,
   );
@@ -1076,14 +1168,13 @@ export async function buildPerformanceBenchmarksSection(
   const pipelineLink = runUrl
     ? `<a href="${runUrl}">${benchmarkRunId}</a>`
     : (benchmarkRunId ?? '');
-  const baselineLogsUrl =
-    'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';
-  const baselineLogsLink = `<a href="${baselineLogsUrl}">Baseline logs</a>`;
+  const baselineLogsLink = `<a href="${EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL}">Baseline logs</a>`;
   const commitInfo = `\n\n<p><strong>Baseline (latest main)</strong>: ${commitLink} | <strong>Date</strong>: ${commitDate} | <strong>Pipeline</strong>: ${pipelineLink} | ${baselineLogsLink}</p>\n\n`;
 
   // Plain text only inside <summary> (no block elements like <p>).
   const summaryLine = `${sectionTitle} (Total: ${HEALTH_ICON[EntryHealth.Pass]} ${passes} pass · ${HEALTH_ICON[EntryHealth.Warn]} ${warnings} warn · ${HEALTH_ICON[EntryHealth.Fail]} ${failures} fail)`;
-  const subsectionsHtml = interactionHtml + startupHtml + userJourneyHtml;
+  const subsectionsHtml =
+    interactionHtml + startupHtml + userJourneyHtml + dappPageLoadHtml;
   const content =
     commitInfo + matrixHtml + regressionDetailsHtml + subsectionsHtml;
 

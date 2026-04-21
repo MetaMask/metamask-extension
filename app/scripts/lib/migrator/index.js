@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import { isObject } from '@metamask/utils';
-import { PersistenceManager } from '../stores/persistence-manager';
+import { PersistenceManager } from '../../../../shared/lib/stores/persistence-manager';
 
 /**
  * @typedef {object} Migration

@@ -39,7 +39,9 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     snapAndHardwareMessenger: jest.fn() as any,
     trackEvent: jest.fn(),
-    getIsSmartTransaction: jest.fn(),
+    getIsSmartTransaction: jest.fn().mockReturnValue(false),
+    getSmartTransactionsPreferenceEnabled: jest.fn(),
+    getSmartTransactionsEnabled: jest.fn(),
     getSmartTransactionByMinedTxHash: jest.fn(),
     getMethodData: jest.fn(),
     getIsConfirmationAdvancedDetailsOpen: jest.fn(),
@@ -76,18 +78,15 @@ const createTransactionMeta = () => {
     },
     hash: txHash,
     error: null,
-    swapMetaData: {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      gas_included: true,
-    },
   };
 };
 
 describe('getSmartTransactionMetricsProperties', () => {
-  it('returns all smart transaction properties', () => {
+  it('returns all smart transaction properties when STX is active', () => {
     const transactionMetricsRequest = createTransactionMetricsRequest({
       getIsSmartTransaction: () => true,
+      getSmartTransactionsPreferenceEnabled: () => true,
+      getSmartTransactionsEnabled: () => true,
       getSmartTransactionByMinedTxHash: () => {
         return {
           uuid: 'uuid',
@@ -118,25 +117,24 @@ describe('getSmartTransactionMetricsProperties', () => {
     expect(result).toStrictEqual({
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      gas_included: true,
+      is_smart_transactions_user_opt_in: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_smart_transactions_available: true,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       is_smart_transaction: true,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      smart_transaction_proxied: true,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      smart_transaction_timed_out: true,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       stx_original_transaction_status: 'pending',
     });
   });
 
-  it('returns "is_smart_transaction: false" if it is not a smart transaction', () => {
+  it('returns correct properties when user has not opted in', () => {
     const transactionMetricsRequest = createTransactionMetricsRequest({
       getIsSmartTransaction: () => false,
+      getSmartTransactionsPreferenceEnabled: () => false,
+      getSmartTransactionsEnabled: () => true,
     });
     const transactionMeta = createTransactionMeta();
 
@@ -150,16 +148,56 @@ describe('getSmartTransactionMetricsProperties', () => {
     expect(result).toStrictEqual({
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_smart_transactions_user_opt_in: false,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_smart_transactions_available: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       is_smart_transaction: false,
     });
   });
 
-  it('returns "is_smart_transaction" and "gas_included" params only if it is a smart transaction, but does not have statusMetadata', () => {
+  it('returns correct properties when STX is not available for the chain', () => {
+    const transactionMetricsRequest = createTransactionMetricsRequest({
+      getIsSmartTransaction: () => false,
+      getSmartTransactionsPreferenceEnabled: () => true,
+      getSmartTransactionsEnabled: () => false,
+    });
+    const transactionMeta = createTransactionMeta();
+
+    const result = getSmartTransactionMetricsProperties(
+      transactionMetricsRequest,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      transactionMeta as any,
+    );
+
+    expect(result).toStrictEqual({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_smart_transactions_user_opt_in: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_smart_transactions_available: false,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_smart_transaction: false,
+    });
+  });
+
+  it('returns both new properties plus stx_original_transaction_status when statusMetadata is present', () => {
     const transactionMetricsRequest = createTransactionMetricsRequest({
       getIsSmartTransaction: () => true,
+      getSmartTransactionsPreferenceEnabled: () => true,
+      getSmartTransactionsEnabled: () => true,
       getSmartTransactionByMinedTxHash: () => {
         return {
-          statusMetadata: null,
+          statusMetadata: {
+            originalTransactionStatus: 'pending',
+            timedOut: true,
+            proxied: true,
+          },
         };
       },
     });
@@ -175,10 +213,16 @@ describe('getSmartTransactionMetricsProperties', () => {
     expect(result).toStrictEqual({
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_smart_transactions_user_opt_in: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_smart_transactions_available: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       is_smart_transaction: true,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      gas_included: true,
+      stx_original_transaction_status: 'pending',
     });
   });
 });

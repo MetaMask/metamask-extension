@@ -21,6 +21,7 @@ import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
+import { getDisplaySymbol } from '../../../utils';
 import type { AmountInputProps } from '../../order-entry.types';
 import { isDigitsOnlyInput, isUnsignedDecimalInput } from '../../utils';
 
@@ -62,13 +63,12 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   }, [balancePercent]);
 
   const tokenAmount = useMemo(() => {
-    const numAmount = Number.parseFloat(amount) || 0;
+    const numAmount = Number.parseFloat(amount.replace(/,/gu, '')) || 0;
     if (numAmount === 0 || currentPrice === 0) {
       return null;
     }
-    const positionValue = numAmount * leverage;
-    return currentPrice > 0 ? positionValue / currentPrice : null;
-  }, [amount, currentPrice, leverage]);
+    return currentPrice > 0 ? numAmount / currentPrice : null;
+  }, [amount, currentPrice]);
 
   const tokenDisplayValue = useMemo(() => {
     if (tokenAmount === null || tokenAmount === 0) {
@@ -80,6 +80,11 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     });
   }, [tokenAmount, formatNumber]);
 
+  const formatAmount = useCallback(
+    (value: number): string => value.toFixed(2),
+    [],
+  );
+
   const handleAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
@@ -89,13 +94,11 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
       onAmountChange(value);
 
-      if (value && availableBalance > 0) {
+      const maxSize = availableBalance * leverage;
+      if (value && maxSize > 0) {
         const numValue = Number.parseFloat(value);
         if (!Number.isNaN(numValue) && numValue > 0) {
-          const pct = Math.min(
-            Math.round((numValue / availableBalance) * 100),
-            100,
-          );
+          const pct = Math.min(Math.round((numValue / maxSize) * 100), 100);
           onBalancePercentChange(pct);
           setPercentInputValue(String(pct));
         } else {
@@ -107,7 +110,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         setPercentInputValue('0');
       }
     },
-    [availableBalance, onAmountChange, onBalancePercentChange],
+    [onAmountChange, onBalancePercentChange, availableBalance, leverage],
   );
 
   const handleAmountBlur = useCallback(() => {
@@ -116,7 +119,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       return;
     }
 
-    const numValue = Number.parseFloat(amount);
+    const numValue = Number.parseFloat(amount.replace(/,/gu, ''));
     if (Number.isFinite(numValue) && numValue > 0) {
       onAmountChange(numValue.toFixed(2));
       return;
@@ -136,24 +139,17 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           return;
         }
         const numToken = parseFloat(value);
-        if (
-          isNaN(numToken) ||
-          numToken <= 0 ||
-          currentPrice === 0 ||
-          leverage === 0
-        ) {
+        if (isNaN(numToken) || numToken <= 0 || currentPrice === 0) {
           onAmountChange('');
           onBalancePercentChange(0);
           setPercentInputValue('0');
           return;
         }
-        const usdMargin = (numToken * currentPrice) / leverage;
-        onAmountChange(usdMargin.toFixed(2));
-        if (availableBalance > 0) {
-          const pct = Math.min(
-            Math.round((usdMargin / availableBalance) * 100),
-            100,
-          );
+        const usdSize = numToken * currentPrice;
+        onAmountChange(formatAmount(usdSize));
+        const maxSize = availableBalance * leverage;
+        if (maxSize > 0) {
+          const pct = Math.min(Math.round((usdSize / maxSize) * 100), 100);
           onBalancePercentChange(pct);
           setPercentInputValue(String(pct));
         } else {
@@ -168,6 +164,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       availableBalance,
       onAmountChange,
       onBalancePercentChange,
+      formatAmount,
     ],
   );
 
@@ -183,11 +180,18 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       if (percent === 0) {
         onAmountChange('');
       } else {
-        const newAmount = (availableBalance * percent) / 100;
-        onAmountChange(newAmount.toFixed(2));
+        const maxSize = availableBalance * leverage;
+        const newAmount = (maxSize * percent) / 100;
+        onAmountChange(formatAmount(newAmount));
       }
     },
-    [onAmountChange, onBalancePercentChange, availableBalance],
+    [
+      onAmountChange,
+      onBalancePercentChange,
+      availableBalance,
+      leverage,
+      formatAmount,
+    ],
   );
 
   const handlePercentInputChange = useCallback(
@@ -201,13 +205,20 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           if (num === 0) {
             onAmountChange('');
           } else {
-            const newAmount = (availableBalance * num) / 100;
-            onAmountChange(newAmount.toFixed(2));
+            const maxSize = availableBalance * leverage;
+            const newAmount = (maxSize * num) / 100;
+            onAmountChange(formatAmount(newAmount));
           }
         }
       }
     },
-    [onAmountChange, onBalancePercentChange, availableBalance],
+    [
+      onAmountChange,
+      onBalancePercentChange,
+      availableBalance,
+      leverage,
+      formatAmount,
+    ],
   );
 
   const handlePercentInputBlur = useCallback(() => {
@@ -219,7 +230,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     } else if (num > 100) {
       onBalancePercentChange(100);
       setPercentInputValue('100');
-      onAmountChange(availableBalance.toFixed(2));
+      onAmountChange(formatAmount(availableBalance * leverage));
     } else {
       onBalancePercentChange(num);
       setPercentInputValue(String(num));
@@ -229,44 +240,41 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     onAmountChange,
     onBalancePercentChange,
     availableBalance,
+    leverage,
+    formatAmount,
   ]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
-      {/* Header: Size, then Available to trade below (both left-aligned) */}
-      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-        <Text variant={TextVariant.BodySm}>{t('perpsSize')}</Text>
+      {/* Available to trade row */}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Text variant={TextVariant.BodySm}>{t('perpsAvailableToTrade')}</Text>
         <Box
           flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
           gap={2}
         >
-          <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-            {t('perpsAvailableToTrade')}
+          <Text variant={TextVariant.BodySm}>
+            {`${formatNumber(availableBalance, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC`}
           </Text>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={1}
-          >
-            <Text
-              variant={TextVariant.BodyXs}
-              color={TextColor.TextAlternative}
-            >
-              {`${formatCurrencyWithMinThreshold(availableBalance, 'USD')} USDC`}
-            </Text>
-            <Icon
-              name={IconName.AddCircle}
-              size={IconSize.Sm}
-              color={IconColor.IconMuted}
-              aria-label="Add Funds"
-              onClick={onAddFunds}
-              className="bg-transparent border-0 p-0 cursor-pointer flex items-center"
-              data-testid="amount-input-add-funds"
-            />
-          </Box>
+          <Icon
+            name={IconName.AddCircle}
+            size={IconSize.Sm}
+            color={IconColor.IconAlternative}
+            aria-label="Add Funds"
+            onClick={onAddFunds}
+            className="bg-transparent border-0 p-0 cursor-pointer flex items-center"
+            data-testid="amount-input-add-funds"
+          />
         </Box>
       </Box>
+
+      {/* Size label */}
+      <Text variant={TextVariant.BodySm}>{t('perpsSize')}</Text>
 
       {/* Two side-by-side inputs: USD (left), Token (right) */}
       <Box
@@ -315,7 +323,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextAlternative}
               >
-                {asset}
+                {getDisplaySymbol(asset)}
               </Text>
             }
           />

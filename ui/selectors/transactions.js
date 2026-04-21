@@ -21,8 +21,9 @@ import {
   getProviderConfig,
   getCurrentChainId,
 } from '../../shared/lib/selectors/networks';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
+
 import {
+  createDeepEqualSelector,
   createShallowEqualInputAndResultSelector,
   createParameterizedShallowEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';

@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 #
 # Pushes benchmark results to MetaMask/extension_benchmark_stats.
-# Called twice per CI run (once per mode), writing to separate stats files
-# under stats/{branch}/, both keyed by commit hash.
+# Writes stats/{branch}/performance_data.json, keyed by commit hash.
 #
-# Modes (BENCHMARK_DATA_TYPE):
-#   dapp-page-load (default) - appends a single dapp page-load JSON to page_load_data.json
-#   performance              - aggregates Selenium-based benchmark JSONs (startup, interaction,
-#                              user-journey) into performance_data.json
+# Mode (BENCHMARK_DATA_TYPE):
+#   performance (default) - aggregates benchmark-*.json artifacts (startup, interaction,
+#                           user journey, dapp page load / pageLoadBenchmark) into performance_data.json
 #
 
 set -e
@@ -29,7 +27,7 @@ if [[ -z "${OWNER:-}" ]]; then
     exit 1
 fi
 
-DATA_TYPE="${BENCHMARK_DATA_TYPE:-dapp-page-load}"
+DATA_TYPE="${BENCHMARK_DATA_TYPE:-performance}"
 CLONE_DIR="temp-benchmark-stats"
 
 # Sanitize branch name for use as a directory (e.g. release/12.x → release-12.x)
@@ -37,17 +35,6 @@ RAW_BRANCH="${BRANCH_NAME:-main}"
 SAFE_BRANCH="${RAW_BRANCH//\//-}"
 
 # Assemble the commit data based on mode
-assemble_dapp_page_load_data() {
-    local benchmark_file="${BENCHMARK_FILE:-test-artifacts/benchmarks/dapp-page-load-benchmark-results.json}"
-
-    jq . "${benchmark_file}" > /dev/null || {
-        echo "Error: Benchmark JSON is invalid: ${benchmark_file}" >&2
-        exit 1
-    }
-
-    cat "${benchmark_file}"
-}
-
 assemble_performance_data() {
     local results_dir="${BENCHMARK_RESULTS_DIR:-benchmark-results}"
 
@@ -56,13 +43,15 @@ assemble_performance_data() {
         exit 1
     fi
 
-    # Page load presets run on ALL browser/buildType combinations (chrome/firefox × browserify/webpack).
-    # They are stored under the "pageLoad" group, keyed as "{browser}-{buildType}-{preset}"
-    # so each combination has its own historical entry (e.g. "chrome-browserify-standardHome").
+    # Startup benchmarks run on ALL browser/buildType combinations (chrome/firefox × browserify/webpack).
+    # They are merged under the historical preset key "pageLoad" (legacy name in performance_data.json),
+    # with entries keyed as "{browser}-{buildType}-{presetName}"
+    # (e.g. "chrome-browserify-startupStandardHome").
     #
-    # User action and performance presets only run on chrome-browserify (the canonical production
-    # target) and are stored under their own preset key (e.g. "userActions", "performanceAssets").
-    local PAGE_LOAD_PRESETS=("startupStandardHome" "startupPowerUserHome")
+    # Interaction, user journey, and dapp page load presets only run on chrome-browserify (the canonical
+    # production target) and are stored under their own preset key (e.g. "interactionUserActions",
+    # "userJourneyAssets", "pageLoadBenchmark").
+    local STARTUP_PRESETS=("startupStandardHome" "startupPowerUserHome")
 
     local presets_json="{}"
     local page_load_json="{}"
@@ -87,29 +76,29 @@ assemble_performance_data() {
         build_type=$(echo "${base_name}" | cut -d'-' -f2)
         preset_name=$(echo "${base_name}" | cut -d'-' -f3-)
 
-        local is_page_load=false
-        for pl_preset in "${PAGE_LOAD_PRESETS[@]}"; do
-            if [[ "${preset_name}" == "${pl_preset}" ]]; then
-                is_page_load=true
+        local is_startup=false
+        for startup_preset in "${STARTUP_PRESETS[@]}"; do
+            if [[ "${preset_name}" == "${startup_preset}" ]]; then
+                is_startup=true
                 break
             fi
         done
 
-        if [[ "${is_page_load}" == true ]]; then
-            # Store all browser/buildType combinations for page load presets.
+        if [[ "${is_startup}" == true ]]; then
+            # Store all browser/buildType combinations for startup presets.
             # Unwrap the outer key: the benchmark runner wraps results as { "<camelCaseFileName>": {...} }.
             # The inner key is the camelCase filename (e.g. "standardHome"), NOT the preset name
             # (e.g. "startupStandardHome"), so we unwrap by checking for a single-key object.
-            local preset_data page_load_key
+            local preset_data startup_key
             preset_data=$(jq 'if (keys | length) == 1 then .[keys[0]] else . end' "${file}")
-            page_load_key="${browser}-${build_type}-${preset_name}"
-            echo "  Adding page load preset '${page_load_key}'" >&2
+            startup_key="${browser}-${build_type}-${preset_name}"
+            echo "  Adding startup preset '${startup_key}'" >&2
             page_load_json=$(echo "${page_load_json}" | jq \
-                --arg key "${page_load_key}" \
+                --arg key "${startup_key}" \
                 --argjson data "${preset_data}" \
                 '. + {($key): $data}')
         elif [[ "${browser}" == "chrome" && "${build_type}" == "browserify" ]]; then
-            # For user action and performance presets, only store chrome-browserify —
+            # For interaction, user journey, and dapp page load presets, only store chrome-browserify —
             # that is what the PR comment displays.
             local preset_data
             preset_data=$(jq . "${file}")
@@ -119,7 +108,7 @@ assemble_performance_data() {
                 --argjson data "${preset_data}" \
                 '. + {($key): $data}')
         else
-            echo "  Skipping ${browser}-${build_type}-${preset_name} (non-page-load, non-canonical)" >&2
+            echo "  Skipping ${browser}-${build_type}-${preset_name} (non-startup, non-canonical)" >&2
             continue
         fi
 
@@ -131,7 +120,7 @@ assemble_performance_data() {
         return
     fi
 
-    # Merge the pageLoad group into presets (only if any page load files were found)
+    # Merge the startup group into presets (only if any startup files were found).
     if [[ "${page_load_json}" != "{}" ]]; then
         presets_json=$(echo "${presets_json}" | jq --argjson pl "${page_load_json}" '. + {"pageLoad": $pl}')
     fi
@@ -146,12 +135,6 @@ assemble_performance_data() {
 
 # Resolve stats file and assemble data
 case "${DATA_TYPE}" in
-    dapp-page-load)
-        STATS_FILE="stats/${SAFE_BRANCH}/page_load_data.json"
-        COMMIT_MESSAGE="Adding dapp page-load benchmark data for ${RAW_BRANCH} at commit: ${HEAD_COMMIT_HASH}"
-        echo "Mode: dapp-page-load (branch: ${RAW_BRANCH})"
-        COMMIT_DATA=$(assemble_dapp_page_load_data)
-        ;;
     performance)
         STATS_FILE="stats/${SAFE_BRANCH}/performance_data.json"
         COMMIT_MESSAGE="Adding performance benchmark data for ${RAW_BRANCH} at commit: ${HEAD_COMMIT_HASH}"
@@ -165,7 +148,7 @@ case "${DATA_TYPE}" in
         ;;
     *)
         echo "Unknown BENCHMARK_DATA_TYPE: ${DATA_TYPE}"
-        echo "Must be 'dapp-page-load' or 'performance'"
+        echo "Must be 'performance'"
         exit 1
         ;;
 esac

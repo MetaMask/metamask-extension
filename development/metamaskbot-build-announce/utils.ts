@@ -8,6 +8,9 @@ import {
 } from '../../shared/constants/benchmarks';
 import type { HistoricalBaselineReference } from './historical-comparison';
 
+export const EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL =
+  'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';
+
 /**
  * Runs a section builder and returns its result, or a "data not available"
  * message for `sectionName` if the builder returns null/undefined/'' or throws.
@@ -202,6 +205,29 @@ export function resolveBaseline(
 }
 
 /**
+ * Parses a CI artifact filename into its component parts.
+ *
+ * @param artifactFileName - CI artifact filename without extension
+ * (e.g., 'benchmark-chrome-browserify-interactionUserActions').
+ * @returns Parsed components, or undefined if not a valid artifact filename.
+ */
+export function parseArtifactName(
+  artifactFileName: string,
+): { browser: string; buildType: string; preset: string } | undefined {
+  const platforms = Object.values(BENCHMARK_PLATFORMS).join('|');
+  const buildTypes = Object.values(BENCHMARK_BUILD_TYPES).join('|');
+  const pattern = new RegExp(
+    `^benchmark-(${platforms})-(${buildTypes})-(.+)$`,
+    'u',
+  );
+  const match = pattern.exec(artifactFileName);
+  if (!match) {
+    return undefined;
+  }
+  return { browser: match[1], buildType: match[2], preset: match[3] };
+}
+
+/**
  * Extracts the preset name from a CI artifact filename.
  *
  * Examples:
@@ -214,25 +240,17 @@ export function resolveBaseline(
 export function extractPresetFromArtifactName(
   artifactFileName: string,
 ): string | undefined {
-  const platforms = Object.values(BENCHMARK_PLATFORMS).join('|');
-  const buildTypes = Object.values(BENCHMARK_BUILD_TYPES).join('|');
-  const pattern = new RegExp(
-    `^benchmark-(?:${platforms})-(?:${buildTypes})-(.+)$`,
-    'u',
-  );
-  const match = pattern.exec(artifactFileName);
-  if (!match) {
+  const parsed = parseArtifactName(artifactFileName);
+  if (!parsed) {
     return undefined;
   }
 
-  const presetName = match[1];
-
   // Special case: startup benchmarks are stored under 'pageLoad' preset
-  if (presetName.startsWith('startup')) {
+  if (parsed.preset.startsWith('startup')) {
     return 'pageLoad';
   }
 
-  return presetName;
+  return parsed.preset;
 }
 
 /**

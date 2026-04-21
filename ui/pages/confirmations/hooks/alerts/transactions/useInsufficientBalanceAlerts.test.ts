@@ -213,6 +213,54 @@ describe('useInsufficientBalanceAlerts', () => {
     expect(alerts).toEqual(ALERT);
   });
 
+  it('return alert when balance is insufficient, has `selectedGasFeeToken` but empty gasFeeTokens (Tempo)', () => {
+    const transactionFromTempoMock = {
+      ...genUnapprovedContractInteractionConfirmation({
+        chainId: '0x1079',
+        excludeNativeTokenForFee: true,
+        gasFeeTokens: [],
+        selectedGasFeeToken: '0x20c0000000000000000000000000000000000000',
+      }),
+      id: TRANSACTION_ID_MOCK,
+      txParams: {
+        from: ACCOUNT_ADDRESS,
+        value: '0x2',
+        maxFeePerGas: '0x2',
+        gas: '0x3',
+      } as TransactionParams,
+    } as TransactionMeta;
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: true,
+      pending: false,
+    });
+    const alerts = runHook({
+      balance: 0,
+      currentConfirmation: transactionFromTempoMock,
+      transaction: {
+        ...transactionFromTempoMock,
+      },
+    });
+
+    expect(alerts).toEqual([
+      {
+        actions: [
+          {
+            key: 'buy',
+            label: 'Buy pathUSD',
+          },
+        ],
+        field: 'estimatedFee',
+        isBlocking: true,
+        key: 'insufficientBalance',
+        message:
+          'You do not have enough pathUSD in your account to pay for network fees.',
+        reason: 'Insufficient funds',
+        severity: 'danger',
+      },
+    ]);
+  });
+
   it('returns no alerts when pay is active but required token amount is zero', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: { address: '0xabc', chainId: '0x1' } as never,

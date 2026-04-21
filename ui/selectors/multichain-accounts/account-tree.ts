@@ -19,8 +19,8 @@ import {
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration } from '@metamask/network-controller';
 
-import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
 import {
+  createDeepEqualSelector,
   createParameterizedSelector,
   createParameterizedShallowEqualSelector,
 } from '../../../shared/lib/selectors/selector-creators';

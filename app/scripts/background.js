@@ -28,6 +28,9 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
+  POPUP_FILE,
+  POPUP_INIT_FILE,
+  SIDEPANEL_FILE,
 } from '../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
@@ -55,11 +58,11 @@ import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
+import { backedUpStateKeys } from '../../shared/lib/stores/persistence-manager';
 import {
   CorruptionHandler,
   hasVault,
 } from './lib/state-corruption/state-corruption-recovery';
-import { backedUpStateKeys } from './lib/stores/persistence-manager';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
@@ -101,9 +104,10 @@ import { getRequestSafeReload } from './lib/safe-reload';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
+import { getIframeProperties } from './lib/getIframeProperties';
 
 /**
- * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
+ * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
  */
 
 // MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
@@ -154,6 +158,7 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+const POPUP_LAUNCH_FILE = isFirefox ? POPUP_FILE : POPUP_INIT_FILE;
 
 /**
  * Parses port connection info for routing decisions.
@@ -188,6 +193,7 @@ const requestAccountTabIds = {};
 let controller;
 const senderOriginMapping = {};
 const tabOriginMapping = {};
+const frameIdMapping = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = persistenceManager.get.bind(
@@ -241,6 +247,23 @@ function setGlobalInitializers() {
   rejectInitialization = deferred.reject;
 }
 setGlobalInitializers();
+
+/**
+ * Prefer opening the side panel on toolbar click as soon as the service worker starts.
+ * Without this, the first click after a cold start can use manifest `default_popup` until
+ * {@link setupSidePanelToolbarBehavior} runs after {@link isInitialized}.
+ */
+function applyEarlySidePanelToolbarBehavior() {
+  if (!browser?.sidePanel?.setPanelBehavior) {
+    return;
+  }
+  browser.sidePanel
+    .setPanelBehavior({ openPanelOnActionClick: true })
+    .catch(() => {
+      // Non-fatal: `applyToolbarSidePanelBehavior` applies persisted preference once ready.
+    });
+}
+applyEarlySidePanelToolbarBehavior();
 
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
@@ -718,9 +741,12 @@ async function initialize(backup) {
 
   if (isManifestV3) {
     addOffscreenConnectivityListener((isOnline) => {
-      if (connectivityReady && controller.controllerApi.setConnectivityStatus) {
+      if (
+        connectivityReady &&
+        controller.messengerClientApi.setConnectivityStatus
+      ) {
         const status = isOnline ? 'online' : 'offline';
-        controller.controllerApi.setConnectivityStatus(status);
+        controller.messengerClientApi.setConnectivityStatus(status);
       } else {
         // Queue until controller is ready
         pendingConnectivityStatus = isOnline;
@@ -812,13 +838,13 @@ async function initialize(backup) {
     connectivityReady = true;
     if (pendingConnectivityStatus !== null) {
       const status = pendingConnectivityStatus ? 'online' : 'offline';
-      controller.controllerApi.setConnectivityStatus(status);
+      controller.messengerClientApi.setConnectivityStatus(status);
     }
   } else {
     // MV2: Background page has access to window events
     const updateConnectivity = (isOnline) => {
       const status = isOnline ? 'online' : 'offline';
-      controller.controllerApi.setConnectivityStatus(status);
+      controller.messengerClientApi.setConnectivityStatus(status);
     };
     updateConnectivity(globalThis.navigator.onLine);
     globalThis.addEventListener('online', () => updateConnectivity(true));
@@ -960,7 +986,7 @@ export async function loadStateFromPersistence(backup) {
   // read from disk
   // first from preferred, async API:
   /**
-   * @type {import("./lib/stores/base-store").MetaMaskStorageStructure | undefined}
+   * @type {import("../../shared/lib/stores/base-store").MetaMaskStorageStructure | undefined}
    */
   let preMigrationVersionedData;
   if (backup) {
@@ -1007,8 +1033,7 @@ export async function loadStateFromPersistence(backup) {
     migrations,
     defaultVersion: process.env.WITH_STATE
       ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
-        require('../../test/e2e/fixtures/fixture-builder')
-          .FIXTURE_STATE_METADATA_VERSION
+        require('../../test/e2e/fixtures/default-fixture.json').meta.version
       : null,
   });
 
@@ -1177,8 +1202,10 @@ export async function loadStateFromPersistence(backup) {
  * which should only be tracked only after a user opts into metrics and connected to the dapp
  *
  * @param {string} origin - URL of visited dapp
+ * @param {string} [mainFrameOrigin] - The top-level frame origin (if sender is an iframe, this differs from origin)
+ * @param {number} [frameId] - The frame ID from chrome.runtime.MessageSender (0 = top-level, >0 = iframe)
  */
-function emitDappViewedMetricEvent(origin) {
+function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
   const { metaMetricsId } = controller.metaMetricsController.state;
   if (!shouldEmitDappViewedEvent(metaMetricsId)) {
     return;
@@ -1197,6 +1224,8 @@ function emitDappViewedMetricEvent(origin) {
     accountsState.internalAccounts.accounts,
   ).length;
 
+  const iframeProps = getIframeProperties({ frameId, origin, mainFrameOrigin });
+
   controller.metaMetricsController.trackEvent(
     {
       event: MetaMetricsEventName.DappViewed,
@@ -1208,6 +1237,7 @@ function emitDappViewedMetricEvent(origin) {
         is_first_visit: false,
         number_of_accounts: numberOfTotalAccounts,
         number_of_accounts_connected: numberOfConnectedAccounts,
+        ...iframeProps,
       },
     },
     {
@@ -1234,6 +1264,7 @@ function trackDappView(remotePort) {
   const { origin } = url;
   const tabUrl = new URL(remotePort.sender.tab.url);
   const { origin: tabOrigin } = tabUrl;
+  const { frameId } = remotePort.sender;
 
   // store the origin to corresponding tab so it can provide info for onActivated listener
   if (!Object.keys(senderOriginMapping).includes(tabId)) {
@@ -1242,6 +1273,9 @@ function trackDappView(remotePort) {
   // do the same for tab origin, which can be different to sender origin
   if (!(tabId in tabOriginMapping)) {
     tabOriginMapping[tabId] = tabOrigin;
+  }
+  if (!(tabId in frameIdMapping)) {
+    frameIdMapping[tabId] = frameId;
   }
 
   const isConnectedToDapp = controller.controllerMessenger.call(
@@ -1256,14 +1290,16 @@ function trackDappView(remotePort) {
   // - refresh the dapp
   // - open dapp in a new tab
   if (isConnectedToDapp && isTabLoaded) {
-    emitDappViewedMetricEvent(origin);
+    emitDappViewedMetricEvent(origin, tabOrigin, frameId);
   }
 }
 
 /**
  * Emit App Opened event
+ *
+ * @param {string} environmentType - The environment type where the app is opening
  */
-function emitAppOpenedMetricEvent() {
+function emitAppOpenedMetricEvent(environmentType) {
   const { metaMetricsId, participateInMetaMetrics } =
     controller.metaMetricsController.state;
 
@@ -1275,6 +1311,7 @@ function emitAppOpenedMetricEvent() {
   controller.metaMetricsController.trackEvent({
     event: MetaMetricsEventName.AppOpened,
     category: MetaMetricsEventCategory.App,
+    environmentType,
   });
 }
 
@@ -1290,6 +1327,7 @@ function trackAppOpened(environment) {
     ENVIRONMENT_TYPE_POPUP,
     ENVIRONMENT_TYPE_NOTIFICATION,
     ENVIRONMENT_TYPE_FULLSCREEN,
+    ENVIRONMENT_TYPE_SIDEPANEL,
   ];
 
   // Check if any UI instances are currently open
@@ -1302,25 +1340,30 @@ function trackAppOpened(environment) {
 
   // Only emit event if no UI is open and environment is valid
   if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
-    emitAppOpenedMetricEvent();
+    emitAppOpenedMetricEvent(environment);
   }
 }
 
 /**
- * Helper function to refresh appActiveTab by querying the current active tab
- * This is used when the sidepanel opens to ensure it has the current tab info
+ * Helper function to refresh appActiveTab by querying the current active tab.
+ * This is used when the sidepanel opens to ensure it has the current tab info,
+ * and when the focused window changes to keep appActiveTab in sync.
+ *
+ * @param {number} [windowId] - If provided, queries the active tab in this
+ * specific window. Otherwise queries the active tab in the current window.
  */
-const refreshAppActiveTab = async () => {
+const refreshAppActiveTab = async (windowId) => {
   await isInitialized;
   if (!controller) {
     return;
   }
 
   try {
-    const tabs = await browser.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
+    const queryOptions = windowId
+      ? { active: true, windowId }
+      : { active: true, currentWindow: true };
+
+    const tabs = await browser.tabs.query(queryOptions);
     if (!tabs || tabs.length === 0) {
       return;
     }
@@ -1837,21 +1880,29 @@ export function setupController(
     onTransactionFailed,
   );
 
-  function onTransactionFailed() {
-    failedTxCount += 1;
-    const popupFile = isFirefox ? 'popup.html' : 'popup-init.html';
+  function setClientOpenOptions(tab) {
+    const popup = tab ? `${POPUP_LAUNCH_FILE}?tab=${tab}` : POPUP_LAUNCH_FILE;
+    const sidepanelPath = tab ? `${SIDEPANEL_FILE}?tab=${tab}` : SIDEPANEL_FILE;
+
     try {
       if (isManifestV3) {
-        browser.action.setPopup({ popup: `${popupFile}?tab=activity` });
-        browser.sidePanel?.setOptions?.({
-          path: 'sidepanel.html?tab=activity',
-        });
+        browser.action.setPopup({ popup });
+        browser.sidePanel?.setOptions?.({ path: sidepanelPath });
       } else {
-        browser.browserAction.setPopup({ popup: `${popupFile}?tab=activity` });
+        browser.browserAction.setPopup({ popup });
       }
     } catch (e) {
-      console.error('Error setting failed tx badge popup:', e);
+      console.error('Error setting extension action URLs:', e);
     }
+  }
+
+  function onTransactionFailed() {
+    if (isClientOpenStatus()) {
+      return;
+    }
+
+    failedTxCount += 1;
+    setClientOpenOptions('activity');
     updateBadge();
   }
 
@@ -1859,18 +1910,9 @@ export function setupController(
     if (!failedTxCount) {
       return;
     }
+
     failedTxCount = 0;
-    const popupFile = isFirefox ? 'popup.html' : 'popup-init.html';
-    try {
-      if (isManifestV3) {
-        browser.action.setPopup({ popup: popupFile });
-        browser.sidePanel?.setOptions?.({ path: 'sidepanel.html' });
-      } else {
-        browser.browserAction.setPopup({ popup: popupFile });
-      }
-    } catch (e) {
-      console.error('Error clearing failed tx badge popup:', e);
-    }
+    setClientOpenOptions();
     updateBadge();
   }
 
@@ -2086,7 +2128,11 @@ function onNavigateToTab() {
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
-          emitDappViewedMetricEvent(currentOrigin);
+          emitDappViewedMetricEvent(
+            currentOrigin,
+            currentTabOrigin,
+            frameIdMapping[tabId],
+          );
         }
       }
 
@@ -2117,52 +2163,34 @@ function onNavigateToTab() {
 }
 
 // Sidepanel-specific functionality
-// Set initial side panel behavior based on user preference
-const initSidePanelBehavior = async () => {
-  // Only initialize sidepanel behavior if the browser supports the sidePanel API (not Firefox)
-  if (!browser?.sidePanel) {
+async function applyToolbarSidePanelBehavior() {
+  if (!browser?.sidePanel?.setPanelBehavior) {
     return;
   }
+  const useSidePanelAsDefault =
+    controller?.preferencesController?.state?.preferences
+      ?.useSidePanelAsDefault ?? true;
+  await browser.sidePanel.setPanelBehavior({
+    openPanelOnActionClick: useSidePanelAsDefault,
+  });
+}
 
-  try {
-    // Wait for controller to be initialized
-    await isInitialized;
-
-    // Get user preference (default to false for side panel)
-    const useSidePanelAsDefault =
-      controller?.preferencesController?.state?.preferences
-        ?.useSidePanelAsDefault ?? false;
-
-    // Set panel behavior based on preference
-    if (browser?.sidePanel?.setPanelBehavior) {
-      await browser.sidePanel.setPanelBehavior({
-        openPanelOnActionClick: useSidePanelAsDefault,
-      });
-    }
-  } catch (error) {
-    console.error('Error setting side panel behavior:', error);
-  }
-};
-
-initSidePanelBehavior();
-
-// Listen for preference changes to update side panel behavior dynamically
-const setupPreferenceListener = async () => {
-  // Only setup preference listener if the browser supports the sidePanel API (not Firefox)
+/**
+ * Sets initial side panel toolbar behavior after startup, then subscribes only to
+ * `useSidePanelAsDefault` changes (not every PreferencesController update).
+ */
+const setupSidePanelToolbarBehavior = async () => {
   if (!browser?.sidePanel) {
     return;
   }
 
   try {
     await isInitialized;
+    await applyToolbarSidePanelBehavior();
 
-    // Listen for preference changes using the controller messenger
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
-      (state) => {
-        const useSidePanelAsDefault =
-          state?.preferences?.useSidePanelAsDefault ?? false;
-
+      (useSidePanelAsDefault) => {
         if (browser?.sidePanel?.setPanelBehavior) {
           browser.sidePanel
             .setPanelBehavior({
@@ -2173,13 +2201,15 @@ const setupPreferenceListener = async () => {
             );
         }
       },
+      (preferencesControllerState) =>
+        preferencesControllerState?.preferences?.useSidePanelAsDefault ?? true,
     );
   } catch (error) {
-    console.error('Error setting up preference listener:', error);
+    console.error('Error setting side panel toolbar behavior:', error);
   }
 };
 
-setupPreferenceListener();
+setupSidePanelToolbarBehavior();
 
 // Initialize appActiveTab by querying the current active tab on startup
 const initializeAppActiveTab = async () => {
@@ -2339,6 +2369,22 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   }
 
   return {};
+});
+
+// Window focus listener to keep appActiveTab in sync across browser windows.
+// Without this, switching between Chrome windows can leave appActiveTab pointing
+// at the previously focused window's tab, causing
+// the connection bar [ui/components/multichain/dapp-connection-control-bar/dapp-connection-control-bar.tsx]
+// to disappear or appear on the wrong window.
+browser.windows.onFocusChanged.addListener(async (windowId) => {
+  // WINDOW_ID_NONE means all browser windows lost focus (e.g., user switched
+  // to another application). Keep appActiveTab unchanged so it stays correct
+  // when the user returns to Chrome.
+  if (windowId === browser.windows.WINDOW_ID_NONE) {
+    return;
+  }
+
+  await refreshAppActiveTab(windowId);
 });
 
 function setupSentryGetStateGlobal(store) {

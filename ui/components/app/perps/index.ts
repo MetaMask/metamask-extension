@@ -19,7 +19,8 @@ export {
   formatStatus,
   getStatusColor,
   getDisplaySymbol,
-  getAssetIconUrl,
+  getAssetIconUrls,
+  type AssetIconUrls,
   groupTransactionsByDate,
   filterTransactionsByType,
   getTransactionStatusColor,
@@ -27,6 +28,7 @@ export {
   filterMarketsByQuery,
   isHip3Market,
   isCryptoMarket,
+  hasVolume,
 } from './utils';
 
 // Edit Margin

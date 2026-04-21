@@ -3,23 +3,20 @@
  * Measures home page load time with standard wallet state
  */
 
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import {
   BENCHMARK_PERSONA,
-  runPageLoadBenchmark,
-  collectWebVitals,
-} from '../../utils';
-import type {
-  BenchmarkResults,
-  WebVitalsMetrics,
+  type BenchmarkResults,
+  type WebVitalsMetrics,
 } from '../../../../../shared/constants/benchmarks';
+import { runPageLoadBenchmark, collectWebVitals } from '../../utils';
 import type {
   Metrics,
   PageLoadBenchmarkOptions,
   MeasurePageResult,
-} from '../../utils';
+} from '../../utils/types';
 
 async function measurePageStandard(
   pageName: string,
@@ -31,7 +28,7 @@ async function measurePageStandard(
   const persona = BENCHMARK_PERSONA.STANDARD;
   await withFixtures(
     {
-      fixtures: new FixtureBuilder().build(),
+      fixtures: new FixtureBuilderV2().build(),
       disableServerMochaToBackground: true,
       title,
     },

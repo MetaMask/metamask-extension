@@ -19,14 +19,17 @@ import * as Sentry from '@sentry/node';
 import { isNullOrUndefined } from '@metamask/utils';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import { STAT_KEY } from '../../../shared/constants/benchmarks';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  STAT_KEY,
+} from '../../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
   WebVitalsSummary,
 } from '../../../shared/constants/benchmarks';
 import { getGitBranch, getGitCommitHash } from './utils/git';
 import type { UserActionResult } from './utils/types';
-import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from './utils/constants';
 import { aggregateWebVitals } from './utils/statistics';
 
 const packageJsonPath = path.resolve(__dirname, '../../../package.json');

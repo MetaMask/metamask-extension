@@ -1,6 +1,6 @@
 import { getErrorMessage, hasProperty, isObject } from '@metamask/utils';
 import { captureException } from '../../../shared/lib/sentry';
-import { BrowserStorageAdapter } from '../lib/stores/browser-storage-adapter';
+import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
 
 export type VersionedData = {
   meta: { version: number };

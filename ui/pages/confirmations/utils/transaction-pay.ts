@@ -6,6 +6,7 @@ import type {
 } from '@metamask/transaction-pay-controller';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
+import { isTestNetwork } from '../../../helpers/utils/network-helper';
 import { Asset, AssetStandard } from '../types/send';
 
 const FOUR_BYTE_TOKEN_TRANSFER = '0xa9059cbb';
@@ -75,6 +76,13 @@ export function getAvailableTokens({
           token.standard !== AssetStandard.Native) ||
         !token.accountType?.includes('eip155')
       ) {
+        return false;
+      }
+
+      // MetaMask Pay can't source funds from testnets (quotes route through
+      // bridges/swaps that don't support them), so exclude testnet tokens
+      // from both the Pay-with list and the auto-selected default.
+      if (token.chainId && isTestNetwork(token.chainId as Hex)) {
         return false;
       }
 

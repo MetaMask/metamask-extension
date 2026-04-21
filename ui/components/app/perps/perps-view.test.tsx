@@ -7,6 +7,7 @@ import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransac
 import * as streamHooks from '../../../hooks/perps/stream';
 import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
+import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
 const mockGetPerpsStreamManager = jest.fn();
@@ -56,22 +57,36 @@ jest.mock('../../../hooks/perps/stream', () => {
       account: streamMocks.mockAccountState,
       isInitialLoading: false,
     })),
-    usePerpsLiveMarketData: jest.fn(() => ({
-      markets: [
-        ...streamMocks.mockCryptoMarkets,
-        ...streamMocks.mockHip3Markets,
-      ],
-      cryptoMarkets: streamMocks.mockCryptoMarkets,
-      hip3Markets: streamMocks.mockHip3Markets,
-      isInitialLoading: false,
-    })),
   };
 });
+
+jest.mock('./hooks/usePerpsTabExploreData', () => ({
+  usePerpsTabExploreData: jest.fn(() => ({
+    exploreMarkets: [
+      ...mocks.mockCryptoMarkets,
+      ...mocks.mockHip3Markets,
+    ].slice(0, 5),
+    watchlistMarkets: mocks.mockCryptoMarkets.filter((market) =>
+      ['BTC', 'ETH'].includes(market.symbol),
+    ),
+    isInitialLoading: false,
+  })),
+}));
+
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+jest.mock('../../../hooks/perps/usePerpsEligibility', () => ({
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
+}));
+
+jest.mock('./perps-tutorial-modal', () => ({
+  PerpsTutorialModal: () => null,
+}));
 
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
     isTestnet: false,
+    isFirstTimeUser: { testnet: false, mainnet: false },
     watchlistMarkets: {
       testnet: [],
       mainnet: ['BTC', 'ETH'],
@@ -82,6 +97,7 @@ const mockStore = configureStore({
 describe('PerpsView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
     jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
       positions: mocks.mockPositions,
@@ -89,6 +105,13 @@ describe('PerpsView', () => {
     });
     jest.mocked(streamHooks.usePerpsLiveOrders).mockReturnValue({
       orders: mocks.mockOrders,
+      isInitialLoading: false,
+    });
+    jest.mocked(usePerpsTabExploreData).mockReturnValue({
+      exploreMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
+      watchlistMarkets: mocks.mockCryptoMarkets.filter((market) =>
+        ['BTC', 'ETH'].includes(market.symbol),
+      ),
       isInitialLoading: false,
     });
     mockGetPerpsStreamManager.mockReturnValue({
@@ -166,11 +189,13 @@ describe('PerpsView', () => {
       expect(screen.getByText(/open orders/iu)).toBeInTheDocument();
     });
 
-    it('displays close all option in positions section', () => {
+    // TODO: TAT-2852 - Restore when batch close/cancel is implemented
+    it('does not display close all option in positions section while hidden', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
-      const closeAllElements = screen.getAllByText(/close all/iu);
-      expect(closeAllElements.length).toBeGreaterThanOrEqual(1);
+      expect(
+        screen.queryByTestId('perps-close-all-positions'),
+      ).not.toBeInTheDocument();
     });
 
     it('shows Support & Learn section with Learn basics', () => {
@@ -201,6 +226,31 @@ describe('PerpsView', () => {
       expect(
         screen.getByTestId('perps-recent-activity-see-all'),
       ).toBeInTheDocument();
+    });
+
+    it('filters out order and funding transactions from Recent Activity', () => {
+      // mockTransactions contains trades (tx-001, tx-002, tx-002b),
+      // a funding entry (tx-003), orders (tx-004 to tx-004d), and a deposit (tx-005)
+      jest.mocked(usePerpsTransactionHistory).mockReturnValueOnce({
+        transactions: mocks.mockTransactions,
+        isLoading: false,
+        error: null,
+        refetch: jest.fn(),
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      // Trade and deposit cards should be shown
+      expect(screen.getByTestId('transaction-card-tx-001')).toBeInTheDocument();
+      expect(screen.getByTestId('transaction-card-tx-005')).toBeInTheDocument();
+
+      // Funding and order cards must not appear in Recent Activity
+      expect(
+        screen.queryByTestId('transaction-card-tx-003'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('transaction-card-tx-004'),
+      ).not.toBeInTheDocument();
     });
 
     it('shows watchlist when mock watchlist symbols match market data', () => {
@@ -243,8 +293,9 @@ describe('PerpsView', () => {
     });
   });
 
+  // TODO: TAT-2852 - Restore/unskip when batch close/cancel is implemented
   describe('close all and cancel all', () => {
-    it('calls batch close and applies a single positions snapshot', async () => {
+    it.skip('calls batch close and applies a single positions snapshot', async () => {
       const clearAll = jest.fn();
       const pushPositions = jest.fn();
       mockGetPerpsStreamManager.mockReturnValue({
@@ -286,7 +337,7 @@ describe('PerpsView', () => {
       expect(pushPositions).toHaveBeenCalledWith([]);
     });
 
-    it('calls batch cancel and applies a single orders snapshot', async () => {
+    it.skip('calls batch cancel and applies a single orders snapshot', async () => {
       const ordersPush = jest.fn();
       mockGetPerpsStreamManager.mockReturnValue({
         init: jest.fn().mockResolvedValue(undefined),
@@ -360,7 +411,7 @@ describe('PerpsView', () => {
       );
     });
 
-    it('refreshes open orders when cancel all returns success false with no failures', async () => {
+    it.skip('refreshes open orders when cancel all returns success false with no failures', async () => {
       const ordersPush = jest.fn();
       mockGetPerpsStreamManager.mockReturnValue({
         init: jest.fn().mockResolvedValue(undefined),
@@ -400,7 +451,7 @@ describe('PerpsView', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('shows batch error when cancel all reports failures', async () => {
+    it.skip('shows batch error when cancel all reports failures', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsCancelOrders') {
           return Promise.resolve({
@@ -426,5 +477,29 @@ describe('PerpsView', () => {
         [],
       );
     });
+  });
+
+  describe('geo-blocking', () => {
+    it('renders the geo-block modal element (closed by default)', () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('perps-view')).toBeInTheDocument();
+    });
+  });
+
+  it('passes tab explore and watchlist markets from the tab hook', () => {
+    jest.mocked(usePerpsTabExploreData).mockReturnValue({
+      exploreMarkets: [mocks.mockCryptoMarkets[0]],
+      watchlistMarkets: [mocks.mockCryptoMarkets[1]],
+      isInitialLoading: false,
+    });
+
+    renderWithProvider(<PerpsView />, mockStore);
+
+    expect(screen.getByTestId('explore-markets-BTC')).toBeInTheDocument();
+    expect(screen.queryByTestId('explore-markets-ETH')).not.toBeInTheDocument();
+    expect(screen.getByTestId('perps-watchlist-ETH')).toBeInTheDocument();
+    expect(screen.queryByTestId('perps-watchlist-BTC')).not.toBeInTheDocument();
   });
 });

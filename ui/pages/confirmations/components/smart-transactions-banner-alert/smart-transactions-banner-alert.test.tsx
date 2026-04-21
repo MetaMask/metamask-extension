@@ -16,6 +16,7 @@ type TestConfirmContextValue = {
   currentConfirmation: Confirmation;
   isScrollToBottomCompleted: boolean;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
+  goBackTo: string | undefined;
 };
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -40,6 +41,7 @@ const renderWithConfirmContext = (
     } as SignatureRequestType,
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: () => undefined,
+    goBackTo: undefined,
   },
 ) => {
   return renderWithProvider(
@@ -266,6 +268,7 @@ describe('SmartTransactionsBannerAlert', () => {
       } as SignatureRequestType,
       isScrollToBottomCompleted: true,
       setIsScrollToBottomCompleted: () => undefined,
+      goBackTo: undefined,
     };
 
     renderWithConfirmContext(

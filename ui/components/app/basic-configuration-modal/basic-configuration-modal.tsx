@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -46,6 +46,7 @@ import {
   onboardingToggleBasicFunctionalityOff,
 } from '../../../ducks/app/app';
 import { ONBOARDING_PRIVACY_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
+import { useBoolean } from '../../../hooks/useBoolean';
 
 export function BasicConfigurationModal() {
   const t = useI18nContext();
@@ -63,14 +64,10 @@ export function BasicConfigurationModal() {
     return pathname === ONBOARDING_PRIVACY_SETTINGS_ROUTE;
   }, [pathname]);
 
-  const [hasAgreed, setHasAgreed] = useState(false);
+  const { value: hasAgreed, toggle } = useBoolean();
 
   const closeModal = () => {
     dispatch(hideBasicFunctionalityModal());
-  };
-
-  const handleCheckboxClick = () => {
-    setHasAgreed(!hasAgreed);
   };
 
   const handleToggle = () => {
@@ -165,7 +162,7 @@ export function BasicConfigurationModal() {
               id="basic-configuration-checkbox"
               data-testid="basic-configuration-checkbox"
               isSelected={hasAgreed}
-              onChange={handleCheckboxClick}
+              onChange={toggle}
               label={t('basicConfigurationModalCheckbox')}
             />
           )}

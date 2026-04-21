@@ -31,6 +31,7 @@ import {
   getAssetsRates,
 } from '../../selectors/assets';
 import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import { EMPTY_ARRAY } from '../../selectors/shared';
 import { type BridgeAppState, getFromChains } from './selectors';
 import { type BridgeToken } from './types';
 import { getMaybeHexChainId } from './utils';
@@ -317,17 +318,23 @@ const getNonEvmAssetsWithBalance = createSelector(
 // Combines EVM and non-EVM assets and appends tokenFiatAmount to each asset
 const getBridgeAssetsForAccountGroupId = createSelector(
   [
+    (_: BridgeAppState, id: AccountGroupId | undefined) => id,
     getEvmAssetsWithBalance,
     getEvmExchangeRates,
     getNonEvmAssetsWithBalance,
     getAssetsRates,
   ],
   (
+    id,
     evmAssetsWithBalance,
     evmExchangeRatesByAssetId,
     nonEvmAssetsWithBalance,
     nonEvmExchangeRatesByAssetId,
   ): BridgeToken[] => {
+    if (!id) {
+      return EMPTY_ARRAY as unknown as BridgeToken[];
+    }
+
     const evmAssetsWithFiatBalances = evmAssetsWithBalance.map((asset) => ({
       ...asset,
       tokenFiatAmount: new BigNumber(asset.balance ?? '0')
