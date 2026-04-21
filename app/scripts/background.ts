@@ -2032,7 +2032,11 @@ export function setupController(
   function onTransactionStatusUpdated({
     transactionMeta,
   }: {
-    transactionMeta?: { status?: string; txParams?: { from?: string; nonce?: string }; chainId?: string };
+    transactionMeta?: {
+      status?: string;
+      txParams?: { from?: string; nonce?: string };
+      chainId?: string;
+    };
   }) {
     const { status, txParams, chainId } = transactionMeta ?? {};
     if (status !== 'failed' && status !== 'dropped') {
