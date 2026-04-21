@@ -1,12 +1,10 @@
 #!/usr/bin/env node
-/* eslint-disable import-x/extensions */
 import {
   createServer,
   KnowledgeStore,
   setKnowledgeStore,
   allocatePort,
 } from '@metamask/client-mcp-core';
-/* eslint-enable import-x/extensions */
 
 import { MetaMaskSessionManager } from './metamask-provider';
 import { createMetaMaskE2EContext } from './capabilities/factory';
