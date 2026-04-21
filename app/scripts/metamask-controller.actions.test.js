@@ -261,11 +261,12 @@ describe('MetaMaskController', function () {
       await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
       const result2 = metamaskController.keyringController.state;
 
-      expect(result1.keyrings).toHaveLength(1);
+      expect(result1.keyrings).toHaveLength(2);
       expect(result1.keyrings[0].metadata.id).toBe(mockULIDs[0]); // 0: Primary HD keyring
 
-      // On restore, a new keyring metadata is generated.
-      const ulidNewIndex = 1;
+      // On restore, new keyring metadata is generated for both HD and Snap keyrings.
+      // ULID[0]=HD1, ULID[1]=Snap1, ULID[2]=HD2, ULID[3]=Snap2
+      const ulidNewIndex = 2;
       expect(result2).toStrictEqual({
         ...result1,
         keyrings: [
@@ -274,6 +275,13 @@ describe('MetaMaskController', function () {
             metadata: {
               ...result1.keyrings[0].metadata,
               id: mockULIDs[ulidNewIndex + 0], // 0: New primary HD keyring
+            },
+          },
+          {
+            ...result1.keyrings[1],
+            metadata: {
+              ...result1.keyrings[1].metadata,
+              id: mockULIDs[ulidNewIndex + 1], // 1: New Snap keyring
             },
           },
         ],

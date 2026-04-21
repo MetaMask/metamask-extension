@@ -412,6 +412,12 @@ import { ProfileMetricsControllerInit } from './messenger-client-init/profile-me
 import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metrics-service-init';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { registerWalletServices } from './lib/wallet-services/register';
+import { importMnemonicToVault as importMnemonicToVaultImpl } from './lib/wallet-services/vault-management';
+import {
+  getTokenStandardAndDetails as getTokenStandardAndDetailsImpl,
+  getTokenSymbol as getTokenSymbolImpl,
+} from './lib/wallet-services/token-resolution';
+import createFrameIdMiddleware from './lib/createFrameIdMiddleware';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -863,11 +869,11 @@ export default class MetamaskController {
     );
     overrideActionHandler(
       'MultichainAccountService:discoverAndCreateAccounts',
-      (...a) => this.multichainAccountService.discoverAndCreateAccounts(...a),
+      (...a) => this.discoverAndCreateAccounts(...a),
     );
     overrideActionHandler(
       'MultichainAccountService:addAccountsWithBalance',
-      (...a) => this.multichainAccountService.addAccountsWithBalance(...a),
+      (...a) => this._addAccountsWithBalance(...a),
     );
 
     // SnapController
@@ -929,7 +935,7 @@ export default class MetamaskController {
     );
     overrideActionHandler(
       'PermissionController:removeAllAccountPermissions',
-      (...a) => this.permissionController.removeAllAccountPermissions(...a),
+      (...a) => this.removeAllAccountPermissions(...a),
     );
     overrideActionHandler('PermissionController:revokePermissions', (...a) =>
       this.permissionController.revokePermissions(...a),
@@ -1050,6 +1056,117 @@ export default class MetamaskController {
     overrideActionHandler(
       'PreferencesController:setPasswordForgotten',
       (...a) => this.preferencesController.setPasswordForgotten(...a),
+    );
+
+    // AccountsController extras — for sortEvmAccountsByLastSelected, listAccounts
+    overrideActionHandler('AccountsController:listAccounts', (...a) =>
+      this.accountsController.listAccounts(...a),
+    );
+
+    // ApprovalController extras — for requestPermissionApproval
+    overrideActionHandler(
+      'ApprovalController:addAndShowApprovalRequest',
+      (...a) => this.approvalController.addAndShowApprovalRequest(...a),
+    );
+
+    // PermissionController extras — for getPermittedAccounts
+    overrideActionHandler('PermissionController:getCaveat', (...a) =>
+      this.permissionController.getCaveat(...a),
+    );
+
+    // SeedlessOnboardingController extras — for createSeedPhraseBackup
+    overrideActionHandler(
+      'SeedlessOnboardingController:storeKeyringEncryptionKey',
+      (...a) =>
+        this.seedlessOnboardingController.storeKeyringEncryptionKey(...a),
+    );
+
+    // VaultManagement loop-breakers: override routes service self-calls to MC
+    // methods so jest.spyOn() on instance methods continues to work.
+    overrideActionHandler('VaultManagement:importMnemonicToVault', (...a) =>
+      this.importMnemonicToVault(...a),
+    );
+    overrideActionHandler(
+      'VaultManagement:convertEnglishWordlistIndicesToCodepoints',
+      (data) => this._convertEnglishWordlistIndicesToCodepoints(data),
+    );
+
+    // TokenResolution — supply live provider to service functions at call time
+    overrideActionHandler(
+      'TokenResolution:getTokenStandardAndDetails',
+      (address, userAddress, tokenId) =>
+        getTokenStandardAndDetailsImpl(
+          {
+            messenger: this.controllerMessenger,
+            getProvider: () => this.provider,
+          },
+          address,
+          userAddress,
+          tokenId,
+        ),
+    );
+    overrideActionHandler('TokenResolution:getTokenSymbol', (address) =>
+      getTokenSymbolImpl(
+        {
+          messenger: this.controllerMessenger,
+          getProvider: () => this.provider,
+        },
+        address,
+      ),
+    );
+
+    // AssetsContractController — for getTokenStandardAndDetails and getTokenSymbol spy interception
+    overrideActionHandler(
+      'AssetsContractController:getTokenStandardAndDetails',
+      (...a) => this.assetsContractController.getTokenStandardAndDetails(...a),
+    );
+
+    // AccountsController extras — for resetAccount, sortEvmAccountsByLastSelected, sortMultichainAccountsByLastSelected
+    overrideActionHandler('AccountsController:getSelectedAccount', (...a) =>
+      this.accountsController.getSelectedAccount(...a),
+    );
+    overrideActionHandler('AccountsController:getAccountByAddress', (...a) =>
+      this.accountsController.getAccountByAddress(...a),
+    );
+    overrideActionHandler('AccountsController:getAccount', (...a) =>
+      this.accountsController.getAccount(...a),
+    );
+
+    // AccountTreeController extras — for sortMultichainAccountsByLastSelected
+    overrideActionHandler('AccountTreeController:getAccountContext', (...a) =>
+      this.accountTreeController.getAccountContext(...a),
+    );
+    overrideActionHandler(
+      'AccountTreeController:getAccountGroupObject',
+      (...a) => this.accountTreeController.getAccountGroupObject(...a),
+    );
+
+    // PermissionController extras — for permission management
+    overrideActionHandler(
+      'PermissionController:updatePermissionsByCaveat',
+      (...a) => this.permissionController.updatePermissionsByCaveat(...a),
+    );
+    overrideActionHandler(
+      'PermissionController:requestPermissionsIncremental',
+      (...a) => this.permissionController.requestPermissionsIncremental(...a),
+    );
+
+    // KeyringController extras — for removeAccount
+    overrideActionHandler('KeyringController:removeAccount', (...a) =>
+      this.keyringController.removeAccount(...a),
+    );
+
+    // SeedlessOnboardingController extras — for addNewSeedPhraseBackup (non-social path)
+    overrideActionHandler(
+      'SeedlessOnboardingController:updateBackupMetadataState',
+      (...a) =>
+        this.seedlessOnboardingController.updateBackupMetadataState(...a),
+    );
+
+    // AccountManagement extras — for sortEvmAccountsByLastSelected error path
+    overrideActionHandler(
+      'AccountManagement:captureKeyringTypesWithMissingIdentities',
+      (...a) => this.captureKeyringTypesWithMissingIdentities(...a),
     );
 
     // Record installation info if this is the first time the extension is running.
@@ -3201,11 +3318,7 @@ export default class MetamaskController {
 
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
-      getTokenSymbol: (address) =>
-        this.controllerMessenger
-          .call('TokenResolution:getERC20TokenInfo', address)
-          .then((info) => info?.symbol ?? null)
-          .catch(() => null),
+      getTokenSymbol: this.getTokenSymbol.bind(this),
       getTokenStandardAndDetailsByChain:
         this.getTokenStandardAndDetailsByChain.bind(this),
       getERC1155BalanceOf:
@@ -4045,6 +4158,11 @@ export default class MetamaskController {
       'VaultManagement:createNewVaultAndKeychain',
       password,
     );
+    // Initialize Snap keyring and forward selected account group — mirrors main-branch.
+    await this.forwardSelectedAccountGroupToSnapKeyring(
+      await this.getSnapKeyring(),
+      this.accountTreeController.getSelectedAccountGroup(),
+    );
     // Return the primary keyring so callers can read its metadata.id.
     return this.keyringController?.state?.keyrings[0];
   }
@@ -4054,6 +4172,12 @@ export default class MetamaskController {
       'VaultManagement:createNewVaultAndRestore',
       password,
       encodedSeedPhrase,
+    );
+    // Initialize Snap keyring and forward selected account group — mirrors main-branch
+    // createNewVaultAndRestore which calls forwardSelectedAccountGroupToSnapKeyring.
+    await this.forwardSelectedAccountGroupToSnapKeyring(
+      await this.getSnapKeyring(),
+      this.accountTreeController.getSelectedAccountGroup(),
     );
     const completedOnboarding =
       this.onboardingController?.state?.completedOnboarding;
@@ -4072,6 +4196,13 @@ export default class MetamaskController {
       address,
       userAddress,
       tokenId,
+    );
+  }
+
+  async getTokenSymbol(address) {
+    return this.controllerMessenger.call(
+      'TokenResolution:getTokenSymbol',
+      address,
     );
   }
 
@@ -4370,8 +4501,8 @@ export default class MetamaskController {
       shouldImportSolanaAccount: true,
     },
   ) {
-    return this.controllerMessenger.call(
-      'VaultManagement:importMnemonicToVault',
+    return importMnemonicToVaultImpl(
+      { messenger: this.controllerMessenger },
       mnemonic,
       options,
     );
@@ -4893,12 +5024,15 @@ export default class MetamaskController {
       },
     );
     // Select the account
-    this.preferencesController.setSelectedAddress(unlockedAccount);
+    const internalAccount =
+      this.accountsController.getAccountByAddress(unlockedAccount);
+    if (internalAccount) {
+      this.accountsController.setSelectedAccount(internalAccount.id);
+    }
 
     const accounts = this.accountsController.listAccounts();
 
-    const { identities } = this.preferencesController.state;
-    return { unlockedAccount, identities, accounts };
+    return { unlockedAccount, accounts };
   }
 
   //
@@ -5031,6 +5165,39 @@ export default class MetamaskController {
     return this.controllerMessenger.call(
       'AccountManagement:sortMultichainAccountsByLastSelected',
       addresses,
+    );
+  }
+
+  /**
+   * Sorts a list of CAIP account IDs by lastSelected, deduplicating addresses
+   * across chains and preserving relative order for same-address entries.
+   *
+   * @param {string[]} accountIds - CAIP-10 account IDs to sort.
+   * @returns {string[]} The sorted CAIP-10 account IDs.
+   */
+  sortAccountIdsByLastSelected(accountIds) {
+    if (accountIds.length < 2) {
+      return accountIds;
+    }
+
+    const addressByCaipAccountId = new Map(
+      accountIds.map((caipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return [caipAccountId, address];
+      }),
+    );
+
+    const addresses = [...new Set(addressByCaipAccountId.values())];
+    const sortedAddresses =
+      this.sortMultichainAccountsByLastSelected(addresses);
+    const rankByAddress = new Map(
+      sortedAddresses.map((address, index) => [address, index]),
+    );
+
+    return [...accountIds].sort(
+      (firstAccountId, secondAccountId) =>
+        rankByAddress.get(addressByCaipAccountId.get(firstAccountId)) -
+        rankByAddress.get(addressByCaipAccountId.get(secondAccountId)),
     );
   }
 
@@ -6415,6 +6582,8 @@ export default class MetamaskController {
         ),
       rejectApprovalRequestsForOrigin: () =>
         this.rejectOriginPendingApprovals(origin),
+      sortAccountIdsByLastSelected:
+        this.sortAccountIdsByLastSelected.bind(this),
     };
   }
 
@@ -6467,6 +6636,11 @@ export default class MetamaskController {
     // Append tabId to each request if it exists
     if (tabId) {
       engine.push(createTabIdMiddleware({ tabId }));
+    }
+
+    // Append frameId to each request if present (0 = top-level frame, >0 = iframe)
+    if (sender?.frameId !== undefined) {
+      engine.push(createFrameIdMiddleware({ frameId: sender.frameId }));
     }
 
     engine.push(createLoggerMiddleware({ origin }));
@@ -6936,6 +7110,11 @@ export default class MetamaskController {
       engine.push(createTabIdMiddleware({ tabId }));
     }
 
+    // Append frameId to each request if present (0 = top-level frame, >0 = iframe)
+    if (sender?.frameId !== undefined) {
+      engine.push(createFrameIdMiddleware({ frameId: sender.frameId }));
+    }
+
     engine.push(createLoggerMiddleware({ origin }));
 
     engine.push((req, _res, next, end) => {
@@ -7050,6 +7229,8 @@ export default class MetamaskController {
               ),
             },
           }),
+        sortAccountIdsByLastSelected:
+          this.sortAccountIdsByLastSelected.bind(this),
       }),
     );
 

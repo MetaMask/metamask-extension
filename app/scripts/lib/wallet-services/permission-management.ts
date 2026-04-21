@@ -1,4 +1,12 @@
 /* eslint-disable @typescript-eslint/unified-signatures */
+import {
+  Caip25CaveatMutators,
+  Caip25CaveatType,
+  Caip25CaveatValue,
+  Caip25EndowmentPermissionName,
+  setPermittedEthChainIds,
+} from '@metamask/chain-agnostic-permission';
+import type { Hex } from '@metamask/utils';
 /**
  * permission-management
  *
@@ -52,10 +60,6 @@ type PermissionManagementMessenger = {
     scopeString: string,
   ): unknown;
   call(
-    action: 'PermissionController:removeAllAccountPermissions',
-    targetAccount: string,
-  ): void;
-  call(
     action: 'ApprovalController:addAndShowApprovalRequest',
     request: {
       id: string;
@@ -71,7 +75,7 @@ type PermissionManagementMessenger = {
   call(
     action: 'PermissionController:requestPermissionsIncremental',
     subject: { origin: string },
-    chainId: string,
+    permissions: Record<string, unknown>,
   ): Promise<void>;
   call(
     action: 'NetworkOrderController:updateNetworksList',
@@ -234,8 +238,13 @@ export function removeAllAccountPermissions(
   targetAccount: string,
 ): void {
   deps.messenger.call(
-    'PermissionController:removeAllAccountPermissions',
-    targetAccount,
+    'PermissionController:updatePermissionsByCaveat',
+    Caip25CaveatType,
+    (existingScopes: unknown) =>
+      Caip25CaveatMutators[Caip25CaveatType].removeAccount(
+        existingScopes as Caip25CaveatValue,
+        targetAccount as Hex,
+      ),
   );
 }
 
@@ -257,11 +266,12 @@ export async function requestPermissionApproval(
   permissions: Record<string, unknown>,
   options: Record<string, unknown> = {},
 ): Promise<unknown> {
+  const id = crypto.randomUUID();
   return deps.messenger.call('ApprovalController:addAndShowApprovalRequest', {
-    id: crypto.randomUUID(),
+    id,
     origin,
     requestData: {
-      metadata: { id: crypto.randomUUID(), origin },
+      metadata: { id, origin },
       permissions,
       ...options,
     },
@@ -285,10 +295,24 @@ export async function requestApprovalPermittedChainsPermission(
   origin: string,
   chainId: string,
 ): Promise<void> {
+  const caveatValue = setPermittedEthChainIds(
+    {
+      requiredScopes: {},
+      optionalScopes: {},
+      sessionProperties: {},
+      isMultichainOrigin: false,
+    },
+    [chainId as Hex],
+  );
+
   await deps.messenger.call(
     'PermissionController:requestPermissionsIncremental',
     { origin },
-    chainId,
+    {
+      [Caip25EndowmentPermissionName]: {
+        caveats: [{ type: Caip25CaveatType, value: caveatValue }],
+      },
+    },
   );
 }
 

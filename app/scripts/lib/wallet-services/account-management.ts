@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/unified-signatures */
 import log from 'loglevel';
+import { isEvmAccountType } from '@metamask/keyring-api';
 
 /**
  * account-management
@@ -66,9 +67,16 @@ type AccountManagementMessenger = {
     address: string;
     [key: string]: unknown;
   };
+  call(action: 'NetworkController:getState'): {
+    selectedNetworkClientId: string;
+  };
+  call(
+    action: 'NetworkController:getNetworkClientById',
+    networkClientId: string,
+  ): { configuration: { chainId: string } };
   call(
     action: 'TransactionController:wipeTransactions',
-    opts: { address: string },
+    opts: { address: string; chainId?: string },
   ): void;
   call(
     action: 'SmartTransactionsController:wipeSmartTransactions',
@@ -88,6 +96,26 @@ type AccountManagementMessenger = {
     address: string;
     metadata: { lastSelected?: number };
   }[];
+  call(
+    action: 'AccountsController:getAccount',
+    accountId: string,
+  ): { type: string; metadata: { lastSelected?: number } } | undefined;
+  call(
+    action: 'AccountTreeController:getAccountContext',
+    accountId: string,
+  ): { groupId: string } | undefined;
+  call(
+    action: 'AccountTreeController:getAccountGroupObject',
+    groupId: string,
+  ): { accounts: string[] } | undefined;
+  call(
+    action: 'AccountManagement:captureKeyringTypesWithMissingIdentities',
+    internalAccounts: {
+      address: string;
+      metadata: { lastSelected?: number };
+    }[],
+    addresses: string[],
+  ): void;
   call(
     action: 'AccountManagement:removeAccount',
     address: string,
@@ -314,9 +342,19 @@ export async function resetAccount(
     'AccountsController:getSelectedAccount',
   );
   const { address } = selectedAccount as { address: string };
+  const { selectedNetworkClientId } = deps.messenger.call(
+    'NetworkController:getState',
+  );
+  const {
+    configuration: { chainId },
+  } = deps.messenger.call(
+    'NetworkController:getNetworkClientById',
+    selectedNetworkClientId,
+  );
 
   deps.messenger.call('TransactionController:wipeTransactions', {
     address,
+    chainId,
   });
   deps.messenger.call('SmartTransactionsController:wipeSmartTransactions', {
     address,
@@ -846,40 +884,65 @@ export function sortEvmAccountsByLastSelected(
  * from the EOA account in their account group (via AccountTreeController).
  *
  * Extracted from MetamaskController.sortMultichainAccountsByLastSelected (L5347).
- *
- * TODO: Requires messenger actions:
- * - AccountsController:getAccountByAddress
- * - AccountTreeController:getAccountContext (does not exist yet)
  * @param deps
  * @param addresses
- * @param opts
- * @param opts.getLastSelected
  */
 export function sortMultichainAccountsByLastSelected(
   deps: AccountManagementDependencies,
   addresses: string[],
-  opts: {
-    getLastSelected: (address: string) => number | undefined;
-  },
 ): string[] {
+  const getLastSelected = (address: string): number | undefined => {
+    const account = deps.messenger.call(
+      'AccountsController:getAccountByAddress',
+      address,
+    );
+    if (!account) {
+      return undefined;
+    }
+    const context = deps.messenger.call(
+      'AccountTreeController:getAccountContext',
+      (account as { id: string }).id,
+    );
+    if (!context) {
+      return undefined;
+    }
+    const group = deps.messenger.call(
+      'AccountTreeController:getAccountGroupObject',
+      context.groupId,
+    );
+    if (!group) {
+      return undefined;
+    }
+    for (const accountId of group.accounts) {
+      const groupAccount = deps.messenger.call(
+        'AccountsController:getAccount',
+        accountId,
+      );
+      if (groupAccount && isEvmAccountType(groupAccount.type as never)) {
+        return groupAccount.metadata.lastSelected;
+      }
+    }
+    return undefined;
+  };
+
   return [...addresses].sort(
-    (a, b) => (opts.getLastSelected(b) ?? 0) - (opts.getLastSelected(a) ?? 0),
+    (a, b) => (getLastSelected(b) ?? 0) - (getLastSelected(a) ?? 0),
   );
 }
 
 /**
  * Sorts a list of addresses by lastSelected using a provided InternalAccount
  * list.  Throws if any address has no matching InternalAccount entry.
+ * Calls captureKeyringTypesWithMissingIdentities before throwing so the
+ * MC-level spy intercepts the diagnostic capture call.
  *
  * Extracted from MetamaskController.sortAddressesWithInternalAccounts (L5372).
- *
- * TODO: No messenger conversions needed — pure sort over injected data.
- * @param _deps
+ * @param deps
  * @param addresses
  * @param internalAccounts
  */
 export function sortAddressesWithInternalAccounts(
-  _deps: AccountManagementDependencies,
+  deps: AccountManagementDependencies,
   addresses: string[],
   internalAccounts: {
     address: string;
@@ -897,8 +960,18 @@ export function sortAddressesWithInternalAccounts(
     );
 
     if (!firstAccount) {
+      deps.messenger.call(
+        'AccountManagement:captureKeyringTypesWithMissingIdentities',
+        internalAccounts,
+        addresses,
+      );
       throw new Error(`Missing identity for address: "${firstAddress}".`);
     } else if (!secondAccount) {
+      deps.messenger.call(
+        'AccountManagement:captureKeyringTypesWithMissingIdentities',
+        internalAccounts,
+        addresses,
+      );
       throw new Error(`Missing identity for address: "${secondAddress}".`);
     } else if (
       firstAccount.metadata.lastSelected === secondAccount.metadata.lastSelected
@@ -942,6 +1015,8 @@ export const ACCOUNT_MANAGEMENT_ACTIONS = {
     'AccountManagement:sortMultichainAccountsByLastSelected',
   sortAddressesWithInternalAccounts:
     'AccountManagement:sortAddressesWithInternalAccounts',
+  captureKeyringTypesWithMissingIdentities:
+    'AccountManagement:captureKeyringTypesWithMissingIdentities',
 } as const;
 
 /**
@@ -1031,10 +1106,8 @@ export function registerActions(messenger: AccountManagementMessenger): void {
   );
   messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.sortMultichainAccountsByLastSelected,
-    (
-      addresses: string[],
-      opts: { getLastSelected: (address: string) => number | undefined },
-    ) => sortMultichainAccountsByLastSelected(deps, addresses, opts),
+    (addresses: string[]) =>
+      sortMultichainAccountsByLastSelected(deps, addresses),
   );
   messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.sortAddressesWithInternalAccounts,
@@ -1045,5 +1118,12 @@ export function registerActions(messenger: AccountManagementMessenger): void {
         metadata: { lastSelected?: number };
       }[],
     ) => sortAddressesWithInternalAccounts(deps, addresses, internalAccounts),
+  );
+  // captureKeyringTypesWithMissingIdentities: MC overrides this handler in tests
+  // to route to the MC instance method. In production, no-op is acceptable since
+  // this is a diagnostic Sentry capture that should not block the error throw.
+  messenger.registerActionHandler(
+    ACCOUNT_MANAGEMENT_ACTIONS.captureKeyringTypesWithMissingIdentities,
+    () => undefined,
   );
 }

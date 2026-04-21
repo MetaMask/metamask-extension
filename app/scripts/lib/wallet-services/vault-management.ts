@@ -251,6 +251,34 @@ type VaultManagementMessenger = {
     password: string,
     encodedSeedPhrase: number[] | string | Uint8Array,
   ): Promise<void>;
+  call(
+    action: 'VaultManagement:convertEnglishWordlistIndicesToCodepoints',
+    wordlistIndices: Uint8Array,
+  ): Buffer;
+  call(
+    action: 'VaultManagement:importMnemonicToVault',
+    mnemonic: string,
+    options?: {
+      shouldCreateSocialBackup: boolean;
+      shouldSelectAccount: boolean;
+      shouldImportSolanaAccount?: boolean;
+    },
+  ): Promise<void>;
+  call(
+    action: 'VaultManagement:addNewSeedPhraseBackup',
+    mnemonic: string,
+    keyringId: string,
+    syncWithSocial?: boolean,
+  ): Promise<void>;
+  call(
+    action: 'VaultManagement:fetchAllSecretData',
+    password: string,
+  ): Promise<{ data: Uint8Array; type: string }[]>;
+  call(
+    action: 'VaultManagement:restoreSeedPhrasesToVault',
+    secretDatas: { data: Uint8Array; type: string }[],
+  ): Promise<void>;
+  call(action: 'VaultManagement:syncKeyringEncryptionKey'): Promise<void>;
 
   // registerActionHandler — used in registerActions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -500,8 +528,11 @@ export async function getSeedPhrase(
     password,
     keyringId,
   );
-  // Convert mnemonic wordlist indices to Unicode codepoints for display.
-  return Array.from(mnemonic);
+  const encoded = deps.messenger.call(
+    'VaultManagement:convertEnglishWordlistIndicesToCodepoints',
+    mnemonic,
+  );
+  return Array.from(encoded);
 }
 
 // ---------------------------------------------------------------------------
@@ -635,7 +666,7 @@ export async function createSeedPhraseBackup(
     keyringId,
   );
 
-  await syncKeyringEncryptionKey(deps);
+  await deps.messenger.call('VaultManagement:syncKeyringEncryptionKey');
 }
 
 /**
@@ -775,14 +806,20 @@ export async function syncSeedPhrases(deps: VaultDependencies): Promise<void> {
       }
 
       // convert the seed phrase to a mnemonic (string)
-      const encodedSrp = convertEnglishWordlistIndicesToCodepoints(secret.data);
+      const encodedSrp = deps.messenger.call(
+        'VaultManagement:convertEnglishWordlistIndicesToCodepoints',
+        secret.data,
+      );
       const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
 
-      await importMnemonicToVault(deps, mnemonicToRestore, {
-        shouldCreateSocialBackup: false,
-        shouldSelectAccount: false,
-        shouldImportSolanaAccount: true,
-      });
+      await deps.messenger.call(
+        'VaultManagement:importMnemonicToVault',
+        mnemonicToRestore,
+        {
+          shouldCreateSocialBackup: false,
+          shouldSelectAccount: false,
+        },
+      );
     }
   }
 }
@@ -945,7 +982,7 @@ export async function importMnemonicToVault(
   const {
     shouldCreateSocialBackup,
     shouldSelectAccount,
-    shouldImportSolanaAccount,
+    shouldImportSolanaAccount = true,
   } = options;
 
   // TODO: createVaultMutex should be managed by MultichainAccountService
@@ -970,8 +1007,8 @@ export async function importMnemonicToVault(
 
   if (isSocialLoginFlow) {
     try {
-      await addNewSeedPhraseBackup(
-        deps,
+      await deps.messenger.call(
+        'VaultManagement:addNewSeedPhraseBackup',
         mnemonic,
         id,
         shouldCreateSocialBackup,
@@ -1080,14 +1117,21 @@ export async function restoreSeedPhrasesToVault(
     }
 
     // convert the seed phrase to a mnemonic (string)
-    const encodedSrp = convertEnglishWordlistIndicesToCodepoints(secret.data);
+    const encodedSrp = deps.messenger.call(
+      'VaultManagement:convertEnglishWordlistIndicesToCodepoints',
+      secret.data,
+    );
     const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
 
-    await importMnemonicToVault(deps, mnemonicToRestore, {
-      shouldCreateSocialBackup,
-      shouldSelectAccount: shouldSetSelectedAccount,
-      shouldImportSolanaAccount,
-    });
+    await deps.messenger.call(
+      'VaultManagement:importMnemonicToVault',
+      mnemonicToRestore,
+      {
+        shouldCreateSocialBackup,
+        shouldSelectAccount: shouldSetSelectedAccount,
+        shouldImportSolanaAccount,
+      },
+    );
   }
 }
 
@@ -1110,12 +1154,13 @@ export async function restoreSocialBackupAndGetSeedPhrase(
   password: string,
 ): Promise<string> {
   // get the first seed phrase from the array — this is the oldest/root seed phrase
-  const [firstSecretData, ...remainingSecretData] = await fetchAllSecretData(
-    deps,
+  const [firstSecretData, ...remainingSecretData] = await deps.messenger.call(
+    'VaultManagement:fetchAllSecretData',
     password,
   );
 
-  const firstSeedPhrase = convertEnglishWordlistIndicesToCodepoints(
+  const firstSeedPhrase = deps.messenger.call(
+    'VaultManagement:convertEnglishWordlistIndicesToCodepoints',
     firstSecretData.data,
   );
   const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
@@ -1130,7 +1175,10 @@ export async function restoreSocialBackupAndGetSeedPhrase(
 
   // restore the remaining Mnemonics/SeedPhrases/PrivateKeys to the vault
   if (remainingSecretData.length > 0) {
-    await restoreSeedPhrasesToVault(deps, remainingSecretData);
+    await deps.messenger.call(
+      'VaultManagement:restoreSeedPhrasesToVault',
+      remainingSecretData,
+    );
   }
 
   return mnemonic;
@@ -1452,6 +1500,8 @@ export const VAULT_MANAGEMENT_ACTIONS = {
   getHDEntropyIndex: 'VaultManagement:getHDEntropyIndex',
   markPasswordForgotten: 'VaultManagement:markPasswordForgotten',
   unMarkPasswordForgotten: 'VaultManagement:unMarkPasswordForgotten',
+  convertEnglishWordlistIndicesToCodepoints:
+    'VaultManagement:convertEnglishWordlistIndicesToCodepoints',
 } as const;
 
 /**
@@ -1591,5 +1641,10 @@ export function registerActions(messenger: VaultManagementMessenger): void {
   messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.unMarkPasswordForgotten,
     () => unMarkPasswordForgotten(deps),
+  );
+  messenger.registerActionHandler(
+    VAULT_MANAGEMENT_ACTIONS.convertEnglishWordlistIndicesToCodepoints,
+    (wordlistIndices: Uint8Array) =>
+      convertEnglishWordlistIndicesToCodepoints(wordlistIndices),
   );
 }
