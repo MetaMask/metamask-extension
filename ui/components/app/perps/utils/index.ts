@@ -23,11 +23,14 @@ export {
   isOrderAssociatedWithFullPosition,
 } from './orderUtils';
 
+export { formatPerpsPrice, type PerpsPriceRange } from './formatPerpsPrice';
+
 export {
-  formatPerpsPrice,
-  PRICE_RANGES_UNIVERSAL,
-  type PerpsPriceRange,
-} from './formatPerpsPrice';
+  parsePerpsDisplayPrice,
+  normalizePerpsDisplayPrice,
+  formatPerpsFiatMinimal,
+  formatPerpsFiatUniversal,
+} from './formatPerpsDisplayPrice';
 
 export {
   isValidTakeProfitPrice,

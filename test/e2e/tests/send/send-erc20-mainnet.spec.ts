@@ -45,8 +45,6 @@ describe('Send ERC20 - Mainnet', function () {
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.waitForNonEvmAccountsLoaded();
         await assetListPage.importTokenBySearch({
           tokenName: 'DAI',
           networkName: MAINNET_DISPLAY_NAME,

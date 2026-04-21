@@ -14,7 +14,7 @@ import {
   setDataCollectionForMarketing,
   setMarketingConsent,
 } from '../../../store/actions';
-import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
