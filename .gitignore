@@ -19,7 +19,22 @@ package
 .sublime-project
 
 # LLMs
-.claude/*.local.*
+.claude/**/*.local.*
+.cursor/**/*.local.*
+.agents/**/*.local.*
+
+# MCP config (commonly contains credentials)
+/.mcp.json
+.claude/mcp.json
+.cursor/mcp.json
+.agents/mcp.json
+
+# Agent session artifacts, logs, and caches
+.claude/cache/
+.claude/logs/
+.claude/todos/
+.cursor/cache/
+.cursor/logs/
 
 *.bak
 
