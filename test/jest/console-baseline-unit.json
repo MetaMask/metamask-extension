@@ -1519,7 +1519,15 @@
     "ui/pages/settings-v2/assets-tab/assets-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/pages/settings-v2/backup-and-sync-tab/backup-and-sync-tab.test.tsx": {
+      "MetaMask: Background connection not initialized": 1,
+      "React: componentWill* lifecycle deprecations": 1,
+      "Reselect: Input stability warnings": 1
+    },
     "ui/pages/settings-v2/developer-tools-tab/developer-tools-tab.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1
+    },
+    "ui/pages/settings-v2/experimental-tab/experimental-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings-v2/preferences-and-display-tab/account-identicon-item.test.tsx": {
@@ -1576,19 +1584,11 @@
       "Reselect: Identity function warnings": 1,
       "error: Warning: Received `true` for a": 1
     },
-    "ui/pages/settings/backup-and-sync-tab/backup-and-sync-tab.test.tsx": {
-      "MetaMask: Background connection not initialized": 1,
-      "React: componentWill* lifecycle deprecations": 1,
-      "Reselect: Input stability warnings": 1
-    },
     "ui/pages/settings/developer-options-tab/developer-options-tab.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 11,
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings/developer-options-tab/developer-options-toggle-row-component.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1
-    },
-    "ui/pages/settings/experimental-tab/experimental-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings/info-tab/info-tab.test.tsx": {
