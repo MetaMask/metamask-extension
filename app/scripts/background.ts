@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck -- background.ts migrated from .js; full typing deferred
-/* eslint-enable @typescript-eslint/ban-ts-comment */
 /**
  * @file The entry point for the web extension singleton process.
  */
@@ -15,6 +12,8 @@ import { persistenceManager } from './lib/setup-initial-state-hooks';
 import '../../shared/constants/infura-project-id';
 
 import { lightTheme } from '@metamask/design-tokens';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error -- readable-stream ships no .d.ts; `finished` exists at runtime
 import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
@@ -78,6 +77,7 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
+import { SubjectType } from '@metamask/permission-controller';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
@@ -171,7 +171,9 @@ function parsePortInfo(port: Runtime.Port): {
 
   let isMetaMaskUIPort;
   if (isFirefox) {
-    isMetaMaskUIPort = Boolean(metamaskInternalProcessHash[processName]);
+    isMetaMaskUIPort = Boolean(
+      (metamaskInternalProcessHash as Record<string, boolean>)[processName],
+    );
   } else {
     isMetaMaskUIPort =
       senderUrl?.origin === `chrome-extension://${browser.runtime.id}`;
@@ -199,7 +201,7 @@ if (inTest || process.env.METAMASK_DEBUG) {
   );
 }
 
-const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL!);
 
 // normalized (adds a trailing slash to the end of the domain if it's missing)
 // the URL once and reuse it:
@@ -209,6 +211,8 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error -- lazyListener.once union overload not resolvable statically
 lazyListener.once('runtime', 'onInstalled').then((details) => {
   handleOnInstalled(details);
 });
@@ -2167,14 +2171,17 @@ function onNavigateToTab() {
 }
 
 // Sidepanel-specific functionality
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const browserWithSidePanel = browser as any;
+
 async function applyToolbarSidePanelBehavior() {
-  if (!browser?.sidePanel?.setPanelBehavior) {
+  if (!browserWithSidePanel?.sidePanel?.setPanelBehavior) {
     return;
   }
   const useSidePanelAsDefault =
     controller?.preferencesController?.state?.preferences
       ?.useSidePanelAsDefault ?? true;
-  await browser.sidePanel.setPanelBehavior({
+  await browserWithSidePanel.sidePanel.setPanelBehavior({
     openPanelOnActionClick: useSidePanelAsDefault,
   });
 }
@@ -2184,7 +2191,7 @@ async function applyToolbarSidePanelBehavior() {
  * `useSidePanelAsDefault` changes (not every PreferencesController update).
  */
 const setupSidePanelToolbarBehavior = async () => {
-  if (!browser?.sidePanel) {
+  if (!browserWithSidePanel?.sidePanel) {
     return;
   }
 
@@ -2194,18 +2201,20 @@ const setupSidePanelToolbarBehavior = async () => {
 
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
-      (useSidePanelAsDefault) => {
-        if (browser?.sidePanel?.setPanelBehavior) {
-          browser.sidePanel
+      (useSidePanelAsDefault: boolean) => {
+        if (browserWithSidePanel?.sidePanel?.setPanelBehavior) {
+          browserWithSidePanel.sidePanel
             .setPanelBehavior({
               openPanelOnActionClick: useSidePanelAsDefault,
             })
-            .catch((error) =>
+            .catch((error: unknown) =>
               console.error('Error updating panel behavior:', error),
             );
         }
       },
-      (preferencesControllerState) =>
+      (preferencesControllerState: {
+        preferences?: { useSidePanelAsDefault?: boolean };
+      }) =>
         preferencesControllerState?.preferences?.useSidePanelAsDefault ?? true,
     );
   } catch (error) {
@@ -2250,8 +2259,8 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
 
     // Update the app active tab state
     controller.appStateController.setAppActiveTab({
-      id,
-      title,
+      id: id!,
+      title: title ?? '',
       origin,
       protocol,
       url,
@@ -2265,11 +2274,14 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
       origin,
       name: title || host || origin,
       iconUrl: favIconUrl || null,
-      subjectType: 'website',
+      subjectType: SubjectType.Website,
     });
   } catch (error) {
     // Ignore errors from tabs that don't exist or can't be accessed
-    console.log('Error in tabs.onActivated listener:', error.message);
+    console.log(
+      'Error in tabs.onActivated listener:',
+      (error as Error).message,
+    );
   }
 
   return {};
@@ -2349,8 +2361,8 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     if ((urlChanged || statusComplete) && isActuallyActive) {
       // Update the app active tab state
       controller.appStateController.setAppActiveTab({
-        id,
-        title,
+        id: id!,
+        title: title ?? '',
         origin,
         protocol,
         url,
@@ -2364,12 +2376,12 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
         origin,
         name: title || host || origin,
         iconUrl: favIconUrl || null,
-        subjectType: 'website',
+        subjectType: SubjectType.Website,
       });
     }
   } catch (error) {
     // Ignore errors from tabs that don't exist or can't be accessed
-    console.log('Error in tabs.onUpdated listener:', error.message);
+    console.log('Error in tabs.onUpdated listener:', (error as Error).message);
   }
 
   return {};
@@ -2408,7 +2420,8 @@ async function initBackground(backup: Backup | null) {
     await initialize(backup);
     if (process.env.IN_TEST) {
       // Send message to offscreen document
-      if (browser.offscreen) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((browser as any).offscreen) {
         browser.runtime.sendMessage({
           target: OffscreenCommunicationTarget.extension,
           event: OffscreenCommunicationEvents.metamaskBackgroundReady,

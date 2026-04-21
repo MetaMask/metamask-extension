@@ -256,6 +256,7 @@ type StateHooks = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getMostRecentPersistedState?: () => any;
+  getStorageKind?: () => string;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getPersistedState: () => Promise<any>;
@@ -347,6 +348,7 @@ export declare global {
   var stateHooks: StateHooks;
 
   var logStateString: () => Promise<string>;
+  var logEncryptedVault: () => void;
 
   var browser: Browser;
 
