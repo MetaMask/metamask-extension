@@ -202,7 +202,7 @@ export async function getTokenStandardAndDetails(
         symbol: tokenDetails.symbol,
       };
     } catch (e) {
-      log.warn(`Failed to get token balance. Error: ${e}`);
+      log.warn('Failed to get token balance. Error:', e);
     }
   }
 
@@ -215,7 +215,7 @@ export async function getTokenStandardAndDetails(
         tokenId,
       );
     } catch (e) {
-      log.warn(`Failed to get token standard and details. Error: ${e}`);
+      log.warn('Failed to get token standard and details. Error:', e);
     }
   }
 
@@ -338,8 +338,6 @@ export const TOKEN_RESOLUTION_ACTIONS = {
  * is not in the call chain.
  * @param messenger
  * @param getProvider - Lazy getter for the current provider (defaults to no-op).
- *   In production, MC overrides these handlers with closures that supply the
- *   live provider. The default no-op is never reached in practice.
  */
 export function registerActions(
   messenger: TokenResolutionMessenger,
