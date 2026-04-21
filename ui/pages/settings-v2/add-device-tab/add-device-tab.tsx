@@ -1,10 +1,10 @@
 import React from 'react';
-import InfoTab from '../../settings/info-tab/info-tab';
 import { SettingsTab } from '../shared';
 import { SettingItemConfig } from '../types';
+import AddDeviceSettings from './add-device-settings';
 
 const ADD_DEVICE_TAB_SETTING_ITEMS: SettingItemConfig[] = [
-  { id: 'add-device', component: InfoTab },
+  { id: 'add-device', component: AddDeviceSettings },
 ];
 
 const AboutTab = () => {

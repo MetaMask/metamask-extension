@@ -10,6 +10,7 @@ import {
   ButtonIcon,
   Text,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AddWallets,
   EnterPassword,
@@ -17,7 +18,6 @@ import {
   QrCodeScan,
 } from './components';
 import { AddDeviceSettingsStep } from './constant';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const AddDeviceSettings = () => {
   const navigate = useNavigate();
@@ -44,32 +44,9 @@ const AddDeviceSettings = () => {
   };
 
   return (
-    <Box>
-      <Box className="flex items-center justify-between">
-        <ButtonIcon
-          iconName={IconName.ArrowLeft}
-          ariaLabel="back"
-          size={ButtonIconSize.Sm}
-          onClick={() => navigate(-1)}
-          data-testid="settings-v2-header-back-button"
-        />
-        <Text
-          variant={TextVariant.HeadingLg}
-          color={TextColor.TextDefault}
-          fontWeight={FontWeight.Bold}
-        >
-          {t('addDevice')}
-        </Text>
-        <ButtonIcon
-          iconName={IconName.Close}
-          ariaLabel="close"
-          size={ButtonIconSize.Sm}
-          onClick={() => navigate(-1)}
-          data-testid="settings-v2-header-close-button"
-        />
-      </Box>
+    <>
       {renderStep()}
-    </Box>
+    </>
   );
 };
 

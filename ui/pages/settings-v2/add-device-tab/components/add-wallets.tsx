@@ -9,11 +9,11 @@ import {
   Button,
   AvatarAccount,
   AvatarAccountSize,
-  AvatarGroup,
-  AvatarAccountVariant,
-  AvatarGroupVariant,
-  AvatarGroupSize,
   twMerge,
+  AvatarGroup,
+  AvatarGroupVariant,
+  AvatarAccountVariant,
+  AvatarGroupSize,
 } from '@metamask/design-system-react';
 import { CaipChainId } from '@metamask/utils';
 import { AddDeviceSettingsStep } from '../constant';
@@ -23,29 +23,12 @@ type AddWalletsProps = {
   onAddWallets: (type: AddDeviceSettingsStep) => void;
 };
 
-const ETHEREUM_CAIP = 'eip155:1' as CaipChainId;
-const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
-
-const STABLECOIN_AVATAR_PROPS = [
-  {
-    variant: AvatarAccountVariant.Jazzicon,
-    address: USDC_ADDRESS,
-  },
-  {
-    variant: AvatarAccountVariant.Jazzicon,
-    address: ETHEREUM_CAIP,
-  },
-  {
-    variant: AvatarAccountVariant.Jazzicon,
-    address: DAI_ADDRESS,
-  },
-];
-
 const WalletItem = ({
+  id,
   isSelected,
   onChange,
 }: {
+  id: string;
   isSelected: boolean;
   onChange: () => void;
 }) => {
@@ -54,23 +37,21 @@ const WalletItem = ({
   return (
     <Box
       className={twMerge(
-        'flex-row gap-2 items-center justify-between p-4',
+        'flex flex-row gap-2 items-center justify-between p-4',
         isSelected ? 'bg-primary-muted' : 'bg-background-default',
       )}
       onClick={onChange}
     >
-      <Box className="flex-row flex-1 items-center gap-3">
-        <Checkbox
-          isSelected={isSelected}
-          onChange={onChange}
-          id="add-wallet-checkbox"
-        />
+      <Box className="flex flex-row flex-1 items-center gap-3">
+        <Box onClick={(event) => event.stopPropagation()}>
+          <Checkbox isSelected={isSelected} onChange={onChange} id={id} />
+        </Box>
         <AvatarAccount
           shape="circle"
           address="0x1234567890123456789012345678901234567890"
           size={AvatarAccountSize.Md}
         />
-        <Box className="flex-col gap-1">
+        <Box className="flex flex-col gap-1">
           <Text
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
@@ -87,7 +68,7 @@ const WalletItem = ({
           </Text>
         </Box>
       </Box>
-      <Box className="flex-col items-end justify-end gap-1">
+      <Box className="flex flex-col items-end justify-end gap-1">
         <Text
           variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
@@ -96,10 +77,22 @@ const WalletItem = ({
           $1,234.45
         </Text>
         <AvatarGroup
-          size={AvatarGroupSize.Xs}
-          max={1}
           variant={AvatarGroupVariant.Account}
-          avatarPropsArr={STABLECOIN_AVATAR_PROPS}
+          size={AvatarGroupSize.Xs}
+          avatarPropsArr={[
+            {
+              variant: AvatarAccountVariant.Jazzicon,
+              address: '0x123...',
+            },
+            {
+              variant: AvatarAccountVariant.Blockies,
+              address: '0x456...',
+            },
+            {
+              variant: AvatarAccountVariant.Jazzicon,
+              address: '0x789...',
+            },
+          ]}
         />
       </Box>
     </Box>
@@ -145,7 +138,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
   );
 
   return (
-    <Box className="p-4 pt-0 px-0 flex-1 flex-col gap-4">
+    <Box className="p-4 flex flex-1 flex-col gap-4">
       <Box className="flex-col gap-1 px-4">
         <Text
           variant={TextVariant.HeadingLg}
@@ -158,7 +151,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
           {t('add_wallets_desc')}
         </Text>
       </Box>
-      <Box className="flex-col gap-3">
+      <Box className="flex flex-col gap-3">
         <Checkbox
           isSelected={isSelectAll}
           onChange={handleSelectAll}
@@ -170,6 +163,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
           {wallets.map((wallet) => (
             <WalletItem
               key={wallet.address}
+              id={`add-wallet-checkbox-${wallet.address}`}
               isSelected={wallet.isSelected}
               onChange={() => handleSelectWallet(wallet.address)}
             />

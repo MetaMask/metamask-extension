@@ -22,7 +22,7 @@ const EnterPassword = ({ onContinue }: EnterPasswordProps) => {
   const [password, setPassword] = useState('');
   const t = useI18nContext();
   return (
-    <Box className="p-4 pt-0 flex-1 flex-col gap-4">
+    <Box className="p-4 flex flex-1 flex-col gap-4">
       <Text
         variant={TextVariant.HeadingLg}
         className="text-[26px]"
