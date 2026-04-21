@@ -82,6 +82,7 @@ import {
   type TraceCallback,
 } from '../../../shared/lib/trace';
 import { ENVIRONMENT } from '../../../development/build/constants';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
@@ -1441,7 +1442,6 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
         getTokensControllerAllTokens({ metamask: metamaskState }),
       ),
-      ...this.#getAccountCompositionTraits(metamaskState),
       [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
       [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
@@ -1472,6 +1472,7 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.InstallType]: getInstallType(),
       [MetaMetricsUserTrait.DeviceType]: getDeviceType(),
       [MetaMetricsUserTrait.Os]: getOs(),
+      ...this.#getAccountCompositionTraits(metamaskState),
     };
 
     if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {
@@ -1614,10 +1615,8 @@ export class MetaMetricsController extends BaseController<
       // BIP44 multichain accounts share an entropy source id and group index
       // across all chains (EVM, BTC, SOL, …). Deduplicating on that key gives
       // the count of account groups rather than individual chain addresses.
-      const entropy = account.options?.entropy as
-        | { type: 'mnemonic'; id: string; groupIndex: number }
-        | { type: string }
-        | undefined;
+      const entropy: InternalAccount['options']['entropy'] =
+        account.options?.entropy;
 
       if (
         entropy?.type === 'mnemonic' &&

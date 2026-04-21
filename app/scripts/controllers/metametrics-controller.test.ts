@@ -50,7 +50,6 @@ import {
   MetaMetricsController,
   AllowedActions,
   AllowedEvents,
-  MetaMaskState,
   MetaMetricsControllerOptions,
 } from './metametrics-controller';
 import {
@@ -1853,6 +1852,46 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  function buildStateWithAccounts(
+    accounts: Record<string, InternalAccount>,
+  ): Parameters<MetaMetricsController['_buildUserTraitsObject']>[0] {
+    return {
+      addressBook: {},
+      allNfts: {},
+      allTokens: {},
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      internalAccounts: {
+        accounts,
+        selectedAccount: Object.keys(accounts)[0] ?? '',
+      },
+      multichainNetworkConfigurationsByChainId: {},
+      ledgerTransportType: LedgerTransportTypes.webhid,
+      openSeaEnabled: false,
+      useNftDetection: false,
+      theme: 'default' as ThemeType,
+      useTokenDetection: false,
+      names: {
+        [NameType.ETHEREUM_ADDRESS]: {},
+      },
+      currentCurrency: 'usd',
+      securityAlertsEnabled: false,
+      participateInMetaMetrics: true,
+      dataCollectionForMarketing: false,
+      preferences: {
+        privacyMode: false,
+        tokenNetworkFilter: {},
+        tokenSortConfig: {
+          key: '',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
+        showNativeTokenAsMainBalance: false,
+      } as Preferences,
+      srpSessionData: undefined,
+      keyrings: [],
+    };
+  }
+
   describe('_buildUserTraitsObject', function () {
     beforeEach(() => {
       jest.spyOn(Utils, 'getPlatform').mockReturnValue(PLATFORM_CHROME);
@@ -2428,43 +2467,10 @@ describe('MetaMetricsController', function () {
           },
         } as unknown as InternalAccount,
       };
-      const networkState = mockNetworkState({ chainId: CHAIN_IDS.MAINNET });
       await withController(({ controller }) => {
-        const traits = controller._buildUserTraitsObject({
-          addressBook: {},
-          allNfts: {},
-          allTokens: {},
-          ...networkState,
-          internalAccounts: {
-            accounts: mockAccounts,
-            selectedAccount: 'evm-0',
-          },
-          multichainNetworkConfigurationsByChainId: {},
-          ledgerTransportType: LedgerTransportTypes.webhid,
-          openSeaEnabled: false,
-          useNftDetection: false,
-          theme: 'default' as ThemeType,
-          useTokenDetection: false,
-          names: {
-            [NameType.ETHEREUM_ADDRESS]: {},
-          },
-          currentCurrency: 'usd',
-          securityAlertsEnabled: false,
-          participateInMetaMetrics: true,
-          dataCollectionForMarketing: false,
-          preferences: {
-            privacyMode: false,
-            tokenNetworkFilter: {},
-            tokenSortConfig: {
-              key: '',
-              order: 'dsc',
-              sortCallback: 'stringNumeric',
-            },
-            showNativeTokenAsMainBalance: false,
-          } as Preferences,
-          srpSessionData: undefined,
-          keyrings: [],
-        });
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts(mockAccounts),
+        );
 
         // 6 internal accounts but only 2 unique {srp, groupIndex} pairs → 2 groups.
         expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(2);
@@ -2526,44 +2532,10 @@ describe('MetaMetricsController', function () {
           options: {},
         } as unknown as InternalAccount,
       };
-
-      const networkState = mockNetworkState({ chainId: CHAIN_IDS.MAINNET });
       await withController(({ controller }) => {
-        const traits = controller._buildUserTraitsObject({
-          addressBook: {},
-          allNfts: {},
-          allTokens: {},
-          ...networkState,
-          internalAccounts: {
-            accounts: mockAccounts,
-            selectedAccount: 'hd-acc',
-          },
-          multichainNetworkConfigurationsByChainId: {},
-          ledgerTransportType: LedgerTransportTypes.webhid,
-          openSeaEnabled: false,
-          useNftDetection: false,
-          theme: 'default' as ThemeType,
-          useTokenDetection: false,
-          names: {
-            [NameType.ETHEREUM_ADDRESS]: {},
-          },
-          currentCurrency: 'usd',
-          securityAlertsEnabled: false,
-          participateInMetaMetrics: true,
-          dataCollectionForMarketing: false,
-          preferences: {
-            privacyMode: false,
-            tokenNetworkFilter: {},
-            tokenSortConfig: {
-              key: '',
-              order: 'dsc',
-              sortCallback: 'stringNumeric',
-            },
-            showNativeTokenAsMainBalance: false,
-          } as Preferences,
-          srpSessionData: undefined,
-          keyrings: [],
-        });
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts(mockAccounts),
+        );
 
         // 8 accounts: 1 HD group + 1 imported + 1 snap + 1 ledger +
         //             1 trezor + 1 lattice + 1 qr + 1 onekey = 8 distinct groups.
@@ -2733,46 +2705,6 @@ describe('MetaMetricsController', function () {
   });
 
   describe('#getAccountCompositionTraits', function () {
-    function buildStateWithAccounts(
-      accounts: Record<string, unknown>,
-    ): Parameters<MetaMetricsController['_buildUserTraitsObject']>[0] {
-      return {
-        addressBook: {},
-        allNfts: {},
-        allTokens: {},
-        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        internalAccounts: {
-          accounts: accounts as MetaMaskState['internalAccounts']['accounts'],
-          selectedAccount: Object.keys(accounts)[0] ?? '',
-        },
-        multichainNetworkConfigurationsByChainId: {},
-        ledgerTransportType: LedgerTransportTypes.webhid,
-        openSeaEnabled: false,
-        useNftDetection: false,
-        theme: 'default' as ThemeType,
-        useTokenDetection: false,
-        names: {
-          [NameType.ETHEREUM_ADDRESS]: {},
-        },
-        currentCurrency: 'usd',
-        securityAlertsEnabled: false,
-        participateInMetaMetrics: true,
-        dataCollectionForMarketing: false,
-        preferences: {
-          privacyMode: false,
-          tokenNetworkFilter: {},
-          tokenSortConfig: {
-            key: '',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
-          },
-          showNativeTokenAsMainBalance: false,
-        } as Preferences,
-        srpSessionData: undefined,
-        keyrings: [],
-      };
-    }
-
     it('returns zeros for an empty accounts object', async function () {
       await withController(({ controller }) => {
         const traits = controller._buildUserTraitsObject(
@@ -2801,21 +2733,21 @@ describe('MetaMetricsController', function () {
               options: {
                 entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 0 },
               },
-            },
+            } as unknown as InternalAccount,
             'evm-1': {
               id: 'evm-1',
               metadata: { keyring: { type: KeyringType.hdKeyTree } },
               options: {
                 entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 1 },
               },
-            },
+            } as unknown as InternalAccount,
             'evm-2': {
               id: 'evm-2',
               metadata: { keyring: { type: KeyringType.hdKeyTree } },
               options: {
                 entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 2 },
               },
-            },
+            } as unknown as InternalAccount,
           }),
         );
         expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(1);
@@ -2834,21 +2766,21 @@ describe('MetaMetricsController', function () {
               options: {
                 entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 0 },
               },
-            },
+            } as unknown as InternalAccount,
             'evm-srp2': {
               id: 'evm-srp2',
               metadata: { keyring: { type: KeyringType.hdKeyTree } },
               options: {
                 entropy: { type: 'mnemonic', id: 'srp2', groupIndex: 0 },
               },
-            },
+            } as unknown as InternalAccount,
             'evm-srp3': {
               id: 'evm-srp3',
               metadata: { keyring: { type: KeyringType.hdKeyTree } },
               options: {
                 entropy: { type: 'mnemonic', id: 'srp3', groupIndex: 0 },
               },
-            },
+            } as unknown as InternalAccount,
           }),
         );
         expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(3);
@@ -2864,32 +2796,32 @@ describe('MetaMetricsController', function () {
               id: 'ledger-1',
               metadata: { keyring: { type: KeyringType.ledger } },
               options: {},
-            },
+            } as unknown as InternalAccount,
             'ledger-2': {
               id: 'ledger-2',
               metadata: { keyring: { type: KeyringType.ledger } },
               options: {},
-            },
+            } as unknown as InternalAccount,
             'trezor-1': {
               id: 'trezor-1',
               metadata: { keyring: { type: KeyringType.trezor } },
               options: {},
-            },
+            } as unknown as InternalAccount,
             'lattice-1': {
               id: 'lattice-1',
               metadata: { keyring: { type: KeyringType.lattice } },
               options: {},
-            },
+            } as unknown as InternalAccount,
             'qr-1': {
               id: 'qr-1',
               metadata: { keyring: { type: KeyringType.qr } },
               options: {},
-            },
+            } as unknown as InternalAccount,
             'onekey-1': {
               id: 'onekey-1',
               metadata: { keyring: { type: KeyringType.oneKey } },
               options: {},
-            },
+            } as unknown as InternalAccount,
           }),
         );
         expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(0);
@@ -2912,12 +2844,12 @@ describe('MetaMetricsController', function () {
               id: 'imported-1',
               metadata: { keyring: { type: KeyringType.imported } },
               options: {},
-            },
+            } as unknown as InternalAccount,
             'imported-2': {
               id: 'imported-2',
               metadata: { keyring: { type: KeyringType.imported } },
               options: {},
-            },
+            } as unknown as InternalAccount,
           }),
         );
         expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(0);
@@ -2934,37 +2866,37 @@ describe('MetaMetricsController', function () {
               id: 'ledger-1',
               metadata: { keyring: { type: KeyringType.ledger } },
               options: {},
-            },
+            } as unknown as InternalAccount,
             'ledger-2': {
               id: 'ledger-2',
               metadata: { keyring: { type: KeyringType.ledger } },
               options: {},
-            },
+            } as unknown as InternalAccount,
             'trezor-1': {
               id: 'trezor-1',
               metadata: { keyring: { type: KeyringType.trezor } },
               options: {},
-            },
+            } as unknown as InternalAccount,
             'lattice-1': {
               id: 'lattice-1',
               metadata: { keyring: { type: KeyringType.lattice } },
               options: {},
-            },
+            } as unknown as InternalAccount,
             'lattice-2': {
               id: 'lattice-2',
               metadata: { keyring: { type: KeyringType.lattice } },
               options: {},
-            },
+            } as unknown as InternalAccount,
             'qr-1': {
               id: 'qr-1',
               metadata: { keyring: { type: KeyringType.qr } },
               options: {},
-            },
+            } as unknown as InternalAccount,
             'onekey-1': {
               id: 'onekey-1',
               metadata: { keyring: { type: KeyringType.oneKey } },
               options: {},
-            },
+            } as unknown as InternalAccount,
           }),
         );
         // 1 Ledger device + 1 Trezor + 1 Lattice + 1 QR (includes OneKey) = 4 distinct hardware wallets.
@@ -2981,7 +2913,7 @@ describe('MetaMetricsController', function () {
                 id: 'unknown-acc',
                 metadata: { keyring: { type: 'SomeUnknownKeyring' } },
                 options: {},
-              },
+              } as unknown as InternalAccount,
             }),
           ),
         ).not.toThrow();
@@ -2997,7 +2929,7 @@ describe('MetaMetricsController', function () {
                 id: 'no-metadata-acc',
                 metadata: undefined,
                 options: {},
-              },
+              } as unknown as InternalAccount,
             }),
           ),
         ).not.toThrow();
@@ -3014,30 +2946,30 @@ describe('MetaMetricsController', function () {
               options: {
                 entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 0 },
               },
-            },
+            } as unknown as InternalAccount,
             'evm-1': {
               id: 'evm-1',
               metadata: { keyring: { type: KeyringType.hdKeyTree } },
               options: {
                 entropy: { type: 'mnemonic', id: 'srp2', groupIndex: 0 },
               },
-            },
+            } as unknown as InternalAccount,
             'ledger-1': {
               id: 'ledger-1',
               metadata: { keyring: { type: KeyringType.ledger } },
               options: {},
-            },
+            } as unknown as InternalAccount,
             'imported-1': {
               id: 'imported-1',
               metadata: { keyring: { type: KeyringType.imported } },
               options: {},
-            },
+            } as unknown as InternalAccount,
             // Snap accounts are excluded from total wallet count.
             'snap-1': {
               id: 'snap-1',
               metadata: { keyring: { type: KeyringType.snap } },
               options: {},
-            },
+            } as unknown as InternalAccount,
           }),
         );
         const hdEntropies =
