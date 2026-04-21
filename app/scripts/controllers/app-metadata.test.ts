@@ -6,7 +6,8 @@ import {
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import AppMetadataController, {
+import {
+  AppMetadataController,
   getDefaultAppMetadataControllerState,
   type AppMetadataControllerOptions,
 } from './app-metadata';

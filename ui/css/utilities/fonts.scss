@@ -53,14 +53,28 @@ $font-path: './fonts';
 
 @font-face {
   font-family: 'Geist';
-  src: url('#{$font-path}/Geist/Geist-Bold.woff2') format('woff2');
+  src: url('#{$font-path}/Geist/Geist-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('#{$font-path}/Geist/Geist-SemiBoldItalic.woff2') format('woff2');
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('#{$font-path}/Geist/Geist-SemiBold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Geist';
-  src: url('#{$font-path}/Geist/Geist-BoldItalic.woff2') format('woff2');
+  src: url('#{$font-path}/Geist/Geist-SemiBoldItalic.woff2') format('woff2');
   font-weight: 700;
   font-style: italic;
 }

@@ -9,6 +9,7 @@ import { updateSelectedGasFeeToken } from '../../../store/controller-actions/tra
 import { useConfirmContext } from '../context/confirm';
 import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
 import { useHasInsufficientBalance } from './useHasInsufficientBalance';
+import { useTransactionEventFragment } from './useTransactionEventFragment';
 
 export function useAutomaticGasFeeTokenSelect() {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ export function useAutomaticGasFeeTokenSelect() {
     useConfirmContext<TransactionMeta>();
 
   const { hasInsufficientBalance } = useHasInsufficientBalance();
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const {
     gasFeeTokens,
@@ -73,7 +75,29 @@ export function useAutomaticGasFeeTokenSelect() {
 
     if (shouldSelect) {
       await selectFirstToken();
+      const automaticFeeTokenSelected = gasFeeTokens?.find(
+        ({ tokenAddress }) => tokenAddress === firstGasFeeTokenAddress,
+      )?.symbol;
+      updateTransactionEventFragment(
+        {
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            gas_payment_token_default: true,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            gas_payment_token_default_symbol: automaticFeeTokenSelected,
+          },
+        },
+        transactionId,
+      );
       setFirstCheck(false);
     }
-  }, [shouldSelect, selectFirstToken, firstCheck, gasFeeTokens, transactionId]);
+  }, [
+    shouldSelect,
+    selectFirstToken,
+    firstCheck,
+    gasFeeTokens,
+    transactionId,
+    updateTransactionEventFragment,
+    firstGasFeeTokenAddress,
+  ]);
 }
