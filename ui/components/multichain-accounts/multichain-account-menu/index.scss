@@ -1,10 +1,12 @@
 .multichain-account-cell-popover-menu-button {
+  box-sizing: border-box;
   cursor: pointer;
   width: 28px;
   height: 28px;
 
-  &:hover {
-    background: var(--color-primary-muted);
+  // Higher specificity than `.mm-box.box--background-color-*` so hover fills the full 28×28 area
+  &.mm-box:hover {
+    background-color: var(--color-primary-muted);
 
     .multichain-account-cell-popover-menu-button-icon {
       background-color: var(--color-primary-default);

@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import WebSocketRegistry from '../../websocket/registry';
 import { withFixtures } from '../../helpers';
@@ -50,6 +51,22 @@ async function waitForBalanceUpdate(
       return false;
     }
   }, timeoutMs);
+}
+
+async function mockDisabledWebsocketBalance(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            backendWebSocketConnection: false,
+          },
+        ],
+      };
+    });
 }
 
 describe('Account Activity WebSocket Balance Resilience', function (this: Suite) {

@@ -455,8 +455,8 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [position]);
 
   // Filter and sort open orders for this market, then normalize for display.
-  // Normalization adds synthetic TP/SL rows for parent orders and filters out
-  // full-position TP/SL (those stay on the position card / auto-close section).
+  // Normalization adds synthetic TP/SL rows for parent orders when no matching
+  // real trigger exists; full-position TP/SL also appear in this Orders list.
   const orders = useMemo(() => {
     if (!decodedSymbol) {
       return [];
@@ -689,7 +689,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, []);
 
   const handleBackClick = useCallback(() => {
-    navigate(DEFAULT_ROUTE);
+    navigate(-1);
   }, [navigate]);
 
   const buildOrderEntryUrl = useCallback(
@@ -820,9 +820,24 @@ const PerpsMarketDetailPage: React.FC = () => {
         PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
     });
     setIsModifyMenuOpen(false);
+    if (position.leverage?.type === 'cross') {
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.INCREASE_POSITION_CROSS_MARGIN_BLOCKED,
+        description: t('perpsCrossMarginNotSupportedDescription'),
+      });
+      return;
+    }
     const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
     navigate(buildOrderEntryUrl(direction, 'modify'));
-  }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
+  }, [
+    position,
+    decodedSymbol,
+    navigate,
+    buildOrderEntryUrl,
+    track,
+    replacePerpsToastByKey,
+    t,
+  ]);
 
   const handleReduceExposure = useCallback(() => {
     if (!isEligible) {
