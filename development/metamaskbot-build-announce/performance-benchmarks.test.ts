@@ -248,10 +248,10 @@ describe('computeEntryHealth', () => {
       const entry = makeEntry({
         benchmarkName: 'startupStandardHome',
         presetName: 'startupStandardHome',
-        mean: { uiStartup: 2800 },
+        mean: { uiStartup: 2600 },
         stdDev: { uiStartup: 100 },
-        p75: { uiStartup: 3200 },
-        p95: { uiStartup: 4200 },
+        p75: { uiStartup: 2600 },
+        p95: { uiStartup: 3100 },
       });
       expect(computeEntryHealth(entry, undefined)).toBe(EntryHealth.Warn);
     });

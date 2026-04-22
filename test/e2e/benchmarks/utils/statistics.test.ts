@@ -329,14 +329,20 @@ describe('Statistics Utils', () => {
     });
 
     // @ts-expect-error '.each' is missing from type definitions
-    it.each([0, 10, 24.9])('returns undefined for CV below 25 (%s)', (cv: number) => {
-      expect(computeCvAdjustment(cv)).toBeUndefined();
-    });
+    it.each([0, 10, 24.9])(
+      'returns undefined for CV below 25 (%s)',
+      (cv: number) => {
+        expect(computeCvAdjustment(cv)).toBeUndefined();
+      },
+    );
 
     // @ts-expect-error '.each' is missing from type definitions
-    it.each([50.1, 75, 200])('returns undefined for CV above 50 (%s)', (cv: number) => {
-      expect(computeCvAdjustment(cv)).toBeUndefined();
-    });
+    it.each([50.1, 75, 200])(
+      'returns undefined for CV above 50 (%s)',
+      (cv: number) => {
+        expect(computeCvAdjustment(cv)).toBeUndefined();
+      },
+    );
 
     // @ts-expect-error '.each' is missing from type definitions
     it.each([

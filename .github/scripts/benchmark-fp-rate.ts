@@ -103,8 +103,11 @@ async function fetchMergedPrs(
       if (!pr.merged_at) {
         continue;
       }
-      if (pr.merged_at < since) {
+      if (pr.updated_at < since) {
         return prs;
+      }
+      if (pr.merged_at < since) {
+        continue;
       }
       prs.push({
         number: pr.number,
@@ -175,11 +178,11 @@ export async function computeWeeklyReport(
       pr.mergeCommitSha,
     );
 
-    if (skipped) {
-      skippedPrs += 1;
-    }
     if (ran) {
       totalGatedPrs += 1;
+      if (skipped) {
+        skippedPrs += 1;
+      }
       if (failed) {
         failedGatedPrs += 1;
       }
@@ -204,11 +207,13 @@ function writeReport(
 ): void {
   const absolutePath = path.resolve(outputPath);
   let existing: FpReportFile = {};
-  if (fs.existsSync(absolutePath)) {
+  try {
     const raw = fs.readFileSync(absolutePath, 'utf8');
     if (raw.trim().length > 0) {
       existing = JSON.parse(raw) as FpReportFile;
     }
+  } catch {
+    // File does not exist yet — start with empty object
   }
   existing[weekKey] = report;
   fs.writeFileSync(absolutePath, `${JSON.stringify(existing, null, 2)}\n`);
