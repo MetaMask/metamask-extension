@@ -377,6 +377,11 @@ export async function runPageLoadBenchmark(
 
   // Discard the first WARMUP_RUNS browser-load sessions before computing stats.
   // Each session contributes exactly pageLoads metric objects to runResults.
+  if (browserLoads <= WARMUP_RUNS) {
+    throw new Error(
+      `browserLoads (${browserLoads}) must be greater than WARMUP_RUNS (${WARMUP_RUNS})`,
+    );
+  }
   const warmupSize = WARMUP_RUNS * pageLoads;
   const measuredResults = runResults.slice(warmupSize);
   // Web vitals entries are sparse (collection can fail silently), so filter by

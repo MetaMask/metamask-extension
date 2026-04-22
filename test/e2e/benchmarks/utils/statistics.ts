@@ -233,7 +233,9 @@ export function trimOutliers(samples: number[]): {
   trimmedCount: number;
 } {
   const { filtered, outlierCount } = detectOutliersIQR(samples);
-  return { samples: filtered, trimmedCount: outlierCount };
+  // Spread to ensure we never return the original array reference.
+  // detectOutliersIQR returns values directly (not a copy) for n < 4.
+  return { samples: [...filtered], trimmedCount: outlierCount };
 }
 
 /**

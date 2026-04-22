@@ -112,10 +112,20 @@ describe('trimOutliers (IQR-based)', () => {
       );
     });
 
-    it('does not mutate the input array', () => {
+    it('does not mutate the input array (n >= 4, filter path)', () => {
       const samples = [10, 11, 1000, 12, 13];
       const copy = [...samples];
       trimOutliers(samples);
+      expect(samples).toEqual(copy);
+    });
+
+    it('does not mutate the input array (n < 4, early-return path)', () => {
+      const samples = [100, 200, 9000];
+      const copy = [...samples];
+      const result = trimOutliers(samples);
+      expect(samples).toEqual(copy);
+      // returned array must not be the same reference
+      result.samples.push(999);
       expect(samples).toEqual(copy);
     });
   });
