@@ -392,6 +392,37 @@ describe('toast selectors', () => {
           approvalId: 'approval-1',
           txId: 'tx-1',
           smartTransactionStatus: 'pending',
+          evmStatus: undefined,
+        },
+      ]);
+    });
+
+    it('populates evmStatus from the matching TransactionController entry', () => {
+      const state = {
+        metamask: {
+          pendingApprovals: {
+            'approval-1': {
+              id: 'approval-1',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {
+                txId: 'tx-1',
+                smartTransaction: { status: 'pending' },
+              },
+            },
+          },
+          transactions: [
+            { id: 'tx-1', status: 'dropped' },
+            { id: 'tx-2', status: 'confirmed' },
+          ],
+        },
+      } as unknown as SelectorState;
+
+      expect(selectSmartTransactions(state)).toStrictEqual([
+        {
+          approvalId: 'approval-1',
+          txId: 'tx-1',
+          smartTransactionStatus: 'pending',
+          evmStatus: 'dropped',
         },
       ]);
     });

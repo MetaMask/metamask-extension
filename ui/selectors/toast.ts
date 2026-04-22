@@ -139,11 +139,13 @@ type TxRequest = {
   approvalId: string;
   txId: string;
   smartTransactionStatus: string | undefined;
+  evmStatus: string | undefined;
 };
 
 export const selectSmartTransactions = createDeepEqualSelector(
   getPendingApprovals,
-  (pendingApprovals) => {
+  selectTransactions,
+  (pendingApprovals, transactions) => {
     const result: TxRequest[] = [];
 
     for (const approval of pendingApprovals) {
@@ -164,10 +166,14 @@ export const selectSmartTransactions = createDeepEqualSelector(
         continue;
       }
 
+      // Also track the EVM transaction status so we can detect failures
+      const evmTransaction = transactions.find((tx) => tx.id === txId);
+
       result.push({
         approvalId: approval.id,
         txId,
         smartTransactionStatus: smartTransaction?.status,
+        evmStatus: evmTransaction?.status,
       });
     }
 
