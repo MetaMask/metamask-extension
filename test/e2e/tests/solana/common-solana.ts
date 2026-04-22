@@ -1633,22 +1633,27 @@ export async function mockSecurityAlertSwap(mockServer: Mockttp) {
 }
 
 export async function mockPriceApiSpotPriceSwap(mockServer: Mockttp) {
-  return await mockServer.forGet(SPOT_PRICE_API).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-          {
-            id: 'usd-coin',
-            price: 0.999761,
+  return await mockServer
+    .forGet(SPOT_PRICE_API)
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+            {
+              id: 'usd-coin',
+              price: 0.999761,
+              usd: 0.999761,
+            },
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+            id: 'solana',
+            price: 168.88,
+            usd: 168.88,
           },
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-          id: 'solana',
-          price: 168.88,
         },
-      },
-    };
-  });
+      };
+    });
 }
 
 const SOLANA_BRIDGE_TOKENS = [
