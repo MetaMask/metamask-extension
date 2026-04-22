@@ -273,19 +273,17 @@ class BridgeQuotePage {
 
   approveModalIfPresent = async () => {
     try {
-      // Use a short timeout — the modal renders synchronously after CTA click
-      await this.driver.waitForSelector(this.warningModal, { timeout: 3000 });
-    } catch {
-      return; // No confirmation modal present
-    }
-
-    try {
-      // Click proceed if the button is enabled (transaction not yet submitted)
+      // Wait for an *enabled* proceed button. Using :not([disabled]) means:
+      // - No modal present           → no match → 3 s timeout → catch (no-op)
+      // - Modal open, tx in-flight   → button has [disabled] attr → no match
+      //                              → 3 s timeout → catch (no-op)
+      // - Modal open, tx not yet submitted → button is enabled → match → click
+      await this.driver.waitForSelector(
+        `${this.warningModalProceedButton}:not([disabled])`,
+      );
       await this.driver.clickElement(this.warningModalProceedButton);
     } catch {
-      // Proceed button not interactable (e.g. tx already in-flight and button is
-      // disabled). Cancel the modal so it doesn't block dismissStatusPageIfPresent.
-      await this.driver.clickElement(this.warningModalCancelButton);
+      // No confirmation modal with an enabled proceed button — nothing to do
     }
   };
 
