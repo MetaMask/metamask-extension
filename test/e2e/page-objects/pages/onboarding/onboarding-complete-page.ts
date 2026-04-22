@@ -35,12 +35,12 @@ class OnboardingCompletePage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(timeout: number = 30000): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.manageDefaultSettingsButton,
-        this.onboardingCompleteDoneButton,
-      ]);
+      await this.driver.waitForMultipleSelectors(
+        [this.manageDefaultSettingsButton, this.onboardingCompleteDoneButton],
+        { timeout },
+      );
     } catch (e) {
       console.log(
         'Timeout while waiting for onboarding wallet creation complete page to be loaded',

@@ -57,8 +57,16 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AppStateController.onboardingDate',
   'data.AppStateController.recoveryPhraseReminderLastShown',
   'data.AppStateController.termsOfUseLastAgreed',
+  'data.CurrencyController.currencyRates.BNB.conversionDate',
+  'data.CurrencyController.currencyRates.BNB.conversionRate',
+  'data.CurrencyController.currencyRates.BNB.usdConversionRate',
   'data.CurrencyController.currencyRates.ETH.conversionDate',
   'data.CurrencyController.currencyRates.ETH.conversionRate',
+  'data.CurrencyController.currencyRates.POL.conversionDate',
+  'data.CurrencyController.currencyRates.POL.conversionRate',
+  'data.CurrencyController.currencyRates.POL.usdConversionRate',
+  'data.MultichainAssetsRatesController.conversionRates.bip122:000000000019d6689c085ae165831e93/slip44:0.conversionTime',
+  'data.MultichainAssetsRatesController.conversionRates.bip122:000000000019d6689c085ae165831e93/slip44:0.expirationTime',
   'data.NetworkController.networkConfigurationsByChainId.0x539.lastUpdatedAt',
   'data.NotificationServicesController.metamaskNotificationsList',
   'data.PhishingController.c2DomainBlocklistLastFetched',
@@ -72,11 +80,11 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',
+  'data.AccountTracker',
+  'data.AssetsController',
   'data.AuthenticationController',
   'data.MetaMetricsController',
   'data.MultichainAssetsController',
-  // Token balances are fetched dynamically after unlock; pre-seeding them in the
-  // fixture prevents the "Fund your wallet" empty-state banner from appearing.
   'data.TokenBalancesController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
@@ -86,8 +94,17 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Version that changes on every release
   'data.AppMetadataController.currentAppVersion',
   // Random ids
+  'data.MultichainBalancesController',
   'data.MultichainBalancesController.balances',
   'data.MultichainTransactionsController.nonEvmTransactions',
+  // Failover URLs are populated from QUICKNODE_* env vars in CI but absent locally
+  'data.NetworkController.networkConfigurationsByChainId.0x1.rpcEndpoints[0].failoverUrls',
+  'data.NetworkController.networkConfigurationsByChainId.0x2105.rpcEndpoints[0].failoverUrls',
+  'data.NetworkController.networkConfigurationsByChainId.0x38.rpcEndpoints[0].failoverUrls',
+  'data.NetworkController.networkConfigurationsByChainId.0x89.rpcEndpoints[0].failoverUrls',
+  'data.NetworkController.networkConfigurationsByChainId.0xa.rpcEndpoints[0].failoverUrls',
+  'data.NetworkController.networkConfigurationsByChainId.0xa4b1.rpcEndpoints[0].failoverUrls',
+  'data.NetworkController.networkConfigurationsByChainId.0xe708.rpcEndpoints[0].failoverUrls',
   'data.NetworkController.networkConfigurationsByChainId.0x539.rpcEndpoints[0].networkClientId',
   'data.NetworkController.networksMetadata',
   'data.NetworkController.selectedNetworkClientId',
