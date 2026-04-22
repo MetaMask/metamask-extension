@@ -734,7 +734,7 @@
       "warn: No tokens found for chainId:": 1
     },
     "ui/pages/confirmations/components/activity/transaction-details-summary/transaction-details-summary.test.tsx": {
-      "warn: No tokens found for chainId:": 6
+      "warn: No tokens found for chainId:": 7
     },
     "ui/pages/confirmations/components/activity/transaction-details/transaction-details.test.tsx": {
       "warn: No tokens found for chainId:": 1
