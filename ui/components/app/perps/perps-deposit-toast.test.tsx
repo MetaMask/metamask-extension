@@ -79,7 +79,7 @@ describe('PerpsDepositToast', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders in-progress toast for perpsDepositAndOrder transactions', () => {
+  it('renders submitted toast when mounting with deposit already in progress for perpsDepositAndOrder', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -95,6 +95,9 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
+    expect(
+      screen.getByTestId('perps-deposit-submitted-toast'),
+    ).toBeInTheDocument();
     expect(
       screen.getByText(messages.perpsDepositToastSubmittedTitle.message),
     ).toBeInTheDocument();
@@ -359,7 +362,12 @@ describe('PerpsDepositToast', () => {
       store.dispatch({
         type: 'UPDATE_METAMASK_STATE',
         value: {
-          transactions: [buildPendingDepositTransaction({ id: 'submitted-tx-1' })],
+          transactions: [
+            buildPendingDepositTransaction({
+              id: 'submitted-tx-1',
+              status: TransactionStatus.submitted,
+            }),
+          ],
           lastDepositTransactionId: 'submitted-tx-1',
           lastDepositResult: null,
         },
