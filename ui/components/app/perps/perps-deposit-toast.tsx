@@ -27,9 +27,7 @@ export function PerpsDepositToast() {
     useState<string | null>(null);
   const [dismissedCompletion, setDismissedCompletion] = useState(false);
 
-  const prevTransactionIdRef = useRef<string | null>(
-    lastDepositTransactionId,
-  );
+  const prevTransactionIdRef = useRef<string | null>(lastDepositTransactionId);
   const [submittedTransactionId, setSubmittedTransactionId] = useState<
     string | null
   >(null);
