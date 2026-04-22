@@ -255,6 +255,23 @@ describe('computeEntryHealth', () => {
       });
       expect(computeEntryHealth(entry, undefined)).toBe(EntryHealth.Warn);
     });
+
+    it('activates CV-adaptive widening when mean and stdDev are forwarded', () => {
+      // startupPowerUserHome.uiStartup.p75 → warn 4000, ciMultiplier 2.0.
+      // Effective warn without CV widening = 4000 * 2.0 = 8000.
+      // CV = 1200/4000 = 30% (in [25, 50] window) → widen by (1 + 30/200) = 1.15.
+      // Effective warn with CV widening = 8000 * 1.15 = 9200.
+      // A p75 of 9000 warns without widening but passes with widening.
+      const entry = makeEntry({
+        benchmarkName: 'startupPowerUserHome',
+        presetName: 'startupPowerUserHome',
+        mean: { uiStartup: 4000 },
+        stdDev: { uiStartup: 1200 },
+        p75: { uiStartup: 9000 },
+        p95: { uiStartup: 10000 },
+      });
+      expect(computeEntryHealth(entry, undefined)).toBe(EntryHealth.Pass);
+    });
   });
 });
 
