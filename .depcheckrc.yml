@@ -39,6 +39,7 @@ ignores:
   - 'ethers' # ethers @5.7.0 expected by @account-abstraction/contracts, but conflicts with transitive ethers@6.x
   - 'ganache-cli'
   - 'geckodriver'
+  - 'husky'
   - 'jest'
   - 'mocha-junit-reporter'
   - 'prettier-plugin-sort-json' # automatically imported by prettier
