@@ -1227,101 +1227,101 @@ async function setupMocking(
   // Only register these global handlers when unified state is enabled; otherwise individual
   // tests set up their own token API mocks (e.g. Solana swap tests mock Solana USDC).
   if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true') {
-  await server
-    .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
-    .always()
-    .thenJson(200, {
-      fullSupport: [
-        'eip155:1',
-        'eip155:59144',
-        'eip155:42161',
-        'eip155:8453',
-        'eip155:10',
-        'eip155:137',
-        'eip155:56',
-        'eip155:1337',
-      ],
-      partialSupport: [],
-    });
-
-  await server
-    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
-    .always()
-    .thenCallback((request) => {
-      const url = new URL(request.url);
-      const assetIds = url.searchParams.getAll('assetIds').join(',');
-
-      const results = [];
-
-      const pushIf = (predicate, entry) => {
-        if (predicate) {
-          results.push(entry);
-        }
-      };
-
-      pushIf(assetIds.includes('eip155:1/slip44:60'), {
-        assetId: 'eip155:1/slip44:60',
-        name: 'Ethereum',
-        symbol: 'ETH',
-        decimals: 18,
+    await server
+      .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+      .always()
+      .thenJson(200, {
+        fullSupport: [
+          'eip155:1',
+          'eip155:59144',
+          'eip155:42161',
+          'eip155:8453',
+          'eip155:10',
+          'eip155:137',
+          'eip155:56',
+          'eip155:1337',
+        ],
+        partialSupport: [],
       });
 
-      // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
-      // Support both slip44:1 and slip44:60 requests for backward compat.
-      pushIf(
-        assetIds.includes('eip155:1337/slip44:1') ||
-          assetIds.includes('eip155:1337/slip44:60'),
-        {
-          assetId: 'eip155:1337/slip44:1',
+    await server
+      .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+      .always()
+      .thenCallback((request) => {
+        const url = new URL(request.url);
+        const assetIds = url.searchParams.getAll('assetIds').join(',');
+
+        const results = [];
+
+        const pushIf = (predicate, entry) => {
+          if (predicate) {
+            results.push(entry);
+          }
+        };
+
+        pushIf(assetIds.includes('eip155:1/slip44:60'), {
+          assetId: 'eip155:1/slip44:60',
           name: 'Ethereum',
           symbol: 'ETH',
           decimals: 18,
-        },
-      );
-
-      const usdcMainnet =
-        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-      const usdtMainnet =
-        'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7';
-      const daiMainnet =
-        'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
-
-      if (
-        assetIds.includes(usdcMainnet) ||
-        assetIds.includes(usdcMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: usdcMainnet,
-          name: 'USD Coin',
-          symbol: 'USDC',
-          decimals: 6,
         });
-      }
-      if (
-        assetIds.includes(usdtMainnet) ||
-        assetIds.includes(usdtMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: usdtMainnet,
-          name: 'Tether USD',
-          symbol: 'USDT',
-          decimals: 6,
-        });
-      }
-      if (
-        assetIds.includes(daiMainnet) ||
-        assetIds.includes(daiMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: daiMainnet,
-          name: 'Dai Stablecoin',
-          symbol: 'DAI',
-          decimals: 18,
-        });
-      }
 
-      return { statusCode: 200, json: results };
-    });
+        // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
+        // Support both slip44:1 and slip44:60 requests for backward compat.
+        pushIf(
+          assetIds.includes('eip155:1337/slip44:1') ||
+            assetIds.includes('eip155:1337/slip44:60'),
+          {
+            assetId: 'eip155:1337/slip44:1',
+            name: 'Ethereum',
+            symbol: 'ETH',
+            decimals: 18,
+          },
+        );
+
+        const usdcMainnet =
+          'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+        const usdtMainnet =
+          'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7';
+        const daiMainnet =
+          'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
+
+        if (
+          assetIds.includes(usdcMainnet) ||
+          assetIds.includes(usdcMainnet.toLowerCase())
+        ) {
+          results.push({
+            assetId: usdcMainnet,
+            name: 'USD Coin',
+            symbol: 'USDC',
+            decimals: 6,
+          });
+        }
+        if (
+          assetIds.includes(usdtMainnet) ||
+          assetIds.includes(usdtMainnet.toLowerCase())
+        ) {
+          results.push({
+            assetId: usdtMainnet,
+            name: 'Tether USD',
+            symbol: 'USDT',
+            decimals: 6,
+          });
+        }
+        if (
+          assetIds.includes(daiMainnet) ||
+          assetIds.includes(daiMainnet.toLowerCase())
+        ) {
+          results.push({
+            assetId: daiMainnet,
+            name: 'Dai Stablecoin',
+            symbol: 'DAI',
+            decimals: 18,
+          });
+        }
+
+        return { statusCode: 200, json: results };
+      });
   } // end ASSETS_UNIFIED_STATE_ENABLED === 'true'
 
   // Accounts API: v2 supported networks (used by AccountsApiDataSource when assetsUnifyState is enabled)
