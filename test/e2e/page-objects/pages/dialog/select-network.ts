@@ -49,7 +49,7 @@ class SelectNetwork {
 
   private readonly selectRpcMessage = {
     text: 'Select RPC URL',
-    tag: 'h4',
+    tag: 'p',
   };
 
   private readonly yourNetworksMessage = {

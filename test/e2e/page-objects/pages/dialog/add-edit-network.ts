@@ -44,8 +44,7 @@ class AddEditNetworkModal {
     '[data-testid="test-add-rpc-drop-down"]';
 
   private readonly editModalSaveButton = {
-    text: 'Save',
-    tag: 'button',
+    testId: 'page-container-footer-next',
   };
 
   private readonly explorerUrlInputDropDownButton = {
