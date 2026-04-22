@@ -253,4 +253,19 @@ describe('SendAlertModal', () => {
       expect(mockOnAcknowledge).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('Edge cases', () => {
+    it('does not call onAcknowledge when alerts drain to empty while modal is open', () => {
+      const { rerender, queryByTestId } = renderComponent({
+        alerts: [TOKEN_ALERT],
+      });
+
+      rerender(<SendAlertModal {...defaultProps} alerts={[]} />);
+
+      expect(
+        queryByTestId('send-alert-modal-acknowledge-button'),
+      ).not.toBeInTheDocument();
+      expect(mockOnAcknowledge).not.toHaveBeenCalled();
+    });
+  });
 });

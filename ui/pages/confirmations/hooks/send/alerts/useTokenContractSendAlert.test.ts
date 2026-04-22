@@ -95,6 +95,21 @@ describe('useTokenContractSendAlert', () => {
     expect(result.current).toBeNull();
   });
 
+  it('returns null without calling the API when to matches asset address', async () => {
+    mockUseSendContext.mockReturnValue({
+      to: '0xAsset',
+      chainId: '0x1',
+      asset: { address: '0xAsset' },
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { result } = renderHook(() => useTokenContractSendAlert());
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(result.current).toBeNull();
+    expect(mockGetTokenStandard).not.toHaveBeenCalled();
+  });
+
   it('resets when recipient changes', async () => {
     mockGetTokenStandard.mockResolvedValue({ standard: 'ERC20' } as never);
 

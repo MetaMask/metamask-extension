@@ -157,12 +157,15 @@ export const SendAlertModal = ({
   const isOnLastAlert = safeIndex >= Math.max(alerts.length - 1, 0);
 
   const handleAcknowledgeStep = useCallback(() => {
+    if (!currentAlert) {
+      return;
+    }
     if (isOnLastAlert) {
       onAcknowledge();
       return;
     }
     goToNext();
-  }, [goToNext, isOnLastAlert, onAcknowledge]);
+  }, [currentAlert, goToNext, isOnLastAlert, onAcknowledge]);
 
   if (!currentAlert) {
     return null;

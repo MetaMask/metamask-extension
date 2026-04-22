@@ -16,7 +16,13 @@ export function useTokenContractSendAlert(): SendAlert | null {
     let cancelled = false;
     setIsTokenContract(false);
 
-    if (!to || !chainId || !isEvmSendType || !isValidHexAddress(to)) {
+    if (
+      !to ||
+      !chainId ||
+      !isEvmSendType ||
+      !isValidHexAddress(to) ||
+      to.toLowerCase() === asset?.address?.toLowerCase()
+    ) {
       return undefined;
     }
 
