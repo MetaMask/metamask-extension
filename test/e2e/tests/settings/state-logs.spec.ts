@@ -158,7 +158,7 @@ describe('State logs', function () {
   it('state log file matches the expected state structure', async function () {
     if (
       process.env.SELENIUM_BROWSER === 'chrome' ||
-      process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false'
+      process.env.ASSETS_UNIFIED_STATE_ENABLED !== 'true'
     ) {
       // Chrome shows OS level download prompt which can't be dismissed by Selenium
       this.skip();
