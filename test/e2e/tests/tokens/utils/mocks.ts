@@ -103,11 +103,19 @@ export async function mockEthPrices(
   > = {};
   for (const cid of chainIds) {
     const dec = Number.parseInt(cid, 16);
-    spotEntries[`eip155:${dec}/slip44:60`] = {
+    const entry = {
       price: ethPrice,
       marketCap: 382623505141,
       pricePercentChange1d: 0,
     };
+    // Chain 1337 (0x539 / localhost): native CAIP is slip44:1 per nativeAssetIdentifiers
+    // and test/e2e/mock-e2e.js. Other EVM chains use slip44:60 for ETH.
+    if (dec === 1337) {
+      spotEntries[`eip155:${dec}/slip44:1`] = entry;
+      spotEntries[`eip155:${dec}/slip44:60`] = { ...entry };
+    } else {
+      spotEntries[`eip155:${dec}/slip44:60`] = entry;
+    }
   }
 
   await mockSpotPrices(mockServer, spotEntries);
