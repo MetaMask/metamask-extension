@@ -5326,6 +5326,14 @@
     "message": "You'll receive",
     "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask will swap to your desired token for you. No MetaMask fee applies when you swap to mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
+  "providerFee": {
+    "message": "Provider fee",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
+  },
   "payWithModalTitle": {
     "message": "Pay with",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
