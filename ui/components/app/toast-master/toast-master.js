@@ -23,6 +23,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
+  PERPS_ROUTE,
   REVEAL_SEED_ROUTE,
   REVIEW_PERMISSIONS,
   SETTINGS_ROUTE,
@@ -114,6 +115,7 @@ export function ToastMaster() {
   // Get current pathname from React Router
   const currentPathname = location?.pathname ?? DEFAULT_ROUTE;
   const onHomeScreen = currentPathname === DEFAULT_ROUTE;
+  const onPerpsScreen = currentPathname.startsWith(PERPS_ROUTE);
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
   // Storage error toast should show on ALL screens
@@ -138,6 +140,16 @@ export function ToastMaster() {
         <ShieldPausedToast />
         <ShieldEndingToast />
         <SidePanelMigrationToast />
+      </ToastContainer>
+    );
+  }
+
+  if (onPerpsScreen) {
+    return (
+      <ToastContainer>
+        {storageErrorToast}
+        <PerpsDepositToast />
+        <PerpsWithdrawToast />
       </ToastContainer>
     );
   }

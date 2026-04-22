@@ -784,6 +784,104 @@ describe('submitSmartTransactionHook', () => {
       );
     });
 
+    it('does not show status page for perpsDeposit transaction type', async () => {
+      withRequest(
+        {
+          options: {
+            transactionMeta: {
+              hash: txHash,
+              status: TransactionStatus.signed,
+              id: '1',
+              txParams: {
+                from: addressFrom,
+                to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+                maxFeePerGas: '0x2fd8a58d7',
+                maxPriorityFeePerGas: '0xaa0f8a94',
+                gas: '0x7b0d',
+                nonce: '0x4b',
+              },
+              type: TransactionType.perpsDeposit,
+              chainId: CHAIN_IDS.MAINNET,
+              networkClientId: 'testNetworkClientId',
+              time: 1624408066355,
+              defaultGasEstimates: {
+                gas: '0x7b0d',
+                gasPrice: '0x77359400',
+              },
+              securityProviderResponse: {
+                flagAsDangerous: 0,
+              },
+            },
+          },
+        },
+        async ({ request, messenger, startFlowSpy, addRequestSpy }) => {
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: {
+                minedHash: txHash,
+              },
+            } as SmartTransaction);
+          });
+
+          await submitSmartTransactionHook(request);
+
+          expect(startFlowSpy).not.toHaveBeenCalled();
+          expect(addRequestSpy).not.toHaveBeenCalled();
+        },
+      );
+    });
+
+    it('does not show status page for perpsDepositAndOrder transaction type', async () => {
+      withRequest(
+        {
+          options: {
+            transactionMeta: {
+              hash: txHash,
+              status: TransactionStatus.signed,
+              id: '1',
+              txParams: {
+                from: addressFrom,
+                to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+                maxFeePerGas: '0x2fd8a58d7',
+                maxPriorityFeePerGas: '0xaa0f8a94',
+                gas: '0x7b0d',
+                nonce: '0x4b',
+              },
+              type: TransactionType.perpsDepositAndOrder,
+              chainId: CHAIN_IDS.MAINNET,
+              networkClientId: 'testNetworkClientId',
+              time: 1624408066355,
+              defaultGasEstimates: {
+                gas: '0x7b0d',
+                gasPrice: '0x77359400',
+              },
+              securityProviderResponse: {
+                flagAsDangerous: 0,
+              },
+            },
+          },
+        },
+        async ({ request, messenger, startFlowSpy, addRequestSpy }) => {
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: {
+                minedHash: txHash,
+              },
+            } as SmartTransaction);
+          });
+
+          await submitSmartTransactionHook(request);
+
+          expect(startFlowSpy).not.toHaveBeenCalled();
+          expect(addRequestSpy).not.toHaveBeenCalled();
+        },
+      );
+    });
+
     it('shows status page for simpleSend transaction type', async () => {
       withRequest(
         async ({ request, messenger, startFlowSpy, addRequestSpy }) => {
