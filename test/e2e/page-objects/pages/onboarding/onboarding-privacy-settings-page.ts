@@ -42,7 +42,7 @@ class OnboardingPrivacySettingsPage {
 
   private readonly addCustomNetworkFormMessage = {
     text: 'Add a custom network',
-    tag: 'h4',
+    tag: 'p',
   };
 
   private readonly addRpcUrlButton = {
@@ -52,7 +52,7 @@ class OnboardingPrivacySettingsPage {
 
   private readonly addRpcUrlDialogMessage = {
     text: 'Add RPC URL',
-    tag: 'h4',
+    tag: 'p',
   };
 
   private readonly addRpcUrlDropDown = '[data-testid="test-add-rpc-drop-down"]';
@@ -60,8 +60,7 @@ class OnboardingPrivacySettingsPage {
   private readonly chainIdInput = '[data-testid="network-form-chain-id"]';
 
   private readonly confirmAddCustomNetworkButton = {
-    text: 'Save',
-    tag: 'button',
+    testId: 'page-container-footer-next',
   };
 
   private readonly confirmAddRpcUrlButton = {
