@@ -125,7 +125,7 @@ export const schema = {
           properties: {
             outFile: {
               description:
-                'Output file path template for the emitted bundle-size summary relative to webpack output. Must include `[browser]`.',
+                'Output file path template for the emitted bundle-size summary relative to webpack output. Must include `[browser]`, for example `bundle-size/[browser].json`.',
               type: 'string',
               pattern: '\\[browser\\]',
             },
