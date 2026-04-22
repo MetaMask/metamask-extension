@@ -3057,12 +3057,47 @@
         "@scure/base": true
       }
     },
-    "@segment/loosely-validate-event": {
+    "@segment/analytics-node>@segment/analytics-core": {
+      "globals": {
+        "clearTimeout": true,
+        "console": true,
+        "setTimeout": true
+      },
       "packages": {
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "@segment/loosely-validate-event>component-type": true,
-        "@segment/loosely-validate-event>join-component": true
+        "@segment/analytics-node>@lukeed/uuid": true,
+        "@segment/analytics-node>@segment/analytics-generic-utils": true,
+        "@segment/analytics-node>@segment/analytics-core>dset": true,
+        "@segment/analytics-node>@segment/analytics-core>tslib": true
+      }
+    },
+    "@segment/analytics-node>@segment/analytics-generic-utils": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@segment/analytics-node>@segment/analytics-generic-utils>tslib": true
+      }
+    },
+    "@segment/analytics-node": {
+      "globals": {
+        "AbortController": true,
+        "EdgeRuntime": true,
+        "URL": true,
+        "WebSocketPair": true,
+        "WorkerGlobalScope": true,
+        "clearTimeout": true,
+        "console.warn": true,
+        "fetch": true,
+        "importScripts": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@segment/analytics-node>@lukeed/uuid": true,
+        "@segment/analytics-node>@segment/analytics-core": true,
+        "@segment/analytics-node>@segment/analytics-generic-utils": true,
+        "@segment/analytics-node>jose": true,
+        "process": true,
+        "@segment/analytics-node>tslib": true
       }
     },
     "@solana/addresses": {
@@ -4828,6 +4863,26 @@
         "WebSocket": true
       }
     },
+    "@segment/analytics-node>jose": {
+      "globals": {
+        "AbortController": true,
+        "CryptoKey": true,
+        "EdgeRuntime": true,
+        "Headers": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "URL": true,
+        "WebSocketPair": true,
+        "atob": true,
+        "btoa": true,
+        "clearTimeout": true,
+        "crypto": true,
+        "fetch": true,
+        "navigator": true,
+        "setTimeout": true,
+        "structuredClone": true
+      }
+    },
     "@ensdomains/content-hash>js-base64": {
       "globals": {
         "Base64": "write",
@@ -6291,6 +6346,30 @@
     },
     "tslib": {
       "globals": {
+        "SuppressedError": true,
+        "define": true
+      }
+    },
+    "@segment/analytics-node>@segment/analytics-core>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
+    "@segment/analytics-node>@segment/analytics-generic-utils>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
+    "@segment/analytics-node>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
         "SuppressedError": true,
         "define": true
       }
