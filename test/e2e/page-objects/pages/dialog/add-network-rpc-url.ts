@@ -5,8 +5,7 @@ class AddNetworkRpcUrlModal {
   private readonly driver: Driver;
 
   private readonly addRpcUrlButton = {
-    text: 'Add URL',
-    tag: 'button',
+    testId: 'page-container-footer-next',
   };
 
   private readonly addRpcNameInput = {

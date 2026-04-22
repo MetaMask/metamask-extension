@@ -126,7 +126,7 @@ class SelectNetwork {
   async deleteNetwork(chainId: string): Promise<void> {
     console.log(`Delete network ${chainId} from network list`);
     await this.openNetworkListOptions(chainId);
-    await this.driver.clickElementAndWaitToDisappear(this.deleteNetworkButton);
+    await this.driver.clickElement(this.deleteNetworkButton);
     await this.driver.waitForSelector(this.confirmDeleteNetworkModal);
     // Ensure drawer overlay is not present to avoid ElementClickInterceptedError
     await this.driver.assertElementNotPresent(this.drawerOverlay, {
