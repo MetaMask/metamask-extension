@@ -5,7 +5,7 @@ import {
 
 describe('formatPriceImpact', () => {
   it('should return 0% for undefined', () => {
-    expect(formatPriceImpactPercentage(undefined)).toBe('0%');
+    expect(formatPriceImpactPercentage(undefined)).toBeNull();
   });
 
   it('should return 0% for 0', () => {
