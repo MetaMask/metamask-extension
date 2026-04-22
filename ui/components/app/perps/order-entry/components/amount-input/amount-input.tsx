@@ -11,13 +11,7 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   BorderRadius,
@@ -90,16 +84,14 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
   // Local draft for the token input so intermediate values (e.g. "0", "0.") are
   // preserved while the user is actively typing.
+  const [isEditingToken, setIsEditingToken] = useState(false);
   const [tokenInputValue, setTokenInputValue] = useState(unGroupedTokenDisplay);
-  const isEditingTokenRef = useRef(false);
 
-  // Keep the token input in sync with external state changes (slider, USD field,
-  // percent pill) unless the user is currently typing in the token field.
-  useEffect(() => {
-    if (!isEditingTokenRef.current) {
-      setTokenInputValue(unGroupedTokenDisplay);
-    }
-  }, [unGroupedTokenDisplay]);
+  // When not editing, derive the displayed token value from the current amount
+  // rather than syncing via an effect — avoids a stale intermediate render.
+  const displayedTokenValue = isEditingToken
+    ? tokenInputValue
+    : unGroupedTokenDisplay;
 
   const formatAmount = useCallback(
     (value: number): string => value.toFixed(2),
@@ -196,13 +188,13 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   );
 
   const handleTokenFocus = useCallback(() => {
-    isEditingTokenRef.current = true;
-  }, []);
+    setTokenInputValue(unGroupedTokenDisplay);
+    setIsEditingToken(true);
+  }, [unGroupedTokenDisplay]);
 
   const handleTokenBlur = useCallback(() => {
-    isEditingTokenRef.current = false;
-    setTokenInputValue(unGroupedTokenDisplay);
-  }, [unGroupedTokenDisplay]);
+    setIsEditingToken(false);
+  }, []);
 
   const handleSliderChange = useCallback(
     (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
@@ -340,7 +332,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         <Box className="flex-1 min-w-0">
           <TextField
             size={TextFieldSize.Md}
-            value={tokenInputValue}
+            value={displayedTokenValue}
             onChange={handleTokenAmountChange}
             onFocus={handleTokenFocus}
             onBlur={handleTokenBlur}
