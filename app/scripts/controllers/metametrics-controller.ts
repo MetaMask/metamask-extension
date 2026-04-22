@@ -73,7 +73,7 @@ import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
-import Analytics from '../lib/segment/analytics';
+import type { SegmentClient } from '../lib/segment';
 import {
   trace,
   endTrace,
@@ -365,7 +365,7 @@ type CaptureException = typeof captureException | ((err: unknown) => void);
 export type MetaMetricsControllerOptions = {
   state?: Partial<MetaMetricsControllerState>;
   messenger: MetaMetricsControllerMessenger;
-  segment: Analytics;
+  segment: SegmentClient;
   version: string;
   environment: string;
   extension: Browser;
