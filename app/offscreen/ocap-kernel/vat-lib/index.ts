@@ -1,7 +1,7 @@
-export { makeContactEndpoint } from './contact-endpoint.ts';
-export { getRemotableSpec } from './describe.ts';
+export { makeContactEndpoint } from './contact-endpoint';
+export { getRemotableSpec } from './describe';
 export {
   registerServicesWithMatcher,
   type RegistrationEntry,
-} from './matcher-registration.ts';
-export { makeRegistrationToken } from './registration-token.ts';
+} from './matcher-registration';
+export { makeRegistrationToken } from './registration-token';

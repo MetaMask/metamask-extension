@@ -2,7 +2,7 @@
 import { E } from '@endo/eventual-send';
 import { makeDiscoverableExo } from '@metamask/kernel-utils/discoverable';
 
-import type { HostApiProxy } from '../../types.ts';
+import type { HostApiProxy } from '../../types';
 
 export const PERSONAL_MESSAGE_SIGNER_DESCRIPTION =
   'Signs personal messages with a MetaMask wallet account and enumerates the available accounts.';

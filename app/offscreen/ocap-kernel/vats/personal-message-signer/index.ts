@@ -8,17 +8,17 @@ import type {
 } from '@metamask/ocap-kernel';
 import type { ServicePoint } from '@metamask/service-discovery-types';
 
-import type { HostApiProxy } from '../../types.ts';
+import type { HostApiProxy } from '../../types';
 import {
   getRemotableSpec,
   makeContactEndpoint,
   makeRegistrationToken,
   registerServicesWithMatcher,
-} from '../../vat-lib/index.ts';
+} from '../../vat-lib';
 import {
   makePersonalMessageSigner,
   PERSONAL_MESSAGE_SIGNER_DESCRIPTION,
-} from './service.ts';
+} from './service';
 
 const SERVICE_NAME = 'PersonalMessageSigner';
 

@@ -13,11 +13,11 @@ import {
   makeContactEndpoint,
   makeRegistrationToken,
   registerServicesWithMatcher,
-} from '../../vat-lib/index.ts';
+} from '../../vat-lib';
 import {
   makeRandomNumberService,
   RANDOM_NUMBER_SERVICE_DESCRIPTION,
-} from './service.ts';
+} from './service';
 
 const SERVICE_NAME = 'RandomNumberService';
 

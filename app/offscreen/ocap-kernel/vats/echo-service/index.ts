@@ -13,8 +13,8 @@ import {
   makeContactEndpoint,
   makeRegistrationToken,
   registerServicesWithMatcher,
-} from '../../vat-lib/index.ts';
-import { ECHO_SERVICE_DESCRIPTION, makeEchoService } from './service.ts';
+} from '../../vat-lib';
+import { ECHO_SERVICE_DESCRIPTION, makeEchoService } from './service';
 
 const SERVICE_NAME = 'EchoService';
 
