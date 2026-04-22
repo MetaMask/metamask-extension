@@ -22,14 +22,6 @@ function mapToastStatus(
   status?: string,
   evmStatus?: string,
 ): TransactionStatus | undefined {
-  if (evmStatus && failureStatuses.has(evmStatus)) {
-    return 'failed';
-  }
-
-  if (!status || status === SmartTransactionStatuses.PENDING) {
-    return 'pending';
-  }
-
   if (status === SmartTransactionStatuses.SUCCESS) {
     return 'success';
   }
@@ -41,6 +33,19 @@ function mapToastStatus(
     status === SmartTransactionStatuses.UNKNOWN
   ) {
     return 'failed';
+  }
+
+  // STX is pending/undefined — check the underlying EVM status to handle Cancel and Speed Up
+  if (evmStatus && failureStatuses.has(evmStatus)) {
+    return 'failed';
+  }
+
+  if (evmStatus === EvmTransactionStatus.confirmed) {
+    return 'success';
+  }
+
+  if (!status || status === SmartTransactionStatuses.PENDING) {
+    return 'pending';
   }
 
   return undefined;

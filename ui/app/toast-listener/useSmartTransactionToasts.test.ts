@@ -191,6 +191,50 @@ describe('useSmartTransactionToasts', () => {
     },
   );
 
+  it('stays pending during Speed Up then shows success when the replacement confirms', () => {
+    mockTransactions = [
+      {
+        approvalId: 'approval-1',
+        txId: 'tx-1',
+        smartTransactionStatus: SmartTransactionStatuses.PENDING,
+        evmStatus: TransactionStatus.submitted,
+      },
+    ];
+
+    const { rerender } = renderHook(() => useSmartTransactionToasts());
+
+    expect(mockShowPendingToast).toHaveBeenCalledWith('stx-tx-1');
+
+    // Speed Up in flight: selector is following the retry replacement, which is still submitted.
+    mockTransactions = [
+      {
+        approvalId: 'approval-1',
+        txId: 'tx-1',
+        smartTransactionStatus: SmartTransactionStatuses.PENDING,
+        evmStatus: TransactionStatus.submitted,
+      },
+    ];
+
+    rerender();
+
+    expect(mockShowFailedToast).not.toHaveBeenCalled();
+    expect(mockShowSuccessToast).not.toHaveBeenCalled();
+
+    mockTransactions = [
+      {
+        approvalId: 'approval-1',
+        txId: 'tx-1',
+        smartTransactionStatus: SmartTransactionStatuses.PENDING,
+        evmStatus: TransactionStatus.confirmed,
+      },
+    ];
+
+    rerender();
+
+    expect(mockShowSuccessToast).toHaveBeenCalledWith('stx-tx-1');
+    expect(mockResolvePendingApproval).toHaveBeenCalledWith('approval-1', true);
+  });
+
   it('shows a failed toast and resolves the approval when a pending transaction becomes unknown', () => {
     mockTransactions = [
       {
