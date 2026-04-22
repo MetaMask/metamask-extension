@@ -625,11 +625,13 @@ export const validateResultThresholds = (
         ? (stdDev / mean) * 100
         : undefined;
 
-    // Mirror validateThresholds: skip unreliable metrics (CV > 50%) so they
-    // are not gated against un-widened thresholds. CV-adaptive widening only
-    // applies in [25, 50]; above that the measurement is fundamentally unstable
-    // and any pass/fail signal would be noise, not a regression.
-    if (cv !== undefined && cv > CV_THRESHOLDS.POOR) {
+    // Mirror validateThresholds: skip unreliable metrics (CV >= 50%) so they
+    // are not gated against un-widened thresholds. Uses the same boundary as
+    // assessDataQuality, which classifies cv >= CV_THRESHOLDS.POOR as
+    // 'unreliable'. CV-adaptive widening applies only below that; above it the
+    // measurement is fundamentally unstable and any pass/fail signal would be
+    // noise, not a regression.
+    if (cv !== undefined && cv >= CV_THRESHOLDS.POOR) {
       continue;
     }
 
