@@ -3,6 +3,7 @@ import { screen, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   CONNECT_HARDWARE_ROUTE,
@@ -66,7 +67,7 @@ describe('ChooseNewWalletTypePage', () => {
     it('renders the page with header title', () => {
       renderComponent();
 
-      expect(screen.getByText('Add a wallet')).toBeInTheDocument();
+      expect(screen.getByText(messages.addAWallet.message)).toBeInTheDocument();
     });
 
     it('renders the back button', () => {
@@ -81,9 +82,11 @@ describe('ChooseNewWalletTypePage', () => {
       expect(
         screen.getByTestId('choose-wallet-type-import-wallet'),
       ).toBeInTheDocument();
-      expect(screen.getByText('Import a wallet')).toBeInTheDocument();
       expect(
-        screen.getByText('Using a 12, 18 or 24-word seed phrase'),
+        screen.getByText(messages.importAWallet.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.importAWalletDescription.message),
       ).toBeInTheDocument();
     });
 
@@ -93,8 +96,12 @@ describe('ChooseNewWalletTypePage', () => {
       expect(
         screen.getByTestId('choose-wallet-type-import-account'),
       ).toBeInTheDocument();
-      expect(screen.getByText('Import an account')).toBeInTheDocument();
-      expect(screen.getByText('Via a private key')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.importAnAccount.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.importAnAccountDescription.message),
+      ).toBeInTheDocument();
     });
 
     it('renders the hardware wallet option', () => {
@@ -103,8 +110,12 @@ describe('ChooseNewWalletTypePage', () => {
       expect(
         screen.getByTestId('choose-wallet-type-hardware-wallet'),
       ).toBeInTheDocument();
-      expect(screen.getByText('Connect a hardware wallet')).toBeInTheDocument();
-      expect(screen.getByText('Using QR Code')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.connectAHardwareWallet.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.connectAHardwareWalletDescription.message),
+      ).toBeInTheDocument();
     });
 
     it('does not render snap account option when disabled', () => {
