@@ -131,8 +131,9 @@ export function resolveTeamMention(
 ): string {
   const team = ownership[benchmarkName];
   if (team) {
-    // Slack subteam IDs are uppercase alphanumeric, 9+ chars (e.g. S01ABC1234)
-    if (/^S[A-Z0-9]{8,}$/u.test(team)) {
+    // Slack subteam IDs contain only uppercase letters and digits (e.g. S12345, S01ABC1234).
+    // Team name strings like "SnapsTeam" always contain lowercase, so this is the discriminator.
+    if (/^S[A-Z0-9]+$/u.test(team)) {
       return `<!subteam^${team}>`;
     }
     return `@${team}`;
