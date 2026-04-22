@@ -35,7 +35,10 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         );
-        await login(driver, { expectedBalance: '1.21M' });
+        await login(driver, {
+          expectedBalance: '1.21M',
+          waitForNonEvmAccounts: false,
+        });
 
         // deploy action
         const testDappPage = new TestDappPage(driver);
@@ -72,7 +75,10 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
           '0x100000000000000000000',
         );
-        await login(driver, { expectedBalance: '1.21M' });
+        await login(driver, {
+          expectedBalance: '1.21M',
+          waitForNonEvmAccounts: false,
+        });
 
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
@@ -138,6 +144,7 @@ describe('Trezor Hardware', function (this: Suite) {
         await login(driver, {
           expectedBalance:
             `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+          waitForNonEvmAccounts: false,
         });
 
         const contractAddress =
@@ -192,6 +199,7 @@ describe('Trezor Hardware', function (this: Suite) {
         await login(driver, {
           expectedBalance:
             `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+          waitForNonEvmAccounts: false,
         });
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry

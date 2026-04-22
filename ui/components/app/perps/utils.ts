@@ -6,7 +6,11 @@ import type {
   PerpsTransaction,
   PerpsTransactionFilter,
 } from './types';
-import { HYPERLIQUID_ASSET_ICONS_BASE_URL, PERPS_CONSTANTS } from './constants';
+import {
+  HYPERLIQUID_ASSET_ICONS_BASE_URL,
+  METAMASK_PERPS_ICONS_BASE_URL,
+  PERPS_CONSTANTS,
+} from './constants';
 
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
@@ -204,29 +208,38 @@ export const getDisplaySymbol = (symbol: string): string => {
   return symbol;
 };
 
+export type AssetIconUrls = {
+  primary: string;
+  fallback: string;
+};
+
 /**
- * Generate the icon URL for an asset symbol
- * Handles both regular assets and HIP-3 assets (dex:symbol format)
- *
- * @param symbol - The symbol to generate the icon URL for
- * @returns The icon URL
- * @example
- * getAssetIconUrl('BTC') => 'https://app.hyperliquid.xyz/coins/BTC.svg'
- * getAssetIconUrl('xyz:TSLA') => 'https://app.hyperliquid.xyz/coins/xyz:TSLA.svg'
+ * Generate primary and fallback icon URLs for an asset symbol.
+ * Primary is the MetaMask-hosted GitHub CDN; fallback is HyperLiquid.
+ * HIP-3 assets use the `hip3:{dex}_{symbol}` filename convention on the
+ * MetaMask CDN (e.g., xyz:NATGAS → hip3:xyz_NATGAS.svg).
+ * @param symbol
  */
-export const getAssetIconUrl = (symbol: string): string => {
+export const getAssetIconUrls = (symbol: string): AssetIconUrls | null => {
   if (!symbol) {
-    return '';
+    return null;
   }
 
-  // Check for HIP-3 asset (contains colon)
   if (symbol.includes(':')) {
     const [dex, assetSymbol] = symbol.split(':');
-    return `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${dex.toLowerCase()}:${assetSymbol.toUpperCase()}.svg`;
+    const hyperliquidFormat = `${dex.toLowerCase()}:${assetSymbol.toUpperCase()}`;
+    const metamaskFormat = `hip3:${dex.toLowerCase()}_${assetSymbol.toUpperCase()}`;
+    return {
+      primary: `${METAMASK_PERPS_ICONS_BASE_URL}${metamaskFormat}.svg`,
+      fallback: `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${hyperliquidFormat}.svg`,
+    };
   }
 
-  // Regular asset - uppercase the symbol
-  return `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${symbol.toUpperCase()}.svg`;
+  const upperSymbol = symbol.toUpperCase();
+  return {
+    primary: `${METAMASK_PERPS_ICONS_BASE_URL}${upperSymbol}.svg`,
+    fallback: `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${upperSymbol}.svg`,
+  };
 };
 
 /**

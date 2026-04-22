@@ -13,6 +13,7 @@ import {
   DEFAULT_MUSD_BLOCKED_COUNTRIES,
   MUSD_CONVERSION_BONUS_TERMS_OF_USE,
   FALLBACK_MIN_ASSET_BALANCE_REQUIRED,
+  MERKL_ELIGIBLE_MUSD_CHAIN_IDS,
   isMusdToken,
   getMusdTokenAddressForChain,
   getMusdAssetIdForChain,
@@ -21,6 +22,14 @@ import {
 } from './constants';
 
 describe('MUSD Constants', () => {
+  describe('MERKL_ELIGIBLE_MUSD_CHAIN_IDS', () => {
+    it('includes Mainnet, Linea mainnet, and the Linea testnet alias from ELIGIBLE_TOKENS', () => {
+      expect(MERKL_ELIGIBLE_MUSD_CHAIN_IDS).toContain(CHAIN_IDS.MAINNET);
+      expect(MERKL_ELIGIBLE_MUSD_CHAIN_IDS).toContain(CHAIN_IDS.LINEA_MAINNET);
+      expect(MERKL_ELIGIBLE_MUSD_CHAIN_IDS).toContain('0xe709');
+    });
+  });
+
   describe('MUSD_TOKEN', () => {
     it('should have correct symbol', () => {
       expect(MUSD_TOKEN.symbol).toBe('MUSD');
