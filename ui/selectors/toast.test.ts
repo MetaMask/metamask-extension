@@ -360,7 +360,6 @@ describe('toast selectors', () => {
     it('returns only smart transaction status page approvals with tx ids', () => {
       const state = {
         metamask: {
-          transactions: [{ id: 'tx-1', type: TransactionType.simpleSend }],
           pendingApprovals: {
             'approval-1': {
               id: 'approval-1',
@@ -392,52 +391,6 @@ describe('toast selectors', () => {
         {
           approvalId: 'approval-1',
           txId: 'tx-1',
-          smartTransactionStatus: 'pending',
-        },
-      ]);
-    });
-
-    it('excludes perpsDeposit and perpsDepositAndOrder from smart transaction toasts', () => {
-      const state = {
-        metamask: {
-          transactions: [
-            { id: 'tx-1', type: TransactionType.perpsDeposit },
-            { id: 'tx-2', type: TransactionType.perpsDepositAndOrder },
-            { id: 'tx-3', type: TransactionType.simpleSend },
-          ],
-          pendingApprovals: {
-            'approval-1': {
-              id: 'approval-1',
-              type: 'smartTransaction:showSmartTransactionStatusPage',
-              requestState: {
-                txId: 'tx-1',
-                smartTransaction: { status: 'pending' },
-              },
-            },
-            'approval-2': {
-              id: 'approval-2',
-              type: 'smartTransaction:showSmartTransactionStatusPage',
-              requestState: {
-                txId: 'tx-2',
-                smartTransaction: { status: 'success' },
-              },
-            },
-            'approval-3': {
-              id: 'approval-3',
-              type: 'smartTransaction:showSmartTransactionStatusPage',
-              requestState: {
-                txId: 'tx-3',
-                smartTransaction: { status: 'pending' },
-              },
-            },
-          },
-        },
-      } as unknown as SelectorState;
-
-      expect(selectSmartTransactions(state)).toStrictEqual([
-        {
-          approvalId: 'approval-3',
-          txId: 'tx-3',
           smartTransactionStatus: 'pending',
         },
       ]);

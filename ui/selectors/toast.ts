@@ -143,15 +143,7 @@ type TxRequest = {
 
 export const selectSmartTransactions = createDeepEqualSelector(
   getPendingApprovals,
-  selectTransactions,
-  (pendingApprovals, transactions) => {
-    const txTypeById = new Map<string, string>();
-    for (const tx of transactions) {
-      if (tx.id && tx.type) {
-        txTypeById.set(tx.id, tx.type);
-      }
-    }
-
+  (pendingApprovals) => {
     const result: TxRequest[] = [];
 
     for (const approval of pendingApprovals) {
@@ -169,11 +161,6 @@ export const selectSmartTransactions = createDeepEqualSelector(
       };
 
       if (!txId) {
-        continue;
-      }
-
-      const txType = txTypeById.get(txId);
-      if (txType && TOAST_EXCLUDED_TRANSACTION_TYPES.has(txType)) {
         continue;
       }
 
