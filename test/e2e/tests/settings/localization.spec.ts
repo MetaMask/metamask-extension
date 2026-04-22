@@ -108,9 +108,6 @@ describe('Localization', function () {
             },
           })
           .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withAssetsController({
-            selectedCurrency: 'php',
-          })
           .build(),
         testSpecificMock: mockPhpConversion,
         title: this.test?.fullTitle(),
