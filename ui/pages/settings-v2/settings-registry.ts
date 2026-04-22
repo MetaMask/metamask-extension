@@ -32,6 +32,7 @@ import {
   ADD_DEVICE_ROUTE,
 } from '../../helpers/constants/routes';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
+import { getIsAddDeviceSyncEnabled } from '../../../shared/lib/environment';
 import { CLAIMS_TAB_KEYS } from '../settings/transaction-shield-tab/types';
 
 /**
@@ -73,7 +74,7 @@ export const SETTINGS_V2_ROOT_SECTIONS: readonly {
       DEVELOPER_OPTIONS_ROUTE,
       DEVELOPER_TOOLS_ROUTE,
       ABOUT_US_ROUTE,
-      ADD_DEVICE_ROUTE,
+      ...(getIsAddDeviceSyncEnabled() ? [ADD_DEVICE_ROUTE] : []),
     ],
   },
 ] as const;
@@ -314,14 +315,18 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     iconName: IconName.Info,
   },
 
-  // --- Add Device tab ---
-  [ADD_DEVICE_ROUTE]: {
-    labelKey: 'addDevice',
-    parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('./add-device-tab/index.ts')),
-    isTab: true,
-    iconName: IconName.Mobile,
-  },
+  // --- Add Device tab (only when ADD_DEVICE_SYNC_ENABLED=true) ---
+  ...(getIsAddDeviceSyncEnabled()
+    ? {
+        [ADD_DEVICE_ROUTE]: {
+          labelKey: 'addDevice',
+          parentPath: SETTINGS_V2_ROUTE,
+          component: mmLazy(() => import('./add-device-tab/index.ts')),
+          isTab: true,
+          iconName: IconName.Mobile,
+        },
+      }
+    : {}),
 
   // --- Snap settings (navigated via URL, not shown as a tab) ---
   [SNAP_SETTINGS_ROUTE]: {

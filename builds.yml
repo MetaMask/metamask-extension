@@ -389,6 +389,9 @@ env:
   - ASSETS_UNIFIED_STATE_ENABLED: false
   # Build-time gate: when true, hardware wallet onboarding uses the new flow.
   - NEW_HARDWARE_WALLET_ONBOARDING: false
+  # Build-time gate: when true, the Add Device Sync tab is shown in Settings
+  # (device pairing via QR code scan and verification code).
+  - ADD_DEVICE_SYNC_ENABLED: false
 
   ###
   # Meta variables

@@ -61,6 +61,15 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
 };
 
 /**
+ * Compile-time gate (`ADD_DEVICE_SYNC_ENABLED`): when true the
+ * Add Device tab is shown in Settings, allowing users to pair a second device
+ * via QR code scan and verification code.
+ */
+export const getIsAddDeviceSyncEnabled = (): boolean => {
+  return process.env.ADD_DEVICE_SYNC_ENABLED?.toString() === 'true';
+};
+
+/**
  * Compile-time gate (`NEW_HARDWARE_WALLET_ONBOARDING`): when true the
  * extension uses the redesigned hardware-wallet onboarding flows (device
  * discovery and error handling).
