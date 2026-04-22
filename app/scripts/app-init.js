@@ -96,7 +96,7 @@ function importAllScripts() {
   }
 
   // Always apply LavaMoat in e2e test builds, so that we can capture initialization stats
-  if (testMode || applyLavaMoat) {
+  if (applyLavaMoat) {
     loadFile('../scripts/runtime-lavamoat.js');
     loadFile('../scripts/lockdown-more.js');
     loadFile('../scripts/policy-load.js');
