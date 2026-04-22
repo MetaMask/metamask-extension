@@ -146,6 +146,11 @@ describe('Profile Metrics', function () {
         }) => {
           await login(driver);
 
+          const [authCall] = mockedEndpoint;
+
+          // Wait for the initial 2 PUT requests before creating a new account
+          await waitForEndpointToBeCalled(driver, authCall, 2);
+
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.openAccountMenu();
           const accountListPage = new AccountListPage(driver);
@@ -153,13 +158,9 @@ describe('Profile Metrics', function () {
           await accountListPage.addMultichainAccount();
           await accountListPage.checkAccountDisplayedInAccountList('Account 2');
           await accountListPage.closeMultichainAccountsPage();
-          const [authCall] = mockedEndpoint;
 
-          // There are 3 PUT requests:
-          // 1. One for default EVM Account 1 alone
-          // 2. One for default Solana Account 1 (which is generated after the EVM Account is added)
-          // 3. One for Account 2 (Solana + EVM Accounts in one request)
-          await waitForEndpointToBeCalled(driver, authCall, 3);
+          // 3rd PUT request for the newly created Account 2
+          await waitForEndpointToBeCalled(driver, authCall, 3, 10000);
 
           const requests = await authCall.getSeenRequests();
           assert.equal(

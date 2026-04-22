@@ -463,8 +463,8 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [position]);
 
   // Filter and sort open orders for this market, then normalize for display.
-  // Normalization adds synthetic TP/SL rows for parent orders when no matching
-  // real trigger exists; full-position TP/SL also appear in this Orders list.
+  // Normalization adds synthetic TP/SL rows for parent orders and filters out
+  // full-position TP/SL (those stay on the position card / auto-close section).
   const orders = useMemo(() => {
     if (!decodedSymbol) {
       return [];

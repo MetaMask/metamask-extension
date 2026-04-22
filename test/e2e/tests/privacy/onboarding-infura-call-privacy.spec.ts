@@ -174,6 +174,7 @@ describe('MetaMask onboarding', function () {
         await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         await homePage.checkPageIsLoaded();
 
         // requests happen here
@@ -181,7 +182,7 @@ describe('MetaMask onboarding', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, driver.timeout);
+          }, 20000);
 
           const requests = await mockedEndpoint.getSeenRequests();
           assert.equal(

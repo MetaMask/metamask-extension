@@ -19,6 +19,7 @@ describe('Name lookup', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withSelectedNetwork()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: async (mockServer: Mockttp) => [
@@ -40,8 +41,10 @@ describe('Name lookup', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        // Navigate to the extension home page and validate the recipient address in the send flow
+        await homePage.checkPageIsLoaded();
+
         await homePage.startSendFlow();
+        await sendPage.checkPageIsLoaded();
 
         await sendPage.selectToken('0x1', 'ETH');
         await sendPage.fillRecipient('metamask.domain');

@@ -6474,104 +6474,6 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  /**
-   * When assets-unify-state is enabled, validates ERC-20 `wallet_watchAsset`
-   * input that the unified path requires before the EIP-747 confirmation flow.
-   * Does not persist; see {@link #persistUnifiedWatchAsset}.
-   *
-   * @param {object} asset - The asset descriptor from the dapp request.
-   * @param {string} networkClientId - The network client the request targets.
-   */
-  #validateUnifiedWatchAssetRequest(asset, networkClientId) {
-    if (!this.assetsController) {
-      throw rpcErrors.internal({
-        message: 'AssetsController is not available for wallet_watchAsset.',
-      });
-    }
-
-    if (!networkClientId) {
-      throw rpcErrors.invalidParams({
-        message:
-          'wallet_watchAsset requires a network context (networkClientId).',
-      });
-    }
-
-    const { chainId } =
-      this.networkController.getNetworkConfigurationByNetworkClientId(
-        networkClientId,
-      );
-
-    if (!chainId) {
-      throw rpcErrors.internal({
-        message: 'Active network configuration is missing chainId.',
-      });
-    }
-
-    // ERC-20 options from dapps do not include chainId; resolve CAIP asset id from the request network.
-    const assetId = toAssetId(asset.address, chainId);
-    if (!assetId) {
-      throw rpcErrors.invalidParams({
-        message:
-          'Invalid token address or unsupported chain for wallet_watchAsset.',
-      });
-    }
-
-    const decimals = Number.parseInt(String(asset.decimals), 10);
-    if (!Number.isInteger(decimals) || decimals < 0 || decimals > 255) {
-      throw rpcErrors.invalidParams({
-        message: `Invalid ERC-20 decimals: ${String(asset.decimals)}.`,
-      });
-    }
-  }
-
-  /**
-   * After the user approves EIP-747, persist the token on the unified
-   * AssetsController. Must run only after `TokensController.watchAsset` succeeds
-   * so a rejected confirmation does not leave orphaned unified state.
-   *
-   * @param {object} asset - The asset descriptor (possibly enriched by TokensController).
-   * @param {string} networkClientId - The network client the request targets.
-   */
-  #persistUnifiedWatchAsset = async (asset, networkClientId) => {
-    const { chainId } =
-      this.networkController.getNetworkConfigurationByNetworkClientId(
-        networkClientId,
-      );
-
-    const assetId = toAssetId(asset.address, chainId);
-    if (!assetId) {
-      throw rpcErrors.invalidParams({
-        message:
-          'Invalid token address or unsupported chain for wallet_watchAsset.',
-      });
-    }
-
-    const decimals = Number.parseInt(String(asset.decimals), 10);
-    if (!Number.isInteger(decimals) || decimals < 0 || decimals > 255) {
-      throw rpcErrors.invalidParams({
-        message: `Invalid ERC-20 decimals: ${String(asset.decimals)}.`,
-      });
-    }
-
-    const accountId = this.accountsController.getSelectedAccount().id;
-    const iconUrl = asset.image ?? asset.iconUrl;
-    const pendingMetadata = {
-      address: asset.address,
-      symbol: asset.symbol,
-      name: asset.name ?? asset.symbol,
-      decimals,
-      chainId,
-      unlisted: false,
-      ...(iconUrl ? { iconUrl } : {}),
-    };
-
-    await this.assetsController.addCustomAsset(
-      accountId,
-      assetId,
-      pendingMetadata,
-    );
-  };
-
   handleWatchAssetRequest = async ({
     asset,
     type,
@@ -6580,19 +6482,72 @@ export default class MetamaskController extends EventEmitter {
   }) => {
     switch (type) {
       case ERC20: {
-        const unifyWatchAsset = this.#isAssetsUnifyStateEnabled();
-        if (unifyWatchAsset) {
-          this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
+        if (this.#isAssetsUnifyStateEnabled()) {
+          if (!networkClientId) {
+            throw rpcErrors.invalidParams({
+              message:
+                'wallet_watchAsset requires a network context (networkClientId).',
+            });
+          }
+
+          const { chainId } =
+            this.networkController.getNetworkConfigurationByNetworkClientId(
+              networkClientId,
+            );
+
+          if (!chainId) {
+            throw rpcErrors.internal({
+              message: 'Active network configuration is missing chainId.',
+            });
+          }
+
+          // ERC-20 options from dapps do not include chainId; resolve CAIP asset id from the request network.
+          const assetId = toAssetId(asset.address, chainId);
+          if (!assetId) {
+            throw rpcErrors.invalidParams({
+              message:
+                'Invalid token address or unsupported chain for wallet_watchAsset.',
+            });
+          }
+
+          const decimals = Number.parseInt(String(asset.decimals), 10);
+          if (!Number.isInteger(decimals) || decimals < 0 || decimals > 255) {
+            throw rpcErrors.invalidParams({
+              message: `Invalid ERC-20 decimals: ${String(asset.decimals)}.`,
+            });
+          }
+
+          const accountId = this.accountsController.getSelectedAccount().id;
+          const iconUrl = asset.image ?? asset.iconUrl;
+          const pendingMetadata = {
+            address: assetId,
+            symbol: asset.symbol,
+            name: asset.name ?? asset.symbol,
+            decimals,
+            chainId,
+            unlisted: false,
+            ...(iconUrl ? { iconUrl } : {}),
+          };
+
+          const result = await this.tokensController.watchAsset({
+            asset,
+            type,
+            networkClientId,
+          });
+
+          await this.assetsController.addCustomAsset(
+            accountId,
+            assetId,
+            pendingMetadata,
+          );
+
+          return result;
         }
-        await this.tokensController.watchAsset({
+        return this.tokensController.watchAsset({
           asset,
           type,
           networkClientId,
         });
-        if (unifyWatchAsset) {
-          await this.#persistUnifiedWatchAsset(asset, networkClientId);
-        }
-        return undefined;
       }
       case ERC721:
       case ERC1155:
