@@ -218,7 +218,9 @@ class FixtureBuilderV2 {
       ac.selectedCurrency = selectedCurrency;
     }
     merge(ac.assetsBalance, assetsBalance);
-    merge(ac.assetsPrice, assetsPrice);
+    if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true') {
+      merge(ac.assetsPrice, assetsPrice);
+    }
     merge(ac.assetsInfo, assetsInfo);
     if (selectedCurrency !== undefined) {
       ac.selectedCurrency = selectedCurrency;
