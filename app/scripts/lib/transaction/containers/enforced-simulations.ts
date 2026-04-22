@@ -61,15 +61,19 @@ export async function enforceSimulations({
     slippage,
   );
 
-  const { data, to } = await convertTransactionToRedeemDelegations({
-    transaction: transactionMeta,
-    messenger: messenger as DelegationMessenger,
-    caveats,
-    delegatee: from,
-    delegationSignature: useRealSignature
-      ? undefined
-      : MOCK_DELEGATION_SIGNATURE,
-  });
+  const { authorizationList, data, to, type } =
+    await convertTransactionToRedeemDelegations({
+      transaction: transactionMeta,
+      messenger: messenger as DelegationMessenger,
+      caveats,
+      delegatee: from,
+      delegationSignature: useRealSignature
+        ? undefined
+        : MOCK_DELEGATION_SIGNATURE,
+      authorization: transactionMeta.delegationAddress
+        ? undefined
+        : { minimal: true },
+    });
 
   log('Data', data);
 
@@ -78,6 +82,11 @@ export async function enforceSimulations({
       transaction.txParams.data = data;
       transaction.txParams.to = to;
       transaction.txParams.value = '0x0';
+      transaction.txParams.type = type;
+
+      if (authorizationList) {
+        transaction.txParams.authorizationList = authorizationList;
+      }
     },
   };
 }

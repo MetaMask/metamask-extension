@@ -68,7 +68,7 @@ describe('TypedSignPermissionInfo', () => {
       const mockStore = configureMockStore([])(state);
       expect(() =>
         renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
-      ).toThrow('Invalid permission type');
+      ).toThrow('Invalid permission type: invalid');
     });
 
     it('throws an error when decodedPermission is not defined', () => {
