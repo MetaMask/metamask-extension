@@ -218,4 +218,13 @@ describe('BridgeFeeRow', () => {
       queryByText(messages.perpsWithdrawFee.message),
     ).not.toBeInTheDocument();
   });
+
+  it('renders Provider Fee label on the skeleton while loading a perpsWithdraw transaction', () => {
+    useIsTransactionPayLoadingMock.mockReturnValue(true);
+
+    const { getByTestId, getByText } = render({}, getPerpsWithdrawState());
+
+    expect(getByTestId('bridge-fee-row-skeleton')).toBeInTheDocument();
+    expect(getByText(messages.perpsWithdrawFee.message)).toBeInTheDocument();
+  });
 });
