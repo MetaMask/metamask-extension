@@ -55,6 +55,8 @@ function setEnvironmentVariables({
       testing: isTestBuild,
     }),
     METAMASK_DEBUG: isDevBuild || variables.getMaybe('METAMASK_DEBUG') === true,
+    SENTRY_DISTRIBUTED_TRACING_PILOT:
+      variables.getMaybe('SENTRY_DISTRIBUTED_TRACING_PILOT') === true,
     METAMASK_BUILD_NAME: buildName,
     METAMASK_BUILD_APP_ID: getBuildAppId({
       buildType,
