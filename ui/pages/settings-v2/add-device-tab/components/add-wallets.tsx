@@ -145,13 +145,13 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
           fontWeight={FontWeight.Bold}
           color={TextColor.TextDefault}
         >
-          Add Wallets
+          {t('add_wallets')}
         </Text>
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t('add_wallets_desc')}
         </Text>
       </Box>
-      <Box className="flex flex-col gap-3">
+      <Box className="flex flex-col gap-3 mt-4">
         <Checkbox
           isSelected={isSelectAll}
           onChange={handleSelectAll}

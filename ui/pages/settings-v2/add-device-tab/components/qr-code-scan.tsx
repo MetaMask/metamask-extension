@@ -27,7 +27,6 @@ const QrCodeScan = ({ onScanSuccess }: QrCodeScanProps) => {
     <Box className="p-4 flex flex-1 flex-col gap-4">
       <Text
         variant={TextVariant.HeadingLg}
-        className="text-[26px]"
         color={TextColor.TextDefault}
         fontWeight={FontWeight.Bold}
       >

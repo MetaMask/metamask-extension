@@ -133,7 +133,6 @@ const EnterVerificationCode = () => {
       <Box className="flex flex-col gap-2">
         <Text
           variant={TextVariant.HeadingLg}
-          className="text-[26px]"
           color={TextColor.TextDefault}
           fontWeight={FontWeight.Bold}
         >
