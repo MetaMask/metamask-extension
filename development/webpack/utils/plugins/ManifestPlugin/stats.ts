@@ -1,4 +1,3 @@
-import path from 'node:path';
 import type { BundleSizeCategory } from './types';
 
 export const BUNDLE_SIZE_SUMMARY_FILE = 'bundle_size_stats.json';
@@ -105,14 +104,6 @@ export function getBundlePartSizes(
     other: sumAssetSizes(otherAssets, assetSizes),
     contentScripts: sumAssetSizes(categoryAssets.contentScripts, assetSizes),
   };
-}
-
-export function getBundleSizeDebugFilePath(outFile: string): string {
-  const parsed = path.posix.parse(outFile);
-  const baseName = parsed.ext ? parsed.name : parsed.base;
-  const extension = parsed.ext || '.json';
-
-  return path.posix.join(parsed.dir, `${baseName}.debug${extension}`);
 }
 
 export function mapBundleParts<TResult>(

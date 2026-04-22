@@ -475,17 +475,17 @@ describe('ManifestPlugin', () => {
           'home',
           {
             getFiles: () => [
-              'chrome/runtime.js',
-              'chrome/home.js',
-              'chrome/shared.js',
-              'chrome/home.html',
-              'chrome/home.css',
+              'runtime.js',
+              'home.js',
+              'shared.js',
+              'home.html',
+              'home.css',
             ],
             getEntrypointChunk: () => ({
               getAllAsyncChunks: () =>
                 new Set([
                   {
-                    files: new Set(['chrome/home-async.js', 'chrome/home.css']),
+                    files: new Set(['home-async.js', 'home.css']),
                   },
                 ]),
             }),
@@ -494,12 +494,12 @@ describe('ManifestPlugin', () => {
         [
           'service-worker.ts',
           {
-            getFiles: () => ['chrome/service-worker.js', 'chrome/shared.js'],
+            getFiles: () => ['service-worker.js', 'shared.js'],
             getEntrypointChunk: () => ({
               getAllAsyncChunks: () =>
                 new Set([
                   {
-                    files: new Set(['chrome/background.js']),
+                    files: new Set(['background.js']),
                   },
                 ]),
             }),
@@ -508,11 +508,7 @@ describe('ManifestPlugin', () => {
         [
           'offscreen',
           {
-            getFiles: () => [
-              'chrome/runtime.js',
-              'chrome/offscreen.js',
-              'chrome/offscreen.css',
-            ],
+            getFiles: () => ['runtime.js', 'offscreen.js', 'offscreen.css'],
             getEntrypointChunk: () => ({
               getAllAsyncChunks: () => new Set(),
             }),
@@ -521,7 +517,7 @@ describe('ManifestPlugin', () => {
         [
           'scripts/contentscript.js',
           {
-            getFiles: () => ['chrome/scripts/contentscript.js'],
+            getFiles: () => ['scripts/contentscript.js'],
             getEntrypointChunk: () => ({
               getAllAsyncChunks: () => new Set(),
             }),
@@ -530,7 +526,7 @@ describe('ManifestPlugin', () => {
         [
           'scripts/inpage.js',
           {
-            getFiles: () => ['chrome/scripts/inpage.js'],
+            getFiles: () => ['scripts/inpage.js'],
             getEntrypointChunk: () => ({
               getAllAsyncChunks: () => new Set(),
             }),
@@ -630,11 +626,7 @@ describe('ManifestPlugin', () => {
         [
           'home',
           {
-            getFiles: () => [
-              'chrome/runtime.js',
-              'chrome/home.js',
-              'chrome/home.css',
-            ],
+            getFiles: () => ['runtime.js', 'home.js', 'home.css'],
             getEntrypointChunk: () => ({
               getAllAsyncChunks: () => new Set(),
             }),
@@ -643,12 +635,12 @@ describe('ManifestPlugin', () => {
         [
           'service-worker.ts',
           {
-            getFiles: () => ['chrome/service-worker.js', 'chrome/shared.js'],
+            getFiles: () => ['service-worker.js', 'shared.js'],
             getEntrypointChunk: () => ({
               getAllAsyncChunks: () =>
                 new Set([
                   {
-                    files: new Set(['chrome/background.js']),
+                    files: new Set(['background.js']),
                   },
                 ]),
             }),
