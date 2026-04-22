@@ -2,26 +2,22 @@ import React, { useState, useEffect, useRef } from 'react';
 import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
-  AlignItems,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-  BackgroundColor,
-} from '../../../helpers/constants/design-system';
-import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
   ButtonIcon,
   ButtonIconSize,
+  FontWeight,
+  IconColor,
   IconName,
   Text,
-} from '../../component-library';
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
@@ -151,59 +147,65 @@ export const MultichainAddressRow = ({
   return (
     <Box
       className={`multichain-address-row ${className}`}
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
       padding={4}
       gap={4}
       data-testid="multichain-address-row"
       backgroundColor={
         addressCopied
-          ? BackgroundColor.successMuted
-          : BackgroundColor.backgroundDefault
+          ? BoxBackgroundColor.SuccessMuted
+          : BoxBackgroundColor.BackgroundDefault
       }
     >
       <AvatarNetwork
         size={AvatarNetworkSize.Md}
         name={networkName}
         src={networkImageSrc}
-        borderRadius={BorderRadius.LG}
+        className="rounded-lg"
         data-testid="multichain-address-row-network-icon"
       />
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexStart}
-        style={{ flex: 1, minWidth: 0 }} // Ensure the text shrinks properly
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
+        className="min-w-0 flex-1"
       >
         <Text
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textDefault}
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextDefault}
           data-testid="multichain-address-row-network-name"
-          ellipsis={true}
-          width={BlockSize.Full}
+          ellipsis
+          className="w-full"
         >
           {networkName}
         </Text>
         <Text
-          variant={TextVariant.bodySm}
+          variant={TextVariant.BodySm}
           color={
-            addressCopied ? TextColor.successDefault : TextColor.textAlternative
+            addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
           }
           data-testid="multichain-address-row-address"
         >
           {subText}
         </Text>
       </Box>
-      <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={2}
+      >
         <ButtonIcon
           iconName={copyIcon}
           size={ButtonIconSize.Md}
           onClick={handleCopyClick}
           ariaLabel={t('copyAddressShort')}
-          color={
-            addressCopied ? IconColor.successDefault : IconColor.iconDefault
-          }
+          iconProps={{
+            color: addressCopied
+              ? IconColor.SuccessDefault
+              : IconColor.IconDefault,
+          }}
           data-testid="multichain-address-row-copy-button"
         />
         {qrActionParams ? (
@@ -212,7 +214,7 @@ export const MultichainAddressRow = ({
             size={ButtonIconSize.Md}
             onClick={handleQrClick}
             ariaLabel="Show QR code"
-            color={IconColor.iconDefault}
+            iconProps={{ color: IconColor.IconDefault }}
             data-testid="multichain-address-row-qr-button"
           />
         ) : null}
