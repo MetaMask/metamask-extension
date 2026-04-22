@@ -8,7 +8,10 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
-import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
+import {
+  mockTokensV2SupportedNetworks,
+  mockTokensV3Assets,
+} from '../btc/mocks/tokens-api';
 import {
   mockSolanaBalanceQuote,
   mockGetMinimumBalanceForRentExemption,
@@ -36,7 +39,6 @@ import {
   mockGetFailedTransaction,
   mockBridgeGetTokens,
   mockBridgeSearchTokens,
-  mockTokensV3Assets,
   mockGetSignaturesForWalletOnly,
 } from './common-solana';
 

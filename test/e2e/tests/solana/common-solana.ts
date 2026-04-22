@@ -1736,10 +1736,18 @@ const USDC_TOKEN_INFO = {
 export async function mockBridgeTxStatus(
   mockServer: Mockttp,
   direction: 'SOL_TO_USDC' | 'USDC_TO_SOL' = 'SOL_TO_USDC',
+  signatureHolder?: SignatureHolder,
 ) {
   const isSolToUsdc = direction === 'SOL_TO_USDC';
   return await mockServer.forGet(BRIDGE_TX_STATUS).thenCallback(() => {
-    console.log('mockBridgeTxStatus', direction);
+    const fallbackHash = isSolToUsdc
+      ? SOL_TO_USDC_SWAP_SIGNATURE
+      : USDC_TO_SOL_SWAP_SIGNATURE;
+    const srcTxHash =
+      signatureHolder?.value && signatureHolder.value.length > 0
+        ? signatureHolder.value
+        : fallbackHash;
+    console.log('mockBridgeTxStatus', direction, { srcTxHash });
     return {
       statusCode: 200,
       json: {
@@ -1748,9 +1756,7 @@ export async function mockBridgeTxStatus(
         bridge: 'lifi',
         srcChain: {
           chainId: 1151111081099710,
-          txHash: isSolToUsdc
-            ? SOL_TO_USDC_SWAP_SIGNATURE
-            : USDC_TO_SOL_SWAP_SIGNATURE,
+          txHash: srcTxHash,
           amount: isSolToUsdc ? '1000000000' : '991250',
           token: isSolToUsdc ? SOL_TOKEN_INFO : USDC_TOKEN_INFO,
         },
