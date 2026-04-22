@@ -120,6 +120,7 @@ const lazyListener =
 const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
 const BADGE_MAX_COUNT = 9;
+const maxSeenFailedNonces = 99;
 
 const inTest = process.env.IN_TEST;
 
@@ -188,6 +189,7 @@ let notificationIsOpen = false;
 let uiIsTriggering = false;
 let openSidePanelCount = 0;
 let failedTxCount = 0;
+const seenFailedNonces = new Set();
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -1608,6 +1610,18 @@ export function setupController(
     );
   };
 
+  const hasPersistentUiOpen = () => {
+    return (
+      openPopupCount > 0 ||
+      openSidePanelCount > 0 ||
+      Object.keys(openMetamaskTabsIDs).length > 0
+    );
+  };
+
+  const isOnlyNotificationOpen = () => {
+    return notificationIsOpen && !hasPersistentUiOpen();
+  };
+
   const onCloseEnvironmentInstances = (isClientOpen, environmentType) => {
     // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
     if (isClientOpen === false) {
@@ -1703,6 +1717,11 @@ export function setupController(
 
         finished(portStream, () => {
           notificationIsOpen = false;
+          // Render any failure badge that was suppressed while the notification was open
+          if (failedTxCount > 0) {
+            setClientOpenOptions('activity');
+          }
+          updateBadge();
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
           onCloseEnvironmentInstances(
@@ -1713,6 +1732,7 @@ export function setupController(
       }
 
       if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
+        clearFailedTxBadge();
         const tabId = remotePort.sender.tab.id;
         openMetamaskTabsIDs[tabId] = true;
 
@@ -1871,13 +1891,8 @@ export function setupController(
   );
 
   controller.controllerMessenger.subscribe(
-    'TransactionController:transactionFailed',
-    onTransactionFailed,
-  );
-
-  controller.controllerMessenger.subscribe(
-    'TransactionController:transactionDropped',
-    onTransactionFailed,
+    'TransactionController:transactionStatusUpdated',
+    onTransactionStatusUpdated,
   );
 
   function setClientOpenOptions(tab) {
@@ -1896,21 +1911,45 @@ export function setupController(
     }
   }
 
-  function onTransactionFailed() {
-    if (isClientOpenStatus()) {
+  function onTransactionStatusUpdated({ transactionMeta }) {
+    const { status, txParams, chainId } = transactionMeta ?? {};
+    if (status !== 'failed' && status !== 'dropped') {
       return;
     }
 
+    const { from, nonce } = txParams ?? {};
+    const nonceKey =
+      from && nonce !== undefined && chainId
+        ? `${chainId}:${from.toLowerCase()}:${nonce}`
+        : undefined;
+    if (nonceKey && seenFailedNonces.has(nonceKey)) {
+      return;
+    }
+
+    // Skip if a persistent UI is open, transaction status is in the Activity tab
+    if (hasPersistentUiOpen()) {
+      return;
+    }
+
+    if (nonceKey) {
+      if (seenFailedNonces.size >= maxSeenFailedNonces) {
+        seenFailedNonces.clear();
+      }
+      seenFailedNonces.add(nonceKey);
+    }
+
     failedTxCount += 1;
-    setClientOpenOptions('activity');
+
+    // Defer landing page until notification closes; close handler re-applies
+    if (!isOnlyNotificationOpen()) {
+      setClientOpenOptions('activity');
+    }
+
     updateBadge();
   }
 
   function clearFailedTxBadge() {
-    if (!failedTxCount) {
-      return;
-    }
-
+    seenFailedNonces.clear();
     failedTxCount = 0;
     setClientOpenOptions();
     updateBadge();
@@ -1929,7 +1968,8 @@ export function setupController(
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
-   * The number reflects the current number of pending transactions or message signatures needing user approval.
+   * Failed transactions take priority and show a red count badge.
+   * Pending approvals show the standard blue count badge.
    */
   function updateBadge() {
     const pendingApprovalCount = getPendingApprovalCount();
@@ -1937,11 +1977,12 @@ export function setupController(
     let label = '';
     let badgeColor = BADGE_COLOR_APPROVAL;
 
-    if (pendingApprovalCount) {
-      label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
-    } else if (failedTxCount) {
+    // Defer showing the failure badge until the notification closes
+    if (failedTxCount > 0 && !isOnlyNotificationOpen()) {
       label = getBadgeLabel(failedTxCount, BADGE_MAX_COUNT);
       badgeColor = BADGE_COLOR_FAILED;
+    } else if (pendingApprovalCount > 0) {
+      label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
     }
 
     try {
