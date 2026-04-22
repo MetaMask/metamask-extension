@@ -93,11 +93,19 @@ export function useTransactionCustomAmount({
   );
 
   useEffect(() => {
+    // When isMaxAmount is true, amountHuman is driven by quote-controller updates
+    // (primaryRequiredToken.amountUsd). Re-feeding it into updateTokenAmount
+    // changes txParams.data, which restarts the quote cycle (infinite loop).
+    // updatePendingAmountPercentage(100) already calls updateTokenAmountCallback
+    // directly when MAX is first clicked.
+    if (isMaxAmount) {
+      return;
+    }
     // Use ref directly to avoid re-running when callback is recreated
     if (debounceRef.current) {
       debounceRef.current(amountHuman);
     }
-  }, [amountHuman]);
+  }, [amountHuman, isMaxAmount]);
 
   useEffect(() => {
     if (amountHumanDebounced !== '0') {
