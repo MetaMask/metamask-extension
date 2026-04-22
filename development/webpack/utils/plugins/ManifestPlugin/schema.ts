@@ -118,28 +118,36 @@ export const schema = {
     },
     stats: {
       description: 'Optional bundle-size reporting configuration.',
-      type: 'object',
-      required: ['outFile', 'classifyEntrypoint'],
-      properties: {
-        outFile: {
-          description:
-            'Output file path for the emitted bundle-size summary relative to each browser root.',
-          type: 'string',
+      anyOf: [
+        {
+          type: 'object',
+          required: ['outFile', 'classifyEntrypoint'],
+          properties: {
+            outFile: {
+              description:
+                'Output file path template for the emitted bundle-size summary relative to webpack output. Must include `[browser]`.',
+              type: 'string',
+              pattern: '\\[browser\\]',
+            },
+            debug: {
+              description:
+                'Whether to emit a sibling debug artifact with the classified entrypoint graph.',
+              type: 'boolean',
+            },
+            classifyEntrypoint: {
+              description:
+                'Classifies a webpack entrypoint by runtime surface for bundle-size reporting.',
+              instanceof: 'Function',
+              tsType:
+                "((name: string) => 'background' | 'ui' | 'other' | 'contentScripts' | null)",
+            },
+          },
+          additionalProperties: false,
         },
-        debug: {
-          description:
-            'Whether to emit a sibling debug artifact with the classified entrypoint graph.',
-          type: 'boolean',
+        {
+          const: false,
         },
-        classifyEntrypoint: {
-          description:
-            'Classifies a webpack entrypoint by runtime surface for bundle-size reporting.',
-          instanceof: 'Function',
-          tsType:
-            "((name: string) => 'background' | 'ui' | 'other' | 'contentScripts' | null)",
-        },
-      },
-      additionalProperties: false,
+      ],
     },
   },
   additionalProperties: false,
