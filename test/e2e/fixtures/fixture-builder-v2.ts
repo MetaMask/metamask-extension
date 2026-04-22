@@ -1350,6 +1350,19 @@ class FixtureBuilderV2 {
   }
 
   build(): FixtureBuildResult {
+    if (process.env.ASSETS_UNIFIED_STATE_ENABLED !== 'true') {
+      const ac = (this.fixture.data as Record<string, unknown>)
+        .AssetsController as
+        | {
+            assetsPrice?: Record<string, unknown>;
+            assetsInfo?: Record<string, unknown>;
+          }
+        | undefined;
+      if (ac) {
+        ac.assetsPrice = {};
+        ac.assetsInfo = {};
+      }
+    }
     return {
       ...this.fixture,
       storageServiceData: this.storageServiceData,
