@@ -330,7 +330,7 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
-        'Order size must be over $10',
+        'Order size must be at least $10',
       );
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
     });
@@ -802,7 +802,7 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
       expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
-        'Order size must be over $10',
+        'Order size must be at least $10',
       );
     });
 
@@ -818,7 +818,7 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
       expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
-        'Order size must be over $10',
+        'Order size must be at least $10',
       );
     });
 
@@ -834,7 +834,7 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
-        'Order size must be over $10',
+        'Order size must be at least $10',
       );
     });
 
