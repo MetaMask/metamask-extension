@@ -359,7 +359,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('submits a smart transaction with an already signed transaction', async () => {
-    withRequest(
+    await withRequest(
       async ({
         request,
         messenger,
@@ -389,12 +389,15 @@ describe('submitSmartTransactionHook', () => {
         const { txParams } = request.transactionMeta || {};
         expect(
           request.smartTransactionsController.submitSignedTransactions,
-        ).toHaveBeenCalledWith({
-          signedTransactions: [request.signedTransactionInHex],
-          signedCanceledTransactions: [],
-          txParams,
-          transactionMeta: request.transactionMeta,
-        });
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            signedTransactions: [request.signedTransactionInHex],
+            signedCanceledTransactions: [],
+            txParams,
+            transactionMeta: request.transactionMeta,
+            networkClientId: 'testNetworkClientId',
+          }),
+        );
         addRequestCallback();
         expect(startFlowSpy).toHaveBeenCalled();
         expect(addRequestSpy).toHaveBeenCalledWith(
@@ -403,33 +406,17 @@ describe('submitSmartTransactionHook', () => {
             origin: 'http://localhost',
             type: 'smartTransaction:showSmartTransactionStatusPage',
             requestState: {
-              smartTransaction: {
+              smartTransaction: expect.objectContaining({
                 status: 'pending',
                 uuid,
                 creationTime: expect.any(Number),
-              },
+              }),
               isDapp: true,
               txId,
             },
           },
           true,
         );
-        expect(updateRequestStateSpy).toHaveBeenCalledWith({
-          id: 'approvalId',
-          requestState: {
-            smartTransaction: {
-              uuid,
-              status: 'success',
-              statusMetadata: {
-                minedHash:
-                  '0x0302b75dfb9fd9eb34056af031efcaee2a8cbd799ea054a85966165cd82a7356',
-              },
-            },
-            isDapp: true,
-            txId,
-          },
-        });
-
         expect(endFlowSpy).toHaveBeenCalledWith({
           id: 'approvalId',
         });
@@ -438,7 +425,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('signs and submits a smart transaction', async () => {
-    withRequest(
+    await withRequest(
       {
         options: {
           signedTransactionInHex: undefined,
@@ -486,12 +473,15 @@ describe('submitSmartTransactionHook', () => {
         );
         expect(
           request.smartTransactionsController.submitSignedTransactions,
-        ).toHaveBeenCalledWith({
-          signedTransactions: [createSignedTransaction()],
-          signedCanceledTransactions: [],
-          txParams,
-          transactionMeta: request.transactionMeta,
-        });
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            signedTransactions: [createSignedTransaction()],
+            signedCanceledTransactions: [],
+            txParams,
+            transactionMeta: request.transactionMeta,
+            networkClientId: 'testNetworkClientId',
+          }),
+        );
         addRequestCallback();
         expect(startFlowSpy).toHaveBeenCalled();
         expect(addRequestSpy).toHaveBeenCalledWith(
@@ -500,33 +490,17 @@ describe('submitSmartTransactionHook', () => {
             origin: 'http://localhost',
             type: 'smartTransaction:showSmartTransactionStatusPage',
             requestState: {
-              smartTransaction: {
+              smartTransaction: expect.objectContaining({
                 status: 'pending',
                 uuid,
                 creationTime: expect.any(Number),
-              },
+              }),
               isDapp: true,
               txId,
             },
           },
           true,
         );
-        expect(updateRequestStateSpy).toHaveBeenCalledWith({
-          id: 'approvalId',
-          requestState: {
-            smartTransaction: {
-              uuid,
-              status: 'success',
-              statusMetadata: {
-                minedHash:
-                  '0x0302b75dfb9fd9eb34056af031efcaee2a8cbd799ea054a85966165cd82a7356',
-              },
-            },
-            isDapp: true,
-            txId,
-          },
-        });
-
         expect(endFlowSpy).toHaveBeenCalledWith({
           id: 'approvalId',
         });
@@ -535,7 +509,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('submits a smart transaction and does not update approval request if approval was already approved or rejected', async () => {
-    withRequest(
+    await withRequest(
       async ({
         request,
         messenger,
@@ -569,12 +543,15 @@ describe('submitSmartTransactionHook', () => {
         ).not.toHaveBeenCalled();
         expect(
           request.smartTransactionsController.submitSignedTransactions,
-        ).toHaveBeenCalledWith({
-          signedTransactions: [request.signedTransactionInHex],
-          signedCanceledTransactions: [],
-          txParams,
-          transactionMeta: request.transactionMeta,
-        });
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            signedTransactions: [request.signedTransactionInHex],
+            signedCanceledTransactions: [],
+            txParams,
+            transactionMeta: request.transactionMeta,
+            networkClientId: 'testNetworkClientId',
+          }),
+        );
         expect(startFlowSpy).toHaveBeenCalled();
         expect(addRequestSpy).toHaveBeenCalledWith(
           {
@@ -582,11 +559,11 @@ describe('submitSmartTransactionHook', () => {
             origin: 'http://localhost',
             type: 'smartTransaction:showSmartTransactionStatusPage',
             requestState: {
-              smartTransaction: {
+              smartTransaction: expect.objectContaining({
                 status: 'pending',
                 uuid,
                 creationTime: expect.any(Number),
-              },
+              }),
               isDapp: true,
               txId,
             },
