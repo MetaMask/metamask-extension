@@ -113,6 +113,10 @@ describe('PerpsView', () => {
       orders: mocks.mockOrders,
       isInitialLoading: false,
     });
+    jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+      account: mocks.mockAccountState,
+      isInitialLoading: false,
+    });
     jest.mocked(usePerpsTabExploreData).mockReturnValue({
       exploreMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
       watchlistMarkets: mocks.mockCryptoMarkets.filter((market) =>
@@ -535,7 +539,12 @@ describe('PerpsView', () => {
         mockStore,
       );
 
-      expect(mockTrackEvent).toHaveBeenCalledWith(
+      const screenViewedCalls = mockTrackEvent.mock.calls.filter(
+        ([arg]) => arg?.event === MetaMetricsEventName.PerpsScreenViewed,
+      );
+
+      expect(screenViewedCalls).toHaveLength(1);
+      expect(screenViewedCalls[0][0]).toEqual(
         expect.objectContaining({
           event: MetaMetricsEventName.PerpsScreenViewed,
           category: MetaMetricsEventCategory.Perps,
@@ -561,6 +570,35 @@ describe('PerpsView', () => {
 
       jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
         positions: mocks.mockPositions,
+        isInitialLoading: true,
+      });
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <PerpsView />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.PerpsScreenViewed,
+        }),
+      );
+    });
+
+    it('does not fire Perp Screen Viewed while account data is still loading', () => {
+      const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
+      // positions/orders/markets are ready but account hasn't arrived yet
+      jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+        account: null,
         isInitialLoading: true,
       });
 

@@ -87,7 +87,7 @@ export const PerpsView: React.FC = () => {
     usePerpsLivePositions();
   const { orders: allOrders, isInitialLoading: ordersLoading } =
     usePerpsLiveOrders();
-  const { account } = usePerpsLiveAccount();
+  const { account, isInitialLoading: accountLoading } = usePerpsLiveAccount();
   const {
     exploreMarkets,
     watchlistMarkets,
@@ -203,7 +203,8 @@ export const PerpsView: React.FC = () => {
   }, [isEligible, applyOrdersSnapshot, orders.length, t]);
 
   const hasPositions = positions.length > 0;
-  const isLoading = positionsLoading || ordersLoading || marketsLoading;
+  const isLoading =
+    positionsLoading || ordersLoading || marketsLoading || accountLoading;
   const hasPerpBalance = Boolean(
     account && Number.parseFloat(account.availableBalance) > 0,
   );
