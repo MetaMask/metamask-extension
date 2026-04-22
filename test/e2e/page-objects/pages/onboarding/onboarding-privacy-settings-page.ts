@@ -40,11 +40,6 @@ class OnboardingPrivacySettingsPage {
     tag: 'p',
   };
 
-  private readonly addCustomNetworkFormMessage = {
-    text: 'Add network',
-    tag: 'p',
-  };
-
   private readonly addRpcUrlButton = {
     text: 'Add RPC URL',
     tag: 'button',
@@ -120,7 +115,11 @@ class OnboardingPrivacySettingsPage {
     await this.navigateToGeneralSettings();
     console.log('Adding custom network');
     await this.driver.clickElement(this.addCustomNetworkButton);
-    await this.driver.waitForSelector(this.addCustomNetworkFormMessage);
+    await this.driver.waitForMultipleSelectors([
+      this.networkNameInput,
+      this.chainIdInput,
+      this.addRpcUrlDropDown,
+    ]);
     await this.driver.fill(this.networkNameInput, networkName);
     await this.driver.fill(this.chainIdInput, chainId.toString());
     await this.driver.fill(this.currencySymbolInput, currencySymbol);
