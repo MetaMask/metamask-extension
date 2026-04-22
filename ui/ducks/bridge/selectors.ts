@@ -1062,6 +1062,3 @@ export const getBridgeUnavailableQuoteReason = createSelector(
       ? getQuoteStreamReasonString(quoteStreamComplete.reason)
       : 'noOptionsAvailableMessage',
 );
-
-export const getTokenAlerts = ({ metamask }: BridgeAppState) =>
-  selectTokenWarnings(metamask);

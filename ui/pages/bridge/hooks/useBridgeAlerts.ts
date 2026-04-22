@@ -50,7 +50,7 @@ export const useBridgeAlerts = () => {
   const toToken = useSelector(getToToken);
   const ticker = useMultichainSelector(getMultichainNativeCurrency);
 
-  const { tokenAlerts, txAlert } = useSecurityAlerts();
+  const { txAlert } = useSecurityAlerts();
   const { openBuyCryptoInPdapp } = useRamps();
 
   const activeQuotePriceData = useSelector(getActiveQuotePriceData);
@@ -84,21 +84,6 @@ export const useBridgeAlerts = () => {
         bannerAlerts.push(alert);
       }
     };
-
-    tokenAlerts.forEach((alert) => {
-      categorizeAlert({
-        ...alert,
-        isDismissable: true,
-        isConfirmationAlert: true,
-        bannerAlertProps: {
-          severity:
-            alert.severity === 'danger'
-              ? BannerAlertSeverity.Danger
-              : BannerAlertSeverity.Warning,
-          'data-testid': 'bridge-token-warning-alert',
-        },
-      });
-    });
 
     if (isStockMarketClosed) {
       categorizeAlert({
@@ -226,7 +211,7 @@ export const useBridgeAlerts = () => {
     isSwap,
     openBuyCryptoInPdapp,
     ticker,
-    tokenAlerts,
+    // tokenAlerts,
     txAlert,
     t,
   ]);

@@ -30,15 +30,3 @@ export const getQuoteStreamReasonString = (
       return 'bridgeQuoteStreamCompleteRetry';
   }
 };
-
-export const getTokenWarningTitle = (featureType: TokenFeatureType): string => {
-  return featureType === TokenFeatureType.MALICIOUS
-    ? 'bridgeMaliciousTokenTitle'
-    : 'bridgeSuspiciousTokenTitle';
-};
-
-export const getTokenWarningSeverity = (
-  featureType: TokenFeatureType,
-): BridgeAlert['severity'] => {
-  return featureType === TokenFeatureType.MALICIOUS ? 'danger' : 'warning';
-};

@@ -22,6 +22,7 @@ import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
 import { useIsTxSubmittable } from '../../../../hooks/bridge/useIsTxSubmittable';
 import { useDismissableAlerts } from '../../hooks/useDismissableBanners';
 import { useBridgeAlerts } from '../../hooks/useBridgeAlerts';
+import { BridgeSecurityDataBannerAlert } from './bridge-security-data-banner-alert';
 
 export const BridgeAlertBannerList = ({
   quoteParams,
@@ -80,6 +81,8 @@ export const BridgeAlertBannerList = ({
             </ul>
           </BannerAlert>
         )}
+
+      <BridgeSecurityDataBannerAlert />
 
       {isValidQuoteRequest(quoteParams, true) &&
         bannerAlerts.map((alert, index: number) =>

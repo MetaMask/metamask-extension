@@ -1282,6 +1282,12 @@
   "bridgeTo": {
     "message": "Bridge to"
   },
+  "bridgeTokenIsMaliciousBanner": {
+    "message": "$1 is a malicious token."
+  },
+  "bridgeTokenIsSuspiciousBanner": {
+    "message": "$1 is a suspicious token."
+  },
   "bridgeTokenNotFound": {
     "message": "No tokens match \"$1\""
   },
