@@ -1742,9 +1742,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Using QR Code"
   },
-  "connectAccount": {
-    "message": "Connect account"
-  },
   "connectAccounts": {
     "message": "Connect accounts"
   },
