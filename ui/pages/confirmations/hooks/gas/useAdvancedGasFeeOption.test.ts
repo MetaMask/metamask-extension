@@ -52,7 +52,6 @@ describe('useAdvancedGasFeeOption', () => {
 
     mockUseTransactionGasLimit.mockReturnValue({
       gasLimit: '0x5208',
-      modalGasLimit: '0x5208',
       quotedGasLimit: undefined,
     });
   });
@@ -159,10 +158,9 @@ describe('useAdvancedGasFeeOption', () => {
     );
   });
 
-  it('passes the modal gas limit from useTransactionGasLimit to calculateGasEstimate and tooltip', () => {
+  it('passes the gas limit from useTransactionGasLimit to calculateGasEstimate and tooltip', () => {
     mockUseTransactionGasLimit.mockReturnValue({
-      gasLimit: '0x5208',
-      modalGasLimit: '0x1fbd0',
+      gasLimit: '0x1fbd0',
       quotedGasLimit: undefined,
     });
 

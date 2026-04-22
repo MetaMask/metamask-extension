@@ -38,7 +38,7 @@ export const useAdvancedGasFeeOption = ({
   } = transactionMeta;
 
   const { calculateGasEstimate } = useFeeCalculations(transactionMeta);
-  const { modalGasLimit: displayGas } = useTransactionGasLimit(transactionMeta);
+  const { gasLimit: displayGas } = useTransactionGasLimit(transactionMeta);
 
   const onAdvancedGasFeeClick = useCallback(() => {
     const newModalType =

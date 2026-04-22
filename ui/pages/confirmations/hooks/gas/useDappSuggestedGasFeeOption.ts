@@ -28,7 +28,7 @@ export const useDappSuggestedGasFeeOption = ({
     useConfirmContext<TransactionMeta>();
   const nativeTicker = useTransactionNativeTicker();
   const { calculateGasEstimate } = useFeeCalculations(transactionMeta);
-  const { modalGasLimit: displayGas } = useTransactionGasLimit(transactionMeta);
+  const { gasLimit: displayGas } = useTransactionGasLimit(transactionMeta);
   const dispatch = useDispatch();
 
   const { dappSuggestedGasFees, id, origin, userFeeLevel } = transactionMeta;

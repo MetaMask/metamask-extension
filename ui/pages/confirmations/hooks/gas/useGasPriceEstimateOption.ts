@@ -31,7 +31,7 @@ export const useGasPriceEstimateOption = ({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const { calculateGasEstimate } = useFeeCalculations(transactionMeta);
-  const { modalGasLimit: displayGas } = useTransactionGasLimit(transactionMeta);
+  const { gasLimit: displayGas } = useTransactionGasLimit(transactionMeta);
   const nativeTicker = useTransactionNativeTicker();
 
   const {
