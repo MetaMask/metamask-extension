@@ -98,6 +98,9 @@ describe('Localization', function () {
           .withCurrencyController({
             currentCurrency: 'php',
           })
+          .withAssetsController({
+            selectedCurrency: 'php',
+          })
           .withPreferencesController({
             preferences: {
               showFiatInTestnets: true,
@@ -105,6 +108,9 @@ describe('Localization', function () {
             },
           })
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController({
+            selectedCurrency: 'php',
+          })
           .build(),
         testSpecificMock: mockPhpConversion,
         title: this.test?.fullTitle(),

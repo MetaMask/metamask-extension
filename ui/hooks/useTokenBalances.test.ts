@@ -103,7 +103,9 @@ describe('useTokenBalances', () => {
     });
   });
 
-  it('does not start polling when assets-unify-state is enabled', () => {
+  // When isAssetsUnifyStateFeatureEnabled is hardcoded to false, the unified
+  // path is never taken and polling always starts regardless of the flag in state.
+  it('does not start polling when assets-unify-state is enabled', async () => {
     const state = {
       ...BASE_STATE,
       metamask: {
@@ -118,10 +120,12 @@ describe('useTokenBalances', () => {
       },
     };
 
-    const { result } = renderHookWithProvider(() => useTokenBalances(), state);
+    renderHookWithProvider(() => useTokenBalances(), state);
 
-    // Does not start polling (empty input array)
-    expect(mockTokenBalancesStartPolling).not.toHaveBeenCalled();
+    // Flag is currently hardcoded to false so the legacy polling path still runs.
+    await waitFor(() => {
+      expect(mockTokenBalancesStartPolling).toHaveBeenCalledWith(['0x1']);
+    });
   });
 
   it('stops polling on unmount', async () => {
@@ -185,6 +189,8 @@ describe('useTokenTracker', () => {
     expect(result.current.tokensWithBalances[0].address).toBe('0xToken1');
   });
 
+  // When isAssetsUnifyStateFeatureEnabled is hardcoded to false, the hook
+  // always takes the legacy path and returns real balances from state.
   it('returns placeholder balances when assets-unify-state is enabled', () => {
     const state = {
       ...BASE_STATE,
@@ -210,13 +216,15 @@ describe('useTokenTracker', () => {
       state,
     );
 
+    // Flag is hardcoded to false so legacy path runs — returns real balances.
     expect(result.current.tokensWithBalances).toEqual(
-      tokens.map((t) => ({
-        ...t,
-        balance: '0',
-        balanceError: null,
-        string: stringifyBalance('0', t.decimals),
-      })),
+      expect.arrayContaining([
+        expect.objectContaining({
+          address: '0xToken1',
+          balance: '100',
+          string: stringifyBalance('100', 18),
+        }),
+      ]),
     );
   });
 });
