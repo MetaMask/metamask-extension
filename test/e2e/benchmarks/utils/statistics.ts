@@ -501,7 +501,6 @@ const validatePercentile = (
     };
     if (cvAdjustment !== undefined) {
       base.cvAdjustment = cvAdjustment;
-      base.adjustedThreshold = threshold;
     }
     return base;
   };

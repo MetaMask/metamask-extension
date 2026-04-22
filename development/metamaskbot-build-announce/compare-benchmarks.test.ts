@@ -201,7 +201,7 @@ describe('compare-benchmarks', () => {
         expect(violation).toBeDefined();
         expect(violation?.severity).toBe(THRESHOLD_SEVERITY.Fail);
         expect(violation?.cvAdjustment).toBeCloseTo(1.2);
-        expect(violation?.adjustedThreshold).toBeCloseTo(11280);
+        expect(violation?.threshold).toBeCloseTo(11280);
         expect(result.anyFailed).toBe(true);
       } finally {
         process.env.CI = originalCI;
@@ -234,7 +234,6 @@ describe('compare-benchmarks', () => {
         );
         expect(violation).toBeDefined();
         expect(violation?.cvAdjustment).toBeUndefined();
-        expect(violation?.adjustedThreshold).toBeUndefined();
       } finally {
         process.env.CI = originalCI;
       }

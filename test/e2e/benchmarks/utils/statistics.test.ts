@@ -410,7 +410,6 @@ describe('Statistics Utils', () => {
         expect(triggered).toHaveLength(1);
         expect(triggered[0].severity).toBe('warn');
         expect(triggered[0].cvAdjustment).toBeCloseTo(1.2);
-        expect(triggered[0].adjustedThreshold).toBeCloseTo(1296);
         expect(triggered[0].threshold).toBeCloseTo(1296);
       } finally {
         process.env.CI = originalCI;
@@ -425,7 +424,6 @@ describe('Statistics Utils', () => {
       const violations = validateTimerThreshold(stats, thresholds);
       expect(violations).toHaveLength(1);
       expect(violations[0].cvAdjustment).toBeUndefined();
-      expect(violations[0].adjustedThreshold).toBeUndefined();
     });
   });
 
