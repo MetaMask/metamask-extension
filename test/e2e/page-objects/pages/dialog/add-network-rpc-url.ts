@@ -69,7 +69,8 @@ class AddNetworkRpcUrlModal {
 
   async saveAddRpcUrl(): Promise<void> {
     console.log('Confirm added RPC URL');
-    await this.driver.clickElementAndWaitToDisappear(this.addRpcUrlButton);
+    await this.driver.clickElement(this.addRpcUrlButton);
+    await this.driver.assertElementNotPresent(this.addRpcUrlInput);
   }
 
   /**

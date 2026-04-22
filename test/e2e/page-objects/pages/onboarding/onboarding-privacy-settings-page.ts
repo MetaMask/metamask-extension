@@ -41,7 +41,7 @@ class OnboardingPrivacySettingsPage {
   };
 
   private readonly addCustomNetworkFormMessage = {
-    text: 'Add a custom network',
+    text: 'Add network',
     tag: 'p',
   };
 

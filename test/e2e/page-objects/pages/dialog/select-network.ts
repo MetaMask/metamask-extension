@@ -132,9 +132,8 @@ class SelectNetwork {
     await this.driver.assertElementNotPresent(this.drawerOverlay, {
       waitAtLeastGuard: 200,
     });
-    await this.driver.clickElementAndWaitToDisappear(
-      this.confirmDeleteNetworkButton,
-    );
+    await this.driver.clickElement(this.confirmDeleteNetworkButton);
+    await this.driver.assertElementNotPresent(this.confirmDeleteNetworkModal);
   }
 
   async fillNetworkSearchInput(networkName: string): Promise<void> {

@@ -15,8 +15,10 @@ export enum NetworkId {
 class NetworkManager {
   protected readonly driver: Driver;
 
-  private readonly addCustomNetworkButton =
-    '[data-testid="networks-page-add-custom-network-button"]';
+  private readonly addCustomNetworkButton = {
+    text: 'Add custom network',
+    tag: 'button',
+  };
 
   private readonly allPopularNetworksLabel = {
     text: 'All popular networks',
