@@ -74,9 +74,9 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
   const fetchGeolocation = useCallback(
     async (
       method: 'getGeolocation' | 'refreshGeolocation',
-      options?: { isCancelled?: () => boolean },
+      options: { isCancelled: () => boolean },
     ): Promise<string | null> => {
-      const shouldCommit = () => !options?.isCancelled?.();
+      const shouldCommit = () => !options.isCancelled();
 
       if (!shouldCommit()) {
         return null;
@@ -124,7 +124,9 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
   }, [fetchGeolocation]);
 
   const refreshGeolocation = useCallback(async (): Promise<void> => {
-    await fetchGeolocation('refreshGeolocation' { isCancelled: () => false });
+    await fetchGeolocation('refreshGeolocation', {
+      isCancelled: () => false,
+    });
   }, [fetchGeolocation]);
 
   /**
