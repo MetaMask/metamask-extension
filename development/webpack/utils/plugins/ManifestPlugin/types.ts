@@ -1,4 +1,3 @@
-import type { EntryOptions } from 'webpack';
 import type { Browser, Manifest } from '../../helpers';
 
 export type BundleSizeCategory =
@@ -23,11 +22,6 @@ export type BundleSizeStatsOptions = {
    */
   classifyEntrypoint: (name: string) => BundleSizeCategory | null;
 };
-
-export type EntryDescriptionNormalized = { import?: string[] } & Omit<
-  EntryOptions,
-  'name'
->;
 
 export type BaseManifestPluginOptions<Zip extends boolean> = {
   /**

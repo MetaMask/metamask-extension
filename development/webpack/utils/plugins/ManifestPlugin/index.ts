@@ -7,6 +7,7 @@ import {
   type Compiler,
   type Asset,
   type Chunk,
+  type EntryOptions,
 } from 'webpack';
 import { validate } from 'schema-utils';
 import {
@@ -19,23 +20,28 @@ import {
   createBundleSizeCategoryAssets,
   createBundleSizeSummary,
   getBundlePartSizes,
-  getBundleSizeDebugFilePath,
   type BundleSizeAssetStat,
   type BundleSizeDebugEntrypoint,
 } from './stats';
 import { schema } from './schema';
-import type {
-  EntryDescriptionNormalized,
-  ManifestPluginOptions,
-} from './types';
+import type { ManifestPluginOptions } from './types';
 import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip';
 
 const { CachedSource, RawSource } = sources;
 
 type Assets = Compilation['assets'];
+
+export type EntryDescriptionNormalized = { import?: string[] } & Omit<
+  EntryOptions,
+  'name'
+>;
 type Entrypoint =
   Compilation['entrypoints'] extends Map<string, infer T> ? T : never;
-export type { EntryDescriptionNormalized } from './types';
+type CollectedBundleSizeStats = {
+  partSizes: ReturnType<typeof getBundlePartSizes>;
+  debugEntrypoints?: Record<string, BundleSizeDebugEntrypoint>;
+  timestamp: number;
+};
 
 const NAME = 'ManifestPlugin';
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
@@ -52,24 +58,9 @@ function normalizeRelativePath(filePath: string): string {
   return filePath.split(path.sep).join(path.posix.sep);
 }
 
-function stripBrowserPrefix(
-  assetName: string,
-  browsers: readonly Browser[],
-): string {
-  for (const browser of browsers) {
-    const prefix = `${browser}/`;
-    if (assetName.startsWith(prefix)) {
-      return assetName.slice(prefix.length);
-    }
-  }
-
-  return assetName;
-}
-
 function getAssetStats(
   compilation: Compilation,
   assetNames: string[],
-  browsers: readonly Browser[],
 ): BundleSizeAssetStat[] {
   const seenAssets = new Set<string>();
 
@@ -78,9 +69,7 @@ function getAssetStats(
       return [];
     }
 
-    const normalizedName = normalizeRelativePath(
-      stripBrowserPrefix(assetName, browsers),
-    );
+    const normalizedName = normalizeRelativePath(assetName);
     if (seenAssets.has(normalizedName)) {
       return [];
     }
@@ -98,26 +87,22 @@ function getAssetStats(
 function getChunkAssets(
   compilation: Compilation,
   chunks: Iterable<Chunk>,
-  browsers: readonly Browser[],
 ): BundleSizeAssetStat[] {
   return getAssetStats(
     compilation,
     Array.from(chunks, (chunk) => Array.from(chunk.files)).flat(),
-    browsers,
   );
 }
 
 function getEntrypointAssets(
   compilation: Compilation,
   entrypoint: Entrypoint,
-  browsers: readonly Browser[],
 ): Pick<BundleSizeDebugEntrypoint, 'initialFiles' | 'asyncFiles'> {
   return {
-    initialFiles: getAssetStats(compilation, entrypoint.getFiles(), browsers),
+    initialFiles: getAssetStats(compilation, entrypoint.getFiles()),
     asyncFiles: getChunkAssets(
       compilation,
       entrypoint.getEntrypointChunk().getAllAsyncChunks(),
-      browsers,
     ),
   };
 }
@@ -221,11 +206,18 @@ export class ManifestPlugin<Z extends boolean> {
     });
   }
 
+  /**
+   * Returns the emitted zip size for a browser build.
+   *
+   * @param compilation - The active compilation.
+   * @param browser - The browser whose zip asset should be measured.
+   * @returns The emitted zip size, if zip output is enabled.
+   */
   private getBundleZipSize(
     compilation: Compilation,
     browser: Browser,
   ): number | undefined {
-    if (!this.options.zip) {
+    if (this.options.zip !== true) {
       return undefined;
     }
 
@@ -241,7 +233,15 @@ export class ManifestPlugin<Z extends boolean> {
     return zipAsset.source.size();
   }
 
-  private emitBundleSizeStatsAssets(compilation: Compilation): void {
+  /**
+   * Collects bundle-size stats from the pre-fanout compilation assets.
+   *
+   * @param compilation - The active compilation.
+   * @returns The collected bundle-size stats when reporting is enabled.
+   */
+  private collectBundleSizeStats(
+    compilation: Compilation,
+  ): CollectedBundleSizeStats | undefined {
     const statsOptions = this.options.stats;
 
     if (!statsOptions) {
@@ -261,11 +261,7 @@ export class ManifestPlugin<Z extends boolean> {
         continue;
       }
 
-      const entrypointFiles = getEntrypointAssets(
-        compilation,
-        entrypoint,
-        this.options.browsers,
-      );
+      const entrypointFiles = getEntrypointAssets(compilation, entrypoint);
       const files = [
         ...entrypointFiles.initialFiles,
         ...entrypointFiles.asyncFiles,
@@ -288,29 +284,53 @@ export class ManifestPlugin<Z extends boolean> {
       }
     }
 
-    const partSizes = getBundlePartSizes(categoryAssets, assetSizes);
-    const timestamp = Date.now();
-    const debugFilePath = statsOptions.debug
-      ? getBundleSizeDebugFilePath(statsOptions.outFile)
-      : undefined;
+    return {
+      partSizes: getBundlePartSizes(categoryAssets, assetSizes),
+      debugEntrypoints,
+      timestamp: Date.now(),
+    };
+  }
+
+  /**
+   * Emits browser-scoped bundle-size summary and debug assets.
+   *
+   * @param compilation - The active compilation.
+   * @param bundleSizeStats - The collected bundle-size stats to emit.
+   */
+  private emitBundleSizeStatsAssets(
+    compilation: Compilation,
+    bundleSizeStats: CollectedBundleSizeStats | undefined,
+  ): void {
+    const statsOptions = this.options.stats;
+
+    if (!statsOptions || !bundleSizeStats) {
+      return;
+    }
 
     for (const browser of this.options.browsers) {
       emitJsonAsset(
         compilation,
         path.posix.join(browser, statsOptions.outFile),
-        createBundleSizeSummary(partSizes, {
+        createBundleSizeSummary(bundleSizeStats.partSizes, {
           zip: this.getBundleZipSize(compilation, browser),
-          timestamp,
+          timestamp: bundleSizeStats.timestamp,
         }),
       );
 
-      if (!debugFilePath || !debugEntrypoints) {
+      if (!bundleSizeStats.debugEntrypoints) {
         continue;
       }
 
-      emitJsonAsset(compilation, path.posix.join(browser, debugFilePath), {
-        entrypoints: debugEntrypoints,
-      });
+      emitJsonAsset(
+        compilation,
+        path.posix.join(
+          browser,
+          statsOptions.outFile.replace(/\.json$/u, '.debug.json'),
+        ),
+        {
+          entrypoints: bundleSizeStats.debugEntrypoints,
+        },
+      );
     }
   }
 
@@ -850,16 +870,18 @@ export class ManifestPlugin<Z extends boolean> {
         tapOptions,
         async (assets: Assets) => {
           this.resolveEntrypoints(compilation);
+          const bundleSizeStats = this.collectBundleSizeStats(compilation);
           await this.zipAndMoveAssets(compilation, assets, options);
-          this.emitBundleSizeStatsAssets(compilation);
+          this.emitBundleSizeStatsAssets(compilation, bundleSizeStats);
         },
       );
     } else {
       const options = this.options as ManifestPluginOptions<false>;
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
         this.resolveEntrypoints(compilation);
+        const bundleSizeStats = this.collectBundleSizeStats(compilation);
         this.moveAssets(compilation, assets, options);
-        this.emitBundleSizeStatsAssets(compilation);
+        this.emitBundleSizeStatsAssets(compilation, bundleSizeStats);
       });
     }
   }
