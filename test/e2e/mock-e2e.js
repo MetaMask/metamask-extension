@@ -1224,6 +1224,9 @@ async function setupMocking(
     });
 
   // Tokens API (assets-unify-state): required alongside Accounts API v5 so EVM balances load.
+  // Only register these global handlers when unified state is enabled; otherwise individual
+  // tests set up their own token API mocks (e.g. Solana swap tests mock Solana USDC).
+  if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true') {
   await server
     .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
     .always()
@@ -1319,6 +1322,7 @@ async function setupMocking(
 
       return { statusCode: 200, json: results };
     });
+  } // end ASSETS_UNIFIED_STATE_ENABLED === 'true'
 
   // Accounts API: v2 supported networks (used by AccountsApiDataSource when assetsUnifyState is enabled)
   await server
