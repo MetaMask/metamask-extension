@@ -147,7 +147,6 @@ describe('Permission List Item', () => {
             ],
           },
           siteOrigin: 'http://localhost:8000',
-          status: 'Active',
         };
 
       const mockNativeTokenPeriodicPermission: PermissionInfoWithMetadata<NativeTokenPeriodicPermission> =
@@ -177,7 +176,6 @@ describe('Permission List Item', () => {
             ],
           },
           siteOrigin: 'http://localhost:8000',
-          status: 'Active',
         };
 
       describe('permission status tag', () => {
@@ -557,7 +555,6 @@ describe('Permission List Item', () => {
             ],
           },
           siteOrigin: 'http://localhost:8000',
-          status: 'Active',
         };
 
       const mockErc20TokenStreamPermission: PermissionInfoWithMetadata<Erc20TokenStreamPermission> =
@@ -589,7 +586,6 @@ describe('Permission List Item', () => {
             ],
           },
           siteOrigin: 'http://localhost:8000',
-          status: 'Active',
         };
 
       it('renders erc20 token stream permission correctly', () => {
