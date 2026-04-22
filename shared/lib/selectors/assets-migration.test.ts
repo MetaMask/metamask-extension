@@ -5,6 +5,7 @@ import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
 } from '../assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../environment';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
@@ -27,6 +28,11 @@ import {
 jest.mock('../assets-unify-state/remote-feature-flag', () =>
   jest.requireActual('../assets-unify-state/remote-feature-flag'),
 );
+
+jest.mock('../environment', () => ({
+  ...jest.requireActual('../environment'),
+  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(() => true),
+}));
 
 const mockAccountId = 'mock-account-id-1';
 const mockAccountId2 = 'mock-account-id-2';
@@ -110,7 +116,7 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
     });
   });
 
-  describe.skip('when assets unify state feature is enabled (happy path)', () => {
+  describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives accountsByChainId from new state structure', () => {
       const state = {
         metamask: {
@@ -158,7 +164,7 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
     });
   });
 
-  describe.skip('edge cases when enabled', () => {
+  describe('edge cases when enabled', () => {
     it('handles multiple chains for the same EVM account', () => {
       const state = {
         metamask: {
@@ -349,7 +355,7 @@ describe('getTokensControllerAllTokens', () => {
     });
   });
 
-  describe.skip('when assets unify state feature is enabled (happy path)', () => {
+  describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives allTokens from new state structure', () => {
       const state = {
         metamask: {
@@ -410,7 +416,7 @@ describe('getTokensControllerAllTokens', () => {
     });
   });
 
-  describe.skip('edge cases when enabled', () => {
+  describe('edge cases when enabled', () => {
     it('includes tokens from customAssets not present in assetsBalance', () => {
       const state = {
         metamask: {
@@ -582,7 +588,7 @@ describe('getTokensControllerAllIgnoredTokens', () => {
     });
   });
 
-  describe.skip('when assets unify state feature is enabled (happy path)', () => {
+  describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives allIgnoredTokens from new state structure', () => {
       const state = {
         metamask: {
@@ -623,7 +629,7 @@ describe('getTokensControllerAllIgnoredTokens', () => {
     });
   });
 
-  describe.skip('edge cases when enabled', () => {
+  describe('edge cases when enabled', () => {
     it('skips preferences with hidden set to false', () => {
       const state = {
         metamask: {
@@ -734,7 +740,7 @@ describe('getTokenBalancesControllerTokenBalances', () => {
     });
   });
 
-  describe.skip('when assets unify state feature is enabled (happy path)', () => {
+  describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives tokenBalances from new state structure', () => {
       const state = {
         metamask: {
@@ -856,7 +862,7 @@ describe('getTokenBalancesControllerTokenBalances', () => {
     });
   });
 
-  describe.skip('edge cases when enabled', () => {
+  describe('edge cases when enabled', () => {
     it('skips balance entries without metadata in assetsInfo', () => {
       const unknownAssetId =
         'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
@@ -960,7 +966,7 @@ describe('getMultiChainAssetsControllerAccountsAssets', () => {
     });
   });
 
-  describe.skip('when assets unify state feature is enabled (happy path)', () => {
+  describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives accountsAssets from new state structure for non-EVM accounts only', () => {
       const state = {
         metamask: {
@@ -1004,7 +1010,7 @@ describe('getMultiChainAssetsControllerAccountsAssets', () => {
     });
   });
 
-  describe.skip('edge cases when enabled', () => {
+  describe('edge cases when enabled', () => {
     it('merges and deduplicates assetsBalance and customAssets', () => {
       const extraSolAssetId =
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:So11111111111111111111111111111111111111112' as CaipAssetType;
@@ -1119,7 +1125,7 @@ describe('getMultiChainAssetsControllerAssetsMetadata', () => {
     });
   });
 
-  describe.skip('when assets unify state feature is enabled (happy path)', () => {
+  describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives assetsMetadata from assetsInfo for non-EIP155 assets only', () => {
       const state = {
         metamask: {
@@ -1168,7 +1174,7 @@ describe('getMultiChainAssetsControllerAssetsMetadata', () => {
     });
   });
 
-  describe.skip('edge cases when enabled', () => {
+  describe('edge cases when enabled', () => {
     it('defaults iconUrl to empty string when image is undefined', () => {
       const state = {
         metamask: {
@@ -1235,7 +1241,7 @@ describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
     });
   });
 
-  describe.skip('when assets unify state feature is enabled (happy path)', () => {
+  describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives allIgnoredAssets from assetPreferences for non-EVM accounts only', () => {
       const state = {
         metamask: {
@@ -1273,7 +1279,7 @@ describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
     });
   });
 
-  describe.skip('edge cases when enabled', () => {
+  describe('edge cases when enabled', () => {
     it('skips preferences with hidden set to false', () => {
       const state = {
         metamask: {
@@ -1366,7 +1372,7 @@ describe('getMultiChainBalancesControllerBalances', () => {
     });
   });
 
-  describe.skip('when assets unify state feature is enabled (happy path)', () => {
+  describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives balances from new state structure for non-EVM accounts only', () => {
       const state = {
         metamask: {
@@ -1436,7 +1442,7 @@ describe('getCurrencyRateControllerCurrentCurrency', () => {
     });
   });
 
-  describe.skip('when assets unify state feature is enabled', () => {
+  describe('when assets unify state feature is enabled', () => {
     it('returns selectedCurrency from new state', () => {
       const state = {
         metamask: {
@@ -1479,7 +1485,7 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
     });
   });
 
-  describe.skip('when assets unify state feature is enabled (happy path)', () => {
+  describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives currencyRates from assetsInfo and assetsPrice for native EVM assets', () => {
       const lastUpdated = 1700000000000; // ms
       const mockNonFungibleAssetId = 'eip155:137/slip44:987654321';
@@ -1594,7 +1600,7 @@ describe('getTokenRatesControllerMarketData', () => {
     });
   });
 
-  describe.skip('when assets unify state feature is enabled (happy path)', () => {
+  describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives marketData from assetsPrice with prices converted to native currency', () => {
       const lastUpdated = 1700000000000;
       const ethPriceInUsd = 2000;
@@ -1684,7 +1690,7 @@ describe('getTokenRatesControllerMarketData', () => {
     });
   });
 
-  describe.skip('edge cases when enabled', () => {
+  describe('edge cases when enabled', () => {
     it('skips non-EIP155 assets from marketData', () => {
       const state = {
         metamask: {
@@ -1962,7 +1968,7 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     });
   });
 
-  describe.skip('when assets unify state feature is enabled (happy path)', () => {
+  describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives conversionRates from assetsPrice for non-EVM assets only', () => {
       const lastUpdated = 1700000000000;
       const state = {
@@ -2054,7 +2060,7 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     });
   });
 
-  describe.skip('edge cases when enabled', () => {
+  describe('edge cases when enabled', () => {
     it('returns empty result when only EVM assets exist in assetsPrice', () => {
       const state = {
         metamask: {
@@ -2149,7 +2155,7 @@ describe('getRatesControllerRates', () => {
     });
   });
 
-  describe.skip('when assets unify state feature is enabled (happy path)', () => {
+  describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives rates from assetsInfo and assetsPrice for non-EVM native assets', () => {
       const lastUpdated = 1700000000000;
       const state = {
@@ -2228,7 +2234,7 @@ describe('getRatesControllerFiatCurrency', () => {
     });
   });
 
-  describe.skip('when assets unify state feature is enabled', () => {
+  describe('when assets unify state feature is enabled', () => {
     it('returns selectedCurrency from new state', () => {
       const state = {
         metamask: {
@@ -2241,5 +2247,54 @@ describe('getRatesControllerFiatCurrency', () => {
 
       expect(result).toBe('usd');
     });
+  });
+});
+
+describe('getIsAssetsUnifiedStateIncludedInBuild compile-time gate', () => {
+  afterEach(() => {
+    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
+  });
+
+  it('returns legacy accountsByChainId when the build excludes unified state even if the remote flag is enabled', () => {
+    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(false);
+    const legacyAccountsByChainId = {
+      '0x1': {
+        [mockAccountAddressChecksummed]: {
+          balance: '0xabc' as const,
+        },
+      },
+    };
+    const state = {
+      metamask: {
+        // `getIsAssetsUnifyStateEnabled` is memoized on `remoteFeatureFlags` only; vary
+        // the object so this test does not reuse a cached `true` from earlier examples.
+        remoteFeatureFlags: {
+          ...enabledFlags.remoteFeatureFlags,
+          compileTimeGateCacheBust: 'accountsByChainId',
+        },
+        accountsByChainId: legacyAccountsByChainId,
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', decimals: 18 },
+        },
+        assetsBalance: {
+          [mockAccountId]: {
+            [nativeEthAssetId]: { amount: '999' },
+          },
+        },
+        internalAccounts: {
+          accounts: {
+            [mockAccountId]: {
+              id: mockAccountId,
+              address: mockAccountAddressLowercase,
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    };
+
+    expect(getAccountTrackerControllerAccountsByChainId(state)).toBe(
+      legacyAccountsByChainId,
+    );
   });
 });
