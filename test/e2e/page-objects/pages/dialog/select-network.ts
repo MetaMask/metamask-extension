@@ -10,7 +10,8 @@ class SelectNetwork {
 
   private readonly addNetworkButton = '[data-testid="test-add-button"]';
 
-  private readonly closeButton = 'button[aria-label="Close"]';
+  private readonly closeButton =
+    '[data-testid="settings-v2-header-back-button"]';
 
   private readonly confirmDeleteNetworkButton = {
     text: 'Delete',
@@ -37,12 +38,15 @@ class SelectNetwork {
 
   private readonly rpcUrlItem = '.select-rpc-url__item';
 
+  private readonly searchButton =
+    '[data-testid="settings-v2-header-search-button"]';
+
   private readonly searchInput =
-    '[data-testid="network-redesign-modal-search-input"]';
+    '[data-testid="settings-v2-header-search-input"]';
 
   private readonly selectNetworkMessage = {
-    text: 'Manage networks',
-    tag: 'h4',
+    text: 'Networks',
+    tag: 'p',
   };
 
   private readonly selectRpcMessage = {
@@ -68,7 +72,7 @@ class SelectNetwork {
     try {
       await this.driver.waitForMultipleSelectors([
         this.selectNetworkMessage,
-        this.searchInput,
+        this.addCustomNetworkButton,
       ]);
     } catch (e) {
       console.log(
@@ -137,6 +141,11 @@ class SelectNetwork {
 
   async fillNetworkSearchInput(networkName: string): Promise<void> {
     console.log(`Fill network search input with ${networkName}`);
+    const searchInputs = await this.driver.findElements(this.searchInput);
+    if (searchInputs.length === 0) {
+      await this.driver.clickElement(this.searchButton);
+      await this.driver.waitForSelector(this.searchInput);
+    }
     await this.driver.fill(this.searchInput, networkName);
   }
 

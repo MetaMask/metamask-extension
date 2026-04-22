@@ -150,9 +150,7 @@ const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
 const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
-const NetworksPage = mmLazy(
-  () => import('../settings-v2/networks-page/index.ts'),
-);
+const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
 );

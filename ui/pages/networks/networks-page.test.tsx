@@ -1,9 +1,11 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import configureStore from '../../store/store';
+import mockState from '../../../test/data/mock-state.json';
+import { NETWORKS_ROUTE } from '../../helpers/constants/routes';
 import { NetworksPage } from './networks-page';
 
 const mockNetworkConfigurations = {
@@ -25,7 +27,7 @@ const mockNetworkConfigurations = {
 };
 
 describe('NetworksPage', () => {
-  const renderNetworksPage = (pathname = '/settings/networks') => {
+  const renderNetworksPage = (pathname = NETWORKS_ROUTE) => {
     const store = configureStore({
       ...mockState,
       metamask: {
@@ -57,8 +59,27 @@ describe('NetworksPage', () => {
   });
 
   it('renders the add network flow from the query param', () => {
-    renderNetworksPage('/settings/networks?view=add');
+    renderNetworksPage(`${NETWORKS_ROUTE}?view=add`);
 
     expect(screen.getByText('Add network')).toBeInTheDocument();
+  });
+
+  it('renders the custom rpc page with footer actions and adds the rpc', async () => {
+    renderNetworksPage(`${NETWORKS_ROUTE}?view=edit-rpc`);
+
+    expect(
+      screen.getByTestId('page-container-footer-cancel'),
+    ).toHaveTextContent('Cancel');
+    expect(screen.getByTestId('page-container-footer-next')).toHaveTextContent(
+      'Add URL',
+    );
+
+    await userEvent.type(
+      screen.getByTestId('rpc-url-input-test'),
+      'https://new-rpc.example.com',
+    );
+    await userEvent.click(screen.getByTestId('page-container-footer-next'));
+
+    expect(screen.getByText('Edit network')).toBeInTheDocument();
   });
 });
