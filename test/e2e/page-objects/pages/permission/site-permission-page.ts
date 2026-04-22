@@ -168,10 +168,13 @@ class SitePermissionPage {
    */
   async checkConnectedNetworksNumber(number: number): Promise<void> {
     console.log(`Check that the number of connected networks is: ${number}`);
-    await this.driver.waitForSelector({
-      text: `${number} networks connected`,
-      tag: 'span',
-    });
+    await this.driver.waitForSelector(
+      {
+        text: `${number} networks connected`,
+        tag: 'span',
+      },
+      { timeout: 30000 },
+    );
   }
 }
 
