@@ -1089,6 +1089,9 @@
   "bridgeLowestCost": {
     "message": "Lowest cost"
   },
+  "bridgeMalicious": {
+    "message": "Malicious"
+  },
   "bridgeMaliciousTokenTitle": {
     "message": "Malicious token"
   },
@@ -1263,6 +1266,9 @@
   "bridgeStepActionSwapPending": {
     "message": "Swapping $1 for $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "Suspicious"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Suspicious token"
