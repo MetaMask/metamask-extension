@@ -22,15 +22,14 @@ export function wrapMessengerWithTracing<
 >(
   messenger: Messenger<Namespace, AllowedActions, AllowedEvents>,
 ): Messenger<Namespace, AllowedActions, AllowedEvents> {
-  const originalCall = messenger.call.bind(messenger);
+  const originalCall = messenger.call.bind(messenger) as (
+    actionType: string,
+    ...args: unknown[]
+  ) => unknown;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (messenger as any).call = (actionType: string, ...args: unknown[]) => {
+  messenger.call = ((actionType: string, ...args: unknown[]) => {
     if (!getActiveSpan()) {
-      return (originalCall as (...Args: unknown[]) => unknown)(
-        actionType,
-        ...args,
-      );
+      return originalCall(actionType, ...args);
     }
     return trace(
       {
@@ -38,9 +37,9 @@ export function wrapMessengerWithTracing<
         op: 'messenger.call',
         data: { action: actionType },
       },
-      () => (originalCall as (...a: unknown[]) => unknown)(actionType, ...args),
+      () => originalCall(actionType, ...args),
     );
-  };
+  }) as typeof messenger.call;
 
   return messenger;
 }
