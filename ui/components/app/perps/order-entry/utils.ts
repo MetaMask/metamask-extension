@@ -36,13 +36,13 @@ export const isUnsignedDecimalInput = (value: string): boolean => {
 };
 
 /**
- * Linear-time signed decimal validation with optional leading minus and
- * optional single decimal point. Accepts intermediate states like "-" and "-.".
+ * Linear-time signed decimal validation with optional leading sign (+ or -) and
+ * optional single decimal point. Accepts intermediate states like "-", "+", "-.", "+.".
  * @param value
  */
 export const isSignedDecimalInput = (value: string): boolean => {
   let startIndex = 0;
-  if (value.startsWith('-')) {
+  if (value.startsWith('-') || value.startsWith('+')) {
     startIndex = 1;
   }
 
