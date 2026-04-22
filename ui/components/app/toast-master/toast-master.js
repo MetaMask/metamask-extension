@@ -3,13 +3,12 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
-import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
+import { SECOND } from '../../../../shared/constants/time';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -31,21 +30,17 @@ import {
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
   getOriginOfCurrentTab,
-  getPermissions,
   getUseNftDetection,
 } from '../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
-  addPermittedAccount,
   hidePermittedNetworkToast,
   toggleDefaultView,
 } from '../../../store/actions';
 import { Icon, IconName, IconSize } from '../../component-library';
-import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import { PerpsDepositToast } from '../perps/perps-deposit-toast';
@@ -56,13 +51,6 @@ import {
 import { MerklClaimToast, MusdConversionToast } from '../musd';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
-import {
-  getAccountGroupWithInternalAccounts,
-  getIconSeedAddressByAccountGroupId,
-  getSelectedAccountGroup,
-} from '../../../selectors/multichain-accounts/account-tree';
-import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
-import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
 import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -94,7 +82,6 @@ import {
   selectShowSurveyToast,
   selectNewSrpAdded,
   selectShowCopyAddressToast,
-  selectShowConnectAccountGroupToast,
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
@@ -137,7 +124,6 @@ export function ToastMaster() {
       <ToastContainer>
         {storageErrorToast}
         <SurveyToast />
-        <ConnectAccountGroupToast />
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
         <NftEnablementToast />
@@ -172,103 +158,6 @@ export function ToastMaster() {
   }
 
   return null;
-}
-
-function ConnectAccountGroupToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const [hideConnectAccountToast, setHideConnectAccountToast] = useState(false);
-  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
-  const selectedAccountGroupInternalAccounts = useSelector((state) =>
-    getAccountGroupWithInternalAccounts(state, selectedAccountGroup),
-  )?.find((accountGroup) => accountGroup.id === selectedAccountGroup);
-
-  // If the account has changed, allow the connect account toast again
-  const prevAccountGroup = usePrevious(selectedAccountGroup);
-  if (selectedAccountGroup !== prevAccountGroup && hideConnectAccountToast) {
-    setHideConnectAccountToast(false);
-  }
-
-  const showConnectAccountToast = useSelector((state) =>
-    selectedAccountGroupInternalAccounts
-      ? selectShowConnectAccountGroupToast(
-          state,
-          selectedAccountGroupInternalAccounts,
-        )
-      : false,
-  );
-
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const existingPermissions = useSelector((state) =>
-    getPermissions(state, activeTabOrigin),
-  );
-  const existingCaip25CaveatValue = existingPermissions
-    ? getCaip25CaveatValueFromPermissions(existingPermissions)
-    : null;
-  const existingChainIds = useMemo(
-    () =>
-      existingCaip25CaveatValue
-        ? getAllScopesFromCaip25CaveatValue(existingCaip25CaveatValue)
-        : [],
-    [existingCaip25CaveatValue],
-  );
-
-  const addressesToPermit = useMemo(() => {
-    if (!selectedAccountGroupInternalAccounts?.accounts) {
-      return [];
-    }
-    return selectedAccountGroupInternalAccounts.accounts
-      .filter((account) => hasChainIdSupport(account.scopes, existingChainIds))
-      .map((account) => account.address);
-  }, [existingChainIds, selectedAccountGroupInternalAccounts?.accounts]);
-
-  const seedAddress = useSelector((state) =>
-    getIconSeedAddressByAccountGroupId(
-      state,
-      selectedAccountGroupInternalAccounts?.id,
-    ),
-  );
-
-  // Early return if selectedAccountGroupInternalAccounts is undefined
-  if (!selectedAccountGroupInternalAccounts || !seedAddress) {
-    return null;
-  }
-
-  return (
-    Boolean(!hideConnectAccountToast && showConnectAccountToast) && (
-      <Toast
-        dataTestId="connect-account-toast"
-        key="connect-account-toast"
-        startAdornment={
-          <PreferredAvatar address={seedAddress} className="self-center" />
-        }
-        text={t('accountIsntConnectedToastText', [
-          selectedAccountGroupInternalAccounts.metadata?.name,
-          getURLHost(activeTabOrigin),
-        ])}
-        actionText={t('connectAccount')}
-        onActionClick={() => {
-          // Connect this account
-          addressesToPermit.forEach((address) => {
-            dispatch(addPermittedAccount(activeTabOrigin, address));
-          });
-          // Use setTimeout to prevent React re-render from
-          // hiding the tooltip
-          setTimeout(() => {
-            // Trigger a mouseenter on the header's connection icon
-            // to display the informative connection tooltip
-            document
-              .querySelector(
-                '[data-testid="connection-menu"] [data-tooltipped]',
-              )
-              ?.dispatchEvent(new CustomEvent('mouseenter', {}));
-          }, 250 * MILLISECOND);
-        }}
-        onClose={() => setHideConnectAccountToast(true)}
-      />
-    )
-  );
 }
 
 function SurveyToastMayDelete() {
