@@ -122,7 +122,7 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
   }, [fetchGeolocation]);
 
   const refreshGeolocation = useCallback(async (): Promise<void> => {
-    await fetchGeolocation('refreshGeolocation');
+    await fetchGeolocation('refreshGeolocation' { isCancelled: () => false });
   }, [fetchGeolocation]);
 
   /**
