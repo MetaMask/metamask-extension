@@ -86,6 +86,9 @@ class AccountListPage {
   private readonly closeAccountModalButton =
     'header button[aria-label="Close"]';
 
+  private readonly chooseWalletTypeBackButton =
+    '[data-testid="back-button"]';
+
   private readonly closeMultichainAccountsPageButton =
     '.multichain-page-header button[aria-label="Back"]';
 
@@ -334,6 +337,7 @@ class AccountListPage {
         await this.driver.clickElementAndWaitToDisappear(
           this.importAccountConfirmButton,
         );
+        await this.closeChooseWalletTypePage();
       }
       return;
     }
@@ -536,6 +540,11 @@ class AccountListPage {
     );
   }
 
+  async closeChooseWalletTypePage(): Promise<void> {
+    console.log(`Navigate back from choose wallet type page`);
+    await this.driver.clickElement(this.chooseWalletTypeBackButton);
+  }
+
   async closeMultichainAccountsPage(): Promise<void> {
     console.log(`Close multichain accounts page`);
     await this.driver.clickElementAndWaitToDisappear(
@@ -577,6 +586,7 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.importAccountConfirmButton,
     );
+    await this.closeChooseWalletTypePage();
   }
 
   async isBtcAccountCreationButtonEnabled(): Promise<boolean> {
