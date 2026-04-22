@@ -65,7 +65,7 @@ class AccountListPage {
     '[data-testid="multichain-account-menu-popover-add-watch-only-account"]';
 
   private readonly addHardwareWalletButton =
-    '[data-testid="add-wallet-modal-hardware-wallet"]';
+    '[data-testid="choose-wallet-type-hardware-wallet"]';
 
   private readonly addImportedAccountButton =
     '[data-testid="multichain-account-menu-popover-add-imported-account"]';
@@ -76,7 +76,7 @@ class AccountListPage {
   };
 
   private readonly addSnapAccountButton =
-    '[data-testid="add-wallet-modal-snap-account"]';
+    '[data-testid="choose-wallet-type-snap-account"]';
 
   private readonly walletDetailsButton = {
     text: 'Details',
@@ -93,10 +93,10 @@ class AccountListPage {
     '[data-testid="account-list-add-wallet-button"]';
 
   private readonly importWalletFromMultichainWalletModalButton =
-    '[data-testid="add-wallet-modal-import-wallet"]';
+    '[data-testid="choose-wallet-type-import-wallet"]';
 
   private readonly importAccountFromMultichainWalletModalButton =
-    '[data-testid="add-wallet-modal-import-account"]';
+    '[data-testid="choose-wallet-type-import-account"]';
 
   private readonly multichainAccountMenuItem =
     '.multichain-account-cell-menu-item';
