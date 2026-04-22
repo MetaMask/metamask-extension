@@ -3,10 +3,8 @@ import { Driver } from '../../../webdriver/driver';
 class SelectNetwork {
   private driver: Driver;
 
-  private readonly addCustomNetworkButton = {
-    text: 'Add a custom network',
-    tag: 'button',
-  };
+  private readonly addCustomNetworkButton =
+    '[data-testid="networks-page-add-custom-network-button"]';
 
   private readonly addNetworkButton = '[data-testid="test-add-button"]';
 

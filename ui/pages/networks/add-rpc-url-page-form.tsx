@@ -5,17 +5,14 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  Input,
+  Text,
+  TextColor,
+  TextVariant,
+  FontWeight,
 } from '@metamask/design-system-react';
-import {
-  FormTextField,
-  FormTextFieldSize,
-} from '../../components/component-library/form-text-field';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  BackgroundColor,
-  BorderColor,
-  BorderRadius,
-} from '../../helpers/constants/design-system';
+import { BorderRadius } from '../../helpers/constants/design-system';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { isWebUrl } from '../../../app/scripts/lib/util';
@@ -62,49 +59,52 @@ export const AddRpcUrlPageForm = ({
         style={{ scrollbarColor: 'var(--color-icon-muted) transparent' }}
       >
         <Box className="flex w-full flex-col gap-6 px-4 pt-4">
-          <FormTextField
-            id="rpcUrl"
-            label={t('rpcUrl')}
-            placeholder={t('enterRpcUrl')}
-            value={url}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              setUrl(event.target.value)
-            }
-            error={Boolean(error)}
-            helpText={error}
-            size={FormTextFieldSize.Lg}
-            labelProps={{ marginBottom: 1 }}
-            textFieldProps={{
-              backgroundColor: BackgroundColor.backgroundMuted,
-              borderColor: BorderColor.borderMuted,
-              borderRadius: BorderRadius.XL,
-              style: { borderColor: 'var(--color-border-muted)' },
-            }}
-            inputProps={{
-              'data-testid': 'rpc-url-input-test',
-            }}
-            autoFocus
-          />
-          <FormTextField
-            id="rpcName"
-            label={t('rpcNameOptional')}
-            placeholder={t('enterANameToIdentifyTheUrl')}
-            value={name}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              setName(event.target.value)
-            }
-            size={FormTextFieldSize.Lg}
-            labelProps={{ marginBottom: 1 }}
-            textFieldProps={{
-              backgroundColor: BackgroundColor.backgroundMuted,
-              borderColor: BorderColor.borderMuted,
-              borderRadius: BorderRadius.XL,
-              style: { borderColor: 'var(--color-border-muted)' },
-            }}
-            inputProps={{
-              'data-testid': 'rpc-name-input-test',
-            }}
-          />
+          <Box className="flex w-full flex-col gap-1">
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextDefault}
+            >
+              {t('rpcUrl')}
+            </Text>
+            <Input
+              id="rpcUrl"
+              placeholder={t('enterRpcUrl')}
+              value={url}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                setUrl(event.target.value)
+              }
+              className="rounded-xl border border-border-muted bg-background-muted px-4 py-3"
+              style={{ borderRadius: BorderRadius.XL }}
+              data-testid="rpc-url-input-test"
+              autoFocus
+            />
+            {error ? (
+              <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
+                {error}
+              </Text>
+            ) : null}
+          </Box>
+          <Box className="flex w-full flex-col gap-1">
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextDefault}
+            >
+              {t('rpcNameOptional')}
+            </Text>
+            <Input
+              id="rpcName"
+              placeholder={t('enterANameToIdentifyTheUrl')}
+              value={name}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                setName(event.target.value)
+              }
+              className="rounded-xl border border-border-muted bg-background-muted px-4 py-3"
+              style={{ borderRadius: BorderRadius.XL }}
+              data-testid="rpc-name-input-test"
+            />
+          </Box>
         </Box>
       </Box>
 

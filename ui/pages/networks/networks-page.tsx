@@ -6,6 +6,7 @@ import {
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   Box,
+  BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -16,8 +17,6 @@ import * as URI from 'uri-js';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useNetworkFormState } from '../settings/networks-tab/networks-form/networks-form-state';
 import { setEditedNetwork } from '../../store/actions';
-import { ModalHeader } from '../../components/component-library/modal-header';
-import { ModalBody } from '../../components/component-library/modal-body';
 import AddBlockExplorerModal from '../../components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import { SelectRpcUrlModal } from '../../components/multichain/network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
 import { AddNetwork } from '../../components/multichain/network-manager/components/add-network';
@@ -72,6 +71,12 @@ const NetworksPageFormHeader = ({
     </Header>
   );
 };
+
+const NetworksPageFormBody = ({ children }: { children: React.ReactNode }) => (
+  <Box flexDirection={BoxFlexDirection.Column} className="min-h-0 flex-1">
+    {children}
+  </Box>
+);
 
 export const NetworksPage = () => {
   const dispatch = useDispatch();
@@ -231,12 +236,12 @@ export const NetworksPage = () => {
             onBack={handleNewNetwork}
             onClose={handleClose}
           />
-          <ModalBody style={{ paddingTop: 0 }}>
+          <NetworksPageFormBody>
             <AddRpcUrlPageForm
               onCancel={handleNewNetwork}
               onAdded={handleAddRPC}
             />
-          </ModalBody>
+          </NetworksPageFormBody>
         </>
       ) : null}
       {view === 'edit-rpc' ? (
@@ -246,36 +251,40 @@ export const NetworksPage = () => {
             onBack={handleEditOnComplete}
             onClose={handleClose}
           />
-          <ModalBody style={{ paddingTop: 0 }}>
+          <NetworksPageFormBody>
             <AddRpcUrlPageForm
               onCancel={handleEditOnComplete}
               onAdded={handleAddRPC}
             />
-          </ModalBody>
+          </NetworksPageFormBody>
         </>
       ) : null}
       {view === 'add-explorer-url' ? (
         <>
-          <ModalHeader onClose={handleClose} onBack={handleNewNetwork}>
-            {t('addBlockExplorerUrl')}
-          </ModalHeader>
-          <ModalBody style={{ paddingTop: 0 }}>
+          <NetworksPageFormHeader
+            title={t('addBlockExplorerUrl')}
+            onBack={handleNewNetwork}
+            onClose={handleClose}
+          />
+          <NetworksPageFormBody>
             <AddBlockExplorerModal
               onAdded={handleAddExplorerUrl(handleAddOnComplete)}
             />
-          </ModalBody>
+          </NetworksPageFormBody>
         </>
       ) : null}
       {view === 'edit-explorer-url' ? (
         <>
-          <ModalHeader onClose={handleClose} onBack={handleNewNetwork}>
-            {t('addBlockExplorerUrl')}
-          </ModalHeader>
-          <ModalBody style={{ paddingTop: 0 }}>
+          <NetworksPageFormHeader
+            title={t('addBlockExplorerUrl')}
+            onBack={handleNewNetwork}
+            onClose={handleClose}
+          />
+          <NetworksPageFormBody>
             <AddBlockExplorerModal
               onAdded={handleAddExplorerUrl(handleEditOnComplete)}
             />
-          </ModalBody>
+          </NetworksPageFormBody>
         </>
       ) : null}
       {view === 'edit' ? (
@@ -294,15 +303,17 @@ export const NetworksPage = () => {
       ) : null}
       {view === 'select-rpc' ? (
         <>
-          <ModalHeader onClose={handleClose} onBack={handleGoHome}>
-            {t('selectRpcUrl')}
-          </ModalHeader>
-          <ModalBody style={{ paddingTop: 0 }}>
+          <NetworksPageFormHeader
+            title={t('selectRpcUrl')}
+            onBack={handleGoHome}
+            onClose={handleClose}
+          />
+          <NetworksPageFormBody>
             <SelectRpcUrlModal
               networkConfiguration={editedNetwork as NetworkConfiguration}
               onNetworkChange={handleClose}
             />
-          </ModalBody>
+          </NetworksPageFormBody>
         </>
       ) : null}
     </Box>

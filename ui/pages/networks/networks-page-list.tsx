@@ -20,6 +20,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonVariant,
+  BoxBackgroundColor,
   FontWeight,
   IconColor,
   IconName,
@@ -27,8 +28,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { AvatarNetworkSize as LegacyAvatarNetworkSize } from '../../components/component-library/avatar-network';
-import { SuccessPill } from '../../components/component-library/success-pill';
 import { AdditionalNetworksInfo } from '../../components/multichain/network-manager/components/additional-networks-info';
 import { useNetworkChangeHandlers } from '../../components/multichain/network-manager/hooks/useNetworkChangeHandlers';
 import { useNetworkItemCallbacks } from '../../components/multichain/network-manager/hooks/useNetworkItemCallbacks';
@@ -120,7 +119,14 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
           {network.name}
         </Text>
         {isNetworkGasSponsored ? (
-          <SuccessPill label={t('noNetworkFee')} />
+          <Box
+            backgroundColor={BoxBackgroundColor.SuccessMuted}
+            className="rounded-md px-2 py-1"
+          >
+            <Text variant={TextVariant.BodySm} color={TextColor.SuccessDefault}>
+              {t('noNetworkFee')}
+            </Text>
+          </Box>
         ) : null}
       </Box>
       <ButtonIcon
@@ -202,7 +208,6 @@ export const NetworksPageList = ({ searchQuery }: NetworksPageListProps) => {
           chainId={network.chainId}
           name={network.name}
           iconSrc={getNetworkIcon(network)}
-          iconSize={LegacyAvatarNetworkSize.Md}
           focus={false}
           selected={false}
           rpcEndpoint={
@@ -307,6 +312,7 @@ export const NetworksPageList = ({ searchQuery }: NetworksPageListProps) => {
           className="w-full"
           variant={ButtonVariant.Secondary}
           onClick={() => setSearchParams({ view: 'add' })}
+          data-testid="networks-page-add-custom-network-button"
         >
           {t('addACustomNetwork')}
         </Button>

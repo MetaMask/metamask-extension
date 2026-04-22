@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { NETWORKS_ROUTE } from '../../helpers/constants/routes';
@@ -54,14 +55,18 @@ describe('NetworksPage', () => {
   it('renders the sectioned networks view on the root route', () => {
     renderNetworksPage();
 
-    expect(screen.getByText('Enabled networks')).toBeInTheDocument();
-    expect(screen.getByText('Add a custom network')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.enabledNetworks.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.addACustomNetwork.message),
+    ).toBeInTheDocument();
   });
 
   it('renders the add network flow from the query param', () => {
     renderNetworksPage(`${NETWORKS_ROUTE}?view=add`);
 
-    expect(screen.getByText('Add network')).toBeInTheDocument();
+    expect(screen.getByText(messages.addNetwork.message)).toBeInTheDocument();
   });
 
   it('renders the custom rpc page with footer actions and adds the rpc', async () => {
@@ -80,6 +85,6 @@ describe('NetworksPage', () => {
     );
     await userEvent.click(screen.getByTestId('page-container-footer-next'));
 
-    expect(screen.getByText('Edit network')).toBeInTheDocument();
+    expect(screen.getByText(messages.editNetwork.message)).toBeInTheDocument();
   });
 });
