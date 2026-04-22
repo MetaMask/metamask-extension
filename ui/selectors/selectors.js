@@ -2926,7 +2926,7 @@ export function getUsePhishDetect(state) {
 }
 
 /**
- * True when a passkey is registered for unlock
+ * Checks if a passkey is registered for unlock
  *
  * @param {*} state
  * @returns {boolean}
@@ -2936,13 +2936,7 @@ export function getIsPasskeyRegistered(state) {
 }
 
 /**
- * Returns true when the passkey/biometrics feature is available to the
- * current user.
- *
- * Gated by three conditions:
- * 1. PASSKEY_ENABLED build flag is true
- * 2. Browser supports WebAuthn (safety net)
- * 3. User is not on a social login flow
+ * Checks if the passkey feature is available
  *
  * @param {object} state - Redux state
  * @returns {boolean}

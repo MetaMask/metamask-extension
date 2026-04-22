@@ -196,7 +196,7 @@ const PasskeySettingsItem = () => {
 
   return (
     <SettingsToggleItem
-      title={t(SECURITY_ITEMS['passkey-unlock'])}
+      title={t(SECURITY_ITEMS.passkey)}
       description={description}
       value={Boolean(isPasskeyRegistered)}
       onToggle={handlePasskeySettingsToggle}

@@ -56,7 +56,7 @@ const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [
     ),
   },
   { id: 'password', component: PasswordItem },
-  { id: 'passkey-unlock', component: PasskeySettingsItem },
+  { id: 'passkey', component: PasskeySettingsItem },
   { id: 'auto-lock', component: AutoLockItem },
   { id: 'phishing-detection', component: PhishingDetectionItem },
 ];

@@ -1176,16 +1176,11 @@ export function submitPassword(password: string): Promise<void> {
   return submitRequestToBackground('submitPassword', [password]);
 }
 
-export function submitEncryptionKey(
-  encryptionKey: string,
-  encryptionSalt?: string,
-): Promise<void> {
-  return submitRequestToBackground('submitEncryptionKey', [
-    encryptionKey,
-    encryptionSalt,
-  ]);
-}
-
+/**
+ * Generates passkey registration options.
+ *
+ * @returns Passkey registration options.
+ */
 export async function generatePasskeyRegistrationOptions(): Promise<PasskeyRegistrationOptions> {
   const prfSupported = await isPasskeyPRFSupported();
   return submitRequestToBackground('generatePasskeyRegistrationOptions', [
@@ -1193,13 +1188,17 @@ export async function generatePasskeyRegistrationOptions(): Promise<PasskeyRegis
   ]);
 }
 
+/**
+ * Generates passkey authentication options.
+ *
+ * @returns Passkey authentication options.
+ */
 export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthenticationOptions> {
   return submitRequestToBackground('generatePasskeyAuthenticationOptions');
 }
 
 /**
- * Finishes WebAuthn passkey registration in the background after the UI runs `create()`.
- * Persists the passkey record; the vault encryption key is never returned to the UI.
+ * Protects the vault key with a passkey.
  *
  * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
  */
@@ -1212,7 +1211,7 @@ export function protectVaultKeyWithPasskey(
 }
 
 /**
- * Finishes passkey unlock in the background (unwrap vault key, submit encryption key).
+ * Unlocks the vault with a passkey.
  *
  * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.
  */
@@ -1225,7 +1224,7 @@ export function unlockWithPasskey(
 }
 
 /**
- * Settings: after WebAuthn assertion, remove passkey unlock credential (no keyring submit).
+ * Removes the passkey from the vault using the passkey authentication response.
  *
  * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.
  */
@@ -1238,9 +1237,9 @@ export function removePasskeyWithPasskeyVerification(
 }
 
 /**
- * Settings: verify wallet password, then remove passkey unlock credential.
+ * Removes the passkey from the vault using the wallet password.
  *
- * @param password - The user's wallet password.
+ * @param password - The wallet password.
  */
 export function removePasskeyWithPasswordVerification(
   password: string,
@@ -2680,11 +2679,7 @@ export function lockMetamask(
     dispatch(showLoadingIndication(message));
 
     return backgroundSetLocked()
-      .then(() => {
-        // Background may set AppStateController.passkeyAutoUnlockSuppressed on lock; forceUpdate
-        // so UnlockPage sees it before paint.
-        return forceUpdateMetamaskState(dispatch);
-      })
+      .then(() => forceUpdateMetamaskState(dispatch))
       .catch((error) => {
         dispatch(displayWarning(getErrorMessage(error)));
         return Promise.reject(error);
