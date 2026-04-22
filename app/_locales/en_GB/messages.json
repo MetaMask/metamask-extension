@@ -1092,11 +1092,11 @@
   "bridgeLowestCost": {
     "message": "Lowest cost"
   },
-  "bridgeMaliciousTokenTitle": {
-    "message": "Malicious token"
-  },
   "bridgeMalicious": {
     "message": "Malicious"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Malicious token"
   },
   "bridgeMarketClosedAction": {
     "message": "Market closed"
@@ -1270,11 +1270,11 @@
     "message": "Swapping $1 for $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeSuspiciousTokenTitle": {
-    "message": "Suspicious token"
-  },
   "bridgeSuspicious": {
     "message": "Suspicious"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Suspicious token"
   },
   "bridgeTo": {
     "message": "Bridge to"
