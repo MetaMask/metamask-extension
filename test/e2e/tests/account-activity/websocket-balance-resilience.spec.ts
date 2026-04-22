@@ -60,7 +60,6 @@ async function mockDisabledWebsocketBalance(mockServer: Mockttp) {
     .always()
     .thenCallback(() => {
       return {
-        ok: true,
         statusCode: 200,
         json: [
           {
