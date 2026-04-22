@@ -107,9 +107,10 @@ jobs:
 
       # Compute a content hash of all build-affecting source files.
       # Used to detect when builds can be reused from a prior run.
-      # IMPORTANT: We hash from HEAD_COMMIT_HASH (the PR head), not the merge
-      # commit that actions/checkout creates. This ensures the hash is stable
-      # across pushes even when the base branch advances.
+      # IMPORTANT: We hash from GITHUB_SHA (the merge commit for PRs, the
+      # pushed commit for pushes). This ensures the hash captures the merged
+      # tree that will actually be built and tested, so builds are never
+      # reused when the base branch has gained build-affecting changes.
       #
       # Uses a DENYLIST approach: we exclude paths known NOT to affect builds.
       # This is safer than an allowlist — if a new build-affecting file is
@@ -152,7 +153,7 @@ jobs:
             const eslintPattern = /^\.eslintrc(\.[a-z.-]+)?\.js$/;
 
             const { stdout: tree } = await exec.getExecOutput(
-              'git', ['ls-tree', '-r', process.env.HEAD_COMMIT_HASH],
+              'git', ['ls-tree', '-r', 'HEAD'],
               { silent: true },
             );
             const kept = tree.split('\n').filter(line => {
@@ -175,7 +176,7 @@ jobs:
             // the build-command values it passes to run-build.yml DO affect
             // output. Extract and sort them so only command changes bust the hash.
             const { stdout: mainYml } = await exec.getExecOutput(
-              'git', ['show', `${process.env.HEAD_COMMIT_HASH}:.github/workflows/main.yml`],
+              'git', ['show', `HEAD:.github/workflows/main.yml`],
               { silent: true },
             );
             const buildCommands = (mainYml.match(/build-command: .+/g) ?? [])
