@@ -785,7 +785,7 @@ describe('submitSmartTransactionHook', () => {
     });
 
     it('does not show status page for perpsDeposit transaction type', async () => {
-      withRequest(
+      await withRequest(
         {
           options: {
             transactionMeta: {
@@ -834,7 +834,7 @@ describe('submitSmartTransactionHook', () => {
     });
 
     it('does not show status page for perpsDepositAndOrder transaction type', async () => {
-      withRequest(
+      await withRequest(
         {
           options: {
             transactionMeta: {
