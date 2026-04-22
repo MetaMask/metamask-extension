@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import {
@@ -75,10 +77,7 @@ function getAssetStats(
     }
 
     seenAssets.add(normalizedName);
-    const asset = compilation.getAsset(assetName);
-    if (!asset) {
-      throw new Error(`Missing emitted asset "${assetName}"`);
-    }
+    const asset = compilation.getAsset(assetName)!;
 
     return [{ name: normalizedName, size: asset.source.size() }];
   });
@@ -224,11 +223,7 @@ export class ManifestPlugin<Z extends boolean> {
     const { outFilePath } = (this.options as ManifestPluginOptions<true>)
       .zipOptions;
     const zipAssetPath = outFilePath.replaceAll('[browser]', browser);
-    const zipAsset = compilation.getAsset(zipAssetPath);
-
-    if (!zipAsset) {
-      throw new Error(`Missing emitted zip asset "${zipAssetPath}"`);
-    }
+    const zipAsset = compilation.getAsset(zipAssetPath)!;
 
     return zipAsset.source.size();
   }
