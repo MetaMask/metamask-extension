@@ -551,7 +551,8 @@ export default class MetamaskController extends EventEmitter {
     // lock to ensure only one seedless onboarding operation is running at once
     this.seedlessOperationMutex = new Mutex();
 
-    /** @type {ReturnType<typeof setTimeout> | null} */
+    // timer to reset passkey auto unlock suppressed state
+    /** @type {NodeJS.Timeout | null} */
     this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
 
     this.extension.runtime.onInstalled.addListener((details) => {
@@ -4424,8 +4425,6 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Protects the vault encryption key with a passkey after the UI runs WebAuthn credential creation.
-   * Verifies the challenge against the open registration session, then exports the vault
-   * encryption key only in the background, and persists the passkey record.
    *
    * @param {import('@metamask/passkey-controller').PasskeyRegistrationResponse} registrationResponse - Wire response from the UI.
    * @returns {Promise<void>}
@@ -4442,7 +4441,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Completes passkey unlock in the background: verifies auth challenge, unwraps vault key, submits it.
+   * Unlocks the vault with a passkey.
    *
    * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - Wire response from the UI.
    * @returns {Promise<void>}
@@ -4451,9 +4450,8 @@ export default class MetamaskController extends EventEmitter {
     if (!getIsPasskeyFeatureEnabled()) {
       throw new Error('Passkey feature is not enabled');
     }
-    const isEnrolled = this.passkeyController.isPasskeyEnrolled();
-    if (!isEnrolled) {
-      throw new Error('Passkey is not enrolled');
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new Error('Passkey is not registered');
     }
     const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
       authenticationResponse,
@@ -4462,16 +4460,14 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Verifies passkey authentication and removes the passkey record (settings disable).
-   * Does not submit the encryption key to the keyring — vault stays unlocked.
+   * Removes the passkey from the vault using the passkey authentication response.
    *
    * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse
    * @returns {Promise<void>}
    */
   async removePasskeyWithPasskeyVerification(authenticationResponse) {
-    const isEnrolled = this.passkeyController.isPasskeyEnrolled();
-    if (!isEnrolled) {
-      throw new Error('Passkey is not enrolled');
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new Error('Passkey is not registered');
     }
     const verified = await this.passkeyController.verifyPasskeyAuthentication(
       authenticationResponse,
@@ -4510,7 +4506,7 @@ export default class MetamaskController extends EventEmitter {
       throw new Error('Passkey feature is not enabled');
     }
     if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new Error('Passkey is not enrolled');
+      throw new Error('Passkey is not registered');
     }
 
     // verify passkey authentication
@@ -4780,7 +4776,7 @@ export default class MetamaskController extends EventEmitter {
         }
       }
 
-      // delete passkey since users turn off passkey after changing password
+      // Passkey is registered but not authenticated when changing password, remove it
       if (!isSocialLoginFlow && this.passkeyController.isPasskeyEnrolled()) {
         this.passkeyController.removePasskey();
       }
@@ -9001,35 +8997,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Clears the timer that resets {@link AppStateController} `passkeyAutoUnlockSuppressed`.
-   */
-  clearPasskeyAutoUnlockSuppressedResetTimeout() {
-    if (this.passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
-      clearTimeout(this.passkeyAutoUnlockSuppressedResetTimeoutId);
-      this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
-    }
-  }
-
-  /**
-   * After any lock, suppress auto passkey unlock briefly (cross-surface), then clear.
-   */
-  schedulePasskeyAutoUnlockSuppressedResetAfterLock() {
-    this.clearPasskeyAutoUnlockSuppressedResetTimeout();
-    this.appStateController.setPasskeyAutoUnlockSuppressed(true);
-    this.passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
-      this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
-      this.appStateController.setPasskeyAutoUnlockSuppressed(false);
-    }, 3000);
-  }
-
-  /**
    * Locks MetaMask
    *
-   * @param {object} [options] - The options for setting the locked state.
-   * @param {boolean} [options.skipSeedlessOperationLock] - If true, the seedless operation mutex will not be locked.
+   * @param {object} options - The options for setting the locked state.
+   * @param {boolean} options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
    */
-  async setLocked(options = {}) {
-    const { skipSeedlessOperationLock = false } = options;
+  async setLocked(options = { skipSeedlessOperationLock: false }) {
+    const { skipSeedlessOperationLock } = options;
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     let releaseLock;
@@ -9054,7 +9028,16 @@ export default class MetamaskController extends EventEmitter {
         this.authenticationController.performSignOut();
       }
 
-      this.schedulePasskeyAutoUnlockSuppressedResetAfterLock();
+      // After lock, suppress auto passkey unlock briefly (cross-surface), then clear.
+      if (this.passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
+        clearTimeout(this.passkeyAutoUnlockSuppressedResetTimeoutId);
+        this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
+      }
+      this.appStateController.setPasskeyAutoUnlockSuppressed(true);
+      this.passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
+        this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
+        this.appStateController.setPasskeyAutoUnlockSuppressed(false);
+      }, 3000);
     } catch (error) {
       log.error('Error setting locked state', error);
       throw error;

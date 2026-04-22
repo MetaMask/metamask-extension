@@ -8,10 +8,7 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../app/scripts/lib/util';
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../../shared/constants/app';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -22,8 +19,6 @@ import {
   IPFS_DEFAULT_GATEWAY_URL,
   IPFS_FORBIDDEN_GATEWAY,
 } from '../../../../shared/constants/network';
-import { SECOND } from '../../../../shared/constants/time';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import {
   AUTO_DETECT_TOKEN_LEARN_MORE_LINK,
   COINGECKO_LINK,
@@ -62,27 +57,13 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   MANAGE_WALLET_RECOVERY_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
-  SECURITY_TURN_OFF_PASSKEY_ROUTE,
-  SECURITY_REGISTER_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
-import {
-  startPasskeyRegistration,
-  startPasskeyAuthentication,
-  cancelPasskeyCeremony,
-  PasskeyCeremonyTimeoutError,
-} from '../../../../shared/lib/passkey';
-import {
-  protectVaultKeyWithPasskey,
-  generatePasskeyAuthenticationOptions,
-  generatePasskeyRegistrationOptions,
-  removePasskeyWithPasskeyVerification,
-  updateDataDeletionTaskStatus,
-} from '../../../store/actions';
+import { updateDataDeletionTaskStatus } from '../../../store/actions';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/lib/environment';
 import MetametricsToggle from './metametrics-toggle';
@@ -138,9 +119,6 @@ export default class SecurityTab extends PureComponent {
     setMarketingConsent: PropTypes.func,
     getMarketingConsent: PropTypes.func,
     hasActiveShieldSubscription: PropTypes.bool,
-    isPasskeyRegistered: PropTypes.bool,
-    isPasskeyFeatureAvailable: PropTypes.bool,
-    forceUpdateMetamaskState: PropTypes.func.isRequired,
   };
 
   state = {
@@ -150,7 +128,6 @@ export default class SecurityTab extends PureComponent {
     showDataCollectionDisclaimer: false,
     ipfsToggle: this.props.ipfsGateway.length > 0,
     hasEmailMarketingConsentError: false,
-    passkeyToggleBusy: false,
   };
 
   settingsRefCounter = 0;
@@ -195,18 +172,6 @@ export default class SecurityTab extends PureComponent {
     }
   }
 
-  componentWillUnmount() {
-    cancelPasskeyCeremony();
-  }
-
-  openPasskeyTurnOffInFullScreen = () => {
-    cancelPasskeyCeremony();
-    global.platform?.openExtensionInBrowser?.(
-      SECURITY_TURN_OFF_PASSKEY_ROUTE,
-      'from=sidepanel',
-    );
-  };
-
   toggleSetting(value, toggleMethod) {
     toggleMethod(!value);
   }
@@ -238,84 +203,6 @@ export default class SecurityTab extends PureComponent {
   }
 
   hideSrpQuizModal = () => this.setState({ srpQuizModalVisible: false });
-
-  handlePasskeySettingsToggle = async (currentValue) => {
-    if (this.state.passkeyToggleBusy) {
-      return;
-    }
-    const { trackEvent, t } = this.context;
-    const { isPasskeyRegistered, navigate, forceUpdateMetamaskState } =
-      this.props;
-    const wantsOn = !currentValue;
-
-    if (wantsOn) {
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
-        global.platform?.openExtensionInBrowser?.(
-          SECURITY_REGISTER_PASSKEY_ROUTE,
-        );
-        return;
-      }
-
-      this.setState({ passkeyToggleBusy: true });
-      try {
-        const options = await generatePasskeyRegistrationOptions();
-        const registrationResponse = await startPasskeyRegistration(options);
-        await protectVaultKeyWithPasskey(registrationResponse);
-        await forceUpdateMetamaskState();
-        toast.success(
-          <ToastContent title={t('passkeySettingsToastTurnedOn')} />,
-          { duration: 5 * SECOND },
-        );
-        trackEvent({
-          category: MetaMetricsEventCategory.Settings,
-          event: MetaMetricsEventName.SettingsUpdated,
-          properties: { passkey_unlock_registered: true },
-        });
-      } catch (error) {
-        log.debug(
-          'Passkey registration from settings failed or cancelled',
-          error,
-        );
-      } finally {
-        this.setState({ passkeyToggleBusy: false });
-      }
-      return;
-    }
-
-    if (!isPasskeyRegistered) {
-      return;
-    }
-
-    this.setState({ passkeyToggleBusy: true });
-    try {
-      const authOptions = await generatePasskeyAuthenticationOptions();
-      const authenticationResponse =
-        await startPasskeyAuthentication(authOptions);
-      await removePasskeyWithPasskeyVerification(authenticationResponse);
-      await forceUpdateMetamaskState();
-      toast.success(
-        <ToastContent title={t('passkeySettingsToastTurnedOff')} />,
-        { duration: 5 * SECOND },
-      );
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SettingsUpdated,
-        properties: { passkey_unlock_registered: false },
-      });
-    } catch (error) {
-      log.debug(
-        'Passkey verification for disable failed; offering password fallback',
-        error,
-      );
-      if (!(error instanceof PasskeyCeremonyTimeoutError)) {
-        if (error?.name !== 'NotAllowedError' && error?.name !== 'AbortError') {
-          navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE);
-        }
-      }
-    } finally {
-      this.setState({ passkeyToggleBusy: false });
-    }
-  };
 
   renderSeedWords() {
     const { t } = this.context;
@@ -1402,69 +1289,6 @@ export default class SecurityTab extends PureComponent {
     );
   };
 
-  renderPasskeySettingsToggle() {
-    const { t } = this.context;
-    const { isPasskeyRegistered, hasActiveShieldSubscription } = this.props;
-    const { passkeyToggleBusy } = this.state;
-    const registered = Boolean(isPasskeyRegistered);
-
-    return (
-      <Box
-        ref={this.settingsRefs[0]}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-        data-testid="security-passkey-settings-row"
-      >
-        <div className="settings-page__content-item">
-          <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.center}
-            marginBottom={2}
-          >
-            <Text variant={TextVariant.headingSm}>
-              {t('unlockWithBiometricsToggle')}
-            </Text>
-            <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-              <ToggleButton
-                value={registered}
-                onToggle={this.handlePasskeySettingsToggle}
-                offLabel={t('off')}
-                onLabel={t('on')}
-                disabled={hasActiveShieldSubscription || passkeyToggleBusy}
-                dataTestId="security-passkey-settings-toggle"
-              />
-            </Box>
-          </Box>
-          <Text marginBottom={2} color={TextColor.textAlternative}>
-            {t('biometricsToggleDescription')}
-          </Text>
-          {passkeyToggleBusy &&
-          getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL ? (
-            <button
-              type="button"
-              data-testid="security-passkey-sidepanel-continue-full-screen"
-              className="w-full cursor-pointer border-0 bg-transparent p-0 text-left outline-none hover:bg-transparent hover:shadow-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-primary-default focus-visible:ring-offset-2"
-              onClick={this.openPasskeyTurnOffInFullScreen}
-            >
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.primaryDefault}
-              >
-                {t('passkeyTroubleContinueFullScreen')}
-              </Text>
-            </button>
-          ) : null}
-        </div>
-
-        <div className="settings-page__content-item-col"></div>
-      </Box>
-    );
-  }
-
   render() {
     const { dataCollectionForMarketing } = this.props;
     const { showDataCollectionDisclaimer } = this.state;
@@ -1482,10 +1306,6 @@ export default class SecurityTab extends PureComponent {
         {getIsSeedlessOnboardingFeatureEnabled() && this.renderChangePassword()}
 
         {this.renderSecurityAlertsToggle()}
-
-        {this.props.isPasskeyFeatureAvailable &&
-          !this.props.socialLoginEnabled &&
-          this.renderPasskeySettingsToggle()}
 
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}

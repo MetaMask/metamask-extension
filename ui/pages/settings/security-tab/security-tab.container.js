@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
-  forceUpdateMetamaskState,
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
   setDataCollectionForMarketing,
@@ -26,8 +25,6 @@ import {
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,
-  getIsPasskeyRegistered,
-  getIsPasskeyFeatureAvailable,
   getMetaMetricsDataDeletionId,
   getHDEntropyIndex,
   getPreferences,
@@ -80,8 +77,6 @@ const mapStateToProps = (state) => {
     use4ByteResolution,
     useExternalServices,
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
-    isPasskeyRegistered: getIsPasskeyRegistered(state),
-    isPasskeyFeatureAvailable: getIsPasskeyFeatureAvailable(state),
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
     hdEntropyIndex: getHDEntropyIndex(state),
@@ -94,7 +89,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     setParticipateInMetaMetrics: (val) =>
       dispatch(setParticipateInMetaMetrics(val)),
     setDataCollectionForMarketing: (val) =>

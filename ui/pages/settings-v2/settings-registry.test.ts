@@ -6,7 +6,6 @@ import {
   PRIVACY_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
   SECURITY_REGISTER_PASSKEY_ROUTE,
-  SECURITY_TURN_OFF_PASSKEY_ROUTE,
   SETTINGS_V2_ROUTE,
   THEME_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
@@ -154,7 +153,6 @@ describe('settings-registry', () => {
       expect(paths).toContain(MANAGE_WALLET_RECOVERY_ROUTE);
       expect(paths).toContain(SECURITY_PASSWORD_CHANGE_V2_ROUTE);
       expect(paths).toContain(SECURITY_REGISTER_PASSKEY_ROUTE);
-      expect(paths).toContain(SECURITY_TURN_OFF_PASSKEY_ROUTE);
       expect(paths).toContain(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE);
       expect(paths).toContain(TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE);
       expect(paths).toContain(`${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}/*`);

@@ -45,7 +45,7 @@ export default function PasskeyRegisterSubPage() {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const [isEnrolling, setIsEnrolling] = useState(false);
+  const [isRegisteringPasskey, setIsRegisteringPasskey] = useState(false);
 
   const fromChangePassword =
     new URLSearchParams(location.search).get('from') === 'change-password';
@@ -61,8 +61,8 @@ export default function PasskeyRegisterSubPage() {
     navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
   };
 
-  const handleSetUpBiometrics = async () => {
-    setIsEnrolling(true);
+  const handleRegisterPasskey = async () => {
+    setIsRegisteringPasskey(true);
     try {
       const options = await generatePasskeyRegistrationOptions();
       const registrationResponse = await startPasskeyRegistration(options);
@@ -78,14 +78,14 @@ export default function PasskeyRegisterSubPage() {
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          passkey_unlock_registered: true,
+          passkey_registered: true,
         },
       });
       goToSettings();
     } catch {
       // User cancelled or authenticator unavailable — stay on this screen
     } finally {
-      setIsEnrolling(false);
+      setIsRegisteringPasskey(false);
     }
   };
 
@@ -141,19 +141,21 @@ export default function PasskeyRegisterSubPage() {
           size={ButtonSize.Lg}
           className="w-full"
           data-testid="register-passkey-set-up-button"
-          disabled={isEnrolling}
+          disabled={isRegisteringPasskey}
+          isLoading={isRegisteringPasskey}
+          aria-label={t('setUpBiometrics')}
           onClick={() => {
-            handleSetUpBiometrics();
+            handleRegisterPasskey();
           }}
         >
-          {isEnrolling ? t('unlocking') : t('setUpBiometrics')}
+          {t('setUpBiometrics')}
         </Button>
         <Button
           variant={ButtonVariant.Tertiary}
           size={ButtonSize.Md}
           className="w-full"
           data-testid="register-passkey-cancel-button"
-          disabled={isEnrolling}
+          disabled={isRegisteringPasskey}
           onClick={goToSettings}
         >
           {fromChangePassword ? t('maybeLater') : t('cancel')}

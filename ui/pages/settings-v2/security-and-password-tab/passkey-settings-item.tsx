@@ -25,8 +25,8 @@ import {
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_REGISTER_PASSKEY_ROUTE,
-  SECURITY_TURN_OFF_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getIsPasskeyFeatureAvailable,
@@ -63,15 +63,12 @@ const PasskeySettingsItem = () => {
     };
   }, []);
 
-  const openPasskeyTurnOffInFullScreen = useCallback(() => {
+  const openSecurityAndPasswordInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();
-    global.platform?.openExtensionInBrowser?.(
-      SECURITY_TURN_OFF_PASSKEY_ROUTE,
-      'from=sidepanel',
-    );
+    global.platform?.openExtensionInBrowser?.(SECURITY_AND_PASSWORD_ROUTE);
   }, []);
 
-  const registerPasskeyUnlock = useCallback(async () => {
+  const registerPasskey = useCallback(async () => {
     if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
       global.platform?.openExtensionInBrowser?.(
         SECURITY_REGISTER_PASSKEY_ROUTE,
@@ -96,7 +93,7 @@ const PasskeySettingsItem = () => {
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention -- MetaMetrics snake_case contract
-          passkey_unlock_registered: true,
+          passkey_registered: true,
         },
       });
     } catch (error) {
@@ -109,7 +106,7 @@ const PasskeySettingsItem = () => {
     }
   }, [dispatch, t, trackEvent]);
 
-  const removePasskeyUnlock = useCallback(async () => {
+  const removePasskey = useCallback(async () => {
     if (!isPasskeyRegistered) {
       return;
     }
@@ -132,7 +129,7 @@ const PasskeySettingsItem = () => {
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention -- MetaMetrics snake_case contract
-          passkey_unlock_registered: false,
+          passkey_registered: false,
         },
       });
     } catch (error: unknown) {
@@ -143,7 +140,13 @@ const PasskeySettingsItem = () => {
       const errorName = error instanceof Error ? error.name : undefined;
       if (!(error instanceof PasskeyCeremonyTimeoutError)) {
         if (errorName !== 'NotAllowedError' && errorName !== 'AbortError') {
-          navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE);
+          if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
+            global.platform?.openExtensionInBrowser?.(
+              SECURITY_AND_PASSWORD_ROUTE,
+            );
+          } else {
+            navigate(SECURITY_AND_PASSWORD_ROUTE);
+          }
         }
       }
     } finally {
@@ -159,13 +162,13 @@ const PasskeySettingsItem = () => {
 
       const shouldEnablePasskeyUnlock = !isPasskeyUnlockEnabled;
       if (shouldEnablePasskeyUnlock) {
-        await registerPasskeyUnlock();
+        await registerPasskey();
         return;
       }
 
-      await removePasskeyUnlock();
+      await removePasskey();
     },
-    [isPasskeyOperationPending, registerPasskeyUnlock, removePasskeyUnlock],
+    [isPasskeyOperationPending, registerPasskey, removePasskey],
   );
 
   const description = useMemo(() => {
@@ -178,7 +181,7 @@ const PasskeySettingsItem = () => {
             type="button"
             data-testid="security-passkey-sidepanel-continue-full-screen"
             className="mt-2 w-full cursor-pointer border-0 bg-transparent p-0 text-left outline-none hover:bg-transparent hover:shadow-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-primary-default focus-visible:ring-offset-2"
-            onClick={openPasskeyTurnOffInFullScreen}
+            onClick={openSecurityAndPasswordInFullScreen}
           >
             <Text variant={TextVariant.BodySm} color={TextColor.PrimaryDefault}>
               {t('passkeyTroubleContinueFullScreen')}
@@ -188,7 +191,7 @@ const PasskeySettingsItem = () => {
       </>
     );
     return body;
-  }, [openPasskeyTurnOffInFullScreen, isPasskeyOperationPending, t]);
+  }, [openSecurityAndPasswordInFullScreen, isPasskeyOperationPending, t]);
 
   if (!isPasskeyFeatureAvailable) {
     return null;
