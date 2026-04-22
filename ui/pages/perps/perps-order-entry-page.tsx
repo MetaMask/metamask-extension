@@ -672,8 +672,10 @@ const PerpsOrderEntryPage: React.FC = () => {
       return undefined;
     }
 
-    const rawAmount = formattedPositionSize.endsWith(` ${rawAssetSymbol}`)
-      ? formattedPositionSize.slice(0, -` ${rawAssetSymbol}`.length).trimEnd()
+    const rawAmount = formattedPositionSize.endsWith(` ${displayAssetSymbol}`)
+      ? formattedPositionSize
+          .slice(0, -` ${displayAssetSymbol}`.length)
+          .trimEnd()
       : formattedPositionSize;
 
     if (!rawAmount) {

@@ -831,6 +831,35 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('does not duplicate symbol in toast description for HIP3 markets (TAT-3053)', async () => {
+      // HIP3 market symbol is "xyz:TSLA" but positionSize uses the display name "TSLA".
+      // The strip logic must match against the display name, not the raw symbol,
+      // otherwise the toast reads "Long 0.5 TSLA TSLA" instead of "Long 0.5 TSLA".
+      mockUseParams.mockReturnValue({ symbol: 'xyz%3ATSLA' });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          state: expect.objectContaining({
+            pendingOrderFilledDescription:
+              expect.stringMatching(/^Long [^ ]+ TSLA$/u),
+          }),
+        }),
+      );
+    });
+
     it('shows order failure toast when order fails', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsPlaceOrder') {
