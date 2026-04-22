@@ -12,7 +12,9 @@ import {
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
+  forceUpdateMetamaskState,
 } from '../../../store/actions';
+import { startPasskeyRegistration } from '../../../../shared/lib/passkey';
 import Biometrics from './biometrics';
 
 jest.mock('../../../../shared/lib/passkey', () => ({
@@ -47,6 +49,7 @@ jest.mock('../../../store/actions', () => {
       extensions: { prf: { eval: { first: 'AQ' } } },
     }),
     protectVaultKeyWithPasskey: jest.fn().mockResolvedValue(undefined),
+    forceUpdateMetamaskState: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -69,6 +72,16 @@ describe('Biometrics', () => {
     mockUseNavigate.mockClear();
     jest.mocked(protectVaultKeyWithPasskey).mockClear();
     jest.mocked(generatePasskeyRegistrationOptions).mockClear();
+    jest.mocked(forceUpdateMetamaskState).mockClear();
+    jest.mocked(startPasskeyRegistration).mockResolvedValue({
+      id: 'AQ',
+      rawId: 'AQ',
+      type: 'public-key',
+      response: {
+        clientDataJSON: 'e30',
+        attestationObject: 'e30',
+      },
+    });
   });
 
   it('renders and matches snapshot', () => {
@@ -154,12 +167,31 @@ describe('Biometrics', () => {
       await waitFor(() => {
         expect(protectVaultKeyWithPasskey).toHaveBeenCalled();
       });
+      expect(forceUpdateMetamaskState).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_REVIEW_SRP_ROUTE,
         {
           replace: true,
         },
       );
+    });
+
+    it('does not navigate when the user cancels passkey registration', async () => {
+      const mockStore = buildMockStore(FirstTimeFlowType.create);
+      const { getByTestId } = renderWithProvider(<Biometrics />, mockStore);
+
+      jest
+        .mocked(startPasskeyRegistration)
+        .mockRejectedValueOnce(
+          new DOMException('User cancelled', 'NotAllowedError'),
+        );
+
+      fireEvent.click(getByTestId('biometrics-set-up-button'));
+
+      await waitFor(() => {
+        expect(startPasskeyRegistration).toHaveBeenCalled();
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalled();
     });
   });
 });

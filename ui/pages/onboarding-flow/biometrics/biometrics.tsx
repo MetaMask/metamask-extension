@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import log from 'loglevel';
 import {
   Box,
   Text,
@@ -13,7 +14,7 @@ import {
   TextColor,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
@@ -25,6 +26,7 @@ import { startPasskeyRegistration } from '../../../../shared/lib/passkey';
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
+  forceUpdateMetamaskState,
 } from '../../../store/actions';
 
 /**
@@ -33,9 +35,10 @@ import {
  */
 export default function Biometrics() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const [isEnrolling, setIsEnrolling] = useState(false);
+  const [isRegisteringPasskey, setIsRegisteringPasskey] = useState(false);
 
   const goToNextStep = useCallback(() => {
     navigate(
@@ -51,16 +54,20 @@ export default function Biometrics() {
   };
 
   const handleSetUpBiometrics = async () => {
-    setIsEnrolling(true);
+    setIsRegisteringPasskey(true);
     try {
       const options = await generatePasskeyRegistrationOptions();
       const registrationResponse = await startPasskeyRegistration(options);
       await protectVaultKeyWithPasskey(registrationResponse);
-    } catch {
-      // User cancelled or authenticator unavailable — continue onboarding
-    } finally {
-      setIsEnrolling(false);
+      await forceUpdateMetamaskState(dispatch);
       goToNextStep();
+    } catch (error: unknown) {
+      log.debug(
+        'Onboarding passkey registration failed or was cancelled',
+        error,
+      );
+    } finally {
+      setIsRegisteringPasskey(false);
     }
   };
 
@@ -101,17 +108,19 @@ export default function Biometrics() {
           size={ButtonSize.Lg}
           className="w-full"
           data-testid="biometrics-set-up-button"
-          disabled={isEnrolling}
+          disabled={isRegisteringPasskey}
+          isLoading={isRegisteringPasskey}
+          aria-label={t('setUpBiometrics')}
           onClick={handleSetUpBiometrics}
         >
-          {isEnrolling ? t('unlocking') : t('setUpBiometrics')}
+          {t('setUpBiometrics')}
         </Button>
         <Button
           variant={ButtonVariant.Tertiary}
           size={ButtonSize.Md}
           className="w-full"
           data-testid="biometrics-maybe-later-button"
-          disabled={isEnrolling}
+          disabled={isRegisteringPasskey}
           onClick={handleMaybeLater}
         >
           {t('maybeLater')}
