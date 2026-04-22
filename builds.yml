@@ -330,8 +330,6 @@ env:
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false
-  # Enable distributed tracing pilot (very low tracesSampleRate=0.0001) for validation builds only.
-  # Set to true in Flask build to pilot RPC + messenger span wrappers in production.
   - SENTRY_DISTRIBUTED_TRACING_PILOT: false
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - IN_TEST

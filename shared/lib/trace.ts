@@ -89,11 +89,13 @@ export enum TraceName {
   CreateMultichainAccount = 'Create Multichain Account',
   DiscoverAccounts = 'Discover Accounts',
   EvmDiscoverAccounts = 'EVM Discover Accounts',
-  BackgroundRpc = 'Background RPC',
-  MessengerCall = 'Messenger Call',
+  // mUSD / 1-Click Convert
   MusdConversionNavigation = 'mUSD Conversion Navigation',
   MusdConversionQuote = 'mUSD Conversion Quote',
   MusdConversionConfirm = 'mUSD Conversion Confirm',
+  // Distributed tracing
+  BackgroundRpc = 'Background RPC',
+  MessengerCall = 'Messenger Call',
 }
 
 /**
@@ -108,6 +110,7 @@ export enum TraceOperation {
   AccountCreate = 'account.create',
   AccountUi = 'account.ui',
   AccountDiscover = 'account.discover',
+  // mUSD Conversion
   MusdConversionOperation = 'musd.conversion.operation',
   MusdConversionDataFetch = 'musd.conversion.data_fetch',
 }
@@ -325,7 +328,6 @@ export function getActiveSpan(): Sentry.Span | null {
  *
  * @returns Serialized context with traceId/spanId, or undefined if no active span.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- used by background-connection.ts
 export function getSerializedTraceContext():
   | SerializedTraceContext
   | undefined {
@@ -404,7 +406,6 @@ export function extractTraceContext(params: unknown): {
  * @param request.id - Optional trace ID for same-process map lookup.
  * @returns Serialized trace context.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- used by trace.test.ts
 export function serializeTraceContext(
   span: Sentry.Span | null | undefined,
   request: { name: string; id?: string },
