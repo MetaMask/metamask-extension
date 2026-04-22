@@ -23,6 +23,7 @@ import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
 import { isEnforcedSimulationsEligible } from '../../../../shared/lib/transaction/enforced-simulations';
+import { getEip7702SupportedChains } from '../../../../shared/lib/eip7702-support-utils';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   getSmartTransactionCommonParams,
@@ -199,10 +200,12 @@ export const TransactionControllerInit: MessengerClientInitFunction<
       beforeSign: new EnforceSimulationHook({
         messenger: initMessenger,
         isEligible: (transactionMeta) =>
-          isEnforcedSimulationsEligible(
-            transactionMeta,
-            initMessenger.call('AppStateController:getState'),
-          ),
+          isEnforcedSimulationsEligible(transactionMeta, {
+            ...initMessenger.call('AppStateController:getState'),
+            eip7702SupportedChains: getEip7702SupportedChains(
+              initMessenger.call('RemoteFeatureFlagController:getState'),
+            ),
+          }),
       }).getBeforeSignHook(),
       beforeCheckPendingTransactions: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
@@ -450,9 +453,6 @@ export async function publishHook({
     (!isSmartTransaction || !sendBundleSupport || isExternalSign)
   ) {
     const hook = new Delegation7702PublishHook({
-      isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
-        transactionController,
-      ),
       messenger: initMessenger,
     }).getHook();
 

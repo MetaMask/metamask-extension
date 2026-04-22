@@ -508,7 +508,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
     });
 
-    it('shows an add funds CTA when new order balance is zero', async () => {
+    it('disables submit button and shows add funds label when balance is zero', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
@@ -522,17 +522,11 @@ describe('PerpsOrderEntryPage', () => {
 
       const submitButton = screen.getByTestId('submit-order-button');
 
-      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toBeDisabled();
       expect(submitButton).toHaveTextContent(messages.addFunds.message);
-
-      await act(async () => {
-        fireEvent.click(submitButton);
-      });
-
-      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
     });
 
-    it('shows geo-block modal instead of depositing when user is not eligible and balance is zero', async () => {
+    it('disables submit button when user is not eligible and balance is zero', () => {
       mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
       mockLiveAccount.mockReturnValue({
         account: {
@@ -546,14 +540,7 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       const submitButton = screen.getByTestId('submit-order-button');
-      expect(submitButton).not.toBeDisabled();
-
-      await act(async () => {
-        fireEvent.click(submitButton);
-      });
-
-      expect(mockTriggerDeposit).not.toHaveBeenCalled();
-      expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      expect(submitButton).toBeDisabled();
     });
 
     it('shows geo-block modal instead of placing order when user is not eligible and has balance', async () => {

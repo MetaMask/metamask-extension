@@ -1,15 +1,17 @@
 import {
   AuthorizationList,
-  IsAtomicBatchSupportedRequest,
-  IsAtomicBatchSupportedResult,
+  TransactionEnvelopeType,
   TransactionMeta,
+} from '@metamask/transaction-controller';
+import type {
+  TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerGetNonceLockAction,
 } from '@metamask/transaction-controller';
 import { Hex, add0x, createProjectLogger } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import type { Messenger } from '@metamask/messenger';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
-import type { TransactionControllerGetNonceLockAction } from '@metamask/transaction-controller';
 import {
   BATCH_DEFAULT_MODE,
   Caveat,
@@ -38,7 +40,8 @@ export const PRIMARY_TYPE_DELEGATION = 'Delegation';
 type DelegationMessengerActions =
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
-  | TransactionControllerGetNonceLockAction;
+  | TransactionControllerGetNonceLockAction
+  | TransactionControllerIsAtomicBatchSupportedAction;
 
 export type DelegationMessenger = Messenger<
   string,
@@ -47,9 +50,7 @@ export type DelegationMessenger = Messenger<
 >;
 
 type AuthorizationRequest = {
-  isAtomicBatchSupported?: (
-    request: IsAtomicBatchSupportedRequest,
-  ) => Promise<IsAtomicBatchSupportedResult>;
+  minimal?: boolean;
 
   upgradeContractAddress?: Hex;
 
@@ -102,13 +103,10 @@ type ConvertTransactionToRedeemDelegationsResult = {
   authorizationList?: AuthorizationList;
   data: Hex;
   to: Hex;
+  type: TransactionEnvelopeType;
 };
 
 type GetDelegationTransactionRequest = {
-  isAtomicBatchSupported: (
-    request: IsAtomicBatchSupportedRequest,
-  ) => Promise<IsAtomicBatchSupportedResult>;
-
   messenger: DelegationMessenger;
 };
 
@@ -116,6 +114,7 @@ type DelegationTransactionResult = {
   authorizationList?: AuthorizationList;
   data: Hex;
   to: Hex;
+  type: TransactionEnvelopeType;
   value: Hex;
 };
 
@@ -179,6 +178,9 @@ export async function convertTransactionToRedeemDelegations(
     authorizationList,
     data,
     to: environment.DelegationManager as Hex,
+    type: authorizationList
+      ? TransactionEnvelopeType.setCode
+      : (transaction.txParams.type as TransactionEnvelopeType),
   };
 }
 
@@ -186,19 +188,18 @@ export async function getDelegationTransaction(
   request: GetDelegationTransactionRequest,
   transaction: TransactionMeta,
 ): Promise<DelegationTransactionResult> {
-  const { data, to, authorizationList } =
+  const { authorizationList, data, to, type } =
     await convertTransactionToRedeemDelegations({
       transaction,
       messenger: request.messenger,
-      authorization: {
-        isAtomicBatchSupported: request.isAtomicBatchSupported,
-      },
+      authorization: {},
     });
 
   return {
     authorizationList,
     data,
     to,
+    type,
     value: '0x0',
   };
 }
@@ -350,22 +351,22 @@ function decodeAuthorizationSignature(signature: Hex) {
 
 async function resolveUpgradeContractAddress(
   transaction: TransactionMeta,
+  messenger: DelegationMessenger,
   authorization: AuthorizationRequest,
 ): Promise<Hex | undefined> {
   if (authorization.upgradeContractAddress) {
     return authorization.upgradeContractAddress;
   }
 
-  if (!authorization.isAtomicBatchSupported) {
-    throw new Error('Upgrade contract address not found');
-  }
-
   const { chainId, txParams } = transaction;
 
-  const atomicBatchResult = await authorization.isAtomicBatchSupported({
-    address: txParams.from as Hex,
-    chainIds: [chainId],
-  });
+  const atomicBatchResult = await messenger.call(
+    'TransactionController:isAtomicBatchSupported',
+    {
+      address: txParams.from as Hex,
+      chainIds: [chainId],
+    },
+  );
 
   const chainResult = atomicBatchResult.find(
     (r) => r.chainId.toLowerCase() === chainId.toLowerCase(),
@@ -410,11 +411,16 @@ async function buildAuthorizationList(
 ): Promise<AuthorizationList | undefined> {
   const upgradeContractAddress = await resolveUpgradeContractAddress(
     transaction,
+    messenger,
     authorization,
   );
 
   if (!upgradeContractAddress) {
     return undefined;
+  }
+
+  if (authorization.minimal) {
+    return [{ address: upgradeContractAddress }];
   }
 
   const { chainId, txParams, networkClientId } = transaction;
