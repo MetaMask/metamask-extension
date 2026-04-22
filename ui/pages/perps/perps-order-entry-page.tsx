@@ -908,10 +908,6 @@ const PerpsOrderEntryPage: React.FC = () => {
           'perpsClosePosition',
           [closeParams],
         );
-        // Navigate only after the RPC resolves. Navigating before the await
-        // was orphaning the Promise response and leaving the in-progress toast
-        // stuck forever.
-        handleBackClick();
         if (!result.success) {
           const message = result.error || 'Failed to close position';
           reportTransactionFailure(
@@ -925,6 +921,10 @@ const PerpsOrderEntryPage: React.FC = () => {
           );
           throw new Error(result.error ?? 'Failed to close position');
         }
+        // Navigate only on success. Staying on the form on failure lets the
+        // catch block surface the inline error (setSubmitError for partial
+        // close) and the failure toast renders on the current page.
+        handleBackClick();
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
           [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
@@ -961,9 +961,6 @@ const PerpsOrderEntryPage: React.FC = () => {
             success: boolean;
             error?: string;
           }>('perpsPlaceOrder', [orderParams]);
-          // Navigate only after the RPC resolves to avoid orphaning the
-          // Promise response on the unmounted order-entry page.
-          handleBackClick();
           if (!result.success) {
             const message = result.error || 'Failed to add to position';
             reportTransactionFailure(
@@ -972,6 +969,9 @@ const PerpsOrderEntryPage: React.FC = () => {
             );
             throw new Error(result.error ?? 'Failed to add to position');
           }
+          // Navigate only on success. On failure, stay on the form so the
+          // catch block's failure toast renders on the current page.
+          handleBackClick();
 
           track(MetaMetricsEventName.PerpsTradeTransaction, {
             [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
@@ -1057,9 +1057,18 @@ const PerpsOrderEntryPage: React.FC = () => {
         'perpsPlaceOrder',
         [orderParams],
       );
-      // Navigate only after the RPC resolves. Navigating before the await was
-      // unmounting this page and orphaning the Promise response, leaving the
-      // "Submitting your trade" toast stuck forever.
+      if (!result.success) {
+        const message = result.error || 'Failed to place order';
+        reportTransactionFailure(
+          MetaMetricsEventName.PerpsTradeTransaction,
+          message,
+        );
+        throw new Error(result.error ?? 'Failed to place order');
+      }
+      // Navigate only on success. On failure, stay on the form so the catch
+      // block's failure toast renders on the current page. Navigating before
+      // the await previously unmounted this page and orphaned the Promise
+      // response, leaving the "Submitting your trade" toast stuck forever.
       handleBackClick(
         undefined,
         undefined,
@@ -1070,14 +1079,6 @@ const PerpsOrderEntryPage: React.FC = () => {
             }
           : undefined,
       );
-      if (!result.success) {
-        const message = result.error || 'Failed to place order';
-        reportTransactionFailure(
-          MetaMetricsEventName.PerpsTradeTransaction,
-          message,
-        );
-        throw new Error(result.error ?? 'Failed to place order');
-      }
 
       track(MetaMetricsEventName.PerpsTradeTransaction, {
         [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,

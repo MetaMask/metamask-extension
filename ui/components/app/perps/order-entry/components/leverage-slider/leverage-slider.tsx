@@ -106,18 +106,29 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
 
   const handleInputKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
+      // Leverage is a secondary control — Enter must not submit the outer
+      // order-entry form. Swallow it so the native form-submit path only
+      // fires from primary inputs (size/limit price).
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        return;
+      }
       if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') {
         return;
       }
       event.preventDefault();
       const step = event.key === 'ArrowUp' ? 1 : -1;
-      const current = Number.parseInt(inputValue, 10);
-      const base = Number.isNaN(current) ? minLeverage : current;
+      // Read the current value straight from the DOM input so rapid consecutive
+      // presses cannot batch against a stale local-state capture in this
+      // closure. Falls back to `leverage` (the parent-owned source of truth)
+      // when the input is empty or non-numeric.
+      const rawCurrent = Number.parseInt(event.currentTarget.value, 10);
+      const base = Number.isNaN(rawCurrent) ? leverage : rawCurrent;
       const next = Math.min(maxLeverage, Math.max(minLeverage, base + step));
       setInputValue(String(next));
       onLeverageChange(next);
     },
-    [inputValue, onLeverageChange, minLeverage, maxLeverage],
+    [leverage, onLeverageChange, minLeverage, maxLeverage],
   );
 
   return (

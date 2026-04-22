@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { createEvent, fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
@@ -119,6 +119,23 @@ describe('LeverageSlider', () => {
       const input = getInput();
       fireEvent.keyDown(input, { key: 'Enter' });
       fireEvent.keyDown(input, { key: 'a' });
+      expect(onLeverageChange).not.toHaveBeenCalled();
+    });
+
+    it('swallows Enter so it does not bubble to an outer form', () => {
+      const onLeverageChange = jest.fn();
+      renderWithProvider(
+        <LeverageSlider
+          {...defaultProps}
+          leverage={3}
+          onLeverageChange={onLeverageChange}
+        />,
+        mockStore,
+      );
+      const input = getInput();
+      const event = createEvent.keyDown(input, { key: 'Enter' });
+      fireEvent(input, event);
+      expect(event.defaultPrevented).toBe(true);
       expect(onLeverageChange).not.toHaveBeenCalled();
     });
   });

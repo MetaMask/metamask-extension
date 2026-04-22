@@ -288,8 +288,11 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
       } catch {
         e = new Error(safeMessage);
       }
-      // preserve the stack
-      e.stack = stack;
+      // preserve the stack if the server sent one; otherwise keep the
+      // locally-captured stack from the constructor.
+      if (stack !== undefined) {
+        e.stack = stack;
+      }
       if (request) {
         requests.delete(id);
         request.reject(e);

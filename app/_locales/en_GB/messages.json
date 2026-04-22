@@ -5776,7 +5776,7 @@
     "message": "Mid"
   },
   "perpsMinOrderSize": {
-    "message": "Minimum order size $1",
+    "message": "Order size must be over $1",
     "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as submit-button copy when the size input is empty or below the minimum."
   },
   "perpsModify": {
