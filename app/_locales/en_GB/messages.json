@@ -114,9 +114,6 @@
   "accountIdenticon": {
     "message": "Account icon"
   },
-  "accountIsntConnectedToastText": {
-    "message": "$1 isn't connected to $2"
-  },
   "accountName": {
     "message": "Account name"
   },
@@ -1543,12 +1540,6 @@
   "confirmFieldFrequency": {
     "message": "Frequency"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Initial allowance"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Max allowance"
-  },
   "confirmFieldNeverExpires": {
     "message": "Never expires"
   },
@@ -1568,20 +1559,14 @@
     "message": "Monthly"
   },
   "confirmFieldPeriodDurationSeconds": {
-    "message": "seconds",
-    "description": "Unit descriptor following the numeric value, e.g. '100 seconds'"
+    "message": "$1 seconds",
+    "description": "$1 is the number of seconds in the permission period (shown when the period is not a standard hour/day/week/etc.)"
   },
   "confirmFieldPeriodDurationWeekly": {
     "message": "Weekly"
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Yearly"
-  },
-  "confirmFieldStartDate": {
-    "message": "Start date"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Stream rate"
   },
   "confirmFieldTooltipJustification": {
     "message": "Justification for the request provided by the website"
@@ -1747,9 +1732,6 @@
   },
   "connect": {
     "message": "Connect"
-  },
-  "connectAccount": {
-    "message": "Connect account"
   },
   "connectAccounts": {
     "message": "Connect accounts"
@@ -3032,6 +3014,9 @@
   "gasUsed": {
     "message": "Gas used"
   },
+  "gatorNoJustificationProvided": {
+    "message": "No justification was provided for the permission"
+  },
   "gatorPermissionAnnualFrequency": {
     "message": "Yearly",
     "description": "Time period for annual recurring permissions redemption"
@@ -4030,12 +4015,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
-  },
-  "missingSetting": {
-    "message": "Can't find a setting?"
-  },
-  "missingSettingRequest": {
-    "message": "Request here"
   },
   "month": {
     "message": "month"
@@ -5619,6 +5598,12 @@
   "perpsContactSupport": {
     "message": "Contact support"
   },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "MetaMask Perps only support trading with isolated margin. You need to first close your cross margin position before you can trade on MetaMask."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Cross margin not supported"
+  },
   "perpsDateToday": {
     "message": "Today"
   },
@@ -6112,6 +6097,9 @@
   },
   "perpsTrades": {
     "message": "Trades"
+  },
+  "perpsTriggerPrice": {
+    "message": "Trigger price"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "Leverage amplifies both gains and losses. With 40x leverage, a 1% price move equals a 40% gain or loss on your margin."

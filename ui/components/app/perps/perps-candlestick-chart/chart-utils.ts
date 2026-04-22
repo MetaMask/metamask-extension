@@ -4,7 +4,6 @@
  * Converts CandleData from @metamask/perps-controller (strings, milliseconds)
  * into the format expected by lightweight-charts (numbers, seconds).
  */
-import { brandColor } from '@metamask/design-tokens';
 import type { CandleData, CandleStick } from '@metamask/perps-controller';
 
 /**
@@ -73,13 +72,17 @@ export function formatSingleCandleForChart(
 /**
  * Convert a single CandleStick to HistogramData for the volume series.
  * Volume is converted to USD notional value (volume x close price).
- * Color is based on candle direction (green = bullish, red = bearish).
+ * Color is based on candle direction (bullish = upColor, bearish = downColor).
  *
  * @param candle - Raw candle from the controller (strings, time in ms)
+ * @param upColor - Color for bullish (close >= open) candles
+ * @param downColor - Color for bearish (close < open) candles
  * @returns Formatted histogram data or null if invalid
  */
 export function formatSingleVolumeForChart(
   candle: CandleStick,
+  upColor: string,
+  downColor: string,
 ): HistogramData<Time> | null {
   const timeInSeconds = Math.floor(candle.time / 1000) as Time;
   const volume = parseFloat(candle.volume || '0');
@@ -91,7 +94,7 @@ export function formatSingleVolumeForChart(
 
   // Color based on candle direction
   const isBullish = close >= open;
-  const color = isBullish ? brandColor.lime100 : brandColor.red300;
+  const color = isBullish ? upColor : downColor;
 
   if (isNaN(value) || value <= 0) {
     return null;
@@ -123,20 +126,24 @@ export function formatCandleDataForChart(
 /**
  * Formats raw candle data into volume histogram data for lightweight-charts.
  * Transforms volume to USD notional value (volume x close price).
- * Colors bars based on candle direction (green = bullish, red = bearish).
+ * Colors bars based on candle direction (bullish = upColor, bearish = downColor).
  *
  * @param data - CandleData from the controller
+ * @param upColor - Color for bullish (close >= open) candles
+ * @param downColor - Color for bearish (close < open) candles
  * @returns Formatted histogram data array, sorted ascending by time
  */
 export function formatVolumeDataForChart(
   data: CandleData,
+  upColor: string,
+  downColor: string,
 ): HistogramData<Time>[] {
   if (!data?.candles) {
     return [];
   }
 
   return data.candles
-    .map((candle) => formatSingleVolumeForChart(candle))
+    .map((candle) => formatSingleVolumeForChart(candle, upColor, downColor))
     .filter((item): item is HistogramData<Time> => item !== null)
     .sort((a, b) => (a.time as number) - (b.time as number));
 }
