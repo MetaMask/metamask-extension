@@ -189,6 +189,7 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        // At the moment, setting this flag has no effect because of this issue #42049, so we need to mock the request
         manifestFlags: {
           remoteFeatureFlags: {
             backendWebSocketConnection: { value: false },
