@@ -1304,9 +1304,7 @@ export default class SecurityTab extends PureComponent {
         </span>
         {this.renderSeedWords()}
         {getIsSeedlessOnboardingFeatureEnabled() && this.renderChangePassword()}
-
         {this.renderSecurityAlertsToggle()}
-
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
