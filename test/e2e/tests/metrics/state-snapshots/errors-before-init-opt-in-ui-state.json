@@ -72,6 +72,7 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
+    "AssetsController": "object",
     "AuthenticationController": { "isSignedIn": "boolean" },
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
