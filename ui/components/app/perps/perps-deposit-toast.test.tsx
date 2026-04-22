@@ -38,7 +38,7 @@ describe('PerpsDepositToast', () => {
     expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
   });
 
-  it('renders in-progress toast when deposit is in progress', () => {
+  it('renders submitted toast when mounting with deposit already in progress', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -50,9 +50,11 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(screen.getByTestId('perps-deposit-toast')).toBeInTheDocument();
     expect(
-      screen.getByText(messages.perpsDepositToastPendingTitle.message),
+      screen.getByTestId('perps-deposit-submitted-toast'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsDepositToastSubmittedTitle.message),
     ).toBeInTheDocument();
   });
 
