@@ -9006,9 +9006,6 @@
   "tokenContractAddress": {
     "message": "代币合约地址"
   },
-  "tokenContractError": {
-    "message": "此地址为代币合约地址。若向该地址发送代币，将导致代币丢失。"
-  },
   "tokenContractWarning": {
     "message": "代币合约警告"
   },

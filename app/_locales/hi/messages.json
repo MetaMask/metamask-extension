@@ -9006,9 +9006,6 @@
   "tokenContractAddress": {
     "message": "टोकन कॉन्ट्रैक्ट एड्रेस"
   },
-  "tokenContractError": {
-    "message": "यह एड्रेस एक टोकन कॉन्ट्रैक्ट एड्रेस है। अगर आप इस एड्रेस पर टोकन भेजते हैं, तो आप उन्हें खो देंगे।"
-  },
   "tokenContractWarning": {
     "message": "टोकन कॉन्ट्रैक्ट वार्निंग"
   },

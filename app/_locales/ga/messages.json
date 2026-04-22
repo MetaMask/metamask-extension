@@ -6364,9 +6364,6 @@
   "tokenContractAddress": {
     "message": "Seoladh conartha comhartha"
   },
-  "tokenContractError": {
-    "message": "Is seoladh conartha comharthaí é an seoladh seo. Má sheolann tú comharthaí chuig an seoladh seo, caillfidh tú iad."
-  },
   "tokenDecimal": {
     "message": "Deicheamhach comhartha"
   },

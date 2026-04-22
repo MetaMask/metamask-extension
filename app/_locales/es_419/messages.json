@@ -9010,9 +9010,6 @@
   "tokenContractAddress": {
     "message": "Dirección de contrato del token"
   },
-  "tokenContractError": {
-    "message": "Esta dirección es una dirección de contrato de tókens. Si envías tókens a esta dirección, los perderás."
-  },
   "tokenContractWarning": {
     "message": "Advertencia sobre el contrato de tokens"
   },

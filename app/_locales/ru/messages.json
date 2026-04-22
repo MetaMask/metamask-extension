@@ -9006,9 +9006,6 @@
   "tokenContractAddress": {
     "message": "Адрес контракта токена"
   },
-  "tokenContractError": {
-    "message": "Этот адрес — адрес контракта токенов. Если вы отправите токены на этот адрес, вы их потеряете."
-  },
   "tokenContractWarning": {
     "message": "Предупреждение о контракте токена"
   },

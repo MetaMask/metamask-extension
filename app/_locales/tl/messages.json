@@ -9006,9 +9006,6 @@
   "tokenContractAddress": {
     "message": "Address ng kontrata ng token"
   },
-  "tokenContractError": {
-    "message": "Ang address na ito ay isang address ng kontrata ng token. Kung magpapadala ka ng mga token sa address na ito, mawawala ang mga ito sa iyo."
-  },
   "tokenContractWarning": {
     "message": "Babala sa kontrata ng token"
   },

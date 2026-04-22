@@ -9010,9 +9010,6 @@
   "tokenContractAddress": {
     "message": "Token sözleşme adresi"
   },
-  "tokenContractError": {
-    "message": "Bu adres bir token sözleşmesi adresi. Bu adrese token gönderirseniz bunları kaybedersiniz."
-  },
   "tokenContractWarning": {
     "message": "Token sözleşmesi uyarısı"
   },

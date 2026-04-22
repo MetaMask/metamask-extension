@@ -9006,9 +9006,6 @@
   "tokenContractAddress": {
     "message": "Token-Contract-Adresse"
   },
-  "tokenContractError": {
-    "message": "Diese Adresse ist eine Token-Contract-Adresse. Das Senden von Token an diese Adresse führt zu deren Verlust."
-  },
   "tokenContractWarning": {
     "message": "Token-Contract-Warnung"
   },

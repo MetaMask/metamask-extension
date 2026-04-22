@@ -9010,9 +9010,6 @@
   "tokenContractAddress": {
     "message": "Alamat kontrak token"
   },
-  "tokenContractError": {
-    "message": "Alamat ini merupakan alamat kontrak token. Jika mengirim token ke alamat ini, Anda akan kehilangan token tersebut."
-  },
   "tokenContractWarning": {
     "message": "Peringatan kontrak token"
   },

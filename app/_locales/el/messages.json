@@ -9006,9 +9006,6 @@
   "tokenContractAddress": {
     "message": "Διεύθυνση συμβολαίου token"
   },
-  "tokenContractError": {
-    "message": "Αυτή η διεύθυνση είναι διεύθυνση συμβολαίου token. Αν στείλετε tokens σε αυτήν τη διεύθυνση, θα τα χάσετε."
-  },
   "tokenContractWarning": {
     "message": "Προειδοποίηση συμβολαίου token"
   },

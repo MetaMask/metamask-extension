@@ -9010,9 +9010,6 @@
   "tokenContractAddress": {
     "message": "토큰 계약 주소"
   },
-  "tokenContractError": {
-    "message": "이 주소는 토큰 계약 주소입니다. 이 주소로 토큰을 보내면 토큰을 잃게 됩니다."
-  },
   "tokenContractWarning": {
     "message": "토큰 계약 경고"
   },

@@ -9006,9 +9006,6 @@
   "tokenContractAddress": {
     "message": "トークンコントラクトアドレス"
   },
-  "tokenContractError": {
-    "message": "このアドレスはトークンコントラクトアドレスです。このアドレスにトークンを送ると、トークンが失われます。"
-  },
   "tokenContractWarning": {
     "message": "トークンコントラクトに関する警告"
   },

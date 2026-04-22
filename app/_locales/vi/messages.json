@@ -9010,9 +9010,6 @@
   "tokenContractAddress": {
     "message": "Địa chỉ hợp đồng của token"
   },
-  "tokenContractError": {
-    "message": "Đây là địa chỉ hợp đồng token. Nếu bạn gửi token đến địa chỉ này, bạn sẽ bị mất chúng."
-  },
   "tokenContractWarning": {
     "message": "Cảnh báo hợp đồng token"
   },

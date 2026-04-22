@@ -9006,9 +9006,6 @@
   "tokenContractAddress": {
     "message": "Adresse du contrat de jeton"
   },
-  "tokenContractError": {
-    "message": "Cette adresse est une adresse de contrat de jetons. Si vous envoyez des jetons à cette adresse, vous les perdrez."
-  },
   "tokenContractWarning": {
     "message": "Avertissement concernant le contrat de jetons"
   },
