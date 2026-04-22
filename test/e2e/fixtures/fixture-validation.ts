@@ -30,7 +30,8 @@ type JsonLike = Record<string, unknown>;
 /**
  * Returns a list of keys to ignore when comparing fixture schemas.
  * These are properties that change frequently or are impractical to include
- * (making the diff file unreadable).
+ * (making the diff file unreadable). Keep this list small: RPC fields such as
+ * `failoverUrls` are validated so unintended network config changes surface in CI.
  *
  * @returns Array of dot-separated key paths to ignore
  */
@@ -81,6 +82,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',
   'data.AccountTracker',
+  // Base JSON fixtures use `{}`; schema diff skips this subtree—AssetsController fills at runtime.
   'data.AssetsController',
   'data.AuthenticationController',
   'data.MetaMetricsController',
@@ -97,14 +99,8 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.MultichainBalancesController',
   'data.MultichainBalancesController.balances',
   'data.MultichainTransactionsController.nonEvmTransactions',
-  // Failover URLs are populated from QUICKNODE_* env vars in CI but absent locally
-  'data.NetworkController.networkConfigurationsByChainId.0x1.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0x2105.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0x38.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0x89.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0xa.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0xa4b1.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0xe708.rpcEndpoints[0].failoverUrls',
+  // RPC `failoverUrls` are not ignored: CI may populate them from QUICKNODE_*; keep fixtures
+  // aligned via `@metamaskbot update-e2e-fixture` or a CI-equivalent env when refreshing state.
   'data.NetworkController.networkConfigurationsByChainId.0x539.rpcEndpoints[0].networkClientId',
   'data.NetworkController.networksMetadata',
   'data.NetworkController.selectedNetworkClientId',
@@ -512,7 +508,7 @@ export const formatSchemaDiff = ({
   }
 
   messages.push(
-    "\nUpdate the fixture locally and commit the change, or request an update by commenting '@metamaskbot update-e2e-fixture' on the pull request.",
+    '\nUpdate the fixture and commit the change. Options: comment `@metamaskbot update-e2e-fixture` on the pull request (CI-aligned state), or regenerate locally using the same env as CI (e.g. QUICKNODE_* and other build vars from a CI job artifact) so RPC fields such as `failoverUrls` match.',
   );
 
   return messages.join('\n\n');

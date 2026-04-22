@@ -220,11 +220,6 @@ class HomePage {
     await this.driver.waitForSelector(this.bitcoinAccountIcon);
   }
 
-  async waitForTronAccountLoaded(): Promise<void> {
-    console.log('Waiting for Tron account icon to be visible');
-    await this.driver.waitForSelector(this.tronAccountIcon);
-  }
-
   async checkPageIsNotLoaded(): Promise<void> {
     console.log('Check home page is not loaded');
     await this.driver.assertElementNotPresent(this.activityTab, {
@@ -415,12 +410,12 @@ class HomePage {
    *
    * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
-   * @param timeout - How long to wait for the balance to appear in ms. Defaults to 6000.
+   * @param timeout - Max ms to wait for the balance; defaults to `driver.timeout` (10s unless the test overrides `Driver` construction).
    */
   async checkExpectedBalanceIsDisplayed(
     expectedBalance: string = '25',
     symbol: string = 'ETH',
-    timeout: number = 30000,
+    timeout: number = this.driver.timeout,
   ): Promise<void> {
     if (expectedBalance === '0') {
       await this.driver.waitForSelector(this.fundYourWalletBanner, { timeout });
@@ -463,31 +458,12 @@ class HomePage {
    *
    * @param expectedTokenBalance - The expected balance to be displayed.
    * @param symbol - The symbol of the currency or token.
+   * @param timeout - Max ms to wait; defaults to `driver.timeout` (10s unless overridden on `Driver`).
    */
   async checkExpectedTokenBalanceIsDisplayed(
     expectedTokenBalance: string,
     symbol: string,
-  ): Promise<void> {
-    await this.driver.waitForSelector(
-      {
-        css: '[data-testid="multichain-token-list-item-value"]',
-        text: `${expectedTokenBalance} ${symbol}`,
-      },
-      { timeout: 30000 },
-    );
-  }
-
-  /**
-   * Checks if the expected token balance is displayed on homepage.
-   *
-   * @param expectedTokenBalance - The expected balance to be displayed.
-   * @param symbol - The symbol of the currency or token.
-   * @param timeout - How long to wait for the balance to appear in ms. Defaults to 30000.
-   */
-  async checkExpectedTokenBalanceIsDisplayedWithTimeout(
-    expectedTokenBalance: string,
-    symbol: string,
-    timeout: number = 30000,
+    timeout: number = this.driver.timeout,
   ): Promise<void> {
     await this.driver.waitForSelector(
       {
