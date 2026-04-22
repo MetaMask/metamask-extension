@@ -303,10 +303,10 @@ describe('formatWeeklyDigest', () => {
         {
           name: 'startupStandardHome',
           medianDelta: 0.21,
-          p90Delta: 0.15,
+          p95Delta: 0.15,
           team: '@extension-platform',
         },
-        { name: 'confirmTransaction', medianDelta: 0.04, p90Delta: 0.02 },
+        { name: 'confirmTransaction', medianDelta: 0.04, p95Delta: 0.02 },
         {
           name: 'swapETHtoLINK',
           medianDelta: -0.1,
@@ -316,12 +316,12 @@ describe('formatWeeklyDigest', () => {
       ],
     };
 
-    it('shows Needs Attention for regressions >= 5%', () => {
+    it('shows Needs attention for regressions > 5%', () => {
       const text = extractBlockText(formatWeeklyDigest(dataWithTrends).blocks);
-      expect(text).toContain('Needs Attention');
+      expect(text).toContain('Needs attention');
       expect(text).toContain('startupStandardHome');
       expect(text).toContain('+21%');
-      expect(text).toContain('p90 +15%');
+      expect(text).toContain('p95 +15%');
       expect(text).toContain('@extension-platform');
     });
 
@@ -349,7 +349,7 @@ describe('formatWeeklyDigest', () => {
       const severe: WeeklyDigestData = {
         ...digestData,
         benchmarkTrends: [
-          { name: 'assetView', medianDelta: 8.0, p90Delta: 0.21 },
+          { name: 'assetView', medianDelta: 8.0, p95Delta: 0.21 },
         ],
       };
       const result = formatWeeklyDigest(severe);
@@ -361,7 +361,7 @@ describe('formatWeeklyDigest', () => {
 
     it('omits trend sections when benchmarkTrends is not provided', () => {
       const text = extractBlockText(formatWeeklyDigest(digestData).blocks);
-      expect(text).not.toContain('Needs Attention');
+      expect(text).not.toContain('Needs attention');
       expect(text).not.toContain('Watch');
       expect(text).not.toContain('Improving');
     });

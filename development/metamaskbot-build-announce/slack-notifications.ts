@@ -60,26 +60,24 @@ const SEVERE_FAIL_MULTIPLIER = 2.0; // >2x the fail threshold
 
 const BATCH_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 
-let batchDirPromise: Promise<string> | null = null;
-let batchFilePathPromise: Promise<string> | null = null;
+// Fixed path so successive CI processes on the same runner share the batch file.
+const BATCH_DIR = path.join(os.tmpdir(), 'metamask-benchmark-batch');
+const BATCH_FILE = path.join(BATCH_DIR, 'batch.json');
+
+let batchDirReady: Promise<void> | null = null;
+
+async function ensureBatchDir(): Promise<void> {
+  if (!batchDirReady) {
+    batchDirReady = fs
+      .mkdir(BATCH_DIR, { recursive: true })
+      .then(() => fs.chmod(BATCH_DIR, 0o700));
+  }
+  return batchDirReady;
+}
 
 async function getBatchFilePath(): Promise<string> {
-  if (!batchDirPromise) {
-    batchDirPromise = fs
-      .mkdtemp(path.join(os.tmpdir(), 'benchmark-slack-batch-'))
-      .then(async (dir) => {
-        await fs.chmod(dir, 0o700);
-        return dir;
-      });
-  }
-
-  if (!batchFilePathPromise) {
-    batchFilePathPromise = batchDirPromise.then((dir) =>
-      path.join(dir, 'batch.json'),
-    );
-  }
-
-  return await batchFilePathPromise;
+  await ensureBatchDir();
+  return BATCH_FILE;
 }
 
 // ---------------------------------------------------------------------------
@@ -133,9 +131,8 @@ export function resolveTeamMention(
 ): string {
   const team = ownership[benchmarkName];
   if (team) {
-    // Slack user group mention: <!subteam^ID|@handle>
-    // If it looks like a Slack group ID, wrap it; otherwise treat as @mention
-    if (team.startsWith('S')) {
+    // Slack subteam IDs are uppercase alphanumeric, 9+ chars (e.g. S01ABC1234)
+    if (/^S[A-Z0-9]{8,}$/u.test(team)) {
       return `<!subteam^${team}>`;
     }
     return `@${team}`;
@@ -814,8 +811,10 @@ export async function sendBenchmarkNotifications(
 
   // Severe regressions: send immediately
   if (severe.length > 0) {
+    // Deduplicate: a benchmark with multiple severe violations maps to one comparison object.
+    const severeComparisons = [...new Set(severe.map((s) => s.comparison))];
     const payload = formatFailVerdict({
-      comparisons: severe.map((s) => s.comparison),
+      comparisons: severeComparisons,
       context,
       ownership,
     });
