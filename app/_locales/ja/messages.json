@@ -5784,7 +5784,8 @@
     "message": "市場を検索"
   },
   "perpsSeeAll": {
-    "message": "すべて表示"
+    "message": "すべて表示",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "現在サービスが一時的にご利用いただけません。後ほどもう一度お試しください。"
