@@ -62,13 +62,13 @@ BLOCKAID_PUBLIC_KEY=
 ; ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true
 
 ; SENTRY CONFIGURATION
-; SENTRY_DSN                          - For production builds only (do NOT use in development)
-; SENTRY_DSN_DEV                      - For local dev and one-off QA testing (sends to 'test-metamask' project)
+; SENTRY_DSN             - For production builds only (do NOT use in development)
+; SENTRY_DSN_DEV         - For local dev and one-off QA testing (sends to 'test-metamask' project)
 ; SENTRY_DSN_DEV=https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496
-; SENTRY_DSN_PERFORMANCE              - For CI/CD and automated performance testing (keeps CI traffic separate)
-; SENTRY_DISTRIBUTED_TRACING_PILOT    - Set to true to enable the distributed tracing pilot sample rate (0.0001).
-;                                       Enabled by default for Flask builds. Forces tracesSampleRate=0.0001 to
-;                                       keep span volume within quota while RPC + messenger wrappers are validated.
+; SENTRY_DSN_PERFORMANCE - For CI/CD and automated performance testing (keeps CI traffic separate)
+; SENTRY_DISTRIBUTED_TRACING_PILOT - Set to true to enable the distributed tracing pilot sample rate (0.0001).
+;   Enabled by default for Flask builds. Forces tracesSampleRate=0.0001 to keep span volume within
+;   quota while RPC + messenger wrappers are validated.
 ;SENTRY_DISTRIBUTED_TRACING_PILOT=true
 
 ; Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
