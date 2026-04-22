@@ -45,9 +45,9 @@ critical:
     - development/webpack/
     - lavamoat/
     # State management
-    - ui/store/
-    - ui/ducks/
-    - ui/selectors/
+    - ui/store/store.ts
+    - ui/store/background-connection.ts
+    - ui/store/patch-store-substream-connection.ts
     - shared/lib/selectors/
     # CI / workflows
     - .github/workflows/
