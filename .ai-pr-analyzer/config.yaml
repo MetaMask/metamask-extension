@@ -16,6 +16,12 @@ critical:
     - app/scripts/contentscript.js
     - app/scripts/inpage.js
     - app/scripts/migrations/index.js
+    - app/scripts/controller-init/network-controller-init.ts
+    - app/scripts/lib/createMetamaskMiddleware.ts
+    - app/scripts/lib/encryptor-factory.ts
+    - ui/store/store.ts
+    - ui/store/background-connection.ts
+    - ui/store/patch-store-substream-connection.ts
 
   keywords:
     - Controller
@@ -28,7 +34,6 @@ critical:
     # Security surface
     - app/scripts/controllers/permissions/
     - app/scripts/lib/snap-keyring/
-    - app/scripts/lib/encryptor-factory.ts
     - app/scripts/lib/state-corruption/
     - app/scripts/lib/ppom/
     - app/scripts/lib/trust-signals/
@@ -37,18 +42,10 @@ critical:
     - app/scripts/streams/
     - app/scripts/lib/rpc-method-middleware/
     - app/scripts/lib/transaction/
-    # Network / RPC
-    - app/scripts/lib/createMetamaskMiddleware.ts
-    - app/scripts/lib/network-controller/
     # Build system
     - development/build/
     - development/webpack/
     - lavamoat/
-    # State management
-    - ui/store/store.ts
-    - ui/store/background-connection.ts
-    - ui/store/patch-store-substream-connection.ts
-    - shared/lib/selectors/
     # CI / workflows
     - .github/workflows/
     - .github/scripts/

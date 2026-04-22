@@ -28,7 +28,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-
       # https://github.com/MetaMask/ai-analyzer/releases
       - name: Checkout AI Analyzer
         uses: actions/checkout@v6
