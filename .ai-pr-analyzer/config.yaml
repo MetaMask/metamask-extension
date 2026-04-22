@@ -33,7 +33,7 @@ critical:
     - app/scripts/lib/ppom/
     - app/scripts/lib/trust-signals/
     # Core wiring
-    - app/scripts/messenger-client-init/
+    - app/scripts/controller-init/messengers/
     - app/scripts/streams/
     - app/scripts/lib/rpc-method-middleware/
     - app/scripts/lib/transaction/
