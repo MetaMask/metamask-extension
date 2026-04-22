@@ -8,7 +8,8 @@ export type BundleSizeCategory =
 
 export type BundleSizeStatsOptions = {
   /**
-   * Output file path for the emitted summary, relative to each browser root.
+   * Output file path template for the emitted summary, relative to webpack's
+   * output directory. Must include `[browser]`.
    */
   outFile: string;
 
@@ -19,6 +20,8 @@ export type BundleSizeStatsOptions = {
 
   /**
    * Classifies a webpack entrypoint by runtime surface for bundle-size reporting.
+   *
+   * Return `null` to omit.
    */
   classifyEntrypoint: (name: string) => BundleSizeCategory | null;
 };
@@ -102,7 +105,7 @@ export type BaseManifestPluginOptions<Zip extends boolean> = {
   /**
    * Optional bundle-size reporting configuration.
    */
-  stats?: BundleSizeStatsOptions;
+  stats?: BundleSizeStatsOptions | false;
 };
 
 export type ZipOptions = {

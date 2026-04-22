@@ -438,6 +438,7 @@ describe('ManifestPlugin', () => {
       __dirname,
       'fixtures/ManifestPlugin/empty',
     );
+    const bundleSizeSummaryOutFile = `[browser]/${BUNDLE_SIZE_SUMMARY_FILE}`;
     const chromeSummaryAssetPath = `chrome/${BUNDLE_SIZE_SUMMARY_FILE}`;
     const chromeDebugAssetPath = chromeSummaryAssetPath.replace(
       /\.json$/u,
@@ -571,7 +572,7 @@ describe('ManifestPlugin', () => {
         zip: true,
         zipOptions,
         stats: {
-          outFile: BUNDLE_SIZE_SUMMARY_FILE,
+          outFile: bundleSizeSummaryOutFile,
           classifyEntrypoint: classifyStatsEntrypoint,
         },
       });
@@ -641,7 +642,7 @@ describe('ManifestPlugin', () => {
         buildType: 'main',
         zip: false,
         stats: {
-          outFile: BUNDLE_SIZE_SUMMARY_FILE,
+          outFile: bundleSizeSummaryOutFile,
           debug: true,
           classifyEntrypoint: classifyStatsEntrypoint,
         },
@@ -675,7 +676,7 @@ describe('ManifestPlugin', () => {
       });
     });
 
-    it('does not emit bundle-size artifacts when stats are disabled', async () => {
+    it('does not emit bundle-size artifacts when stats not enabled', async () => {
       const { compiler, compilation, promise } = mockWebpack(
         ['home.js'],
         [Buffer.alloc(200)],

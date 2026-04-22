@@ -8,7 +8,6 @@ import {
   type Compilation,
   type Compiler,
   type Asset,
-  type Chunk,
   type EntryOptions,
 } from 'webpack';
 import { validate } from 'schema-utils';
@@ -37,8 +36,6 @@ export type EntryDescriptionNormalized = { import?: string[] } & Omit<
   EntryOptions,
   'name'
 >;
-type Entrypoint =
-  Compilation['entrypoints'] extends Map<string, infer T> ? T : never;
 type CollectedBundleSizeStats = {
   partSizes: ReturnType<typeof getBundlePartSizes>;
   debugEntrypoints?: Record<string, BundleSizeDebugEntrypoint>;
@@ -56,54 +53,16 @@ function isJavaScriptAsset(assetName: string): boolean {
   );
 }
 
-function normalizeRelativePath(filePath: string): string {
-  return filePath.split(path.sep).join(path.posix.sep);
-}
-
-function getAssetStats(
-  compilation: Compilation,
-  assetNames: string[],
-): BundleSizeAssetStat[] {
-  const seenAssets = new Set<string>();
-
-  return assetNames.flatMap((assetName) => {
-    if (!isJavaScriptAsset(assetName)) {
-      return [];
-    }
-
-    const normalizedName = normalizeRelativePath(assetName);
-    if (seenAssets.has(normalizedName)) {
-      return [];
-    }
-
-    seenAssets.add(normalizedName);
+function getAssetStats(compilation: Compilation, assetNames: string[]) {
+  const stats = new Map<string, BundleSizeAssetStat>();
+  for (const assetName of assetNames) {
+    if (!isJavaScriptAsset(assetName)) continue;
+    const posixName = assetName.split(path.sep).join(path.posix.sep);
+    if (stats.has(posixName)) continue;
     const asset = compilation.getAsset(assetName)!;
-
-    return [{ name: normalizedName, size: asset.source.size() }];
-  });
-}
-
-function getChunkAssets(
-  compilation: Compilation,
-  chunks: Iterable<Chunk>,
-): BundleSizeAssetStat[] {
-  return getAssetStats(
-    compilation,
-    Array.from(chunks, (chunk) => Array.from(chunk.files)).flat(),
-  );
-}
-
-function getEntrypointAssets(
-  compilation: Compilation,
-  entrypoint: Entrypoint,
-): Pick<BundleSizeDebugEntrypoint, 'initialFiles' | 'asyncFiles'> {
-  return {
-    initialFiles: getAssetStats(compilation, entrypoint.getFiles()),
-    asyncFiles: getChunkAssets(
-      compilation,
-      entrypoint.getEntrypointChunk().getAllAsyncChunks(),
-    ),
-  };
+    stats.set(posixName, { name: posixName, size: asset.source.size() });
+  }
+  return stats.values();
 }
 
 function emitJsonAsset(
@@ -223,9 +182,7 @@ export class ManifestPlugin<Z extends boolean> {
     const { outFilePath } = (this.options as ManifestPluginOptions<true>)
       .zipOptions;
     const zipAssetPath = outFilePath.replaceAll('[browser]', browser);
-    const zipAsset = compilation.getAsset(zipAssetPath)!;
-
-    return zipAsset.source.size();
+    return compilation.getAsset(zipAssetPath)!.source.size();
   }
 
   /**
@@ -249,28 +206,23 @@ export class ManifestPlugin<Z extends boolean> {
       | Record<string, BundleSizeDebugEntrypoint>
       | undefined = statsOptions.debug ? {} : undefined;
 
-    for (const [name, entrypoint] of compilation.entrypoints) {
+    for (const [name, entry] of compilation.entrypoints) {
       const category = statsOptions.classifyEntrypoint(name);
 
       if (!category) {
         continue;
       }
 
-      const entrypointFiles = getEntrypointAssets(compilation, entrypoint);
-      const files = [
-        ...entrypointFiles.initialFiles,
-        ...entrypointFiles.asyncFiles,
-      ];
-
-      if (files.length === 0) {
-        continue;
-      }
+      const asyncChunks = [...entry.getEntrypointChunk().getAllAsyncChunks()];
+      const asyncAssetNames = asyncChunks.flatMap((chunk) => [...chunk.files]);
+      const entrypointFiles = {
+        initialFiles: [...getAssetStats(compilation, entry.getFiles())],
+        asyncFiles: [...getAssetStats(compilation, asyncAssetNames)],
+      };
+      const files = Object.values(entrypointFiles).flatMap((vals) => vals);
 
       if (debugEntrypoints) {
-        debugEntrypoints[name] = {
-          category,
-          ...entrypointFiles,
-        };
+        debugEntrypoints[name] = { category, ...entrypointFiles };
       }
 
       for (const file of files) {
@@ -296,36 +248,23 @@ export class ManifestPlugin<Z extends boolean> {
     compilation: Compilation,
     bundleSizeStats: CollectedBundleSizeStats | undefined,
   ): void {
-    const statsOptions = this.options.stats;
+    if (this.options.stats && bundleSizeStats) {
+      const { outFile } = this.options.stats;
+      for (const browser of this.options.browsers) {
+        const statsFile = outFile.replaceAll('[browser]', browser);
+        const zip = this.getBundleZipSize(compilation, browser);
+        const { partSizes, timestamp, debugEntrypoints } = bundleSizeStats;
+        const summary = createBundleSizeSummary(partSizes, { zip, timestamp });
+        emitJsonAsset(compilation, statsFile, summary);
 
-    if (!statsOptions || !bundleSizeStats) {
-      return;
-    }
-
-    for (const browser of this.options.browsers) {
-      emitJsonAsset(
-        compilation,
-        path.posix.join(browser, statsOptions.outFile),
-        createBundleSizeSummary(bundleSizeStats.partSizes, {
-          zip: this.getBundleZipSize(compilation, browser),
-          timestamp: bundleSizeStats.timestamp,
-        }),
-      );
-
-      if (!bundleSizeStats.debugEntrypoints) {
-        continue;
+        if (debugEntrypoints) {
+          emitJsonAsset(
+            compilation,
+            statsFile.replace(/(\.json)$/u, '.debug$1'),
+            { entrypoints: debugEntrypoints },
+          );
+        }
       }
-
-      emitJsonAsset(
-        compilation,
-        path.posix.join(
-          browser,
-          statsOptions.outFile.replace(/\.json$/u, '.debug.json'),
-        ),
-        {
-          entrypoints: bundleSizeStats.debugEntrypoints,
-        },
-      );
     }
   }
 
