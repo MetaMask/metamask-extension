@@ -273,7 +273,21 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
     if (isError(response)) {
       const { error } = response;
       const { code, message, data, stack } = error;
-      const e = new JsonRpcError(code, message, data);
+      // Guard against malformed error payloads (e.g. empty `message`). Without
+      // this the `new JsonRpcError(...)` constructor throws inside the stream
+      // handler, `requests.delete(id)` and `request.reject(e)` below never
+      // run, and the pending Promise is orphaned forever (UI hangs on
+      // in-progress toasts etc.).
+      const safeMessage =
+        typeof message === 'string' && message.length > 0
+          ? message
+          : 'Background returned an error with an empty message';
+      let e: Error;
+      try {
+        e = new JsonRpcError(code, safeMessage, data);
+      } catch {
+        e = new Error(safeMessage);
+      }
       // preserve the stack
       e.stack = stack;
       if (request) {

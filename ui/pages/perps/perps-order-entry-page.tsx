@@ -651,7 +651,11 @@ const PerpsOrderEntryPage: React.FC = () => {
       )}`;
 
       if (!perpsToastKey) {
-        navigate(marketDetailPath);
+        if (extraState) {
+          navigate(marketDetailPath, { state: extraState });
+        } else {
+          navigate(marketDetailPath);
+        }
         return;
       }
 
@@ -900,19 +904,14 @@ const PerpsOrderEntryPage: React.FC = () => {
           position.size,
           marketInfo?.szDecimals,
         );
-        handleBackClick(
-          isPartialClose
-            ? PERPS_TOAST_KEYS.PARTIAL_CLOSE_IN_PROGRESS
-            : PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS,
-          isPartialClose
-            ? closePartialToastDescription
-            : tradeActionToastDescription,
-        );
-
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsClosePosition',
           [closeParams],
         );
+        // Navigate only after the RPC resolves. Navigating before the await
+        // was orphaning the Promise response and leaving the in-progress toast
+        // stuck forever.
+        handleBackClick();
         if (!result.success) {
           const message = result.error || 'Failed to close position';
           reportTransactionFailure(
@@ -951,14 +950,20 @@ const PerpsOrderEntryPage: React.FC = () => {
             orderMode,
             position?.size,
           );
-          handleBackClick(
-            PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
-            tradeActionToastDescription,
-          );
+          // Emit the submit-in-progress toast here (not via route state).
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
+            ...(tradeActionToastDescription
+              ? { description: tradeActionToastDescription }
+              : {}),
+          });
           const result = await submitRequestToBackground<{
             success: boolean;
             error?: string;
           }>('perpsPlaceOrder', [orderParams]);
+          // Navigate only after the RPC resolves to avoid orphaning the
+          // Promise response on the unmounted order-entry page.
+          handleBackClick();
           if (!result.success) {
             const message = result.error || 'Failed to add to position';
             reportTransactionFailure(
@@ -999,7 +1004,8 @@ const PerpsOrderEntryPage: React.FC = () => {
             ? orderFormState.stopLossPrice
             : undefined,
         });
-        handleBackClick(PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS);
+        // Emit the update-in-progress toast here (not via route state).
+        replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS });
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsUpdatePositionTPSL',
           [{ symbol: orderFormState.asset, takeProfitPrice, stopLossPrice }],
@@ -1033,6 +1039,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
         });
+        handleBackClick();
         return;
       }
 
@@ -1042,19 +1049,26 @@ const PerpsOrderEntryPage: React.FC = () => {
         orderMode,
         position?.size,
       );
+      // Do not re-emit SUBMIT_IN_PROGRESS via route state — it was already
+      // emitted above by replacePerpsToastByKey. Re-emitting from the
+      // market-detail useEffect races with the ORDER_SUBMITTED replace below
+      // and can leave the toast stuck at "Submitting your trade".
+      const result = await submitRequestToBackground<PerpsBackgroundResult>(
+        'perpsPlaceOrder',
+        [orderParams],
+      );
+      // Navigate only after the RPC resolves. Navigating before the await was
+      // unmounting this page and orphaning the Promise response, leaving the
+      // "Submitting your trade" toast stuck forever.
       handleBackClick(
-        PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
-        tradeActionToastDescription,
+        undefined,
+        undefined,
         orderFormState.type === 'market'
           ? {
               pendingOrderSymbol: orderFormState.asset,
               pendingOrderFilledDescription: tradeActionToastDescription,
             }
           : undefined,
-      );
-      const result = await submitRequestToBackground<PerpsBackgroundResult>(
-        'perpsPlaceOrder',
-        [orderParams],
       );
       if (!result.success) {
         const message = result.error || 'Failed to place order';
