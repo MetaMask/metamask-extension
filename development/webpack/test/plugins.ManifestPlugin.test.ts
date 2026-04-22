@@ -434,105 +434,133 @@ describe('ManifestPlugin', () => {
       }
     });
 
+    const statsFixtureContext = join(
+      __dirname,
+      'fixtures/ManifestPlugin/empty',
+    );
+    const chromeSummaryAssetPath = `chrome/${BUNDLE_SIZE_SUMMARY_FILE}`;
+    const chromeDebugAssetPath = chromeSummaryAssetPath.replace(
+      /\.json$/u,
+      '.debug.json',
+    );
+    const zipOptions = {
+      level: 0,
+      mtime: 1711141205825,
+      excludeExtensions: ['.map'],
+      outFilePath: '[browser]/extension.zip',
+    } satisfies ZipOptions['zipOptions'];
+    const classifyStatsEntrypoint = (name: string) => {
+      if (name === 'service-worker.ts') {
+        return 'background' as const;
+      }
+      if (name === 'home') {
+        return 'ui' as const;
+      }
+      if (name === 'offscreen') {
+        return 'other' as const;
+      }
+      if (name === 'scripts/contentscript.js' || name === 'scripts/inpage.js') {
+        return 'contentScripts' as const;
+      }
+      return null;
+    };
+    const bundleSizeStatsFiles = [
+      'runtime.js',
+      'home.js',
+      'home-async.js',
+      'home.html',
+      'home.css',
+      'service-worker.js',
+      'shared.js',
+      'background.js',
+      'offscreen.js',
+      'offscreen.css',
+      'scripts/contentscript.js',
+      'scripts/inpage.js',
+    ];
+    const bundleSizeStatsContents = [
+      Buffer.alloc(100),
+      Buffer.alloc(200),
+      Buffer.alloc(250),
+      '<html></html>',
+      Buffer.alloc(50),
+      Buffer.alloc(300),
+      Buffer.alloc(150),
+      Buffer.alloc(350),
+      Buffer.alloc(140),
+      Buffer.alloc(15),
+      Buffer.alloc(400),
+      Buffer.alloc(500),
+    ];
+
+    function createMockEntrypoint(
+      initialFiles: string[],
+      asyncFiles: string[] = [],
+    ) {
+      return {
+        getFiles: () => initialFiles,
+        getEntrypointChunk: () => ({
+          getAllAsyncChunks: () =>
+            new Set(
+              asyncFiles.length > 0
+                ? [
+                    {
+                      files: new Set(asyncFiles),
+                    },
+                  ]
+                : [],
+            ),
+        }),
+      };
+    }
+
+    function setMockEntrypoints(
+      compilation: Compilation,
+      entrypoints: Record<string, ReturnType<typeof createMockEntrypoint>>,
+    ) {
+      compilation.entrypoints = new Map(
+        Object.entries(entrypoints),
+      ) as typeof compilation.entrypoints;
+    }
+
+    function readJsonAsset<T>(
+      compilation: Compilation,
+      assetPath: string,
+      message: string,
+    ): T {
+      const asset = compilation.getAsset(assetPath);
+      assert(asset, message);
+
+      return JSON.parse(asset.source.source().toString()) as T;
+    }
+
     it('emits bundle_size_stats.json when stats are enabled', async () => {
-      const files = [
-        'runtime.js',
-        'home.js',
-        'home-async.js',
-        'home.html',
-        'home.css',
-        'service-worker.js',
-        'shared.js',
-        'background.js',
-        'offscreen.js',
-        'offscreen.css',
-        'scripts/contentscript.js',
-        'scripts/inpage.js',
-      ];
-      const contents = [
-        Buffer.alloc(100),
-        Buffer.alloc(200),
-        Buffer.alloc(250),
-        '<html></html>',
-        Buffer.alloc(50),
-        Buffer.alloc(300),
-        Buffer.alloc(150),
-        Buffer.alloc(350),
-        Buffer.alloc(140),
-        Buffer.alloc(15),
-        Buffer.alloc(400),
-        Buffer.alloc(500),
-      ];
       const { compiler, compilation, promise } = mockWebpack(
-        files,
-        contents,
-        files.map(() => null),
+        bundleSizeStatsFiles,
+        bundleSizeStatsContents,
+        bundleSizeStatsFiles.map(() => null),
         false,
       );
-      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
-      compilation.entrypoints = new Map([
-        [
-          'home',
-          {
-            getFiles: () => [
-              'runtime.js',
-              'home.js',
-              'shared.js',
-              'home.html',
-              'home.css',
-            ],
-            getEntrypointChunk: () => ({
-              getAllAsyncChunks: () =>
-                new Set([
-                  {
-                    files: new Set(['home-async.js', 'home.css']),
-                  },
-                ]),
-            }),
-          },
-        ],
-        [
-          'service-worker.ts',
-          {
-            getFiles: () => ['service-worker.js', 'shared.js'],
-            getEntrypointChunk: () => ({
-              getAllAsyncChunks: () =>
-                new Set([
-                  {
-                    files: new Set(['background.js']),
-                  },
-                ]),
-            }),
-          },
-        ],
-        [
-          'offscreen',
-          {
-            getFiles: () => ['runtime.js', 'offscreen.js', 'offscreen.css'],
-            getEntrypointChunk: () => ({
-              getAllAsyncChunks: () => new Set(),
-            }),
-          },
-        ],
-        [
+      compiler.context = statsFixtureContext;
+      setMockEntrypoints(compilation, {
+        home: createMockEntrypoint(
+          ['runtime.js', 'home.js', 'shared.js', 'home.html', 'home.css'],
+          ['home-async.js', 'home.css'],
+        ),
+        'service-worker.ts': createMockEntrypoint(
+          ['service-worker.js', 'shared.js'],
+          ['background.js'],
+        ),
+        offscreen: createMockEntrypoint([
+          'runtime.js',
+          'offscreen.js',
+          'offscreen.css',
+        ]),
+        'scripts/contentscript.js': createMockEntrypoint([
           'scripts/contentscript.js',
-          {
-            getFiles: () => ['scripts/contentscript.js'],
-            getEntrypointChunk: () => ({
-              getAllAsyncChunks: () => new Set(),
-            }),
-          },
-        ],
-        [
-          'scripts/inpage.js',
-          {
-            getFiles: () => ['scripts/inpage.js'],
-            getEntrypointChunk: () => ({
-              getAllAsyncChunks: () => new Set(),
-            }),
-          },
-        ],
-      ]) as typeof compilation.entrypoints;
+        ]),
+        'scripts/inpage.js': createMockEntrypoint(['scripts/inpage.js']),
+      });
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
         manifest_version: 3,
@@ -541,46 +569,21 @@ describe('ManifestPlugin', () => {
         description: null,
         buildType: 'main',
         zip: true,
-        zipOptions: {
-          level: 0,
-          mtime: 1711141205825,
-          excludeExtensions: ['.map'],
-          outFilePath: '[browser]/extension.zip',
-        },
+        zipOptions,
         stats: {
           outFile: BUNDLE_SIZE_SUMMARY_FILE,
-          classifyEntrypoint: (name) => {
-            if (name === 'service-worker.ts') {
-              return 'background';
-            }
-            if (name === 'home') {
-              return 'ui';
-            }
-            if (name === 'offscreen') {
-              return 'other';
-            }
-            if (
-              name === 'scripts/contentscript.js' ||
-              name === 'scripts/inpage.js'
-            ) {
-              return 'contentScripts';
-            }
-            return null;
-          },
+          classifyEntrypoint: classifyStatsEntrypoint,
         },
       });
 
       manifestPlugin.apply(compiler);
       await promise;
 
-      const summaryAssetPath = `chrome/${BUNDLE_SIZE_SUMMARY_FILE}`;
-      const summaryAsset = compilation.getAsset(summaryAssetPath);
-
-      assert(summaryAsset, 'bundle-size summary should be emitted');
-
-      const summary = JSON.parse(
-        summaryAsset.source.source().toString(),
-      ) as BundleSizeSummary;
+      const summary = readJsonAsset<BundleSizeSummary>(
+        compilation,
+        chromeSummaryAssetPath,
+        'bundle-size summary should be emitted',
+      );
       const zipAsset = compilation.getAsset('chrome/extension.zip');
 
       assert(zipAsset, 'zip asset should be emitted');
@@ -594,7 +597,7 @@ describe('ManifestPlugin', () => {
         timestamp: summary.timestamp,
       });
       assert.strictEqual(
-        compilation.getAsset('chrome/bundle_size_stats.debug.json'),
+        compilation.getAsset(chromeDebugAssetPath),
         undefined,
         'debug artifact should not be emitted by default',
       );
@@ -621,32 +624,14 @@ describe('ManifestPlugin', () => {
         [null, null, null, null, null, null],
         false,
       );
-      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
-      compilation.entrypoints = new Map([
-        [
-          'home',
-          {
-            getFiles: () => ['runtime.js', 'home.js', 'home.css'],
-            getEntrypointChunk: () => ({
-              getAllAsyncChunks: () => new Set(),
-            }),
-          },
-        ],
-        [
-          'service-worker.ts',
-          {
-            getFiles: () => ['service-worker.js', 'shared.js'],
-            getEntrypointChunk: () => ({
-              getAllAsyncChunks: () =>
-                new Set([
-                  {
-                    files: new Set(['background.js']),
-                  },
-                ]),
-            }),
-          },
-        ],
-      ]) as typeof compilation.entrypoints;
+      compiler.context = statsFixtureContext;
+      setMockEntrypoints(compilation, {
+        home: createMockEntrypoint(['runtime.js', 'home.js', 'home.css']),
+        'service-worker.ts': createMockEntrypoint(
+          ['service-worker.js', 'shared.js'],
+          ['background.js'],
+        ),
+      });
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
         manifest_version: 3,
@@ -658,49 +643,36 @@ describe('ManifestPlugin', () => {
         stats: {
           outFile: BUNDLE_SIZE_SUMMARY_FILE,
           debug: true,
-          classifyEntrypoint: (name) => {
-            if (name === 'service-worker.ts') {
-              return 'background';
-            }
-            if (name === 'home') {
-              return 'ui';
-            }
-            return null;
-          },
+          classifyEntrypoint: classifyStatsEntrypoint,
         },
       });
 
       manifestPlugin.apply(compiler);
       await promise;
 
-      const debugAsset = compilation.getAsset(
-        'chrome/bundle_size_stats.debug.json',
-      );
-
-      assert(debugAsset, 'debug artifact should be emitted');
-      assert.deepStrictEqual(
-        JSON.parse(debugAsset.source.source().toString()),
-        {
-          entrypoints: {
-            home: {
-              category: 'ui',
-              initialFiles: [
-                { name: 'runtime.js', size: 100 },
-                { name: 'home.js', size: 200 },
-              ],
-              asyncFiles: [],
-            },
-            'service-worker.ts': {
-              category: 'background',
-              initialFiles: [
-                { name: 'service-worker.js', size: 300 },
-                { name: 'shared.js', size: 150 },
-              ],
-              asyncFiles: [{ name: 'background.js', size: 350 }],
-            },
+      const debugArtifact = readJsonAsset<{
+        entrypoints: Record<string, unknown>;
+      }>(compilation, chromeDebugAssetPath, 'debug artifact should be emitted');
+      assert.deepStrictEqual(debugArtifact, {
+        entrypoints: {
+          home: {
+            category: 'ui',
+            initialFiles: [
+              { name: 'runtime.js', size: 100 },
+              { name: 'home.js', size: 200 },
+            ],
+            asyncFiles: [],
+          },
+          'service-worker.ts': {
+            category: 'background',
+            initialFiles: [
+              { name: 'service-worker.js', size: 300 },
+              { name: 'shared.js', size: 150 },
+            ],
+            asyncFiles: [{ name: 'background.js', size: 350 }],
           },
         },
-      );
+      });
     });
 
     it('does not emit bundle-size artifacts when stats are disabled', async () => {
@@ -709,7 +681,7 @@ describe('ManifestPlugin', () => {
         [Buffer.alloc(200)],
         [null],
       );
-      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+      compiler.context = statsFixtureContext;
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
         manifest_version: 3,
@@ -724,13 +696,10 @@ describe('ManifestPlugin', () => {
       await promise;
 
       assert.strictEqual(
-        compilation.getAsset(`chrome/${BUNDLE_SIZE_SUMMARY_FILE}`),
+        compilation.getAsset(chromeSummaryAssetPath),
         undefined,
       );
-      assert.strictEqual(
-        compilation.getAsset('chrome/bundle_size_stats.debug.json'),
-        undefined,
-      );
+      assert.strictEqual(compilation.getAsset(chromeDebugAssetPath), undefined);
     });
   });
 
