@@ -789,8 +789,9 @@ export async function sendBenchmarkNotifications(
       });
     }
 
-    // Check if the oldest entry in batch has exceeded the window
-    const oldest = fresh.reduce(
+    // Check if the oldest entry in the pre-filter batch has exceeded the window.
+    // Must use `batch` not `fresh` — fresh entries are by definition < BATCH_WINDOW_MS old.
+    const oldest = batch.reduce(
       (min, e) => Math.min(min, e.timestamp),
       Infinity,
     );

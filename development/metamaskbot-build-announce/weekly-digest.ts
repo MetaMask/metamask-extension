@@ -187,7 +187,7 @@ async function main(): Promise<void> {
     metricsPromoted: [],
     totalEnforced: Object.keys(
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      require('../../test/e2e/benchmarks/utils/constants').THRESHOLD_REGISTRY,
+      require('../../test/e2e/benchmarks/utils/thresholds').THRESHOLD_REGISTRY,
     ).length,
     totalMetrics: 31, // approximate total including non-enforced
     regressionsThisWeek: {
