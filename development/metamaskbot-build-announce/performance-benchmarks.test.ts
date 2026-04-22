@@ -272,6 +272,21 @@ describe('computeEntryHealth', () => {
       });
       expect(computeEntryHealth(entry, undefined)).toBe(EntryHealth.Pass);
     });
+
+    it('excludes metrics with CV > 50% from gating (mirrors validateThresholds)', () => {
+      // CV = 3000/5000 = 60% > 50% → unreliable; metric must not be validated.
+      // Without the exclusion, p75=15000 exceeds even 2.0x widened warn (8000)
+      // and fail (9400) and would misreport as a threshold violation.
+      const entry = makeEntry({
+        benchmarkName: 'startupPowerUserHome',
+        presetName: 'startupPowerUserHome',
+        mean: { uiStartup: 5000 },
+        stdDev: { uiStartup: 3000 },
+        p75: { uiStartup: 15000 },
+        p95: { uiStartup: 20000 },
+      });
+      expect(computeEntryHealth(entry, undefined)).toBe(EntryHealth.Pass);
+    });
   });
 });
 
