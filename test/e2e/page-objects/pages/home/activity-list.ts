@@ -413,8 +413,7 @@ class ActivityListPage {
     }
 
     console.log('Navigating back to activity list');
-    const backButton = await this.driver.waitForSelector(this.backButton);
-    await backButton.click();
+    await this.driver.clickElement(this.backButton);
   }
 
   /**
