@@ -5545,6 +5545,9 @@
   "perpsSearchMarkets": {
     "message": "시장 검색"
   },
+  "perpsSeeAll": {
+    "message": "모두 보기"
+  },
   "perpsShort": {
     "message": "숏"
   },

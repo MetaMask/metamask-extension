@@ -5545,6 +5545,9 @@
   "perpsSearchMarkets": {
     "message": "Piyasa ara"
   },
+  "perpsSeeAll": {
+    "message": "Tümünü Gör"
+  },
   "perpsShort": {
     "message": "Kısa"
   },

@@ -5545,6 +5545,9 @@
   "perpsSearchMarkets": {
     "message": "Pesquisar mercados"
   },
+  "perpsSeeAll": {
+    "message": "Ver tudo"
+  },
   "perpsShort": {
     "message": "Short"
   },

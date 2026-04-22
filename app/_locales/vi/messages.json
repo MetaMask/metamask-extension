@@ -5545,6 +5545,9 @@
   "perpsSearchMarkets": {
     "message": "Tìm kiếm thị trường"
   },
+  "perpsSeeAll": {
+    "message": "Xem tất cả"
+  },
   "perpsShort": {
     "message": "Bán khống"
   },

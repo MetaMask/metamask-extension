@@ -5545,6 +5545,9 @@
   "perpsSearchMarkets": {
     "message": "搜索市场"
   },
+  "perpsSeeAll": {
+    "message": "查看全部"
+  },
   "perpsShort": {
     "message": "做空"
   },

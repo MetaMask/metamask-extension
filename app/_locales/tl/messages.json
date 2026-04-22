@@ -5545,6 +5545,9 @@
   "perpsSearchMarkets": {
     "message": "Maghanap ng mga market"
   },
+  "perpsSeeAll": {
+    "message": "Tingnan Lahat"
+  },
   "perpsShort": {
     "message": "Short"
   },
