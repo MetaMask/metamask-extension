@@ -167,10 +167,6 @@ class SmartTransactionHook {
       return useRegularTransactionSubmit;
     }
 
-    if (this.#shouldShowStatusPage) {
-      await this.#startApprovalFlow();
-    }
-
     let getFeesResponse;
     // Skip getting fees if the tx is signed and sponsored
     if (
@@ -235,10 +231,6 @@ class SmartTransactionHook {
       throw new Error(
         'submitBatch: Smart Transaction is required for batch submissions',
       );
-    }
-
-    if (this.#shouldShowStatusPage) {
-      await this.#startApprovalFlow();
     }
 
     try {
@@ -341,6 +333,8 @@ class SmartTransactionHook {
 
   async #processApprovalIfNeeded(uuid: string) {
     if (this.#shouldShowStatusPage) {
+      await this.#startApprovalFlow();
+
       this.#addApprovalRequest({
         uuid,
       });
