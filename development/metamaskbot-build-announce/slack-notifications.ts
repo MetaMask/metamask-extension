@@ -198,7 +198,7 @@ function richTextSection(
 
 function textEl(
   text: string,
-  style?: { bold?: boolean; italic?: boolean },
+  style?: { bold?: boolean; italic?: boolean; code?: boolean },
 ): Record<string, unknown> {
   return style ? { type: 'text', text, style } : { type: 'text', text };
 }
@@ -310,12 +310,15 @@ export function formatFailVerdict(payload: FailVerdictPayload): {
 
 /**
  * Per-benchmark 7d vs 30d trend entry for the weekly digest.
- * medianDelta and p90Delta are fractional (0.21 = +21%, -0.10 = -10%).
+ * medianDelta and p95Delta are fractional (0.21 = +21%, -0.10 = -10%).
+ * medianValue7d is the absolute 7d mean in seconds (shown on non-stable rows).
  */
 export type BenchmarkTrendEntry = {
   name: string;
   medianDelta: number;
-  p90Delta?: number;
+  p95Delta?: number;
+  /** Absolute 7d mean value in seconds — shown on Needs attention / Watch / Improving rows. */
+  medianValue7d?: number;
   team?: string;
 };
 
@@ -336,13 +339,15 @@ export type WeeklyDigestData = {
   }[];
   /** Per-benchmark 7d vs 30d trends. Omit if trend data is unavailable. */
   benchmarkTrends?: BenchmarkTrendEntry[];
+  /** Benchmarks with missing data in one or both windows. */
+  dataGaps?: { name: string; note: string; team?: string }[];
 };
 
-// Thresholds for bucketing benchmark trends into sections
-const ATTENTION_MEDIAN = 0.05; // ≥ +5%
-const WATCH_MEDIAN = 0.02; // ≥ +2%
+// Thresholds for bucketing benchmark trends into sections (match SKILL.md: 5/3/-3)
+const ATTENTION_MEDIAN = 0.05; // > +5%
+const WATCH_MEDIAN = 0.03; // ≥ +3%
 const IMPROVING_MEDIAN = -0.03; // ≤ −3%
-const ATTENTION_P90 = 0.15; // p90 ≥ +15% also triggers attention
+const ATTENTION_P95 = 0.15; // p95 ≥ +15% also triggers Needs attention
 
 const STABLE_MAX_DISPLAY = 6; // show at most N stable items before summarising
 
@@ -353,15 +358,36 @@ function formatDeltaPct(delta: number): string {
 
 function trendEntryElements(
   entry: BenchmarkTrendEntry,
+  options: {
+    showDelta?: boolean;
+    showAbsolute?: boolean;
+    showP95?: boolean;
+  } = {},
 ): Record<string, unknown>[] {
-  const severe = entry.medianDelta >= 0.5;
-  const deltaText = formatDeltaPct(entry.medianDelta);
+  const { showDelta = true, showAbsolute = true, showP95 = true } = options;
   const elements: Record<string, unknown>[] = [
-    textEl(`• ${entry.name} — `),
-    textEl(deltaText, severe ? { bold: true } : undefined),
+    textEl('• '),
+    textEl(entry.name, { bold: true }),
   ];
-  if (entry.p90Delta !== undefined) {
-    elements.push(textEl(` · p90 ${formatDeltaPct(entry.p90Delta)}`));
+  if (showDelta) {
+    elements.push(
+      textEl(' — '),
+      textEl(formatDeltaPct(entry.medianDelta), { code: true }),
+    );
+  }
+  if (showAbsolute && entry.medianValue7d !== undefined) {
+    elements.push(
+      textEl(' · 7d mean '),
+      textEl(`${entry.medianValue7d.toFixed(2).replace(/\.?0+$/u, '')}s`, {
+        code: true,
+      }),
+    );
+  }
+  if (showP95 && entry.p95Delta !== undefined) {
+    elements.push(
+      textEl(' · p95 '),
+      textEl(formatDeltaPct(entry.p95Delta), { code: true }),
+    );
   }
   if (entry.team) {
     elements.push(textEl(` ${entry.team}`));
@@ -411,8 +437,8 @@ export function formatWeeklyDigest(data: WeeklyDigestData): {
     const stable: BenchmarkTrendEntry[] = [];
 
     for (const t of data.benchmarkTrends) {
-      const p90Severe = t.p90Delta !== undefined && t.p90Delta >= ATTENTION_P90;
-      if (t.medianDelta >= ATTENTION_MEDIAN || p90Severe) {
+      const p95Severe = t.p95Delta !== undefined && t.p95Delta >= ATTENTION_P95;
+      if (t.medianDelta > ATTENTION_MEDIAN || p95Severe) {
         attention.push(t);
       } else if (t.medianDelta >= WATCH_MEDIAN) {
         watch.push(t);
@@ -430,7 +456,7 @@ export function formatWeeklyDigest(data: WeeklyDigestData): {
     if (attention.length > 0) {
       blocks.push(
         divider(),
-        buildTrendSection('rotating_light', 'Needs Attention', attention),
+        buildTrendSection('rotating_light', 'Needs attention', attention),
       );
     }
     if (watch.length > 0) {
@@ -447,7 +473,13 @@ export function formatWeeklyDigest(data: WeeklyDigestData): {
         textEl(' Stable\n', { bold: true }),
       ];
       for (const e of shown) {
-        stableElements.push(...trendEntryElements(e));
+        // Stable rows: name only (no absolute value, no p95)
+        stableElements.push(
+          ...trendEntryElements(e, {
+            showAbsolute: false,
+            showP95: false,
+          }),
+        );
       }
       if (hidden > 0) {
         stableElements.push(
@@ -457,6 +489,24 @@ export function formatWeeklyDigest(data: WeeklyDigestData): {
         );
       }
       blocks.push(divider(), richTextSection(stableElements));
+    }
+
+    if (data.dataGaps && data.dataGaps.length > 0) {
+      const gapElements: Record<string, unknown>[] = [
+        emojiEl('grey_question'),
+        textEl(' Data gaps\n', { bold: true }),
+      ];
+      for (const g of data.dataGaps) {
+        gapElements.push(textEl('• '), textEl(g.name, { bold: true }));
+        if (g.note) {
+          gapElements.push(textEl(` — ${g.note}`));
+        }
+        if (g.team) {
+          gapElements.push(textEl(` ${g.team}`));
+        }
+        gapElements.push(textEl('\n'));
+      }
+      blocks.push(divider(), richTextSection(gapElements));
     }
   }
 
