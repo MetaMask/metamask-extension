@@ -27,8 +27,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
+
 
       # https://github.com/MetaMask/ai-analyzer/releases
       - name: Checkout AI Analyzer
