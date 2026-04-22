@@ -59,6 +59,8 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # This is to support tests that set manifestFlags.testing.infuraProjectId, such as power-user.spec.ts
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      # Disables ASSETS_UNIFIED_STATE_ENABLED
+      ASSETS_UNIFIED_STATE_ENABLED: 'false'
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       # Enable colors in CI for enhanced test reporter output
       FORCE_COLOR: '1'
