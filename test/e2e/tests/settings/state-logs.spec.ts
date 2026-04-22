@@ -156,7 +156,10 @@ describe('State logs', function () {
   });
 
   it('state log file matches the expected state structure', async function () {
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    if (
+      process.env.SELENIUM_BROWSER === 'chrome' ||
+      process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false'
+    ) {
       // Chrome shows OS level download prompt which can't be dismissed by Selenium
       this.skip();
     }
@@ -169,13 +172,10 @@ describe('State logs', function () {
               showNativeTokenAsMainBalance: false,
             },
           })
-          .withTokenBalancesController({
-            tokenBalances: {
-              '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-                '0x539': {
-                  '0x0000000000000000000000000000000000000000':
-                    '0x15af1d78b58c40000', // 25 ETH
-                },
+          .withAssetsController({
+            assetsBalance: {
+              'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+                'eip155:1337/slip44:1': { amount: '25' },
               },
             },
           })
