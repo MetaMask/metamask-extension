@@ -5,7 +5,7 @@ import type {
   StateOptions,
 } from '@metamask/client-mcp-core';
 import {
-  getExtensionState,
+  getBaseExtensionState,
   detectCurrentScreen,
 } from '../launcher/state-inspector';
 
@@ -23,7 +23,7 @@ export class MetaMaskStateSnapshotCapability
   }
 
   async getState(page: Page, options: StateOptions): Promise<StateSnapshot> {
-    return getExtensionState(page, {
+    return getBaseExtensionState(page, {
       extensionId: options.extensionId,
       chainId: options.chainId ?? this.defaultChainId,
     });

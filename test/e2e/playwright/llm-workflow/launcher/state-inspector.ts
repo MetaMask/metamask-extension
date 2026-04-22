@@ -26,6 +26,30 @@ import {
 import type { ExtensionState } from '../launcher-types';
 import { HomePage } from '../page-objects/home-page';
 
+const UNLOCKED_SCREENS: Set<ExtensionState['currentScreen']> = new Set([
+  'home',
+  'send',
+  'swap',
+  'settings',
+  'confirm-transaction',
+  'confirm-signature',
+  'confirmation',
+  'connect',
+  'bridge',
+]);
+
+const LOCKED_SCREENS: Set<ExtensionState['currentScreen']> = new Set([
+  'unlock',
+  'onboarding-welcome',
+  'onboarding-import',
+  'onboarding-create',
+  'onboarding-srp',
+  'onboarding-password',
+  'onboarding-complete',
+  'onboarding-metametrics',
+  'onboarding-privacy',
+]);
+
 export async function detectCurrentScreen(
   page: Page | undefined,
 ): Promise<ExtensionState['currentScreen']> {
@@ -140,15 +164,10 @@ export function detectScreenFromUrl(
       screen: 'onboarding-import',
     },
     {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_REVEAL_SRP_ROUTE),
-      screen: 'onboarding-srp',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_REVIEW_SRP_ROUTE),
-      screen: 'onboarding-srp',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_CONFIRM_SRP_ROUTE),
+      matcher: (path) =>
+        hasRoutePrefix(path, ONBOARDING_REVEAL_SRP_ROUTE) ||
+        hasRoutePrefix(path, ONBOARDING_REVIEW_SRP_ROUTE) ||
+        hasRoutePrefix(path, ONBOARDING_CONFIRM_SRP_ROUTE),
       screen: 'onboarding-srp',
     },
     {
@@ -156,11 +175,9 @@ export function detectScreenFromUrl(
       screen: 'onboarding-complete',
     },
     {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_METAMETRICS),
-      screen: 'onboarding-metametrics',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_HELP_US_IMPROVE_ROUTE),
+      matcher: (path) =>
+        hasRoutePrefix(path, ONBOARDING_METAMETRICS) ||
+        hasRoutePrefix(path, ONBOARDING_HELP_US_IMPROVE_ROUTE),
       screen: 'onboarding-metametrics',
     },
     {
@@ -203,30 +220,6 @@ export async function detectUnlockState(
   page: Page,
   currentScreen: ExtensionState['currentScreen'],
 ): Promise<boolean> {
-  const UNLOCKED_SCREENS: Set<ExtensionState['currentScreen']> = new Set([
-    'home',
-    'send',
-    'swap',
-    'settings',
-    'confirm-transaction',
-    'confirm-signature',
-    'confirmation',
-    'connect',
-    'bridge',
-  ]);
-
-  const LOCKED_SCREENS: Set<ExtensionState['currentScreen']> = new Set([
-    'unlock',
-    'onboarding-welcome',
-    'onboarding-import',
-    'onboarding-create',
-    'onboarding-srp',
-    'onboarding-password',
-    'onboarding-complete',
-    'onboarding-metametrics',
-    'onboarding-privacy',
-  ]);
-
   if (UNLOCKED_SCREENS.has(currentScreen)) {
     return true;
   }
@@ -240,7 +233,7 @@ export async function detectUnlockState(
     .catch(() => false);
 }
 
-export async function getExtensionState(
+export async function getBaseExtensionState(
   page: Page | undefined,
   options: {
     extensionId?: string;

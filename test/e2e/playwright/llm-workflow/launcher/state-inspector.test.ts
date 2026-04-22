@@ -13,7 +13,7 @@ import {
   detectCurrentScreen,
   detectScreenFromUrl,
   detectUnlockState,
-  getExtensionState,
+  getBaseExtensionState,
 } from './state-inspector';
 
 const mockGetAccountAddress = jest.fn();
@@ -279,7 +279,10 @@ describe('state-inspector', () => {
   describe('getExtensionState', () => {
     it('throws when extension is not initialized', async () => {
       await expect(
-        getExtensionState(undefined, { extensionId: undefined, chainId: 1 }),
+        getBaseExtensionState(undefined, {
+          extensionId: undefined,
+          chainId: 1,
+        }),
       ).rejects.toThrow('Extension not initialized');
     });
 
@@ -288,7 +291,7 @@ describe('state-inspector', () => {
         '[data-testid="account-menu-icon"]': false,
       });
 
-      const state = await getExtensionState(page, {
+      const state = await getBaseExtensionState(page, {
         extensionId: 'a'.repeat(32),
         chainId: 1,
       });
@@ -306,7 +309,7 @@ describe('state-inspector', () => {
     it('returns home details when unlocked on home', async () => {
       const page = buildPage('chrome-extension://id/home.html#/');
 
-      const state = await getExtensionState(page, {
+      const state = await getBaseExtensionState(page, {
         extensionId: 'b'.repeat(32),
         chainId: 1337,
       });
@@ -324,7 +327,7 @@ describe('state-inspector', () => {
         '[data-testid="account-menu-icon"]': false,
       });
 
-      const state = await getExtensionState(page, {
+      const state = await getBaseExtensionState(page, {
         extensionId: 'c'.repeat(32),
         chainId: 1,
       });
@@ -341,7 +344,7 @@ describe('state-inspector', () => {
         },
       );
 
-      const state = await getExtensionState(page, {
+      const state = await getBaseExtensionState(page, {
         extensionId: 'd'.repeat(32),
         chainId: 1,
       });
