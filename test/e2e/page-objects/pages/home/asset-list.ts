@@ -252,6 +252,14 @@ class AssetListPage {
     return assets.length;
   }
 
+  /**
+   * Returns visible text for each token row (used to match by token name substring).
+   */
+  async getTokenListNames(): Promise<string[]> {
+    const elements = await this.driver.findElements(this.tokenListItem);
+    return Promise.all(elements.map((el) => el.getText()));
+  }
+
   async sortTokenList(
     sortBy: 'alphabetically' | 'decliningBalance',
   ): Promise<void> {
@@ -337,10 +345,18 @@ class AssetListPage {
 
     await this.driver.waitForSelector(this.tokenDecimalsTitle);
     await this.driver.clickElement(this.importTokensNextButton);
+    // await this.driver.delay(10000);
     await this.driver.waitForSelector(this.tokenConfirmListItem);
-    await this.driver.clickElementAndWaitToDisappear(
+    await this.driver.clickElementAndWaitToDisappearWithRetry(
       this.confirmImportTokenButton,
+      {
+        disappearTimeout: 5000,
+        maxAttempts: 3,
+        retryDelayMs: 1000,
+      },
     );
+    // await this.driver.clickElement(this.confirmImportTokenButton, 10);
+
     await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
   }
 
@@ -376,7 +392,9 @@ class AssetListPage {
     await this.driver.waitForSelector(this.multichainTokenListButton);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
-    await this.driver.waitForSelector(this.importTokenModalTitle);
+    await this.driver.waitForSelector(this.importTokenModalTitle, {
+      waitAtLeastGuard: 2000,
+    });
 
     for (const name of tokenNames) {
       await this.driver.pasteIntoField(this.tokenSearchInput, name);
@@ -615,6 +633,63 @@ class AssetListPage {
 
     if (amount) {
       await this.checkTokenAmountIsDisplayed(amount);
+    }
+  }
+
+  /**
+   * Like {@link checkTokenExistsInList}, but polls the token list on an interval until the
+   * token appears (or `timeout` elapses), then optionally waits for the balance text.
+   * Also provides a way to check token at given position with name.
+   *
+   * @param tokenName - The name of the token to check in the list.
+   * @param amount - (Optional) The amount string as shown in the list (e.g. `8.5 TST`).
+   * @param [options] - Optional polling limits.
+   * @param [options.timeout] - Max ms to wait for the token name to appear (default 20000).
+   * @param [options.interval] - Ms between polls while waiting for the token (default 500).
+   * @param [options.amountTimeout] - Max ms to wait for the amount row (default 20000).
+   */
+  async checkTokenExistsInListWithRetry(
+    tokenName: string,
+    amount?: string,
+    options: {
+      timeout?: number;
+      interval?: number;
+      amountTimeout?: number;
+    } = {},
+  ): Promise<void> {
+    const { timeout = 20000, interval = 500, amountTimeout = 20000 } = options;
+    console.log(
+      `Checking if token ${tokenName} exists in token list (poll every ${interval}ms, max ${timeout}ms)`,
+    );
+    try {
+      await this.driver.waitUntil(
+        async () => {
+          const tokenList = await this.getTokenListNames();
+          return tokenList.some((token) => token.includes(tokenName));
+        },
+        { timeout, interval },
+      );
+    } catch {
+      const tokenList = await this.getTokenListNames();
+      throw new Error(
+        `Token "${tokenName}" was not found in the token list within ${timeout}ms. Current list: ${JSON.stringify(tokenList)}`,
+      );
+    }
+
+    console.log(`Token "${tokenName}" was found in the token list`);
+
+    if (amount) {
+      console.log(
+        `Waiting for token amount ${amount} (max ${amountTimeout}ms)`,
+      );
+      await this.driver.waitForSelector(
+        {
+          css: this.tokenAmountValue,
+          text: amount,
+        },
+        { timeout: amountTimeout },
+      );
+      console.log(`Token amount ${amount} was found`);
     }
   }
 

@@ -36,6 +36,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { AssetsControllerState } from '@metamask/assets-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
 import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
@@ -180,6 +181,50 @@ class FixtureBuilderV2 {
       };
     }
     merge(this.fixture.data.AddressBookController, data);
+    return this;
+  }
+
+  withAssetsController({
+    assetsBalance = {},
+    assetsPrice = {},
+    assetsInfo = {},
+    selectedCurrency,
+  }: {
+    assetsBalance?: Record<string, Record<string, { amount: string }>>;
+    assetsPrice?: Record<string, unknown>;
+    assetsInfo?: Record<string, unknown>;
+    selectedCurrency?: string;
+  } = {}): this {
+    if (!(this.fixture.data as Record<string, unknown>).AssetsController) {
+      (this.fixture.data as Record<string, unknown>).AssetsController = {};
+    }
+    const ac = (this.fixture.data as Record<string, unknown>)
+      .AssetsController as {
+      assetsBalance: Record<string, Record<string, { amount: string }>>;
+      assetsPrice: Record<string, unknown>;
+      assetsInfo: Record<string, unknown>;
+      selectedCurrency?: string;
+    };
+    if (!ac.assetsBalance) {
+      ac.assetsBalance = {};
+    }
+    if (!ac.assetsPrice) {
+      ac.assetsPrice = {};
+    }
+    if (!ac.assetsInfo) {
+      ac.assetsInfo = {};
+    }
+    if (selectedCurrency) {
+      ac.selectedCurrency = selectedCurrency;
+    }
+    merge(ac.assetsBalance, assetsBalance);
+    if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true') {
+      merge(ac.assetsPrice, assetsPrice);
+    }
+    merge(ac.assetsInfo, assetsInfo);
+    if (selectedCurrency !== undefined) {
+      ac.selectedCurrency = selectedCurrency;
+    }
     return this;
   }
 
@@ -1117,55 +1162,66 @@ class FixtureBuilderV2 {
   }
 
   withTrezorAccount(): this {
-    return this.withAccountsController({
-      internalAccounts: {
-        accounts: {
-          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-            options: {
-              entropySource: '01KGHAX3WXGMX9H76THHSSV553',
-              derivationPath: "m/44'/60'/0'/0/0",
-              groupIndex: 0,
-              entropy: {
-                type: 'mnemonic',
-                id: '01KGHAX3WXGMX9H76THHSSV553',
+    return this.withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1337/slip44:1': { amount: '25' },
+        },
+        [HARDWARE_WALLET_ACCOUNT_ID]: {
+          'eip155:1337/slip44:1': { amount: '100' },
+        },
+      },
+    })
+      .withAccountsController({
+        internalAccounts: {
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              options: {
+                entropySource: '01KGHAX3WXGMX9H76THHSSV553',
                 derivationPath: "m/44'/60'/0'/0/0",
                 groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01KGHAX3WXGMX9H76THHSSV553',
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
+              methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Account 1',
+                importTime: 1724486724986,
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
               },
             },
-            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
-            type: 'eip155:eoa',
-            scopes: ['eip155:0'],
-            metadata: {
-              name: 'Account 1',
-              importTime: 1724486724986,
-              lastSelected: 1665507600000,
-              keyring: {
-                type: 'HD Key Tree',
+            [HARDWARE_WALLET_ACCOUNT_ID]: {
+              id: HARDWARE_WALLET_ACCOUNT_ID,
+              address: TREZOR_ADDRESS,
+              options: {},
+              methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Trezor 1',
+                importTime: 1724486729079,
+                keyring: {
+                  type: 'Trezor Hardware',
+                },
+                lastSelected: 1724486729083,
               },
             },
           },
-          [HARDWARE_WALLET_ACCOUNT_ID]: {
-            id: HARDWARE_WALLET_ACCOUNT_ID,
-            address: TREZOR_ADDRESS,
-            options: {},
-            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
-            type: 'eip155:eoa',
-            scopes: ['eip155:0'],
-            metadata: {
-              name: 'Trezor 1',
-              importTime: 1724486729079,
-              keyring: {
-                type: 'Trezor Hardware',
-              },
-              lastSelected: 1724486729083,
-            },
-          },
+          selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
         },
-        selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
-      },
-    }).withKeyringController({ vault: TREZOR_VAULT });
+      })
+      .withKeyringController({ vault: TREZOR_VAULT });
   }
 
   withTransactionControllerApprovedTransaction(): this {
