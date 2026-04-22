@@ -9,7 +9,7 @@ import {
   formatSignedChangePercent,
   getChangeColor,
   getDisplaySymbol,
-  getAssetIconUrl,
+  getAssetIconUrls,
   safeDecodeURIComponent,
   normalizeTpslPrices,
   filterMarketsByQuery,
@@ -21,7 +21,10 @@ import {
   parseVolume,
   hasVolume,
 } from './utils';
-import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
+import {
+  HYPERLIQUID_ASSET_ICONS_BASE_URL,
+  METAMASK_PERPS_ICONS_BASE_URL,
+} from './constants';
 import type { PerpsMarketData, PerpsTransaction } from './types';
 
 const createMockMarket = (
@@ -212,27 +215,31 @@ describe('Perps Utils', () => {
     });
   });
 
-  describe('getAssetIconUrl', () => {
-    it('generates correct URL for regular assets', () => {
-      expect(getAssetIconUrl('BTC')).toBe(
-        `${HYPERLIQUID_ASSET_ICONS_BASE_URL}BTC.svg`,
-      );
-      expect(getAssetIconUrl('eth')).toBe(
-        `${HYPERLIQUID_ASSET_ICONS_BASE_URL}ETH.svg`,
-      );
+  describe('getAssetIconUrls', () => {
+    it('returns primary (MetaMask CDN) and fallback (HyperLiquid) URLs for regular assets', () => {
+      expect(getAssetIconUrls('BTC')).toStrictEqual({
+        primary: `${METAMASK_PERPS_ICONS_BASE_URL}BTC.svg`,
+        fallback: `${HYPERLIQUID_ASSET_ICONS_BASE_URL}BTC.svg`,
+      });
+      expect(getAssetIconUrls('eth')).toStrictEqual({
+        primary: `${METAMASK_PERPS_ICONS_BASE_URL}ETH.svg`,
+        fallback: `${HYPERLIQUID_ASSET_ICONS_BASE_URL}ETH.svg`,
+      });
     });
 
-    it('generates correct URL for HIP-3 assets', () => {
-      expect(getAssetIconUrl('xyz:TSLA')).toBe(
-        `${HYPERLIQUID_ASSET_ICONS_BASE_URL}xyz:TSLA.svg`,
-      );
-      expect(getAssetIconUrl('ABC:aapl')).toBe(
-        `${HYPERLIQUID_ASSET_ICONS_BASE_URL}abc:AAPL.svg`,
-      );
+    it('uses hip3:{dex}_{symbol} format for MetaMask CDN and dex:symbol for HyperLiquid', () => {
+      expect(getAssetIconUrls('xyz:TSLA')).toStrictEqual({
+        primary: `${METAMASK_PERPS_ICONS_BASE_URL}hip3:xyz_TSLA.svg`,
+        fallback: `${HYPERLIQUID_ASSET_ICONS_BASE_URL}xyz:TSLA.svg`,
+      });
+      expect(getAssetIconUrls('ABC:aapl')).toStrictEqual({
+        primary: `${METAMASK_PERPS_ICONS_BASE_URL}hip3:abc_AAPL.svg`,
+        fallback: `${HYPERLIQUID_ASSET_ICONS_BASE_URL}abc:AAPL.svg`,
+      });
     });
 
-    it('returns empty string for empty input', () => {
-      expect(getAssetIconUrl('')).toBe('');
+    it('returns null for empty input', () => {
+      expect(getAssetIconUrls('')).toBeNull();
     });
   });
 
