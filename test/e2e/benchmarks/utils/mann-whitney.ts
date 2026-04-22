@@ -16,7 +16,7 @@ export type MannWhitneyResult = {
   significant: boolean;
   /** Two-sided p-value */
   pValue: number;
-  /** Rank-biserial effect size r: |r|>0.5 large, >0.3 medium, >0.1 small */
+  /** Rank-biserial effect size r: positive = current slower (regression), negative = current faster (improvement). |r|>0.5 large, >0.3 medium, >0.1 small */
   effectSize: number;
   /** Median-based delta: (current - baseline) / baseline */
   deltaPercent: number;
@@ -245,8 +245,10 @@ export function mannWhitneyU(
   const U2 = n1 * n2 - U1;
   const U = Math.min(U1, U2);
 
-  // Effect size: rank-biserial r
-  const effectSize = 1 - (2 * U) / (n1 * n2);
+  // Effect size: signed rank-biserial r using U2 (not min).
+  // Positive = current tends to be larger (regression), negative = current faster (improvement).
+  // Range [-1, 1]. U is still min(U1, U2) used only for p-value below.
+  const effectSize = 1 - (2 * U2) / (n1 * n2);
 
   // Median-based delta
   const medCurrent = median(current);
