@@ -127,6 +127,11 @@ export async function runKernel(): Promise<never> {
         vats: {
           [subcluster.vatName]: {
             bundleSpec: bundleUrl,
+            // Endow the Web Crypto API so the vat can generate registration
+            // tokens and (for RandomNumberService) random numbers. SES
+            // strips crypto from the default compartment globals, so it
+            // must be opted into explicitly here.
+            globals: ['crypto'],
             parameters: { matcherUrl },
           },
         },
