@@ -438,8 +438,10 @@ describe('ManifestPlugin', () => {
       __dirname,
       'fixtures/ManifestPlugin/empty',
     );
-    const bundleSizeSummaryOutFile = `[browser]/${BUNDLE_SIZE_SUMMARY_FILE}`;
-    const chromeSummaryAssetPath = `chrome/${BUNDLE_SIZE_SUMMARY_FILE}`;
+    const chromeSummaryAssetPath = BUNDLE_SIZE_SUMMARY_FILE.replaceAll(
+      '[browser]',
+      'chrome',
+    );
     const chromeDebugAssetPath = chromeSummaryAssetPath.replace(
       /\.json$/u,
       '.debug.json',
@@ -535,7 +537,7 @@ describe('ManifestPlugin', () => {
       return JSON.parse(asset.source.source().toString()) as T;
     }
 
-    it('emits bundle_size_stats.json when stats are enabled', async () => {
+    it('emits the bundle-size summary when stats are enabled', async () => {
       const { compiler, compilation, promise } = mockWebpack(
         bundleSizeStatsFiles,
         bundleSizeStatsContents,
@@ -572,7 +574,7 @@ describe('ManifestPlugin', () => {
         zip: true,
         zipOptions,
         stats: {
-          outFile: bundleSizeSummaryOutFile,
+          outFile: BUNDLE_SIZE_SUMMARY_FILE,
           classifyEntrypoint: classifyStatsEntrypoint,
         },
       });
@@ -642,7 +644,7 @@ describe('ManifestPlugin', () => {
         buildType: 'main',
         zip: false,
         stats: {
-          outFile: bundleSizeSummaryOutFile,
+          outFile: BUNDLE_SIZE_SUMMARY_FILE,
           debug: true,
           classifyEntrypoint: classifyStatsEntrypoint,
         },
