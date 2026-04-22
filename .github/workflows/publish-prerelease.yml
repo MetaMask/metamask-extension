@@ -133,7 +133,6 @@ jobs:
         with:
           is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
-          fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
 
       - name: Find the associated PR
         if: ${{ startsWith(env.BRANCH, 'release/') && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
@@ -157,8 +156,10 @@ jobs:
 
       - name: Get merge base commit hash
         if: ${{ env.BASE_COMMIT_HASH && env.HEAD_COMMIT_HASH }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          merge_base_commit_hash="$(git merge-base "${BASE_COMMIT_HASH}" "${HEAD_COMMIT_HASH}")"
+          merge_base_commit_hash="$(gh api "repos/${GITHUB_REPOSITORY}/compare/${BASE_COMMIT_HASH}...${HEAD_COMMIT_HASH}" --jq '.merge_base_commit.sha')"
           echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
           echo "The merge base commit hash is '${merge_base_commit_hash}'"
 

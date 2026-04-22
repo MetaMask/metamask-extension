@@ -4,6 +4,7 @@ import type {
   TransactionPayRequiredToken,
   TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Asset, AssetStandard } from '../types/send';
 import {
   getTokenTransferData,
@@ -299,6 +300,47 @@ describe('transaction-pay utils', () => {
 
     it('returns empty array when tokens is empty', () => {
       const result = getAvailableTokens({ tokens: [] });
+
+      expect(result).toHaveLength(0);
+    });
+
+    it('excludes tokens on testnet chains, keeping mainnet tokens', () => {
+      const tokens = [
+        createMockAsset({
+          address: TOKEN_ADDRESS_MOCK,
+          chainId: CHAIN_IDS.SEPOLIA,
+        }),
+        createMockAsset({
+          address: TOKEN_ADDRESS_MOCK,
+          chainId: CHAIN_IDS.LINEA_SEPOLIA,
+        }),
+        createMockAsset({
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_IDS.MAINNET,
+        }),
+      ];
+
+      const result = getAvailableTokens({ tokens });
+
+      expect(result).toHaveLength(1);
+      expect(result[0].address).toBe(TOKEN_ADDRESS_2_MOCK);
+      expect(result[0].chainId).toBe(CHAIN_IDS.MAINNET);
+    });
+
+    it('excludes testnet tokens even when selected as the pay token', () => {
+      const payToken = createMockPaymentToken({
+        address: TOKEN_ADDRESS_MOCK,
+        chainId: CHAIN_IDS.SEPOLIA,
+      });
+      const tokens = [
+        createMockAsset({
+          address: TOKEN_ADDRESS_MOCK,
+          chainId: CHAIN_IDS.SEPOLIA,
+          balance: '1000000000000000000',
+        }),
+      ];
+
+      const result = getAvailableTokens({ payToken, tokens });
 
       expect(result).toHaveLength(0);
     });
