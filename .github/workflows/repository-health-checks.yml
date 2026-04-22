@@ -18,7 +18,6 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
-          fetch-depth: 0 # This is needed to checkout all branches
           skip-allow-scripts: true
 
       - name: ShellCheck Lint
@@ -183,6 +182,8 @@ jobs:
         if: ${{ !cancelled() }}
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn tsx .github/scripts/check-feature-flag-registry.ts
 
       - name: Check working tree
@@ -197,11 +198,6 @@ jobs:
         if: ${{ !cancelled() && github.event_name == 'pull_request'}}
         env:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
-        run: |
-          # The following command generates a diff of changes between the common
-          # ancestor of $BASE_REF and HEAD, and the current commit (HEAD), for
-          # files in the current directory and its subdirectories. The output is
-          # then saved to a file called "diff".
-          git diff "$(git merge-base "origin/$BASE_REF" HEAD)" HEAD -- . > ./diff
-
-          yarn fitness-functions ci ./diff
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn fitness-functions ci
