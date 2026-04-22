@@ -194,6 +194,7 @@ jest.mock('../../providers/perps', () => ({
 }));
 
 const mockReplacePerpsToastByKey = jest.fn();
+const mockSetPendingOrder = jest.fn();
 jest.mock('../../components/app/perps/perps-toast', () => {
   const { PERPS_TOAST_KEYS } = jest.requireActual(
     '../../components/app/perps/perps-toast/perps-toast-provider',
@@ -203,6 +204,8 @@ jest.mock('../../components/app/perps/perps-toast', () => {
     PERPS_TOAST_KEYS,
     usePerpsToast: () => ({
       replacePerpsToastByKey: mockReplacePerpsToastByKey,
+      setPendingOrder: mockSetPendingOrder,
+      pendingOrder: null,
     }),
   };
 });
