@@ -19,7 +19,6 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import { getDisplaySymbol } from '../utils';
-import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
@@ -181,13 +180,6 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
       usdInputRef.current.focus();
     }
   }, [autoFocusUsd, mode, formState.type]);
-
-  const usdSizePlaceholder = useMemo(() => {
-    if (mode !== 'new') {
-      return '0.00';
-    }
-    return t('perpsSizePlaceholderMin', [`$${PERPS_MIN_MARKET_ORDER_USD}`]);
-  }, [mode, t]);
 
   // Determine submit button text based on mode
   const submitButtonText = useMemo(() => {
@@ -356,7 +348,6 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             currentPrice={currentPrice}
             onAddFunds={onAddFunds}
             autoFocus={autoFocusUsd && formState.type === 'market'}
-            usdPlaceholder={usdSizePlaceholder}
             usdInputRef={usdInputRef}
           />
         )}

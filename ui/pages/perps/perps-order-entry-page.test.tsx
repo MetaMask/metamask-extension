@@ -838,15 +838,6 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('renders contextual placeholder "min $10" on the size input', () => {
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const amountInput = amountContainer.querySelector('input');
-      expect(amountInput).toHaveAttribute('placeholder', 'min $10');
-    });
-
     it('disables submit when auto-close take profit is invalid', async () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);

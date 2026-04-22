@@ -5923,10 +5923,6 @@
   "perpsSize": {
     "message": "Size"
   },
-  "perpsSizePlaceholderMin": {
-    "message": "min $1",
-    "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as the placeholder in the size input when the field is empty."
-  },
   "perpsSlippageExceeded": {
     "message": "Slippage exceeded. Adjust your slippage tolerance and try again."
   },
