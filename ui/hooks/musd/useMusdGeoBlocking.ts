@@ -78,10 +78,12 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
     ): Promise<string | null> => {
       const shouldCommit = () => !options?.isCancelled?.();
 
-      if (shouldCommit()) {
-        setIsLoading(true);
-        setError(null);
+      if (!shouldCommit()) {
+        return null;
       }
+
+      setIsLoading(true);
+      setError(null);
 
       try {
         const location = await submitRequestToBackground<string>(method);
