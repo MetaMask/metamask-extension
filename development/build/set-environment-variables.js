@@ -87,7 +87,7 @@ function setEnvironmentVariables({
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
     PERPS_ENABLED: isTestBuild ? 'true' : variables.getMaybe('PERPS_ENABLED'),
     ASSETS_UNIFIED_STATE_ENABLED: isTestBuild
-      ? 'false'
+      ? 'true'
       : variables.getMaybe('ASSETS_UNIFIED_STATE_ENABLED'),
     GOOGLE_CLIENT_ID,
     APPLE_CLIENT_ID,
