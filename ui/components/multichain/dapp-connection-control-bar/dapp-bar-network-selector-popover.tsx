@@ -355,10 +355,7 @@ export const DappBarNetworkSelectorPopover: React.FC<
           data-testid="dapp-bar-network-selector-popover__list"
         >
           {visibleNetworks.map((network) => {
-            const isSelected = isSameChain(
-              network.chainId,
-              activeDappChainId,
-            );
+            const isSelected = isSameChain(network.chainId, activeDappChainId);
             return (
               <NetworkListItem
                 key={network.chainId}
