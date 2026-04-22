@@ -65,6 +65,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed TP/SL formatting and PnL calculation (#41497)
 - Fixed Perps position card dropdown and interval selection (#41590)
 - Surfaced MetaMask fee in the bridge fee tooltip for MetaMask Pay (#41642)
+### Fixed
+
+- Sei Mainnet: replace deprecated Seitrace explorer with Seiscan
+  (`https://seiscan.io`). Existing installs are migrated via migration 207.
 
 ## [13.27.0]
 

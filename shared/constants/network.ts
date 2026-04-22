@@ -1664,7 +1664,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
       },
     ],
     defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: ['https://seitrace.com/'],
+    blockExplorerUrls: ['https://seiscan.io/'],
     defaultBlockExplorerUrlIndex: 0,
   },
   {
