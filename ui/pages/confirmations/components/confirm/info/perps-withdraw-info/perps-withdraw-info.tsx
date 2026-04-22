@@ -13,7 +13,10 @@ export const PerpsWithdrawInfo = () => {
   });
 
   return (
-    <CustomAmountInfo currency={PERPS_CURRENCY} hasMax hidePayTokenAmount>
+    // Percentage buttons (25/50/75/Max) are intentionally hidden for MVP —
+    // not passing `hasMax` so they never render. Re-enable by passing
+    // `hasMax` (and optionally a `percentages` override) when ready.
+    <CustomAmountInfo currency={PERPS_CURRENCY} hidePayTokenAmount>
       <PerpsWithdrawBalance />
     </CustomAmountInfo>
   );
