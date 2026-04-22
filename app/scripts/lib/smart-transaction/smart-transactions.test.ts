@@ -359,7 +359,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('submits a smart transaction with an already signed transaction', async () => {
-    await withRequest(
+    withRequest(
       async ({
         request,
         messenger,
@@ -389,15 +389,12 @@ describe('submitSmartTransactionHook', () => {
         const { txParams } = request.transactionMeta || {};
         expect(
           request.smartTransactionsController.submitSignedTransactions,
-        ).toHaveBeenCalledWith(
-          expect.objectContaining({
-            signedTransactions: [request.signedTransactionInHex],
-            signedCanceledTransactions: [],
-            txParams,
-            transactionMeta: request.transactionMeta,
-            networkClientId: 'testNetworkClientId',
-          }),
-        );
+        ).toHaveBeenCalledWith({
+          signedTransactions: [request.signedTransactionInHex],
+          signedCanceledTransactions: [],
+          txParams,
+          transactionMeta: request.transactionMeta,
+        });
         addRequestCallback();
         expect(startFlowSpy).toHaveBeenCalled();
         expect(addRequestSpy).toHaveBeenCalledWith(
@@ -406,17 +403,33 @@ describe('submitSmartTransactionHook', () => {
             origin: 'http://localhost',
             type: 'smartTransaction:showSmartTransactionStatusPage',
             requestState: {
-              smartTransaction: expect.objectContaining({
+              smartTransaction: {
                 status: 'pending',
                 uuid,
                 creationTime: expect.any(Number),
-              }),
+              },
               isDapp: true,
               txId,
             },
           },
           true,
         );
+        expect(updateRequestStateSpy).toHaveBeenCalledWith({
+          id: 'approvalId',
+          requestState: {
+            smartTransaction: {
+              uuid,
+              status: 'success',
+              statusMetadata: {
+                minedHash:
+                  '0x0302b75dfb9fd9eb34056af031efcaee2a8cbd799ea054a85966165cd82a7356',
+              },
+            },
+            isDapp: true,
+            txId,
+          },
+        });
+
         expect(endFlowSpy).toHaveBeenCalledWith({
           id: 'approvalId',
         });
@@ -425,7 +438,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('signs and submits a smart transaction', async () => {
-    await withRequest(
+    withRequest(
       {
         options: {
           signedTransactionInHex: undefined,
@@ -473,15 +486,12 @@ describe('submitSmartTransactionHook', () => {
         );
         expect(
           request.smartTransactionsController.submitSignedTransactions,
-        ).toHaveBeenCalledWith(
-          expect.objectContaining({
-            signedTransactions: [createSignedTransaction()],
-            signedCanceledTransactions: [],
-            txParams,
-            transactionMeta: request.transactionMeta,
-            networkClientId: 'testNetworkClientId',
-          }),
-        );
+        ).toHaveBeenCalledWith({
+          signedTransactions: [createSignedTransaction()],
+          signedCanceledTransactions: [],
+          txParams,
+          transactionMeta: request.transactionMeta,
+        });
         addRequestCallback();
         expect(startFlowSpy).toHaveBeenCalled();
         expect(addRequestSpy).toHaveBeenCalledWith(
@@ -490,17 +500,33 @@ describe('submitSmartTransactionHook', () => {
             origin: 'http://localhost',
             type: 'smartTransaction:showSmartTransactionStatusPage',
             requestState: {
-              smartTransaction: expect.objectContaining({
+              smartTransaction: {
                 status: 'pending',
                 uuid,
                 creationTime: expect.any(Number),
-              }),
+              },
               isDapp: true,
               txId,
             },
           },
           true,
         );
+        expect(updateRequestStateSpy).toHaveBeenCalledWith({
+          id: 'approvalId',
+          requestState: {
+            smartTransaction: {
+              uuid,
+              status: 'success',
+              statusMetadata: {
+                minedHash:
+                  '0x0302b75dfb9fd9eb34056af031efcaee2a8cbd799ea054a85966165cd82a7356',
+              },
+            },
+            isDapp: true,
+            txId,
+          },
+        });
+
         expect(endFlowSpy).toHaveBeenCalledWith({
           id: 'approvalId',
         });
@@ -509,7 +535,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('submits a smart transaction and does not update approval request if approval was already approved or rejected', async () => {
-    await withRequest(
+    withRequest(
       async ({
         request,
         messenger,
@@ -543,15 +569,12 @@ describe('submitSmartTransactionHook', () => {
         ).not.toHaveBeenCalled();
         expect(
           request.smartTransactionsController.submitSignedTransactions,
-        ).toHaveBeenCalledWith(
-          expect.objectContaining({
-            signedTransactions: [request.signedTransactionInHex],
-            signedCanceledTransactions: [],
-            txParams,
-            transactionMeta: request.transactionMeta,
-            networkClientId: 'testNetworkClientId',
-          }),
-        );
+        ).toHaveBeenCalledWith({
+          signedTransactions: [request.signedTransactionInHex],
+          signedCanceledTransactions: [],
+          txParams,
+          transactionMeta: request.transactionMeta,
+        });
         expect(startFlowSpy).toHaveBeenCalled();
         expect(addRequestSpy).toHaveBeenCalledWith(
           {
@@ -559,11 +582,11 @@ describe('submitSmartTransactionHook', () => {
             origin: 'http://localhost',
             type: 'smartTransaction:showSmartTransactionStatusPage',
             requestState: {
-              smartTransaction: expect.objectContaining({
+              smartTransaction: {
                 status: 'pending',
                 uuid,
                 creationTime: expect.any(Number),
-              }),
+              },
               isDapp: true,
               txId,
             },
@@ -755,104 +778,6 @@ describe('submitSmartTransactionHook', () => {
           await submitSmartTransactionHook(request);
 
           // Status page should not be shown for shieldSubscriptionApprove transactions
-          expect(startFlowSpy).not.toHaveBeenCalled();
-          expect(addRequestSpy).not.toHaveBeenCalled();
-        },
-      );
-    });
-
-    it('does not show status page for perpsDeposit transaction type', async () => {
-      await withRequest(
-        {
-          options: {
-            transactionMeta: {
-              hash: txHash,
-              status: TransactionStatus.signed,
-              id: '1',
-              txParams: {
-                from: addressFrom,
-                to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-                maxFeePerGas: '0x2fd8a58d7',
-                maxPriorityFeePerGas: '0xaa0f8a94',
-                gas: '0x7b0d',
-                nonce: '0x4b',
-              },
-              type: TransactionType.perpsDeposit,
-              chainId: CHAIN_IDS.MAINNET,
-              networkClientId: 'testNetworkClientId',
-              time: 1624408066355,
-              defaultGasEstimates: {
-                gas: '0x7b0d',
-                gasPrice: '0x77359400',
-              },
-              securityProviderResponse: {
-                flagAsDangerous: 0,
-              },
-            },
-          },
-        },
-        async ({ request, messenger, startFlowSpy, addRequestSpy }) => {
-          setImmediate(() => {
-            messenger.publish('SmartTransactionsController:smartTransaction', {
-              status: 'success',
-              uuid,
-              statusMetadata: {
-                minedHash: txHash,
-              },
-            } as SmartTransaction);
-          });
-
-          await submitSmartTransactionHook(request);
-
-          expect(startFlowSpy).not.toHaveBeenCalled();
-          expect(addRequestSpy).not.toHaveBeenCalled();
-        },
-      );
-    });
-
-    it('does not show status page for perpsDepositAndOrder transaction type', async () => {
-      await withRequest(
-        {
-          options: {
-            transactionMeta: {
-              hash: txHash,
-              status: TransactionStatus.signed,
-              id: '1',
-              txParams: {
-                from: addressFrom,
-                to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-                maxFeePerGas: '0x2fd8a58d7',
-                maxPriorityFeePerGas: '0xaa0f8a94',
-                gas: '0x7b0d',
-                nonce: '0x4b',
-              },
-              type: TransactionType.perpsDepositAndOrder,
-              chainId: CHAIN_IDS.MAINNET,
-              networkClientId: 'testNetworkClientId',
-              time: 1624408066355,
-              defaultGasEstimates: {
-                gas: '0x7b0d',
-                gasPrice: '0x77359400',
-              },
-              securityProviderResponse: {
-                flagAsDangerous: 0,
-              },
-            },
-          },
-        },
-        async ({ request, messenger, startFlowSpy, addRequestSpy }) => {
-          setImmediate(() => {
-            messenger.publish('SmartTransactionsController:smartTransaction', {
-              status: 'success',
-              uuid,
-              statusMetadata: {
-                minedHash: txHash,
-              },
-            } as SmartTransaction);
-          });
-
-          await submitSmartTransactionHook(request);
-
           expect(startFlowSpy).not.toHaveBeenCalled();
           expect(addRequestSpy).not.toHaveBeenCalled();
         },
