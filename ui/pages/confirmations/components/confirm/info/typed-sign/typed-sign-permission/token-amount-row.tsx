@@ -18,7 +18,7 @@ import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info
  *
  * @param props - The component props.
  * @param props.label - The label to display for the row.
- * @param props.value - The amount of the token. Can be a hex string or BigNumber.
+ * @param props.value - The amount of the token as a BigNumber.
  * @param props.tokenAddress - The contract address of the token.
  * @param props.chainId - The chain ID on which the token exists.
  * @param props.decimals - The number of decimals the token uses.
@@ -27,7 +27,7 @@ import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info
  */
 export const TokenAmountRow: React.FC<{
   label: string;
-  value: Hex | BigNumber;
+  value: BigNumber;
   tokenAddress: string;
   chainId: Hex;
   decimals: number | undefined;
