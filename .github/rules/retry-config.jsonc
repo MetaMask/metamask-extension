@@ -65,36 +65,40 @@
   // retryableOnTransientError job fails and its logs match any of these,
   // it will be marked jobRetryable=true.
   "transientErrorPatterns": [
-    "429 Too Many Requests",
-    "502 Bad Gateway",
-    "503 Service Unavailable",
-    "API rate limit exceeded",
-    "Anvil exited: Error: Address already in use",
-    "Authentication failed for",
-    "Could not resolve host",
-    "EAI_AGAIN",
-    "ECONNREFUSED",
-    "ECONNRESET",
-    "ENOTFOUND",
-    "ENOMEM",
-    "ESOCKETTIMEDOUT",
-    "ETIMEDOUT",
-    "Exceeded timeout of \\d+ ms for a test",
-    "fatal: unable to access",
-    "git.* failed with exit code 128",
-    "heap out of memory",
-    "JavaScript heap out of memory",
-    "net::ERR_",
-    "No space left on device",
-    "npm ERR! network",
-    "OOMKilled",
-    "read ECONNRESET",
-    "resource temporarily unavailable",
-    "socket hang up",
-    "vkCreateInstance failed with VK_ERROR_INCOMPATIBLE_DRIVER",
-    "VulkanError.cpp",
-    "write EPIPE",
-    "Yarn is terminating due to an unexpected empty event loop"
+    "429 Too Many Requests", // HTTP rate-limiting from npm registry, GitHub API, etc.
+    "500 Internal Server Error", // upstream server error (registry, API)
+    "502 Bad Gateway", // load-balancer/proxy failure between runner and upstream
+    "503 Service Unavailable", // upstream service temporarily down
+    "504 Gateway Time-out", // upstream timed out behind a proxy/LB
+    "API rate limit exceeded", // GitHub REST API rate limit
+    "Anvil exited: Error: Address already in use", // port collision starting Foundry local chain
+    "Authentication failed for", // transient git auth failure cloning repos
+    "Back off \\d+(\\.\\d+)? seconds before retry", // npm registry throttle (e.g. "Back off 16.402 seconds before retry")
+    "Command failed after \\d+ attempts", // Prepare dependencies: yarn install retries exhausted
+    "Could not resolve host", // DNS resolution failure
+    "EAI_AGAIN", // Node.js DNS lookup timed out
+    "ECONNREFUSED", // TCP connection refused (service not listening)
+    "ECONNRESET", // TCP connection reset by peer
+    "ENOTFOUND", // Node.js DNS name not found
+    "ENOMEM", // OS-level out-of-memory
+    "ESOCKETTIMEDOUT", // Node.js socket timeout (npm/yarn downloads)
+    "ETIMEDOUT", // TCP connection timed out
+    "Exceeded timeout of \\d+ ms for a test", // Jest test timeout (flaky slow test)
+    "fatal: unable to access", // git clone/fetch network failure
+    "git.* failed with exit code 128", // git op failed (auth, network, corrupt pack)
+    "heap out of memory", // V8 heap exhaustion (generic form)
+    "JavaScript heap out of memory", // Node.js OOM crash
+    "net::ERR_", // Chromium network errors in E2E (ERR_CONNECTION_REFUSED, etc.)
+    "No space left on device", // runner disk full
+    "npm ERR! network", // npm network failure
+    "OOMKilled", // Linux OOM killer terminated the process
+    "read ECONNRESET", // TCP read failure (more specific than ECONNRESET alone)
+    "resource temporarily unavailable", // file descriptor / process limit exhaustion
+    "socket hang up", // HTTP connection dropped mid-request
+    "vkCreateInstance failed with VK_ERROR_INCOMPATIBLE_DRIVER", // GPU driver issue on runner for headless Chrome
+    "VulkanError.cpp", // GPU driver crash in headless Chrome
+    "write EPIPE", // broken pipe — receiving process terminated
+    "Yarn is terminating due to an unexpected empty event loop" // Yarn bug: event loop drains unexpectedly mid-install
   ],
 
   // Patterns that indicate deterministic failures — errors that will never
@@ -102,12 +106,27 @@
   // Checked against annotations + log tail when no transient pattern matched
   // and the structural annotation check did not fire.
   "deterministicErrorPatterns": [
-    "BASELINE VIOLATIONS DETECTED",
-    "Code style issues found",
-    "NEW FILES \\(not in baseline\\)",
-    "Test Suites:.*failed",
-    "Working tree dirty",
-    "snapshots? failed",
-    "✖ \\d+ problems? \\("
+    "BASELINE VIOLATIONS DETECTED", // lint-baseline.mts: new violations added to already-baselined files
+    "Can't walk dependency graph", // Browserify build: broken import/require chain
+    "Cannot find module", // Node.js require/import of missing package or path
+    "Code style issues found", // oxlint --check or ESLint formatting rule failure
+    "compiled with \\d+ errors?", // Webpack build errors
+    "doesn't seem to be present in your lockfile", // Yarn: package missing from yarn.lock (needs `yarn install`)
+    "Error occurred when checking code style", // oxfmt parse error checking formatting
+    "Failed to build the preview", // Storybook: Webpack compilation error building story preview
+    "Format issues found in above \\d+ files", // Prettier or oxfmt --check: files need reformatting
+    "Invalid code fence parameters", // build: malformed code fence in source (BEGIN:, END:)
+    "LavaMoat - required node builtin package not in allowlist", // LavaMoat policy: dependency uses disallowed Node.js builtin
+    "Lint errors encountered for transformed file", // Browserify build: ESLint errors in post-transform output
+    "Module not found", // Webpack: import of nonexistent module
+    "no platform directories.*found in dist", // build verification: platform folders missing from output
+    "NEW FILES \\(not in baseline\\)", // lint-baseline.mts: new files with violations not yet baselined
+    "shellcheck reported issue", // actionlint/shellcheck: shell script issues in workflow YAML
+    "SyntaxError: Unexpected token", // JS/TS parse error (bad syntax in source)
+    "Test Suites:.*failed", // Jest summary line: one or more test suites failed
+    "Working tree dirty", // git working tree has uncommitted changes after a build/generate step
+    "snapshots? failed", // Jest snapshot assertion mismatch
+    "✖ failing tests:", // Node.js test runner (node --test) summary of failures
+    "✖ \\d+ problems? \\(" // ESLint summary: "✖ N problems (X errors, Y warnings)"
   ]
 }
