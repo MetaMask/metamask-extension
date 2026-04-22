@@ -219,7 +219,7 @@ export class ManifestPlugin<Z extends boolean> {
         initialFiles: [...getAssetStats(compilation, entry.getFiles())],
         asyncFiles: [...getAssetStats(compilation, asyncAssetNames)],
       };
-      const files = Object.values(entrypointFiles).flatMap((vals) => vals);
+      const files = Object.values(entrypointFiles).flat();
 
       if (debugEntrypoints) {
         debugEntrypoints[name] = { category, ...entrypointFiles };
