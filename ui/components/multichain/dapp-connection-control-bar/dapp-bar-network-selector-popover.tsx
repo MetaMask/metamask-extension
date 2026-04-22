@@ -17,6 +17,9 @@ import {
   Display,
   FlexDirection,
   IconColor,
+  JustifyContent,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetworkSize,
@@ -27,7 +30,10 @@ import {
   Popover,
   PopoverPosition,
   PopoverRole,
+  Text,
 } from '../../component-library';
+import ToggleButton from '../../ui/toggle-button';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
 import {
   getAllDomains,
@@ -45,6 +51,7 @@ import {
   setActiveNetwork,
   setNetworkClientIdForDomain,
   setNextNonce,
+  setShowTestNetworks,
   setTokenNetworkFilter,
   showPermittedNetworkToast,
   updateCustomNonce,
@@ -91,6 +98,7 @@ export const DappBarNetworkSelectorPopover: React.FC<
   DappBarNetworkSelectorPopoverProps
 > = ({ referenceElement, isOpen, onClose }) => {
   const dispatch = useDispatch();
+  const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
 
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
@@ -265,6 +273,24 @@ export const DappBarNetworkSelectorPopover: React.FC<
     ],
   );
 
+  const handleToggleTestNetworks = useCallback(
+    (currentValue: boolean) => {
+      // Don't allow disabling while actively on a testnet - mirrors the
+      // network-list-menu behavior so the user can't hide their own selection.
+      if (currentlyOnTestnet) {
+        return;
+      }
+      const newValue = !currentValue;
+      dispatch(setShowTestNetworks(newValue));
+      trackEvent({
+        event: MetaMetricsEventName.TestNetworksDisplayed,
+        category: MetaMetricsEventCategory.Network,
+        properties: { value: newValue },
+      });
+    },
+    [dispatch, trackEvent, currentlyOnTestnet],
+  );
+
   return (
     <Popover
       referenceElement={referenceElement}
@@ -290,42 +316,84 @@ export const DappBarNetworkSelectorPopover: React.FC<
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.stretch}
         width={BlockSize.Full}
-        style={{
-          maxHeight: `${POPOVER_MAX_HEIGHT}px`,
-          overflowY: 'auto',
-          paddingTop: 4,
-          paddingBottom: 4,
-        }}
-        data-testid="dapp-bar-network-selector-popover__list"
+        style={{ maxHeight: `${POPOVER_MAX_HEIGHT}px` }}
       >
-        {visibleNetworks.map((network) => {
-          const isSelected = isSameChain(network.chainId, activeDappChainId);
-          return (
-            <NetworkListItem
-              key={network.chainId}
-              chainId={network.chainId}
-              name={network.name}
-              iconSrc={getNetworkIcon(network)}
-              iconSize={AvatarNetworkSize.Sm}
-              selected={isSelected}
-              focus={false}
-              showEndAccessory={isSelected}
-              endAccessory={
-                isSelected ? (
-                  <Icon
-                    name={IconName.Check}
-                    size={IconSize.Sm}
-                    color={IconColor.primaryDefault}
-                    data-testid={`dapp-bar-network-selector-popover__selected-${network.chainId}`}
-                  />
-                ) : undefined
-              }
-              onClick={() => {
-                handleSelectNetwork(network);
-              }}
-            />
-          );
-        })}
+        {/* Sticky header: compact test-networks toggle. Stays in view while the
+            network list below scrolls. */}
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.spaceBetween}
+          paddingTop={2}
+          paddingBottom={2}
+          paddingLeft={4}
+          paddingRight={2}
+          style={{
+            flexShrink: 0,
+            borderBottom: '1px solid var(--color-border-muted)',
+          }}
+          data-testid="dapp-bar-network-selector-popover__testnet-toggle-row"
+        >
+          <Text
+            variant={TextVariant.bodySmMedium}
+            color={TextColor.textAlternative}
+          >
+            {t('showTestnetNetworks')}
+          </Text>
+          <ToggleButton
+            dataTestId="dapp-bar-network-selector-popover__testnet-toggle"
+            value={showTestnets || currentlyOnTestnet}
+            disabled={currentlyOnTestnet}
+            onToggle={handleToggleTestNetworks}
+          />
+        </Box>
+
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.stretch}
+          width={BlockSize.Full}
+          style={{
+            overflowY: 'auto',
+            flex: '1 1 auto',
+            paddingTop: 4,
+            paddingBottom: 4,
+          }}
+          data-testid="dapp-bar-network-selector-popover__list"
+        >
+          {visibleNetworks.map((network) => {
+            const isSelected = isSameChain(
+              network.chainId,
+              activeDappChainId,
+            );
+            return (
+              <NetworkListItem
+                key={network.chainId}
+                chainId={network.chainId}
+                name={network.name}
+                iconSrc={getNetworkIcon(network)}
+                iconSize={AvatarNetworkSize.Sm}
+                selected={isSelected}
+                focus={false}
+                showEndAccessory={isSelected}
+                endAccessory={
+                  isSelected ? (
+                    <Icon
+                      name={IconName.Check}
+                      size={IconSize.Sm}
+                      color={IconColor.primaryDefault}
+                      data-testid={`dapp-bar-network-selector-popover__selected-${network.chainId}`}
+                    />
+                  ) : undefined
+                }
+                onClick={() => {
+                  handleSelectNetwork(network);
+                }}
+              />
+            );
+          })}
+        </Box>
       </Box>
     </Popover>
   );
