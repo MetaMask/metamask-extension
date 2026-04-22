@@ -244,7 +244,9 @@ describe('Permission List Item', () => {
             store,
           );
           expect(
-            getByRole('button', { name: messages.gatorPermissionsRevoke.message }),
+            getByRole('button', {
+              name: messages.gatorPermissionsRevoke.message,
+            }),
           ).toBeInTheDocument();
         });
 
@@ -261,7 +263,9 @@ describe('Permission List Item', () => {
             store,
           );
           expect(
-            getByRole('button', { name: messages.gatorPermissionsRevoke.message }),
+            getByRole('button', {
+              name: messages.gatorPermissionsRevoke.message,
+            }),
           ).toBeInTheDocument();
         });
 

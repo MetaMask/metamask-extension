@@ -12,13 +12,19 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Button
+  Button,
 } from '@metamask/design-system-react';
-import { GatorPermissionStatus, PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
+import {
+  GatorPermissionStatus,
+  PermissionInfoWithMetadata,
+} from '@metamask/gator-permissions-controller';
 import { getURLHost } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { BackgroundColor, TextColor as DesignSystemTextColor } from '../../../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  TextColor as DesignSystemTextColor,
+} from '../../../../../helpers/constants/design-system';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import { useBoolean } from '../../../../../hooks/useBoolean';
@@ -201,11 +207,7 @@ export const ReviewGatorPermissionItem = ({
               alignItems: 'center',
             }}
           >
-            <Text
-              variant={TextVariant.BodyMd}
-              ellipsis
-              style={{ minWidth: 0 }}
-            >
+            <Text variant={TextVariant.BodyMd} ellipsis style={{ minWidth: 0 }}>
               {getURLHost(siteOrigin)}
             </Text>
             {statusTag ? (
@@ -213,7 +215,9 @@ export const ReviewGatorPermissionItem = ({
                 data-testid="review-gator-permission-status-tag"
                 label={statusTag.label}
                 backgroundColor={statusTag.backgroundColor}
-                labelProps={{ color: statusTag.labelColor as DesignSystemTextColor}}
+                labelProps={{
+                  color: statusTag.labelColor as DesignSystemTextColor,
+                }}
                 textVariant={TextVariant.BodySm}
                 style={{ flexShrink: 0 }}
               />
