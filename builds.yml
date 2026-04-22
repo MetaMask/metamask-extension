@@ -391,6 +391,10 @@ env:
   # Relay multiaddr(s) for ocap kernel remote comms (comma-separated)
   - OCAP_RELAY_MULTIADDR: null
 
+  # Ocap URL of the service matcher. When set, each service vat launched
+  # by the offscreen kernel registers itself with the matcher on bootstrap.
+  - OCAP_MATCHER_URL: null
+
   ###
   # Meta variables
   ###

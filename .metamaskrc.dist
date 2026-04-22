@@ -94,6 +94,10 @@ BLOCKAID_PUBLIC_KEY=
 ; Run `yarn ocap relay` to start a local relay and get the multiaddr.
 ;OCAP_RELAY_MULTIADDR=
 
+; Ocap URL of the service matcher. When set, each service vat launched by
+; the offscreen kernel registers itself with the matcher on bootstrap.
+;OCAP_MATCHER_URL=
+
 ; This variable is required to run performance tests
 TEST_SRP_2=
 
