@@ -201,6 +201,40 @@ export const mockHistoricalPrices = async (
  * @param assetType - CAIP asset type segment (e.g. `slip44:60` or `erc20:0xABC…`).
  * @param prices - Price data points as `[timestamp, price]` tuples. Defaults to empty array.
  */
+const ETH_ASSET_PRICE_ENTRY = (ethConversionRate: number) => ({
+  allTimeHigh: 4946.05,
+  allTimeLow: 0.432979,
+  assetPriceType: 'fungible',
+  circulatingSupply: 120691953.6332311,
+  dilutedMarketCap: 254092339264,
+  high1d: 2200.03,
+  id: 'ethereum',
+  lastUpdated: 1773438429871,
+  low1d: 2056.83,
+  marketCap: 254092339264,
+  marketCapPercentChange1d: 2.18596,
+  price: ethConversionRate,
+  priceChange1d: 43.82,
+  pricePercentChange14d: 9.421731338592206,
+  pricePercentChange1d: 2.126621077867312,
+  pricePercentChange1h: -0.3841700831496128,
+  pricePercentChange1y: 13.959581118344246,
+  pricePercentChange200d: -51.8482496460765,
+  pricePercentChange30d: 7.7834713430167195,
+  pricePercentChange7d: 6.25337717882139,
+  totalVolume: 29988506301,
+  usdPrice: ethConversionRate,
+});
+
+export const getMockAssetsPrice = (
+  ethConversionRate: number = MOCK_ETH_CONVERSION_RATE,
+) => ({
+  'eip155:1/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
+  'eip155:59144/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
+  'eip155:8453/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
+  'eip155:42161/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
+});
+
 export const mockHistoricalPricesV3 = async (
   mockServer: Mockttp,
   caipChainId: string,

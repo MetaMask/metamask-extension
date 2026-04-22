@@ -7,7 +7,7 @@ import { NETWORK_CLIENT_ID } from '../../constants';
 import { Mockttp } from '../../mock-e2e';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { login } from '../../page-objects/flows/login.flow';
-import { getMockAssetsPrice } from '../bridge/constants';
+import { getMockAssetsPrice } from './utils/mocks';
 
 const ETH_CONVERSION_RATE_USD = 1700;
 

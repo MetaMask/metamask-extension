@@ -8,7 +8,7 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import { getMockAssetsPrice } from '../bridge/constants';
+import { getMockAssetsPrice } from '../tokens/utils/mocks';
 import { login } from '../../page-objects/flows/login.flow';
 
 const infuraSepoliaUrl =
