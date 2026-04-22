@@ -86,8 +86,7 @@ class AccountListPage {
   private readonly closeAccountModalButton =
     'header button[aria-label="Close"]';
 
-  private readonly chooseWalletTypeBackButton =
-    '[data-testid="back-button"]';
+  private readonly chooseWalletTypeBackButton = '[data-testid="back-button"]';
 
   private readonly closeMultichainAccountsPageButton =
     '.multichain-page-header button[aria-label="Back"]';
