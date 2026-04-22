@@ -379,7 +379,11 @@ export async function runPageLoadBenchmark(
   // Each session contributes exactly pageLoads metric objects to runResults.
   const warmupSize = WARMUP_RUNS * pageLoads;
   const measuredResults = runResults.slice(warmupSize);
-  const measuredWebVitalsRuns = allWebVitalsRuns.slice(warmupSize);
+  // Web vitals entries are sparse (collection can fail silently), so filter by
+  // iteration index rather than slicing by position to avoid off-by-N errors.
+  const measuredWebVitalsRuns = allWebVitalsRuns.filter(
+    (wv) => wv.iteration >= warmupSize,
+  );
 
   if (measuredResults.some((result) => result.navigation.length > 1)) {
     throw new Error(`Multiple navigations not supported`);
