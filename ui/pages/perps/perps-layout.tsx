@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import { PerpsToastProvider } from '../../components/app/perps';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
 import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { setLastVisitedPerpsRoute } from '../../store/actions';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 
 const MIN_HIDDEN_DURATION_MS = 30_000;
 
@@ -23,6 +25,7 @@ export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
   usePerpsLifecycleBreadcrumbs();
 
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const { pathname, search } = useLocation();
 
   // Persist the active Perps path so that closing and reopening the extension
@@ -32,15 +35,15 @@ export default function PerpsLayout() {
   // persisted value survives and home mount picks it up.
   useEffect(() => {
     const fullPath = search ? `${pathname}${search}` : pathname;
-    setLastVisitedPerpsRoute(fullPath).catch(() => {
+    Promise.resolve(dispatch(setLastVisitedPerpsRoute(fullPath))).catch(() => {
       // fire-and-forget — persistence failure should not break Perps
     });
     return () => {
-      setLastVisitedPerpsRoute(null).catch(() => {
+      Promise.resolve(dispatch(setLastVisitedPerpsRoute(null))).catch(() => {
         // fire-and-forget
       });
     };
-  }, [pathname, search]);
+  }, [dispatch, pathname, search]);
 
   // Nudge background perps WebSocket health when the tab becomes visible after
   // being hidden for a while. Offline→online is handled in PerpsStreamBridge.

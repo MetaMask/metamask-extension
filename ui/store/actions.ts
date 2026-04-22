@@ -4320,14 +4320,19 @@ export async function setDefaultHomeActiveTabName(
   }
 }
 
-export async function setLastVisitedPerpsRoute(
+export function setLastVisitedPerpsRoute(
   path: string | null,
-): Promise<void> {
-  try {
-    await submitRequestToBackground('setLastVisitedPerpsRoute', [path]);
-  } catch {
-    // noop
-  }
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setLastVisitedPerpsRoute', [path]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error('[setLastVisitedPerpsRoute] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
 }
 
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
