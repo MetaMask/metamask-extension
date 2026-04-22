@@ -50,25 +50,118 @@ describe('OrderCard', () => {
     expect(screen.getByText('TSLA')).toBeInTheDocument();
   });
 
-  it('displays Long for buy side order', () => {
-    const order = createMockOrder({ side: 'buy' });
-    renderWithProvider(<OrderCard order={order} />, mockStore);
+  describe('order label (formatOrderLabel)', () => {
+    it('displays "Limit long" for a plain buy limit order', () => {
+      const order = createMockOrder({ side: 'buy', orderType: 'limit' });
+      renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText(messages.perpsLong.message)).toBeInTheDocument();
-  });
+      expect(screen.getByText('Limit long')).toBeInTheDocument();
+    });
 
-  it('displays Short for sell side order', () => {
-    const order = createMockOrder({ side: 'sell' });
-    renderWithProvider(<OrderCard order={order} />, mockStore);
+    it('displays "Limit short" for a plain sell limit order', () => {
+      const order = createMockOrder({ side: 'sell', orderType: 'limit' });
+      renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText(messages.perpsShort.message)).toBeInTheDocument();
-  });
+      expect(screen.getByText('Limit short')).toBeInTheDocument();
+    });
 
-  it('displays the order type', () => {
-    const order = createMockOrder({ orderType: 'limit' });
-    renderWithProvider(<OrderCard order={order} />, mockStore);
+    it('displays "Market long" for a plain buy market order', () => {
+      const order = createMockOrder({
+        side: 'buy',
+        orderType: 'market',
+        price: '0',
+      });
+      renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText(messages.perpsLimit.message)).toBeInTheDocument();
+      expect(screen.getByText('Market long')).toBeInTheDocument();
+    });
+
+    it('displays "Limit close long" for a reduce-only sell limit order', () => {
+      const order = createMockOrder({
+        side: 'sell',
+        orderType: 'limit',
+        reduceOnly: true,
+      });
+      renderWithProvider(<OrderCard order={order} />, mockStore);
+
+      expect(screen.getByText('Limit close long')).toBeInTheDocument();
+    });
+
+    it('displays "Limit close short" for a reduce-only buy limit order', () => {
+      const order = createMockOrder({
+        side: 'buy',
+        orderType: 'limit',
+        reduceOnly: true,
+      });
+      renderWithProvider(<OrderCard order={order} />, mockStore);
+
+      expect(screen.getByText('Limit close short')).toBeInTheDocument();
+    });
+
+    it('displays "Take profit limit close long" for a TP trigger (sell side)', () => {
+      const order = createMockOrder({
+        side: 'sell',
+        orderType: 'limit',
+        isTrigger: true,
+        reduceOnly: true,
+        detailedOrderType: 'Take Profit Limit',
+      });
+      renderWithProvider(<OrderCard order={order} />, mockStore);
+
+      expect(
+        screen.getByText('Take profit limit close long'),
+      ).toBeInTheDocument();
+    });
+
+    it('shows market symbol only after size for TP/SL, not before the label', () => {
+      const order = createMockOrder({
+        side: 'sell',
+        orderType: 'limit',
+        symbol: 'ETH',
+        size: '1.5',
+        isTrigger: true,
+        reduceOnly: true,
+        detailedOrderType: 'Take Profit Limit',
+        triggerPrice: '3200',
+        price: '3200',
+      });
+      renderWithProvider(<OrderCard order={order} />, mockStore);
+
+      expect(
+        screen.getByText('Take profit limit close long'),
+      ).toBeInTheDocument();
+      expect(screen.getByText('1.5 ETH')).toBeInTheDocument();
+      expect(screen.queryByText(/^ETH$/u)).not.toBeInTheDocument();
+    });
+
+    it('shows "Trigger price" subtitle for TP/SL orders', () => {
+      const order = createMockOrder({
+        side: 'sell',
+        isTrigger: true,
+        reduceOnly: true,
+        detailedOrderType: 'Take Profit Limit',
+        triggerPrice: '3200',
+        price: '3200',
+      });
+      renderWithProvider(<OrderCard order={order} />, mockStore);
+
+      expect(
+        screen.getByText(messages.perpsTriggerPrice.message),
+      ).toBeInTheDocument();
+    });
+
+    it('displays "Stop market close short" for a SL trigger (buy side)', () => {
+      const order = createMockOrder({
+        side: 'buy',
+        orderType: 'market',
+        isTrigger: true,
+        reduceOnly: true,
+        detailedOrderType: 'Stop Market',
+      });
+      renderWithProvider(<OrderCard order={order} />, mockStore);
+
+      expect(screen.getByText('Stop market close short')).toBeInTheDocument();
+    });
   });
 
   it('displays the order size with symbol', () => {
@@ -90,6 +183,23 @@ describe('OrderCard', () => {
     expect(screen.getByText('$3,500.00')).toBeInTheDocument();
   });
 
+  it('displays TP/SL trigger price, not size × price notional', () => {
+    const order = createMockOrder({
+      orderType: 'limit',
+      side: 'sell',
+      isTrigger: true,
+      reduceOnly: true,
+      detailedOrderType: 'Take Profit Limit',
+      triggerPrice: '3200.00',
+      price: '3200.00',
+      size: '2.0',
+    });
+    renderWithProvider(<OrderCard order={order} />, mockStore);
+
+    expect(screen.getByText('$3,200.00')).toBeInTheDocument();
+    expect(screen.queryByText('$6,400.00')).not.toBeInTheDocument();
+  });
+
   it('displays Market label when order value is zero', () => {
     const order = createMockOrder({
       orderType: 'market',
@@ -98,9 +208,7 @@ describe('OrderCard', () => {
     });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    // "Market" appears in both the value slot and the order type slot
-    const marketElements = screen.getAllByText(messages.perpsMarket.message);
-    expect(marketElements.length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText(messages.perpsMarket.message)).toBeInTheDocument();
   });
 
   it('renders the token logo', () => {

@@ -301,6 +301,22 @@ jest.mock('../../components/app/perps/perps-tutorial-modal', () => ({
   PerpsTutorialModal: () => null,
 }));
 
+jest.mock('../../components/app/perps/perps-candlestick-chart', () => {
+  // require React inside factory to avoid jest.mock hoisting scope restrictions
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const mockReact = require('react');
+  return {
+    PerpsCandlestickChart: mockReact.forwardRef(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (props: any, _ref: any) =>
+        mockReact.createElement('div', {
+          'data-testid': 'perps-candlestick-chart',
+          'data-price-lines': JSON.stringify(props.priceLines ?? []),
+        }),
+    ),
+  };
+});
+
 const mockUseParams = jest.fn().mockReturnValue({ symbol: 'ETH' });
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn().mockReturnValue({
@@ -635,6 +651,43 @@ describe('PerpsMarketDetailPage', () => {
 
       expect(getByTestId('perps-market-detail-chart')).toBeInTheDocument();
       expect(getByTestId('perps-candlestick-chart')).toBeInTheDocument();
+    });
+
+    it('passes a Liq price line to the chart when position has a liquidationPrice', async () => {
+      // ETH mock position has liquidationPrice: '2400.00'
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      const chart = getByTestId('perps-candlestick-chart');
+      const priceLines = JSON.parse(
+        chart.getAttribute('data-price-lines') ?? '[]',
+      ) as { label: string; price: number }[];
+
+      const liqLine = priceLines.find((l) => l.label === 'Liq');
+      expect(liqLine).toBeDefined();
+      expect(liqLine?.price).toBe(2400);
+    });
+
+    it('omits the Liq price line from the chart when position liquidationPrice is null', async () => {
+      mockLivePositions.mockReturnValue({
+        positions: [{ ...mockPositions[0], liquidationPrice: null }],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      const chart = getByTestId('perps-candlestick-chart');
+      const priceLines = JSON.parse(
+        chart.getAttribute('data-price-lines') ?? '[]',
+      ) as { label: string }[];
+
+      expect(priceLines.find((l) => l.label === 'Liq')).toBeUndefined();
     });
 
     it('displays favorite button', async () => {
