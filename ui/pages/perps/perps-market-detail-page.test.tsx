@@ -575,7 +575,7 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('navigates back when back button is clicked', async () => {
+    it('navigates back in history when back button is clicked', async () => {
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = await renderPage(store);
@@ -583,7 +583,7 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/');
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
     });
 
     it('uses market 24h change as fallback when no live percent update exists', async () => {
@@ -906,6 +906,31 @@ describe('PerpsMarketDetailPage', () => {
       );
       expect(mockUseNavigate).toHaveBeenCalledWith(
         expect.stringContaining('direction=long'),
+      );
+    });
+
+    it('shows cross-margin toast and does not navigate when Add exposure is clicked on a cross-margin position', async () => {
+      const crossPosition = {
+        ...mockPositions[0],
+        leverage: { type: 'cross' as const, value: 5 },
+      };
+      mockLivePositions.mockReturnValue({
+        positions: [crossPosition, ...mockPositions.slice(1)],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+      fireEvent.click(screen.getByTestId('perps-modify-menu-add-exposure'));
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsCrossMarginNotSupportedTitle',
+        description: messages.perpsCrossMarginNotSupportedDescription.message,
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(
+        expect.stringContaining('mode=modify'),
       );
     });
 
