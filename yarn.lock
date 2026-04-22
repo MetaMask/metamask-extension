@@ -5678,16 +5678,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:@metamask-previews/assets-controller@6.0.0-preview-a45abf1e1":
-  version: 6.0.0-preview-a45abf1e1
-  resolution: "@metamask-previews/assets-controller@npm:6.0.0-preview-a45abf1e1"
+"@metamask/assets-controller@npm:@metamask-previews/assets-controller@6.0.0-preview-974b0bd94":
+  version: 6.0.0-preview-974b0bd94
+  resolution: "@metamask-previews/assets-controller@npm:6.0.0-preview-974b0bd94"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/account-tree-controller": "npm:^7.1.0"
     "@metamask/accounts-controller": "npm:^37.2.0"
-    "@metamask/assets-controllers": "npm:^104.1.0"
+    "@metamask/assets-controllers": "npm:^104.2.0"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/client-controller": "npm:^1.0.1"
     "@metamask/controller-utils": "npm:^11.20.0"
@@ -5711,13 +5711,13 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/55270a2080f05a1872d35a6f48d9bcdd43cebc059f891c58b35d4ee6bfeded49793bfe86c5fe321eecdb6dd0cd0354974fe47795590b293b48d299389e875396
+  checksum: 10/96e37900dda4a317c4f6aafcdebcaaae87c62f3817321b674e55484a2e69217dcb8241c678a7dacfc6bf9e537bf5ceed12ce11de96ac1fb0e3cecf6b9162f631
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@104.1.0-preview-a45abf1e1":
-  version: 104.1.0-preview-a45abf1e1
-  resolution: "@metamask-previews/assets-controllers@npm:104.1.0-preview-a45abf1e1"
+"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@104.2.0-preview-974b0bd94":
+  version: 104.2.0-preview-974b0bd94
+  resolution: "@metamask-previews/assets-controllers@npm:104.2.0-preview-974b0bd94"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5767,7 +5767,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/7346cd8442065bfd4a78a8ac511ec44ad63cda9725cf81654987aee18800f53dfa43306bbcc78d162dfeb8f51bfeeefbd356f8164232d7bf7ca12025871203a3
+  checksum: 10/930b0c7cc15341aba9521b4f5ca0357152ad66bd40b022a75e83991c46c679c21d364659df7a604f429db572d016e5e3077f1321ea5f301aaa7fc2bc818bf226
   languageName: node
   linkType: hard
 
@@ -34094,8 +34094,8 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@6.0.0-preview-a45abf1e1"
-    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@104.1.0-preview-a45abf1e1"
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@6.0.0-preview-974b0bd94"
+    "@metamask/assets-controllers": "npm:@@metamask-previews/assets-controllers@104.2.0-preview-974b0bd94"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
     "@metamask/bitcoin-wallet-snap": "npm:^1.10.1"
