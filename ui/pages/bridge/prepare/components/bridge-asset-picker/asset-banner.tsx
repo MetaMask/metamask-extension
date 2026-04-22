@@ -1,0 +1,78 @@
+import React from 'react';
+import {
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
+import { type BridgeToken } from '../../../../../ducks/bridge/types';
+import { BridgeAssetSecurityDataType } from '../../../utils/tokens';
+import { Tag } from '../../../../../components/component-library';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import {
+  BackgroundColor,
+  FontWeight,
+  TextColor,
+} from '../../../../../helpers/constants/design-system';
+
+type AssetBannerProps = {
+  asset: BridgeToken;
+};
+
+export const AssetBanner = ({ asset }: AssetBannerProps) => {
+  const t = useI18nContext();
+  const assetIsVerified =
+    asset.securityData?.type === BridgeAssetSecurityDataType.VERIFIED ||
+    asset.isVerified;
+  const assetIsSuspicious =
+    asset.securityData?.type === BridgeAssetSecurityDataType.WARNING ||
+    asset.securityData?.type === BridgeAssetSecurityDataType.SPAM;
+  const assetIsMalicious =
+    asset.securityData?.type === BridgeAssetSecurityDataType.MALICIOUS;
+
+  if (assetIsVerified) {
+    return (
+      <Icon
+        data-testid="bridge-asset-verified-badge"
+        name={IconName.VerifiedFilled}
+        size={IconSize.Sm}
+        color={IconColor.InfoDefault}
+      />
+    );
+  }
+
+  if (assetIsSuspicious) {
+    return (
+      <Tag
+        label={t('bridgeSuspicious')}
+        iconName={IconName.Danger}
+        backgroundColor={BackgroundColor.warningMuted}
+        labelProps={{
+          color: TextColor.warningDefault,
+          fontWeight: FontWeight.Medium,
+        }}
+        startIconProps={{
+          className: 'text-warning-default',
+          size: IconSize.Sm,
+        }}
+      />
+    );
+  }
+
+  if (assetIsMalicious) {
+    return (
+      <Tag
+        label={t('bridgeMalicious')}
+        iconName={IconName.Error}
+        backgroundColor={BackgroundColor.errorMuted}
+        labelProps={{
+          color: TextColor.errorDefault,
+          fontWeight: FontWeight.Medium,
+        }}
+        startIconProps={{ className: 'text-error-default', size: IconSize.Sm }}
+      />
+    );
+  }
+
+  return null;
+};

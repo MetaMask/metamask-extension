@@ -612,6 +612,7 @@ describe('Bridge selectors', () => {
         tokenFiatAmount: undefined,
         rwaData: undefined,
         isVerified: undefined,
+        securityData: undefined,
       });
     });
   });
@@ -647,6 +648,7 @@ describe('Bridge selectors', () => {
           "isVerified": undefined,
           "name": "DEST",
           "rwaData": undefined,
+          "securityData": undefined,
           "symbol": "DEST",
           "tokenFiatAmount": undefined,
         }
@@ -680,6 +682,7 @@ describe('Bridge selectors', () => {
         tokenFiatAmount: undefined,
         rwaData: undefined,
         isVerified: undefined,
+        securityData: undefined,
       });
     });
 
@@ -748,6 +751,7 @@ describe('Bridge selectors', () => {
         tokenFiatAmount: undefined,
         rwaData: undefined,
         isVerified: undefined,
+        securityData: undefined,
       });
     });
   });
