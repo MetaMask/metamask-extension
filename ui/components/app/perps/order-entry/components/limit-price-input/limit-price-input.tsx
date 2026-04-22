@@ -156,6 +156,7 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
         }
         endAccessory={
           <ButtonBase
+            type="button"
             size={ButtonBaseSize.Sm}
             onClick={handleMidClick}
             className="bg-transparent rounded-none px-2 min-w-0 h-auto"
