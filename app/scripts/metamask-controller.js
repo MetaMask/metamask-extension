@@ -454,6 +454,7 @@ import { ProfileMetricsControllerInit } from './messenger-client-init/profile-me
 import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metrics-service-init';
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
+import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -701,6 +702,7 @@ export default class MetamaskController extends EventEmitter {
       ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }
         : {}),
+      LegacyBackgroundApiService: LegacyBackgroundApiServiceInit,
     };
 
     const {
@@ -828,6 +830,8 @@ export default class MetamaskController extends EventEmitter {
     this.claimsService = messengerClientsByName.ClaimsService;
     this.profileMetricsController =
       messengerClientsByName.ProfileMetricsController;
+    this.legacyBackgroundApiService =
+      messengerClientsByName.LegacyBackgroundApiService;
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -1691,6 +1695,36 @@ export default class MetamaskController extends EventEmitter {
         ?.catch((error) => {
           console.error(error);
         });
+    }
+  }
+
+  /**
+   * Disconnect an active Perps session without affecting non-Perps users.
+   *
+   * Perps is an optional feature, so guard on build inclusion, controller
+   * presence, and active connection state before calling into the controller.
+   */
+  #disconnectPerpsIfActive() {
+    try {
+      if (
+        !getIsPerpsIncludedInBuild() ||
+        !this.messengerClientsByName.PerpsController ||
+        typeof this.messengerClientApi.perpsDisconnect !== 'function'
+      ) {
+        return;
+      }
+
+      if (
+        this.messengerClientApi.perpsGetConnectionState?.() === 'disconnected'
+      ) {
+        return;
+      }
+
+      this.messengerClientApi.perpsDisconnect().catch((error) => {
+        console.error(error);
+      });
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -7071,6 +7105,10 @@ export default class MetamaskController extends EventEmitter {
       );
       messengerSubscriptions.clear();
       perpsStream?.destroy();
+      if (this.activeControllerConnections === 0) {
+        // Destroy the UI bridge stream first, then disconnect the controller-owned Perps WS.
+        this.#disconnectPerpsIfActive();
+      }
     });
   }
 
@@ -8277,6 +8315,7 @@ export default class MetamaskController extends EventEmitter {
     // KeyringController event. Other controllers subscribe to the 'lock'
     // event of the MetaMaskController itself.
     this.emit('lock');
+    this.#disconnectPerpsIfActive();
   }
 
   /**

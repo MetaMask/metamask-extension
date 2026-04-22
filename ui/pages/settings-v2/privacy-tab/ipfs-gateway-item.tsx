@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { FormTextField } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import {
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
