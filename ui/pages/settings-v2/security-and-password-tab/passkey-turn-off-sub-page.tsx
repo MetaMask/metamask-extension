@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useContext, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import log from 'loglevel';
 import {
   Box,
   Button,
@@ -11,35 +12,118 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
-import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import {
   FormTextField,
   FormTextFieldSize,
   TextFieldType,
-} from '../../../../components/component-library';
+} from '../../../components/component-library';
 import {
-  SECURITY_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_TURN_OFF_PASSKEY_ROUTE,
-} from '../../../../helpers/constants/routes';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+} from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getIsPasskeyRegistered } from '../../../selectors';
 import {
   forceUpdateMetamaskState,
   removePasskeyWithPasswordVerification,
-} from '../../../../store/actions';
-import { toast, ToastContent } from '../../../../components/ui/toast/toast';
-import { SECOND } from '../../../../../shared/constants/time';
+  generatePasskeyAuthenticationOptions,
+  removePasskeyWithPasskeyVerification,
+} from '../../../store/actions';
+import { toast, ToastContent } from '../../../components/ui/toast/toast';
+import { SECOND } from '../../../../shared/constants/time';
+import {
+  startPasskeyAuthentication,
+  cancelPasskeyCeremony,
+} from '../../../../shared/lib/passkey';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 const passkeySettingsToastDurationMs = 5 * SECOND;
 
-export default function TurnOffPasskey() {
+type AutoPasskeyPhase = 'pending' | 'use-password';
+
+export default function PasskeyTurnOffSubPage() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
+
+  const [autoPasskeyPhase, setAutoPasskeyPhase] = useState<AutoPasskeyPhase>(
+    () => (isPasskeyRegistered ? 'pending' : 'use-password'),
+  );
   const [password, setPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
     useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      cancelPasskeyCeremony();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isPasskeyRegistered || autoPasskeyPhase !== 'pending') {
+      return;
+    }
+
+    let cancelled = false;
+
+    const attemptPasskeyTurnOff = async () => {
+      try {
+        const authOptions = await generatePasskeyAuthenticationOptions();
+        const authenticationResponse =
+          await startPasskeyAuthentication(authOptions);
+        if (cancelled) {
+          return;
+        }
+        await removePasskeyWithPasskeyVerification(authenticationResponse);
+        await forceUpdateMetamaskState(dispatch);
+        toast.success(
+          <ToastContent title={t('passkeySettingsToastTurnedOff')} />,
+          { duration: passkeySettingsToastDurationMs },
+        );
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.SettingsUpdated,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention -- MetaMetrics snake_case contract
+            passkey_unlock_registered: false,
+          },
+        });
+        navigate(SECURITY_AND_PASSWORD_ROUTE);
+      } catch (error: unknown) {
+        if (cancelled) {
+          return;
+        }
+        log.debug(
+          'Passkey verification for disable failed; showing password fallback',
+          error,
+        );
+        setAutoPasskeyPhase('use-password');
+      }
+    };
+
+    attemptPasskeyTurnOff();
+
+    return () => {
+      cancelled = true;
+      cancelPasskeyCeremony();
+    };
+  }, [
+    autoPasskeyPhase,
+    dispatch,
+    isPasskeyRegistered,
+    navigate,
+    t,
+    trackEvent,
+  ]);
 
   const openTurnOffPasskeyInFullScreen = () => {
     global.platform?.openExtensionInBrowser?.(
@@ -59,13 +143,35 @@ export default function TurnOffPasskey() {
         <ToastContent title={t('passkeySettingsToastTurnedOff')} />,
         { duration: passkeySettingsToastDurationMs },
       );
-      navigate(SECURITY_ROUTE);
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SettingsUpdated,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- MetaMetrics snake_case contract
+          passkey_unlock_registered: false,
+        },
+      });
+      navigate(SECURITY_AND_PASSWORD_ROUTE);
     } catch {
       setIsIncorrectPasswordError(true);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (autoPasskeyPhase === 'pending') {
+    return (
+      <Box padding={4} flexDirection={BoxFlexDirection.Column} gap={4}>
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          data-testid="passkey-turn-off-pending"
+        >
+          {t('changePasswordVerifyingPasskey')}
+        </Text>
+      </Box>
+    );
+  }
 
   return (
     <Box padding={4} flexDirection={BoxFlexDirection.Column} gap={6}>

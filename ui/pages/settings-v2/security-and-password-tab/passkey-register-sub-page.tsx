@@ -18,28 +18,28 @@ import {
   Icon,
   IconColor,
 } from '@metamask/design-system-react';
-import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   startPasskeyRegistration,
   cancelPasskeyCeremony,
-} from '../../../../../shared/lib/passkey';
+} from '../../../../shared/lib/passkey';
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
   forceUpdateMetamaskState,
-} from '../../../../store/actions';
-import { toast, ToastContent } from '../../../../components/ui/toast/toast';
-import { SECOND } from '../../../../../shared/constants/time';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+} from '../../../store/actions';
+import { toast, ToastContent } from '../../../components/ui/toast/toast';
+import { SECOND } from '../../../../shared/constants/time';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
+} from '../../../../shared/constants/metametrics';
 
 const passkeySettingsToastDurationMs = 5 * SECOND;
 
-export default function RegisterPasskey() {
+export default function PasskeyRegisterSubPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -58,7 +58,7 @@ export default function RegisterPasskey() {
   );
 
   const goToSettings = () => {
-    navigate(SECURITY_ROUTE, { replace: true });
+    navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
   };
 
   const handleSetUpBiometrics = async () => {

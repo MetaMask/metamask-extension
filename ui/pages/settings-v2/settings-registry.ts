@@ -19,6 +19,8 @@ import {
   PREFERENCES_AND_DISPLAY_ROUTE,
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+  SECURITY_REGISTER_PASSKEY_ROUTE,
+  SECURITY_TURN_OFF_PASSKEY_ROUTE,
   SETTINGS_V2_ROUTE,
   SNAP_SETTINGS_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
@@ -165,6 +167,20 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(
       () => import('./security-and-password-tab/password-sub-page.tsx'),
+    ),
+  },
+  [SECURITY_TURN_OFF_PASSKEY_ROUTE]: {
+    labelKey: 'turnOffPasskeysTitle',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () => import('./security-and-password-tab/passkey-turn-off-sub-page.tsx'),
+    ),
+  },
+  [SECURITY_REGISTER_PASSKEY_ROUTE]: {
+    labelKey: 'setUpBiometrics',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () => import('./security-and-password-tab/passkey-register-sub-page.tsx'),
     ),
   },
 
