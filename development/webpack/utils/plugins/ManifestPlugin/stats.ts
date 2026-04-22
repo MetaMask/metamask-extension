@@ -118,11 +118,11 @@ export function createBundleSizeSummary(
   partSizes: Record<BundlePart, number>,
   {
     zip,
-    timestamp = Date.now(),
+    timestamp,
   }: {
     zip?: number;
-    timestamp?: number;
-  } = {},
+    timestamp: number;
+  },
 ): BundleSizeSummary {
   return {
     ...mapBundleParts((part) => partSizes[part]),
