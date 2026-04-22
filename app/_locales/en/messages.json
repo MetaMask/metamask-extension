@@ -8064,7 +8064,7 @@
     "message": "Smart account"
   },
   "smartAccountDappRequestsDescription": {
-    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
+    "message": "Let dapps request smart account features for standard accounts. MetaMask will only upgrade to our audited smart account."
   },
   "smartAccountDappRequestsTitle": {
     "message": "Smart account requests from dapps"
@@ -8076,7 +8076,7 @@
     "message": "Smart account requests from dapps"
   },
   "smartAccountRequestsFromDappsDescription": {
-    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
+    "message": "Let dapps request smart account features for standard accounts. MetaMask will only upgrade to our audited smart account."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."

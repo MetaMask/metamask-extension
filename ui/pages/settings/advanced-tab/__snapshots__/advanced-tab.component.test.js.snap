@@ -80,7 +80,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         <div
           class="settings-page__content-description"
         >
-          Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts.
+          Let dapps request smart account features for standard accounts. MetaMask will only upgrade to our audited smart account.
         </div>
       </div>
       <div
