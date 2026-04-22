@@ -12,25 +12,25 @@ import {
 } from '@metamask/multichain-network-controller';
 import { toHex } from '@metamask/controller-utils';
 import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import {
-  AvatarNetworkSize,
   Box,
+  BoxAlignItems,
+  BoxBorderColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
   Icon,
+  IconColor,
   IconName,
   IconSize,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import {
+  AvatarNetworkSize,
   Popover,
   PopoverPosition,
   PopoverRole,
-  Text,
 } from '../../component-library';
 import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -312,32 +312,29 @@ export const DappBarNetworkSelectorPopover: React.FC<
       className="dapp-bar-network-selector-popover"
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.stretch}
-        width={BlockSize.Full}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Stretch}
+        className="w-full"
         style={{ maxHeight: `${POPOVER_MAX_HEIGHT}px` }}
       >
         {/* Sticky header: compact test-networks toggle. Stays in view while the
             network list below scrolls. */}
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.spaceBetween}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Between}
           paddingTop={2}
           paddingBottom={2}
           paddingLeft={4}
           paddingRight={2}
-          style={{
-            flexShrink: 0,
-            borderBottom: '1px solid var(--color-border-muted)',
-          }}
+          borderColor={BoxBorderColor.BorderMuted}
+          className="shrink-0 border-x-0 border-t-0 border-b"
           data-testid="dapp-bar-network-selector-popover__testnet-toggle-row"
         >
           <Text
-            variant={TextVariant.bodySmMedium}
-            color={TextColor.textAlternative}
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextAlternative}
           >
             {t('showTestnetNetworks')}
           </Text>
@@ -350,16 +347,11 @@ export const DappBarNetworkSelectorPopover: React.FC<
         </Box>
 
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.stretch}
-          width={BlockSize.Full}
-          style={{
-            overflowY: 'auto',
-            flex: '1 1 auto',
-            paddingTop: 4,
-            paddingBottom: 4,
-          }}
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Stretch}
+          paddingTop={1}
+          paddingBottom={1}
+          className="w-full grow basis-auto overflow-y-auto"
           data-testid="dapp-bar-network-selector-popover__list"
         >
           {visibleNetworks.map((network) => {
@@ -382,7 +374,7 @@ export const DappBarNetworkSelectorPopover: React.FC<
                     <Icon
                       name={IconName.Check}
                       size={IconSize.Sm}
-                      color={IconColor.primaryDefault}
+                      color={IconColor.PrimaryDefault}
                       data-testid={`dapp-bar-network-selector-popover__selected-${network.chainId}`}
                     />
                   ) : undefined
