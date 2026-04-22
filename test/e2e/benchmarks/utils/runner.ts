@@ -7,6 +7,7 @@ import type {
   StatisticalResult,
   ThresholdConfig,
   TimerStatistics,
+  WebVitalsAggregated,
   WebVitalsMetrics,
   WebVitalsRun,
   WebVitalsSummary,
@@ -29,6 +30,7 @@ import {
   MAX_EXCLUSION_RATE,
   MAX_TOTAL_DURATION_MS,
   validateThresholds,
+  WEB_VITALS_NUMERIC_KEYS,
 } from './statistics';
 import type {
   BenchmarkFunction,
@@ -39,6 +41,26 @@ import type {
   UserActionMeasurement,
 } from './types';
 import { performanceTracker } from './performance-tracker';
+
+/**
+ * Promote web vitals aggregated stats into a TimerStatistics array.
+ * This allows web vitals to flow through the same threshold validation
+ * pipeline as traditional timers.
+ *
+ * @param aggregated - Aggregated web vitals from {@link aggregateWebVitals}
+ */
+function extractWebVitalsAsTimerStats(
+  aggregated: WebVitalsAggregated,
+): TimerStatistics[] {
+  const stats: TimerStatistics[] = [];
+  for (const key of WEB_VITALS_NUMERIC_KEYS) {
+    const metric = aggregated[key];
+    if (metric) {
+      stats.push(metric);
+    }
+  }
+  return stats;
+}
 
 /**
  * Run a benchmark function with retries
@@ -184,16 +206,17 @@ export async function runBenchmarkWithIterations(
     MAX_EXCLUSION_RATE,
   );
 
-  const thresholdResult = validateThresholds(timerStats, thresholdConfig);
-
   // Aggregate web vitals if any runs reported them
   let webVitalsSummary: WebVitalsSummary | undefined;
   if (webVitalsRuns.length > 0) {
-    webVitalsSummary = {
-      runs: webVitalsRuns,
-      aggregated: aggregateWebVitals(webVitalsRuns),
-    };
+    const aggregated = aggregateWebVitals(webVitalsRuns);
+    webVitalsSummary = { runs: webVitalsRuns, aggregated };
+
+    // Promote web vitals into timerStats so they flow through threshold validation
+    timerStats.push(...extractWebVitalsAsTimerStats(aggregated));
   }
+
+  const thresholdResult = validateThresholds(timerStats, thresholdConfig);
   // Extract benchmarkType from the first result (same across all iterations)
   const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
 
@@ -242,6 +265,7 @@ export function convertTimerStatisticsToBenchmarkResults(
   const p75: StatisticalResult = {};
   const p95: StatisticalResult = {};
 
+  // timers already includes promoted web vitals from runBenchmarkWithIterations
   for (const timer of timers) {
     mean[timer.id] = timer.mean;
     min[timer.id] = timer.min;
@@ -369,17 +393,36 @@ export async function runPageLoadBenchmark(
     };
   }
 
+  const mean = calcMeanResult(result);
+  const min = calcMinResult(result);
+  const max = calcMaxResult(result);
+  const stdDevResult = calcStdDevResult(result);
+  const p75 = calcPResult(result, 75);
+  const p95 = calcPResult(result, 95);
+
+  // Promote web vitals aggregated stats into the top-level maps
+  if (webVitals?.aggregated) {
+    for (const wv of extractWebVitalsAsTimerStats(webVitals.aggregated)) {
+      mean[wv.id] = wv.mean;
+      min[wv.id] = wv.min;
+      max[wv.id] = wv.max;
+      stdDevResult[wv.id] = wv.stdDev;
+      p75[wv.id] = wv.p75;
+      p95[wv.id] = wv.p95;
+    }
+  }
+
   return {
     testTitle,
     persona: resultPersona,
     platform,
     buildType,
-    mean: calcMeanResult(result),
-    min: calcMinResult(result),
-    max: calcMaxResult(result),
-    stdDev: calcStdDevResult(result),
-    p75: calcPResult(result, 75),
-    p95: calcPResult(result, 95),
+    mean,
+    min,
+    max,
+    stdDev: stdDevResult,
+    p75,
+    p95,
     ...(webVitals && { webVitals }),
   };
 }

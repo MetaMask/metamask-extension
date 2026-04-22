@@ -7,6 +7,7 @@
     "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
+      "accountTree": "object",
       "accountWalletsMetadata": "object",
       "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
       "selectedAccountGroup": "string"
@@ -45,7 +46,7 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
-      "newPrivacyPolicyToastClickedOrClosed": null,
+      "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": null,
@@ -156,9 +157,7 @@
       },
       "nativeAssetIdentifiers": "object"
     },
-    "NetworkOrderController": {
-      "orderedNetworkList": "object"
-    },
+    "NetworkOrderController": { "orderedNetworkList": "object" },
     "NftController": {
       "allNftContracts": "object",
       "allNfts": "object",
@@ -229,6 +228,7 @@
       },
       "referrals": "object",
       "securityAlertsEnabled": "boolean",
+      "showSidePanelMigrationToast": "boolean",
       "snapRegistryList": "object",
       "snapsAddSnapAccountModalDismissed": "boolean",
       "theme": "os",
@@ -305,5 +305,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 202 }
+  "meta": { "storageKind": "split", "version": 206 }
 }

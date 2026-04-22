@@ -150,7 +150,9 @@ describe('App Header', () => {
         fireEvent.click(rejectButton);
 
         await waitFor(() => {
-          expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
+          // When user doesn't consent, non-personal params (utm_source) are preserved
+          const expectedUrl = SUPPORT_LINK;
+          expect(openWindow).toHaveBeenCalledWith(expectedUrl);
         });
       });
     });

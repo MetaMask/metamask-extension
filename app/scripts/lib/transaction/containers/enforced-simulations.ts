@@ -5,7 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger, hexToNumber } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
 import { getEnforcedSimulationsSlippage } from '../../../../../shared/lib/transaction/enforced-simulations';
 import {
   createCaveatBuilder,
@@ -54,15 +54,19 @@ export async function enforceSimulations({
     slippage,
   );
 
-  const { data, to } = await convertTransactionToRedeemDelegations({
-    transaction: transactionMeta,
-    messenger: messenger as DelegationMessenger,
-    caveats,
-    delegatee: from,
-    delegationSignature: useRealSignature
-      ? undefined
-      : MOCK_DELEGATION_SIGNATURE,
-  });
+  const { authorizationList, data, to, type } =
+    await convertTransactionToRedeemDelegations({
+      transaction: transactionMeta,
+      messenger: messenger as DelegationMessenger,
+      caveats,
+      delegatee: from,
+      delegationSignature: useRealSignature
+        ? undefined
+        : MOCK_DELEGATION_SIGNATURE,
+      authorization: transactionMeta.delegationAddress
+        ? undefined
+        : { minimal: true },
+    });
 
   log('Data', data);
 
@@ -71,6 +75,11 @@ export async function enforceSimulations({
       transaction.txParams.data = data;
       transaction.txParams.to = to;
       transaction.txParams.value = '0x0';
+      transaction.txParams.type = type;
+
+      if (authorizationList) {
+        transaction.txParams.authorizationList = authorizationList;
+      }
     },
   };
 }

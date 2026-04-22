@@ -1,8 +1,9 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
+import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
-import { bridgeTransaction, getBridgeL2Fixtures } from './bridge-test-utils';
+import { getBridgeL2Fixtures } from './bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
   this.timeout(120000); // Needs a higher timeout as it's a longer tests
@@ -11,7 +12,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeL2Fixtures(
         this.test?.fullTitle(),
         BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        true,
       ),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });

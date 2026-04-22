@@ -1,11 +1,21 @@
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { createSelector } from 'reselect';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
+import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
 import type { MetaMaskReduxState } from '../store/store';
 import {
   TOAST_EXCLUDED_TRANSACTION_TYPES,
   TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
+import { getPendingApprovals } from './approvals';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import {
+  selectRequiredTransactionHashes,
+  selectRequiredTransactionIds,
+} from './transactionController';
 
 const selectTransactions = (state: MetaMaskReduxState) =>
   state.metamask?.transactions ?? EMPTY_ARRAY;
@@ -57,7 +67,15 @@ export const selectEvmTransactionsForToast = createSelector(
   selectTransactions,
   selectBridgeApprovalTxIds,
   selectCrossChainBridgeSourceTxIds,
-  (rawTransactions, bridgeApprovalIds, crossChainBridgeIds) => {
+  selectRequiredTransactionIds,
+  selectRequiredTransactionHashes,
+  (
+    rawTransactions,
+    bridgeApprovalIds,
+    crossChainBridgeIds,
+    requiredTransactionIds,
+    requiredTransactionHashes,
+  ) => {
     if (!rawTransactions?.length) {
       return EMPTY_ARRAY;
     }
@@ -79,7 +97,12 @@ export const selectEvmTransactionsForToast = createSelector(
         Boolean(type) &&
         !TOAST_EXCLUDED_TRANSACTION_TYPES.has(type) &&
         !bridgeApprovalIds.has(transaction.id?.toLowerCase()) &&
-        !crossChainBridgeIds.has(transaction.id)
+        !crossChainBridgeIds.has(transaction.id) &&
+        !requiredTransactionIds.has(transaction.id) &&
+        !(
+          transaction.hash &&
+          requiredTransactionHashes.has(transaction.hash.toLowerCase())
+        )
       );
     });
   },
@@ -113,5 +136,73 @@ export const selectNonEvmTransactionsForToast = createDeepEqualSelector(
           !crossChainBridgeIds.has(transaction.id)
         );
       });
+  },
+);
+
+type TxRequest = {
+  approvalId: string;
+  txId: string;
+  smartTransactionStatus: string | undefined;
+  evmStatus: string | undefined;
+};
+
+function getEffectiveEvmStatus(
+  txId: string,
+  transactions: ReturnType<typeof selectTransactions>,
+) {
+  const originalTx = transactions.find((tx) => tx.id === txId);
+  if (!originalTx) {
+    return undefined;
+  }
+
+  if (
+    originalTx.status === TransactionStatus.dropped &&
+    originalTx.replacedById
+  ) {
+    const replacement = transactions.find(
+      (tx) => tx.id === originalTx.replacedById,
+    );
+    if (replacement?.type === TransactionType.retry) {
+      return replacement.status;
+    }
+  }
+
+  return originalTx.status;
+}
+
+export const selectSmartTransactions = createDeepEqualSelector(
+  getPendingApprovals,
+  selectTransactions,
+  (pendingApprovals, transactions) => {
+    const result: TxRequest[] = [];
+
+    for (const approval of pendingApprovals) {
+      if (
+        approval.type !==
+        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
+      ) {
+        continue;
+      }
+
+      const { requestState = {} } = approval;
+      const { txId, smartTransaction } = requestState as {
+        txId?: string;
+        smartTransaction?: { status?: string };
+      };
+
+      if (!txId) {
+        continue;
+      }
+
+      result.push({
+        approvalId: approval.id,
+        txId,
+        smartTransactionStatus: smartTransaction?.status,
+        // Track EVM transaction status to detect cancels and speed ups
+        evmStatus: getEffectiveEvmStatus(txId, transactions),
+      });
+    }
+
+    return result;
   },
 );

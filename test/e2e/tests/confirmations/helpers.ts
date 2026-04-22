@@ -1,5 +1,5 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -39,7 +39,7 @@ export function withTransactionEnvelopeTypeFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
       driverOptions: { timeOut: 20000 },
-      fixtures: new FixtureBuilder()
+      fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
           metaMetricsId: MOCK_META_METRICS_ID,
@@ -71,14 +71,13 @@ export function withSignatureFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
       driverOptions: { timeOut: 20000 },
-      fixtures: new FixtureBuilder()
+      fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
           metaMetricsId: MOCK_META_METRICS_ID,
           participateInMetaMetrics: true,
         })
         .build(),
-      localNodeOptions: {},
       testSpecificMock: mocks,
       title,
     },

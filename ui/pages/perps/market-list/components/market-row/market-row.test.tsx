@@ -65,6 +65,13 @@ describe('MarketRow', () => {
       expect(screen.getByText('+2.5%')).toBeInTheDocument();
     });
 
+    it('appends % to change24hPercent when stream omits it', () => {
+      const market = createMockMarket({ change24hPercent: '+2.5' });
+      renderWithProvider(<MarketRow market={market} />, mockStore);
+
+      expect(screen.getByText('+2.5%')).toBeInTheDocument();
+    });
+
     it('displays the max leverage', () => {
       renderWithProvider(<MarketRow {...defaultProps} />, mockStore);
 

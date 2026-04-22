@@ -21,15 +21,6 @@ class BitcoinHomepage extends HomePage {
         this.buySellButton,
         this.receiveButton,
       ]);
-
-      // Bitcoin accounts get created asynchronously during wallet alignment, so we need
-      // to wait for this to succeed to be able to use Bitcoin accounts.
-      await this.waitForNonEvmAccountsLoaded();
-
-      // FIXME: For some reason, balances are taking a bit more time to display in full
-      // view mode compared to the sidepanel. To warkaround this, we are adding a small
-      // delay that helps stabilizing the Bitcoin tests.
-      await this.driver.delay(2000);
     } catch (e) {
       console.log('Timeout while waiting for bitcoin homepage to be loaded', e);
       throw e;

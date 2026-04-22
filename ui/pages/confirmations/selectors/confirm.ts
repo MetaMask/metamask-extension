@@ -4,7 +4,7 @@ import { QuoteResponse } from '@metamask/bridge-controller';
 
 import { createSelector } from 'reselect';
 import { getPendingApprovals } from '../../../selectors/approvals';
-import { createDeepEqualSelector } from '../../../../shared/lib/selectors/util';
+import { createDeepEqualSelector } from '../../../../shared/lib/selectors/selector-creators';
 import { ConfirmMetamaskState } from '../types/confirm';
 
 const ConfirmationApprovalTypes = [

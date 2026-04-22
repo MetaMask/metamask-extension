@@ -1,8 +1,9 @@
-import type { PersistenceManager as PersistenceManagerType } from './stores/persistence-manager';
+import type { PersistenceManager as PersistenceManagerType } from '../../../shared/lib/stores/persistence-manager';
 
 const mockGet = jest.fn();
 const mockGetBackup = jest.fn();
 const mockCleanUpMostRecentRetrievedState = jest.fn();
+const mockPersistenceOn = jest.fn();
 let mockMostRecentRetrievedState: unknown = null;
 
 jest.mock('../platforms/extension', () => {
@@ -23,23 +24,31 @@ jest.mock('../../../shared/lib/object.utils', () => ({
   maskObject: jest.fn((obj) => obj),
 }));
 
-jest.mock('./stores/extension-store', () => {
+jest.mock('../../../shared/lib/stores/extension-store', () => {
   return jest.fn().mockImplementation(() => ({}));
 });
 
-jest.mock('./stores/fixture-extension-store', () => ({
+jest.mock('../../../shared/lib/stores/fixture-extension-store', () => ({
   FixtureExtensionStore: jest.fn().mockImplementation(() => ({})),
 }));
 
-jest.mock('./stores/persistence-manager', () => ({
-  PersistenceManager: jest.fn().mockImplementation(() => ({
-    get: mockGet,
-    getBackup: mockGetBackup,
-    cleanUpMostRecentRetrievedState: mockCleanUpMostRecentRetrievedState,
-    get mostRecentRetrievedState() {
-      return mockMostRecentRetrievedState;
-    },
-  })),
+jest.mock('../../../shared/lib/stores/persistence-manager', () => ({
+  PersistenceManager: jest.fn().mockImplementation(() => {
+    const instance = {
+      get: mockGet,
+      getBackup: mockGetBackup,
+      cleanUpMostRecentRetrievedState: mockCleanUpMostRecentRetrievedState,
+      on: (...args: unknown[]) => {
+        mockPersistenceOn(...args);
+        return instance;
+      },
+      off: jest.fn(),
+      get mostRecentRetrievedState() {
+        return mockMostRecentRetrievedState;
+      },
+    };
+    return instance;
+  }),
 }));
 
 /**
@@ -69,6 +78,7 @@ describe('setup-initial-state-hooks', () => {
     jest.resetModules();
     mockMostRecentRetrievedState = null;
     mockCleanUpMostRecentRetrievedState.mockClear();
+    mockPersistenceOn.mockClear();
     globalThis.stateHooks = {} as typeof stateHooks;
   });
 
@@ -84,7 +94,7 @@ describe('setup-initial-state-hooks', () => {
     it('detects browserify MV3 background (app-init.js)', async () => {
       setSelfHref('chrome-extension://abc123/scripts/app-init.js');
       const { FixtureExtensionStore } = jest.requireMock(
-        './stores/fixture-extension-store',
+        '../../../shared/lib/stores/fixture-extension-store',
       );
 
       await importFresh();
@@ -97,7 +107,7 @@ describe('setup-initial-state-hooks', () => {
     it('detects webpack MV3 background (service-worker.js)', async () => {
       setSelfHref('chrome-extension://abc123/service-worker.js');
       const { FixtureExtensionStore } = jest.requireMock(
-        './stores/fixture-extension-store',
+        '../../../shared/lib/stores/fixture-extension-store',
       );
 
       await importFresh();
@@ -110,7 +120,7 @@ describe('setup-initial-state-hooks', () => {
     it('detects Firefox MV2 background (background.html)', async () => {
       setSelfHref('moz-extension://abc123/background.html');
       const { FixtureExtensionStore } = jest.requireMock(
-        './stores/fixture-extension-store',
+        '../../../shared/lib/stores/fixture-extension-store',
       );
 
       await importFresh();
@@ -123,7 +133,7 @@ describe('setup-initial-state-hooks', () => {
     it('returns false for UI context (home.html)', async () => {
       setSelfHref('chrome-extension://abc123/home.html');
       const { FixtureExtensionStore } = jest.requireMock(
-        './stores/fixture-extension-store',
+        '../../../shared/lib/stores/fixture-extension-store',
       );
 
       await importFresh();
@@ -136,7 +146,7 @@ describe('setup-initial-state-hooks', () => {
     it('returns false for popup UI (popup.html)', async () => {
       setSelfHref('chrome-extension://abc123/popup.html');
       const { FixtureExtensionStore } = jest.requireMock(
-        './stores/fixture-extension-store',
+        '../../../shared/lib/stores/fixture-extension-store',
       );
 
       await importFresh();
@@ -174,6 +184,25 @@ describe('setup-initial-state-hooks', () => {
 
       expect(persistenceManager).toBeDefined();
       expect(persistenceManager.get).toBeDefined();
+    });
+
+    it('registers persistence lifecycle event listeners for analytics wiring', async () => {
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+
+      expect(mockPersistenceOn).toHaveBeenCalledTimes(3);
+      expect(mockPersistenceOn).toHaveBeenCalledWith(
+        'vaultCorruptionDetected',
+        expect.any(Function),
+      );
+      expect(mockPersistenceOn).toHaveBeenCalledWith(
+        'splitStateMigrationSucceeded',
+        expect.any(Function),
+      );
+      expect(mockPersistenceOn).toHaveBeenCalledWith(
+        'splitStateMigrationFailed',
+        expect.any(Function),
+      );
     });
   });
 

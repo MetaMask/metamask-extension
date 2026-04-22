@@ -1,6 +1,7 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
+import { cloneDeep } from 'lodash';
 import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
@@ -67,13 +68,33 @@ export default function setupSentry() {
   };
 }
 
+/**
+ * Deep-clone a Sentry report.
+ * If `cloneDeep` throws (unexpected graph), returns the original reference.
+ *
+ * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
+ * @returns {Record<string, unknown>} Cloned report, or original reference on failure.
+ */
+function safeCloneReport(report) {
+  try {
+    return cloneDeep(report);
+  } catch (err) {
+    log('Failed to clone Sentry event, using original reference', err);
+    return report;
+  }
+}
+
 function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
-    beforeSend: (report) => rewriteReport(report),
+    // Clone before rewriteReport so we never mutate the event object that dedupeIntegration
+    // still holds as previousEvent — rewriteReportUrls changes stack frame filenames in place,
+    // which would otherwise make the next error look like a different stack (background timers
+    // usually run after beforeSend finished; rapid UI captures often dedupe first).
+    beforeSend: (report) => rewriteReport(safeCloneReport(report)),
     debug: METAMASK_DEBUG,
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
@@ -85,10 +106,7 @@ function getClientOptions() {
         // Creates ui.long-animation-frame spans (falls back to ui.long-task).
         // Pairs with TBT aggregate measurements from performance-observers.ts.
         enableLongAnimationFrame: true,
-        shouldCreateSpanForRequest: (url) => {
-          // Do not create spans for outgoing requests to a 'sentry.io' domain.
-          return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
-        },
+        shouldCreateSpanForRequest,
       }),
       metaMetricsIntegration({
         getMetaMetricsState,
@@ -275,6 +293,30 @@ export function beforeBreadcrumb() {
     const newBreadcrumb = removeUrlsFromBreadCrumb(breadcrumb);
     return newBreadcrumb;
   };
+}
+
+/**
+ * Returns whether a span should be created for a given request URL.
+ * Filters out Sentry domain requests and local extension file fetches.
+ *
+ * @param {string} url - The request URL.
+ * @returns {boolean} Whether to create a span for the request.
+ */
+export function shouldCreateSpanForRequest(url) {
+  // Do not create spans for outgoing requests to a 'sentry.io' domain.
+  if (/^https?:\/\/(?:[\w\d.@-]+\.)?sentry\.io(?:\/|$)/u.test(url)) {
+    return false;
+  }
+  // Block span creation on fetches for preinstalled snap manifest and locale files.
+  // Snap manifests are fetched on every MV3 SW restart,
+  // and locale files are fetched on every popup open.
+  // These are high volume, local file reads with no diagnostic value.
+  // TODO: Consider blocking all local extension file fetches.
+  if (/^(?:chrome|moz)-extension:\/\/[^/]+\/(?:snaps|_locales)\//u.test(url)) {
+    return false;
+  }
+  // Create spans for all other requests.
+  return true;
 }
 
 /**

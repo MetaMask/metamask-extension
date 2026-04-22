@@ -21,17 +21,18 @@ jest.mock('../../../../hooks/useFormatters', () => ({
   }),
 }));
 
+const mockUsePerpsLiveAccount = jest.fn().mockReturnValue({
+  account: mockAccountState,
+  isInitialLoading: false,
+});
+
 jest.mock('../../../../hooks/perps/stream', () => ({
-  usePerpsLiveAccount: () => ({
-    account: mockAccountState,
-    isInitialLoading: false,
-  }),
+  usePerpsLiveAccount: (...args: unknown[]) => mockUsePerpsLiveAccount(...args),
 }));
 
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../../hooks/perps', () => ({
-  usePerpsEligibility: () => ({
-    isEligible: true,
-  }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
 const mockStore = configureStore({
@@ -83,7 +84,23 @@ describe('PerpsBalanceDropdown', () => {
   it('displays the formatted total balance from mock data', () => {
     renderWithProvider(<PerpsBalanceDropdown />, mockStore);
 
-    expect(screen.getByText('$15,625.00')).toBeInTheDocument();
+    expect(screen.getByText('$15,250')).toBeInTheDocument();
+  });
+
+  it('renders loading skeleton when account data is still loading', () => {
+    mockUsePerpsLiveAccount.mockReturnValueOnce({
+      account: null,
+      isInitialLoading: true,
+    });
+
+    renderWithProvider(<PerpsBalanceDropdown />, mockStore);
+
+    expect(
+      screen.getByTestId('perps-control-bar-skeleton'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('perps-balance-dropdown-balance'),
+    ).not.toBeInTheDocument();
   });
 
   it('toggles dropdown when balance row is clicked', () => {
@@ -189,7 +206,24 @@ describe('PerpsBalanceDropdown', () => {
   it('displays formatted P&L value when hasPositions is true', () => {
     renderWithProvider(<PerpsBalanceDropdown hasPositions />, mockStore);
 
-    expect(screen.getByText(/\+\$375\.00/u)).toBeInTheDocument();
+    expect(screen.getByText(/\+\$375/u)).toBeInTheDocument();
     expect(screen.getByText(/7\.32%/u)).toBeInTheDocument();
+  });
+
+  describe('geo-blocking', () => {
+    it('shows geo-block modal and does not call onAddFunds when user is not eligible', () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      const onAddFunds = jest.fn();
+      renderWithProvider(
+        <PerpsBalanceDropdown onAddFunds={onAddFunds} />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
+      fireEvent.click(screen.getByTestId('perps-balance-dropdown-add-funds'));
+
+      expect(onAddFunds).not.toHaveBeenCalled();
+      expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+    });
   });
 });

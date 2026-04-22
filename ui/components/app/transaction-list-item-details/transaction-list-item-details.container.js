@@ -9,6 +9,7 @@ import {
   getInternalAccounts,
   getIsCustomNetwork,
   getRpcPrefsForCurrentProvider,
+  isHardwareWallet,
 } from '../../../selectors';
 import { tryReverseResolveAddress } from '../../../store/actions';
 import TransactionListItemDetails from './transaction-list-item-details.component';
@@ -36,6 +37,7 @@ const mapStateToProps = (state, ownProps) => {
     senderNickname: senderAccountName || getNickName(senderAddress),
     isCustomNetwork,
     blockExplorerLinkText: getBlockExplorerLinkText(state),
+    isHardwareWalletAccount: isHardwareWallet(state),
   };
 };
 

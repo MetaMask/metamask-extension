@@ -1,6 +1,18 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
+  Icon,
+  IconName,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   selectIsAccountSyncingEnabled,
@@ -8,15 +20,7 @@ import {
   selectIsBackupAndSyncEnabled,
   selectIsBackupAndSyncUpdateLoading,
 } from '../../../../selectors/identity/backup-and-sync';
-import { Box, Icon, IconName, Text } from '../../../component-library';
 import ToggleButton from '../../../ui/toggle-button';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import { useBackupAndSync } from '../../../../hooks/identity/useBackupAndSync/useBackupAndSync';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -107,15 +111,15 @@ const FeatureToggle = ({
 
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.flexStart}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Start}
       marginBottom={4}
       id={`backup-and-sync-features-toggles-${section.id}`}
     >
-      <Box display={Display.Flex} gap={4}>
+      <Box flexDirection={BoxFlexDirection.Row} gap={4}>
         <Icon name={section.iconName} />
-        <Text variant={TextVariant.bodyMdMedium}>
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {t(section.titleI18NKey)}
         </Text>
       </Box>
@@ -191,17 +195,18 @@ export const BackupAndSyncFeaturesToggles = () => {
       className="privacy-settings__setting__wrapper"
       data-testid={backupAndSyncFeaturesTogglesTestIds.container}
     >
-      <Text variant={TextVariant.bodyMdMedium}>
+      <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
         {t('backupAndSyncManageWhatYouSync')}
       </Text>
-      <Text
-        variant={TextVariant.bodyMd}
-        color={TextColor.textAlternative}
-        as="div"
-        marginBottom={4}
-      >
-        {t('backupAndSyncManageWhatYouSyncDescription')}
-      </Text>
+      <Box marginBottom={4}>
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          asChild
+        >
+          <div>{t('backupAndSyncManageWhatYouSyncDescription')}</div>
+        </Text>
+      </Box>
 
       {backupAndSyncFeaturesTogglesSections.map((section) => (
         <FeatureToggle

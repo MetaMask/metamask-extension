@@ -2,8 +2,6 @@ import { Interface } from '@ethersproject/abi';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   GasFeeToken,
-  IsAtomicBatchSupportedRequest,
-  IsAtomicBatchSupportedResult,
   PublishHook,
   PublishHookResult,
   TransactionMeta,
@@ -14,7 +12,7 @@ import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
 } from '../../../../../shared/lib/eip7702-support-utils';
-import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
 import {
   RelayStatus,
   RelaySubmitRequest,
@@ -39,22 +37,13 @@ const EMPTY_RESULT = {
 const log = createProjectLogger('delegation-7702-publish-hook');
 
 export class Delegation7702PublishHook {
-  #isAtomicBatchSupported: (
-    request: IsAtomicBatchSupportedRequest,
-  ) => Promise<IsAtomicBatchSupportedResult>;
-
   #messenger: TransactionControllerInitMessenger;
 
   constructor({
-    isAtomicBatchSupported,
     messenger,
   }: {
-    isAtomicBatchSupported: (
-      request: IsAtomicBatchSupportedRequest,
-    ) => Promise<IsAtomicBatchSupportedResult>;
     messenger: TransactionControllerInitMessenger;
   }) {
-    this.#isAtomicBatchSupported = isAtomicBatchSupported;
     this.#messenger = messenger;
   }
 
@@ -83,10 +72,13 @@ export class Delegation7702PublishHook {
 
     const { from } = txParams;
 
-    const atomicBatchSupport = await this.#isAtomicBatchSupported({
-      address: from as Hex,
-      chainIds: [chainId],
-    });
+    const atomicBatchSupport = await this.#messenger.call(
+      'TransactionController:isAtomicBatchSupported',
+      {
+        address: from as Hex,
+        chainIds: [chainId],
+      },
+    );
 
     const atomicBatchChainSupport = findAtomicBatchSupportForChain(
       atomicBatchSupport,

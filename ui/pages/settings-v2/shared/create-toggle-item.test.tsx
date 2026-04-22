@@ -186,5 +186,88 @@ describe('createToggleItem', () => {
         properties: { settingName: 'testToggle', newValue: true },
       });
     });
+
+    it('takes precedence over trackEventProperty', () => {
+      const configWithTrackingAndProperty: ToggleItemConfig = {
+        ...configWithTracking,
+        trackEventProperty: 'test_setting_enabled',
+      };
+      const TestToggleWithTrackingAndProperty = createToggleItem(
+        configWithTrackingAndProperty,
+      );
+      const mockStore = createMockStore({ testToggleValue: false });
+      renderWithProvider(
+        <MetaMetricsContext.Provider
+          value={{ trackEvent: mockTrackEvent } as never}
+        >
+          <TestToggleWithTrackingAndProperty />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('test-toggle-with-tracking'));
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SettingsUpdated,
+        properties: { settingName: 'testToggle', newValue: true },
+      });
+    });
+  });
+
+  describe('with trackEventProperty', () => {
+    const mockTrackEvent = jest.fn();
+
+    const configWithPropertyTracking: ToggleItemConfig = {
+      ...testConfig,
+      dataTestId: 'test-toggle-with-property-tracking',
+      trackEventProperty: 'test_setting_enabled',
+    };
+
+    const TestToggleWithPropertyTracking = createToggleItem(
+      configWithPropertyTracking,
+    );
+
+    const renderWithMetaMetrics = (store: ReturnType<typeof createMockStore>) =>
+      renderWithProvider(
+        <MetaMetricsContext.Provider
+          value={{ trackEvent: mockTrackEvent } as never}
+        >
+          <TestToggleWithPropertyTracking />
+        </MetaMetricsContext.Provider>,
+        store,
+      );
+
+    beforeEach(() => {
+      mockTrackEvent.mockClear();
+    });
+
+    it('tracks SettingsUpdated event with property name when toggled on', () => {
+      const mockStore = createMockStore({ testToggleValue: false });
+      renderWithMetaMetrics(mockStore);
+
+      fireEvent.click(screen.getByTestId('test-toggle-with-property-tracking'));
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SettingsUpdated,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        properties: { test_setting_enabled: true },
+      });
+    });
+
+    it('tracks SettingsUpdated event with property name when toggled off', () => {
+      const mockStore = createMockStore({ testToggleValue: true });
+      renderWithMetaMetrics(mockStore);
+
+      fireEvent.click(screen.getByTestId('test-toggle-with-property-tracking'));
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SettingsUpdated,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        properties: { test_setting_enabled: false },
+      });
+    });
   });
 });

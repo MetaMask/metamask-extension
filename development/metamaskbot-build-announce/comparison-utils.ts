@@ -66,6 +66,7 @@ export type PerRunSamples = Record<string, number[]>;
 
 export type BenchmarkEntryComparison = {
   benchmarkName: string;
+  source?: string; // e.g., 'chrome-browserify'
   relativeMetrics: MetricComparison[];
   absoluteViolations: ThresholdViolation[];
   /** Layer 3: Mann-Whitney U statistical significance tests per metric. */

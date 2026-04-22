@@ -17,6 +17,7 @@ import { brandColor } from '@metamask/design-tokens';
 import { Box } from '@metamask/design-system-react';
 import type { CandleData, CandleStick } from '@metamask/perps-controller';
 import { CandlePeriod, ZOOM_CONFIG } from '../constants/chartConfig';
+import { useTheme } from '../../../../hooks/useTheme';
 import {
   formatCandleDataForChart,
   formatVolumeDataForChart,
@@ -101,6 +102,25 @@ const PerpsCandlestickChart = forwardRef<
     },
     ref,
   ) => {
+    const theme = useTheme();
+    const isDark = theme === 'dark';
+
+    // Theme-aware colors matching mobile semantic tokens
+    const upColor = isDark ? brandColor.lime100 : brandColor.lime500;
+    const downColor = isDark ? brandColor.red300 : brandColor.red500;
+    // Volume bars use the same hue but at ~37% opacity so they don't overpower the candles
+    const volumeUpColor = `${upColor}60`;
+    const volumeDownColor = `${downColor}60`;
+    const textColor = isDark
+      ? 'rgba(255, 255, 255, 0.4)'
+      : 'rgba(0, 0, 0, 0.4)';
+    const gridColor = isDark
+      ? 'rgba(255, 255, 255, 0.06)'
+      : 'rgba(0, 0, 0, 0.06)';
+    const crosshairColor = isDark
+      ? 'rgba(255, 255, 255, 0.4)'
+      : 'rgba(0, 0, 0, 0.4)';
+
     const containerRef = useRef<HTMLDivElement>(null);
     const chartRef = useRef<IChartApi | null>(null);
     const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
@@ -111,6 +131,14 @@ const PerpsCandlestickChart = forwardRef<
     // Track previous candle data for incremental update optimization
     const prevCandleCountRef = useRef<number>(0);
     const prevLastCandleTimeRef = useRef<number>(0);
+    // Track the symbol+interval the series was last filled with so we can
+    // force a full setData when the user switches markets or timeframes.
+    // Without this, rapid switches (e.g. xyz:AAPL → xyz:GOLD) can coincide
+    // with the new series having the same length as the old one, sending
+    // the new symbol's candle through the `.update()` path and triggering
+    // lightweight-charts' "Cannot update oldest data" crash.
+    const prevSymbolRef = useRef<string | null>(null);
+    const prevIntervalRef = useRef<string | null>(null);
 
     // Edge detection cooldown
     const lastLoadMoreTimeRef = useRef<number>(0);
@@ -190,7 +218,7 @@ const PerpsCandlestickChart = forwardRef<
         height,
         layout: {
           background: { color: 'transparent' },
-          textColor: 'rgba(255, 255, 255, 0.4)',
+          textColor,
           attributionLogo: false,
           panes: {
             separatorColor: 'transparent',
@@ -199,8 +227,8 @@ const PerpsCandlestickChart = forwardRef<
           },
         },
         grid: {
-          vertLines: { color: 'rgba(255, 255, 255, 0.06)' },
-          horzLines: { color: 'rgba(255, 255, 255, 0.06)' },
+          vertLines: { color: gridColor },
+          horzLines: { color: gridColor },
         },
         crosshair: {
           mode: 1, // Normal crosshair mode
@@ -209,14 +237,14 @@ const PerpsCandlestickChart = forwardRef<
             labelVisible: true,
             width: 1,
             style: 3, // Dotted line
-            color: 'rgba(255, 255, 255, 0.4)',
+            color: crosshairColor,
           },
           horzLine: {
             visible: true,
             labelVisible: true,
             width: 1,
             style: 3,
-            color: 'rgba(255, 255, 255, 0.4)',
+            color: crosshairColor,
           },
         },
         timeScale: {
@@ -240,11 +268,11 @@ const PerpsCandlestickChart = forwardRef<
 
       // Create candlestick series (pane 0 - top)
       const candlestickSeries = chart.addSeries(CandlestickSeries, {
-        upColor: brandColor.lime100,
-        downColor: brandColor.red300,
+        upColor,
+        downColor,
         borderVisible: false,
-        wickUpColor: brandColor.lime100,
-        wickDownColor: brandColor.red300,
+        wickUpColor: upColor,
+        wickDownColor: downColor,
         priceLineVisible: false,
         lastValueVisible: false,
       });
@@ -255,7 +283,7 @@ const PerpsCandlestickChart = forwardRef<
       const volumeSeries = chart.addSeries(
         HistogramSeries,
         {
-          color: brandColor.lime100, // Default green
+          color: volumeUpColor, // Default to bullish color (semi-transparent)
           priceFormat: { type: 'volume' },
           priceScaleId: '', // Independent price scale
           lastValueVisible: false,
@@ -338,7 +366,7 @@ const PerpsCandlestickChart = forwardRef<
       // Add resize listener
       window.addEventListener('resize', handleResize);
 
-      // Cleanup on unmount
+      // Cleanup on unmount / before effect re-runs (e.g. theme change)
       return () => {
         window.removeEventListener('resize', handleResize);
         if (chartRef.current) {
@@ -347,8 +375,26 @@ const PerpsCandlestickChart = forwardRef<
           seriesRef.current = null;
           volumeSeriesRef.current = null;
         }
+        // Reset data-tracking refs so the data-update effect issues a full
+        // setData() on the new chart rather than a single-candle update().
+        prevCandleCountRef.current = 0;
+        prevLastCandleTimeRef.current = 0;
+        prevSymbolRef.current = null;
+        prevIntervalRef.current = null;
+        dataLengthRef.current = 0;
       };
-    }, [height, handleResize]);
+    }, [
+      height,
+      handleResize,
+      theme,
+      upColor,
+      downColor,
+      volumeUpColor,
+      volumeDownColor,
+      textColor,
+      gridColor,
+      crosshairColor,
+    ]);
 
     // Update chart data when candleData or selectedPeriod changes
     useEffect(() => {
@@ -370,24 +416,40 @@ const PerpsCandlestickChart = forwardRef<
       const periodChanged = previousPeriodRef.current !== selectedPeriod;
       previousPeriodRef.current = selectedPeriod;
 
+      // A symbol or interval switch means the series must be rebuilt from
+      // scratch — the new market's candle times are unrelated to the old
+      // market's, so an incremental update would violate lightweight-charts'
+      // monotonic-time invariant.
+      const symbolChanged = prevSymbolRef.current !== candleData.symbol;
+      const intervalChanged = prevIntervalRef.current !== candleData.interval;
+      const seriesIdentityChanged = symbolChanged || intervalChanged;
+
       // Determine update strategy:
       // 1. Same count + same last candle time = live tick update (replace last candle in-place)
       // 2. Count increased by 1 + previous last time still present = new candle appended
-      // 3. Otherwise = full replacement (period change, initial load, fetch-more merge)
+      // 3. Otherwise = full replacement (period change, symbol switch, initial load, fetch-more merge)
       const isLiveTick =
         !periodChanged &&
+        !seriesIdentityChanged &&
         prevCount > 0 &&
         currentCount === prevCount &&
         currentLastTime === prevLastTime;
 
       const isAppend =
-        !periodChanged && prevCount > 0 && currentCount === prevCount + 1;
+        !periodChanged &&
+        !seriesIdentityChanged &&
+        prevCount > 0 &&
+        currentCount === prevCount + 1;
 
       if (isLiveTick || isAppend) {
         // Incremental update — only update the last candle
         const lastCandle = candles[currentCount - 1];
         const formattedCandle = formatSingleCandleForChart(lastCandle);
-        const formattedVolume = formatSingleVolumeForChart(lastCandle);
+        const formattedVolume = formatSingleVolumeForChart(
+          lastCandle,
+          volumeUpColor,
+          volumeDownColor,
+        );
 
         if (formattedCandle && seriesRef.current) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -410,7 +472,11 @@ const PerpsCandlestickChart = forwardRef<
 
           // Update volume data
           if (volumeSeriesRef.current) {
-            const volumeData = formatVolumeDataForChart(candleData);
+            const volumeData = formatVolumeDataForChart(
+              candleData,
+              volumeUpColor,
+              volumeDownColor,
+            );
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             volumeSeriesRef.current.setData(volumeData as any);
           }
@@ -426,10 +492,14 @@ const PerpsCandlestickChart = forwardRef<
 
           chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
 
-          // Handle period change: scroll to real time and notify parent
+          // Handle period change: scroll to real time and notify parent.
+          // Also scroll on symbol/interval switch so the new market renders
+          // at the live edge instead of whatever offset the prior series had.
           if (periodChanged) {
             chartRef.current.timeScale().scrollToRealTime();
             onPeriodDataRequest?.(selectedPeriod);
+          } else if (seriesIdentityChanged) {
+            chartRef.current.timeScale().scrollToRealTime();
           }
         }
       }
@@ -437,6 +507,8 @@ const PerpsCandlestickChart = forwardRef<
       // Update tracking refs
       prevCandleCountRef.current = currentCount;
       prevLastCandleTimeRef.current = currentLastTime;
+      prevSymbolRef.current = candleData.symbol;
+      prevIntervalRef.current = candleData.interval;
 
       // Clear flag after chart has applied updates (library may emit crosshair on next frame)
       const timeoutId = setTimeout(() => {
@@ -444,7 +516,13 @@ const PerpsCandlestickChart = forwardRef<
       }, 0);
 
       return () => clearTimeout(timeoutId);
-    }, [candleData, selectedPeriod, onPeriodDataRequest]);
+    }, [
+      candleData,
+      selectedPeriod,
+      onPeriodDataRequest,
+      volumeUpColor,
+      volumeDownColor,
+    ]);
 
     // Manage price lines (TP, Entry, SL, etc.)
     useEffect(() => {
