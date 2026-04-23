@@ -137,9 +137,11 @@ jobs:
       }}
     permissions:
       contents: read
-      issues: write
-      pull-requests: write
+      id-token: write # required for S3 upload of audit baseline
+      issues: write # create tracking issues for new audit advisories
+      actions: read # download audit-baseline artifact from prior push-to-main runs
     uses: ./.github/workflows/repository-health-checks.yml
+    secrets: inherit
 
   test-storybook:
     name: Test storybook
@@ -661,6 +663,7 @@ jobs:
     permissions:
       pull-requests: read
       statuses: write
+      checks: read
     # We list every job we want to validate in `needs`, because `needs` only contains results for jobs explicitly
     # named here. A failing job can cause downstream jobs to be `skipped`, which can hide the true failure unless
     # the upstream job is also included.
