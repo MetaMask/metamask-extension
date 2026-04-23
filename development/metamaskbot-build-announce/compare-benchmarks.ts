@@ -409,11 +409,19 @@ async function main(): Promise<void> {
           : undefined,
     };
 
-    await sendBenchmarkNotifications(
-      result.comparisons,
-      slackContext,
-      THRESHOLD_REGISTRY,
-    );
+    try {
+      await sendBenchmarkNotifications(
+        result.comparisons,
+        slackContext,
+        THRESHOLD_REGISTRY,
+      );
+    } catch (err) {
+      // Slack failure must not override the benchmark verdict exit code.
+      console.error(
+        'Slack notification failed (benchmark result unaffected):',
+        err,
+      );
+    }
   }
 
   process.exit(result.anyFailed ? 1 : 0);

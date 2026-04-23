@@ -695,12 +695,8 @@ export async function postToSlack(
   payload: { blocks: SlackBlock[] },
 ): Promise<void> {
   const webhook = new IncomingWebhook(webhookUrl);
-  try {
-    // @ts-expect-error SlackBlock is structurally compatible but narrower than @slack/types Block
-    await webhook.send({ blocks: payload.blocks });
-  } catch (err) {
-    console.error('Slack webhook failed:', err);
-  }
+  // @ts-expect-error SlackBlock is structurally compatible but narrower than @slack/types Block
+  await webhook.send({ blocks: payload.blocks });
 }
 
 // ---------------------------------------------------------------------------
