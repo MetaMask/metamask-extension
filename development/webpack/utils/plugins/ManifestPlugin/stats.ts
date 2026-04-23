@@ -35,10 +35,6 @@ export type BundleSizeDebugEntrypoint = {
   asyncFiles: BundleSizeAssetStat[];
 };
 
-export type BundleSizeDebugArtifact = {
-  entrypoints: Record<string, BundleSizeDebugEntrypoint>;
-};
-
 type BundleSizeCategoryAssets = Record<BundleSizeCategory, Set<string>>;
 
 const bundleSizeCategories = [
