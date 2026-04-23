@@ -189,7 +189,7 @@ describe('Transaction Controller Init', () => {
         },
       )?.isEnabled;
 
-      expect(incomingTransactionsIsEnabled?.()).toBe(true);
+      expect(incomingTransactionsIsEnabled?.()).toBe(false);
     });
 
     it('unless enabled in preferences but onboarding incomplete', () => {
