@@ -66,10 +66,11 @@ BLOCKAID_PUBLIC_KEY=
 ; SENTRY_DSN_DEV         - For local dev and one-off QA testing (sends to 'test-metamask' project)
 ; SENTRY_DSN_DEV=https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496
 ; SENTRY_DSN_PERFORMANCE - For CI/CD and automated performance testing (keeps CI traffic separate)
-; SENTRY_DISTRIBUTED_TRACING_PILOT - Set to true to enable the distributed tracing pilot sample rate (0.0001).
-;   Enabled by default for Flask builds. Forces tracesSampleRate=0.0001 to keep span volume within
-;   quota while RPC + messenger wrappers are validated.
-;SENTRY_DISTRIBUTED_TRACING_PILOT=true
+; SENTRY_DISTRIBUTED_TRACING_DISABLED - Emergency kill switch for the distributed tracing wrappers.
+;   When true, forces tracesSampleRate=0 (disables all Sentry tracing), skips installing
+;   wrapMessengerWithTracing, and stops appending _traceContext to background RPC calls.
+;   Hotfix release required to flip this in production.
+;SENTRY_DISTRIBUTED_TRACING_DISABLED=true
 
 ; Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
 ; This should NEVER be enabled in production since it slows down react

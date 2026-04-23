@@ -136,7 +136,6 @@ buildTypes:
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
       - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic,erc20-token-revocation'
       - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
-      - SENTRY_DISTRIBUTED_TRACING_PILOT: true
 
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
@@ -330,7 +329,7 @@ env:
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false
-  - SENTRY_DISTRIBUTED_TRACING_PILOT: false
+  - SENTRY_DISTRIBUTED_TRACING_DISABLED: false
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - IN_TEST
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables

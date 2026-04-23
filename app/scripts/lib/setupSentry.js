@@ -31,8 +31,8 @@ const RELEASE = getSentryRelease(
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 const SENTRY_DSN_PERFORMANCE = process.env.SENTRY_DSN_PERFORMANCE;
-const SENTRY_DISTRIBUTED_TRACING_PILOT =
-  process.env.SENTRY_DISTRIBUTED_TRACING_PILOT;
+const SENTRY_DISTRIBUTED_TRACING_DISABLED =
+  process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED;
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
@@ -162,13 +162,8 @@ function getTracesSampleRate(sentryTarget) {
     return 1.0;
   }
 
-  // Distributed tracing pilot: very low rate to keep span volume within quota
-  // while new RPC + messenger wrappers are validated in production.
-  // Empirical fan-out: mean ~100 spans/txn, p95 ~200, max 1200.
-  // 0.0001 ingest is ~30% of previous baseline, leaving 70% headroom.
-  // Safe step-up ceiling is ~0.0003 with 12% headroom.
-  if (SENTRY_DISTRIBUTED_TRACING_PILOT) {
-    return 0.0001;
+  if (SENTRY_DISTRIBUTED_TRACING_DISABLED) {
+    return 0;
   }
 
   return 0.0075;
