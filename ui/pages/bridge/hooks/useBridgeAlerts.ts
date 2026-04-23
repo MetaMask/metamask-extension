@@ -58,7 +58,7 @@ export const useBridgeAlerts = () => {
     assetSuspiciousLocalizedFeatures,
   } = useAssetSecurityData(toToken);
 
-  const { txAlert } = useSecurityAlerts();
+  const { txAlert } = useSecurityAlerts(toToken);
   const { openBuyCryptoInPdapp } = useRamps();
 
   const activeQuotePriceData = useSelector(getActiveQuotePriceData);
