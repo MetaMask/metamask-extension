@@ -347,6 +347,44 @@ export function printReport(result: {
       const details = line.details ? ` | ${line.details}` : '';
       console.log(`      ${line.icon} ${line.metric}${details}`);
     }
+
+    // Layer 3: Statistical significance (informational)
+    if ((comparison.statisticalTests ?? []).length > 0) {
+      const sigTests = (comparison.statisticalTests ?? []).filter(
+        (t: StatisticalTestResult) => t.verdict !== 'pass',
+      );
+      if (sigTests.length > 0) {
+        console.log('  Statistical significance (Mann-Whitney U):');
+        for (const t of sigTests) {
+          const icon = t.verdict === 'fail' ? '🔺' : '🔼';
+          const delta = formatDeltaPercent(t.deltaPercent);
+          console.log(
+            `    ${icon} ${t.metric}: p=${t.pValue.toFixed(4)}, r=${t.effectSize.toFixed(2)}, ${delta}`,
+          );
+        }
+      }
+    }
+  }
+
+  // Layer 3 early warnings: passed entries with statistically significant regressions
+  const earlyWarnings = passed.filter(({ comparison }) =>
+    (comparison.statisticalTests ?? []).some((t) => t.verdict !== 'pass'),
+  );
+  if (earlyWarnings.length > 0) {
+    console.log('\n  Statistical early warnings (passed absolute gate):');
+    for (const { comparison } of earlyWarnings) {
+      const sigTests = (comparison.statisticalTests ?? []).filter(
+        (t: StatisticalTestResult) => t.verdict !== 'pass',
+      );
+      console.log(`  ${formatName(comparison)}`);
+      for (const t of sigTests) {
+        const icon = t.verdict === 'fail' ? '🔺' : '🔼';
+        const delta = formatDeltaPercent(t.deltaPercent);
+        console.log(
+          `    ${icon} ${t.metric}: p=${t.pValue.toFixed(4)}, r=${t.effectSize.toFixed(2)}, ${delta}`,
+        );
+      }
+    }
   }
 
   // Show passing entries grouped by benchmark name
