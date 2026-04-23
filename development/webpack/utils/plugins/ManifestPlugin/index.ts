@@ -53,16 +53,14 @@ function isJavaScriptAsset(assetName: string): boolean {
   );
 }
 
-function getAssetStats(compilation: Compilation, assetNames: string[]) {
-  const stats = new Map<string, BundleSizeAssetStat>();
+function getAssetStats(compilation: Compilation, assetNames: Iterable<string>) {
+  const stats: BundleSizeAssetStat[] = [];
   for (const assetName of assetNames) {
     if (!isJavaScriptAsset(assetName)) continue;
-    const posixName = assetName.split(path.sep).join(path.posix.sep);
-    if (stats.has(posixName)) continue;
     const asset = compilation.getAsset(assetName)!;
-    stats.set(posixName, { name: posixName, size: asset.source.size() });
+    stats.push({ name: assetName, size: asset.source.size() });
   }
-  return stats.values();
+  return stats;
 }
 
 function emitJsonAsset(
@@ -213,19 +211,16 @@ export class ManifestPlugin<Z extends boolean> {
         continue;
       }
 
-      const asyncChunks = [...entry.getEntrypointChunk().getAllAsyncChunks()];
-      const asyncAssetNames = asyncChunks.flatMap((chunk) => [...chunk.files]);
-      const entrypointFiles = {
-        initialFiles: [...getAssetStats(compilation, entry.getFiles())],
-        asyncFiles: [...getAssetStats(compilation, asyncAssetNames)],
-      };
-      const files = Object.values(entrypointFiles).flat();
+      const initialFiles = getAssetStats(compilation, entry.getFiles());
+      const asyncFiles = [
+        ...entry.getEntrypointChunk().getAllAsyncChunks(),
+      ].flatMap((chunk) => getAssetStats(compilation, chunk.files));
 
       if (debugEntrypoints) {
-        debugEntrypoints[name] = { category, ...entrypointFiles };
+        debugEntrypoints[name] = { category, initialFiles, asyncFiles };
       }
 
-      for (const file of files) {
+      for (const file of [...initialFiles, ...asyncFiles]) {
         categoryAssets[category].add(file.name);
         assetSizes.set(file.name, file.size);
       }
