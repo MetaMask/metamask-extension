@@ -4442,6 +4442,7 @@
         "exports.isExist": true
       },
       "packages": {
+        "@metamask/snaps-utils>fast-xml-parser>@nodable/entities": true,
         "@metamask/snaps-utils>fast-xml-parser>path-expression-matcher": true,
         "@metamask/snaps-utils>fast-xml-parser>strnum": true
       }
@@ -4562,7 +4563,7 @@
         "lodash": true,
         "eth-lattice-keyring>gridplus-sdk>ox": true,
         "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
-        "uuid": true,
+        "eth-lattice-keyring>gridplus-sdk>uuid": true,
         "viem": true,
         "openai>zod": true
       }
@@ -6490,6 +6491,12 @@
     "@metamask/keyring-snap-client>uuid": {
       "globals": {
         "crypto": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>uuid": {
+      "globals": {
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "remote-redux-devtools>socketcluster-client>uuid": {
