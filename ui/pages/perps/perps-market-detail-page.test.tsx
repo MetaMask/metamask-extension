@@ -816,9 +816,6 @@ describe('PerpsMarketDetailPage', () => {
         'perps-market-detail-view-all-activity',
       );
       expect(viewAllButton).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.perpsSeeAll.message),
-      ).toBeInTheDocument();
 
       fireEvent.click(viewAllButton);
       expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);

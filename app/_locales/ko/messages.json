@@ -5784,7 +5784,8 @@
     "message": "시장 검색"
   },
   "perpsSeeAll": {
-    "message": "모두 보기"
+    "message": "모두 보기",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요."

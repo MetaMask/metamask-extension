@@ -5784,7 +5784,8 @@
     "message": "Tìm kiếm thị trường"
   },
   "perpsSeeAll": {
-    "message": "Xem tất cả"
+    "message": "Xem tất cả",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Dịch vụ tạm thời không khả dụng. Vui lòng thử lại sau."
