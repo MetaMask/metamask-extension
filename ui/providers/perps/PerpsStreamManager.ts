@@ -677,6 +677,38 @@ class PerpsStreamManager {
     clearPerpsMarketInfoModuleCache();
     clearPerpsMarketFillsModuleCache();
   }
+
+  /**
+   * Seed the per-channel caches from the background controller's persisted
+   * snapshots so a fresh popup mount renders real data on its first frame
+   * instead of a skeleton. Existing cache is left untouched — the first
+   * push from the live stream wins over the persisted snapshot.
+   *
+   * @param snapshot - Controller caches keyed off `activeProvider`.
+   * @param snapshot.markets - Cached `PerpsMarketData[]` from the active provider.
+   * @param snapshot.positions - Cached positions for the current account.
+   * @param snapshot.orders - Cached orders for the current account.
+   * @param snapshot.account - Cached `AccountState` for the current account.
+   */
+  hydrateFromControllerCache(snapshot: {
+    markets?: PerpsMarketData[] | null;
+    positions?: Position[] | null;
+    orders?: Order[] | null;
+    account?: AccountState | null;
+  }): void {
+    if (snapshot.markets?.length && !this.markets.hasCachedData()) {
+      this.markets.pushData(snapshot.markets);
+    }
+    if (snapshot.positions && !this.positions.hasCachedData()) {
+      this.positions.pushData(snapshot.positions);
+    }
+    if (snapshot.orders && !this.orders.hasCachedData()) {
+      this.orders.pushData(snapshot.orders);
+    }
+    if (snapshot.account !== undefined && !this.account.hasCachedData()) {
+      this.account.pushData(snapshot.account);
+    }
+  }
 }
 
 // Module-level singleton instance
