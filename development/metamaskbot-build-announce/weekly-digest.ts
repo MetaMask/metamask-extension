@@ -139,7 +139,8 @@ async function computeFalsePositiveRate(
     }
   }
 
-  const rate = totalRuns > 0 ? flakeCount / totalRuns : 0;
+  const rate =
+    benchmarkFailures.length > 0 ? flakeCount / benchmarkFailures.length : 0;
   return {
     rate,
     total: benchmarkFailures.length,

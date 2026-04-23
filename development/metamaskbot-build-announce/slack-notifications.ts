@@ -185,7 +185,7 @@ export function isSevereRegression(
 // Block helpers (rich_text format matching post-nightly-builds.ts)
 // ---------------------------------------------------------------------------
 
-function richTextSection(
+export function richTextSection(
   elements: Record<string, unknown>[],
 ): Record<string, unknown> {
   return {
@@ -194,22 +194,22 @@ function richTextSection(
   };
 }
 
-function textEl(
+export function textEl(
   text: string,
   style?: { bold?: boolean; italic?: boolean; code?: boolean },
 ): Record<string, unknown> {
   return style ? { type: 'text', text, style } : { type: 'text', text };
 }
 
-function linkEl(url: string, text: string): Record<string, unknown> {
+export function linkEl(url: string, text: string): Record<string, unknown> {
   return { type: 'link', url, text };
 }
 
-function emojiEl(name: string): Record<string, unknown> {
+export function emojiEl(name: string): Record<string, unknown> {
   return { type: 'emoji', name };
 }
 
-function divider(): Record<string, unknown> {
+export function divider(): Record<string, unknown> {
   return { type: 'divider' };
 }
 

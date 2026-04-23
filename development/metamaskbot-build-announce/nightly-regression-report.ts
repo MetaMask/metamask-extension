@@ -21,38 +21,13 @@ import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
 import type { BenchmarkEntryComparison } from './comparison-utils';
 import { loadCurrentBenchmarks, runComparison } from './compare-benchmarks';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
-
-// ---------------------------------------------------------------------------
-// rich_text block helpers (matching post-nightly-builds.ts style)
-// ---------------------------------------------------------------------------
-
-function richTextSection(
-  elements: Record<string, unknown>[],
-): Record<string, unknown> {
-  return {
-    type: 'rich_text',
-    elements: [{ type: 'rich_text_section', elements }],
-  };
-}
-
-function textEl(
-  text: string,
-  style?: { bold?: boolean; italic?: boolean },
-): Record<string, unknown> {
-  return style ? { type: 'text', text, style } : { type: 'text', text };
-}
-
-function linkEl(url: string, text: string): Record<string, unknown> {
-  return { type: 'link', url, text };
-}
-
-function emojiEl(name: string): Record<string, unknown> {
-  return { type: 'emoji', name };
-}
-
-function divider(): Record<string, unknown> {
-  return { type: 'divider' };
-}
+import {
+  richTextSection,
+  textEl,
+  linkEl,
+  emojiEl,
+  divider,
+} from './slack-notifications';
 
 // ---------------------------------------------------------------------------
 // Report formatting
