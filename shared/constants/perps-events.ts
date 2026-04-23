@@ -39,10 +39,13 @@ export const PERPS_EVENT_PROPERTY = {
   BUTTON_TYPE: 'button_type',
   BUTTON_LOCATION: 'button_location',
   MARKET_CATEGORY_FILTER: 'market_category_filter',
+  OPEN_POSITION: 'open_position',
+  OPEN_ORDER: 'open_order',
 } as const;
 
 export const PERPS_EVENT_VALUE = {
   SCREEN_TYPE: {
+    WALLET_HOME_PERPS_TAB: 'wallet_home_perps_tab',
     MARKET_LIST: 'market_list',
     TRADING: 'trading',
     ASSET_DETAILS: 'asset_details',
@@ -110,6 +113,7 @@ export const PERPS_EVENT_VALUE = {
   },
   SOURCE: {
     WALLET_HOME_PERPS_TAB: 'wallet_home_perps_tab',
+    HOMESCREEN_TAB: 'homescreen_tab',
     MARKET_LIST: 'market_list',
     ASSET_DETAILS: 'perps_asset_details_screen',
     DEEPLINK: 'deeplink',

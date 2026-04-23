@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
+  usePerpsLiveAccount,
 } from '../../../hooks/perps/stream';
 import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../shared/constants/perps';
@@ -28,6 +29,12 @@ import {
 
 import { usePerpsEligibility } from '../../../hooks/perps';
 import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
+import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../shared/constants/perps-events';
 
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
@@ -80,6 +87,7 @@ export const PerpsView: React.FC = () => {
     usePerpsLivePositions();
   const { orders: allOrders, isInitialLoading: ordersLoading } =
     usePerpsLiveOrders();
+  const { account, isInitialLoading: accountLoading } = usePerpsLiveAccount();
   const {
     exploreMarkets,
     watchlistMarkets,
@@ -93,8 +101,9 @@ export const PerpsView: React.FC = () => {
   } = usePerpsTransactionHistory();
 
   // Recent Activity shows only trade executions, deposits, and withdrawals.
-  // Open orders are already surfaced in PerpsPositionsOrders above.
-  // Funding payments belong in the full activity page.
+  // Open limit/market orders (excluding TP/SL triggers) are in PerpsPositionsOrders;
+  // TP/SL trigger rows are listed on the per-asset market detail page only.
+  // Funding payments belong on the full activity page.
   const recentActivityTransactions = useMemo(
     () =>
       allRecentActivityTransactions.filter(
@@ -106,14 +115,15 @@ export const PerpsView: React.FC = () => {
     [allRecentActivityTransactions],
   );
 
-  // Show only user-placed limit orders resting on the orderbook.
-  // Excludes:
-  // - isTrigger: TP/SL trigger orders
-  // - isSynthetic: synthetic/virtual orders not placed directly by the user
+  // Open orders on the Perps tab: user-placed limits/markets on the book only.
+  // Excludes TP/SL (isTrigger / isPositionTpsl — those list on market detail) and synthetics.
   const orders = useMemo(() => {
     return allOrders.filter(
       (order) =>
-        order.status === 'open' && !order.isTrigger && !order.isSynthetic,
+        order.status === 'open' &&
+        !order.isTrigger &&
+        order.isPositionTpsl !== true &&
+        !order.isSynthetic,
     );
   }, [allOrders]);
 
@@ -193,9 +203,26 @@ export const PerpsView: React.FC = () => {
   }, [isEligible, applyOrdersSnapshot, orders.length, t]);
 
   const hasPositions = positions.length > 0;
-  const isLoading = positionsLoading || ordersLoading || marketsLoading;
+  const isLoading =
+    positionsLoading || ordersLoading || marketsLoading || accountLoading;
+  const hasPerpBalance = Boolean(
+    account && Number.parseFloat(account.availableBalance) > 0,
+  );
 
   usePerpsMeasurement('PerpsTabLoaded', !isLoading);
+
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !isLoading,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.WALLET_HOME_PERPS_TAB,
+      [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positions.length,
+      [PERPS_EVENT_PROPERTY.OPEN_ORDER]: orders.length,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+    },
+  });
 
   // Auto-open tutorial modal the first time a user enters the perps domain.
   // Guards on both the backend isFirstTimeUser flag (stable once propagated) and
