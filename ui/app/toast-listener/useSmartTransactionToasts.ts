@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
+import { TransactionStatus as EvmTransactionStatus } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { type TransactionStatus } from '../../helpers/utils/transaction-display';
 import { resolvePendingApproval } from '../../store/actions';
@@ -10,11 +11,17 @@ function generateToastId(txId: string) {
   return `stx-${txId}`;
 }
 
-function mapToastStatus(status?: string): TransactionStatus | undefined {
-  if (!status || status === SmartTransactionStatuses.PENDING) {
-    return 'pending';
-  }
+const failureStatuses = new Set<string>([
+  EvmTransactionStatus.failed,
+  EvmTransactionStatus.dropped,
+  EvmTransactionStatus.rejected,
+  EvmTransactionStatus.cancelled,
+]);
 
+function mapToastStatus(
+  status?: string,
+  evmStatus?: string,
+): TransactionStatus | undefined {
   if (status === SmartTransactionStatuses.SUCCESS) {
     return 'success';
   }
@@ -27,6 +34,21 @@ function mapToastStatus(status?: string): TransactionStatus | undefined {
   ) {
     return 'failed';
   }
+
+  // STX is pending/undefined — check the underlying EVM status to handle Cancel and Speed Up
+  if (evmStatus && failureStatuses.has(evmStatus)) {
+    return 'failed';
+  }
+
+  if (evmStatus === EvmTransactionStatus.confirmed) {
+    return 'success';
+  }
+
+  if (!status || status === SmartTransactionStatuses.PENDING) {
+    return 'pending';
+  }
+
+  return undefined;
 }
 
 // Relies on pendingApprovals being managed via the SmartTransactionHook
@@ -42,7 +64,10 @@ export function useSmartTransactionToasts() {
 
     for (const tx of transactions) {
       const toastId = generateToastId(tx.txId);
-      const currentStatus = mapToastStatus(tx.smartTransactionStatus);
+      const currentStatus = mapToastStatus(
+        tx.smartTransactionStatus,
+        tx.evmStatus,
+      );
       const previousStatus = previousStatusesRef.current[toastId];
 
       nextStatuses[toastId] = currentStatus;

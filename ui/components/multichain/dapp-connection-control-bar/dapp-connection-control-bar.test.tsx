@@ -17,17 +17,20 @@ const mockRemovePermissionsFor = jest.fn(
 const mockHidePermittedNetworkToast = jest.fn(() => ({
   type: 'SHOW_PERMITTED_NETWORK_TOAST_CLOSE',
 }));
+const mockAddPermittedAccounts = jest.fn(
+  (_origin: string, _addresses: string[]) => () => Promise.resolve(),
+);
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   removePermissionsFor: (subjects: Record<string, string[]>) =>
     mockRemovePermissionsFor(subjects),
   hidePermittedNetworkToast: () => mockHidePermittedNetworkToast(),
+  addPermittedAccounts: (origin: string, addresses: string[]) =>
+    mockAddPermittedAccounts(origin, addresses),
 }));
 
 const ACCOUNT_1_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const ACCOUNT_1_ID = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
-const ACCOUNT_2_ADDRESS = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
-const ACCOUNT_2_ID = '784225f4-d30b-4e77-a900-c8bbce735b88';
 const GROUP_1_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
 const LEDGER_GROUP_ID =
   'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813';
@@ -244,58 +247,97 @@ describe('DappConnectionControlBar', () => {
   });
 
   describe('when an unconnected account group is selected', () => {
-    it('falls back to the most recently selected connected account', () => {
-      const state = {
-        metamask: {
-          ...mockState.metamask,
-          ...sharedMetamaskOverrides,
-          accountTree: {
-            ...mockState.metamask.accountTree,
-            selectedAccountGroup: LEDGER_GROUP_ID,
-          },
-          internalAccounts: {
-            ...mockState.metamask.internalAccounts,
-            accounts: {
-              ...mockState.metamask.internalAccounts.accounts,
-              [ACCOUNT_1_ID]: {
-                ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID],
-                metadata: {
-                  ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID]
-                    .metadata,
-                  lastSelected: 2000,
-                },
-              },
-              [ACCOUNT_2_ID]: {
-                ...mockState.metamask.internalAccounts.accounts[ACCOUNT_2_ID],
-                metadata: {
-                  ...mockState.metamask.internalAccounts.accounts[ACCOUNT_2_ID]
-                    .metadata,
-                  lastSelected: 1000,
-                },
+    const buildUnconnectedState = () => ({
+      metamask: {
+        ...mockState.metamask,
+        ...sharedMetamaskOverrides,
+        selectedAccountGroup: LEDGER_GROUP_ID,
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            [ACCOUNT_1_ID]: {
+              ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID],
+              metadata: {
+                ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID]
+                  .metadata,
+                lastSelected: 2000,
               },
             },
-            selectedAccount: ACCOUNT_2_ID,
           },
-          subjects: {
-            [DAPP_ORIGIN]: {
-              permissions: makeCaip25Permission([
-                `eip155:0:${ACCOUNT_1_ADDRESS}`,
-                `eip155:0:${ACCOUNT_2_ADDRESS}`,
-              ]),
-            },
+          selectedAccount: '15e69915-2a1a-4019-93b3-916e11fd432f',
+        },
+        subjects: {
+          [DAPP_ORIGIN]: {
+            permissions: makeCaip25Permission([
+              `eip155:0:${ACCOUNT_1_ADDRESS}`,
+            ]),
           },
         },
-        activeTab,
-      };
-      const store = configureStore(state);
-      const { getByTestId } = renderWithProvider(
-        <DappConnectionControlBar />,
-        store,
-      );
+      },
+      activeTab,
+    });
+
+    const renderUnconnected = () => {
+      const store = configureStore(buildUnconnectedState());
+      return renderWithProvider(<DappConnectionControlBar />, store);
+    };
+
+    it('renders the control bar in the not-connected state', () => {
+      const { getByTestId } = renderUnconnected();
+      expect(getByTestId('dapp-connection-control-bar')).toBeInTheDocument();
+    });
+
+    it('displays the selected (unconnected) account name', () => {
+      const { getByTestId } = renderUnconnected();
       const accountEl = getByTestId(
         'dapp-connection-control-bar__account-name',
       );
-      expect(accountEl.textContent).toContain('Account 1');
+      expect(accountEl.textContent).toContain('Ledger Account 1');
+    });
+
+    it('displays the "Not connected" indicator', () => {
+      const { getByTestId } = renderUnconnected();
+      expect(
+        getByTestId('dapp-connection-control-bar__not-connected-tag'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders a grey (not-connected) status dot', () => {
+      const { getByTestId } = renderUnconnected();
+      const dot = getByTestId('dapp-connection-control-bar__connection-dot');
+      expect(dot.className).toContain(
+        'dapp-connection-control-bar__connection-dot--not-connected',
+      );
+    });
+
+    it('does not render the network, permissions, or disconnect buttons', () => {
+      const { queryByTestId } = renderUnconnected();
+      expect(
+        queryByTestId('dapp-connection-control-bar__network-button'),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByTestId('dapp-connection-control-bar__permissions-button'),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByTestId('dapp-connection-control-bar__disconnect-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('dispatches addPermittedAccounts when the Connect CTA is clicked', async () => {
+      const { getByTestId } = renderUnconnected();
+      const connectButton = getByTestId(
+        'dapp-connection-control-bar__connect-button',
+      );
+      fireEvent.click(connectButton);
+      await waitFor(() => {
+        expect(mockAddPermittedAccounts).toHaveBeenCalledWith(
+          DAPP_ORIGIN,
+          expect.arrayContaining([
+            '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+          ]),
+        );
+      });
     });
   });
 

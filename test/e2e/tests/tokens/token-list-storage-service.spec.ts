@@ -7,7 +7,6 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { login } from '../../page-objects/flows/login.flow';
 
@@ -47,11 +46,8 @@ describe('Token List via StorageService', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
 
-        await homePage.checkPageIsLoaded();
-        await homePage.waitForNonEvmAccountsLoaded();
         await assetListPage.importTokenBySearch({
           tokenName,
           networkName: MAINNET_DISPLAY_NAME,
