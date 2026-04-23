@@ -136,7 +136,7 @@ export const ChooseNewWalletTypePage = () => {
         ) {
           const keepWindowOpen =
             getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
-          global.platform.openExtensionInBrowser?.(
+          globalThis.platform.openExtensionInBrowser?.(
             option.route,
             null,
             keepWindowOpen,
@@ -165,7 +165,7 @@ export const ChooseNewWalletTypePage = () => {
         hd_entropy_index: null,
       },
     });
-    global.platform.openTab({
+    globalThis.platform.openTab({
       url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL as string,
     });
   }, [trackEvent]);

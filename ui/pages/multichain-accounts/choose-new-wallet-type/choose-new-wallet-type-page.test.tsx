@@ -36,7 +36,7 @@ const mockOpenTab = jest.fn();
 
 beforeAll(() => {
   // @ts-expect-error mocking platform
-  global.platform = {
+  globalThis.platform = {
     openExtensionInBrowser: mockOpenExtensionInBrowser,
     openTab: mockOpenTab,
   };
