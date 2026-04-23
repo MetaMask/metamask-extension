@@ -30,7 +30,7 @@ import type {
 } from '../../../shared/constants/benchmarks';
 import { getGitBranch, getGitCommitHash } from './utils/git';
 import type { UserActionResult } from './utils/types';
-import { aggregateWebVitals } from './utils/statistics';
+import { aggregateWebVitals, assessDataQuality } from './utils/statistics';
 
 const packageJsonPath = path.resolve(__dirname, '../../../package.json');
 const { version } = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as {
@@ -253,15 +253,7 @@ async function main() {
           if (meanVal > 0 && stdDevVal !== undefined) {
             const cv = (stdDevVal / meanVal) * 100;
             derivedMetrics[`${type}.cv.${key}`] = cv;
-            let dataQuality: 'good' | 'poor' | 'unreliable';
-            if (cv < 30) {
-              dataQuality = 'good';
-            } else if (cv < 50) {
-              dataQuality = 'poor';
-            } else {
-              dataQuality = 'unreliable';
-            }
-            derivedMetrics[`${type}.dataQuality.${key}`] = dataQuality;
+            derivedMetrics[`${type}.dataQuality.${key}`] = assessDataQuality(cv);
           }
         }
       }
@@ -276,6 +268,11 @@ async function main() {
       if (benchmark.trimmedCount) {
         for (const [key, count] of Object.entries(benchmark.trimmedCount)) {
           derivedMetrics[`${type}.trimmedCount.${key}`] = count;
+        }
+      }
+      if (benchmark.outliers) {
+        for (const [key, count] of Object.entries(benchmark.outliers)) {
+          derivedMetrics[`${type}.outliers.${key}`] = count;
         }
       }
 
