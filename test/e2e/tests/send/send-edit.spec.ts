@@ -29,6 +29,7 @@ const ETH_USD_PRICE = 1700;
 const E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700 = {
   assetPriceType: 'fungible' as const,
   id: 'ethereum',
+  lastUpdated: 0,
   price: ETH_USD_PRICE,
   usdPrice: ETH_USD_PRICE,
 };

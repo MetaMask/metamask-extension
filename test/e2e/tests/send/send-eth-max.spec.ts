@@ -51,6 +51,7 @@ const ETH_NATIVE_INFO = {
 const ASSETS_PRICE_ETH_1700 = {
   assetPriceType: 'fungible' as const,
   id: 'ethereum',
+  lastUpdated: 0,
   price: 1700,
   usdPrice: 1700,
 };
