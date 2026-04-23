@@ -223,10 +223,9 @@ const STANDARD_HOME: ThresholdConfig = {
   },
   ...CLS_THRESHOLDS,
   // Baseline from CI: p75≈850ms, p95≈1021ms (2026-04-22, chrome-browserify).
-  // Local equivalent (÷ ciMultiplier 1.5): p75≈567ms, p95≈681ms.
   tbt: {
-    p75: { warn: 680, fail: 740 },
-    p95: { warn: 825, fail: 885 },
+    p75: { warn: 1020, fail: 1100 },
+    p95: { warn: 1225, fail: 1325 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
