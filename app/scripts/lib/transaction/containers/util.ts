@@ -63,11 +63,20 @@ export async function applyTransactionContainers({
       transaction.containerTypes = types;
 
       // Only update the fields modified by container wrapping.
-      // Preserves gas fees, nonce, gasLimit, type, chainId,
-      // authorizationList, and other fields set by the approval flow.
+      // Preserves gas fees, nonce, gasLimit, chainId,
+      // and other fields set by the approval flow.
       transaction.txParams.data = finalMetadata.txParams.data;
       transaction.txParams.to = finalMetadata.txParams.to;
       transaction.txParams.value = finalMetadata.txParams.value;
+
+      if (finalMetadata.txParams.type) {
+        transaction.txParams.type = finalMetadata.txParams.type;
+      }
+
+      if (finalMetadata.txParams.authorizationList) {
+        transaction.txParams.authorizationList =
+          finalMetadata.txParams.authorizationList;
+      }
 
       if (newGas) {
         transaction.txParams.gas = newGas;

@@ -3,8 +3,6 @@ import { abiERC20 } from '@metamask/metamask-eth-abis';
 import { type SentinelMeta } from '@metamask/smart-transactions-controller';
 import {
   GasFeeToken,
-  IsAtomicBatchSupportedRequest,
-  IsAtomicBatchSupportedResult,
   PublishHook,
   PublishHookResult,
   TransactionMeta,
@@ -40,22 +38,13 @@ const EMPTY_RESULT = {
 const log = createProjectLogger('delegation-7702-publish-hook');
 
 export class Delegation7702PublishHook {
-  #isAtomicBatchSupported: (
-    request: IsAtomicBatchSupportedRequest,
-  ) => Promise<IsAtomicBatchSupportedResult>;
-
   #messenger: TransactionControllerInitMessenger;
 
   constructor({
-    isAtomicBatchSupported,
     messenger,
   }: {
-    isAtomicBatchSupported: (
-      request: IsAtomicBatchSupportedRequest,
-    ) => Promise<IsAtomicBatchSupportedResult>;
     messenger: TransactionControllerInitMessenger;
   }) {
-    this.#isAtomicBatchSupported = isAtomicBatchSupported;
     this.#messenger = messenger;
   }
 
@@ -84,10 +73,13 @@ export class Delegation7702PublishHook {
 
     const { from } = txParams;
 
-    const atomicBatchSupport = await this.#isAtomicBatchSupported({
-      address: from as Hex,
-      chainIds: [chainId],
-    });
+    const atomicBatchSupport = await this.#messenger.call(
+      'TransactionController:isAtomicBatchSupported',
+      {
+        address: from as Hex,
+        chainIds: [chainId],
+      },
+    );
 
     const atomicBatchChainSupport = findAtomicBatchSupportForChain(
       atomicBatchSupport,

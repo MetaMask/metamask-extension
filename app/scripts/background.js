@@ -28,10 +28,8 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
-  POPUP_FILE,
-  POPUP_INIT_FILE,
-  SIDEPANEL_FILE,
 } from '../../shared/constants/app';
+import { AccountOverviewTabKey } from '../../shared/constants/app-state';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
 import {
@@ -159,7 +157,6 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
-const POPUP_LAUNCH_FILE = isFirefox ? POPUP_FILE : POPUP_INIT_FILE;
 
 /**
  * Parses port connection info for routing decisions.
@@ -1611,11 +1608,7 @@ export function setupController(
   };
 
   const hasPersistentUiOpen = () => {
-    return (
-      openPopupCount > 0 ||
-      openSidePanelCount > 0 ||
-      Object.keys(openMetamaskTabsIDs).length > 0
-    );
+    return openPopupCount > 0 || openSidePanelCount > 0;
   };
 
   const isOnlyNotificationOpen = () => {
@@ -1719,7 +1712,7 @@ export function setupController(
           notificationIsOpen = false;
           // Render any failure badge that was suppressed while the notification was open
           if (failedTxCount > 0) {
-            setClientOpenOptions('activity');
+            setClientLandingTab(AccountOverviewTabKey.Activity);
           }
           updateBadge();
           const isClientOpen = isClientOpenStatus();
@@ -1895,19 +1888,11 @@ export function setupController(
     onTransactionStatusUpdated,
   );
 
-  function setClientOpenOptions(tab) {
-    const popup = tab ? `${POPUP_LAUNCH_FILE}?tab=${tab}` : POPUP_LAUNCH_FILE;
-    const sidepanelPath = tab ? `${SIDEPANEL_FILE}?tab=${tab}` : SIDEPANEL_FILE;
-
+  function setClientLandingTab(tab) {
     try {
-      if (isManifestV3) {
-        browser.action.setPopup({ popup });
-        browser.sidePanel?.setOptions?.({ path: sidepanelPath });
-      } else {
-        browser.browserAction.setPopup({ popup });
-      }
+      controller.appStateController.setDefaultHomeActiveTabName(tab ?? null);
     } catch (e) {
-      console.error('Error setting extension action URLs:', e);
+      console.error('Error setting landing tab:', e);
     }
   }
 
@@ -1942,7 +1927,7 @@ export function setupController(
 
     // Defer landing page until notification closes; close handler re-applies
     if (!isOnlyNotificationOpen()) {
-      setClientOpenOptions('activity');
+      setClientLandingTab(AccountOverviewTabKey.Activity);
     }
 
     updateBadge();
@@ -1951,7 +1936,6 @@ export function setupController(
   function clearFailedTxBadge() {
     seenFailedNonces.clear();
     failedTxCount = 0;
-    setClientOpenOptions();
     updateBadge();
   }
 
