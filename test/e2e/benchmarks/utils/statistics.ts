@@ -168,7 +168,7 @@ export const detectOutliersZScore = (
   threshold: number = Z_SCORE_THRESHOLD,
 ): { filtered: number[]; outlierCount: number; outliers: number[] } => {
   if (values.length < 3) {
-    return { filtered: values, outlierCount: 0, outliers: [] };
+    return { filtered: [...values], outlierCount: 0, outliers: [] };
   }
 
   const mean = calculateMean(values);
