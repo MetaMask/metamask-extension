@@ -2229,9 +2229,6 @@
   "deepLink_thePerpsMarketDetailPage": {
     "message": "永续合约市场页面"
   },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "永续合约市场列表页面"
-  },
   "deepLink_thePerpsPage": {
     "message": "永续合约页面"
   },
