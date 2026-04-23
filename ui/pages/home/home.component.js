@@ -9,6 +9,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
+import { wasPerpsUnmountedInAppRecently } from '../../helpers/perps/in-app-leave-marker';
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
@@ -265,11 +266,23 @@ export default class Home extends PureComponent {
       typeof path === 'string' &&
       (path === PERPS_ROUTE || path.startsWith(`${PERPS_ROUTE}/`));
 
+    // An in-app departure from `/perps/*` scheduled a Redux clear in the
+    // passive-effect phase — React fires this `componentDidMount` first, so
+    // the clear hasn't landed yet. The module-level marker tells us this is
+    // an in-app transition (not a popup reopen) and we must not replay the
+    // redirect. A fresh JS context (popup close→reopen) starts with an
+    // unset marker, so the real resume path still fires.
     // `pendingRedirectRoute` is a higher-priority cross-session redirect
     // (e.g. a background-initiated deeplink); skip the perps resume when
     // one is queued. Always clear the persisted entry afterwards so a
     // later home mount cannot replay it.
-    if (!pendingRedirectRoute && isFresh && isPerpsPath) {
+    const justLeftPerpsInApp = wasPerpsUnmountedInAppRecently(1500);
+    if (
+      !pendingRedirectRoute &&
+      !justLeftPerpsInApp &&
+      isFresh &&
+      isPerpsPath
+    ) {
       setRedirectAfterDefaultPage({ path });
     }
 

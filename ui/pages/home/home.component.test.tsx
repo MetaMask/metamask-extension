@@ -295,4 +295,27 @@ describe('Home — checkLastVisitedPerpsRoute', () => {
     expect(props.setRedirectAfterDefaultPage).not.toHaveBeenCalled();
     expect(props.clearLastVisitedPerpsRoute).toHaveBeenCalled();
   });
+
+  it('skips the redirect but still clears when PerpsLayout just unmounted in-app (covers the componentDidMount vs useEffect-cleanup race)', async () => {
+    const markerModulePath = '../../helpers/perps/in-app-leave-marker';
+    const {
+      markPerpsUnmountInApp,
+      __resetPerpsInAppLeaveMarkerForTests: resetPerpsInAppLeaveMarkerForTests,
+    } = await import(markerModulePath);
+    try {
+      markPerpsUnmountInApp();
+
+      const { props } = renderHome({
+        lastVisitedPerpsRoute: {
+          path: '/perps/market/BTC',
+          timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
+        },
+      });
+
+      expect(props.setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+      expect(props.clearLastVisitedPerpsRoute).toHaveBeenCalled();
+    } finally {
+      resetPerpsInAppLeaveMarkerForTests();
+    }
+  });
 });

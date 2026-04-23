@@ -10,6 +10,7 @@ import { setLastVisitedPerpsRoute } from '../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { markPerpsUnmountInApp } from '../../helpers/perps/in-app-leave-marker';
 
 const MIN_HIDDEN_DURATION_MS = 30_000;
 
@@ -106,6 +107,11 @@ export default function PerpsLayout() {
   // persisted value survives and the next home mount picks it up.
   useEffect(() => {
     return () => {
+      // Flag the in-app departure *synchronously* — the async thunk below
+      // cannot race Home's `componentDidMount` for the about-to-mount
+      // default-page view. `checkLastVisitedPerpsRoute` reads this marker
+      // to skip the redirect when the Redux clear has not landed yet.
+      markPerpsUnmountInApp();
       Promise.resolve(dispatch(setLastVisitedPerpsRoute(null))).catch(() => {
         // fire-and-forget
       });
