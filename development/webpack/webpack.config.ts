@@ -39,7 +39,7 @@ import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import type { BundleSizeCategory } from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
-import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/bundle-size';
+import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
