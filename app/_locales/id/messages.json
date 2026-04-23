@@ -5784,7 +5784,8 @@
     "message": "Cari pasar"
   },
   "perpsSeeAll": {
-    "message": "Lihat Semua"
+    "message": "Lihat Semua",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Layanan tidak tersedia untuk sementara waktu. Coba lagi nanti."

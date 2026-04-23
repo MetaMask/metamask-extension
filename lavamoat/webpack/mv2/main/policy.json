@@ -771,6 +771,12 @@
         "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": true
       }
     },
+    "@metamask/gator-permissions-controller>@metamask/delegation-core>@metamask/abi-utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/gator-permissions-controller>@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
@@ -1124,6 +1130,13 @@
     "@metamask/delegation-core": {
       "packages": {
         "@metamask/abi-utils": true,
+        "@metamask/utils": true,
+        "@noble/hashes": true
+      }
+    },
+    "@metamask/gator-permissions-controller>@metamask/delegation-core": {
+      "packages": {
+        "@metamask/gator-permissions-controller>@metamask/delegation-core>@metamask/abi-utils": true,
         "@metamask/utils": true,
         "@noble/hashes": true
       }
@@ -1511,7 +1524,7 @@
       "packages": {
         "@metamask/gator-permissions-controller>@metamask/abi-utils": true,
         "@metamask/base-controller": true,
-        "@metamask/delegation-core": true,
+        "@metamask/gator-permissions-controller>@metamask/delegation-core": true,
         "@metamask/gator-permissions-controller>@metamask/delegation-deployments": true,
         "@metamask/snaps-utils": true,
         "@metamask/transaction-controller": true,

@@ -5784,7 +5784,8 @@
     "message": "Piyasa ara"
   },
   "perpsSeeAll": {
-    "message": "Tümünü Gör"
+    "message": "Tümünü Gör",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Hizmet geçici olarak kullanılamıyor. Lütfen daha sonra tekrar deneyin."

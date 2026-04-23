@@ -5784,7 +5784,8 @@
     "message": "Rechercher des marchés"
   },
   "perpsSeeAll": {
-    "message": "Tout afficher"
+    "message": "Tout afficher",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Le service est temporairement indisponible. Veuillez réessayer plus tard."

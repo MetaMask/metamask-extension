@@ -5784,7 +5784,8 @@
     "message": "Maghanap ng mga market"
   },
   "perpsSeeAll": {
-    "message": "Tingnan Lahat"
+    "message": "Tingnan Lahat",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Pansamantalang hindi available ang serbisyo. Pakisubukan muli mamaya."

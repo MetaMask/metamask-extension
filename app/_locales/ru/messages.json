@@ -5784,7 +5784,8 @@
     "message": "Поиск рынков"
   },
   "perpsSeeAll": {
-    "message": "Смотреть все"
+    "message": "Смотреть все",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Сервис временно недоступен. Повторите попытку позже."

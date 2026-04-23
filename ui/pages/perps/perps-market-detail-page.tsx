@@ -1027,9 +1027,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         {/* Header Content: symbol-USD, price + change */}
         <Box flexDirection={BoxFlexDirection.Column}>
-          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-            {displayName}-USD
-          </Text>
+          <Text variant={TextVariant.HeadingMd}>{displayName}-USD</Text>
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Baseline}
@@ -1043,7 +1041,8 @@ const PerpsMarketDetailPage: React.FC = () => {
               {displayPrice}
             </Text>
             <Text
-              variant={TextVariant.BodyXs}
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
               color={getChangeColor(displayChange)}
               data-testid="perps-market-detail-change"
             >
@@ -1061,7 +1060,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               ? t('perpsRemoveFromFavorites')
               : t('perpsAddToFavorites')
           }
-          className="p-2 cursor-pointer"
+          className="p-2 cursor-pointer transition-transform hover:scale-110"
           onClick={handleFavoriteClick}
         >
           <Icon
@@ -1143,7 +1142,7 @@ const PerpsMarketDetailPage: React.FC = () => {
       <>
         {/* Position Section */}
         {position && (
-          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+          <Box paddingLeft={4} paddingRight={4}>
             <Box paddingBottom={2}>
               <Text
                 variant={TextVariant.HeadingSm}
@@ -1489,7 +1488,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         {/* Orders Section - shown regardless of position, but only if there are orders */}
         {orders.length > 0 && (
-          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+          <Box paddingLeft={4} paddingRight={4}>
             <Box paddingBottom={2}>
               <Text
                 variant={TextVariant.HeadingSm}
@@ -1572,7 +1571,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   >
                     <Icon
                       name={IconName.Info}
-                      size={IconSize.Sm}
+                      size={IconSize.Xs}
                       color={IconColor.IconAlternative}
                     />
                   </Tooltip>
@@ -1612,7 +1611,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   >
                     <Icon
                       name={IconName.Info}
-                      size={IconSize.Sm}
+                      size={IconSize.Xs}
                       color={IconColor.IconAlternative}
                     />
                   </Tooltip>
@@ -1668,7 +1667,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                 >
                   <Icon
                     name={IconName.Info}
-                    size={IconSize.Sm}
+                    size={IconSize.Xs}
                     color={IconColor.IconAlternative}
                   />
                 </Tooltip>
