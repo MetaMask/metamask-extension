@@ -395,20 +395,36 @@ describe('UpdateTPSLModalContent', () => {
       expect(numValue).toBeCloseTo(3325, 0);
     });
 
-    it('updates SL price when a RoE% value is typed', () => {
-      // ETH: entry=2850, leverage=3, -50% RoE -> 2850 * (1 - 50/300) = 2850 * 0.8333 = 2375
+    it('updates SL price when a negative RoE% is typed (signed convention)', () => {
+      // ETH: entry=2850, leverage=3, -50% signed RoE -> 2850 * (1 + (-50)/300) = 2850 * 0.8333 = 2375
       renderTpslModalContent();
 
       const percentInputs = screen.getAllByPlaceholderText('0');
       const slPercentInput = percentInputs[1];
       fireEvent.focus(slPercentInput);
-      fireEvent.change(slPercentInput, { target: { value: '50' } });
+      fireEvent.change(slPercentInput, { target: { value: '-50' } });
 
       const slPriceInput = screen.getAllByPlaceholderText(
         '0.00',
       )[1] as HTMLInputElement;
       const numValue = parseFloat(slPriceInput.value.replace(/,/gu, ''));
       expect(numValue).toBeCloseTo(2375, 0);
+    });
+
+    it('updates SL price when a positive RoE% is typed (SL above entry)', () => {
+      // SOL: entry=95, leverage=10, +15% signed RoE -> 95 * (1 + 15/1000) = 95 * 1.015 = 96.425
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const percentInputs = screen.getAllByPlaceholderText('0');
+      const slPercentInput = percentInputs[1];
+      fireEvent.focus(slPercentInput);
+      fireEvent.change(slPercentInput, { target: { value: '15' } });
+
+      const slPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
+      const numValue = parseFloat(slPriceInput.value.replace(/,/gu, ''));
+      expect(numValue).toBeCloseTo(96.425, 0);
     });
 
     it('clears TP price when percent input is cleared', () => {
@@ -450,7 +466,51 @@ describe('UpdateTPSLModalContent', () => {
       expect(slPriceInput.value).toBe('');
     });
 
+    it('clears TP price when only a plus sign is typed in TP percent input', () => {
+      renderTpslModalContent();
+
+      const tpPercentInput = screen.getAllByPlaceholderText('0')[0];
+      fireEvent.focus(tpPercentInput);
+      fireEvent.change(tpPercentInput, { target: { value: '+' } });
+
+      const tpPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[0] as HTMLInputElement;
+      expect(tpPriceInput.value).toBe('');
+    });
+
+    it('clears SL price when only a plus sign is typed in SL percent input', () => {
+      renderTpslModalContent();
+
+      const slPercentInput = screen.getAllByPlaceholderText('0')[1];
+      fireEvent.focus(slPercentInput);
+      fireEvent.change(slPercentInput, { target: { value: '+' } });
+
+      const slPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
+      expect(slPriceInput.value).toBe('');
+    });
+
+    it('accepts + prefix in TP percent input', () => {
+      // SOL: entry=95, leverage=10. +25% signed RoE -> 95*(1+25/1000) = 95*1.025 = 97.375
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const tpPercentInput = screen.getAllByPlaceholderText('0')[0];
+      fireEvent.focus(tpPercentInput);
+      fireEvent.change(tpPercentInput, { target: { value: '+25' } });
+
+      const tpPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[0] as HTMLInputElement;
+      const numValue = parseFloat(tpPriceInput.value.replace(/,/gu, ''));
+      expect(numValue).toBeCloseTo(97.375, 0);
+    });
+
     it('shows raw input while SL percent is focused and formatted value after blur', () => {
+      // SOL: entry=95, leverage=10. Typing +10 (SL above entry for lock-in-profit scenario)
+      // -> price = 95*(1+10/1000) = 95.95 -> blur shows priceToPercent("95.95") for long
+      // -> (95.95-95)/95*10*100 = 10 -> "10" (positive, no sign)
       renderTpslModalContent({ position: positionWithoutTPSL });
 
       const slPercentInput = screen.getAllByPlaceholderText('0')[1];
@@ -462,7 +522,8 @@ describe('UpdateTPSLModalContent', () => {
       fireEvent.blur(slPercentInput);
 
       const blurredValue = (slPercentInput as HTMLInputElement).value;
-      expect(blurredValue).toMatch(/^\d+(\.\d+)?$/u);
+      // After blur, shows signed RoE: positive percent stays positive (no sign prefix)
+      expect(blurredValue).toMatch(/^-?\d+(\.\d+)?$/u);
     });
 
     it('rejects non-numeric characters in TP percent input', () => {
@@ -501,12 +562,12 @@ describe('UpdateTPSLModalContent', () => {
 
       fireEvent.blur(tpPercentInput);
 
-      // After blur: shows derived formatted value
+      // After blur: shows derived signed RoE value
       // SOL: entry=95, leverage=10
       // price = 95 * (1 + 25/1000) = 95 * 1.025 = 97.375 -> formatted as "97.38"
-      // priceToPercent('97.38', long TP): (97.38-95)/95 * 10 * 100 = 25.05 -> "25.05"
+      // priceToPercent('97.38', long): (97.38-95)/95 * 10 * 100 = 25.05 -> "25.05"
       const blurredValue = (tpPercentInput as HTMLInputElement).value;
-      expect(blurredValue).toMatch(/^\d+(\.\d+)?$/u);
+      expect(blurredValue).toMatch(/^-?\d+(\.\d+)?$/u);
     });
   });
 

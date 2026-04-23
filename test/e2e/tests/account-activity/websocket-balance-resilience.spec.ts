@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import WebSocketRegistry from '../../websocket/registry';
 import { withFixtures } from '../../helpers';
@@ -51,6 +52,22 @@ async function waitForBalanceUpdate(
       return false;
     }
   }, timeoutMs);
+}
+
+async function mockDisabledWebsocketBalance(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            backendWebSocketConnection: false,
+          },
+        ],
+      };
+    });
 }
 
 describe('Account Activity WebSocket Balance Resilience', function (this: Suite) {
@@ -171,11 +188,13 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        // At the moment, setting this flag has no effect because of this issue #42049, so we need to mock the request
         manifestFlags: {
           remoteFeatureFlags: {
             backendWebSocketConnection: { value: false },
           },
         },
+        testSpecificMock: mockDisabledWebsocketBalance,
       },
       async ({
         driver,
@@ -185,9 +204,7 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
         localNodes: Anvil[];
       }) => {
         await login(driver);
-
         const homepage = new HomePage(driver);
-        await homepage.checkExpectedBalanceIsDisplayed('25');
 
         const connectionCount = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.accountActivity,

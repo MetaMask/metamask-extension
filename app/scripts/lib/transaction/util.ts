@@ -148,15 +148,25 @@ async function addTransactionOnTempo(
     keyringController as Parameters<typeof accountSupports7702>[1],
   );
 
-  // Classic transaction, we simply set pathUSD as default
-  // and add excludeNativeTokenForFee to signal to ignore native.
+  // Non-Tempo transaction (not type 0x76)
   if (!isTempoTransactionType(request.transactionParams)) {
+    if (!request.transactionParams.to) {
+      log.debug(
+        'addTransactionOnTempo: Smart-Contract deployment tx detected. Fallback to classic tx.',
+      );
+      // Classic transaction
+      return addTransactionWithController(request);
+    }
     if (!isEip7702SupportedByAccount) {
       log.debug(
         'addTransactionOnTempo: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
       );
+      // Classic transaction
       return addTransactionWithController(request);
     }
+
+    // We make it a EIP-7702 tx, seting pathUSD as default gasToken
+    // and add excludeNativeTokenForFee to signal to ignore native.
     return addTransactionWithController(
       getTempoEvmTransactionArgs({ request, chainId }),
     );

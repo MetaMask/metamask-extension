@@ -42,6 +42,7 @@ const TRANSACTION_TYPES_HIDE_BANNER: string[] = [
   TransactionType.musdClaim,
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
+  TransactionType.perpsWithdraw,
   TransactionType.predictDeposit,
   TransactionType.predictWithdraw,
 ];

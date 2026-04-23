@@ -1,6 +1,7 @@
 import {
   SimulationData,
   SimulationTokenStandard,
+  TransactionControllerIsAtomicBatchSupportedAction,
   TransactionMeta,
   TransactionParams,
 } from '@metamask/transaction-controller';
@@ -39,8 +40,12 @@ const TX_PARAMS_MOCK: TransactionParams = {
   to: '0xabcdef1234567890abcdef1234567890abcdef12' as Hex,
 };
 
+const DELEGATION_ADDRESS_MOCK =
+  '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B' as Hex;
+
 const TRANSACTION_META_MOCK: TransactionMeta = {
   chainId: CHAIN_ID_MOCK,
+  delegationAddress: DELEGATION_ADDRESS_MOCK,
   id: '123-456',
   simulationData: SIMULATION_DATA_MOCK,
   txParams: TX_PARAMS_MOCK,
@@ -55,12 +60,17 @@ describe('Enforced Simulations Utils', () => {
     DelegationControllerSignDelegationAction['handler']
   > = jest.fn();
 
+  const isAtomicBatchSupportedMock: jest.MockedFn<
+    TransactionControllerIsAtomicBatchSupportedAction['handler']
+  > = jest.fn();
+
   beforeEach(() => {
     jest.resetAllMocks();
 
     const baseMessenger = new Messenger<
       MockAnyNamespace,
-      DelegationControllerSignDelegationAction,
+      | DelegationControllerSignDelegationAction
+      | TransactionControllerIsAtomicBatchSupportedAction,
       never
     >({
       namespace: MOCK_ANY_NAMESPACE,
@@ -71,9 +81,15 @@ describe('Enforced Simulations Utils', () => {
       signDelegationMock,
     );
 
+    baseMessenger.registerActionHandler(
+      'TransactionController:isAtomicBatchSupported',
+      isAtomicBatchSupportedMock,
+    );
+
     messenger = new Messenger<
       'TransactionControllerInitMessenger',
-      DelegationControllerSignDelegationAction,
+      | DelegationControllerSignDelegationAction
+      | TransactionControllerIsAtomicBatchSupportedAction,
       never,
       typeof baseMessenger
     >({
@@ -82,7 +98,10 @@ describe('Enforced Simulations Utils', () => {
     });
     baseMessenger.delegate({
       messenger,
-      actions: ['DelegationController:signDelegation'],
+      actions: [
+        'DelegationController:signDelegation',
+        'TransactionController:isAtomicBatchSupported',
+      ],
     });
 
     signDelegationMock.mockResolvedValue(DELEGATION_SIGNATURE_MOCK);
@@ -231,6 +250,20 @@ describe('Enforced Simulations Utils', () => {
       );
     });
 
+    it('throws when no caveats can be generated', async () => {
+      const transactionMeta = cloneDeep(TRANSACTION_META_MOCK);
+      transactionMeta.simulationData = {
+        tokenBalanceChanges: [],
+      };
+
+      await expect(
+        enforceSimulations({
+          ...options,
+          transactionMeta,
+        }),
+      ).rejects.toThrow('No caveats generated for enforced simulations');
+    });
+
     describe('applies slippage', () => {
       it('if decrease', async () => {
         simulationData.tokenBalanceChanges = [
@@ -296,6 +329,46 @@ describe('Enforced Simulations Utils', () => {
         expect(newTransaction.txParams.data).not.toStrictEqual(
           expect.stringContaining(remove0x(toHex(90000)).toLowerCase()),
         );
+      });
+    });
+
+    describe('with non-upgraded account', () => {
+      const UPGRADE_CONTRACT_ADDRESS_MOCK =
+        '0x1234567890123456789012345678901234567890' as Hex;
+
+      beforeEach(() => {
+        options.transactionMeta = cloneDeep({
+          ...TRANSACTION_META_MOCK,
+          delegationAddress: undefined,
+        }) as TransactionMeta;
+
+        isAtomicBatchSupportedMock.mockResolvedValue([
+          {
+            chainId: CHAIN_ID_MOCK,
+            isSupported: false,
+            upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+          },
+        ]);
+      });
+
+      it('sets transaction type to setCode', async () => {
+        const { updateTransaction } = await enforceSimulations(options);
+
+        const newTransaction = cloneDeep(options.transactionMeta);
+        updateTransaction?.(newTransaction);
+
+        expect(newTransaction.txParams.type).toBe('0x4');
+      });
+
+      it('sets minimal authorization list with upgrade contract address', async () => {
+        const { updateTransaction } = await enforceSimulations(options);
+
+        const newTransaction = cloneDeep(options.transactionMeta);
+        updateTransaction?.(newTransaction);
+
+        expect(newTransaction.txParams.authorizationList).toEqual([
+          { address: UPGRADE_CONTRACT_ADDRESS_MOCK },
+        ]);
       });
     });
   });
