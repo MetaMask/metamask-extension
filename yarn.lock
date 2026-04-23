@@ -5702,24 +5702,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/assets-controller@npm:6.0.0"
+"@metamask/assets-controller@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@metamask/assets-controller@npm:6.1.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/account-tree-controller": "npm:^7.1.0"
     "@metamask/accounts-controller": "npm:^37.2.0"
-    "@metamask/assets-controllers": "npm:^104.0.0"
+    "@metamask/assets-controllers": "npm:^104.3.0"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/client-controller": "npm:^1.0.1"
     "@metamask/controller-utils": "npm:^11.20.0"
     "@metamask/core-backend": "npm:^6.2.1"
-    "@metamask/keyring-api": "npm:^21.6.0"
+    "@metamask/keyring-api": "npm:^23.0.1"
     "@metamask/keyring-controller": "npm:^25.2.0"
-    "@metamask/keyring-internal-api": "npm:^10.0.0"
-    "@metamask/keyring-snap-client": "npm:^8.2.0"
+    "@metamask/keyring-internal-api": "npm:^10.1.1"
+    "@metamask/keyring-snap-client": "npm:^9.0.1"
     "@metamask/messenger": "npm:^1.1.1"
     "@metamask/network-controller": "npm:^30.0.1"
     "@metamask/network-enablement-controller": "npm:^5.0.2"
@@ -5729,13 +5729,13 @@ __metadata:
     "@metamask/preferences-controller": "npm:^23.1.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/transaction-controller": "npm:^64.2.0"
+    "@metamask/transaction-controller": "npm:^64.3.0"
     "@metamask/utils": "npm:^11.9.0"
     async-mutex: "npm:^0.5.0"
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/f7c008e6090a7909ad159023f46470292dcb22a7235aa76022d1bf93cb4273a6a9cf2acf82ecc9324c882a9dfdec73b4cb2cb73cfc27b67a569fdc1fe912fc51
+  checksum: 10/09afba91b32cd449deda05f0527599c2f986c15b087e21f25955d7f8225e65d5c9948245ee05611f8cda3e713126f0c9267561b59c9f4fd1cf3dc2dbef934766
   languageName: node
   linkType: hard
 
@@ -5795,9 +5795,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^104.0.0, @metamask/assets-controllers@npm:^104.1.0":
-  version: 104.1.0
-  resolution: "@metamask/assets-controllers@npm:104.1.0"
+"@metamask/assets-controllers@npm:^104.3.0":
+  version: 104.3.0
+  resolution: "@metamask/assets-controllers@npm:104.3.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5847,7 +5847,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/a653a293a32e2ab3739cdb679340e761882875f80c20e0faca65c15a9056a0184afb331bbf20d713ad2258b27dfce98c5503ee95bc4eb57fc05ad21b7d2f4c3a
+  checksum: 10/9dbab56816788a66ca1dacf1aa476455115c3f1bb53ac2b809c096dee0b43e3dd641a15ea6ec192dc088cfbeb0d84c2bddd4d19d4f0b732aa7c3e7befe64a1ea
   languageName: node
   linkType: hard
 
@@ -7142,6 +7142,22 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^19.0.0
   checksum: 10/f69dcb56d3089dfd1bd902ad409c017288e31d3631a2024f42f6b6ee1b4f6e663ad4d7bdfd5d3bcf6c9827190d3bad6983c89f7c821959d305f6ba8f4aae0d7c
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-snap-client@npm:^9.0.1":
+  version: 9.0.1
+  resolution: "@metamask/keyring-snap-client@npm:9.0.1"
+  dependencies:
+    "@metamask/keyring-api": "npm:^23.0.1"
+    "@metamask/keyring-utils": "npm:^3.2.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@types/uuid": "npm:^9.0.8"
+    uuid: "npm:^9.0.1"
+    webextension-polyfill: "npm:^0.12.0"
+  peerDependencies:
+    "@metamask/providers": ^19.0.0
+  checksum: 10/1f6594bee7c3b49c41bb9597a1ddb25c941fe0182381cd03dd28af5da328a48ec15569e6421e961026eb7189161e63af174061a86ffbe6034ed6c7b24c7b0e1d
   languageName: node
   linkType: hard
 
@@ -34158,8 +34174,8 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^6.0.0"
-    "@metamask/assets-controllers": "npm:^104.1.0"
+    "@metamask/assets-controller": "npm:^6.1.0"
+    "@metamask/assets-controllers": "npm:^104.3.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
     "@metamask/bitcoin-wallet-snap": "npm:^1.10.1"
