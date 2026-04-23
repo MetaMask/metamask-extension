@@ -12,9 +12,7 @@ describe('getArtifactLinks', () => {
       '42',
     );
 
-    expect(links.bundleSizeStats.url).toBe(
-      `${HOST}/bundle-size/bundle_size_stats.json`,
-    );
+    expect(links.bundleSizeStats.url).toBe(`${HOST}/bundle-size/chrome.json`);
     expect(links.storybook.url).toBe(`${HOST}/storybook-build/index.html`);
     expect(links.allArtifacts.url).toBe(
       'https://github.com/MetaMask/metamask-extension/actions/runs/42#artifacts',
@@ -87,7 +85,7 @@ describe('buildArtifactsBody', () => {
     });
 
     expect(result).toContain(
-      `<a href="${HOST}/bundle-size/bundle_size_stats.json">Bundle Size Stats</a>`,
+      `<a href="${HOST}/bundle-size/chrome.json">Bundle Size Stats</a>`,
     );
   });
 

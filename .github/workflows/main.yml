@@ -472,8 +472,8 @@ jobs:
 
       - name: Copy bundle size summary
         run: >-
-          mkdir -p test-artifacts/chrome &&
-          cp artifacts/build-dist-webpack/dist/chrome/bundle_size_stats.json test-artifacts/chrome/
+          mkdir -p test-artifacts/bundle-size &&
+          cp artifacts/build-dist-webpack/dist/bundle-size/chrome.json test-artifacts/bundle-size/chrome.json
 
       - name: Record bundle size at commit
         if: ${{ env.BRANCH == 'main' && env.IS_FORK == 'false'}}
@@ -489,7 +489,7 @@ jobs:
           # This job would never actually run if `builds-from-run != github.run_id`,
           # but if it did anyway, we want to upload *this run's* analysis output, not the build run's output.
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/bundle-size
-          path: test-artifacts/chrome
+          path: test-artifacts/bundle-size
 
   prep-e2e:
     needs:
