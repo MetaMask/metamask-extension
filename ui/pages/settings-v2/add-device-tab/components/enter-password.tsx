@@ -11,6 +11,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   FormTextField,
   FormTextFieldSize,
+  TextFieldType,
 } from '../../../../components/component-library';
 import { AddDeviceSettingsStep } from '../constant';
 
@@ -35,6 +36,7 @@ const EnterPassword = ({ onContinue }: EnterPasswordProps) => {
       </Text>
       <FormTextField
         value={password}
+        type={TextFieldType.Password}
         onChange={(e) => setPassword(e.target.value)}
         size={FormTextFieldSize.Lg}
       />

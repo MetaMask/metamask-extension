@@ -365,8 +365,6 @@ export function getSettingsV2RouteMeta(
       ),
     );
 
-  console.log('matchingRoute', matchingRoute);
-
   return matchingRoute ? SETTINGS_V2_ROUTES[matchingRoute] : null;
 }
 

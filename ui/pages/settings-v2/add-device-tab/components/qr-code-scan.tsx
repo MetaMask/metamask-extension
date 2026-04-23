@@ -19,6 +19,7 @@ const QrCodeScan = ({ onScanSuccess }: QrCodeScanProps) => {
 
   useEffect(() => {
     setTimeout(() => {
+      // TODO: Remove this after we have the actual QR code scanning working
       onScanSuccess(AddDeviceSettingsStep.EnterVerificationCode);
     }, 2000);
   }, [onScanSuccess]);
@@ -30,7 +31,7 @@ const QrCodeScan = ({ onScanSuccess }: QrCodeScanProps) => {
         color={TextColor.TextDefault}
         fontWeight={FontWeight.Bold}
       >
-        {t('scan_qr_code')}
+        {t('scanQrCode')}
       </Text>
       <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {t('scan_qr_code_desc')}

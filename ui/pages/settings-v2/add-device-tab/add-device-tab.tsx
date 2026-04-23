@@ -7,8 +7,8 @@ const ADD_DEVICE_TAB_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'add-device', component: AddDeviceSettings },
 ];
 
-const AboutTab = () => {
+const AddDeviceTab = () => {
   return <SettingsTab items={ADD_DEVICE_TAB_SETTING_ITEMS} />;
 };
 
-export default AboutTab;
+export default AddDeviceTab;

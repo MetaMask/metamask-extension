@@ -1,1 +1,1 @@
-export { default } from './add-device-tab';
+export { default as AddDeviceTab } from './add-device-tab';
