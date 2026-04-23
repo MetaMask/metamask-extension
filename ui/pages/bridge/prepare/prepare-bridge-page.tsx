@@ -134,9 +134,6 @@ const PrepareBridgePage = ({
   const wasTxDeclined = useSelector(getWasTxDeclined);
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
   const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
-  const bridgeUnavailableQuotesReason = useSelector(
-    getBridgeUnavailableQuoteReason,
-  );
 
   const { isInsufficientBalance } = useSelector(getValidationErrors);
   const { securityWarnings } = useSecurityAlerts();
@@ -543,6 +540,9 @@ const PrepareBridgePage = ({
           />
         </Column>
 
+        {/** Alert banners */}
+        {quoteParams && <BridgeAlertBannerList quoteParams={quoteParams} />}
+
         {/* Quote details - displayed below the swap form */}
         {(isInitialQuoteLoading || (!wasTxDeclined && unvalidatedQuote)) && (
           <Column paddingInline={4} gap={2}>
@@ -567,9 +567,6 @@ const PrepareBridgePage = ({
             )}
           </Column>
         )}
-
-        {/** Alert banners */}
-        {quoteParams && <BridgeAlertBannerList quoteParams={quoteParams} />}
 
         {!isInitialQuoteLoading && (
           <Column

@@ -1116,6 +1116,9 @@
   "bridgeNoMMFee": {
     "message": "No MM fee"
   },
+  "bridgeNoPriceInfoTitle": {
+    "message": "No price information"
+  },
   "bridgePoints": {
     "message": "Est. points",
     "description": "Label for estimated points that can be earned from a bridge or swap"
@@ -1143,6 +1146,9 @@
   "bridgePoints_tooltip_content_2": {
     "message": "Keep in mind this value is an estimate and will be finalized once the transaction is complete. Points can take up to 1 hour to be confirmed in your Rewards balance.",
     "description": "Second part of tooltip content explaining how points are calculated"
+  },
+  "bridgePriceDataUnavailableError": {
+    "message": "We couldn't get price information for this token. Make sure the amount received is what you expect before continuing."
   },
   "bridgePriceImpact": {
     "message": "Price impact"

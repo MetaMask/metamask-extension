@@ -1,5 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`BridgeAlertModal price-data-unavailable does not open when activeQuotePriceData is present 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+</body>
+`;
+
 exports[`BridgeAlertModal quote-card should not render when there is no price impact warning or error: -0.1 1`] = `
 <body>
   <div

@@ -1,5 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`BridgeAlertBannerList price-data-unavailable banner renders the banner even when the quote is expired 1`] = `"No price informationWe couldn't get price information for this token. Make sure the amount received is what you expect before continuing."`;
+
+exports[`BridgeAlertBannerList price-data-unavailable banner renders the banner when activeQuotePriceData is absent 1`] = `"No price informationWe couldn't get price information for this token. Make sure the amount received is what you expect before continuing."`;
+
+exports[`BridgeAlertBannerList price-data-unavailable banner renders the banner when activeQuotePriceData is absent 2`] = `
+<div
+  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
+  data-testid="bridge-banner-alerts"
+>
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
+    data-testid="bridge-price-data-unavailable"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+      >
+        No price information
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+      >
+        We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      />
+    </div>
+  </div>
+</div>
+`;
+
 exports[`BridgeAlertBannerList should render the insufficient-gas alert when insufficient gas 1`] = `
 [
   "More ETH needed for gasYou don't have enough ETH to pay the gas fee for this bridge. Enter a smaller amount or buy more ETH.Buy more ETH",
@@ -8,9 +46,35 @@ exports[`BridgeAlertBannerList should render the insufficient-gas alert when ins
 
 exports[`BridgeAlertBannerList should render the insufficient-gas alert when insufficient gas 2`] = `
 <div
-  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
+  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
   data-testid="bridge-banner-alerts"
 >
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
+    data-testid="bridge-price-data-unavailable"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+      >
+        No price information
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+      >
+        We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      />
+    </div>
+  </div>
   <div
     class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
     data-testid="bridge-insufficient-gas"
@@ -53,7 +117,7 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
 
 exports[`BridgeAlertBannerList should render the market-closed alert when market is closed (no quotes) 2`] = `
 <div
-  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
+  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
   data-testid="bridge-banner-alerts"
 >
   <div
@@ -76,6 +140,32 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
       >
         This stock token is currently outside trading hours. Try again when the market reopens.
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      />
+    </div>
+  </div>
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
+    data-testid="bridge-price-data-unavailable"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+      >
+        No price information
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+      >
+        We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
       </p>
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -93,7 +183,7 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
 
 exports[`BridgeAlertBannerList should render the market-closed alert when market is closed 2`] = `
 <div
-  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
+  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
   data-testid="bridge-banner-alerts"
 >
   <div
@@ -122,6 +212,32 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
       />
     </div>
   </div>
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
+    data-testid="bridge-price-data-unavailable"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+      >
+        No price information
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+      >
+        We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      />
+    </div>
+  </div>
 </div>
 `;
 
@@ -133,7 +249,7 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when no quotes 
 
 exports[`BridgeAlertBannerList should render the no-quotes alert when no quotes 2`] = `
 <div
-  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
+  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
   data-testid="bridge-banner-alerts"
 >
   <div
@@ -157,6 +273,32 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when no quotes 
       />
     </div>
   </div>
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
+    data-testid="bridge-price-data-unavailable"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+      >
+        No price information
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+      >
+        We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      />
+    </div>
+  </div>
 </div>
 `;
 
@@ -168,7 +310,7 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when reason is 
 
 exports[`BridgeAlertBannerList should render the no-quotes alert when reason is available 2`] = `
 <div
-  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
+  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
   data-testid="bridge-banner-alerts"
 >
   <div
@@ -192,6 +334,32 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when reason is 
       />
     </div>
   </div>
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
+    data-testid="bridge-price-data-unavailable"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+      >
+        No price information
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+      >
+        We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      />
+    </div>
+  </div>
 </div>
 `;
 
@@ -203,7 +371,7 @@ exports[`BridgeAlertBannerList should render the token-warning-alert alert when 
 
 exports[`BridgeAlertBannerList should render the token-warning-alert alert when token warning 2`] = `
 <div
-  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
+  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
   data-testid="bridge-banner-alerts"
 >
   <div
@@ -241,6 +409,32 @@ exports[`BridgeAlertBannerList should render the token-warning-alert alert when 
       />
     </button>
   </div>
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
+    data-testid="bridge-price-data-unavailable"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+      >
+        No price information
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+      >
+        We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      />
+    </div>
+  </div>
 </div>
 `;
 
@@ -252,7 +446,7 @@ exports[`BridgeAlertBannerList should render the tx-alert alert when tx alert is
 
 exports[`BridgeAlertBannerList should render the tx-alert alert when tx alert is present 2`] = `
 <div
-  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
+  class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
   data-testid="bridge-banner-alerts"
 >
   <div
@@ -275,6 +469,32 @@ exports[`BridgeAlertBannerList should render the tx-alert alert when tx alert is
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
       >
         Tx alert description Please select a different quote.
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      />
+    </div>
+  </div>
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
+    data-testid="bridge-price-data-unavailable"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+      >
+        No price information
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+      >
+        We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
       </p>
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"

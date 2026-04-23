@@ -718,6 +718,9 @@ export const getFromAmountInCurrency = createSelector(
 
 export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
 
+export const getActiveQuotePriceData = (state: BridgeAppState) =>
+  getBridgeQuotes(state).activeQuote?.quote?.priceData;
+
 export const getPriceImpact = createSelector(
   [
     (state: BridgeAppState) =>

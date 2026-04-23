@@ -14,6 +14,7 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets/HardwareWalletContext';
 import * as useSubmitBridgeTransactionModule from '../../hooks/useSubmitBridgeTransaction';
+import * as bridgeSelectors from '../../../../ducks/bridge/selectors';
 import { BridgeAlert } from '../types';
 import { BridgeAlertModal } from './bridge-alert-modal';
 
@@ -279,6 +280,48 @@ describe('BridgeAlertModal', () => {
         expect(baseElement).toMatchSnapshot();
       },
     );
+  });
+
+  describe('price-data-unavailable', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      jest
+        .spyOn(bridgeSelectors, 'getActiveQuotePriceData')
+        .mockReturnValue(undefined as never);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('renders "No price information" title and "Proceed" button when activeQuotePriceData is absent', async () => {
+      const { getByTestId, getAllByRole } = renderModal('submit-cta');
+
+      expect(getAllByRole('button').map((b) => b.textContent)).toStrictEqual([
+        '',
+        messages.proceed.message,
+        messages.cancel.message,
+      ]);
+      expect(getByTestId('bridge-alert-modal-proceed-button')).toBeEnabled();
+      expect(getByTestId('bridge-alert-modal-cancel-button')).toBeEnabled();
+    });
+
+    it('submits the transaction when "Proceed" is clicked', async () => {
+      const { getByTestId } = renderModal('submit-cta');
+
+      await act(async () => {
+        await userEvent.click(getByTestId('bridge-alert-modal-proceed-button'));
+      });
+
+      expect(mockOnClose).toHaveBeenCalledTimes(1);
+      expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not open when activeQuotePriceData is present', () => {
+      jest.restoreAllMocks(); // restore early so real selector runs for this test
+      const { baseElement } = renderModal('submit-cta', '0.05');
+      expect(baseElement).toMatchSnapshot();
+    });
   });
 
   describe('fiat alert banner', () => {

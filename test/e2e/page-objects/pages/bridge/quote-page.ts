@@ -271,6 +271,22 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.warningModalProceedButton);
   };
 
+  approveModalIfPresent = async () => {
+    try {
+      // Wait for an *enabled* proceed button. Using :not([disabled]) means:
+      // - No modal present           → no match → 3 s timeout → catch (no-op)
+      // - Modal open, tx in-flight   → button has [disabled] attr → no match
+      //                              → 3 s timeout → catch (no-op)
+      // - Modal open, tx not yet submitted → button is enabled → match → click
+      await this.driver.waitForSelector(
+        `${this.warningModalProceedButton}:not([disabled])`,
+      );
+      await this.driver.clickElement(this.warningModalProceedButton);
+    } catch {
+      // No confirmation modal with an enabled proceed button — nothing to do
+    }
+  };
+
   rejectModal = async () => {
     await this.driver.clickElement(this.warningModalCancelButton);
   };
@@ -281,6 +297,10 @@ class BridgeQuotePage {
 
   submitQuoteAndDismiss = async () => {
     await this.submitQuote();
+
+    // If no price data is available a confirmation modal appears before submission.
+    // Dismiss it so the transaction can proceed to the status page.
+    await this.approveModalIfPresent();
 
     await this.dismissStatusPageIfPresent();
   };
