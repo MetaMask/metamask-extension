@@ -267,6 +267,7 @@ describe('Custom RPC history', function (this: Suite) {
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
+        await homepage.closeUseNetworkNotificationModal();
 
         // Check custom network http://127.0.0.1:8545/2 is removed from network list
         // need a hard delay to avoid the background error message "network configuration not found" for removed network

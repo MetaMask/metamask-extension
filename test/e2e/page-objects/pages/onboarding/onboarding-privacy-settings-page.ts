@@ -45,11 +45,6 @@ class OnboardingPrivacySettingsPage {
     tag: 'button',
   };
 
-  private readonly addRpcUrlDialogMessage = {
-    text: 'Add RPC URL',
-    tag: 'p',
-  };
-
   private readonly addRpcUrlDropDown = '[data-testid="test-add-rpc-drop-down"]';
 
   private readonly chainIdInput = '[data-testid="network-form-chain-id"]';
@@ -126,7 +121,7 @@ class OnboardingPrivacySettingsPage {
     // Add rpc url
     await this.driver.clickElement(this.addRpcUrlDropDown);
     await this.driver.clickElement(this.addRpcUrlButton);
-    await this.driver.waitForSelector(this.addRpcUrlDialogMessage);
+    await this.driver.waitForSelector(this.rpcUrlInput);
     await this.driver.fill(this.rpcUrlInput, networkUrl);
     await this.driver.clickElement(this.confirmAddRpcUrlButton);
     await this.driver.clickElementAndWaitToDisappear(
