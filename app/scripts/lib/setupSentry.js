@@ -168,11 +168,7 @@ function getTracesSampleRate(sentryTarget) {
     return 1.0;
   }
 
-  // RPC + messenger wrappers add ~100 spans per sampled trace (empirical mean).
-  // Pre-PR baseline: 0.0075 × ~17 spans/trace = ~360M spans/day in production.
-  // 0.0005 × ~117 spans/trace = ~165M spans/day = ~46% of baseline (54% headroom).
-  // Step up to 0.001 (≈baseline) once production behavior is validated.
-  return 0.0005;
+  return 0.0075;
 }
 
 /**
