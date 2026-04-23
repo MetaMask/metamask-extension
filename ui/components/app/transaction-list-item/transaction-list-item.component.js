@@ -269,6 +269,7 @@ function TransactionListItemInner({
 
     return (
       <Button
+        className="whitespace-nowrap"
         data-testid="speed-up-button"
         size={ButtonSize.Sm}
         onClick={hasCancelled ? cancelTransaction : retryTransaction}
