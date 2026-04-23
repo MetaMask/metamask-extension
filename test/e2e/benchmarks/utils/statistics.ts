@@ -197,7 +197,7 @@ export const detectOutliersIQR = (
   values: number[],
 ): { filtered: number[]; outlierCount: number; outliers: number[] } => {
   if (values.length < 4) {
-    return { filtered: values, outlierCount: 0, outliers: [] };
+    return { filtered: [...values], outlierCount: 0, outliers: [] };
   }
 
   const sorted = [...values].sort((a, b) => a - b);
@@ -218,25 +218,6 @@ export const detectOutliersIQR = (
 
   return { filtered, outlierCount: outliers.length, outliers };
 };
-
-/**
- * IQR-based outlier trimming.
- * Returns the filtered samples and the number of values removed.
- * Intended for use before stats computation and before Mann-Whitney U tests.
- *
- * Thin wrapper over {@link detectOutliersIQR} with a stable public interface.
- *
- * @param samples - Raw per-run durations (unsorted)
- */
-export function trimOutliers(samples: number[]): {
-  samples: number[];
-  trimmedCount: number;
-} {
-  const { filtered, outlierCount } = detectOutliersIQR(samples);
-  // Spread to ensure we never return the original array reference.
-  // detectOutliersIQR returns values directly (not a copy) for n < 4.
-  return { samples: [...filtered], trimmedCount: outlierCount };
-}
 
 /**
  * Combined outlier detection using both IQR and z-score methods
