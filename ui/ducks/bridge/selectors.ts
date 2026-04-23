@@ -802,7 +802,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
 
     const minimumNativeBalanceToBeKeptInAccount =
       getMinimumReserveBalanceForChain({
-        caipAssetId: fromToken.assetId,
+        caipAssetId: fromToken?.assetId,
         minimumBalanceForRentExemptionInSOL,
       });
     const maxSwappableNativeBalance = BigNumber.max(
