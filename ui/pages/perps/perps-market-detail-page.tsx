@@ -985,6 +985,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         height={250}
         selectedPeriod={selectedPeriod}
         candleData={candleData}
+        currentPrice={currentPrice}
         priceLines={chartPriceLines}
         onNeedMoreHistory={fetchMoreHistory}
         // onCrosshairMove={setHoveredCandle}

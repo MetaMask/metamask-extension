@@ -122,6 +122,10 @@ export const PRICE_THRESHOLD = {
   MEDIUM: 100,
   /** Medium-low values boundary (> $10). */
   MEDIUM_LOW: 10,
+  /** Medium-low values boundary (> $1). */
+  VERY_LOW: 1,
+  /** Very small values boundary (< $1). */
+  EXTRA_LOW: 0.1,
   /** Low values boundary (>= $0.01). */
   LOW: 0.01,
   /**
