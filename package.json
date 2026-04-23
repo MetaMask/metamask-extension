@@ -263,7 +263,7 @@
     "which@npm:^1.3.1": "^4.0.0",
     "qs@npm:6.13.0": "^6.14.1",
     "gridplus-sdk@npm:^4.0.0": "patch:gridplus-sdk@npm%3A4.0.0#~/.yarn/patches/gridplus-sdk-npm-4.0.0-0e9f598de2.patch",
-    "gridplus-sdk/uuid@npm:^13.0.0": "^8.3.2",
+    "gridplus-sdk/uuid@npm:^13.0.0": "^14.0.0",
     "gridplus-sdk/@types/uuid@npm:^11.0.0": "^8.3.0",
     "@ledgerhq/hw-transport-webhid@npm:^6.31.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch",
     "fast-xml-parser": "^5.5.7",
@@ -272,7 +272,8 @@
     "@metamask/snaps-controllers": "^20.0.1",
     "@metamask/messenger@npm:^0.3.0": "^1.1.1",
     "@metamask/perps-controller": "^3.0.0",
-    "@metamask/smart-transactions-controller/@metamask/transaction-controller": "^64.3.0"
+    "@metamask/smart-transactions-controller/@metamask/transaction-controller": "^64.3.0",
+    "uuid": "^14.0.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -498,7 +499,7 @@
     "tslib": "~2.6.0",
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
-    "uuid": "^8.3.2",
+    "uuid": "^14.0.0",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
