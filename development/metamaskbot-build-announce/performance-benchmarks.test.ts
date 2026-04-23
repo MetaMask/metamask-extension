@@ -262,42 +262,30 @@ describe('computeEntryHealth', () => {
       // CV = 1200/4000 = 30% (in [25, 50] window) → widen by (1 + 30/200) = 1.15.
       // Effective warn with CV widening = 8000 * 1.15 = 9200.
       // A p75 of 9000 warns without widening but passes with widening.
-      const originalCI = process.env.CI;
-      process.env.CI = 'true';
-      try {
-        const entry = makeEntry({
-          benchmarkName: 'startupPowerUserHome',
-          presetName: 'startupPowerUserHome',
-          mean: { uiStartup: 4000 },
-          stdDev: { uiStartup: 1200 },
-          p75: { uiStartup: 9000 },
-          p95: { uiStartup: 10000 },
-        });
-        expect(computeEntryHealth(entry, undefined)).toBe(EntryHealth.Pass);
-      } finally {
-        process.env.CI = originalCI;
-      }
+      const entry = makeEntry({
+        benchmarkName: 'startupPowerUserHome',
+        presetName: 'startupPowerUserHome',
+        mean: { uiStartup: 4000 },
+        stdDev: { uiStartup: 1200 },
+        p75: { uiStartup: 9000 },
+        p95: { uiStartup: 10000 },
+      });
+      expect(computeEntryHealth(entry, undefined)).toBe(EntryHealth.Pass);
     });
 
     it('excludes metrics with CV > 50% from gating (mirrors validateThresholds)', () => {
       // CV = 3000/5000 = 60% > 50% → unreliable; metric must not be validated.
       // Without the exclusion, p75=15000 exceeds even 2.0x widened warn (8000)
       // and fail (9400) and would misreport as a threshold violation.
-      const originalCI = process.env.CI;
-      process.env.CI = 'true';
-      try {
-        const entry = makeEntry({
-          benchmarkName: 'startupPowerUserHome',
-          presetName: 'startupPowerUserHome',
-          mean: { uiStartup: 5000 },
-          stdDev: { uiStartup: 3000 },
-          p75: { uiStartup: 15000 },
-          p95: { uiStartup: 20000 },
-        });
-        expect(computeEntryHealth(entry, undefined)).toBe(EntryHealth.Pass);
-      } finally {
-        process.env.CI = originalCI;
-      }
+      const entry = makeEntry({
+        benchmarkName: 'startupPowerUserHome',
+        presetName: 'startupPowerUserHome',
+        mean: { uiStartup: 5000 },
+        stdDev: { uiStartup: 3000 },
+        p75: { uiStartup: 15000 },
+        p95: { uiStartup: 20000 },
+      });
+      expect(computeEntryHealth(entry, undefined)).toBe(EntryHealth.Pass);
     });
   });
 });
