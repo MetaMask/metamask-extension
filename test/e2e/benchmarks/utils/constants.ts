@@ -56,9 +56,6 @@ export const POWER_USER_NUM_BROWSER_LOADS = 15;
 /** Number of leading browser-load sessions to discard as warm-up before computing stats. */
 export const WARMUP_RUNS = 1;
 
-/** Minimum effective sample count (after warm-up exclusion + IQR trimming) required to emit a Mann-Whitney verdict. */
-export const MIN_SAMPLES_FOR_VERDICT = 5;
-
 export const ALL_METRICS = {
   uiStartup: 'UI Startup',
   load: 'navigation[0].load',
