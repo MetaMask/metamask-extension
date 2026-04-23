@@ -2475,6 +2475,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     productionDefault: 'variation 2',
     status: FeatureFlagStatus.Active,
   },
+
+  perpsPerpTradingGeoBlockedCountriesV2: {
+    name: 'perpsPerpTradingGeoBlockedCountriesV2',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: { blockedRegions: [] },
+    status: FeatureFlagStatus.Active,
+  },
 };
 
 // ============================================================================

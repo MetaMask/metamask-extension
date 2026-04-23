@@ -9,16 +9,27 @@
  * - mock-e2e.js: HTTP mocks for api.hyperliquid.xyz/info and /exchange
  *
  * When PerpsController makes real Hyperliquid calls from the background, these
- * mocks will intercept them. Currently the extension uses MockPerpsController.
+ * mocks will intercept them. Perps E2E tests require PERPS_ENABLED=true in the test
+ * build (set in .metamaskrc, see .metamaskrc.dist) and the real PerpsController in
+ * the extension background.
  *
  * @see {@link https://github.com/MetaMask/metamask-extension} for more info
  */
 
 /**
- * Default withFixtures config for Perps tests (feature flag enabled).
- * Implemented in perps-fixture-config.ts in this directory; re-exported here for convenience.
+ * Default withFixtures config for Perps tests (feature flag enabled, geo-blocked user).
+ * Implemented in perps-fixture-config.ts; re-exported here for convenience.
  *
  * @param title - The test title (e.g. this.test?.fullTitle()) for debugging.
  * @returns Partial withFixtures config to spread into withFixtures().
  */
 export { getPerpsConfig as getConfig } from './perps-fixture-config';
+
+/**
+ * withFixtures config for Perps tests with an eligible (non-geo-blocked) user.
+ * Use for tests that exercise trading actions: Long/Short, Add Funds, Close All.
+ *
+ * @param title - The test title for debugging.
+ * @returns Partial withFixtures config to spread into withFixtures().
+ */
+export { getPerpsConfigEligible } from './perps-fixture-config';

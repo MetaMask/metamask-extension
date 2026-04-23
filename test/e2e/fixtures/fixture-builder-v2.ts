@@ -254,6 +254,14 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withPerpsController(data: Record<string, unknown>): this {
+    merge(
+      (this.fixture.data as Record<string, unknown>).PerpsController,
+      data,
+    );
+    return this;
+  }
+
   withPermissionController(
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {

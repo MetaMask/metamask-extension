@@ -20,6 +20,15 @@ export class PerpsPositionsBase {
   }
 
   /**
+   * Clicks the position card for the given symbol (navigates to market detail).
+   *
+   * @param symbol - The trading pair symbol (e.g. 'ETH', 'BTC').
+   */
+  async clickPositionCard(symbol: string): Promise<void> {
+    await this.driver.clickElement({ testId: `position-card-${symbol}` });
+  }
+
+  /**
    * Waits for a position card for the given symbol to be visible.
    *
    * @param symbol - The trading pair symbol (e.g. 'ETH', 'BTC').

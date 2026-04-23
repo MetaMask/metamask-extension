@@ -13,6 +13,7 @@ import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
 } from '@metamask/network-controller';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
+import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
 import {
   RemoteFeatureFlagControllerGetStateAction,
   RemoteFeatureFlagControllerStateChangeEvent,
@@ -34,6 +35,7 @@ type AllowedActions =
   | KeyringControllerSignTypedMessageAction
   | TransactionControllerAddTransactionAction
   | RemoteFeatureFlagControllerGetStateAction
+  | GeolocationControllerGetGeolocationAction
   | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
   | MetaMetricsControllerTrackEventAction
@@ -80,6 +82,7 @@ export function getPerpsControllerMessenger(
       'KeyringController:signTypedMessage',
       'TransactionController:addTransaction',
       'RemoteFeatureFlagController:getState',
+      'GeolocationController:getGeolocation',
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
       'AuthenticationController:getBearerToken',
       'MetaMetricsController:trackEvent',
