@@ -44,6 +44,7 @@ function render({
   alerts = [] as {
     key: string;
     severity: string;
+    reason?: string;
     message: string;
     isBlocking?: boolean;
   }[],
@@ -56,6 +57,7 @@ function render({
   alerts?: {
     key: string;
     severity: string;
+    reason?: string;
     message: string;
     isBlocking?: boolean;
   }[];
@@ -122,13 +124,14 @@ describe('<SingleActionFooter />', () => {
     expect(getByTestId('confirm-footer-button')).not.toBeDisabled();
   });
 
-  it('disables button when there is a blocking alert', () => {
+  it('prefers alert reason as button text when blocking alert has both reason and message', () => {
     const { getByTestId } = render({
       alerts: [
         {
           key: 'some-blocking-alert',
           severity: Severity.Danger,
-          message: 'Something is wrong',
+          reason: 'No quotes',
+          message: 'This payment route is not available right now.',
           isBlocking: true,
         },
       ],
@@ -136,7 +139,43 @@ describe('<SingleActionFooter />', () => {
 
     const button = getByTestId('confirm-footer-button');
     expect(button).toBeDisabled();
-    expect(button).toHaveTextContent(messages.musdConvert.message);
+    expect(button).toHaveTextContent('No quotes');
+  });
+
+  it('falls back to alert message as button text when reason is absent', () => {
+    const { getByTestId } = render({
+      alerts: [
+        {
+          key: 'some-blocking-alert',
+          severity: Severity.Danger,
+          message: 'Insufficient funds',
+          isBlocking: true,
+        },
+      ],
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Insufficient funds');
+  });
+
+  it('shows alert reason on perpsDeposit button when there is a blocking alert', () => {
+    const { getByTestId } = render({
+      confirmation: genPerpsDeposit(),
+      alerts: [
+        {
+          key: 'some-blocking-alert',
+          severity: Severity.Danger,
+          reason: 'Insufficient funds',
+          message: 'Some longer description',
+          isBlocking: true,
+        },
+      ],
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Insufficient funds');
   });
 
   it('disables button when amount is zero', () => {

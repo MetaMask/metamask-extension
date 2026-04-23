@@ -5784,7 +5784,8 @@
     "message": "Αναζήτηση αγορών"
   },
   "perpsSeeAll": {
-    "message": "Προβολή όλων"
+    "message": "Προβολή όλων",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Η υπηρεσία είναι προσωρινά μη διαθέσιμη. Προσπαθήστε ξανά αργότερα."
