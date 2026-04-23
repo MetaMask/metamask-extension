@@ -21,7 +21,7 @@ import {
   GAS_SPONSORSHIP_SUPPORTED_CHAIN_ID,
   GAS_SPONSORSHIP_VAULT_ADDRESS_BASE,
 } from '../../../../../../shared/constants/gas-sponsorship';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 
 const WEI_PER_ETH = 10n ** 18n;
 const WEI_PER_ETH_DECIMAL = new BigNumber(WEI_PER_ETH.toString());

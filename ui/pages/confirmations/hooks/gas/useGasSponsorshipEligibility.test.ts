@@ -19,8 +19,12 @@ jest.mock('../../../../hooks/useAsync', () => ({
   useAsyncResult: jest.fn(),
 }));
 
+jest.mock('../../../../contexts/hardware-wallets', () => ({
+  HardwareWalletErrorProvider: ({ children }: { children: unknown }) =>
+    children,
+}));
+
 jest.mock('../../../../store/actions', () => ({
-  ...jest.requireActual('../../../../store/actions'),
   estimateGas: jest.fn(),
 }));
 
@@ -137,7 +141,7 @@ describe('useGasSponsorshipEligibility', () => {
     expect(result.healthStatus).toBe('insufficient');
   });
 
-  it('returns ineligible when tx sender differs from settlement escrow', async () => {
+  it('returns eligible when tx sender differs from recorded settlement escrow', async () => {
     useGasSponsorshipCampaignMock.mockReturnValue({
       campaign: {
         settlementEscrow: '0x1234567890123456789012345678901234567899',
@@ -150,8 +154,7 @@ describe('useGasSponsorshipEligibility', () => {
 
     const result = await runHook();
 
-    expect(result.isEligible).toBe(false);
-    expect(result.isSettlementEscrowCaller).toBe(false);
-    expect(result.healthStatus).toBe('error');
+    expect(result.isEligible).toBe(true);
+    expect(result.healthStatus).toBe('ready');
   });
 });

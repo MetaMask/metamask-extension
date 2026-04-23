@@ -348,25 +348,6 @@ export class Delegation7702PublishHook {
         transactionId: transactionMeta.id,
       });
 
-      if (
-        diagnostics.txFrom &&
-        diagnostics.settlementEscrowAddress &&
-        diagnostics.txFrom.toLowerCase() !==
-          diagnostics.settlementEscrowAddress.toLowerCase()
-      ) {
-        this.#debug(
-          'Sponsorship settlement caller mismatch (tx sender differs from settlementEscrow)',
-          {
-            settlementEscrowAddress: diagnostics.settlementEscrowAddress,
-            transactionId: transactionMeta.id,
-            txFrom: diagnostics.txFrom,
-          },
-        );
-        throw new Error(
-          'transaction sender does not match settlementEscrow; sponsored settlement would revert',
-        );
-      }
-
       if (amountWei <= 0n) {
         throw new Error('computed sponsorship amount is invalid');
       }

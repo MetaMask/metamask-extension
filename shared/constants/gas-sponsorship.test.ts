@@ -4,6 +4,7 @@ import {
   GAS_SPONSORSHIP_CAMPAIGN_ID,
   GAS_SPONSORSHIP_CAMPAIGN_NAME,
   GAS_SPONSORSHIP_VAULT_ABI,
+  GAS_SPONSORSHIP_VAULT_ADDRESS_BASE,
   isGasSponsorshipChainSupported,
 } from './gas-sponsorship';
 
@@ -17,6 +18,12 @@ describe('gas sponsorship constants', () => {
   it('supports only Base chain', () => {
     expect(isGasSponsorshipChainSupported(CHAIN_IDS.BASE)).toBe(true);
     expect(isGasSponsorshipChainSupported(CHAIN_IDS.MAINNET)).toBe(false);
+  });
+
+  it('uses the Base SponsorshipVaultV3 deployment', () => {
+    expect(GAS_SPONSORSHIP_VAULT_ADDRESS_BASE).toBe(
+      '0xdE45e8536770A7fd5E6aCA0b98f4b04Ec45ACe80',
+    );
   });
 
   it('exports SponsorshipVault ABI signatures', () => {

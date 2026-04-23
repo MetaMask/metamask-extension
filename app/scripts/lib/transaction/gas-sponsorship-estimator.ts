@@ -14,6 +14,7 @@ export type GasSponsorshipEstimationDiagnostics = {
   bufferedBps: number;
   maxFeePerGasWei: string;
   settlementEscrowAddress: string;
+  settleTxFrom: string;
   settleTxCostWei: string;
   settleTxGasLimit: string;
   txFrom: string | undefined;
@@ -62,10 +63,12 @@ const estimateSettleGasLimit = async ({
   campaignId,
   vaultAddress,
   provider,
+  settleTxFrom,
 }: {
   campaignId: Hex;
   vaultAddress: Hex;
   provider: NetworkClientProvider;
+  settleTxFrom: string;
 }) => {
   const settlementEscrowCallData =
     SPONSORSHIP_VAULT_INTERFACE.encodeFunctionData('settlementEscrow');
@@ -95,7 +98,7 @@ const estimateSettleGasLimit = async ({
     method: 'eth_estimateGas',
     params: [
       {
-        from: settlementEscrowAddress,
+        from: settleTxFrom,
         to: vaultAddress,
         data: settleCallData,
       },
@@ -105,6 +108,7 @@ const estimateSettleGasLimit = async ({
   return {
     settleTxGasLimit: parseQuantity(settleGasLimitResult, 'settleTxGasLimit'),
     settlementEscrowAddress,
+    settleTxFrom,
   };
 };
 
@@ -133,13 +137,17 @@ export async function estimateGasSponsorshipAmount({
     txParams.maxFeePerGas ?? txParams.gasPrice,
     'maxFeePerGas',
   );
+  if (!txParams.from) {
+    throw new Error('Invalid txFrom: expected address string');
+  }
 
   const networkClient = getNetworkClientById(networkClientId);
-  const { settleTxGasLimit, settlementEscrowAddress } =
+  const { settleTxGasLimit, settlementEscrowAddress, settleTxFrom } =
     await estimateSettleGasLimit({
       campaignId,
       vaultAddress,
       provider: networkClient.provider,
+      settleTxFrom: txParams.from,
     });
 
   const userTxCostWei = userTxGasLimit * maxFeePerGasWei;
@@ -153,6 +161,7 @@ export async function estimateGasSponsorshipAmount({
       bufferedBps: bufferBps,
       maxFeePerGasWei: maxFeePerGasWei.toString(),
       settlementEscrowAddress,
+      settleTxFrom,
       settleTxCostWei: settleTxCostWei.toString(),
       settleTxGasLimit: settleTxGasLimit.toString(),
       txFrom: txParams.from,

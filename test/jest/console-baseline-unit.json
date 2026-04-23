@@ -45,8 +45,8 @@
       "Test errors: Fetch failures": 6
     },
     "app/scripts/lib/transaction/hooks/delegation-7702-publish.test.ts": {
-      "error: delegation-7702-publish-hook: Hook failed {": 3,
-      "error: delegation-7702-publish-hook: Sponsorship estimation failed ...": 2
+      "error: delegation-7702-publish-hook: Hook failed {": 2,
+      "error: delegation-7702-publish-hook: Sponsorship estimation failed ...": 1
     },
     "app/scripts/messenger-client-init/confirmations/transaction-controller-init.test.ts": {
       "error: Failed to record sentinel_relay metrics": 1,
@@ -1265,8 +1265,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/gas/useGasSponsorshipEligibility.test.ts": {
-      "Reselect: Identity function warnings": 3,
-      "warn: ⚠️ React Router Future Flag": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/gas/useGaslessSupportedSmartTransactions.test.ts": {
       "Reselect: Identity function warnings": 3

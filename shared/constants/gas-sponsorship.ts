@@ -9,7 +9,7 @@ export const GAS_SPONSORSHIP_CAMPAIGN_ID = deriveCampaignId(
   GAS_SPONSORSHIP_CAMPAIGN_NAME,
 );
 export const GAS_SPONSORSHIP_VAULT_ADDRESS_BASE =
-  '0xffd977344c80b13683f49fa65ed2945c08f34b3c' as Hex;
+  '0xdE45e8536770A7fd5E6aCA0b98f4b04Ec45ACe80' as Hex;
 export const GAS_SPONSORSHIP_BUFFER_BPS = 3500;
 export const GAS_SPONSORSHIP_VAULT_ABI = [
   'function campaignDetails(bytes32 campaignId) view returns (address sponsor, uint128 availableBalanceWei)',

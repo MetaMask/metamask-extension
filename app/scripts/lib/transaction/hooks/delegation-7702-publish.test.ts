@@ -518,6 +518,11 @@ describe('Delegation 7702 Publish Hook', () => {
     expect(providerRequestMock).toHaveBeenCalledWith(
       expect.objectContaining({
         method: 'eth_estimateGas',
+        params: [
+          expect.objectContaining({
+            from: TRANSACTION_META_MOCK.txParams.from,
+          }),
+        ],
       }),
     );
     const signArgs = signDelegationControllerMock.mock.calls[0][0];
@@ -562,7 +567,7 @@ describe('Delegation 7702 Publish Hook', () => {
     ).rejects.toThrow('Gas sponsorship estimation failed');
   });
 
-  it('fails closed for sponsored flow when tx sender differs from settlement escrow', async () => {
+  it('submits sponsored flow when tx sender differs from recorded settlement escrow', async () => {
     providerRequestMock.mockImplementation(async ({ method }) => {
       if (method === 'eth_call') {
         const mismatchedEscrow = '0x1234567890123456789012345678901234567899';
@@ -585,16 +590,16 @@ describe('Delegation 7702 Publish Hook', () => {
       },
     ]);
 
-    await expect(
-      hookClass.getHook()(
-        {
-          ...TRANSACTION_META_MOCK,
-          isExternalSign: true,
-          isGasFeeSponsored: true,
-        },
-        SIGNED_TX_MOCK,
-      ),
-    ).rejects.toThrow('Gas sponsorship estimation failed');
+    await hookClass.getHook()(
+      {
+        ...TRANSACTION_META_MOCK,
+        isExternalSign: true,
+        isGasFeeSponsored: true,
+      },
+      SIGNED_TX_MOCK,
+    );
+
+    expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
   });
 
   it('signs delegation for gasless 7702 swap without gas fee tokens', async () => {

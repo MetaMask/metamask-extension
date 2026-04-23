@@ -1,6 +1,9 @@
 import type { TransactionParams } from '@metamask/transaction-controller';
 
+import { GAS_SPONSORSHIP_VAULT_ADDRESS_BASE } from '../../../../shared/constants/gas-sponsorship';
 import { estimateGasSponsorshipAmount } from './gas-sponsorship-estimator';
+
+const TX_FROM_MOCK = '0x12345678901234567890123456789012345678ab';
 
 describe('estimateGasSponsorshipAmount', () => {
   it('estimates sponsorship amount with buffer', async () => {
@@ -20,9 +23,10 @@ describe('estimateGasSponsorshipAmount', () => {
       bufferBps: 3500,
       campaignId:
         '0x15a3519b47bfd10994040bdf9cfe7e3b069ca673e64e0a1098e5528a3eb89606',
-      vaultAddress: '0xffd977344c80b13683f49fa65ed2945c08f34b3c',
+      vaultAddress: GAS_SPONSORSHIP_VAULT_ADDRESS_BASE,
       networkClientId: 'mainnet',
       txParams: {
+        from: TX_FROM_MOCK,
         gas: '0x5208',
         maxFeePerGas: '0x2',
       } as TransactionParams,
@@ -35,6 +39,15 @@ describe('estimateGasSponsorshipAmount', () => {
 
     expect(result.amountWei).toBe(191700n);
     expect(result.diagnostics.settleTxGasLimit).toBe('50000');
+    expect(result.diagnostics.settleTxFrom).toBe(TX_FROM_MOCK);
+    expect(requestMock).toHaveBeenCalledWith({
+      method: 'eth_estimateGas',
+      params: [
+        expect.objectContaining({
+          from: TX_FROM_MOCK,
+        }),
+      ],
+    });
   });
 
   it('throws if tx gas params are missing', async () => {
@@ -43,7 +56,7 @@ describe('estimateGasSponsorshipAmount', () => {
         bufferBps: 3500,
         campaignId:
           '0x15a3519b47bfd10994040bdf9cfe7e3b069ca673e64e0a1098e5528a3eb89606',
-        vaultAddress: '0xffd977344c80b13683f49fa65ed2945c08f34b3c',
+        vaultAddress: GAS_SPONSORSHIP_VAULT_ADDRESS_BASE,
         networkClientId: 'mainnet',
         txParams: {} as TransactionParams,
         getNetworkClientById: () => ({

@@ -57,9 +57,6 @@ const parseHexQuantityToBigInt = (value?: string): bigint | undefined => {
   }
 };
 
-const isSameAddress = (left?: string, right?: string): boolean =>
-  Boolean(left && right && left.toLowerCase() === right.toLowerCase());
-
 const applyBufferBps = (value: bigint): bigint => {
   const numerator =
     value * (BPS_DENOMINATOR + BigInt(GAS_SPONSORSHIP_BUFFER_BPS));
@@ -126,23 +123,10 @@ export function useGasSponsorshipEligibility() {
     () => getUserTransactionEstimate(transactionMeta),
     [transactionMeta],
   );
-
-  const isSettlementEscrowCaller = isSameAddress(
-    campaign?.settlementEscrow,
-    transactionMeta?.txParams?.from,
-  );
-  const hasSettlementEscrowCallerMismatch = Boolean(
-    shouldEvaluateSponsorship &&
-      campaign?.settlementEscrow &&
-      transactionMeta?.txParams?.from &&
-      !isSettlementEscrowCaller,
-  );
+  const settleTxFrom = transactionMeta?.txParams?.from;
 
   const canEstimateSettleTransaction = Boolean(
-    shouldEvaluateSponsorship &&
-      isSettlementEscrowCaller &&
-      campaign?.settlementEscrow &&
-      userEstimate.maxFeePerGasWei,
+    shouldEvaluateSponsorship && settleTxFrom && userEstimate.maxFeePerGasWei,
   );
 
   const {
@@ -150,7 +134,7 @@ export function useGasSponsorshipEligibility() {
     pending: settleTxEstimatePending,
     error: settleTxEstimateError,
   } = useAsyncResult(async () => {
-    if (!canEstimateSettleTransaction || !campaign?.settlementEscrow) {
+    if (!canEstimateSettleTransaction || !settleTxFrom) {
       return undefined;
     }
 
@@ -161,13 +145,13 @@ export function useGasSponsorshipEligibility() {
 
     const settleGasEstimate = await estimateGas({
       data: settleData,
-      from: campaign.settlementEscrow,
+      from: settleTxFrom,
       to: GAS_SPONSORSHIP_VAULT_ADDRESS_BASE,
       value: '0x0',
     });
 
     return parseHexQuantityToBigInt(settleGasEstimate);
-  }, [canEstimateSettleTransaction, campaign?.settlementEscrow]);
+  }, [canEstimateSettleTransaction, settleTxFrom]);
 
   const estimate = useMemo(() => {
     if (!shouldEvaluateSponsorship) {
@@ -229,7 +213,6 @@ export function useGasSponsorshipEligibility() {
   );
   const isEligible = Boolean(
     shouldEvaluateSponsorship &&
-      isSettlementEscrowCaller &&
       hasCampaign &&
       !estimate.estimationFailed &&
       hasSufficientBalance &&
@@ -244,11 +227,7 @@ export function useGasSponsorshipEligibility() {
     (canEstimateSettleTransaction && settleTxEstimatePending)
   ) {
     healthStatus = 'loading';
-  } else if (
-    campaignError ||
-    estimate.estimationFailed ||
-    hasSettlementEscrowCallerMismatch
-  ) {
+  } else if (campaignError || estimate.estimationFailed) {
     healthStatus = 'error';
   } else if (hasSufficientBalance) {
     healthStatus = 'ready';
@@ -263,7 +242,6 @@ export function useGasSponsorshipEligibility() {
     estimate,
     healthStatus,
     isEligible,
-    isSettlementEscrowCaller,
     isSmartTransaction,
     isSupportedChain,
   };
