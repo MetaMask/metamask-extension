@@ -4,6 +4,7 @@ import type {
   Messenger,
 } from '@metamask/messenger';
 import { getActiveSpan, trace } from '../../../shared/lib/trace';
+import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
 
 /**
  * Wrap a messenger's `call` method with Sentry tracing.
@@ -33,7 +34,11 @@ export function wrapMessengerWithTracing<
   ) => unknown;
 
   messenger.call = ((actionType: string, ...args: unknown[]) => {
-    if (!getActiveSpan()) {
+    const activeSpan = getActiveSpan();
+    if (!activeSpan) {
+      return originalCall(actionType, ...args);
+    }
+    if (!shouldSampleWrappers(activeSpan.spanContext()?.traceId)) {
       return originalCall(actionType, ...args);
     }
     return trace(

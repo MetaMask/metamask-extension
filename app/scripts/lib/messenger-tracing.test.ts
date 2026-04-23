@@ -1,10 +1,15 @@
 import { Messenger } from '@metamask/messenger';
 import { getActiveSpan, trace } from '../../../shared/lib/trace';
+import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
 import { wrapMessengerWithTracing } from './messenger-tracing';
 
 jest.mock('../../../shared/lib/trace', () => ({
   getActiveSpan: jest.fn(),
   trace: jest.fn((_request: unknown, fn: () => unknown) => fn()),
+}));
+
+jest.mock('../../../shared/lib/wrapper-sampling', () => ({
+  shouldSampleWrappers: jest.fn(),
 }));
 
 type TestGetStateAction = {
@@ -27,9 +32,13 @@ type TestActions = TestGetStateAction | TestDoWorkAction | TestFailAction;
 describe('wrapMessengerWithTracing', () => {
   const traceMock = trace as jest.Mock;
   const getActiveSpanMock = getActiveSpan as jest.Mock;
+  const shouldSampleWrappersMock = shouldSampleWrappers as jest.Mock;
 
   beforeEach(() => {
-    getActiveSpanMock.mockReturnValue({}); // Active span present
+    getActiveSpanMock.mockReturnValue({
+      spanContext: () => ({ traceId: 'test-trace-id-deadbeef' }),
+    });
+    shouldSampleWrappersMock.mockReturnValue(true);
     traceMock.mockClear();
     traceMock.mockImplementation((_request: unknown, fn: () => unknown) =>
       fn(),
@@ -38,6 +47,21 @@ describe('wrapMessengerWithTracing', () => {
 
   it('skips trace when no active span (avoids overhead when tracing disabled)', () => {
     getActiveSpanMock.mockReturnValue(null);
+    const messenger = new Messenger<'Test', TestActions, never>({
+      namespace: 'Test',
+    });
+    const handler = jest.fn().mockReturnValue('result');
+    messenger.registerActionHandler('Test:getState', handler);
+
+    const wrapped = wrapMessengerWithTracing(messenger);
+    const result = wrapped.call('Test:getState');
+
+    expect(traceMock).not.toHaveBeenCalled();
+    expect(result).toBe('result');
+  });
+
+  it('skips trace when shouldSampleWrappers returns false (sub-sampled out)', () => {
+    shouldSampleWrappersMock.mockReturnValue(false);
     const messenger = new Messenger<'Test', TestActions, never>({
       namespace: 'Test',
     });

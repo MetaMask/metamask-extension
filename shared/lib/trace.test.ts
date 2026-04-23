@@ -6,6 +6,11 @@ import {
   getSerializedTraceContext,
   serializeTraceContext,
 } from './trace';
+import { shouldSampleWrappers } from './wrapper-sampling';
+
+jest.mock('./wrapper-sampling', () => ({
+  shouldSampleWrappers: jest.fn().mockReturnValue(true),
+}));
 
 jest.replaceProperty(global, 'sentry', {
   withIsolationScope: jest.fn(),
@@ -521,6 +526,12 @@ describe('Trace', () => {
   });
 
   describe('getSerializedTraceContext', () => {
+    const shouldSampleWrappersMock = jest.mocked(shouldSampleWrappers);
+
+    beforeEach(() => {
+      shouldSampleWrappersMock.mockReturnValue(true);
+    });
+
     it('returns undefined when no active span', () => {
       getActiveSpanMock.mockReturnValue(undefined);
       expect(getSerializedTraceContext()).toBeUndefined();
@@ -542,6 +553,20 @@ describe('Trace', () => {
         _spanId: 'def456',
       });
       /* eslint-enable @typescript-eslint/naming-convention */
+    });
+
+    it('returns undefined when shouldSampleWrappers rejects the trace', () => {
+      shouldSampleWrappersMock.mockReturnValue(false);
+      const activeSpanMock = {
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'abc123',
+          spanId: 'def456',
+        }),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      expect(getSerializedTraceContext()).toBeUndefined();
     });
 
     it('returns undefined when sentry is not initialized', () => {

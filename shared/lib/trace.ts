@@ -7,6 +7,7 @@ import type {
   TraceContext as ControllerTraceContext,
 } from '@metamask/controller-utils';
 import { sentryLogger } from './sentry';
+import { shouldSampleWrappers } from './wrapper-sampling';
 
 /**
  * The supported trace names.
@@ -322,11 +323,12 @@ export function getActiveSpan(): Sentry.Span | null {
 /**
  * Get the serialized trace context from the currently active Sentry span.
  * Used by cross-boundary wrappers to propagate trace context over RPC.
- * Returns undefined when SENTRY_DISTRIBUTED_TRACING_DISABLED is set, which
- * stops the UI from appending `_traceContext` to background RPC calls and
- * thereby keeps the background `createMetaRPCHandler` on its unwrapped path.
+ * Returns undefined when SENTRY_DISTRIBUTED_TRACING_DISABLED is set, or when
+ * `shouldSampleWrappers` rejects this trace. Either case stops the UI from
+ * appending `_traceContext` to background RPC calls and thereby keeps the
+ * background `createMetaRPCHandler` on its unwrapped path.
  *
- * @returns Serialized context with traceId/spanId, or undefined if no active span or kill switch is set.
+ * @returns Serialized context with traceId/spanId, or undefined if no active span, kill switch is set, or trace is sub-sampled out.
  */
 export function getSerializedTraceContext():
   | SerializedTraceContext
@@ -340,6 +342,9 @@ export function getSerializedTraceContext():
   }
   try {
     const ctx = activeSpan.spanContext();
+    if (!shouldSampleWrappers(ctx.traceId)) {
+      return undefined;
+    }
     // eslint-disable-next-line @typescript-eslint/naming-convention
     return { _traceId: ctx.traceId, _spanId: ctx.spanId };
   } catch {
