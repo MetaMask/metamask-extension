@@ -293,10 +293,11 @@ describe('MultiRpc:', function (this: Suite) {
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.checkRpcIsSelected('Arbitrum mainnet 2');
 
-        await expectMockRequest(driver, mockedEndpoint[0], { timeout: 5000 });
         const usedUrl = await mockedEndpoint[0].getSeenRequests();
         // check the url first request send on the background to the mocked rpc after switch
         assert.equal(usedUrl[0].url, 'https://responsive-rpc.test/');
+        // check that requests are sent on the background for the url https://responsive-rpc.test/
+        await expectMockRequest(driver, mockedEndpoint[0], { timeout: 5000 });
       },
     );
   });

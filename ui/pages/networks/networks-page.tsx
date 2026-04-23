@@ -199,7 +199,7 @@ export const NetworksPage = () => {
   }, [navigate, searchParams]);
 
   return (
-    <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden">
+    <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background-default">
       {view === '' ? (
         <>
           <SettingsV2Header
