@@ -41,19 +41,15 @@ const renderProvider = ({
 }) => {
   const store = mockStore(state);
 
-  const TestComponent = ({
-    eventName,
-  }: {
-    eventName: MetaMetricsEventName;
-  }) => {
+  const TestComponent = () => {
     const { trackEvent } = useContext(MetaMetricsContext);
 
     useEffect(() => {
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
-        event: eventName,
+        event,
       });
-    }, [eventName, trackEvent]);
+    }, [event, trackEvent]);
 
     return null;
   };
@@ -64,7 +60,7 @@ const renderProvider = ({
         path: '*',
         element: (
           <MetaMetricsProvider>
-            <TestComponent eventName={event} />
+            <TestComponent />
           </MetaMetricsProvider>
         ),
       },
