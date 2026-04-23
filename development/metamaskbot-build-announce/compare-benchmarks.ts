@@ -267,6 +267,23 @@ export function buildMetricLines(
   });
 }
 
+function printStatisticalTests(comparison: BenchmarkEntryComparison): void {
+  const sigTests = (comparison.statisticalTests ?? []).filter(
+    (t: StatisticalTestResult) => t.verdict !== 'pass',
+  );
+  if (sigTests.length === 0) {
+    return;
+  }
+  console.log('  Statistical significance (Mann-Whitney U):');
+  for (const t of sigTests) {
+    const icon = t.verdict === 'fail' ? '🔺' : '🔼';
+    const delta = formatDeltaPercent(t.deltaPercent);
+    console.log(
+      `    ${icon} ${t.metric}: p=${t.pValue.toFixed(4)}, r=${t.effectSize.toFixed(2)}, ${delta}`,
+    );
+  }
+}
+
 function formatName(comparison: BenchmarkEntryComparison): string {
   const source = comparison.source ? ` [${comparison.source}]` : '';
   return `${comparison.benchmarkName}${source}`;
@@ -322,22 +339,7 @@ export function printReport(result: {
       console.log(`      ${line.icon} ${line.metric}${details}`);
     }
 
-    // Layer 3: Statistical significance (informational)
-    if ((comparison.statisticalTests ?? []).length > 0) {
-      const sigTests = (comparison.statisticalTests ?? []).filter(
-        (t: StatisticalTestResult) => t.verdict !== 'pass',
-      );
-      if (sigTests.length > 0) {
-        console.log('  Statistical significance (Mann-Whitney U):');
-        for (const t of sigTests) {
-          const icon = t.verdict === 'fail' ? '🔺' : '🔼';
-          const delta = formatDeltaPercent(t.deltaPercent);
-          console.log(
-            `    ${icon} ${t.metric}: p=${t.pValue.toFixed(4)}, r=${t.effectSize.toFixed(2)}, ${delta}`,
-          );
-        }
-      }
-    }
+    printStatisticalTests(comparison);
   }
 
   // Show warned entries with details
@@ -348,22 +350,7 @@ export function printReport(result: {
       console.log(`      ${line.icon} ${line.metric}${details}`);
     }
 
-    // Layer 3: Statistical significance (informational)
-    if ((comparison.statisticalTests ?? []).length > 0) {
-      const sigTests = (comparison.statisticalTests ?? []).filter(
-        (t: StatisticalTestResult) => t.verdict !== 'pass',
-      );
-      if (sigTests.length > 0) {
-        console.log('  Statistical significance (Mann-Whitney U):');
-        for (const t of sigTests) {
-          const icon = t.verdict === 'fail' ? '🔺' : '🔼';
-          const delta = formatDeltaPercent(t.deltaPercent);
-          console.log(
-            `    ${icon} ${t.metric}: p=${t.pValue.toFixed(4)}, r=${t.effectSize.toFixed(2)}, ${delta}`,
-          );
-        }
-      }
-    }
+    printStatisticalTests(comparison);
   }
 
   // Layer 3 early warnings: passed entries with statistically significant regressions
@@ -373,17 +360,8 @@ export function printReport(result: {
   if (earlyWarnings.length > 0) {
     console.log('\n  Statistical early warnings (passed absolute gate):');
     for (const { comparison } of earlyWarnings) {
-      const sigTests = (comparison.statisticalTests ?? []).filter(
-        (t: StatisticalTestResult) => t.verdict !== 'pass',
-      );
       console.log(`  ${formatName(comparison)}`);
-      for (const t of sigTests) {
-        const icon = t.verdict === 'fail' ? '🔺' : '🔼';
-        const delta = formatDeltaPercent(t.deltaPercent);
-        console.log(
-          `    ${icon} ${t.metric}: p=${t.pValue.toFixed(4)}, r=${t.effectSize.toFixed(2)}, ${delta}`,
-        );
-      }
+      printStatisticalTests(comparison);
     }
   }
 
