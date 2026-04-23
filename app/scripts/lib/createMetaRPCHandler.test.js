@@ -4,7 +4,6 @@ import createMetaRPCHandler from './createMetaRPCHandler';
 
 jest.mock('../../../shared/lib/trace', () => ({
   trace: jest.fn((_request, fn) => fn()),
-  TraceName: { BackgroundRpc: 'Background RPC' },
 }));
 
 describe('createMetaRPCHandler', () => {
