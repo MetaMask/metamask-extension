@@ -1,0 +1,50 @@
+test/e2e/playwright/llm-workflow/capabilities/state-snapshot.test.ts
+  03a57842576238fc 4,8-9
+  3f3084711ee0b42a 29,40,60,69,77,84,91,98,105
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "df3defc111f2e7b7fd915a7488feeaa355e89de7",
+  "prompts": {
+    "03a57842576238fc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2465b6e65ffevphk3j1uHQOi9s-902b741e-9bfc-4a4e-a92d-89d86489c438",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 2,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    },
+    "3f3084711ee0b42a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2465b6e65ffevphk3j1uHQOi9s-1fc82cf5-66c6-4d15-84a3-046f208524c8",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares",
+      "messages": [],
+      "total_additions": 9,
+      "total_deletions": 9,
+      "accepted_lines": 9,
+      "overriden_lines": 0
+    },
+    "7dedd4d32b25fc99": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_249d4b985ffedUT8hAiE3EC4sP-62f570ae-a2ab-4cb2-bcd9-14f87641d889",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
