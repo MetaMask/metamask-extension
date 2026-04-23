@@ -205,7 +205,6 @@ export const CoinOverview = ({
   const isRewardsEnabled = useSelector(selectRewardsEnabled);
 
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
-  console.log('hasBalance ........', !hasBalance);
   const isTestnet = useSelector(getMultichainIsTestnet);
 
   // Only show empty state when Receive can act (selectedAccountGroup exists);

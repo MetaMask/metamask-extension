@@ -49,13 +49,11 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   balance,
   chainId,
 }) => {
-  console.log('AccountGroupBalance ........', balance);
   const { privacyMode, showNativeTokenAsMainBalance } =
     useSelector(getPreferences);
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
   const { formatCurrency, formatTokenQuantity } = useFormatters();
 
-  console.log('formatCurrency ........', formatCurrency);
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const fallbackCurrency = useSelector(getCurrentCurrency);
   const anyEnabledNetworksAreAvailable = useSelector(
@@ -72,18 +70,14 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
     getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
   );
 
-  console.log('selectedAccount ........', selectedAccount);
   const multichainNativeTokenBalance = useSelector((state) =>
     getMultichainNativeTokenBalance(state, selectedAccount),
   );
 
   const isEvm = isEvmChainId(chainId);
 
-  console.log('isEvm ........', isEvm);
-
   const isTestnet = useSelector(getMultichainIsTestnet);
 
-  console.log('isTestnet ........', isTestnet);
   const showNativeTokenAsMain = Boolean(
     showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1,
   );
@@ -92,8 +86,6 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
     getMultichainNativeCurrency,
     selectedAccount,
   );
-
-  console.log('nativeCurrency ........', nativeCurrency);
 
   let formattedNativeBalance = null;
   if (showNativeTokenAsMain || isTestnet) {
@@ -111,8 +103,6 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
       );
     }
   }
-
-  console.log('formattedNativeBalance ........', formattedNativeBalance);
 
   const total = selectedGroupBalance?.totalBalanceInUserCurrency;
   const currency = selectedGroupBalance
@@ -153,7 +143,6 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
     formattedNativeBalance,
   ]);
 
-  console.log('formattedTotal ........', formattedTotal);
   return (
     <Skeleton
       isLoading={
