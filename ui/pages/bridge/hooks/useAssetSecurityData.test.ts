@@ -102,12 +102,15 @@ describe('useAssetSecurityData', () => {
       BridgeAssetSecurityDataType.SPAM,
       BridgeAssetSecurityDataType.INFO,
       BridgeAssetSecurityDataType.BENIGN,
-    ])('is falsy when securityData.type is %s', (type) => {
-      const { result } = renderHook(() =>
-        useAssetSecurityData(makeToken({ securityData: { type } })),
-      );
-      expect(result.current.assetIsVerified).toBeFalsy();
-    });
+    ])(
+      'is falsy when securityData.type is %s',
+      (type: BridgeAssetSecurityDataType) => {
+        const { result } = renderHook(() =>
+          useAssetSecurityData(makeToken({ securityData: { type } })),
+        );
+        expect(result.current.assetIsVerified).toBeFalsy();
+      },
+    );
   });
 
   // ─── assetIsSuspicious ─────────────────────────────────────────────────────
@@ -146,12 +149,15 @@ describe('useAssetSecurityData', () => {
       BridgeAssetSecurityDataType.VERIFIED,
       BridgeAssetSecurityDataType.INFO,
       BridgeAssetSecurityDataType.BENIGN,
-    ])('is false when securityData.type is %s', (type) => {
-      const { result } = renderHook(() =>
-        useAssetSecurityData(makeToken({ securityData: { type } })),
-      );
-      expect(result.current.assetIsSuspicious).toBe(false);
-    });
+    ])(
+      'is false when securityData.type is %s',
+      (type: BridgeAssetSecurityDataType) => {
+        const { result } = renderHook(() =>
+          useAssetSecurityData(makeToken({ securityData: { type } })),
+        );
+        expect(result.current.assetIsSuspicious).toBe(false);
+      },
+    );
   });
 
   // ─── assetIsMalicious ──────────────────────────────────────────────────────
@@ -180,12 +186,15 @@ describe('useAssetSecurityData', () => {
       BridgeAssetSecurityDataType.VERIFIED,
       BridgeAssetSecurityDataType.INFO,
       BridgeAssetSecurityDataType.BENIGN,
-    ])('is false when securityData.type is %s', (type) => {
-      const { result } = renderHook(() =>
-        useAssetSecurityData(makeToken({ securityData: { type } })),
-      );
-      expect(result.current.assetIsMalicious).toBe(false);
-    });
+    ])(
+      'is false when securityData.type is %s',
+      (type: BridgeAssetSecurityDataType) => {
+        const { result } = renderHook(() =>
+          useAssetSecurityData(makeToken({ securityData: { type } })),
+        );
+        expect(result.current.assetIsMalicious).toBe(false);
+      },
+    );
   });
 
   // ─── assetSuspiciousLocalizedFeatures ─────────────────────────────────────
@@ -445,6 +454,192 @@ describe('useAssetSecurityData', () => {
         ),
       );
       expect(result.current.assetMaliciousLocalizedFeatures).toHaveLength(3);
+    });
+  });
+
+  // ─── assetSuspiciousFeatures ──────────────────────────────────────────────
+
+  describe('assetSuspiciousFeatures', () => {
+    it('returns an empty array when there is no securityData', () => {
+      const { result } = renderHook(() => useAssetSecurityData(makeToken()));
+      expect(result.current.assetSuspiciousFeatures).toStrictEqual([]);
+    });
+
+    it('returns an empty array when metadata is absent', () => {
+      const { result } = renderHook(() =>
+        useAssetSecurityData(
+          makeToken({
+            securityData: { type: BridgeAssetSecurityDataType.WARNING },
+          }),
+        ),
+      );
+      expect(result.current.assetSuspiciousFeatures).toStrictEqual([]);
+    });
+
+    it('returns WARNING and SPAM features, excluding MALICIOUS ones', () => {
+      const warningFeature = makeFeature(
+        'HONEYPOT',
+        BridgeAssetSecurityDataType.WARNING,
+      );
+      const spamFeature = makeFeature(
+        'IMPERSONATOR_HIGH_CONFIDENCE',
+        BridgeAssetSecurityDataType.SPAM,
+      );
+      const maliciousFeature = makeFeature(
+        'RUGPULL',
+        BridgeAssetSecurityDataType.MALICIOUS,
+      );
+
+      const { result } = renderHook(() =>
+        useAssetSecurityData(
+          makeToken({
+            securityData: {
+              type: BridgeAssetSecurityDataType.WARNING,
+              metadata: {
+                features: [warningFeature, spamFeature, maliciousFeature],
+              },
+            },
+          }),
+        ),
+      );
+
+      expect(result.current.assetSuspiciousFeatures).toHaveLength(2);
+      expect(result.current.assetSuspiciousFeatures).toContainEqual(
+        warningFeature,
+      );
+      expect(result.current.assetSuspiciousFeatures).toContainEqual(
+        spamFeature,
+      );
+      expect(result.current.assetSuspiciousFeatures).not.toContainEqual(
+        maliciousFeature,
+      );
+    });
+
+    it('returns an empty array when all features are MALICIOUS', () => {
+      const { result } = renderHook(() =>
+        useAssetSecurityData(
+          makeToken({
+            securityData: {
+              type: BridgeAssetSecurityDataType.MALICIOUS,
+              metadata: {
+                features: [
+                  makeFeature('RUGPULL', BridgeAssetSecurityDataType.MALICIOUS),
+                ],
+              },
+            },
+          }),
+        ),
+      );
+      expect(result.current.assetSuspiciousFeatures).toStrictEqual([]);
+    });
+  });
+
+  // ─── assetMaliciousFeatures ───────────────────────────────────────────────
+
+  describe('assetMaliciousFeatures', () => {
+    it('returns an empty array when there is no securityData', () => {
+      const { result } = renderHook(() => useAssetSecurityData(makeToken()));
+      expect(result.current.assetMaliciousFeatures).toStrictEqual([]);
+    });
+
+    it('returns an empty array when metadata is absent', () => {
+      const { result } = renderHook(() =>
+        useAssetSecurityData(
+          makeToken({
+            securityData: { type: BridgeAssetSecurityDataType.MALICIOUS },
+          }),
+        ),
+      );
+      expect(result.current.assetMaliciousFeatures).toStrictEqual([]);
+    });
+
+    it('returns only MALICIOUS features, excluding WARNING and SPAM ones', () => {
+      const maliciousFeature = makeFeature(
+        'RUGPULL',
+        BridgeAssetSecurityDataType.MALICIOUS,
+      );
+      const warningFeature = makeFeature(
+        'HONEYPOT',
+        BridgeAssetSecurityDataType.WARNING,
+      );
+      const spamFeature = makeFeature(
+        'IMPERSONATOR_HIGH_CONFIDENCE',
+        BridgeAssetSecurityDataType.SPAM,
+      );
+
+      const { result } = renderHook(() =>
+        useAssetSecurityData(
+          makeToken({
+            securityData: {
+              type: BridgeAssetSecurityDataType.MALICIOUS,
+              metadata: {
+                features: [maliciousFeature, warningFeature, spamFeature],
+              },
+            },
+          }),
+        ),
+      );
+
+      expect(result.current.assetMaliciousFeatures).toHaveLength(1);
+      expect(result.current.assetMaliciousFeatures).toContainEqual(
+        maliciousFeature,
+      );
+      expect(result.current.assetMaliciousFeatures).not.toContainEqual(
+        warningFeature,
+      );
+      expect(result.current.assetMaliciousFeatures).not.toContainEqual(
+        spamFeature,
+      );
+    });
+
+    it('returns multiple MALICIOUS features', () => {
+      const rugpull = makeFeature(
+        'RUGPULL',
+        BridgeAssetSecurityDataType.MALICIOUS,
+      );
+      const knownMalicious = makeFeature(
+        'KNOWN_MALICIOUS',
+        BridgeAssetSecurityDataType.MALICIOUS,
+      );
+
+      const { result } = renderHook(() =>
+        useAssetSecurityData(
+          makeToken({
+            securityData: {
+              type: BridgeAssetSecurityDataType.MALICIOUS,
+              metadata: { features: [rugpull, knownMalicious] },
+            },
+          }),
+        ),
+      );
+
+      expect(result.current.assetMaliciousFeatures).toHaveLength(2);
+      expect(result.current.assetMaliciousFeatures).toContainEqual(rugpull);
+      expect(result.current.assetMaliciousFeatures).toContainEqual(
+        knownMalicious,
+      );
+    });
+
+    it('returns an empty array when all features are WARNING or SPAM', () => {
+      const { result } = renderHook(() =>
+        useAssetSecurityData(
+          makeToken({
+            securityData: {
+              type: BridgeAssetSecurityDataType.WARNING,
+              metadata: {
+                features: [
+                  makeFeature('HONEYPOT', BridgeAssetSecurityDataType.WARNING),
+                  makeFeature(
+                    'IMPERSONATOR_HIGH_CONFIDENCE',
+                    BridgeAssetSecurityDataType.SPAM,
+                  ),
+                ],
+              },
+            },
+          }),
+        ),
+      );
+      expect(result.current.assetMaliciousFeatures).toStrictEqual([]);
     });
   });
 

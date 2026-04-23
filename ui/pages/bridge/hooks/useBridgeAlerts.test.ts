@@ -13,6 +13,7 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { BannerAlertSeverity } from '../../../components/component-library';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
+import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
 import { useBridgeAlerts } from './useBridgeAlerts';
@@ -79,10 +80,14 @@ describe('useBridgeAlerts', () => {
     jest.mocked(useRamps).mockReturnValue({
       openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
     } as never);
-    jest.mocked(useSecurityAlerts).mockReturnValue({ txAlert: null });
+    jest
+      .mocked(useSecurityAlerts)
+      .mockReturnValue({ txAlert: null, securityWarnings: [] });
     jest.mocked(useAssetSecurityData).mockReturnValue({
       assetIsMalicious: false,
       assetIsSuspicious: false,
+      assetMaliciousFeatures: [],
+      assetSuspiciousFeatures: [],
       assetMaliciousLocalizedFeatures: [],
       assetSuspiciousLocalizedFeatures: [],
       assetIsVerified: false,
@@ -174,7 +179,7 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      const ids = result.current.bannerAlerts.map((a) => a.id);
+      const ids = result.current.bannerAlerts.map((a: BridgeAlert) => a.id);
       expect(ids).not.toContain('no-quotes');
       expect(ids).toContain('market-closed');
     });
@@ -188,7 +193,7 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      const ids = result.current.bannerAlerts.map((a) => a.id);
+      const ids = result.current.bannerAlerts.map((a: BridgeAlert) => a.id);
       expect(ids).not.toContain('no-quotes');
     });
   });
@@ -202,7 +207,9 @@ describe('useBridgeAlerts', () => {
     };
 
     it('adds tx-alert to bannerAlerts when txAlert and activeQuote are both present', () => {
-      jest.mocked(useSecurityAlerts).mockReturnValue({ txAlert: mockTxAlert });
+      jest
+        .mocked(useSecurityAlerts)
+        .mockReturnValue({ txAlert: mockTxAlert, securityWarnings: [] });
       jest.mocked(getBridgeQuotes).mockReturnValue({
         isLoading: false,
         activeQuote: MOCK_BRIDGE_QUOTE,
@@ -210,9 +217,9 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      expect(result.current.bannerAlerts.map((a) => a.id)).toContain(
-        'tx-alert',
-      );
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).toContain('tx-alert');
       expect(result.current.alertsById['tx-alert']).toStrictEqual(
         expect.objectContaining({
           id: 'tx-alert',
@@ -221,13 +228,15 @@ describe('useBridgeAlerts', () => {
           bannerAlertProps: { severity: BannerAlertSeverity.Danger },
         }),
       );
-      expect(result.current.confirmationAlerts.map((a) => a.id)).not.toContain(
-        'tx-alert',
-      );
+      expect(
+        result.current.confirmationAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('tx-alert');
     });
 
     it('does not add tx-alert when activeQuote is invalid (quote expired)', () => {
-      jest.mocked(useSecurityAlerts).mockReturnValue({ txAlert: mockTxAlert });
+      jest
+        .mocked(useSecurityAlerts)
+        .mockReturnValue({ txAlert: mockTxAlert, securityWarnings: [] });
       jest.mocked(getBridgeQuotes).mockReturnValue({
         isLoading: false,
         activeQuote: MOCK_BRIDGE_QUOTE,
@@ -236,13 +245,15 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      expect(result.current.bannerAlerts.map((a) => a.id)).not.toContain(
-        'tx-alert',
-      );
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('tx-alert');
     });
 
     it('does not add tx-alert when txAlert is null', () => {
-      jest.mocked(useSecurityAlerts).mockReturnValue({ txAlert: null });
+      jest
+        .mocked(useSecurityAlerts)
+        .mockReturnValue({ txAlert: null, securityWarnings: [] });
       jest.mocked(getBridgeQuotes).mockReturnValue({
         isLoading: false,
         activeQuote: MOCK_BRIDGE_QUOTE,
@@ -250,9 +261,9 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      expect(result.current.bannerAlerts.map((a) => a.id)).not.toContain(
-        'tx-alert',
-      );
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('tx-alert');
     });
   });
 
@@ -265,6 +276,8 @@ describe('useBridgeAlerts', () => {
       jest.mocked(useAssetSecurityData).mockReturnValue({
         assetIsMalicious: true,
         assetIsSuspicious: false,
+        assetMaliciousFeatures: [],
+        assetSuspiciousFeatures: [],
         assetMaliciousLocalizedFeatures: [
           { title: 'Honeypot', description: null },
         ],
@@ -275,12 +288,12 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      expect(result.current.bannerAlerts.map((a) => a.id)).toContain(
-        'token-security',
-      );
-      expect(result.current.confirmationAlerts.map((a) => a.id)).toContain(
-        'token-security',
-      );
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).toContain('token-security');
+      expect(
+        result.current.confirmationAlerts.map((a: BridgeAlert) => a.id),
+      ).toContain('token-security');
       const alert = result.current.alertsById['token-security'];
       expect(alert).toStrictEqual(
         expect.objectContaining({
@@ -301,6 +314,8 @@ describe('useBridgeAlerts', () => {
       jest.mocked(useAssetSecurityData).mockReturnValue({
         assetIsMalicious: false,
         assetIsSuspicious: true,
+        assetMaliciousFeatures: [],
+        assetSuspiciousFeatures: [],
         assetMaliciousLocalizedFeatures: [],
         assetSuspiciousLocalizedFeatures: [
           { title: 'Airdrop', description: null },
@@ -329,6 +344,8 @@ describe('useBridgeAlerts', () => {
       jest.mocked(useAssetSecurityData).mockReturnValue({
         assetIsMalicious: true,
         assetIsSuspicious: false,
+        assetMaliciousFeatures: [],
+        assetSuspiciousFeatures: [],
         assetMaliciousLocalizedFeatures: [],
         assetSuspiciousLocalizedFeatures: [],
         assetIsVerified: false,
@@ -337,15 +354,17 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      expect(result.current.bannerAlerts.map((a) => a.id)).not.toContain(
-        'token-security',
-      );
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('token-security');
     });
 
     it('does not add token-security when the asset is neither malicious nor suspicious', () => {
       jest.mocked(useAssetSecurityData).mockReturnValue({
         assetIsMalicious: false,
         assetIsSuspicious: false,
+        assetMaliciousFeatures: [],
+        assetSuspiciousFeatures: [],
         assetMaliciousLocalizedFeatures: [],
         assetSuspiciousLocalizedFeatures: [],
         assetIsVerified: true,
@@ -354,9 +373,9 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      expect(result.current.bannerAlerts.map((a) => a.id)).not.toContain(
-        'token-security',
-      );
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('token-security');
     });
   });
 
@@ -370,12 +389,12 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      expect(result.current.bannerAlerts.map((a) => a.id)).toContain(
-        'price-data-unavailable',
-      );
-      expect(result.current.confirmationAlerts.map((a) => a.id)).toContain(
-        'price-data-unavailable',
-      );
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).toContain('price-data-unavailable');
+      expect(
+        result.current.confirmationAlerts.map((a: BridgeAlert) => a.id),
+      ).toContain('price-data-unavailable');
       expect(result.current.alertsById['price-data-unavailable']).toStrictEqual(
         expect.objectContaining({
           id: 'price-data-unavailable',
@@ -399,9 +418,9 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      expect(result.current.bannerAlerts.map((a) => a.id)).not.toContain(
-        'price-data-unavailable',
-      );
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('price-data-unavailable');
     });
 
     it('does not add price-data-unavailable when no quote is present', () => {
@@ -413,9 +432,9 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      expect(result.current.bannerAlerts.map((a) => a.id)).not.toContain(
-        'price-data-unavailable',
-      );
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('price-data-unavailable');
     });
   });
 
@@ -434,9 +453,9 @@ describe('useBridgeAlerts', () => {
     it('adds insufficient-gas to bannerAlerts with a buy action button', () => {
       const { result } = renderHook();
 
-      expect(result.current.bannerAlerts.map((a) => a.id)).toContain(
-        'insufficient-gas',
-      );
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).toContain('insufficient-gas');
       const alert = result.current.alertsById['insufficient-gas'];
       expect(alert).toStrictEqual(
         expect.objectContaining({
@@ -453,9 +472,9 @@ describe('useBridgeAlerts', () => {
       expect(alert?.bannerAlertProps?.actionButtonOnClick).toBeInstanceOf(
         Function,
       );
-      expect(result.current.confirmationAlerts.map((a) => a.id)).not.toContain(
-        'insufficient-gas',
-      );
+      expect(
+        result.current.confirmationAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('insufficient-gas');
     });
 
     it('uses the swap i18n key for same-chain quotes', () => {
@@ -489,9 +508,9 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      expect(result.current.bannerAlerts.map((a) => a.id)).not.toContain(
-        'insufficient-gas',
-      );
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('insufficient-gas');
     });
 
     it('does not add insufficient-gas when activeQuote is invalid', () => {
@@ -499,9 +518,9 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      expect(result.current.bannerAlerts.map((a) => a.id)).not.toContain(
-        'insufficient-gas',
-      );
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('insufficient-gas');
     });
 
     it('does not add insufficient-gas when isInsufficientBalance is also true', () => {
@@ -513,9 +532,9 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      expect(result.current.bannerAlerts.map((a) => a.id)).not.toContain(
-        'insufficient-gas',
-      );
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('insufficient-gas');
     });
   });
 
@@ -537,12 +556,12 @@ describe('useBridgeAlerts', () => {
           isConfirmationAlert: false,
         }),
       );
-      expect(result.current.bannerAlerts.map((a) => a.id)).not.toContain(
-        'price-impact',
-      );
-      expect(result.current.confirmationAlerts.map((a) => a.id)).not.toContain(
-        'price-impact',
-      );
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('price-impact');
+      expect(
+        result.current.confirmationAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('price-impact');
     });
   });
 
@@ -556,12 +575,12 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      expect(result.current.confirmationAlerts.map((a) => a.id)).toContain(
-        'price-impact',
-      );
-      expect(result.current.bannerAlerts.map((a) => a.id)).not.toContain(
-        'price-impact',
-      );
+      expect(
+        result.current.confirmationAlerts.map((a: BridgeAlert) => a.id),
+      ).toContain('price-impact');
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('price-impact');
       expect(result.current.alertsById['price-impact']).toStrictEqual(
         expect.objectContaining({
           id: 'price-impact',
@@ -638,12 +657,14 @@ describe('useBridgeAlerts', () => {
 
       const { result } = renderHook();
 
-      const bannerIds = result.current.bannerAlerts.map((a) => a.id);
+      const bannerIds = result.current.bannerAlerts.map(
+        (a: BridgeAlert) => a.id,
+      );
       expect(bannerIds).toContain('market-closed');
       expect(bannerIds).toContain('price-data-unavailable');
-      expect(result.current.confirmationAlerts.map((a) => a.id)).toContain(
-        'price-data-unavailable',
-      );
+      expect(
+        result.current.confirmationAlerts.map((a: BridgeAlert) => a.id),
+      ).toContain('price-data-unavailable');
     });
 
     it('confirmationAlerts only contains alerts with isConfirmationAlert true', () => {
@@ -661,7 +682,7 @@ describe('useBridgeAlerts', () => {
       const { result } = renderHook();
 
       const confirmationIds = result.current.confirmationAlerts.map(
-        (a) => a.id,
+        (a: BridgeAlert) => a.id,
       );
       expect(confirmationIds).toContain('price-data-unavailable');
       expect(confirmationIds).toContain('price-impact');

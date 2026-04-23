@@ -16,14 +16,27 @@ export const useAssetSecurityData = (asset: BridgeToken) => {
     asset.securityData?.type === BridgeAssetSecurityDataType.MALICIOUS;
   const assetHasSecurityData = Boolean(asset.securityData);
 
+  const assetSuspiciousFeatures = useMemo(
+    () =>
+      asset.securityData?.metadata?.features.filter(
+        (feature) =>
+          feature.type === BridgeAssetSecurityDataType.WARNING ||
+          feature.type === BridgeAssetSecurityDataType.SPAM,
+      ) ?? [],
+    [asset],
+  );
+
+  const assetMaliciousFeatures = useMemo(
+    () =>
+      asset.securityData?.metadata?.features.filter(
+        (feature) => feature.type === BridgeAssetSecurityDataType.MALICIOUS,
+      ) ?? [],
+    [asset],
+  );
+
   const assetSuspiciousLocalizedFeatures = useMemo(
     () =>
-      asset.securityData?.metadata?.features
-        .filter(
-          (feature) =>
-            feature.type === BridgeAssetSecurityDataType.WARNING ||
-            feature.type === BridgeAssetSecurityDataType.SPAM,
-        )
+      assetSuspiciousFeatures
         .map(mapAssetSecurityDataFeatureToLocalizedFormat(asset.symbol, t))
         .filter(
           (
@@ -34,15 +47,12 @@ export const useAssetSecurityData = (asset: BridgeToken) => {
             >
           > => Boolean(value),
         ) ?? [],
-    [asset, t],
+    [assetSuspiciousFeatures, asset, t],
   );
 
   const assetMaliciousLocalizedFeatures = useMemo(
     () =>
-      asset.securityData?.metadata?.features
-        .filter(
-          (feature) => feature.type === BridgeAssetSecurityDataType.MALICIOUS,
-        )
+      assetMaliciousFeatures
         .map(mapAssetSecurityDataFeatureToLocalizedFormat(asset.symbol, t))
         .filter(
           (
@@ -53,7 +63,7 @@ export const useAssetSecurityData = (asset: BridgeToken) => {
             >
           > => Boolean(value),
         ) ?? [],
-    [asset, t],
+    [assetMaliciousFeatures, asset, t],
   );
 
   return {
@@ -61,6 +71,8 @@ export const useAssetSecurityData = (asset: BridgeToken) => {
     assetIsVerified,
     assetIsSuspicious,
     assetIsMalicious,
+    assetSuspiciousFeatures,
+    assetMaliciousFeatures,
     assetSuspiciousLocalizedFeatures,
     assetMaliciousLocalizedFeatures,
   };
