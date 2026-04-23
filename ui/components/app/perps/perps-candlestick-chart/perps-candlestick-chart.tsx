@@ -267,6 +267,9 @@ const PerpsCandlestickChart = forwardRef<
       chartRef.current = chart;
 
       // Create candlestick series (pane 0 - top)
+      // priceFormat mirrors mobile (TradingViewChartTemplate.tsx:697): allow up to
+      // 6 decimals with a minMove of 1e-6 so small-value assets (PUMP at $0.001824)
+      // render real digits on the Y axis instead of rounding to $0.00.
       const candlestickSeries = chart.addSeries(CandlestickSeries, {
         upColor,
         downColor,
@@ -275,6 +278,11 @@ const PerpsCandlestickChart = forwardRef<
         wickDownColor: downColor,
         priceLineVisible: false,
         lastValueVisible: false,
+        priceFormat: {
+          type: 'price',
+          precision: 6,
+          minMove: 0.000001,
+        },
       });
 
       seriesRef.current = candlestickSeries;
