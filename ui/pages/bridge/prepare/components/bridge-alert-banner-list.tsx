@@ -91,29 +91,34 @@ export const BridgeAlertBannerList = ({
             </BannerAlert>
           )}
 
-        {isValidQuoteRequest(quoteParams, true) &&
+        {isValidQuoteRequest(quoteParams, false) &&
           bannerAlerts
             .filter((alert) => alert && alertVisibility[alert.id] !== false)
-            .map((alert, index: number) => (
-              <BannerAlert
-                key={`${alert.id}-${index}`}
-                textAlign={TextAlign.Left}
-                data-testid={`bridge-${alert.id}`}
-                onClose={
-                  alert.openModalOnClick
-                    ? () => setModalAlertId(alert.id)
-                    : () => dismissAlert(alert.id)
-                }
-                closeButtonProps={
-                  alert.openModalOnClick
-                    ? { iconName: IconName.ArrowRight }
-                    : undefined
-                }
-                title={alert.title}
-                description={alert.description}
-                {...alert.bannerAlertProps}
-              />
-            ))}
+            .map((alert, index: number) => {
+              let onClose: (() => void) | undefined;
+              if (alert.openModalOnClick) {
+                onClose = () => setModalAlertId(alert.id);
+              } else if (alert.isDismissable) {
+                onClose = () => dismissAlert(alert.id);
+              }
+
+              return (
+                <BannerAlert
+                  key={`${alert.id}-${index}`}
+                  textAlign={TextAlign.Left}
+                  data-testid={`bridge-${alert.id}`}
+                  onClose={onClose}
+                  closeButtonProps={
+                    alert.openModalOnClick
+                      ? { iconName: IconName.ArrowRight }
+                      : undefined
+                  }
+                  title={alert.title}
+                  description={alert.description}
+                  {...alert.bannerAlertProps}
+                />
+              );
+            })}
       </Column>
 
       <BridgeAlertModal

@@ -96,6 +96,7 @@ export const useBridgeAlerts = () => {
     if (isStockMarketClosed) {
       categorizeAlert({
         id: 'market-closed',
+        isDismissable: false,
         severity: 'danger',
         title: t('bridgeMarketClosedTitle'),
         description: t('bridgeMarketClosedDescription'),
@@ -109,6 +110,7 @@ export const useBridgeAlerts = () => {
     if (isNoQuotesAvailable && !isStockMarketClosed && !isQuoteExpired) {
       categorizeAlert({
         id: 'no-quotes',
+        isDismissable: false,
         severity: 'danger',
         description: t(bridgeUnavailableQuotesReason),
         isConfirmationAlert: false,
@@ -147,7 +149,8 @@ export const useBridgeAlerts = () => {
         infoList: assetIsMalicious
           ? assetMaliciousLocalizedFeatures
           : assetSuspiciousLocalizedFeatures,
-        isConfirmationAlert: true,
+        isConfirmationAlert: assetIsMalicious,
+        isDismissable: false,
         openModalOnClick: true,
         bannerAlertProps: {
           severity: assetIsMalicious
@@ -161,6 +164,7 @@ export const useBridgeAlerts = () => {
       categorizeAlert({
         id: 'price-data-unavailable',
         severity: 'danger',
+        isDismissable: false,
         title: t('bridgeNoPriceInfoTitle'),
         description: t('bridgePriceDataUnavailableError'),
         isConfirmationAlert: true,
@@ -178,6 +182,7 @@ export const useBridgeAlerts = () => {
     ) {
       categorizeAlert({
         id: 'insufficient-gas',
+        isDismissable: false,
         severity: 'danger',
         title: t('bridgeValidationInsufficientGasTitle', [ticker]),
         description: t(
@@ -198,6 +203,7 @@ export const useBridgeAlerts = () => {
     if (isPriceImpactWarning) {
       categorizeAlert({
         id: 'price-impact',
+        isDismissable: false,
         severity: 'warning',
         title: t('bridgePriceImpactHigh'),
         description: t('bridgePriceImpactHighDescription', [
@@ -210,6 +216,7 @@ export const useBridgeAlerts = () => {
     if (isPriceImpactError) {
       categorizeAlert({
         id: 'price-impact',
+        isDismissable: false,
         severity: 'danger',
         title: t('bridgePriceImpactVeryHigh'),
         description: t('bridgePriceImpactVeryHighDescription', [
@@ -252,7 +259,6 @@ export const useBridgeAlerts = () => {
     assetIsSuspicious,
     assetMaliciousLocalizedFeatures,
     assetSuspiciousLocalizedFeatures,
-    // tokenAlerts,
     txAlert,
     t,
   ]);

@@ -34,15 +34,6 @@ exports[`BridgeAlertBannerList price-data-unavailable banner renders the banner 
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
-    <button
-      aria-label="Close"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-    >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/close.svg');"
-      />
-    </button>
   </div>
 </div>
 `;
@@ -83,15 +74,6 @@ exports[`BridgeAlertBannerList should render the insufficient-gas alert when ins
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
-    <button
-      aria-label="Close"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-    >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/close.svg');"
-      />
-    </button>
   </div>
   <div
     class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
@@ -123,15 +105,6 @@ exports[`BridgeAlertBannerList should render the insufficient-gas alert when ins
         Buy more ETH
       </button>
     </div>
-    <button
-      aria-label="Close"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-    >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/close.svg');"
-      />
-    </button>
   </div>
 </div>
 `;
@@ -172,15 +145,6 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
-    <button
-      aria-label="Close"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-    >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/close.svg');"
-      />
-    </button>
   </div>
   <div
     class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
@@ -207,15 +171,6 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
-    <button
-      aria-label="Close"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-    >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/close.svg');"
-      />
-    </button>
   </div>
 </div>
 `;
@@ -256,15 +211,6 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
-    <button
-      aria-label="Close"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-    >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/close.svg');"
-      />
-    </button>
   </div>
   <div
     class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
@@ -291,15 +237,6 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
-    <button
-      aria-label="Close"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-    >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/close.svg');"
-      />
-    </button>
   </div>
 </div>
 `;
@@ -335,15 +272,6 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when no quotes 
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
-    <button
-      aria-label="Close"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-    >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/close.svg');"
-      />
-    </button>
   </div>
   <div
     class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
@@ -370,15 +298,6 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when no quotes 
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
-    <button
-      aria-label="Close"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-    >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/close.svg');"
-      />
-    </button>
   </div>
 </div>
 `;
@@ -414,15 +333,6 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when reason is 
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
-    <button
-      aria-label="Close"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-    >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/close.svg');"
-      />
-    </button>
   </div>
   <div
     class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
@@ -449,15 +359,6 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when reason is 
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
-    <button
-      aria-label="Close"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-    >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/close.svg');"
-      />
-    </button>
   </div>
 </div>
 `;
@@ -529,15 +430,6 @@ exports[`BridgeAlertBannerList should render the token-security alert when token
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
-    <button
-      aria-label="Close"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-    >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/close.svg');"
-      />
-    </button>
   </div>
 </div>
 `;
@@ -578,15 +470,6 @@ exports[`BridgeAlertBannerList should render the tx-alert alert when tx alert is
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
-    <button
-      aria-label="Close"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-    >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/close.svg');"
-      />
-    </button>
   </div>
   <div
     class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
@@ -613,15 +496,6 @@ exports[`BridgeAlertBannerList should render the tx-alert alert when tx alert is
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
-    <button
-      aria-label="Close"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-    >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/close.svg');"
-      />
-    </button>
   </div>
 </div>
 `;
