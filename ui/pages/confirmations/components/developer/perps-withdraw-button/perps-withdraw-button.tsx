@@ -1,8 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
-import { Interface } from '@ethersproject/abi';
-import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import {
@@ -17,23 +15,7 @@ import {
   ConfirmationLoader,
   useConfirmationNavigation,
 } from '../../../hooks/useConfirmationNavigation';
-
-const ERC20_ABI = ['function transfer(address to, uint256 amount)'];
-const erc20Interface = new Interface(ERC20_ABI);
-
-const generateERC20TransferData = (
-  recipient: Hex,
-  amount: string,
-  decimals: number,
-): Hex => {
-  const multiplier = new BigNumber(10).pow(decimals);
-  const amountRaw = new BigNumber(amount).times(multiplier);
-
-  return erc20Interface.encodeFunctionData('transfer', [
-    recipient,
-    `0x${amountRaw.toString(16)}`,
-  ]) as Hex;
-};
+import { generateERC20TransferData } from '../utils';
 
 export const PerpsWithdrawButton = () => {
   const { navigateToTransaction } = useConfirmationNavigation();
@@ -54,8 +36,11 @@ export const PerpsWithdrawButton = () => {
         CHAIN_IDS.ARBITRUM,
       );
 
+      // Placeholder 0-USDC transfer: the real withdraw flow uses a Hyperliquid
+      // signed withdraw action, not an on-chain ERC-20 transfer. Recipient is
+      // the user's own address since withdrawn USDC ultimately returns to them.
       const transferData = generateERC20TransferData(
-        ARBITRUM_USDC.address,
+        selectedAccount.address as Hex,
         '0',
         ARBITRUM_USDC.decimals,
       );
