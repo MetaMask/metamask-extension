@@ -34,6 +34,7 @@ import {
 import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics';
 import {
   isSignificantRegression,
+  MIN_SAMPLES_FOR_VERDICT,
   type StatisticalTestResult,
 } from '../../test/e2e/benchmarks/utils/mann-whitney';
 
@@ -194,7 +195,11 @@ function collectStatisticalTests(
   const results: StatisticalTestResult[] = [];
   for (const [metric, current] of Object.entries(currentSamples)) {
     const baseline = baselineSamples[metric];
-    if (!baseline || baseline.length < 2 || current.length < 2) {
+    if (
+      !baseline ||
+      baseline.length < MIN_SAMPLES_FOR_VERDICT ||
+      current.length < MIN_SAMPLES_FOR_VERDICT
+    ) {
       continue;
     }
     results.push(isSignificantRegression(metric, current, baseline));

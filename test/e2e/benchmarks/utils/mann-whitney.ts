@@ -11,6 +11,9 @@
  * Reference: mann-whitney-u.py in repo root (scipy.stats.mannwhitneyu validation)
  */
 
+/** Minimum effective sample count (after warm-up exclusion + IQR trimming) required to emit a Mann-Whitney verdict. */
+export const MIN_SAMPLES_FOR_VERDICT = 5;
+
 export type MannWhitneyResult = {
   /** Whether the regression is statistically significant at the given alpha */
   significant: boolean;
@@ -311,7 +314,10 @@ export function isSignificantRegression(
   const result = mannWhitneyU(current, baseline, alpha);
 
   let verdict: StatisticalVerdict = 'pass';
-  if (result.significant && result.deltaPercent > 0) {
+  const sufficientSamples =
+    current.length >= MIN_SAMPLES_FOR_VERDICT &&
+    baseline.length >= MIN_SAMPLES_FOR_VERDICT;
+  if (sufficientSamples && result.significant && result.deltaPercent > 0) {
     if (result.deltaPercent >= 0.1) {
       verdict = 'fail';
     } else if (result.deltaPercent >= 0.05) {
