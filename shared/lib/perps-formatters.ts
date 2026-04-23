@@ -287,7 +287,7 @@ export const PRICE_RANGES_UNIVERSAL: FiatRangeConfig[] = [
     condition: (val) => Math.abs(val) > PRICE_THRESHOLD.VERY_HIGH,
     minimumDecimals: 0,
     maximumDecimals: 0,
-    significantDigits: 6,
+    significantDigits: 5,
     threshold: PRICE_THRESHOLD.VERY_HIGH,
   },
   {
