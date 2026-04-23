@@ -835,7 +835,6 @@ const _getBaseValidationErrors = createDeepEqualSelector(
             !isLoading &&
             quotesRefreshCount > 0,
         ),
-      // Shown anytime (before, during and after having fetched quotes)
       insufficientNativeReserveError,
       // Shown after fetching quotes
       isInsufficientGasForQuote: Boolean(

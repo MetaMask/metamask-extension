@@ -1338,7 +1338,7 @@
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
-    "message": "Minimum $1 account reserve not met.",
+    "message": "Minimum $1 reserve balance is required",
     "description": "$1 is the ticker symbol of the token"
   },
   "bridged": {
