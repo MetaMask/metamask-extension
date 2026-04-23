@@ -11,7 +11,7 @@ const GENESIS_PRIVATE_KEY =
 const GENESIS_ADDRESS = 'TPL66VK2gCXNCD7EJg9pgJRfqcRazjhUZY';
 
 const CONTAINER_NAME = 'tron-private-e2e';
-const HTTP_PORT = 8090;
+const HTTP_PORT = 18090;
 const CONFIG_DIR = join(__dirname, 'tron-config');
 
 export class TronNode {
