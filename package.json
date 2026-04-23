@@ -501,7 +501,7 @@
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "@actions/core": "^1.10.0",
+    "@actions/core": "^1.10.1",
     "@actions/github": "^5.1.1",
     "@anthropic-ai/sdk": "^0.32.1",
     "@babel/code-frame": "^7.25.9",
