@@ -112,6 +112,11 @@ class HeaderNavbar {
     await this.driver.clickElement(this.globalNetworksMenu);
   }
 
+  async openGlobalNetworksPageWhenDrawerIsOpen(): Promise<void> {
+    console.log('Open global menu networks Page');
+    await this.driver.clickElement(this.globalNetworksMenu);
+  }
+
   async openGlobalMenu({
     withNotificationCounter = false,
   } = {}): Promise<void> {

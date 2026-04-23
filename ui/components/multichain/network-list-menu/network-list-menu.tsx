@@ -824,7 +824,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
   let title;
   if (actionMode === ACTION_MODE.LIST) {
-    title = t('manageNetworksMenuHeading');
+    title = t('networks');
   } else if (actionMode === ACTION_MODE.ADD_EDIT && !editedNetwork) {
     title = t('addACustomNetwork');
   } else if (actionMode === ACTION_MODE.ADD_RPC) {
