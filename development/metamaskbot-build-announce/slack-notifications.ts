@@ -8,13 +8,11 @@
  *
  * Channel: #extension-performance-alerts (bound to the webhook)
  *
- * Batching: regressions within a 1-hour window are accumulated into
- * a single message, unless a regression is severe (>50% delta or
- * >2x the fail threshold).
+ * Severe regressions (>50% delta or >2x the fail threshold) are sent
+ * immediately; normal regressions are batched into a single message per run.
  */
 
 import { promises as fs } from 'fs';
-import os from 'os';
 import path from 'path';
 import { IncomingWebhook } from '@slack/webhook';
 import type {
@@ -57,28 +55,6 @@ type SlackBlock = Record<string, unknown>;
 
 const SEVERE_DELTA_THRESHOLD = 0.5; // 50% regression
 const SEVERE_FAIL_MULTIPLIER = 2.0; // >2x the fail threshold
-
-const BATCH_WINDOW_MS = 60 * 60 * 1000; // 1 hour
-
-// Fixed path so successive CI processes on the same runner share the batch file.
-const BATCH_DIR = path.join(os.tmpdir(), 'metamask-benchmark-batch');
-const BATCH_FILE = path.join(BATCH_DIR, 'batch.json');
-
-let batchDirReady: Promise<void> | null = null;
-
-async function ensureBatchDir(): Promise<void> {
-  if (!batchDirReady) {
-    batchDirReady = fs
-      .mkdir(BATCH_DIR, { recursive: true })
-      .then(() => fs.chmod(BATCH_DIR, 0o700));
-  }
-  return batchDirReady;
-}
-
-async function getBatchFilePath(): Promise<string> {
-  await ensureBatchDir();
-  return BATCH_FILE;
-}
 
 // ---------------------------------------------------------------------------
 // Ownership config (Phase 2 fallback to PR author; Phase 4 uses #6841 map)
@@ -634,36 +610,6 @@ export function formatBaselineReset(data: BaselineResetData): {
 // Batching
 // ---------------------------------------------------------------------------
 
-async function loadBatch(): Promise<BatchEntry[]> {
-  try {
-    const batchFile = await getBatchFilePath();
-    const raw = await fs.readFile(batchFile, 'utf-8');
-    return JSON.parse(raw) as BatchEntry[];
-  } catch {
-    return [];
-  }
-}
-
-async function saveBatch(entries: BatchEntry[]): Promise<void> {
-  try {
-    const batchFile = await getBatchFilePath();
-    await fs.writeFile(batchFile, JSON.stringify(entries, null, 2), {
-      mode: 0o600,
-    });
-  } catch {
-    // Batch write failure is non-fatal — benchmark verdict is unaffected
-  }
-}
-
-async function clearBatch(): Promise<void> {
-  try {
-    const batchFile = await getBatchFilePath();
-    await fs.unlink(batchFile);
-  } catch {
-    // file doesn't exist — fine
-  }
-}
-
 /**
  * Formats a batched notification combining multiple regressions
  * accumulated within the batching window.
@@ -826,57 +772,16 @@ export async function sendBenchmarkNotifications(
     await postToSlack(context.webhookUrl, payload);
   }
 
-  // Normal regressions: batch
+  // Normal regressions: send immediately.
+  // Batching via /tmp is not viable on ephemeral CI runners where each job
+  // gets a fresh filesystem — loadBatch always returns [].
   if (normal.length > 0) {
-    const now = Date.now();
-    const batch = await loadBatch();
-
-    // Combine persisted entries with new ones — flush must include both.
-    const updated: BatchEntry[] = [
-      ...batch,
-      ...normal.map((entry) => ({
-        comparison: entry.comparison,
-        violation: entry.violation,
-        timestamp: now,
-      })),
-    ];
-
-    // Flush when the oldest persisted entry has waited long enough.
-    // Empty batch means no prior context (fresh CI runner) — flush immediately.
-    const oldest =
-      batch.length > 0
-        ? batch.reduce((min, e) => Math.min(min, e.timestamp), Infinity)
-        : 0;
-    if (now - oldest >= BATCH_WINDOW_MS || severe.length > 0) {
-      const payload = formatBatchedNotification(updated, context, ownership);
-      await postToSlack(context.webhookUrl, payload);
-      await clearBatch();
-    } else {
-      await saveBatch(updated);
-    }
+    const entries: BatchEntry[] = normal.map((entry) => ({
+      comparison: entry.comparison,
+      violation: entry.violation,
+      timestamp: Date.now(),
+    }));
+    const payload = formatBatchedNotification(entries, context, ownership);
+    await postToSlack(context.webhookUrl, payload);
   }
-}
-
-/**
- * Forces a flush of any pending batched notifications.
- * Called by a scheduled job or at the end of the CI pipeline.
- *
- * @param context - Slack context (webhook URL, PR info).
- */
-export async function flushBatchedNotifications(
-  context: SlackContext,
-): Promise<void> {
-  if (!context.webhookUrl) {
-    return;
-  }
-
-  const batch = await loadBatch();
-  if (batch.length === 0) {
-    return;
-  }
-
-  const ownership = await loadOwnershipMap();
-  const payload = formatBatchedNotification(batch, context, ownership);
-  await postToSlack(context.webhookUrl, payload);
-  await clearBatch();
 }
