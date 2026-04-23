@@ -645,10 +645,14 @@ async function loadBatch(): Promise<BatchEntry[]> {
 }
 
 async function saveBatch(entries: BatchEntry[]): Promise<void> {
-  const batchFile = await getBatchFilePath();
-  await fs.writeFile(batchFile, JSON.stringify(entries, null, 2), {
-    mode: 0o600,
-  });
+  try {
+    const batchFile = await getBatchFilePath();
+    await fs.writeFile(batchFile, JSON.stringify(entries, null, 2), {
+      mode: 0o600,
+    });
+  } catch {
+    // Batch write failure is non-fatal — benchmark verdict is unaffected
+  }
 }
 
 async function clearBatch(): Promise<void> {

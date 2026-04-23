@@ -102,8 +102,11 @@ async function computeFalsePositiveRate(
 ): Promise<{ rate: number; total: number; real: number; flake: number }> {
   const runs = await fetchRecentWorkflowRuns(owner, repo, token);
 
-  // Filter to benchmark-related failures
-  const benchmarkFailures = runs.filter((r) => r.conclusion === 'failure');
+  // Only PR-associated failures — main-branch runs fail for unrelated reasons
+  // (lint, unit tests, etc.) that have nothing to do with benchmark regressions.
+  const benchmarkFailures = runs.filter(
+    (r) => r.conclusion === 'failure' && r.pull_requests.length > 0,
+  );
   const totalRuns = runs.length;
 
   if (totalRuns === 0) {
