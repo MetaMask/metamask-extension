@@ -3,6 +3,12 @@ import { NetworkController } from '@metamask/network-controller';
 import { it as jestIt } from '@jest/globals';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
+  ActionConstraint,
+  Messenger,
+  MockAnyNamespace,
+  MOCK_ANY_NAMESPACE,
+} from '@metamask/messenger';
+import {
   TransactionMeta,
   TransactionType,
   TransactionController,
@@ -14,6 +20,8 @@ import {
   PublishBatchHookTransaction,
 } from '@metamask/transaction-controller';
 import { TransactionPayPublishHook } from '@metamask/transaction-pay-controller';
+import type { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
+import type { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
 import {
   getTransactionControllerInitMessenger,
   getTransactionControllerMessenger,
@@ -65,15 +73,25 @@ function buildInitRequestMock(): jest.Mocked<
     TransactionControllerInitMessenger
   >
 > {
-  const baseControllerMessenger = getRootMessenger();
+  const baseControllerMessenger = new Messenger<
+    MockAnyNamespace,
+    AppStateControllerSetDefaultHomeActiveTabNameAction | ActionConstraint,
+    never
+  >({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
+  baseControllerMessenger.registerActionHandler(
+    'AppStateController:setDefaultHomeActiveTabName',
+    (_defaultHomeActiveTabName: AccountOverviewTabKey | null) => undefined,
+  );
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getTransactionControllerMessenger(
-      baseControllerMessenger,
+      baseControllerMessenger as never,
     ),
     initMessenger: getTransactionControllerInitMessenger(
-      baseControllerMessenger,
+      baseControllerMessenger as never,
     ),
   };
 

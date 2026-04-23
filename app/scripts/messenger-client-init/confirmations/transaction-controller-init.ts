@@ -18,6 +18,7 @@ import {
   TransactionPayPublishHook,
 } from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
+import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 import { trace } from '../../../../shared/lib/trace';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
@@ -447,11 +448,13 @@ export async function publishHook({
     transactionMeta.txParams?.from,
     keyringController,
   );
+  let attemptedHook = false;
 
   if (
     keyringSupports7702 &&
     (!isSmartTransaction || !sendBundleSupport || isExternalSign)
   ) {
+    attemptedHook = true;
     const hook = new Delegation7702PublishHook({
       messenger: initMessenger,
     }).getHook();
@@ -480,6 +483,7 @@ export async function publishHook({
     isSmartTransaction &&
     (sendBundleSupport || transactionMeta.selectedGasFeeToken === undefined)
   ) {
+    attemptedHook = true;
     const result = await submitSmartTransactionHook({
       transactionMeta,
       signedTransactionInHex: signedTx as Hex,
@@ -509,6 +513,19 @@ export async function publishHook({
     // else, fall back to regular regular transaction submission
   }
 
+  if (attemptedHook) {
+    try {
+      await initMessenger.call(
+        'AppStateController:setDefaultHomeActiveTabName',
+        AccountOverviewTabKey.Activity,
+      );
+    } catch (error) {
+      console.error(
+        'Failed to set default home active tab for fallback transaction',
+        error,
+      );
+    }
+  }
   // Default: fall back to regular transaction submission
   return { transactionHash: undefined };
 }
