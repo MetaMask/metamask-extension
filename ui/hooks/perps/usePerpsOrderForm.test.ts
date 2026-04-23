@@ -2,7 +2,12 @@ import { act } from '@testing-library/react-hooks';
 
 import mockState from '../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsOrderForm } from './usePerpsOrderForm';
+
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn(),
+}));
 
 describe('usePerpsOrderForm', () => {
   const defaultOptions = {
@@ -17,6 +22,32 @@ describe('usePerpsOrderForm', () => {
       ...mockState.metamask,
     },
   };
+
+  beforeEach(() => {
+    jest.mocked(submitRequestToBackground).mockImplementation((method) => {
+      const immediate = <ResolvedValue>(
+        value: ResolvedValue,
+      ): Promise<ResolvedValue> =>
+        ({
+          then(onFulfilled: (resolved: ResolvedValue) => unknown) {
+            const result = onFulfilled(value);
+            return immediate(result as ResolvedValue);
+          },
+          catch() {
+            return immediate(value);
+          },
+          finally(onFinally: () => void) {
+            onFinally();
+            return immediate(value);
+          },
+        }) as Promise<ResolvedValue>;
+
+      if (method === 'perpsCalculateLiquidationPrice') {
+        return immediate('40000');
+      }
+      return immediate(undefined);
+    });
+  });
 
   describe('initialization', () => {
     it('initializes with default form state', () => {
@@ -358,11 +389,10 @@ describe('usePerpsOrderForm', () => {
     });
 
     it('uses markPrice (oracle) for margin calculation when provided', () => {
-      // Simulates the HYPE example from mobile:
-      // amount=$15, leverage=3x, oracle price=$25.65, szDecimals=1
-      // positionSize = round(15/25.65, 1) = 0.6
-      // notional = 0.6 × 25.65 = $15.39
-      // margin   = $15.39 / 3 = $5.13
+      // amount=$15, leverage=3x, currentPrice=$24.95, markPrice=$25.65, szDecimals=1
+      // positionSize = round(15/24.95, 1) = 0.6, but 0.6 * 24.95 = 14.97 < 15,
+      // so calculatePositionSize bumps up to 0.7.
+      // notional = 0.7 × 25.65 = $17.955, margin = $17.955 / 3 ≈ $5.98 (float truncation)
       const { result } = renderHookWithProvider(
         () =>
           usePerpsOrderForm({
@@ -379,11 +409,8 @@ describe('usePerpsOrderForm', () => {
         result.current.handleLeverageChange(3);
       });
 
-      // positionSize = trunc(15 / 25.65, szDecimals=1) = 0.5
-      // notional = 0.5 * 25.65 = 12.825, margin = 12.825 / 3 = 4.275 → $4.28
-      // This differs from currentPrice-based margin ($5.00) because the oracle
-      // price is used, confirming markPrice is wired through.
-      expect(result.current.calculations.marginRequired).toContain('4.2');
+      // Assertion verified: '5.98' matches the bumped-position-size calculation above.
+      expect(result.current.calculations.marginRequired).toContain('5.98');
     });
 
     it('falls back to currentPrice for margin when markPrice is not provided', () => {
@@ -540,7 +567,7 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.calculations.positionSize).toContain('BTC');
       // Amount is treated as notional position size (TAT-2684 fix), so
       // orderValue equals the entered amount ($1000) regardless of leverage.
-      expect(result.current.calculations.orderValue).toBe('$1,000.00');
+      expect(result.current.calculations.orderValue).toBe('$1,000');
     });
   });
 

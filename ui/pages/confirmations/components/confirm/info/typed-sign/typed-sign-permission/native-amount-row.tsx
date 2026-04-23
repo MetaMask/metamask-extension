@@ -9,7 +9,6 @@ import {
 import { BigNumber } from 'bignumber.js';
 import React from 'react';
 
-import { Hex } from '@metamask/utils';
 import { ConfirmInfoRowTextTokenUnits } from '../../../../../../../components/app/confirm/info/row/text-token-units';
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 
@@ -19,7 +18,7 @@ import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info
  *
  * @param props - The component props.
  * @param props.label - The label to display for the row.
- * @param props.value - The amount of the token. Can be a hex string or BigNumber.
+ * @param props.value - The amount of the token as a BigNumber.
  * @param props.symbol - The symbol for the native token (e.g., 'ETH').
  * @param props.decimals - The number of decimals the native token uses.
  * @param props.imageUrl - (Optional) The URL of the network or token image.
@@ -28,7 +27,7 @@ import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info
  */
 export const NativeAmountRow: React.FC<{
   label: string;
-  value: Hex | BigNumber;
+  value: BigNumber;
   symbol: string;
   decimals: number;
   imageUrl?: string;
