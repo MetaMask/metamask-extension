@@ -6459,9 +6459,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^23.1.0, @metamask/eth-json-rpc-middleware@npm:^23.1.1":
-  version: 23.1.1
-  resolution: "@metamask/eth-json-rpc-middleware@npm:23.1.1"
+"@metamask/eth-json-rpc-middleware@npm:^23.1.1, @metamask/eth-json-rpc-middleware@npm:^23.1.2":
+  version: 23.1.2
+  resolution: "@metamask/eth-json-rpc-middleware@npm:23.1.2"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^15.0.1"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.1"
@@ -6474,7 +6474,7 @@ __metadata:
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/229859120744e22cd0da50e3af316521ddb1f470dd4e2ae9797145d7694d0355d847f1453a1280788359d5cb5ba78bdfc6b038be85287918e7a530cbaf24d1d4
+  checksum: 10/394cd692f76d28133f4956956e4c8e3b97f3b6c98f461e223c6a1f35b4a174d207bc9806bc834d7090501192a4055b08ecb4a114158c637fb8826ba34d274b81
   languageName: node
   linkType: hard
 
@@ -34183,7 +34183,7 @@ __metadata:
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.1"
     "@metamask/eth-hd-keyring": "npm:^13.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^23.1.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^23.1.2"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:^11.4.0"
     "@metamask/eth-qr-keyring": "npm:^1.1.0"
