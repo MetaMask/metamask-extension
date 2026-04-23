@@ -370,8 +370,8 @@ export const DappBarNetworkSelectorPopover: React.FC<
                   isSelected ? (
                     <Icon
                       name={IconName.Check}
-                      size={IconSize.Sm}
-                      color={IconColor.PrimaryDefault}
+                      size={IconSize.Xl}
+                      color={IconColor.IconDefault}
                       data-testid={`dapp-bar-network-selector-popover__selected-${network.chainId}`}
                     />
                   ) : undefined
