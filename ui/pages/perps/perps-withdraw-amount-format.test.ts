@@ -21,6 +21,14 @@ describe('formatAmountInputFromNumber', () => {
     expect(formatAmountInputFromNumber(0.999)).toBe('0.99');
   });
 
+  it('preserves exact decimals despite IEEE-754 representation (e.g. 0.29 * 100 = 28.999…)', () => {
+    expect(formatAmountInputFromNumber(0.29)).toBe('0.29');
+    expect(formatAmountInputFromNumber(0.57)).toBe('0.57');
+    expect(formatAmountInputFromNumber(0.58)).toBe('0.58');
+    expect(formatAmountInputFromNumber(1.4)).toBe('1.40');
+    expect(formatAmountInputFromNumber(100.29)).toBe('100.29');
+  });
+
   it('formats values < $0.01 with 6 decimals, truncated', () => {
     expect(formatAmountInputFromNumber(0.001)).toBe('0.001000');
     expect(formatAmountInputFromNumber(0.0001234567)).toBe('0.000123');
