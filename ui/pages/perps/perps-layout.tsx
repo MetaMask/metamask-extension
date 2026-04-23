@@ -105,12 +105,12 @@ export default function PerpsLayout() {
   // Clear only when the user intentionally leaves Perps in-app. A popup
   // close kills the page before React processes this cleanup, so the
   // persisted value survives and the next home mount picks it up.
-  useEffect(() => {
+  // `useLayoutEffect` so the cleanup runs in the layout phase — before
+  // the about-to-mount Home's `componentDidMount` reads the marker.
+  // A `useEffect` cleanup fires in the passive phase, which React
+  // schedules after `componentDidMount` of newly mounted siblings.
+  useLayoutEffect(() => {
     return () => {
-      // Flag the in-app departure *synchronously* — the async thunk below
-      // cannot race Home's `componentDidMount` for the about-to-mount
-      // default-page view. `checkLastVisitedPerpsRoute` reads this marker
-      // to skip the redirect when the Redux clear has not landed yet.
       markPerpsUnmountInApp();
       Promise.resolve(dispatch(setLastVisitedPerpsRoute(null))).catch(() => {
         // fire-and-forget
