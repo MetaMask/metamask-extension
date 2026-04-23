@@ -101,9 +101,10 @@ describe('perpsRoute', () => {
       expect(result.query.get('filter')).toBeNull();
     });
 
-    it.each(['all', 'crypto', 'stocks', 'commodities', 'forex', 'new'])(
-      'maps tab=%s to filter=%s',
-      (tab) => {
+    (
+      ['all', 'crypto', 'stocks', 'commodities', 'forex', 'new'] as const
+    ).forEach((tab) => {
+      it(`maps tab=${tab} to filter=${tab}`, () => {
         const result = perps.handler(
           new URLSearchParams({ screen: 'market-list', tab }),
         );
@@ -111,8 +112,8 @@ describe('perpsRoute', () => {
         assertPathDestination(result);
         expect(result.path).toBe(PERPS_MARKET_LIST_ROUTE);
         expect(result.query.get('filter')).toBe(tab);
-      },
-    );
+      });
+    });
 
     it('ignores an invalid tab value', () => {
       const result = perps.handler(
