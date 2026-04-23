@@ -21,7 +21,7 @@ import { Anvil } from '../../seeder/anvil';
 
 const FIFTY_ETH_WEI = '0x2b5e3af16b1880000';
 const THIRTY_FIVE_ETH_WEI = '0x1e5b8fa8fe2ac0000';
-const BALANCE_POLL_TIMEOUT = 210_000;
+const BALANCE_POLL_TIMEOUT = 90_000;
 const RECONNECT_TIMEOUT = 60_000;
 
 async function waitForAccountActivityWsConnections(
@@ -73,7 +73,7 @@ async function mockDisabledWebsocketBalance(mockServer: Mockttp) {
 describe('Account Activity WebSocket Balance Resilience', function (this: Suite) {
   describe('REST Polling Fallback', function () {
     it('balance updates continue via REST polling when WebSocket disconnects', async function () {
-      this.timeout(210_000);
+      this.timeout(90_000);
 
       // Mutable object passed to the global mock in mock-e2e.js.
       // The mock reads defaultNativeEthHuman on every poll, so flipping it

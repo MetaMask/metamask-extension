@@ -141,12 +141,7 @@ export class TestDappSolana {
       disconnect: async () =>
         await this.driver.clickElement(this.disconnectButtonLocator),
       verifyAccount: async (expectedAccount: string) => {
-        await this.driver.waitForSelector(
-          this.accountLocator(expectedAccount),
-          {
-            timeout: 30000,
-          },
-        );
+        await this.driver.waitForSelector(this.accountLocator(expectedAccount));
       },
     };
   }

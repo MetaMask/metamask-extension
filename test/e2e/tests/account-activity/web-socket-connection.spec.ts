@@ -16,7 +16,7 @@ async function waitForAccountActivityWebsocketConnections(
       WEBSOCKET_SERVICES.accountActivity,
     ).getWebsocketConnectionCount();
     return connectionCount === expectedCount;
-  }, 20000);
+  }, driver.timeout);
 }
 
 describe('Account Activity Web Socket', function (this: Suite) {
