@@ -84,9 +84,9 @@ describe('trimOutliers (IQR-based)', () => {
       ];
       const withSpikes = [...normal, 900, 850]; // two cold-start spikes
       const result = trimOutliers(withSpikes);
-      expect(result.trimmedCount).toBeGreaterThanOrEqual(1);
-      expect(result.trimmedCount).toBeLessThanOrEqual(3);
-      expect(result.samples.length).toBeGreaterThanOrEqual(12);
+      expect(result.trimmedCount).toBe(1);
+      expect(result.trimmedCount).toBe(3);
+      expect(result.samples.length).toBe(12);
     });
 
     it('does not over-trim a low-variance run', () => {
