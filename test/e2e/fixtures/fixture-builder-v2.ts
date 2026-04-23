@@ -36,7 +36,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { AssetsControllerState } from '@metamask/assets-controller';
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
 import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
@@ -150,6 +150,13 @@ type MultichainAssetsRatesControllerFixturePatch = Partial<
   >;
 };
 
+/**
+ * Partial persisted {@link AssetsControllerState} merged by
+ * {@link FixtureBuilderV2.withAssetsController}. Matches every key on the controller
+ * state from `@metamask/assets-controller` (`customAssets`, `assetPreferences`, etc.).
+ */
+type AssetsControllerFixturePatch = Partial<AssetsControllerState>;
+
 class FixtureBuilderV2 {
   fixture: FixtureType;
 
@@ -184,44 +191,38 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withAssetsController({
-    assetsBalance = {},
-    assetsPrice = {},
-    assetsInfo = {},
-    selectedCurrency,
-  }: {
-    assetsBalance?: Record<string, Record<string, { amount: string }>>;
-    assetsPrice?: Record<string, unknown>;
-    assetsInfo?: Record<string, unknown>;
-    selectedCurrency?: string;
-  } = {}): this {
+  /**
+   * Merges persisted AssetsController state on the fixture. Shapes match
+   * `AssetsControllerState` from `@metamask/assets-controller`.
+   *
+   * @param patch - Subset of `AssetsControllerState` to deep-merge; see {@link AssetsControllerFixturePatch}.
+   */
+  withAssetsController(patch: AssetsControllerFixturePatch = {}): this {
+    const {
+      assetsBalance = {},
+      assetsPrice = {},
+      assetsInfo = {},
+      customAssets = {},
+      assetPreferences = {},
+      selectedCurrency,
+    } = patch;
     if (!(this.fixture.data as Record<string, unknown>).AssetsController) {
       (this.fixture.data as Record<string, unknown>).AssetsController = {};
     }
     const ac = (this.fixture.data as Record<string, unknown>)
-      .AssetsController as {
-      assetsBalance: Record<string, Record<string, { amount: string }>>;
-      assetsPrice: Record<string, unknown>;
-      assetsInfo: Record<string, unknown>;
-      selectedCurrency?: string;
-    };
-    if (!ac.assetsBalance) {
-      ac.assetsBalance = {};
-    }
-    if (!ac.assetsPrice) {
-      ac.assetsPrice = {};
-    }
-    if (!ac.assetsInfo) {
-      ac.assetsInfo = {};
-    }
-    if (selectedCurrency) {
-      ac.selectedCurrency = selectedCurrency;
-    }
+      .AssetsController as Partial<AssetsControllerState>;
+    ac.assetsBalance ??= {};
+    ac.assetsPrice ??= {};
+    ac.assetsInfo ??= {};
+    ac.customAssets ??= {};
+    ac.assetPreferences ??= {};
     merge(ac.assetsBalance, assetsBalance);
     if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true') {
       merge(ac.assetsPrice, assetsPrice);
     }
     merge(ac.assetsInfo, assetsInfo);
+    merge(ac.customAssets, customAssets);
+    merge(ac.assetPreferences, assetPreferences);
     if (selectedCurrency !== undefined) {
       ac.selectedCurrency = selectedCurrency;
     }
