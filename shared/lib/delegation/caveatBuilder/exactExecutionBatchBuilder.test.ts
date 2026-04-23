@@ -3,7 +3,6 @@ import type { DeleGatorEnvironment } from '..';
 import { exactExecutionBatchBuilder } from './exactExecutionBatchBuilder';
 
 const ENFORCER_ADDRESS_MOCK = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-
 const mockEnvironment: DeleGatorEnvironment = {
   DelegationManager: '0x1234567890123456789012345678901234567890',
   EntryPoint: '0x2345678901234567890123456789012345678901',

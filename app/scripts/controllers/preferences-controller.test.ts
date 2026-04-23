@@ -447,6 +447,7 @@ describe('preferences controller', () => {
       expect(controller.state.preferences).toStrictEqual({
         autoLockTimeLimit: undefined,
         avatarType: 'maskicon',
+        confirmationsGasSponsorshipDevEnabled: false,
         showExtensionInFullSizeView: false,
         privacyMode: false,
         showFiatInTestnets: false,
@@ -479,6 +480,7 @@ describe('preferences controller', () => {
       expect(controller.getPreferences()).toStrictEqual({
         autoLockTimeLimit: undefined,
         avatarType: 'maskicon',
+        confirmationsGasSponsorshipDevEnabled: false,
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
@@ -675,6 +677,7 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "confirmationsGasSponsorshipDevEnabled": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -744,6 +747,7 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "confirmationsGasSponsorshipDevEnabled": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -826,6 +830,7 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "confirmationsGasSponsorshipDevEnabled": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -909,6 +914,7 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "confirmationsGasSponsorshipDevEnabled": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -1225,6 +1231,7 @@ describe('preferences controller', () => {
           preferences: {
             autoLockTimeLimit: undefined,
             avatarType: 'jazzicon',
+            confirmationsGasSponsorshipDevEnabled: false,
             showExtensionInFullSizeView: true,
             privacyMode: true,
             showFiatInTestnets: true,

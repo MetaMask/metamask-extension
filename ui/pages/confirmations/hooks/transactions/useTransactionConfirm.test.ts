@@ -26,6 +26,7 @@ import { useHardwareWalletError } from '../../../../contexts/hardware-wallets';
 import * as DappSwapContext from '../../context/dapp-swap';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
+import { useGasSponsorshipEligibility } from '../gas/useGasSponsorshipEligibility';
 import * as DappSwapActions from './dapp-swap-comparison/useDappSwapActions';
 import { useTransactionConfirm } from './useTransactionConfirm';
 
@@ -69,9 +70,8 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock('../gas/useIsGaslessSupported');
-
 jest.mock('../gas/useGaslessSupportedSmartTransactions');
+jest.mock('../gas/useGasSponsorshipEligibility');
 
 const CUSTOM_NONCE_VALUE = '1234';
 const originalConsoleWarn = console.warn;
@@ -118,6 +118,9 @@ describe('useTransactionConfirm', () => {
   const useGaslessSupportedSmartTransactionsMock = jest.mocked(
     useGaslessSupportedSmartTransactions,
   );
+  const useGasSponsorshipEligibilityMock = jest.mocked(
+    useGasSponsorshipEligibility,
+  );
   beforeEach(() => {
     jest.resetAllMocks();
     consoleWarnSpy = jest
@@ -132,26 +135,14 @@ describe('useTransactionConfirm', () => {
         originalConsoleWarn(...args);
       });
 
-    useIsGaslessSupportedMock.mockReturnValue({
-      isSmartTransaction: false,
-      isSupported: false,
-      pending: false,
-    });
-    updateAndApproveTxMock.mockReturnValue(() =>
-      Promise.resolve({} as TransactionMeta),
-    );
-
-    useIsGaslessSupportedMock.mockReturnValue({
-      isSupported: false,
-      isSmartTransaction: false,
-      pending: false,
-    });
-
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: false,
       isSmartTransaction: false,
       pending: false,
     });
+    useGasSponsorshipEligibilityMock.mockReturnValue({
+      isEligible: false,
+    } as unknown as ReturnType<typeof useGasSponsorshipEligibility>);
 
     updateAndApproveTxMock.mockReturnValue(() => Promise.resolve(null));
     attemptCloseNotificationPopupMock.mockResolvedValue(undefined);
@@ -193,11 +184,6 @@ describe('useTransactionConfirm', () => {
   });
 
   it('updates batch transaction if smart transaction and selected gas fee token', async () => {
-    useIsGaslessSupportedMock.mockReturnValue({
-      isSmartTransaction: true,
-      isSupported: true,
-      pending: false,
-    });
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: true,
       isSmartTransaction: true,
@@ -230,16 +216,14 @@ describe('useTransactionConfirm', () => {
   });
 
   it('updates transaction params if smart transaction and selected gas fee token', async () => {
-    useIsGaslessSupportedMock.mockReturnValue({
-      isSmartTransaction: true,
-      isSupported: true,
-      pending: false,
-    });
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: true,
       isSmartTransaction: true,
       pending: false,
     });
+    useGasSponsorshipEligibilityMock.mockReturnValue({
+      isEligible: true,
+    } as unknown as ReturnType<typeof useGasSponsorshipEligibility>);
 
     const { onTransactionConfirm } = runHook({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
@@ -257,15 +241,10 @@ describe('useTransactionConfirm', () => {
         maxPriorityFeePerGas: GAS_FEE_TOKEN_MOCK.maxPriorityFeePerGas,
       }),
     );
+    expect(actualTransactionMeta.isGasFeeSponsored).toBe(false);
   });
 
   it('does not update transaction params if smart transaction and no selected gas fee token', async () => {
-    useIsGaslessSupportedMock.mockReturnValue({
-      isSmartTransaction: true,
-      isSupported: true,
-      pending: false,
-    });
-
     const { onTransactionConfirm } = runHook({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
     });
@@ -285,11 +264,6 @@ describe('useTransactionConfirm', () => {
   });
 
   it('calls handleSmartTransaction if chainSupportsSendBundle is true', async () => {
-    useIsGaslessSupportedMock.mockReturnValue({
-      isSmartTransaction: true,
-      isSupported: true,
-      pending: false,
-    });
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: true,
       isSmartTransaction: true,
@@ -321,11 +295,6 @@ describe('useTransactionConfirm', () => {
   });
 
   it('does not call handleSmartTransaction if chainSupportsSendBundle is false', async () => {
-    useIsGaslessSupportedMock.mockReturnValue({
-      isSmartTransaction: true,
-      isSupported: true,
-      pending: false,
-    });
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: false,
       isSmartTransaction: true,
@@ -351,12 +320,6 @@ describe('useTransactionConfirm', () => {
   });
 
   it('returns false if chainId is undefined during chainSupportsSendBundle check', async () => {
-    useIsGaslessSupportedMock.mockReturnValue({
-      isSmartTransaction: false,
-      isSupported: true,
-      pending: false,
-    });
-
     const { onTransactionConfirm } = runHook({
       customNonceValue: CUSTOM_NONCE_VALUE,
     });
@@ -485,30 +448,23 @@ describe('useTransactionConfirm', () => {
     );
   });
 
-  it('uses 7702 flow if gasless supported and not smart tx supported', async () => {
+  it('uses sponsored 7702 flow when eligible and smart transactions are off', async () => {
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: false,
       isSmartTransaction: false,
       pending: false,
     });
-    useIsGaslessSupportedMock.mockReturnValue({
-      isSupported: true,
-      isSmartTransaction: false,
-      pending: false,
-    });
+    useGasSponsorshipEligibilityMock.mockReturnValue({
+      isEligible: true,
+    } as unknown as ReturnType<typeof useGasSponsorshipEligibility>);
 
-    const { onTransactionConfirm } = runHook({
-      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
-    });
+    const { onTransactionConfirm } = runHook();
 
     await onTransactionConfirm();
 
     const actual = updateAndApproveTxMock.mock.calls[0][0];
     expect(actual.isExternalSign).toBe(true);
-    expect(actual.isGasFeeSponsored).toBe(
-      TRANSACTION_META_MOCK.isGasFeeSponsored,
-    );
+    expect(actual.isGasFeeSponsored).toBe(true);
   });
 
   it('does not call handleSmartTransaction if no selected gas fee token', async () => {

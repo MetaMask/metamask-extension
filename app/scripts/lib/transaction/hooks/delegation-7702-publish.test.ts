@@ -15,6 +15,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import type { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
 import { getDeleGatorEnvironment } from '../../../../../shared/lib/delegation';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
@@ -48,11 +49,14 @@ const UPGRADE_CONTRACT_ADDRESS_MOCK =
 
 const DELEGATION_MANAGER_ADDRESS_MOCK =
   '0x12345678901234567890123456789012345678a0';
+const ESCROW_ADDRESS_MOCK = '0x12345678901234567890123456789012345678ab';
 
 const TRANSACTION_META_MOCK = {
   chainId: '0x1',
+  networkClientId: 'mainnet',
   txParams: {
     from: '0x12345678901234567890123456789012345678ab',
+    gas: '0x5208',
     maxFeePerGas: '0x2',
     maxPriorityFeePerGas: '0x1',
     nonce: '0x3',
@@ -82,6 +86,10 @@ describe('Delegation 7702 Publish Hook', () => {
   const getNonceLockMock: jest.MockedFn<
     TransactionControllerGetNonceLockAction['handler']
   > = jest.fn();
+  const getNetworkClientByIdMock: jest.MockedFn<
+    NetworkControllerGetNetworkClientByIdAction['handler']
+  > = jest.fn();
+  const providerRequestMock = jest.fn();
 
   const signDelegationControllerMock: jest.MockedFn<
     DelegationControllerSignDelegationAction['handler']
@@ -104,7 +112,8 @@ describe('Delegation 7702 Publish Hook', () => {
       | KeyringControllerSignTypedMessageAction
       | TransactionControllerGetNonceLockAction
       | TransactionControllerIsAtomicBatchSupportedAction
-      | TransactionControllerUpdateTransactionAction,
+      | TransactionControllerUpdateTransactionAction
+      | NetworkControllerGetNetworkClientByIdAction,
       never
     >({
       namespace: MOCK_ANY_NAMESPACE,
@@ -117,7 +126,8 @@ describe('Delegation 7702 Publish Hook', () => {
       | KeyringControllerSignTypedMessageAction
       | TransactionControllerGetNonceLockAction
       | TransactionControllerIsAtomicBatchSupportedAction
-      | TransactionControllerUpdateTransactionAction,
+      | TransactionControllerUpdateTransactionAction
+      | NetworkControllerGetNetworkClientByIdAction,
       never,
       typeof baseMessenger
     >({
@@ -133,6 +143,7 @@ describe('Delegation 7702 Publish Hook', () => {
         'TransactionController:getNonceLock',
         'TransactionController:isAtomicBatchSupported',
         'TransactionController:updateTransaction',
+        'NetworkController:getNetworkClientById',
       ] as never,
     });
 
@@ -154,6 +165,10 @@ describe('Delegation 7702 Publish Hook', () => {
     baseMessenger.registerActionHandler(
       'TransactionController:updateTransaction',
       updateTransactionMock,
+    );
+    baseMessenger.registerActionHandler(
+      'NetworkController:getNetworkClientById',
+      getNetworkClientByIdMock,
     );
 
     baseMessenger.registerActionHandler(
@@ -186,6 +201,24 @@ describe('Delegation 7702 Publish Hook', () => {
       status: RelayStatus.Success,
       transactionHash: TRANSCATION_HASH_MOCK,
     });
+
+    providerRequestMock.mockImplementation(async ({ method }) => {
+      if (method === 'eth_call') {
+        return `0x000000000000000000000000${ESCROW_ADDRESS_MOCK.slice(2)}`;
+      }
+
+      if (method === 'eth_estimateGas') {
+        return '0xc350';
+      }
+
+      throw new Error(`Unhandled provider method: ${String(method)}`);
+    });
+
+    getNetworkClientByIdMock.mockReturnValue({
+      provider: {
+        request: providerRequestMock,
+      },
+    } as ReturnType<NetworkControllerGetNetworkClientByIdAction['handler']>);
   });
 
   describe('returns empty result if', () => {
@@ -471,6 +504,7 @@ describe('Delegation 7702 Publish Hook', () => {
     await hookClass.getHook()(
       {
         ...TRANSACTION_META_MOCK,
+        isExternalSign: true,
         isGasFeeSponsored: true,
       },
       SIGNED_TX_MOCK,
@@ -478,8 +512,89 @@ describe('Delegation 7702 Publish Hook', () => {
 
     expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
     expect(signDelegationControllerMock).toHaveBeenCalledTimes(1);
+    expect(getNetworkClientByIdMock).toHaveBeenCalledWith(
+      TRANSACTION_META_MOCK.networkClientId,
+    );
+    expect(providerRequestMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        method: 'eth_estimateGas',
+      }),
+    );
     const signArgs = signDelegationControllerMock.mock.calls[0][0];
     expect(signArgs.delegation.caveats).toHaveLength(2);
+    const expectedBatchEnforcer = getDeleGatorEnvironment(
+      parseInt(TRANSACTION_META_MOCK.chainId, 16),
+    ).caveatEnforcers.ExactExecutionBatchEnforcer;
+    expect(signArgs.delegation.caveats[0].enforcer).toBe(expectedBatchEnforcer);
+  });
+
+  it('fails closed for sponsored flow if sponsorship estimation fails', async () => {
+    providerRequestMock.mockImplementation(async ({ method }) => {
+      if (method === 'eth_call') {
+        return `0x000000000000000000000000${ESCROW_ADDRESS_MOCK.slice(2)}`;
+      }
+
+      if (method === 'eth_estimateGas') {
+        throw new Error('estimation failed');
+      }
+
+      throw new Error(`Unhandled provider method: ${String(method)}`);
+    });
+
+    isAtomicBatchSupportedMock.mockResolvedValueOnce([
+      {
+        chainId: TRANSACTION_META_MOCK.chainId,
+        delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        isSupported: true,
+        upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+      },
+    ]);
+
+    await expect(
+      hookClass.getHook()(
+        {
+          ...TRANSACTION_META_MOCK,
+          isExternalSign: true,
+          isGasFeeSponsored: true,
+        },
+        SIGNED_TX_MOCK,
+      ),
+    ).rejects.toThrow('Gas sponsorship estimation failed');
+  });
+
+  it('fails closed for sponsored flow when tx sender differs from settlement escrow', async () => {
+    providerRequestMock.mockImplementation(async ({ method }) => {
+      if (method === 'eth_call') {
+        const mismatchedEscrow = '0x1234567890123456789012345678901234567899';
+        return `0x000000000000000000000000${mismatchedEscrow.slice(2)}`;
+      }
+
+      if (method === 'eth_estimateGas') {
+        return '0xc350';
+      }
+
+      throw new Error(`Unhandled provider method: ${String(method)}`);
+    });
+
+    isAtomicBatchSupportedMock.mockResolvedValueOnce([
+      {
+        chainId: TRANSACTION_META_MOCK.chainId,
+        delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        isSupported: true,
+        upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+      },
+    ]);
+
+    await expect(
+      hookClass.getHook()(
+        {
+          ...TRANSACTION_META_MOCK,
+          isExternalSign: true,
+          isGasFeeSponsored: true,
+        },
+        SIGNED_TX_MOCK,
+      ),
+    ).rejects.toThrow('Gas sponsorship estimation failed');
   });
 
   it('signs delegation for gasless 7702 swap without gas fee tokens', async () => {

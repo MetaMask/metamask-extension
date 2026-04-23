@@ -5123,6 +5123,9 @@
   "paidByMetaMask": {
     "message": "Paid by MetaMask"
   },
+  "paidByCampaignName": {
+    "message": "Paid by $1"
+  },
   "paidWith": {
     "message": "Paid with"
   },
@@ -8840,6 +8843,9 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "This network fee is paid by MetaMask, so you can transact without $1 in your account."
+  },
+  "swapGasFeesSponsoredByCampaignExplanation": {
+    "message": "This network fee is paid by $1, so you can transact without $2 in your account."
   },
   "swapIncludesMMFee": {
     "message": "Includes a $1% MetaMask fee.",

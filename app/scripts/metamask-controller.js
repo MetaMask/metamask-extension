@@ -147,6 +147,10 @@ import {
   NetworkStatus,
   UNSUPPORTED_RPC_METHODS,
 } from '../../shared/constants/network';
+import {
+  GAS_SPONSORSHIP_VAULT_ABI,
+  GAS_SPONSORSHIP_VAULT_ADDRESS_BASE,
+} from '../../shared/constants/gas-sponsorship';
 
 import {
   HardwareDeviceNames,
@@ -2944,6 +2948,7 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.findNetworkClientIdByChainId.bind(
           this.networkController,
         ),
+      getGasSponsorshipCampaign: this.getGasSponsorshipCampaign.bind(this),
 
       // active networks by accounts
       getNetworksWithTransactionActivityByAccounts:
@@ -9634,6 +9639,61 @@ export default class MetamaskController extends EventEmitter {
 
   #createEnsureOnboardingCompleteCallback() {
     return createEnsureOnboardingCompleteCallback(this.controllerMessenger);
+  }
+
+  /**
+   * Fetches a sponsorship campaign by campaign id.
+   *
+   * @param {string} campaignId - The campaign id (bytes32 hex string).
+   * @param {string} networkClientId - The network client id to read from.
+   * @returns {Promise<{sponsor: string, availableBalanceWei: string, remainingBalanceWei: string, settlementEscrow: string}>}
+   */
+  async getGasSponsorshipCampaign(campaignId, networkClientId) {
+    const sponsorshipVaultInterface = new Interface(GAS_SPONSORSHIP_VAULT_ABI);
+    const data = sponsorshipVaultInterface.encodeFunctionData(
+      'campaignDetails',
+      [campaignId],
+    );
+    const networkClient =
+      this.networkController.getNetworkClientById(networkClientId);
+
+    const result = await networkClient.provider.request({
+      method: 'eth_call',
+      params: [
+        {
+          to: GAS_SPONSORSHIP_VAULT_ADDRESS_BASE,
+          data,
+        },
+        'latest',
+      ],
+    });
+
+    const [sponsor, availableBalanceWei] =
+      sponsorshipVaultInterface.decodeFunctionResult('campaignDetails', result);
+    const settlementEscrowCallData =
+      sponsorshipVaultInterface.encodeFunctionData('settlementEscrow');
+    const settlementEscrowResult = await networkClient.provider.request({
+      method: 'eth_call',
+      params: [
+        {
+          to: GAS_SPONSORSHIP_VAULT_ADDRESS_BASE,
+          data: settlementEscrowCallData,
+        },
+        'latest',
+      ],
+    });
+    const [settlementEscrow] = sponsorshipVaultInterface.decodeFunctionResult(
+      'settlementEscrow',
+      settlementEscrowResult,
+    );
+
+    return {
+      settlementEscrow,
+      sponsor,
+      availableBalanceWei: availableBalanceWei.toString(),
+      // Keep `remainingBalanceWei` for compatibility with existing UI callers.
+      remainingBalanceWei: availableBalanceWei.toString(),
+    };
   }
 
   #initMessengerClients({ initFunctions, initState }) {

@@ -11,11 +11,11 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import * as DappSwapContext from '../../../../../context/dapp-swap';
 import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
-import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
+import { useGasSponsorshipEligibility } from '../../../../../hooks/gas/useGasSponsorshipEligibility';
 import { EditGasFeesRow } from './edit-gas-fees-row';
 
 jest.mock('../../../../../hooks/gas/useEstimationFailed');
-jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
+jest.mock('../../../../../hooks/gas/useGasSponsorshipEligibility');
 
 jest.mock('../../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
@@ -31,7 +31,9 @@ jest.mock(
 );
 
 const mockUseEstimationFailed = jest.mocked(useEstimationFailed);
-const mockUseIsGaslessSupported = jest.mocked(useIsGaslessSupported);
+const mockUseGasSponsorshipEligibility = jest.mocked(
+  useGasSponsorshipEligibility,
+);
 
 function render({
   chainId = CHAIN_IDS.GOERLI,
@@ -40,7 +42,8 @@ function render({
   fiatFee = '$1',
   nativeFee = '0.001 ETH',
   estimationFailed = false,
-  isGaslessSupported = false,
+  isGasSponsorshipEligible = false,
+  isMetaMaskSponsored = false,
 }: {
   chainId?: Hex;
   gasFeeTokens?: GasFeeToken[];
@@ -48,21 +51,21 @@ function render({
   fiatFee?: string;
   nativeFee?: string;
   estimationFailed?: boolean;
-  isGaslessSupported?: boolean;
+  isGasSponsorshipEligible?: boolean;
+  isMetaMaskSponsored?: boolean;
 } = {}) {
   mockUseEstimationFailed.mockReturnValue(estimationFailed);
-  mockUseIsGaslessSupported.mockReturnValue({
-    isSupported: isGaslessSupported,
-    isSmartTransaction: false,
-    pending: false,
-  });
+  mockUseGasSponsorshipEligibility.mockReturnValue({
+    campaignName: 'Confirmations team',
+    isEligible: isGasSponsorshipEligible,
+  } as unknown as ReturnType<typeof useGasSponsorshipEligibility>);
 
   const state = getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
       chainId,
       gasFeeTokens,
       selectedGasFeeToken,
-      isGasFeeSponsored: isGaslessSupported,
+      isGasFeeSponsored: isMetaMaskSponsored,
     }),
   );
 
@@ -146,11 +149,21 @@ describe('<EditGasFeesRow />', () => {
     it('does not render "Unavailable" when gas fee is sponsored even if estimation failed', () => {
       const { queryByText, getByTestId } = render({
         estimationFailed: true,
-        isGaslessSupported: true,
+        isGasSponsorshipEligible: true,
       });
 
       expect(queryByText(messages.unavailable.message)).toBeNull();
-      expect(getByTestId('paid-by-meta-mask')).toBeInTheDocument();
+      expect(getByTestId('paid-by-sponsor')).toBeInTheDocument();
+    });
+
+    it('renders Paid by MetaMask when existing sponsorship flag is true', () => {
+      const { getByTestId, getByText } = render({
+        isMetaMaskSponsored: true,
+        isGasSponsorshipEligible: false,
+      });
+
+      expect(getByTestId('paid-by-sponsor')).toBeInTheDocument();
+      expect(getByText('Paid by MetaMask')).toBeInTheDocument();
     });
   });
 });

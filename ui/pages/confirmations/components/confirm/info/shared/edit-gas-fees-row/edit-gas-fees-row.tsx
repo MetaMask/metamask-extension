@@ -26,7 +26,7 @@ import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
-import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
+import { useGasSponsorshipEligibility } from '../../../../../hooks/gas/useGasSponsorshipEligibility';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
 import { useTransactionNativeTicker } from '../../../../../hooks/transactions/useTransactionNativeTicker';
@@ -54,11 +54,7 @@ export const EditGasFeesRow = ({
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
-  const {
-    chainId,
-    isGasFeeSponsored: doesSentinelAllowSponsorship,
-    simulationData,
-  } = transactionMeta;
+  const { chainId, simulationData } = transactionMeta;
 
   const estimationFailed = useEstimationFailed();
   const gasFeeToken = useSelectedGasFeeToken();
@@ -72,13 +68,25 @@ export const EditGasFeesRow = ({
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const isLoadingGasUsed = !simulationData || balanceChangesResult.pending;
 
-  // This prevents the gas fee row from showing as sponsored if stx is disabled
-  // by the user and 7702 is not supported in the chain.
-  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const isGasFeeSponsored = isGaslessSupported && doesSentinelAllowSponsorship;
+  const { campaignName, isEligible: isCampaignSponsored } =
+    useGasSponsorshipEligibility();
+  const isMetaMaskSponsored =
+    Boolean(transactionMeta.isGasFeeSponsored) && !isCampaignSponsored;
+  const isGasFeeSponsored = isCampaignSponsored || isMetaMaskSponsored;
+  let paidByLabel: string | undefined;
+  if (isCampaignSponsored) {
+    paidByLabel = t('paidByCampaignName', [campaignName]);
+  } else if (isMetaMaskSponsored) {
+    paidByLabel = t('paidByMetaMask');
+  }
 
   let tooltip = t('estimatedFeeTooltip');
-  if (isGasFeeSponsored) {
+  if (isCampaignSponsored) {
+    tooltip = t('swapGasFeesSponsoredByCampaignExplanation', [
+      campaignName,
+      nativeTokenSymbol,
+    ]);
+  } else if (isMetaMaskSponsored) {
     tooltip = t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol]);
   } else if (gasFeeToken?.metaMaskFee && gasFeeToken.metaMaskFee !== '0x0') {
     tooltip = t('confirmGasFeeTokenTooltip', [metamaskFeeFiat]);
@@ -113,11 +121,8 @@ export const EditGasFeesRow = ({
             textAlign={TextAlign.Center}
             gap={1}
           >
-            {isGasFeeSponsored && (
-              <SuccessPill
-                label={t('paidByMetaMask')}
-                data-testid="paid-by-meta-mask"
-              />
+            {paidByLabel && (
+              <SuccessPill label={paidByLabel} data-testid="paid-by-sponsor" />
             )}
             {isGasFeeEditable && <EditGasIconButton />}
             {estimationFailed && !isGasFeeSponsored && (

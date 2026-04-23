@@ -3290,6 +3290,21 @@ export async function findNetworkClientIdByChainId(
   ]);
 }
 
+export async function getGasSponsorshipCampaign(
+  campaignId: Hex,
+  networkClientId: string,
+): Promise<{
+  settlementEscrow: Hex;
+  sponsor: Hex;
+  availableBalanceWei?: string;
+  remainingBalanceWei: string;
+}> {
+  return await submitRequestToBackground('getGasSponsorshipCampaign', [
+    campaignId,
+    networkClientId,
+  ]);
+}
+
 export function addNft(
   address: string,
   tokenID: string,

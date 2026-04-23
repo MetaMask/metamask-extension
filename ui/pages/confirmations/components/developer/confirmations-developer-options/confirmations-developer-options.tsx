@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Text } from '../../../../../components/component-library';
 import { TextColor } from '../../../../../helpers/constants/design-system';
+import { GasSponsorshipDevOptions } from '../gas-sponsorship-dev-options';
 import { MusdConversionButton } from '../musd-conversion-button';
 import { PerpsDepositButton } from '../perps-deposit-button';
 
@@ -24,6 +25,7 @@ export const ConfirmationsDeveloperOptions = () => {
       <div className="settings-page__content-padded">
         <MusdConversionButton />
         <PerpsDepositButton />
+        <GasSponsorshipDevOptions />
       </div>
     </>
   );

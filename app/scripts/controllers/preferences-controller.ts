@@ -82,6 +82,7 @@ type PreferencesControllerOptions = {
 export type Preferences = {
   autoLockTimeLimit?: number;
   avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
+  confirmationsGasSponsorshipDevEnabled: boolean;
   defaultAddressScope: DefaultAddressScope;
   dismissSmartAccountSuggestionEnabled: boolean;
   featureNotificationsEnabled: boolean;
@@ -179,6 +180,7 @@ export const getDefaultPreferencesControllerState =
     preferences: {
       autoLockTimeLimit: undefined,
       avatarType: 'maskicon',
+      confirmationsGasSponsorshipDevEnabled: false,
       dismissSmartAccountSuggestionEnabled: false,
       featureNotificationsEnabled: false,
       hideZeroBalanceTokens: false,
