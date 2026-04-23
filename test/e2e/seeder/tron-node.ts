@@ -133,15 +133,22 @@ export class TronNode {
     }
     const result = (await broadcastResp.json()) as {
       result?: boolean;
+      code?: string;
+      txid?: string;
       [key: string]: unknown;
     };
 
-    if (!result.result) {
+    // In a single-node private net the witness has no P2P peers, so java-tron
+    // returns NO_CONNECTION even though it added the tx to its own mempool.
+    // The txid in the response confirms it was accepted locally — just poll.
+    const isNoConnectionWithTxid =
+      result.code === 'NO_CONNECTION' && Boolean(result.txid);
+    if (!result.result && !isNoConnectionWithTxid) {
       throw new Error(`broadcasttransaction failed: ${JSON.stringify(result)}`);
     }
 
     // Poll until the transaction is confirmed on-chain (up to 30 s)
-    const txId = (result as { txid?: string }).txid;
+    const txId = result.txid;
     if (txId) {
       const deadline = Date.now() + 30_000;
       while (Date.now() < deadline) {
