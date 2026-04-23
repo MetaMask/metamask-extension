@@ -5529,7 +5529,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Available Perps balance: "
+    "message": "Available balance: "
   },
   "perpsAvailableToAdd": {
     "message": "Available to add"
