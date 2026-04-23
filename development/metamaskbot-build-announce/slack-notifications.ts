@@ -769,10 +769,15 @@ export async function sendBenchmarkNotifications(
   }
 
   // Normal regressions: send immediately.
-  // Batching via /tmp is not viable on ephemeral CI runners where each job
-  // gets a fresh filesystem — loadBatch always returns [].
-  if (normal.length > 0) {
-    const entries: BatchEntry[] = normal.map((entry) => ({
+  // Exclude violations from comparisons already covered by the severe path —
+  // formatFailVerdict renders all fail violations for each comparison, so
+  // including them here too would produce duplicate notifications.
+  const severeComparisonSet = new Set(severe.map((s) => s.comparison));
+  const normalOnly = normal.filter(
+    (entry) => !severeComparisonSet.has(entry.comparison),
+  );
+  if (normalOnly.length > 0) {
+    const entries: BatchEntry[] = normalOnly.map((entry) => ({
       comparison: entry.comparison,
       violation: entry.violation,
       timestamp: Date.now(),
