@@ -26,8 +26,8 @@ jest.mock('react-router-dom', () => ({
 
 const mockGetEnvironmentType = jest.fn();
 
-jest.mock('../../../../app/scripts/lib/util', () => ({
-  ...jest.requireActual('../../../../app/scripts/lib/util'),
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
   getEnvironmentType: () => mockGetEnvironmentType(),
 }));
 
