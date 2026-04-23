@@ -3067,7 +3067,7 @@
         "@segment/analytics-node>@lukeed/uuid": true,
         "@segment/analytics-node>@segment/analytics-generic-utils": true,
         "@segment/analytics-node>@segment/analytics-core>dset": true,
-        "@segment/analytics-node>@segment/analytics-core>tslib": true
+        "tslib": true
       }
     },
     "@segment/analytics-node>@segment/analytics-generic-utils": {
@@ -3075,7 +3075,7 @@
         "console.warn": true
       },
       "packages": {
-        "@segment/analytics-node>@segment/analytics-generic-utils>tslib": true
+        "tslib": true
       }
     },
     "@segment/analytics-node": {
@@ -3097,7 +3097,7 @@
         "@segment/analytics-node>@segment/analytics-generic-utils": true,
         "@segment/analytics-node>jose": true,
         "process": true,
-        "@segment/analytics-node>tslib": true
+        "tslib": true
       }
     },
     "@solana/addresses": {
@@ -6346,30 +6346,6 @@
     },
     "tslib": {
       "globals": {
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "@segment/analytics-node>@segment/analytics-core>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "@segment/analytics-node>@segment/analytics-generic-utils>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "@segment/analytics-node>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
         "SuppressedError": true,
         "define": true
       }

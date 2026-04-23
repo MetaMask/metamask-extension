@@ -2851,7 +2851,7 @@
         "@segment/analytics-node>@lukeed/uuid": true,
         "@segment/analytics-node>@segment/analytics-generic-utils": true,
         "@segment/analytics-node>@segment/analytics-core>dset": true,
-        "@segment/analytics-node>@segment/analytics-core>tslib": true
+        "tslib": true
       }
     },
     "@segment/analytics-node>@segment/analytics-generic-utils": {
@@ -6385,13 +6385,6 @@
     },
     "tslib": {
       "globals": {
-        "SuppressedError": true
-      }
-    },
-    "@segment/analytics-node>@segment/analytics-core>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
         "SuppressedError": true
       }
     },
