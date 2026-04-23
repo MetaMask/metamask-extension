@@ -132,6 +132,19 @@ export class PerpsStreamBridge {
         if (!this.#activated && this.#isConnectionAlive()) {
           this.#activate();
         }
+        // Prime the controller's per-provider market/user caches so a
+        // subsequent popup cold-mount can hydrate the UI synchronously from
+        // `state.metamask.cachedMarketDataByProvider`/`cachedUserDataByProvider`
+        // and skip the loading skeleton. The controller throttles repeat
+        // calls (preloadGuardMs), so this is cheap to invoke on every init.
+        try {
+          this.#controller.startMarketDataPreload();
+        } catch (error) {
+          console.debug(
+            '[PerpsStreamBridge] startMarketDataPreload failed',
+            error,
+          );
+        }
         return result;
       },
       perpsDisconnect: async (...args: unknown[]) => {
