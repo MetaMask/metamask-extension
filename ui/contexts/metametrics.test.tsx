@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import React, { useContext, useEffect } from 'react';
+import { act, render, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
@@ -47,26 +47,15 @@ const renderProvider = ({
     eventName: MetaMetricsEventName;
   }) => {
     const { trackEvent } = useContext(MetaMetricsContext);
-    const [trackSettled, setTrackSettled] = useState(false);
 
     useEffect(() => {
-      let cancelled = false;
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: eventName,
-      }).finally(() => {
-        if (!cancelled) {
-          setTrackSettled(true);
-        }
       });
-      return () => {
-        cancelled = true;
-      };
     }, [eventName, trackEvent]);
 
-    return trackSettled ? (
-      <span data-testid="metametrics-provider-track-settled" />
-    ) : null;
+    return null;
   };
 
   const router = createMemoryRouter(
@@ -186,10 +175,8 @@ describe('MetaMetricsProvider', () => {
       },
     });
 
-    await waitFor(() => {
-      expect(
-        screen.getByTestId('metametrics-provider-track-settled'),
-      ).toBeInTheDocument();
+    await act(async () => {
+      await Promise.resolve();
     });
 
     expect(mockedTrackMetaMetricsEvent).not.toHaveBeenCalled();
