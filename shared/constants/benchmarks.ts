@@ -110,6 +110,7 @@ export type BenchmarkResults = {
   p75: StatisticalResult;
   p95: StatisticalResult;
   trimmedCount?: StatisticalResult;
+  outliers?: StatisticalResult;
   webVitals?: WebVitalsSummary;
 };
 

@@ -330,6 +330,29 @@ export function convertSummaryToResults(
   );
 }
 
+/**
+ * Run the dApp page-load benchmark and aggregate results.
+ *
+ * Uses IQR-only outlier trimming (`trimmedCount`). Z-score is intentionally
+ * excluded for two reasons:
+ *
+ * 1. **Serial correlation** — page loads run serially within each browser
+ *    session (shared JIT cache, extension state). A slow startup elevates all
+ *    `pageLoads` measurements in a session as a correlated cluster. Z-score
+ *    assumes i.i.d. samples and would flag the cluster as outliers even when
+ *    the elevation has a real underlying cause. IQR is rank-based and
+ *    distribution-free, making it robust to correlated samples.
+ *
+ * 2. **Multimodal distributions** — `longTask*`, `tbt`, and `numNetworkReqs`
+ *    are zero or near-zero most runs with occasional real spikes. Z-score would
+ *    flag those spikes as noise, removing genuine signal.
+ *
+ * `calculateTimerStatistics` (iteration-based benchmarks) applies both IQR and
+ * z-score because each run is an independent browser session.
+ *
+ * @param measurePageFn - Function that drives one browser session and returns metrics
+ * @param options - Benchmark configuration
+ */
 export async function runPageLoadBenchmark(
   measurePageFn: (
     pageName: string,
