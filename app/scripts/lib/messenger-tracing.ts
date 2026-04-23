@@ -11,6 +11,7 @@ import { getActiveSpan, trace } from '../../../shared/lib/trace';
  * under the currently active trace, enabling visibility into
  * inter-controller communication sequences.
  * Skips trace overhead when no active span exists (e.g. MetaMetrics off).
+ * Returns the messenger unchanged when SENTRY_DISTRIBUTED_TRACING_DISABLED is set.
  *
  * @param messenger - The messenger instance to instrument.
  * @returns The same messenger with tracing applied to `call`.
@@ -22,6 +23,10 @@ export function wrapMessengerWithTracing<
 >(
   messenger: Messenger<Namespace, AllowedActions, AllowedEvents>,
 ): Messenger<Namespace, AllowedActions, AllowedEvents> {
+  if (process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED) {
+    return messenger;
+  }
+
   const originalCall = messenger.call.bind(messenger) as (
     actionType: string,
     ...args: unknown[]

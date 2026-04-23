@@ -322,12 +322,18 @@ export function getActiveSpan(): Sentry.Span | null {
 /**
  * Get the serialized trace context from the currently active Sentry span.
  * Used by cross-boundary wrappers to propagate trace context over RPC.
+ * Returns undefined when SENTRY_DISTRIBUTED_TRACING_DISABLED is set, which
+ * stops the UI from appending `_traceContext` to background RPC calls and
+ * thereby keeps the background `createMetaRPCHandler` on its unwrapped path.
  *
- * @returns Serialized context with traceId/spanId, or undefined if no active span.
+ * @returns Serialized context with traceId/spanId, or undefined if no active span or kill switch is set.
  */
 export function getSerializedTraceContext():
   | SerializedTraceContext
   | undefined {
+  if (process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED) {
+    return undefined;
+  }
   const activeSpan = sentryGetActiveSpan();
   if (!activeSpan) {
     return undefined;
