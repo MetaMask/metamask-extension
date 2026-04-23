@@ -133,7 +133,9 @@ class SmartTransactionHook {
 
     const legacyShowStatusPage = Boolean(
       (transactionMeta.type !== TransactionType.bridge &&
-        transactionMeta.type !== TransactionType.shieldSubscriptionApprove) ||
+        transactionMeta.type !== TransactionType.shieldSubscriptionApprove &&
+        transactionMeta.type !== TransactionType.perpsDeposit &&
+        transactionMeta.type !== TransactionType.perpsDepositAndOrder) ||
         (this.#transactions && this.#transactions.length > 0),
     );
 
@@ -163,10 +165,6 @@ class SmartTransactionHook {
       isLegacyTransaction(this.#transactionMeta)
     ) {
       return useRegularTransactionSubmit;
-    }
-
-    if (this.#shouldShowStatusPage) {
-      await this.#startApprovalFlow();
     }
 
     let getFeesResponse;
@@ -233,10 +231,6 @@ class SmartTransactionHook {
       throw new Error(
         'submitBatch: Smart Transaction is required for batch submissions',
       );
-    }
-
-    if (this.#shouldShowStatusPage) {
-      await this.#startApprovalFlow();
     }
 
     try {
@@ -339,6 +333,8 @@ class SmartTransactionHook {
 
   async #processApprovalIfNeeded(uuid: string) {
     if (this.#shouldShowStatusPage) {
+      await this.#startApprovalFlow();
+
       this.#addApprovalRequest({
         uuid,
       });
