@@ -1,0 +1,18 @@
+name: Markdown link check
+
+on:
+  pull_request:
+    paths:
+      - "**/*.md"
+      - ".github/workflows/markdown-link-check.yml"
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check links
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: "yes"
+          check-modified-files-only: "yes"
