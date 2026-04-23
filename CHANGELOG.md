@@ -7,6 +7,139 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.29.0]
+
+### Uncategorized
+
+- Land fallback transaction on Activity tab (#42066)
+- Add cross-margin warning toast (#42015)
+- Classify TP/SL orders (#41971)
+- Update assets controller (NFT refresh uses multicall v3) (#41689)
+- Added UTM parameters to extension links for improved analytics tracking (#40745)
+- Bump assets controller v6 0 0 (#41818)
+- Add hover state styles to default address component in account list and app header (#41766)
+- chore: Bulk register actions in `MetaMetricsController` (#41607)
+- chore: Bulk register actions in `OAuthService` (#41613)
+- chore: Bulk register actions in `DataDeletionService` (#41652)
+- chore: Bulk register actions in `SubscriptionService` (#41616)
+- chore: Bulk register actions in `NetworkOrderController` (#41608)
+- chore: Bulk register actions in `EncryptionPublicKeyController` (#41604)
+- chore: Bulk register actions in `PreferencesController` (#41611)
+- chore: Bulk register actions in `OnboardingController` (#41609)
+- chore: Bulk register actions in `AppStateController` (#41559)
+- chore: Bulk register actions in `DecryptMessageController` (#41560)
+
+### Added
+
+- Added a Developer Options entry to trigger the new Perps Withdraw confirmation UI (#42043)
+- Added display support for Perps withdraw transactions in the confirmation screen and activity list (#42047)
+- Make order input for token amount interactive (#42013)
+- Added a "Deposit submitted" toast for Perps deposits, fixed missing deposit toasts on Perps pages, and suppressed generic (#42045)
+  transaction toasts during Perps deposits.
+- Update tempo native token logo (#41995)
+- Migration to reset native balance to 0 on tempo chains (#41787)
+- Show badge on transaction failure while MM is closed (#41984)
+- **Removed** "Account isn't connected" toast notification on account switch; (#41895)
+  **Added** Inline not-connected state in the Dapp Connection Control Bar
+  with a "Connect" CTA, grey status dot, and "Not connected" indicator
+  tag.
+- feat: Create `LegacyBackgroundApiService` and init (#41786)
+- Use API-provided transaction labels (#41857)
+- Add auto connect to trezor accounts. (#41656)
+- Fixed perps geo-blocking by integrating the GeolocationController so user location is correctly resolved (#41831)
+- Extend notification account toggles to all wallet keyrings (#40762)
+- Post-smart transaction toast notification (#41757)
+- Add gas fees sponsored tx in token details page (#41730)
+- Added Mantle mainnet as a featured network (#41135)
+- Updated the Perps deposit confirmation screen to use a single “Add funds” button that stays disabled until an amount is (#41686)
+  entered, and removed the extra token amount line below the fiat total.
+- Fixed the swap/bridge amount input so it fills the full available width and adjusts font size in readable steps instead of (#41722)
+  truncating long values; also fixed scientific-notation and zero-rounding
+  display bugs in the fiat amount row.
+- Replaced disabled-button geo-blocking in Perps with an informational modal for restricted users, and allowed withdrawals (#41646)
+  regardless of geo-block status
+- Set sidepanel as default (#41617)
+- `wallet_requestSupportedExecutionPermissions` now correctly includes all supported chains (#41643)
+- Adds initial metrics to Perps for extension (#41337)
+- Wires up sentry events (#41528)
+- Adds percentage input to the musd conversion flow (#41624)
+
+### Fixed
+
+- Null (internal decimal behavior, no user-facing feature flag — matches #41920 / #41993 precedent). (#41993)
+- Fixed perps deeplinks — `/perps?screen=asset&symbol=X` now navigates to the correct market detail page; added `/perps-asset` (#42085)
+  and
+  `/perps-markets` deeplinks to match mobile; removed extension-only
+  `/perps/market` and `/perps/market-list` deeplinks in favour of the
+  shared `screen` param format.
+- Polished perps market detail page layout, typography, icon sizing, and interaction states (#41881)
+- Updated MM Pay confirmation screens so blocking errors appear on the primary button using short labels (#41816)
+- Tempo fallback to classic transaction if contract deployment (#41978)
+- Fixed duplicated market symbol in trade toast descriptions for HIP-3 markets. (#42058)
+  Fixed an infinite back-navigation loop between the Perps order entry and
+  market detail pages.
+  Fixed a double-click-to-go-back issue after submitting a trade caused by
+  duplicate history entries.
+- Fixed the Long/Short submit button being enabled with no perps balance, and restored access to the market-detail page for (#41888)
+  zero-balance users
+- Fixed a bug where typing `+` or `-` in TP/SL percent fields was rejected or produced prices on the wrong side of the entry (#41919)
+  price.
+- Failed-transaction badge fixes (#42032)
+- Fixed a bug where the back button on the Perps market detail page always redirected to wallet home instead of the previous (#41921)
+  screen.
+- Add new `excludeNativeTokenForFee` (Tempo) specific cases in isGaslessLoading guard to Confirmation button. (#41683)
+- Fixed the perps chart to correctly display the liquidation price line and render all chart colors in both light and (#42008)
+  dark themes.
+- Fixed missing logos for some perps markets (HIP-3 assets like NATGAS, OIL) (#42001)
+- Fix content overflow on Transaction shield pages (#41990)
+- Fixed the bridge quote card incorrectly showing a "0%" price impact row for quotes with no price impact data. (#41905)
+- Fixed an issue where the gas station could still be offered when downgrading an EIP-7702 account (#41773)
+- Fixed perps deposit activity summary so the source relay step shows the send-from-network line instead of the generic (#41727)
+  “transaction” label.
+- Fixed an issue where transactions on hardware wallets could incorrectly display as “paid by MetaMask” instead of showing the (#41410)
+  actual gas fee.
+- Sidepanel default (#41819)
+- Add caching layer to fills and market info (#41797)
+- Fixes back button route from Manage Wallet Recovery page when SRP is not backed up (#41832)
+- Fixed a bug that caused Perps market prices and related data to stop updating while the popup stayed open (#41802)
+- Fixed dapp connection bar disappearing or appearing on the wrong window when switching between multiple Chrome windows (#41644)
+- Improved perps trading toast notifications to show correct in-progress and success messages, and navigate the user back to (#41822)
+  the market detail page immediately after order submission.
+- Fixed a bug where TP/SL percentage inputs on limit orders calculated prices relative to the current market price instead of (#41825)
+  the limit entry price.
+- Fix perps total balance miscalculation (#41796)
+- Fixed reverse position modal to display computed flip fee and use "Confirm" button label (#41685)
+- Fixed TP/SL presets and editing not working correctly in non-English locales for perpetuals trading (#41605)
+- Https://consensyssoftware.atlassian.net/browse/TAT-2891 (#41734)
+- Unified "Reduce exposure" and "Close position" flows to use the same close-position modal (#41779)
+- Fixed a bug that was causing the wallet imported toast to momentarily show the wrong wallet added. (#41664)
+- Fix spacing between balance and address for a ledger account during the connection flow. (#41710)
+- Animation-loader style update (#41771)
+- Fix displaying of erc20 approvals on device. (#41698)
+- Fixed a bug where the perps client could enter an unrecoverable "not initialized" state, requiring a Chrome restart (#41672)
+- Fixed "Paid by MetaMask" gas sponsorship label incorrectly appearing on failed or rejected hardware wallet transactions (#41592)
+- Displayed all swap-supported networks in the bridge asset picker and automatically enabled networks when a token is selected (#41650)
+  on a new chain
+- Fixes the 24h change display for market rows on the Perps tab landing view (#41723)
+- Replaced the "Transaction Already Confirmed" modal with an informational toast notification that now displays for both cancel (#41241)
+  and speed-up transaction errors
+- Fix close position calculation double counting pnl (#41705)
+- Fixes the Reduce exposure flow in the perps order entry page (#41671)
+- Fix broken add margin slider (#41706)
+- Fixed a crash that occurred when opening a swap deeplink containing a network the user had not yet added to MetaMask. (#41574)
+- Fixed a bug where zero-balance perps order entry showed an enabled trade CTA instead of prompting users to add funds (#41692)
+- Fixed a bug where perps order entry did not restrict order size above available margin (#41697)
+- Fixed a bug that was causing the 24h price change percentage to lose its `%` symbol on the perps market header after the (#41695)
+  first render.
+- Added validation errors for Take Profit and Stop Loss trigger prices set on the wrong side of the current market price (#41615)
+- Fixed a bug that was causing the position Return on Equity (ROE) percentage to display 100× too small. Added ROE% display to (#41696)
+  position rows.
+- N/a (#41634)
+- Various fixes to tpsl formatting and pnl calculation (#41497)
+- N/a (#41576)
+- Fixes the perps position card dropdown and interval selection issues in the extension (#41590)
+- Updates metamask fee to be in tx bridge fee tooltip in MM Pay (#41642)
+
 ## [13.27.0]
 
 ### Added
@@ -2108,7 +2241,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.29.0...HEAD
+[13.29.0]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...v13.29.0
 [13.27.0]: https://github.com/MetaMask/metamask-extension/compare/v13.26.0...v13.27.0
 [13.26.0]: https://github.com/MetaMask/metamask-extension/compare/v13.25.0...v13.26.0
 [13.25.0]: https://github.com/MetaMask/metamask-extension/compare/v13.24.0...v13.25.0
