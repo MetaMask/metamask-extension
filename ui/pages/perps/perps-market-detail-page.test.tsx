@@ -194,6 +194,7 @@ jest.mock('../../providers/perps', () => ({
 }));
 
 const mockReplacePerpsToastByKey = jest.fn();
+const mockSetPendingOrder = jest.fn();
 jest.mock('../../components/app/perps/perps-toast', () => {
   const { PERPS_TOAST_KEYS } = jest.requireActual(
     '../../components/app/perps/perps-toast/perps-toast-provider',
@@ -203,6 +204,8 @@ jest.mock('../../components/app/perps/perps-toast', () => {
     PERPS_TOAST_KEYS,
     usePerpsToast: () => ({
       replacePerpsToastByKey: mockReplacePerpsToastByKey,
+      setPendingOrder: mockSetPendingOrder,
+      pendingOrder: null,
     }),
   };
 });
@@ -300,6 +303,22 @@ jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
 jest.mock('../../components/app/perps/perps-tutorial-modal', () => ({
   PerpsTutorialModal: () => null,
 }));
+
+jest.mock('../../components/app/perps/perps-candlestick-chart', () => {
+  // require React inside factory to avoid jest.mock hoisting scope restrictions
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const mockReact = require('react');
+  return {
+    PerpsCandlestickChart: mockReact.forwardRef(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (props: any, _ref: any) =>
+        mockReact.createElement('div', {
+          'data-testid': 'perps-candlestick-chart',
+          'data-price-lines': JSON.stringify(props.priceLines ?? []),
+        }),
+    ),
+  };
+});
 
 const mockUseParams = jest.fn().mockReturnValue({ symbol: 'ETH' });
 const mockUseNavigate = jest.fn();
@@ -559,7 +578,7 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('navigates back when back button is clicked', async () => {
+    it('navigates back in history when back button is clicked', async () => {
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = await renderPage(store);
@@ -567,7 +586,7 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/');
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
     });
 
     it('uses market 24h change as fallback when no live percent update exists', async () => {
@@ -635,6 +654,43 @@ describe('PerpsMarketDetailPage', () => {
 
       expect(getByTestId('perps-market-detail-chart')).toBeInTheDocument();
       expect(getByTestId('perps-candlestick-chart')).toBeInTheDocument();
+    });
+
+    it('passes a Liq price line to the chart when position has a liquidationPrice', async () => {
+      // ETH mock position has liquidationPrice: '2400.00'
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      const chart = getByTestId('perps-candlestick-chart');
+      const priceLines = JSON.parse(
+        chart.getAttribute('data-price-lines') ?? '[]',
+      ) as { label: string; price: number }[];
+
+      const liqLine = priceLines.find((l) => l.label === 'Liq');
+      expect(liqLine).toBeDefined();
+      expect(liqLine?.price).toBe(2400);
+    });
+
+    it('omits the Liq price line from the chart when position liquidationPrice is null', async () => {
+      mockLivePositions.mockReturnValue({
+        positions: [{ ...mockPositions[0], liquidationPrice: null }],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      const chart = getByTestId('perps-candlestick-chart');
+      const priceLines = JSON.parse(
+        chart.getAttribute('data-price-lines') ?? '[]',
+      ) as { label: string }[];
+
+      expect(priceLines.find((l) => l.label === 'Liq')).toBeUndefined();
     });
 
     it('displays favorite button', async () => {
@@ -853,6 +909,31 @@ describe('PerpsMarketDetailPage', () => {
       );
       expect(mockUseNavigate).toHaveBeenCalledWith(
         expect.stringContaining('direction=long'),
+      );
+    });
+
+    it('shows cross-margin toast and does not navigate when Add exposure is clicked on a cross-margin position', async () => {
+      const crossPosition = {
+        ...mockPositions[0],
+        leverage: { type: 'cross' as const, value: 5 },
+      };
+      mockLivePositions.mockReturnValue({
+        positions: [crossPosition, ...mockPositions.slice(1)],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+      fireEvent.click(screen.getByTestId('perps-modify-menu-add-exposure'));
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsCrossMarginNotSupportedTitle',
+        description: messages.perpsCrossMarginNotSupportedDescription.message,
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(
+        expect.stringContaining('mode=modify'),
       );
     });
 
@@ -1182,7 +1263,7 @@ describe('PerpsMarketDetailPage', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('shows an add funds CTA instead of Long/Short when balance is zero', async () => {
+    it('shows Long/Short buttons even when balance is zero', async () => {
       mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
       mockLiveAccount.mockReturnValue({
         account: {
@@ -1196,33 +1277,9 @@ describe('PerpsMarketDetailPage', () => {
 
       await renderPage(store);
 
-      expect(
-        screen.queryByTestId('perps-trade-cta-buttons'),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.getByTestId('perps-add-funds-cta-button'),
-      ).toHaveTextContent(messages.addFunds.message);
-    });
-
-    it('starts deposit flow from add funds CTA when balance is zero', async () => {
-      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
-      mockLiveAccount.mockReturnValue({
-        account: {
-          ...mockAccountState,
-          availableBalance: '0',
-          totalBalance: '0',
-        },
-        isInitialLoading: false,
-      });
-      const store = mockStore(createMockState(true));
-
-      await renderPage(store);
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('perps-add-funds-cta-button'));
-      });
-
-      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('perps-trade-cta-buttons')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-long-cta-button')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-short-cta-button')).toBeInTheDocument();
     });
 
     it('navigates to order entry when Long button is clicked', async () => {
@@ -1465,29 +1522,6 @@ describe('PerpsMarketDetailPage', () => {
         expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
       });
       expect(mockUseNavigate).not.toHaveBeenCalled();
-    });
-
-    it('shows geo-block modal when clicking Add Funds while not eligible', async () => {
-      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
-      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
-      mockLiveAccount.mockReturnValue({
-        account: {
-          ...mockAccountState,
-          availableBalance: '0',
-          totalBalance: '0',
-        },
-        isInitialLoading: false,
-      });
-      const store = mockStore(createMockState(true));
-      await renderPage(store);
-
-      const addFundsButton = screen.getByTestId('perps-add-funds-cta-button');
-      fireEvent.click(addFundsButton);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
-      });
-      expect(mockTriggerDeposit).not.toHaveBeenCalled();
     });
 
     it('shows geo-block modal when clicking Close while not eligible', async () => {

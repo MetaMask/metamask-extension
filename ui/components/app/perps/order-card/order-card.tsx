@@ -15,7 +15,9 @@ import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { formatPerpsFiatMinimal } from '../utils/formatPerpsDisplayPrice';
-import { formatOrderType, getDisplayName } from '../utils';
+import { getDisplayName } from '../utils';
+import { formatOrderLabel } from '../utils/orderUtils';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import type { Order } from '../types';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 
@@ -27,7 +29,8 @@ export type OrderCardProps = {
 
 /**
  * OrderCard component displays individual order information
- * Two rows: symbol/type/side + size on left, USD value + limit price on right
+ * Two rows on the left: symbol + order label (TP/SL: label only; symbol follows size below),
+ * trigger or notional value on the right
  *
  * @param options0 - Component props
  * @param options0.order - The order data to display
@@ -41,8 +44,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const isBuy = order.side === 'buy';
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const displayName = getDisplayName(order.symbol);
+  const isTriggerBasedOrder =
+    order.isTrigger === true || order.isPositionTpsl === true;
 
   const handleClick = useCallback(() => {
     if (onClick) {
@@ -55,17 +60,34 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     }
   }, [navigate, order, onClick]);
 
-  // Calculate order value in USD (size * price), formatted like position values
+  // Limit/market: notional (size × limit price). TP/SL: trigger level (take-profit / stop-loss price).
   const orderValueUsd = useMemo(() => {
+    if (isTriggerBasedOrder) {
+      const triggerLevel =
+        parseFloat(order.triggerPrice || order.price || '0') || 0;
+      if (triggerLevel > 0) {
+        return formatCurrencyWithMinThreshold(triggerLevel, 'USD');
+      }
+    }
+
     const size = parseFloat(order.size) || 0;
     const price = parseFloat(order.price) || 0;
     if (size > 0 && price > 0) {
       return formatPerpsFiatMinimal(size * price);
     }
     return null;
-  }, [order.size, order.price]);
+  }, [
+    isTriggerBasedOrder,
+    order.triggerPrice,
+    order.size,
+    order.price,
+    formatCurrencyWithMinThreshold,
+  ]);
 
-  const baseStyles = 'cursor-pointer pt-2 pb-2 px-4 h-[62px]';
+  const baseStyles = 'cursor-pointer pt-2 pb-2 px-4';
+  // Non-trigger rows keep the fixed 62 px height to match the position/token tabs.
+  // Trigger-based (TP/SL) rows grow with content; min-h keeps the floor at 62 px.
+  const heightStyle = isTriggerBasedOrder ? 'h-auto min-h-[62px]' : 'h-[62px]';
   const variantStyles =
     variant === 'muted'
       ? 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
@@ -76,9 +98,11 @@ export const OrderCard: React.FC<OrderCardProps> = ({
       className={twMerge(
         // Reset ButtonBase defaults for card layout
         'justify-start rounded-none min-w-0',
-        // Card styles (matches tokens tab: 62px height, 8px v-padding, 16px h-padding, 16px gap)
-        'gap-4 text-left',
+        // items-center keeps each column's content block centered in the card height,
+        // whether the label fits on one line or wraps to two.
+        'gap-4 text-left items-center',
         baseStyles,
+        heightStyle,
         variantStyles,
       )}
       isFullWidth
@@ -99,22 +123,31 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         alignItems={BoxAlignItems.Start}
         gap={1}
       >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={1}
-        >
-          <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {isBuy ? t('perpsLong') : t('perpsShort')}
-          </Text>
-        </Box>
+        {isTriggerBasedOrder ? (
+          // TP/SL: render label directly in the column so it wraps freely.
+          // The symbol is redundant here — it appears after the size below.
+          <Text fontWeight={FontWeight.Medium}>{formatOrderLabel(order)}</Text>
+        ) : (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+          >
+            <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
+              {formatOrderLabel(order)}
+            </Text>
+          </Box>
+        )}
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {order.size} {displayName}
         </Text>
       </Box>
 
-      {/* Right side: USD value + limit price */}
+      {/* Right side: USD value */}
       <Box
         className="shrink-0"
         flexDirection={BoxFlexDirection.Column}
@@ -124,9 +157,11 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
           {orderValueUsd ?? t('perpsMarket')}
         </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {formatOrderType(order.orderType)}
-        </Text>
+        {isTriggerBasedOrder && orderValueUsd && (
+          <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
+            {t('perpsTriggerPrice')}
+          </Text>
+        )}
       </Box>
     </ButtonBase>
   );

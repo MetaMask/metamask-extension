@@ -15,6 +15,7 @@ import { AccountsControllerState } from '@metamask/accounts-controller';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import {
   CAIP_FORMATTED_TEST_CHAINS,
+  CHAIN_IDS,
   NetworkStatus,
 } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
@@ -327,7 +328,12 @@ export const getNonTestNetworks = createSelector(
     return Object.entries(networkConfigurationsByCaipChainId)
       .filter(([chainId]) => {
         const caipChainId = chainId as CaipChainId;
-        return !CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
+        const localhostCaipChainId =
+          `eip155:${hexToDecimal(CHAIN_IDS.LOCALHOST)}` as CaipChainId;
+        return (
+          !CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId) ||
+          caipChainId === localhostCaipChainId
+        );
       })
       .map(([chainId, network]) => ({
         ...network,

@@ -22,7 +22,7 @@ function getDiffByAutomationType(
   let diff;
   if (automationType === AUTOMATION_TYPE.CI) {
     const optionalArguments = process.argv.slice(3);
-    if (optionalArguments.length !== 1) {
+    if (optionalArguments.length > 1) {
       console.error('Invalid number of arguments.');
       process.exit(1);
     }
@@ -37,11 +37,19 @@ function getDiffByAutomationType(
   return diff;
 }
 
-function getCIDiff(path: string): string {
-  return fs.readFileSync(path, {
-    encoding: 'utf8',
-    flag: 'r',
-  });
+function getCIDiff(path?: string): string {
+  if (path) {
+    return fs.readFileSync(path, {
+      encoding: 'utf8',
+      flag: 'r',
+    });
+  }
+
+  // No file argument — fetch diff directly (requires CI environment variables).
+  // Lazy-import to avoid pulling @actions/github into local dev hooks.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- deliberate lazy require
+  const { getPrDiff } = require('../../../.github/scripts/shared/get-pr-diff');
+  return getPrDiff({ baseBranch: process.env.BASE_REF || 'main' });
 }
 
 function runGitCommand(args: string[]): string {
