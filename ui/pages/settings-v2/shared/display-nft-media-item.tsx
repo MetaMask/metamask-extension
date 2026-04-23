@@ -8,8 +8,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { SettingsToggleItem } from '../../settings/settings-toggle-item';
 import { ASSET_ITEMS } from '../search-config';
+import { SettingsToggleItem } from './settings-toggle-item';
 
 export const DisplayNftMediaToggleItem = () => {
   const t = useI18nContext();

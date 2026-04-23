@@ -117,6 +117,7 @@ describe('Permission List Item', () => {
 
       const mockNativeTokenStreamPermission: PermissionInfoWithMetadata<NativeTokenStreamPermission> =
         {
+          status: 'Active',
           permissionResponse: {
             chainId: '0x1',
             from: mockAccountAddress,
@@ -146,6 +147,7 @@ describe('Permission List Item', () => {
 
       const mockNativeTokenPeriodicPermission: PermissionInfoWithMetadata<NativeTokenPeriodicPermission> =
         {
+          status: 'Active',
           permissionResponse: {
             chainId: '0x1',
             from: mockAccountAddress,
@@ -371,6 +373,7 @@ describe('Permission List Item', () => {
 
       const mockErc20TokenPeriodicPermission: PermissionInfoWithMetadata<Erc20TokenPeriodicPermission> =
         {
+          status: 'Active',
           permissionResponse: {
             chainId: '0x5',
             from: mockAccountAddress,
@@ -400,6 +403,7 @@ describe('Permission List Item', () => {
 
       const mockErc20TokenStreamPermission: PermissionInfoWithMetadata<Erc20TokenStreamPermission> =
         {
+          status: 'Active',
           permissionResponse: {
             chainId: '0x5',
             from: mockAccountAddress,
@@ -567,6 +571,7 @@ describe('Permission List Item', () => {
               delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
             },
             siteOrigin: 'http://localhost:8000',
+            status: 'Active',
           };
 
         const { container, getByTestId } = renderWithProvider(
@@ -641,6 +646,7 @@ describe('Permission List Item', () => {
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
           siteOrigin: 'http://localhost:8000',
+          status: 'Active',
         };
 
         const { container, getByTestId, queryByTestId } = renderWithProvider(
@@ -703,6 +709,7 @@ describe('Permission List Item', () => {
               // No rules array = no expiry
             },
             siteOrigin: 'http://localhost:8000',
+            status: 'Active',
           };
 
         const { container, getByTestId } = renderWithProvider(
@@ -758,6 +765,7 @@ describe('Permission List Item', () => {
               ],
             },
             siteOrigin: 'http://localhost:8000',
+            status: 'Active',
           };
 
         const { container, getByTestId } = renderWithProvider(
@@ -811,6 +819,7 @@ describe('Permission List Item', () => {
               ],
             },
             siteOrigin: 'http://localhost:8000',
+            status: 'Active',
           };
 
         const { container, getByTestId } = renderWithProvider(

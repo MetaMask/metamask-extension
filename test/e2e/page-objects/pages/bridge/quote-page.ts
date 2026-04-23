@@ -175,7 +175,7 @@ class BridgeQuotePage {
     await this.driver.clickElement(assetPicker);
     await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
     console.log(`Filled search input with ${token}`);
-    await this.driver.clickElement({
+    await this.driver.clickElementAndWaitToDisappear({
       css: this.tokenButton,
       text: token,
     });
