@@ -137,6 +137,12 @@ function getClientOptions() {
  * @returns tracesSampleRate to setup Sentry
  */
 function getTracesSampleRate(sentryTarget) {
+  // Emergency kill switch must come first: it must override every other path,
+  // including SENTRY_DSN_FAKE (1.0), CI rates, and METAMASK_DEBUG (1.0).
+  if (SENTRY_DISTRIBUTED_TRACING_DISABLED) {
+    return 0;
+  }
+
   if (sentryTarget === SENTRY_DSN_FAKE) {
     return 1.0;
   }
@@ -160,10 +166,6 @@ function getTracesSampleRate(sentryTarget) {
 
   if (METAMASK_DEBUG) {
     return 1.0;
-  }
-
-  if (SENTRY_DISTRIBUTED_TRACING_DISABLED) {
-    return 0;
   }
 
   // RPC + messenger wrappers add ~100 spans per sampled trace (empirical mean).
