@@ -55,8 +55,9 @@ describe('Check balance', function (this: Suite) {
         },
         assetsPrice: {
           [SOL_CAIP_ASSET]: {
-            assetPriceType: 'fungible',
+            assetPriceType: 'fungible' as const,
             id: 'solana',
+            lastUpdated: 0,
             price: SOL_SPOT_PRICE,
             usdPrice: SOL_SPOT_PRICE,
           },

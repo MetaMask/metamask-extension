@@ -125,14 +125,16 @@ const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
   },
   assetsPrice: {
     [SOL_CAIP_ASSET]: {
-      assetPriceType: 'fungible',
+      assetPriceType: 'fungible' as const,
       id: 'solana',
+      lastUpdated: 0,
       price: SOL_PRICE,
       usdPrice: SOL_PRICE,
     },
     [USDC_CAIP_ASSET]: {
-      assetPriceType: 'fungible',
+      assetPriceType: 'fungible' as const,
       id: 'usd-coin',
+      lastUpdated: 0,
       price: USDC_PRICE,
       usdPrice: USDC_PRICE,
     },
@@ -374,6 +376,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
                 },
               },
             },
+            ...MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH,
           });
           return fixture;
         })(),
@@ -384,9 +387,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await login(driver);
 
         const homePage = new NonEvmHomepage(driver);
-        if (isUnifiedAssetsEnabled) {
-          await homePage.waitForNonEvmAccountsLoaded();
-        }
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
