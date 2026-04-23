@@ -297,7 +297,7 @@ describe('submitSmartTransactionHook', () => {
       const result = await submitSmartTransactionHook(request);
       expect(request.smartTransactionsController.getFees).toHaveBeenCalled();
       expect(endFlowSpy).toHaveBeenCalledWith({
-        id: 'approvalId',
+        id: '',
       });
       expect(result).toEqual({ transactionHash: undefined });
     });
@@ -915,21 +915,34 @@ describe('submitSmartTransactionHook', () => {
 
     // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
-      { flag: true, shouldShow: false, desc: 'skips status page when true' },
-      { flag: false, shouldShow: true, desc: 'shows status page when false' },
+      {
+        flag: true,
+        shouldRender: false,
+        expectedApprovalId: uuid,
+        desc: 'creates approval request without showing it when status page rendering is skipped',
+      },
+      {
+        flag: false,
+        shouldRender: true,
+        expectedApprovalId: 'approvalId',
+        desc: 'creates and shows approval request when status page rendering is enabled',
+      },
       {
         flag: undefined,
-        shouldShow: true,
-        desc: 'shows status page when undefined (backwards compatible)',
+        shouldRender: true,
+        expectedApprovalId: 'approvalId',
+        desc: 'creates and shows approval request when flag is undefined (backwards compatible)',
       },
     ])(
       '$desc',
       async ({
         flag,
-        shouldShow,
+        shouldRender,
+        expectedApprovalId,
       }: {
         flag: boolean | undefined;
-        shouldShow: boolean;
+        shouldRender: boolean;
+        expectedApprovalId: string;
       }) => {
         withRequest(
           {
@@ -954,20 +967,25 @@ describe('submitSmartTransactionHook', () => {
 
             const result = await submitSmartTransactionHook(request);
 
-            if (shouldShow) {
-              expect(startFlowSpy).toHaveBeenCalled();
-              expect(addRequestSpy).toHaveBeenCalled();
+            if (shouldRender) {
+              expect(startFlowSpy).toHaveBeenCalledWith();
             } else {
               expect(startFlowSpy).not.toHaveBeenCalled();
-              expect(addRequestSpy).not.toHaveBeenCalled();
             }
+            expect(addRequestSpy).toHaveBeenCalledWith(
+              expect.objectContaining({
+                id: expectedApprovalId,
+                type: 'smartTransaction:showSmartTransactionStatusPage',
+              }),
+              shouldRender,
+            );
             expect(result).toEqual({ transactionHash: txHash });
           },
         );
       },
     );
 
-    it('skips status page even with batch transactions when flag is true', async () => {
+    it('creates approval request without showing it for batch transactions when status page rendering is skipped', async () => {
       withRequest(
         {
           options: {
@@ -999,7 +1017,13 @@ describe('submitSmartTransactionHook', () => {
           const result = await submitSmartTransactionHook(request);
 
           expect(startFlowSpy).not.toHaveBeenCalled();
-          expect(addRequestSpy).not.toHaveBeenCalled();
+          expect(addRequestSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              id: uuid,
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+            }),
+            false,
+          );
           expect(result).toEqual({ transactionHash: txHash });
         },
       );
@@ -1248,7 +1272,7 @@ describe('submitBatchSmartTransactionHook', () => {
       );
 
       expect(endFlowSpy).toHaveBeenCalledWith({
-        id: 'approvalId',
+        id: '',
       });
     });
   });
