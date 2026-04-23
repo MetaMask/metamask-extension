@@ -365,7 +365,7 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when reason is 
 
 exports[`BridgeAlertBannerList should render the token-security alert when token warning 1`] = `
 [
-  "Malicious token",
+  "USDC is a malicious token.",
 ]
 `;
 
@@ -388,7 +388,7 @@ exports[`BridgeAlertBannerList should render the token-security alert when token
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
       >
-        Malicious token
+        USDC is a malicious token.
       </p>
       
       <p

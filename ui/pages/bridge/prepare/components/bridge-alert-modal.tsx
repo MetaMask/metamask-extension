@@ -66,6 +66,13 @@ export const BridgeAlertModal = ({
   const singleAlert = alertId ? [alertsById[alertId]] : [];
   const alerts = shouldShowSubmitCTA ? confirmationAlerts : singleAlert;
   const activeAlert = alerts[activeAlertIndex];
+  const modalTitle = activeAlert?.modalProps?.title ?? activeAlert?.title;
+  const modalDescription =
+    activeAlert?.modalProps?.description ?? activeAlert?.description;
+  const modalInfoList =
+    activeAlert?.modalProps?.infoList ?? activeAlert?.infoList;
+  const modalBannerErrorMessage =
+    activeAlert?.modalProps?.alertModalErrorMessage;
   const isModalOpen = Boolean(
     isOpen &&
       activeAlert &&
@@ -134,15 +141,15 @@ export const BridgeAlertModal = ({
                   : IconColor.WarningDefault
               }
             />
-            {activeAlert.title && (
-              <Text variant={TextVariant.HeadingSm}>{activeAlert.title}</Text>
+            {modalTitle && (
+              <Text variant={TextVariant.HeadingSm}>{modalTitle}</Text>
             )}
           </Column>
         </ModalHeader>
         <Column gap={3} paddingInline={4} paddingBottom={4}>
-          <Text variant={TextVariant.BodySm}>{activeAlert.description}</Text>
+          <Text variant={TextVariant.BodySm}>{modalDescription}</Text>
           <Column>
-            {activeAlert.infoList?.map((item) => (
+            {modalInfoList?.map((item) => (
               <Row
                 key={item.title}
                 paddingTop={2}
@@ -175,11 +182,11 @@ export const BridgeAlertModal = ({
               </Row>
             ))}
           </Column>
-          {activeAlert.alertModalErrorMessage && (
+          {modalBannerErrorMessage && (
             <BannerAlert
               data-testid="bridge-alert-modal-banner"
               severity={BannerAlertSeverity.Danger}
-              description={activeAlert.alertModalErrorMessage}
+              description={modalBannerErrorMessage}
             />
           )}
         </Column>

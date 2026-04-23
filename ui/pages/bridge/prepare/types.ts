@@ -48,6 +48,16 @@ export type DestinationAccount =
   | InternalDestinationAccount
   | ExternalDestinationAccount;
 
+/** Optional overrides for {@link BridgeAlertModal}; omitted fields fall back to top-level alert fields */
+export type BridgeAlertModalProps = {
+  title?: string;
+  description?: string;
+  /** Optional list of labeled items rendered below the description (e.g. token security risk factors) */
+  infoList?: { title: string; description: string | null }[];
+  /** Inner danger {@link BannerAlert} in the modal (e.g. malicious token or fiat loss). */
+  alertModalErrorMessage?: string;
+};
+
 /** An alert transformed for display purposes */
 export type MinimalBridgeAlert = {
   id:
@@ -77,10 +87,10 @@ export type BridgeAlert = MinimalBridgeAlert & {
     'severity' | 'actionButtonLabel' | 'actionButtonOnClick' | 'data-testid'
   >;
   /**
-   * This is for the BannerAlert shown in the alert modal, which may appear when the alert modal is opened
-   * from the quote card or the confirmation flow.
+   * When set, non-undefined fields override top-level title, description, and infoList in the modal.
+   * Top-level title and description still drive the inline {@link BannerAlert} list.
    */
-  alertModalErrorMessage?: string;
+  modalProps?: BridgeAlertModalProps;
   /**
    * When true, the banner renders an arrow-right button instead of a dismiss X.
    * Clicking it opens the BridgeAlertModal with the alert's details.

@@ -137,18 +137,30 @@ export const useBridgeAlerts = () => {
         severity: assetIsMalicious ? 'danger' : 'warning',
         title: t(
           assetIsMalicious
-            ? 'bridgeTokenIsMaliciousTitle'
-            : 'bridgeTokenIsSuspiciousTitle',
+            ? 'bridgeTokenIsMaliciousBanner'
+            : 'bridgeTokenIsSuspiciousBanner',
+          [toToken.symbol],
         ),
-        description: assetIsSuspicious
-          ? t('bridgeTokenIsSuspiciousModalDescription', [toToken.symbol])
-          : '',
-        alertModalErrorMessage: assetIsMalicious
-          ? t('bridgeTokenIsMaliciousModalDescription', [toToken.symbol])
-          : null,
-        infoList: assetIsMalicious
-          ? assetMaliciousLocalizedFeatures
-          : assetSuspiciousLocalizedFeatures,
+        description: '',
+        modalProps: {
+          title: t(
+            assetIsMalicious
+              ? 'bridgeMaliciousTokenTitle'
+              : 'bridgeSuspiciousTokenTitle',
+          ),
+          description: t(
+            assetIsMalicious
+              ? 'bridgeTokenIsMaliciousModalDescription'
+              : 'bridgeTokenIsSuspiciousModalDescription',
+            [toToken.symbol],
+          ),
+          alertModalErrorMessage: assetIsMalicious
+            ? t('bridgeTokenIsMaliciousModalDescription', [toToken.symbol])
+            : undefined,
+          infoList: assetIsMalicious
+            ? assetMaliciousLocalizedFeatures
+            : assetSuspiciousLocalizedFeatures,
+        },
         isConfirmationAlert: assetIsMalicious,
         isDismissable: false,
         openModalOnClick: true,
@@ -223,8 +235,12 @@ export const useBridgeAlerts = () => {
           formattedPriceImpactPercentage,
         ]),
         isConfirmationAlert: true,
-        alertModalErrorMessage: formattedPriceImpactFiat
-          ? t('bridgePriceImpactFiatAlert', [formattedPriceImpactFiat])
+        modalProps: formattedPriceImpactFiat
+          ? {
+              alertModalErrorMessage: t('bridgePriceImpactFiatAlert', [
+                formattedPriceImpactFiat,
+              ]),
+            }
           : undefined,
       });
     }

@@ -299,10 +299,14 @@ describe('useBridgeAlerts', () => {
         expect.objectContaining({
           id: 'token-security',
           severity: 'danger',
-          title: 'bridgeTokenIsMaliciousTitle',
+          title: `bridgeTokenIsMaliciousBanner:${MOCK_TO_TOKEN.symbol}`,
           description: '',
-          alertModalErrorMessage: `bridgeTokenIsMaliciousModalDescription:${MOCK_TO_TOKEN.symbol}`,
-          infoList: [{ title: 'Honeypot', description: null }],
+          modalProps: {
+            title: 'bridgeMaliciousTokenTitle',
+            description: `bridgeTokenIsMaliciousModalDescription:${MOCK_TO_TOKEN.symbol}`,
+            infoList: [{ title: 'Honeypot', description: null }],
+            alertModalErrorMessage: `bridgeTokenIsMaliciousModalDescription:${MOCK_TO_TOKEN.symbol}`,
+          },
           isConfirmationAlert: true,
           openModalOnClick: true,
           bannerAlertProps: { severity: BannerAlertSeverity.Danger },
@@ -330,10 +334,13 @@ describe('useBridgeAlerts', () => {
       expect(alert).toStrictEqual(
         expect.objectContaining({
           severity: 'warning',
-          title: 'bridgeTokenIsSuspiciousTitle',
-          description: `bridgeTokenIsSuspiciousModalDescription:${MOCK_TO_TOKEN.symbol}`,
-          alertModalErrorMessage: null,
-          infoList: [{ title: 'Airdrop', description: null }],
+          title: `bridgeTokenIsSuspiciousBanner:${MOCK_TO_TOKEN.symbol}`,
+          description: '',
+          modalProps: {
+            title: 'bridgeSuspiciousTokenTitle',
+            description: `bridgeTokenIsSuspiciousModalDescription:${MOCK_TO_TOKEN.symbol}`,
+            infoList: [{ title: 'Airdrop', description: null }],
+          },
           bannerAlertProps: { severity: BannerAlertSeverity.Warning },
         }),
       );
@@ -588,12 +595,14 @@ describe('useBridgeAlerts', () => {
           title: 'bridgePriceImpactVeryHigh',
           description: 'bridgePriceImpactVeryHighDescription:90.0%',
           isConfirmationAlert: true,
-          alertModalErrorMessage: undefined,
         }),
+      );
+      expect(result.current.alertsById['price-impact']?.modalProps).toBe(
+        undefined,
       );
     });
 
-    it('includes the fiat loss message in alertModalErrorMessage when available', () => {
+    it('includes the fiat loss message in modalProps.alertModalErrorMessage when available', () => {
       jest.mocked(getValidationErrors).mockReturnValue({
         ...DEFAULT_VALIDATION_ERRORS,
         isPriceImpactError: true,
@@ -605,7 +614,8 @@ describe('useBridgeAlerts', () => {
       const { result } = renderHook();
 
       expect(
-        result.current.alertsById['price-impact']?.alertModalErrorMessage,
+        result.current.alertsById['price-impact']?.modalProps
+          ?.alertModalErrorMessage,
       ).toBe('bridgePriceImpactFiatAlert:$12.34');
     });
 
