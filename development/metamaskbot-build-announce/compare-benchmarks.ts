@@ -409,7 +409,11 @@ async function main(): Promise<void> {
           : undefined,
     };
 
-    await sendBenchmarkNotifications(result.comparisons, slackContext);
+    await sendBenchmarkNotifications(
+      result.comparisons,
+      slackContext,
+      THRESHOLD_REGISTRY,
+    );
   }
 
   process.exit(result.anyFailed ? 1 : 0);

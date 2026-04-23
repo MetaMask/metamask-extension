@@ -842,10 +842,11 @@ export async function sendBenchmarkNotifications(
     ];
 
     // Flush when the oldest persisted entry has waited long enough.
-    const oldest = batch.reduce(
-      (min, e) => Math.min(min, e.timestamp),
-      Infinity,
-    );
+    // Empty batch means no prior context (fresh CI runner) — flush immediately.
+    const oldest =
+      batch.length > 0
+        ? batch.reduce((min, e) => Math.min(min, e.timestamp), Infinity)
+        : 0;
     if (now - oldest >= BATCH_WINDOW_MS || severe.length > 0) {
       const payload = formatBatchedNotification(updated, context, ownership);
       await postToSlack(context.webhookUrl, payload);
