@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "添加自定义网络"
   },
-  "addAHardwareWallet": {
-    "message": "添加硬件钱包"
-  },
   "addANetwork": {
     "message": "添加网络"
   },
