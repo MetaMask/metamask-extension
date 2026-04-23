@@ -13131,7 +13131,7 @@ SOFTWARE.
 ******************************
 
 fast-xml-builder
-1.1.4 <https://github.com/NaturalIntelligence/fast-xml-builder>
+1.1.5 <https://github.com/NaturalIntelligence/fast-xml-builder>
 MIT License
 
 Copyright (c) 2026 Natural Intelligence
@@ -13158,7 +13158,7 @@ SOFTWARE.
 ******************************
 
 fast-xml-parser
-5.5.7 <https://github.com/NaturalIntelligence/fast-xml-parser>
+5.7.1 <https://github.com/NaturalIntelligence/fast-xml-parser>
 MIT License
 
 Copyright (c) 2017 Amit Kumar Gupta
@@ -28102,6 +28102,13 @@ THE SOFTWARE.
 
 ******************************
 
+@nodable/entities
+2.1.0 <https://github.com/nodable/val-parsers>
+license: MIT
+authors: Amit Gupta (https://solothought.com)
+
+******************************
+
 node-addon-api
 2.0.2 <https://github.com/nodejs/node-addon-api>
 The MIT License (MIT)
@@ -28954,7 +28961,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 path-expression-matcher
-1.1.3 <https://github.com/NaturalIntelligence/path-expression-matcher>
+1.5.0 <https://github.com/NaturalIntelligence/path-expression-matcher>
 MIT License
 
 Copyright (c) 2024
@@ -37202,7 +37209,7 @@ THE SOFTWARE.
 ******************************
 
 strnum
-2.2.1 <https://github.com/NaturalIntelligence/strnum>
+2.2.3 <https://github.com/NaturalIntelligence/strnum>
 MIT License
 
 Copyright (c) 2021 Natural Intelligence
