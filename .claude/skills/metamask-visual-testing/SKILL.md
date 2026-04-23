@@ -1,6 +1,6 @@
 ---
 name: metamask-visual-testing
-description: Launch and test MetaMask Chrome extension with Playwright in headless sidepanel mode. Use for visual validation of UI changes, testing onboarding/unlock flows, confirmations, and capturing screenshots.
+description: Drives the MetaMask Chrome extension via the mm CLI for visual testing in headed Chrome with MetaMask running in sidepanel mode. Use when asked to visually verify UI changes, capture screenshots, click through onboarding, unlock, send, swap, connect, or confirmation flows, test dapp interactions, or debug extension UI state. Trigger phrases include "verify visually", "take a screenshot", "test the flow", "check the UI", and "click through onboarding".
 compatibility: opencode
 metadata:
   location: test/e2e/playwright/llm-workflow/
@@ -13,71 +13,72 @@ metadata:
 
 Use this skill when you need to:
 
-- Visually validate MetaMask UI changes
-- Test extension behavior in a real browser
-- Verify onboarding, unlock, or transaction flows
-- Capture screenshots for validation
-- Debug UI state issues
+- Visually validate MetaMask UI changes in a real browser
+- Capture screenshots as evidence
+- Verify onboarding, unlock, transaction, swap, or dapp-confirmation flows
+- Click through extension behavior instead of reasoning from code alone
+- Debug unexpected UI state in the extension or sidepanel
 
-## CRITICAL: Always Start with Knowledge Search
-
-**Before launching a browser or interacting with any UI, you MUST run:**
-
-```bash
-mm knowledge-search "<flow>"    # e.g. "send", "unlock", "connect", "swap", "onboarding"
-mm knowledge-sessions           # List recent sessions with discovered steps
-```
-
-This is the single most important step. Prior sessions contain exact step sequences, testId targets, and timing that eliminate trial-and-error. See [Core Workflow → Step 0](#0-reuse-existing-knowledge-mandatory--do-not-skip) for full details.
+For architecture and developer-facing implementation details, see `test/e2e/playwright/llm-workflow/README.md`.
 
 ## Prerequisites
 
 **CLI invocation**: The `mm` CLI is a project-local dependency. Use one of:
 
 ```bash
-npx mm <command>          # Works in any project that has it installed
-yarn mm <command>         # If using Yarn
-./node_modules/.bin/mm <command>  # Direct path
+npx mm <command>
+yarn mm <command>
+./node_modules/.bin/mm <command>
 ```
 
-All examples in this skill use `mm` for brevity — prefix with `npx` or `yarn` as needed.
+All examples in this skill use `mm` for brevity.
 
-**Validate that there's an Extension build** (required before `mm launch` will work):
+**Validate that there is an extension build** before `mm launch`:
 
-Extension build is in the `dist/chrome/` folder.
+- Build output is in `dist/chrome/`
+- If there is no build, build the extension
+- If there is a build and the user explicitly asked to rebuild, rebuild it
+- If there is a build and the user explicitly asked not to rebuild, reuse it
+- If reuse vs rebuild affects the task and the user was explicit, follow that instruction
 
-- If there is NO build, then proceed and build the Extension
-- If there is a build, then:
-  - if the user has asked to build, proceed with rebuilding the Extension
-  - if the user has asked to NOT build, proceed WITHOUT building and re-use the existing build
-  - if the user was not explicit about it, ASK the user how they want to proceed — use existing build or rebuild the Extension
-
-**Build the extension** (required before any CLI command will work):
+**Build command**:
 
 ```bash
-yarn install      # Install dependencies (first time only)
-yarn build:test   # Build extension to dist/chrome/
+yarn install
+yarn build:test:webpack
 ```
 
-You only need to rebuild after source code changes. `mm launch` validates the
-build exists and returns a clear error with the exact command if it's missing.
+`mm launch` validates the build and returns an actionable error if it is missing.
 
-If ports are in use from previous runs:
+If ports are stuck from a previous run, do not assume fixed port numbers. The current daemon and sub-service ports are persisted in the worktree-local `.mm-server` file:
 
 ```bash
-lsof -ti:8545,12345,8000 | xargs kill -9
+cat .mm-server
 ```
+
+Look under `subPorts` for the active `anvil`, `fixture`, and `mock` ports, then target those specific ports if you need to clean up orphan processes.
+
+## Gotchas
+
+- `a11yRef`s (`e1`, `e2`, ...) are **ephemeral**. After `mm describe-screen`, `mm accessibility-snapshot`, or major navigation, re-describe before reusing refs.
+- `mm type` uses Playwright `fill()` and **clears the field first**.
+- After confirm or reject in sidepanel mode, the page does **not** close. It stays open and navigates back to the home route.
+- `mm wait-for-notification` waits for the sidepanel confirmation route. It does **not** wait for a legacy popup window.
+- `mm run-steps` expects a JSON **object** with a `steps` key, not a bare array.
+- In `mm run-steps`, prefer `a11yRef`, `testId`, or `selector` in args. `ref` is accepted as shorthand, but explicit keys are clearer.
+- You cannot switch context during an active session. Run `mm cleanup` first, or use `mm launch --context ...`.
+- The default password for built-in fixtures is `correct horse battery staple`.
 
 ## CLI Commands Overview
 
-The `mm` CLI is the primary interface. It automatically manages a background HTTP daemon.
+The `mm` CLI is the primary interface.
 
 ### Lifecycle
 
 | Command                 | Description                                      |
 | ----------------------- | ------------------------------------------------ |
-| `mm launch`             | Launch MetaMask in headed Chrome (starts daemon) |
-| `mm cleanup`            | Stop browser and all services                    |
+| `mm launch`             | Launch MetaMask in headed Chrome                 |
+| `mm cleanup`            | Stop browser and services                        |
 | `mm cleanup --shutdown` | Stop browser, services, and the daemon           |
 | `mm status`             | Show current daemon and session status           |
 
@@ -85,31 +86,16 @@ The `mm` CLI is the primary interface. It automatically manages a background HTT
 
 | Command                      | Description                                                                  |
 | ---------------------------- | ---------------------------------------------------------------------------- |
-| `mm click <ref>`             | Click element by a11y ref, testId, or selector (supports `--within` scoping) |
-| `mm type <ref> <text>`       | Type text into element (clears field first, uses Playwright `fill()`)        |
-| `mm get-text <ref>`          | Read text content of element (supports `--within` scoping)                   |
+| `mm click <ref>`             | Click element by a11y ref, testId, or selector                               |
+| `mm type <ref> <text>`       | Type text into element                                                        |
+| `mm get-text <ref>`          | Read text content of element                                                  |
 | `mm describe-screen`         | Combined state + activeTab + testIds + a11y snapshot                         |
 | `mm screenshot [--name <n>]` | Take and save screenshot                                                     |
-| `mm wait-for <ref>`          | Wait for element to be visible (supports `--within` scoping)                 |
+| `mm wait-for <ref>`          | Wait for element to be visible                                               |
 | `mm wait-for-notification`   | Wait for sidepanel confirmation route, set as active                         |
-| `mm accessibility-snapshot`  | Get trimmed a11y tree with refs (e1, e2...)                                  |
+| `mm accessibility-snapshot`  | Get trimmed a11y tree with refs                                              |
 | `mm list-testids`            | List visible `data-testid` attributes                                        |
 | `mm clipboard <action>`      | Read from or write to browser clipboard                                      |
-
-### Observation Efficiency
-
-Mutating actions (`click`, `type`, `navigate`, etc.) return **compacted observations** in their response. Option subtrees with 3 or more `option` nodes under a `combobox` or `listbox` are collapsed into a single summary node (e.g., `"55 options (refs e2–e56)"`).
-
-After the first mutating action sets a baseline, subsequent mutations return a **diff-based** observation. The `observations.a11y.diff` field (when present) shows what changed (`added`, `removed`, `unchanged`). Calling `mm describe-screen` resets the baseline — the next mutation returns a full compact observation again (good time to re-orient).
-
-**Recommended usage:**
-
-- Use `observations.state` for quick checks: current screen name, `isUnlocked`, network, etc.
-- Use `observations.a11y.nodes` with the compact refs for the next interaction — no `mm describe-screen` needed.
-- Call `mm describe-screen` when you need:
-  - The full, unfiltered a11y tree (e.g., to see all options in a dropdown)
-  - `priorKnowledge` from historical sessions
-  - Screenshots
 
 ### Navigation & Tabs
 
@@ -118,42 +104,30 @@ After the first mutating action sets a baseline, subsequent mutations return a *
 | `mm navigate <url>`       | Navigate to a specific URL                                             |
 | `mm navigate-home`        | Navigate to the extension home                                         |
 | `mm navigate-settings`    | Navigate to the extension settings                                     |
-| `mm switch-to-tab <role>` | Switch active page to a different tab by role (positional or `--role`) |
-| `mm close-tab <role>`     | Close a tab (notification, dapp, or other)                             |
+| `mm switch-to-tab <role>` | Switch active page to a different tab by role                          |
+| `mm close-tab <role>`     | Close a tab                                                            |
 
 ### Context
 
 | Command                      | Description                                    |
 | ---------------------------- | ---------------------------------------------- |
 | `mm get-context`             | Get current context and available capabilities |
-| `mm set-context <e2e\|prod>` | Switch workflow context (e2e or prod)          |
+| `mm set-context <e2e\|prod>` | Switch workflow context                        |
 
-### State & Knowledge
+### State, Knowledge, and Seeding
 
 | Command                       | Description                                     |
 | ----------------------------- | ----------------------------------------------- |
-| `mm get-state`                | Get current extension state (includes tab info) |
+| `mm get-state`                | Get current extension state                     |
 | `mm knowledge-search <query>` | Search steps across sessions                    |
 | `mm knowledge-last`           | Get last N step records from this session       |
 | `mm knowledge-sessions`       | List recent sessions with metadata              |
 | `mm knowledge-summarize`      | Generate session recipe                         |
 | `mm run-steps <json>`         | Execute multiple tools in sequence              |
-
-### Contract Seeding
-
-| Command                   | Description                             |
-| ------------------------- | --------------------------------------- |
-| `mm seed-contract <type>` | Deploy a test contract (ERC-20, NFT...) |
-| `mm seed-contracts`       | Deploy multiple test contracts          |
-| `mm get-contract-address` | Get deployed contract address           |
-| `mm list-contracts`       | List all deployed contracts             |
-
-## Daemon Model
-
-- **Auto-start**: `mm launch` starts the daemon if not running.
-- **Worktree Isolation**: Each worktree has its own daemon, tracked in `.mm-server`.
-- **Idle Timeout**: Daemon shuts down after 30 minutes of inactivity.
-- **Logs**: Activity logged to `.mm-daemon.log`.
+| `mm seed-contract <type>`     | Deploy a test contract                          |
+| `mm seed-contracts`           | Deploy multiple test contracts                  |
+| `mm get-contract-address`     | Get deployed contract address                   |
+| `mm list-contracts`           | List all deployed contracts                     |
 
 ## Launch Modes & Fixtures
 
@@ -162,22 +136,18 @@ After the first mutating action sets a baseline, subsequent mutations return a *
 Wallet is pre-configured with 25 ETH on local Anvil.
 
 ```bash
-mm launch                   # or explicitly:
+mm launch
 mm launch --state default
-mm launch --context prod    # launch directly in prod context (no separate set-context needed)
+mm launch --context prod
 ```
 
 ### Onboarding: Fresh Wallet
-
-Start with a brand new wallet that requires onboarding.
 
 ```bash
 mm launch --state onboarding
 ```
 
 ### Custom Fixture
-
-Use a preset fixture or provide custom wallet state.
 
 ```bash
 mm launch --state custom --preset withMultipleAccounts
@@ -198,102 +168,38 @@ mm launch --state custom --preset withMultipleAccounts
 
 ## Context Switching (e2e vs prod)
 
-The system supports two execution contexts with different capabilities.
-
-### Available Contexts
+Two execution contexts are supported:
 
 | Context | Description                                                                  |
 | ------- | ---------------------------------------------------------------------------- |
-| `e2e`   | **Default.** Local Anvil blockchain, pre-onboarded wallet, fixtures, seeding |
+| `e2e`   | Default. Local Anvil blockchain, pre-onboarded wallet, fixtures, seeding     |
 | `prod`  | Production-like mode. No fixtures, no local chain, limited capabilities      |
 
-### E2E Context Capabilities (Default)
-
-- `fixture` — Wallet state management with presets
-- `chain` — Local Anvil blockchain (port 8545)
-- `contractSeeding` — Deploy test contracts (ERC-20, NFTs, etc.)
-- `stateSnapshot` — Extension state detection
-- `mockServer` — Mock API responses (opt-in)
-
-### Prod Context Capabilities
-
-- `stateSnapshot` — Extension state detection only
-
-### Switching Contexts
-
-**Check current context:**
+Use:
 
 ```bash
 mm get-context
-```
-
-**Switch to prod context:**
-
-```bash
 mm set-context prod
-```
-
-**Switch back to e2e:**
-
-```bash
 mm set-context e2e
 ```
 
-### Context Switching Rules
+Rules:
 
-1. **Cannot switch during active session** — You must call `mm cleanup` first (or use `--context` on `mm launch` which sets context before launching)
-2. **Default context is e2e** — On daemon startup, context is always e2e
-3. **Context persists** — Once switched, context remains until changed or daemon restarts
-4. **Inline context on launch** — `mm launch --context prod` sets context and launches in one step, no separate `mm set-context` needed
-
-### Example: Testing in Different Contexts
-
-```bash
-# Start in e2e (default)
-mm get-context                                # Verify e2e context
-mm launch --state default                     # Launch with fixtures
-mm describe-screen
-mm cleanup                                    # End session
-
-# Switch to prod (option A: inline --context flag)
-mm launch --context prod --state onboarding   # Sets context + launches in one step
-mm describe-screen
-mm cleanup
-
-# Switch to prod (option B: separate set-context)
-mm set-context prod                           # Switch context
-mm get-context                                # Verify prod context
-mm launch --state onboarding                  # No fixtures in prod
-mm describe-screen
-mm cleanup
-
-# Switch back to e2e
-mm set-context e2e
-```
+1. Cannot switch during an active session — run `mm cleanup` first
+2. Default context is `e2e`
+3. Context persists until changed or daemon restart
+4. `mm launch --context prod` sets context and launches in one step
 
 ## Sidepanel Mode (Default)
 
-The extension runs in **headless mode by default**, using Chrome's side panel (`sidepanel.html`) instead of the traditional popup (`notification.html`). No configuration needed.
+The extension runs in **headless browser mode** by default, using `sidepanel.html` instead of the legacy popup.
 
-### Sidepanel vs Popup: Key Differences
+What matters operationally:
 
-| Behavior             | Sidepanel (headless, default)                             | Popup (legacy)                       |
-| -------------------- | --------------------------------------------------------- | ------------------------------------ |
-| **Confirmation UI**  | Renders inside `sidepanel.html`                           | Opens separate `notification.html`   |
-| **After confirming** | Sidepanel stays open, navigates back to home route        | Popup auto-closes                    |
-| **After rejecting**  | Sidepanel stays open, navigates back to home route        | Popup auto-closes                    |
-| **Page lifecycle**   | Single persistent page, URL hash changes between routes   | New page opens, closes on completion |
-| **Route detection**  | Checks URL hash against known confirmation route prefixes | Waits for `notification.html` event  |
-
-### What This Means for Testing
-
-1. **No tab closing after confirmation**: After clicking confirm/reject, the sidepanel navigates back to the home route. You do NOT need to switch tabs — just continue interacting with the sidepanel page.
-
-2. **`mm wait-for-notification` behavior**: Opens or finds the `sidepanel.html` page and waits for a confirmation route in its URL hash. It does NOT wait for a new popup window.
-
-3. **Post-confirmation state**: After a confirmation action, use `mm describe-screen` to verify the extension returned to the home screen. The sidepanel page remains active.
-
-4. **Confirmation routes detected**:
+1. After confirm or reject, the sidepanel stays open and navigates back to home
+2. `mm wait-for-notification` waits for a confirmation route in the sidepanel URL hash
+3. After a confirmation action, use `mm describe-screen` to verify the return to home state
+4. Known confirmation routes include:
    - `/connect`
    - `/confirm-transaction`
    - `/confirmation`
@@ -303,64 +209,57 @@ The extension runs in **headless mode by default**, using Chrome's side panel (`
 
 ## Core Workflow
 
-### 0. Reuse Existing Knowledge (MANDATORY — DO NOT SKIP)
-
-**STOP. Before `mm launch` or any interaction, you MUST query prior knowledge first.**
-
-Skipping this step wastes tokens rediscovering flows that are already recorded. Prior sessions contain exact step sequences, testId targets, and timing that eliminate trial-and-error.
+### 1. Build Extension
 
 ```bash
-# ALWAYS run BOTH of these before starting any flow:
-mm knowledge-search "<flow name>"   # e.g. "send flow", "unlock", "connect dapp", "swap"
-mm knowledge-sessions               # List recent sessions with metadata
+yarn build:test:webpack
 ```
 
-**If knowledge exists:** Use the discovered steps directly (via `mm run-steps` for known sequences).
-**If no knowledge exists:** Proceed with discovery (`mm describe-screen`) — your steps will be recorded for future sessions.
-
-**This is not optional.** Agents that skip this step will repeat work that has already been done.
-
-### 1. Build Extension (prerequisite — run outside mm CLI)
-
-```bash
-yarn build:test
-```
-
-Skip if already built. `mm launch` validates the build and returns an
-actionable error if it's missing.
+Skip if already built and reuse is acceptable for the task.
 
 ### 2. Launch Extension
 
 ```bash
 mm launch
-mm launch --state default          # Pre-onboarded with 25 ETH
-mm launch --state onboarding       # Fresh wallet requiring onboarding
-mm launch --context prod --state onboarding  # Prod context + onboarding in one command
+mm launch --state default
+mm launch --state onboarding
+mm launch --context prod --state onboarding
 mm launch --state custom --preset withMultipleAccounts
 ```
 
-### 3. Describe Current Screen
+### 3. Reuse Existing Knowledge (Mandatory)
+
+Before interacting, query prior knowledge:
+
+```bash
+mm knowledge-search "<flow name>"
+mm knowledge-sessions
+```
+
+If knowledge exists, reuse the discovered sequence. If not, proceed with discovery and let this session record the new steps.
+
+### 4. Describe Current Screen
 
 ```bash
 mm describe-screen
 ```
 
-Returns combined state information:
+This returns the current screen, active tab info, visible testIds, and an accessibility tree with refs.
 
-- Current screen (home, unlock, onboarding-\*, settings, unknown)
-- Active tab info (`role` and `url` of the currently active page)
-- Visible testIds
-- Accessibility tree with refs (e1, e2, ...) — includes actionable roles (`button`, `link`, `checkbox`, `radio`, `switch`, `textbox`, `combobox`, `menuitem`), structural roles (`menu`, `listbox`, `option`, `tab`, `tabpanel`, `list`, `listitem`), and important roles (`dialog`, `alert`, `status`, `heading`)
+**Observation efficiency:**
 
-A11y nodes with short or generic names are enriched with `testId` (from `data-testid`) and `textContent` (visible text) to help identify ambiguous elements. When 3+ consecutive identical nodes appear, they are collapsed into a summary like `… 3 more "maskicon" (refs e2–e4)` to reduce token waste — individual refs still work for targeting.
+- Mutating actions like `click`, `type`, and `navigate` return compact observations
+- After the first mutation, later mutations return diff-based observations until `mm describe-screen` resets the baseline
+- Use mutation responses for quick next-step targeting when they already contain the needed refs
+- Call `mm describe-screen` when you need the full a11y tree, screenshots, or priorKnowledge
 
-### 4. Interact with UI
+### 5. Interact with UI
 
-Interaction commands (`mm click`, `mm type`, `mm wait-for`) support **three targeting methods**. Use exactly ONE per call.
+Use exactly one targeting method per call.
 
-#### By a11yRef (from accessibility snapshot)
+#### By a11yRef
 
-Refs like `e1`, `e2`, etc. come from `mm describe-screen` or `mm accessibility-snapshot`. These are the most common targets during discovery.
+Use refs from `mm describe-screen` or `mm accessibility-snapshot` during discovery.
 
 ```bash
 mm click e5
@@ -368,13 +267,9 @@ mm type e2 "correct horse battery staple"
 mm wait-for e3 --timeout 10000
 ```
 
-**Note**: `mm type` uses Playwright's `fill()` — it **clears the field** then sets the value. No `clearFirst` flag needed.
-
-**Note**: a11yRefs are ephemeral — they refresh on every `mm describe-screen` or `mm accessibility-snapshot` call. After major navigation, always re-describe before using refs.
-
 #### Scoped targeting with `--within`
 
-Use `--within` to scope a target inside a parent element. This is essential when multiple elements share the same testId or a11y name and you need to target one inside a specific container.
+Use `--within` when duplicate names or testIds exist and you need to target inside a specific container.
 
 ```bash
 mm click --testid end-accessory --within "testid:account-list-item/0"
@@ -382,11 +277,11 @@ mm click e3 --within "testid:dialog-container"
 mm wait-for --testid confirm-btn --within "selector:.modal-content"
 ```
 
-The `--within` value accepts the same formats as the target: a bare a11y ref (`e5`), `testid:<id>`, or `selector:<css>`.
+The `--within` value accepts an a11y ref, `testid:<id>`, or `selector:<css>`.
 
-#### By testId (data-testid attribute)
+#### By testId
 
-Use `data-testid` values from `mm list-testids` or `mm describe-screen`. These are stable and preferred for known, deterministic flows and batching.
+Prefer `testId` for stable, known flows and batching.
 
 ```bash
 mm click --testid unlock-submit
@@ -397,17 +292,15 @@ mm get-text --testid balance-display
 
 #### By CSS selector
 
-Use Playwright-compatible selectors for elements that lack testIds or a11y refs. The `--selector` value is passed directly to Playwright's `page.locator()`.
+Use selectors as a fallback when testIds or a11y refs are unavailable.
 
-**Supported selector engines:**
+Supported forms:
 
-| Engine | Syntax                 | Example                                                         |
-| ------ | ---------------------- | --------------------------------------------------------------- |
-| CSS    | Standard CSS selectors | `button.primary`, `[data-testid="foo"]`, `input[name='amount']` |
-| Text   | `text=` prefix         | `text=Rename`, `text=Confirm`                                   |
-| Role   | `role=` prefix         | `role=button[name="Submit"]`                                    |
+- CSS: `button.primary`
+- Text: `text=Rename`
+- Role: `role=button[name='Submit']`
 
-**Not supported:** `:text()` pseudo-class (e.g. `button:text('Rename')`) — this is not valid CSS or Playwright syntax. Use `text=Rename` instead.
+Do not use the unsupported `:text()` pseudo-class.
 
 ```bash
 mm click --selector "button.primary"
@@ -418,57 +311,46 @@ mm wait-for --selector ".transaction-list-item" --timeout 10000
 mm get-text --selector ".balance-value"
 ```
 
-#### Which Targeting Method to Use
-
-| Method       | Best For                                   | Stability |
-| ------------ | ------------------------------------------ | --------- |
-| **a11yRef**  | Discovery, exploration, first-time flows   | Ephemeral |
-| **testId**   | Known flows, batching, deterministic steps | Stable    |
-| **selector** | Fallback when no testId or a11y ref exists | Fragile   |
-
 #### Reading Element Text
 
-Use `mm get-text` to read the visible text content of any element. Supports the same targeting methods and `--within` scoping as other interaction commands.
-
 ```bash
-mm get-text e5                                          # By a11y ref
-mm get-text --testid balance-display                    # By testId
-mm get-text --selector ".tx-amount"                     # By CSS selector
-mm get-text --testid amount --within "testid:tx-row"    # Scoped within parent
+mm get-text e5
+mm get-text --testid balance-display
+mm get-text --selector ".tx-amount"
+mm get-text --testid amount --within "testid:tx-row"
 ```
 
-Returns `{ text, target, length }`. Useful for asserting values, reading balances, or verifying text after actions.
+Start with a11y refs during discovery, then prefer testIds once the flow is known.
 
-**Recommendation**: Start with `a11yRef` during discovery (`mm describe-screen`), then switch to `testId` for batched/repeated flows (`mm run-steps`).
+### 6. Verify-Fix Loop
 
-### 5. Take Screenshots
+After any interaction sequence:
+
+1. Run `mm describe-screen` to verify the expected state
+2. If the state is wrong:
+   - capture `mm screenshot --name "debug-<action>"`
+   - check `mm knowledge-search "<flow>"`
+   - retry the failed step or adjust targeting
+3. Only continue when the expected screen or state is confirmed
+
+### 7. Handle Confirmations (Dapp Flows)
 
 ```bash
-mm screenshot --name "after-unlock"
+mm navigate https://test-dapp.io
+mm click e1
+mm wait-for-notification
+mm describe-screen
+mm click e2
+mm describe-screen
+mm switch-to-tab dapp
+mm describe-screen
 ```
 
-### 6. Handle Confirmations (Dapp Flows)
+`mm switch-to-tab dapp` is equivalent to `mm switch-to-tab --role dapp`.
 
-When a dapp triggers a confirmation (connect, sign, send):
+Tab roles: `extension`, `notification`, `dapp`, `other`.
 
-```bash
-mm navigate https://test-dapp.io          # Open dapp in new tab, set as active
-mm click e1                                # Click Connect button in dapp
-mm wait-for-notification                   # Active page = sidepanel (confirmation route)
-mm describe-screen                         # See confirmation elements
-mm click e2                                # Confirm action
-mm describe-screen                         # Sidepanel navigates back to home (activeTab shows role/url)
-mm switch-to-tab dapp                      # Switch back to dapp (positional role)
-mm describe-screen                         # Verify connected state in dapp
-```
-
-**Important**: After clicking confirm or reject, the sidepanel does NOT close. It stays open and navigates back to the home route. Use `mm describe-screen` to verify (check `activeTab` for current role/url), then `mm switch-to-tab dapp` to return to the dapp.
-
-**Note**: `mm switch-to-tab` accepts a positional role argument: `mm switch-to-tab dapp` is equivalent to `mm switch-to-tab --role dapp`.
-
-**Tab roles**: `extension` (home), `notification` (sidepanel), `dapp` (external sites), `other`
-
-### 7. Navigate
+### 8. Navigate
 
 ```bash
 mm navigate-home
@@ -476,63 +358,32 @@ mm navigate-settings
 mm navigate https://test-dapp.io
 ```
 
-### 8. Cleanup (Always Required)
+### 9. Take Screenshots
 
 ```bash
-mm cleanup                     # Stop browser and services
-mm cleanup --shutdown          # Also stop the daemon
+mm screenshot --name "after-unlock"
 ```
 
-## Typical Workflow Example
+For visual validation, capture screenshots before and after meaningful state changes.
+
+### 10. Cleanup (Always Required)
 
 ```bash
-# 0. MANDATORY: Check prior knowledge FIRST
-mm knowledge-search "unlock"
-mm knowledge-sessions
-
-# 1. Build (if needed)
-yarn build:test
-
-# 2. Launch
-mm launch
-
-# 3. Observe
-mm describe-screen
-
-# 4. Interact (using refs from describe-screen)
-mm type e1 "correct horse battery staple"
-mm click e2
-
-# 5. Verify
-mm describe-screen
-mm screenshot --name "home-validated"
-
-# 6. Cleanup
 mm cleanup
+mm cleanup --shutdown
 ```
 
 ## Batching with mm run-steps
 
-Use `mm run-steps` to execute multiple commands in a single call when you **already know** the exact sequence. This reduces round-trips and is ideal for known, deterministic flows.
+Use `mm run-steps` for known, deterministic sequences. Use individual commands for discovery, debugging, or when intermediate state changes the next action.
 
-### When to Use Batching
+Important details:
 
-| Use `mm run-steps`                      | Use Individual Commands                     |
-| --------------------------------------- | ------------------------------------------- |
-| Known flows from prior knowledge        | First-time exploration                      |
-| Deterministic sequences (wizard steps)  | Decisions based on intermediate state       |
-| Repetitive patterns (fill form, submit) | Debugging or investigating issues           |
-| Replaying a successful flow             | When you need to inspect each step's result |
-
-### Example: Batched Unlock Flow
-
-**IMPORTANT**: `mm run-steps` expects a JSON **object** with a `steps` key, NOT a bare array.
-
-**Targeting in run-steps**: Use `a11yRef`, `testId`, or `selector` as the arg key (not `ref`). The shorthand `ref` is also accepted and auto-mapped to `a11yRef`. Use `within` in args to scope targets within a parent element.
-
-**Batch timeout**: Add `"batchTimeoutMs": 30000` to set an overall deadline. If exceeded, remaining steps are marked as skipped (`MM_BATCH_TIMEOUT`) and partial results are returned — no more silent HTTP timeouts with zero diagnostic info. The summary includes a `skipped` count alongside `succeeded` and `failed`.
-
-**Tool aliases**: Steps accept shorthand tool names: `navigate_home` / `navigate-home`, `navigate_settings` / `navigate-settings`, and `navigate_notification` / `navigate-notification` resolve to `navigate` with the appropriate `screen` argument.
+- `mm run-steps` expects a JSON object with a `steps` key
+- Prefer `a11yRef`, `testId`, or `selector` in args
+- Use `within` in args to scope a target within a parent element
+- Add `batchTimeoutMs` for an overall timeout
+- Tool aliases such as `navigate_home` and `navigate-home` are supported
 
 ```bash
 mm run-steps '{"steps":[
@@ -541,72 +392,33 @@ mm run-steps '{"steps":[
   { "tool": "wait_for", "args": { "testId": "account-menu-icon", "timeoutMs": 10000 } },
   { "tool": "get_text", "args": { "testId": "account-balance", "within": { "testId": "account-overview" } } }
 ]}'
-
-# Using a11yRef (from describe-screen):
-mm run-steps '{"steps":[
-  { "tool": "type", "args": { "a11yRef": "e1", "text": "correct horse battery staple" } },
-  { "tool": "click", "args": { "a11yRef": "e2" } }
-]}'
 ```
 
-### Pattern: Discover First, Then Batch
+Pattern:
 
-1. Use `mm describe-screen` to discover available elements
-2. Use `mm knowledge-search` to find prior successful sequences
-3. Use `mm run-steps` to execute the known sequence efficiently
-4. Use `mm describe-screen` again to verify the end state
-
-## Common Workflows
-
-### Unlock Wallet
-
-```bash
-mm launch
-mm describe-screen
-mm type e1 "correct horse battery staple"    # e1 = password field
-mm click e2                                   # e2 = unlock button
-mm describe-screen                            # verify home screen
-```
-
-### Connect to Dapp
-
-```bash
-mm navigate https://test-dapp.io
-mm click e1                                   # Connect button in dapp
-mm wait-for-notification                      # Wait for confirmation in sidepanel
-mm describe-screen                            # See connect prompt
-mm click e2                                   # Confirm connection
-mm describe-screen                            # Verify sidepanel returned to home (check activeTab)
-mm switch-to-tab dapp                         # Switch back to dapp (positional role)
-mm describe-screen                            # Verify connected state
-```
-
-### Onboarding Flow
-
-```bash
-mm launch --state onboarding
-mm describe-screen                            # See onboarding screen
-# Follow the onboarding steps using refs from describe-screen
-```
+1. Discover with `mm describe-screen`
+2. Reuse prior successful steps from `mm knowledge-search`
+3. Batch the known sequence with `mm run-steps`
+4. Re-verify with `mm describe-screen`
 
 ## Capabilities
 
-- **Anvil**: Local blockchain running on port 8545
-- **Fixture Server**: Manages wallet state on port 12345
-- **Contract Seeding**: Deploy test contracts via `mm seed-contract`
-- **Mock Server**: Mock external API responses (opt-in)
+- **Anvil**: Local blockchain on port 8545
+- **Fixture Server**: Wallet state management on port 12345
+- **Contract Seeding**: Deploy test contracts with `mm seed-contract`
+- **Mock Server**: Mock external API responses when enabled
 
 ## Error Recovery
 
 ### On Failure
 
-1. Call `mm describe-screen` to see current state
-2. Check the screen value:
-   - `unlock` → Type password and click submit
-   - `home` → Already ready, check for modals
-   - `onboarding-*` → Complete onboarding flow
-   - `unknown` → Take screenshot, investigate
-3. If still stuck, query prior runs:
+1. Run `mm describe-screen`
+2. Check the current screen:
+   - `unlock` → enter password and submit
+   - `home` → continue, but check for modals or blockers
+   - `onboarding-*` → complete onboarding
+   - `unknown` → take a screenshot and investigate
+3. Query prior runs if needed:
 
 ```bash
 mm knowledge-search "send"
@@ -614,7 +426,7 @@ mm knowledge-sessions
 mm knowledge-last
 ```
 
-4. Use `mm screenshot --name "debug"` for visual diagnosis
+4. Capture `mm screenshot --name "debug"` for diagnosis
 
 ### Error Codes
 
@@ -625,7 +437,7 @@ mm knowledge-last
 | `MM_LAUNCH_FAILED`           | Browser launch failed                       |
 | `MM_INVALID_INPUT`           | Invalid parameters                          |
 | `MM_TARGET_NOT_FOUND`        | Element not found                           |
-| `MM_TAB_NOT_FOUND`           | Tab not found (for switch/close)            |
+| `MM_TAB_NOT_FOUND`           | Tab not found                               |
 | `MM_CLICK_FAILED`            | Click operation failed                      |
 | `MM_TYPE_FAILED`             | Type operation failed                       |
 | `MM_WAIT_TIMEOUT`            | Wait timeout exceeded                       |
@@ -644,35 +456,14 @@ mm knowledge-last
 
 ## Common Failures & Solutions
 
-| Symptom                       | Likely Cause                    | Solution                                     |
-| ----------------------------- | ------------------------------- | -------------------------------------------- |
-| `MM_SESSION_ALREADY_RUNNING`  | Previous session not cleaned    | Call `mm cleanup` first                      |
-| `MM_NO_ACTIVE_SESSION`        | No browser running              | Call `mm launch` first                       |
-| Extension not loading         | Extension not built             | Run `yarn build:test` then retry `mm launch` |
-| `EADDRINUSE` port error       | Orphan processes                | `lsof -ti:8545,12345,8000 \| xargs kill -9`  |
-| `MM_TARGET_NOT_FOUND`         | Element not visible             | Use `mm describe-screen` to check state      |
-| `MM_WAIT_TIMEOUT`             | Slow environment or UI delay    | Increase timeout, check screenshot           |
-| `MM_CONTEXT_SWITCH_BLOCKED`   | Switching during active session | Call `mm cleanup` before `mm set-context`    |
-| Fixtures not available        | Running in prod context         | Switch to e2e: `mm set-context e2e`          |
-| Stale a11yRefs after navigate | Refs not refreshed              | Call `mm describe-screen` to get fresh refs  |
-
-## Visual Testing Decision Rules
-
-When performing visual validation:
-
-1. **Before action**: `mm screenshot --name "before-X"`
-2. **Perform action**: `mm click` / `mm type` using refs from `mm describe-screen`
-3. **After action**: `mm describe-screen` to verify state
-4. **Capture result**: `mm screenshot --name "after-X"`
-5. **On failure**: Check `mm knowledge-last` and screenshot for diagnosis
-
-## Key Files
-
-| File                                                     | Purpose                                        |
-| -------------------------------------------------------- | ---------------------------------------------- |
-| `test/e2e/playwright/llm-workflow/README.md`             | Canonical operator runbook (source of truth)   |
-| `test/e2e/playwright/llm-workflow/daemon.ts`             | Daemon entry point                             |
-| `test/e2e/playwright/llm-workflow/extension-launcher.ts` | Core launcher class                            |
-| `test/e2e/playwright/llm-workflow/fixture-helper.ts`     | Fixture presets and builder                    |
-| `test/e2e/playwright/llm-workflow/metamask-provider.ts`  | Session manager (browser, pages, capabilities) |
-| `test/e2e/playwright/llm-workflow/capabilities/`         | MetaMask-specific capabilities                 |
+| Symptom                       | Likely Cause                    | Solution                                            |
+| ----------------------------- | ------------------------------- | --------------------------------------------------- |
+| `MM_SESSION_ALREADY_RUNNING`  | Previous session not cleaned    | Call `mm cleanup` first                             |
+| `MM_NO_ACTIVE_SESSION`        | No browser running              | Call `mm launch` first                              |
+| Extension not loading         | Extension not built             | Run `yarn build:test:webpack` then retry `mm launch` |
+| `EADDRINUSE` port error       | Orphan processes                | Check `.mm-server` for the active daemon/sub-service ports, then kill the specific orphaned process on that port |
+| `MM_TARGET_NOT_FOUND`         | Element not visible             | Use `mm describe-screen` to check state             |
+| `MM_WAIT_TIMEOUT`             | Slow environment or UI delay    | Increase timeout, inspect screenshot                |
+| `MM_CONTEXT_SWITCH_BLOCKED`   | Switching during active session | Call `mm cleanup` before `mm set-context`           |
+| Fixtures not available        | Running in prod context         | Switch to e2e: `mm set-context e2e`                 |
+| Stale a11yRefs after navigate | Refs not refreshed              | Call `mm describe-screen` to get fresh refs         |
