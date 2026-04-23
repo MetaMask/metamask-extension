@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { MockedEndpoint, Mockttp } from 'mockttp';
+import { MockedEndpoint } from 'mockttp';
 import { TokenFeatureType } from '@metamask/bridge-controller';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
@@ -16,47 +16,8 @@ import {
 } from '../bridge/constants';
 import { checkNotification } from './shared';
 
-const UNSTABLE_TOKEN_PRICE_TITLE = 'Malicious token';
-const UNSTABLE_TOKEN_PRICE_DESCRIPTION =
-  'The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it.';
-
-const getBridgeFixturesWithTokenAlertWarning = (title?: string) => {
-  const fixtures = getBridgeFixtures({
-    title,
-    featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-    withErc20: false,
-  });
-
-  return {
-    ...fixtures,
-    testSpecificMock: async (mockServer: Mockttp) => {
-      const baseMocks = fixtures.testSpecificMock
-        ? await fixtures.testSpecificMock(mockServer)
-        : [];
-
-      return [
-        ...baseMocks,
-        await mockServer
-          .forPost('https://security-alerts.api.cx.metamask.io/token/scan')
-          .always()
-          .thenJson(200, {
-            features: [
-              {
-                // This maps to "Unstable token price" in i18n.
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                feature_id: 'UNSTABLE_TOKEN_PRICE',
-                type: 'Warning',
-                description: 'Unstable price warning',
-              },
-            ],
-          }),
-      ];
-    },
-  };
-};
-
 describe('Swaps - notifications', function () {
-  it('shows token risk warning banner for unstable token price', async function () {
+  it('shows token risk warning banner for malicious destination token', async function () {
     await withFixtures(
       getBridgeFixtures({
         title: this.test?.fullTitle(),
@@ -69,7 +30,7 @@ describe('Swaps - notifications', function () {
             type: TokenFeatureType.MALICIOUS,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             feature_id: 'HONEYPOT',
-            description: UNSTABLE_TOKEN_PRICE_DESCRIPTION,
+            description: 'Malicious token feature from quote stream',
           },
         ],
       }),
@@ -99,9 +60,9 @@ describe('Swaps - notifications', function () {
           'Security alerts token/scan endpoint was called',
         );
 
+        // Banner title uses bridgeTokenIsMaliciousBanner ("$1 is a malicious token.")
         await bridgeQuotePage.checkTokenRiskWarningIsDisplayed(
-          UNSTABLE_TOKEN_PRICE_TITLE,
-          UNSTABLE_TOKEN_PRICE_DESCRIPTION,
+          'malicious token',
         );
       },
     );

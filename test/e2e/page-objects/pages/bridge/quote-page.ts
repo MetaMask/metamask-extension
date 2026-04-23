@@ -435,12 +435,31 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.switchTokensButton);
   }
 
+  /**
+   * Asserts the destination-token security banner is shown (malicious or suspicious).
+   * The banner title is localized with the token symbol (e.g. "MUSD is a malicious token."),
+   * so we scope by data-testid and match a stable substring of the title.
+   *
+   * @param titleSubstring - Text that must appear in the banner (title is token-specific).
+   * @param descriptionSubstring - When provided, text that must also appear in the same banner.
+   */
   async checkTokenRiskWarningIsDisplayed(
-    title: string,
-    description: string,
+    titleSubstring: string,
+    descriptionSubstring?: string,
   ): Promise<void> {
-    await this.driver.waitForSelector({ text: title }, { timeout: 30000 });
-    await this.driver.waitForSelector({ text: description });
+    await this.driver.waitForSelector(
+      {
+        testId: 'bridge-token-security',
+        text: titleSubstring,
+      },
+      { timeout: 30000 },
+    );
+    if (descriptionSubstring) {
+      await this.driver.waitForSelector({
+        testId: 'bridge-token-security',
+        text: descriptionSubstring,
+      });
+    }
   }
 
   async setCustomSlippage(value: string): Promise<void> {
