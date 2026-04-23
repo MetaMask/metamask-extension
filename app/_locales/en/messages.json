@@ -1217,6 +1217,102 @@
   "bridgeReceiveLoading": {
     "message": "Receiving on destination chain"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Suspicious airdrop"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Concentrated supply"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Suspicious behavior"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Inflated trader count"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Fake volume"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Heavy bot activity"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Undisclosed supply"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "High buy fee"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "High sell fee"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "High transfer fee"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Honeypot risk"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Impersonator"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Impersonates a sensitive asset"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Likely impersonator"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Possible impersonator"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Inappropriate content"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Artificial volume"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Low locked liquidity"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "Creator has low reputation"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Known malicious"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Suspicious metadata"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Possible price manipulation"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Rugpull risk"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Sanctioned creator"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Resembles malicious contract"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Bot activity at launch"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Spam text"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Suspicious code"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Token backdoor"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Unsellable token"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Unstable price"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Wash trading"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Select a destination account"
   },
@@ -1285,8 +1381,20 @@
   "bridgeTokenIsMaliciousBanner": {
     "message": "$1 is a malicious token."
   },
+  "bridgeTokenIsMaliciousModalDescription": {
+    "message": "$1 is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
+  },
+  "bridgeTokenIsMaliciousTitle": {
+    "message": "Malicious token"
+  },
   "bridgeTokenIsSuspiciousBanner": {
     "message": "$1 is a suspicious token."
+  },
+  "bridgeTokenIsSuspiciousModalDescription": {
+    "message": "$1 is flagged as suspicious. Take a look at the risks before you continue."
+  },
+  "bridgeTokenIsSuspiciousTitle": {
+    "message": "Suspicious token"
   },
   "bridgeTokenNotFound": {
     "message": "No tokens match \"$1\""

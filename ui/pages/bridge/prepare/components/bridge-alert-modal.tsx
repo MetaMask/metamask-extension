@@ -9,6 +9,7 @@ import {
   IconName,
   IconSize,
   Text,
+  TextColor,
   TextVariant,
   BannerAlert,
 } from '@metamask/design-system-react';
@@ -133,11 +134,47 @@ export const BridgeAlertModal = ({
                   : IconColor.WarningDefault
               }
             />
-            {activeAlert.title}
+            {activeAlert.title && (
+              <Text variant={TextVariant.HeadingSm}>{activeAlert.title}</Text>
+            )}
           </Column>
         </ModalHeader>
         <Column gap={3} paddingInline={4} paddingBottom={4}>
           <Text variant={TextVariant.BodySm}>{activeAlert.description}</Text>
+          <Column>
+            {activeAlert.infoList?.map((item) => (
+              <Row
+                key={item.title}
+                paddingTop={2}
+                paddingBottom={2}
+                gap={3}
+                alignItems={AlignItems.center}
+              >
+                <Icon
+                  name={
+                    activeAlert.severity === 'danger'
+                      ? IconName.Danger
+                      : IconName.Warning
+                  }
+                  size={IconSize.Md}
+                  color={
+                    activeAlert.severity === 'danger'
+                      ? IconColor.ErrorDefault
+                      : IconColor.WarningDefault
+                  }
+                />
+                <Column>
+                  <Text variant={TextVariant.BodyMd}>{item.title}</Text>
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    color={TextColor.TextAlternative}
+                  >
+                    {item.description}
+                  </Text>
+                </Column>
+              </Row>
+            ))}
+          </Column>
           {activeAlert.alertModalErrorMessage && (
             <BannerAlert
               data-testid="bridge-alert-modal-banner"

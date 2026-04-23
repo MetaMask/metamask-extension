@@ -18,6 +18,7 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
+import { useAssetSecurityData } from './useAssetSecurityData';
 
 /**
  * Merges tx, token, and validation alert data used for displaying {@link BannerAlert}
@@ -49,6 +50,13 @@ export const useBridgeAlerts = () => {
 
   const toToken = useSelector(getToToken);
   const ticker = useMultichainSelector(getMultichainNativeCurrency);
+
+  const {
+    assetIsMalicious,
+    assetIsSuspicious,
+    assetMaliciousLocalizedFeatures,
+    assetSuspiciousLocalizedFeatures,
+  } = useAssetSecurityData(toToken);
 
   const { txAlert } = useSecurityAlerts();
   const { openBuyCryptoInPdapp } = useRamps();
@@ -117,6 +125,34 @@ export const useBridgeAlerts = () => {
         isConfirmationAlert: false,
         bannerAlertProps: {
           severity: BannerAlertSeverity.Danger,
+        },
+      });
+    }
+
+    if (toToken && (assetIsMalicious || assetIsSuspicious)) {
+      categorizeAlert({
+        id: 'token-security',
+        severity: assetIsMalicious ? 'danger' : 'warning',
+        title: t(
+          assetIsMalicious
+            ? 'bridgeTokenIsMaliciousTitle'
+            : 'bridgeTokenIsSuspiciousTitle',
+        ),
+        description: assetIsSuspicious
+          ? t('bridgeTokenIsSuspiciousModalDescription', [toToken.symbol])
+          : '',
+        alertModalErrorMessage: assetIsMalicious
+          ? t('bridgeTokenIsMaliciousModalDescription', [toToken.symbol])
+          : null,
+        infoList: assetIsMalicious
+          ? assetMaliciousLocalizedFeatures
+          : assetSuspiciousLocalizedFeatures,
+        isConfirmationAlert: true,
+        openModalOnClick: true,
+        bannerAlertProps: {
+          severity: assetIsMalicious
+            ? BannerAlertSeverity.Danger
+            : BannerAlertSeverity.Warning,
         },
       });
     }
@@ -211,6 +247,11 @@ export const useBridgeAlerts = () => {
     isSwap,
     openBuyCryptoInPdapp,
     ticker,
+    toToken,
+    assetIsMalicious,
+    assetIsSuspicious,
+    assetMaliciousLocalizedFeatures,
+    assetSuspiciousLocalizedFeatures,
     // tokenAlerts,
     txAlert,
     t,

@@ -94,7 +94,11 @@ exports[`BridgeAlertModal quote-card should render alert banner when there is a 
                     d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
                   />
                 </svg>
-                Very high price impact
+                <h4
+                  class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default"
+                >
+                  Very high price impact
+                </h4>
               </div>
             </div>
             <div
@@ -120,6 +124,9 @@ exports[`BridgeAlertModal quote-card should render alert banner when there is a 
             >
               You'll lose approximately 27% of your token's market price on this swap. Try a smaller trade or a more liquid route to improve your rate.
             </p>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            />
             <div
               class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
               data-testid="bridge-alert-modal-banner"
@@ -234,7 +241,11 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
                     d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
                   />
                 </svg>
-                Very high price impact
+                <h4
+                  class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default"
+                >
+                  Very high price impact
+                </h4>
               </div>
             </div>
             <div
@@ -260,6 +271,9 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
             >
               You'll lose approximately 27% of your token's market price on this swap. Try a smaller trade or a more liquid route to improve your rate.
             </p>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            />
           </div>
           <div
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
@@ -346,7 +360,11 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
                     d="M12 17q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.713S12.283 15 12 15s-.52.096-.712.287S11 15.717 11 16s.096.52.288.712.429.288.712.288m-1-4h2V7h-2zm1 9q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
                   />
                 </svg>
-                High price impact
+                <h4
+                  class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default"
+                >
+                  High price impact
+                </h4>
               </div>
             </div>
             <div
@@ -372,6 +390,9 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
             >
               Because of your trade size and available liquidity, you'll get about 7.0% less than the market price. This is already factored into your quote.
             </p>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            />
           </div>
           <div
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
@@ -458,7 +479,11 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
                     d="M12 17q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.713S12.283 15 12 15s-.52.096-.712.287S11 15.717 11 16s.096.52.288.712.429.288.712.288m-1-4h2V7h-2zm1 9q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
                   />
                 </svg>
-                High price impact
+                <h4
+                  class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default"
+                >
+                  High price impact
+                </h4>
               </div>
             </div>
             <div
@@ -484,6 +509,9 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
             >
               Because of your trade size and available liquidity, you'll get about 7.0% less than the market price. This is already factored into your quote.
             </p>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            />
           </div>
           <div
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
@@ -570,7 +598,11 @@ exports[`BridgeAlertModal submit-cta should disable the submit button when submi
                     d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
                   />
                 </svg>
-                Very high price impact
+                <h4
+                  class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default"
+                >
+                  Very high price impact
+                </h4>
               </div>
             </div>
             <div
@@ -596,6 +628,9 @@ exports[`BridgeAlertModal submit-cta should disable the submit button when submi
             >
               You'll lose approximately 90% of your token's market price on this swap. Try a smaller trade or a more liquid route to improve your rate.
             </p>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            />
             <div
               class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
               data-testid="bridge-alert-modal-banner"
@@ -792,7 +827,11 @@ exports[`BridgeAlertModal submit-cta should render when there is a price impact 
                     d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
                   />
                 </svg>
-                Very high price impact
+                <h4
+                  class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default"
+                >
+                  Very high price impact
+                </h4>
               </div>
             </div>
             <div
@@ -818,6 +857,9 @@ exports[`BridgeAlertModal submit-cta should render when there is a price impact 
             >
               You'll lose approximately 90% of your token's market price on this swap. Try a smaller trade or a more liquid route to improve your rate.
             </p>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            />
             <div
               class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
               data-testid="bridge-alert-modal-banner"

@@ -57,10 +57,13 @@ export type MinimalBridgeAlert = {
     | 'market-closed'
     | 'no-quotes'
     | 'insufficient-gas'
-    | 'price-data-unavailable';
+    | 'price-data-unavailable'
+    | 'token-security';
   title?: string;
   description: string;
   severity: 'warning' | 'danger';
+  /** Optional list of labeled items rendered below the description (e.g. token security risk factors) */
+  infoList?: { title: string; description: string | null }[];
 };
 
 export type BridgeAlert = MinimalBridgeAlert & {
@@ -78,4 +81,9 @@ export type BridgeAlert = MinimalBridgeAlert & {
    * from the quote card or the confirmation flow.
    */
   alertModalErrorMessage?: string;
+  /**
+   * When true, the banner renders an arrow-right button instead of a dismiss X.
+   * Clicking it opens the BridgeAlertModal with the alert's details.
+   */
+  openModalOnClick?: true;
 };

@@ -41,7 +41,7 @@ export enum BridgeAssetSecurityDataType {
   MALICIOUS = 'Malicious',
 }
 
-const BridgeAssetSecurityData = type({
+export const BridgeAssetSecurityData = type({
   isVerified: optional(boolean()),
   securityData: optional(
     type({
