@@ -129,16 +129,27 @@ async function gateRanAndStatus(
   if (!sha) {
     return { ran: false, failed: false };
   }
-  const { data } = await octokit.rest.checks.listForRef({
-    owner,
-    repo,
-    ref: sha,
-    per_page: 100,
-  });
-  const gateChecks = data.check_runs.filter(
-    (run) =>
-      run.name === GATE_CHECK_NAME || run.name === GATE_CHECK_NAME_FALLBACK,
-  );
+  // Filter by check_name server-side so pagination is not required even when a
+  // merge commit has hundreds of check runs (e.g. ~350 in this repo). A plain
+  // per_page:100 fetch would miss the gate check on pages 2+ and silently drop
+  // those PRs from the denominator, biasing the FP-rate proxy upward.
+  const [primary, fallback] = await Promise.all([
+    octokit.rest.checks.listForRef({
+      owner,
+      repo,
+      ref: sha,
+      check_name: GATE_CHECK_NAME,
+      per_page: 100,
+    }),
+    octokit.rest.checks.listForRef({
+      owner,
+      repo,
+      ref: sha,
+      check_name: GATE_CHECK_NAME_FALLBACK,
+      per_page: 100,
+    }),
+  ]);
+  const gateChecks = [...primary.data.check_runs, ...fallback.data.check_runs];
   if (gateChecks.length === 0) {
     return { ran: false, failed: false };
   }
