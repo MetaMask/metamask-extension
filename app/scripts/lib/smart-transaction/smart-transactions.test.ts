@@ -915,6 +915,7 @@ describe('submitSmartTransactionHook', () => {
       );
     });
   });
+
   describe('extensionSkipTransactionStatusPage feature flag', () => {
     const baseFeatureFlags = {
       extensionActive: true,
