@@ -91,7 +91,7 @@ describe('Send ERC20 - Gas Customization', function () {
 
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
-        await assetListPage.checkTokenExistsInListWithRetry(
+        await assetListPage.checkTokenExistsInList(
           symbol,
           valueWithSymbol('9'),
         );
@@ -163,7 +163,7 @@ describe('Send ERC20 - Gas Customization', function () {
 
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
-        await assetListPage.checkTokenExistsInListWithRetry(
+        await assetListPage.checkTokenExistsInList(
           symbol,
           valueWithSymbol('8.5'),
         );
@@ -227,7 +227,7 @@ describe('Send ERC20 - Gas Customization', function () {
 
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
-        await assetListPage.checkTokenExistsInListWithRetry(
+        await assetListPage.checkTokenExistsInList(
           symbol,
           valueWithSymbol('8.5'),
         );
