@@ -69,7 +69,7 @@ export const MOCK_CURRENCY_RATES = {
 const ETH_ASSET_PRICE_ENTRY = (ethConversionRate: number) => ({
   allTimeHigh: 4946.05,
   allTimeLow: 0.432979,
-  assetPriceType: 'fungible',
+  assetPriceType: 'fungible' as const,
   circulatingSupply: 120691953.6332311,
   dilutedMarketCap: 254092339264,
   high1d: 2200.03,

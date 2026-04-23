@@ -420,14 +420,16 @@ const SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE = {
   },
   assetsPrice: {
     [SOL_CAIP_ASSET]: {
-      assetPriceType: 'fungible',
+      assetPriceType: 'fungible' as const,
       id: 'solana',
+      lastUpdated: 0,
       price: SOL_PRICE,
       usdPrice: SOL_PRICE,
     },
     [USDC_CAIP_ASSET]: {
-      assetPriceType: 'fungible',
+      assetPriceType: 'fungible' as const,
       id: 'usd-coin',
+      lastUpdated: 0,
       price: USDC_PRICE,
       usdPrice: USDC_PRICE,
     },
