@@ -4563,7 +4563,7 @@
         "lodash": true,
         "eth-lattice-keyring>gridplus-sdk>ox": true,
         "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
-        "eth-lattice-keyring>gridplus-sdk>uuid": true,
+        "uuid": true,
         "viem": true,
         "openai>zod": true
       }
@@ -6491,12 +6491,6 @@
     "@metamask/keyring-snap-client>uuid": {
       "globals": {
         "crypto": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>uuid": {
-      "globals": {
-        "crypto.getRandomValues": true,
-        "crypto.randomUUID": true
       }
     },
     "remote-redux-devtools>socketcluster-client>uuid": {
