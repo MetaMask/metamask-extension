@@ -16,6 +16,10 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import {
+  formatPerpsFiat,
+  PRICE_RANGES_UNIVERSAL,
+} from '../../../../../shared/lib/perps-formatters';
+import {
   Modal,
   ModalContent,
   ModalHeader,
@@ -72,10 +76,7 @@ type FormatNumber = (
   },
 ) => string;
 
-type FormatCurrencyWithMinThreshold = (
-  value: number,
-  currency: string,
-) => string;
+type FormatPerpsFiat = (value: number | string) => string;
 
 type FormatPercentWithMinThreshold = (value: number) => string | undefined;
 
@@ -197,19 +198,19 @@ const getCloseFailureToastConfig = ({
   error,
   isPartialClose,
   t,
-  formatCurrencyWithMinThreshold,
+  formatFiat,
 }: {
   error: unknown;
   isPartialClose: boolean;
   t: CloseToastTranslation;
-  formatCurrencyWithMinThreshold: FormatCurrencyWithMinThreshold;
+  formatFiat: FormatPerpsFiat;
 }): { errorMessage: string; toast: CloseToastConfig } => {
   const isOrderSizeMinError =
     error instanceof Error && error.message === 'ORDER_SIZE_MIN';
 
   const errorMessage = isOrderSizeMinError
     ? t('perpsClosePartialMinNotional', [
-        formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
+        formatFiat(PERPS_MIN_MARKET_ORDER_USD),
       ])
     : handlePerpsError(error, t as (key: string) => string);
 
@@ -237,6 +238,7 @@ export type ClosePositionModalProps = {
   onClose: () => void;
   position: Position;
   currentPrice: number;
+  sizeDecimals?: number;
 };
 
 export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
@@ -244,6 +246,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   onClose,
   position,
   currentPrice,
+  sizeDecimals,
 }) => {
   const t = useI18nContext() as CloseToastTranslation;
   const { isEligible } = usePerpsEligibility();
@@ -259,12 +262,13 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
     },
   });
-  const {
-    formatCurrencyWithMinThreshold,
-    formatNumber,
-    formatPercentWithMinThreshold,
-  } = useFormatters();
+  const { formatNumber, formatPercentWithMinThreshold } = useFormatters();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const formatFiat = useCallback(
+    (value: number | string) =>
+      formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL }),
+    [],
+  );
 
   const [closePercent, setClosePercent] = useState(100);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -409,7 +413,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
           error: new Error(message),
           isPartialClose,
           t,
-          formatCurrencyWithMinThreshold,
+          formatFiat,
         });
         setError(errorMessage);
         replacePerpsToastByKey(toast);
@@ -450,7 +454,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         error: err,
         isPartialClose,
         t,
-        formatCurrencyWithMinThreshold,
+        formatFiat,
       });
       setError(errorMessage);
       replacePerpsToastByKey(toast);
@@ -474,7 +478,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     closePercent,
     onClose,
     formatPercentWithMinThreshold,
-    formatCurrencyWithMinThreshold,
+    formatFiat,
   ]);
 
   const handlePercentChange = useCallback((percent: number) => {
@@ -501,6 +505,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                 onClosePercentChange={handlePercentChange}
                 asset={displayName}
                 currentPrice={currentPrice}
+                sizeDecimals={sizeDecimals}
               />
 
               {isPartialCloseBelowMinNotional ? (
@@ -522,10 +527,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                     color={TextColor.WarningDefault}
                   >
                     {t('perpsClosePartialMinNotional', [
-                      formatCurrencyWithMinThreshold(
-                        PERPS_MIN_MARKET_ORDER_USD,
-                        'USD',
-                      ),
+                      formatFiat(PERPS_MIN_MARKET_ORDER_USD),
                     ])}
                   </Text>
                 </Box>
@@ -555,7 +557,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                       textAlign={TextAlign.Right}
                       data-testid="perps-close-summary-margin-value"
                     >
-                      {formatCurrencyWithMinThreshold(roundedMargin, 'USD')}
+                      {formatFiat(roundedMargin)}
                     </Text>
                     <Text
                       variant={TextVariant.BodyXs}
@@ -574,9 +576,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                           asChild
                         >
                           <span>
-                            {`${unrealizedPnl >= 0 ? '+' : '-'}${formatCurrencyWithMinThreshold(
+                            {`${unrealizedPnl >= 0 ? '+' : '-'}${formatFiat(
                               Math.abs(unrealizedPnl),
-                              'USD',
                             )}`}
                           </span>
                         </Text>,
@@ -602,7 +603,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                     fontWeight={FontWeight.Medium}
                     data-testid="perps-close-summary-fees-value"
                   >
-                    -{formatCurrencyWithMinThreshold(roundedFees, 'USD')}
+                    -{formatFiat(roundedFees)}
                   </Text>
                 </Box>
 
@@ -623,10 +624,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                     fontWeight={FontWeight.Medium}
                     data-testid="perps-close-summary-receive-value"
                   >
-                    {formatCurrencyWithMinThreshold(
-                      Math.max(youWillReceive, 0),
-                      'USD',
-                    )}
+                    {formatFiat(Math.max(youWillReceive, 0))}
                   </Text>
                 </Box>
               </Box>

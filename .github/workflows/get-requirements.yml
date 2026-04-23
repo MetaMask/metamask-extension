@@ -49,7 +49,11 @@ env:
   # Note: merge_group events only target `main` (no merge queue on `stable`),
   # so the fallback to 'main' is correct for that case too.
   BASE_BRANCH: ${{ github.event.pull_request.base.ref || (startsWith(github.ref_name, 'release/') && 'stable') || 'main' }}
+  # WARNING: always 'true' on fork repos — see IS_CROSS_REPO_PR below.
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
+  # True only for PRs whose head branch lives in a different repository.
+  # Unlike IS_FORK, this is false for same-repo work on a forked repository.
+  IS_CROSS_REPO_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
   EVENT_NAME: ${{ github.event_name }}
   PR_NUMBER: ${{ github.event.pull_request.number }}
   GH_TOKEN: ${{ github.token }}
@@ -93,8 +97,8 @@ jobs:
         run: |
           echo "SKIP=false" >> "$GITHUB_OUTPUT"
 
-          # Ignore the [skip-e2e] tag for forks
-          if [[ "$IS_FORK" != "true" ]] && { [[ "$EVENT_NAME" == "pull_request" ]] || [[ "$EVENT_NAME" == "merge_group" ]] || [[ "$BRANCH" == trigger-ci-* ]]; }; then
+          # Ignore the [skip-e2e] tag for cross-repo fork PRs (untrusted commit messages)
+          if [[ "$IS_CROSS_REPO_PR" != "true" ]] && { [[ "$EVENT_NAME" == "pull_request" ]] || [[ "$EVENT_NAME" == "merge_group" ]] || [[ "$BRANCH" == trigger-ci-* ]]; }; then
             if git show --format='%B' --no-patch "${HEAD_COMMIT_HASH}" | grep --fixed-strings --quiet '[skip-e2e]'; then
               echo "SKIP=true" >> "$GITHUB_OUTPUT"
               echo "-> SKIP=true due to [skip-e2e] tag in last commit message"

@@ -37,7 +37,10 @@ describe('Trezor Hardware', function (this: Suite) {
             KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
             '0x100000000000000000000',
           )) ?? console.error('localNodes is undefined or empty');
-          await login(driver, { expectedBalance: `1.21M` });
+          await login(driver, {
+            expectedBalance: `1.21M`,
+            waitForNonEvmAccounts: false,
+          });
           const homePage = new HomePage(driver);
           await sendRedesignedTransactionToAddress({
             driver,

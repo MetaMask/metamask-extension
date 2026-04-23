@@ -308,7 +308,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
           />
         </Box>
         <Box
-          className={classnames('flex-auto flex-col w-full pt-2', {
+          className={classnames('flex-auto flex-col w-full min-w-0 pt-2', {
             flex: !isOnSettingsRoot,
             'hidden sm:flex': isOnSettingsRoot && !isSidepanel,
             hidden: isOnSettingsRoot && isSidepanel,
