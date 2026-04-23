@@ -834,6 +834,7 @@ export class AppStateController extends BaseController<
     this.#onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.#timer = null;
 
+    // Clearing an alarm does not remove the listeners, so we only need to register the listener once.
     if (isManifestV3) {
       this.#extension.alarms.onAlarm.addListener(
         (alarmInfo: { name: string }) => {
