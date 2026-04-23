@@ -7,8 +7,6 @@ import { DAPP_PATH } from '../../constants';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
 
-export { mockTokensV3Assets } from '../btc/mocks/tokens-api';
-
 /**
  * Holds the actual transaction signature captured from sendTransaction.
  * Shared between mock functions so that getSignaturesForAddress and
