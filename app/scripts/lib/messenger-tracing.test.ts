@@ -1,11 +1,10 @@
 import { Messenger } from '@metamask/messenger';
-import { getActiveSpan, trace, TraceName } from '../../../shared/lib/trace';
+import { getActiveSpan, trace } from '../../../shared/lib/trace';
 import { wrapMessengerWithTracing } from './messenger-tracing';
 
 jest.mock('../../../shared/lib/trace', () => ({
   getActiveSpan: jest.fn(),
   trace: jest.fn((_request: unknown, fn: () => unknown) => fn()),
-  TraceName: { MessengerCall: 'Messenger Call' },
 }));
 
 type TestGetStateAction = {
@@ -65,7 +64,7 @@ describe('wrapMessengerWithTracing', () => {
     expect(traceMock).toHaveBeenCalledTimes(1);
     expect(traceMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: `${TraceName.MessengerCall}: Test:getState`,
+        name: `Messenger Call: Test:getState`,
         op: 'messenger.call',
         data: { action: 'Test:getState' },
       }),

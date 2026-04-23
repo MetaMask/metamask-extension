@@ -164,8 +164,9 @@ function getTracesSampleRate(sentryTarget) {
 
   // Distributed tracing pilot: very low rate to keep span volume within quota
   // while new RPC + messenger wrappers are validated in production.
-  // Projected fan-out: ~33–93× per transaction; 0.0001 keeps ingest ≤ current baseline.
-  // Step up to 0.0005 after 1 week of clean data.
+  // Empirical fan-out: mean ~100 spans/txn, p95 ~200, max 1200.
+  // 0.0001 ingest is ~30% of previous baseline, leaving 70% headroom.
+  // Safe step-up ceiling is ~0.0003 with 12% headroom.
   if (SENTRY_DISTRIBUTED_TRACING_PILOT) {
     return 0.0001;
   }

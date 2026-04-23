@@ -93,9 +93,6 @@ export enum TraceName {
   MusdConversionNavigation = 'mUSD Conversion Navigation',
   MusdConversionQuote = 'mUSD Conversion Quote',
   MusdConversionConfirm = 'mUSD Conversion Confirm',
-  // Distributed tracing
-  BackgroundRpc = 'Background RPC',
-  MessengerCall = 'Messenger Call',
 }
 
 /**
@@ -174,10 +171,10 @@ export type TraceRequest = {
   id?: string;
 
   /**
-   * The name of the trace. Accepts TraceName enum values or a dynamic string
-   * (e.g. including the RPC method or messenger action).
+   * The name of the trace. Accepts a `TraceName` enum value
+   * or the name of a RPC method or messenger action.
    */
-  name: TraceName | (string & Record<never, never>);
+  name: TraceName | `${'Background RPC' | 'Messenger Call'}: ${string}`;
 
   /**
    * The parent context of the trace.

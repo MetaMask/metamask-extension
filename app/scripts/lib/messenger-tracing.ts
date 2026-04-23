@@ -3,7 +3,7 @@ import type {
   EventConstraint,
   Messenger,
 } from '@metamask/messenger';
-import { getActiveSpan, trace, TraceName } from '../../../shared/lib/trace';
+import { getActiveSpan, trace } from '../../../shared/lib/trace';
 
 /**
  * Wrap a messenger's `call` method with Sentry tracing.
@@ -33,7 +33,7 @@ export function wrapMessengerWithTracing<
     }
     return trace(
       {
-        name: `${TraceName.MessengerCall}: ${actionType}`,
+        name: `Messenger Call: ${actionType}`,
         op: 'messenger.call',
         data: { action: actionType },
       },
