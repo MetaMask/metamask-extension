@@ -9,7 +9,7 @@ export type BundleSizeCategory =
 export type BundleSizeStatsOptions = {
   /**
    * Output file path template for the emitted summary, relative to webpack's
-   * output directory. Must include `[browser]`, for example
+   * output directory. Must include `[browser]` and end with `.json`, for example
    * `bundle-size/[browser].json`.
    */
   outFile: string;
