@@ -209,7 +209,7 @@ export async function displayCriticalErrorMessage(
   criticalErrorType?: CriticalErrorType,
 ): Promise<never> {
   const backup = port ? await safeGetVaultBackup() : null;
-  const canTriggerRestore = Boolean(port) && hasVault(backup);
+  const canTriggerRestore = port && hasVault(backup);
 
   try {
     port?.postMessage({
@@ -266,7 +266,7 @@ export async function displayCriticalErrorMessage(
           localeContext.t('stateCorruptionAreYouSure') ?? '',
         );
         if (confirmed) {
-          (port as browser.Runtime.Port).postMessage({
+          port.postMessage({
             data: {
               method: METHOD_REPAIR_DATABASE_TIMEOUT,
               params: { criticalErrorType, backup },
