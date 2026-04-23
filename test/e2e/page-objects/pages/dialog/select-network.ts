@@ -60,7 +60,7 @@ class SelectNetwork {
   private readonly showTestNetworksToggle = '.toggle-button';
 
   private readonly addPopularNetworkByChainIdIcon = (chainId: string) =>
-    `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"] button`;
+    `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"]`;
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -110,6 +110,9 @@ class SelectNetwork {
 
     const buttonSelector = this.addPopularNetworkByChainIdIcon(chainId);
 
+    const addButton = await this.driver.findElement(buttonSelector);
+
+    await this.driver.scrollToElement(addButton);
     await this.driver.clickElementAndWaitToDisappear(buttonSelector);
   }
 
@@ -138,11 +141,8 @@ class SelectNetwork {
 
   async fillNetworkSearchInput(networkName: string): Promise<void> {
     console.log(`Fill network search input with ${networkName}`);
-    const searchInputs = await this.driver.findElements(this.searchInput);
-    if (searchInputs.length === 0) {
-      await this.driver.clickElement(this.searchButton);
-      await this.driver.waitForSelector(this.searchInput);
-    }
+    await this.driver.clickElement(this.searchButton);
+    await this.driver.waitForSelector(this.searchInput);
     await this.driver.fill(this.searchInput, networkName);
   }
 

@@ -103,7 +103,7 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
       gap={4}
       className="network-manager__additional-network-item w-full px-4"
       key={network.chainId}
-      data-testid={`networks-page-additional-network-${network.chainId}`}
+      data-testid={`popular-network-${network.chainId}`}
     >
       <AvatarNetwork name={network.name} size="md" src={networkImageUrl} />
       <Box
@@ -133,6 +133,7 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
         size={ButtonIconSize.Md}
         color={IconColor.IconDefault}
         iconName={IconName.Add}
+        data-testid="test-add-button"
         className="ml-auto"
         ariaLabel={t('addNetwork')}
       />

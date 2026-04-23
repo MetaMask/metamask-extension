@@ -50,7 +50,8 @@ class OnboardingPrivacySettingsPage {
   private readonly chainIdInput = '[data-testid="network-form-chain-id"]';
 
   private readonly confirmAddCustomNetworkButton = {
-    testId: 'page-container-footer-next',
+    text: 'Save',
+    tag: 'button',
   };
 
   private readonly confirmAddRpcUrlButton = {

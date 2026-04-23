@@ -23,6 +23,9 @@ class AddEditNetworkModal {
     tag: 'button',
   };
 
+  private readonly backButton =
+    '[data-testid="settings-v2-header-back-button"]';
+
   private readonly chainIdInputField = {
     testId: 'network-form-chain-id',
   };
@@ -167,6 +170,11 @@ class AddEditNetworkModal {
     await this.driver.clickElementAndWaitToDisappear(
       this.legacyEditModalSaveButton,
     );
+  }
+
+  async clickBackButton(): Promise<void> {
+    console.log('Click back button in add/edit network modal');
+    await this.driver.clickElementAndWaitToDisappear(this.backButton);
   }
 
   /**
