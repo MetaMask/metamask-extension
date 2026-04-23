@@ -1737,7 +1737,7 @@
     "message": "Connect a hardware wallet"
   },
   "connectAHardwareWalletDescription": {
-    "message": "Using QR Code"
+    "message": "Using USB or a QR Code"
   },
   "connectAccounts": {
     "message": "Connect accounts"
