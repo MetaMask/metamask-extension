@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from 'react';
-import { render, waitFor } from '@testing-library/react';
+import React, { useContext, useEffect, useState } from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
@@ -41,17 +41,32 @@ const renderProvider = ({
 }) => {
   const store = mockStore(state);
 
-  const TestComponent = () => {
+  const TestComponent = ({
+    eventName,
+  }: {
+    eventName: MetaMetricsEventName;
+  }) => {
     const { trackEvent } = useContext(MetaMetricsContext);
+    const [trackSettled, setTrackSettled] = useState(false);
 
     useEffect(() => {
+      let cancelled = false;
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
-        event,
+        event: eventName,
+      }).finally(() => {
+        if (!cancelled) {
+          setTrackSettled(true);
+        }
       });
-    }, [event, trackEvent]);
+      return () => {
+        cancelled = true;
+      };
+    }, [eventName, trackEvent]);
 
-    return null;
+    return trackSettled ? (
+      <span data-testid="metametrics-provider-track-settled" />
+    ) : null;
   };
 
   const router = createMemoryRouter(
@@ -60,7 +75,7 @@ const renderProvider = ({
         path: '*',
         element: (
           <MetaMetricsProvider>
-            <TestComponent />
+            <TestComponent eventName={event} />
           </MetaMetricsProvider>
         ),
       },
@@ -157,6 +172,27 @@ describe('MetaMetricsProvider', () => {
       );
     });
 
+    expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
+  });
+
+  it('does not buffer normal events when the user has opted out of MetaMetrics', async () => {
+    renderProvider({
+      event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+      state: {
+        metamask: {
+          participateInMetaMetrics: false,
+          metaMetricsId: '0x123',
+        },
+      },
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('metametrics-provider-track-settled'),
+      ).toBeInTheDocument();
+    });
+
+    expect(mockedTrackMetaMetricsEvent).not.toHaveBeenCalled();
     expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 });
