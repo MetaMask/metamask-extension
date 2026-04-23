@@ -781,14 +781,37 @@ export const getFormattedPriceImpactFiat = createSelector(
 const getQuoteStreamComplete = (state: BridgeAppState) =>
   state.metamask.quoteStreamComplete;
 
+const _minimumBalanceCache = new Map<string, string>();
+
+// The goal of this is to prevent the refresh of
+// selectMinimumBalanceForRentExemptionInSOL when a quotes a re-loading
+const selectCachedMinimumBalanceForRentExemptionInSOL = (
+  state: BridgeAppState,
+  assetId?: string,
+) => {
+  if (assetId && _minimumBalanceCache.has(assetId)) {
+    return _minimumBalanceCache.get(assetId) ?? '0';
+  }
+  const value = selectMinimumBalanceForRentExemptionInSOL(
+    state.metamask as BridgeAppStateFromController,
+  );
+  if (assetId && value !== '0') {
+    _minimumBalanceCache.set(assetId, value);
+  }
+  return value;
+};
+
 const _getBaseValidationErrors = createDeepEqualSelector(
   [
     getBridgeQuotes,
     _getValidatedSrcAmount,
     getFromToken,
     getFromAmount,
-    ({ metamask }: BridgeAppState) =>
-      selectMinimumBalanceForRentExemptionInSOL(metamask),
+    (state: BridgeAppState) =>
+      selectCachedMinimumBalanceForRentExemptionInSOL(
+        state,
+        getFromToken(state)?.assetId,
+      ),
     getQuoteRequest,
     getTxAlerts,
     _getFromNativeBalance,
