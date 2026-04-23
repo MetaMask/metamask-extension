@@ -24356,7 +24356,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"elliptic@npm:6.6.1, elliptic@npm:^6.4.0, elliptic@npm:^6.5.3, elliptic@npm:^6.5.4, elliptic@npm:^6.5.5, elliptic@npm:^6.5.7, elliptic@npm:^6.6.1":
+"elliptic@npm:^6.6.1":
   version: 6.6.1
   resolution: "elliptic@npm:6.6.1"
   dependencies:
