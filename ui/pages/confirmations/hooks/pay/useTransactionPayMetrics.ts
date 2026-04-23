@@ -70,7 +70,10 @@ export function useTransactionPayMetrics() {
 
     if (
       payToken &&
-      hasTransactionType(transactionMeta, [TransactionType.perpsDeposit])
+      hasTransactionType(transactionMeta, [
+        TransactionType.perpsDeposit,
+        TransactionType.perpsWithdraw,
+      ])
     ) {
       props.mm_pay_use_case = 'custom_amount';
       props.simulation_sending_assets_total_value = sendingValue;
