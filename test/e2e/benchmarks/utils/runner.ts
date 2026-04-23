@@ -267,6 +267,7 @@ export function convertTimerStatisticsToBenchmarkResults(
   const p75: StatisticalResult = {};
   const p95: StatisticalResult = {};
   const trimmedCount: StatisticalResult = {};
+  const outliers: StatisticalResult = {};
 
   // timers already includes promoted web vitals from runBenchmarkWithIterations
   for (const timer of timers) {
@@ -279,9 +280,11 @@ export function convertTimerStatisticsToBenchmarkResults(
     if (timer.trimmedCount !== undefined) {
       trimmedCount[timer.id] = timer.trimmedCount;
     }
+    outliers[timer.id] = timer.outliers;
   }
 
   const hasTrimmedCounts = Object.keys(trimmedCount).length > 0;
+  const hasOutliers = Object.keys(outliers).length > 0;
 
   return {
     testTitle,
@@ -296,6 +299,7 @@ export function convertTimerStatisticsToBenchmarkResults(
     p75,
     p95,
     ...(hasTrimmedCounts && { trimmedCount }),
+    ...(hasOutliers && { outliers }),
     ...(webVitals && { webVitals }),
   };
 }
