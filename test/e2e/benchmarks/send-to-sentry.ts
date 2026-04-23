@@ -253,7 +253,7 @@ async function main() {
           if (meanVal > 0 && stdDevVal !== undefined) {
             const cv = (stdDevVal / meanVal) * 100;
             derivedMetrics[`${type}.cv.${key}`] = cv;
-            let dataQuality: string;
+            let dataQuality: 'good' | 'poor' | 'unreliable';
             if (cv < 30) {
               dataQuality = 'good';
             } else if (cv < 50) {
