@@ -36,10 +36,10 @@ const createMetaRPCHandler = (api, outStream) => {
             op: 'rpc.handler',
             data: { method: data.method, ...(controller && { controller }) },
           },
-          () => handler(...cleanParams),
+          () => handler.call(api, ...cleanParams),
         );
       } else {
-        result = await handler(...cleanParams);
+        result = await handler.call(api, ...cleanParams);
       }
     } catch (err) {
       error = err;
