@@ -33,6 +33,11 @@ function genPerpsDeposit() {
   return { ...base, type: TransactionType.perpsDeposit, origin: 'metamask' };
 }
 
+function genPerpsWithdraw() {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return { ...base, type: TransactionType.perpsWithdraw, origin: 'metamask' };
+}
+
 function render({
   isGaslessLoading = false,
   confirmation = genMusdConversion(),
@@ -46,7 +51,8 @@ function render({
   isGaslessLoading?: boolean;
   confirmation?:
     | ReturnType<typeof genMusdConversion>
-    | ReturnType<typeof genPerpsDeposit>;
+    | ReturnType<typeof genPerpsDeposit>
+    | ReturnType<typeof genPerpsWithdraw>;
   alerts?: {
     key: string;
     severity: string;
@@ -160,6 +166,14 @@ describe('<SingleActionFooter />', () => {
 
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       messages.addFunds.message,
+    );
+  });
+
+  it('shows Withdraw label for perpsWithdraw transaction type', () => {
+    const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.perpsWithdraw.message,
     );
   });
 });
