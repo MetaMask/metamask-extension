@@ -59,7 +59,7 @@ describe('PerpsDepositToast', () => {
     expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
   });
 
-  it('renders submitted toast when mounting with deposit already in progress', () => {
+  it('renders pending toast when mounting with deposit already in progress', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -71,15 +71,13 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
+    expect(screen.getByTestId('perps-deposit-toast')).toBeInTheDocument();
     expect(
-      screen.getByTestId('perps-deposit-submitted-toast'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.perpsDepositToastSubmittedTitle.message),
+      screen.getByText(messages.perpsDepositToastPendingTitle.message),
     ).toBeInTheDocument();
   });
 
-  it('renders submitted toast when mounting with deposit already in progress for perpsDepositAndOrder', () => {
+  it('renders pending toast when mounting with deposit already in progress for perpsDepositAndOrder', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -96,10 +94,7 @@ describe('PerpsDepositToast', () => {
     renderWithProvider(<PerpsDepositToast />, store);
 
     expect(
-      screen.getByTestId('perps-deposit-submitted-toast'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.perpsDepositToastSubmittedTitle.message),
+      screen.getByText(messages.perpsDepositToastPendingTitle.message),
     ).toBeInTheDocument();
   });
 
@@ -309,7 +304,7 @@ describe('PerpsDepositToast', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders submitted toast when a new deposit transaction ID appears', () => {
+  it('renders pending toast when a new deposit transaction ID appears', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -321,32 +316,28 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(
-      screen.queryByTestId('perps-deposit-submitted-toast'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
 
     act(() => {
       store.dispatch({
         type: 'UPDATE_METAMASK_STATE',
         value: {
-          transactions: [buildPendingDepositTransaction({ id: 'submitted-tx-1' })],
+          transactions: [
+            buildPendingDepositTransaction({ id: 'submitted-tx-1' }),
+          ],
           lastDepositTransactionId: 'submitted-tx-1',
           lastDepositResult: null,
         },
       });
     });
 
+    expect(screen.getByTestId('perps-deposit-toast')).toBeInTheDocument();
     expect(
-      screen.getByTestId('perps-deposit-submitted-toast'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.perpsDepositToastSubmittedTitle.message),
+      screen.getByText(messages.perpsDepositToastPendingTitle.message),
     ).toBeInTheDocument();
   });
 
-  it('hides submitted toast after auto-hide and shows pending toast', () => {
-    jest.useFakeTimers();
-
+  it('keeps showing the pending toast after a transaction ID appears', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -357,6 +348,8 @@ describe('PerpsDepositToast', () => {
     });
 
     renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
 
     act(() => {
       store.dispatch({
@@ -374,24 +367,13 @@ describe('PerpsDepositToast', () => {
       });
     });
 
-    expect(
-      screen.getByTestId('perps-deposit-submitted-toast'),
-    ).toBeInTheDocument();
-
-    act(() => {
-      jest.advanceTimersByTime(5_000);
-    });
-
-    expect(
-      screen.queryByTestId('perps-deposit-submitted-toast'),
-    ).not.toBeInTheDocument();
     expect(screen.getByTestId('perps-deposit-toast')).toBeInTheDocument();
     expect(
       screen.getByText(messages.perpsDepositToastPendingTitle.message),
     ).toBeInTheDocument();
   });
 
-  it('clears submitted toast when deposit result arrives', () => {
+  it('shows completion toast when deposit result arrives', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -407,16 +389,16 @@ describe('PerpsDepositToast', () => {
       store.dispatch({
         type: 'UPDATE_METAMASK_STATE',
         value: {
-          transactions: [buildPendingDepositTransaction({ id: 'submitted-tx-1' })],
+          transactions: [
+            buildPendingDepositTransaction({ id: 'submitted-tx-1' }),
+          ],
           lastDepositTransactionId: 'submitted-tx-1',
           lastDepositResult: null,
         },
       });
     });
 
-    expect(
-      screen.getByTestId('perps-deposit-submitted-toast'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('perps-deposit-toast')).toBeInTheDocument();
 
     act(() => {
       store.dispatch({
@@ -434,16 +416,11 @@ describe('PerpsDepositToast', () => {
     });
 
     expect(
-      screen.queryByTestId('perps-deposit-submitted-toast'),
-    ).not.toBeInTheDocument();
-    expect(
       screen.getByText(messages.perpsDepositToastSuccessTitle.message),
     ).toBeInTheDocument();
   });
 
   it('shows pending for the active deposit only when a stale perps tx remains submitted', () => {
-    jest.useFakeTimers();
-
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -464,18 +441,12 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    act(() => {
-      jest.advanceTimersByTime(5_000);
-    });
-
     expect(
       screen.getByText(messages.perpsDepositToastPendingTitle.message),
     ).toBeInTheDocument();
   });
 
   it('does not show pending when active id is confirmed even if another perps deposit stays submitted', () => {
-    jest.useFakeTimers();
-
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -495,10 +466,6 @@ describe('PerpsDepositToast', () => {
     });
 
     renderWithProvider(<PerpsDepositToast />, store);
-
-    act(() => {
-      jest.advanceTimersByTime(5_000);
-    });
 
     expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
   });

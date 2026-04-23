@@ -140,13 +140,19 @@ class SmartTransactionHook {
     this.#txParams = transactionMeta.txParams;
     this.#transactions = transactions;
 
-    const legacyShowStatusPage = Boolean(
-      (transactionMeta.type !== TransactionType.bridge &&
-        transactionMeta.type !== TransactionType.shieldSubscriptionApprove &&
-        transactionMeta.type !== TransactionType.perpsDeposit &&
-        transactionMeta.type !== TransactionType.perpsDepositAndOrder) ||
-        (this.#transactions && this.#transactions.length > 0),
-    );
+    const isPerpsDepositTransaction =
+      transactionMeta.type === TransactionType.perpsDeposit ||
+      transactionMeta.type === TransactionType.perpsDepositAndOrder ||
+      transactionMeta.type === TransactionType.perpsRelayDeposit;
+
+    const legacyShowStatusPage = isPerpsDepositTransaction
+      ? false
+      : Boolean(
+          (transactionMeta.type !== TransactionType.bridge &&
+            transactionMeta.type !==
+              TransactionType.shieldSubscriptionApprove) ||
+            (this.#transactions && this.#transactions.length > 0),
+        );
 
     this.#shouldShowStatusPage = legacyShowStatusPage;
 
