@@ -265,7 +265,7 @@ describe('Home — checkLastVisitedPerpsRoute', () => {
     expect(props.clearLastVisitedPerpsRoute).toHaveBeenCalled();
   });
 
-  it('defers to pendingRedirectRoute when both are set', () => {
+  it('defers to pendingRedirectRoute when both are set but still clears the persisted perps entry', () => {
     const { props } = renderHome({
       pendingRedirectRoute: { path: '/shield-plan' },
       lastVisitedPerpsRoute: {
@@ -278,6 +278,21 @@ describe('Home — checkLastVisitedPerpsRoute', () => {
       path: '/shield-plan',
     });
     expect(props.setRedirectAfterDefaultPage).toHaveBeenCalledTimes(1);
-    expect(props.clearLastVisitedPerpsRoute).not.toHaveBeenCalled();
+    // Even when pendingRedirectRoute wins, the perps entry must be cleared
+    // so a later home mount cannot replay it after the higher-priority
+    // redirect has already fired.
+    expect(props.clearLastVisitedPerpsRoute).toHaveBeenCalled();
+  });
+
+  it('rejects a path with the /perps prefix that is not actually a /perps subroute', () => {
+    const { props } = renderHome({
+      lastVisitedPerpsRoute: {
+        path: '/perpsNew/market/BTC',
+        timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
+      },
+    });
+
+    expect(props.setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+    expect(props.clearLastVisitedPerpsRoute).toHaveBeenCalled();
   });
 });

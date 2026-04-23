@@ -252,16 +252,24 @@ export default class Home extends PureComponent {
       clearLastVisitedPerpsRoute,
     } = this.props;
 
-    if (pendingRedirectRoute || !lastVisitedPerpsRoute) {
+    if (!lastVisitedPerpsRoute) {
       return;
     }
 
     const { path, timestamp } = lastVisitedPerpsRoute;
     const isFresh = Date.now() - timestamp < PERPS_REOPEN_TTL_MS;
+    // Exact match on `/perps` or a `/perps/...` sub-route only. Prevents a
+    // future sibling like `/perpsNew` from silently resuming off a stale
+    // persisted path.
     const isPerpsPath =
-      typeof path === 'string' && path.startsWith(PERPS_ROUTE);
+      typeof path === 'string' &&
+      (path === PERPS_ROUTE || path.startsWith(`${PERPS_ROUTE}/`));
 
-    if (isFresh && isPerpsPath) {
+    // `pendingRedirectRoute` is a higher-priority cross-session redirect
+    // (e.g. a background-initiated deeplink); skip the perps resume when
+    // one is queued. Always clear the persisted entry afterwards so a
+    // later home mount cannot replay it.
+    if (!pendingRedirectRoute && isFresh && isPerpsPath) {
       setRedirectAfterDefaultPage({ path });
     }
 

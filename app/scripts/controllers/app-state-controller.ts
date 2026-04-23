@@ -679,8 +679,14 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   lastVisitedPerpsRoute: {
-    includeInStateLogs: true,
-    persist: true,
+    // Scrubbed from shared state logs — a path like "/perps/market/<symbol>"
+    // can reveal portfolio details when a user shares a support log.
+    includeInStateLogs: false,
+    // Memory-only, like `pendingRedirectRoute` — the "brief close/reopen"
+    // the feature targets happens within the MV3 service worker's
+    // in-memory lifetime and a 5-minute TTL, so disk persistence is not
+    // needed and would leave stale paths in persisted state indefinitely.
+    persist: false,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
