@@ -118,22 +118,18 @@ async function computeFalsePositiveRate(
   let realCount = 0;
 
   for (const run of benchmarkFailures) {
-    if (run.pull_requests.length > 0) {
-      const prNumber = run.pull_requests[0].number;
-      const prUrl = `https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}`;
-      const prResponse = await fetch(prUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/vnd.github+json',
-        },
-      });
-      if (prResponse.ok) {
-        const pr = (await prResponse.json()) as { merged: boolean };
-        if (pr.merged) {
-          flakeCount += 1;
-        } else {
-          realCount += 1;
-        }
+    const prNumber = run.pull_requests[0].number;
+    const prUrl = `https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}`;
+    const prResponse = await fetch(prUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github+json',
+      },
+    });
+    if (prResponse.ok) {
+      const pr = (await prResponse.json()) as { merged: boolean };
+      if (pr.merged) {
+        flakeCount += 1;
       } else {
         realCount += 1;
       }

@@ -16,7 +16,6 @@
  */
 
 import { parseArgs } from 'util';
-import { IncomingWebhook } from '@slack/webhook';
 import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
 import type { BenchmarkEntryComparison } from './comparison-utils';
 import { loadCurrentBenchmarks, runComparison } from './compare-benchmarks';
@@ -27,6 +26,7 @@ import {
   linkEl,
   emojiEl,
   divider,
+  postToSlack,
 } from './slack-notifications';
 
 // ---------------------------------------------------------------------------
@@ -212,9 +212,7 @@ async function main(): Promise<void> {
     ciRunUrl,
   );
 
-  const webhook = new IncomingWebhook(SLACK_BENCHMARK_WEBHOOK_URL);
-  // @ts-expect-error SlackBlock is structurally compatible but narrower than @slack/types Block
-  await webhook.send({ blocks: payload.blocks });
+  await postToSlack(SLACK_BENCHMARK_WEBHOOK_URL, payload);
 
   console.log(
     `Nightly report posted to Slack. ${result.anyFailed ? 'REGRESSIONS DETECTED' : 'All passing.'}`,
