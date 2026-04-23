@@ -2,6 +2,7 @@ import { strict as assert } from 'assert';
 import { join } from 'path';
 import { Mockttp } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
 import { createDownloadFolder, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -174,7 +175,7 @@ describe('State logs', function () {
           })
           .withAssetsController({
             assetsBalance: {
-              'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
                 'eip155:1337/slip44:1': { amount: '25' },
               },
             },
