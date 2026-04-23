@@ -164,7 +164,10 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
                 fontSize,
                 lineHeight,
                 fontWeight: 500,
-                width: `${Math.max(1, amountLength)}ch`,
+                minWidth: '1ch',
+                // field-sizing: content shrinks/grows the input to its text
+                // width, keeping the $ + amount pair centred in the flex row.
+                fieldSizing: 'content',
               } as React.CSSProperties
             }
           />

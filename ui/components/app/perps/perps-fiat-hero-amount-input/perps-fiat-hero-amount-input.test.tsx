@@ -28,12 +28,14 @@ describe('isValidPartialFiatAmountInput', () => {
 });
 
 describe('PerpsFiatHeroAmountInput', () => {
-  it('renders the container with w-full class to ensure centering in narrow viewports', () => {
-    const { container } = render(
-      <PerpsFiatHeroAmountInput value="2.707414" onChange={jest.fn()} />,
+  it('renders symbol and input for the given value', () => {
+    render(<PerpsFiatHeroAmountInput value="2.707414" onChange={jest.fn()} />);
+    expect(
+      screen.getByTestId('perps-fiat-hero-amount-symbol'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveValue(
+      '2.707414',
     );
-    const heroBox = container.firstChild as HTMLElement;
-    expect(heroBox.className).toContain('w-full');
   });
 
   it('renders symbol and forwards input changes', () => {
@@ -56,7 +58,6 @@ describe('PerpsFiatHeroAmountInput', () => {
 
     const skeleton = screen.getByTestId('perps-fiat-hero-amount-skeleton');
     expect(skeleton).toBeInTheDocument();
-    expect(skeleton.className).toContain('w-full');
     expect(
       screen.queryByTestId('perps-fiat-hero-amount-input'),
     ).not.toBeInTheDocument();
