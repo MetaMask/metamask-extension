@@ -103,7 +103,6 @@ export const ChooseNewWalletTypePage = () => {
             {
               id: 'institutional-wallet',
               titleKey: 'manageInstitutionalWallets',
-              descriptionKey: 'manageInstitutionalWallets',
               iconName: IconName.Add,
               route: getSnapRoute(INSTITUTIONAL_WALLET_SNAP_ID),
             },
@@ -258,13 +257,15 @@ export const ChooseNewWalletTypePage = () => {
                 >
                   {t(option.titleKey)}
                 </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.TextAlternative}
-                >
-                  {t(option.descriptionKey)}
-                </Text>
+                {option.descriptionKey && (
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t(option.descriptionKey)}
+                  </Text>
+                )}
               </Box>
             </Box>
           ))}

@@ -4,7 +4,7 @@ import type { MetaMetricsEventPayload } from '../../../../shared/constants/metam
 export type WalletTypeOption = {
   id: string;
   titleKey: string;
-  descriptionKey: string;
+  descriptionKey?: string;
   iconName: IconName;
   route: string;
   metricsEvent?: MetaMetricsEventPayload;
