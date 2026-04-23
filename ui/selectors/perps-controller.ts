@@ -6,6 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import type { PerpsControllerState } from '@metamask/perps-controller';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import type { Hex } from '@metamask/utils';
 
 /**
  * The PerpsController state is flattened into state.metamask by
@@ -75,8 +76,8 @@ type PerpsDepositPendingState = {
       string,
       {
         paymentToken?: {
-          address: string;
-          chainId: string;
+          address: Hex;
+          chainId: Hex;
         };
       }
     >;
@@ -86,8 +87,8 @@ type PerpsDepositPendingState = {
 const isNativePayToken = (
   paymentToken?:
     | {
-        address: string;
-        chainId: string;
+        address: Hex;
+        chainId: Hex;
       }
     | undefined,
 ) => {
@@ -105,8 +106,8 @@ const isPerpsToastOwnedDepositTransaction = (
   transaction?: TransactionMeta,
   paymentToken?:
     | {
-        address: string;
-        chainId: string;
+        address: Hex;
+        chainId: Hex;
       }
     | undefined,
 ) => {
@@ -172,7 +173,7 @@ export const selectPerpsDepositPending = createSelector(
       return false;
     }
 
-    return PERPS_DEPOSIT_PENDING_STATUSES.has(tx.status);
+    return tx ? PERPS_DEPOSIT_PENDING_STATUSES.has(tx.status) : false;
   },
 );
 
