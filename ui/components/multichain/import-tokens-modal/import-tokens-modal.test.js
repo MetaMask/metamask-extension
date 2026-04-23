@@ -548,7 +548,7 @@ describe('ImportTokensModal', () => {
     const enableAssetsUnifyState = {
       remoteFeatureFlags: {
         assetsUnifyState: {
-          enabled: true,
+          enabled: false,
           featureVersion: '1',
         },
       },
