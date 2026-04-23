@@ -13,6 +13,7 @@ import {
   selectPerpsDepositPending,
   selectPerpsLastDepositResult,
   selectPerpsLastDepositTransactionId,
+  selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
 import { Toast } from '../../multichain/toast';
 
@@ -23,6 +24,7 @@ export function PerpsDepositToast() {
   const lastDepositTransactionId = useSelector(
     selectPerpsLastDepositTransactionId,
   );
+  const shouldShowDepositToast = useSelector(selectPerpsShouldShowDepositToast);
   const [dismissedPendingTransactionId, setDismissedPendingTransactionId] =
     useState<string | null>(null);
   const [dismissedCompletion, setDismissedCompletion] = useState(false);
@@ -64,7 +66,7 @@ export function PerpsDepositToast() {
   const hasDismissedPendingToast =
     (lastDepositTransactionId ?? 'pending') === dismissedPendingTransactionId;
 
-  if (lastDepositResult && !dismissedCompletion) {
+  if (lastDepositResult && shouldShowDepositToast && !dismissedCompletion) {
     const isSuccess = lastDepositResult.success === true;
     return (
       <Toast

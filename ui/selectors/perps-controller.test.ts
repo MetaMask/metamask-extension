@@ -28,6 +28,7 @@ import {
   selectPerpsCachedAccountState,
   selectPerpsPerpsBalances,
   selectPerpsMarketFilterPreferences,
+  selectPerpsShouldShowDepositToast,
 } from './perps-controller';
 
 function buildState(overrides: Record<string, unknown> = {}) {
@@ -280,6 +281,86 @@ describe('perps-controller selectors', () => {
                 status: TransactionStatus.approved,
               }),
             ],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for token-funded deposits with a non-native pay token', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [buildTx()],
+            transactionData: {
+              [activeDepositId]: {
+                paymentToken: {
+                  address: '0x00000000000000000000000000000000000000dA',
+                  chainId: '0xa4b1',
+                },
+              },
+            },
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true for native-token-funded deposits', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [buildTx()],
+            transactionData: {
+              [activeDepositId]: {
+                paymentToken: {
+                  address: '0x0000000000000000000000000000000000000000',
+                  chainId: '0xa4b1',
+                },
+              },
+            },
+          }),
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('selectPerpsShouldShowDepositToast', () => {
+    it('returns true for a direct deposit transaction', () => {
+      expect(
+        selectPerpsShouldShowDepositToast(
+          buildState({
+            lastDepositTransactionId: 'tx-1',
+            transactions: [
+              {
+                id: 'tx-1',
+                type: TransactionType.perpsDeposit,
+                status: TransactionStatus.approved,
+              },
+            ],
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false for a token-funded deposit transaction', () => {
+      expect(
+        selectPerpsShouldShowDepositToast(
+          buildState({
+            lastDepositTransactionId: 'tx-1',
+            transactions: [
+              {
+                id: 'tx-1',
+                type: TransactionType.perpsDeposit,
+                status: TransactionStatus.approved,
+              },
+            ],
+            transactionData: {
+              'tx-1': {
+                paymentToken: {
+                  address: '0x00000000000000000000000000000000000000dA',
+                  chainId: '0xa4b1',
+                },
+              },
+            },
           }),
         ),
       ).toBe(false);

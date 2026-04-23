@@ -77,6 +77,54 @@ describe('PerpsDepositToast', () => {
     ).toBeInTheDocument();
   });
 
+  it('does not render pending toast for token-funded deposits', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [buildPendingDepositTransaction()],
+        lastDepositTransactionId: 'pending-tx-1',
+        lastDepositResult: null,
+        transactionData: {
+          'pending-tx-1': {
+            paymentToken: {
+              address: '0x00000000000000000000000000000000000000dA',
+              chainId: '0xa4b1',
+            },
+          },
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
+  });
+
+  it('renders pending toast for native-token-funded deposits', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [buildPendingDepositTransaction()],
+        lastDepositTransactionId: 'pending-tx-1',
+        lastDepositResult: null,
+        transactionData: {
+          'pending-tx-1': {
+            paymentToken: {
+              address: '0x0000000000000000000000000000000000000000',
+              chainId: '0xa4b1',
+            },
+          },
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(
+      screen.getByText(messages.perpsDepositToastPendingTitle.message),
+    ).toBeInTheDocument();
+  });
+
   it('renders pending toast when mounting with deposit already in progress for perpsDepositAndOrder', () => {
     const store = configureStore({
       metamask: {
@@ -121,7 +169,13 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        transactions: [],
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
         lastDepositResult: {
           success: true,
           error: '',
@@ -142,7 +196,13 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        transactions: [],
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
         lastDepositResult: {
           success: false,
           error: 'Bridge failed',
@@ -165,7 +225,13 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        transactions: [],
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
         lastDepositResult: {
           success: true,
           error: '',
@@ -192,7 +258,13 @@ describe('PerpsDepositToast', () => {
     const initialStore = configureStore({
       metamask: {
         ...mockState.metamask,
-        transactions: [],
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
         lastDepositResult: {
           success: true,
           error: '',
@@ -214,7 +286,13 @@ describe('PerpsDepositToast', () => {
     const nextStore = configureStore({
       metamask: {
         ...mockState.metamask,
-        transactions: [],
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
         lastDepositResult: {
           success: true,
           error: '',
@@ -233,7 +311,13 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        transactions: [],
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
         lastDepositResult: {
           success: true,
           error: '',
@@ -259,7 +343,13 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        transactions: [],
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
         lastDepositResult: {
           success: false,
           error: 'Bridge failed',
@@ -404,7 +494,12 @@ describe('PerpsDepositToast', () => {
       store.dispatch({
         type: 'UPDATE_METAMASK_STATE',
         value: {
-          transactions: [],
+          transactions: [
+            buildPendingDepositTransaction({
+              id: 'submitted-tx-1',
+              status: TransactionStatus.confirmed,
+            }),
+          ],
           lastDepositTransactionId: 'submitted-tx-1',
           lastDepositResult: {
             success: true,
@@ -418,6 +513,37 @@ describe('PerpsDepositToast', () => {
     expect(
       screen.getByText(messages.perpsDepositToastSuccessTitle.message),
     ).toBeInTheDocument();
+  });
+
+  it('does not show completion toast for token-funded deposits', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'submitted-tx-1',
+          }),
+        ],
+        lastDepositTransactionId: 'submitted-tx-1',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+        transactionData: {
+          'submitted-tx-1': {
+            paymentToken: {
+              address: '0x00000000000000000000000000000000000000dA',
+              chainId: '0xa4b1',
+            },
+          },
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
   });
 
   it('shows pending for the active deposit only when a stale perps tx remains submitted', () => {

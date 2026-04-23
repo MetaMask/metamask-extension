@@ -5,6 +5,7 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import type { PerpsControllerState } from '@metamask/perps-controller';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 
 /**
  * The PerpsController state is flattened into state.metamask by
@@ -70,8 +71,80 @@ type PerpsDepositPendingState = {
   metamask: {
     transactions?: TransactionMeta[];
     lastDepositTransactionId?: string | null;
+    transactionData?: Record<
+      string,
+      {
+        paymentToken?: {
+          address: string;
+          chainId: string;
+        };
+      }
+    >;
   };
 };
+
+const isNativePayToken = (
+  paymentToken?:
+    | {
+        address: string;
+        chainId: string;
+      }
+    | undefined,
+) => {
+  if (!paymentToken) {
+    return true;
+  }
+
+  return (
+    paymentToken.address.toLowerCase() ===
+    getNativeTokenAddress(paymentToken.chainId).toLowerCase()
+  );
+};
+
+const isPerpsToastOwnedDepositTransaction = (
+  transaction?: TransactionMeta,
+  paymentToken?:
+    | {
+        address: string;
+        chainId: string;
+      }
+    | undefined,
+) => {
+  if (!transaction?.type) {
+    return false;
+  }
+
+  return (
+    PERPS_DEPOSIT_TRANSACTION_TYPES.has(transaction.type) &&
+    isNativePayToken(paymentToken)
+  );
+};
+
+const selectPerpsActiveDepositTransaction = createSelector(
+  (state: PerpsDepositPendingState): TransactionMeta[] =>
+    state.metamask.transactions ?? EMPTY_ARRAY,
+  (state: PerpsDepositPendingState) =>
+    state.metamask.lastDepositTransactionId ?? null,
+  (transactions, lastDepositTransactionId) => {
+    if (!lastDepositTransactionId) {
+      return null;
+    }
+
+    return (
+      transactions.find((tx) => tx.id === lastDepositTransactionId) ?? null
+    );
+  },
+);
+
+export const selectPerpsShouldShowDepositToast = createSelector(
+  selectPerpsActiveDepositTransaction,
+  (state: PerpsDepositPendingState) => state.metamask.transactionData ?? {},
+  (transaction, transactionData) =>
+    isPerpsToastOwnedDepositTransaction(
+      transaction ?? undefined,
+      transaction ? transactionData[transaction.id]?.paymentToken : undefined,
+    ),
+);
 
 /**
  * Whether the **active** Perps deposit (identified by `lastDepositTransactionId`)
@@ -87,22 +160,19 @@ type PerpsDepositPendingState = {
  * @param state - Combined Perps + TransactionController state.
  */
 export const selectPerpsDepositPending = createSelector(
-  (state: PerpsDepositPendingState): TransactionMeta[] =>
-    state.metamask.transactions ?? EMPTY_ARRAY,
-  (state: PerpsDepositPendingState) =>
-    state.metamask.lastDepositTransactionId ?? null,
-  (transactions, lastDepositTransactionId) => {
-    if (!lastDepositTransactionId) {
+  selectPerpsActiveDepositTransaction,
+  (state: PerpsDepositPendingState) => state.metamask.transactionData ?? {},
+  (tx, transactionData) => {
+    if (
+      !isPerpsToastOwnedDepositTransaction(
+        tx ?? undefined,
+        tx ? transactionData[tx.id]?.paymentToken : undefined,
+      )
+    ) {
       return false;
     }
-    const tx = transactions.find((t) => t.id === lastDepositTransactionId);
-    if (tx?.type === undefined) {
-      return false;
-    }
-    return (
-      PERPS_DEPOSIT_TRANSACTION_TYPES.has(tx.type) &&
-      PERPS_DEPOSIT_PENDING_STATUSES.has(tx.status)
-    );
+
+    return PERPS_DEPOSIT_PENDING_STATUSES.has(tx.status);
   },
 );
 
