@@ -827,31 +827,27 @@ export async function sendBenchmarkNotifications(
     const now = Date.now();
     const batch = await loadBatch();
 
-    // Filter out stale entries (older than batch window)
-    const fresh = batch.filter((e) => now - e.timestamp < BATCH_WINDOW_MS);
-
-    // Add new entries
-    for (const entry of normal) {
-      fresh.push({
+    // Combine persisted entries with new ones — flush must include both.
+    const updated: BatchEntry[] = [
+      ...batch,
+      ...normal.map((entry) => ({
         comparison: entry.comparison,
         violation: entry.violation,
         timestamp: now,
-      });
-    }
+      })),
+    ];
 
-    // Check if the oldest entry in the pre-filter batch has exceeded the window.
-    // Must use `batch` not `fresh` — fresh entries are by definition < BATCH_WINDOW_MS old.
+    // Flush when the oldest persisted entry has waited long enough.
     const oldest = batch.reduce(
       (min, e) => Math.min(min, e.timestamp),
       Infinity,
     );
     if (now - oldest >= BATCH_WINDOW_MS || severe.length > 0) {
-      // Flush batch
-      const payload = formatBatchedNotification(fresh, context, ownership);
+      const payload = formatBatchedNotification(updated, context, ownership);
       await postToSlack(context.webhookUrl, payload);
       await clearBatch();
     } else {
-      await saveBatch(fresh);
+      await saveBatch(updated);
     }
   }
 }
