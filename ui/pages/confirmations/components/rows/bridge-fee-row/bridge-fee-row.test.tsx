@@ -183,6 +183,18 @@ describe('BridgeFeeRow', () => {
     expect(queryByTestId('bridge-fee-row-tooltip')).not.toBeInTheDocument();
   });
 
+  it('always renders fee in USD even when user currency is EUR', () => {
+    const state = getMockPersonalSignConfirmState({
+      metamask: { currentCurrency: 'eur' },
+    });
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <BridgeFeeRow />,
+      mockStore(state),
+    );
+
+    expect(getByTestId('transaction-fee-value')).toHaveTextContent('$1.23');
+  });
+
   it('renders fee value with ConfirmInfoRowText for Default variant', () => {
     const { getByTestId } = render();
 

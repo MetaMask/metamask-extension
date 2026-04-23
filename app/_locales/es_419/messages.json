@@ -5784,7 +5784,8 @@
     "message": "Buscar mercados"
   },
   "perpsSeeAll": {
-    "message": "Ver todo"
+    "message": "Ver todo",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "El servicio no está disponible temporalmente. Vuelve a intentarlo más tarde."
