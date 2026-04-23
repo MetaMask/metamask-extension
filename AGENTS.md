@@ -1003,8 +1003,8 @@ When the user explicitly asks for visual verification of UI behavior (e.g., "ver
 
 **Workflow:**
 
-0. **FIRST — Query prior knowledge (MANDATORY):** Run `mm knowledge-search "<flow>"` and `mm knowledge-sessions` before doing anything else. This reuses previously discovered flows and avoids wasting tokens rediscovering known sequences.
-1. Build if needed (`yarn build:test`), then `mm launch`
+0. Build if needed (`yarn build:test`), then `mm launch` (this auto-starts the daemon)
+1. **Query prior knowledge:** Run `mm knowledge-search "<flow>"` and `mm knowledge-sessions` to reuse previously discovered flows and avoid wasting tokens rediscovering known sequences.
 2. Always call `mm describe-screen` before acting to discover targets
 3. Use `mm click`/`mm type`/`mm wait-for` to drive the flow
 4. Provide evidence via `mm screenshot` and/or final `mm describe-screen` output

@@ -36,6 +36,7 @@ const UNLOCKED_SCREENS: Set<ExtensionState['currentScreen']> = new Set([
   'confirmation',
   'connect',
   'bridge',
+  'notification',
 ]);
 
 const LOCKED_SCREENS: Set<ExtensionState['currentScreen']> = new Set([

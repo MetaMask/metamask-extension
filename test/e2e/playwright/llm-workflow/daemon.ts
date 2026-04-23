@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import path from 'path';
 import {
   createServer,
   KnowledgeStore,
@@ -8,6 +9,7 @@ import {
 
 import { MetaMaskSessionManager } from './metamask-provider';
 import { createMetaMaskE2EContext } from './capabilities/factory';
+import { resolveRepoRoot } from './resolve-repo-root';
 
 // Single shared KnowledgeStore instance used by both the global singleton
 // (for session manager metadata recording) and createServer (for tool context).
@@ -23,6 +25,8 @@ function releasePort(
 const server = createServer({
   sessionManager: new MetaMaskSessionManager(),
   knowledgeStore,
+  idleShutdownMs: 30 * 60 * 1000,
+  logFilePath: path.join(resolveRepoRoot(), '.mm-daemon.log'),
   contextFactory: async () => {
     const [anvilAlloc, fixtureAlloc, mockAlloc] = await Promise.all([
       allocatePort(),

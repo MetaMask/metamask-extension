@@ -78,7 +78,7 @@ The `mm` CLI is the primary interface for interacting with the extension. It aut
 
 ```bash
 # 1. Build the extension
-yarn build:test
+yarn build:test:webpack
 
 # 2. Launch the session (starts daemon + browser)
 mm launch
@@ -98,21 +98,6 @@ mm cleanup
 - **Worktree Isolation**: Each worktree has its own daemon, tracked in `.mm-server`.
 - **Idle Timeout**: Daemon shuts down after 30 minutes of inactivity.
 - **Logs**: Activity is logged to `.mm-daemon.log`.
-
----
-
-## Development Workflow
-
-When implementing UI changes, follow this cycle:
-
-0. **KNOWLEDGE**: `mm knowledge-search "<flow>"` and `mm knowledge-sessions` to reuse prior discoveries.
-1. **IMPLEMENT**: Write code changes.
-2. **BUILD**: `yarn build:test`.
-3. **LAUNCH**: `mm launch`.
-4. **OBSERVE**: `mm describe-screen` to get element references.
-5. **INTERACT**: `mm click`, `mm type` using refs from `describe-screen`.
-6. **VALIDATE**: `mm screenshot` to capture visual evidence.
-7. **CLEANUP**: `mm cleanup`.
 
 ---
 
