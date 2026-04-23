@@ -173,7 +173,7 @@ const manifestPlugin = new ManifestPlugin({
         outFile: BUNDLE_SIZE_SUMMARY_FILE,
         classifyEntrypoint: classifyBundleSizeEntrypoint,
       }
-    : undefined,
+    : false,
 });
 
 const plugins: WebpackPluginInstance[] = [
