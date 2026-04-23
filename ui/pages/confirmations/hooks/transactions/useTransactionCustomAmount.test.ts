@@ -498,5 +498,42 @@ describe('useTransactionCustomAmount', () => {
       // Verify no additional calls were made
       expect(updateTokenAmountMock).toHaveBeenCalledTimes(initialCallCount);
     });
+
+    it('does not call updateTokenAmount when amountUsd changes while isMaxAmount is true', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { rerender } = runHook({
+        disableUpdate: false,
+        isMaxAmount: true,
+        tokenFiatRate: 2,
+        requiredTokens: [{ amountUsd: '100', skipIfBalance: false }],
+        updateTokenAmountMock,
+      });
+
+      // Clear any initial calls from mount
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+      updateTokenAmountMock.mockClear();
+
+      // Simulate QuoteRefresher updating amountUsd (price movement)
+      jest
+        .mocked(
+          useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken,
+        )
+        .mockReturnValue({
+          amountUsd: '100.01',
+          skipIfBalance: false,
+        } as unknown as ReturnType<
+          typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
+        >);
+
+      rerender();
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      // Must NOT call updateTokenAmount — doing so restarts the quote cycle
+      expect(updateTokenAmountMock).not.toHaveBeenCalled();
+    });
   });
 });

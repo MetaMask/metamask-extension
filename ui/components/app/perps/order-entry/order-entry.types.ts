@@ -127,6 +127,8 @@ export type OrderEntryProps = {
   onAddFunds?: () => void;
   /** Initial leverage override for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
+  /** Market size decimals for controller-based position-size formatting */
+  sizeDecimals?: number;
   /**
    * Oracle mark price (oraclePx from HyperLiquid's activeAssetCtx feed).
    * Used for margin calculation to match mobile's source of truth.
@@ -165,6 +167,13 @@ export type AmountInputProps = {
   asset: string;
   /** Current asset price for token conversion */
   currentPrice: number;
+  /**
+   * HyperLiquid size decimals for the asset (from MarketInfo.szDecimals). Used
+   * to cap the token-input display precision so PUMP (szDecimals=0) never shows
+   * fractional token counts and ETH (szDecimals=4) stops at 4 decimals instead
+   * of the previous hard-coded 6.
+   */
+  szDecimals?: number;
   /** Callback when add-funds icon is pressed */
   onAddFunds?: () => void;
 };
@@ -244,4 +253,6 @@ export type CloseAmountSectionProps = {
   asset: string;
   /** Current asset price for USD value calculation */
   currentPrice: number;
+  /** Market size decimals for controller-based position-size formatting */
+  sizeDecimals?: number;
 };

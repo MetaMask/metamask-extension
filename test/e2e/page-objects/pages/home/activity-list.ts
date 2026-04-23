@@ -66,6 +66,8 @@ class ActivityListPage {
 
   private readonly popoverClose = '[data-testid="popover-close"]';
 
+  private readonly backButton = '.mm-button-icon';
+
   private readonly viewTransactionOnExplorerButton = {
     text: 'View on block explorer',
     tag: 'button',
@@ -411,7 +413,7 @@ class ActivityListPage {
     }
 
     console.log('Navigating back to activity list');
-    const backButton = await this.driver.findElement('.mm-button-icon');
+    const backButton = await this.driver.waitForSelector(this.backButton);
     await backButton.click();
   }
 

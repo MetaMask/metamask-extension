@@ -4,11 +4,6 @@
       "hiddenAccountList": [],
       "pinnedAccountList": []
     },
-    "AccountTracker": {
-      "accountsByChainId": {
-        "0x1": {}
-      }
-    },
     "AccountTreeController": {
       "accountGroupsMetadata": {},
       "accountTree": {
@@ -40,7 +35,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 204,
+      "currentMigrationVersion": 206,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -91,6 +86,7 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
+    "AssetsController": {},
     "AuthenticationController": {
       "isSignedIn": false
     },
@@ -2040,8 +2036,8 @@
         "gmx": {},
         "hyperliquid": {}
       },
-      "showSidePanelMigrationToast": false,
       "securityAlertsEnabled": true,
+      "showSidePanelMigrationToast": false,
       "snapRegistryList": {},
       "snapsAddSnapAccountModalDismissed": false,
       "theme": "os",
@@ -2253,6 +2249,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 204
+    "version": 206
   }
 }

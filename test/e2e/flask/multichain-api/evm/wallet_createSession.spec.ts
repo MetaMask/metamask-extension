@@ -98,7 +98,10 @@ describe('Multichain API', function () {
           const ACCOUNT_NOT_IN_WALLET =
             '0x9999999999999999999999999999999999999999';
 
-          await login(driver, { validateBalance: false });
+          await login(driver, {
+            validateBalance: false,
+            waitForNonEvmAccounts: false,
+          });
           await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);
@@ -430,7 +433,10 @@ describe('Multichain API', function () {
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await login(driver, { validateBalance: false });
+          await login(driver, {
+            validateBalance: false,
+            waitForNonEvmAccounts: false,
+          });
           new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);

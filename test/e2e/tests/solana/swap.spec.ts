@@ -169,7 +169,6 @@ describe('Swap on Solana', function () {
         await login(driver);
 
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
@@ -235,7 +234,6 @@ describe('Swap on Solana', function () {
         await login(driver);
 
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
@@ -285,7 +283,6 @@ describe('Swap on Solana', function () {
         await login(driver);
 
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
@@ -321,7 +318,6 @@ describe('Swap on Solana', function () {
         await login(driver);
 
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
