@@ -212,7 +212,7 @@ ${Object.entries(env)
     });
     assert.strictEqual(manifestPlugin.options.setBuildId, false);
     assert.strictEqual(manifestPlugin.options.zip, false);
-    assert.strictEqual(manifestPlugin.options.stats, undefined);
+    assert.strictEqual(manifestPlugin.options.stats, false);
     const manifestOpts = manifestPlugin.options as ManifestPluginOptions<true>;
     assert.strictEqual(manifestOpts.zipOptions, undefined);
 
