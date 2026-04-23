@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { execSync } from 'child_process';
 import { join } from 'path';
 import { sha256 } from 'ethereum-cryptography/sha256';
@@ -108,6 +109,7 @@ export class TronNode {
     // Layout: r (32 bytes) || s (32 bytes) || recovery (1 byte)
     const sigBytes = new Uint8Array(65);
     sigBytes.set(sig.toCompactRawBytes());
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     sigBytes[64] = sig.recovery!;
     const signatureHex = Buffer.from(sigBytes).toString('hex');
 
@@ -117,7 +119,11 @@ export class TronNode {
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...tx, signature: [signatureHex], visible: true }),
+        body: JSON.stringify({
+          ...tx,
+          signature: [signatureHex],
+          visible: true,
+        }),
       },
     );
     if (!broadcastResp.ok) {
