@@ -37,6 +37,7 @@ import {
   TransactionControllerEstimateGasAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
+  TransactionControllerIsAtomicBatchSupportedAction,
   TransactionControllerMessenger,
   TransactionControllerPostTransactionBalanceUpdatedEvent,
   TransactionControllerStateChangeEvent,
@@ -130,6 +131,7 @@ type InitMessengerActions =
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
+  | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateTransactionAction
   | TransactionPayControllerGetStateAction
   | TransactionPayControllerGetStrategyAction;
@@ -207,6 +209,7 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:estimateGas',
       'TransactionController:getNonceLock',
       'TransactionController:getState',
+      'TransactionController:isAtomicBatchSupported',
       'TransactionController:updateTransaction',
       'TransactionPayController:getState',
       'TransactionPayController:getStrategy',

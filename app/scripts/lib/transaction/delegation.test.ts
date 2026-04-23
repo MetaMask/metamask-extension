@@ -7,6 +7,7 @@ import { DelegationControllerSignDelegationAction } from '@metamask/delegation-c
 import { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
 import {
   TransactionControllerGetNonceLockAction,
+  TransactionControllerIsAtomicBatchSupportedAction,
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import {
@@ -107,6 +108,10 @@ describe('delegation', () => {
     TransactionControllerGetNonceLockAction['handler']
   > = jest.fn();
 
+  const isAtomicBatchSupportedMock: jest.MockedFn<
+    TransactionControllerIsAtomicBatchSupportedAction['handler']
+  > = jest.fn();
+
   let messenger: DelegationMessenger;
   let addCaveatMock: jest.Mock;
   let buildCaveatMock: jest.Mock;
@@ -118,7 +123,8 @@ describe('delegation', () => {
       MockAnyNamespace,
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
-      | TransactionControllerGetNonceLockAction,
+      | TransactionControllerGetNonceLockAction
+      | TransactionControllerIsAtomicBatchSupportedAction,
       never
     >({
       namespace: MOCK_ANY_NAMESPACE,
@@ -128,7 +134,8 @@ describe('delegation', () => {
       'TestDelegation',
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
-      | TransactionControllerGetNonceLockAction,
+      | TransactionControllerGetNonceLockAction
+      | TransactionControllerIsAtomicBatchSupportedAction,
       never,
       typeof baseMessenger
     >({
@@ -142,6 +149,7 @@ describe('delegation', () => {
         'DelegationController:signDelegation',
         'KeyringController:signEip7702Authorization',
         'TransactionController:getNonceLock',
+        'TransactionController:isAtomicBatchSupported',
       ] as never,
     });
 
@@ -158,6 +166,11 @@ describe('delegation', () => {
     baseMessenger.registerActionHandler(
       'TransactionController:getNonceLock',
       getNonceLockMock,
+    );
+
+    baseMessenger.registerActionHandler(
+      'TransactionController:isAtomicBatchSupported',
+      isAtomicBatchSupportedMock,
     );
 
     messenger = childMessenger as DelegationMessenger;
@@ -485,20 +498,56 @@ describe('delegation', () => {
       expect(signEip7702AuthorizationMock).not.toHaveBeenCalled();
     });
 
-    it('throws when authorization has no upgradeContractAddress and no isAtomicBatchSupported', async () => {
-      await expect(
-        convertTransactionToRedeemDelegations({
-          transaction: TRANSACTION_META_MOCK,
-          messenger,
-          authorization: {
-            upgradeContractAddress: undefined,
-          },
-        }),
-      ).rejects.toThrow('Upgrade contract address not found');
+    it('returns minimal authorization list with only address when minimal is true', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValue([
+        {
+          chainId: '0x1',
+          isSupported: false,
+          upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        },
+      ]);
+
+      const result = await convertTransactionToRedeemDelegations({
+        transaction: TRANSACTION_META_MOCK,
+        messenger,
+        authorization: { minimal: true },
+      });
+
+      expect(result.authorizationList).toEqual([
+        { address: UPGRADE_CONTRACT_ADDRESS_MOCK },
+      ]);
+      expect(getNonceLockMock).not.toHaveBeenCalled();
+      expect(signEip7702AuthorizationMock).not.toHaveBeenCalled();
     });
 
-    it('resolves authorization via isAtomicBatchSupported when that variant is used', async () => {
-      const isAtomicBatchSupported = jest.fn().mockResolvedValue([
+    it('returns setCode transaction type when authorization list is present', async () => {
+      const result = await convertTransactionToRedeemDelegations({
+        transaction: TRANSACTION_META_MOCK,
+        messenger,
+        authorization: {
+          upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        },
+      });
+
+      expect(result.type).toBe('0x4');
+    });
+
+    it('returns original transaction type when no authorization list', async () => {
+      const transaction = {
+        ...TRANSACTION_META_MOCK,
+        txParams: { ...TRANSACTION_META_MOCK.txParams, type: '0x2' },
+      } as unknown as TransactionMeta;
+
+      const result = await convertTransactionToRedeemDelegations({
+        transaction,
+        messenger,
+      });
+
+      expect(result.type).toBe('0x2');
+    });
+
+    it('resolves authorization via messenger isAtomicBatchSupported', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValue([
         {
           chainId: '0x1',
           isSupported: false,
@@ -509,12 +558,10 @@ describe('delegation', () => {
       await convertTransactionToRedeemDelegations({
         transaction: TRANSACTION_META_MOCK,
         messenger,
-        authorization: {
-          isAtomicBatchSupported,
-        },
+        authorization: {},
       });
 
-      expect(isAtomicBatchSupported).toHaveBeenCalledWith({
+      expect(isAtomicBatchSupportedMock).toHaveBeenCalledWith({
         address: TRANSACTION_META_MOCK.txParams.from,
         chainIds: ['0x1'],
       });
@@ -523,47 +570,47 @@ describe('delegation', () => {
     });
 
     it('throws when isAtomicBatchSupported returns no upgradeContractAddress', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValue([
+        { chainId: '0x1', isSupported: false },
+      ] as never);
+
       await expect(
         convertTransactionToRedeemDelegations({
           transaction: TRANSACTION_META_MOCK,
           messenger,
-          authorization: {
-            isAtomicBatchSupported: jest
-              .fn()
-              .mockResolvedValue([{ chainId: '0x1', isSupported: false }]),
-          },
+          authorization: {},
         }),
       ).rejects.toThrow('Upgrade contract address not found');
     });
 
     it('throws when chain is not in isAtomicBatchSupported result', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValue([
+        { chainId: '0x999', isSupported: false },
+      ] as never);
+
       await expect(
         convertTransactionToRedeemDelegations({
           transaction: TRANSACTION_META_MOCK,
           messenger,
-          authorization: {
-            isAtomicBatchSupported: jest
-              .fn()
-              .mockResolvedValue([{ chainId: '0x999', isSupported: false }]),
-          },
+          authorization: {},
         }),
       ).rejects.toThrow('Chain does not support EIP-7702');
     });
 
     it('skips authorization when already upgraded and isSupported', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValue([
+        {
+          chainId: '0x1',
+          isSupported: true,
+          delegationAddress: '0xexisting',
+          upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        },
+      ]);
+
       const result = await convertTransactionToRedeemDelegations({
         transaction: TRANSACTION_META_MOCK,
         messenger,
-        authorization: {
-          isAtomicBatchSupported: jest.fn().mockResolvedValue([
-            {
-              chainId: '0x1',
-              isSupported: true,
-              delegationAddress: '0xexisting',
-              upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
-            },
-          ]),
-        },
+        authorization: {},
       });
 
       expect(result.authorizationList).toBeUndefined();
@@ -571,19 +618,20 @@ describe('delegation', () => {
     });
 
     it('throws when upgraded to different address and upgradeExistingDelegation is false', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValue([
+        {
+          chainId: '0x1',
+          isSupported: false,
+          delegationAddress: '0xdifferent',
+          upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        },
+      ]);
+
       await expect(
         convertTransactionToRedeemDelegations({
           transaction: TRANSACTION_META_MOCK,
           messenger,
           authorization: {
-            isAtomicBatchSupported: jest.fn().mockResolvedValue([
-              {
-                chainId: '0x1',
-                isSupported: false,
-                delegationAddress: '0xdifferent',
-                upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
-              },
-            ]),
             upgradeExistingDelegation: false,
           },
         }),
@@ -593,19 +641,19 @@ describe('delegation', () => {
     });
 
     it('overwrites delegation when upgraded to different address by default', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValue([
+        {
+          chainId: '0x1',
+          isSupported: false,
+          delegationAddress: '0xdifferent',
+          upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        },
+      ]);
+
       const result = await convertTransactionToRedeemDelegations({
         transaction: TRANSACTION_META_MOCK,
         messenger,
-        authorization: {
-          isAtomicBatchSupported: jest.fn().mockResolvedValue([
-            {
-              chainId: '0x1',
-              isSupported: false,
-              delegationAddress: '0xdifferent',
-              upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
-            },
-          ]),
-        },
+        authorization: {},
       });
 
       expect(result.authorizationList).toBeDefined();
@@ -613,18 +661,19 @@ describe('delegation', () => {
     });
 
     it('overwrites delegation when upgraded to different address and upgradeExistingDelegation is true', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValue([
+        {
+          chainId: '0x1',
+          isSupported: false,
+          delegationAddress: '0xdifferent',
+          upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        },
+      ]);
+
       const result = await convertTransactionToRedeemDelegations({
         transaction: TRANSACTION_META_MOCK,
         messenger,
         authorization: {
-          isAtomicBatchSupported: jest.fn().mockResolvedValue([
-            {
-              chainId: '0x1',
-              isSupported: false,
-              delegationAddress: '0xdifferent',
-              upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
-            },
-          ]),
           upgradeExistingDelegation: true,
         },
       });
@@ -636,17 +685,16 @@ describe('delegation', () => {
 
   describe('getDelegationTransaction', () => {
     it('adds value 0x0 to converted delegation transaction', async () => {
-      const result = await getDelegationTransaction(
+      isAtomicBatchSupportedMock.mockResolvedValue([
         {
-          messenger,
-          isAtomicBatchSupported: jest.fn().mockResolvedValue([
-            {
-              chainId: '0x1',
-              isSupported: false,
-              upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
-            },
-          ]),
+          chainId: '0x1',
+          isSupported: false,
+          upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
         },
+      ]);
+
+      const result = await getDelegationTransaction(
+        { messenger },
         TRANSACTION_META_MOCK,
       );
 
@@ -659,8 +707,8 @@ describe('delegation', () => {
       );
     });
 
-    it('passes isAtomicBatchSupported through to authorization', async () => {
-      const isAtomicBatchSupported = jest.fn().mockResolvedValue([
+    it('calls isAtomicBatchSupported via messenger', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValue([
         {
           chainId: '0x1',
           isSupported: false,
@@ -668,15 +716,9 @@ describe('delegation', () => {
         },
       ]);
 
-      await getDelegationTransaction(
-        {
-          messenger,
-          isAtomicBatchSupported,
-        },
-        TRANSACTION_META_MOCK,
-      );
+      await getDelegationTransaction({ messenger }, TRANSACTION_META_MOCK);
 
-      expect(isAtomicBatchSupported).toHaveBeenCalledWith({
+      expect(isAtomicBatchSupportedMock).toHaveBeenCalledWith({
         address: TRANSACTION_META_MOCK.txParams.from,
         chainIds: ['0x1'],
       });

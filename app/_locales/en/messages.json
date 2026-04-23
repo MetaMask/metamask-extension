@@ -5634,6 +5634,12 @@
   "perpsDepositToastPendingTitle": {
     "message": "Adding funds to Perps"
   },
+  "perpsDepositToastSubmittedDescription": {
+    "message": "Your funds are being added to Perps."
+  },
+  "perpsDepositToastSubmittedTitle": {
+    "message": "Deposit submitted"
+  },
   "perpsDepositToastSuccessDescription": {
     "message": "Your funds are ready to trade."
   },

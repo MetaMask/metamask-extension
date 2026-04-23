@@ -239,7 +239,8 @@ const PerpsOrderEntryPage: React.FC = () => {
   const { trigger: triggerDeposit, isLoading: isDepositLoading } =
     usePerpsDepositConfirmation();
   const { formatPercentWithMinThreshold } = useFormatters();
-  const { replacePerpsToastByKey, hidePerpsToast } = usePerpsToast();
+  const { replacePerpsToastByKey, hidePerpsToast, setPendingOrder } =
+    usePerpsToast();
 
   const { positions: allPositions } = usePerpsLivePositions();
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
@@ -564,6 +565,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     isDepositLoading ||
     isOrderPending ||
     (orderMode === 'new' && isLoadingAccount) ||
+    hasNoAvailableBalance ||
     (isPrimaryTradeAction &&
       (isLimitPriceInvalid ||
         isLimitPriceUnfavorable ||
@@ -642,6 +644,21 @@ const PerpsOrderEntryPage: React.FC = () => {
       perpsToastDescription?: string,
       extraState?: Partial<PerpsToastRouteState>,
     ) => {
+      if (perpsToastKey) {
+        replacePerpsToastByKey({
+          key: perpsToastKey,
+          ...(perpsToastDescription
+            ? { description: perpsToastDescription }
+            : {}),
+        });
+      }
+      if (extraState?.pendingOrderSymbol) {
+        setPendingOrder({
+          symbol: extraState.pendingOrderSymbol,
+          filledDescription: extraState.pendingOrderFilledDescription,
+        });
+      }
+
       if (!decodedSymbol) {
         return;
       }
@@ -666,7 +683,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       };
       navigate(marketDetailPath, { state: toastRouteState });
     },
-    [navigate, decodedSymbol],
+    [decodedSymbol, navigate, replacePerpsToastByKey, setPendingOrder],
   );
 
   const getTradeActionToastDescription = useCallback(() => {
@@ -690,8 +707,10 @@ const PerpsOrderEntryPage: React.FC = () => {
       return undefined;
     }
 
-    const rawAmount = formattedPositionSize.endsWith(` ${rawAssetSymbol}`)
-      ? formattedPositionSize.slice(0, -` ${rawAssetSymbol}`.length).trimEnd()
+    const rawAmount = formattedPositionSize.endsWith(` ${displayAssetSymbol}`)
+      ? formattedPositionSize
+          .slice(0, -` ${displayAssetSymbol}`.length)
+          .trimEnd()
       : formattedPositionSize;
 
     if (!rawAmount) {
@@ -833,6 +852,8 @@ const PerpsOrderEntryPage: React.FC = () => {
         : tradeActionToastDescription;
     } else {
       inProgressToastKey = ORDER_MODE_TOAST_KEYS[orderMode].inProgress;
+      inProgressToastDescription =
+        orderMode === 'new' ? tradeActionToastDescription : undefined;
     }
     if (inProgressToastKey) {
       replacePerpsToastByKey({
