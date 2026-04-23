@@ -252,14 +252,6 @@ class AssetListPage {
     return assets.length;
   }
 
-  /**
-   * Returns visible text for each token row (used to match by token name substring).
-   */
-  async getTokenListNames(): Promise<string[]> {
-    const elements = await this.driver.findElements(this.tokenListItem);
-    return Promise.all(elements.map((el) => el.getText()));
-  }
-
   async sortTokenList(
     sortBy: 'alphabetically' | 'decliningBalance',
   ): Promise<void> {

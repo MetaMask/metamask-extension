@@ -135,7 +135,7 @@ describe('Incremental Security', function (this: Suite) {
         }
 
         await homePage.checkPageIsLoaded();
-        // to update balance faster and avoid timeout errors
+        // to update balance faster and avoid timeout error
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed('1', 'ETH');
 

@@ -61,7 +61,7 @@ describe('Ledger Hardware', function (this: Suite) {
         );
         const homePage = new HomePage(driver);
         await homePage.goToTokensTab();
-        await homePage.checkExpectedTokenBalanceIsDisplayedWithTimeout(
+        await homePage.checkExpectedTokenBalanceIsDisplayed(
           '10',
           symbol,
         );

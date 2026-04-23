@@ -182,7 +182,7 @@ describe('MetaMask onboarding', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 20000);
+          }, driver.timeout);
 
           const requests = await mockedEndpoint.getSeenRequests();
           assert.equal(
