@@ -14,9 +14,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import {
-  formatPerpsFiatMinimal,
-} from '../utils/formatPerpsDisplayPrice';
+import { formatPerpsFiatMinimal } from '../utils/formatPerpsDisplayPrice';
 import { formatOrderType, getDisplayName } from '../utils';
 import type { Order } from '../types';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';

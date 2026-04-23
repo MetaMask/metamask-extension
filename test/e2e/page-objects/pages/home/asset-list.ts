@@ -345,7 +345,6 @@ class AssetListPage {
 
     await this.driver.waitForSelector(this.tokenDecimalsTitle);
     await this.driver.clickElement(this.importTokensNextButton);
-    // await this.driver.delay(10000);
     await this.driver.waitForSelector(this.tokenConfirmListItem);
     // Same readiness condition as `importTokenBySearch`: confirm copy means
     // `pendingTokens` is populated and the confirm step finished rendering before Import.

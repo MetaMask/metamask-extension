@@ -869,7 +869,6 @@ module.exports = {
   generateRandNumBetween,
   getCleanAppState,
   getEventPayloads,
-  getUnifiedMainnetNativeEthHumanForFiatTotal,
   isSidePanelEnabled,
   largeDelayMs,
   regularDelayMs,

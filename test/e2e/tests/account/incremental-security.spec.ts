@@ -135,21 +135,9 @@ describe('Incremental Security', function (this: Suite) {
         }
 
         await homePage.checkPageIsLoaded();
-
-        // Poll with periodic refreshes until the balance from the
-        // dapp-initiated transfer is reflected in the UI.
-        await driver.waitUntil(
-          async () => {
-            try {
-              await homePage.checkExpectedBalanceIsDisplayed('1', 'ETH', 1000);
-              return true;
-            } catch {
-              await driver.refresh();
-              return false;
-            }
-          },
-          { interval: 2000, timeout: 30000 },
-        );
+        // to update balance faster and avoid timeout errors
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed('1', 'ETH');
 
         // Backup SRP flow - only for non-sidepanel builds
         // With sidepanel, appState is lost during page reload, so this flow won't work
