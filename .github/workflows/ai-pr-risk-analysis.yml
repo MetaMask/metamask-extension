@@ -43,7 +43,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           mode: pr-risk-analysis
-          add-comment: true
+          add-comment: false
           add-label: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
           litellm-api-key: ${{ secrets.LITELLM_API_KEY }}
