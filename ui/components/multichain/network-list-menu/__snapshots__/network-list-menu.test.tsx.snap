@@ -38,7 +38,7 @@ exports[`NetworkListMenu renders properly 1`] = `
               <h4
                 class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--color-text-default"
               >
-                Manage networks
+                Networks
               </h4>
             </div>
             <div
@@ -1266,7 +1266,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
               <h4
                 class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--color-text-default"
               >
-                Manage networks
+                Networks
               </h4>
             </div>
             <div
