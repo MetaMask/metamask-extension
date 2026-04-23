@@ -1,5 +1,4 @@
 export { mockInitialFullScan } from './esplora';
-export { mockBitcoinFeatureFlag } from './feature-flag';
 export {
   mockExchangeRates,
   mockCurrencyExchangeRates,

@@ -226,6 +226,18 @@ describe('AmountInput', () => {
     });
   });
 
+  describe('HIP-3 symbol display', () => {
+    it('strips the dex prefix from HIP-3 asset symbols in the token input label', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} asset="xyz:BRENTOIL" />,
+        mockStore,
+      );
+
+      expect(screen.getByText('BRENTOIL')).toBeInTheDocument();
+      expect(screen.queryByText('xyz:BRENTOIL')).not.toBeInTheDocument();
+    });
+  });
+
   describe('token display', () => {
     it('displays token amount as size divided by price (not multiplied by leverage)', () => {
       renderWithProvider(
@@ -335,6 +347,97 @@ describe('AmountInput', () => {
       });
 
       expect(onAmountChange).not.toHaveBeenCalled();
+    });
+
+    it('preserves leading "0" in the field while the user continues typing', () => {
+      const onAmountChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          currentPrice={45000}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-token-field');
+      const input = container.querySelector('input') as HTMLInputElement;
+
+      fireEvent.focus(input);
+
+      // Step 1: type "0" — partial; USD clears but field keeps "0"
+      fireEvent.change(input, { target: { value: '0' } });
+      expect(input).toHaveValue('0');
+      expect(onAmountChange).toHaveBeenLastCalledWith('');
+
+      // Step 2: type "0." — field keeps "0."
+      fireEvent.change(input, { target: { value: '0.' } });
+      expect(input).toHaveValue('0.');
+
+      // Step 3: type "0.5" — field shows "0.5" and USD is computed
+      fireEvent.change(input, { target: { value: '0.5' } });
+      expect(input).toHaveValue('0.5');
+      // 0.5 × 45000 = 22500
+      expect(onAmountChange).toHaveBeenLastCalledWith('22500.00');
+    });
+
+    it('clears USD when the token field is backspaced to empty', () => {
+      const onAmountChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          currentPrice={50000}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-token-field');
+      const input = container.querySelector('input') as HTMLInputElement;
+
+      fireEvent.focus(input);
+      // Enter a valid token amount
+      fireEvent.change(input, { target: { value: '0.1' } });
+      expect(onAmountChange).toHaveBeenLastCalledWith('5000.00');
+
+      // Clear the field
+      fireEvent.change(input, { target: { value: '' } });
+      expect(input).toHaveValue('');
+      expect(onAmountChange).toHaveBeenLastCalledWith('');
+    });
+
+    it('shows un-grouped value for large token amounts so backspace edits work', () => {
+      // 450000 USDC / price 1 = 450000 tokens
+      // Without useGrouping:false this would be "450,000" which isUnsignedDecimalInput rejects
+      renderWithProvider(
+        <AmountInput {...defaultProps} amount="450000" currentPrice={1} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-token-field');
+      const input = container.querySelector('input');
+      // Must not contain a comma — value must be plain digits
+      expect(input?.value).not.toContain(',');
+      expect(input).toHaveValue('450000');
+    });
+
+    it('syncs token field from external amount change when not editing', () => {
+      const { rerender } = renderWithProvider(
+        <AmountInput {...defaultProps} amount="" currentPrice={50000} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-token-field');
+      const input = container.querySelector('input');
+      expect(input).toHaveValue('');
+
+      // Simulate external update (e.g. slider or USD field changed amount)
+      rerender(
+        <AmountInput {...defaultProps} amount="5000" currentPrice={50000} />,
+      );
+
+      // 5000 / 50000 = 0.1
+      expect(input).toHaveValue('0.1');
     });
   });
 

@@ -1,6 +1,6 @@
 import { SubjectMetadataController } from '@metamask/permission-controller';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getSubjectMetadataControllerMessenger,
@@ -11,7 +11,7 @@ import { SubjectMetadataControllerInit } from './subject-metadata-controller-ini
 jest.mock('@metamask/permission-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<SubjectMetadataControllerMessenger>
+  MessengerClientInitRequest<SubjectMetadataControllerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
@@ -26,8 +26,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('SubjectMetadataControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = SubjectMetadataControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(SubjectMetadataController);
+    const { messengerClient } =
+      SubjectMetadataControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(SubjectMetadataController);
   });
 
   it('passes the proper arguments to the controller', () => {

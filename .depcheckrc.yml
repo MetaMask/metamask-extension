@@ -40,16 +40,15 @@ ignores:
   - 'ganache-cli'
   - 'geckodriver'
   - 'jest'
-  - 'lavamoat-viz'
   - 'mocha-junit-reporter'
   - 'prettier-plugin-sort-json' # automatically imported by prettier
-  - 'source-map-explorer'
   - 'playwright'
   - 'wait-on'
   - 'tsx' # used in .devcontainer
   - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
   - 'tweetnacl' # used by solana-wallet-standard
   - 'bs58' # used by solana-wallet-standard
+  - '@metamask/design-system-shared' # scanned by Tailwind JIT to generate utility classes; dev dependency not imported directly
   # storybook
   - '@storybook/cli'
   - '@storybook/core'
@@ -70,6 +69,7 @@ ignores:
   - '@pmmmwh/react-refresh-webpack-plugin' # dev tool
   - 'webpack-dev-server' # dev tool
   - 'html-bundler-webpack-plugin' # build tool
+  - 'webpack-bundle-analyzer' # build tool
   - 'postcss-loader' # build tool
   - '@swc/helpers' # build tool
   - 'browserslist' # build tool

@@ -1,5 +1,5 @@
 import { MultichainBalancesController } from '@metamask/assets-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { MultichainBalancesControllerMessenger } from '../messengers/multichain';
 
 /**
@@ -10,14 +10,14 @@ import { MultichainBalancesControllerMessenger } from '../messengers/multichain'
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const MultichainBalancesControllerInit: ControllerInitFunction<
+export const MultichainBalancesControllerInit: MessengerClientInitFunction<
   MultichainBalancesController,
   MultichainBalancesControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new MultichainBalancesController({
+  const messengerClient = new MultichainBalancesController({
     messenger: controllerMessenger,
     state: persistedState.MultichainBalancesController,
   });
 
-  return { controller };
+  return { messengerClient };
 };

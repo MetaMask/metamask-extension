@@ -2,14 +2,14 @@ import {
   WebSocketService,
   WebSocketServiceMessenger,
 } from '@metamask/snaps-controllers';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { getRootMessenger } from '../../lib/messenger';
 import { getWebSocketServiceMessenger } from '../messengers/snaps';
 import { WebSocketServiceInit } from './websocket-service-init';
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<WebSocketServiceMessenger>
+  MessengerClientInitRequest<WebSocketServiceMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
@@ -24,7 +24,7 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('WebSocketServiceInit', () => {
   it('initializes the controller', () => {
-    const { controller } = WebSocketServiceInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(WebSocketService);
+    const { messengerClient } = WebSocketServiceInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(WebSocketService);
   });
 });

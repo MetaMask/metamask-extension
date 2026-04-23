@@ -6,7 +6,11 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { formatChainIdToHex, StatusTypes } from '@metamask/bridge-controller';
+import {
+  formatChainIdToHex,
+  isCrossChain,
+  StatusTypes,
+} from '@metamask/bridge-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -51,7 +55,7 @@ import {
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getNativeTokenInfo } from '../../../selectors';
+import { getNativeTokenInfo, isHardwareWallet } from '../../../selectors';
 import { getTransactions } from '../../../selectors/transactions';
 import {
   MetaMetricsContextProp,
@@ -68,7 +72,7 @@ import {
 } from '../../../../shared/constants/bridge';
 import { Numeric } from '../../../../shared/lib/Numeric';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { formatTokenAmount } from '../utils/quote';
+import { resolveTransactionType } from '../../../components/multichain/activity-v2/helpers';
 import {
   getBlockExplorerUrl,
   getBridgeAmountReceivedFormatted,
@@ -76,6 +80,7 @@ import {
   getIsDelayed,
   STATUS_TO_COLOR_MAP,
 } from '../utils/tx-details';
+import { formatTokenAmount } from '../utils/quote';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -85,6 +90,7 @@ const CrossChainSwapTxDetails = () => {
   const locale = useSelector(getIntlLocale);
   const { trackEvent } = useContext(MetaMetricsContext);
   const rootState = useSelector((state) => state);
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
 
   const { txHash } = useParams<{ txHash: string }>();
   const location = useLocation() as {
@@ -122,7 +128,15 @@ const CrossChainSwapTxDetails = () => {
     (tx) => tx.id === bridgeHistoryItem?.approvalTxId,
   );
 
-  const isBridgeTx = srcChainTxMeta?.type === TransactionType.bridge;
+  const isBridgeTx =
+    srcChainTxMeta?.type === TransactionType.bridge ||
+    (transaction?.transactionCategory &&
+      resolveTransactionType(transaction) === TransactionType.bridge) ||
+    (bridgeHistoryItem &&
+      isCrossChain(
+        bridgeHistoryItem.status.srcChain?.chainId,
+        bridgeHistoryItem.status.destChain?.chainId,
+      ));
 
   const srcTxHash = srcChainTxMeta?.hash;
   const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
@@ -130,11 +144,15 @@ const CrossChainSwapTxDetails = () => {
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
   const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
 
-  const bridgeStatus = bridgeHistoryItem
-    ? bridgeHistoryItem?.status.status
-    : StatusTypes.PENDING;
-  // Show src tx status for swaps
-  const status = isBridgeTx ? bridgeStatus : srcChainTxMeta?.status;
+  // Either the local tx or the transaction from accounts-api
+  const transactionStatus = srcChainTxMeta?.status || transaction?.status;
+  // Use txHistory status for bridge txs, fallback to src tx status if not a local bridge tx
+  const bridgeStatus =
+    (bridgeHistoryItem ? bridgeHistoryItem.status.status : transactionStatus) ??
+    StatusTypes.PENDING;
+
+  // Show src tx status for swaps, but use txHistory status for bridge txs
+  const status = isBridgeTx ? bridgeStatus : transactionStatus;
 
   const srcChainIconUrl = srcNetwork
     ? getImageForChainId(
@@ -166,6 +184,7 @@ const CrossChainSwapTxDetails = () => {
         state: rootState as MetaMaskReduxState,
         transaction: srcChainTxMeta,
         isTokenApprove: false,
+        isHardwareWalletAccount,
       })
     : undefined;
 

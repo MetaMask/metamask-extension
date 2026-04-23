@@ -13,7 +13,7 @@ import {
   PermissionControllerInitMessenger,
   PermissionControllerMessenger,
 } from './messengers';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the permission controller.
@@ -22,42 +22,49 @@ import { ControllerInitFunction } from './types';
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.initMessenger
- * @param request.getController
+ * @param request.getMessengerClient
  * @returns The initialized controller.
  */
-export const PermissionControllerInit: ControllerInitFunction<
+export const PermissionControllerInit: MessengerClientInitFunction<
   PermissionController<
     PermissionSpecificationConstraint,
     CaveatSpecificationConstraint
   >,
   PermissionControllerMessenger,
   PermissionControllerInitMessenger
-> = ({ controllerMessenger, persistedState, initMessenger, getController }) => {
-  const approvalController = getController('ApprovalController');
-  const keyringController = getController('KeyringController');
+> = ({
+  controllerMessenger,
+  persistedState,
+  initMessenger,
+  getMessengerClient,
+}) => {
+  const approvalController = getMessengerClient('ApprovalController');
+  const keyringController = getMessengerClient('KeyringController');
 
-  const controller = new PermissionController({
+  const messengerClient = new PermissionController({
     state: persistedState.PermissionController,
-    // @ts-expect-error: The permission controller needs certain actions that
-    // are not declared in the messenger's type.
+    // @ts-expect-error PermissionController messenger parameter type is incompatible with our messenger alias (handler unions).
     messenger: controllerMessenger,
     caveatSpecifications: getCaveatSpecifications({
-      listAccounts: initMessenger.call.bind(
-        initMessenger,
-        'AccountsController:listAccounts',
-      ),
-      findNetworkClientIdByChainId: initMessenger.call.bind(
-        initMessenger,
-        'NetworkController:findNetworkClientIdByChainId',
-      ),
-      isNonEvmScopeSupported: initMessenger.call.bind(
-        initMessenger,
-        'MultichainRoutingService:isSupportedScope',
-      ),
-      getNonEvmAccountAddresses: initMessenger.call.bind(
-        initMessenger,
-        'MultichainRoutingService:getSupportedAccounts',
-      ),
+      listAccounts: () => {
+        const accounts = initMessenger.call('AccountsController:listAccounts');
+        return accounts.map((account) => ({
+          type: account.type,
+          address: account.address as `0x${string}`,
+        }));
+      },
+      findNetworkClientIdByChainId: (chainId) =>
+        initMessenger.call(
+          'NetworkController:findNetworkClientIdByChainId',
+          chainId,
+        ),
+      isNonEvmScopeSupported: (scope) =>
+        initMessenger.call('MultichainRoutingService:isSupportedScope', scope),
+      getNonEvmAccountAddresses: (scope) =>
+        initMessenger.call(
+          'MultichainRoutingService:getSupportedAccounts',
+          scope,
+        ),
     }),
     permissionSpecifications: {
       ...getPermissionSpecifications(),
@@ -71,6 +78,6 @@ export const PermissionControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

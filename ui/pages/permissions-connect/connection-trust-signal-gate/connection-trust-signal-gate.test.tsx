@@ -102,4 +102,22 @@ describe('ConnectionTrustSignalGate', () => {
     expect(queryByTestId('trust-signal-block-modal')).not.toBeInTheDocument();
     expect(getByText('Child content')).toBeInTheDocument();
   });
+
+  it('calls onCancel when cancel button is clicked in block modal', () => {
+    mockUseOriginTrustSignals.mockReturnValue({
+      state: TrustSignalDisplayState.Malicious,
+      label: null,
+    });
+
+    const onCancel = jest.fn();
+
+    const { getByTestId } = render(
+      <ConnectionTrustSignalGate {...defaultProps} onCancel={onCancel}>
+        <div>Child content</div>
+      </ConnectionTrustSignalGate>,
+    );
+
+    fireEvent.click(getByTestId('trust-signal-block-modal-cancel'));
+    expect(onCancel).toHaveBeenCalledTimes(1);
+  });
 });

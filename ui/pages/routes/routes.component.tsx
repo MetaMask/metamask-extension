@@ -105,7 +105,6 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
-import { isInteractiveUI } from '../../../shared/lib/environment-type';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -691,7 +690,7 @@ export default function Routes() {
       dir={textDirection}
     >
       <ConfirmationHandler />
-      {isInteractiveUI() && <ToastListener />}
+      <ToastListener />
 
       <QRHardwarePopover />
       <Modal />

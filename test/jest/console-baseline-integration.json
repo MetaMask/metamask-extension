@@ -107,7 +107,6 @@
       "React: State updates on unmounted components": 1,
       "Reselect: Identity function warnings": 3,
       "Reselect: Input stability warnings": 6,
-      "error: Failed to fetch survey: test-metametrics-id": 2,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/notifications&auth/notifications-list.test.tsx": {

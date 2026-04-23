@@ -5,7 +5,7 @@ import {
   StaticAssetsController,
   StaticAssetsPollingFeatureFlagOptions,
 } from '../controllers/static-assets-controller';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import {
   StaticAssetsControllerMessenger,
   StaticAssetsControllerInitMessenger,
@@ -19,12 +19,12 @@ function getRemoteFeatureFlagControllerState(
     ?.staticAssetsPollingOptions as StaticAssetsPollingFeatureFlagOptions;
 }
 
-export const StaticAssetsControllerInit: ControllerInitFunction<
+export const StaticAssetsControllerInit: MessengerClientInitFunction<
   StaticAssetsController,
   StaticAssetsControllerMessenger,
   StaticAssetsControllerInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
-  const controller = new StaticAssetsController({
+  const messengerClient = new StaticAssetsController({
     messenger: controllerMessenger,
     getSupportedChains: (): Set<Hex> => {
       const supportedChains =
@@ -44,6 +44,6 @@ export const StaticAssetsControllerInit: ControllerInitFunction<
     },
   });
   return {
-    controller,
+    messengerClient,
   };
 };

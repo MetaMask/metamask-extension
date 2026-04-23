@@ -12,7 +12,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { tEn, enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { getIsSecurityAlertsEnabled } from '../../../selectors';
-import { REVEAL_SRP_LIST_ROUTE } from '../../../helpers/constants/routes';
+import { MANAGE_WALLET_RECOVERY_ROUTE } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import SecurityTab from './security-tab.container';
 
@@ -196,7 +196,7 @@ describe('Security Tab', () => {
 
     fireEvent.click(screen.getByTestId('reveal-seed-words'));
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(REVEAL_SRP_LIST_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(MANAGE_WALLET_RECOVERY_ROUTE);
   });
 
   it('sets IPFS gateway', async () => {

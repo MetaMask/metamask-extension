@@ -37,6 +37,7 @@ import {
   TransactionControllerEstimateGasAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
+  TransactionControllerIsAtomicBatchSupportedAction,
   TransactionControllerMessenger,
   TransactionControllerPostTransactionBalanceUpdatedEvent,
   TransactionControllerStateChangeEvent,
@@ -57,7 +58,7 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
-import { SubscriptionServiceAction } from '../../services/subscription/types';
+import { SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction } from '../../services/subscription/types';
 import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
   InstitutionalSnapControllerPublishHookAction,
@@ -124,12 +125,13 @@ type InitMessengerActions =
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
   | SubscriptionControllerActions
-  | SubscriptionServiceAction
+  | SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction
   | TransactionControllerAddTransactionAction
   | TransactionControllerAddTransactionBatchAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
+  | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateTransactionAction
   | TransactionPayControllerGetStateAction
   | TransactionPayControllerGetStrategyAction;
@@ -207,6 +209,7 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:estimateGas',
       'TransactionController:getNonceLock',
       'TransactionController:getState',
+      'TransactionController:isAtomicBatchSupported',
       'TransactionController:updateTransaction',
       'TransactionPayController:getState',
       'TransactionPayController:getStrategy',
