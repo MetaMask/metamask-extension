@@ -197,7 +197,10 @@ async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
       const url = new URL(request.url);
       const assetIdsParam = url.searchParams.getAll('assetIds').join(',');
       const ids = assetIdsParam
-        ? assetIdsParam.split(',').map((id) => id.trim()).filter(Boolean)
+        ? assetIdsParam
+            .split(',')
+            .map((id) => id.trim())
+            .filter(Boolean)
         : [];
       const results = ids
         .filter((id) => solanaAssets[id])
