@@ -482,6 +482,7 @@ export async function runPageLoadBenchmark(
     p75,
     p95,
     trimmedCount: trimmedCounts,
+    outliers: trimmedCounts,
     ...(webVitals && { webVitals }),
   };
 }
