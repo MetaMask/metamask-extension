@@ -8,15 +8,16 @@ import {
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
 import { getSelectedInternalAccount } from '../../../../../selectors';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { DeveloperButton } from '../developer-button';
-import { MAINNET_MUSD } from '../../../constants/musd';
+import { ARBITRUM_USDC } from '../../../constants/perps';
 import {
   ConfirmationLoader,
   useConfirmationNavigation,
 } from '../../../hooks/useConfirmationNavigation';
 import { generateERC20TransferData } from '../utils';
 
-export const MusdConversionButton = () => {
+export const PerpsWithdrawButton = () => {
   const { navigateToTransaction } = useConfirmationNavigation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const [hasTriggered, setHasTriggered] = useState(false);
@@ -32,25 +33,28 @@ export const MusdConversionButton = () => {
 
     try {
       const networkClientId = await findNetworkClientIdByChainId(
-        MAINNET_MUSD.chainId,
+        CHAIN_IDS.ARBITRUM,
       );
 
+      // Placeholder 0-USDC transfer: the real withdraw flow uses a Hyperliquid
+      // signed withdraw action, not an on-chain ERC-20 transfer. Recipient is
+      // the user's own address since withdrawn USDC ultimately returns to them.
       const transferData = generateERC20TransferData(
         selectedAccount.address as Hex,
         '0',
-        MAINNET_MUSD.decimals,
+        ARBITRUM_USDC.decimals,
       );
 
       const txMeta = await addTransaction(
         {
           from: selectedAccount.address as Hex,
-          to: MAINNET_MUSD.address,
+          to: ARBITRUM_USDC.address,
           data: transferData,
           value: '0x0',
         },
         {
           networkClientId,
-          type: TransactionType.musdConversion,
+          type: TransactionType.perpsWithdraw,
         },
       );
 
@@ -60,7 +64,7 @@ export const MusdConversionButton = () => {
         loader: ConfirmationLoader.CustomAmount,
       });
     } catch (error) {
-      console.error('Failed to create MUSD conversion transaction', error);
+      console.error('Failed to create perps withdraw transaction', error);
     } finally {
       setIsLoading(false);
     }
@@ -68,8 +72,8 @@ export const MusdConversionButton = () => {
 
   return (
     <DeveloperButton
-      title="MUSD Conversion"
-      description="Triggers a MUSD conversion confirmation."
+      title="Perps Withdraw"
+      description="Triggers a Perps withdraw confirmation."
       buttonLabel={isLoading ? 'Loading...' : 'Trigger'}
       onPress={handleTrigger}
       hasTriggered={hasTriggered}
