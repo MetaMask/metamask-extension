@@ -129,6 +129,12 @@ export type ManifestFlags = {
      * immediately, triggering the storage error toast notification.
      */
     simulateStorageSetFailure?: boolean;
+    /**
+     * Override the fixture server port for dynamic port allocation.
+     * When set, FixtureExtensionStore fetches state from this port
+     * instead of the default 12345.
+     */
+    fixtureServerPort?: number;
   };
 };
 
