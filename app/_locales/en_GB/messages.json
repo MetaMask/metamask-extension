@@ -5572,7 +5572,7 @@
     "message": "Close Amount"
   },
   "perpsCloseLong": {
-    "message": "Close Long"
+    "message": "Close long"
   },
   "perpsClosePartialMinNotional": {
     "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
@@ -5581,13 +5581,13 @@
     "message": "Close position"
   },
   "perpsCloseShort": {
-    "message": "Close Short"
+    "message": "Close short"
   },
   "perpsConfirmCloseLong": {
-    "message": "Close Long"
+    "message": "Close long"
   },
   "perpsConfirmCloseShort": {
-    "message": "Close Short"
+    "message": "Close short"
   },
   "perpsConnectionTimeout": {
     "message": "Connection timed out. Please try again."
