@@ -3,8 +3,13 @@
  *
  * Applied as a second filter on top of `tracesSampleRate`: only this fraction of
  * sampled traces will record wrapper spans. Conservative starting point at 0.5%
- * caps wrapper-driven span volume to ~0.01-0.1% of pre-PR baseline ingest while
- * still yielding ~100K instrumented traces/day for production validation.
+ * caps wrapper-driven span volume to ~0.001-0.3% of pre-PR baseline ingest while
+ * still yielding ~105K instrumented traces/day for production validation.
+ *
+ * Step-up candidate: 5% (W=0.05) once the `isReadOnlyAction` denylist is
+ * confirmed effective in production. The denylist removes ~90% of the
+ * originally-projected per-trace wrapper-span volume (~100 spans → ~10-20),
+ * leaving ~10× headroom against the original conservative ceiling.
  */
 const WRAPPER_SAMPLE_RATE = 0.005;
 
