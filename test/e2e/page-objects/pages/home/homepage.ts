@@ -44,6 +44,8 @@ class HomePage {
 
   private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
 
+  private readonly tronAccountIcon = 'img[src="./images/tron-logo.svg"]';
+
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
@@ -216,6 +218,11 @@ class HomePage {
     console.log('Waiting for Non EVM account icons to be visible');
     await this.driver.waitForSelector(this.solanaAccountIcon);
     await this.driver.waitForSelector(this.bitcoinAccountIcon);
+  }
+
+  async waitForTronAccountLoaded(): Promise<void> {
+    console.log('Waiting for Tron account icon to be visible');
+    await this.driver.waitForSelector(this.tronAccountIcon);
   }
 
   async checkPageIsNotLoaded(): Promise<void> {
@@ -408,22 +415,26 @@ class HomePage {
    *
    * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
+   * @param timeout - Max ms to wait for the balance; defaults to `driver.timeout` (10s unless the test overrides `Driver` construction).
    */
   async checkExpectedBalanceIsDisplayed(
     expectedBalance: string = '25',
     symbol: string = 'ETH',
+    timeout: number = this.driver.timeout,
   ): Promise<void> {
     if (expectedBalance === '0') {
-      await this.driver.waitForSelector(this.fundYourWalletBanner);
+      await this.driver.waitForSelector(this.fundYourWalletBanner, { timeout });
       return;
     }
     try {
-      await this.driver.waitForSelector({
-        css: this.balance,
-        text: expectedBalance,
-      });
+      await this.driver.waitForSelector(
+        { css: this.balance, text: expectedBalance },
+        { timeout },
+      );
     } catch (e) {
-      const balance = await this.driver.waitForSelector(this.balance);
+      const balance = await this.driver.waitForSelector(this.balance, {
+        timeout,
+      });
       const currentBalance = parseFloat(await balance.getText());
       const errorMessage = `Expected balance ${expectedBalance} ${symbol}, got balance ${currentBalance} ${symbol}`;
       console.log(errorMessage, e);
@@ -452,15 +463,20 @@ class HomePage {
    *
    * @param expectedTokenBalance - The expected balance to be displayed.
    * @param symbol - The symbol of the currency or token.
+   * @param timeout - Max ms to wait; defaults to `driver.timeout` (10s unless overridden on `Driver`).
    */
   async checkExpectedTokenBalanceIsDisplayed(
     expectedTokenBalance: string,
     symbol: string,
+    timeout: number = this.driver.timeout,
   ): Promise<void> {
-    await this.driver.waitForSelector({
-      css: '[data-testid="multichain-token-list-item-value"]',
-      text: `${expectedTokenBalance} ${symbol}`,
-    });
+    await this.driver.waitForSelector(
+      {
+        css: '[data-testid="multichain-token-list-item-value"]',
+        text: `${expectedTokenBalance} ${symbol}`,
+      },
+      { timeout },
+    );
   }
 
   /**

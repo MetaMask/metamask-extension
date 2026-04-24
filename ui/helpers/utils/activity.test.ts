@@ -111,6 +111,57 @@ describe('filterTransactionByChain', () => {
     });
   });
 
+  describe('perpsWithdraw transactions', () => {
+    it('returns true when source chain (metamaskPay.chainId) is in enabled chains', () => {
+      const transactionGroup = {
+        initialTransaction: {
+          type: TransactionType.perpsWithdraw,
+          chainId: CHAIN_IDS.ARBITRUM,
+          metamaskPay: {
+            chainId: CHAIN_IDS.BASE,
+          },
+        },
+      };
+
+      expect(
+        filterTransactionByChain(transactionGroup as never, [CHAIN_IDS.BASE]),
+      ).toBe(true);
+    });
+
+    it('returns false when only destination chain (Arbitrum) is enabled', () => {
+      const transactionGroup = {
+        initialTransaction: {
+          type: TransactionType.perpsWithdraw,
+          chainId: CHAIN_IDS.ARBITRUM,
+          metamaskPay: {
+            chainId: CHAIN_IDS.BASE,
+          },
+        },
+      };
+
+      expect(
+        filterTransactionByChain(transactionGroup as never, [
+          CHAIN_IDS.ARBITRUM,
+        ]),
+      ).toBe(false);
+    });
+
+    it('falls back to destination chain when no metamaskPay.chainId', () => {
+      const transactionGroup = {
+        initialTransaction: {
+          type: TransactionType.perpsWithdraw,
+          chainId: CHAIN_IDS.ARBITRUM,
+        },
+      };
+
+      expect(
+        filterTransactionByChain(transactionGroup as never, [
+          CHAIN_IDS.ARBITRUM,
+        ]),
+      ).toBe(true);
+    });
+  });
+
   describe('musdConversion transactions', () => {
     it('returns true when transaction chain is in enabled chains', () => {
       const transactionGroup = {
