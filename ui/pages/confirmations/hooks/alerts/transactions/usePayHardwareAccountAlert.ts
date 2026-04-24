@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -13,14 +14,25 @@ import { useConfirmContext } from '../../../context/confirm';
 import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../../components/app/rewards/utils/isHardwareAccount';
 
+const PAY_HARDWARE_ALERT_TRANSACTION_TYPES: TransactionType[] = [
+  TransactionType.musdConversion,
+];
+
 export function usePayHardwareAccountAlert(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
+  const transactionType = currentConfirmation?.type;
   const fromAddress = currentConfirmation?.txParams?.from as Hex | undefined;
 
+  const isApplicableType =
+    transactionType !== undefined &&
+    PAY_HARDWARE_ALERT_TRANSACTION_TYPES.includes(transactionType);
+
   const account = useSelector((state) =>
-    fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
+    fromAddress && isApplicableType
+      ? getInternalAccountByAddress(state, fromAddress)
+      : undefined,
   );
 
   const isHardwareWallet = account ? isHardwareAccount(account) : false;
