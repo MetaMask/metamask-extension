@@ -1286,12 +1286,12 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   let resolvedButtonText = submitButtonText;
   if (isPrimaryTradeAction) {
-    if (isInsufficientFunds) {
-      resolvedButtonText = t('insufficientFundsSend');
-    } else if (isBelowMinOrderSize) {
+    if (isBelowMinOrderSize) {
       resolvedButtonText = t('perpsMinOrderSize', [
         `$${PERPS_MIN_MARKET_ORDER_USD}`,
       ]);
+    } else if (isInsufficientFunds) {
+      resolvedButtonText = t('insufficientFundsSend');
     }
   }
 
