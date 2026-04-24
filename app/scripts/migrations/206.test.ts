@@ -148,6 +148,7 @@ describe(`migration #${VERSION}`, () => {
     await migrate(versionedData, changedControllers);
 
     expect(versionedData.meta.version).toBe(VERSION);
+    // Same same
     expect(versionedData.data.TokenBalancesController).toStrictEqual({
       tokenBalances: {
         '0xbf4ed7b27f1d666546861667caba0eecca747d7d': {
