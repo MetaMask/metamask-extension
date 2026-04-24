@@ -38,6 +38,10 @@ const PERPS_DEPOSIT_TRANSACTION_TYPES: ReadonlySet<TransactionType> = new Set([
 ]);
 
 const EMPTY_ARRAY: never[] = [];
+const EMPTY_TRANSACTION_DATA: Record<
+  string,
+  { paymentToken?: { address: Hex; chainId: Hex } }
+> = {};
 const EMPTY_TRADE_CONFIGURATIONS: PerpsControllerState['tradeConfigurations'] =
   { testnet: {}, mainnet: {} };
 
@@ -139,7 +143,8 @@ const selectPerpsActiveDepositTransaction = createSelector(
 
 export const selectPerpsShouldShowDepositToast = createSelector(
   selectPerpsActiveDepositTransaction,
-  (state: PerpsDepositPendingState) => state.metamask.transactionData ?? {},
+  (state: PerpsDepositPendingState) =>
+    state.metamask.transactionData ?? EMPTY_TRANSACTION_DATA,
   (transaction, transactionData) =>
     isPerpsToastOwnedDepositTransaction(
       transaction ?? undefined,
@@ -162,7 +167,8 @@ export const selectPerpsShouldShowDepositToast = createSelector(
  */
 export const selectPerpsDepositPending = createSelector(
   selectPerpsActiveDepositTransaction,
-  (state: PerpsDepositPendingState) => state.metamask.transactionData ?? {},
+  (state: PerpsDepositPendingState) =>
+    state.metamask.transactionData ?? EMPTY_TRANSACTION_DATA,
   (tx, transactionData) => {
     if (
       !isPerpsToastOwnedDepositTransaction(
