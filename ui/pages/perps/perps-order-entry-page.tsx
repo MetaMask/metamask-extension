@@ -1334,9 +1334,9 @@ const PerpsOrderEntryPage: React.FC = () => {
         paddingLeft={4}
         paddingRight={4}
         paddingBottom={4}
-        paddingTop={2}
+        paddingTop={3}
         flexDirection={BoxFlexDirection.Column}
-        gap={2}
+        gap={4}
         className="shrink-0"
       >
         {orderCalculations && (
