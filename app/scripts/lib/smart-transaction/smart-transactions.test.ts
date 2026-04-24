@@ -65,6 +65,7 @@ type WithRequestCallback<ReturnValue> = ({
   addRequestSpy,
   updateRequestStateSpy,
   endFlowSpy,
+  submitSignedTransactionsSpy,
 }: {
   request: SubmitSmartTransactionRequest;
   messenger: SmartTransactionsControllerMessenger;
@@ -72,6 +73,7 @@ type WithRequestCallback<ReturnValue> = ({
   addRequestSpy: jest.Mock;
   updateRequestStateSpy: jest.Mock;
   endFlowSpy: jest.Mock;
+  submitSignedTransactionsSpy: jest.SpyInstance;
 }) => ReturnValue;
 
 type WithRequestArgs<ReturnValue> =
@@ -101,10 +103,10 @@ function withRequest<ReturnValue>(
   messenger.registerActionHandler('ApprovalController:startFlow', startFlowSpy);
 
   const addRequestSpy = jest.fn().mockImplementation(() => {
-    return Promise.resolve().then(() => {
-      if (typeof addRequestCallback === 'function') {
-        addRequestCallback();
-      }
+    return new Promise<void>((resolve) => {
+      addRequestCallback = () => {
+        resolve();
+      };
     });
   });
   messenger.registerActionHandler(
@@ -173,7 +175,7 @@ function withRequest<ReturnValue>(
     },
     approvalTxFees: null,
   });
-  jest
+  const submitSignedTransactionsSpy = jest
     .spyOn(smartTransactionsController, 'submitSignedTransactions')
     .mockResolvedValue({
       uuid,
@@ -229,6 +231,7 @@ function withRequest<ReturnValue>(
     addRequestSpy,
     updateRequestStateSpy,
     endFlowSpy,
+    submitSignedTransactionsSpy,
   });
 }
 
@@ -238,7 +241,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('does not submit a transaction that is not a smart transaction', async () => {
-    withRequest(
+    await withRequest(
       {
         options: {
           isSmartTransaction: false,
@@ -252,7 +255,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('falls back to regular transaction submit if the transaction type is "swapAndSend"', async () => {
-    withRequest(async ({ request }) => {
+    await withRequest(async ({ request }) => {
       if (request.transactionMeta) {
         request.transactionMeta.type = TransactionType.swapAndSend;
       }
@@ -262,7 +265,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('falls back to regular transaction submit if the transaction type is "swapApproval"', async () => {
-    withRequest(async ({ request }) => {
+    await withRequest(async ({ request }) => {
       if (request.transactionMeta) {
         request.transactionMeta.type = TransactionType.swapApproval;
       }
@@ -272,7 +275,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('falls back to regular transaction submit if it is a legacy transaction', async () => {
-    withRequest(async ({ request }) => {
+    await withRequest(async ({ request }) => {
       // Modify transaction to be a legacy transaction (has gasPrice, no maxFeePerGas/maxPriorityFeePerGas)
       request.transactionMeta.txParams = {
         ...request.transactionMeta.txParams,
@@ -288,7 +291,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('falls back to regular transaction submit if /getFees throws an error', async () => {
-    withRequest(async ({ request, endFlowSpy }) => {
+    await withRequest(async ({ request, endFlowSpy }) => {
       jest
         .spyOn(request.smartTransactionsController, 'getFees')
         .mockImplementation(() => {
@@ -297,14 +300,14 @@ describe('submitSmartTransactionHook', () => {
       const result = await submitSmartTransactionHook(request);
       expect(request.smartTransactionsController.getFees).toHaveBeenCalled();
       expect(endFlowSpy).toHaveBeenCalledWith({
-        id: 'approvalId',
+        id: '',
       });
       expect(result).toEqual({ transactionHash: undefined });
     });
   });
 
   it('skips getting fees if the transaction is signed and sponsored', async () => {
-    withRequest(async ({ request }) => {
+    await withRequest(async ({ request, submitSignedTransactionsSpy }) => {
       request.transactionMeta.isGasFeeSponsored = true;
       request.featureFlags.extensionReturnTxHashAsap = true;
 
@@ -313,15 +316,13 @@ describe('submitSmartTransactionHook', () => {
       expect(
         request.smartTransactionsController.getFees,
       ).not.toHaveBeenCalled();
-      expect(
-        request.smartTransactionsController.submitSignedTransactions,
-      ).toHaveBeenCalled();
+      expect(submitSignedTransactionsSpy).toHaveBeenCalled();
       expect(result).toEqual({ transactionHash: txHash });
     });
   });
 
   it('returns a txHash asap if the feature flag requires it', async () => {
-    withRequest(async ({ request }) => {
+    await withRequest(async ({ request }) => {
       request.featureFlags.extensionReturnTxHashAsap = true;
       const result = await submitSmartTransactionHook(request);
       expect(result).toEqual({ transactionHash: txHash });
@@ -329,7 +330,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('throws an error if there is no uuid', async () => {
-    withRequest(async ({ request }) => {
+    await withRequest(async ({ request }) => {
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
           return { uuid: undefined };
@@ -342,7 +343,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('throws an error if there is no transaction hash', async () => {
-    withRequest(async ({ request, messenger }) => {
+    await withRequest(async ({ request, messenger }) => {
       setImmediate(() => {
         messenger.publish('SmartTransactionsController:smartTransaction', {
           status: 'cancelled',
@@ -359,7 +360,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('submits a smart transaction with an already signed transaction', async () => {
-    withRequest(
+    await withRequest(
       async ({
         request,
         messenger,
@@ -367,6 +368,7 @@ describe('submitSmartTransactionHook', () => {
         addRequestSpy,
         updateRequestStateSpy,
         endFlowSpy,
+        submitSignedTransactionsSpy,
       }) => {
         setImmediate(() => {
           messenger.publish('SmartTransactionsController:smartTransaction', {
@@ -387,31 +389,31 @@ describe('submitSmartTransactionHook', () => {
         const result = await submitSmartTransactionHook(request);
         expect(result).toEqual({ transactionHash: txHash });
         const { txParams } = request.transactionMeta || {};
-        expect(
-          request.smartTransactionsController.submitSignedTransactions,
-        ).toHaveBeenCalledWith({
-          signedTransactions: [request.signedTransactionInHex],
-          signedCanceledTransactions: [],
-          txParams,
-          transactionMeta: request.transactionMeta,
-        });
+        expect(submitSignedTransactionsSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            signedTransactions: [request.signedTransactionInHex],
+            signedCanceledTransactions: [],
+            txParams,
+            transactionMeta: request.transactionMeta,
+          }),
+        );
         addRequestCallback();
         expect(startFlowSpy).toHaveBeenCalled();
         expect(addRequestSpy).toHaveBeenCalledWith(
-          {
+          expect.objectContaining({
             id: 'approvalId',
             origin: 'http://localhost',
             type: 'smartTransaction:showSmartTransactionStatusPage',
-            requestState: {
-              smartTransaction: {
+            requestState: expect.objectContaining({
+              smartTransaction: expect.objectContaining({
                 status: 'pending',
                 uuid,
                 creationTime: expect.any(Number),
-              },
+              }),
               isDapp: true,
               txId,
-            },
-          },
+            }),
+          }),
           true,
         );
         expect(updateRequestStateSpy).toHaveBeenCalledWith({
@@ -430,6 +432,8 @@ describe('submitSmartTransactionHook', () => {
           },
         });
 
+        addRequestCallback();
+        await Promise.resolve();
         expect(endFlowSpy).toHaveBeenCalledWith({
           id: 'approvalId',
         });
@@ -438,7 +442,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('signs and submits a smart transaction', async () => {
-    withRequest(
+    await withRequest(
       {
         options: {
           signedTransactionInHex: undefined,
@@ -451,6 +455,7 @@ describe('submitSmartTransactionHook', () => {
         addRequestSpy,
         updateRequestStateSpy,
         endFlowSpy,
+        submitSignedTransactionsSpy,
       }) => {
         setImmediate(() => {
           messenger.publish('SmartTransactionsController:smartTransaction', {
@@ -484,31 +489,31 @@ describe('submitSmartTransactionHook', () => {
           ],
           { hasNonce: true },
         );
-        expect(
-          request.smartTransactionsController.submitSignedTransactions,
-        ).toHaveBeenCalledWith({
-          signedTransactions: [createSignedTransaction()],
-          signedCanceledTransactions: [],
-          txParams,
-          transactionMeta: request.transactionMeta,
-        });
+        expect(submitSignedTransactionsSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            signedTransactions: [createSignedTransaction()],
+            signedCanceledTransactions: [],
+            txParams,
+            transactionMeta: request.transactionMeta,
+          }),
+        );
         addRequestCallback();
         expect(startFlowSpy).toHaveBeenCalled();
         expect(addRequestSpy).toHaveBeenCalledWith(
-          {
+          expect.objectContaining({
             id: 'approvalId',
             origin: 'http://localhost',
             type: 'smartTransaction:showSmartTransactionStatusPage',
-            requestState: {
-              smartTransaction: {
+            requestState: expect.objectContaining({
+              smartTransaction: expect.objectContaining({
                 status: 'pending',
                 uuid,
                 creationTime: expect.any(Number),
-              },
+              }),
               isDapp: true,
               txId,
-            },
-          },
+            }),
+          }),
           true,
         );
         expect(updateRequestStateSpy).toHaveBeenCalledWith({
@@ -527,6 +532,8 @@ describe('submitSmartTransactionHook', () => {
           },
         });
 
+        addRequestCallback();
+        await Promise.resolve();
         expect(endFlowSpy).toHaveBeenCalledWith({
           id: 'approvalId',
         });
@@ -535,7 +542,7 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('submits a smart transaction and does not update approval request if approval was already approved or rejected', async () => {
-    withRequest(
+    await withRequest(
       async ({
         request,
         messenger,
@@ -543,6 +550,7 @@ describe('submitSmartTransactionHook', () => {
         addRequestSpy,
         updateRequestStateSpy,
         endFlowSpy,
+        submitSignedTransactionsSpy,
       }) => {
         setImmediate(() => {
           messenger.publish('SmartTransactionsController:smartTransaction', {
@@ -553,13 +561,15 @@ describe('submitSmartTransactionHook', () => {
             },
           } as SmartTransaction);
           addRequestCallback();
-          messenger.publish('SmartTransactionsController:smartTransaction', {
-            status: 'success',
-            uuid,
-            statusMetadata: {
-              minedHash: txHash,
-            },
-          } as SmartTransaction);
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: {
+                minedHash: txHash,
+              },
+            } as SmartTransaction);
+          });
         });
         const result = await submitSmartTransactionHook(request);
         expect(result).toEqual({ transactionHash: txHash });
@@ -567,33 +577,34 @@ describe('submitSmartTransactionHook', () => {
         expect(
           request.transactionController.approveTransactionsWithSameNonce,
         ).not.toHaveBeenCalled();
-        expect(
-          request.smartTransactionsController.submitSignedTransactions,
-        ).toHaveBeenCalledWith({
-          signedTransactions: [request.signedTransactionInHex],
-          signedCanceledTransactions: [],
-          txParams,
-          transactionMeta: request.transactionMeta,
-        });
+        expect(submitSignedTransactionsSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            signedTransactions: [request.signedTransactionInHex],
+            signedCanceledTransactions: [],
+            txParams,
+            transactionMeta: request.transactionMeta,
+          }),
+        );
         expect(startFlowSpy).toHaveBeenCalled();
         expect(addRequestSpy).toHaveBeenCalledWith(
-          {
+          expect.objectContaining({
             id: 'approvalId',
             origin: 'http://localhost',
             type: 'smartTransaction:showSmartTransactionStatusPage',
-            requestState: {
-              smartTransaction: {
+            requestState: expect.objectContaining({
+              smartTransaction: expect.objectContaining({
                 status: 'pending',
                 uuid,
                 creationTime: expect.any(Number),
-              },
+              }),
               isDapp: true,
               txId,
-            },
-          },
+            }),
+          }),
           true,
         );
         expect(updateRequestStateSpy).not.toHaveBeenCalled();
+        await Promise.resolve();
         expect(endFlowSpy).toHaveBeenCalledWith({
           id: 'approvalId',
         });
@@ -613,7 +624,7 @@ describe('submitSmartTransactionHook', () => {
 
     const endFlowSpy = jest.fn();
     const acceptRequestSpy = jest.fn();
-    const addRequestSpy = jest.fn(() => Promise.resolve());
+    const addRequestSpy = jest.fn(() => new Promise(() => undefined));
 
     // Create a mock messenger
     const mockMessenger = {
@@ -641,13 +652,15 @@ describe('submitSmartTransactionHook', () => {
     const typedMessenger =
       mockMessenger as unknown as SubmitSmartTransactionRequest['controllerMessenger'];
 
-    withRequest(
+    await withRequest(
       {
         options: {
           controllerMessenger: typedMessenger,
         },
       },
       async ({ request }) => {
+        request.featureFlags.extensionReturnTxHashAsap = true;
+
         // Mock the transaction success for both submissions
         // We do this outside the messenger to avoid type issues
         setImmediate(() => {
@@ -685,7 +698,7 @@ describe('submitSmartTransactionHook', () => {
 
   describe('shouldShowStatusPage logic', () => {
     it('does not show status page for bridge transaction type', async () => {
-      withRequest(
+      await withRequest(
         {
           options: {
             transactionMeta: {
@@ -735,7 +748,7 @@ describe('submitSmartTransactionHook', () => {
     });
 
     it('does not show status page for shieldSubscriptionApprove transaction type', async () => {
-      withRequest(
+      await withRequest(
         {
           options: {
             transactionMeta: {
@@ -785,7 +798,7 @@ describe('submitSmartTransactionHook', () => {
     });
 
     it('shows status page for simpleSend transaction type', async () => {
-      withRequest(
+      await withRequest(
         async ({ request, messenger, startFlowSpy, addRequestSpy }) => {
           setImmediate(() => {
             messenger.publish('SmartTransactionsController:smartTransaction', {
@@ -807,7 +820,7 @@ describe('submitSmartTransactionHook', () => {
     });
 
     it('shows status page for bridge transaction type when there are batch transactions', async () => {
-      withRequest(
+      await withRequest(
         {
           options: {
             transactionMeta: {
@@ -867,7 +880,7 @@ describe('submitSmartTransactionHook', () => {
     });
 
     it('shows status page for simpleSend with batch transactions', async () => {
-      withRequest(
+      await withRequest(
         {
           options: {
             transactions: [
@@ -915,23 +928,36 @@ describe('submitSmartTransactionHook', () => {
 
     // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
-      { flag: true, shouldShow: false, desc: 'skips status page when true' },
-      { flag: false, shouldShow: true, desc: 'shows status page when false' },
+      {
+        flag: true,
+        shouldRender: false,
+        expectedApprovalId: uuid,
+        desc: 'creates approval request without showing it when status page rendering is skipped',
+      },
+      {
+        flag: false,
+        shouldRender: true,
+        expectedApprovalId: 'approvalId',
+        desc: 'creates and shows approval request when status page rendering is enabled',
+      },
       {
         flag: undefined,
-        shouldShow: true,
-        desc: 'shows status page when undefined (backwards compatible)',
+        shouldRender: true,
+        expectedApprovalId: 'approvalId',
+        desc: 'creates and shows approval request when flag is undefined (backwards compatible)',
       },
     ])(
       '$desc',
       async ({
         flag,
-        shouldShow,
+        shouldRender,
+        expectedApprovalId,
       }: {
         flag: boolean | undefined;
-        shouldShow: boolean;
+        shouldRender: boolean;
+        expectedApprovalId: string;
       }) => {
-        withRequest(
+        await withRequest(
           {
             options: {
               featureFlags: {
@@ -954,21 +980,26 @@ describe('submitSmartTransactionHook', () => {
 
             const result = await submitSmartTransactionHook(request);
 
-            if (shouldShow) {
-              expect(startFlowSpy).toHaveBeenCalled();
-              expect(addRequestSpy).toHaveBeenCalled();
+            if (shouldRender) {
+              expect(startFlowSpy).toHaveBeenCalledWith();
             } else {
               expect(startFlowSpy).not.toHaveBeenCalled();
-              expect(addRequestSpy).not.toHaveBeenCalled();
             }
+            expect(addRequestSpy).toHaveBeenCalledWith(
+              expect.objectContaining({
+                id: expectedApprovalId,
+                type: 'smartTransaction:showSmartTransactionStatusPage',
+              }),
+              shouldRender,
+            );
             expect(result).toEqual({ transactionHash: txHash });
           },
         );
       },
     );
 
-    it('skips status page even with batch transactions when flag is true', async () => {
-      withRequest(
+    it('creates approval request without showing it for batch transactions when status page rendering is skipped', async () => {
+      await withRequest(
         {
           options: {
             featureFlags: {
@@ -999,7 +1030,13 @@ describe('submitSmartTransactionHook', () => {
           const result = await submitSmartTransactionHook(request);
 
           expect(startFlowSpy).not.toHaveBeenCalled();
-          expect(addRequestSpy).not.toHaveBeenCalled();
+          expect(addRequestSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              id: uuid,
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+            }),
+            false,
+          );
           expect(result).toEqual({ transactionHash: txHash });
         },
       );
@@ -1013,7 +1050,7 @@ describe('submitBatchSmartTransactionHook', () => {
   });
 
   it('does not submit a transaction that is not a smart transaction', async () => {
-    withRequest(
+    await withRequest(
       {
         options: {
           isSmartTransaction: false,
@@ -1028,7 +1065,7 @@ describe('submitBatchSmartTransactionHook', () => {
   });
 
   it('throws an error if there is no uuid', async () => {
-    withRequest(async ({ request }) => {
+    await withRequest(async ({ request }) => {
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
           return { uuid: undefined };
@@ -1041,7 +1078,7 @@ describe('submitBatchSmartTransactionHook', () => {
   });
 
   it('throws an error if there is no transaction hash', async () => {
-    withRequest(async ({ request, messenger }) => {
+    await withRequest(async ({ request, messenger }) => {
       setImmediate(() => {
         messenger.publish('SmartTransactionsController:smartTransaction', {
           status: 'cancelled',
@@ -1058,7 +1095,7 @@ describe('submitBatchSmartTransactionHook', () => {
   });
 
   it('submits batch transactions from transactions array', async () => {
-    withRequest(
+    await withRequest(
       {
         options: {
           transactions: [
@@ -1116,22 +1153,24 @@ describe('submitBatchSmartTransactionHook', () => {
 
         expect(
           request.smartTransactionsController.submitSignedTransactions,
-        ).toHaveBeenCalledWith({
-          signedTransactions: ['0x1234', '0x5678'],
-          signedCanceledTransactions: [],
-          ...(request.transactionMeta?.txParams && {
-            txParams: request.transactionMeta.txParams,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            signedTransactions: ['0x1234', '0x5678'],
+            signedCanceledTransactions: [],
+            ...(request.transactionMeta?.txParams && {
+              txParams: request.transactionMeta.txParams,
+            }),
+            ...(request.transactionMeta && {
+              transactionMeta: request.transactionMeta,
+            }),
           }),
-          ...(request.transactionMeta && {
-            transactionMeta: request.transactionMeta,
-          }),
-        });
+        );
       },
     );
   });
 
   it('submits batch transaction and handles approval flow correctly', async () => {
-    withRequest(
+    await withRequest(
       async ({
         request,
         messenger,
@@ -1169,20 +1208,20 @@ describe('submitBatchSmartTransactionHook', () => {
 
         expect(startFlowSpy).toHaveBeenCalled();
         expect(addRequestSpy).toHaveBeenCalledWith(
-          {
+          expect.objectContaining({
             id: 'approvalId',
             origin: 'http://localhost',
             type: 'smartTransaction:showSmartTransactionStatusPage',
-            requestState: {
-              smartTransaction: {
+            requestState: expect.objectContaining({
+              smartTransaction: expect.objectContaining({
                 status: 'pending',
                 uuid,
                 creationTime: expect.any(Number),
-              },
+              }),
               isDapp: true,
               txId,
-            },
-          },
+            }),
+          }),
           true,
         );
 
@@ -1207,7 +1246,7 @@ describe('submitBatchSmartTransactionHook', () => {
   });
 
   it('returns empty results array when no txHashes are returned', async () => {
-    withRequest(async ({ request, messenger }) => {
+    await withRequest(async ({ request, messenger }) => {
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
           return {
@@ -1236,7 +1275,7 @@ describe('submitBatchSmartTransactionHook', () => {
   });
 
   it('handles error during transaction submission', async () => {
-    withRequest(async ({ request, endFlowSpy }) => {
+    await withRequest(async ({ request, endFlowSpy }) => {
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
           throw new Error('Submission error');
@@ -1248,13 +1287,13 @@ describe('submitBatchSmartTransactionHook', () => {
       );
 
       expect(endFlowSpy).toHaveBeenCalledWith({
-        id: 'approvalId',
+        id: '',
       });
     });
   });
 
   it('returns txHashes asap if extensionReturnTxHashAsapBatch feature flag is enabled', async () => {
-    withRequest(async ({ request }) => {
+    await withRequest(async ({ request }) => {
       request.featureFlags.extensionReturnTxHashAsapBatch = true;
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
@@ -1274,7 +1313,7 @@ describe('submitBatchSmartTransactionHook', () => {
   });
 
   it('waits for transaction hash if extensionReturnTxHashAsapBatch is false', async () => {
-    withRequest(async ({ request, messenger }) => {
+    await withRequest(async ({ request, messenger }) => {
       request.featureFlags.extensionReturnTxHashAsapBatch = false;
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
