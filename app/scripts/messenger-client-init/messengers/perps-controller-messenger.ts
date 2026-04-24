@@ -3,6 +3,7 @@ import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
+import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
 import {
   KeyringControllerGetStateAction,
   KeyringControllerSignTypedMessageAction,
@@ -37,6 +38,7 @@ type AllowedActions =
   | RemoteFeatureFlagControllerGetStateAction
   | GeolocationControllerGetGeolocationAction
   | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
+  | GeolocationControllerGetGeolocationAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
   | MetaMetricsControllerTrackEventAction
   | StorageServiceGetItemAction
@@ -84,6 +86,7 @@ export function getPerpsControllerMessenger(
       'RemoteFeatureFlagController:getState',
       'GeolocationController:getGeolocation',
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
+      'GeolocationController:getGeolocation',
       'AuthenticationController:getBearerToken',
       'MetaMetricsController:trackEvent',
       'StorageService:getItem',
