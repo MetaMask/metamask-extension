@@ -2,6 +2,7 @@ import { merge, cloneDeep } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
 import type { Hex, Json } from '@metamask/utils';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
+import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type {
@@ -178,6 +179,11 @@ class FixtureBuilderV2 {
   */
   withAccountsController(data: Partial<AccountsControllerState>): this {
     merge(this.fixture.data.AccountsController, data);
+    return this;
+  }
+
+  withAccountTreeController(data: Partial<AccountTreeControllerState>): this {
+    merge(this.fixture.data.AccountTreeController, data);
     return this;
   }
 
@@ -376,6 +382,22 @@ class FixtureBuilderV2 {
      ==================================================================
   */
   withAccountsControllerAdditionalAccountVault(): this {
+    // Account sorting for permitted accounts (e.g. `eth_accounts`) now reads
+    // `lastSelected` from the matching `AccountGroup` in `AccountTreeController`
+    // rather than from `InternalAccount.metadata.lastSelected`. Mirror the
+    // per-account `lastSelected` values onto their corresponding account groups
+    // so sorting remains deterministic in fixtures.
+    this.withAccountTreeController({
+      accountGroupsMetadata: {
+        'entropy:01KGHBJCECE5PTNHY84ZAE2V9Y/0': {
+          lastSelected: 1665507600000,
+        },
+        'entropy:01KGHBJCECE5PTNHY84ZAE2V9Y/1': {
+          lastSelected: 1665507800000,
+        },
+      },
+    });
+
     return this.withAccountsController({
       internalAccounts: {
         selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
