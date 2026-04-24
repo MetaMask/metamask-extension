@@ -21,7 +21,7 @@ import {
   DEFAULT_ADDRESS_OPTIONS,
   type DefaultAddressScope,
 } from '../../../../shared/constants/default-address';
-import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PREFERENCES_ITEMS } from '../search-config';
 
 export const ShowDefaultAddressItem = () => {

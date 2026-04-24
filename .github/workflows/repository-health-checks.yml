@@ -11,12 +11,13 @@ jobs:
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SLACK_WEBHOOK_METAMASK_EXTENSION: ${{ secrets.SLACK_WEBHOOK_METAMASK_EXTENSION }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
-          fetch-depth: 0 # This is needed to checkout all branches
           skip-allow-scripts: true
 
       - name: ShellCheck Lint
@@ -43,9 +44,127 @@ jobs:
         if: ${{ !cancelled() }}
         run: yarn --check-resolutions
 
-      - name: Run audit
-        if: ${{ !cancelled() }}
-        run: yarn audit
+      # --- Baseline download (PR, push-to-main, and cron) ---
+      # When the download fails (first rollout, expired artifact, or fork PR
+      # with read-only token), NO_BASELINE=true tells the triage script to
+      # fall back to the same criteria as the package.json `audit` script:
+      #   yarn audit --environment production --severity moderate
+      #
+      # merge_group runs skip the diff entirely: by the time a PR enters the
+      # merge queue it has already passed the diff check. Any new advisory
+      # that appeared on main since then wasn't introduced by this PR and
+      # will be surfaced by the next push-to-main run.
+      #
+      # schedule (cron) runs also diff against the latest baseline. This
+      # catches newly published CVEs overnight — even when no code was pushed —
+      # and sends a Slack alert. The cron schedule is defined in main.yml.
+      - name: Audit -- find baseline run
+        id: find-baseline-run
+        if: >-
+          ${{
+            !cancelled()
+            && (
+              github.event_name == 'pull_request'
+              || github.event_name == 'push'
+              || github.event_name == 'schedule'
+            )
+          }}
+        continue-on-error: true
+        uses: actions/github-script@v8
+        with:
+          script: |
+            // Security: we must use an explicit push-to-main run ID when
+            // downloading the baseline artifact. If we omit run-id,
+            // actions/download-artifact defaults to the current run only.
+            // If we searched all runs without the branch+event filter, a PR
+            // branch run could upload a poisoned audit-baseline artifact that
+            // whitelists arbitrary GHSA IDs, causing the diff to report zero
+            // new advisories.
+            const { data } = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'main.yml',
+              branch: 'main',
+              event: 'push',
+              status: 'completed',
+              per_page: 1,
+            });
+            const run = data.workflow_runs[0];
+            if (!run) {
+              core.setFailed('No completed push-to-main run found for main.yml');
+              return;
+            }
+            core.info(`Using baseline from run ${run.id} (${run.html_url})`);
+            core.setOutput('run-id', String(run.id));
+
+      - name: Audit -- download baseline
+        id: download-baseline
+        if: ${{ !cancelled() && steps.find-baseline-run.outcome == 'success' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: audit-baseline
+          path: .tmp
+          run-id: ${{ steps.find-baseline-run.outputs.run-id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Audit -- check for vulnerabilities
+        if: ${{ !cancelled() && github.event_name != 'merge_group' }}
+        env:
+          NO_BASELINE: ${{ steps.download-baseline.outcome != 'success' }}
+        run: |
+          mkdir -p .tmp
+          yarn tsx .github/scripts/yarn-audit-and-triage.mts
+
+      # --- Diff (runs when a real baseline was downloaded) ---
+      # On push-to-main and cron this detects advisories introduced since the
+      # last green build and sends a Slack notification. On PRs it fails the
+      # check when new production moderate+ advisories are found.
+      - name: Audit -- diff against baseline
+        if: ${{ !cancelled() && steps.download-baseline.outcome == 'success' }}
+        run: |
+          yarn tsx .github/scripts/yarn-audit-diff.mts
+
+      # On push-to-main, rename the audit output to audit-baseline.json so the
+      # uploaded artifact name matches what PR runs download to .tmp.
+      - name: Audit -- rename baseline
+        if: >-
+          ${{
+            !cancelled()
+            && github.event_name == 'push'
+            && github.ref == 'refs/heads/main'
+          }}
+        run: mv .tmp/audit-current.json .tmp/audit-baseline.json
+
+      - name: Audit -- upload baseline artifact
+        if: >-
+          ${{
+            !cancelled()
+            && github.event_name == 'push'
+            && github.ref == 'refs/heads/main'
+          }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: audit-baseline
+          path: .tmp/audit-baseline.json
+
+      - name: Audit -- upload baseline to S3
+        if: >-
+          ${{
+            !cancelled()
+            && github.event_name == 'push'
+            && github.ref == 'refs/heads/main'
+            && github.repository == 'MetaMask/metamask-extension'
+            && vars.AWS_REGION
+            && vars.AWS_IAM_ROLE
+            && vars.AWS_S3_BUCKET
+          }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/audit-baseline
+          path: .tmp/audit-baseline.json
 
       - name: Detect yarn lock deduplications
         if: ${{ !cancelled() }}
@@ -63,7 +182,8 @@ jobs:
         if: ${{ !cancelled() }}
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn tsx .github/scripts/check-feature-flag-registry.ts
 
       - name: Check working tree
@@ -78,11 +198,6 @@ jobs:
         if: ${{ !cancelled() && github.event_name == 'pull_request'}}
         env:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
-        run: |
-          # The following command generates a diff of changes between the common
-          # ancestor of $BASE_REF and HEAD, and the current commit (HEAD), for
-          # files in the current directory and its subdirectories. The output is
-          # then saved to a file called "diff".
-          git diff "$(git merge-base "origin/$BASE_REF" HEAD)" HEAD -- . > ./diff
-
-          yarn fitness-functions ci ./diff
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn fitness-functions ci

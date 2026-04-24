@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { capitalize } from 'lodash';
 import type { Order, Position } from '@metamask/perps-controller';
 
 const FULL_POSITION_SIZE_TOLERANCE = new BigNumber('0.00000001');
@@ -166,24 +167,21 @@ export const isOrderAssociatedWithFullPosition = (
 };
 
 /**
- * Determines whether an order should be shown in Market Details > Orders.
+ * Determines whether an order should be shown in Market Details > Orders
+ * (the perps asset / position detail screen).
  *
- * - All non-reduce-only orders are shown.
- * - Reduce-only orders are shown only when they are NOT full-position TP/SL.
+ * Full-position TP/SL and `isPositionTpsl` rows are included here so users can
+ * see and act on them alongside other open orders, in addition to the position
+ * summary. `isOrderAssociatedWithFullPosition` remains for other call sites.
  *
- * @param order - The order to check
- * @param position - The current position (if any)
+ * @param _order - The order to check (reserved for future filtering)
+ * @param _position - The current position (reserved for future filtering)
  * @returns Whether the order should be displayed
  */
 export const shouldDisplayOrderInMarketDetailsOrders = (
-  order: Order,
-  position?: Position,
-): boolean => {
-  if (!order.reduceOnly) {
-    return true;
-  }
-  return !isOrderAssociatedWithFullPosition(order, position);
-};
+  _order: Order,
+  _position?: Position,
+): boolean => true;
 
 const buildSyntheticTriggerOrder = (
   parentOrder: Order,
@@ -305,7 +303,7 @@ export const buildDisplayOrdersWithSyntheticTpsl = (
  * Normalizes orders for the Perps Market Details > Orders section.
  *
  * Composes display-order enrichment (synthetic TP/SL rows) with visibility
- * filtering (hides full-position TP/SL, keeps everything else).
+ * filtering (currently all enriched orders are shown, including full-position TP/SL).
  *
  * @param options0 - Options object
  * @param options0.orders - The orders to normalize
@@ -324,4 +322,42 @@ export const normalizeMarketDetailsOrders = ({
   return ordersWithSyntheticTpsl.filter((order) =>
     shouldDisplayOrderInMarketDetailsOrders(order, existingPosition),
   );
+};
+
+/**
+ * Formats an order label following the pattern: [Type] [close?] [direction]
+ * Matches the mobile canonical formatter in app/components/UI/Perps/utils/orderUtils.ts.
+ *
+ * Examples:
+ * - "Market long" / "Limit short"
+ * - "Limit close long" / "Market close short"
+ * - "Stop market close long" / "Take profit limit close short"
+ *
+ * Rules:
+ * - isClosing = reduceOnly || isTrigger
+ * - direction for closing: sell → long, buy → short
+ * - direction for opening: buy → long, sell → short
+ * - typeString = detailedOrderType if present, otherwise "Limit" or "Market"
+ * - lodash capitalize: uppercases first char, lowercases the rest
+ *
+ * @param order - The order to label
+ * @returns Formatted label string in sentence case
+ */
+export const formatOrderLabel = (order: Order): string => {
+  const { side, detailedOrderType, orderType, reduceOnly, isTrigger } = order;
+  const isClosing = Boolean(reduceOnly || isTrigger);
+
+  let direction: string;
+  if (isClosing) {
+    direction = side === 'sell' ? 'long' : 'short';
+  } else {
+    direction = side === 'buy' ? 'long' : 'short';
+  }
+
+  const typeString =
+    detailedOrderType || (orderType === 'limit' ? 'Limit' : 'Market');
+
+  return isClosing
+    ? capitalize(`${typeString} close ${direction}`)
+    : capitalize(`${typeString} ${direction}`);
 };

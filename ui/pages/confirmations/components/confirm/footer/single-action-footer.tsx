@@ -22,6 +22,7 @@ type ButtonState = {
 const BUTTON_TEXT_BY_TYPE: Partial<Record<TransactionType, string>> = {
   [TransactionType.musdConversion]: 'musdConvert',
   [TransactionType.perpsDeposit]: 'addFunds',
+  [TransactionType.perpsWithdraw]: 'perpsWithdraw',
 };
 
 function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {

@@ -174,7 +174,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 204,
+      "currentMigrationVersion": 206,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -220,6 +220,7 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
+    "AssetsController": {},
     "AuthenticationController": {},
     "BridgeStatusController": {
       "txHistory": {}
@@ -359,7 +360,31 @@
       }
     },
     "MultichainAssetsRatesController": {
-      "conversionRates": {}
+      "conversionRates": {
+        "bip122:000000000019d6689c085ae165831e93/slip44:0": {
+          "conversionTime": 1776106420,
+          "currency": "swift:0/iso4217:USD",
+          "expirationTime": 1776106480,
+          "marketData": {
+            "allTimeHigh": "126080",
+            "allTimeLow": "67.81",
+            "circulatingSupply": "19975290",
+            "fungible": true,
+            "marketCap": "1836592437357",
+            "pricePercentChange": {
+              "P14D": 4.795747124043681,
+              "P1D": 1.6980683447716627,
+              "P1Y": -1.0484081200296924,
+              "P200D": -14.088182161660676,
+              "P30D": 2.1388997840239408,
+              "P7D": -1.6285705945180806,
+              "PT1H": -0.09840133404969334
+            },
+            "totalVolume": "45216146754"
+          },
+          "rate": "106763"
+        }
+      }
     },
     "MultichainBalancesController": {
       "balances": {
@@ -917,8 +942,8 @@
         "gmx": {},
         "hyperliquid": {}
       },
-      "showSidePanelMigrationToast": false,
       "securityAlertsEnabled": true,
+      "showSidePanelMigrationToast": false,
       "snapRegistryList": {},
       "snapsAddSnapAccountModalDismissed": false,
       "theme": "os",
@@ -1080,6 +1105,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 204
+    "version": 206
   }
 }
