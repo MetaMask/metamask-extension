@@ -1,14 +1,10 @@
 import { cloneDeep } from 'lodash';
-<<<<<<< Updated upstream
 import { zeroAddress } from 'ethereumjs-util';
-=======
->>>>>>> Stashed changes
 import { migrate, version } from './206';
 
 const VERSION = version;
 const OLD_VERSION = VERSION - 1;
 
-<<<<<<< Updated upstream
 const ZERO_ADDRESS = zeroAddress();
 
 describe(`migration #${VERSION}`, () => {
@@ -61,16 +57,6 @@ describe(`migration #${VERSION}`, () => {
               },
             },
           },
-=======
-describe(`migration #${VERSION}`, () => {
-  it('resets isSignedIn from true to false', async () => {
-    const oldStorage = {
-      meta: { version: OLD_VERSION },
-      data: {
-        AuthenticationController: {
-          isSignedIn: true,
-          srpSessionData: { 'srp-1': { token: 'cached-token' } },
->>>>>>> Stashed changes
         },
       },
     };
@@ -81,7 +67,6 @@ describe(`migration #${VERSION}`, () => {
     await migrate(versionedData, changedControllers);
 
     expect(versionedData.meta.version).toBe(VERSION);
-<<<<<<< Updated upstream
     expect(versionedData.data.TokenBalancesController).toStrictEqual({
       tokenBalances: {
         '0xbf4ed7b27f1d666546861667caba0eecca747d7d': {
@@ -153,28 +138,6 @@ describe(`migration #${VERSION}`, () => {
               },
             },
           },
-=======
-    expect(versionedData.data.AuthenticationController).toStrictEqual({
-      isSignedIn: false,
-      srpSessionData: { 'srp-1': { token: 'cached-token' } },
-    });
-    expect(changedControllers).toStrictEqual(
-      new Set(['AuthenticationController']),
-    );
-  });
-
-  it('preserves srpSessionData untouched', async () => {
-    const srpSessionData = {
-      'srp-1': { token: 'token-1', profile: { profileId: 'p1' } },
-      'srp-2': { token: 'token-2', profile: { profileId: 'p2' } },
-    };
-    const oldStorage = {
-      meta: { version: OLD_VERSION },
-      data: {
-        AuthenticationController: {
-          isSignedIn: true,
-          srpSessionData,
->>>>>>> Stashed changes
         },
       },
     };
@@ -184,9 +147,7 @@ describe(`migration #${VERSION}`, () => {
 
     await migrate(versionedData, changedControllers);
 
-<<<<<<< Updated upstream
     expect(versionedData.meta.version).toBe(VERSION);
-    // Same same
     expect(versionedData.data.TokenBalancesController).toStrictEqual({
       tokenBalances: {
         '0xbf4ed7b27f1d666546861667caba0eecca747d7d': {
@@ -208,15 +169,6 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('does nothing when TokenBalancesController is missing', async () => {
-=======
-    expect(versionedData.data.AuthenticationController).toStrictEqual({
-      isSignedIn: false,
-      srpSessionData,
-    });
-  });
-
-  it('does nothing when AuthenticationController is missing', async () => {
->>>>>>> Stashed changes
     const oldStorage = {
       meta: { version: OLD_VERSION },
       data: {
@@ -234,19 +186,11 @@ describe(`migration #${VERSION}`, () => {
     expect(changedControllers.size).toBe(0);
   });
 
-<<<<<<< Updated upstream
   it('does nothing when TokenBalancesController is of incorrect type', async () => {
     const oldStorage = {
       meta: { version: OLD_VERSION },
       data: {
         TokenBalancesController: 'I am not an object',
-=======
-  it('does nothing when AuthenticationController is not an object', async () => {
-    const oldStorage = {
-      meta: { version: OLD_VERSION },
-      data: {
-        AuthenticationController: 'invalid',
->>>>>>> Stashed changes
       },
     };
 
@@ -260,22 +204,12 @@ describe(`migration #${VERSION}`, () => {
     expect(changedControllers.size).toBe(0);
   });
 
-<<<<<<< Updated upstream
   it('does nothing when tokenBalances object is missing', async () => {
     const oldStorage = {
       meta: { version: OLD_VERSION },
       data: {
         TokenBalancesController: {
           iamNotTheTokenBalanceObject: {},
-=======
-  it('does nothing when isSignedIn is already false', async () => {
-    const oldStorage = {
-      meta: { version: OLD_VERSION },
-      data: {
-        AuthenticationController: {
-          isSignedIn: false,
-          srpSessionData: {},
->>>>>>> Stashed changes
         },
       },
     };
@@ -290,21 +224,12 @@ describe(`migration #${VERSION}`, () => {
     expect(changedControllers.size).toBe(0);
   });
 
-<<<<<<< Updated upstream
   it('does nothing when tokenBalances is of incorrect type', async () => {
     const oldStorage = {
       meta: { version: OLD_VERSION },
       data: {
         TokenBalancesController: {
           tokenBalances: 'I am not an object.',
-=======
-  it('does nothing when isSignedIn property is missing', async () => {
-    const oldStorage = {
-      meta: { version: OLD_VERSION },
-      data: {
-        AuthenticationController: {
-          srpSessionData: {},
->>>>>>> Stashed changes
         },
       },
     };
