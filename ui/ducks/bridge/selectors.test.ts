@@ -1857,6 +1857,42 @@ describe('Bridge selectors', () => {
       expect(result.isInsufficientGasBalance).toStrictEqual(true);
     });
 
+    it('should return isInsufficientGasBalance=true for gasIncluded7702 on Monad when native balance after trade < 10 MON but user is using a Hardware Wallet', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromTokenInputValue: '95',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          // 100 MON in wei
+          fromNativeBalance: '100000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.MONAD,
+            srcTokenAmount: '95000000000000000000',
+            gasIncluded7702: true,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: 'eip155:143' }],
+          },
+          gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
+      expect(result.isInsufficientGasBalance).toStrictEqual(false);
+    });
+
     it('should return isInsufficientGasBalance=true for gasIncluded7702 on Monad when native balance after trade < 10 MON', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
@@ -1877,37 +1913,17 @@ describe('Bridge selectors', () => {
         metamaskStateOverrides: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
         },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: 'eip155:143' }],
+          },
+          gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
+        },
       });
       const result = getValidationErrors(state as never);
 
       // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
       expect(result.isInsufficientGasBalance).toStrictEqual(true);
-    });
-
-    it('should return isInsufficientGasBalance=false for non-sponsored Monad swap even when remaining balance < 10 MON', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: {
-          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
-          fromTokenInputValue: '95',
-          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
-          fromNativeBalance: '100000000000000000000',
-        },
-        bridgeStateOverrides: {
-          quotesLastFetched: Date.now(),
-          quoteRequest: {
-            srcChainId: CHAIN_IDS.MONAD,
-            srcTokenAmount: '95000000000000000000',
-            gasIncluded7702: false,
-          },
-        },
-        metamaskStateOverrides: {
-          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
-        },
-      });
-      const result = getValidationErrors(state as never);
-
-      // 100 - 95 = 5 MON remaining, but no 7702 sponsorship so no reserve applies
-      expect(result.isInsufficientGasBalance).toStrictEqual(false);
     });
 
     it('should return isInsufficientGasBalance=false for gasIncluded7702 on Monad when native balance after trade >= 10 MON', () => {
@@ -1930,11 +1946,158 @@ describe('Bridge selectors', () => {
         metamaskStateOverrides: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
         },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: 'eip155:143' }],
+          },
+          gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
+        },
       });
       const result = getValidationErrors(state as never);
 
       // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
+    });
+
+    it('should return populated insufficientNativeReserveError on Monad when native balance after trade < 10 MON', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromTokenInputValue: '95',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          // 100 MON in wei
+          fromNativeBalance: '100000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.MONAD,
+            srcTokenAmount: '95000000000000000000',
+            gasIncluded7702: true,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: 'eip155:143' }],
+          },
+          gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
+      expect(result.insufficientNativeReserveError).toStrictEqual({
+        maxSwappableNativeBalance: '90',
+        minimumNativeBalanceToBeKeptInAccount: '10',
+      });
+    });
+
+    it('should return undefined insufficientNativeReserveError on Monad when native balance after trade < 10 MON but user is using a Hardware Wallet', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromTokenInputValue: '95',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          // 100 MON in wei
+          fromNativeBalance: '100000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.MONAD,
+            srcTokenAmount: '95000000000000000000',
+            gasIncluded7702: true,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: 'eip155:143' }],
+          },
+          gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
+      expect(result.insufficientNativeReserveError).toStrictEqual(undefined);
+    });
+
+    it('should return undefined insufficientNativeReserveError on Monad when native balance after trade >= 10 MON', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromTokenInputValue: '80',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          // 100 MON in wei
+          fromNativeBalance: '100000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.MONAD,
+            srcTokenAmount: '80000000000000000000',
+            gasIncluded7702: true,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: 'eip155:143' }],
+          },
+          gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
+      expect(result.insufficientNativeReserveError).toBeUndefined();
+    });
+
+    it('should return undefined insufficientNativeReserveError on Solana even when trying to use full balance', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
+          fromToken: {
+            decimals: 9,
+            address: zeroAddress(),
+            chainId: formatChainIdToCaip(ChainId.SOLANA),
+            assetId: getNativeAssetForChainId(ChainId.SOLANA).assetId,
+          },
+          fromTokenInputValue: '1000000000',
+          fromNativeBalance: '1000000000',
+        },
+        bridgeStateOverrides: {
+          minimumBalanceForRentExemptionInLamports: '1000000000',
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: ChainId.SOLANA,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: 'eip155:143' }],
+          },
+          gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // We don't apply such logic in Solana because this is handled by another validator
+      expect(result.insufficientNativeReserveError).toBeUndefined();
     });
   });
 

@@ -196,6 +196,7 @@ const PrepareBridgePage = ({
     isNoQuotesAvailable,
     isInsufficientGasForQuote,
     isInsufficientBalance,
+    insufficientNativeReserveError,
     isStockMarketClosed,
   } = useSelector(
     (state) => getValidationErrors(state as BridgeAppState, Date.now()),
@@ -203,6 +204,10 @@ const PrepareBridgePage = ({
   );
   const txAlert = useSelector(getTxAlerts);
   const { openBuyCryptoInPdapp } = useRamps();
+
+  const hasInsufficientReserveNativeToken = Boolean(
+    insufficientNativeReserveError,
+  );
 
   const { tokenAlert } = useTokenAlerts();
   const securityWarnings: string[] = useMemo(() => {
@@ -257,6 +262,7 @@ const PrepareBridgePage = ({
       return;
     }
     if (
+      hasInsufficientReserveNativeToken ||
       isInsufficientGasForQuote ||
       tokenAlert ||
       txAlert ||
@@ -268,6 +274,7 @@ const PrepareBridgePage = ({
       });
     }
   }, [
+    hasInsufficientReserveNativeToken,
     isInsufficientGasForQuote,
     tokenAlert,
     txAlert,
@@ -298,7 +305,8 @@ const PrepareBridgePage = ({
       // balance is less than the tenderly balance
       insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
         ? true
-        : isInsufficientBalance,
+        : // hasInsufficientReserveNativeToken will also make simulation fail
+          isInsufficientBalance || hasInsufficientReserveNativeToken,
       slippage,
       walletAddress: selectedAccount.address,
       destWalletAddress: selectedDestinationAccount?.address,
@@ -318,6 +326,7 @@ const PrepareBridgePage = ({
     effectiveGasIncluded,
     effectiveGasIncluded7702,
     isInsufficientBalance,
+    hasInsufficientReserveNativeToken,
   ]);
 
   // `useRef` is used here to manually memoize a function reference.
@@ -798,6 +807,40 @@ const PrepareBridgePage = ({
               textAlign={TextAlign.Left}
               actionButtonLabel={t('buyMoreAsset', [ticker])}
               actionButtonOnClick={() => openBuyCryptoInPdapp()}
+            />
+          )}
+        {!isLoading &&
+          activeQuote &&
+          !isInsufficientBalance &&
+          !isInsufficientGasForQuote &&
+          insufficientNativeReserveError &&
+          insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
+            '0' && (
+            <BannerAlert
+              title={t('bridgeValidationInsufficientNativeReserveTitle', [
+                ticker,
+              ])}
+              severity={BannerAlertSeverity.Danger}
+              description={t(
+                'bridgeValidationInsufficientNativeReserveMessage',
+                [
+                  insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount,
+                  insufficientNativeReserveError.maxSwappableNativeBalance,
+                  ticker,
+                ],
+              )}
+              descriptionProps={{
+                'data-testid': 'bridge-insufficient-native-reserve',
+              }}
+              textAlign={TextAlign.Left}
+              actionButtonLabel={t('bridgeUseMaxAmountAllowedWithReserve')}
+              actionButtonOnClick={() =>
+                dispatch(
+                  setFromTokenInputValue(
+                    insufficientNativeReserveError.maxSwappableNativeBalance,
+                  ),
+                )
+              }
             />
           )}
         <div ref={alertBannersRef} />
