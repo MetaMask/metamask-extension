@@ -27,8 +27,9 @@ import type {
 import {
   formatPerpsFiat,
   formatPercentage,
+  formatVolume,
   PRICE_RANGES_UNIVERSAL,
-} from '@metamask/perps-controller';
+} from '../../../../shared/lib/perps-formatters';
 import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
 import {
   MetaMetricsEventCategory,
@@ -223,15 +224,12 @@ function createFeatureFlags(): PerpsPlatformDependencies['featureFlags'] {
 }
 
 function createMarketDataFormatters(): MarketDataFormatters {
-  const compactFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    notation: 'compact',
-    maximumFractionDigits: 1,
-  });
-
   return {
-    formatVolume: (value: number) => compactFormatter.format(value),
+    // Mobile-parity magnitude-aware volume formatter (2 decimals for B/M, 0 for
+    // K, 2 below $1K). Replaces the previous Intl.NumberFormat compact config,
+    // which dropped trailing `.0` on round billions (`$2B` instead of mobile's
+    // `$2.30B`). See shared/lib/perps-formatters.ts:formatVolume.
+    formatVolume: (value: number) => formatVolume(value),
     formatPerpsFiat: (
       value: number,
       options?: { ranges?: unknown[] },

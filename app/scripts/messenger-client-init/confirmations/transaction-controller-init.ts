@@ -132,9 +132,7 @@ export const TransactionControllerInit: MessengerClientInitFunction<
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
       includeTokenTransfers: false,
-      isEnabled: () =>
-        preferencesController().state.useExternalServices &&
-        onboardingController().state.completedOnboarding,
+      isEnabled: () => false,
       updateTransactions: true,
     },
     isAutomaticGasFeeUpdateEnabled,
