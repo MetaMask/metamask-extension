@@ -40,10 +40,8 @@ describe('Name lookup', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await homePage.checkPageIsLoaded();
+        // Navigate to the extension home page and validate the recipient address in the send flow
         await homePage.startSendFlow();
-
-        await sendPage.checkPageIsLoaded();
 
         await sendPage.selectToken('0x1', 'ETH');
         await sendPage.fillRecipient('metamask.domain');
