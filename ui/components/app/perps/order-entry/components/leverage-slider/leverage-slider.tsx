@@ -147,7 +147,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
       <Box
         flexDirection={BoxFlexDirection.Row}
         className="px-3 justify-between"
-        style={{ marginRight: 'calc(64px + 8px)' }}
+        style={{ marginRight: 'calc(72px + 8px)' }}
       >
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {minLeverage}x
