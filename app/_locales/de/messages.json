@@ -2229,9 +2229,6 @@
   "deepLink_thePerpsMarketDetailPage": {
     "message": "die Tätermarktseite"
   },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "die Seite mit der Tätermarktliste"
-  },
   "deepLink_thePerpsPage": {
     "message": "die Perps-Seite"
   },
