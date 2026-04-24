@@ -1,4 +1,5 @@
 import type { Page, BrowserContext } from '@playwright/test';
+import type { ManifestFlags } from '../../../../shared/lib/manifestFlags';
 
 export type StateMode = 'default' | 'onboarding' | 'custom';
 
@@ -33,6 +34,7 @@ export type LaunchOptions = {
   network?: NetworkConfig;
   fixture?: FixtureData;
   proxyServer?: string;
+  manifestFlags?: Partial<ManifestFlags>;
 };
 
 export type LauncherLaunchOptions = LaunchOptions;

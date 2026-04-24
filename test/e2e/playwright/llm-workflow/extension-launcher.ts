@@ -1,5 +1,6 @@
 import path from 'path';
 import { promises as fs, existsSync } from 'fs';
+import { merge } from 'lodash';
 import { chromium, type Page, type BrowserContext } from '@playwright/test';
 import {
   ConsoleErrorBuffer,
@@ -7,6 +8,7 @@ import {
   waitForExtensionUiReady,
 } from '@metamask/client-mcp-core';
 import type { ExtensionReadinessConfig } from '@metamask/client-mcp-core';
+import type { ManifestFlags } from '../../../../shared/lib/manifestFlags';
 import {
   CONNECT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -62,6 +64,7 @@ type ResolvedOptions = {
   stateMode: 'default' | 'onboarding' | 'custom';
   network: NetworkConfig;
   proxyServer?: string;
+  manifestFlags?: Partial<ManifestFlags>;
 };
 
 export function buildChromiumLaunchArgs(
@@ -97,6 +100,8 @@ export class MetaMaskExtensionLauncher {
 
   private userDataDir: string;
 
+  private manifestBackupPath?: string;
+
   private consoleErrorBuffer = new ConsoleErrorBuffer(100);
 
   constructor(options: LauncherLaunchOptions = {}) {
@@ -117,6 +122,7 @@ export class MetaMaskExtensionLauncher {
         chainId: DEFAULT_CHAIN_ID,
       },
       proxyServer: options.proxyServer,
+      manifestFlags: options.manifestFlags,
     };
     this.userDataDir = '';
 
@@ -179,10 +185,44 @@ export class MetaMaskExtensionLauncher {
     }
   }
 
+  private getManifestPath(): string {
+    return path.join(this.options.extensionPath, 'manifest.json');
+  }
+
+  private async backupManifest(): Promise<void> {
+    const manifestPath = this.getManifestPath();
+    const backupPath = `${manifestPath}.backup`;
+    await fs.copyFile(manifestPath, backupPath);
+    this.manifestBackupPath = backupPath;
+  }
+
+  private async patchManifestFlags(
+    flags: Partial<ManifestFlags>,
+  ): Promise<void> {
+    const manifestPath = this.getManifestPath();
+    const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf-8'));
+    manifest._flags = merge({}, manifest._flags ?? {}, flags);
+    await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2));
+  }
+
+  private async restoreManifest(): Promise<void> {
+    if (!this.manifestBackupPath || !existsSync(this.manifestBackupPath)) {
+      return;
+    }
+    await fs.copyFile(this.manifestBackupPath, this.getManifestPath());
+    await fs.rm(this.manifestBackupPath, { force: true });
+    this.manifestBackupPath = undefined;
+  }
+
   async launch(): Promise<LauncherContext> {
     await this.validateExtensionExists();
 
     await this.ensureDirectories();
+
+    if (this.options.manifestFlags) {
+      await this.backupManifest();
+      await this.patchManifestFlags(this.options.manifestFlags);
+    }
 
     try {
       this.userDataDir =
@@ -506,25 +546,28 @@ export class MetaMaskExtensionLauncher {
   }
 
   async cleanup(): Promise<void> {
-    if (this.context) {
-      try {
-        await this.context.close();
-      } catch (e) {
-        console.warn('Failed to close browser context:', e);
+    try {
+      if (this.context) {
+        try {
+          await this.context.close();
+        } catch (e) {
+          console.warn('Failed to close browser context:', e);
+        }
+        this.context = undefined;
       }
-      this.context = undefined;
-    }
 
-    if (this.userDataDir && !this.options.userDataDir) {
-      try {
-        await fs.rm(this.userDataDir, { recursive: true, force: true });
-      } catch {
-        console.warn('Failed to clean up user data directory');
+      if (this.userDataDir && !this.options.userDataDir) {
+        try {
+          await fs.rm(this.userDataDir, { recursive: true, force: true });
+        } catch {
+          console.warn('Failed to clean up user data directory');
+        }
       }
+    } finally {
+      await this.restoreManifest();
+      this.extensionPage = undefined;
+      this.extensionId = undefined;
     }
-
-    this.extensionPage = undefined;
-    this.extensionId = undefined;
   }
 }
 

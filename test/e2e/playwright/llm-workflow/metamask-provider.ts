@@ -410,6 +410,13 @@ export class MetaMaskSessionManager implements ISessionManager {
 
     let launcher: MetaMaskExtensionLauncher | undefined;
 
+    const workflowConfig = this.workflowContext?.config;
+    const contextPorts =
+      workflowConfig !== undefined && workflowConfig.environment === 'e2e'
+        ? workflowConfig.ports
+        : undefined;
+    const resolvedFixturePort = contextPorts?.fixtureServer;
+
     try {
       if (!isProdMode && fixtureCapability) {
         const fixtureState = fixtureCapability.resolveState({
@@ -451,6 +458,13 @@ export class MetaMaskSessionManager implements ISessionManager {
         slowMo: input.slowMo ?? 0,
         extensionPath,
         proxyServer,
+        manifestFlags: resolvedFixturePort
+          ? {
+              testing: {
+                fixtureServerPort: resolvedFixturePort,
+              },
+            }
+          : undefined,
       };
 
       launcher = new MetaMaskExtensionLauncher(launchOptions);
@@ -478,16 +492,8 @@ export class MetaMaskSessionManager implements ISessionManager {
       chainId,
     });
     const startedAt = new Date().toISOString();
-    const config = this.workflowContext?.config;
-    const contextPorts =
-      config !== undefined && config.environment === 'e2e'
-        ? config.ports
-        : undefined;
 
-    // TODO - remove DEFAULT values once Types on client-mcp-core are updated.
-    const resolvedAnvilPort = contextPorts?.anvil ?? DEFAULT_ANVIL_PORT;
-    const resolvedFixturePort =
-      contextPorts?.fixtureServer ?? DEFAULT_FIXTURE_SERVER_PORT;
+    const resolvedAnvilPort = contextPorts?.anvil;
 
     this.activeSession = {
       state: {
@@ -495,8 +501,9 @@ export class MetaMaskSessionManager implements ISessionManager {
         extensionId,
         startedAt,
         ports: {
-          anvil: resolvedAnvilPort,
-          fixtureServer: resolvedFixturePort,
+          // TODO - remove DEFAULT values once Types on client-mcp-core are updated.
+          anvil: resolvedAnvilPort ?? DEFAULT_ANVIL_PORT,
+          fixtureServer: resolvedFixturePort ?? DEFAULT_FIXTURE_SERVER_PORT,
         },
         stateMode,
       },
