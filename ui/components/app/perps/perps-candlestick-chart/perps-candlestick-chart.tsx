@@ -24,6 +24,7 @@ import {
   formatVolumeDataForChart,
   formatSingleCandleForChart,
   formatSingleVolumeForChart,
+  formatChartTimestamp,
 } from './chart-utils';
 
 /**
@@ -279,6 +280,10 @@ const PerpsCandlestickChart = forwardRef<
             enableResize: false,
           },
         },
+        localization: {
+          timeFormatter: (time: number) =>
+            formatChartTimestamp(time, null, true),
+        },
         grid: {
           vertLines: { color: gridColor },
           horzLines: { color: gridColor },
@@ -304,6 +309,8 @@ const PerpsCandlestickChart = forwardRef<
           timeVisible: true,
           secondsVisible: false,
           borderColor: 'transparent',
+          tickMarkFormatter: (time: number, tickMarkType: number) =>
+            formatChartTimestamp(time, tickMarkType, false),
         },
         rightPriceScale: {
           borderColor: 'transparent',
