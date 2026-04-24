@@ -74,7 +74,8 @@ export function usePerpsMarginCalculations({
     const isLong = Number.parseFloat(position.size) >= 0;
     // Add-margin draws from tradeable funds, not withdrawable-only, so HL
     // unified accounts funded by spot USDC can still add margin.
-    const availableBalance = Number.parseFloat(getTradeableBalance(account)) || 0;
+    const availableBalance =
+      Number.parseFloat(getTradeableBalance(account)) || 0;
     const notionalValue = Number.parseFloat(position.positionValue) || 0;
 
     const maxAmount =
