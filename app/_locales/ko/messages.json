@@ -7951,9 +7951,6 @@
   "smartAccount": {
     "message": "스마트 계정"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "디앱이 일반 계정에 스마트 계정 기능을 요청하도록 허용합니다. 이미 스마트 계정인 계정에는 영향을 미치지 않습니다."
-  },
   "smartAccountDappRequestsTitle": {
     "message": "디앱의 스마트 계정 요청"
   },
@@ -7962,9 +7959,6 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "디앱의 스마트 계정 요청"
-  },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "디앱이 일반 계정에 스마트 계정 기능을 요청하도록 허용합니다. 이미 스마트 계정인 계정에는 영향을 미치지 않습니다."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "같은 주소. 더욱 스마트한 기능."

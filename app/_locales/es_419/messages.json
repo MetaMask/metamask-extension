@@ -7951,9 +7951,6 @@
   "smartAccount": {
     "message": "Cuenta inteligente"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "Permite que las dapps soliciten funciones de cuentas inteligentes para cuentas estándar. Esto no afectará a las cuentas que ya son cuentas inteligentes."
-  },
   "smartAccountDappRequestsTitle": {
     "message": "Solicitudes de cuentas inteligentes desde dapps"
   },
@@ -7962,9 +7959,6 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "Solicitudes de cuentas inteligentes desde dapps"
-  },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Permite que las dapps soliciten funciones de cuentas inteligentes para cuentas estándar. Esto no afectará a las cuentas que ya son cuentas inteligentes."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "La misma dirección. Funciones más inteligentes."

@@ -7951,9 +7951,6 @@
   "smartAccount": {
     "message": "Akun cerdas"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "Izinkan dapp meminta fitur akun cerdas untuk akun standar. Ini tidak akan memengaruhi akun yang sudah menjadi akun cerdas."
-  },
   "smartAccountDappRequestsTitle": {
     "message": "Permintaan akun cerdas dari dapp"
   },
@@ -7962,9 +7959,6 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "Permintaan akun cerdas dari dapp"
-  },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Izinkan dapp meminta fitur akun cerdas untuk akun standar. Ini tidak akan memengaruhi akun yang sudah menjadi akun cerdas."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Alamat sama. Fitur lebih cerdas."

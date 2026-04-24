@@ -7951,9 +7951,6 @@
   "smartAccount": {
     "message": "Tài khoản thông minh"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "Cho phép dapp yêu cầu các tính năng tài khoản thông minh cho tài khoản tiêu chuẩn. Điều này sẽ không ảnh hưởng đến các tài khoản đã là tài khoản thông minh."
-  },
   "smartAccountDappRequestsTitle": {
     "message": "Yêu cầu tài khoản thông minh từ dapp"
   },
@@ -7962,9 +7959,6 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "Yêu cầu tài khoản thông minh từ dapp"
-  },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Cho phép dapp yêu cầu các tính năng tài khoản thông minh cho tài khoản tiêu chuẩn. Điều này sẽ không ảnh hưởng đến các tài khoản đã là tài khoản thông minh."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Cùng địa chỉ. Tính năng thông minh hơn."

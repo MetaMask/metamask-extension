@@ -7947,9 +7947,6 @@
   "smartAccount": {
     "message": "智能账户"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "让 dapp 为标准账户请求智能账户功能。这不会影响已经是智能账户的账户。"
-  },
   "smartAccountDappRequestsTitle": {
     "message": "来自 dapp 的智能账户请求"
   },
@@ -7958,9 +7955,6 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "来自 dapp 的智能账户请求"
-  },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "让 dapp 为标准账户请求智能账户功能。这不会影响已经是智能账户的账户。"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "地址相同。功能更加智能化。"

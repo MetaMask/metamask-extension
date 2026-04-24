@@ -7947,9 +7947,6 @@
   "smartAccount": {
     "message": "Smart-Konto"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "Lassen Sie Dapps die Smart-Konto-Funktionen für Standardkonten anfordern. Dies wirkt sich nicht auf bereits bestehende Smart-Konten aus."
-  },
   "smartAccountDappRequestsTitle": {
     "message": "Anfragen für Smart-Konten von Dapps"
   },
@@ -7958,9 +7955,6 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "Anfragen für Smart-Konten von Dapps"
-  },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Lassen Sie Dapps die Smart-Konto-Funktionen für Standardkonten anfordern. Dies wirkt sich nicht auf bereits bestehende Smart-Konten aus."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Dieselbe Adresse. Intelligentere Funktionen."

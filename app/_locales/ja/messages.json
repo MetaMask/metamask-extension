@@ -7947,9 +7947,6 @@
   "smartAccount": {
     "message": "スマートアカウント"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "DAppによる、スタンダードアカウントに対するスマートアカウント機能のリクエストを許可します。これにより、すでにスマートアカウントのアカウントに影響はありません。"
-  },
   "smartAccountDappRequestsTitle": {
     "message": "DAppからのスマートアカウントリクエスト"
   },
@@ -7958,9 +7955,6 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "DAppからのスマートアカウントリクエスト"
-  },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "DAppによる、スタンダードアカウントに対するスマートアカウント機能のリクエストを許可します。これにより、すでにスマートアカウントのアカウントに影響はありません。"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "同じアドレスでよりスマートな機能。"

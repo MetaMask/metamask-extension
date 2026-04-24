@@ -7947,9 +7947,6 @@
   "smartAccount": {
     "message": "Compte intelligent"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "Autoriser les dapps à demander des fonctionnalités de compte intelligent pour les comptes standards. Cela n’affectera pas les comptes qui sont déjà des comptes intelligents."
-  },
   "smartAccountDappRequestsTitle": {
     "message": "Demandes de comptes intelligents émanant de dapps"
   },
@@ -7958,9 +7955,6 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "Demandes de comptes intelligents émanant de dapps"
-  },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Autoriser les dapps à demander des fonctionnalités de compte intelligent pour les comptes standards. Cela n’affectera pas les comptes qui sont déjà des comptes intelligents."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Même adresse. Des fonctionnalités plus intelligentes."
