@@ -16,7 +16,10 @@ export class PerpsOrderEntryPage {
   private readonly amountInputFieldInput =
     '[data-testid="amount-input-field"] input';
 
-  private readonly autoCloseToggle = '[data-testid="auto-close-toggle"] input';
+  /** Visible track (checkbox input is visually hidden by react-toggle-button). */
+  private readonly autoCloseToggleLabel = {
+    xpath: `//label[contains(@class,'toggle-button')][.//input[@data-testid='auto-close-toggle']]`,
+  };
 
   private readonly backButton = { testId: 'perps-order-entry-back-button' };
 
@@ -36,13 +39,15 @@ export class PerpsOrderEntryPage {
 
   private readonly orderTypeMarketButton = { testId: 'order-type-market' };
 
-  private readonly slPriceInput = '[data-testid="sl-price-input"] input';
+  private readonly slPriceInput =
+    '[data-testid="perps-order-entry-page"] [data-testid="sl-price-input"]';
 
   private readonly slValidationError = { testId: 'sl-validation-error' };
 
   private readonly submitOrderButton = { testId: 'submit-order-button' };
 
-  private readonly tpPriceInput = '[data-testid="tp-price-input"] input';
+  private readonly tpPriceInput =
+    '[data-testid="perps-order-entry-page"] [data-testid="tp-price-input"]';
 
   private readonly tpValidationError = { testId: 'tp-validation-error' };
 
@@ -82,8 +87,11 @@ export class PerpsOrderEntryPage {
    * The TP and SL price inputs are only visible when auto-close is enabled.
    */
   async enableAutoClose(): Promise<void> {
-    await this.driver.waitForSelector({ css: this.autoCloseToggle });
-    await this.driver.clickElement({ css: this.autoCloseToggle });
+    await this.driver.waitForSelector(this.autoCloseToggleLabel);
+    const toggle = await this.driver.findElement(this.autoCloseToggleLabel);
+    await this.driver.scrollToElement(toggle);
+    await this.driver.clickElement(this.autoCloseToggleLabel);
+    await this.driver.waitForSelector(this.tpPriceInput);
   }
 
   /**

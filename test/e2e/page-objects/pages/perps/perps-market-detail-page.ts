@@ -115,6 +115,18 @@ export class PerpsMarketDetailPage {
     testId: 'perps-update-tpsl-modal-submit',
   };
 
+  /**
+   * Update TP/SL modal does not set data-testid on TP/SL TextFields; inputs appear in
+   * order: TP price, TP %, SL price, SL % (see update-tpsl-modal-content.tsx).
+   */
+  private readonly tpslModalTpPriceInputLocator = {
+    xpath: `(//*[@data-testid="perps-update-tpsl-modal"]//input[contains(@class,"mm-text-field__input")])[1]`,
+  };
+
+  private readonly tpslModalSlPriceInputLocator = {
+    xpath: `(//*[@data-testid="perps-update-tpsl-modal"]//input[contains(@class,"mm-text-field__input")])[3]`,
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -341,7 +353,7 @@ export class PerpsMarketDetailPage {
    * @param price - Stop loss price string (e.g. '2400').
    */
   async fillSlPriceInTpslModal(price: string): Promise<void> {
-    await this.driver.fill('[data-testid="sl-price-input"] input', price);
+    await this.driver.fill(this.tpslModalSlPriceInputLocator, price);
   }
 
   /**
@@ -351,7 +363,7 @@ export class PerpsMarketDetailPage {
    * @param price - Take profit price string (e.g. '3500').
    */
   async fillTpPriceInTpslModal(price: string): Promise<void> {
-    await this.driver.fill('[data-testid="tp-price-input"] input', price);
+    await this.driver.fill(this.tpslModalTpPriceInputLocator, price);
   }
 
   /**
@@ -428,11 +440,34 @@ export class PerpsMarketDetailPage {
 
   /**
    * Submits the TP/SL update modal (perps-update-tpsl-modal).
+   *
+   * @param timeout - Max wait for the submit control to disappear (default 20_000).
    */
-  async submitTpslUpdate(): Promise<void> {
+  async submitTpslUpdate(timeout = 20000): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(
       this.updateTpslModalSubmit,
+      timeout,
     );
+  }
+
+  /**
+   * Waits until the TP/SL update modal is removed from the DOM after save or dismiss.
+   */
+  async waitForUpdateTpslModalClosed(timeout = 15000): Promise<void> {
+    await this.driver.waitForElementNotPresent(this.updateTpslModal, timeout);
+  }
+
+  /**
+   * Asserts the auto-close row body text includes a fragment (e.g. formatted fiat "3,500").
+   */
+  async checkAutoCloseRowContains(textFragment: string): Promise<void> {
+    const row = await this.driver.findVisibleElement(this.autoCloseRow);
+    const text = await row.getText();
+    if (!text.includes(textFragment)) {
+      throw new Error(
+        `Expected auto-close row to include "${textFragment}". Actual:\n${text}`,
+      );
+    }
   }
 
   /**
