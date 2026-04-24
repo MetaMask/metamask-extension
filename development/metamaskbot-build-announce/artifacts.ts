@@ -6,6 +6,7 @@ import {
   BENCHMARK_BUILD_TYPES,
   BENCHMARK_PLATFORMS,
 } from '../../shared/constants/benchmarks';
+import { BUNDLE_SIZE_DEBUG_FILE } from '../webpack/utils/plugins/ManifestPlugin/stats';
 
 type ArtifactLink = { url: string; label: string };
 
@@ -44,7 +45,10 @@ export function getArtifactLinks(
       label: 'Bundle Size Data',
     },
     bundleSizeStats: {
-      url: `${hostUrl}/bundle-size/chrome.debug.json`,
+      url: `${hostUrl}/${BUNDLE_SIZE_DEBUG_FILE.replaceAll(
+        '[browser]',
+        'chrome',
+      )}`,
       label: 'Bundle Size Stats',
     },
     bundleAnalyzer: {
