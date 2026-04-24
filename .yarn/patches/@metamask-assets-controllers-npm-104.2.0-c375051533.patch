@@ -1,0 +1,15 @@
+diff --git a/dist/MultichainAssetsController/MultichainAssetsController.cjs b/dist/MultichainAssetsController/MultichainAssetsController.cjs
+index 0f74ce9c3200043c7c8fd121218e41790c55cc0e..c000cb505f336afabd764517719f7655189a39ae 100644
+--- a/dist/MultichainAssetsController/MultichainAssetsController.cjs
++++ b/dist/MultichainAssetsController/MultichainAssetsController.cjs
+@@ -508,6 +508,10 @@ async function _MultichainAssetsController_filterBlockaidSpamTokensOnAdd(assets)
+         const batchOutcomes = await __classPrivateFieldGet(this, _MultichainAssetsController_instances, "m", _MultichainAssetsController_runBatchedBulkTokenScans).call(this, chainName, tokenEntries);
+         for (const outcome of batchOutcomes) {
+             if (outcome.status === 'rejected') {
++                // Fail-open: if API fails, allow all tokens in this batch through
++                for (const entry of outcome.entries) {
++                    keptTokenAssets.add(entry.asset);
++                }
+                 continue;
+             }
+             for (const entry of outcome.entries) {
