@@ -1277,7 +1277,7 @@ const PerpsOrderEntryPage: React.FC = () => {
             </Text>
             {displayChange && (
               <Text
-                variant={TextVariant.BodyXs}
+                variant={TextVariant.BodySm}
                 color={getChangeColor(displayChange)}
                 data-testid="perps-order-entry-change"
               >
