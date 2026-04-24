@@ -1271,6 +1271,7 @@ describe('PerpsMarketDetailPage', () => {
         account: {
           ...mockAccountState,
           availableBalance: '0',
+          availableToTradeBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: false,
