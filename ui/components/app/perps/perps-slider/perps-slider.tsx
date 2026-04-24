@@ -24,7 +24,7 @@ import Tooltip from '../../../ui/tooltip';
  */
 const sliderStyles = {
   root: {
-    height: 6,
+    height: 4,
     padding: 0,
     overflow: 'visible',
   },
@@ -33,13 +33,13 @@ const sliderStyles = {
   rail: {
     borderRadius: 50,
     background: 'var(--color-border-muted)',
-    height: 6,
+    height: 4,
     opacity: 1,
   },
   track: {
     borderRadius: 50,
     background: 'var(--color-text-default)',
-    height: 6,
+    height: 4,
   },
   thumb: {
     height: 16,
