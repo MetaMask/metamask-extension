@@ -1,5 +1,6 @@
 import addEthereumChain from './add-ethereum-chain';
 import ethAccounts from './eth-accounts';
+import getStateLogs from './get-state-logs';
 import getProviderState from './get-provider-state';
 import logWeb3ShimUsage from './log-web3-shim-usage';
 import requestAccounts from './request-accounts';
@@ -9,6 +10,7 @@ import watchAsset from './watch-asset';
 
 export const handlers = [
   addEthereumChain,
+  getStateLogs,
   getProviderState,
   logWeb3ShimUsage,
   sendMetadata,

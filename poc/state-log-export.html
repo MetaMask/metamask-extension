@@ -193,32 +193,47 @@
         statusEl.textContent = message;
       }
 
-      exportBtn.addEventListener('click', () => {
+      function triggerDownload(stateString) {
+        const blob = new Blob([stateString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `MetaMask-state-logs-${Date.now()}.json`;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+
+      async function requestStateLogsViaRpc() {
+        if (!window.ethereum?.request) {
+          throw new Error('MetaMask provider is not available');
+        }
+
+        return await window.ethereum.request({
+          method: 'metamask_getStateLogs',
+        });
+      }
+
+      exportBtn.addEventListener('click', async () => {
         if (!metamaskDetected) return;
 
         exportBtn.disabled = true;
         setStatus('loading', 'MetaMask is asking for your confirmation…');
 
-        // postMessage to content script bridge — no secrets in this message
-        window.postMessage({ type: 'METAMASK_REQUEST_STATE_LOGS' }, '*');
-      });
-
-      // Listen for responses from the content script bridge
-      window.addEventListener('message', (event) => {
-        if (event.source !== window) return;
-
-        if (event.data?.type === 'METAMASK_STATE_LOGS_SUCCESS') {
+        try {
+          const stateString = await requestStateLogsViaRpc();
+          triggerDownload(stateString);
           setStatus('success', '✓ State logs downloaded. Attach the file to your support ticket.');
           exportBtn.disabled = false;
-        }
-
-        if (event.data?.type === 'METAMASK_STATE_LOGS_DENIED') {
-          setStatus('', '');
-          exportBtn.disabled = false;
-        }
-
-        if (event.data?.type === 'METAMASK_STATE_LOGS_ERROR') {
-          setStatus('error', `Export failed: ${event.data.error ?? 'unknown error'}. Try the manual method below.`);
+          return;
+        } catch (error) {
+          if (error?.code === 4001) {
+            setStatus('', '');
+          } else {
+            setStatus('error', `Export failed: ${error?.message ?? 'unknown error'}. Try the manual method below.`);
+          }
           exportBtn.disabled = false;
         }
       });

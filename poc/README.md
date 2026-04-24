@@ -21,13 +21,12 @@ Then load the unpacked extension in Chrome:
 
 Open `poc/state-log-export.html` directly in Chrome (File → Open, or drag into browser tab).
 
-> The content script already runs on `file://` origins so no server is needed.
-
 ### 3. Click "Download State Logs"
 
-1. Check the consent checkbox
+1. Make sure MetaMask is detected on the page
 2. Click the button
-3. A `MetaMask-state-logs-<timestamp>.json` file downloads automatically
+3. Approve the MetaMask confirmation
+4. A `MetaMask-state-logs-<timestamp>.json` file downloads automatically
 
 ---
 
@@ -35,22 +34,22 @@ Open `poc/state-log-export.html` directly in Chrome (File → Open, or drag into
 
 | File | Change |
 |---|---|
-| `app/scripts/contentscript.js` | Added `setupStateLogBridge()` IIFE — listens for `postMessage`, relays to background, triggers download |
-| `app/scripts/background.js` | Added `onMessage` handler for `METAMASK_REQUEST_STATE_LOGS` — returns `controller.getState()` |
+| `app/scripts/lib/rpc-method-middleware/handlers/get-state-logs.ts` | Added `metamask_getStateLogs` handler in the provider RPC pipeline |
+| `app/scripts/metamask-controller.js` | Added `handleGetStateLogsRequest()` — opens approval and returns the state payload |
 | `poc/state-log-export.html` | Mock support page — the UI a user would see in the chatbot flow |
 
 ## Security properties
 
-- Origin validated in content script: only `https://support.metamask.io` and `localhost` accepted
-- Background validates `sender.tab` — rejects any call that didn't originate from a content script
-- State data never touches page JavaScript — download triggered directly from content script scope
+- Request flows through the provider RPC pipeline and native confirmation system
+- Approval is required before any state payload is returned
 - Routes through `controller.getState()` which excludes the encrypted vault; private keys and SRP are never present
+- No custom content-script or runtime-message bridge remains in the PoC
 
 ## What's different from production MVP
 
 | PoC | Production |
 |---|---|
 | Uses `controller.getState()` | Should use `logStateString()` path to include logs + platform metadata |
-| `file://` origin allowed | Remove for production; `localhost` should also be removed |
+| Local file page for demo/testing | Real chatbot widget on `support.metamask.io` |
 | No i18n | All strings go in `app/_locales/en/messages.json` |
-| Test HTML page | Real chatbot widget on `support.metamask.io` |
+| No allowlisting on the custom method yet | Add explicit support-surface policy before production rollout |

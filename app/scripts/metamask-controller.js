@@ -157,6 +157,7 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
   PLATFORM_FIREFOX,
+  STATE_LOG_EXPORT_APPROVAL_TYPE,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -6429,6 +6430,18 @@ export default class MetamaskController extends EventEmitter {
     );
   };
 
+  handleGetStateLogsRequest = async (origin) => {
+    await this.approvalController.addAndShowApprovalRequest({
+      id: crypto.randomUUID(),
+      origin,
+      type: STATE_LOG_EXPORT_APPROVAL_TYPE,
+      requestData: {},
+    });
+
+    const state = this.getState();
+    return JSON.stringify(state, null, 2);
+  };
+
   handleWatchAssetRequest = async ({
     asset,
     type,
@@ -7029,6 +7042,7 @@ export default class MetamaskController extends EventEmitter {
     return {
       // Miscellaneous
       getProviderState: this.getProviderState.bind(this),
+      handleGetStateLogsRequest: this.handleGetStateLogsRequest.bind(this),
       handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
       requestUserApproval:
         this.approvalController.addAndShowApprovalRequest.bind(
