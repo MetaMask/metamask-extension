@@ -1632,21 +1632,18 @@ export async function mockGetMultipleAccounts(mockServer: Mockttp) {
 export async function mockSecurityAlertBulkScan(mockServer: Mockttp) {
   return await mockServer
     .forPost(SECURITY_ALERT_BULK_SCAN_URL)
-    .thenCallback(() => {
+    .thenCallback(async (req) => {
+      const body = (await req.body.getJson()) as { tokens: string[] };
+      const tokens = Array.isArray(body.tokens) ? body.tokens : [];
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const results: Record<string, { result_type: string }> = {};
+      for (const address of tokens) {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        results[address] = { result_type: 'Benign' };
+      }
       return {
         statusCode: 200,
-        json: {
-          results: {
-            EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: {
-              address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-              chain: 'solana',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              malicious_score: '0.0',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              result_type: 'Verified',
-            },
-          },
-        },
+        json: { results },
       };
     });
 }
