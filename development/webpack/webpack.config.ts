@@ -171,6 +171,7 @@ const manifestPlugin = new ManifestPlugin({
   stats: args.stats
     ? {
         outFile: BUNDLE_SIZE_SUMMARY_FILE,
+        debug: true,
         classifyEntrypoint: classifyBundleSizeEntrypoint,
       }
     : false,

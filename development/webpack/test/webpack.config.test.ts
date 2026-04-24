@@ -289,6 +289,7 @@ ${Object.entries(env)
       manifestPlugin.options.stats.outFile,
       BUNDLE_SIZE_SUMMARY_FILE,
     );
+    assert.strictEqual(manifestPlugin.options.stats.debug, true);
     assert.strictEqual(
       manifestPlugin.options.stats.classifyEntrypoint('service-worker.ts'),
       'background',
