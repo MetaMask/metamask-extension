@@ -109,9 +109,9 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('background:');
     expect(result).toContain('ui:');
     expect(result).toContain('common:');
-    expect(result).toContain('other:');
-    expect(result).toContain('contentScripts:');
-    expect(result).toContain('zip:');
+    expect(result).toContain('other: n/a');
+    expect(result).toContain('contentScripts: n/a');
+    expect(result).toContain('zip: n/a');
   });
 
   it('uses the first baseline candidate found in history data', async () => {
@@ -207,6 +207,9 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('background: 1.07 KiB');
     expect(result).toContain('ui: 2.15 KiB');
     expect(result).toContain('common: 300 Bytes');
+    expect(result).toContain('other: 400 Bytes');
+    expect(result).toContain('contentScripts: 500 Bytes');
+    expect(result).toContain('zip: 600 Bytes');
     expect(result).toContain(
       '<small>No bundle-size baseline commit was available for this build, so diff values are omitted.</small>',
     );
@@ -231,6 +234,9 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('background: 1.07 KiB');
     expect(result).toContain('ui: 2.15 KiB');
     expect(result).toContain('common: 300 Bytes');
+    expect(result).toContain('other: 400 Bytes');
+    expect(result).toContain('contentScripts: 500 Bytes');
+    expect(result).toContain('zip: 600 Bytes');
     expect(result).toContain(
       '<small>Bundle-size history data could not be loaded, so diff values are omitted.</small>',
     );
@@ -253,8 +259,13 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('background: 1.07 KiB');
     expect(result).toContain('ui: 2.15 KiB');
     expect(result).toContain('common: 300 Bytes');
+    expect(result).toContain('other: 400 Bytes');
+    expect(result).toContain('contentScripts: 500 Bytes');
+    expect(result).toContain('zip: 600 Bytes');
     expect(result).toContain(
       '<small>No matching bundle-size baseline was found in the history data, so diff values are omitted.</small>',
     );
+    expect(result).not.toContain('Warning!');
+    expect(result).not.toContain('Bundle size reduced!');
   });
 });
