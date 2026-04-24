@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { isValidHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions';
@@ -41,13 +41,15 @@ export function useTokenContractSendAlert(): SendAlert | null {
     };
   }, [to, chainId, isEvmSendType, asset?.address]);
 
-  if (!isTokenContract) {
-    return null;
-  }
-
-  return {
-    key: 'tokenContract',
-    title: t('smartContractAddress'),
-    message: t('smartContractAddressWarning'),
-  };
+  return useMemo(
+    () =>
+      isTokenContract
+        ? {
+            key: 'tokenContract',
+            title: t('smartContractAddress'),
+            message: t('smartContractAddressWarning'),
+          }
+        : null,
+    [isTokenContract, t],
+  );
 }

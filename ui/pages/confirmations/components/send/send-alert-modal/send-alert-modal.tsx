@@ -148,7 +148,7 @@ export const SendAlertModal = ({
     setCurrentIndex((prev) => Math.min(prev + 1, alerts.length - 1));
   }, [alerts.length]);
 
-  const alertKeys = alerts.map((a) => a.key).join('|');
+  const alertKeys = JSON.stringify(alerts.map((a) => a.key));
 
   useEffect(() => {
     setCurrentIndex(0);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
@@ -60,25 +60,29 @@ export function useFirstTimeInteractionSendAlert(): SendAlert | null {
     return checkFirstTimeInteraction({ from, to, chainId: chainIdNum });
   }, [to, from, chainId, shouldSkip]);
 
-  if (shouldSkip || isFirstTime !== true) {
-    return null;
-  }
+  const isActive = !shouldSkip && isFirstTime === true;
 
-  const styledAddress = (
-    <Text
-      key="address"
-      variant={TextVariant.BodyMd}
-      fontWeight={FontWeight.Medium}
-      color={TextColor.TextDefault}
-    >
-      {to}
-    </Text>
-  );
+  return useMemo(() => {
+    if (!isActive || !to) {
+      return null;
+    }
 
-  return {
-    key: 'firstTimeInteraction',
-    title: t('sendAlertNewAddressTitle'),
-    message: t('sendAlertNewAddressMessage', [styledAddress]),
-    acknowledgeButtonLabel: t('continue'),
-  };
+    const styledAddress = (
+      <Text
+        key="address"
+        variant={TextVariant.BodyMd}
+        fontWeight={FontWeight.Medium}
+        color={TextColor.TextDefault}
+      >
+        {to}
+      </Text>
+    );
+
+    return {
+      key: 'firstTimeInteraction',
+      title: t('sendAlertNewAddressTitle'),
+      message: t('sendAlertNewAddressMessage', [styledAddress]),
+      acknowledgeButtonLabel: t('continue'),
+    };
+  }, [isActive, to, t]);
 }
