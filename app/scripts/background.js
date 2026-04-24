@@ -658,62 +658,66 @@ const handleOnConnect = async (port) => {
     // This is set in `setupController`, which is called as part of initialization
     connectWindowPostMessage(port, removeCriticalErrorListeners);
   } catch (error) {
-    sentry?.captureException(error);
+    try {
+      sentry?.captureException(error);
 
-    // Only handle errors for MetaMask UI connections (popup, notification, fullscreen),
-    // not for contentscripts injected into regular web pages.
-    // Contentscripts can't display error screens and would create hanging promises.
-    if (isMetaMaskUIPort) {
-      // If we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
-      // restore from a backup, if we have one.
-      if (isStateCorruptionError(error)) {
-        await corruptionHandler.handleStateCorruptionError({
-          port,
-          error,
-          database: persistenceManager,
-          repairCallback: async (backup) => {
-            // we are going to reinitialize the background script, so we need to
-            // reset the initialization promises. this is gross since it is
-            // possible the original references could have been passed to other
-            // functions, and we can't update those references from here.
-            // right now, that isn't the case though.
-            setGlobalInitializers();
+      // Only handle errors for MetaMask UI connections (popup, notification, fullscreen),
+      // not for contentscripts injected into regular web pages.
+      // Contentscripts can't display error screens and would create hanging promises.
+      if (isMetaMaskUIPort) {
+        // If we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
+        // restore from a backup, if we have one.
+        if (isStateCorruptionError(error)) {
+          await corruptionHandler.handleStateCorruptionError({
+            port,
+            error,
+            database: persistenceManager,
+            repairCallback: async (backup) => {
+              // we are going to reinitialize the background script, so we need to
+              // reset the initialization promises. this is gross since it is
+              // possible the original references could have been passed to other
+              // functions, and we can't update those references from here.
+              // right now, that isn't the case though.
+              setGlobalInitializers();
 
-            if (hasVault(backup)) {
-              await initBackground(backup);
-              controller.onboardingController.setFirstTimeFlowType(
-                FirstTimeFlowType.restore,
-              );
-            } else {
-              // if we don't have a backup we need to make sure we clear the state
-              // from the database, and then reinitialize the background script
-              // with the first time state.
-              await persistenceManager.reset();
-              await initBackground(null);
-            }
-          },
-        });
-      } else {
-        // General errors
-        const errorLike = isObject(error)
-          ? {
-              message: error.message ?? 'Unknown error',
-              name: error.name ?? 'UnknownError',
-              stack: error.stack,
-              // Preserve sentryTags for searchable/filterable fields in Sentry UI
-              ...(error.sentryTags && { sentryTags: error.sentryTags }),
-            }
-          : {
-              message: String(error),
-              name: 'UnknownError',
-              stack: '',
-            };
-        tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
-          error: errorLike,
-          currentLocale:
-            controller?.preferencesController?.state?.currentLocale,
-        });
+              if (hasVault(backup)) {
+                await initBackground(backup);
+                controller.onboardingController.setFirstTimeFlowType(
+                  FirstTimeFlowType.restore,
+                );
+              } else {
+                // if we don't have a backup we need to make sure we clear the state
+                // from the database, and then reinitialize the background script
+                // with the first time state.
+                await persistenceManager.reset();
+                await initBackground(null);
+              }
+            },
+          });
+        } else {
+          // General errors
+          const errorLike = isObject(error)
+            ? {
+                message: error.message ?? 'Unknown error',
+                name: error.name ?? 'UnknownError',
+                stack: error.stack,
+                // Preserve sentryTags for searchable/filterable fields in Sentry UI
+                ...(error.sentryTags && { sentryTags: error.sentryTags }),
+              }
+            : {
+                message: String(error),
+                name: 'UnknownError',
+                stack: '',
+              };
+          tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
+            error: errorLike,
+            currentLocale:
+              controller?.preferencesController?.state?.currentLocale,
+          });
+        }
       }
+    } finally {
+      removeCriticalErrorListeners?.();
     }
   }
 };
