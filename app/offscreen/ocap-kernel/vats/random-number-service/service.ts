@@ -24,7 +24,7 @@ function drawRandomFloat(): number {
     const bytes = new Uint32Array(1);
     cryptoSource.getRandomValues(bytes);
     // 32-bit resolution is more than enough for a demo service.
-    return (bytes[0] ?? 0) / 0x1_0000_0000;
+    return (bytes[0] ?? 0) / 4294967296;
   }
   fallbackCounter += 1;
   return (fallbackCounter % 1_000_000) / 1_000_000;

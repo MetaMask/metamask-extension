@@ -120,22 +120,34 @@ export async function runKernel(): Promise<never> {
     const rootKrefs: Record<string, string> = {};
 
     for (const subcluster of serviceSubclusters) {
+      console.log(`~~~ Launching subcluster: ${subcluster.vatName} ~~~`);
       const bundleUrl = chrome.runtime.getURL(subcluster.bundlePath);
-      const result = await E(kernelP).launchSubcluster({
-        bootstrap: subcluster.vatName,
-        services: subcluster.services,
-        vats: {
-          [subcluster.vatName]: {
-            bundleSpec: bundleUrl,
-            // Endow the Web Crypto API so the vat can generate registration
-            // tokens and (for RandomNumberService) random numbers. SES
-            // strips crypto from the default compartment globals, so it
-            // must be opted into explicitly here.
-            globals: ['crypto'],
-            parameters: { matcherUrl },
+      let result;
+      try {
+        result = await E(kernelP).launchSubcluster({
+          bootstrap: subcluster.vatName,
+          services: subcluster.services,
+          vats: {
+            [subcluster.vatName]: {
+              bundleSpec: bundleUrl,
+              // Endow the Web Crypto API so the vat can generate registration
+              // tokens and (for RandomNumberService) random numbers. SES
+              // strips crypto from the default compartment globals, so it
+              // must be opted into explicitly here.
+              globals: ['crypto'],
+              parameters: { matcherUrl },
+            },
           },
-        },
-      });
+        });
+      } catch (launchError) {
+        console.error(
+          `~~~ Subcluster launch FAILED: ${subcluster.vatName} ~~~`,
+          launchError,
+          'error.data:',
+          (launchError as { data?: unknown }).data,
+        );
+        throw launchError;
+      }
 
       const { bootstrapResult, rootKref } = result;
       rootKrefs[subcluster.vatName] = rootKref;
