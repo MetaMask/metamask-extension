@@ -114,7 +114,7 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
   useEffect(() => {
     let cancelled = false;
 
-    void fetchGeolocation('getGeolocation', {
+    fetchGeolocation('getGeolocation', {
       isCancelled: () => cancelled,
     });
 
