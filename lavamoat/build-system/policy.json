@@ -5005,12 +5005,6 @@
         "postcss>source-map-js": true
       }
     },
-    "postcss-discard-font-face": {
-      "packages": {
-        "postcss-discard-font-face>balanced-match": true,
-        "postcss": true
-      }
-    },
     "tailwindcss>postcss-js": {
       "globals": {
         "console": true

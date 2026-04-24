@@ -19840,13 +19840,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"balanced-match@npm:^0.4.1":
-  version: 0.4.2
-  resolution: "balanced-match@npm:0.4.2"
-  checksum: 10/205ebb42ce8529fa8e043a808b41bfb9818d5f98a8eb76a1cd5483f8a98dd0baefc8a9d940f36b591b1316a04f56b35c32b60ac9b1f848e41e4698672cec6c1e
-  languageName: node
-  linkType: hard
-
 "balanced-match@npm:^1.0.0":
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
@@ -34373,7 +34366,6 @@ __metadata:
     path-browserify: "npm:^1.0.1"
     pify: "npm:^5.0.0"
     postcss: "npm:^8.5.10"
-    postcss-discard-font-face: "npm:^3.0.0"
     postcss-loader: "npm:^8.2.1"
     postcss-rtlcss: "npm:^6.0.0"
     prettier: "npm:^3.6.2"
@@ -37386,16 +37378,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-discard-font-face@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "postcss-discard-font-face@npm:3.0.0"
-  dependencies:
-    balanced-match: "npm:^0.4.1"
-    postcss: "npm:^5.0.21"
-  checksum: 10/968632c4426bb04816787575ad768ad0bca572573366aa7ef2f91069ab5224319bea3517b14d7ffb501f6787bc1d8d4a265f40027d4cc593cfcd7824bf834c34
-  languageName: node
-  linkType: hard
-
 "postcss-html@npm:^0.36.0":
   version: 0.36.0
   resolution: "postcss-html@npm:0.36.0"
@@ -37672,7 +37654,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.5.10":
+"postcss@npm:7.0.36":
+  version: 7.0.36
+  resolution: "postcss@npm:7.0.36"
+  dependencies:
+    chalk: "npm:^2.4.2"
+    source-map: "npm:^0.6.1"
+    supports-color: "npm:^6.1.0"
+  checksum: 10/bb1bfc6fd0b6aef7587a4f8867eed3c441529725131266f6c0e40bd0f3c8c40096a1391646989b82e78ee40f2bb930dc441fa413bec3325250727fd0a554bedc
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^7.0.14, postcss@npm:^7.0.16, postcss@npm:^7.0.2, postcss@npm:^7.0.21, postcss@npm:^7.0.26, postcss@npm:^7.0.32, postcss@npm:^7.0.6, postcss@npm:^7.0.7":
+  version: 7.0.39
+  resolution: "postcss@npm:7.0.39"
+  dependencies:
+    picocolors: "npm:^0.2.1"
+    source-map: "npm:^0.6.1"
+  checksum: 10/9635b3a444673d1e50ea67c68382201346b54d7bb69729fff5752a794d57ca5cae7f6fafd4157a9ab7f9ddac30a0d5e548c1196653468cbae3c2758dbc2f5662
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.3.0, postcss@npm:^8.4.21, postcss@npm:^8.4.33, postcss@npm:^8.4.4, postcss@npm:^8.4.40, postcss@npm:^8.4.47, postcss@npm:^8.4.48, postcss@npm:^8.5.10":
   version: 8.5.10
   resolution: "postcss@npm:8.5.10"
   dependencies:
@@ -42913,6 +42916,15 @@ __metadata:
   dependencies:
     has-flag: "npm:^3.0.0"
   checksum: 10/5f505c6fa3c6e05873b43af096ddeb22159831597649881aeb8572d6fe3b81e798cc10840d0c9735e0026b250368851b7f77b65e84f4e4daa820a4f69947f55b
+  languageName: node
+  linkType: hard
+
+"supports-color@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "supports-color@npm:6.1.0"
+  dependencies:
+    has-flag: "npm:^3.0.0"
+  checksum: 10/78a5c43b9e478966ed41ed923a942dfd6209bf3bcc826a01435cfec98d5a17ca5d866effd2b6be438c16cd73b99f4a4397fcbb282e6f653e39046e1335334189
   languageName: node
   linkType: hard
 

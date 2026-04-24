@@ -269,7 +269,6 @@
     "fast-xml-parser": "^5.7.1",
     "minimatch@npm:^10.1.1": "10.2.4",
     "protobufjs": "7.5.5",
-    "postcss": "^8.5.10",
     "@metamask/snaps-controllers": "^20.0.1",
     "@metamask/messenger@npm:^0.3.0": "^1.1.1",
     "@metamask/perps-controller": "^3.0.0"
@@ -726,7 +725,6 @@
     "openai": "^4.73.0",
     "path-browserify": "^1.0.1",
     "postcss": "^8.5.10",
-    "postcss-discard-font-face": "^3.0.0",
     "postcss-loader": "^8.2.1",
     "postcss-rtlcss": "^6.0.0",
     "prettier": "^3.6.2",
