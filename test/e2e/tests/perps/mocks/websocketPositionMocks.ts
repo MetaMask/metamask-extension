@@ -622,6 +622,75 @@ export function pushPositionClosed(
   );
 }
 
+const WS_MOCK_DEFAULT_USER =
+  '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+
+const MOCK_L1_FILL_HASH = `0x${'b'.repeat(64)}`;
+
+export type PushUserFillsClosePositionSnapshotOpts = {
+  user?: string;
+  coin: string;
+  px: string;
+  sz: string;
+  /** Hyperliquid wire side: `"A"` = sell, `"B"` = buy */
+  side: 'A' | 'B';
+  /** e.g. `"Close Long"`, `"Close Short"` */
+  dir: string;
+  /** Position size before the fill (decimal string; may be negative for shorts). */
+  startPosition: string;
+  oid?: number;
+  tid?: number;
+};
+
+/**
+ * Pushes a `userFills` WebSocket snapshot so the Hyperliquid subscription client
+ * delivers an `OrderFill[]` payload to the UI (same path as production fills).
+ * Use after a simulated close (full or partial) to assert Activity / Recent activity.
+ *
+ * Shape matches `@nktkas/hyperliquid` `UserFillsEvent` (user + fills + isSnapshot).
+ *
+ * @param server - The LocalWebSocketServer for the perps service
+ * @param opts - Wire fill fields for one close (or partial-close) fill
+ */
+export function pushUserFillsClosePositionSnapshot(
+  server: { sendMessage: (msg: string) => void },
+  opts: PushUserFillsClosePositionSnapshotOpts,
+): void {
+  const user = opts.user ?? WS_MOCK_DEFAULT_USER;
+  const now = Date.now();
+  const oid = opts.oid ?? 8_881_001;
+  const tid = opts.tid ?? 8_881_002;
+
+  const fill = {
+    coin: opts.coin,
+    px: opts.px,
+    sz: opts.sz,
+    side: opts.side,
+    time: now,
+    startPosition: opts.startPosition,
+    dir: opts.dir,
+    closedPnl: '12.50',
+    hash: MOCK_L1_FILL_HASH,
+    oid,
+    crossed: true,
+    fee: '1.25',
+    tid,
+    feeToken: 'USDC',
+    twapId: null,
+  };
+
+  server.sendMessage(
+    JSON.stringify({
+      channel: 'userFills',
+      data: {
+        user,
+        isSnapshot: true,
+        fills: [fill],
+      },
+    }),
+  );
+}
+
 /**
  * ETH long with TP and SL already set.
  * Use for tests that need to verify the auto-close row is already displayed,

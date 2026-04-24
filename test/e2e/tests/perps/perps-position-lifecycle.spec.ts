@@ -3,7 +3,8 @@
  *
  * Tests covering the full lifecycle of a perpetuals position:
  * opening, modifying exposure, closing (partial and full),
- * reversing direction, and margin management.
+ * reversing direction, margin management, and (where a close or partial close
+ * is simulated) Perps Activity shows the corresponding trade row after a `userFills` snapshot.
  *
  * PREREQUISITE: All tests require PERPS_ENABLED=true in the extension build.
  * Set PERPS_ENABLED=true in .metamaskrc (see .metamaskrc.dist) before running locally.
@@ -21,7 +22,9 @@ import { login } from '../../page-objects/flows/login.flow';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
+import { PerpsActivityPage } from '../../page-objects/pages/perps/perps-activity-page';
 import { PerpsOrderEntryPage } from '../../page-objects/pages/perps/perps-order-entry-page';
+import { assertPerpsActivityShowsCloseFill } from './assertPerpsActivityShowsCloseFill';
 import { getPerpsConfigEligible } from './helpers';
 import {
   WS_USER_WITH_BTC_SHORT_POSITION,
@@ -29,6 +32,7 @@ import {
   WS_USER_WITH_FUNDED_ACCOUNT,
   pushPositionUpdate,
   pushPositionClosed,
+  pushUserFillsClosePositionSnapshot,
 } from './mocks/websocketPositionMocks';
 
 describe('Perps Position Lifecycle', function (this: Suite) {
@@ -100,6 +104,24 @@ describe('Perps Position Lifecycle', function (this: Suite) {
 
         // After full close the trade CTA buttons (Long / Short) should reappear
         await marketDetailPage.waitForTradeCtaButtons();
+
+        await assertPerpsActivityShowsCloseFill({
+          driver,
+          perpsHomePage,
+          marketDetailPage,
+          pushUserFills: () =>
+            pushUserFillsClosePositionSnapshot(perpsServer, {
+              coin: 'AVAX',
+              px: '25.05',
+              sz: '4.0',
+              side: 'A',
+              dir: 'Close Long',
+              startPosition: '4.0',
+              oid: 4_010_001,
+              tid: 4_010_002,
+            }),
+          expectedTitleContains: 'Closed long',
+        });
       },
     );
   });
@@ -162,6 +184,24 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         pushPositionClosed(perpsServer);
 
         await marketDetailPage.waitForTradeCtaButtons();
+
+        await assertPerpsActivityShowsCloseFill({
+          driver,
+          perpsHomePage,
+          marketDetailPage,
+          pushUserFills: () =>
+            pushUserFillsClosePositionSnapshot(perpsServer, {
+              coin: 'AVAX',
+              px: '25.05',
+              sz: '4.0',
+              side: 'B',
+              dir: 'Close Short',
+              startPosition: '-4.0',
+              oid: 4_011_001,
+              tid: 4_011_002,
+            }),
+          expectedTitleContains: 'Closed short',
+        });
       },
     );
   });
@@ -214,6 +254,30 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await marketDetailPage.checkPositionCtaButtonsVisible();
         await marketDetailPage.checkPositionSizeValue('1.25 ETH');
         await marketDetailPage.checkPositionLeverage('Long 3x');
+
+        await assertPerpsActivityShowsCloseFill({
+          driver,
+          perpsHomePage,
+          marketDetailPage,
+          pushUserFills: () =>
+            pushUserFillsClosePositionSnapshot(perpsServer, {
+              coin: 'ETH',
+              px: '2850.0',
+              sz: '1.25',
+              side: 'A',
+              dir: 'Close Long',
+              startPosition: '2.5',
+              oid: 5_010_001,
+              tid: 5_010_002,
+            }),
+          expectedTitleContains: 'Closed long',
+        });
+
+        const activityPageAfterPartial = new PerpsActivityPage(driver);
+        await activityPageAfterPartial.clickHeaderBack();
+        await perpsHomePage.navigateToPerpsHome();
+        await perpsHomePage.waitForPositionsSection();
+        await perpsHomePage.waitForPositionCardSize('ETH', '1.25 ETH');
       },
     );
   });
@@ -267,7 +331,26 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await marketDetailPage.checkPositionSizeValue('2.25 ETH');
         await marketDetailPage.checkPositionLeverage('Long 3x');
 
-        await marketDetailPage.clickBack();
+        await assertPerpsActivityShowsCloseFill({
+          driver,
+          perpsHomePage,
+          marketDetailPage,
+          pushUserFills: () =>
+            pushUserFillsClosePositionSnapshot(perpsServer, {
+              coin: 'ETH',
+              px: '2850.0',
+              sz: '0.25',
+              side: 'A',
+              dir: 'Close Long',
+              startPosition: '2.5',
+              oid: 5_020_001,
+              tid: 5_020_002,
+            }),
+          expectedTitleContains: 'Closed long',
+        });
+
+        const activityPageAfterReduce = new PerpsActivityPage(driver);
+        await activityPageAfterReduce.clickHeaderBack();
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
         await perpsHomePage.waitForPositionCardSize('ETH', '2.25 ETH');
