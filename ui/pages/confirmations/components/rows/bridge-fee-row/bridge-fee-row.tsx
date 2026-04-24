@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import { Text } from '../../../../../components/component-library';
 import {
@@ -22,7 +21,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { useConfirmContext } from '../../../context/confirm';
-import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 
 export type BridgeFeeRowProps = {
   variant?: ConfirmInfoRowSize;
@@ -32,8 +31,6 @@ export type BridgeFeeRowProps = {
    */
   tooltipDescription?: string;
 };
-
-const WITHDRAW_TYPES = [TransactionType.perpsWithdraw];
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function BridgeFeeRow({
@@ -47,7 +44,7 @@ export function BridgeFeeRow({
   const totals = useTransactionPayTotals();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  const isWithdraw = hasTransactionType(currentConfirmation, WITHDRAW_TYPES);
+  const isWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   // When a caller hasn't supplied a tooltipDescription, fall back to the
   // perpsWithdraw description so the Perps Withdraw confirmation mirrors

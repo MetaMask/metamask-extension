@@ -27,14 +27,12 @@ import {
   addToken,
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
-import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 
 export type PayWithModalProps = {
   isOpen: boolean;
   onClose: () => void;
 };
-
-const WITHDRAW_TRANSACTION_TYPES = [TransactionType.perpsWithdraw];
 
 export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const t = useI18nContext();
@@ -51,10 +49,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const { onPaymentTokenChange: onMusdPaymentTokenChange } =
     useMusdPaymentToken();
 
-  const isWithdraw = hasTransactionType(
-    currentConfirmation,
-    WITHDRAW_TRANSACTION_TYPES,
-  );
+  const isWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   const handleClose = useCallback(() => {
     onClose();

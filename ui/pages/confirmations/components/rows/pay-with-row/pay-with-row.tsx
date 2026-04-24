@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 
 import {
   Box,
@@ -103,9 +100,7 @@ export function PayWithRow({
 
   const canEdit = fromAccount ? !isHardwareAccount(fromAccount) : true;
 
-  const isWithdraw = hasTransactionType(currentConfirmation, [
-    TransactionType.perpsWithdraw,
-  ]);
+  const isWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   const handleOpenModal = useCallback(() => {
     if (canEdit) {

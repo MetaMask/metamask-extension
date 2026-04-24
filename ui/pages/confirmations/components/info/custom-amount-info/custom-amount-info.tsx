@@ -32,7 +32,7 @@ import {
   PercentageButtonsSkeleton,
 } from '../../percentage-buttons';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
-import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
@@ -249,17 +249,12 @@ function CenterContainerSkeleton() {
   );
 }
 
-const WITHDRAW_TRANSACTION_TYPES = [TransactionType.perpsWithdraw];
-
 function BottomContainer({ amountFiat }: { amountFiat: string }) {
   const isResultReady = useIsResultReady();
   const { hideResults } = useTransactionCustomAmountAlerts();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  const isWithdraw = hasTransactionType(
-    currentConfirmation,
-    WITHDRAW_TRANSACTION_TYPES,
-  );
+  const isWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   if (!isResultReady || hideResults) {
     return null;

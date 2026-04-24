@@ -1,9 +1,6 @@
 'use no memo';
 
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -14,18 +11,13 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getUseTransactionSimulations } from '../../../../../selectors';
-import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 import { useHasInsufficientBalance } from '../../useHasInsufficientBalance';
 import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHasSourceAmount';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
-
-// Transaction types where the user's wallet balance doesn't pay for gas (gasless
-// flows like Perps withdraw via HyperLiquid -> Relay), so the "insufficient
-// balance" alert should be suppressed even when the native balance is low.
-const IGNORE_TYPES = [TransactionType.perpsWithdraw];
 
 export function useInsufficientBalanceAlerts({
   ignoreGasFeeToken,
@@ -36,7 +28,10 @@ export function useInsufficientBalanceAlerts({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { selectedGasFeeToken, gasFeeTokens, excludeNativeTokenForFee } =
     currentConfirmation ?? {};
-  const isIgnoredType = hasTransactionType(currentConfirmation, IGNORE_TYPES);
+  // Gasless flows (Perps Withdraw via HyperLiquid -> Relay) don't use the
+  // user's native balance for gas, so suppress the "insufficient balance"
+  // alert even when native balance is low.
+  const isIgnoredType = isPerpsWithdrawTransaction(currentConfirmation);
   const { hasInsufficientBalance, nativeCurrency } =
     useHasInsufficientBalance();
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);

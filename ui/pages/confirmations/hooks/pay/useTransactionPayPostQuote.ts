@@ -1,11 +1,8 @@
 import { useEffect, useRef } from 'react';
-import {
-  type TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../context/confirm';
 import { setPostQuote } from '../../../../store/controller-actions/transaction-pay-controller';
-import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
+import { isPerpsWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
 
 /**
  * Configures TransactionPayController to use post-quote mode for withdrawal
@@ -16,9 +13,7 @@ export function useTransactionPayPostQuote(): void {
   const transactionId = currentConfirmation?.id;
   const isSet = useRef<string | null>(null);
 
-  const isPerpsWithdraw = hasTransactionType(currentConfirmation, [
-    TransactionType.perpsWithdraw,
-  ]);
+  const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   useEffect(() => {
     if (!transactionId || isSet.current === transactionId || !isPerpsWithdraw) {

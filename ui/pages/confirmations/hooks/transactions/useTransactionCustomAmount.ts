@@ -1,13 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { debounce, type DebouncedFunc } from 'lodash';
 import { BigNumber } from 'bignumber.js';
-import {
-  type TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { setIsMaxAmount } from '../../../../store/controller-actions/transaction-pay-controller';
-import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
+import { isPerpsWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import { useConfirmContext } from '../../context/confirm';
@@ -208,7 +205,7 @@ function useTokenBalance() {
   const { payToken } = useTransactionPayToken();
   const { account } = usePerpsLiveAccount();
 
-  if (hasTransactionType(transactionMeta, [TransactionType.perpsWithdraw])) {
+  if (isPerpsWithdrawTransaction(transactionMeta)) {
     const available = account?.availableBalance;
     return available ? parseFloat(available) || 0 : 0;
   }
