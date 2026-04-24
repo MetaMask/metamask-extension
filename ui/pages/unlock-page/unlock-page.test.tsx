@@ -34,6 +34,9 @@ jest.mock('../onboarding-flow/welcome/fox-appear-animation', () => ({
 }));
 
 jest.mock('../../../shared/lib/passkey', () => ({
+  ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
+    '../../../shared/lib/passkey',
+  ),
   startPasskeyAuthentication: jest.fn().mockResolvedValue({
     id: 'cred',
     rawId: 'cred',
@@ -44,7 +47,6 @@ jest.mock('../../../shared/lib/passkey', () => ({
       signature: 'AQ',
     },
   }),
-  cancelPasskeyCeremony: jest.fn(),
   isWebAuthnSupported: jest.fn().mockReturnValue(true),
 }));
 

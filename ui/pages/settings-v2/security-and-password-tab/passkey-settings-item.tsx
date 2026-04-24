@@ -20,7 +20,8 @@ import {
   startPasskeyAuthentication,
   startPasskeyRegistration,
   cancelPasskeyCeremony,
-  PasskeyCeremonyTimeoutError,
+  isPasskeyCeremonySilentError,
+  translatePasskeyError,
 } from '../../../../shared/lib/passkey';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -46,7 +47,7 @@ import { SECURITY_ITEMS } from '../search-config';
 const passkeySettingsToastDurationMs = 5 * SECOND;
 
 const PasskeySettingsItem = () => {
-  const t = useI18nContext();
+  const t = useI18nContext() as (key: string) => string;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -96,11 +97,26 @@ const PasskeySettingsItem = () => {
           passkey_registered: true,
         },
       });
+
+      throw new Error('test');
     } catch (error) {
-      log.debug(
-        'Passkey registration from settings failed or cancelled',
-        error,
-      );
+      if (isPasskeyCeremonySilentError(error)) {
+        log.debug(
+          'Passkey registration from settings cancelled or timed out',
+          error,
+        );
+      } else {
+        log.error('Passkey registration from settings failed', error);
+        toast.error(
+          <ToastContent
+            title={
+              translatePasskeyError(error, t) ??
+              t('passkeyErrorRegistrationFailed')
+            }
+          />,
+          { duration: passkeySettingsToastDurationMs },
+        );
+      }
     } finally {
       setIsPasskeyOperationPending(false);
     }
@@ -133,20 +149,31 @@ const PasskeySettingsItem = () => {
         },
       });
     } catch (error: unknown) {
-      log.debug(
-        'Passkey verification for disable failed; offering password fallback',
-        error,
-      );
-      const errorName = error instanceof Error ? error.name : undefined;
-      if (!(error instanceof PasskeyCeremonyTimeoutError)) {
-        if (errorName !== 'NotAllowedError' && errorName !== 'AbortError') {
-          if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
-            global.platform?.openExtensionInBrowser?.(
-              SECURITY_AND_PASSWORD_ROUTE,
-            );
-          } else {
-            navigate(SECURITY_AND_PASSWORD_ROUTE);
-          }
+      if (isPasskeyCeremonySilentError(error)) {
+        log.debug(
+          'Passkey verification for disable cancelled or timed out',
+          error,
+        );
+      } else {
+        log.error(
+          'Passkey verification for disable failed; offering password fallback',
+          error,
+        );
+        toast.error(
+          <ToastContent
+            title={
+              translatePasskeyError(error, t) ??
+              t('passkeyErrorVerificationFailed')
+            }
+          />,
+          { duration: passkeySettingsToastDurationMs },
+        );
+        if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
+          global.platform?.openExtensionInBrowser?.(
+            SECURITY_AND_PASSWORD_ROUTE,
+          );
+        } else {
+          navigate(SECURITY_AND_PASSWORD_ROUTE);
         }
       }
     } finally {

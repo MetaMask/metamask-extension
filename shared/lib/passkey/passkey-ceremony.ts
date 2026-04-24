@@ -31,6 +31,22 @@ export class PasskeyCeremonyTimeoutError extends Error {
 }
 
 /**
+ * Returns true when a WebAuthn ceremony failed in a way that should not surface
+ * as a user-facing error (dismissed prompt, abort, or app-side ceremony timeout).
+ *
+ * Use after {@link startPasskeyRegistration} / {@link startPasskeyAuthentication}.
+ *
+ * @param error - Rejection from the browser ceremony or timeout wrapper.
+ */
+export function isPasskeyCeremonySilentError(error: unknown): boolean {
+  if (error instanceof PasskeyCeremonyTimeoutError) {
+    return true;
+  }
+  const name = error instanceof Error ? error.name : '';
+  return name === 'NotAllowedError' || name === 'AbortError';
+}
+
+/**
  * Aborts the in-flight WebAuthn request without starting a new ceremony.
  * Call from unmount, “use password”, or when leaving the passkey step.
  */

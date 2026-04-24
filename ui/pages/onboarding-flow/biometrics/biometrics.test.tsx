@@ -1,7 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, waitFor, screen } from '@testing-library/react';
+import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -18,6 +19,9 @@ import { startPasskeyRegistration } from '../../../../shared/lib/passkey';
 import Biometrics from './biometrics';
 
 jest.mock('../../../../shared/lib/passkey', () => ({
+  ...jest.requireActual<typeof import('../../../../shared/lib/passkey')>(
+    '../../../../shared/lib/passkey',
+  ),
   startPasskeyRegistration: jest.fn().mockResolvedValue({
     id: 'AQ',
     rawId: 'AQ',
@@ -190,6 +194,29 @@ describe('Biometrics', () => {
 
       await waitFor(() => {
         expect(startPasskeyRegistration).toHaveBeenCalled();
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+      expect(
+        screen.queryByTestId('biometrics-registration-error'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows an inline error when protecting the vault key with the passkey fails', async () => {
+      const mockStore = buildMockStore(FirstTimeFlowType.create);
+      const { getByTestId } = renderWithProvider(<Biometrics />, mockStore);
+
+      jest.mocked(protectVaultKeyWithPasskey).mockRejectedValueOnce({
+        code: PasskeyControllerErrorCode.RegistrationVerificationFailed,
+      });
+
+      fireEvent.click(getByTestId('biometrics-set-up-button'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('biometrics-registration-error'),
+        ).toHaveTextContent(
+          messages.passkeyErrorRegistrationVerificationFailed.message,
+        );
       });
       expect(mockUseNavigate).not.toHaveBeenCalled();
     });

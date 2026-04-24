@@ -66,7 +66,8 @@ import { captureException } from '../../../shared/lib/sentry';
 import {
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
-  PasskeyCeremonyTimeoutError,
+  isPasskeyCeremonySilentError,
+  translatePasskeyError,
 } from '../../../shared/lib/passkey';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
@@ -103,7 +104,10 @@ type UnlockPageProps = {
 
 type UnlockPageState = {
   password: string;
+  /** Password / seedless unlock failures (shown under the password field). */
   error: string | null;
+  /** Passkey / WebAuthn unlock failures (biometrics-first layout or when surfaced on password view). */
+  passkeyError: string | null;
   showResetPasswordModal: boolean;
   isLocked: boolean;
   isSubmitting: boolean;
@@ -233,6 +237,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   state: UnlockPageState = {
     password: '',
     error: null,
+    passkeyError: null,
     showResetPasswordModal: false,
     isLocked: false,
     isSubmitting: false,
@@ -306,7 +311,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     const isActive = this.isPasskeyActive;
 
     if (wasActive && !isActive) {
-      this.setState({ showPasswordForm: true });
+      this.setState({ showPasswordForm: true, passkeyError: null });
     } else if (!wasActive && isActive) {
       this.maybeAutoPasskeyUnlock();
     }
@@ -374,7 +379,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       return;
     }
 
-    this.setState({ error: null, isSubmitting: true });
+    this.setState({ error: null, passkeyError: null, isSubmitting: true });
 
     // Capture the rehydration state before async operations that might change it
     const isRehydrationFlow = this.isSocialImportRehydration();
@@ -541,6 +546,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     }
     this.setState({
       error: finalErrorMessage,
+      passkeyError: null,
       unlockDelayPeriod: finalUnlockDelayPeriod,
       showLoginErrorModal: shouldShowLoginErrorModal,
       showConnectionsRemovedModal: shouldShowConnectionsRemovedModal,
@@ -549,7 +555,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
   handleInputChange(event: ChangeEvent<HTMLInputElement>) {
     const { target } = event;
-    this.setState({ password: target.value, error: null });
+    this.setState({ password: target.value, error: null, passkeyError: null });
 
     const element = target;
     const boundingRect = element.getBoundingClientRect();
@@ -581,9 +587,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   };
 
   renderHelpText = () => {
-    const { error, unlockDelayPeriod } = this.state;
+    const { error, passkeyError, unlockDelayPeriod } = this.state;
+    const helpMessage = error ?? passkeyError;
 
-    if (!error) {
+    if (!helpMessage) {
       return null;
     }
 
@@ -592,28 +599,27 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         className="unlock-page__help-text"
         flexDirection={BoxFlexDirection.Column}
       >
-        {error && (
-          <Text
-            data-testid="unlock-page-help-text"
-            variant={TextVariant.BodySm}
-            textAlign={TextAlign.Left}
-            color={TextColor.ErrorDefault}
-          >
-            {error}
-            {unlockDelayPeriod > 0 && (
-              <FormattedCounter
-                startFrom={unlockDelayPeriod}
-                onCountdownEnd={() =>
-                  this.setState({
-                    isLocked: false,
-                    error: null,
-                    unlockDelayPeriod: 0,
-                  })
-                }
-              />
-            )}
-          </Text>
-        )}
+        <Text
+          data-testid="unlock-page-help-text"
+          variant={TextVariant.BodySm}
+          textAlign={TextAlign.Left}
+          color={TextColor.ErrorDefault}
+        >
+          {helpMessage}
+          {unlockDelayPeriod > 0 && error && (
+            <FormattedCounter
+              startFrom={unlockDelayPeriod}
+              onCountdownEnd={() =>
+                this.setState({
+                  isLocked: false,
+                  error: null,
+                  passkeyError: null,
+                  unlockDelayPeriod: 0,
+                })
+              }
+            />
+          )}
+        </Text>
       </Box>
     );
   };
@@ -633,6 +639,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     // passkey runs—including when the user tapped the fingerprint icon from the password form.
     this.setState({
       error: null,
+      passkeyError: null,
       passkeyInProgress: true,
       showPasswordForm: false,
     });
@@ -641,30 +648,16 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     try {
       if (!this.isPasskeyActive) {
         this.setState({
-          error: t('passkeyUnlockFailed'),
+          error: null,
+          passkeyError: t('passkeyUnlockFailed'),
           passkeyInProgress: false,
           showPasswordForm: true,
         });
         return;
       }
       const authOptions = await generatePasskeyAuthenticationOptions();
-      let authenticationResponse;
-      try {
-        authenticationResponse = await startPasskeyAuthentication(authOptions);
-      } catch (error) {
-        if (error instanceof PasskeyCeremonyTimeoutError) {
-          throw error;
-        }
-        const name = error instanceof Error ? error.name : '';
-        if (name === 'NotAllowedError' || name === 'AbortError') {
-          this.setState({
-            error: null,
-            showPasswordForm: false,
-          });
-          return;
-        }
-        throw new Error(UnlockPage.getPasskeyUnlockErrorMessage(error, t));
-      }
+      const authenticationResponse =
+        await startPasskeyAuthentication(authOptions);
 
       await unlockWithPasskey(authenticationResponse);
       await this.props.forceUpdateMetamaskState();
@@ -683,16 +676,17 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         properties: { method: 'passkey' },
       });
     } catch (err) {
-      if (err instanceof PasskeyCeremonyTimeoutError) {
+      if (isPasskeyCeremonySilentError(err)) {
         this.setState({
           error: null,
+          passkeyError: null,
           showPasswordForm: false,
         });
       } else {
-        const message =
-          err instanceof Error ? err.message : t('passkeyUnlockFailed');
         this.setState({
-          error: message,
+          error: null,
+          passkeyError:
+            translatePasskeyError(err, t) ?? t('passkeyUnlockFailed'),
           showPasswordForm: false,
         });
       }
@@ -769,18 +763,9 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     cancelPasskeyCeremony();
     this.setState({
       showPasswordForm: true,
+      passkeyError: null,
     });
   };
-
-  static getPasskeyUnlockErrorMessage(
-    error: unknown,
-    t: UnlockPageContext['t'],
-  ): string {
-    if (error instanceof PasskeyCeremonyTimeoutError) {
-      return t('passkeyUnlockTimedOut');
-    }
-    return t('passkeyUnlockFailed');
-  }
 
   renderLogoSection(isRehydrationFlow: boolean) {
     const { t } = this.context as UnlockPageContext;
@@ -812,6 +797,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     const {
       password,
       error,
+      passkeyError,
       isLocked,
       isSubmitting,
       showResetPasswordModal,
@@ -910,7 +896,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                     }
                     type={TextFieldType.Password}
                     value={password}
-                    error={Boolean(error)}
+                    error={Boolean(error || passkeyError)}
                     helpText={this.renderHelpText()}
                     autoComplete={false}
                     autoFocus
@@ -1019,7 +1005,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                 alignItems={BoxAlignItems.Center}
                 gap={4}
               >
-                {!showPasswordForm && error ? (
+                {!showPasswordForm && passkeyError ? (
                   <Text
                     variant={TextVariant.BodySm}
                     color={TextColor.ErrorDefault}
@@ -1027,7 +1013,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                     data-testid="unlock-passkey-error-banner"
                     className="w-full"
                   >
-                    {error}
+                    {passkeyError}
                   </Text>
                 ) : null}
                 <Button

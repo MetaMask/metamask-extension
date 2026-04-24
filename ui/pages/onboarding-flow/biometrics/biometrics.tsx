@@ -12,6 +12,7 @@ import {
   FontWeight,
   TextVariant,
   TextColor,
+  TextAlign,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,7 +23,11 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { startPasskeyRegistration } from '../../../../shared/lib/passkey';
+import {
+  startPasskeyRegistration,
+  translatePasskeyError,
+  isPasskeyCeremonySilentError,
+} from '../../../../shared/lib/passkey';
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
@@ -36,9 +41,12 @@ import {
 export default function Biometrics() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const t = useI18nContext();
+  const t = useI18nContext() as (key: string) => string;
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const [isRegisteringPasskey, setIsRegisteringPasskey] = useState(false);
+  const [registrationError, setRegistrationError] = useState<string | null>(
+    null,
+  );
 
   const goToNextStep = useCallback(() => {
     navigate(
@@ -54,6 +62,7 @@ export default function Biometrics() {
   };
 
   const handleSetUpBiometrics = async () => {
+    setRegistrationError(null);
     setIsRegisteringPasskey(true);
     try {
       const options = await generatePasskeyRegistrationOptions();
@@ -62,9 +71,16 @@ export default function Biometrics() {
       await forceUpdateMetamaskState(dispatch);
       goToNextStep();
     } catch (error: unknown) {
-      log.debug(
-        'Onboarding passkey registration failed or was cancelled',
-        error,
+      if (isPasskeyCeremonySilentError(error)) {
+        log.debug(
+          'Onboarding passkey registration cancelled or timed out',
+          error,
+        );
+        return;
+      }
+      log.error('Onboarding passkey registration failed', error);
+      setRegistrationError(
+        translatePasskeyError(error, t) ?? t('passkeyErrorRegistrationFailed'),
       );
     } finally {
       setIsRegisteringPasskey(false);
@@ -97,6 +113,17 @@ export default function Biometrics() {
       <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {t('biometricsDescription')}
       </Text>
+
+      {registrationError ? (
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.ErrorDefault}
+          textAlign={TextAlign.Center}
+          data-testid="biometrics-registration-error"
+        >
+          {registrationError}
+        </Text>
+      ) : null}
 
       <Box
         flexDirection={BoxFlexDirection.Column}

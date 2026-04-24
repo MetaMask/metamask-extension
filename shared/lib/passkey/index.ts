@@ -3,9 +3,10 @@ export {
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
   PasskeyCeremonyTimeoutError,
-  PASSKEY_SIDEPANEL_CEREMONY_TIMEOUT_MS,
+  isPasskeyCeremonySilentError,
 } from './passkey-ceremony';
 export {
   isPasskeyPRFSupported,
   isWebAuthnSupported,
 } from './passkey-capabilities';
+export { translatePasskeyError } from './passkey-error';
