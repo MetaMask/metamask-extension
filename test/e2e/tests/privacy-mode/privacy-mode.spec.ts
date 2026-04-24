@@ -46,8 +46,9 @@ describe('Privacy Mode', function () {
           .withAssetsController({
             assetsPrice: {
               'eip155:1/slip44:60': {
-                assetPriceType: 'fungible',
+                assetPriceType: 'fungible' as const,
                 id: 'ethereum',
+                lastUpdated: 0,
                 price: MOCK_ETH_CONVERSION_RATE,
                 usdPrice: MOCK_ETH_CONVERSION_RATE,
               },
