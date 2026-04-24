@@ -412,11 +412,6 @@ export class MetaMaskSessionManager implements ISessionManager {
 
     try {
       if (!isProdMode && fixtureCapability) {
-        const fixturePort = input.ports?.fixtureServer;
-        if (fixturePort !== undefined && fixtureCapability.setPort) {
-          fixtureCapability.setPort(fixturePort);
-        }
-
         const fixtureState = fixtureCapability.resolveState({
           stateMode,
           fixturePreset: input.fixturePreset,
@@ -428,10 +423,6 @@ export class MetaMaskSessionManager implements ISessionManager {
       }
 
       if (chainCapability) {
-        const anvilPort = input.ports?.anvil;
-        if (anvilPort !== undefined) {
-          chainCapability.setPort(anvilPort);
-        }
         await chainCapability.start();
         startedCapabilities.chain = true;
       }
@@ -492,12 +483,11 @@ export class MetaMaskSessionManager implements ISessionManager {
       config !== undefined && config.environment === 'e2e'
         ? config.ports
         : undefined;
-    const resolvedAnvilPort =
-      input.ports?.anvil ?? contextPorts?.anvil ?? DEFAULT_ANVIL_PORT;
+
+    // TODO - remove DEFAULT values once Types on client-mcp-core are updated.
+    const resolvedAnvilPort = contextPorts?.anvil ?? DEFAULT_ANVIL_PORT;
     const resolvedFixturePort =
-      input.ports?.fixtureServer ??
-      contextPorts?.fixtureServer ??
-      DEFAULT_FIXTURE_SERVER_PORT;
+      contextPorts?.fixtureServer ?? DEFAULT_FIXTURE_SERVER_PORT;
 
     this.activeSession = {
       state: {

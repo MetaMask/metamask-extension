@@ -13,10 +13,6 @@ import { MetaMaskMockServerCapability } from './mock-server';
 
 export type CreateMetaMaskContextOptions = {
   config?: Partial<E2EEnvironmentConfig>;
-  ports?: {
-    anvil?: number;
-    fixtureServer?: number;
-  };
   mockServer?: {
     enabled?: boolean;
     port?: number;
@@ -54,10 +50,6 @@ export function createMetaMaskE2EContext(
   const config: E2EEnvironmentConfig = {
     ...DEFAULT_E2E_CONFIG,
     ...options.config,
-    ports: {
-      ...options.config?.ports,
-      ...options.ports,
-    },
   };
 
   const fixture = new MetaMaskFixtureCapability({

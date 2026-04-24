@@ -36,10 +36,6 @@ export class MetaMaskFixtureCapability implements FixtureCapability {
     this.fetchWithTimeout = options.fetchWithTimeout ?? fetchWithTimeout;
   }
 
-  setPort(port: number): void {
-    this.port = port;
-  }
-
   async start(state: WalletState): Promise<void> {
     console.log('Starting FixtureServer...');
 

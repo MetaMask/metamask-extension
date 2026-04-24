@@ -67,11 +67,13 @@ describe('Capability Factory', () => {
       expect(context.config.defaultChainId).toBe(1337);
     });
 
-    it('uses custom ports when provided', () => {
+    it('uses custom ports when provided via config', () => {
       const context = createMetaMaskE2EContext({
-        ports: {
-          anvil: 9545,
-          fixtureServer: 23456,
+        config: {
+          ports: {
+            anvil: 9545,
+            fixtureServer: 23456,
+          },
         },
       });
 
@@ -81,9 +83,11 @@ describe('Capability Factory', () => {
 
     it('wires ports from config into capabilities', () => {
       const context = createMetaMaskE2EContext({
-        ports: {
-          anvil: 9545,
-          fixtureServer: 23456,
+        config: {
+          ports: {
+            anvil: 9545,
+            fixtureServer: 23456,
+          },
         },
       });
 
@@ -96,9 +100,11 @@ describe('Capability Factory', () => {
 
     it('stores ports in config.ports for downstream consumers', () => {
       const context = createMetaMaskE2EContext({
-        ports: {
-          anvil: 9545,
-          fixtureServer: 23456,
+        config: {
+          ports: {
+            anvil: 9545,
+            fixtureServer: 23456,
+          },
         },
       });
 
@@ -109,9 +115,11 @@ describe('Capability Factory', () => {
 
     it('keeps config.ports and capability ports in sync', () => {
       const context = createMetaMaskE2EContext({
-        ports: {
-          anvil: 7777,
-          fixtureServer: 8888,
+        config: {
+          ports: {
+            anvil: 7777,
+            fixtureServer: 8888,
+          },
         },
       });
 

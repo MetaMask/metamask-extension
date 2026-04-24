@@ -39,9 +39,11 @@ const server = createServer({
       releasePort(mockAlloc),
     ]);
     const context = createMetaMaskE2EContext({
-      ports: {
-        anvil: anvilAlloc.port,
-        fixtureServer: fixtureAlloc.port,
+      config: {
+        ports: {
+          anvil: anvilAlloc.port,
+          fixtureServer: fixtureAlloc.port,
+        },
       },
       mockServer: {
         port: mockAlloc.port,

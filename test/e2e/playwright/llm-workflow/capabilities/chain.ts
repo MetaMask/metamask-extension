@@ -54,6 +54,7 @@ export class NoOpChainCapability implements ChainCapability {
     return true;
   }
 
+  // TODO - REMOVE
   setPort(port: number): void {
     this.port = port;
   }
@@ -129,6 +130,7 @@ export class MetaMaskChainCapability implements ChainCapability {
     return this.anvil;
   }
 
+  // TODO - REMOVE
   setPort(port: number): void {
     this.port = port;
   }
