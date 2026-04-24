@@ -896,7 +896,7 @@
       "packages": {
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>acorn": true,
         "chokidar>normalize-path": true,
-        "postcss": true,
+        "gulp-sourcemaps>@gulp-sourcemaps/identity-map>postcss": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>source-map": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2": true
       }
@@ -4930,6 +4930,16 @@
         "process": true
       }
     },
+    "gulp-sourcemaps>@gulp-sourcemaps/identity-map>postcss>picocolors": {
+      "builtin": {
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.argv.includes": true,
+        "process.env": true,
+        "process.platform": true
+      }
+    },
     "micromatch>picomatch": {
       "builtin": {
         "path.basename": true,
@@ -5046,6 +5056,23 @@
       "packages": {
         "stylelint>postcss-selector-parser>cssesc": true,
         "@storybook/react>util-deprecate": true
+      }
+    },
+    "gulp-sourcemaps>@gulp-sourcemaps/identity-map>postcss": {
+      "builtin": {
+        "fs": true,
+        "path": true
+      },
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "console": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "gulp-sourcemaps>@gulp-sourcemaps/identity-map>postcss>picocolors": true,
+        "gulp-sourcemaps>@gulp-sourcemaps/identity-map>source-map": true
       }
     },
     "eslint-plugin-prettier>prettier-linter-helpers": {
