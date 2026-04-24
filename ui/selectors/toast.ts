@@ -1,3 +1,7 @@
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { createSelector } from 'reselect';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
@@ -139,11 +143,37 @@ type TxRequest = {
   approvalId: string;
   txId: string;
   smartTransactionStatus: string | undefined;
+  evmStatus: string | undefined;
 };
+
+function getEffectiveEvmStatus(
+  txId: string,
+  transactions: ReturnType<typeof selectTransactions>,
+) {
+  const originalTx = transactions.find((tx) => tx.id === txId);
+  if (!originalTx) {
+    return undefined;
+  }
+
+  if (
+    originalTx.status === TransactionStatus.dropped &&
+    originalTx.replacedById
+  ) {
+    const replacement = transactions.find(
+      (tx) => tx.id === originalTx.replacedById,
+    );
+    if (replacement?.type === TransactionType.retry) {
+      return replacement.status;
+    }
+  }
+
+  return originalTx.status;
+}
 
 export const selectSmartTransactions = createDeepEqualSelector(
   getPendingApprovals,
-  (pendingApprovals) => {
+  selectTransactions,
+  (pendingApprovals, transactions) => {
     const result: TxRequest[] = [];
 
     for (const approval of pendingApprovals) {
@@ -168,6 +198,8 @@ export const selectSmartTransactions = createDeepEqualSelector(
         approvalId: approval.id,
         txId,
         smartTransactionStatus: smartTransaction?.status,
+        // Track EVM transaction status to detect cancels and speed ups
+        evmStatus: getEffectiveEvmStatus(txId, transactions),
       });
     }
 

@@ -2229,9 +2229,6 @@
   "deepLink_thePerpsMarketDetailPage": {
     "message": "永续合约市场页面"
   },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "永续合约市场列表页面"
-  },
   "deepLink_thePerpsPage": {
     "message": "永续合约页面"
   },
@@ -5784,7 +5781,8 @@
     "message": "搜索市场"
   },
   "perpsSeeAll": {
-    "message": "查看全部"
+    "message": "查看全部",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "服务暂时不可用。请稍后再试。"
