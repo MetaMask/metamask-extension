@@ -110,7 +110,8 @@ describe('CancelOrderModal', () => {
       expect(
         screen.getByText(messages.perpsLimitPrice.message),
       ).toBeInTheDocument();
-      expect(screen.getAllByText('$3,000.00').length).toBeGreaterThanOrEqual(1);
+      // formatPerpsFiatUniversal strips trailing zeros for whole-dollar amounts
+      expect(screen.getAllByText('$3,000').length).toBeGreaterThanOrEqual(1);
     });
 
     it('displays the size row with symbol', () => {
@@ -169,7 +170,25 @@ describe('CancelOrderModal', () => {
       expect(
         screen.getByText(messages.perpsOrderValue.message),
       ).toBeInTheDocument();
-      expect(screen.getAllByText('$3,000.00').length).toBeGreaterThanOrEqual(1);
+      // formatPerpsFiatMinimal strips .00 for whole-dollar notional
+      expect(screen.getAllByText('$3,000').length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('keeps meaningful decimals on limit price and notional', () => {
+      const order: Order = {
+        ...baseOrder,
+        price: '3000.10',
+        size: '2.0',
+      };
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={order} />,
+        mockStore,
+      );
+
+      // Universal keeps ≤1 decimal for $1k–$10k range
+      expect(screen.getAllByText('$3,000.1').length).toBeGreaterThanOrEqual(1);
+      // Notional 6000.20 → minimal with fiatStyleStripping keeps .20
+      expect(screen.getByText('$6,000.20')).toBeInTheDocument();
     });
 
     it('hides order value row when price is zero', () => {

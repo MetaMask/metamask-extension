@@ -49,7 +49,11 @@ env:
   # Note: merge_group events only target `main` (no merge queue on `stable`),
   # so the fallback to 'main' is correct for that case too.
   BASE_BRANCH: ${{ github.event.pull_request.base.ref || (startsWith(github.ref_name, 'release/') && 'stable') || 'main' }}
+  # WARNING: always 'true' on fork repos — see IS_CROSS_REPO_PR below.
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
+  # True only for PRs whose head branch lives in a different repository.
+  # Unlike IS_FORK, this is false for same-repo work on a forked repository.
+  IS_CROSS_REPO_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
   EVENT_NAME: ${{ github.event_name }}
   PR_NUMBER: ${{ github.event.pull_request.number }}
   GH_TOKEN: ${{ github.token }}
@@ -93,8 +97,8 @@ jobs:
         run: |
           echo "SKIP=false" >> "$GITHUB_OUTPUT"
 
-          # Ignore the [skip-e2e] tag for forks
-          if [[ "$IS_FORK" != "true" ]] && { [[ "$EVENT_NAME" == "pull_request" ]] || [[ "$EVENT_NAME" == "merge_group" ]] || [[ "$BRANCH" == trigger-ci-* ]]; }; then
+          # Ignore the [skip-e2e] tag for cross-repo fork PRs (untrusted commit messages)
+          if [[ "$IS_CROSS_REPO_PR" != "true" ]] && { [[ "$EVENT_NAME" == "pull_request" ]] || [[ "$EVENT_NAME" == "merge_group" ]] || [[ "$BRANCH" == trigger-ci-* ]]; }; then
             if git show --format='%B' --no-patch "${HEAD_COMMIT_HASH}" | grep --fixed-strings --quiet '[skip-e2e]'; then
               echo "SKIP=true" >> "$GITHUB_OUTPUT"
               echo "-> SKIP=true due to [skip-e2e] tag in last commit message"
@@ -103,9 +107,10 @@ jobs:
 
       # Compute a content hash of all build-affecting source files.
       # Used to detect when builds can be reused from a prior run.
-      # IMPORTANT: We hash from HEAD_COMMIT_HASH (the PR head), not the merge
-      # commit that actions/checkout creates. This ensures the hash is stable
-      # across pushes even when the base branch advances.
+      # IMPORTANT: We hash from GITHUB_SHA (the merge commit for PRs, the
+      # pushed commit for pushes). This ensures the hash captures the merged
+      # tree that will actually be built and tested, so builds are never
+      # reused when the base branch has gained build-affecting changes.
       #
       # Uses a DENYLIST approach: we exclude paths known NOT to affect builds.
       # This is safer than an allowlist — if a new build-affecting file is
@@ -148,7 +153,7 @@ jobs:
             const eslintPattern = /^\.eslintrc(\.[a-z.-]+)?\.js$/;
 
             const { stdout: tree } = await exec.getExecOutput(
-              'git', ['ls-tree', '-r', process.env.HEAD_COMMIT_HASH],
+              'git', ['ls-tree', '-r', 'HEAD'],
               { silent: true },
             );
             const kept = tree.split('\n').filter(line => {
@@ -171,7 +176,7 @@ jobs:
             // the build-command values it passes to run-build.yml DO affect
             // output. Extract and sort them so only command changes bust the hash.
             const { stdout: mainYml } = await exec.getExecOutput(
-              'git', ['show', `${process.env.HEAD_COMMIT_HASH}:.github/workflows/main.yml`],
+              'git', ['show', `HEAD:.github/workflows/main.yml`],
               { silent: true },
             );
             const buildCommands = (mainYml.match(/build-command: .+/g) ?? [])
@@ -185,28 +190,6 @@ jobs:
             const buildHash = hash.trim();
             core.setOutput('build-hash', buildHash);
             core.info(`-> Build-source hash: ${buildHash}`);
-
-      # Post the hash as a commit status so future runs can look it up by SHA.
-      # This is an optimization for future runs — failure must not block current CI.
-      - name: Post build-source-hash commit status
-        if: ${{ steps.compute-build-hash.outputs.build-hash }}
-        continue-on-error: true
-        uses: actions/github-script@v8
-        env:
-          BUILD_HASH: ${{ steps.compute-build-hash.outputs.build-hash }}
-          HEAD_COMMIT_HASH: ${{ env.HEAD_COMMIT_HASH }}
-        with:
-          script: |
-            await github.rest.repos.createCommitStatus({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              sha: process.env.HEAD_COMMIT_HASH,
-              state: 'success',
-              context: 'build-source-hash',
-              description: process.env.BUILD_HASH,
-              target_url: `${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.RUN_ID}`,
-            });
-            core.info(`Posted build-source-hash: ${process.env.BUILD_HASH}`);
 
       # Check for build override tags in commit message or PR labels.
       # [force-builds] / force-builds label → always build fresh.
@@ -357,6 +340,31 @@ jobs:
             } catch (err) {
               core.warning(`Build reuse lookup failed: ${err.message}. Builds will run fresh.`);
             }
+
+      # Post the hash as a commit status so future runs can look it up by SHA.
+      # This must run AFTER "Find reusable builds" to avoid self-poisoning:
+      # getCombinedStatusForRef returns only the latest status per context, so
+      # posting first would overwrite a prior run's hash on the same PR head SHA,
+      # causing the finder to see our own hash and incorrectly match a stale build.
+      - name: Post build-source-hash commit status
+        if: ${{ steps.compute-build-hash.outputs.build-hash }}
+        continue-on-error: true
+        uses: actions/github-script@v8
+        env:
+          BUILD_HASH: ${{ steps.compute-build-hash.outputs.build-hash }}
+          HEAD_COMMIT_HASH: ${{ env.HEAD_COMMIT_HASH }}
+        with:
+          script: |
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: process.env.HEAD_COMMIT_HASH,
+              state: 'success',
+              context: 'build-source-hash',
+              description: process.env.BUILD_HASH,
+              target_url: `${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.RUN_ID}`,
+            });
+            core.info(`Posted build-source-hash: ${process.env.BUILD_HASH}`);
 
       - id: filter
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
