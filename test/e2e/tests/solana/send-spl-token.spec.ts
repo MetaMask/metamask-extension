@@ -277,6 +277,7 @@ async function mockSendSPLTokenFailed(
     await mockGetFailedSignaturesForAddress(mockServer),
     await mockGetFailedTransaction(mockServer),
     await mockGetMintAccountInfo(mockServer),
+    await mockSecurityAlertBulkScan(mockServer),
     isUnifiedAssetsEnabled
       ? await mockSolanaTokenApiAssets(mockServer)
       : await mockTokenApiAssets(mockServer),
