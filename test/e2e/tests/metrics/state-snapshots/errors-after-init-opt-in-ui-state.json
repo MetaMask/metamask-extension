@@ -239,7 +239,7 @@
     "lastDepositResult": null,
     "lastDepositTransactionId": null,
     "lastError": null,
-    "lastFetchedAt": null,
+    "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": "object",
     "lastSyncedTimestamp": "number",
     "lastUpdateTimestamp": "number",

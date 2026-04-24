@@ -216,7 +216,6 @@ function CenterContainer({
       {hasTokens && hasMax && (
         <PercentageButtons onPercentageClick={onPercentageClick} />
       )}
-
       <AlertMessage />
     </Box>
   );

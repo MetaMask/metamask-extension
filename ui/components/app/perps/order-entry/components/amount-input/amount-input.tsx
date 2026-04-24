@@ -23,7 +23,11 @@ import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
 import { getDisplaySymbol } from '../../../utils';
 import type { AmountInputProps } from '../../order-entry.types';
-import { isDigitsOnlyInput, isUnsignedDecimalInput } from '../../utils';
+import {
+  formatNumberForInput,
+  isDigitsOnlyInput,
+  isUnsignedDecimalInput,
+} from '../../utils';
 
 /**
  * AmountInput - Size section with dual USD/token inputs and percentage slider
@@ -40,6 +44,7 @@ import { isDigitsOnlyInput, isUnsignedDecimalInput } from '../../utils';
  * @param options0.asset
  * @param options0.currentPrice
  * @param options0.onAddFunds
+ * @param options0.szDecimals
  */
 export const AmountInput: React.FC<AmountInputProps> = ({
   amount,
@@ -50,6 +55,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   leverage,
   asset,
   currentPrice,
+  szDecimals,
   onAddFunds,
 }) => {
   const t = useI18nContext();
@@ -70,15 +76,28 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     return currentPrice > 0 ? numAmount / currentPrice : null;
   }, [amount, currentPrice]);
 
-  const tokenDisplayValue = useMemo(() => {
+  // Uses a locale-neutral formatter (always ".") so the value is always
+  // editable by isUnsignedDecimalInput regardless of the user's locale.
+  // Cap the max fractional digits to the asset's szDecimals so PUMP shows
+  // integer token counts ("6081") and ETH stops at 4 decimals instead of the
+  // previous hard-coded 6 (matches mobile's formatPositionSize behaviour).
+  const unGroupedTokenDisplay = useMemo(() => {
     if (tokenAmount === null || tokenAmount === 0) {
       return '';
     }
-    return formatNumber(tokenAmount, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 6,
-    });
-  }, [tokenAmount, formatNumber]);
+    return formatNumberForInput(tokenAmount, szDecimals);
+  }, [tokenAmount, szDecimals]);
+
+  // Local draft for the token input so intermediate values (e.g. "0", "0.") are
+  // preserved while the user is actively typing.
+  const [isEditingToken, setIsEditingToken] = useState(false);
+  const [tokenInputValue, setTokenInputValue] = useState(unGroupedTokenDisplay);
+
+  // When not editing, derive the displayed token value from the current amount
+  // rather than syncing via an effect — avoids a stale intermediate render.
+  const displayedTokenValue = isEditingToken
+    ? tokenInputValue
+    : unGroupedTokenDisplay;
 
   const formatAmount = useCallback(
     (value: number): string => value.toFixed(2),
@@ -131,31 +150,37 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   const handleTokenAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || isUnsignedDecimalInput(value)) {
-        if (value === '' || value === '.') {
-          onAmountChange('');
-          onBalancePercentChange(0);
-          setPercentInputValue('0');
-          return;
-        }
-        const numToken = parseFloat(value);
-        if (isNaN(numToken) || numToken <= 0 || currentPrice === 0) {
-          onAmountChange('');
-          onBalancePercentChange(0);
-          setPercentInputValue('0');
-          return;
-        }
-        const usdSize = numToken * currentPrice;
-        onAmountChange(formatAmount(usdSize));
-        const maxSize = availableBalance * leverage;
-        if (maxSize > 0) {
-          const pct = Math.min(Math.round((usdSize / maxSize) * 100), 100);
-          onBalancePercentChange(pct);
-          setPercentInputValue(String(pct));
-        } else {
-          onBalancePercentChange(0);
-          setPercentInputValue('0');
-        }
+      if (value !== '' && !isUnsignedDecimalInput(value)) {
+        return;
+      }
+
+      // Always update the local draft so partial inputs like "0", "0.", "0.0"
+      // are preserved in the field while the user is still typing.
+      setTokenInputValue(value);
+
+      if (value === '' || value === '.') {
+        onAmountChange('');
+        onBalancePercentChange(0);
+        setPercentInputValue('0');
+        return;
+      }
+      const numToken = parseFloat(value);
+      if (!Number.isFinite(numToken) || numToken <= 0 || currentPrice === 0) {
+        onAmountChange('');
+        onBalancePercentChange(0);
+        setPercentInputValue('0');
+        return;
+      }
+      const usdSize = numToken * currentPrice;
+      onAmountChange(formatAmount(usdSize));
+      const maxSize = availableBalance * leverage;
+      if (maxSize > 0) {
+        const pct = Math.min(Math.round((usdSize / maxSize) * 100), 100);
+        onBalancePercentChange(pct);
+        setPercentInputValue(String(pct));
+      } else {
+        onBalancePercentChange(0);
+        setPercentInputValue('0');
       }
     },
     [
@@ -168,8 +193,13 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     ],
   );
 
+  const handleTokenFocus = useCallback(() => {
+    setTokenInputValue(unGroupedTokenDisplay);
+    setIsEditingToken(true);
+  }, [unGroupedTokenDisplay]);
+
   const handleTokenBlur = useCallback(() => {
-    // Token value is derived from amount; no need to sync back on blur
+    setIsEditingToken(false);
   }, []);
 
   const handleSliderChange = useCallback(
@@ -308,8 +338,9 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         <Box className="flex-1 min-w-0">
           <TextField
             size={TextFieldSize.Md}
-            value={tokenDisplayValue}
+            value={displayedTokenValue}
             onChange={handleTokenAmountChange}
+            onFocus={handleTokenFocus}
             onBlur={handleTokenBlur}
             placeholder="0"
             borderRadius={BorderRadius.MD}

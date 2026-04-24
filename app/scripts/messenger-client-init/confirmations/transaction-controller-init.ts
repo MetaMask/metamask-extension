@@ -18,11 +18,13 @@ import {
   TransactionPayPublishHook,
 } from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
+import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 import { trace } from '../../../../shared/lib/trace';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
 import { isEnforcedSimulationsEligible } from '../../../../shared/lib/transaction/enforced-simulations';
+import { getEip7702SupportedChains } from '../../../../shared/lib/eip7702-support-utils';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   getSmartTransactionCommonParams,
@@ -130,9 +132,7 @@ export const TransactionControllerInit: MessengerClientInitFunction<
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
       includeTokenTransfers: false,
-      isEnabled: () =>
-        preferencesController().state.useExternalServices &&
-        onboardingController().state.completedOnboarding,
+      isEnabled: () => false,
       updateTransactions: true,
     },
     isAutomaticGasFeeUpdateEnabled,
@@ -199,10 +199,12 @@ export const TransactionControllerInit: MessengerClientInitFunction<
       beforeSign: new EnforceSimulationHook({
         messenger: initMessenger,
         isEligible: (transactionMeta) =>
-          isEnforcedSimulationsEligible(
-            transactionMeta,
-            initMessenger.call('AppStateController:getState'),
-          ),
+          isEnforcedSimulationsEligible(transactionMeta, {
+            ...initMessenger.call('AppStateController:getState'),
+            eip7702SupportedChains: getEip7702SupportedChains(
+              initMessenger.call('RemoteFeatureFlagController:getState'),
+            ),
+          }),
       }).getBeforeSignHook(),
       beforeCheckPendingTransactions: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
@@ -444,15 +446,14 @@ export async function publishHook({
     transactionMeta.txParams?.from,
     keyringController,
   );
+  let attemptedHook = false;
 
   if (
     keyringSupports7702 &&
     (!isSmartTransaction || !sendBundleSupport || isExternalSign)
   ) {
+    attemptedHook = true;
     const hook = new Delegation7702PublishHook({
-      isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
-        transactionController,
-      ),
       messenger: initMessenger,
     }).getHook();
 
@@ -480,6 +481,7 @@ export async function publishHook({
     isSmartTransaction &&
     (sendBundleSupport || transactionMeta.selectedGasFeeToken === undefined)
   ) {
+    attemptedHook = true;
     const result = await submitSmartTransactionHook({
       transactionMeta,
       signedTransactionInHex: signedTx as Hex,
@@ -509,6 +511,19 @@ export async function publishHook({
     // else, fall back to regular regular transaction submission
   }
 
+  if (attemptedHook) {
+    try {
+      await initMessenger.call(
+        'AppStateController:setDefaultHomeActiveTabName',
+        AccountOverviewTabKey.Activity,
+      );
+    } catch (error) {
+      console.error(
+        'Failed to set default home active tab for fallback transaction',
+        error,
+      );
+    }
+  }
   // Default: fall back to regular transaction submission
   return { transactionHash: undefined };
 }
