@@ -431,14 +431,10 @@ export async function publishHook({
     transactionMeta.chainId,
   );
 
-  const payHook = new TransactionPayPublishHook({
+  const payResult = await new TransactionPayPublishHook({
     isSmartTransaction: () => isSmartTransaction,
     messenger: initMessenger as unknown as TransactionPayControllerMessenger,
-  }).getHook();
-
-  // @ts-expect-error Root @metamask/transaction-controller v64 includes TransactionType.batch
-  // not present in the v63 copy nested inside @metamask/smart-transactions-controller.
-  const payResult = await payHook(transactionMeta, signedTx as Hex);
+  }).getHook()(transactionMeta, signedTx as Hex);
 
   if (payResult?.transactionHash) {
     return payResult;
