@@ -4,6 +4,7 @@ import { join, resolve } from 'node:path';
 import { Open } from 'unzipper';
 import { sources, type Compilation } from 'webpack';
 import {
+  BUNDLE_SIZE_DEBUG_FILE,
   BUNDLE_SIZE_SUMMARY_FILE,
   type BundleSizeSummary,
 } from '../utils/plugins/ManifestPlugin/stats';
@@ -442,9 +443,9 @@ describe('ManifestPlugin', () => {
       '[browser]',
       'chrome',
     );
-    const chromeDebugAssetPath = chromeSummaryAssetPath.replace(
-      /\.json$/u,
-      '.debug.json',
+    const chromeDebugAssetPath = BUNDLE_SIZE_DEBUG_FILE.replaceAll(
+      '[browser]',
+      'chrome',
     );
     const statsEntrypointCategories = {
       'service-worker.ts': 'background',

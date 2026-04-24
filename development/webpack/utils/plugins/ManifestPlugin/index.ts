@@ -255,7 +255,7 @@ export class ManifestPlugin<Z extends boolean> {
         if (debugEntrypoints) {
           emitJsonAsset(
             compilation,
-            statsFile.replace(/(\.json)$/u, '.debug$1'),
+            statsFile.replace(/\.json$/u, '.debug.json'),
             { entrypoints: debugEntrypoints },
           );
         }

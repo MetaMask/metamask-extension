@@ -1,6 +1,10 @@
 import type { BundleSizeCategory } from './types';
 
 export const BUNDLE_SIZE_SUMMARY_FILE = 'bundle-size/[browser].json';
+export const BUNDLE_SIZE_DEBUG_FILE = BUNDLE_SIZE_SUMMARY_FILE.replace(
+  /\.json$/u,
+  '.debug.json',
+);
 
 export const bundleParts = [
   'background',
