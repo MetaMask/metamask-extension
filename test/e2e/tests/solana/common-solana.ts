@@ -1639,7 +1639,7 @@ export async function mockSecurityAlertBulkScan(mockServer: Mockttp) {
       const results: Record<string, { result_type: string }> = {};
       for (const address of tokens) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        results[address] = { result_type: 'Benign' };
+        results[address] = { result_type: 'Verified' };
       }
       return {
         statusCode: 200,
