@@ -272,7 +272,7 @@ describe('Custom RPC history', function (this: Suite) {
         // Check custom network http://127.0.0.1:8545/2 is removed from network list
         // need a hard delay to avoid the background error message "network configuration not found" for removed network
         await driver.delay(2000);
-        await headerNavbar.openGlobalNetworksPageWhenDrawerIsOpen();
+        await headerNavbar.openGlobalNetworksMenu({ isDrawerOpen: true });
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.checkNetworkOptionIsDisplayed(
           'http://127.0.0.1:8545/2',

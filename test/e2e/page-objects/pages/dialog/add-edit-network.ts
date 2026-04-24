@@ -50,11 +50,6 @@ class AddEditNetworkModal {
     testId: 'page-container-footer-next',
   };
 
-  private readonly legacyEditModalSaveButton = {
-    text: 'Save',
-    tag: 'button',
-  };
-
   private readonly explorerUrlInputDropDownButton = {
     testId: 'test-explorer-drop-down',
   };
@@ -73,12 +68,7 @@ class AddEditNetworkModal {
         this.networkNameInputField,
         this.editModalRpcDropDownButton,
       ]);
-      const pageFooterButtons = await this.driver.findElements(
-        this.editModalSaveButton,
-      );
-      if (pageFooterButtons.length === 0) {
-        await this.driver.waitForSelector(this.legacyEditModalSaveButton);
-      }
+      await this.driver.waitForSelector(this.editModalSaveButton);
     } catch (e) {
       console.log(
         'Timeout while waiting for add/edit network dialog to be loaded',
@@ -158,18 +148,7 @@ class AddEditNetworkModal {
 
   async saveEditedNetwork(): Promise<void> {
     console.log('Save and close edit network modal');
-    const pageFooterButtons = await this.driver.findElements(
-      this.editModalSaveButton,
-    );
-    if (pageFooterButtons.length > 0) {
-      await this.driver.clickElementAndWaitToDisappear(
-        this.editModalSaveButton,
-      );
-      return;
-    }
-    await this.driver.clickElementAndWaitToDisappear(
-      this.legacyEditModalSaveButton,
-    );
+    await this.driver.clickElementAndWaitToDisappear(this.editModalSaveButton);
   }
 
   async clickBackButton(): Promise<void> {
@@ -270,18 +249,7 @@ class AddEditNetworkModal {
   async checkSaveButtonIsEnabled(): Promise<boolean> {
     console.log('Check if save button is enabled on add/edit network modal');
     try {
-      const pageFooterButtons = await this.driver.findElements(
-        this.editModalSaveButton,
-      );
-      if (pageFooterButtons.length > 0) {
-        await this.driver.findClickableElement(this.editModalSaveButton, {
-          timeout: 1000,
-        });
-      } else {
-        await this.driver.findClickableElement(this.legacyEditModalSaveButton, {
-          timeout: 1000,
-        });
-      }
+      await this.driver.findClickableElement(this.editModalSaveButton);
     } catch (e) {
       console.log('Save button not enabled', e);
       return false;

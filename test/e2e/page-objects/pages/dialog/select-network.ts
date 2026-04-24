@@ -109,10 +109,7 @@ class SelectNetwork {
     console.log('Click Add Button for Popular Network');
 
     const buttonSelector = this.addPopularNetworkByChainIdIcon(chainId);
-
     const addButton = await this.driver.findElement(buttonSelector);
-
-    await this.driver.scrollToElement(addButton);
     await this.driver.clickElementAndWaitToDisappear(buttonSelector);
   }
 
