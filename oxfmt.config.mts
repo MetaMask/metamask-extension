@@ -22,8 +22,6 @@ export default defineConfig({
     '/development/circular-deps.jsonc',
     '/development/ts-migration-dashboard/build/**',
     '/dist/',
-    '/lavamoat/**/policy-override.json',
-    '/lavamoat/**/policy.json',
     '/node_modules/',
     '/storybook-build/',
     '/test-artifacts/',
