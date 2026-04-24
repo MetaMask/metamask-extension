@@ -6,7 +6,6 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
-import HomePage from '../../page-objects/pages/home/homepage';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -59,12 +58,7 @@ describe('Add Custom network', function (this: Suite) {
         await addRpcUrlModal.saveAddRpcUrl();
         await addEditNetworkModal.addExplorerUrl('https://test.com');
         await addEditNetworkModal.saveEditedNetwork();
-        await selectNetworkDialog.clickCloseButton();
-
-        // Validate the network was added
-        const homepage = new HomePage(driver);
-        await homepage.checkPageIsLoaded();
-        await homepage.checkAddNetworkMessageIsDisplayed('Gnosis');
+        await selectNetworkDialog.checkAddNetworkMessageIsDisplayed('Gnosis');
       },
     );
   });
@@ -180,12 +174,9 @@ describe('Add Custom network', function (this: Suite) {
           true,
         );
         await addEditNetworkModal.saveEditedNetwork();
-        await selectNetworkDialog.clickCloseButton();
-
-        // Validate the network was added
-        const homepage = new HomePage(driver);
-        await homepage.checkPageIsLoaded();
-        await homepage.checkAddNetworkMessageIsDisplayed('Collision network');
+        await selectNetworkDialog.checkAddNetworkMessageIsDisplayed(
+          'Collision network',
+        );
       },
     );
   });

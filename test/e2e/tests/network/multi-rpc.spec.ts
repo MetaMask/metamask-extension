@@ -410,23 +410,12 @@ describe('MultiRpc:', function (this: Suite) {
         await editNetworkModal.selectRPCInEditNetworkModal(
           'Arbitrum mainnet 2',
         );
-        await selectNetworkDialog.clickCloseButton();
-
-        // validate the network was successfully edited
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        // Check for edit network toast (may not appear with sidepanel due to appState loss)
-        if (await isSidePanelEnabled()) {
-          console.log('Skipping edit network toast check for sidepanel build');
-        } else {
-          await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
-        }
-
-        await homePage.closeUseNetworkNotificationModal();
+        await selectNetworkDialog.checkEditNetworkMessageIsDisplayed(
+          'Arbitrum',
+        );
+        await expectNoMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
 
         // check that the second rpc is selected in the network dialog
-        await headerNavbar.openGlobalNetworksMenu();
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.checkRpcIsSelected('Arbitrum mainnet 2');
       },
@@ -563,6 +552,7 @@ describe('MultiRpc:', function (this: Suite) {
           await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
         }
         await homePage.closeUseNetworkNotificationModal();
+        await expectNoMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
 
         // check that the second rpc is selected in the network dialog
         const headerNavbar = new HeaderNavbar(driver);

@@ -6,7 +6,6 @@ import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
-import HomePage from '../../page-objects/pages/home/homepage';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -42,15 +41,11 @@ describe('Update Network:', function (this: Suite) {
         await editNetworkModal.saveEditedNetwork();
         await editNetworkModal.clickBackButton();
 
-        // Verify the new network name is visible
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed(
+        // Verify the edit toast is visible on networks page
+        await selectNetworkDialog.checkEditNetworkMessageIsDisplayed(
           inputData.networkName,
         );
-        await homePage.closeUseNetworkNotificationModal();
         // Since switching networks is disabled via the networks modal in global menu, we don't need to check the selected network anymore
-        await headerNavbar.openGlobalNetworksMenu();
 
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:1337');
@@ -159,14 +154,11 @@ describe('Update Network:', function (this: Suite) {
         );
         await editNetworkModal.saveEditedNetwork();
         await editNetworkModal.clickBackButton();
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
-        await homePage.closeUseNetworkNotificationModal();
+        await selectNetworkDialog.checkEditNetworkMessageIsDisplayed(
+          'Arbitrum',
+        );
 
         // Re-open the network menu and go back to edit the network
-        await headerNavbar.openGlobalNetworksMenu();
-
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();
@@ -256,14 +248,11 @@ describe('Update Network:', function (this: Suite) {
         // Save the network
         await editNetworkModal.saveEditedNetwork();
         await editNetworkModal.clickBackButton();
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
-        await homePage.closeUseNetworkNotificationModal();
+        await selectNetworkDialog.checkEditNetworkMessageIsDisplayed(
+          'Arbitrum',
+        );
 
         // Re-open the network menu and go back to edit the network
-        await headerNavbar.openGlobalNetworksMenu();
-
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();

@@ -241,6 +241,26 @@ class SelectNetwork {
     });
   }
 
+  async checkAddNetworkMessageIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Check the toaster message for adding network ${networkName} is displayed on networks page`,
+    );
+    await this.driver.waitForSelector({
+      tag: 'h6',
+      text: `“${networkName}” was successfully added!`,
+    });
+  }
+
+  async checkEditNetworkMessageIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Check the toaster message for editing network ${networkName} is displayed on networks page`,
+    );
+    await this.driver.waitForSelector({
+      tag: 'h6',
+      text: `“${networkName}” was successfully edited!`,
+    });
+  }
+
   async clickDiscoverButton(): Promise<void> {
     console.log('Click Discover button in network options');
     await this.driver.clickElement(this.discoverButton);

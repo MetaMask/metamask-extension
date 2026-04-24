@@ -14,9 +14,10 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
+import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useNetworkFormState } from '../settings/networks-tab/networks-form/networks-form-state';
-import { setActiveNetwork, setEditedNetwork } from '../../store/actions';
+import { setEditedNetwork } from '../../store/actions';
 import AddBlockExplorerModal from '../../components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import { SelectRpcUrlModal } from '../../components/multichain/network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
 import { AddNetwork } from '../../components/multichain/network-manager/components/add-network';
@@ -24,6 +25,7 @@ import { Header } from '../../components/multichain/pages/page';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain/networks';
 import { getEditedNetwork } from '../../selectors/selectors';
+import { SECOND } from '../../../shared/constants/time';
 import { SettingsV2Header } from '../settings-v2/shared/settings-v2-header';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 import { NetworksPageList } from './networks-page-list';
@@ -178,15 +180,15 @@ export const NetworksPage = () => {
     navigate(DEFAULT_ROUTE);
   }, [dispatch, navigate]);
 
-  // The select-rpc page already updates the network configuration. We only
-  // need to point the active network at the chosen RPC client before closing.
-  const handleSelectRpc = useCallback(
-    (_chainId: string, networkClientId: string) => {
-      dispatch(setActiveNetwork(networkClientId));
-      handleClose();
-    },
-    [dispatch, handleClose],
-  );
+  const clearEditedNetwork = useCallback(() => {
+    dispatch(setEditedNetwork());
+  }, [dispatch]);
+
+  // networks page should update configuration only
+  // should not switch the currently selected network on the homepage.
+  const handleSelectRpc = useCallback(() => {
+    handleClose();
+  }, [handleClose]);
 
   const handleGoHome = useCallback(() => {
     setView();
@@ -201,17 +203,44 @@ export const NetworksPage = () => {
   }, [setView]);
 
   const handleRootBack = useCallback(() => {
+    clearEditedNetwork();
     navigate(
       searchParams.get('drawerOpen') === 'true'
         ? `${DEFAULT_ROUTE}?drawerOpen=true`
         : DEFAULT_ROUTE,
     );
-  }, [navigate, searchParams]);
+  }, [clearEditedNetwork, navigate, searchParams]);
 
   return (
     <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background-default">
       {view === '' ? (
         <>
+          {editedNetwork?.editCompleted ? (
+            <ActionableMessage
+              key="edited-network"
+              type="success"
+              className="home__new-tokens-imported-notification"
+              autoHideTime={5 * SECOND}
+              onAutoHide={clearEditedNetwork}
+              message={
+                <Box style={{ display: 'inline-flex', alignItems: 'center' }}>
+                  <i className="fa fa-check-circle home__new-network-notification-icon" />
+                  <h6>
+                    {editedNetwork.newNetwork
+                      ? t('newNetworkAdded', [editedNetwork.nickname])
+                      : t('newNetworkEdited', [editedNetwork.nickname])}
+                  </h6>
+                  <ButtonIcon
+                    ariaLabel={t('close')}
+                    iconName={IconName.Close}
+                    size={ButtonIconSize.Sm}
+                    onClick={clearEditedNetwork}
+                    className="home__new-network-notification-close"
+                  />
+                </Box>
+              }
+            />
+          ) : null}
           <SettingsV2Header
             title={t('networks')}
             onClose={handleRootBack}
