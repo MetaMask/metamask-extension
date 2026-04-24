@@ -5889,7 +5889,7 @@
     "message": "Flip your short position to a long"
   },
   "perpsSaveChanges": {
-    "message": "Save Changes",
+    "message": "Save changes",
     "description": "Button text for saving TP/SL changes"
   },
   "perpsSearchMarkets": {
