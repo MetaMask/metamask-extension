@@ -4,7 +4,7 @@ import { join } from 'path';
 import { sha256 } from 'ethereum-cryptography/sha256';
 import { secp256k1 } from 'ethereum-cryptography/secp256k1';
 
-// Must match the `localwitness` entry in tron-config/private_net_config.conf
+// Must match the `localwitness` entry in tron/config/private_net_config.conf
 // Zion witness account from genesis block (95 billion TRX in private chain)
 const GENESIS_PRIVATE_KEY =
   'da146374a75310b9666e834ee4ad0866d6f4035967bfc76217c5a495fff9f0d0';
@@ -12,7 +12,7 @@ const GENESIS_ADDRESS = 'TPL66VK2gCXNCD7EJg9pgJRfqcRazjhUZY';
 
 const CONTAINER_NAME = 'tron-private-e2e';
 const HTTP_PORT = 18090;
-const CONFIG_DIR = join(__dirname, 'tron-config');
+const CONFIG_DIR = join(__dirname, 'config');
 
 export const TRON_LOCAL_NODE_URL = `http://localhost:${HTTP_PORT}`;
 
@@ -32,11 +32,19 @@ export class TronNode {
   async start(
     options: { initialBalances?: Record<string, number> } = {},
   ): Promise<void> {
-    // Remove any leftover container from a previous run
+    // Remove any leftover container and stale blockchain data from a previous
+    // run. Both must be cleared together: the container holds port 18090, and
+    // the data directory holds chain state that would inflate account balances
+    // if reused (fundAccount would add on top of an existing balance).
     try {
       execSync(`docker rm -f ${CONTAINER_NAME}`, { stdio: 'pipe' });
     } catch {
       // Container didn't exist — that's fine
+    }
+    try {
+      execSync('rm -rf /tmp/tron-output-e2e', { stdio: 'pipe' });
+    } catch {
+      // Directory didn't exist — that's fine
     }
 
     execSync(

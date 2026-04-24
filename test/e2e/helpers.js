@@ -231,7 +231,7 @@ async function withFixtures(options, testSuite) {
 
         case 'tron':
           // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
-          const { TronNode } = require('./seeder/tron-node');
+          const { TronNode } = require('./seeder/tron/node');
           localNode = new TronNode();
           await localNode.start(nodeOptions);
           localNodes.push(localNode);
