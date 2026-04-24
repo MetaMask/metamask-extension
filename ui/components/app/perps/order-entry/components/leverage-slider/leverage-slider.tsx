@@ -117,7 +117,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
             markInterval={5}
           />
         </Box>
-        <Box className="shrink-0 w-16">
+        <Box className="shrink-0" style={{ width: '4.5rem' }}>
           <TextField
             size={TextFieldSize.Sm}
             value={inputValue}
