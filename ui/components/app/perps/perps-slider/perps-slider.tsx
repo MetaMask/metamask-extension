@@ -46,11 +46,13 @@ const sliderStyles = {
     width: 16,
     marginTop: -6,
     marginLeft: -5,
+    // eslint-disable-next-line @metamask/design-tokens/color-no-hex
     backgroundColor: '#414243',
     border: '2px solid var(--color-text-default)',
     boxSizing: 'border-box' as const,
     boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     '[data-theme="dark"] &': {
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
       backgroundColor: '#CCCCCC',
     },
     '&:focus, &$active': {
@@ -65,10 +67,12 @@ const sliderStyles = {
       width: 18,
       marginTop: -7,
       marginLeft: -6,
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
       backgroundColor: '#414243',
       border: '2px solid var(--color-text-default)',
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
       '[data-theme="dark"] &': {
+        // eslint-disable-next-line @metamask/design-tokens/color-no-hex
         backgroundColor: '#CCCCCC',
       },
     },
@@ -77,11 +81,13 @@ const sliderStyles = {
       width: 16,
       marginTop: -6,
       marginLeft: -5,
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
       backgroundColor: '#414243',
       border: '2px solid var(--color-text-default)',
       boxSizing: 'border-box' as const,
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
       '[data-theme="dark"] &': {
+        // eslint-disable-next-line @metamask/design-tokens/color-no-hex
         backgroundColor: '#CCCCCC',
       },
       '&:hover': {
