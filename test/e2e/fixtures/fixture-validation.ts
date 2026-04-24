@@ -82,7 +82,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',
   'data.AccountTracker',
-  // Base JSON fixtures use `{}`; schema diff skips this subtree—AssetsController fills at runtime.
   'data.AssetsController',
   'data.AuthenticationController',
   'data.MetaMetricsController',
@@ -99,8 +98,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.MultichainBalancesController',
   'data.MultichainBalancesController.balances',
   'data.MultichainTransactionsController.nonEvmTransactions',
-  // RPC `failoverUrls` are not ignored: CI may populate them from QUICKNODE_*; keep fixtures
-  // aligned via `@metamaskbot update-e2e-fixture` or a CI-equivalent env when refreshing state.
   'data.NetworkController.networkConfigurationsByChainId.0x539.rpcEndpoints[0].networkClientId',
   'data.NetworkController.networksMetadata',
   'data.NetworkController.selectedNetworkClientId',

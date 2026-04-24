@@ -1086,7 +1086,7 @@ class AccountListPage {
         } is equal to ${expectedNumberOfAccounts}? ${isValid}`,
       );
       return isValid;
-    }, 20000);
+    });
   }
 
   /**
