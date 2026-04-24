@@ -122,15 +122,7 @@ class CriticalErrorPage {
       );
 
       // Now safe to close extra tabs (service worker has finished handoff / fallback).
-      const allHandles = await this.driver.driver.getAllWindowHandles();
-      const currentHandle = await this.driver.driver.getWindowHandle();
-      for (const handle of allHandles) {
-        if (handle !== currentHandle) {
-          await this.driver.driver.switchTo().window(handle);
-          await this.driver.driver.close();
-        }
-      }
-      await this.driver.driver.switchTo().window(currentHandle);
+      await this.driver.closeAllOtherTabs();
     } else {
       await alert.dismiss();
     }
