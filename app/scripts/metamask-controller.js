@@ -2895,8 +2895,6 @@ export default class MetamaskController extends EventEmitter {
       resetAccount: this.resetAccount.bind(this),
       removeAccount: this.removeAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
-      getAccountsBySnapId: (snapId) =>
-        getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId),
       checkIsSeedlessPasswordOutdated:
         this.checkIsSeedlessPasswordOutdated.bind(this),
       syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
@@ -3526,16 +3524,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:enableSnap',
       ),
-      updateSnap: (origin, requestedSnaps) => {
-        // We deliberately do not await this promise as that would mean waiting for the update to complete
-        // Instead we return null to signal to the UI that it is safe to redirect to the update flow
-        this.controllerMessenger.call(
-          'SnapController:installSnaps',
-          origin,
-          requestedSnaps,
-        );
-        return null;
-      },
       removeSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:removeSnap',

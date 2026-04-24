@@ -136,6 +136,7 @@ async function start() {
 
     await initializeUiWithTab(
       activeTab,
+      backgroundConnection,
       subStreams.patch,
       windowType,
       traceContext,
@@ -239,6 +240,7 @@ async function loadPhishingWarningPage() {
 
 async function initializeUiWithTab(
   activeTab,
+  backgroundConnection,
   patchSubstream,
   windowType,
   traceContext,
@@ -248,6 +250,7 @@ async function initializeUiWithTab(
     const store = await launchMetamaskUi({
       activeTab,
       container,
+      backgroundConnection,
       patchSubstream,
       traceContext,
       initialState,
