@@ -7,6 +7,25 @@ import { getActiveSpan, trace } from '../../../shared/lib/trace';
 import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
 
 /**
+ * Read-only verb prefixes that produce noise in trace waterfalls without
+ * useful timing or attribution signal. Empirically these dominate
+ * messenger.call volume in `metamask-performance` (~90% of all calls).
+ *
+ * The pattern matches `:verb` followed by an uppercase letter (camelCase
+ * method) or end-of-string, so it catches both `:getState` and `:getSnap`
+ * without false-matching `:getter` (which doesn't exist as a method anyway).
+ */
+const READ_ONLY_VERB = /^(?:get|has|find|is|peek)(?:[A-Z]|$)/u;
+
+export function isReadOnlyAction(actionType: string): boolean {
+  const colonIndex = actionType.indexOf(':');
+  if (colonIndex === -1) {
+    return false;
+  }
+  return READ_ONLY_VERB.test(actionType.slice(colonIndex + 1));
+}
+
+/**
  * Wrap a messenger's `call` method with Sentry tracing.
  * Each `messenger.call(action, ...args)` invocation creates a child span
  * under the currently active trace, enabling visibility into
@@ -36,6 +55,9 @@ export function wrapMessengerWithTracing<
   messenger.call = ((actionType: string, ...args: unknown[]) => {
     const activeSpan = getActiveSpan();
     if (!activeSpan) {
+      return originalCall(actionType, ...args);
+    }
+    if (isReadOnlyAction(actionType)) {
       return originalCall(actionType, ...args);
     }
     if (!shouldSampleWrappers(activeSpan.spanContext()?.traceId)) {

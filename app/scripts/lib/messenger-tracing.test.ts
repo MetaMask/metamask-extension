@@ -1,7 +1,10 @@
 import { Messenger } from '@metamask/messenger';
 import { getActiveSpan, trace } from '../../../shared/lib/trace';
 import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
-import { wrapMessengerWithTracing } from './messenger-tracing';
+import {
+  isReadOnlyAction,
+  wrapMessengerWithTracing,
+} from './messenger-tracing';
 
 jest.mock('../../../shared/lib/trace', () => ({
   getActiveSpan: jest.fn(),
@@ -27,7 +30,22 @@ type TestFailAction = {
   handler: () => void;
 };
 
-type TestActions = TestGetStateAction | TestDoWorkAction | TestFailAction;
+type TestSetStateAction = {
+  type: 'Test:setState';
+  handler: (value: string) => void;
+};
+
+type TestHasItemAction = {
+  type: 'Test:hasItem';
+  handler: () => boolean;
+};
+
+type TestActions =
+  | TestGetStateAction
+  | TestDoWorkAction
+  | TestFailAction
+  | TestSetStateAction
+  | TestHasItemAction;
 
 describe('wrapMessengerWithTracing', () => {
   const traceMock = trace as jest.Mock;
@@ -60,8 +78,7 @@ describe('wrapMessengerWithTracing', () => {
     expect(result).toBe('result');
   });
 
-  it('skips trace when shouldSampleWrappers returns false (sub-sampled out)', () => {
-    shouldSampleWrappersMock.mockReturnValue(false);
+  it('skips trace for a read-only messenger action (denylist applies)', () => {
     const messenger = new Messenger<'Test', TestActions, never>({
       namespace: 'Test',
     });
@@ -75,26 +92,59 @@ describe('wrapMessengerWithTracing', () => {
     expect(result).toBe('result');
   });
 
-  it('wraps messenger.call with tracing', () => {
+  it('still traces non-read-only actions like setState', () => {
     const messenger = new Messenger<'Test', TestActions, never>({
       namespace: 'Test',
     });
-    const handler = jest.fn().mockReturnValue('result');
-    messenger.registerActionHandler('Test:getState', handler);
+    const handler = jest.fn();
+    messenger.registerActionHandler('Test:setState', handler);
 
     const wrapped = wrapMessengerWithTracing(messenger);
-    const result = wrapped.call('Test:getState');
+    wrapped.call('Test:setState', 'new-value');
 
     expect(traceMock).toHaveBeenCalledTimes(1);
     expect(traceMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: `Messenger Call: Test:getState`,
+        name: `Messenger Call: Test:setState`,
         op: 'messenger.call',
-        data: { action: 'Test:getState' },
       }),
       expect.any(Function),
     );
-    expect(result).toBe('result');
+  });
+
+  it('skips trace when shouldSampleWrappers returns false (sub-sampled out)', () => {
+    shouldSampleWrappersMock.mockReturnValue(false);
+    const messenger = new Messenger<'Test', TestActions, never>({
+      namespace: 'Test',
+    });
+    const handler = jest.fn();
+    messenger.registerActionHandler('Test:setState', handler);
+
+    const wrapped = wrapMessengerWithTracing(messenger);
+    wrapped.call('Test:setState', 'value');
+
+    expect(traceMock).not.toHaveBeenCalled();
+  });
+
+  it('wraps messenger.call with tracing', () => {
+    const messenger = new Messenger<'Test', TestActions, never>({
+      namespace: 'Test',
+    });
+    const handler = jest.fn().mockImplementation(() => undefined);
+    messenger.registerActionHandler('Test:setState', handler);
+
+    const wrapped = wrapMessengerWithTracing(messenger);
+    wrapped.call('Test:setState', 'value');
+
+    expect(traceMock).toHaveBeenCalledTimes(1);
+    expect(traceMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: `Messenger Call: Test:setState`,
+        op: 'messenger.call',
+        data: { action: 'Test:setState' },
+      }),
+      expect.any(Function),
+    );
   });
 
   it('returns the same messenger instance', () => {
@@ -129,5 +179,41 @@ describe('wrapMessengerWithTracing', () => {
 
     wrapMessengerWithTracing(messenger);
     expect(() => messenger.call('Test:fail')).toThrow('handler error');
+  });
+});
+
+describe('isReadOnlyAction', () => {
+  it.each([
+    'KeyringController:getState',
+    'SnapController:getSnap',
+    'NetworkController:getNetworkClientById',
+    'PermissionController:hasPermissions',
+    'WebSocketService:findSubscriptionsByChannelPrefix',
+    'Foo:isEnabled',
+    'Bar:peekQueue',
+  ])('returns true for read-only verb: %s', (actionType) => {
+    expect(isReadOnlyAction(actionType)).toBe(true);
+  });
+
+  it.each([
+    'KeyringController:setState',
+    'SnapController:updateSnapState',
+    'BackendWebSocketService:connect',
+    'WebSocketService:sendMessage',
+    'CronjobController:schedule',
+    'AccountsController:addAccount',
+    'AccountsController:removeAccount',
+  ])('returns false for state-changing or boundary action: %s', (actionType) => {
+    expect(isReadOnlyAction(actionType)).toBe(false);
+  });
+
+  it('returns false for action without colon separator', () => {
+    expect(isReadOnlyAction('getState')).toBe(false);
+  });
+
+  it.each([
+    'Foo:getter', // not a method, but still matches verb prefix - acceptable false positive
+  ])('matches lowercase-continuation false positives (acceptable): %s', (actionType) => {
+    expect(isReadOnlyAction(actionType)).toBe(false);
   });
 });
