@@ -1,19 +1,5 @@
 import type { ArtifactLinks } from './artifacts';
 
-type BundleSizeSummary = {
-  background: number;
-  ui: number;
-  common: number;
-  other?: number;
-  contentScripts?: number;
-  zip?: number;
-  timestamp: number;
-};
-
-const bundleParts = ['background', 'ui', 'common'] as const;
-type BundlePart = (typeof bundleParts)[number];
-type BundleSizeHistory = Record<string, Partial<Record<BundlePart, number>>>;
-
 /**
  * Converts a byte count to a human-readable string (e.g. "1.5 KiB").
  *
@@ -73,8 +59,9 @@ export async function buildBundleSizeDiffSection(
       `Failed to fetch prBundleSizeStats, status ${prBundleSizeStatsResponse.statusText}`,
     );
   }
-  const prBundleSizeStats =
-    (await prBundleSizeStatsResponse.json()) as BundleSizeSummary;
+  // This annotation narrows the untyped json() result to the known schema of the bundle size stats artifact.
+  const prBundleSizeStats: Record<string, number> =
+    await prBundleSizeStatsResponse.json();
 
   const devBundleSizeStatsResponse = await fetch(artifacts.bundleSizeData.url);
   if (!devBundleSizeStatsResponse.ok) {
@@ -82,8 +69,14 @@ export async function buildBundleSizeDiffSection(
       `Failed to fetch devBundleSizeStats, status ${devBundleSizeStatsResponse.statusText}`,
     );
   }
-  const devBundleSizeStats =
-    (await devBundleSizeStatsResponse.json()) as BundleSizeHistory;
+  // This annotation narrows the untyped json() result to the known schema of the dev bundle size data.
+  const devBundleSizeStats: Record<
+    string,
+    Record<string, number>
+  > = await devBundleSizeStatsResponse.json();
+
+  const bundleParts = ['background', 'ui', 'common'] as const;
+  type BundlePart = (typeof bundleParts)[number];
 
   const prSizes: Record<BundlePart, number> = {
     background: prBundleSizeStats.background,
@@ -92,10 +85,13 @@ export async function buildBundleSizeDiffSection(
   };
 
   const devSizes: Record<BundlePart, number> = {
-    background: devBundleSizeStats[mergeBaseCommitHash]?.background ?? 0,
-    ui: devBundleSizeStats[mergeBaseCommitHash]?.ui ?? 0,
-    common: devBundleSizeStats[mergeBaseCommitHash]?.common ?? 0,
+    background: 0,
+    ui: 0,
+    common: 0,
   };
+  for (const part of bundleParts) {
+    devSizes[part] = devBundleSizeStats[mergeBaseCommitHash]?.[part] ?? 0;
+  }
 
   const diffs: Record<BundlePart, number> = {
     background: 0,
