@@ -32,6 +32,7 @@ import { nanoid } from 'nanoid';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/messenger';
 import {
+  createPermissionMiddleware,
   MethodNames,
   PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
@@ -7565,9 +7566,22 @@ export default class MetamaskController extends EventEmitter {
     );
 
     if (subjectType !== SubjectType.Internal) {
+      const permissionMessenger = new Messenger({
+        namespace: 'PermissionMessenger',
+        parent: this.controllerMessenger,
+      });
+      this.controllerMessenger.delegate({
+        messenger: permissionMessenger,
+        actions: [
+          'PermissionController:executeRestrictedMethod',
+          'PermissionController:hasUnrestrictedMethod',
+        ],
+      });
+
       engine.push(
-        this.permissionController.createPermissionMiddleware({
+        createPermissionMiddleware({
           origin,
+          messenger: permissionMessenger,
         }),
       );
 

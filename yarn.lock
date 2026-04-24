@@ -7418,22 +7418,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^12.2.0, @metamask/permission-controller@npm:^12.2.1, @metamask/permission-controller@npm:^12.3.0":
-  version: 12.3.0
-  resolution: "@metamask/permission-controller@npm:12.3.0"
+"@metamask/permission-controller@npm:@metamask-previews/permission-controller@12.3.0-preview-1e2fe74a0":
+  version: 12.3.0-preview-1e2fe74a0
+  resolution: "@metamask-previews/permission-controller@npm:12.3.0-preview-1e2fe74a0"
   dependencies:
     "@metamask/approval-controller": "npm:^9.0.1"
-    "@metamask/base-controller": "npm:^9.0.1"
-    "@metamask/controller-utils": "npm:^11.19.0"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^11.20.0"
     "@metamask/json-rpc-engine": "npm:^10.2.4"
-    "@metamask/messenger": "npm:^1.0.0"
+    "@metamask/messenger": "npm:^1.1.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.9.0"
     "@types/deep-freeze-strict": "npm:^1.1.0"
     deep-freeze-strict: "npm:^1.1.1"
     immer: "npm:^9.0.6"
     nanoid: "npm:^3.3.8"
-  checksum: 10/a5fe9f2bab8c2d41cd829cd6c1af970e71da97eac42de17071c10f90d975e9135a4e6987ed6b2f3ea2209b1c6c51b822508f800225fda2207cdc598c16ea77dd
+  checksum: 10/082815b35b19e5587127e128e5723d25e7842ed64a8c5aae6b5f8226b4070359220161ac5721c1315b7aee1e1a11d5eb1cbdb67d596aa8a6087bd9b5cc05151e
   languageName: node
   linkType: hard
 
