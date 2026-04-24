@@ -1,0 +1,61 @@
+name: Benchmark FP rate report
+
+on:
+  schedule:
+    # Monday 12:00 UTC — weekly FP rate snapshot for the past 7 days.
+    - cron: '0 12 * * MON'
+  workflow_dispatch:
+    inputs:
+      window-days:
+        description: Lookback window in days
+        required: false
+        default: '7'
+
+permissions:
+  contents: read
+  pull-requests: read
+  checks: read
+
+jobs:
+  compute-and-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: default-branch
+    env:
+      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      WINDOW_DAYS: ${{ github.event.inputs.window-days || '7' }}
+      STATS_REPO: ${{ github.repository_owner }}/extension_benchmark_stats
+      STATS_CLONE_DIR: temp-benchmark-stats
+      STATS_FILE: fp-rates.json
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: metamask/github-tools/.github/actions/setup-environment@v1
+
+      - name: Clone extension_benchmark_stats
+        run: |
+          rm -rf "${STATS_CLONE_DIR}"
+          git clone --depth 1 "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${STATS_REPO}.git" "${STATS_CLONE_DIR}"
+
+      - name: Compute FP rate and update ${{ env.STATS_FILE }}
+        run: yarn tsx .github/scripts/benchmark-fp-rate.ts
+        env:
+          OUTPUT_PATH: ${{ env.STATS_CLONE_DIR }}/${{ env.STATS_FILE }}
+
+      - name: Commit and push FP rate update
+        working-directory: ${{ env.STATS_CLONE_DIR }}
+        run: |
+          if git diff --quiet -- "${STATS_FILE}"; then
+            echo "No changes to ${STATS_FILE}, skipping commit."
+            exit 0
+          fi
+          git config user.email "metamaskbot@users.noreply.github.com"
+          git config user.name "MetaMask Bot"
+          git add "${STATS_FILE}"
+          git commit -m "Update benchmark FP rate report"
+          git push "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${STATS_REPO}" HEAD:main
