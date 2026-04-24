@@ -3,7 +3,7 @@ import os from 'os';
 
 export default defineConfig({
   ignorePatterns: [
-    '*.json',
+    '**/*.json',
     '*.scss',
     '/.github/',
     '/.nyc_output/',
