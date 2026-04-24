@@ -10,7 +10,6 @@ export default defineConfig({
     '/.storybook/',
     '/.yarn/',
     '/app/html/partials/partial-head.html',
-    '/app/images/animations/**/*.json',
     '/app/scripts/**/*-method-action-types.ts',
     '/app/scripts/lib/ppom/ppom.js',
     '/app/vendor/',
