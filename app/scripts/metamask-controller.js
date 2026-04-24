@@ -6246,8 +6246,9 @@ export default class MetamaskController extends EventEmitter {
           },
         );
 
-        const [accountAddressToEmit] =
-          this.sortAddressesByLastSelected(parsedPermittedAddresses);
+        const [accountAddressToEmit] = this.sortAddressesByLastSelected(
+          parsedPermittedAddresses,
+        );
 
         if (accountAddressToEmit) {
           this._notifyMultichainAccountChange(
@@ -9052,8 +9053,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     const addresses = [...new Set(addressByCaipAccountId.values())];
-    const sortedAddresses =
-      this.sortAddressesByLastSelected(addresses);
+    const sortedAddresses = this.sortAddressesByLastSelected(addresses);
     const rankByAddress = new Map(
       sortedAddresses.map((address, index) => [address, index]),
     );

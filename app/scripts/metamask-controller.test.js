@@ -2190,7 +2190,9 @@ describe('MetaMaskController', () => {
           .mockImplementation((address) => ({ id: `id-${address}`, address }));
         jest
           .spyOn(metamaskController.accountTreeController, 'getAccountContext')
-          .mockImplementation((accountId) => ({ groupId: `group-${accountId}` }));
+          .mockImplementation((accountId) => ({
+            groupId: `group-${accountId}`,
+          }));
         jest
           .spyOn(
             metamaskController.accountTreeController,
