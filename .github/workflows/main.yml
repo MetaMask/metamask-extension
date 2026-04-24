@@ -466,14 +466,13 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: build-dist-webpack
-          path: artifacts/build-dist-webpack
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
+          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from the run that produced the builds.
 
       - name: Copy bundle size summary
         run: >-
           mkdir -p test-artifacts/bundle-size &&
-          cp artifacts/build-dist-webpack/dist/bundle-size/chrome.json test-artifacts/bundle-size/chrome.json
+          cp dist/bundle-size/chrome.json test-artifacts/bundle-size/chrome.json
 
       - name: Record bundle size at commit
         if: ${{ env.BRANCH == 'main' && env.IS_FORK == 'false'}}
