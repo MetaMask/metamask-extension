@@ -44,6 +44,8 @@ class HomePage {
 
   private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
 
+  private readonly tronAccountIcon = 'img[src="./images/tron-logo.svg"]';
+
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
@@ -216,6 +218,11 @@ class HomePage {
     console.log('Waiting for Non EVM account icons to be visible');
     await this.driver.waitForSelector(this.solanaAccountIcon);
     await this.driver.waitForSelector(this.bitcoinAccountIcon);
+  }
+
+  async waitForTronAccountLoaded(): Promise<void> {
+    console.log('Waiting for Tron account icon to be visible');
+    await this.driver.waitForSelector(this.tronAccountIcon);
   }
 
   async checkPageIsNotLoaded(): Promise<void> {

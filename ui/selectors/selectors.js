@@ -727,10 +727,12 @@ export const getInternalAccountsSortedByKeyring = createSelector(
      * @type {import('@metamask/keyring-internal-api').InternalAccount[]}
      */
     const result = keyrings.reduce((internalAccounts, keyring) => {
-      // Get regular accounts for this keyring
-      const keyringAccounts = keyring.accounts.map(
-        (address) => accounts[address],
-      );
+      // Get regular accounts for this keyring, filtering out undefined entries
+      // that can occur when a keyring address has a case mismatch or is not yet
+      // synced to AccountsController.
+      const keyringAccounts = keyring.accounts
+        .map((address) => accounts[address])
+        .filter(Boolean);
 
       // If it's an HD keyring, add any snap accounts that belong to it
       if (keyring.type === KeyringTypes.hd) {

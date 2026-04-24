@@ -2229,9 +2229,6 @@
   "deepLink_thePerpsMarketDetailPage": {
     "message": "la página del mercado de contratos perpetuos"
   },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "la página de la lista del mercado de contratos perpetuos"
-  },
   "deepLink_thePerpsPage": {
     "message": "la página de contratos perpetuos"
   },

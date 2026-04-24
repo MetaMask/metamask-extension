@@ -1125,10 +1125,12 @@ describe('PerpsMarketDetailPage', () => {
 
       // ETH is long, entry=2850, leverage=3.
       // RoE formula: targetPrice = 2850 * (1 + 25/(3*100)) = 2850 * 1.08333 = 3087.50
+      // formatPerpsFiat/PRICE_RANGES_UNIVERSAL caps $1k-$10k range at 1 decimal
+      // (5 sig digs) and strips the comma for input display → "3087.5".
       const presetButton = screen.getByText('+25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('3087.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('3087.5')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for long position', async () => {
@@ -1142,10 +1144,11 @@ describe('PerpsMarketDetailPage', () => {
 
       // ETH is long, entry=2850, leverage=3.
       // RoE formula: targetPrice = 2850 * (1 - 25/(3*100)) = 2850 * 0.91667 = 2612.50
+      // formatPerpsFiat/PRICE_RANGES_UNIVERSAL (1 decimal for $1k-$10k).
       const presetButton = screen.getByText('-25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('2612.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('2612.5')).toBeInTheDocument();
     });
 
     it('populates TP price from preset button for short position', async () => {
@@ -1157,10 +1160,11 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
       // RoE formula (short TP): targetPrice = 45000 * (1 - 10/(15*100)) = 45000 * 0.99333 = 44700.00
+      // formatPerpsFiat/PRICE_RANGES_UNIVERSAL (0 decimals for > $10k).
       const presetButton = screen.getByText('+10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('44700.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('44700')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for short position', async () => {
@@ -1172,10 +1176,11 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
       // RoE formula (short SL): targetPrice = 45000 * (1 + 10/(15*100)) = 45000 * 1.00667 = 45300.00
+      // formatPerpsFiat/PRICE_RANGES_UNIVERSAL (0 decimals for > $10k).
       const presetButton = screen.getByText('-10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('45300.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('45300')).toBeInTheDocument();
     });
 
     it('shows TP/SL success toast without in-progress toast when saving', async () => {

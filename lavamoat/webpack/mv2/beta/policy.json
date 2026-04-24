@@ -1940,7 +1940,6 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
-        "Intl.NumberFormat": true,
         "WebSocket": true,
         "clearInterval": true,
         "clearTimeout": true,
@@ -4483,6 +4482,7 @@
         "exports.isExist": true
       },
       "packages": {
+        "@metamask/snaps-utils>fast-xml-parser>@nodable/entities": true,
         "@metamask/snaps-utils>fast-xml-parser>path-expression-matcher": true,
         "@metamask/snaps-utils>fast-xml-parser>strnum": true
       }

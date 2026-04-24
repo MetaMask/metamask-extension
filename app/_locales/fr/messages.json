@@ -2229,9 +2229,6 @@
   "deepLink_thePerpsMarketDetailPage": {
     "message": "la page du marché des contrats à terme perpétuels"
   },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "la liste des actifs pouvant être négociés sur le marché de contrats à terme perpétuels"
-  },
   "deepLink_thePerpsPage": {
     "message": "la page des contrats à terme perpétuels"
   },

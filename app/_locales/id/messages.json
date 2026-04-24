@@ -2229,9 +2229,6 @@
   "deepLink_thePerpsMarketDetailPage": {
     "message": "halaman pasar perp"
   },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "halaman daftar pasar perp"
-  },
   "deepLink_thePerpsPage": {
     "message": "halaman perp"
   },

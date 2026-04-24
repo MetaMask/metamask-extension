@@ -2229,9 +2229,6 @@
   "deepLink_thePerpsMarketDetailPage": {
     "message": "της σελίδας αγοράς για perps"
   },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "τη λίστα αγοράς για perps"
-  },
   "deepLink_thePerpsPage": {
     "message": "η σελίδα συμβολαίων perps"
   },

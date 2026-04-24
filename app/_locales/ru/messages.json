@@ -2229,9 +2229,6 @@
   "deepLink_thePerpsMarketDetailPage": {
     "message": "страницу рынка перпов"
   },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "страницу списка рынков перпов"
-  },
   "deepLink_thePerpsPage": {
     "message": "страница перпов"
   },
