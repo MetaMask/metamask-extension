@@ -203,9 +203,12 @@ describe('isReadOnlyAction', () => {
     'CronjobController:schedule',
     'AccountsController:addAccount',
     'AccountsController:removeAccount',
-  ])('returns false for state-changing or boundary action: %s', (actionType) => {
-    expect(isReadOnlyAction(actionType)).toBe(false);
-  });
+  ])(
+    'returns false for state-changing or boundary action: %s',
+    (actionType) => {
+      expect(isReadOnlyAction(actionType)).toBe(false);
+    },
+  );
 
   it('returns false for action without colon separator', () => {
     expect(isReadOnlyAction('getState')).toBe(false);
@@ -213,7 +216,10 @@ describe('isReadOnlyAction', () => {
 
   it.each([
     'Foo:getter', // not a method, but still matches verb prefix - acceptable false positive
-  ])('matches lowercase-continuation false positives (acceptable): %s', (actionType) => {
-    expect(isReadOnlyAction(actionType)).toBe(false);
-  });
+  ])(
+    'matches lowercase-continuation false positives (acceptable): %s',
+    (actionType) => {
+      expect(isReadOnlyAction(actionType)).toBe(false);
+    },
+  );
 });
