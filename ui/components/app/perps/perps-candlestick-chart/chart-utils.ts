@@ -33,6 +33,22 @@ export type HistogramData<TTime> = {
 };
 
 /**
+ * Convert a UTC millisecond timestamp to a local-time Unix timestamp (seconds).
+ *
+ * Lightweight-charts renders numeric timestamps as-is on the x-axis without
+ * any timezone conversion. By subtracting the JS timezone offset we shift the
+ * value so the axis labels show the user's local wall-clock time. The offset
+ * is computed per-timestamp to account for DST transitions.
+ *
+ * @param utcMs - UTC timestamp in milliseconds
+ * @returns Seconds-precision timestamp adjusted to local time
+ */
+function toLocalChartTime(utcMs: number): Time {
+  const offsetSeconds = new Date(utcMs).getTimezoneOffset() * 60;
+  return Math.floor(utcMs / 1000 - offsetSeconds) as Time;
+}
+
+/**
  * Convert a single CandleStick to CandlestickData for lightweight-charts.
  * Returns null if the candle has invalid (NaN or non-positive) OHLC values.
  *
@@ -42,7 +58,7 @@ export type HistogramData<TTime> = {
 export function formatSingleCandleForChart(
   candle: CandleStick,
 ): CandlestickData<Time> | null {
-  const timeInSeconds = Math.floor(candle.time / 1000) as Time;
+  const timeInSeconds = toLocalChartTime(candle.time);
 
   const formatted: CandlestickData<Time> = {
     time: timeInSeconds,
@@ -84,7 +100,7 @@ export function formatSingleVolumeForChart(
   upColor: string,
   downColor: string,
 ): HistogramData<Time> | null {
-  const timeInSeconds = Math.floor(candle.time / 1000) as Time;
+  const timeInSeconds = toLocalChartTime(candle.time);
   const volume = parseFloat(candle.volume || '0');
   const close = parseFloat(candle.close);
   const open = parseFloat(candle.open);
