@@ -19,37 +19,29 @@ import {
   TRON_RECIPIENT_ADDRESS,
 } from '../tron/mocks/common-tron';
 import { proxyTronBlockchainCalls } from '../tron/mocks/local-tron-node-mocks';
-import { TronNode } from '../../seeder/tron-node';
+import { TRON_LOCAL_NODE_URL } from '../../seeder/tron-node';
 
 // Fund the test account with the same SUN value the original mock uses,
 // so the balance display assertion ('6.072 TRX') requires no change.
 const FUND_AMOUNT_SUN = 6_072_392;
 
 describe('Send Tron (local blockchain)', function (this: Suite) {
-  this.timeout(180_000); // covers Docker startup (before hook) and the test run
-
-  const tronNode = new TronNode();
-
-  // eslint-disable-next-line mocha/no-hooks-for-single-case
-  before(async function () {
-    // Docker pull + node startup can take up to 90 seconds on a cold machine.
-    this.timeout(120_000);
-    tronNode.start(); // synchronous — uses execSync internally
-    await tronNode.waitForReady(90_000);
-    // Fund the fixture's derived Tron account from the genesis witness account.
-    await tronNode.fundAccount(TRON_ACCOUNT_ADDRESS, FUND_AMOUNT_SUN);
-  });
-
-  // eslint-disable-next-line mocha/no-hooks-for-single-case
-  after(async function () {
-    tronNode.stop();
-  });
+  this.timeout(180_000); // covers Docker startup and the test run
 
   it('should be possible to send TRX using a real local blockchain', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        localNodeOptions: [
+          'anvil',
+          {
+            type: 'tron',
+            options: {
+              initialBalances: { [TRON_ACCOUNT_ADDRESS]: FUND_AMOUNT_SUN },
+            },
+          },
+        ],
         testSpecificMock: async (mockServer: Mockttp) => [
           // ── External service mocks (unchanged from original test) ──────────
           await mockTronFeatureFlags(mockServer),
@@ -60,7 +52,7 @@ describe('Send Tron (local blockchain)', function (this: Suite) {
           // ── Blockchain calls proxied to local Tron node ───────────────────
           ...(await proxyTronBlockchainCalls(
             mockServer,
-            tronNode.baseUrl,
+            TRON_LOCAL_NODE_URL,
             TRON_ACCOUNT_ADDRESS,
           )),
         ],

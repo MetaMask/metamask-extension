@@ -14,10 +14,24 @@ const CONTAINER_NAME = 'tron-private-e2e';
 const HTTP_PORT = 18090;
 const CONFIG_DIR = join(__dirname, 'tron-config');
 
-export class TronNode {
-  readonly baseUrl = `http://localhost:${HTTP_PORT}`;
+export const TRON_LOCAL_NODE_URL = `http://localhost:${HTTP_PORT}`;
 
-  start(): void {
+export class TronNode {
+  readonly baseUrl = TRON_LOCAL_NODE_URL;
+
+  /**
+   * Starts the java-tron Docker container, waits for the node to be ready,
+   * and seeds any requested initial balances — matching the async start()
+   * contract used by Ganache and Anvil so that withFixtures can manage the
+   * lifecycle automatically.
+   *
+   * @param options - Start options.
+   * @param options.initialBalances - Map of Tron address to amount in SUN to
+   * fund from the genesis witness account after the node is ready.
+   */
+  async start(
+    options: { initialBalances?: Record<string, number> } = {},
+  ): Promise<void> {
     // Remove any leftover container from a previous run
     try {
       execSync(`docker rm -f ${CONTAINER_NAME}`, { stdio: 'pipe' });
@@ -37,9 +51,17 @@ export class TronNode {
       ].join(' '),
       { stdio: 'pipe' },
     );
+
+    await this.waitForReady(90_000);
+
+    for (const [address, amountInSun] of Object.entries(
+      options.initialBalances ?? {},
+    )) {
+      await this.fundAccount(address, amountInSun);
+    }
   }
 
-  stop(): void {
+  async quit(): Promise<void> {
     try {
       execSync(`docker rm -f ${CONTAINER_NAME}`, { stdio: 'pipe' });
     } catch {

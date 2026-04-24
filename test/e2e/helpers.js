@@ -227,6 +227,22 @@ async function withFixtures(options, testSuite) {
           localNodes.push(localNode);
           break;
 
+        case 'ganache':
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
+          const { Ganache } = require('./seeder/ganache');
+          localNode = new Ganache();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
+          break;
+
+        case 'tron':
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
+          const { TronNode } = require('./seeder/tron-node');
+          localNode = new TronNode();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
+          break;
+
         case 'none':
           break;
 
