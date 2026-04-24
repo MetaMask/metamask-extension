@@ -4863,6 +4863,14 @@
     "message": "View on $1",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "Transaction failed! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "Transaction confirmed!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
+  },
   "notifications": {
     "message": "Notifications"
   },
