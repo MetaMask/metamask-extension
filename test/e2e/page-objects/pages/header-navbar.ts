@@ -141,6 +141,16 @@ class HeaderNavbar {
     await this.driver.clickElementAndWaitToDisappear(this.drawerBackButton);
   }
 
+  async closeDrawerIfOpen(): Promise<void> {
+    const drawerCloseButtons = await this.driver.findElements(
+      this.drawerBackButton,
+    );
+
+    if (drawerCloseButtons.length > 0) {
+      await this.clickDrawerBackButton();
+    }
+  }
+
   /**
    * Clicks the "All Permissions" (Connected Sites) button in the header menu.
    * This may land on the Permissions Page directly, or on the Gator Permissions Page (Flask builds).

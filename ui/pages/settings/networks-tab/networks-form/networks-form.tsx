@@ -805,6 +805,7 @@ export const NetworksForm = ({
             onClick={onSubmit}
             size={ButtonPrimarySize.Lg}
             width={BlockSize.Full}
+            data-testid="page-container-footer-next"
           >
             {t('save')}
           </ButtonPrimary>

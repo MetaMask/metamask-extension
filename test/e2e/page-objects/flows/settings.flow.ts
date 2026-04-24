@@ -41,4 +41,5 @@ export const enableNativeTokenAsMainBalance = async (
   await assetsSettings.toggleShowNativeTokenAsMainBalance();
 
   await settingsPage.clickBackButton();
+  await homePage.headerNavbar.closeDrawerIfOpen();
 };
