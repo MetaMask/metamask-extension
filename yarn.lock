@@ -19,13 +19,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@actions/core@npm:^1.10.0":
-  version: 1.10.0
-  resolution: "@actions/core@npm:1.10.0"
+"@actions/core@npm:^1.10.1":
+  version: 1.11.1
+  resolution: "@actions/core@npm:1.11.1"
   dependencies:
+    "@actions/exec": "npm:^1.1.1"
     "@actions/http-client": "npm:^2.0.1"
-    uuid: "npm:^8.3.2"
-  checksum: 10/40f94a994da7b041ed35119abef9bbd19f56a75fdca08b0b7fd4af3da2c69873de5a751cf956cf1437515f4e9cf7ee94204a0c885788f6d0986841ee972ecb29
+  checksum: 10/94f260e33607cc16567ce4c88014f069cd7da92baaa443b72cff80fdf4f1dcd18192e135df0d51ec29e8b82cfe214218715d482f2a7804efa5095737d1245f38
+  languageName: node
+  linkType: hard
+
+"@actions/exec@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@actions/exec@npm:1.1.1"
+  dependencies:
+    "@actions/io": "npm:^1.0.1"
+  checksum: 10/c04bd25191e522841c7e17862d70099de8db61278d2b4c744b69ac0197a48f85c75dba548e1c29c695c4cc5363d558846b4dcd3db9013463c18ba8cf36497c6d
   languageName: node
   linkType: hard
 
@@ -47,6 +56,13 @@ __metadata:
   dependencies:
     tunnel: "npm:^0.0.6"
   checksum: 10/938fb20cb38d961d568f8f6e548673e8136cd526f7783ba67617482d7b94984fa490483e49a0a6e6bdda4621081c2291030edeb69eccbe29f80d034d8315f7e7
+  languageName: node
+  linkType: hard
+
+"@actions/io@npm:^1.0.1":
+  version: 1.1.3
+  resolution: "@actions/io@npm:1.1.3"
+  checksum: 10/4de44e8d428ba9f20049c844b37ecd486b589ed201f8cc8c5b550a9e4c72d1f594271ee2a7a6cfe8a42ebfb5dd527ef65016454656db391a353d41eab4f147e1
   languageName: node
   linkType: hard
 
@@ -6073,7 +6089,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/delegation-core@npm:^0.2.0, @metamask/delegation-core@npm:^0.2.0-rc.1":
+"@metamask/delegation-core@npm:^0.2.0":
   version: 0.2.0
   resolution: "@metamask/delegation-core@npm:0.2.0"
   dependencies:
@@ -6081,6 +6097,17 @@ __metadata:
     "@metamask/utils": "npm:^11.4.0"
     "@noble/hashes": "npm:^1.8.0"
   checksum: 10/ed9430ae854971f9db1082beb26da4de14fa3956a642ca894252abee02c43f61533b274188e3fc7577e9de4ab701f77e6ed2cce30f9fac88806db44c59910bd5
+  languageName: node
+  linkType: hard
+
+"@metamask/delegation-core@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/delegation-core@npm:1.1.0"
+  dependencies:
+    "@metamask/abi-utils": "npm:^3.0.0"
+    "@metamask/utils": "npm:^11.4.0"
+    "@noble/hashes": "npm:^1.8.0"
+  checksum: 10/672f9e2e2b4e8c312f2cd2ff166bbc508fbdb6e141fe92e678abc9993b9ccbdd17db711477a9b97b6ce3919fa6d51d759c16f6c6fda3f89cb95e303b8aa76f7d
   languageName: node
   linkType: hard
 
@@ -6098,11 +6125,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.17.0":
-  version: 0.17.0
-  resolution: "@metamask/design-system-react@npm:0.17.0"
+"@metamask/design-system-react@npm:^0.17.1":
+  version: 0.17.1
+  resolution: "@metamask/design-system-react@npm:0.17.1"
   dependencies:
-    "@metamask/design-system-shared": "npm:^0.11.0"
+    "@metamask/design-system-shared": "npm:^0.12.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -6111,20 +6138,20 @@ __metadata:
     "@metamask/design-system-tailwind-preset": ^0.6.0
     "@metamask/design-tokens": ^8.1.0
     "@metamask/utils": ^11.11.0
-    react: ^17.0.0 || ^18.0.0
-    react-dom: ^17.0.0 || ^18.0.0
-  checksum: 10/fed46d85fcabe2678e3aeaf6019753c19dee11ce439e36ba853a2140c261fffbc256514ca1e6c1722049302913446b6d564a63e4bfdba2ca71670987495195c8
+    react: ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/4d28c7770aa162f136ff56d0cbaf543e3899bdda9278b7b0aa67030ac814cf454f67b426af0b447c742ea9153c941d9a3f56b7599c12b3b59d96bdcd12a3051d
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "@metamask/design-system-shared@npm:0.11.0"
+"@metamask/design-system-shared@npm:^0.12.0":
+  version: 0.12.0
+  resolution: "@metamask/design-system-shared@npm:0.12.0"
   dependencies:
     "@metamask/utils": "npm:^11.11.0"
   peerDependencies:
-    react: ^17.0.0 || ^18.0.0
-  checksum: 10/1d0245b4dc69884352299afad24c5644085a492b92bbd606bbc8523fa32856b8eb9c361db7cea2ad6cba07af5bd79d1a3c8f335a803637ceba2ea4dfe11a42ed
+    react: ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/dfbbabfa77d8fa2763278e670be444dd04fb7f17c70bd5d279cd157c5a78741839163742a73900581f4fb8f5ec02f12f8f52ef8a777d94d33c0b770be9b97565
   languageName: node
   linkType: hard
 
@@ -6193,10 +6220,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ens-resolver-snap@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/ens-resolver-snap@npm:1.1.0"
-  checksum: 10/e7d636ae8934aa31e0b0ee916557e1911b37147d7a6eca74fbe3581df3652162104f190eddba6c5ae100166e79168855ac364393b57abfbc6f8bc82047d71082
+"@metamask/ens-resolver-snap@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@metamask/ens-resolver-snap@npm:1.2.0"
+  checksum: 10/abe07b3eaac4fa4daf5cf24041467183cc3d65975c77e80045e0eeb92c5bc78cd4c47c3980a35d33ed33dea92545ed3df5d7de387ee4bd7062848ccad30fd3db
   languageName: node
   linkType: hard
 
@@ -6336,9 +6363,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^23.1.0, @metamask/eth-json-rpc-middleware@npm:^23.1.1":
-  version: 23.1.1
-  resolution: "@metamask/eth-json-rpc-middleware@npm:23.1.1"
+"@metamask/eth-json-rpc-middleware@npm:^23.1.1, @metamask/eth-json-rpc-middleware@npm:^23.1.2":
+  version: 23.1.2
+  resolution: "@metamask/eth-json-rpc-middleware@npm:23.1.2"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^15.0.1"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.1"
@@ -6351,7 +6378,7 @@ __metadata:
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/229859120744e22cd0da50e3af316521ddb1f470dd4e2ae9797145d7694d0355d847f1453a1280788359d5cb5ba78bdfc6b038be85287918e7a530cbaf24d1d4
+  checksum: 10/394cd692f76d28133f4956956e4c8e3b97f3b6c98f461e223c6a1f35b4a174d207bc9806bc834d7090501192a4055b08ecb4a114158c637fb8826ba34d274b81
   languageName: node
   linkType: hard
 
@@ -24177,7 +24204,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"elliptic@npm:6.6.1, elliptic@npm:^6.4.0, elliptic@npm:^6.5.3, elliptic@npm:^6.5.4, elliptic@npm:^6.5.5, elliptic@npm:^6.5.7, elliptic@npm:^6.6.1":
+"elliptic@npm:^6.6.1":
   version: 6.6.1
   resolution: "elliptic@npm:6.6.1"
   dependencies:
@@ -26478,7 +26505,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-xml-parser@npm:^5.5.7":
+"fast-xml-parser@npm:^5.7.1":
   version: 5.7.1
   resolution: "fast-xml-parser@npm:5.7.1"
   dependencies:
@@ -33932,7 +33959,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "metamask-crx@workspace:."
   dependencies:
-    "@actions/core": "npm:^1.10.0"
+    "@actions/core": "npm:^1.10.1"
     "@actions/github": "npm:^5.1.1"
     "@anthropic-ai/sdk": "npm:^0.32.1"
     "@babel/code-frame": "npm:^7.25.9"
@@ -34005,16 +34032,16 @@ __metadata:
     "@metamask/controller-utils": "npm:^11.18.0"
     "@metamask/core-backend": "npm:^6.2.0"
     "@metamask/delegation-controller": "npm:^2.0.2"
-    "@metamask/delegation-core": "npm:^0.2.0-rc.1"
+    "@metamask/delegation-core": "npm:^1.1.0"
     "@metamask/delegation-deployments": "npm:^1.0.0"
-    "@metamask/design-system-react": "npm:^0.17.0"
-    "@metamask/design-system-shared": "npm:^0.11.0"
+    "@metamask/design-system-react": "npm:^0.17.1"
+    "@metamask/design-system-shared": "npm:^0.12.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.3.0"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
     "@metamask/ens-controller": "npm:^19.1.0"
-    "@metamask/ens-resolver-snap": "npm:^1.1.0"
+    "@metamask/ens-resolver-snap": "npm:^1.2.0"
     "@metamask/eslint-config": "npm:^13.0.0"
     "@metamask/eslint-config-jest": "npm:^13.0.0"
     "@metamask/eslint-config-mocha": "npm:^13.0.0"
@@ -34023,7 +34050,7 @@ __metadata:
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.1"
     "@metamask/eth-hd-keyring": "npm:^13.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^23.1.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^23.1.2"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:^11.4.0"
     "@metamask/eth-qr-keyring": "npm:^1.1.0"

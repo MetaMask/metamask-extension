@@ -128,7 +128,7 @@ describe('PerpsMarketRecentActivity', () => {
       renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
       expect(
-        screen.queryByText(messages.perpsSeeAll.message),
+        screen.queryByTestId('perps-market-detail-view-all-activity'),
       ).not.toBeInTheDocument();
     });
   });
@@ -195,7 +195,7 @@ describe('PerpsMarketRecentActivity', () => {
       renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
       expect(
-        screen.getByText(messages.perpsSeeAll.message),
+        screen.getByTestId('perps-market-detail-view-all-activity'),
       ).toBeInTheDocument();
     });
 
@@ -208,7 +208,9 @@ describe('PerpsMarketRecentActivity', () => {
 
       renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
-      fireEvent.click(screen.getByText(messages.perpsSeeAll.message));
+      fireEvent.click(
+        screen.getByTestId('perps-market-detail-view-all-activity'),
+      );
       expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
     });
   });
