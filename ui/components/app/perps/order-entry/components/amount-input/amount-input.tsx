@@ -50,6 +50,7 @@ const handleNumericFocusSelectAll = (
  * @param options0.asset
  * @param options0.currentPrice
  * @param options0.onAddFunds
+ * @param options0.szDecimals
  * @param options0.autoFocus
  * @param options0.usdPlaceholder
  * @param options0.usdInputRef
@@ -63,6 +64,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   leverage,
   asset,
   currentPrice,
+  szDecimals,
   onAddFunds,
   autoFocus = false,
   usdPlaceholder = '0.00',
@@ -88,12 +90,15 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
   // Uses a locale-neutral formatter (always ".") so the value is always
   // editable by isUnsignedDecimalInput regardless of the user's locale.
+  // Cap the max fractional digits to the asset's szDecimals so PUMP shows
+  // integer token counts ("6081") and ETH stops at 4 decimals instead of the
+  // previous hard-coded 6 (matches mobile's formatPositionSize behaviour).
   const unGroupedTokenDisplay = useMemo(() => {
     if (tokenAmount === null || tokenAmount === 0) {
       return '';
     }
-    return formatNumberForInput(tokenAmount);
-  }, [tokenAmount]);
+    return formatNumberForInput(tokenAmount, szDecimals);
+  }, [tokenAmount, szDecimals]);
 
   // Local draft for the token input so intermediate values (e.g. "0", "0.") are
   // preserved while the user is actively typing.

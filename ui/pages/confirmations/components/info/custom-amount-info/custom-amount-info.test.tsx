@@ -5,6 +5,7 @@ import configureMockStore from 'redux-mock-store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import * as useTransactionCustomAmountModule from '../../../hooks/transactions/useTransactionCustomAmount';
 import * as useTransactionCustomAmountAlertsModule from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import * as useAutomaticTransactionPayTokenModule from '../../../hooks/pay/useAutomaticTransactionPayToken';
@@ -81,7 +82,11 @@ const DEFAULT_PAY_TOKEN_HOOK_RETURN = {
   setPayToken: jest.fn(),
 };
 
-const DEFAULT_ALERTS_HOOK_RETURN = {
+const DEFAULT_ALERTS_HOOK_RETURN: {
+  alertMessage?: string;
+  hideResults: boolean;
+  disableUpdate: boolean;
+} = {
   alertMessage: undefined,
   hideResults: false,
   disableUpdate: false,
@@ -315,6 +320,34 @@ describe('CustomAmountInfo', () => {
 
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
     });
+  });
+
+  it('does not render alert body text when reason and message are the same', () => {
+    const { queryByText } = render({
+      alertsHookReturn: {
+        alertMessage: undefined,
+        hideResults: true,
+        disableUpdate: false,
+      },
+    });
+
+    expect(
+      queryByText(messages.alertInsufficientPayTokenBalance.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders alert message as body text when reason differs from message', () => {
+    const { getByText } = render({
+      alertsHookReturn: {
+        alertMessage: messages.alertNoPayTokenQuotesMessage.message,
+        hideResults: true,
+        disableUpdate: false,
+      },
+    });
+
+    expect(
+      getByText(messages.alertNoPayTokenQuotesMessage.message),
+    ).toBeInTheDocument();
   });
 
   describe('overrideCenterContent', () => {

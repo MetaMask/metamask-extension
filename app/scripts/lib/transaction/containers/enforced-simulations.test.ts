@@ -250,6 +250,20 @@ describe('Enforced Simulations Utils', () => {
       );
     });
 
+    it('throws when no caveats can be generated', async () => {
+      const transactionMeta = cloneDeep(TRANSACTION_META_MOCK);
+      transactionMeta.simulationData = {
+        tokenBalanceChanges: [],
+      };
+
+      await expect(
+        enforceSimulations({
+          ...options,
+          transactionMeta,
+        }),
+      ).rejects.toThrow('No caveats generated for enforced simulations');
+    });
+
     describe('applies slippage', () => {
       it('if decrease', async () => {
         simulationData.tokenBalanceChanges = [
