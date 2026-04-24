@@ -9,8 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.29.0]
 
+### Uncategorized
+
+- Added UTM parameters to extension links for improved analytics tracking (#40745)
+- Bump assets controller v6 0 0 (#41818)
+- chore: Bulk register actions in `MetaMetricsController` (#41607)
+- chore: Bulk register actions in `OAuthService` (#41613)
+- chore: Bulk register actions in `DataDeletionService` (#41652)
+- chore: Bulk register actions in `SubscriptionService` (#41616)
+- chore: Bulk register actions in `NetworkOrderController` (#41608)
+- chore: Bulk register actions in `EncryptionPublicKeyController` (#41604)
+- chore: Bulk register actions in `PreferencesController` (#41611)
+- chore: Bulk register actions in `OnboardingController` (#41609)
+- chore: Bulk register actions in `AppStateController` (#41559)
+- chore: Bulk register actions in `DecryptMessageController` (#41560)
+
 ### Added
 
+- feat: Create `LegacyBackgroundApiService` and init (#41786)
+- Adds initial metrics to Perps for extension (#41337)
+- Wires up sentry events (#41528)
 - Added a cross-margin warning toast for perpetuals (#42015)
 - Added a Developer Options entry for the Perps withdraw confirmation UI (#42043)
 - Added a “Deposit submitted” toast for Perps deposits, restored missing Perps deposit toasts, and suppressed generic transaction toasts during Perps deposits (#42045)
@@ -47,6 +65,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Null (internal decimal behavior, no user-facing feature flag — matches #41920 / #41993 precedent). (#41993)
+- Https://consensyssoftware.atlassian.net/browse/TAT-2891 (#41734)
+- N/a (#41634)
+- N/a (#41576)
 - Fixed `wallet_requestSupportedExecutionPermissions` to include all supported chains (#41643)
 - Fixed Perps geo-blocking using the GeolocationController so user location resolves correctly (#41831)
 - Fixed Perps deeplinks so `/perps?screen=asset&symbol=X` opens the correct market detail page; added `/perps-asset` and `/perps-markets` to align with mobile and removed extension-only `/perps/market` and `/perps/market-list` routes in favor of the shared `screen` parameter (#42085)
@@ -2194,7 +2216,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.29.0...HEAD
 [13.29.0]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...v13.29.0
 [13.27.0]: https://github.com/MetaMask/metamask-extension/compare/v13.26.0...v13.27.0
 [13.26.0]: https://github.com/MetaMask/metamask-extension/compare/v13.25.0...v13.26.0
