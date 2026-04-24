@@ -242,6 +242,10 @@ const migrations = [
   require('./204'),
   require('./205'),
   require('./206'),
+<<<<<<< Updated upstream
+  require('./207'),
+=======
+>>>>>>> Stashed changes
 ];
 
 export default migrations;

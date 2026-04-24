@@ -1,9 +1,13 @@
 import { hasProperty, isObject } from '@metamask/utils';
+<<<<<<< Updated upstream
 import { zeroAddress } from 'ethereumjs-util';
+=======
+>>>>>>> Stashed changes
 import type { Migrate } from './types';
 
 export const version = 206;
 
+<<<<<<< Updated upstream
 const CHAINS_TO_MIGRATE_NATIVE_BALANCE_TO_ZERO = [
   '0x1079', // Tempo Mainnet
   '0xa5bf', // Tempo Testnet Moderato
@@ -28,6 +32,15 @@ const ZERO_BALANCE = '0x0';
  * This one-time migration resets the native balance to 0 (`0x0`) on Tempo chains.
  * Since the "hidding native" behavior is already in this version of MetaMask, the
  * migration should only need to run once for those users that already used Tempo before.
+=======
+/**
+ * This migration resets `AuthenticationController.isSignedIn` to `false` so
+ * that the first wallet unlock after upgrade triggers `performSignIn`, which
+ * now includes automatic SRP profile pairing (ADR 0006).
+ *
+ * `srpSessionData` is intentionally preserved — cached tokens are still valid
+ * and will be reused. The pairing call is idempotent.
+>>>>>>> Stashed changes
  *
  * @param versionedData - The versioned data object to migrate.
  * @param changedControllers - A set used to record controllers that were modified.
@@ -36,12 +49,18 @@ export const migrate = (async (versionedData, changedControllers) => {
   versionedData.meta.version = version;
 
   if (
+<<<<<<< Updated upstream
     !hasProperty(versionedData.data, 'TokenBalancesController') ||
     !isObject(versionedData.data.TokenBalancesController)
+=======
+    !hasProperty(versionedData.data, 'AuthenticationController') ||
+    !isObject(versionedData.data.AuthenticationController)
+>>>>>>> Stashed changes
   ) {
     return;
   }
 
+<<<<<<< Updated upstream
   const { TokenBalancesController } = versionedData.data;
 
   if (
@@ -76,4 +95,16 @@ export const migrate = (async (versionedData, changedControllers) => {
   if (hasBeenMutatedAtLeastOnce) {
     changedControllers.add('TokenBalancesController');
   }
+=======
+  const authController = versionedData.data.AuthenticationController as {
+    isSignedIn?: boolean;
+  };
+
+  if (!hasProperty(authController, 'isSignedIn') || !authController.isSignedIn) {
+    return;
+  }
+
+  authController.isSignedIn = false;
+  changedControllers.add('AuthenticationController');
+>>>>>>> Stashed changes
 }) satisfies Migrate;
