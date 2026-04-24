@@ -43,8 +43,8 @@ export const WS_USER_WITH_ETH_LONG: WebSocketMessageMock[] = [
             entryPrice: '2850.00',
             positionValue: '7125.00',
             unrealizedPnl: '375.00',
-            marginUsed: '2375.00',
-            leverage: { type: 'isolated', value: 3, rawUsd: '2375.00' },
+            marginUsed: '2600.00',
+            leverage: { type: 'isolated', value: 3, rawUsd: '2600.00' },
             liquidationPrice: '2400.00',
             maxLeverage: 20,
             returnOnEquity: '0.1579',
@@ -59,9 +59,9 @@ export const WS_USER_WITH_ETH_LONG: WebSocketMessageMock[] = [
             stopLossCount: 0,
           },
         ],
-        balances: [{ coin: 'USDC', hold: '2375.00', total: '12500.00' }],
+        balances: [{ coin: 'USDC', hold: '2600.00', total: '12500.00' }],
         accountValue: '12875.00',
-        totalMarginUsed: '2375.00',
+        totalMarginUsed: '2600.00',
         totalNtlPos: '7125.00',
         totalRawUsd: '12875.00',
       },
@@ -149,6 +149,9 @@ const FUNDED_CLEARING_HOUSE_STATE = {
 /**
  * Clearing-house state with an open ETH long position (2.5 ETH, 3x isolated, entry $2850).
  * accountValue = initial 10 000 + 375 unrealizedPnl = 10 375.
+ *
+ * `marginUsed` must exceed notional/leverage (7125/3 = 2375) so the UI allows removing margin
+ * (`calculateMaxRemovableMargin` in usePerpsMarginCalculations); otherwise "Available to subtract" is $0.
  */
 const ETH_LONG_CLEARING_HOUSE_STATE = {
   ...FUNDED_CLEARING_HOUSE_STATE,
@@ -156,29 +159,29 @@ const ETH_LONG_CLEARING_HOUSE_STATE = {
     ...FUNDED_CLEARING_HOUSE_STATE.marginSummary,
     accountValue: '12875.0',
     totalNtlPos: '7125.0',
-    totalMarginUsed: '2375.0',
-    withdrawable: '10500.0',
+    totalMarginUsed: '2600.0',
+    withdrawable: '10275.0',
   },
   crossMarginSummary: {
     ...FUNDED_CLEARING_HOUSE_STATE.crossMarginSummary,
     accountValue: '12875.0',
     totalNtlPos: '7125.0',
-    totalMarginUsed: '2375.0',
-    withdrawable: '10500.0',
+    totalMarginUsed: '2600.0',
+    withdrawable: '10275.0',
   },
-  withdrawable: '10500.0',
+  withdrawable: '10275.0',
   assetPositions: [
     {
       position: {
         coin: 'ETH',
         szi: '2.5',
-        leverage: { type: 'isolated', value: 3, rawUsd: '2375.0' },
+        leverage: { type: 'isolated', value: 3, rawUsd: '2600.0' },
         entryPx: '2850.00',
         positionValue: '7125.0',
         unrealizedPnl: '375.0',
         returnOnEquity: '0.1579',
         liquidationPx: '2400.00',
-        marginUsed: '2375.0',
+        marginUsed: '2600.0',
         maxTradeSzs: ['100', '100'],
         cumFunding: {
           allTime: '12.50',
@@ -272,6 +275,135 @@ export const WS_USER_WITH_ETH_LONG_POSITION: WebSocketMessageMock[] = [
     },
     delay: 50,
     logMessage: 'Perps ETH long mock: clearinghouseState POST with ETH position',
+  },
+];
+
+/**
+ * Clearing-house state with an open BTC short (-0.5 BTC, 15x cross, entry $45 000).
+ * Aligns with `WS_USER_WITH_BTC_SHORT` for HIP-3 clearinghouse / webData paths.
+ */
+const BTC_SHORT_CLEARING_HOUSE_STATE = {
+  ...FUNDED_CLEARING_HOUSE_STATE,
+  marginSummary: {
+    ...FUNDED_CLEARING_HOUSE_STATE.marginSummary,
+    accountValue: '10750.0',
+    totalNtlPos: '22500.0',
+    totalMarginUsed: '1500.0',
+    withdrawable: '9500.0',
+  },
+  crossMarginSummary: {
+    ...FUNDED_CLEARING_HOUSE_STATE.crossMarginSummary,
+    accountValue: '10750.0',
+    totalNtlPos: '22500.0',
+    totalMarginUsed: '1500.0',
+    withdrawable: '9500.0',
+  },
+  withdrawable: '9500.0',
+  assetPositions: [
+    {
+      position: {
+        coin: 'BTC',
+        szi: '-0.5',
+        leverage: { type: 'cross', value: 15 },
+        entryPx: '45000.00',
+        positionValue: '22500.0',
+        unrealizedPnl: '-250.0',
+        returnOnEquity: '-0.1667',
+        liquidationPx: '48000.00',
+        marginUsed: '1500.0',
+        maxTradeSzs: ['100', '100'],
+        cumFunding: {
+          allTime: '-5.20',
+          sinceOpen: '-3.10',
+          sinceChange: '0.0',
+        },
+      },
+      type: 'oneWay',
+    },
+  ],
+  time: 0,
+};
+
+/**
+ * Account with an open BTC short position (HIP-3 compatible).
+ *
+ * Same subscription / POST coverage as `WS_USER_WITH_ETH_LONG_POSITION`, for BTC short.
+ */
+export const WS_USER_WITH_BTC_SHORT_POSITION: WebSocketMessageMock[] = [
+  {
+    messageIncludes: ['"method":"subscribe"', '"type":"clearinghouseState"'],
+    dynamicResponse: buildSubscribedConfirmation,
+    followUpResponse: {
+      channel: 'clearinghouseState',
+      data: {
+        clearinghouseState: BTC_SHORT_CLEARING_HOUSE_STATE,
+        dex: '',
+        user: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+      },
+    },
+    followUpDelay: 50,
+    delay: 50,
+    logMessage:
+      'Perps BTC short mock: clearinghouseState subscription with BTC position',
+  },
+  {
+    messageIncludes: ['"method":"subscribe"', '"type":"webData2"'],
+    dynamicResponse: buildSubscribedConfirmation,
+    followUpResponse: {
+      channel: 'webData2',
+      data: {
+        clearinghouseState: BTC_SHORT_CLEARING_HOUSE_STATE,
+        openOrders: [],
+        frontendOpenOrders: [],
+        fills: [],
+        userFundings: [],
+        userNonFundingLedgerUpdates: [],
+        serverTime: 0,
+      },
+    },
+    followUpDelay: 50,
+    delay: 50,
+    logMessage: 'Perps BTC short mock: webData2 with BTC position',
+  },
+  {
+    messageIncludes: ['"method":"subscribe"', '"type":"webData3"'],
+    dynamicResponse: buildSubscribedConfirmation,
+    followUpResponse: {
+      channel: 'webData3',
+      data: {
+        perpDexStates: [
+          {
+            clearinghouseState: BTC_SHORT_CLEARING_HOUSE_STATE,
+            openOrders: [],
+            frontendOpenOrders: [],
+            fills: [],
+            userFundings: [],
+            userNonFundingLedgerUpdates: [],
+            serverTime: 0,
+            perpsAtOpenInterestCap: [],
+          },
+        ],
+      },
+    },
+    followUpDelay: 50,
+    delay: 50,
+    logMessage: 'Perps BTC short mock: webData3 with BTC position',
+  },
+  {
+    messageIncludes: ['"method":"post"', '"type":"clearinghouseState"'],
+    dynamicResponse: (message: string) => {
+      const req = parseWsPost(message);
+      return req
+        ? buildWsPostResponse(
+            req.id,
+            req.type,
+            BTC_SHORT_CLEARING_HOUSE_STATE,
+          )
+        : null;
+    },
+    delay: 50,
+    logMessage:
+      'Perps BTC short mock: clearinghouseState POST with BTC position',
   },
 ];
 
@@ -383,8 +515,15 @@ export function pushPositionUpdate(
     accountValue: string;
     totalMarginUsed: string;
     withdrawable: string;
+    /** Hyperliquid liquidation price string, or null if unknown */
+    liquidationPx?: string | null;
+    unrealizedPnl?: string;
   },
 ): void {
+  const liquidationPx =
+    opts.liquidationPx === undefined ? null : opts.liquidationPx;
+  const unrealizedPnl = opts.unrealizedPnl ?? '0.0';
+
   const stateWithPosition = {
     ...FUNDED_CLEARING_HOUSE_STATE,
     marginSummary: {
@@ -413,9 +552,9 @@ export function pushPositionUpdate(
           },
           entryPx: opts.entryPx,
           positionValue: opts.positionValue,
-          unrealizedPnl: '0.0',
+          unrealizedPnl,
           returnOnEquity: '0.0',
-          liquidationPx: null,
+          liquidationPx,
           marginUsed: opts.totalMarginUsed,
           maxTradeSzs: ['100', '100'],
           cumFunding: { allTime: '0.0', sinceOpen: '0.0', sinceChange: '0.0' },
@@ -501,8 +640,8 @@ export const WS_USER_WITH_ETH_LONG_AND_TPSL: WebSocketMessageMock[] = [
             entryPrice: '2850.00',
             positionValue: '7125.00',
             unrealizedPnl: '375.00',
-            marginUsed: '2375.00',
-            leverage: { type: 'isolated', value: 3, rawUsd: '2375.00' },
+            marginUsed: '2600.00',
+            leverage: { type: 'isolated', value: 3, rawUsd: '2600.00' },
             liquidationPrice: '2400.00',
             maxLeverage: 20,
             returnOnEquity: '0.1579',
@@ -517,9 +656,9 @@ export const WS_USER_WITH_ETH_LONG_AND_TPSL: WebSocketMessageMock[] = [
             stopLossCount: 1,
           },
         ],
-        balances: [{ coin: 'USDC', hold: '2375.00', total: '12500.00' }],
+        balances: [{ coin: 'USDC', hold: '2600.00', total: '12500.00' }],
         accountValue: '12875.00',
-        totalMarginUsed: '2375.00',
+        totalMarginUsed: '2600.00',
         totalNtlPos: '7125.00',
         totalRawUsd: '12875.00',
       },

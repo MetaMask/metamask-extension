@@ -504,7 +504,9 @@ async function withFixtures(options, testSuite) {
          * forcing background exceptions to be captured
          * proving more helpful context
          */
-        await driver.navigate(PAGES.BACKGROUND);
+        await driver.navigate(PAGES.BACKGROUND, {
+          waitForControllers: false,
+        });
       }
     }
 

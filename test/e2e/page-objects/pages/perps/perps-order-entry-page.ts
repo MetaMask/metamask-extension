@@ -52,9 +52,22 @@ export class PerpsOrderEntryPage {
 
   /**
    * Waits for the order entry page to be fully loaded.
+   *
+   * @param options.timeout - Max wait in ms (default 60_000; Perps can be slow after in-app navigation).
    */
-  async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.orderEntryPage);
+  async checkPageIsLoaded(options?: { timeout?: number }): Promise<void> {
+    await this.driver.waitForSelector(this.orderEntryPage, {
+      timeout: options?.timeout ?? 60000,
+    });
+  }
+
+  /**
+   * Waits until the order entry route has unmounted (e.g. after submit navigates back to market detail).
+   *
+   * @param timeout - Max wait in ms (default 15_000).
+   */
+  async waitForPageClosed(timeout = 15000): Promise<void> {
+    await this.driver.waitForElementNotPresent(this.orderEntryPage, timeout);
   }
 
   /**
@@ -159,9 +172,9 @@ export class PerpsOrderEntryPage {
   /**
    * Clicks the Submit button on the order entry page and waits for it to disappear.
    *
-   * @param timeout - Optional wait timeout in ms (default 3000).
+   * @param timeout - Optional wait timeout in ms (default 20000; navigation + background order can be slow).
    */
-  async submitOrder(timeout = 3000): Promise<void> {
+  async submitOrder(timeout = 20000): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(
       this.submitOrderButton,
       timeout,

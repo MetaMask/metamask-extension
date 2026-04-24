@@ -130,8 +130,10 @@ export class PerpsHomePage extends PerpsPositionsBase {
    * Waits for the Perps tab to be present, clicks it, then waits for the Perps Home view to load.
    */
   async navigateToPerpsHome(): Promise<void> {
-    await this.driver.waitForSelector(this.accountOverviewPerpsTab);
-    await this.driver.clickElement(this.accountOverviewPerpsTab, 20000);
+    await this.driver.waitForSelector(this.accountOverviewPerpsTab, {
+      timeout: 60000,
+    });
+    await this.driver.clickElement(this.accountOverviewPerpsTab);
     await this.checkPageIsLoaded();
   }
 

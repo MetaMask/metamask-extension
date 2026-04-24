@@ -47,6 +47,8 @@ export class PerpsMarketDetailPage {
 
   private readonly longCtaButton = { testId: 'perps-long-cta-button' };
 
+  private readonly marginCard = { testId: 'perps-margin-card' };
+
   private readonly marginMenu = { testId: 'perps-margin-menu' };
 
   private readonly marginMenuAdd = { testId: 'perps-margin-menu-add' };
@@ -177,6 +179,24 @@ export class PerpsMarketDetailPage {
   }
 
   /**
+   * Asserts that the position liquidation price row contains the given text fragment
+   * (e.g. "2,400" for $2,400-style formatting).
+   */
+  async checkPositionLiquidationContains(textFragment: string): Promise<void> {
+    await this.driver.waitForSelector({
+      testId: 'perps-position-liquidation-value',
+      text: textFragment,
+    });
+  }
+
+  /**
+   * Clicks the back control on the market detail header (navigates to wallet default route).
+   */
+  async clickBack(): Promise<void> {
+    await this.driver.clickElement(this.marketDetailBackButton);
+  }
+
+  /**
    * Clicks the Add Funds CTA button visible when balance is zero.
    */
   async clickAddFundsCta(): Promise<void> {
@@ -235,11 +255,11 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Opens the margin card menu on the position detail section.
-   * Used to add or remove margin from an existing position.
+   * Opens the margin Add/Remove popover: clicks the margin summary card, then waits for the menu.
    */
   async clickMarginMenu(): Promise<void> {
-    await this.driver.clickElement(this.marginMenu);
+    await this.driver.clickElement(this.marginCard);
+    await this.driver.waitForSelector(this.marginMenu);
   }
 
   /**
@@ -335,10 +355,35 @@ export class PerpsMarketDetailPage {
   }
 
   /**
+   * Fills the USD margin amount in the Add or Remove margin modal.
+   * Requires the corresponding modal to be open (add / decrease).
+   *
+   * @param mode - 'add' for perps-add-margin-modal, 'remove' for perps-decrease-margin-modal.
+   * @param amountUsd - Amount string without currency (e.g. '100', '250').
+   */
+  async fillMarginModalAmount(
+    mode: 'add' | 'remove',
+    amountUsd: string,
+  ): Promise<void> {
+    const modalTestId =
+      mode === 'add' ? 'perps-add-margin-modal' : 'perps-decrease-margin-modal';
+    await this.driver.waitForSelector({ testId: modalTestId });
+    const amountInputCss = `[data-testid="${modalTestId}"] [data-testid="perps-edit-margin-amount-input"]`;
+    await this.driver.waitForSelector(amountInputCss);
+    await this.driver.fill(amountInputCss, amountUsd);
+  }
+
+  /**
    * Saves the margin edit modal (applies the margin change).
    */
   async saveMarginEdit(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.editMarginModalSave);
+    await this.driver.waitForSelector(this.editMarginModalSave);
+    const saveButton = await this.driver.findElement(this.editMarginModalSave);
+    await this.driver.scrollToElement(saveButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.editMarginModalSave,
+      20000,
+    );
   }
 
   /**
@@ -454,6 +499,31 @@ export class PerpsMarketDetailPage {
    */
   async waitForDecreaseMarginModal(): Promise<void> {
     await this.driver.waitForSelector(this.decreaseMarginModal);
+  }
+
+  /**
+   * Waits until the Add / Remove margin modal is fully removed from the DOM.
+   * Prefer this over a fixed sleep after save so the mock WS push runs after the UI closed.
+   *
+   * @param mode - Which modal variant was open.
+   * @param timeout - Max wait in ms (default 15_000).
+   */
+  async waitForEditMarginModalClosed(
+    mode: 'add' | 'remove',
+    timeout = 15000,
+  ): Promise<void> {
+    const modalTestId =
+      mode === 'add' ? 'perps-add-margin-modal' : 'perps-decrease-margin-modal';
+    await this.driver.waitForElementNotPresent({ testId: modalTestId }, timeout);
+  }
+
+  /**
+   * Waits until the reverse-position confirmation modal is removed from the DOM.
+   *
+   * @param timeout - Max wait in ms (default 15_000).
+   */
+  async waitForReversePositionModalClosed(timeout = 15000): Promise<void> {
+    await this.driver.waitForElementNotPresent(this.reversePositionModal, timeout);
   }
 
   /**

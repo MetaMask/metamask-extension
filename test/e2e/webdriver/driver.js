@@ -1140,6 +1140,20 @@ class Driver {
   }
 
   /**
+   * Waits until no elements match the locator (e.g. a modal has fully unmounted).
+   *
+   * @param {string | object} rawLocator - Locator for {@link Driver#buildLocator}.
+   * @param {number} [timeout] - Max wait in milliseconds (defaults to {@link Driver#timeout}).
+   * @returns {Promise<void>}
+   */
+  async waitForElementNotPresent(rawLocator, timeout = this.timeout) {
+    await this.driver.wait(
+      until.elementIsNotPresent(this.buildLocator(rawLocator)),
+      timeout,
+    );
+  }
+
+  /**
    * Retrieves the current URL of the browser session.
    *
    * @returns {Promise<string>} promise resolves upon retrieving the URL text.

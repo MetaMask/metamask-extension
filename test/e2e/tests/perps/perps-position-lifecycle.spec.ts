@@ -24,8 +24,7 @@ import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market
 import { PerpsOrderEntryPage } from '../../page-objects/pages/perps/perps-order-entry-page';
 import { getPerpsConfigEligible } from './helpers';
 import {
-  WS_USER_WITH_BTC_SHORT,
-  WS_USER_WITH_ETH_LONG,
+  WS_USER_WITH_BTC_SHORT_POSITION,
   WS_USER_WITH_ETH_LONG_POSITION,
   WS_USER_WITH_FUNDED_ACCOUNT,
   pushPositionUpdate,
@@ -67,8 +66,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await orderEntryPage.fillAmount('100');
         await orderEntryPage.submitOrder();
 
-        // Wait for the background order flow to complete before pushing position data
-        await driver.delay(2000);
+        await orderEntryPage.waitForPageClosed();
 
         // Simulate the HyperLiquid WS subscription push that arrives after order fill
         const perpsServer = WebSocketRegistry.getServer(
@@ -135,7 +133,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await orderEntryPage.fillAmount('100');
         await orderEntryPage.submitOrder();
 
-        await driver.delay(2000);
+        await orderEntryPage.waitForPageClosed();
 
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
@@ -172,7 +170,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
   // ─── Close position flows ──────────────────────────────────────────────────
 
   // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
-  it.only('partially closes 50% of an existing ETH long position from the homepage', async function () {
+  it('partially closes 50% of an existing ETH long position from the homepage', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligible(this.test?.fullTitle()),
@@ -220,12 +218,13 @@ describe('Perps Position Lifecycle', function (this: Suite) {
     );
   });
 
+
   // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
-  it.skip('partially closes an existing ETH long position and verifies position remains open', async function () {
+  it('reduces exposure (partial close) via Modify menu on an ETH long position', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligible(this.test?.fullTitle()),
-        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG,
+        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -233,69 +232,56 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
+        await perpsHomePage.waitForPositionCard('ETH');
 
-        const marketListPage = new PerpsMarketListPage(driver);
-        await marketListPage.navigateToMarketList();
-
-        const marketDetailPage = new PerpsMarketDetailPage(driver);
-        await marketDetailPage.navigateToMarket('ETH');
-        await marketDetailPage.checkPositionCtaButtonsVisible();
-
-        await marketDetailPage.clickClose();
-        await marketDetailPage.waitForClosePositionModal();
-        // The close modal has a close-amount-slider; default may be 100%.
-        // For partial close we use the Reduce Exposure flow via the Modify menu instead.
-        // See 'reduces exposure (partial close) via Modify menu' test below.
-        // Here we verify the modal is present with summary rows before cancelling.
-        await marketDetailPage.waitForCloseSummaryRows();
-      },
-    );
-  });
-
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
-  it.skip('reduces exposure (partial close) via Modify menu on an ETH long position', async function () {
-    await withFixtures(
-      {
-        ...getPerpsConfigEligible(this.test?.fullTitle()),
-        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG,
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
-
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-
-        const marketListPage = new PerpsMarketListPage(driver);
-        await marketListPage.navigateToMarketList();
+        await perpsHomePage.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
-        await marketDetailPage.navigateToMarket('ETH');
+        await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
 
-        // Modify → Reduce Exposure navigates to order entry in reduce mode
         await marketDetailPage.clickModify();
         await marketDetailPage.clickModifyMenuReduceExposure();
 
-        const orderEntryPage = new PerpsOrderEntryPage(driver);
-        await orderEntryPage.checkPageIsLoaded();
-        // Fill a partial amount to reduce (not the full position size)
-        await orderEntryPage.fillAmount('500');
-        await orderEntryPage.submitOrder();
+        await marketDetailPage.waitForClosePositionModal();
+        await marketDetailPage.waitForCloseSummaryRows();
 
-        // After partial reduce, position CTA buttons remain (position still open)
-        await marketDetailPage.checkPageIsLoaded();
+        await marketDetailPage.setClosePercent(10);
+        await marketDetailPage.submitClosePosition();
+
+        const perpsServer = WebSocketRegistry.getServer(
+          WEBSOCKET_SERVICES.perps,
+        );
+        pushPositionUpdate(perpsServer, {
+          coin: 'ETH',
+          szi: '2.25',
+          entryPx: '2850.00',
+          leverage: 3,
+          positionValue: '6412.5',
+          accountValue: '12637.5',
+          totalMarginUsed: '2137.5',
+          withdrawable: '10500.0',
+        });
+
         await marketDetailPage.checkPositionCtaButtonsVisible();
+        await marketDetailPage.checkPositionSizeValue('2.25 ETH');
+        await marketDetailPage.checkPositionLeverage('Long 3x');
+
+        await marketDetailPage.clickBack();
+        await perpsHomePage.navigateToPerpsHome();
+        await perpsHomePage.waitForPositionsSection();
+        await perpsHomePage.waitForPositionCardSize('ETH', '2.25 ETH');
       },
     );
   });
 
   // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
-  it.skip('adds exposure to an existing ETH long position via Modify menu', async function () {
+  it('adds exposure to an existing ETH long position via Modify menu', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligible(this.test?.fullTitle()),
-        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG,
+        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
+        ignoredConsoleErrors: ['Value is null'],
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -303,15 +289,13 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
-
-        const marketListPage = new PerpsMarketListPage(driver);
-        await marketListPage.navigateToMarketList();
+        await perpsHomePage.waitForPositionCard('ETH');
+        await perpsHomePage.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
-        await marketDetailPage.navigateToMarket('ETH');
+        await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
 
-        // Modify → Add Exposure navigates to order entry in add-exposure mode
         await marketDetailPage.clickModify();
         await marketDetailPage.clickModifyMenuAddExposure();
 
@@ -320,9 +304,31 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await orderEntryPage.fillAmount('200');
         await orderEntryPage.submitOrder();
 
-        // Position CTA buttons should still be visible after adding exposure
+        await orderEntryPage.waitForPageClosed();
+
+        const perpsServer = WebSocketRegistry.getServer(
+          WEBSOCKET_SERVICES.perps,
+        );
+        pushPositionUpdate(perpsServer, {
+          coin: 'ETH',
+          szi: '2.5667',
+          entryPx: '2850.00',
+          leverage: 3,
+          positionValue: '7700.1',
+          accountValue: '12950.0',
+          totalMarginUsed: '2564.0',
+          withdrawable: '10386.0',
+        });
+
         await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
+        await marketDetailPage.checkPositionSizeValue('2.5667 ETH');
+        await marketDetailPage.checkPositionLeverage('Long 3x');
+
+        await marketDetailPage.clickBack();
+        await perpsHomePage.navigateToPerpsHome();
+        await perpsHomePage.waitForPositionsSection();
+        await perpsHomePage.waitForPositionCardSize('ETH', '2.5667 ETH');
       },
     );
   });
@@ -330,11 +336,11 @@ describe('Perps Position Lifecycle', function (this: Suite) {
   // ─── Reverse position flows ────────────────────────────────────────────────
 
   // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
-  it.skip('reverses an ETH long position to short via Modify menu', async function () {
+  it('reverses an ETH long position to short via Modify menu', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligible(this.test?.fullTitle()),
-        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG,
+        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -342,38 +348,55 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
-
-        const marketListPage = new PerpsMarketListPage(driver);
-        await marketListPage.navigateToMarketList();
+        await perpsHomePage.waitForPositionCard('ETH');
+        await perpsHomePage.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
-        await marketDetailPage.navigateToMarket('ETH');
+        await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
 
-        // Modify → Reverse Position shows the reverse confirmation modal
         await marketDetailPage.clickModify();
         await marketDetailPage.clickModifyMenuReversePosition();
         await marketDetailPage.waitForReversePositionModal();
-
-        // Verify the modal shows estimated size and fee rows
         await marketDetailPage.waitForReversePositionSummaryRows();
-
-        // Confirm the reverse
         await marketDetailPage.confirmReversePosition();
 
-        // After reversing, the position CTA buttons remain (now a short position)
+        await marketDetailPage.waitForReversePositionModalClosed();
+
+        const perpsServer = WebSocketRegistry.getServer(
+          WEBSOCKET_SERVICES.perps,
+        );
+        pushPositionUpdate(perpsServer, {
+          coin: 'ETH',
+          szi: '-2.5',
+          entryPx: '2850.00',
+          leverage: 3,
+          positionValue: '7125.0',
+          accountValue: '12500.0',
+          totalMarginUsed: '2375.0',
+          withdrawable: '10125.0',
+        });
+
         await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
+        await marketDetailPage.checkPositionSizeValue('2.5 ETH');
+        await marketDetailPage.checkPositionLeverage('Short 3x');
+
+        await marketDetailPage.clickBack();
+        await perpsHomePage.navigateToPerpsHome();
+        await perpsHomePage.waitForPositionsSection();
+        await perpsHomePage.waitForPositionCardContains('ETH', '3x short');
+        await perpsHomePage.waitForPositionCardSize('ETH', '2.5 ETH');
       },
     );
   });
 
   // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
-  it.skip('cancels reverse position modal without reversing', async function () {
+  it('cancels reverse position modal without reversing', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligible(this.test?.fullTitle()),
-        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG,
+        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -381,32 +404,37 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
-
-        const marketListPage = new PerpsMarketListPage(driver);
-        await marketListPage.navigateToMarketList();
+        await perpsHomePage.waitForPositionCard('ETH');
+        await perpsHomePage.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
-        await marketDetailPage.navigateToMarket('ETH');
+        await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
 
         await marketDetailPage.clickModify();
         await marketDetailPage.clickModifyMenuReversePosition();
         await marketDetailPage.waitForReversePositionModal();
 
-        // Cancel — should return to market detail without reversing
         await marketDetailPage.cancelReversePosition();
         await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
+        await marketDetailPage.checkPositionLeverage('Long 3x');
+
+        await marketDetailPage.clickBack();
+        await perpsHomePage.navigateToPerpsHome();
+        await perpsHomePage.waitForPositionsSection();
+        await perpsHomePage.waitForPositionCardContains('ETH', '3x long');
+        await perpsHomePage.waitForPositionCardSize('ETH', '2.5 ETH');
       },
     );
   });
 
   // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
-  it.skip('reverses a BTC short position to long', async function () {
+  it('reverses a BTC short position to long', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligible(this.test?.fullTitle()),
-        perpsWebSocketSpecificMocks: WS_USER_WITH_BTC_SHORT,
+        perpsWebSocketSpecificMocks: WS_USER_WITH_BTC_SHORT_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -414,22 +442,45 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
-
-        const marketListPage = new PerpsMarketListPage(driver);
-        await marketListPage.navigateToMarketList();
+        await perpsHomePage.waitForPositionCard('BTC');
+        await perpsHomePage.clickPositionCard('BTC');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
-        await marketDetailPage.navigateToMarket('BTC');
+        await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
 
         await marketDetailPage.clickModify();
         await marketDetailPage.clickModifyMenuReversePosition();
         await marketDetailPage.waitForReversePositionModal();
+        await marketDetailPage.waitForReversePositionSummaryRows();
         await marketDetailPage.confirmReversePosition();
 
-        // After reversing, the position CTA buttons remain (now long BTC)
+        await marketDetailPage.waitForReversePositionModalClosed();
+
+        const perpsServer = WebSocketRegistry.getServer(
+          WEBSOCKET_SERVICES.perps,
+        );
+        pushPositionUpdate(perpsServer, {
+          coin: 'BTC',
+          szi: '0.5',
+          entryPx: '45000.00',
+          leverage: 15,
+          positionValue: '22500.0',
+          accountValue: '10750.0',
+          totalMarginUsed: '1500.0',
+          withdrawable: '9500.0',
+        });
+
         await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
+        await marketDetailPage.checkPositionSizeValue('0.5 BTC');
+        await marketDetailPage.checkPositionLeverage('Long 15x');
+
+        await marketDetailPage.clickBack();
+        await perpsHomePage.navigateToPerpsHome();
+        await perpsHomePage.waitForPositionsSection();
+        await perpsHomePage.waitForPositionCardContains('BTC', '15x long');
+        await perpsHomePage.waitForPositionCardSize('BTC', '0.5 BTC');
       },
     );
   });
@@ -437,11 +488,12 @@ describe('Perps Position Lifecycle', function (this: Suite) {
   // ─── Margin management ─────────────────────────────────────────────────────
 
   // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
-  it.skip('adds margin to an existing ETH position and verifies liquidation price updates', async function () {
+  it('adds margin to an existing ETH position and verifies liquidation price updates', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligible(this.test?.fullTitle()),
-        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG,
+        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
+        ignoredConsoleErrors: ['Value is null'],
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -449,35 +501,53 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
-
-        const marketListPage = new PerpsMarketListPage(driver);
-        await marketListPage.navigateToMarketList();
+        await perpsHomePage.waitForPositionCard('ETH');
+        await perpsHomePage.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
-        await marketDetailPage.navigateToMarket('ETH');
+        await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
+        await marketDetailPage.checkPositionLiquidationContains('2,400');
 
-        // Open the margin card menu and select "Add"
         await marketDetailPage.clickMarginMenu();
         await marketDetailPage.clickMarginMenuAdd();
         await marketDetailPage.waitForAddMarginModal();
         await marketDetailPage.waitForMarginModalAvailableBalance();
 
-        // Save the margin change
+        await marketDetailPage.fillMarginModalAmount('add', '250');
         await marketDetailPage.saveMarginEdit();
 
-        // After adding margin, the position detail remains visible
+        await marketDetailPage.waitForEditMarginModalClosed('add');
+
+        const perpsServer = WebSocketRegistry.getServer(
+          WEBSOCKET_SERVICES.perps,
+        );
+        pushPositionUpdate(perpsServer, {
+          coin: 'ETH',
+          szi: '2.5',
+          entryPx: '2850.00',
+          leverage: 3,
+          positionValue: '7125.0',
+          accountValue: '12875.0',
+          totalMarginUsed: '2850.0',
+          withdrawable: '10025.0',
+          liquidationPx: '2320.00',
+          unrealizedPnl: '375.0',
+        });
+
         await marketDetailPage.checkPositionCtaButtonsVisible();
+        await marketDetailPage.checkPositionLiquidationContains('2,320');
       },
     );
   });
 
   // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
-  it.skip('removes margin from an existing ETH position', async function () {
+  it('removes margin from an existing ETH position', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligible(this.test?.fullTitle()),
-        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG,
+        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
+        ignoredConsoleErrors: ['Value is null'],
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -485,24 +555,42 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
-
-        const marketListPage = new PerpsMarketListPage(driver);
-        await marketListPage.navigateToMarketList();
+        await perpsHomePage.waitForPositionCard('ETH');
+        await perpsHomePage.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
-        await marketDetailPage.navigateToMarket('ETH');
+        await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
+        await marketDetailPage.checkPositionLiquidationContains('2,400');
 
-        // Open the margin card menu and select "Remove"
         await marketDetailPage.clickMarginMenu();
         await marketDetailPage.clickMarginMenuRemove();
         await marketDetailPage.waitForDecreaseMarginModal();
         await marketDetailPage.waitForMarginModalAvailableBalance();
 
-        // Save the margin reduction
+        await marketDetailPage.fillMarginModalAmount('remove', '200');
         await marketDetailPage.saveMarginEdit();
 
+        await marketDetailPage.waitForEditMarginModalClosed('remove');
+
+        const perpsServer = WebSocketRegistry.getServer(
+          WEBSOCKET_SERVICES.perps,
+        );
+        pushPositionUpdate(perpsServer, {
+          coin: 'ETH',
+          szi: '2.5',
+          entryPx: '2850.00',
+          leverage: 3,
+          positionValue: '7125.0',
+          accountValue: '12875.0',
+          totalMarginUsed: '2400.0',
+          withdrawable: '10475.0',
+          liquidationPx: '2480.00',
+          unrealizedPnl: '375.0',
+        });
+
         await marketDetailPage.checkPositionCtaButtonsVisible();
+        await marketDetailPage.checkPositionLiquidationContains('2,480');
       },
     );
   });
@@ -510,11 +598,11 @@ describe('Perps Position Lifecycle', function (this: Suite) {
   // ─── Position card on home page ────────────────────────────────────────────
 
   // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
-  it.skip('position card is visible on Perps home when user has open ETH position', async function () {
+  it('position card is visible on Perps home when user has open ETH position', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligible(this.test?.fullTitle()),
-        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG,
+        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -522,18 +610,18 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
-        // ETH position card should be rendered
         await perpsHomePage.waitForPositionCard('ETH');
+        await perpsHomePage.waitForPositionCardSize('ETH', '2.5 ETH');
       },
     );
   });
 
   // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
-  it.skip('clicking a position card on home navigates to the ETH market detail', async function () {
+  it('clicking a position card on home navigates to the ETH market detail', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligible(this.test?.fullTitle()),
-        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG,
+        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -543,12 +631,12 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await perpsHomePage.waitForPositionsSection();
         await perpsHomePage.waitForPositionCard('ETH');
 
-        // Click the position card to navigate to the ETH market detail
         await perpsHomePage.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
+        await marketDetailPage.checkPositionSizeValue('2.5 ETH');
       },
     );
   });

@@ -40,6 +40,37 @@ export class PerpsPositionsBase {
   }
 
   /**
+   * Waits until the position card for `symbol` contains the given text fragment
+   * (e.g. size row "2.25 ETH" or leverage/direction "3x short").
+   *
+   * @param symbol - Asset symbol (e.g. 'ETH', 'BTC').
+   * @param textFragment - Substring that must appear in the card text.
+   */
+  async waitForPositionCardContains(
+    symbol: string,
+    textFragment: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      testId: `position-card-${symbol}`,
+      text: textFragment,
+    });
+  }
+
+  /**
+   * Waits until the position card for `symbol` shows the given size line
+   * (e.g. "2.25 ETH" on the Perps home positions list).
+   *
+   * @param symbol - Asset symbol (e.g. 'ETH').
+   * @param sizeLabel - Size row text as shown on the card (e.g. '2.25 ETH').
+   */
+  async waitForPositionCardSize(
+    symbol: string,
+    sizeLabel: string,
+  ): Promise<void> {
+    await this.waitForPositionCardContains(symbol, sizeLabel);
+  }
+
+  /**
    * Waits for the positions section to be visible (mock positions loaded).
    */
   async waitForPositionsSection(): Promise<void> {

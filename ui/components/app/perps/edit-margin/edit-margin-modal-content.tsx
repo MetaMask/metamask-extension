@@ -444,6 +444,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           <Box className="shrink-0">
             <TextField
               size={TextFieldSize.Md}
+              testId="perps-edit-margin-amount-input"
               value={marginAmount}
               onChange={handleAmountChange}
               placeholder="0.00"
