@@ -1044,14 +1044,31 @@ export class MetaMetricsController extends BaseController<
 
     let identifiedPayload = payload;
 
-    if (hasABTestAnalyticsMappingForEvent(payload.event)) {
+    const hasABTestAnalyticsMapping = hasABTestAnalyticsMappingForEvent(
+      payload.event,
+    );
+    const hasActiveABTests = payload.properties?.active_ab_tests !== undefined;
+
+    let normalizedPayload = payload;
+
+    if (hasActiveABTests) {
+      try {
+        normalizedPayload = enrichWithABTests(payload, null, []);
+      } catch {
+        normalizedPayload = payload;
+      }
+    }
+
+    identifiedPayload = normalizedPayload;
+
+    if (hasABTestAnalyticsMapping) {
       try {
         identifiedPayload = enrichWithABTests(
-          payload,
+          normalizedPayload,
           this.#getRemoteFeatureFlags(),
         );
       } catch {
-        identifiedPayload = payload;
+        identifiedPayload = normalizedPayload;
       }
     }
 
@@ -1074,7 +1091,7 @@ export class MetaMetricsController extends BaseController<
         // @ts-expect-error This property may not exist. We check for it below.
         overrideAnonymousEventNames[`${payload.event}`];
       const anonymousPayload = {
-        ...payload,
+        ...normalizedPayload,
         event: anonymousEventName ?? payload.event,
       };
 
