@@ -5736,7 +5736,7 @@
     "message": "Limit"
   },
   "perpsLimitPrice": {
-    "message": "Limit Price"
+    "message": "Limit price"
   },
   "perpsLimitPriceAboveCurrentPrice": {
     "message": "Limit price is above current price"
@@ -5966,7 +5966,7 @@
     "message": "Triggered"
   },
   "perpsStopLoss": {
-    "message": "Stop Loss",
+    "message": "Stop loss",
     "description": "Label for stop loss price input"
   },
   "perpsStopLossInvalidPrice": {
@@ -5978,7 +5978,7 @@
     "description": "Loading text shown while an order is being submitted"
   },
   "perpsTakeProfit": {
-    "message": "Take Profit",
+    "message": "Take profit",
     "description": "Label for take profit price input"
   },
   "perpsTakeProfitInvalidPrice": {
