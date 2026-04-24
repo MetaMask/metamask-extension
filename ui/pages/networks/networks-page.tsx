@@ -16,7 +16,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useNetworkFormState } from '../settings/networks-tab/networks-form/networks-form-state';
-import { setEditedNetwork } from '../../store/actions';
+import { setActiveNetwork, setEditedNetwork } from '../../store/actions';
 import AddBlockExplorerModal from '../../components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import { SelectRpcUrlModal } from '../../components/multichain/network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
 import { AddNetwork } from '../../components/multichain/network-manager/components/add-network';
@@ -178,6 +178,16 @@ export const NetworksPage = () => {
     navigate(DEFAULT_ROUTE);
   }, [dispatch, navigate]);
 
+  // The select-rpc page already updates the network configuration. We only
+  // need to point the active network at the chosen RPC client before closing.
+  const handleSelectRpc = useCallback(
+    (_chainId: string, networkClientId: string) => {
+      dispatch(setActiveNetwork(networkClientId));
+      handleClose();
+    },
+    [dispatch, handleClose],
+  );
+
   const handleGoHome = useCallback(() => {
     setView();
   }, [setView]);
@@ -311,7 +321,7 @@ export const NetworksPage = () => {
           <NetworksPageFormBody>
             <SelectRpcUrlModal
               networkConfiguration={editedNetwork as NetworkConfiguration}
-              onNetworkChange={handleClose}
+              onNetworkChange={handleSelectRpc}
             />
           </NetworksPageFormBody>
         </>
