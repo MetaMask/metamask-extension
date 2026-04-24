@@ -11,7 +11,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AlertsName } from '../constants';
 import { useConfirmContext } from '../../../context/confirm';
 import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
-import { isHardwareAccount } from '../../../../../../shared/lib/accounts/accounts';
+import { isHardwareAccount } from '../../../../../components/app/rewards/utils/isHardwareAccount';
 
 export function usePayHardwareAccountAlert(): Alert[] {
   const t = useI18nContext();
