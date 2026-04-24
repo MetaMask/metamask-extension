@@ -9,6 +9,10 @@ import {
   TextColor,
   FontWeight,
   ButtonBase,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -140,10 +144,13 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
           onClick={handleSeeAll}
           className="bg-transparent hover:bg-transparent active:bg-transparent p-0 min-w-0 h-auto"
           data-testid="perps-recent-activity-see-all"
+          aria-label={t('perpsSeeAll')}
         >
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('perpsSeeAll')}
-          </Text>
+          <Icon
+            name={IconName.ArrowRight}
+            size={IconSize.Sm}
+            color={IconColor.IconAlternative}
+          />
         </ButtonBase>
       </Box>
 

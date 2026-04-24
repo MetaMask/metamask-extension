@@ -135,7 +135,31 @@ function normalizeSmartContracts(smartContract) {
  */
 
 /**
+ * @typedef {object} UnifiedEvmAccountsApiBalances
+ * @property {string} [mainnetNativeEthHuman] - Mainnet (eip155:1) native balance string for the default fixture account (Accounts API v5).
+ * @property {{ assetId: string, balance: string }[]} [mainnetAdditionalBalances] - Extra v5 rows for mainnet (e.g. ERC-20s).
+ */
+
+/**
+ * Returns a mainnet native ETH (human) balance string so aggregated fiat matches `expectedFiatUsd`
+ * when the unified UI prices ETH at `ethConversionInUsd` (same as `withFixtures({ ethConversionInUsd })`
+ * and the default `price.api` v3 mock for `eip155:1/slip44:60`).
  *
+ * Use with `withFixtures({ unifiedEvmAccountsApiBalances: { mainnetNativeEthHuman: getUnifiedMainnetNativeEthHumanForFiatTotal(...) } })`
+ * when calling `login(driver, { expectedBalance: '$…' })` with assets-unify-state enabled.
+ *
+ * @param {number} expectedFiatUsd
+ * @param {number} ethConversionInUsd
+ * @returns {string}
+ */
+function getUnifiedMainnetNativeEthHumanForFiatTotal(
+  expectedFiatUsd,
+  ethConversionInUsd,
+) {
+  return String(expectedFiatUsd / ethConversionInUsd);
+}
+
+/**
  * @param {object} options
  * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
  */
@@ -163,6 +187,7 @@ async function withFixtures(options, testSuite) {
     accountActivityWebSocketSpecificMocks = [],
     perpsWebSocketSpecificMocks = [],
     extendedTimeoutMultiplier = 1,
+    unifiedEvmAccountsApiBalances,
   } = options;
 
   // Normalize localNodeOptions
@@ -347,6 +372,7 @@ async function withFixtures(options, testSuite) {
       chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
       ethConversionInUsd,
       monConversionInUsd,
+      unifiedEvmAccountsApiBalances,
     });
 
     if ((await detectPort(8000)) !== 8000) {
@@ -843,6 +869,7 @@ module.exports = {
   generateRandNumBetween,
   getCleanAppState,
   getEventPayloads,
+  getUnifiedMainnetNativeEthHumanForFiatTotal,
   isSidePanelEnabled,
   largeDelayMs,
   regularDelayMs,

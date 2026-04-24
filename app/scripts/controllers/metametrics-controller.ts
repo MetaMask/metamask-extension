@@ -905,8 +905,15 @@ export class MetaMetricsController extends BaseController<
       this.clearEventsAfterMetricsOptIn();
       this.trackTracesAfterMetricsOptIn();
       this.clearTracesAfterMetricsOptIn();
-    } else if (this.state.marketingCampaignCookieId) {
-      this.setMarketingCampaignCookieId(null);
+    } else {
+      if (participateInMetaMetrics === false) {
+        // Drop any UI-buffered pre-submit events/traces; they must not be sent after opt-out.
+        this.clearEventsAfterMetricsOptIn();
+        this.clearTracesAfterMetricsOptIn();
+      }
+      if (this.state.marketingCampaignCookieId) {
+        this.setMarketingCampaignCookieId(null);
+      }
     }
 
     if (

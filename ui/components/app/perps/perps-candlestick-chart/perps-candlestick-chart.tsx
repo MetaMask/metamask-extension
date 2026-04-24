@@ -16,6 +16,7 @@ import {
 import { brandColor } from '@metamask/design-tokens';
 import { Box } from '@metamask/design-system-react';
 import type { CandleData, CandleStick } from '@metamask/perps-controller';
+import { PRICE_THRESHOLD } from '../../../../../shared/lib/perps-formatters';
 import { CandlePeriod, ZOOM_CONFIG } from '../constants/chartConfig';
 import { useTheme } from '../../../../hooks/useTheme';
 import {
@@ -24,6 +25,51 @@ import {
   formatSingleCandleForChart,
   formatSingleVolumeForChart,
 } from './chart-utils';
+
+/**
+ * Derive lightweight-charts priceFormat options from a representative price,
+ * mirroring the decimal precision rules in PRICE_RANGES_UNIVERSAL so the
+ * y-axis always shows the same number of decimal places as the header price.
+ *
+ * @param price - Representative asset price (e.g. current mark price).
+ * @returns precision and minMove for a lightweight-charts priceFormat object.
+ */
+export function getPriceFormatForPrice(price: number): {
+  precision: number;
+  minMove: number;
+} {
+  const abs = Math.abs(price);
+  if (abs > PRICE_THRESHOLD.HIGH) {
+    // > $10,000 (includes > $100,000): 0 decimals
+    return { precision: 0, minMove: 1 };
+  }
+  if (abs > PRICE_THRESHOLD.LARGE) {
+    // $1,000–$10,000: max 1 decimal
+    return { precision: 1, minMove: 0.1 };
+  }
+  if (abs > PRICE_THRESHOLD.MEDIUM) {
+    // $100–$1,000: max 2 decimals
+    return { precision: 2, minMove: 0.01 };
+  }
+  if (abs > PRICE_THRESHOLD.MEDIUM_LOW) {
+    // $10–$100: max 3 decimals
+    return { precision: 3, minMove: 0.001 };
+  }
+  if (abs > PRICE_THRESHOLD.VERY_LOW) {
+    // $1–$10: max 4 decimals
+    return { precision: 4, minMove: 0.0001 };
+  }
+  if (abs > PRICE_THRESHOLD.EXTRA_LOW) {
+    // $0.1–$1: max 5 decimals
+    return { precision: 5, minMove: 0.00001 };
+  }
+  if (abs > PRICE_THRESHOLD.LOW) {
+    // $0.01–$0.1: max 6 decimals
+    return { precision: 6, minMove: 0.000001 };
+  }
+  // < $0.01 (including very small values): 6 decimals
+  return { precision: 6, minMove: 0.000001 };
+}
 
 /** Cooldown in ms between load-more requests to avoid spamming */
 const LOAD_MORE_COOLDOWN_MS = 2000;
@@ -54,6 +100,12 @@ type PerpsCandlestickChartProps = {
   selectedPeriod?: CandlePeriod;
   /** Candle data to display. When null/undefined the parent handles loading/error states. */
   candleData?: CandleData | null;
+  /**
+   * Representative current price of the asset, used to derive y-axis decimal
+   * precision. When provided, the y-axis will show the same number of decimal
+   * places as the formatted header price (e.g. 1 decimal for ETH ~$2,332).
+   */
+  currentPrice?: number;
   /** Horizontal price lines to overlay on the chart (TP, Entry, SL, etc.) */
   priceLines?: ChartPriceLine[];
   /** Callback when data needs to be fetched for a new period */
@@ -95,6 +147,7 @@ const PerpsCandlestickChart = forwardRef<
       height = 250,
       selectedPeriod = CandlePeriod.FiveMinutes,
       candleData,
+      currentPrice,
       priceLines,
       onPeriodDataRequest,
       onNeedMoreHistory,
@@ -267,6 +320,9 @@ const PerpsCandlestickChart = forwardRef<
       chartRef.current = chart;
 
       // Create candlestick series (pane 0 - top)
+      // priceFormat mirrors mobile (TradingViewChartTemplate.tsx:697): allow up to
+      // 6 decimals with a minMove of 1e-6 so small-value assets (PUMP at $0.001824)
+      // render real digits on the Y axis instead of rounding to $0.00.
       const candlestickSeries = chart.addSeries(CandlestickSeries, {
         upColor,
         downColor,
@@ -275,6 +331,11 @@ const PerpsCandlestickChart = forwardRef<
         wickDownColor: downColor,
         priceLineVisible: false,
         lastValueVisible: false,
+        priceFormat: {
+          type: 'price',
+          precision: 6,
+          minMove: 0.000001,
+        },
       });
 
       seriesRef.current = candlestickSeries;
@@ -523,6 +584,19 @@ const PerpsCandlestickChart = forwardRef<
       volumeUpColor,
       volumeDownColor,
     ]);
+
+    // Update y-axis price format when the asset's price range changes.
+    // This keeps decimal precision in sync with the header price display
+    // without recreating the chart series.
+    useEffect(() => {
+      if (!seriesRef.current || !currentPrice || currentPrice <= 0) {
+        return;
+      }
+      const { precision, minMove } = getPriceFormatForPrice(currentPrice);
+      seriesRef.current.applyOptions({
+        priceFormat: { type: 'price', precision, minMove },
+      });
+    }, [currentPrice]);
 
     // Manage price lines (TP, Entry, SL, etc.)
     useEffect(() => {

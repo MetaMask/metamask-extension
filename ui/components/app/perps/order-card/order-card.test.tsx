@@ -179,8 +179,20 @@ describe('OrderCard', () => {
     });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    // formatCurrencyWithMinThreshold formats with commas
-    expect(screen.getByText('$3,500.00')).toBeInTheDocument();
+    // formatPerpsFiatMinimal strips .00 for whole-dollar amounts (mobile parity)
+    expect(screen.getByText('$3,500')).toBeInTheDocument();
+  });
+
+  it('keeps meaningful decimals for limit order USD values', () => {
+    const order = createMockOrder({
+      orderType: 'limit',
+      size: '1.0',
+      price: '3500.10',
+    });
+    renderWithProvider(<OrderCard order={order} />, mockStore);
+
+    // fiatStyleStripping preserves .10 (only .00 is stripped)
+    expect(screen.getByText('$3,500.10')).toBeInTheDocument();
   });
 
   it('displays TP/SL trigger price, not size × price notional', () => {
@@ -196,8 +208,26 @@ describe('OrderCard', () => {
     });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText('$3,200.00')).toBeInTheDocument();
+    // formatPerpsFiatUniversal strips trailing zeros for whole-dollar prices
+    expect(screen.getByText('$3,200')).toBeInTheDocument();
     expect(screen.queryByText('$6,400.00')).not.toBeInTheDocument();
+  });
+
+  it('renders sub-cent trigger prices (PUMP) with real decimals instead of "<$0.01"', () => {
+    const order = createMockOrder({
+      symbol: 'PUMP',
+      orderType: 'limit',
+      side: 'sell',
+      isTrigger: true,
+      detailedOrderType: 'Stop Market',
+      triggerPrice: '0.001824',
+      price: '0.001824',
+      size: '6590',
+    });
+    renderWithProvider(<OrderCard order={order} />, mockStore);
+
+    expect(screen.getByText('$0.001824')).toBeInTheDocument();
+    expect(screen.queryByText('<$0.01')).not.toBeInTheDocument();
   });
 
   it('displays Market label when order value is zero', () => {
