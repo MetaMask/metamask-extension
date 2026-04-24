@@ -24,7 +24,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 
 describe('MultiRpc:', function (this: Suite) {
-  it.only('should migrate to multi rpc', async function () {
+  it('should migrate to multi rpc', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
