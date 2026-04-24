@@ -9,8 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.29.0]
 
+### Uncategorized
+
+- chore: sync stable into release/13.29.0 (#42124)
+- Added UTM parameters to extension links for improved analytics tracking (#40745)
+
 ### Added
 
+- Added a Developer Options entry to trigger the new Perps Withdraw confirmation UI (#42043)
+- feat: Create `LegacyBackgroundApiService` and init (#41786)
 - Added a cross-margin warning toast for perpetuals (#42015)
 - Added a “Deposit submitted” toast for Perps deposits, restored missing Perps deposit toasts, and suppressed generic transaction toasts during Perps deposits (#42045)
 - Added auto-connect for Trezor accounts (#41656)
@@ -33,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Null (internal decimal behavior, no user-facing feature flag — matches #41920 / #41993 precedent). (#41993)
 - Fixed Perps deeplinks so `/perps?screen=asset&symbol=X` opens the correct market detail page; added `/perps-asset` and `/perps-markets` to align with mobile and removed extension-only `/perps/market` and `/perps/market-list` routes in favor of the shared `screen` parameter (#42085)
 - Fixed Tempo to fall back to a classic transaction when contract deployment is required (#41978)
 - Fixed a blank smart transaction confirmation page (#42060)
