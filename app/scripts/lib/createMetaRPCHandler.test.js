@@ -1,9 +1,15 @@
 import { obj as createThoughStream } from 'through2';
-import { trace } from '../../../shared/lib/trace';
+import { continueTraceContext, trace } from '../../../shared/lib/trace';
+import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
 import createMetaRPCHandler from './createMetaRPCHandler';
 
 jest.mock('../../../shared/lib/trace', () => ({
   trace: jest.fn((_request, fn) => fn()),
+  continueTraceContext: jest.fn((_ctx, fn) => fn()),
+}));
+
+jest.mock('../../../shared/lib/wrapper-sampling', () => ({
+  shouldSampleWrappers: jest.fn().mockReturnValue(true),
 }));
 
 describe('createMetaRPCHandler', () => {
@@ -122,6 +128,8 @@ describe('createMetaRPCHandler', () => {
   describe('trace context extraction', () => {
     beforeEach(() => {
       jest.mocked(trace).mockClear();
+      jest.mocked(continueTraceContext).mockClear();
+      jest.mocked(shouldSampleWrappers).mockReset().mockReturnValue(true);
     });
 
     it('strips trace context from params and wraps call in trace', async () => {
@@ -175,6 +183,31 @@ describe('createMetaRPCHandler', () => {
         }),
         expect.any(Function),
       );
+    });
+
+    it('continues trace context but skips rpc.handler span when shouldSampleWrappers rejects', async () => {
+      jest.mocked(shouldSampleWrappers).mockReturnValue(false);
+      const api = {
+        foo: jest.fn().mockReturnValue('result'),
+      };
+      const streamTest = createThoughStream();
+      const handler = createMetaRPCHandler(api, streamTest);
+
+      await handler({
+        id: 1,
+        method: 'foo',
+        params: [
+          'bar',
+          { _traceContext: { _traceId: 'trace123', _spanId: 'span456' } },
+        ],
+      });
+
+      expect(trace).not.toHaveBeenCalled();
+      expect(continueTraceContext).toHaveBeenCalledWith(
+        { _traceId: 'trace123', _spanId: 'span456' },
+        expect.any(Function),
+      );
+      expect(api.foo).toHaveBeenCalledWith('bar');
     });
 
     it('does not wrap in trace when no trace context present', async () => {

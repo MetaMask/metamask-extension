@@ -555,7 +555,7 @@ describe('Trace', () => {
       /* eslint-enable @typescript-eslint/naming-convention */
     });
 
-    it('returns undefined when shouldSampleWrappers rejects the trace', () => {
+    it('returns context regardless of shouldSampleWrappers (sub-sampling gates wrapper SPAN emission, not context propagation)', () => {
       shouldSampleWrappersMock.mockReturnValue(false);
       const activeSpanMock = {
         spanContext: jest.fn().mockReturnValue({
@@ -566,7 +566,12 @@ describe('Trace', () => {
 
       getActiveSpanMock.mockReturnValue(activeSpanMock);
 
-      expect(getSerializedTraceContext()).toBeUndefined();
+      /* eslint-disable @typescript-eslint/naming-convention */
+      expect(getSerializedTraceContext()).toStrictEqual({
+        _traceId: 'abc123',
+        _spanId: 'def456',
+      });
+      /* eslint-enable @typescript-eslint/naming-convention */
     });
 
     it('returns undefined when sentry is not initialized', () => {

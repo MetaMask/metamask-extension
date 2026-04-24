@@ -323,12 +323,12 @@ export function getActiveSpan(): Sentry.Span | null {
 /**
  * Get the serialized trace context from the currently active Sentry span.
  * Used by cross-boundary wrappers to propagate trace context over RPC.
- * Returns undefined when SENTRY_DISTRIBUTED_TRACING_DISABLED is set, or when
- * `shouldSampleWrappers` rejects this trace. Either case stops the UI from
- * appending `_traceContext` to background RPC calls and thereby keeps the
- * background `createMetaRPCHandler` on its unwrapped path.
+ * Always propagates when an active span exists, so background-side spans
+ * (auto-instrumented `http.client`, core-package `trace()` callers, etc.)
+ * are correctly nested under the originating UI trace regardless of whether
+ * wrapper spans themselves are sub-sampled in.
  *
- * @returns Serialized context with traceId/spanId, or undefined if no active span, kill switch is set, or trace is sub-sampled out.
+ * @returns Serialized context with traceId/spanId, or undefined if no active span or kill switch is set.
  */
 export function getSerializedTraceContext():
   | SerializedTraceContext
@@ -342,9 +342,6 @@ export function getSerializedTraceContext():
   }
   try {
     const ctx = activeSpan.spanContext();
-    if (!shouldSampleWrappers(ctx.traceId)) {
-      return undefined;
-    }
     // eslint-disable-next-line @typescript-eslint/naming-convention
     return { _traceId: ctx.traceId, _spanId: ctx.spanId };
   } catch {
@@ -401,6 +398,31 @@ export function extractTraceContext(params: unknown): {
   }
 
   return { cleanParams: params, traceContext: undefined };
+}
+
+/**
+ * Run a callback with cross-process trace context active, without creating
+ * a span. Auto-instrumented spans (e.g. `http.client`) and any `trace()`
+ * callers that fire during the callback will be attached to the propagated
+ * trace. Used when the caller wants context propagation but not the wrapper
+ * span itself (e.g. when `shouldSampleWrappers` rejects the wrapper but
+ * trace continuity for downstream spans is still desired).
+ *
+ * @param parentContext - Serialized trace context with `_traceId` / `_spanId`.
+ * @param fn - Callback to run within the propagated trace scope.
+ * @returns The callback's return value.
+ */
+export function continueTraceContext<ResultType>(
+  parentContext: SerializedTraceContext | undefined,
+  fn: () => ResultType,
+): ResultType {
+  if (!hasDistributedTraceIds(parentContext)) {
+    return fn();
+  }
+  const sentryTrace = `${parentContext._traceId}-${parentContext._spanId}-1`;
+  return sentryContinueTrace(sentryTrace, () =>
+    sentryWithIsolationScope(() => fn()),
+  );
 }
 
 /**
