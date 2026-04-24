@@ -75,47 +75,32 @@ export async function buildBundleSizeDiffSection(
     Record<string, number>
   > = await devBundleSizeStatsResponse.json();
 
-  const bundleParts = ['background', 'ui', 'common'] as const;
-  type BundlePart = (typeof bundleParts)[number];
+  const bundleParts = [
+    'background',
+    'ui',
+    'common',
+    'other',
+    'contentScripts',
+    ...(prBundleSizeStats.zip === undefined ? [] : ['zip']),
+  ] as const;
 
-  const prSizes: Record<BundlePart, number> = {
-    background: prBundleSizeStats.background,
-    ui: prBundleSizeStats.ui,
-    common: prBundleSizeStats.common,
-  };
+  const getDevSize = (part: string) =>
+    devBundleSizeStats[mergeBaseCommitHash]?.[part] ?? 0;
+  const getDiff = (part: string) => prBundleSizeStats[part] - getDevSize(part);
 
-  const devSizes: Record<BundlePart, number> = {
-    background: 0,
-    ui: 0,
-    common: 0,
-  };
-  for (const part of bundleParts) {
-    devSizes[part] = devBundleSizeStats[mergeBaseCommitHash]?.[part] ?? 0;
-  }
-
-  const diffs: Record<BundlePart, number> = {
-    background: 0,
-    ui: 0,
-    common: 0,
-  };
-  for (const part of bundleParts) {
-    diffs[part] = prSizes[part] - devSizes[part];
-  }
-
-  const sizeDiffRows = bundleParts.map(
-    (part) =>
-      `${part}: ${getHumanReadableSize(diffs[part])} (${getPercentageChange(
-        devSizes[part],
-        prSizes[part],
-      )}%)`,
-  );
+  const sizeDiffRows = bundleParts.map((part) => {
+    return `${part}: ${getHumanReadableSize(getDiff(part))} (${getPercentageChange(
+      getDevSize(part),
+      prBundleSizeStats[part],
+    )}%)`;
+  });
 
   const sizeDiffHiddenContent = `<ul>${sizeDiffRows
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;
 
-  const sizeDiffBackground = diffs.background + diffs.common;
-  const sizeDiffUi = diffs.ui + diffs.common;
+  const sizeDiffBackground = getDiff('background') + getDiff('common');
+  const sizeDiffUi = getDiff('ui') + getDiff('common');
 
   let sizeDiffWarning: string | undefined;
   if (
