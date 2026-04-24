@@ -74,8 +74,9 @@ describe('buildBundleSizeDiffSection', () => {
     background: 1100,
     ui: 2200,
     common: 300,
-    other: 0,
-    contentScripts: 0,
+    other: 400,
+    contentScripts: 500,
+    zip: 600,
     timestamp: 2,
   };
   const devStats = {
@@ -108,6 +109,9 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('background:');
     expect(result).toContain('ui:');
     expect(result).toContain('common:');
+    expect(result).toContain('other:');
+    expect(result).toContain('contentScripts:');
+    expect(result).toContain('zip:');
   });
 
   it('uses the first baseline candidate found in history data', async () => {

@@ -66,6 +66,7 @@ export async function buildBundleSizeDiffSection(
       `Failed to fetch prBundleSizeStats, status ${prBundleSizeStatsResponse.statusText}`,
     );
   }
+
   // This annotation narrows the untyped json() result to the known schema of the bundle size stats artifact.
   const prBundleSizeStats: Record<string, number> =
     await prBundleSizeStatsResponse.json();
