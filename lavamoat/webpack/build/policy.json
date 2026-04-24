@@ -955,19 +955,6 @@
         "string.prototype.matchall>get-intrinsic": true
       }
     },
-    "postcss-discard-font-face>postcss>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "postcss-discard-font-face>postcss>chalk>ansi-styles": true,
-        "postcss-discard-font-face>postcss>chalk>escape-string-regexp": true,
-        "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi": true,
-        "postcss-discard-font-face>postcss>chalk>strip-ansi": true,
-        "postcss-discard-font-face>postcss>chalk>supports-color": true
-      }
-    },
     "chokidar": {
       "builtin": {
         "events.EventEmitter": true,
@@ -1734,17 +1721,7 @@
         "setTimeout": true
       }
     },
-    "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi": {
-      "packages": {
-        "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi>ansi-regex": true
-      }
-    },
     "chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
-      }
-    },
-    "postcss-discard-font-face>postcss>supports-color>has-flag": {
       "globals": {
         "process.argv": true
       }
@@ -1967,6 +1944,57 @@
         "terser-webpack-plugin": true
       }
     },
+    "postcss-loader>jiti": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "module": true,
+        "node:assert": true,
+        "node:crypto": true,
+        "node:fs": true,
+        "node:module.Module": true,
+        "node:module.builtinModules": true,
+        "node:module.createRequire": true,
+        "node:os.platform": true,
+        "node:os.tmpdir": true,
+        "node:path": true,
+        "node:perf_hooks.performance.now": true,
+        "node:process": true,
+        "node:tty.WriteStream.prototype.hasColors": true,
+        "node:url": true,
+        "node:util.format": true,
+        "node:util.inspect": true,
+        "node:v8": true,
+        "node:vm": true,
+        "os": true,
+        "path": true,
+        "process": true,
+        "tty": true,
+        "url": true,
+        "util": true,
+        "v8": true
+      },
+      "globals": {
+        "Buffer": true,
+        "Bun": true,
+        "Deno": true,
+        "EdgeRuntime": true,
+        "Netlify": true,
+        "TextDecoder": true,
+        "URL": true,
+        "__env__": true,
+        "atob": true,
+        "btoa": true,
+        "console": true,
+        "document": true,
+        "fastly": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true,
+        "structuredClone": true,
+        "value": true
+      }
+    },
     "tailwindcss>jiti": {
       "builtin": {
         "assert": true,
@@ -1995,12 +2023,6 @@
         "navigator": true,
         "process": true,
         "value": true
-      }
-    },
-    "postcss-discard-font-face>postcss>js-base64": {
-      "globals": {
-        "Base64": "write",
-        "define": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {
@@ -2346,7 +2368,7 @@
     "postcss-discard-font-face": {
       "packages": {
         "postcss-discard-font-face>balanced-match": true,
-        "postcss-discard-font-face>postcss": true
+        "postcss": true
       }
     },
     "tailwindcss>postcss-js": {
@@ -2361,6 +2383,9 @@
     "postcss-loader": {
       "builtin": {
         "module": true,
+        "node:module": true,
+        "node:path": true,
+        "node:url": true,
         "path": true,
         "url": true
       },
@@ -2370,6 +2395,7 @@
       },
       "packages": {
         "postcss-loader>cosmiconfig": true,
+        "postcss-loader>jiti": true,
         "tailwindcss>jiti": true,
         "postcss": true,
         "semver": true
@@ -2399,9 +2425,6 @@
       }
     },
     "postcss-rtlcss": {
-      "globals": {
-        "SuppressedError": true
-      },
       "packages": {
         "postcss": true,
         "postcss-rtlcss>rtlcss": true
@@ -2411,21 +2434,6 @@
       "packages": {
         "stylelint>postcss-selector-parser>cssesc": true,
         "@storybook/react>util-deprecate": true
-      }
-    },
-    "postcss-discard-font-face>postcss": {
-      "builtin": {
-        "fs": true,
-        "path": true
-      },
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "postcss-discard-font-face>postcss>chalk": true,
-        "postcss-discard-font-face>postcss>js-base64": true,
-        "postcss-discard-font-face>postcss>source-map": true,
-        "postcss-discard-font-face>postcss>supports-color": true
       }
     },
     "mockttp>express>proxy-addr": {
@@ -2871,11 +2879,6 @@
         "eslint>strip-ansi": true
       }
     },
-    "postcss-discard-font-face>postcss>chalk>strip-ansi": {
-      "packages": {
-        "postcss-discard-font-face>postcss>chalk>strip-ansi>ansi-regex": true
-      }
-    },
     "eslint>strip-ansi": {
       "packages": {
         "eslint>strip-ansi>ansi-regex": true
@@ -2886,14 +2889,6 @@
         "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
         "tailwindcss>sucrase>lines-and-columns": true,
         "tailwindcss>sucrase>ts-interface-checker": true
-      }
-    },
-    "postcss-discard-font-face>postcss>chalk>supports-color": {
-      "globals": {
-        "process.argv": true,
-        "process.env": true,
-        "process.platform": true,
-        "process.stdout": true
       }
     },
     "mocha>supports-color": {
@@ -2907,14 +2902,6 @@
       },
       "packages": {
         "chalk>supports-color>has-flag": true
-      }
-    },
-    "postcss-discard-font-face>postcss>supports-color": {
-      "globals": {
-        "process": true
-      },
-      "packages": {
-        "postcss-discard-font-face>postcss>supports-color>has-flag": true
       }
     },
     "tailwindcss": {
