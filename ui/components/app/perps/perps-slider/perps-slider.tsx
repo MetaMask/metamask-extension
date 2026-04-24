@@ -85,11 +85,11 @@ const sliderStyles = {
     width: 2,
     height: 2,
     borderRadius: '50%',
-    backgroundColor: 'var(--color-text-default)',
-    marginTop: 2,
+    backgroundColor: 'var(--color-icon-alternative)',
+    marginTop: 1,
   },
   markActive: {
-    backgroundColor: 'var(--color-text-default)',
+    backgroundColor: 'var(--color-icon-alternative)',
     opacity: 1,
   },
 };
