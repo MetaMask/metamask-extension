@@ -19,7 +19,7 @@ import {
   TRON_RECIPIENT_ADDRESS,
 } from '../tron/mocks/common-tron';
 import { proxyTronBlockchainCalls } from '../tron/mocks/local-tron-node-mocks';
-import { TRON_LOCAL_NODE_URL } from '../../seeder/tron-node';
+import { TRON_LOCAL_NODE_URL } from '../../seeder/tron/node';
 
 // Fund the test account with the same SUN value the original mock uses,
 // so the balance display assertion ('6.072 TRX') requires no change.
