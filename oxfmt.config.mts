@@ -21,7 +21,6 @@ export default defineConfig({
     '/development/chromereload.js',
     '/development/circular-deps.jsonc',
     '/development/ts-migration-dashboard/build/**',
-    '/development/ts-migration-dashboard/filesToConvert.json',
     '/dist/',
     '/lavamoat/**/policy-override.json',
     '/lavamoat/**/policy.json',
