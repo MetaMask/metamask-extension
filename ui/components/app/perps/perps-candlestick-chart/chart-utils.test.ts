@@ -1,4 +1,5 @@
 import type { CandleStick } from '@metamask/perps-controller';
+import { CandlePeriod } from '../constants/chartConfig';
 import {
   formatChartTimestamp,
   formatSingleCandleForChart,
@@ -109,7 +110,7 @@ describe('formatCandleDataForChart', () => {
   it('sorts output ascending by time', () => {
     const result = formatCandleDataForChart({
       symbol: 'ETH',
-      interval: '1h',
+      interval: CandlePeriod.OneHour,
       candles: [
         makeCandle({ time: 2_000_000_000_000 }),
         makeCandle({ time: 1_000_000_000_000 }),
@@ -121,7 +122,7 @@ describe('formatCandleDataForChart', () => {
   it('filters out invalid candles', () => {
     const result = formatCandleDataForChart({
       symbol: 'ETH',
-      interval: '1h',
+      interval: CandlePeriod.OneHour,
       candles: [makeCandle(), makeCandle({ open: 'NaN' })],
     });
     expect(result).toHaveLength(1);
@@ -137,7 +138,7 @@ describe('formatVolumeDataForChart', () => {
     const result = formatVolumeDataForChart(
       {
         symbol: 'ETH',
-        interval: '1h',
+        interval: CandlePeriod.OneHour,
         candles: [
           makeCandle({ time: 2_000_000_000_000 }),
           makeCandle({ time: 1_000_000_000_000 }),
