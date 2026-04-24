@@ -174,6 +174,7 @@ describe('MetaMask onboarding', function () {
         await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         await homePage.checkPageIsLoaded();
 
         // requests happen here
