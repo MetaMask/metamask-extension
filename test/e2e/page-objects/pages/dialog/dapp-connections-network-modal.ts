@@ -13,7 +13,7 @@ class DappConnectionsNetworkModal {
 
   private readonly dappNetworksHeader = {
     tag: 'h4',
-    text: 'Networks',
+    text: 'Manage networks',
   };
 
   constructor(driver: Driver) {
