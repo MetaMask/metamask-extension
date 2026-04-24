@@ -10,7 +10,10 @@ import {
   MultichainAssetsControllerAccountAssetListUpdatedEvent,
   MultichainAssetsControllerGetStateAction,
 } from '@metamask/assets-controllers';
-import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
+import {
+  KeyringControllerGetStateAction,
+  KeyringControllerStateChangeEvent,
+} from '@metamask/keyring-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
@@ -23,7 +26,8 @@ type Events =
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
   | AccountsControllerAccountBalancesUpdatesEvent
-  | MultichainAssetsControllerAccountAssetListUpdatedEvent;
+  | MultichainAssetsControllerAccountAssetListUpdatedEvent
+  | KeyringControllerStateChangeEvent;
 
 export type MultichainBalancesControllerMessenger = ReturnType<
   typeof getMultichainBalancesControllerMessenger
@@ -55,6 +59,7 @@ export function getMultichainBalancesControllerMessenger(
       'AccountsController:accountRemoved',
       'AccountsController:accountBalancesUpdated',
       'MultichainAssetsController:accountAssetListUpdated',
+      'KeyringController:stateChange',
     ],
     actions: [
       'AccountsController:listMultichainAccounts',
