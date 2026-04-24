@@ -10,9 +10,23 @@ import {
 // Fixed UTC timestamp: 2025-03-15 14:30:00 UTC (a Saturday, unlikely to be "today")
 const FIXED_TS_SECONDS = 1742048400;
 
-const makeCandle = (
-  overrides: Partial<CandleStick> = {},
-): CandleStick =>
+// The production formatters use the system's local timezone, so expected date
+// components must be derived in the same timezone to keep tests deterministic.
+const FIXED_DATE = new Date(FIXED_TS_SECONDS * 1000);
+const EXPECTED_MONTH_SHORT = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+}).format(FIXED_DATE);
+const EXPECTED_DAY = new Intl.DateTimeFormat('en-US', {
+  day: 'numeric',
+}).format(FIXED_DATE);
+const EXPECTED_MONTH_NUMERIC = new Intl.DateTimeFormat('en-US', {
+  month: 'numeric',
+}).format(FIXED_DATE);
+const EXPECTED_YEAR = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+}).format(FIXED_DATE);
+
+const makeCandle = (overrides: Partial<CandleStick> = {}): CandleStick =>
   ({
     time: 1_700_000_000_000,
     open: '100',
@@ -44,9 +58,7 @@ describe('formatSingleCandleForChart', () => {
   });
 
   it('returns null for negative OHLC values', () => {
-    expect(
-      formatSingleCandleForChart(makeCandle({ close: '-5' })),
-    ).toBeNull();
+    expect(formatSingleCandleForChart(makeCandle({ close: '-5' }))).toBeNull();
   });
 });
 
@@ -136,8 +148,8 @@ describe('formatChartTimestamp', () => {
   describe('crosshair mode', () => {
     it('returns short month, day, and 24h time', () => {
       const result = formatChartTimestamp(FIXED_TS_SECONDS, null, true);
-      expect(result).toMatch(/Mar/);
-      expect(result).toMatch(/15/);
+      expect(result).toContain(EXPECTED_MONTH_SHORT);
+      expect(result).toContain(EXPECTED_DAY);
       expect(result).toMatch(/\d{2}:\d{2}/u);
     });
   });
@@ -145,17 +157,17 @@ describe('formatChartTimestamp', () => {
   describe('tickMarkType as number (lightweight-charts v5 enum)', () => {
     it('0 (Year) returns a 4-digit year', () => {
       const result = formatChartTimestamp(FIXED_TS_SECONDS, 0);
-      expect(result).toMatch(/2025/);
+      expect(result).toContain(EXPECTED_YEAR);
     });
 
     it('1 (Month) returns abbreviated month name', () => {
       const result = formatChartTimestamp(FIXED_TS_SECONDS, 1);
-      expect(result).toMatch(/Mar/);
+      expect(result).toContain(EXPECTED_MONTH_SHORT);
     });
 
     it('2 (DayOfMonth) returns month/day', () => {
       const result = formatChartTimestamp(FIXED_TS_SECONDS, 2);
-      expect(result).toMatch(/3\/15/u);
+      expect(result).toContain(`${EXPECTED_MONTH_NUMERIC}/${EXPECTED_DAY}`);
     });
 
     it('3 (Time) returns 24h time, with month/day for non-today dates', () => {
@@ -172,15 +184,15 @@ describe('formatChartTimestamp', () => {
 
   describe('tickMarkType as string', () => {
     it('"Year" returns 4-digit year', () => {
-      expect(formatChartTimestamp(FIXED_TS_SECONDS, 'Year' as never)).toMatch(
-        /2025/,
+      expect(formatChartTimestamp(FIXED_TS_SECONDS, 'Year' as never)).toContain(
+        EXPECTED_YEAR,
       );
     });
 
     it('"Month" returns abbreviated month', () => {
-      expect(formatChartTimestamp(FIXED_TS_SECONDS, 'Month' as never)).toMatch(
-        /Mar/,
-      );
+      expect(
+        formatChartTimestamp(FIXED_TS_SECONDS, 'Month' as never),
+      ).toContain(EXPECTED_MONTH_SHORT);
     });
   });
 
