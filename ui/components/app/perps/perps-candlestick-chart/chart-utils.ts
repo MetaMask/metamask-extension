@@ -247,24 +247,25 @@ function isToday(date: Date, fmt: Formatters): boolean {
 }
 
 /**
- * Patch a formatted date string so that a bare-numeric month part is replaced
- * with the standalone abbreviated month name.
+ * Format a date using the given formatter key, patching a bare-numeric month
+ * part with the standalone abbreviated month name when needed.
  *
  * Some locales (notably Czech) have ICU data that downgrades `month: 'short'`
  * back to a bare number when combined with other fields in a single
  * DateTimeFormat.  We detect this via `formatToParts` and substitute the
  * standalone short month name while preserving the locale-native ordering.
  *
- * @param formatter - The combined DateTimeFormat instance
+ * @param key - Which formatter from the cached set to use
  * @param date - The date to format
- * @param fmt - Cached locale-specific formatters (used to derive the month name)
+ * @param fmt - Cached locale-specific formatters
  * @returns The formatted string with month name patched in when needed
  */
 function formatWithMonthPatch(
-  formatter: Intl.DateTimeFormat,
+  key: keyof Formatters,
   date: Date,
   fmt: Formatters,
 ): string {
+  const formatter = fmt[key];
   const parts = formatter.formatToParts(date);
 
   const hasNumericMonth = parts.some(
@@ -295,7 +296,7 @@ function formatWithMonthPatch(
  * @param fmt - Cached locale-specific formatters
  */
 function formatMonthDay(date: Date, fmt: Formatters): string {
-  return formatWithMonthPatch(fmt.monthDay, date, fmt);
+  return formatWithMonthPatch('monthDay', date, fmt);
 }
 
 function formatTime24h(date: Date, fmt: Formatters): string {
@@ -337,7 +338,7 @@ export function formatChartTimestamp(
   const date = new Date(timeInSeconds * 1000);
 
   if (isCrosshair) {
-    return formatWithMonthPatch(fmt.crosshair, date, fmt);
+    return formatWithMonthPatch('crosshair', date, fmt);
   }
 
   if (tickMarkType !== null && tickMarkType !== undefined) {
