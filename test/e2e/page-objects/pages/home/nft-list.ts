@@ -30,13 +30,13 @@ class NftListPage {
 
   // Toast body can split text across nodes; match on normalized subtree text.
   private readonly successImportNftMessage = {
-    xpath: `//p[contains(normalize-space(.), ${quoteXPathText(
+    xpath: `//*[contains(normalize-space(.), ${quoteXPathText(
       'NFT was successfully added!',
     )})]`,
   };
 
   private readonly successRemoveNftMessage = {
-    xpath: `//p[contains(normalize-space(.), ${quoteXPathText(
+    xpath: `//*[contains(normalize-space(.), ${quoteXPathText(
       'NFT was successfully removed!',
     )})]`,
   };
