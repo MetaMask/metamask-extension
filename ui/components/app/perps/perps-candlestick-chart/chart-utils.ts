@@ -257,24 +257,27 @@ function isToday(date: Date, fmt: Formatters): boolean {
  *
  * @param formatter - The combined DateTimeFormat instance
  * @param date - The date to format
- * @param monthName - Standalone short month name from the monthShort formatter
+ * @param fmt - Cached locale-specific formatters (used to derive the month name)
  * @returns The formatted string with month name patched in when needed
  */
 function formatWithMonthPatch(
   formatter: Intl.DateTimeFormat,
   date: Date,
-  monthName: string,
+  fmt: Formatters,
 ): string {
   const parts = formatter.formatToParts(date);
 
-  const needsPatch = parts.some(
-    (p) =>
-      p.type === 'month' &&
-      /^\d+$/u.test(p.value) &&
-      !monthName.startsWith(p.value),
+  const hasNumericMonth = parts.some(
+    (p) => p.type === 'month' && /^\d+$/u.test(p.value),
   );
 
-  if (!needsPatch) {
+  if (!hasNumericMonth) {
+    return formatter.format(date);
+  }
+
+  const monthName = fmt.monthShort.format(date);
+
+  if (parts.some((p) => p.type === 'month' && monthName.startsWith(p.value))) {
     return formatter.format(date);
   }
 
@@ -292,7 +295,7 @@ function formatWithMonthPatch(
  * @param fmt - Cached locale-specific formatters
  */
 function formatMonthDay(date: Date, fmt: Formatters): string {
-  return formatWithMonthPatch(fmt.monthDay, date, fmt.monthShort.format(date));
+  return formatWithMonthPatch(fmt.monthDay, date, fmt);
 }
 
 function formatTime24h(date: Date, fmt: Formatters): string {
@@ -334,11 +337,7 @@ export function formatChartTimestamp(
   const date = new Date(timeInSeconds * 1000);
 
   if (isCrosshair) {
-    return formatWithMonthPatch(
-      fmt.crosshair,
-      date,
-      fmt.monthShort.format(date),
-    );
+    return formatWithMonthPatch(fmt.crosshair, date, fmt);
   }
 
   if (tickMarkType !== null && tickMarkType !== undefined) {
