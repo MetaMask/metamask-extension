@@ -4467,3 +4467,18 @@ describe('getDeferredDeepLink', () => {
     expect(selectors.getDeferredDeepLink(state)).toBeNull();
   });
 });
+
+describe('getLastVisitedPerpsRoute', () => {
+  it('returns the lastVisitedPerpsRoute value when set', () => {
+    const entry = { path: '/perps/market/BTC', timestamp: 1700000000000 };
+    const state = { metamask: { lastVisitedPerpsRoute: entry } };
+
+    expect(selectors.getLastVisitedPerpsRoute(state)).toStrictEqual(entry);
+  });
+
+  it('returns null when lastVisitedPerpsRoute is undefined', () => {
+    const state = { metamask: {} };
+
+    expect(selectors.getLastVisitedPerpsRoute(state)).toBeNull();
+  });
+});
