@@ -25,9 +25,6 @@ function expectedParts(locale: string) {
       FIXED_DATE,
     ),
     day: new Intl.DateTimeFormat(locale, { day: 'numeric' }).format(FIXED_DATE),
-    monthNumeric: new Intl.DateTimeFormat(locale, {
-      month: 'numeric',
-    }).format(FIXED_DATE),
     year: new Intl.DateTimeFormat(locale, { year: 'numeric' }).format(
       FIXED_DATE,
     ),
@@ -214,7 +211,7 @@ describe('formatChartTimestamp', () => {
             locale,
           );
           expect(result).toContain(parts.day);
-          expect(result).toContain(parts.monthNumeric);
+          expect(result).toContain(parts.monthShort);
         });
 
         it('3 (Time) returns 24h time, with date for non-today dates', () => {

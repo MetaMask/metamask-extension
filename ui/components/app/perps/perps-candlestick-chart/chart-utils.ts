@@ -185,7 +185,7 @@ function createFormatters(locale: string, timezone: string): Formatters {
       timeZone: timezone,
     }),
     monthDay: new Intl.DateTimeFormat(locale, {
-      month: 'numeric',
+      month: 'short',
       day: 'numeric',
       timeZone: timezone,
     }),
