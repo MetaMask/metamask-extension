@@ -828,6 +828,46 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('applies the market minimum to modify mode when an add-to-position amount is entered', () => {
+      // Modify mode reuses perpsPlaceOrder under the hood when amount > 0
+      // (the "increase existing position" path). The $10 market minimum must
+      // gate that path the same way it gates new market orders.
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '5' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
+        'Order size must be at least $10',
+      );
+    });
+
+    it('does not apply min-order-size gate to modify mode with empty amount (TP/SL-only path)', () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      // Empty amount; modify-with-empty-amount is the TP/SL-only update path
+      // and must not show the min-order copy.
+      expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
+        'Order size must be at least $10',
+      );
+    });
+
     it('disables submit when auto-close take profit is invalid', async () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -881,13 +921,11 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        state: expect.objectContaining({
-          pendingOrderSymbol: 'ETH',
-          pendingOrderFilledDescription:
-            expect.stringMatching(/^Long [^ ]+ ETH$/u),
-        }),
-      });
+      // Pending-order data is delivered via setPendingOrder (asserted below).
+      // Route state must NOT carry pendingOrderSymbol/Description because
+      // market-detail will not clear it without a perpsToastKey, leaving a
+      // history entry that replays the filled toast on browser back/forward.
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastSubmitInProgress',
@@ -924,13 +962,13 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/xyz%3ATSLA', {
-        state: expect.objectContaining({
-          pendingOrderSymbol: 'xyz:TSLA',
-          pendingOrderFilledDescription:
-            expect.stringMatching(/^Long [^ ]+ TSLA$/u),
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/xyz%3ATSLA');
+      expect(mockSetPendingOrder).toHaveBeenCalledWith(
+        expect.objectContaining({
+          symbol: 'xyz:TSLA',
+          filledDescription: expect.stringMatching(/^Long [^ ]+ TSLA$/u),
         }),
-      });
+      );
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastSubmitInProgress',
@@ -1039,11 +1077,10 @@ describe('PerpsOrderEntryPage', () => {
         resolvePlaceOrder({ success: true });
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        state: expect.objectContaining({
-          pendingOrderSymbol: 'ETH',
-        }),
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
+      expect(mockSetPendingOrder).toHaveBeenCalledWith(
+        expect.objectContaining({ symbol: 'ETH' }),
+      );
     });
 
     it('calls closePosition when in close mode', async () => {
@@ -1876,13 +1913,7 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        state: expect.objectContaining({
-          pendingOrderSymbol: 'ETH',
-          pendingOrderFilledDescription:
-            expect.stringMatching(/^Long [^ ]+ ETH$/u),
-        }),
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastSubmitInProgress',

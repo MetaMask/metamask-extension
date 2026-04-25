@@ -548,15 +548,23 @@ const PerpsOrderEntryPage: React.FC = () => {
     return marginRequired > availableBalance;
   }, [orderFormState, orderMode, availableBalance]);
 
-  // For new market orders, require an amount meeting the $10 market-order minimum
-  // so submit stays disabled (and the button advertises the minimum) while the
-  // user has not entered a valid size.
+  // For new market orders and modify-with-amount paths, require an amount
+  // meeting the $10 market-order minimum so submit stays disabled (and the
+  // button advertises the minimum) while the user has not entered a valid
+  // size. Modify with empty amount is the TP/SL-only update path and is
+  // intentionally exempt — it does not call perpsPlaceOrder.
   const isBelowMinOrderSize = useMemo(() => {
-    if (!orderFormState || orderMode !== 'new' || orderType !== 'market') {
+    if (!orderFormState || orderType !== 'market') {
       return false;
     }
-    const amount =
-      Number.parseFloat(orderFormState.amount.replace(/,/gu, '')) || 0;
+    if (orderMode !== 'new' && orderMode !== 'modify') {
+      return false;
+    }
+    const rawAmount = orderFormState.amount.replace(/,/gu, '').trim();
+    if (orderMode === 'modify' && rawAmount === '') {
+      return false;
+    }
+    const amount = Number.parseFloat(rawAmount) || 0;
     return amount < PERPS_MIN_MARKET_ORDER_USD;
   }, [orderFormState, orderMode, orderType]);
 
@@ -668,11 +676,13 @@ const PerpsOrderEntryPage: React.FC = () => {
       )}`;
 
       if (!perpsToastKey) {
-        if (extraState) {
-          navigate(marketDetailPath, { state: extraState });
-        } else {
-          navigate(marketDetailPath);
-        }
+        // Without a perpsToastKey, market-detail's parsePerpsToastRouteState
+        // returns null and never clears location.state. Pushing extraState
+        // (pendingOrderSymbol/Description) onto the route would linger in
+        // history and replay the filled toast on browser back/forward.
+        // The pending-order data is already delivered imperatively via
+        // setPendingOrder above, so navigate without route state.
+        navigate(marketDetailPath);
         return;
       }
 
