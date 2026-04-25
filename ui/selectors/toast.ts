@@ -148,18 +148,17 @@ type TxRequest = {
   evmStatus: string | undefined;
 };
 
-function isTransactionTypeExcluded(
-  transaction: TransactionMeta | undefined,
-) {
+function isTransactionTypeExcluded(transaction: TransactionMeta | undefined) {
   const type = transaction?.type;
   const isExcludedType = Boolean(
     type && TOAST_EXCLUDED_TRANSACTION_TYPES.has(type),
   );
-  const isExcludedNestedType = Boolean(transaction?.nestedTransactions?.some(
-    (nested) =>
-      nested.type &&
-      TOAST_EXCLUDED_NESTED_TRANSACTION_TYPES.has(nested.type),
-  ));
+  const isExcludedNestedType = Boolean(
+    transaction?.nestedTransactions?.some(
+      (nested) =>
+        nested.type && TOAST_EXCLUDED_NESTED_TRANSACTION_TYPES.has(nested.type),
+    ),
+  );
 
   return isExcludedType || isExcludedNestedType;
 }
