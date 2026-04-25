@@ -261,10 +261,11 @@ export default class Home extends PureComponent {
     const isFresh = Date.now() - timestamp < PERPS_REOPEN_TTL_MS;
     // Exact match on `/perps` or a `/perps/...` sub-route only. Prevents a
     // future sibling like `/perpsNew` from silently resuming off a stale
-    // persisted path.
+    // persisted path. Strip any query/hash suffix first so a stored path
+    // like `/perps?tab=1` still matches.
+    const pathname = typeof path === 'string' ? path.split(/[?#]/u)[0] : '';
     const isPerpsPath =
-      typeof path === 'string' &&
-      (path === PERPS_ROUTE || path.startsWith(`${PERPS_ROUTE}/`));
+      pathname === PERPS_ROUTE || pathname.startsWith(`${PERPS_ROUTE}/`);
 
     // An in-app departure from `/perps/*` scheduled a Redux clear in the
     // passive-effect phase — React fires this `componentDidMount` first, so
