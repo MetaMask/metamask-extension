@@ -268,6 +268,7 @@ describe('HardwareWalletFooter', () => {
       showErrorModal: showHardwareWalletErrorModalMock,
       dismissErrorModal: dismissHardwareWalletErrorModalMock,
       setErrorModalSuppressed: setErrorModalSuppressedMock,
+      isErrorModalVisible: false,
     });
     mockIsHardwareWalletError.mockReturnValue(false);
     mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
@@ -432,7 +433,23 @@ describe('HardwareWalletFooter', () => {
         showErrorModal: showHardwareWalletErrorModalMock,
         dismissErrorModal: dismissHardwareWalletErrorModalMock,
         setErrorModalSuppressed: setErrorModalSuppressedMock,
-        isDeviceConnected: true,
+        isErrorModalVisible: false,
+      });
+
+      const { getByTestId, queryByTestId } = render();
+      expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+      expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
+    });
+
+    it('renders confirm button when hardware wallet is connected but not ready', () => {
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Connected },
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isErrorModalVisible: false,
       });
 
       const { getByTestId, queryByTestId } = render();
@@ -448,11 +465,68 @@ describe('HardwareWalletFooter', () => {
         showErrorModal: showHardwareWalletErrorModalMock,
         dismissErrorModal: dismissHardwareWalletErrorModalMock,
         setErrorModalSuppressed: setErrorModalSuppressedMock,
-        isDeviceConnected: false,
+        isErrorModalVisible: false,
       });
 
       const { getByTestId, queryByTestId, getByText } = render();
       expect(getByText('Connect Ledger')).toBeInTheDocument();
+      expect(
+        getByTestId('reconnect-hardware-wallet-button'),
+      ).toBeInTheDocument();
+      expect(queryByTestId('confirm-footer-button')).not.toBeInTheDocument();
+    });
+
+    it('does not render reconnect button for QR wallet', () => {
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Qr,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Disconnected },
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isErrorModalVisible: false,
+      });
+
+      const { getByTestId, queryByTestId } = render();
+      expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+      expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
+    });
+
+    it('does not render reconnect button when error modal is visible', () => {
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Disconnected },
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isErrorModalVisible: true,
+      });
+
+      const { getByTestId, queryByTestId } = render();
+      expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+      expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
+    });
+
+    it('renders reconnect button when connection state is error', () => {
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: {
+          status: ConnectionStatus.ErrorState,
+          error: new Error('test'),
+        },
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isErrorModalVisible: false,
+      });
+
+      const { getByTestId, queryByTestId } = render();
       expect(
         getByTestId('reconnect-hardware-wallet-button'),
       ).toBeInTheDocument();
@@ -471,7 +545,7 @@ describe('HardwareWalletFooter', () => {
         showErrorModal: showHardwareWalletErrorModalMock,
         dismissErrorModal: dismissHardwareWalletErrorModalMock,
         setErrorModalSuppressed: setErrorModalSuppressedMock,
-        isDeviceConnected: false,
+        isErrorModalVisible: false,
       });
 
       const { getByTestId } = render(undefined, {
@@ -525,7 +599,7 @@ describe('HardwareWalletFooter', () => {
         showErrorModal: showHardwareWalletErrorModalMock,
         dismissErrorModal: dismissHardwareWalletErrorModalMock,
         setErrorModalSuppressed: setErrorModalSuppressedMock,
-        isDeviceConnected: false,
+        isErrorModalVisible: false,
       });
 
       const stateWithDangerAlert = getMockPersonalSignConfirmStateForRequest(

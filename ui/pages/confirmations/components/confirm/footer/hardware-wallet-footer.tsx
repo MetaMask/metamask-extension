@@ -22,8 +22,11 @@ import {
 } from '../../../hooks/useAddEthereumChain';
 import { getConfirmationSender } from '../utils';
 import {
+  ConnectionStatus,
+  HardwareWalletType,
   useHardwareFooter,
   useHardwareWalletError,
+  useHardwareWalletState,
 } from '../../../../../contexts/hardware-wallets';
 import { ConfirmButton } from './footer';
 
@@ -48,7 +51,7 @@ export const HardwareWalletActionButton = ({
     currentConfirmation?.id ?? '',
   );
 
-  const { dismissErrorModal, setErrorModalSuppressed } =
+  const { dismissErrorModal, setErrorModalSuppressed, isErrorModalVisible } =
     useHardwareWalletError();
 
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
@@ -79,6 +82,8 @@ export const HardwareWalletActionButton = ({
     onUserRejectedHardwareWalletError,
   });
 
+  const { connectionState } = useHardwareWalletState();
+
   useEffect(() => {
     const shouldSuppressHardwareWalletErrors =
       hasUnconfirmedDangerAlerts && shouldRunHardwareWalletPreflight;
@@ -90,10 +95,20 @@ export const HardwareWalletActionButton = ({
     shouldRunHardwareWalletPreflight,
   ]);
 
+  const isQrWallet = walletType === HardwareWalletType.Qr;
+
+  const isNotReady = ![
+    ConnectionStatus.Connected,
+    ConnectionStatus.Ready,
+  ].includes(connectionState.status);
+
   const shouldShowReconnectButton =
     shouldRunHardwareWalletPreflight &&
     !isHardwareWalletReady &&
-    !hasUnconfirmedDangerAlerts;
+    !hasUnconfirmedDangerAlerts &&
+    !isQrWallet &&
+    isNotReady &&
+    !isErrorModalVisible;
 
   const onReconnectHardwareWalletCta = useCallback(async () => {
     await onSubmitPreflightCheck({ trackConnectCta: true });
