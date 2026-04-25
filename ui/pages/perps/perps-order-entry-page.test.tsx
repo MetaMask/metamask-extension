@@ -998,6 +998,54 @@ describe('PerpsOrderEntryPage', () => {
       });
     });
 
+    it('navigates only after the placeOrder background call settles (regression: stuck "Submitting your trade" toast)', async () => {
+      // Hold the perpsPlaceOrder Promise pending so we can observe whether
+      // navigate fires before the await resolves. If navigate were called
+      // synchronously (the old `navigate(-1)` before await pattern), the page
+      // would unmount and orphan the Promise — leaving the in-progress toast
+      // stuck forever.
+      let resolvePlaceOrder: (value: unknown) => void = () => undefined;
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return new Promise((resolve) => {
+            resolvePlaceOrder = resolve;
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
+      // Critical: navigate must not have fired yet — we are still awaiting
+      // the background response.
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+
+      await act(async () => {
+        resolvePlaceOrder({ success: true });
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          pendingOrderSymbol: 'ETH',
+        }),
+      });
+    });
+
     it('calls closePosition when in close mode', async () => {
       mockSearchParams.set('mode', 'close');
       mockLivePositions.mockReturnValue({
