@@ -204,7 +204,7 @@ describe('ImportNftsModal', () => {
         },
       });
 
-      expect(mockToastSuccess).toHaveBeenCalledWith(expect.anything());
+      expect(mockToastSuccess).toHaveBeenCalled();
 
       expect(ignoreTokens).toHaveBeenCalledWith({
         dontShowLoadingIndicator: true,
@@ -247,7 +247,7 @@ describe('ImportNftsModal', () => {
     fireEvent.click(getByText(messages.import.message));
 
     await waitFor(() => {
-      expect(mockToastError).toHaveBeenCalledWith(expect.anything());
+      expect(mockToastError).toHaveBeenCalled();
     });
   });
 

@@ -76,13 +76,15 @@ export const ToastContent = ({
   title,
   actionText,
   onActionClick,
+  dataTestId,
 }: {
   title: string;
   actionText?: string;
+  dataTestId?: string;
   onActionClick?: () => void;
 }) => {
   return (
-    <div>
+    <div data-testid={dataTestId}>
       <p className="text-m-body-md">{title}</p>
 
       {onActionClick && (

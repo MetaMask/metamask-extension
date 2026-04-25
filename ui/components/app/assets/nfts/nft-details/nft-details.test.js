@@ -116,9 +116,7 @@ describe('NFT Details', () => {
       'testNetworkConfigurationId',
     );
     expect(mockToastSuccess).toHaveBeenCalled();
-    await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
-    });
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it(`should show error toast when removeAndIgnoreNft fails and route to '/'`, async () => {
@@ -142,9 +140,7 @@ describe('NFT Details', () => {
       'testNetworkConfigurationId',
     );
     expect(mockToastError).toHaveBeenCalled();
-    await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
-    });
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('should copy nft address', async () => {

@@ -43,7 +43,6 @@ import {
 } from '../../../../../store/actions';
 import { toast, ToastContent } from '../../../../ui/toast/toast';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { MILLISECOND } from '../../../../../../shared/constants/time';
 import NftOptions from '../nft-options/nft-options';
 import InfoTooltip from '../../../../ui/info-tooltip';
 import { usePrevious } from '../../../../../hooks/usePrevious';
@@ -89,9 +88,6 @@ import NftDetailDescription from './nft-detail-description';
 import { renderShortTokenId } from './utils';
 
 const MAX_TOKEN_ID_LENGTH = 15;
-
-/** Let react-hot-toast mount in the DOM before navigation (E2E asserts on toast text). */
-const NAVIGATE_AFTER_REMOVE_TOAST_MS = 300 * MILLISECOND;
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -236,13 +232,21 @@ export function NftDetailsComponent({
   const onRemove = async () => {
     try {
       await dispatch(removeAndIgnoreNft(address, tokenId, nftNetworkClientId));
-      toast.success(<ToastContent title={t('removeNftMessage')} />);
+      toast.success(
+        <ToastContent
+          dataTestId="nft-remove-success-toast"
+          title={t('removeNftMessage')}
+        />,
+      );
     } catch {
-      toast.error(<ToastContent title={t('removeNftErrorMessage')} />);
+      toast.error(
+        <ToastContent
+          dataTestId="nft-remove-error-toast"
+          title={t('removeNftErrorMessage')}
+        />,
+      );
     } finally {
-      setTimeout(() => {
-        navigate(DEFAULT_ROUTE);
-      }, NAVIGATE_AFTER_REMOVE_TOAST_MS);
+      navigate(DEFAULT_ROUTE);
     }
   };
 

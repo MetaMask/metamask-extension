@@ -140,7 +140,12 @@ export const ImportNftsModal = ({ onClose }) => {
 
       dispatch(updateNftDropDownState(newNftDropdownState));
     } catch {
-      toast.error(<ToastContent title={t('nftAddFailedMessage')} />);
+      toast.error(
+        <ToastContent
+          dataTestId="nft-import-error-toast"
+          title={t('nftAddFailedMessage')}
+        />,
+      );
       return;
     } finally {
       endTrace({ name: TraceName.ImportNfts });
@@ -155,7 +160,12 @@ export const ImportNftsModal = ({ onClose }) => {
         }),
       );
     }
-    toast.success(<ToastContent title={t('newNftAddedMessage')} />);
+    toast.success(
+      <ToastContent
+        dataTestId="nft-import-success-toast"
+        title={t('newNftAddedMessage')}
+      />,
+    );
 
     const tokenDetails = await Promise.race([
       getTokenStandardAndDetails(nftAddress, null, tokenId.toString()),
