@@ -43,13 +43,14 @@ import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import {
-  useHardwareFooter,
+  useHardwareWalletConfig,
   useHardwareWalletError,
 } from '../../../../../contexts/hardware-wallets';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
 import { SingleActionFooter } from './single-action-footer';
+import { HardwareWalletActionButton } from './hardware-wallet-footer';
 
 const SINGLE_ACTION_FOOTER_TYPES = [
   TransactionType.musdConversion,
@@ -93,7 +94,7 @@ function getButtonDisabledState(
   return disabled;
 }
 
-const ConfirmButton = ({
+export const ConfirmButton = ({
   alertOwnerId = '',
   disabled,
   onSubmit,
@@ -206,7 +207,7 @@ const ConfirmButton = ({
   );
 };
 
-const CancelButton = ({
+export const CancelButton = ({
   handleFooterCancel,
 }: {
   handleFooterCancel: () => void;
@@ -242,17 +243,14 @@ const Footer = () => {
   const { currentConfirmation, isScrollToBottomCompleted, goBackTo } =
     useConfirmContext<TransactionMeta>();
   const currentConfirmationId = currentConfirmation?.id;
-  const t = useI18nContext();
   const { isGaslessLoading } = useIsGaslessLoading();
 
   const { from: fromAddress } = getConfirmationSender(currentConfirmation);
   const { shouldThrottleOrigin } = useOriginThrottling();
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
   const { onCancel, resetTransactionState } = useConfirmActions();
-  const { hasUnconfirmedDangerAlerts } = useAlerts(
-    currentConfirmation?.id ?? '',
-  );
 
+  const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { dismissErrorModal, setErrorModalSuppressed } =
     useHardwareWalletError();
 
@@ -268,62 +266,12 @@ const Footer = () => {
   );
   const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
 
-  const onUserRejectedHardwareWalletError = useCallback(async () => {
-    // User intentionally rejected on device; follow the cancel flow.
-    await onCancel({
-      location: MetaMetricsEventLocation.Confirmation,
-    });
-    dismissErrorModal();
-    if (currentConfirmationId) {
-      navigateNext(currentConfirmationId);
-    }
-  }, [currentConfirmationId, navigateNext, onCancel, dismissErrorModal]);
-
-  const {
-    walletType,
-    shouldRunHardwareWalletPreflight,
-    isHardwareWalletReady,
-    onSubmitPreflightCheck,
-    withHardwareWalletModalHandling,
-  } = useHardwareFooter({
-    currentConfirmation,
-    currentConfirmationId,
-    onUserRejectedHardwareWalletError,
-  });
-
-  useEffect(() => {
-    const shouldSuppressHardwareWalletErrors =
-      hasUnconfirmedDangerAlerts && shouldRunHardwareWalletPreflight;
-
-    setErrorModalSuppressed(shouldSuppressHardwareWalletErrors);
-  }, [
-    hasUnconfirmedDangerAlerts,
-    setErrorModalSuppressed,
-    shouldRunHardwareWalletPreflight,
-  ]);
-
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) || isGaslessLoading;
-
-  const shouldShowReconnectButton =
-    shouldRunHardwareWalletPreflight &&
-    !isHardwareWalletReady &&
-    !hasUnconfirmedDangerAlerts;
-
-  const onReconnectHardwareWalletCta = useCallback(async () => {
-    await onSubmitPreflightCheck({ trackConnectCta: true });
-  }, [onSubmitPreflightCheck]);
 
   const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {
       return;
-    }
-
-    if (shouldRunHardwareWalletPreflight) {
-      const isReady = await onSubmitPreflightCheck();
-      if (!isReady) {
-        return;
-      }
     }
 
     try {
@@ -341,38 +289,21 @@ const Footer = () => {
         return;
       }
 
-      const resolveApprovalWithHardwareWalletHandling =
-        withHardwareWalletModalHandling(async () => {
-          const resolveApprovalOptions = walletType
-            ? {
-                fromAddress,
-                waitForResult: true,
-                walletType,
-              }
-            : {
-                fromAddress,
-              };
+      await dispatch(
+        resolvePendingApproval(currentConfirmation.id, undefined, {
+          fromAddress,
+        }),
+      );
 
-          await dispatch(
-            resolvePendingApproval(currentConfirmation.id, undefined, {
-              ...resolveApprovalOptions,
-            }),
-          );
-
-          if (currentConfirmationId) {
-            navigateNext(currentConfirmationId);
-          }
-        });
-
-      await resolveApprovalWithHardwareWalletHandling();
+      if (currentConfirmationId) {
+        navigateNext(currentConfirmationId);
+      }
     } finally {
       resetTransactionState();
     }
   }, [
     currentConfirmation,
     currentConfirmationId,
-    onSubmitPreflightCheck,
-    shouldRunHardwareWalletPreflight,
     isAddEthereumChain,
     isTransactionConfirmation,
     onAddEthereumChain,
@@ -381,8 +312,6 @@ const Footer = () => {
     navigateNext,
     dispatch,
     fromAddress,
-    walletType,
-    withHardwareWalletModalHandling,
     resetTransactionState,
   ]);
 
@@ -463,17 +392,8 @@ const Footer = () => {
         />
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
           <CancelButton handleFooterCancel={handleFooterCancel} />
-          {shouldShowReconnectButton ? (
-            <Button
-              block
-              data-testid="reconnect-hardware-wallet-button"
-              onClick={onReconnectHardwareWalletCta}
-              size={ButtonSize.Lg}
-            >
-              {walletType
-                ? t('connectHardwareDevice', [t(walletType)])
-                : t('connect')}
-            </Button>
+          {isHardwareWalletAccount ? (
+            <HardwareWalletActionButton disabled={isConfirmDisabled} />
           ) : (
             <ConfirmButton
               alertOwnerId={currentConfirmation?.id}
