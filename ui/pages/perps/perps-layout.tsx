@@ -9,7 +9,10 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import { setLastVisitedPerpsRoute } from '../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
+import {
+  getSelectedInternalAccount,
+  type AccountsState,
+} from '../../selectors/accounts';
 import { markPerpsUnmountInApp } from '../../helpers/perps/in-app-leave-marker';
 
 const MIN_HIDDEN_DURATION_MS = 30_000;
@@ -55,7 +58,8 @@ export default function PerpsLayout() {
   const { pathname, search } = useLocation();
 
   const selectedAddress = useSelector(
-    (state) => getSelectedInternalAccount(state)?.address ?? null,
+    (state: AccountsState) =>
+      getSelectedInternalAccount(state)?.address ?? null,
   );
 
   // Seed `PerpsStreamManager` synchronously from the background controller's

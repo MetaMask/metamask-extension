@@ -720,11 +720,12 @@ class PerpsStreamManager {
       this.markets.pushData(snapshot.markets);
     }
 
-    const userEntryMatchesActiveAccount =
-      Boolean(selectedAddress) &&
-      Boolean(snapshot.address) &&
-      snapshot.address.toLowerCase() === selectedAddress.toLowerCase();
-    if (!userEntryMatchesActiveAccount) {
+    const snapshotAddress = snapshot.address;
+    if (
+      !selectedAddress ||
+      !snapshotAddress ||
+      snapshotAddress.toLowerCase() !== selectedAddress.toLowerCase()
+    ) {
       return;
     }
 
