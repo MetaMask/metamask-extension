@@ -999,6 +999,29 @@ export function tryUnlockMetamask(
   };
 }
 
+export function tryUnlockMetamaskWithPasskey(
+  authenticationResponse: PasskeyAuthenticationResponse,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    dispatch(unlockInProgress());
+
+    try {
+      await submitRequestToBackground('unlockWithPasskey', [
+        authenticationResponse,
+      ]);
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(unlockSucceeded());
+      dispatch(hideWarning());
+    } catch (error) {
+      dispatch(unlockFailed(getErrorMessage(error)));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 /**
  * Checks if the seedless onboarding user is authenticated.
  *
@@ -1207,19 +1230,6 @@ export function protectVaultKeyWithPasskey(
 ): Promise<void> {
   return submitRequestToBackground('protectVaultKeyWithPasskey', [
     registrationResponse,
-  ]);
-}
-
-/**
- * Unlocks the vault with a passkey.
- *
- * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.
- */
-export function unlockWithPasskey(
-  authenticationResponse: PasskeyAuthenticationResponse,
-): Promise<void> {
-  return submitRequestToBackground('unlockWithPasskey', [
-    authenticationResponse,
   ]);
 }
 

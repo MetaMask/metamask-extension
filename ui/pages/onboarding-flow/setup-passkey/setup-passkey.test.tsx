@@ -6,7 +6,10 @@ import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import * as BrowserRuntimeUtils from '../../../../shared/lib/browser-runtime.utils';
 import {
+  ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
@@ -16,7 +19,7 @@ import {
   forceUpdateMetamaskState,
 } from '../../../store/actions';
 import { startPasskeyRegistration } from '../../../../shared/lib/passkey';
-import Biometrics from './biometrics';
+import SetupPasskey from './setup-passkey';
 
 jest.mock('../../../../shared/lib/passkey', () => ({
   ...jest.requireActual<typeof import('../../../../shared/lib/passkey')>(
@@ -30,6 +33,7 @@ jest.mock('../../../../shared/lib/passkey', () => ({
       clientDataJSON: 'e30',
       attestationObject: 'e30',
     },
+    clientExtensionResults: {},
   }),
 }));
 
@@ -64,14 +68,40 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockUseNavigate,
 }));
 
-const buildMockStore = (firstTimeFlowType: FirstTimeFlowType) =>
+const buildMockStore = (
+  firstTimeFlowType: FirstTimeFlowType,
+  metamaskOverrides: Record<string, unknown> = {},
+) =>
   configureMockStore([thunk])({
     metamask: {
       firstTimeFlowType,
+      participateInMetaMetrics: null,
+      ...metamaskOverrides,
     },
   });
 
-describe('Biometrics', () => {
+describe('SetupPasskey', () => {
+  it('redirects to next route when passkey is already registered', async () => {
+    jest.spyOn(BrowserRuntimeUtils, 'getBrowserName').mockReturnValue('chrome');
+    const mockStore = buildMockStore(FirstTimeFlowType.create, {
+      passkeyRecord: {
+        credential: { id: 'AQ', publicKey: 'AQ', counter: 0, transports: [] },
+        encryptedVaultKey: { ciphertext: 'AQ', iv: 'AQ' },
+        keyDerivation: { method: 'prf' as const, prfSalt: 'AQ' },
+      },
+    });
+    renderWithProvider(<SetupPasskey />, mockStore);
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_REVIEW_SRP_ROUTE,
+        {
+          replace: true,
+        },
+      );
+    });
+  });
+
   beforeEach(() => {
     mockUseNavigate.mockClear();
     jest.mocked(protectVaultKeyWithPasskey).mockClear();
@@ -85,59 +115,60 @@ describe('Biometrics', () => {
         clientDataJSON: 'e30',
         attestationObject: 'e30',
       },
+      clientExtensionResults: {},
     });
   });
 
   it('renders and matches snapshot', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { container } = renderWithProvider(<Biometrics />, mockStore);
+    const { container } = renderWithProvider(<SetupPasskey />, mockStore);
 
     expect(container).toMatchSnapshot();
   });
 
   it('renders the heading text', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByText } = renderWithProvider(<Biometrics />, mockStore);
+    const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
 
-    expect(
-      getByText(messages.unlockWithBiometrics.message),
-    ).toBeInTheDocument();
+    expect(getByText(messages.unlockWithPasskey.message)).toBeInTheDocument();
   });
 
   it('renders the description text', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByText } = renderWithProvider(<Biometrics />, mockStore);
+    const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
 
-    expect(
-      getByText(messages.biometricsDescription.message),
-    ).toBeInTheDocument();
+    expect(getByText(messages.passkeyDescription.message)).toBeInTheDocument();
   });
 
   it('renders the set up biometrics button', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByText } = renderWithProvider(<Biometrics />, mockStore);
+    const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
 
-    expect(getByText(messages.setUpBiometrics.message)).toBeInTheDocument();
+    expect(getByText(messages.setUpPasskey.message)).toBeInTheDocument();
   });
 
   it('renders the maybe later button', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByText } = renderWithProvider(<Biometrics />, mockStore);
+    const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
 
     expect(getByText(messages.maybeLater.message)).toBeInTheDocument();
   });
 
   it('renders the biometrics image', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByAltText } = renderWithProvider(<Biometrics />, mockStore);
+    const { getByAltText } = renderWithProvider(<SetupPasskey />, mockStore);
 
     expect(getByAltText('Biometrics')).toBeInTheDocument();
   });
 
   describe('maybe later navigation', () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
     it('navigates to SRP review route when flow type is create', () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByText } = renderWithProvider(<Biometrics />, mockStore);
+      const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
 
       fireEvent.click(getByText(messages.maybeLater.message));
 
@@ -149,9 +180,12 @@ describe('Biometrics', () => {
       );
     });
 
-    it('navigates to MetaMetrics route when flow type is import', () => {
+    it('navigates to MetaMetrics route when flow type is import on non-Firefox and metrics unset', () => {
+      jest
+        .spyOn(BrowserRuntimeUtils, 'getBrowserName')
+        .mockReturnValue('chrome');
       const mockStore = buildMockStore(FirstTimeFlowType.import);
-      const { getByText } = renderWithProvider(<Biometrics />, mockStore);
+      const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
 
       fireEvent.click(getByText(messages.maybeLater.message));
 
@@ -159,14 +193,50 @@ describe('Biometrics', () => {
         replace: true,
       });
     });
+
+    it('navigates to completion when flow type is import on Firefox', () => {
+      jest
+        .spyOn(BrowserRuntimeUtils, 'getBrowserName')
+        .mockReturnValue(PLATFORM_FIREFOX);
+      const mockStore = buildMockStore(FirstTimeFlowType.import);
+      const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
+
+      fireEvent.click(getByText(messages.maybeLater.message));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_COMPLETION_ROUTE,
+        {
+          replace: true,
+        },
+      );
+    });
+
+    it('navigates to completion when flow type is import and metrics preference is set', () => {
+      jest
+        .spyOn(BrowserRuntimeUtils, 'getBrowserName')
+        .mockReturnValue('chrome');
+      const mockStore = buildMockStore(FirstTimeFlowType.import, {
+        participateInMetaMetrics: true,
+      });
+      const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
+
+      fireEvent.click(getByText(messages.maybeLater.message));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_COMPLETION_ROUTE,
+        {
+          replace: true,
+        },
+      );
+    });
   });
 
   describe('set up biometrics', () => {
     it('completes passkey registration using background encryption key and navigates', async () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByTestId } = renderWithProvider(<Biometrics />, mockStore);
+      const { getByTestId } = renderWithProvider(<SetupPasskey />, mockStore);
 
-      fireEvent.click(getByTestId('biometrics-set-up-button'));
+      fireEvent.click(getByTestId('passkey-set-up-button'));
 
       await waitFor(() => {
         expect(protectVaultKeyWithPasskey).toHaveBeenCalled();
@@ -182,7 +252,7 @@ describe('Biometrics', () => {
 
     it('does not navigate when the user cancels passkey registration', async () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByTestId } = renderWithProvider(<Biometrics />, mockStore);
+      const { getByTestId } = renderWithProvider(<SetupPasskey />, mockStore);
 
       jest
         .mocked(startPasskeyRegistration)
@@ -190,30 +260,30 @@ describe('Biometrics', () => {
           new DOMException('User cancelled', 'NotAllowedError'),
         );
 
-      fireEvent.click(getByTestId('biometrics-set-up-button'));
+      fireEvent.click(getByTestId('passkey-set-up-button'));
 
       await waitFor(() => {
         expect(startPasskeyRegistration).toHaveBeenCalled();
       });
       expect(mockUseNavigate).not.toHaveBeenCalled();
       expect(
-        screen.queryByTestId('biometrics-registration-error'),
+        screen.queryByTestId('passkey-registration-error'),
       ).not.toBeInTheDocument();
     });
 
     it('shows an inline error when protecting the vault key with the passkey fails', async () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByTestId } = renderWithProvider(<Biometrics />, mockStore);
+      const { getByTestId } = renderWithProvider(<SetupPasskey />, mockStore);
 
       jest.mocked(protectVaultKeyWithPasskey).mockRejectedValueOnce({
         code: PasskeyControllerErrorCode.RegistrationVerificationFailed,
       });
 
-      fireEvent.click(getByTestId('biometrics-set-up-button'));
+      fireEvent.click(getByTestId('passkey-set-up-button'));
 
       await waitFor(() => {
         expect(
-          screen.getByTestId('biometrics-registration-error'),
+          screen.getByTestId('passkey-registration-error'),
         ).toHaveTextContent(
           messages.passkeyErrorRegistrationVerificationFailed.message,
         );

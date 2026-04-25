@@ -9,7 +9,7 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
-  ONBOARDING_BIOMETRICS_ROUTE,
+  ONBOARDING_SETUP_PASSKEY_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -54,7 +54,21 @@ describe('Onboarding Create Password', () => {
 
   describe('Initialized State Conditionals with keyrings and firstTimeFlowType', () => {
     it('should route to secure your wallet when keyring is present but not imported first time flow type', () => {
-      const mockStore = configureMockStore([thunk])(initializedMockState);
+      const createFirstTimeFlowWithPasskeyState = {
+        ...initializedMockState,
+        metamask: {
+          ...initializedMockState.metamask,
+          passkeyRecord: {
+            credentialId: 'cred',
+            derivationMethod: 'prf',
+            wrappedEncryptionKey: 'e30',
+            iv: 'e30',
+          },
+        },
+      };
+      const mockStore = configureMockStore([thunk])(
+        createFirstTimeFlowWithPasskeyState,
+      );
 
       renderWithProvider(
         <CreatePassword
@@ -70,6 +84,32 @@ describe('Onboarding Create Password', () => {
       );
     });
 
+    it('should route to setup passkey when keyring is present and imported first time flow type and passkey is not registered', () => {
+      const importFirstTimeFlowState = {
+        ...initializedMockState,
+        metamask: {
+          ...initializedMockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.import,
+          participateInMetaMetrics: null,
+          passkeyRecord: null,
+        },
+      };
+      const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
+
+      renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        mockStore,
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_SETUP_PASSKEY_ROUTE,
+        { replace: true },
+      );
+    });
+
     it('should route to metametrics when keyring is present and imported first time flow type', () => {
       const importFirstTimeFlowState = {
         ...initializedMockState,
@@ -77,6 +117,12 @@ describe('Onboarding Create Password', () => {
           ...initializedMockState.metamask,
           firstTimeFlowType: FirstTimeFlowType.import,
           participateInMetaMetrics: null,
+          passkeyRecord: {
+            credentialId: 'cred',
+            derivationMethod: 'prf',
+            wrappedEncryptionKey: 'e30',
+            iv: 'e30',
+          },
         },
       };
       const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
@@ -101,6 +147,12 @@ describe('Onboarding Create Password', () => {
           ...initializedMockState.metamask,
           firstTimeFlowType: FirstTimeFlowType.import,
           participateInMetaMetrics: true,
+          passkeyRecord: {
+            credentialId: 'cred',
+            derivationMethod: 'prf',
+            wrappedEncryptionKey: 'e30',
+            iv: 'e30',
+          },
         },
       };
       const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
@@ -397,7 +449,7 @@ describe('Onboarding Create Password', () => {
 
       await waitFor(() => {
         expect(mockUseNavigate).toHaveBeenCalledWith(
-          ONBOARDING_BIOMETRICS_ROUTE,
+          ONBOARDING_SETUP_PASSKEY_ROUTE,
           {
             replace: true,
           },
@@ -466,7 +518,7 @@ describe('Onboarding Create Password', () => {
 
       await waitFor(() => {
         expect(mockUseNavigate).toHaveBeenCalledWith(
-          ONBOARDING_BIOMETRICS_ROUTE,
+          ONBOARDING_SETUP_PASSKEY_ROUTE,
           {
             replace: true,
           },

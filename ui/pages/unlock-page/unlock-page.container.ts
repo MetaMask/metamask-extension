@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
+import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -12,6 +13,7 @@ import {
 } from '../../helpers/constants/routes';
 import {
   tryUnlockMetamask,
+  tryUnlockMetamaskWithPasskey,
   markPasswordForgotten,
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
@@ -60,6 +62,9 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
     tryUnlockMetamask: (password: string) =>
       dispatch(tryUnlockMetamask(password)),
+    tryUnlockMetamaskWithPasskey: (
+      authenticationResponse: PasskeyAuthenticationResponse,
+    ) => dispatch(tryUnlockMetamaskWithPasskey(authenticationResponse)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),

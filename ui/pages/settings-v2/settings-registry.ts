@@ -169,7 +169,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     ),
   },
   [SECURITY_REGISTER_PASSKEY_ROUTE]: {
-    labelKey: 'setUpBiometrics',
+    labelKey: 'setUpPasskey',
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(
       () => import('./security-and-password-tab/passkey-register-sub-page.tsx'),

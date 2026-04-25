@@ -11,6 +11,7 @@ import React, {
 import PropTypes from 'prop-types';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
+import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   TextVariant,
   TextColor,
@@ -71,10 +72,7 @@ import {
 } from '../../../shared/lib/passkey';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
-import {
-  generatePasskeyAuthenticationOptions,
-  unlockWithPasskey,
-} from '../../store/actions';
+import { generatePasskeyAuthenticationOptions } from '../../store/actions';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
@@ -87,6 +85,9 @@ type UnlockPageProps = {
   isOnboardingCompleted: boolean;
   onRestore: () => void;
   onSubmit: (password: string) => Promise<void>;
+  tryUnlockMetamaskWithPasskey: (
+    authenticationResponse: PasskeyAuthenticationResponse,
+  ) => Promise<void>;
   checkIsSeedlessPasswordOutdated: () => Promise<void>;
   getIsSeedlessOnboardingUserAuthenticated: () => Promise<boolean>;
   forceUpdateMetamaskState: () => Promise<void>;
@@ -178,6 +179,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
      * onSubmit handler when form is submitted
      */
     onSubmit: PropTypes.func,
+    tryUnlockMetamaskWithPasskey: PropTypes.func,
     /**
      * check password is outdated for social login flow
      */
@@ -297,9 +299,13 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       isPasskeyRegistered,
       isPasskeyFeatureAvailable,
       isSocialLoginFlow,
+      isOnboardingCompleted,
     } = this.props;
     return (
-      isPasskeyRegistered && isPasskeyFeatureAvailable && !isSocialLoginFlow
+      isPasskeyFeatureAvailable &&
+      isPasskeyRegistered &&
+      !isSocialLoginFlow &&
+      isOnboardingCompleted
     );
   }
 
@@ -307,7 +313,8 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     const wasActive =
       prevProps.isPasskeyRegistered &&
       prevProps.isPasskeyFeatureAvailable &&
-      !prevProps.isSocialLoginFlow;
+      !prevProps.isSocialLoginFlow &&
+      prevProps.isOnboardingCompleted;
     const isActive = this.isPasskeyActive;
 
     if (wasActive && !isActive) {
@@ -645,6 +652,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     });
 
     const { t } = this.context as UnlockPageContext;
+    const { isOnboardingCompleted } = this.props;
     try {
       if (!this.isPasskeyActive) {
         this.setState({
@@ -659,8 +667,15 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       const authenticationResponse =
         await startPasskeyAuthentication(authOptions);
 
-      await unlockWithPasskey(authenticationResponse);
-      await this.props.forceUpdateMetamaskState();
+      if (!isOnboardingCompleted) {
+        this.context.bufferedTrace({
+          name: TraceName.OnboardingPasswordLoginAttempt,
+          op: TraceOperation.OnboardingUserJourney,
+          parentContext: this.props.onboardingParentContext?.current,
+        });
+      }
+
+      await this.props.tryUnlockMetamaskWithPasskey(authenticationResponse);
 
       let redirectTo = DEFAULT_ROUTE;
       const fromLocation = this.props.location.state?.from;
@@ -669,6 +684,15 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         redirectTo = fromLocation.pathname + search;
       }
       this.props.navigate(redirectTo);
+
+      if (!isOnboardingCompleted) {
+        this.context.bufferedEndTrace({
+          name: TraceName.OnboardingPasswordLoginAttempt,
+        });
+        this.context.bufferedEndTrace({
+          name: TraceName.OnboardingJourneyOverall,
+        });
+      }
 
       (this.context as UnlockPageContext).trackEvent?.({
         category: MetaMetricsEventCategory.Navigation,
@@ -1021,45 +1045,19 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                   size={ButtonSize.Lg}
                   className="w-full"
                   type="button"
+                  isLoading={this.state.passkeyInProgress}
                   data-testid="unlock-biometrics"
-                  disabled={isLocked || isSubmitting}
+                  disabled={
+                    isLocked || isSubmitting || this.state.passkeyInProgress
+                  }
                   onClick={this.handlePasskeyUnlock}
                   aria-busy={this.state.passkeyInProgress}
-                  aria-label={
-                    this.state.passkeyInProgress
-                      ? t('unlockingWithBiometrics')
-                      : t('unlockWithBiometrics')
-                  }
-                  endIconName={
-                    this.state.passkeyInProgress
-                      ? undefined
-                      : IconName.Fingerprint
-                  }
-                  endIconProps={{
-                    size: IconSize.Lg,
-                  }}
                 >
-                  {this.state.passkeyInProgress ? (
-                    <span className="inline-flex items-center justify-center gap-2 text-inherit">
-                      <Text
-                        fontWeight={FontWeight.Medium}
-                        color={TextColor.Inherit}
-                        asChild
-                      >
-                        <span>{t('unlockingWithBiometrics')}</span>
-                      </Text>
-                      <Icon
-                        name={IconName.Loading}
-                        size={IconSize.Lg}
-                        className="shrink-0 animate-spin text-inherit"
-                      />
-                    </span>
-                  ) : (
-                    t('unlockWithBiometrics')
-                  )}
+                  {t('unlockWithBiometrics')}
                 </Button>
                 {getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL &&
-                this.isPasskeyActive ? (
+                this.isPasskeyActive &&
+                this.state.passkeyInProgress ? (
                   <button
                     type="button"
                     data-testid="unlock-trouble-continue-full-screen"

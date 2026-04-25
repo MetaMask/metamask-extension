@@ -9,7 +9,7 @@ import { ONBOARDING_WELCOME_ROUTE } from '../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
   generatePasskeyAuthenticationOptions,
-  unlockWithPasskey,
+  tryUnlockMetamaskWithPasskey,
 } from '../../store/actions';
 import UnlockPageImport from '.';
 
@@ -60,6 +60,11 @@ const mockTryUnlockMetamask = jest.fn(() => {
     return Promise.resolve();
   };
 });
+const mockTryUnlockMetamaskWithPasskey = jest.fn(() => {
+  return async () => {
+    return Promise.resolve();
+  };
+});
 const mockMarkPasswordForgotten = jest.fn();
 const mockResetWallet = jest.fn(() => {
   return Promise.resolve();
@@ -67,7 +72,8 @@ const mockResetWallet = jest.fn(() => {
 
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
-  tryUnlockMetamask: () => mockTryUnlockMetamask,
+  tryUnlockMetamask: jest.fn(() => mockTryUnlockMetamask),
+  tryUnlockMetamaskWithPasskey: jest.fn(() => mockTryUnlockMetamaskWithPasskey),
   markPasswordForgotten: () => mockMarkPasswordForgotten,
   resetWallet: () => mockResetWallet,
   generatePasskeyAuthenticationOptions: jest.fn().mockResolvedValue({
@@ -75,7 +81,6 @@ jest.mock('../../store/actions.ts', () => ({
     allowCredentials: [{ id: 'AQ', type: 'public-key' }],
     userVerification: 'required',
   }),
-  unlockWithPasskey: jest.fn().mockResolvedValue(undefined),
 }));
 
 const mockElement = document.createElement('svg');
@@ -297,6 +302,7 @@ describe('Unlock Page', () => {
     const mockForceUpdateMetamaskState = jest.fn().mockResolvedValue(undefined);
     const store = configureMockStore([thunk])({
       metamask: {
+        completedOnboarding: true,
         passkeyRecord: {
           credentialId: 'cred',
           derivationMethod: 'prf',
@@ -314,7 +320,7 @@ describe('Unlock Page', () => {
 
     await waitFor(() => {
       expect(generatePasskeyAuthenticationOptions).toHaveBeenCalled();
-      expect(unlockWithPasskey).toHaveBeenCalled();
+      expect(tryUnlockMetamaskWithPasskey).toHaveBeenCalled();
     });
   });
 
@@ -322,6 +328,7 @@ describe('Unlock Page', () => {
     const mockForceUpdateMetamaskState = jest.fn().mockResolvedValue(undefined);
     const store = configureMockStore([thunk])({
       metamask: {
+        completedOnboarding: true,
         passkeyRecord: {
           credentialId: 'cred',
           derivationMethod: 'prf',
@@ -340,7 +347,29 @@ describe('Unlock Page', () => {
 
     await waitFor(() => {
       expect(generatePasskeyAuthenticationOptions).not.toHaveBeenCalled();
-      expect(unlockWithPasskey).not.toHaveBeenCalled();
+      expect(tryUnlockMetamaskWithPasskey).not.toHaveBeenCalled();
+    });
+  });
+
+  it('does not start passkey unlock during onboarding incomplete flow', async () => {
+    const store = configureMockStore([thunk])({
+      metamask: {
+        completedOnboarding: false,
+        passkeyRecord: {
+          credentialId: 'cred',
+          derivationMethod: 'prf',
+          wrappedEncryptionKey: 'e30',
+          iv: 'e30',
+        },
+      },
+    });
+
+    renderWithProvider(<UnlockPage />, store, '/onboarding/unlock');
+
+    await waitFor(() => {
+      expect(generatePasskeyAuthenticationOptions).not.toHaveBeenCalled();
+      expect(tryUnlockMetamaskWithPasskey).not.toHaveBeenCalled();
+      expect(mockUseNavigate).not.toHaveBeenCalled();
     });
   });
 });

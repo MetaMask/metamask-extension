@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import log from 'loglevel';
 import {
   Box,
@@ -17,12 +17,19 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getFirstTimeFlowType } from '../../../selectors';
+import {
+  getFirstTimeFlowType,
+  getIsParticipateInMetaMetricsSet,
+  getIsPasskeyRegistered,
+} from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import {
   startPasskeyRegistration,
   translatePasskeyError,
@@ -36,41 +43,70 @@ import {
 
 /**
  * Passkey enrollment uses the vault encryption key from the background
- * (`exportEncryptionKey`) wrapped with a passkey-derived key — not the account password.
  */
-export default function Biometrics() {
+export default function SetupPasskey() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext() as (key: string) => string;
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const isParticipateInMetaMetricsSet = useSelector(
+    getIsParticipateInMetaMetricsSet,
+  );
+  const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const [isRegisteringPasskey, setIsRegisteringPasskey] = useState(false);
   const [registrationError, setRegistrationError] = useState<string | null>(
     null,
   );
 
   const goToNextStep = useCallback(() => {
-    navigate(
-      firstTimeFlowType === FirstTimeFlowType.create
-        ? ONBOARDING_REVIEW_SRP_ROUTE
-        : ONBOARDING_METAMETRICS,
-      { replace: true },
-    );
-  }, [firstTimeFlowType, navigate]);
+    const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
+
+    // determine next route based on flow type
+    let nextRoute: string;
+    if (firstTimeFlowType === FirstTimeFlowType.create) {
+      nextRoute = ONBOARDING_REVIEW_SRP_ROUTE;
+    } else if (firstTimeFlowType === FirstTimeFlowType.import) {
+      if (isFirefox) {
+        nextRoute = ONBOARDING_COMPLETION_ROUTE;
+      } else {
+        nextRoute = isParticipateInMetaMetricsSet
+          ? ONBOARDING_COMPLETION_ROUTE
+          : ONBOARDING_METAMETRICS;
+      }
+    } else {
+      nextRoute = ONBOARDING_METAMETRICS;
+    }
+
+    navigate(nextRoute, { replace: true });
+  }, [firstTimeFlowType, navigate, isParticipateInMetaMetricsSet]);
+
+  useEffect(() => {
+    if (!isPasskeyRegistered) {
+      return;
+    }
+    goToNextStep();
+  }, [isPasskeyRegistered, goToNextStep]);
 
   const handleMaybeLater = () => {
     goToNextStep();
   };
 
-  const handleSetUpBiometrics = async () => {
+  const handleSetupPasskey = async () => {
     setRegistrationError(null);
     setIsRegisteringPasskey(true);
     try {
+      // register passkey and protect vault key with passkey
       const options = await generatePasskeyRegistrationOptions();
       const registrationResponse = await startPasskeyRegistration(options);
       await protectVaultKeyWithPasskey(registrationResponse);
+
+      // update metamask state to reflect passkey registration
       await forceUpdateMetamaskState(dispatch);
+
+      // go to next step
       goToNextStep();
-    } catch (error: unknown) {
+    } catch (error) {
+      // silent error, do not show error to user
       if (isPasskeyCeremonySilentError(error)) {
         log.debug(
           'Onboarding passkey registration cancelled or timed out',
@@ -78,6 +114,8 @@ export default function Biometrics() {
         );
         return;
       }
+
+      // show error to user
       log.error('Onboarding passkey registration failed', error);
       setRegistrationError(
         translatePasskeyError(error, t) ?? t('passkeyErrorRegistrationFailed'),
@@ -86,6 +124,10 @@ export default function Biometrics() {
       setIsRegisteringPasskey(false);
     }
   };
+
+  if (isPasskeyRegistered) {
+    return null;
+  }
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4} className="h-full">
@@ -108,10 +150,10 @@ export default function Biometrics() {
         fontWeight={FontWeight.Medium}
         color={TextColor.TextDefault}
       >
-        {t('unlockWithBiometrics')}
+        {t('unlockWithPasskey')}
       </Text>
       <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-        {t('biometricsDescription')}
+        {t('passkeyDescription')}
       </Text>
 
       {registrationError ? (
@@ -119,7 +161,7 @@ export default function Biometrics() {
           variant={TextVariant.BodySm}
           color={TextColor.ErrorDefault}
           textAlign={TextAlign.Center}
-          data-testid="biometrics-registration-error"
+          data-testid="passkey-registration-error"
         >
           {registrationError}
         </Text>
@@ -134,19 +176,19 @@ export default function Biometrics() {
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           className="w-full"
-          data-testid="biometrics-set-up-button"
+          data-testid="passkey-set-up-button"
           disabled={isRegisteringPasskey}
           isLoading={isRegisteringPasskey}
-          aria-label={t('setUpBiometrics')}
-          onClick={handleSetUpBiometrics}
+          aria-label={t('setUpPasskey')}
+          onClick={handleSetupPasskey}
         >
-          {t('setUpBiometrics')}
+          {t('setUpPasskey')}
         </Button>
         <Button
           variant={ButtonVariant.Tertiary}
           size={ButtonSize.Md}
           className="w-full"
-          data-testid="biometrics-maybe-later-button"
+          data-testid="passkey-maybe-later-button"
           disabled={isRegisteringPasskey}
           onClick={handleMaybeLater}
         >

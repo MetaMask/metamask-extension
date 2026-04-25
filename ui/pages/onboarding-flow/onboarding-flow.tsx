@@ -34,7 +34,7 @@ import {
   SECURITY_ROUTE,
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
-  ONBOARDING_BIOMETRICS_ROUTE,
+  ONBOARDING_SETUP_PASSKEY_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
@@ -89,7 +89,7 @@ import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
-import Biometrics from './biometrics/biometrics';
+import SetupPasskey from './setup-passkey/setup-passkey';
 
 // Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
 // This is not just for performance, it is necessary so non-Flask builds don't try
@@ -173,9 +173,12 @@ export default function OnboardingFlow() {
       ONBOARDING_REVIEW_SRP_ROUTE,
       ONBOARDING_CONFIRM_SRP_ROUTE,
     ].some((route) => pathname?.startsWith(route));
+    const isSetupPasskeyRoute = pathname?.startsWith(
+      ONBOARDING_SETUP_PASSKEY_ROUTE,
+    );
 
     if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
-      if (isSRPBackupRoute) {
+      if (isSRPBackupRoute || isSetupPasskeyRoute) {
         navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
       }
     }
@@ -371,8 +374,8 @@ export default function OnboardingFlow() {
               }
             />
             <Route
-              path={toRelativePath(ONBOARDING_BIOMETRICS_ROUTE)}
-              element={<Biometrics />}
+              path={toRelativePath(ONBOARDING_SETUP_PASSKEY_ROUTE)}
+              element={<SetupPasskey />}
             />
             <Route
               path={toRelativePath(ONBOARDING_REVEAL_SRP_ROUTE)}

@@ -128,7 +128,7 @@ export default function PasskeyRegisterSubPage() {
         color={TextColor.TextAlternative}
         data-testid="register-passkey-description"
       >
-        {t('biometricsDescription')}
+        {t('passkeyDescription')}
       </Text>
 
       <Box
@@ -143,12 +143,12 @@ export default function PasskeyRegisterSubPage() {
           data-testid="register-passkey-set-up-button"
           disabled={isRegisteringPasskey}
           isLoading={isRegisteringPasskey}
-          aria-label={t('setUpBiometrics')}
+          aria-label={t('setUpPasskey')}
           onClick={() => {
             handleRegisterPasskey();
           }}
         >
-          {t('setUpBiometrics')}
+          {t('setUpPasskey')}
         </Button>
         <Button
           variant={ButtonVariant.Tertiary}

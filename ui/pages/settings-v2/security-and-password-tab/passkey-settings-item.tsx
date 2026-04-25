@@ -97,8 +97,6 @@ const PasskeySettingsItem = () => {
           passkey_registered: true,
         },
       });
-
-      throw new Error('test');
     } catch (error) {
       if (isPasskeyCeremonySilentError(error)) {
         log.debug(

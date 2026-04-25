@@ -949,12 +949,6 @@
   "betaTerms": {
     "message": "Beta Terms of Use"
   },
-  "biometricsDescription": {
-    "message": "Use Face ID or your fingerprint to unlock MetaMask on this device instead of entering your password. This creates a secure passkey stored on your device."
-  },
-  "biometricsToggleDescription": {
-    "message": "Use biometrics to unlock MetaMask on this device instead of your password. When turned on, we’ll store a secure passkey on this device"
-  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -7243,7 +7237,7 @@
     "message": "Set up",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
-  "setUpBiometrics": {
+  "setUpPasskey": {
     "message": "Set up biometrics"
   },
   "settingAddSnapAccount": {
@@ -9483,14 +9477,20 @@
     "description": "Label used for Private Keys row on multichain account details page."
   },
   "unlockWithPasskey": {
-    "message": "Unlock with Passkey"
+    "message": "Unlock with biometrics"
   },
   "unlocking": {
     "message": "Unlocking..."
   },
   "changePasswordVerifyingPasskey": {
-    "message": "Verifying passkey…",
+    "message": "Verifying biometrics…",
     "description": "Shown while the passkey is verified before the user can enter a new password on the change password screen."
+  },
+  "passkeyDescription": {
+    "message": "Use Face ID or your fingerprint to unlock MetaMask on this device instead of entering your password. This creates a secure passkey stored on your device."
+  },
+  "passkeyToggleDescription": {
+    "message": "Use biometrics to unlock MetaMask on this device instead of your password. When turned on, we’ll store a secure passkey on this device"
   },
   "passkeyUnlockFailed": {
     "message": "Biometrics unlock failed. Try your password."
