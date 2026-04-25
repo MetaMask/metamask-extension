@@ -80,7 +80,11 @@ class SmartTransactionHook {
 
   #approvalFlowEnded: boolean;
 
+  // UI flow identifier
   #approvalFlowId: string;
+
+  // Pending approval identifier
+  #approvalRequestId: string;
 
   #chainId: Hex;
 
@@ -104,7 +108,11 @@ class SmartTransactionHook {
 
   #txParams: TransactionParams;
 
+  // Approval flow and UI rendering
   #shouldShowStatusPage: boolean;
+
+  // UI rendering only
+  #shouldRenderStatusPage: boolean;
 
   constructor(request: SubmitSmartTransactionRequest) {
     const {
@@ -118,6 +126,7 @@ class SmartTransactionHook {
       transactions,
     } = request;
     this.#approvalFlowId = '';
+    this.#approvalRequestId = '';
     this.#approvalFlowEnded = false;
     this.#transactionMeta = transactionMeta as TransactionMeta;
     this.#signedTransactionInHex = signedTransactionInHex;
@@ -140,6 +149,10 @@ class SmartTransactionHook {
     );
 
     this.#shouldShowStatusPage = legacyShowStatusPage;
+
+    this.#shouldRenderStatusPage =
+      this.#shouldShowStatusPage &&
+      !this.#featureFlags.extensionSkipTransactionStatusPage;
 
     log.info(
       '[SmartTransaction] shouldShowStatusPage:',
@@ -333,7 +346,9 @@ class SmartTransactionHook {
 
   async #processApprovalIfNeeded(uuid: string) {
     if (this.#shouldShowStatusPage) {
-      await this.#startApprovalFlow();
+      if (this.#shouldRenderStatusPage) {
+        await this.#startApprovalFlow();
+      }
 
       this.#addApprovalRequest({
         uuid,
@@ -349,6 +364,11 @@ class SmartTransactionHook {
       return;
     }
     this.#approvalFlowEnded = true;
+
+    if (!this.#shouldRenderStatusPage) {
+      return;
+    }
+
     this.#endApprovalFlow(this.#approvalFlowId);
 
     // Clear the shared approval flow ID when we end the flow
@@ -361,11 +381,15 @@ class SmartTransactionHook {
     const onApproveOrRejectWrapper = () => {
       this.#onApproveOrReject();
     };
+    this.#approvalRequestId = this.#shouldRenderStatusPage
+      ? this.#approvalFlowId
+      : uuid;
+
     this.#controllerMessenger
       .call(
         'ApprovalController:addRequest',
         {
-          id: this.#approvalFlowId,
+          id: this.#approvalRequestId,
           origin,
           type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
           requestState: {
@@ -379,7 +403,7 @@ class SmartTransactionHook {
             txId: this.#transactionMeta.id,
           },
         },
-        true,
+        this.#shouldRenderStatusPage,
       )
       .then(onApproveOrRejectWrapper, onApproveOrRejectWrapper);
   }
@@ -392,7 +416,7 @@ class SmartTransactionHook {
     return await this.#controllerMessenger.call(
       'ApprovalController:updateRequestState',
       {
-        id: this.#approvalFlowId,
+        id: this.#approvalRequestId,
         requestState: {
           smartTransaction,
           isDapp: this.#isDapp,

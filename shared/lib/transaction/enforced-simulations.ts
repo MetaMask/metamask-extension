@@ -70,11 +70,22 @@ export function isEnforcedSimulationsEligible(
     return false;
   }
 
+  // When forcing is enabled, skip the trust signal check so enforced
+  // simulations always applies as long as balance changes are present.
+  // Intended for local development and QA only.
+  if (isForceEnabled()) {
+    return true;
+  }
+
   if (state && isTrusted(transactionMeta, state)) {
     return false;
   }
 
   return true;
+}
+
+function isForceEnabled(): boolean {
+  return process.env.FORCE_ENABLE_SIMULATIONS === 'true';
 }
 
 function isTrusted(
