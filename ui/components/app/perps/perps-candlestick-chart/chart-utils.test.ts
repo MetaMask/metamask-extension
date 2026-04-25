@@ -6,26 +6,33 @@ import {
   formatSingleVolumeForChart,
   formatCandleDataForChart,
   formatVolumeDataForChart,
+  clearFormatterCache,
 } from './chart-utils';
 
 // Fixed UTC timestamp: 2025-03-15 14:30:00 UTC (a Saturday, unlikely to be "today")
 const FIXED_TS_SECONDS = 1742048400;
-
-// The production formatters use the system's local timezone, so expected date
-// components must be derived in the same timezone to keep tests deterministic.
 const FIXED_DATE = new Date(FIXED_TS_SECONDS * 1000);
-const EXPECTED_MONTH_SHORT = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-}).format(FIXED_DATE);
-const EXPECTED_DAY = new Intl.DateTimeFormat('en-US', {
-  day: 'numeric',
-}).format(FIXED_DATE);
-const EXPECTED_MONTH_NUMERIC = new Intl.DateTimeFormat('en-US', {
-  month: 'numeric',
-}).format(FIXED_DATE);
-const EXPECTED_YEAR = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-}).format(FIXED_DATE);
+
+/**
+ * Build locale-specific expected values so assertions stay deterministic
+ * regardless of which locale is under test.
+ *
+ * @param locale - BCP 47 locale tag
+ */
+function expectedParts(locale: string) {
+  return {
+    monthShort: new Intl.DateTimeFormat(locale, { month: 'short' }).format(
+      FIXED_DATE,
+    ),
+    day: new Intl.DateTimeFormat(locale, { day: 'numeric' }).format(FIXED_DATE),
+    monthNumeric: new Intl.DateTimeFormat(locale, {
+      month: 'numeric',
+    }).format(FIXED_DATE),
+    year: new Intl.DateTimeFormat(locale, { year: 'numeric' }).format(
+      FIXED_DATE,
+    ),
+  };
+}
 
 const makeCandle = (overrides: Partial<CandleStick> = {}): CandleStick =>
   ({
@@ -152,68 +159,139 @@ describe('formatVolumeDataForChart', () => {
 });
 
 describe('formatChartTimestamp', () => {
-  describe('crosshair mode', () => {
-    it('returns short month, day, and 24h time', () => {
-      const result = formatChartTimestamp(FIXED_TS_SECONDS, null, true);
-      expect(result).toContain(EXPECTED_MONTH_SHORT);
-      expect(result).toContain(EXPECTED_DAY);
-      expect(result).toMatch(/\d{2}:\d{2}/u);
+  beforeEach(() => {
+    clearFormatterCache();
+  });
+
+  // Run every formatting assertion for two distinct locales to prove the
+  // locale parameter is actually threaded through to Intl.DateTimeFormat.
+  const locales: string[] = ['en-US', 'de-DE'];
+
+  locales.forEach((locale) => {
+    describe(`locale ${locale}`, () => {
+      const parts = expectedParts(locale);
+
+      describe('crosshair mode', () => {
+        it('returns short month, day, and 24h time', () => {
+          const result = formatChartTimestamp(
+            FIXED_TS_SECONDS,
+            null,
+            true,
+            locale,
+          );
+          expect(result).toContain(parts.monthShort);
+          expect(result).toContain(parts.day);
+          expect(result).toMatch(/\d{2}:\d{2}/u);
+        });
+      });
+
+      describe('tickMarkType as number (lightweight-charts v5 enum)', () => {
+        it('0 (Year) returns a 4-digit year', () => {
+          const result = formatChartTimestamp(
+            FIXED_TS_SECONDS,
+            0,
+            false,
+            locale,
+          );
+          expect(result).toContain(parts.year);
+        });
+
+        it('1 (Month) returns abbreviated month name', () => {
+          const result = formatChartTimestamp(
+            FIXED_TS_SECONDS,
+            1,
+            false,
+            locale,
+          );
+          expect(result).toContain(parts.monthShort);
+        });
+
+        it('2 (DayOfMonth) returns month/day', () => {
+          const result = formatChartTimestamp(
+            FIXED_TS_SECONDS,
+            2,
+            false,
+            locale,
+          );
+          expect(result).toContain(parts.day);
+          expect(result).toContain(parts.monthNumeric);
+        });
+
+        it('3 (Time) returns 24h time, with date for non-today dates', () => {
+          const result = formatChartTimestamp(
+            FIXED_TS_SECONDS,
+            3,
+            false,
+            locale,
+          );
+          expect(result).toContain(parts.day);
+          expect(result).toMatch(/\d{2}:\d{2}/u);
+        });
+
+        it('4 (TimeWithSeconds) returns HH:MM:SS', () => {
+          const result = formatChartTimestamp(
+            FIXED_TS_SECONDS,
+            4,
+            false,
+            locale,
+          );
+          expect(result).toMatch(/\d{2}:\d{2}:\d{2}/u);
+        });
+      });
+
+      describe('tickMarkType as string', () => {
+        it('"Year" returns 4-digit year', () => {
+          expect(
+            formatChartTimestamp(
+              FIXED_TS_SECONDS,
+              'Year' as never,
+              false,
+              locale,
+            ),
+          ).toContain(parts.year);
+        });
+
+        it('"Month" returns abbreviated month', () => {
+          expect(
+            formatChartTimestamp(
+              FIXED_TS_SECONDS,
+              'Month' as never,
+              false,
+              locale,
+            ),
+          ).toContain(parts.monthShort);
+        });
+      });
+
+      describe('fallback', () => {
+        it('null tickMarkType without crosshair returns date + time', () => {
+          const result = formatChartTimestamp(
+            FIXED_TS_SECONDS,
+            null,
+            false,
+            locale,
+          );
+          expect(result).toContain(parts.day);
+          expect(result).toMatch(/\d{2}:\d{2}/u);
+        });
+
+        it('unknown numeric tickMarkType falls through to default', () => {
+          const result = formatChartTimestamp(
+            FIXED_TS_SECONDS,
+            99,
+            false,
+            locale,
+          );
+          expect(result).toContain(parts.day);
+          expect(result).toMatch(/\d{2}:\d{2}/u);
+        });
+      });
     });
   });
 
-  describe('tickMarkType as number (lightweight-charts v5 enum)', () => {
-    it('0 (Year) returns a 4-digit year', () => {
-      const result = formatChartTimestamp(FIXED_TS_SECONDS, 0);
-      expect(result).toContain(EXPECTED_YEAR);
-    });
-
-    it('1 (Month) returns abbreviated month name', () => {
-      const result = formatChartTimestamp(FIXED_TS_SECONDS, 1);
-      expect(result).toContain(EXPECTED_MONTH_SHORT);
-    });
-
-    it('2 (DayOfMonth) returns month/day', () => {
-      const result = formatChartTimestamp(FIXED_TS_SECONDS, 2);
-      expect(result).toContain(`${EXPECTED_MONTH_NUMERIC}/${EXPECTED_DAY}`);
-    });
-
-    it('3 (Time) returns 24h time, with month/day for non-today dates', () => {
-      const result = formatChartTimestamp(FIXED_TS_SECONDS, 3);
-      expect(result).toMatch(/\d{1,2}\/\d{1,2}/u);
-      expect(result).toMatch(/\d{2}:\d{2}/u);
-    });
-
-    it('4 (TimeWithSeconds) returns HH:MM:SS', () => {
-      const result = formatChartTimestamp(FIXED_TS_SECONDS, 4);
-      expect(result).toMatch(/\d{2}:\d{2}:\d{2}/u);
-    });
-  });
-
-  describe('tickMarkType as string', () => {
-    it('"Year" returns 4-digit year', () => {
-      expect(formatChartTimestamp(FIXED_TS_SECONDS, 'Year' as never)).toContain(
-        EXPECTED_YEAR,
-      );
-    });
-
-    it('"Month" returns abbreviated month', () => {
-      expect(
-        formatChartTimestamp(FIXED_TS_SECONDS, 'Month' as never),
-      ).toContain(EXPECTED_MONTH_SHORT);
-    });
-  });
-
-  describe('fallback', () => {
-    it('null tickMarkType without crosshair returns month/day + time', () => {
-      const result = formatChartTimestamp(FIXED_TS_SECONDS, null, false);
-      expect(result).toMatch(/\d{1,2}\/\d{1,2}/u);
-      expect(result).toMatch(/\d{2}:\d{2}/u);
-    });
-
-    it('unknown numeric tickMarkType falls through to default', () => {
-      const result = formatChartTimestamp(FIXED_TS_SECONDS, 99);
-      expect(result).toMatch(/\d{1,2}\/\d{1,2}/u);
-      expect(result).toMatch(/\d{2}:\d{2}/u);
-    });
+  it('produces different output for different locales (month name)', () => {
+    const enMonth = formatChartTimestamp(FIXED_TS_SECONDS, 1, false, 'en-US');
+    const deMonth = formatChartTimestamp(FIXED_TS_SECONDS, 1, false, 'de-DE');
+    expect(enMonth).not.toBe(deMonth);
   });
 });

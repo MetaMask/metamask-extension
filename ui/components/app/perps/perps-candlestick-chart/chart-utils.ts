@@ -156,71 +156,102 @@ export function formatVolumeDataForChart(
 //
 // Uses cached Intl.DateTimeFormat instances instead of Date.toLocaleString
 // to avoid silent fallback to Date.toString() in some extension contexts.
+//
+// Formatters are locale-aware: the locale is threaded from lightweight-charts'
+// tickMarkFormatter callback (which sources it from navigator.language) so
+// labels respect the user's language/region preferences.
 // ---------------------------------------------------------------------------
 
 const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-const dateStringFormatter = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-  timeZone: userTimezone,
-});
+type Formatters = {
+  dateString: Intl.DateTimeFormat;
+  monthDay: Intl.DateTimeFormat;
+  time24h: Intl.DateTimeFormat;
+  crosshair: Intl.DateTimeFormat;
+  year: Intl.DateTimeFormat;
+  monthShort: Intl.DateTimeFormat;
+  timeWithSeconds: Intl.DateTimeFormat;
+};
 
-const monthDayFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'numeric',
-  day: 'numeric',
-  timeZone: userTimezone,
-});
+const formatterCache = new Map<string, Formatters>();
 
-const time24hFormatter = new Intl.DateTimeFormat('en-US', {
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: false,
-  timeZone: userTimezone,
-});
-
-const crosshairFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  day: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: false,
-  timeZone: userTimezone,
-});
-
-const yearFormatter = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  timeZone: userTimezone,
-});
-
-const monthShortFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  timeZone: userTimezone,
-});
-
-const timeWithSecondsFormatter = new Intl.DateTimeFormat('en-US', {
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit',
-  hour12: false,
-  timeZone: userTimezone,
-});
-
-function getDateString(date: Date): string {
-  return dateStringFormatter.format(date);
+function createFormatters(locale: string, timezone: string): Formatters {
+  return {
+    dateString: new Intl.DateTimeFormat(locale, {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: timezone,
+    }),
+    monthDay: new Intl.DateTimeFormat(locale, {
+      month: 'numeric',
+      day: 'numeric',
+      timeZone: timezone,
+    }),
+    time24h: new Intl.DateTimeFormat(locale, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: timezone,
+    }),
+    crosshair: new Intl.DateTimeFormat(locale, {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: timezone,
+    }),
+    year: new Intl.DateTimeFormat(locale, {
+      year: 'numeric',
+      timeZone: timezone,
+    }),
+    monthShort: new Intl.DateTimeFormat(locale, {
+      month: 'short',
+      timeZone: timezone,
+    }),
+    timeWithSeconds: new Intl.DateTimeFormat(locale, {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+      timeZone: timezone,
+    }),
+  };
 }
 
-function isToday(date: Date): boolean {
-  return getDateString(date) === getDateString(new Date());
+function getFormatters(locale: string): Formatters {
+  let formatters = formatterCache.get(locale);
+  if (!formatters) {
+    formatters = createFormatters(locale, userTimezone);
+    formatterCache.set(locale, formatters);
+  }
+  return formatters;
 }
 
-function formatMonthDay(date: Date): string {
-  return monthDayFormatter.format(date);
+/**
+ * Visible for testing – clears the per-locale formatter cache so tests
+ * that stub `navigator.language` start with a clean slate.
+ */
+export function clearFormatterCache(): void {
+  formatterCache.clear();
 }
 
-function formatTime24h(date: Date): string {
-  return time24hFormatter.format(date);
+function getDateString(date: Date, fmt: Formatters): string {
+  return fmt.dateString.format(date);
+}
+
+function isToday(date: Date, fmt: Formatters): boolean {
+  return getDateString(date, fmt) === getDateString(new Date(), fmt);
+}
+
+function formatMonthDay(date: Date, fmt: Formatters): string {
+  return fmt.monthDay.format(date);
+}
+
+function formatTime24h(date: Date, fmt: Formatters): string {
+  return fmt.time24h.format(date);
 }
 
 /**
@@ -244,17 +275,21 @@ type TickMarkType =
  * @param timeInSeconds - UTC timestamp in seconds (as stored by lightweight-charts)
  * @param tickMarkType - Lightweight-charts tick type; null for crosshair
  * @param isCrosshair - True when called from the crosshair time formatter
+ * @param locale - BCP 47 locale tag sourced from the lightweight-charts
+ * callback; falls back to `navigator.language` when omitted.
  * @returns Formatted time string
  */
 export function formatChartTimestamp(
   timeInSeconds: number,
   tickMarkType: TickMarkType | number | null,
   isCrosshair = false,
+  locale: string = navigator.language,
 ): string {
+  const fmt = getFormatters(locale);
   const date = new Date(timeInSeconds * 1000);
 
   if (isCrosshair) {
-    return crosshairFormatter.format(date);
+    return fmt.crosshair.format(date);
   }
 
   if (tickMarkType !== null && tickMarkType !== undefined) {
@@ -269,22 +304,22 @@ export function formatChartTimestamp(
 
     switch (resolved) {
       case 'Year':
-        return yearFormatter.format(date);
+        return fmt.year.format(date);
       case 'Month':
-        return monthShortFormatter.format(date);
+        return fmt.monthShort.format(date);
       case 'DayOfMonth':
-        return formatMonthDay(date);
+        return formatMonthDay(date, fmt);
       case 'Time':
-        if (!isToday(date)) {
-          return `${formatMonthDay(date)} ${formatTime24h(date)}`;
+        if (!isToday(date, fmt)) {
+          return `${formatMonthDay(date, fmt)} ${formatTime24h(date, fmt)}`;
         }
-        return formatTime24h(date);
+        return formatTime24h(date, fmt);
       case 'TimeWithSeconds':
-        return timeWithSecondsFormatter.format(date);
+        return fmt.timeWithSeconds.format(date);
       default:
         break;
     }
   }
 
-  return `${formatMonthDay(date)} ${formatTime24h(date)}`;
+  return `${formatMonthDay(date, fmt)} ${formatTime24h(date, fmt)}`;
 }

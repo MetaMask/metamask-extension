@@ -13,12 +13,14 @@ import {
   ISeriesApi,
   // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'lightweight-charts';
+import { useSelector } from 'react-redux';
 import { brandColor } from '@metamask/design-tokens';
 import { Box } from '@metamask/design-system-react';
 import type { CandleData, CandleStick } from '@metamask/perps-controller';
 import { PRICE_THRESHOLD } from '../../../../../shared/lib/perps-formatters';
 import { CandlePeriod, ZOOM_CONFIG } from '../constants/chartConfig';
 import { useTheme } from '../../../../hooks/useTheme';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
 import {
   formatCandleDataForChart,
   formatVolumeDataForChart,
@@ -158,6 +160,7 @@ const PerpsCandlestickChart = forwardRef<
   ) => {
     const theme = useTheme();
     const isDark = theme === 'dark';
+    const locale = useSelector(getIntlLocale);
 
     // Theme-aware colors matching mobile semantic tokens
     const upColor = isDark ? brandColor.lime100 : brandColor.lime500;
@@ -281,8 +284,9 @@ const PerpsCandlestickChart = forwardRef<
           },
         },
         localization: {
+          locale,
           timeFormatter: (time: number) =>
-            formatChartTimestamp(time, null, true),
+            formatChartTimestamp(time, null, true, locale),
         },
         grid: {
           vertLines: { color: gridColor },
@@ -309,8 +313,11 @@ const PerpsCandlestickChart = forwardRef<
           timeVisible: true,
           secondsVisible: false,
           borderColor: 'transparent',
-          tickMarkFormatter: (time: number, tickMarkType: number) =>
-            formatChartTimestamp(time, tickMarkType, false),
+          tickMarkFormatter: (
+            time: number,
+            tickMarkType: number,
+            chartLocale: string,
+          ) => formatChartTimestamp(time, tickMarkType, false, chartLocale),
         },
         rightPriceScale: {
           borderColor: 'transparent',
@@ -462,6 +469,7 @@ const PerpsCandlestickChart = forwardRef<
       textColor,
       gridColor,
       crosshairColor,
+      locale,
     ]);
 
     // Update chart data when candleData or selectedPeriod changes
