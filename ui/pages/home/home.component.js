@@ -249,6 +249,7 @@ export default class Home extends PureComponent {
     const {
       lastVisitedPerpsRoute,
       pendingRedirectRoute,
+      envType,
       setRedirectAfterDefaultPage,
       clearLastVisitedPerpsRoute,
     } = this.props;
@@ -275,15 +276,18 @@ export default class Home extends PureComponent {
     // unset marker, so the real resume path still fires.
     // `pendingRedirectRoute` is a higher-priority cross-session redirect
     // (e.g. a background-initiated deeplink); skip the perps resume when
-    // one is queued. Always clear the persisted entry afterwards so a
-    // later home mount cannot replay it.
+    // one will actually fire in this environment. Mirror the
+    // `checkPendingRedirectRoute` env applicability check so an
+    // environment-mismatched pending entry (still non-null because the
+    // clear is async) does not suppress the perps resume. Always clear
+    // the persisted entry afterwards so a later home mount cannot replay
+    // it.
+    const pendingApplies =
+      Boolean(pendingRedirectRoute) &&
+      (!pendingRedirectRoute.environmentType ||
+        pendingRedirectRoute.environmentType === envType);
     const justLeftPerpsInApp = wasPerpsUnmountedInAppRecently(1500);
-    if (
-      !pendingRedirectRoute &&
-      !justLeftPerpsInApp &&
-      isFresh &&
-      isPerpsPath
-    ) {
+    if (!pendingApplies && !justLeftPerpsInApp && isFresh && isPerpsPath) {
       setRedirectAfterDefaultPage({ path });
     }
 
