@@ -291,4 +291,20 @@ describe('formatChartTimestamp', () => {
     const deMonth = formatChartTimestamp(FIXED_TS_SECONDS, 1, false, 'de-DE');
     expect(enMonth).not.toBe(deMonth);
   });
+
+  it('patches bare-numeric month in Czech crosshair to abbreviated name', () => {
+    const csMonthName = new Intl.DateTimeFormat('cs', {
+      month: 'short',
+    }).format(FIXED_DATE);
+    const crosshair = formatChartTimestamp(FIXED_TS_SECONDS, null, true, 'cs');
+    expect(crosshair).toContain(csMonthName);
+  });
+
+  it('patches bare-numeric month in Czech DayOfMonth to abbreviated name', () => {
+    const csMonthName = new Intl.DateTimeFormat('cs', {
+      month: 'short',
+    }).format(FIXED_DATE);
+    const dayOfMonth = formatChartTimestamp(FIXED_TS_SECONDS, 2, false, 'cs');
+    expect(dayOfMonth).toContain(csMonthName);
+  });
 });

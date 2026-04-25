@@ -246,8 +246,53 @@ function isToday(date: Date, fmt: Formatters): boolean {
   return getDateString(date, fmt) === getDateString(new Date(), fmt);
 }
 
+/**
+ * Patch a formatted date string so that a bare-numeric month part is replaced
+ * with the standalone abbreviated month name.
+ *
+ * Some locales (notably Czech) have ICU data that downgrades `month: 'short'`
+ * back to a bare number when combined with other fields in a single
+ * DateTimeFormat.  We detect this via `formatToParts` and substitute the
+ * standalone short month name while preserving the locale-native ordering.
+ *
+ * @param formatter - The combined DateTimeFormat instance
+ * @param date - The date to format
+ * @param monthName - Standalone short month name from the monthShort formatter
+ * @returns The formatted string with month name patched in when needed
+ */
+function formatWithMonthPatch(
+  formatter: Intl.DateTimeFormat,
+  date: Date,
+  monthName: string,
+): string {
+  const parts = formatter.formatToParts(date);
+
+  const needsPatch = parts.some(
+    (p) =>
+      p.type === 'month' &&
+      /^\d+$/u.test(p.value) &&
+      !monthName.startsWith(p.value),
+  );
+
+  if (!needsPatch) {
+    return formatter.format(date);
+  }
+
+  return parts
+    .map((p) =>
+      p.type === 'month' && /^\d+$/u.test(p.value) ? monthName : p.value,
+    )
+    .join('');
+}
+
+/**
+ * Format a date as abbreviated month + day (e.g. "Apr 25", "25. dub.").
+ *
+ * @param date - The date to format
+ * @param fmt - Cached locale-specific formatters
+ */
 function formatMonthDay(date: Date, fmt: Formatters): string {
-  return fmt.monthDay.format(date);
+  return formatWithMonthPatch(fmt.monthDay, date, fmt.monthShort.format(date));
 }
 
 function formatTime24h(date: Date, fmt: Formatters): string {
@@ -289,7 +334,11 @@ export function formatChartTimestamp(
   const date = new Date(timeInSeconds * 1000);
 
   if (isCrosshair) {
-    return fmt.crosshair.format(date);
+    return formatWithMonthPatch(
+      fmt.crosshair,
+      date,
+      fmt.monthShort.format(date),
+    );
   }
 
   if (tickMarkType !== null && tickMarkType !== undefined) {
