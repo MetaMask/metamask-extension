@@ -7459,9 +7459,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "@metamask/perps-controller@npm:3.2.0"
+"@metamask/perps-controller@npm:^3.0.0":
+  version: 3.1.1
+  resolution: "@metamask/perps-controller@npm:3.1.1"
   dependencies:
     "@metamask/abi-utils": "npm:^2.0.3"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -7476,7 +7476,7 @@ __metadata:
   dependenciesMeta:
     "@myx-trade/sdk":
       optional: true
-  checksum: 10/352ae09ea187b5b03e610420e713cfc74b8291ea2c0a5806a59b0be8d1ba056a9000099c5705a79c55911507f3bcb235980c9171c1f77b053dc9561eab8581a3
+  checksum: 10/685208f69c92e953163e686d2d03d4f1ebfdfdfdfd6e166a37012c409bffc9b41a2733103fd98556e5c213ca2b425deeecc610b00ea97527506a12daea19d4b0
   languageName: node
   linkType: hard
 
