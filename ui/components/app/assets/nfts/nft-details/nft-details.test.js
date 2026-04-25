@@ -8,10 +8,7 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers-na
 import mockState from '../../../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../../../shared/constants/copy';
-import {
-  removeAndIgnoreNft,
-  setRemoveNftMessage,
-} from '../../../../../store/actions';
+import { removeAndIgnoreNft } from '../../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import {
@@ -35,11 +32,21 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+const mockToastSuccess = jest.fn();
+const mockToastError = jest.fn();
+
+jest.mock('../../../../ui/toast/toast', () => ({
+  toast: {
+    success: (...args) => mockToastSuccess(...args),
+    error: (...args) => mockToastError(...args),
+  },
+  ToastContent: ({ title }) => title,
+}));
+
 jest.mock('../../../../../store/actions.ts', () => ({
   ...jest.requireActual('../../../../../store/actions.ts'),
   checkAndUpdateSingleNftOwnershipStatus: jest.fn().mockReturnValue(jest.fn()),
   removeAndIgnoreNft: jest.fn().mockReturnValue(jest.fn()),
-  setRemoveNftMessage: jest.fn().mockReturnValue(jest.fn()),
 }));
 
 describe('NFT Details', () => {
@@ -57,6 +64,8 @@ describe('NFT Details', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockToastSuccess.mockClear();
+    mockToastError.mockClear();
   });
 
   it('should match minimal props and state snapshot', async () => {
@@ -106,11 +115,13 @@ describe('NFT Details', () => {
       nfts[5].tokenId,
       'testNetworkConfigurationId',
     );
-    expect(setRemoveNftMessage).toHaveBeenCalledWith('success');
-    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockToastSuccess).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
   });
 
-  it(`should call setRemoveNftMessage with error when removeAndIgnoreNft fails and route to '/'`, async () => {
+  it(`should show error toast when removeAndIgnoreNft fails and route to '/'`, async () => {
     const { queryByTestId } = renderWithProvider(
       <NftDetails {...props} />,
       mockStore,
@@ -130,8 +141,10 @@ describe('NFT Details', () => {
       nfts[5].tokenId,
       'testNetworkConfigurationId',
     );
-    expect(setRemoveNftMessage).toHaveBeenCalledWith('error');
-    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockToastError).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
   });
 
   it('should copy nft address', async () => {

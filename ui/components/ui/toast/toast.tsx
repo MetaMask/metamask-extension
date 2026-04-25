@@ -24,7 +24,7 @@ const statusMap = {
 export function Toaster() {
   const t = useI18nContext();
 
-  if (!isInteractiveUI() || process.env.IN_TEST) {
+  if (!isInteractiveUI()) {
     return null;
   }
 

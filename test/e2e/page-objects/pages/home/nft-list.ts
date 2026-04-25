@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 
 class NftListPage {
   private readonly driver: Driver;
@@ -27,14 +28,17 @@ class NftListPage {
 
   private readonly noNftInfo = '[data-testid="nft-tab-empty-state"]';
 
+  // Toast body can split text across nodes; match on normalized subtree text.
   private readonly successImportNftMessage = {
-    text: 'NFT was successfully added!',
-    tag: 'h6',
+    xpath: `//p[contains(normalize-space(.), ${quoteXPathText(
+      'NFT was successfully added!',
+    )})]`,
   };
 
   private readonly successRemoveNftMessage = {
-    text: 'NFT was successfully removed!',
-    tag: 'h6',
+    xpath: `//p[contains(normalize-space(.), ${quoteXPathText(
+      'NFT was successfully removed!',
+    )})]`,
   };
 
   private readonly nftListItem = '[data-testid="nft-wrapper"]';
