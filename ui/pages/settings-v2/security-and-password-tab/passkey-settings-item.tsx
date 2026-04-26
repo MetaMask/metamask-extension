@@ -8,7 +8,7 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
-import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
+import { TextButton, TextColor } from '@metamask/design-system-react';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
@@ -84,10 +84,9 @@ const PasskeySettingsItem = () => {
       await protectVaultKeyWithPasskey(registrationResponse);
       await forceUpdateMetamaskState(dispatch);
 
-      toast.success(
-        <ToastContent title={t('passkeySettingsToastTurnedOn')} />,
-        { duration: passkeySettingsToastDurationMs },
-      );
+      toast.success(<ToastContent title={t('passkeyTurnedOn')} />, {
+        duration: passkeySettingsToastDurationMs,
+      });
 
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
@@ -133,10 +132,9 @@ const PasskeySettingsItem = () => {
       await removePasskeyWithPasskeyVerification(authenticationResponse);
       await forceUpdateMetamaskState(dispatch);
 
-      toast.success(
-        <ToastContent title={t('passkeySettingsToastTurnedOff')} />,
-        { duration: passkeySettingsToastDurationMs },
-      );
+      toast.success(<ToastContent title={t('passkeyTurnedOff')} />, {
+        duration: passkeySettingsToastDurationMs,
+      });
 
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
@@ -199,19 +197,18 @@ const PasskeySettingsItem = () => {
   const description = useMemo(() => {
     const body = (
       <>
-        <span>{t('biometricsToggleDescription')}</span>
+        <span>{t('passkeySettingDescription')}</span>
         {isPasskeyOperationPending &&
         getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL ? (
-          <button
+          <TextButton
             type="button"
             data-testid="security-passkey-sidepanel-continue-full-screen"
-            className="mt-2 w-full cursor-pointer border-0 bg-transparent p-0 text-left outline-none hover:bg-transparent hover:shadow-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-primary-default focus-visible:ring-offset-2"
+            color={TextColor.PrimaryDefault}
+            className="mt-2 w-full"
             onClick={openSecurityAndPasswordInFullScreen}
           >
-            <Text variant={TextVariant.BodySm} color={TextColor.PrimaryDefault}>
-              {t('passkeyTroubleContinueFullScreen')}
-            </Text>
-          </button>
+            {t('passkeyTroubleshoot')}
+          </TextButton>
         ) : null}
       </>
     );

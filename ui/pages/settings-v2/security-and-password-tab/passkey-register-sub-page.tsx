@@ -68,10 +68,9 @@ export default function PasskeyRegisterSubPage() {
       const registrationResponse = await startPasskeyRegistration(options);
       await protectVaultKeyWithPasskey(registrationResponse);
       await forceUpdateMetamaskState(dispatch);
-      toast.success(
-        <ToastContent title={t('passkeySettingsToastTurnedOn')} />,
-        { duration: passkeySettingsToastDurationMs },
-      );
+      toast.success(<ToastContent title={t('passkeyTurnedOn')} />, {
+        duration: passkeySettingsToastDurationMs,
+      });
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,

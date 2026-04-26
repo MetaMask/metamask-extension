@@ -79,7 +79,7 @@ export const THIRD_PARTY_API_ITEMS = {
 export const SECURITY_ITEMS = {
   'manage-wallet-recovery': 'manageWalletRecovery',
   password: 'password',
-  passkey: 'unlockWithBiometrics',
+  passkey: 'unlockWithPasskey',
   'auto-lock': 'autoLock',
   'phishing-detection': 'usePhishingDetection',
 } as const;

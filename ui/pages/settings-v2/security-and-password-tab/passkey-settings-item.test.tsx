@@ -36,7 +36,7 @@ describe('PasskeySettingsItem', () => {
     renderWithProvider(<PasskeySettingsItem />, mockStore);
 
     expect(
-      screen.getByText(messages.unlockWithBiometrics.message),
+      screen.getByText(messages.unlockWithPasskey.message),
     ).toBeInTheDocument();
     expect(
       screen.getByTestId('security-passkey-settings-toggle'),
