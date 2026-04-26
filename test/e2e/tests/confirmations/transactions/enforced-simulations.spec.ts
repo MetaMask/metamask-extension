@@ -31,6 +31,8 @@ const USDC_TRANSFER_AMOUNT_HEX = `${'0'.repeat(58)}0f4240`;
 const USDC_SENDER_PRE_BALANCE_HEX = `${'0'.repeat(56)}3b9aca00`;
 const USDC_SENDER_POST_BALANCE_HEX = `${'0'.repeat(56)}3b8b87c0`;
 const USDC_TRANSFER_CALLDATA = `${ERC20_TRANSFER_SELECTOR}000000000000000000000000${RECIPIENT_NO_0X}${USDC_TRANSFER_AMOUNT_HEX}`;
+const USDC_LARGE_TRANSFER_AMOUNT_HEX = `${'0'.repeat(58)}1e8480`;
+const USDC_LARGE_TRANSFER_CALLDATA = `${ERC20_TRANSFER_SELECTOR}000000000000000000000000${RECIPIENT_NO_0X}${USDC_LARGE_TRANSFER_AMOUNT_HEX}`;
 
 const TRANSACTION_MOCK = {
   data: USDC_TRANSFER_CALLDATA,
@@ -297,6 +299,7 @@ async function confirmAndWaitForReceipt(
   driver: Driver,
   confirmation: TransactionConfirmation,
   publicClient: AnvilPublicClient,
+  expectStatus: 'success' | 'reverted' = 'success',
 ) {
   await confirmation.clickFooterConfirmButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
@@ -333,7 +336,7 @@ async function confirmAndWaitForReceipt(
     timeout: 15_000,
   });
 
-  if (receipt.status !== 'success') {
+  if (receipt.status !== expectStatus) {
     let revertInfo = '';
     try {
       const trace = await publicClient.request({
@@ -348,13 +351,29 @@ async function confirmAndWaitForReceipt(
       revertInfo = 'trace unavailable';
     }
     assert.fail(
-      `Expected on-chain tx to succeed, got status=${receipt.status} (hash=${txHash})\nTrace: ${revertInfo}`,
+      `Expected on-chain tx status=${expectStatus}, got status=${receipt.status} (hash=${txHash})\nTrace: ${revertInfo}`,
     );
   }
 
   const tx = await publicClient.getTransaction({ hash: txHash });
 
-  return { receipt, tx };
+  let revertReason: string | undefined;
+  if (receipt.status === 'reverted') {
+    try {
+      const trace = (await publicClient.request({
+        method: 'debug_traceTransaction' as 'eth_call',
+        params: [
+          txHash,
+          { tracer: 'callTracer', tracerConfig: { withLog: true } },
+        ] as unknown as [],
+      })) as { revertReason?: string };
+      revertReason = trace?.revertReason;
+    } catch {
+      revertReason = undefined;
+    }
+  }
+
+  return { receipt, tx, revertReason };
 }
 
 describe('Enforced Simulations', function (this: Suite) {
@@ -676,6 +695,70 @@ describe('Enforced Simulations', function (this: Suite) {
           tx.value,
           0n,
           `Expected tx.value to be 0, got ${tx.value}`,
+        );
+      },
+    );
+  });
+
+  it('reverts on-chain when the broadcast transaction transfers more than the simulated amount', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+          .withSmartTransactionsOptedOut()
+          .build(),
+        localNodeOptions: {
+          chainId: 1,
+          hardfork: 'Prague',
+          loadState: ENFORCED_SIMULATIONS_LOAD_STATE,
+        },
+        testSpecificMock: setupMocks,
+        title: this.test?.fullTitle(),
+      },
+      async ({
+        driver,
+        localNodes,
+      }: {
+        driver: Driver;
+        localNodes: Anvil[];
+      }) => {
+        const { publicClient } = localNodes[0].getProvider();
+
+        await login(driver, { expectedBalance: '10' });
+
+        await createDappTransaction(driver, {
+          ...TRANSACTION_MOCK,
+          data: USDC_LARGE_TRANSFER_CALLDATA,
+        });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.checkPageIsLoaded();
+
+        await driver.waitForSelector(
+          '[data-testid="enforced-simulations-row"]',
+        );
+
+        await driver.delay(2000);
+
+        const { receipt, revertReason } = await confirmAndWaitForReceipt(
+          driver,
+          confirmation,
+          publicClient,
+          'reverted',
+        );
+
+        assert.strictEqual(
+          receipt.status,
+          'reverted',
+          `Expected on-chain tx to revert, got status=${receipt.status}`,
+        );
+
+        assert.ok(
+          revertReason?.includes('ERC20BalanceChangeEnforcer'),
+          `Expected revert from ERC20BalanceChangeEnforcer, got ${revertReason}`,
         );
       },
     );
