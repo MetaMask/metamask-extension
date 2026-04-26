@@ -1,6 +1,4 @@
-import { strict as assert } from 'assert';
-import { MockedEndpoint } from 'mockttp';
-import { TokenFeatureType } from '@metamask/bridge-controller';
+import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -9,6 +7,7 @@ import {
   getBridgeFixtures,
   getInsufficientFundsFixtures,
   getQuoteNegativeCasesFixtures,
+  mockTokensWithSecurityData,
 } from '../bridge/bridge-test-utils';
 import {
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
@@ -16,25 +15,45 @@ import {
 } from '../bridge/constants';
 import { checkNotification } from './shared';
 
+const MUSD_MALICIOUS_SECURITY_DATA = {
+  type: 'Malicious',
+  metadata: {
+    features: [
+      {
+        featureId: 'HONEYPOT',
+        type: 'Malicious',
+        description: 'Honeypot risk',
+      },
+    ],
+  },
+};
+
 describe('Swaps - notifications', function () {
   it('shows token risk warning banner for malicious destination token', async function () {
+    const fixtures = getBridgeFixtures({
+      title: this.test?.fullTitle(),
+      featureFlags: {
+        ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        refreshRate: 30000,
+      },
+    });
+    const originalTestSpecificMock = fixtures.testSpecificMock;
+
     await withFixtures(
-      getBridgeFixtures({
-        title: this.test?.fullTitle(),
-        featureFlags: {
-          ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-          refreshRate: 30000,
+      {
+        ...fixtures,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          const baseMocks = originalTestSpecificMock
+            ? await originalTestSpecificMock(mockServer)
+            : [];
+          await mockTokensWithSecurityData(
+            mockServer,
+            MUSD_MALICIOUS_SECURITY_DATA,
+          );
+          return baseMocks;
         },
-        tokenWarnings: [
-          {
-            type: TokenFeatureType.MALICIOUS,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            feature_id: 'HONEYPOT',
-            description: 'Malicious token feature from quote stream',
-          },
-        ],
-      }),
-      async ({ driver, mockedEndpoint }) => {
+      },
+      async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
@@ -45,22 +64,7 @@ describe('Swaps - notifications', function () {
         });
         await bridgeQuotePage.waitForQuote();
 
-        const allSeenRequests = (
-          await Promise.all(
-            mockedEndpoint.map((endpoint: MockedEndpoint) =>
-              endpoint.getSeenRequests(),
-            ),
-          )
-        ).flat();
-        const tokenScanRequests = allSeenRequests.filter((request: Request) =>
-          request.url.includes('security-alerts.api.cx.metamask.io/token/scan'),
-        );
-        assert.ok(
-          tokenScanRequests.length === 0,
-          'Security alerts token/scan endpoint was called',
-        );
-
-        // Banner title uses bridgeTokenIsMaliciousBanner ("$1 is a malicious token.")
+        // Banner title is bridgeTokenIsMaliciousBanner ("$1 is a malicious token.")
         await bridgeQuotePage.checkTokenRiskWarningIsDisplayed(
           'malicious token',
         );

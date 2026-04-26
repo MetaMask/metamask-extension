@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { TokenFeatureType } from '@metamask/bridge-controller';
+import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import {
   bridgeTransaction,
@@ -11,7 +11,10 @@ import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
-import { getBridgeFixtures } from './bridge-test-utils';
+import {
+  getBridgeFixtures,
+  mockTokensWithSecurityData,
+} from './bridge-test-utils';
 
 describe('Swap tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -162,22 +165,35 @@ describe('Swap tests', function (this: Suite) {
   });
 
   it('submits swap with token alert', async function () {
+    const MUSD_SECURITY_DATA = {
+      type: 'Malicious',
+      metadata: {
+        features: [
+          {
+            featureId: 'HONEYPOT',
+            type: 'Malicious',
+            description: 'Honeypot risk',
+          },
+        ],
+      },
+    };
+    const fixtures = getBridgeFixtures({
+      title: this.test?.fullTitle(),
+      featureFlags: {
+        ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        refreshRate: 30000,
+      },
+    });
+    const originalMock = fixtures.testSpecificMock;
+
     await withFixtures(
       {
-        ...getBridgeFixtures({
-          title: this.test?.fullTitle(),
-          featureFlags: {
-            ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-            refreshRate: 30000,
-          },
-          tokenWarnings: [
-            {
-              type: TokenFeatureType.MALICIOUS,
-              feature_id: 'HONEYPOT',
-              description: 'Token alert 1',
-            },
-          ],
-        }),
+        ...fixtures,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          const baseMocks = originalMock ? await originalMock(mockServer) : [];
+          await mockTokensWithSecurityData(mockServer, MUSD_SECURITY_DATA);
+          return baseMocks;
+        },
       },
       async ({ driver }) => {
         await login(driver);
@@ -192,10 +208,12 @@ describe('Swap tests', function (this: Suite) {
         });
         await bridgePage.waitForQuote();
 
+        // 1 banner: token-security
         await bridgePage.submitQuoteWithWarning(1);
         await bridgePage.rejectModal();
         console.log('Rejected token alert modal');
 
+        // Re-submit and approve the single confirmation alert (token-security) → tx submits
         await bridgePage.submitQuoteWithWarning();
         await bridgePage.approveModal();
         console.log('Approved token alert modal and submitted swap');
@@ -218,44 +236,52 @@ describe('Swap tests', function (this: Suite) {
   });
 
   it('submits swap with price impact error and multiple token alerts', async function () {
+    const MUSD_SECURITY_DATA = {
+      type: 'Malicious',
+      metadata: {
+        features: [
+          {
+            featureId: 'HONEYPOT',
+            type: 'Malicious',
+            description: 'Honeypot risk',
+          },
+          {
+            featureId: 'AIRDROP_PATTERN',
+            type: 'Warning',
+            description: 'Suspicious airdrop',
+          },
+          {
+            featureId: 'UNKNOWN_TOKEN_ALERT',
+            type: 'Malicious',
+            description: 'Unknown alert',
+          },
+        ],
+      },
+    };
+    const fixtures = getBridgeFixtures({
+      title: this.test?.fullTitle(),
+      featureFlags: {
+        ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        refreshRate: 30000,
+        priceImpactThreshold: {
+          ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED.priceImpactThreshold,
+          gasless: 0.01,
+          normal: 0.01,
+          warning: 0.25,
+          error: 0.0001,
+        },
+      },
+    });
+    const originalMock = fixtures.testSpecificMock;
+
     await withFixtures(
       {
-        ...getBridgeFixtures({
-          title: this.test?.fullTitle(),
-          featureFlags: {
-            ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-            refreshRate: 30000,
-            priceImpactThreshold: {
-              ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED.priceImpactThreshold,
-              gasless: 0.01,
-              normal: 0.01,
-              warning: 0.25,
-              error: 0.0001,
-            },
-          },
-          tokenWarnings: [
-            {
-              type: TokenFeatureType.MALICIOUS,
-              feature_id: 'HONEYPOT',
-              description: 'Token alert 1',
-            },
-            {
-              type: TokenFeatureType.WARNING,
-              feature_id: 'AIRDROP_PATTERN',
-              description: 'Token alert 2',
-            },
-            {
-              type: TokenFeatureType.MALICIOUS,
-              feature_id: 'UNKNOWN_TOKEN_ALERT',
-              description: 'Token alert 3',
-            },
-            {
-              type: TokenFeatureType.INFO,
-              feature_id: 'CONCENTRATED_SUPPLY_DISTRIBUTION',
-              description: 'Token alert 4',
-            },
-          ],
-        }),
+        ...fixtures,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          const baseMocks = originalMock ? await originalMock(mockServer) : [];
+          await mockTokensWithSecurityData(mockServer, MUSD_SECURITY_DATA);
+          return baseMocks;
+        },
       },
       async ({ driver }) => {
         await login(driver);
@@ -272,33 +298,22 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.waitForQuote();
         await bridgePage.checkPriceImpactModalIsDisplayed();
 
-        await bridgePage.submitQuoteWithWarning(3);
-        await bridgePage.rejectModal();
-        console.log('Rejected first token alert modal');
-
-        await bridgePage.submitQuoteWithWarning();
-        await bridgePage.approveModal();
-        await bridgePage.rejectModal();
-        console.log('Rejected second token alert modal');
-
-        await bridgePage.submitQuoteWithWarning();
-        await bridgePage.approveModal();
-        await bridgePage.approveModal();
-        await bridgePage.approveModal();
-        await bridgePage.rejectModal();
-        console.log('Rejected price impact modal');
-
-        await bridgePage.dismissTokenAlert();
-        console.log('Dismissed token alert modal');
-
+        // 2 banners: token-security + price-impact
         await bridgePage.submitQuoteWithWarning(2);
-        console.log('Verified that 2 token alerts are still displayed');
+        await bridgePage.rejectModal();
+        console.log('Rejected confirmation modal on first alert');
+
+        // Re-submit, approve token-security alert, then reject on price-impact
+        await bridgePage.submitQuoteWithWarning();
+        await bridgePage.approveModal();
+        await bridgePage.rejectModal();
+        console.log('Rejected confirmation modal on second alert');
+
+        // Re-submit and approve both confirmation alerts (token-security + price-impact) → tx submits
+        await bridgePage.submitQuoteWithWarning();
         await bridgePage.approveModal();
         await bridgePage.approveModal();
-        await bridgePage.approveModal();
-        console.log('Approved token alert modals');
-        await bridgePage.approveModal();
-        console.log('Approved price impact modal and submitted swap');
+        console.log('Approved all confirmation alerts and submitted swap');
 
         await bridgePage.submitQuoteAndDismiss();
         await verifySubmittedSwapTransaction({
@@ -318,29 +333,42 @@ describe('Swap tests', function (this: Suite) {
   });
 
   it('submits swap with price impact error', async function () {
+    const MUSD_SECURITY_DATA = {
+      type: 'Malicious',
+      metadata: {
+        features: [
+          {
+            featureId: 'HONEYPOT',
+            type: 'Malicious',
+            description: 'Honeypot risk',
+          },
+        ],
+      },
+    };
+    const fixtures = getBridgeFixtures({
+      title: this.test?.fullTitle(),
+      featureFlags: {
+        ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        refreshRate: 30000,
+        priceImpactThreshold: {
+          ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED.priceImpactThreshold,
+          gasless: 0.01,
+          normal: 0.01,
+          warning: 0.25,
+          error: 0.0001,
+        },
+      },
+    });
+    const originalMock = fixtures.testSpecificMock;
+
     await withFixtures(
       {
-        ...getBridgeFixtures({
-          title: this.test?.fullTitle(),
-          featureFlags: {
-            ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-            refreshRate: 30000,
-            priceImpactThreshold: {
-              ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED.priceImpactThreshold,
-              gasless: 0.01,
-              normal: 0.01,
-              warning: 0.25,
-              error: 0.0001,
-            },
-          },
-          tokenWarnings: [
-            {
-              type: TokenFeatureType.MALICIOUS,
-              feature_id: 'HONEYPOT',
-              description: 'Token alert 1',
-            },
-          ],
-        }),
+        ...fixtures,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          const baseMocks = originalMock ? await originalMock(mockServer) : [];
+          await mockTokensWithSecurityData(mockServer, MUSD_SECURITY_DATA);
+          return baseMocks;
+        },
       },
       async ({ driver }) => {
         await login(driver);
@@ -356,13 +384,16 @@ describe('Swap tests', function (this: Suite) {
         });
         await bridgePage.waitForQuote();
 
+        // 2 confirmation alerts: token-security + price-impact
         await bridgePage.submitQuoteWithWarning();
         await bridgePage.rejectModal();
-        console.log('Rejected price impact modal');
+        console.log('Rejected confirmation modal');
 
+        // Approve both alerts → tx submits
         await bridgePage.submitQuoteWithWarning();
         await bridgePage.approveModal();
-        console.log('Approved price impact modal and submitted swap');
+        await bridgePage.approveModal();
+        console.log('Approved all alerts and submitted swap');
 
         await verifySubmittedSwapTransaction({
           driver,

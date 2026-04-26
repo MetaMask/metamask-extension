@@ -94,7 +94,8 @@ class BridgeQuotePage {
 
   private closeButton = '[aria-label="Close"]';
 
-  private tokenWarningAlert = '[data-testid="bridge-token-warning-alert"]';
+  private tokenWarningAlert =
+    '[data-testid="bridge-banner-alerts"] > [data-testid^="bridge-"]';
 
   private priceImpactQuoteCardButton =
     '[data-testid="price-impact-warning-button"]';
