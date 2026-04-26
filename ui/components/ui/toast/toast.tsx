@@ -50,6 +50,7 @@ export function Toaster() {
           {({ message }) => (
             <>
               <StatusIcon
+                className="shrink-0"
                 state={
                   statusMap[item.type as keyof typeof statusMap] ??
                   statusMap.loading
