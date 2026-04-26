@@ -46,12 +46,17 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
   const {
     metamask: { isUnlocked },
   } = state;
+  const isSocialLoginFlow = getIsSocialLoginFlow(state);
+  const isOnboardingCompleted = getCompletedOnboarding(state);
   return {
     isUnlocked,
-    isSocialLoginFlow: getIsSocialLoginFlow(state),
-    isOnboardingCompleted: getCompletedOnboarding(state),
-    isPasskeyRegistered: getIsPasskeyRegistered(state),
-    isPasskeyFeatureAvailable: getIsPasskeyFeatureAvailable(state),
+    isSocialLoginFlow,
+    isOnboardingCompleted,
+    isPasskeyActive:
+      getIsPasskeyFeatureAvailable(state) &&
+      getIsPasskeyRegistered(state) &&
+      !isSocialLoginFlow &&
+      isOnboardingCompleted,
     firstTimeFlowType: getFirstTimeFlowType(state),
     isWalletResetInProgress: getIsWalletResetInProgress(state),
     passkeyAutoUnlockSuppressed: getPasskeyAutoUnlockSuppressed(state),
@@ -84,6 +89,7 @@ const mergeProps = (
   const {
     markPasswordForgotten: propsMarkPasswordForgotten,
     tryUnlockMetamask: propsTryUnlockMetamask,
+    tryUnlockMetamaskWithPasskey: propsTryUnlockMetamaskWithPasskey,
     ...restDispatchProps
   } = dispatchProps;
   const {
@@ -104,8 +110,7 @@ const mergeProps = (
     }
   };
 
-  const onSubmit = async (password: string) => {
-    await propsTryUnlockMetamask(password);
+  const navigateAfterUnlock = () => {
     // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
     let redirectTo = DEFAULT_ROUTE;
     const fromLocation = location.state?.from;
@@ -116,12 +121,25 @@ const mergeProps = (
     navigate(redirectTo);
   };
 
+  const onSubmit = async (password: string) => {
+    await propsTryUnlockMetamask(password);
+    navigateAfterUnlock();
+  };
+
+  const onUnlockWithPasskey = async (
+    authenticationResponse: PasskeyAuthenticationResponse,
+  ) => {
+    await propsTryUnlockMetamaskWithPasskey(authenticationResponse);
+    navigateAfterUnlock();
+  };
+
   return {
     ...stateProps,
     ...restDispatchProps,
     ...restOwnProps,
     onRestore: onImport,
     onSubmit: ownPropsSubmit || onSubmit,
+    onUnlockWithPasskey,
     navigate,
     location,
     isPopup,
