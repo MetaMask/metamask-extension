@@ -377,7 +377,7 @@ async function confirmAndWaitForReceipt(
 }
 
 describe('Enforced Simulations', function (this: Suite) {
-  it('wraps a confirmed transaction with redeemDelegations and caveats for native and ERC20 balance changes', async function () {
+  it('wraps the transaction so balance changes are enforced on-chain', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -455,7 +455,7 @@ describe('Enforced Simulations', function (this: Suite) {
     );
   });
 
-  it('does not wrap the transaction when the recipient is trusted', async function () {
+  it('does not enforce simulations when the recipient is trusted', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -524,7 +524,7 @@ describe('Enforced Simulations', function (this: Suite) {
     );
   });
 
-  it('auto-upgrades to type-4 (setCode) when account is not yet delegated', async function () {
+  it('upgrades the account so enforcement can run when it is not yet delegated', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -619,7 +619,7 @@ describe('Enforced Simulations', function (this: Suite) {
     );
   });
 
-  it('does not wrap the transaction when user disables enforcement', async function () {
+  it('does not enforce simulations when the user disables enforcement', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -700,7 +700,7 @@ describe('Enforced Simulations', function (this: Suite) {
     );
   });
 
-  it('reverts on-chain when the broadcast transaction transfers more than the simulated amount', async function () {
+  it('reverts on-chain when the actual balance change exceeds the simulation', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
