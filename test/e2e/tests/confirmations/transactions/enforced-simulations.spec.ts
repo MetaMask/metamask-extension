@@ -278,9 +278,6 @@ type AnvilPublicClient = ReturnType<Anvil['getProvider']>['publicClient'];
 const ENFORCED_SIMULATIONS_LOAD_STATE =
   './test/e2e/seeder/network-states/eip7702-state/withEnforcedSimulationContracts.json';
 
-const ENFORCED_SIMULATIONS_NO_DELEGATION_LOAD_STATE =
-  './test/e2e/seeder/network-states/eip7702-state/withEnforcedSimulationContractsNoDelegation.json';
-
 const BALANCE_OF_SELECTOR = '0x70a08231';
 
 async function getUsdcBalance(
@@ -520,7 +517,7 @@ describe('Enforced Simulations', function (this: Suite) {
         localNodeOptions: {
           chainId: 1,
           hardfork: 'Prague',
-          loadState: ENFORCED_SIMULATIONS_NO_DELEGATION_LOAD_STATE,
+          loadState: ENFORCED_SIMULATIONS_LOAD_STATE,
         },
         testSpecificMock: setupMocks,
         title: this.test?.fullTitle(),
@@ -532,7 +529,12 @@ describe('Enforced Simulations', function (this: Suite) {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        const { publicClient } = localNodes[0].getProvider();
+        const { publicClient, testClient } = localNodes[0].getProvider();
+
+        await testClient.setCode({
+          address: SENDER_ADDRESS_MOCK as `0x${string}`,
+          bytecode: '0x',
+        });
 
         const codeBefore = await publicClient.getCode({
           address: SENDER_ADDRESS_MOCK as `0x${string}`,
