@@ -220,7 +220,8 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         console.log('Approved token alert modal and submitted swap');
 
-        await bridgePage.submitQuoteAndDismiss();
+        // The confirmation modal already submitted the tx; just dismiss the status page
+        await bridgePage.dismissStatusPageIfPresent();
         await verifySubmittedSwapTransaction({
           driver,
           quote: {
@@ -318,7 +319,8 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         console.log('Approved all confirmation alerts and submitted swap');
 
-        await bridgePage.submitQuoteAndDismiss();
+        // The confirmation modal already submitted the tx; just dismiss the status page
+        await bridgePage.dismissStatusPageIfPresent();
         await verifySubmittedSwapTransaction({
           driver,
           quote: {
