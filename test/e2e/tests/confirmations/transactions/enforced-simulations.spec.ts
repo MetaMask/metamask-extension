@@ -2,6 +2,8 @@ import { strict as assert } from 'assert';
 import { DELEGATOR_CONTRACTS } from '@metamask/delegation-deployments';
 import { MockttpServer } from 'mockttp';
 import { Suite } from 'mocha';
+import { parseTransaction } from 'viem';
+import { Anvil } from '../../../seeder/anvil';
 import { Driver } from '../../../webdriver/driver';
 import { WINDOW_TITLES } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
@@ -34,25 +36,10 @@ const TRANSACTION_MOCK = {
   data: '0x',
   from: SENDER_ADDRESS_MOCK,
   gas: '0x5208',
-  maxFeePerGas: '0x456',
-  maxPriorityFeePerGas: '0x789',
+  maxFeePerGas: '0x2540BE400',
+  maxPriorityFeePerGas: '0x3B9ACA00',
   to: RECIPIENT_ADDRESS,
   value: '0x38d7ea4c68000',
-};
-
-const SIMULATION_REQUEST_MOCK = {
-  id: '0',
-  jsonrpc: '2.0',
-  method: 'infura_simulateTransactions',
-  params: [
-    {
-      transactions: [TRANSACTION_MOCK],
-      withCallTrace: true,
-      withLogs: true,
-      withGas: true,
-      withDefaultBlockOverrides: true,
-    },
-  ],
 };
 
 const SIMULATION_RESPONSE_MOCK = {
@@ -135,48 +122,10 @@ const SIMULATION_RESPONSE_MOCK = {
   id: '42',
 };
 
-const BALANCE_SANDWICH_REQUEST_MOCK = {
-  id: '1',
-  jsonrpc: '2.0',
-  method: 'infura_simulateTransactions',
-  params: [
-    {
-      transactions: [
-        {
-          from: SENDER_ADDRESS_MOCK,
-          to: DAI_ADDRESS,
-          data: `0x70a08231000000000000000000000000${SENDER_ADDRESS_NO_0X_MOCK}`,
-        },
-        {
-          from: SENDER_ADDRESS_MOCK,
-          to: USDC_ADDRESS,
-          data: `0x70a08231000000000000000000000000${SENDER_ADDRESS_NO_0X_MOCK}`,
-        },
-        TRANSACTION_MOCK,
-        {
-          from: SENDER_ADDRESS_MOCK,
-          to: DAI_ADDRESS,
-          data: `0x70a08231000000000000000000000000${SENDER_ADDRESS_NO_0X_MOCK}`,
-        },
-        {
-          from: SENDER_ADDRESS_MOCK,
-          to: USDC_ADDRESS,
-          data: `0x70a08231000000000000000000000000${SENDER_ADDRESS_NO_0X_MOCK}`,
-        },
-      ],
-      withGas: true,
-      withDefaultBlockOverrides: true,
-    },
-  ],
-};
-
 const DAI_PREV_BALANCE_HEX =
   '0000000000000000000000000000000000000000000000000000000000000000';
 const USDC_PREV_BALANCE_HEX =
   '0000000000000000000000000000000000000000000000000000000000f4240a';
-const USDC_NEW_BALANCE_HEX =
-  '0000000000000000000000000000000000000000000000000000000000000000';
-
 const BALANCE_SANDWICH_RESPONSE_MOCK = {
   jsonrpc: '2.0',
   result: {
@@ -258,6 +207,40 @@ async function mockTrustSignalsUntrusted(
   ];
 }
 
+async function mockTrustSignalsTrusted(
+  mockServer: MockttpServer,
+): Promise<MockedEndpoint[]> {
+  return [
+    await mockServer
+      .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/address/evm/scan`)
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: 'Trusted',
+          label: 'Known safe address',
+        },
+      })),
+  ];
+}
+
+async function mockTrustSignalsBenign(
+  mockServer: MockttpServer,
+): Promise<MockedEndpoint[]> {
+  return [
+    await mockServer
+      .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/address/evm/scan`)
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: 'Benign',
+          label: 'No known issues',
+        },
+      })),
+  ];
+}
+
 async function mockSimulationResponses(mockServer: MockttpServer) {
   await mockServer
     .forPost(TX_SENTINEL_URL)
@@ -309,6 +292,81 @@ async function setupMocks(
   return [...eip7702Mocks, ...trustSignalsMocks];
 }
 
+async function setupMocksTrustedRecipient(
+  mockServer: MockttpServer,
+): Promise<MockedEndpoint[]> {
+  const eip7702Mocks = await mockEip7702FeatureFlag(mockServer);
+  const trustSignalsMocks = await mockTrustSignalsTrusted(mockServer);
+  await mockSimulationResponses(mockServer);
+  await mockTransactionRelayNetworks(mockServer);
+  await mockSmartTransactionFeatureFlags(mockServer);
+  return [...eip7702Mocks, ...trustSignalsMocks];
+}
+
+async function setupMocksForDisableTest(
+  mockServer: MockttpServer,
+): Promise<MockedEndpoint[]> {
+  const eip7702Mocks = await mockEip7702FeatureFlag(mockServer);
+  const trustSignalsMocks = await mockTrustSignalsBenign(mockServer);
+  await mockSimulationResponses(mockServer);
+  await mockTransactionRelayNetworks(mockServer);
+  await mockSmartTransactionFeatureFlags(mockServer);
+  return [...eip7702Mocks, ...trustSignalsMocks];
+}
+
+const FAKE_TX_HASH =
+  '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
+
+async function mockSendRawTransaction(
+  mockServer: MockttpServer,
+  capturedRawTxs: string[],
+) {
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({ method: 'eth_sendRawTransaction' })
+    .always()
+    .thenCallback(async (req) => {
+      const body = (await req.body.getJson()) as {
+        params?: string[];
+        id?: number;
+      };
+
+      if (body.params?.[0]) {
+        capturedRawTxs.push(body.params[0]);
+      }
+
+      return {
+        statusCode: 200,
+        json: { jsonrpc: '2.0', id: body.id ?? 1, result: FAKE_TX_HASH },
+      };
+    });
+}
+
+async function confirmAndGetDecodedTransaction(
+  driver: Driver,
+  confirmation: TransactionConfirmation,
+  capturedRawTxs: string[],
+): Promise<ReturnType<typeof parseTransaction>> {
+  await confirmation.clickFooterConfirmButton();
+
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
+  for (let attempt = 0; attempt < 10; attempt++) {
+    if (capturedRawTxs.length > 0) {
+      break;
+    }
+    await driver.delay(1000);
+  }
+
+  if (capturedRawTxs.length === 0) {
+    assert.fail(
+      'No raw transaction captured from eth_sendRawTransaction within timeout',
+    );
+  }
+
+  return parseTransaction(capturedRawTxs[0] as `0x${string}`);
+}
+
 describe('Enforced Simulations', function (this: Suite) {
   it('wraps a confirmed transaction with redeemDelegations and caveats for native and ERC20 balance changes', async function () {
     await withFixtures(
@@ -326,8 +384,24 @@ describe('Enforced Simulations', function (this: Suite) {
         testSpecificMock: setupMocks,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver, { expectedBalance: '0' });
+      async ({
+        driver,
+        mockServer,
+        localNodes,
+      }: {
+        driver: Driver;
+        mockServer: MockttpServer;
+        localNodes: Anvil[];
+      }) => {
+        const capturedRawTxs: string[] = [];
+        await mockSendRawTransaction(mockServer, capturedRawTxs);
+
+        await localNodes[0].setAccountBalance(
+          SENDER_ADDRESS_MOCK as `0x${string}`,
+          '0xDE0B6B3A7640000',
+        );
+
+        await login(driver, { expectedBalance: '1' });
 
         await createDappTransaction(driver, TRANSACTION_MOCK);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -341,51 +415,31 @@ describe('Enforced Simulations', function (this: Suite) {
 
         await driver.delay(2000);
 
-        const wrappedTx = (await driver.executeScript(`
-          const state = await window.stateHooks.getCleanAppState();
-          const txs = state?.metamask?.transactions || [];
-          const tx = txs[txs.length - 1];
-          return {
-            to: tx?.txParams?.to,
-            data: tx?.txParams?.data,
-            value: tx?.txParams?.value,
-            originalTo: tx?.txParamsOriginal?.to,
-            containerTypes: tx?.containerTypes,
-          };
-        `)) as {
-          to: string;
-          data: string;
-          value: string;
-          originalTo: string;
-          containerTypes: string[];
-        };
-
-        assert.ok(wrappedTx, 'No transaction found in state');
-
-        assert.deepStrictEqual(
-          wrappedTx.containerTypes,
-          ['enforcedSimulations'],
-          `Expected containerTypes to include enforcedSimulations, got ${JSON.stringify(wrappedTx.containerTypes)}`,
+        const decoded = await confirmAndGetDecodedTransaction(
+          driver,
+          confirmation,
+          capturedRawTxs,
         );
 
         assert.strictEqual(
-          wrappedTx.to?.toLowerCase(),
+          decoded.to?.toLowerCase(),
           DELEGATION_MANAGER_ADDRESS,
-          `Expected tx.to to be DelegationManager (${DELEGATION_MANAGER_ADDRESS}), got ${wrappedTx.to}`,
-        );
-
-        assert.strictEqual(
-          wrappedTx.value,
-          '0x0',
-          `Expected tx.value to be 0x0 after wrapping, got ${wrappedTx.value}`,
+          `Expected tx.to to be DelegationManager (${DELEGATION_MANAGER_ADDRESS}), got ${decoded.to}`,
         );
 
         assert.ok(
-          wrappedTx.data.startsWith(REDEEM_DELEGATIONS_SELECTOR),
-          `Expected tx.data to start with redeemDelegations selector (${REDEEM_DELEGATIONS_SELECTOR}), got ${wrappedTx.data.slice(0, 10)}`,
+          decoded.value === 0n || decoded.value === undefined,
+          `Expected tx.value to be 0 after wrapping, got ${decoded.value}`,
         );
 
-        const dataLower = wrappedTx.data.toLowerCase();
+        const dataHex = decoded.data ?? '0x';
+
+        assert.ok(
+          dataHex.startsWith(REDEEM_DELEGATIONS_SELECTOR),
+          `Expected tx.data to start with redeemDelegations selector (${REDEEM_DELEGATIONS_SELECTOR}), got ${dataHex.slice(0, 10)}`,
+        );
+
+        const dataLower = dataHex.toLowerCase();
 
         assert.ok(
           dataLower.includes(NATIVE_BALANCE_CHANGE_ENFORCER),
@@ -398,19 +452,239 @@ describe('Enforced Simulations', function (this: Suite) {
         );
 
         assert.ok(
-          dataLower.includes(DAI_ADDRESS.slice(2)),
+          dataLower.includes(DAI_ADDRESS.slice(2).toLowerCase()),
           `Expected tx.data to reference DAI token address (${DAI_ADDRESS})`,
         );
 
         assert.ok(
-          dataLower.includes(USDC_ADDRESS.slice(2)),
+          dataLower.includes(USDC_ADDRESS.slice(2).toLowerCase()),
           `Expected tx.data to reference USDC token address (${USDC_ADDRESS})`,
+        );
+      },
+    );
+  });
+
+  it('does not wrap the transaction when the recipient is trusted', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+          .withSmartTransactionsOptedOut()
+          .build(),
+        localNodeOptions: {
+          loadState:
+            './test/e2e/seeder/network-states/eip7702-state/withUpgradedAccount.json',
+        },
+        testSpecificMock: setupMocksTrustedRecipient,
+        title: this.test?.fullTitle(),
+      },
+      async ({
+        driver,
+        mockServer,
+        localNodes,
+      }: {
+        driver: Driver;
+        mockServer: MockttpServer;
+        localNodes: Anvil[];
+      }) => {
+        const capturedRawTxs: string[] = [];
+        await mockSendRawTransaction(mockServer, capturedRawTxs);
+
+        await localNodes[0].setAccountBalance(
+          SENDER_ADDRESS_MOCK as `0x${string}`,
+          '0xDE0B6B3A7640000',
+        );
+
+        await login(driver, { expectedBalance: '1' });
+
+        await createDappTransaction(driver, TRANSACTION_MOCK);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.checkPageIsLoaded();
+
+        await driver.delay(2000);
+
+        const decoded = await confirmAndGetDecodedTransaction(
+          driver,
+          confirmation,
+          capturedRawTxs,
         );
 
         assert.strictEqual(
-          wrappedTx.originalTo?.toLowerCase(),
-          TRANSACTION_MOCK.to.toLowerCase(),
-          `Expected txParamsOriginal.to to be preserved (${TRANSACTION_MOCK.to}), got ${wrappedTx.originalTo}`,
+          decoded.to?.toLowerCase(),
+          RECIPIENT_ADDRESS.toLowerCase(),
+          `Expected tx.to to remain as original recipient (${RECIPIENT_ADDRESS}), got ${decoded.to}`,
+        );
+
+        assert.strictEqual(
+          decoded.data ?? '0x',
+          '0x',
+          `Expected tx.data to remain as original (0x), got ${(decoded.data ?? '0x').slice(0, 20)}`,
+        );
+
+        assert.strictEqual(
+          decoded.value,
+          BigInt(TRANSACTION_MOCK.value),
+          `Expected tx.value to remain as original (${TRANSACTION_MOCK.value}), got ${decoded.value}`,
+        );
+      },
+    );
+  });
+
+  it('auto-upgrades to type-4 (setCode) when account is not yet delegated', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+          .withSmartTransactionsOptedOut()
+          .build(),
+        localNodeOptions: {
+          chainId: 1,
+        },
+        testSpecificMock: setupMocks,
+        title: this.test?.fullTitle(),
+      },
+      async ({
+        driver,
+        mockServer,
+      }: {
+        driver: Driver;
+        mockServer: MockttpServer;
+      }) => {
+        const capturedRawTxs: string[] = [];
+        await mockSendRawTransaction(mockServer, capturedRawTxs);
+
+        await login(driver);
+
+        await createDappTransaction(driver, TRANSACTION_MOCK);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.checkPageIsLoaded();
+
+        await driver.waitForSelector(
+          '[data-testid="enforced-simulations-row"]',
+        );
+
+        await driver.delay(2000);
+
+        const decoded = await confirmAndGetDecodedTransaction(
+          driver,
+          confirmation,
+          capturedRawTxs,
+        );
+
+        assert.strictEqual(
+          decoded.type,
+          'eip7702',
+          `Expected tx type eip7702, got ${decoded.type}`,
+        );
+
+        const authList =
+          'authorizationList' in decoded
+            ? (decoded.authorizationList as readonly unknown[])
+            : [];
+
+        assert.ok(authList.length > 0, `Expected non-empty authorizationList`);
+
+        const dataHex = decoded.data ?? '0x';
+
+        assert.ok(
+          dataHex.startsWith(REDEEM_DELEGATIONS_SELECTOR),
+          `Expected tx.data to start with redeemDelegations selector (${REDEEM_DELEGATIONS_SELECTOR}), got ${dataHex.slice(0, 10)}`,
+        );
+
+        assert.strictEqual(
+          decoded.to?.toLowerCase(),
+          DELEGATION_MANAGER_ADDRESS,
+          `Expected tx.to to be DelegationManager (${DELEGATION_MANAGER_ADDRESS}), got ${decoded.to}`,
+        );
+      },
+    );
+  });
+
+  it('does not wrap the transaction when user disables enforcement', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+          .withSmartTransactionsOptedOut()
+          .build(),
+        localNodeOptions: {
+          loadState:
+            './test/e2e/seeder/network-states/eip7702-state/withUpgradedAccount.json',
+        },
+        testSpecificMock: setupMocksForDisableTest,
+        title: this.test?.fullTitle(),
+      },
+      async ({
+        driver,
+        mockServer,
+        localNodes,
+      }: {
+        driver: Driver;
+        mockServer: MockttpServer;
+        localNodes: Anvil[];
+      }) => {
+        const capturedRawTxs: string[] = [];
+        await mockSendRawTransaction(mockServer, capturedRawTxs);
+
+        await localNodes[0].setAccountBalance(
+          SENDER_ADDRESS_MOCK as `0x${string}`,
+          '0xDE0B6B3A7640000',
+        );
+
+        await login(driver, { expectedBalance: '1' });
+
+        await createDappTransaction(driver, TRANSACTION_MOCK);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.checkPageIsLoaded();
+
+        await driver.waitForSelector(
+          '[data-testid="enforced-simulations-row"]',
+        );
+
+        await driver.waitForSelector(
+          '[data-testid="enforced-simulations-toggle"]',
+        );
+
+        await driver.clickElement(
+          '[data-testid="enforced-simulations-toggle"]',
+        );
+
+        await driver.delay(3000);
+
+        const decoded = await confirmAndGetDecodedTransaction(
+          driver,
+          confirmation,
+          capturedRawTxs,
+        );
+
+        assert.strictEqual(
+          decoded.to?.toLowerCase(),
+          RECIPIENT_ADDRESS.toLowerCase(),
+          `Expected tx.to to remain as original recipient (${RECIPIENT_ADDRESS}), got ${decoded.to}`,
+        );
+
+        assert.strictEqual(
+          decoded.data ?? '0x',
+          '0x',
+          `Expected tx.data to remain as original (0x), got ${(decoded.data ?? '0x').slice(0, 20)}`,
+        );
+
+        assert.strictEqual(
+          decoded.value,
+          BigInt(TRANSACTION_MOCK.value),
+          `Expected tx.value to remain as original (${TRANSACTION_MOCK.value}), got ${decoded.value}`,
         );
       },
     );
