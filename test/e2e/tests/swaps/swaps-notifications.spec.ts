@@ -59,8 +59,10 @@ describe('Swaps - notifications', function () {
         await homePage.startSwapFlow();
 
         const bridgeQuotePage = new BridgeQuotePage(driver);
+        // Explicitly select mUSD so the token comes from the API with securityData
         await bridgeQuotePage.enterBridgeQuote({
           amount: '1',
+          tokenTo: 'mUSD',
         });
         await bridgeQuotePage.waitForQuote();
 

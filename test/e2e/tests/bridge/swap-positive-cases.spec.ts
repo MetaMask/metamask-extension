@@ -203,8 +203,10 @@ describe('Swap tests', function (this: Suite) {
 
         console.log('Requesting swap quote');
         const bridgePage = new BridgeQuotePage(driver);
+        // Explicitly select MUSD so the token comes from the API with securityData
         await bridgePage.enterBridgeQuote({
           amount: '1',
+          tokenTo: 'mUSD',
         });
         await bridgePage.waitForQuote();
 
@@ -294,6 +296,7 @@ describe('Swap tests', function (this: Suite) {
         console.log('Requesting swap quote');
         await bridgePage.enterBridgeQuote({
           amount: '1',
+          tokenTo: 'mUSD',
         });
         await bridgePage.waitForQuote();
         await bridgePage.checkPriceImpactModalIsDisplayed();
@@ -381,6 +384,7 @@ describe('Swap tests', function (this: Suite) {
         console.log('Requesting swap quote');
         await bridgePage.enterBridgeQuote({
           amount: '1',
+          tokenTo: 'mUSD',
         });
         await bridgePage.waitForQuote();
 
