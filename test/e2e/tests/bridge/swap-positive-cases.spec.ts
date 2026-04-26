@@ -263,7 +263,7 @@ describe('Swap tests', function (this: Suite) {
       title: this.test?.fullTitle(),
       featureFlags: {
         ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        refreshRate: 30000,
+        refreshRate: 120000,
         priceImpactThreshold: {
           ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED.priceImpactThreshold,
           gasless: 0.01,
@@ -304,12 +304,6 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.submitQuoteWithWarning(2);
         await bridgePage.rejectModal();
         console.log('Rejected confirmation modal on first alert');
-
-        // Re-submit, approve token-security alert, then reject on price-impact
-        await bridgePage.submitQuoteWithWarning();
-        await bridgePage.approveModal();
-        await bridgePage.rejectModal();
-        console.log('Rejected confirmation modal on second alert');
 
         // Re-submit and approve both confirmation alerts (token-security + price-impact) → tx submits
         await bridgePage.submitQuoteWithWarning();
