@@ -893,7 +893,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
                 <Box
                   flexDirection={BoxFlexDirection.Row}
-                  alignItems={BoxAlignItems.Center}
+                  alignItems={BoxAlignItems.Start}
                   justifyContent={BoxJustifyContent.Center}
                   gap={2}
                   className="w-full"
@@ -947,7 +947,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                         color: IconColor.IconAlternative,
                         size: IconSize.Lg,
                       }}
-                      className="flex self-center mb-4 h-12 w-12 rounded-lg"
+                      className="flex self-start mb-4 h-12 w-12 rounded-lg"
                       disabled={
                         isLocked ||
                         this.state.isSubmitting ||
