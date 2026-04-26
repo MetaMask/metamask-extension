@@ -19,26 +19,27 @@ import {
 } from '../../simulation-details/types';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 
-const DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
 const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const RECIPIENT_ADDRESS = '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc';
 const RECIPIENT_NO_0X = RECIPIENT_ADDRESS.slice(2);
 const ERC20_TRANSFER_TOPIC =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
 
-const DAI_INCOMING_AMOUNT_HEX =
-  '0000000000000000000000000000000000000000000000008ac7230489e80000';
-const USDC_OUTGOING_AMOUNT_HEX =
-  '00000000000000000000000000000000000000000000000000000000000f4240';
+const ERC20_TRANSFER_SELECTOR = '0xa9059cbb';
+const ONE_USDC = 1_000_000n;
+const USDC_TRANSFER_AMOUNT_HEX = `${'0'.repeat(58)}0f4240`;
+const USDC_SENDER_PRE_BALANCE_HEX = `${'0'.repeat(56)}3b9aca00`;
+const USDC_SENDER_POST_BALANCE_HEX = `${'0'.repeat(56)}3b8b87c0`;
+const USDC_TRANSFER_CALLDATA = `${ERC20_TRANSFER_SELECTOR}000000000000000000000000${RECIPIENT_NO_0X}${USDC_TRANSFER_AMOUNT_HEX}`;
 
 const TRANSACTION_MOCK = {
-  data: '0x',
+  data: USDC_TRANSFER_CALLDATA,
   from: SENDER_ADDRESS_MOCK,
-  gas: '0x5208',
+  gas: '0x7A120',
   maxFeePerGas: '0x2540BE400',
   maxPriorityFeePerGas: '0x3B9ACA00',
-  to: RECIPIENT_ADDRESS,
-  value: '0x38d7ea4c68000',
+  to: USDC_ADDRESS,
+  value: '0x0',
 };
 
 const SIMULATION_RESPONSE_MOCK = {
@@ -48,58 +49,42 @@ const SIMULATION_RESPONSE_MOCK = {
       {
         return: '0x',
         status: '0x1',
-        gasUsed: '0x5208',
-        gasLimit: '0x5208',
+        gasUsed: '0xC350',
+        gasLimit: '0x7A120',
         fees: [
           {
             maxFeePerGas: '0x22ae4b8bcb',
             maxPriorityFeePerGas: '0x59682f04',
             balanceNeeded: '0xeaa6849ea3660',
-            currentBalance: '0x2386f26fc1000000',
+            currentBalance: '0x8AC7230489E80000',
             error: '',
           },
         ],
         stateDiff: {
           post: {
             [SENDER_ADDRESS_MOCK]: {
-              balance: '0x238364f11c398000',
+              balance: '0x8AC7230489E80000',
               nonce: '0x1',
-            },
-            [RECIPIENT_ADDRESS]: {
-              balance: '0x38d7ea4c68000',
             },
           },
           pre: {
             [SENDER_ADDRESS_MOCK]: {
-              balance: '0x2386f26fc1000000',
-            },
-            [RECIPIENT_ADDRESS]: {
-              balance: '0x0',
-              nonce: '0x24',
+              balance: '0x8AC7230489E80000',
             },
           },
         },
         callTrace: {
           from: SENDER_ADDRESS_MOCK,
-          to: RECIPIENT_ADDRESS,
+          to: USDC_ADDRESS,
           type: 'CALL',
           gas: '0x1dcd6500',
-          gasUsed: '0x5208',
-          value: '0x38d7ea4c68000',
-          input: '0x',
+          gasUsed: '0xC350',
+          value: '0x0',
+          input: USDC_TRANSFER_CALLDATA,
           output: '0x',
           error: '',
           calls: null,
           logs: [
-            {
-              address: DAI_ADDRESS,
-              topics: [
-                ERC20_TRANSFER_TOPIC,
-                `0x000000000000000000000000${RECIPIENT_NO_0X}`,
-                `0x000000000000000000000000${SENDER_ADDRESS_NO_0X_MOCK}`,
-              ],
-              data: `0x${DAI_INCOMING_AMOUNT_HEX}`,
-            },
             {
               address: USDC_ADDRESS,
               topics: [
@@ -107,7 +92,7 @@ const SIMULATION_RESPONSE_MOCK = {
                 `0x000000000000000000000000${SENDER_ADDRESS_NO_0X_MOCK}`,
                 `0x000000000000000000000000${RECIPIENT_NO_0X}`,
               ],
-              data: `0x${USDC_OUTGOING_AMOUNT_HEX}`,
+              data: `0x${USDC_TRANSFER_AMOUNT_HEX}`,
             },
           ],
         },
@@ -121,24 +106,12 @@ const SIMULATION_RESPONSE_MOCK = {
   id: '42',
 };
 
-const DAI_PREV_BALANCE_HEX =
-  '0000000000000000000000000000000000000000000000000000000000000000';
-const USDC_PREV_BALANCE_HEX =
-  '0000000000000000000000000000000000000000000000000000000000f4240a';
 const BALANCE_SANDWICH_RESPONSE_MOCK = {
   jsonrpc: '2.0',
   result: {
     transactions: [
       {
-        return: `0x${DAI_PREV_BALANCE_HEX}`,
-        status: '0x1',
-        gasUsed: '0x5de2',
-        fees: [],
-        feeEstimate: 0,
-        baseFeePerGas: 0,
-      },
-      {
-        return: `0x${USDC_PREV_BALANCE_HEX}`,
+        return: `0x${USDC_SENDER_PRE_BALANCE_HEX}`,
         status: '0x1',
         gasUsed: '0x5de2',
         fees: [],
@@ -148,22 +121,13 @@ const BALANCE_SANDWICH_RESPONSE_MOCK = {
       {
         return: '0x',
         status: '0x1',
-        gasUsed: '0x5208',
+        gasUsed: '0xC350',
         fees: [],
         feeEstimate: 0,
         baseFeePerGas: 0,
       },
       {
-        return: `0x${DAI_INCOMING_AMOUNT_HEX}`,
-        status: '0x1',
-        gasUsed: '0x5de2',
-        fees: [],
-        feeEstimate: 0,
-        baseFeePerGas: 0,
-      },
-      {
-        return:
-          '0x0000000000000000000000000000000000000000000000000000000000000000',
+        return: `0x${USDC_SENDER_POST_BALANCE_HEX}`,
         status: '0x1',
         gasUsed: '0x5de2',
         fees: [],
@@ -180,10 +144,6 @@ const BALANCE_SANDWICH_RESPONSE_MOCK = {
 const REDEEM_DELEGATIONS_SELECTOR = '0xcef6d209';
 const DELEGATION_MANAGER_ADDRESS =
   DELEGATOR_CONTRACTS['1.3.0']['1'].DelegationManager.toLowerCase();
-const NATIVE_BALANCE_CHANGE_ENFORCER =
-  DELEGATOR_CONTRACTS['1.3.0'][
-    '1'
-  ].NativeBalanceChangeEnforcer.toLowerCase().slice(2);
 const ERC20_BALANCE_CHANGE_ENFORCER =
   DELEGATOR_CONTRACTS['1.3.0'][
     '1'
@@ -318,6 +278,24 @@ type AnvilPublicClient = ReturnType<Anvil['getProvider']>['publicClient'];
 const ENFORCED_SIMULATIONS_LOAD_STATE =
   './test/e2e/seeder/network-states/eip7702-state/withEnforcedSimulationContracts.json';
 
+const ENFORCED_SIMULATIONS_NO_DELEGATION_LOAD_STATE =
+  './test/e2e/seeder/network-states/eip7702-state/withEnforcedSimulationContractsNoDelegation.json';
+
+const BALANCE_OF_SELECTOR = '0x70a08231';
+
+async function getUsdcBalance(
+  publicClient: AnvilPublicClient,
+  address: string,
+): Promise<bigint> {
+  const data =
+    `${BALANCE_OF_SELECTOR}000000000000000000000000${address.slice(2).toLowerCase()}` as `0x${string}`;
+  const result = await publicClient.call({
+    to: USDC_ADDRESS as `0x${string}`,
+    data,
+  });
+  return BigInt(result.data ?? '0x0');
+}
+
 async function confirmAndWaitForReceipt(
   driver: Driver,
   confirmation: TransactionConfirmation,
@@ -357,6 +335,25 @@ async function confirmAndWaitForReceipt(
     hash: txHash,
     timeout: 15_000,
   });
+
+  if (receipt.status !== 'success') {
+    let revertInfo = '';
+    try {
+      const trace = await publicClient.request({
+        method: 'debug_traceTransaction' as 'eth_call',
+        params: [
+          txHash,
+          { tracer: 'callTracer', tracerConfig: { withLog: true } },
+        ] as unknown as [],
+      });
+      revertInfo = JSON.stringify(trace, null, 2).slice(0, 4000);
+    } catch {
+      revertInfo = 'trace unavailable';
+    }
+    assert.fail(
+      `Expected on-chain tx to succeed, got status=${receipt.status} (hash=${txHash})\nTrace: ${revertInfo}`,
+    );
+  }
 
   const tx = await publicClient.getTransaction({ hash: txHash });
 
@@ -416,6 +413,12 @@ describe('Enforced Simulations', function (this: Suite) {
           `Expected receipt.to to be DelegationManager (${DELEGATION_MANAGER_ADDRESS}), got ${receipt.to}`,
         );
 
+        assert.notStrictEqual(
+          tx.type,
+          'eip7702',
+          `Expected sender to be pre-delegated and tx not to upgrade, got tx.type=${tx.type}`,
+        );
+
         const dataHex = (tx.input ?? '0x').toLowerCase();
 
         assert.ok(
@@ -424,18 +427,8 @@ describe('Enforced Simulations', function (this: Suite) {
         );
 
         assert.ok(
-          dataHex.includes(NATIVE_BALANCE_CHANGE_ENFORCER),
-          `Expected tx.data to contain NativeBalanceChangeEnforcer (${NATIVE_BALANCE_CHANGE_ENFORCER})`,
-        );
-
-        assert.ok(
           dataHex.includes(ERC20_BALANCE_CHANGE_ENFORCER),
           `Expected tx.data to contain ERC20BalanceChangeEnforcer (${ERC20_BALANCE_CHANGE_ENFORCER})`,
-        );
-
-        assert.ok(
-          dataHex.includes(DAI_ADDRESS.slice(2).toLowerCase()),
-          `Expected tx.data to reference DAI token address (${DAI_ADDRESS})`,
         );
 
         assert.ok(
@@ -490,20 +483,26 @@ describe('Enforced Simulations', function (this: Suite) {
 
         assert.strictEqual(
           receipt.to?.toLowerCase(),
-          RECIPIENT_ADDRESS.toLowerCase(),
-          `Expected receipt.to to remain as original recipient (${RECIPIENT_ADDRESS}), got ${receipt.to}`,
+          USDC_ADDRESS.toLowerCase(),
+          `Expected receipt.to to be USDC contract (${USDC_ADDRESS}), got ${receipt.to}`,
+        );
+
+        assert.notStrictEqual(
+          tx.type,
+          'eip7702',
+          `Expected sender to be pre-delegated and tx not to upgrade, got tx.type=${tx.type}`,
         );
 
         assert.strictEqual(
           (tx.input ?? '0x').toLowerCase(),
-          '0x',
-          `Expected tx.input to remain as original (0x), got ${(tx.input ?? '0x').slice(0, 20)}`,
+          USDC_TRANSFER_CALLDATA.toLowerCase(),
+          `Expected tx.input to be USDC transfer calldata, got ${(tx.input ?? '0x').slice(0, 20)}`,
         );
 
         assert.strictEqual(
           tx.value,
-          BigInt(TRANSACTION_MOCK.value),
-          `Expected tx.value to remain as original (${TRANSACTION_MOCK.value}), got ${tx.value}`,
+          0n,
+          `Expected tx.value to be 0, got ${tx.value}`,
         );
       },
     );
@@ -521,7 +520,7 @@ describe('Enforced Simulations', function (this: Suite) {
         localNodeOptions: {
           chainId: 1,
           hardfork: 'Prague',
-          loadState: ENFORCED_SIMULATIONS_LOAD_STATE,
+          loadState: ENFORCED_SIMULATIONS_NO_DELEGATION_LOAD_STATE,
         },
         testSpecificMock: setupMocks,
         title: this.test?.fullTitle(),
@@ -655,20 +654,26 @@ describe('Enforced Simulations', function (this: Suite) {
 
         assert.strictEqual(
           receipt.to?.toLowerCase(),
-          RECIPIENT_ADDRESS.toLowerCase(),
-          `Expected receipt.to to remain as original recipient (${RECIPIENT_ADDRESS}), got ${receipt.to}`,
+          USDC_ADDRESS.toLowerCase(),
+          `Expected receipt.to to be USDC contract (${USDC_ADDRESS}), got ${receipt.to}`,
+        );
+
+        assert.notStrictEqual(
+          tx.type,
+          'eip7702',
+          `Expected sender to be pre-delegated and tx not to upgrade, got tx.type=${tx.type}`,
         );
 
         assert.strictEqual(
           (tx.input ?? '0x').toLowerCase(),
-          '0x',
-          `Expected tx.input to remain as original (0x), got ${(tx.input ?? '0x').slice(0, 20)}`,
+          USDC_TRANSFER_CALLDATA.toLowerCase(),
+          `Expected tx.input to be USDC transfer calldata, got ${(tx.input ?? '0x').slice(0, 20)}`,
         );
 
         assert.strictEqual(
           tx.value,
-          BigInt(TRANSACTION_MOCK.value),
-          `Expected tx.value to remain as original (${TRANSACTION_MOCK.value}), got ${tx.value}`,
+          0n,
+          `Expected tx.value to be 0, got ${tx.value}`,
         );
       },
     );

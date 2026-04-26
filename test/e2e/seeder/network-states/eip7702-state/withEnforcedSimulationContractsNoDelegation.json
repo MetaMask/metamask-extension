@@ -134,7 +134,7 @@
     "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
       "nonce": 0,
       "balance": "0x8AC7230489E80000",
-      "code": "0xef0100abcabcabcabcabcabcabcabcabcabcabcabcabca",
+      "code": "0x",
       "storage": {}
     },
     "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
