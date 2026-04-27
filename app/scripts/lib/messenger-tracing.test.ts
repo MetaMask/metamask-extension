@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Messenger } from '@metamask/messenger';
 import { getActiveSpan, trace } from '../../../shared/lib/trace';
 import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
