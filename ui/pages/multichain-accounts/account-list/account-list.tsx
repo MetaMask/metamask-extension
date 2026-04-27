@@ -117,7 +117,7 @@ export const AccountList = () => {
     [filteredWallets],
   );
 
-  const handleNavigateToAddWallet = useCallback(() => {
+  const handleNavigateToChooseNewWalletType = useCallback(() => {
     navigate(CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE);
   }, [navigate]);
 
@@ -195,7 +195,7 @@ export const AccountList = () => {
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
-          onClick={handleNavigateToAddWallet}
+          onClick={handleNavigateToChooseNewWalletType}
           isDisabled={isAccountTreeSyncingInProgress}
           isFullWidth
           data-testid="account-list-add-wallet-button"
