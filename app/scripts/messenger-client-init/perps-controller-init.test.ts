@@ -196,16 +196,15 @@ describe('PerpsControllerInit', () => {
       PerpsControllerInit(request);
 
       const constructorCall = PerpsControllerMock.mock.calls[0][0];
-      expect(constructorCall.clientConfig.fallbackHip3Enabled).toBe(true);
-      expect(constructorCall.clientConfig.fallbackHip3AllowlistMarkets).toEqual(
-        ['xyz:*'],
-      );
-      expect(
-        constructorCall.clientConfig.fallbackHip3AllowlistMarkets,
-      ).not.toEqual([]);
-      expect(
-        constructorCall.clientConfig.fallbackHip3AllowlistMarkets,
-      ).not.toBeUndefined();
+      const { clientConfig } = constructorCall;
+      expect(clientConfig).toBeDefined();
+      if (!clientConfig) {
+        return;
+      }
+      expect(clientConfig.fallbackHip3Enabled).toBe(true);
+      expect(clientConfig.fallbackHip3AllowlistMarkets).toEqual(['xyz:*']);
+      expect(clientConfig.fallbackHip3AllowlistMarkets).not.toEqual([]);
+      expect(clientConfig.fallbackHip3AllowlistMarkets).not.toBeUndefined();
     });
 
     it('passes deferEligibilityCheck true when onboarding is not complete', () => {
