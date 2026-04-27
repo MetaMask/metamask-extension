@@ -59,6 +59,7 @@ describe('Add Custom network', function (this: Suite) {
         await addRpcUrlModal.saveAddRpcUrl();
         await addEditNetworkModal.addExplorerUrl('https://test.com');
         await addEditNetworkModal.saveEditedNetwork();
+        await selectNetworkDialog.clickCloseButton();
 
         // Validate the network was added
         const homepage = new HomePage(driver);
@@ -179,6 +180,7 @@ describe('Add Custom network', function (this: Suite) {
           true,
         );
         await addEditNetworkModal.saveEditedNetwork();
+        await selectNetworkDialog.clickCloseButton();
 
         // Validate the network was added
         const homepage = new HomePage(driver);

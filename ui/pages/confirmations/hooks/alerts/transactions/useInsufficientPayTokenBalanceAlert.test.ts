@@ -135,6 +135,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
           key: AlertsName.InsufficientPayTokenBalance,
           field: RowAlertKey.EstimatedFee,
           isBlocking: true,
+          reason: 'Insufficient funds',
           message: 'Insufficient funds',
           severity: Severity.Danger,
         },
