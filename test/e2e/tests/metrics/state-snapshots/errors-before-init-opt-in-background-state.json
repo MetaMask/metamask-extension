@@ -7,6 +7,7 @@
     "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
+      "accountTree": "object",
       "accountWalletsMetadata": "object",
       "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
       "selectedAccountGroup": "string"
@@ -68,6 +69,7 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
+    "AssetsController": "object",
     "AuthenticationController": {},
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
@@ -153,9 +155,7 @@
       },
       "nativeAssetIdentifiers": "object"
     },
-    "NetworkOrderController": {
-      "orderedNetworkList": "object"
-    },
+    "NetworkOrderController": { "orderedNetworkList": "object" },
     "NftController": {
       "allNftContracts": "object",
       "allNfts": "object",
@@ -226,6 +226,7 @@
       },
       "referrals": "object",
       "securityAlertsEnabled": "boolean",
+      "showSidePanelMigrationToast": "boolean",
       "snapRegistryList": "object",
       "snapsAddSnapAccountModalDismissed": "boolean",
       "theme": "os",

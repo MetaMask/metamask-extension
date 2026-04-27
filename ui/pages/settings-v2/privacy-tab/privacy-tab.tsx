@@ -1,7 +1,6 @@
 import React from 'react';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createToggleItem } from '../shared';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { getPreferences } from '../../../selectors';
 import {
   setUseMultiAccountBalanceChecker,
@@ -25,13 +24,7 @@ const BatchAccountBalanceRequestsToggleItem = createToggleItem({
     state.metamask.useMultiAccountBalanceChecker,
   action: setUseMultiAccountBalanceChecker,
   dataTestId: 'batch-account-balance-requests-toggle',
-  trackEvent: {
-    event: MetaMetricsEventName.SettingsUpdated,
-    properties: (newValue) => ({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      use_multi_account_balance_checker: newValue,
-    }),
-  },
+  trackEventProperty: 'use_multi_account_balance_checker',
 });
 
 const SkipLinkConfirmationToggleItem = createToggleItem({
@@ -42,13 +35,7 @@ const SkipLinkConfirmationToggleItem = createToggleItem({
     Boolean(getPreferences(state).skipDeepLinkInterstitial),
   action: setSkipDeepLinkInterstitial,
   dataTestId: 'skip-link-confirmation-toggle',
-  trackEvent: {
-    event: MetaMetricsEventName.SettingsUpdated,
-    properties: (newValue) => ({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      skip_deep_link_interstitial: newValue,
-    }),
-  },
+  trackEventProperty: 'skip_deep_link_interstitial',
 });
 
 /** Registry of setting items for the Privacy page. Add new items here */

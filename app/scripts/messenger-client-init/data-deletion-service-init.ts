@@ -2,18 +2,18 @@ import {
   DataDeletionService,
   DataDeletionServiceMessenger,
 } from '../services/data-deletion-service';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
-export const DataDeletionServiceInit: ControllerInitFunction<
+export const DataDeletionServiceInit: MessengerClientInitFunction<
   DataDeletionService,
   DataDeletionServiceMessenger
 > = ({ controllerMessenger }) => {
-  const service = new DataDeletionService({
+  const messengerClient = new DataDeletionService({
     messenger: controllerMessenger,
   });
 
   return {
-    controller: service,
+    messengerClient,
     memStateKey: null,
     persistedStateKey: null,
   };

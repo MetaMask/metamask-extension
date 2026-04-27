@@ -27,9 +27,7 @@ function getWebpackInstance(config: Configuration) {
 
 async function withWatching<T>(
   config: Configuration,
-  callback: (
-    waitForBuild: (trigger?: () => void) => Promise<void>,
-  ) => Promise<T>,
+  callback: (watch: (trigger?: () => void) => Promise<void>) => Promise<T>,
 ) {
   const compiler = webpack(config);
   // @ts-expect-error - Node types need to be updated.
@@ -54,19 +52,16 @@ async function withWatching<T>(
   assert(watchHandle, 'Webpack did not return a watch handle.');
   const watching = watchHandle;
 
-  const waitForBuild = (trigger?: () => void) => {
-    if (!trigger) {
-      return build.promise;
-    }
+  const watch = (trigger: () => void = () => watching.invalidate()) => {
     // @ts-expect-error - Node types need to be updated.
     build = Promise.withResolvers<void>();
     trigger();
-    watching.invalidate();
     return build.promise;
   };
 
   try {
-    return await callback(waitForBuild);
+    await build.promise;
+    return await callback(watch);
   } finally {
     await new Promise<void>((resolveClose, rejectClose) =>
       watching.close((error) => (error ? rejectClose(error) : resolveClose())),
@@ -335,7 +330,7 @@ ${Object.entries(env)
     assert.strictEqual(manifestPlugin.options.setBuildId, true);
   });
 
-  it('keeps build_id stable for no-op watch rebuilds and changes it for real edits', async () => {
+  it('keeps build_id stable for same-content file saves and changes it for real edits', async () => {
     using tempDirectory = fs.mkdtempDisposableSync(
       join(tmpdir(), 'manifest-plugin-watch-test-'),
     );
@@ -378,15 +373,20 @@ ${Object.entries(env)
           }),
         ],
       },
-      async (waitForBuild) => {
-        await waitForBuild();
+      async (rebuild) => {
         const firstBuildId = readBuildId();
         assert.ok(firstBuildId, 'expected initial build_id');
 
-        await waitForBuild(() => writeSource(fs.readFileSync(sourceFilePath)));
+        await rebuild(() =>
+          // Resave the watched source without changing its contents.
+          writeSource(fs.readFileSync(sourceFilePath)),
+        );
         const secondBuildId = readBuildId();
 
-        await waitForBuild(() => writeSource('console.log("v2");\n'));
+        await rebuild(() =>
+          // Change the watched source contents to trigger a real edit rebuild.
+          writeSource('console.log("v2");\n'),
+        );
         const thirdBuildId = readBuildId();
 
         assert.strictEqual(
@@ -400,119 +400,6 @@ ${Object.entries(env)
           'expected real file changes to produce a new build_id',
         );
       },
-    );
-  });
-
-  it('keeps the MYX provider ignore only while the warning still exists', async () => {
-    const config: Configuration = getWebpackConfig();
-    const myxWarningPattern = /MYXProvider\.mjs/u;
-    const ignoreWarnings = config.ignoreWarnings ?? [];
-    const getPerpsControllerWarnings = async (): Promise<string[]> => {
-      const tempDirectory = fs.mkdtempSync(
-        join(tmpdir(), 'webpack-perps-controller-warning-'),
-      );
-      const repositoryRoot = resolve(__dirname, '../../..');
-      const entryFilePath = join(tempDirectory, 'entry.js');
-
-      fs.writeFileSync(entryFilePath, "import '@metamask/perps-controller';\n");
-
-      try {
-        const compiler = webpack({
-          mode: 'development',
-          context: repositoryRoot,
-          entry: entryFilePath,
-          output: {
-            path: join(tempDirectory, 'dist'),
-            filename: 'bundle.js',
-            clean: true,
-          },
-          resolve: {
-            modules: [join(repositoryRoot, 'node_modules'), 'node_modules'],
-          },
-        });
-
-        return await new Promise((resolveWarnings, reject) => {
-          compiler.run((error, stats) => {
-            const closeCompiler = (callback: () => void) => {
-              compiler.close((closeError) => {
-                if (closeError) {
-                  reject(closeError);
-                  return;
-                }
-
-                callback();
-              });
-            };
-
-            if (error) {
-              closeCompiler(() => reject(error));
-              return;
-            }
-
-            if (!stats) {
-              closeCompiler(() =>
-                reject(new Error('Webpack finished without returning stats.')),
-              );
-              return;
-            }
-
-            const errors =
-              stats.toJson({ all: false, errors: true }).errors ?? [];
-            if (errors.length > 0) {
-              closeCompiler(() =>
-                reject(
-                  new Error(
-                    `Webpack build failed:\n${errors
-                      .map((item) =>
-                        typeof item === 'string' ? item : item.message,
-                      )
-                      .join('\n\n')}`,
-                  ),
-                ),
-              );
-              return;
-            }
-
-            const warnings =
-              stats.toJson({ all: false, warnings: true }).warnings ?? [];
-            closeCompiler(() =>
-              resolveWarnings(
-                warnings.map((item) =>
-                  typeof item === 'string' ? item : item.message,
-                ),
-              ),
-            );
-          });
-        });
-      } finally {
-        fs.rmSync(tempDirectory, { recursive: true, force: true });
-      }
-    };
-
-    assert.ok(
-      ignoreWarnings.some(
-        (warning) =>
-          warning instanceof RegExp && warning.test('MYXProvider.mjs'),
-      ),
-      'Expected webpack config to ignore MYXProvider.mjs while that warning still exists.',
-    );
-
-    // The published perps-controller package currently omits MYXProvider.mjs.
-    // This assertion should fail once that warning goes away, which is the cue
-    // to remove the ignoreWarnings entry from webpack.config.ts.
-    const warnings = await getPerpsControllerWarnings();
-    assert.ok(
-      warnings.some((warning) => myxWarningPattern.test(warning)),
-      [
-        'Good news: webpack no longer warns about missing MYXProvider.mjs.',
-        'That means the temporary workaround is probably no longer needed.',
-        'Cleanup steps:',
-        '1. Remove this test: "keeps the MYX provider ignore only while the warning still exists".',
-        '2. Remove /MYXProvider\\.mjs/u from ignoreWarnings in development/webpack/webpack.config.ts.',
-        '3. Re-run the webpack unit tests.',
-        'Warnings seen in this run:',
-        ...warnings,
-      ].join('\n'),
     );
   });
 

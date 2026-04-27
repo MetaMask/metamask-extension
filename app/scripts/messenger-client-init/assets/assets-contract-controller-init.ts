@@ -1,5 +1,5 @@
 import { AssetsContractController } from '@metamask/assets-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   AssetsContractControllerInitMessenger,
   AssetsContractControllerMessenger,
@@ -14,20 +14,20 @@ import { getGlobalChainId } from '../init-utils';
  * @param request.initMessenger - The messenger to use for initialization.
  * @returns The initialized controller.
  */
-export const AssetsContractControllerInit: ControllerInitFunction<
+export const AssetsContractControllerInit: MessengerClientInitFunction<
   AssetsContractController,
   AssetsContractControllerMessenger,
   AssetsContractControllerInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
   // TODO: Fix AssetsContractControllerMessenger type - add AssetsContractControllerActions
   // TODO: Bump @metamask/network-controller to match assets-controllers
-  const controller = new AssetsContractController({
+  const messengerClient = new AssetsContractController({
     messenger: controllerMessenger,
     chainId: getGlobalChainId(initMessenger),
   });
 
   return {
-    controller,
+    messengerClient,
     memStateKey: null,
     persistedStateKey: null,
   };
