@@ -320,10 +320,11 @@ class Driver {
   }
 
   /**
-   * Enables a benchmark-only CDP guard that blocks unexpected network requests.
+   * Enables a benchmark-only CDP guard that detects unexpected network requests.
    *
-   * The allowlist uses `*` wildcards and only applies in Chrome. Any request
-   * outside the allowlist is failed immediately and recorded as a driver error.
+   * Uses `Network.requestWillBeSent` (non-blocking) rather than `Fetch.enable`
+   * to avoid pausing renderer requests, which causes renderer timeouts.
+   * Unexpected requests are recorded in `driver.errors` for post-run validation.
    *
    * @param {string[]} [allowedUrlPatterns] - Wildcard URL patterns to allow.
    * @returns {Promise<void>}
@@ -343,10 +344,12 @@ class Driver {
       allowedUrlPatterns.length > 0
         ? allowedUrlPatterns
         : DEFAULT_BENCHMARK_CDP_URL_PATTERNS;
-    const cdpConnection = await this.getCdpConnection();
+
+    // createCDPConnection initializes _cdpWsConnection on the Selenium driver.
+    await this.getCdpConnection();
     let cdpWsConnection;
     // Selenium exposes the live CDP event stream on this internal field, but
-    // does not provide a higher-level subscription helper for Fetch events.
+    // does not provide a higher-level subscription helper for Network events.
     // Fail fast below if a future Selenium version removes or renames it.
     try {
       cdpWsConnection = this.driver._cdpWsConnection;
@@ -369,55 +372,23 @@ class Driver {
         return;
       }
 
-      if (params.method !== 'Fetch.requestPaused') {
+      if (params.method !== 'Network.requestWillBeSent') {
         return;
       }
 
-      const requestPausedParams = params.params;
-      const url = requestPausedParams?.request?.url || '';
+      const url = params.params?.request?.url || '';
 
-      if (isAllowedBenchmarkCdpRequest(url, normalizedAllowedUrlPatterns)) {
-        cdpConnection
-          .execute(
-            'Fetch.continueRequest',
-            { requestId: requestPausedParams.requestId },
-            null,
-          )
-          .catch((error) => {
-            this.errors.push(
-              `[benchmark-cdp] Failed to continue request ${url}: ${error}`,
-            );
-          });
-
-        return;
+      if (!isAllowedBenchmarkCdpRequest(url, normalizedAllowedUrlPatterns)) {
+        const errorMessage = buildBlockedBenchmarkRequestError(
+          url,
+          normalizedAllowedUrlPatterns,
+        );
+        this.errors.push(errorMessage);
+        console.error(errorMessage);
       }
-
-      const errorMessage = buildBlockedBenchmarkRequestError(
-        url,
-        normalizedAllowedUrlPatterns,
-      );
-      this.errors.push(errorMessage);
-      console.error(errorMessage);
-
-      cdpConnection
-        .execute(
-          'Fetch.failRequest',
-          {
-            requestId: requestPausedParams.requestId,
-            errorReason: 'BlockedByClient',
-          },
-          null,
-        )
-        .catch((error) => {
-          this.errors.push(
-            `[benchmark-cdp] Failed to block request ${url}: ${error}`,
-          );
-        });
     });
 
-    await this.executeCdpCommand('Fetch.enable', {
-      patterns: [{ urlPattern: '*', requestStage: 'Request' }],
-    });
+    await this.executeCdpCommand('Network.enable', {});
     await this.executeCdpCommand('Network.setCacheDisabled', {
       cacheDisabled: true,
     });

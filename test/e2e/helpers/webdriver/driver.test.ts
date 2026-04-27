@@ -51,7 +51,7 @@ describe('webdriver Driver CDP helpers', () => {
     ).resolves.toStrictEqual({ data: 'ok' });
   });
 
-  it('allows expected benchmark requests and blocks unexpected hosts', async () => {
+  it('detects unexpected benchmark requests via Network.requestWillBeSent', async () => {
     const execute = jest.fn().mockResolvedValue(undefined);
     let messageHandler: ((message: string) => void) | undefined;
     const seleniumDriver = {
@@ -73,11 +73,7 @@ describe('webdriver Driver CDP helpers', () => {
 
     await driver.enableBenchmarkCdpNetworkGuard();
 
-    expect(execute).toHaveBeenCalledWith(
-      'Fetch.enable',
-      { patterns: [{ urlPattern: '*', requestStage: 'Request' }] },
-      null,
-    );
+    expect(execute).toHaveBeenCalledWith('Network.enable', {}, null);
     expect(execute).toHaveBeenCalledWith(
       'Network.setCacheDisabled',
       { cacheDisabled: true },
@@ -86,7 +82,7 @@ describe('webdriver Driver CDP helpers', () => {
 
     messageHandler?.(
       JSON.stringify({
-        method: 'Fetch.requestPaused',
+        method: 'Network.requestWillBeSent',
         params: {
           requestId: 'allowed-request',
           request: {
@@ -97,17 +93,13 @@ describe('webdriver Driver CDP helpers', () => {
     );
     await new Promise(setImmediate);
 
-    expect(execute).toHaveBeenCalledWith(
-      'Fetch.continueRequest',
-      { requestId: 'allowed-request' },
-      null,
-    );
+    expect(driver.errors).toHaveLength(0);
 
     messageHandler?.(
       JSON.stringify({
-        method: 'Fetch.requestPaused',
+        method: 'Network.requestWillBeSent',
         params: {
-          requestId: 'blocked-request',
+          requestId: 'unexpected-request',
           request: {
             url: 'https://unexpected.example.com/request',
           },
@@ -116,14 +108,6 @@ describe('webdriver Driver CDP helpers', () => {
     );
     await new Promise(setImmediate);
 
-    expect(execute).toHaveBeenCalledWith(
-      'Fetch.failRequest',
-      {
-        requestId: 'blocked-request',
-        errorReason: 'BlockedByClient',
-      },
-      null,
-    );
     expect(driver.errors).toEqual([
       expect.stringContaining('https://unexpected.example.com/request'),
     ]);
