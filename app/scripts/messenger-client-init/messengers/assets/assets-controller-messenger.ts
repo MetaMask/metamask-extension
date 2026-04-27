@@ -3,8 +3,10 @@ import type { AssetsControllerMessenger as AssetsControllerMessengerType } from 
 import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
+  AccountTreeControllerStateChangeEvent,
 } from '@metamask/account-tree-controller';
 import { PhishingControllerBulkScanTokensAction } from '@metamask/phishing-controller';
+import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import {
   NetworkEnablementControllerGetStateAction,
   NetworkEnablementControllerEvents,
@@ -19,6 +21,11 @@ import type {
   BackendWebSocketServiceActions,
   BackendWebSocketServiceEvents,
 } from '@metamask/core-backend';
+import type {
+  TransactionControllerTransactionConfirmedEvent,
+  TransactionControllerIncomingTransactionsReceivedEvent,
+  TransactionControllerUnapprovedTransactionAddedEvent,
+} from '@metamask/transaction-controller';
 import type { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 import type {
   GetPermissions,
@@ -29,6 +36,10 @@ import type {
   SnapControllerHandleRequestAction,
 } from '@metamask/snaps-controllers';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
+import {
+  OnboardingControllerGetStateAction,
+  OnboardingControllerStateChangeEvent,
+} from '../../../controllers/onboarding';
 import { RootMessenger } from '../../../lib/messenger';
 
 /**
@@ -85,7 +96,11 @@ type RpcDataSourceActions =
  *
  * @see RpcDataSource in @metamask/assets-controller
  */
-type RpcDataSourceEvents = NetworkControllerStateChangeEvent;
+type RpcDataSourceEvents =
+  | NetworkControllerStateChangeEvent
+  | TransactionControllerTransactionConfirmedEvent
+  | TransactionControllerIncomingTransactionsReceivedEvent
+  | TransactionControllerUnapprovedTransactionAddedEvent;
 
 /**
  * Actions required by BackendWebsocketDataSource.
@@ -153,7 +168,8 @@ type AllowedActions =
   | RpcDataSourceActions
   | BackendWebsocketDataSourceActions
   | SnapDataSourceActions
-  | PhishingControllerBulkScanTokensAction;
+  | PhishingControllerBulkScanTokensAction
+  | AccountsControllerGetSelectedAccountAction;
 /**
  * All events allowed for the AssetsController messenger.
  * Includes core controller events and all data source events.
@@ -167,7 +183,8 @@ type AllowedEvents =
   | RpcDataSourceEvents
   | BackendWebsocketDataSourceEvents
   | SnapDataSourceEvents
-  | PreferencesControllerStateChangeEvent;
+  | PreferencesControllerStateChangeEvent
+  | AccountTreeControllerStateChangeEvent;
 /**
  * Messenger type for AssetsController initialization.
  */
@@ -215,6 +232,7 @@ export function getAssetsControllerMessenger(
       'SnapController:getRunnableSnaps',
       'PermissionController:getPermissions',
       'PhishingController:bulkScanTokens',
+      'AccountsController:getSelectedAccount',
     ],
     events: [
       'AccountTreeController:selectedAccountGroupChange',
@@ -227,6 +245,10 @@ export function getAssetsControllerMessenger(
       'AccountsController:accountBalancesUpdated',
       'PermissionController:stateChange',
       'PreferencesController:stateChange',
+      'AccountTreeController:stateChange',
+      'TransactionController:transactionConfirmed',
+      'TransactionController:incomingTransactionsReceived',
+      'TransactionController:unapprovedTransactionAdded',
     ],
   });
 
@@ -247,7 +269,13 @@ type PreferencesControllerGetStateAction = {
 type AllowedInitializationActions =
   | AuthenticationControllerGetBearerTokenAction
   | SnapControllerHandleRequestAction
-  | PreferencesControllerGetStateAction;
+  | PreferencesControllerGetStateAction
+  | OnboardingControllerGetStateAction;
+
+/**
+ * Events needed during AssetsController initialization.
+ */
+type AllowedInitializationEvents = OnboardingControllerStateChangeEvent;
 
 /**
  * Get a restricted messenger for AssetsController initialization.
@@ -257,12 +285,15 @@ type AllowedInitializationActions =
  * @returns The restricted initialization messenger.
  */
 export function getAssetsControllerInitMessenger(
-  messenger: RootMessenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
 ) {
   const initMessenger = new Messenger<
     'AssetsControllerInit',
     AllowedInitializationActions,
-    never,
+    AllowedInitializationEvents,
     typeof messenger
   >({
     namespace: 'AssetsControllerInit',
@@ -275,7 +306,9 @@ export function getAssetsControllerInitMessenger(
       'AuthenticationController:getBearerToken',
       'SnapController:handleRequest',
       'PreferencesController:getState',
+      'OnboardingController:getState',
     ],
+    events: ['OnboardingController:stateChange'],
   });
 
   return initMessenger;

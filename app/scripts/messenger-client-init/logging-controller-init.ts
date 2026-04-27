@@ -1,6 +1,6 @@
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { LOG_EVENT } from '../../../shared/constants/logs';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import { LoggingControllerMessenger } from './messengers';
 
 /**
@@ -13,18 +13,18 @@ import { LoggingControllerMessenger } from './messengers';
  * @param request.extension
  * @returns The initialized controller.
  */
-export const LoggingControllerInit: ControllerInitFunction<
+export const LoggingControllerInit: MessengerClientInitFunction<
   LoggingController,
   LoggingControllerMessenger
 > = ({ controllerMessenger, persistedState, extension }) => {
-  const controller = new LoggingController({
+  const messengerClient = new LoggingController({
     messenger: controllerMessenger,
     state: persistedState.LoggingController,
   });
 
   extension.runtime.onInstalled.addListener((details) => {
     if (details.reason === 'update') {
-      controller.add({
+      messengerClient.add({
         type: LogType.GenericLog,
         data: {
           event: LOG_EVENT.VERSION_UPDATE,
@@ -36,6 +36,6 @@ export const LoggingControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

@@ -13,7 +13,7 @@ import {
   KeyringControllerWithKeyringAction,
 } from '@metamask/keyring-controller';
 import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
-import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 import {
   OnboardingControllerGetStateAction,
@@ -44,7 +44,7 @@ export function getSnapControllerMessenger(
       'ExecutionService:outboundRequest',
       'ExecutionService:outboundResponse',
       'KeyringController:lock',
-      'SnapRegistryController:stateChange',
+      'SnapRegistryController:registryUpdated',
     ],
     actions: [
       'PermissionController:getEndowments',

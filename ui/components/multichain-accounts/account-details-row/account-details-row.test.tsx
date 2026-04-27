@@ -1,8 +1,11 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ButtonIcon, ButtonIconSize } from '../../component-library';
-import { IconName } from '../../component-library/icon';
-import { IconColor } from '../../../helpers/constants/design-system';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconColor,
+  IconName,
+} from '@metamask/design-system-react';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { AccountDetailsRow } from './account-details-row';
 
@@ -25,7 +28,7 @@ describe('AccountDetailsRow', () => {
       const endAccessory = (
         <ButtonIcon
           iconName={IconName.Edit}
-          color={IconColor.iconAlternative}
+          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel={messages.edit.message}
           data-testid="end-accessory-button"
@@ -91,7 +94,7 @@ describe('AccountDetailsRow', () => {
       const arrowButton = (
         <ButtonIcon
           iconName={IconName.ArrowRight}
-          color={IconColor.iconAlternative}
+          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel={messages.viewDetails.message}
           data-testid="arrow-button"
@@ -117,7 +120,7 @@ describe('AccountDetailsRow', () => {
       const endAccessory = (
         <ButtonIcon
           iconName={IconName.Edit}
-          color={IconColor.iconAlternative}
+          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel={messages.edit.message}
           data-testid="end-accessory-button"

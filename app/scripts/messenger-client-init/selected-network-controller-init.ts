@@ -1,7 +1,7 @@
 import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { SelectedNetworkControllerMessenger } from './messengers';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the selected network controller.
@@ -11,11 +11,11 @@ import { ControllerInitFunction } from './types';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const SelectedNetworkControllerInit: ControllerInitFunction<
+export const SelectedNetworkControllerInit: MessengerClientInitFunction<
   SelectedNetworkController,
   SelectedNetworkControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new SelectedNetworkController({
+  const messengerClient = new SelectedNetworkController({
     // @ts-expect-error: `SelectedNetworkController` expects the full state, but
     // the persisted state may be partial.
     state: persistedState.SelectedNetworkController,
@@ -24,6 +24,6 @@ export const SelectedNetworkControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

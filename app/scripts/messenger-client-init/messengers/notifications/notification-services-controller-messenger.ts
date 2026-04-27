@@ -32,8 +32,10 @@ export function getNotificationServicesControllerMessenger(
       'AuthenticationController:isSignedIn',
       'AuthenticationController:performSignIn',
       // Push Actions
+      'NotificationServicesPushController:addPushNotificationLinks',
       'NotificationServicesPushController:enablePushNotifications',
       'NotificationServicesPushController:disablePushNotifications',
+      'NotificationServicesPushController:deletePushNotificationLinks',
       'NotificationServicesPushController:subscribeToPushNotifications',
     ],
     events: [

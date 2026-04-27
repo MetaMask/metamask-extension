@@ -40,6 +40,7 @@ describe('Update Network:', function (this: Suite) {
         // Update the network name and save the changes
         await editNetworkModal.fillNetworkNameInputField(inputData.networkName);
         await editNetworkModal.saveEditedNetwork();
+        await editNetworkModal.clickBackButton();
 
         // Verify the new network name is visible
         const homePage = new HomePage(driver);
@@ -157,6 +158,7 @@ describe('Update Network:', function (this: Suite) {
           false,
         );
         await editNetworkModal.saveEditedNetwork();
+        await editNetworkModal.clickBackButton();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
@@ -253,6 +255,7 @@ describe('Update Network:', function (this: Suite) {
 
         // Save the network
         await editNetworkModal.saveEditedNetwork();
+        await editNetworkModal.clickBackButton();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');

@@ -2,7 +2,7 @@ import {
   SnapInterfaceController,
   SnapInterfaceControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 
 /**
  * Initialize the Snap interface controller.
@@ -12,11 +12,11 @@ import { ControllerInitFunction } from '../types';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const SnapInterfaceControllerInit: ControllerInitFunction<
+export const SnapInterfaceControllerInit: MessengerClientInitFunction<
   SnapInterfaceController,
   SnapInterfaceControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new SnapInterfaceController({
+  const messengerClient = new SnapInterfaceController({
     // @ts-expect-error: `persistedState.SnapInterfaceController` is not compatible
     // with the expected type.
     // TODO: Look into the type mismatch.
@@ -25,6 +25,6 @@ export const SnapInterfaceControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

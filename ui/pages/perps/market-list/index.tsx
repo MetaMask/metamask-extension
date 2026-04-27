@@ -23,8 +23,8 @@ import {
 } from '../../../../shared/constants/perps-events';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  usePerpsLiveMarketData,
   usePerpsLiveAccount,
+  usePerpsLiveMarketListData,
 } from '../../../hooks/perps/stream';
 import {
   filterMarketsByQuery,
@@ -156,7 +156,7 @@ export const MarketListView: React.FC = () => {
 
   // Use stream hooks for real-time market data
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
-    usePerpsLiveMarketData();
+    usePerpsLiveMarketListData();
   const { account } = usePerpsLiveAccount();
 
   // Read initial filter from URL params (set by deeplink)
@@ -192,7 +192,7 @@ export const MarketListView: React.FC = () => {
         PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
       [PERPS_EVENT_PROPERTY.SOURCE]:
         PERPS_EVENT_VALUE.SOURCE.WALLET_HOME_PERPS_TAB,
-      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance ? 'yes' : 'no',
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
       [PERPS_EVENT_PROPERTY.MARKET_CATEGORY_FILTER]: selectedFilter,
     },
   });

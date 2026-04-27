@@ -1,6 +1,6 @@
 import { PhishingController } from '@metamask/phishing-controller';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getPhishingControllerMessenger,
@@ -11,7 +11,7 @@ import { PhishingControllerInit } from './phishing-controller-init';
 jest.mock('@metamask/phishing-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<PhishingControllerMessenger>
+  MessengerClientInitRequest<PhishingControllerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
@@ -26,8 +26,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('PhishingControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = PhishingControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(PhishingController);
+    const { messengerClient } = PhishingControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(PhishingController);
   });
 
   it('passes the proper arguments to the controller', () => {

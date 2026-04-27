@@ -100,7 +100,18 @@ describe('Error Page', function () {
         assert.equal(metricEvent.event, 'Support Link Clicked');
         const trackedUrl = metricEvent.properties.url;
         const queryString = new URL(trackedUrl).search;
-        assert.equal(queryString, '', 'Unexpected query string on tracked URL');
+        // Non-personal attribution params like utm_source should be preserved
+        assert.match(
+          queryString,
+          /utm_source=extension/u,
+          'Non-personal attribution parameter missing from tracked URL',
+        );
+        // Personal data like metrics ID should NOT be present
+        assert.doesNotMatch(
+          queryString,
+          /metamask_metametrics_id/u,
+          'Personal data should not be in tracked URL when user does not consent',
+        );
       },
     );
   });

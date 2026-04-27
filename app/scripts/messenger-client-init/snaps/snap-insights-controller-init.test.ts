@@ -2,7 +2,7 @@ import {
   SnapInsightsController,
   SnapInsightsControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { getSnapInsightsControllerMessenger } from '../messengers/snaps';
 import { getRootMessenger } from '../../lib/messenger';
@@ -11,7 +11,7 @@ import { SnapInsightsControllerInit } from './snap-insights-controller-init';
 jest.mock('@metamask/snaps-controllers');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<SnapInsightsControllerMessenger>
+  MessengerClientInitRequest<SnapInsightsControllerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
@@ -26,8 +26,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('SnapInsightsControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = SnapInsightsControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(SnapInsightsController);
+    const { messengerClient } =
+      SnapInsightsControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(SnapInsightsController);
   });
 
   it('passes the proper arguments to the controller', () => {
