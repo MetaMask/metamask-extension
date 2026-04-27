@@ -7624,9 +7624,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@28.0.2-preview-6ce5d58fa":
-  version: 28.0.2-preview-6ce5d58fa
-  resolution: "@metamask-previews/profile-sync-controller@npm:28.0.2-preview-6ce5d58fa"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@28.0.2-preview-f3d7baae5":
+  version: 28.0.2-preview-f3d7baae5
+  resolution: "@metamask-previews/profile-sync-controller@npm:28.0.2-preview-f3d7baae5"
   dependencies:
     "@metamask/address-book-controller": "npm:^7.1.1"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -7644,7 +7644,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/8ead3b0c8fe3e76a4e0b996d8939619b84cf234e7bda438bd3f1727e2c813e01114303324a79da0022a4a16cbeb5ca2814900919600ff77021bd2e52f08abb05
+  checksum: 10/6d4732b9ff068ac1bfa649eda3164a982164938fb9b157153671e022bd4edae1d5edbf0f6346d14926f6a75c840639e8dea7283adf75c4c05818182ff13820ca
   languageName: node
   linkType: hard
 
@@ -34130,7 +34130,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^23.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.2"
     "@metamask/profile-metrics-controller": "npm:^3.0.4"
-    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@28.0.2-preview-6ce5d58fa"
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@28.0.2-preview-f3d7baae5"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/react-data-query": "npm:^0.2.0"
