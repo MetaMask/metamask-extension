@@ -851,11 +851,11 @@ describe('buildBenchmarkSection', () => {
         },
         p75: {
           openSwapPageFromHome: 340,
-          fetchAndDisplaySwapQuotes: 4500,
+          fetchAndDisplaySwapQuotes: 5100,
         },
         p95: {
           openSwapPageFromHome: 400,
-          fetchAndDisplaySwapQuotes: 5500,
+          fetchAndDisplaySwapQuotes: 6500,
         },
       });
 
@@ -874,11 +874,11 @@ describe('buildBenchmarkSection', () => {
         },
         p75: {
           openSwapPageFromHome: 340,
-          fetchAndDisplaySwapQuotes: 4500,
+          fetchAndDisplaySwapQuotes: 5100,
         },
         p95: {
           openSwapPageFromHome: 400,
-          fetchAndDisplaySwapQuotes: 5500,
+          fetchAndDisplaySwapQuotes: 6500,
         },
       });
 
@@ -1080,11 +1080,11 @@ describe('buildBenchmarkSection', () => {
         },
         p75: {
           openSwapPageFromHome: 340,
-          fetchAndDisplaySwapQuotes: 4500,
+          fetchAndDisplaySwapQuotes: 5100,
         },
         p95: {
           openSwapPageFromHome: 400,
-          fetchAndDisplaySwapQuotes: 5500,
+          fetchAndDisplaySwapQuotes: 6500,
         },
         artifactUrl: 'https://cdn.example.com/swap.json',
       });
