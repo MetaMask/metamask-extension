@@ -225,10 +225,18 @@ async function setupMocking(
       distribution: 'main',
     })
     .thenCallback(() => {
+      const prodFlags = getProductionRemoteFlagApiResponse();
+      const flagsWithoutPerpsGeo = prodFlags.filter(
+        (entry) => !('perpsPerpTradingGeoBlockedCountriesV2' in entry),
+      );
+      const e2eFlags = [
+        ...flagsWithoutPerpsGeo,
+        { perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] } },
+      ];
       return {
         ok: true,
         statusCode: 200,
-        json: getProductionRemoteFlagApiResponse(),
+        json: e2eFlags,
       };
     });
 

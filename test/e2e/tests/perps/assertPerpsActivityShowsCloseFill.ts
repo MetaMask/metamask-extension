@@ -1,7 +1,8 @@
 import type { Driver } from '../../webdriver/driver';
 import { PerpsActivityPage } from '../../page-objects/pages/perps/perps-activity-page';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
-import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
+import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
+import type { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 
 /**
  * After a simulated position change in E2E, pushes a `userFills` snapshot via
@@ -37,6 +38,19 @@ export async function assertPerpsActivityShowsCloseFill(options: {
   await driver.delay(settleDelayMs);
 
   await marketDetailPage.clickBack();
+
+  // Detail `navigate(-1)` can land on the market list (Explore → list → asset). That screen
+  // has no `account-overview__perps-tab`; use the list header back to reach Perps home first.
+  try {
+    await driver.waitForSelector(
+      { testId: 'market-list-view' },
+      { timeout: 4000 },
+    );
+    await new PerpsMarketListPage(driver).clickBack();
+  } catch {
+    // Already past the list (e.g. opened the asset from the home position card).
+  }
+
   await perpsHomePage.navigateToPerpsHome();
   await perpsHomePage.checkPageIsLoaded();
   await perpsHomePage.clickRecentActivitySeeAll();

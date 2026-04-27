@@ -570,12 +570,28 @@ export function pushPositionUpdate(
 
   const user = opts.user ?? '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 
-  server.sendMessage(
-    JSON.stringify({
-      channel: 'clearinghouseState',
-      data: { clearinghouseState: stateWithPosition, dex: '', user },
-    }),
-  );
+  // @metamask/perps-controller HyperLiquidSubscriptionService only applies
+  // incoming clearinghouseState events when positionSubscriberCount > 0 or
+  // accountSubscriberCount > 0 (see createClearinghouseSubscription). During
+  // navigation (e.g. order entry unmount → market detail remount) those counts
+  // can briefly be zero, so a single broadcast is dropped. Re-send on a short
+  // schedule so tests reliably observe the simulated fill after UI re-subscribes.
+  const broadcast = () => {
+    server.sendMessage(
+      JSON.stringify({
+        channel: 'clearinghouseState',
+        data: {
+          clearinghouseState: { ...stateWithPosition, time: Date.now() },
+          dex: '',
+          user,
+        },
+      }),
+    );
+  };
+  broadcast();
+  setTimeout(broadcast, 200);
+  setTimeout(broadcast, 600);
+  setTimeout(broadcast, 1400);
 }
 
 /**
@@ -619,12 +635,22 @@ export function pushPositionClosed(
     time: Date.now(),
   };
 
-  server.sendMessage(
-    JSON.stringify({
-      channel: 'clearinghouseState',
-      data: { clearinghouseState: emptyState, dex: '', user },
-    }),
-  );
+  const broadcast = () => {
+    server.sendMessage(
+      JSON.stringify({
+        channel: 'clearinghouseState',
+        data: {
+          clearinghouseState: { ...emptyState, time: Date.now() },
+          dex: '',
+          user,
+        },
+      }),
+    );
+  };
+  broadcast();
+  setTimeout(broadcast, 200);
+  setTimeout(broadcast, 600);
+  setTimeout(broadcast, 1400);
 }
 
 const WS_MOCK_DEFAULT_USER = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';

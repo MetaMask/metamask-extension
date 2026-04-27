@@ -18,6 +18,8 @@ export class PerpsMarketListPage {
 
   private readonly marketListView = { testId: 'market-list-view' };
 
+  private readonly headerBackButton = { testId: 'back-button' };
+
   /** CSS selector for the search input; driver.fill() expects a string locator. */
   private readonly searchInput = '[data-testid="search-input"]';
 
@@ -64,6 +66,14 @@ export class PerpsMarketListPage {
     await this.driver.waitForSelector(this.exploreMarketsRow);
     await this.driver.clickElementUsingMouseMove(this.exploreMarketsRow);
     await this.checkPageIsLoaded();
+  }
+
+  /**
+   * Clicks the market list header back control (`navigate(-1)`), typically returning to Perps home.
+   */
+  async clickBack(): Promise<void> {
+    await this.driver.waitForSelector(this.headerBackButton);
+    await this.driver.clickElement(this.headerBackButton);
   }
 
   /**

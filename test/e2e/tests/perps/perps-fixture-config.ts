@@ -59,8 +59,8 @@ export function getPerpsConfig(title?: string) {
      * The geolocation mock returns 'US-TX', so startsWith('US') → ineligible.
      *
      * manifestFlags.remoteFeatureFlags only affects the UI selector; the
-     * background controller reads from the HTTP endpoint, which is why this
-     * testSpecificMock is required for the geo-block to take effect.
+     * background reads client-config when external services are on. This mock
+     * reinforces US blocking for tests that enable eligibility refresh.
      * @param server
      */
     testSpecificMock: async (server: Mockttp) => {
@@ -83,6 +83,10 @@ export function getPerpsConfig(title?: string) {
 /**
  * withFixtures config for Perps E2E tests with an eligible (non-geo-blocked) user.
  * Use this for tests that exercise trading actions (Long/Short, Add Funds, Close All).
+ *
+ * Eligibility refresh uses geolocation (`US-TX` in mock-e2e) plus client-config flags; the
+ * default E2E `/v1/flags` response clears `perpsPerpTradingGeoBlockedCountriesV2` so users stay
+ * eligible (see mock-e2e.js).
  *
  * @param title - The test title for debugging.
  * @returns Partial withFixtures config to spread into withFixtures().
