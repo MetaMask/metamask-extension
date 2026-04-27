@@ -23,15 +23,12 @@
  * days. Demote (gated → warn) when CV > 35% OR FP rate > 10% for 2+
  * consecutive weeks. Cadence: monthly review. Output: PR updating this file.
  *
- * Deliberately deferred (out of scope for the initial allowlist):
- * `startupPowerUserHome.*` (high variance, blocked on outlier filtering
- * #7185 and harness fixes); per-flow `tbt` gating (graduates via #7195
- * once observation window completes); `domContentLoaded` (not yet present
- * in THRESHOLD_REGISTRY); `sendTransactions.total` and the send-page step
- * timers (anomalous within-run stdDev — investigate harness before gating).
+ * The Set literal below is the source of truth for what is gated; absence
+ * from the set implies a metric is informational-only — see graduation
+ * procedure above for how to add or remove entries.
  */
 export const GATED_METRICS: ReadonlySet<string> = new Set([
-  // Startup standard persona — powerUser excluded pending #7185
+  // Startup (standard persona)
   'startupStandardHome.uiStartup',
   'startupStandardHome.load',
   'startupStandardHome.loadScripts',
