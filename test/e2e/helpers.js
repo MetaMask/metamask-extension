@@ -410,6 +410,12 @@ async function withFixtures(options, testSuite) {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(ignoredConsoleErrors);
       await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
+
+      if (title?.startsWith('benchmark-')) {
+        await driver.enableBenchmarkCdpNetworkGuard(
+          driverOptions?.benchmarkCdpAllowedUrlPatterns,
+        );
+      }
     }
 
     let driverProxy;

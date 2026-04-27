@@ -24,6 +24,7 @@ import {
   SUPPORTED_VS_CURRENCIES,
   SUPPORTED_NETWORKS,
   BITCOIN_SPOT_PRICES,
+  ETHEREUM_SPOT_PRICES,
   SOLANA_SPOT_PRICES,
   CRYPTOCOMPARE_MULTI_PRICES,
   PHISHING_DETECTION,
@@ -47,6 +48,18 @@ import {
   SOLANA_GET_SIGNATURES_FOR_ADDRESS,
   solanaCatchAllResponse,
 } from './mock-responses';
+
+export const BITCOIN_SPOT_PRICES_URL_REGEX =
+  /price\.api\.cx\.metamask\.io\/v\d+\/spot-prices\/bitcoin(?:$|\?)/u;
+
+export const ETHEREUM_SPOT_PRICES_URL_REGEX =
+  /price\.api\.cx\.metamask\.io\/v\d+\/spot-prices\/ethereum(?:$|\?)/u;
+
+export const SOLANA_SPOT_PRICES_URL_REGEX =
+  /price\.api\.cx\.metamask\.io\/v\d+\/spot-prices\/solana(?:$|\?)/u;
+
+export const V3_HISTORICAL_PRICES_URL_REGEX =
+  /https:\/\/price\.api\.cx\.metamask\.io\/v3\/historical-prices\/[^?]+(?:\?.*)?$/u;
 
 const AuthMocks = AuthenticationController.Mocks;
 
@@ -952,7 +965,7 @@ export async function mockBenchmarkEndpoints(
 
   endpoints.push(
     await server
-      .forGet(/price\.api\.cx\.metamask\.io\/v\d+\/spot-prices\/bitcoin/u)
+      .forGet(BITCOIN_SPOT_PRICES_URL_REGEX)
       .asPriority(102)
       .always()
       .thenCallback(delayedResponse(200, BITCOIN_SPOT_PRICES)),
@@ -960,7 +973,15 @@ export async function mockBenchmarkEndpoints(
 
   endpoints.push(
     await server
-      .forGet(/price\.api\.cx\.metamask\.io\/v\d+\/spot-prices\/solana/u)
+      .forGet(ETHEREUM_SPOT_PRICES_URL_REGEX)
+      .asPriority(102)
+      .always()
+      .thenCallback(delayedResponse(200, ETHEREUM_SPOT_PRICES)),
+  );
+
+  endpoints.push(
+    await server
+      .forGet(SOLANA_SPOT_PRICES_URL_REGEX)
       .asPriority(102)
       .always()
       .thenCallback(delayedResponse(200, SOLANA_SPOT_PRICES)),
@@ -988,6 +1009,14 @@ export async function mockBenchmarkEndpoints(
           buildSpotPricesResponse(req.url, POWER_USER_PRICES),
         ),
       ),
+  );
+
+  endpoints.push(
+    await server
+      .forGet(V3_HISTORICAL_PRICES_URL_REGEX)
+      .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
+      .always()
+      .thenCallback(delayedResponse(600, buildHistoricalPricesResponse())),
   );
 
   endpoints.push(

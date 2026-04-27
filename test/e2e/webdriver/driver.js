@@ -139,6 +139,67 @@ const errorMessages = {
     'waitUntilXWindowHandles timed out polling window handles',
 };
 
+const DEFAULT_BENCHMARK_CDP_URL_PATTERNS = [
+  'chrome-extension://*',
+  'chrome://*',
+  'devtools://*',
+  'data:*',
+  'blob:*',
+  'about:*',
+  'http://127.0.0.1:*',
+  'http://localhost:*',
+  'ws://127.0.0.1:*',
+  'ws://localhost:*',
+  'https://*.infura.io/*',
+  'https://rpc.gnosischain.com/*',
+  'https://mainnet.era.zksync.io/*',
+  'https://carrot.megaeth.com/*',
+  'https://testnet-rpc.monad.xyz/*',
+  'https://accounts.api.cx.metamask.io/*',
+  'https://bridge.api.cx.metamask.io/*',
+  'https://cdn.contentful.com/*',
+  'https://chainid.network/*',
+  'https://client-config.api.cx.metamask.io/*',
+  'https://gas.api.cx.metamask.io/*',
+  'https://metamask.github.io/*',
+  'https://min-api.cryptocompare.com/*',
+  'https://notification.api.cx.metamask.io/*',
+  'https://portfolio.metamask.io/*',
+  'https://price.api.cx.metamask.io/*',
+  'https://security-alerts.api.cx.metamask.io/*',
+  'https://static.cx.metamask.io/*',
+  'https://token.api.cx.metamask.io/*',
+  'https://trigger.api.cx.metamask.io/*',
+  'https://tx-sentinel*.api.cx.metamask.io/*',
+  'https://accounts.google.com/*',
+  'https://acl.execution.metamask.io/*',
+];
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+}
+
+function wildcardPatternToRegExp(pattern) {
+  return new RegExp(`^${escapeRegExp(pattern).replaceAll('\\*', '.*')}$`, 'u');
+}
+
+function isAllowedBenchmarkCdpRequest(
+  url,
+  allowedUrlPatterns = DEFAULT_BENCHMARK_CDP_URL_PATTERNS,
+) {
+  return allowedUrlPatterns.some((pattern) =>
+    wildcardPatternToRegExp(pattern).test(url),
+  );
+}
+
+function buildBlockedBenchmarkRequestError(url, allowedUrlPatterns) {
+  return [
+    `[benchmark-cdp] Blocked unexpected network request: ${url}`,
+    '[benchmark-cdp] Allowed URL patterns:',
+    ...allowedUrlPatterns.map((pattern) => `  - ${pattern}`),
+  ].join('\n');
+}
+
 /**
  * This is MetaMask's custom E2E test driver, wrapping the Selenium WebDriver.
  * For Selenium WebDriver API documentation, see:
@@ -171,6 +232,8 @@ class Driver {
     this.windowHandles = disableServerMochaToBackground
       ? null
       : new WindowHandles(this.driver);
+    this._cdpConnectionPromise = null;
+    this._benchmarkCdpGuardEnabled = false;
 
     // The following values are found in
     // https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/lib/input.js#L50-L110
@@ -191,6 +254,116 @@ class Driver {
 
   async executeScript(script, ...args) {
     return this.driver.executeScript(script, args);
+  }
+
+  async getCdpConnection() {
+    if (!this._cdpConnectionPromise) {
+      this._cdpConnectionPromise = this.driver.createCDPConnection('page');
+    }
+
+    return this._cdpConnectionPromise;
+  }
+
+  async executeCdpCommand(command, params = {}, { returnValue = false } = {}) {
+    if (returnValue && this.driver.sendAndGetDevToolsCommand) {
+      return this.driver.sendAndGetDevToolsCommand(command, params);
+    }
+
+    if (!returnValue && this.driver.sendDevToolsCommand) {
+      return this.driver.sendDevToolsCommand(command, params);
+    }
+
+    const cdpConnection = await this.getCdpConnection();
+    return cdpConnection.execute(command, params, null);
+  }
+
+  async enableBenchmarkCdpNetworkGuard(
+    allowedUrlPatterns = DEFAULT_BENCHMARK_CDP_URL_PATTERNS,
+  ) {
+    if (
+      this.browser !== Browser.CHROME ||
+      this._benchmarkCdpGuardEnabled ||
+      !this.driver?.createCDPConnection
+    ) {
+      return;
+    }
+
+    const normalizedAllowedUrlPatterns =
+      allowedUrlPatterns.length > 0
+        ? allowedUrlPatterns
+        : DEFAULT_BENCHMARK_CDP_URL_PATTERNS;
+    const cdpConnection = await this.getCdpConnection();
+    const cdpWsConnection = this.driver._cdpWsConnection;
+
+    if (!cdpWsConnection) {
+      throw new Error(
+        'Benchmark CDP network guard could not access the browser CDP WebSocket connection.',
+      );
+    }
+
+    cdpWsConnection.on('message', (message) => {
+      let params;
+
+      try {
+        params = JSON.parse(message);
+      } catch {
+        return;
+      }
+
+      if (params.method !== 'Fetch.requestPaused') {
+        return;
+      }
+
+      const requestPausedParams = params.params;
+      const url = requestPausedParams?.request?.url || '';
+
+      if (isAllowedBenchmarkCdpRequest(url, normalizedAllowedUrlPatterns)) {
+        cdpConnection
+          .execute(
+            'Fetch.continueRequest',
+            { requestId: requestPausedParams.requestId },
+            null,
+          )
+          .catch((error) => {
+            this.errors.push(
+              `[benchmark-cdp] Failed to continue request ${url}: ${error}`,
+            );
+          });
+
+        return;
+      }
+
+      const errorMessage = buildBlockedBenchmarkRequestError(
+        url,
+        normalizedAllowedUrlPatterns,
+      );
+      this.errors.push(errorMessage);
+      console.error(errorMessage);
+
+      cdpConnection
+        .execute(
+          'Fetch.failRequest',
+          {
+            requestId: requestPausedParams.requestId,
+            errorReason: 'BlockedByClient',
+          },
+          null,
+        )
+        .catch((error) => {
+          this.errors.push(
+            `[benchmark-cdp] Failed to block request ${url}: ${error}`,
+          );
+        });
+    });
+
+    await this.executeCdpCommand('Fetch.enable', {
+      patterns: [{ urlPattern: '*', requestStage: 'Request' }],
+    });
+    await this.executeCdpCommand('Network.setCacheDisabled', {
+      cacheDisabled: true,
+    });
+
+    this._benchmarkCdpGuardEnabled = true;
   }
 
   /**
@@ -1727,7 +1900,7 @@ class Driver {
   }
 
   async checkBrowserForExceptions(ignoredConsoleErrors) {
-    const cdpConnection = await this.driver.createCDPConnection('page');
+    const cdpConnection = await this.getCdpConnection();
 
     this.driver.onLogException(cdpConnection, (exception) => {
       const { description } = exception.exceptionDetails.exception;
@@ -1756,7 +1929,7 @@ class Driver {
       'null is blocked',
     ]);
 
-    const cdpConnection = await this.driver.createCDPConnection('page');
+    const cdpConnection = await this.getCdpConnection();
 
     // Flush the event processing stack 50ms after the last event is added
     const debounceEventProcessingStack = lodash.debounce(
@@ -1927,4 +2100,11 @@ function sanitizeTestTitle(testTitle) {
   return sanitized;
 }
 
-module.exports = { Driver, PAGES, errorMessages };
+module.exports = {
+  Driver,
+  PAGES,
+  errorMessages,
+  DEFAULT_BENCHMARK_CDP_URL_PATTERNS,
+  isAllowedBenchmarkCdpRequest,
+  buildBlockedBenchmarkRequestError,
+};
