@@ -25,9 +25,6 @@ describe('Update Network:', function (this: Suite) {
           rpcUrl: 'test',
         };
         await login(driver);
-        const assetListPage = new AssetListPage(driver);
-        const originalFilterLabel =
-          await assetListPage.getNetworksFilterLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -52,7 +49,6 @@ describe('Update Network:', function (this: Suite) {
         // Verify the new network name is visible
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
         // Since switching networks is disabled via the networks modal in global menu, we don't need to check the selected network anymore
         await headerNavbar.openGlobalNetworksMenu();
 

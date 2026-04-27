@@ -291,6 +291,7 @@ describe('MultiRpc:', function (this: Suite) {
         // select second rpc for Arbitrum network in the network dialog
         await selectNetworkDialog.selectRPC('Arbitrum mainnet 2');
         await homePage.checkPageIsLoaded();
+        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
         await headerNavbar.openGlobalNetworksMenu();
 
         // check that the second rpc is selected in the network dialog
@@ -302,10 +303,6 @@ describe('MultiRpc:', function (this: Suite) {
         assert.equal(usedUrl[0].url, 'https://responsive-rpc.test/');
         // check that requests are sent on the background for the url https://responsive-rpc.test/
         await expectMockRequest(driver, mockedEndpoint[0], { timeout: 5000 });
-
-        // The Networks page must not change the homepage network filter when
-        // switching the active RPC for the chain the user is already on.
-        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
       },
     );
   });
