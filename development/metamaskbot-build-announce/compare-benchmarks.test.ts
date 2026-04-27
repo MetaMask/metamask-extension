@@ -81,7 +81,29 @@ describe('compare-benchmarks', () => {
       expect(result.comparisons[0].source).toBe('chrome-browserify');
     });
 
-    it('fails when p75 exceeds fail threshold', () => {
+    it('fails when an allowlisted metric exceeds its fail threshold', () => {
+      // startupStandardHome.uiStartup IS in GATED_METRICS — fail breach blocks.
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-browserify-startupStandardHome',
+          data: {
+            startupStandardHome: makeBenchmarkResults({
+              p75: { uiStartup: 99999 },
+              p95: { uiStartup: 99999 },
+              mean: { uiStartup: 99999 },
+            }),
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+      expect(result.anyFailed).toBe(true);
+      expect(result.comparisons[0].absoluteFailed).toBe(true);
+    });
+
+    it('does not fail when a non-allowlisted metric exceeds its fail threshold', () => {
+      // onboardingImportWallet.importWalletToSocialScreen is NOT in GATED_METRICS —
+      // fail breach is downgraded to warn and does not affect anyFailed.
       const benchmarks = [
         {
           name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
@@ -96,7 +118,14 @@ describe('compare-benchmarks', () => {
       ];
 
       const result = runComparison(benchmarks, {});
-      expect(result.anyFailed).toBe(true);
+      expect(result.anyFailed).toBe(false);
+      expect(result.comparisons[0].absoluteFailed).toBe(false);
+      expect(
+        result.comparisons[0].absoluteViolations.every(
+          (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+        ),
+      ).toBe(true);
+      expect(result.comparisons[0].hasWarning).toBe(true);
     });
 
     it('includes relative metrics when baseline is available', () => {
@@ -199,10 +228,14 @@ describe('compare-benchmarks', () => {
           (v) => v.metricId === 'uiStartup' && v.percentile === 'p75',
         );
         expect(violation).toBeDefined();
-        expect(violation?.severity).toBe(THRESHOLD_SEVERITY.Fail);
+        // CV widening (cvAdjustment, threshold) is recorded by
+        // validateResultThresholds before gating; the gating policy then
+        // downgrades severity since startupPowerUserHome.uiStartup is not
+        // allowlisted, so anyFailed stays false.
         expect(violation?.cvAdjustment).toBeCloseTo(1.2);
         expect(violation?.threshold).toBeCloseTo(11280);
-        expect(result.anyFailed).toBe(true);
+        expect(violation?.severity).toBe(THRESHOLD_SEVERITY.Warn);
+        expect(result.anyFailed).toBe(false);
       } finally {
         process.env.CI = originalCI;
       }
@@ -236,6 +269,35 @@ describe('compare-benchmarks', () => {
         expect(violation?.cvAdjustment).toBeUndefined();
       } finally {
         process.env.CI = originalCI;
+      }
+    });
+
+    it('routes non-allowlisted breach into the WARN section of printReport', () => {
+      // End-to-end: runComparison + printReport. A non-gated fail should
+      // surface in WARN, not FAIL, and not change the overall PASS verdict.
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
+          data: {
+            onboardingImportWallet: makeBenchmarkResults({
+              p75: { importWalletToSocialScreen: 99999 },
+              p95: { importWalletToSocialScreen: 99999 },
+              mean: { importWalletToSocialScreen: 99999 },
+            }),
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      try {
+        printReport(result);
+        const allCalls = consoleSpy.mock.calls.flat().join('\n');
+        expect(allCalls).toContain('WARN  onboardingImportWallet');
+        expect(allCalls).not.toMatch(/FAIL\s+onboardingImportWallet/u);
+        expect(allCalls).toContain('PASS — all benchmarks within constant');
+      } finally {
+        consoleSpy.mockRestore();
       }
     });
 
