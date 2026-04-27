@@ -318,7 +318,12 @@ class BridgeQuotePage {
       return;
     }
 
-    await this.driver.clickElement(this.statusPageCloseButton);
+    try {
+      await this.driver.waitForSelector(this.statusPageCloseButton);
+      await this.driver.clickElement(this.statusPageCloseButton);
+    } catch {
+      // Status page may have auto-closed or not appeared
+    }
   };
 
   confirmBridgeTransaction = async () => {
