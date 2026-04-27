@@ -69,8 +69,8 @@ export const ChooseNewWalletTypePage = () => {
     getIsWatchEthereumAccountEnabled,
   );
 
-  const handleImportWallet = useCallback(async () => {
-    await trackEvent({
+  const handleImportWallet = useCallback(() => {
+    trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
       properties: {
@@ -85,8 +85,8 @@ export const ChooseNewWalletTypePage = () => {
     navigate(ADD_WALLET_PAGE_ROUTE);
   }, [navigate]);
 
-  const handleConnectHardwareWallet = useCallback(async () => {
-    await trackEvent({
+  const handleConnectHardwareWallet = useCallback(() => {
+    trackEvent({
       event: MetaMetricsEventName.AddHardwareWalletClicked,
       category: MetaMetricsEventCategory.Navigation,
     });
@@ -111,8 +111,8 @@ export const ChooseNewWalletTypePage = () => {
     navigate(getSnapRoute(INSTITUTIONAL_WALLET_SNAP_ID));
   }, [navigate]);
 
-  const handleAddSnapAccount = useCallback(async () => {
-    await trackEvent({
+  const handleAddSnapAccount = useCallback(() => {
+    trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.AccountAddSelected,
       properties: {
@@ -130,8 +130,8 @@ export const ChooseNewWalletTypePage = () => {
     });
   }, [trackEvent]);
 
-  const handleAddWatchAccount = useCallback(async () => {
-    await trackEvent({
+  const handleAddWatchAccount = useCallback(() => {
+    trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.AccountAddSelected,
       properties: {

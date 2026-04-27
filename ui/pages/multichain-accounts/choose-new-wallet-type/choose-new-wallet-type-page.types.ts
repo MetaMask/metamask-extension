@@ -5,5 +5,5 @@ export type WalletTypeOption = {
   titleKey: string;
   descriptionKey?: string;
   iconName: IconName;
-  onClick: () => void | Promise<void>;
+  onClick: () => void;
 };
