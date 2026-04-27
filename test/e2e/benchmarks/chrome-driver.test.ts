@@ -10,7 +10,7 @@ const isolationFlags = [
 ];
 
 describe('ChromeDriver.build', () => {
-  let ChromeDriver: typeof import('../webdriver/chrome').default;
+  let ChromeDriver: typeof import('../webdriver/chrome.js').default;
   let optionsInstance: { args?: string[]; [key: string]: unknown };
   let serviceInstance: Record<string, unknown>;
   let builderInstance: Record<string, unknown>;
@@ -57,7 +57,7 @@ describe('ChromeDriver.build', () => {
       Builder: jest.fn(() => builderInstance),
     }));
 
-    ({ default: ChromeDriver } = await import('../webdriver/chrome'));
+    ({ default: ChromeDriver } = await import('../webdriver/chrome.js'));
     jest
       .spyOn(ChromeDriver, '_computeExtensionId')
       .mockReturnValue('abcdefghijklmnopabcdefghijklmnop');
