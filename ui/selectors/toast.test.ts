@@ -427,6 +427,36 @@ describe('toast selectors', () => {
       ]);
     });
 
+    it('excludes smart transaction toasts for batches with excluded nested types', () => {
+      const state = {
+        metamask: {
+          pendingApprovals: {
+            'approval-1': {
+              id: 'approval-1',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {
+                txId: 'tx-1',
+                smartTransaction: { status: 'pending' },
+              },
+            },
+          },
+          transactions: [
+            {
+              id: 'tx-1',
+              status: 'submitted',
+              type: TransactionType.batch,
+              nestedTransactions: [
+                { type: TransactionType.tokenMethodApprove },
+                { type: TransactionType.musdRelayDeposit },
+              ],
+            },
+          ],
+        },
+      } as unknown as SelectorState;
+
+      expect(selectSmartTransactions(state)).toStrictEqual([]);
+    });
+
     it('follows the replacement for a Speed Up (retry) chain', () => {
       const state = {
         metamask: {

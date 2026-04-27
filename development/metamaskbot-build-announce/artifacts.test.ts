@@ -43,8 +43,9 @@ describe('buildArtifactsBody', () => {
       buildsFromSha: 'abc1234',
     });
 
-    expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
-    expect(result).toContain('build-dist-webpack');
+    expect(result).toContain(
+      `${HOST}/build-dist-webpack/builds/metamask-chrome-${VERSION}.zip`,
+    );
     expect(result).toContain('Builds ready [abc1234]');
     expect(result).not.toContain('reused from');
     expect(result).toContain(
