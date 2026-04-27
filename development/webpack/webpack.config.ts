@@ -440,6 +440,7 @@ const config = {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
+                config: false,
                 plugins: [
                   tailwindcss(),
                   autoprefixer({ overrideBrowserslist: browsersListQuery }),
