@@ -18,6 +18,7 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
+import { useAssetSecurityData } from './useAssetSecurityData';
 
 /**
  * Merges tx, token, and validation alert data used for displaying {@link BannerAlert}
@@ -50,7 +51,14 @@ export const useBridgeAlerts = () => {
   const toToken = useSelector(getToToken);
   const ticker = useMultichainSelector(getMultichainNativeCurrency);
 
-  const { tokenAlerts, txAlert } = useSecurityAlerts();
+  const {
+    assetIsMalicious,
+    assetIsSuspicious,
+    assetMaliciousLocalizedFeatures,
+    assetSuspiciousLocalizedFeatures,
+  } = useAssetSecurityData(toToken);
+
+  const { txAlert } = useSecurityAlerts(toToken);
   const { openBuyCryptoInPdapp } = useRamps();
 
   const activeQuotePriceData = useSelector(getActiveQuotePriceData);
@@ -85,24 +93,10 @@ export const useBridgeAlerts = () => {
       }
     };
 
-    tokenAlerts.forEach((alert) => {
-      categorizeAlert({
-        ...alert,
-        isDismissable: true,
-        isConfirmationAlert: true,
-        bannerAlertProps: {
-          severity:
-            alert.severity === 'danger'
-              ? BannerAlertSeverity.Danger
-              : BannerAlertSeverity.Warning,
-          'data-testid': 'bridge-token-warning-alert',
-        },
-      });
-    });
-
     if (isStockMarketClosed) {
       categorizeAlert({
         id: 'market-closed',
+        isDismissable: false,
         severity: 'danger',
         title: t('bridgeMarketClosedTitle'),
         description: t('bridgeMarketClosedDescription'),
@@ -116,6 +110,7 @@ export const useBridgeAlerts = () => {
     if (isNoQuotesAvailable && !isStockMarketClosed && !isQuoteExpired) {
       categorizeAlert({
         id: 'no-quotes',
+        isDismissable: false,
         severity: 'danger',
         description: t(bridgeUnavailableQuotesReason),
         isConfirmationAlert: false,
@@ -136,10 +131,52 @@ export const useBridgeAlerts = () => {
       });
     }
 
+    if (toToken && (assetIsMalicious || assetIsSuspicious)) {
+      categorizeAlert({
+        id: 'token-security',
+        severity: assetIsMalicious ? 'danger' : 'warning',
+        title: t(
+          assetIsMalicious
+            ? 'bridgeTokenIsMaliciousBanner'
+            : 'bridgeTokenIsSuspiciousBanner',
+          [toToken.symbol],
+        ),
+        description: '',
+        modalProps: {
+          title: t(
+            assetIsMalicious
+              ? 'bridgeMaliciousTokenTitle'
+              : 'bridgeSuspiciousTokenTitle',
+          ),
+          description: t(
+            assetIsMalicious
+              ? 'bridgeTokenIsMaliciousModalDescription'
+              : 'bridgeTokenIsSuspiciousModalDescription',
+            [toToken.symbol],
+          ),
+          alertModalErrorMessage: assetIsMalicious
+            ? t('bridgeTokenIsMaliciousModalDescription', [toToken.symbol])
+            : undefined,
+          infoList: assetIsMalicious
+            ? assetMaliciousLocalizedFeatures
+            : assetSuspiciousLocalizedFeatures,
+        },
+        isConfirmationAlert: assetIsMalicious,
+        isDismissable: false,
+        openModalOnClick: true,
+        bannerAlertProps: {
+          severity: assetIsMalicious
+            ? BannerAlertSeverity.Danger
+            : BannerAlertSeverity.Warning,
+        },
+      });
+    }
+
     if (unvalidatedQuote && !activeQuotePriceData) {
       categorizeAlert({
         id: 'price-data-unavailable',
         severity: 'danger',
+        isDismissable: false,
         title: t('bridgeNoPriceInfoTitle'),
         description: t('bridgePriceDataUnavailableError'),
         isConfirmationAlert: true,
@@ -157,6 +194,7 @@ export const useBridgeAlerts = () => {
     ) {
       categorizeAlert({
         id: 'insufficient-gas',
+        isDismissable: false,
         severity: 'danger',
         title: t('bridgeValidationInsufficientGasTitle', [ticker]),
         description: t(
@@ -177,6 +215,7 @@ export const useBridgeAlerts = () => {
     if (isPriceImpactWarning) {
       categorizeAlert({
         id: 'price-impact',
+        isDismissable: false,
         severity: 'warning',
         title: t('bridgePriceImpactHigh'),
         description: t('bridgePriceImpactHighDescription', [
@@ -189,14 +228,19 @@ export const useBridgeAlerts = () => {
     if (isPriceImpactError) {
       categorizeAlert({
         id: 'price-impact',
+        isDismissable: false,
         severity: 'danger',
         title: t('bridgePriceImpactVeryHigh'),
         description: t('bridgePriceImpactVeryHighDescription', [
           formattedPriceImpactPercentage,
         ]),
         isConfirmationAlert: true,
-        alertModalErrorMessage: formattedPriceImpactFiat
-          ? t('bridgePriceImpactFiatAlert', [formattedPriceImpactFiat])
+        modalProps: formattedPriceImpactFiat
+          ? {
+              alertModalErrorMessage: t('bridgePriceImpactFiatAlert', [
+                formattedPriceImpactFiat,
+              ]),
+            }
           : undefined,
       });
     }
@@ -226,7 +270,11 @@ export const useBridgeAlerts = () => {
     isSwap,
     openBuyCryptoInPdapp,
     ticker,
-    tokenAlerts,
+    toToken,
+    assetIsMalicious,
+    assetIsSuspicious,
+    assetMaliciousLocalizedFeatures,
+    assetSuspiciousLocalizedFeatures,
     txAlert,
     t,
   ]);

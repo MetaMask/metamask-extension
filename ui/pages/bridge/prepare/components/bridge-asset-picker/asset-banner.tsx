@@ -14,6 +14,7 @@ import {
   FontWeight,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
+import { useAssetSecurityData } from '../../../hooks/useAssetSecurityData';
 
 type AssetBannerProps = {
   asset: BridgeToken;
@@ -21,14 +22,8 @@ type AssetBannerProps = {
 
 export const AssetBanner = ({ asset }: AssetBannerProps) => {
   const t = useI18nContext();
-  const assetIsVerified =
-    asset.securityData?.type === BridgeAssetSecurityDataType.VERIFIED ||
-    asset.isVerified;
-  const assetIsSuspicious =
-    asset.securityData?.type === BridgeAssetSecurityDataType.WARNING ||
-    asset.securityData?.type === BridgeAssetSecurityDataType.SPAM;
-  const assetIsMalicious =
-    asset.securityData?.type === BridgeAssetSecurityDataType.MALICIOUS;
+  const { assetIsVerified, assetIsSuspicious, assetIsMalicious } =
+    useAssetSecurityData(asset);
 
   if (assetIsVerified) {
     return (

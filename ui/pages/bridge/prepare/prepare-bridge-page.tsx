@@ -136,7 +136,7 @@ const PrepareBridgePage = ({
   const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
 
   const { isInsufficientBalance } = useSelector(getValidationErrors);
-  const { securityWarnings } = useSecurityAlerts();
+  const { securityWarnings } = useSecurityAlerts(toToken);
   const { confirmationAlerts, alertsById } = useBridgeAlerts();
 
   const selectedAccount = useSelector(getFromAccount);

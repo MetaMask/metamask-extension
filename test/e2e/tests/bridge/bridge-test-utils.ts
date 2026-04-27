@@ -230,6 +230,50 @@ async function mockHistoricalPrices(mockServer: Mockttp) {
   }));
 }
 
+const MUSD_ASSET_ID =
+  'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da';
+
+/**
+ * Overrides the popular and search token endpoints so the MUSD token includes
+ * the given securityData. The bridge UI reads securityData from the token list
+ * response, not from SSE token_warning events.
+ *
+ * @param mockServer - The Mockttp server instance to register mocks on.
+ * @param securityData - The securityData object to attach to the MUSD token.
+ */
+export async function mockTokensWithSecurityData(
+  mockServer: Mockttp,
+  securityData: Record<string, unknown>,
+) {
+  const tokensWithSecurity = MOCK_TOKENS_ETHEREUM.map((token) => {
+    const base = toBridgeTokenResponse(1, token);
+    if (base.assetId === MUSD_ASSET_ID) {
+      return { ...base, securityData };
+    }
+    return base;
+  });
+
+  await mockServer
+    .forPost(/getTokens\/popular/u)
+    .asPriority(99)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: tokensWithSecurity,
+    }));
+
+  await mockServer
+    .forPost(/getTokens\/search/u)
+    .withJsonBodyIncluding({ chainIds: ['eip155:1'] })
+    .asPriority(99)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        data: tokensWithSecurity,
+        pageInfo: { hasNextPage: false, endCursor: null },
+      },
+    }));
+}
+
 async function mockGetPopularTokens(mockServer: Mockttp) {
   return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
     statusCode: 200,

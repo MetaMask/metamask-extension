@@ -6,9 +6,9 @@ import {
   QuoteResponse,
   QuoteStreamCompleteReason,
   RequestStatus,
-  TokenFeatureType,
 } from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
+import { BridgeAssetSecurityDataType } from '../../utils/tokens';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
@@ -136,24 +136,35 @@ describe('BridgeAlertBannerList', () => {
       { isInsufficientGasForQuote: true, insufficientBalance: false },
     ],
     [
-      'token-warning-alert',
+      'token-security',
       'token warning',
       undefined,
-      undefined,
       {
-        tokenWarnings: [
-          {
-            type: TokenFeatureType.MALICIOUS,
-            feature_id: 'HONEYPOT',
-            description: 'Token warning description 1',
+        toToken: {
+          assetId: toAssetId(
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            formatChainIdToCaip(CHAIN_IDS.POLYGON),
+          ),
+          chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+          address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          symbol: 'USDC',
+          name: 'Native USD Coin (POS)',
+          decimals: 6,
+          securityData: {
+            type: BridgeAssetSecurityDataType.MALICIOUS,
+            metadata: {
+              features: [
+                {
+                  featureId: 'HONEYPOT',
+                  type: BridgeAssetSecurityDataType.MALICIOUS,
+                  description: 'Token warning description 1',
+                },
+              ],
+            },
           },
-          {
-            type: TokenFeatureType.BENIGN,
-            feature_id: 'HONEYPOT',
-            description: 'Token warning description 3',
-          },
-        ],
+        },
       },
+      undefined,
     ],
   ])(
     'should render the %s alert when %s',
