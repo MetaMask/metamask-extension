@@ -28,7 +28,10 @@ export const migrate = (async (versionedData, changedControllers) => {
     isSignedIn?: boolean;
   };
 
-  if (!hasProperty(authController, 'isSignedIn') || !authController.isSignedIn) {
+  if (
+    !hasProperty(authController, 'isSignedIn') ||
+    !authController.isSignedIn
+  ) {
     return;
   }
 
