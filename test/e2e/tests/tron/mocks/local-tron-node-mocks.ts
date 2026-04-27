@@ -21,14 +21,6 @@ async function proxyPost(
   return { statusCode: resp.status, json: await resp.json() };
 }
 
-async function proxyGet(
-  localNodeUrl: string,
-  path: string,
-): Promise<{ statusCode: number; json: unknown }> {
-  const resp = await fetch(`${localNodeUrl}${path}`);
-  return { statusCode: resp.status, json: await resp.json() };
-}
-
 /**
  * Replaces all blockchain-data mocks (getblock, account, resources, transactions,
  * broadcasttransaction) with live proxied requests to a local Tron node.
@@ -37,7 +29,7 @@ async function proxyGet(
  * add them separately in testSpecificMock as usual.
  *
  * @param mockServer - The mockttp server instance
- * @param localNodeUrl - Base URL of the local Tron node (e.g. http://localhost:8090)
+ * @param localNodeUrl - Base URL of the local Tron node (e.g. http://localhost:9090)
  * @param accountAddress - Tron account address used to scope history endpoints
  * @returns Array of registered MockedEndpoints
  */
@@ -80,9 +72,10 @@ export async function proxyTronBlockchainCalls(
       ),
 
     // Account balance + TRC20 holdings
-    // java-tron's fullNode HTTP port does not serve /v1/ REST endpoints, so we
-    // fetch the balance via the traditional /wallet/getaccount API and wrap the
-    // response in the v1 envelope that the Tron snap expects.
+    // TRE exposes the same wallet APIs the snap already uses, but its HTTP
+    // proxy does not give us a usable v1 account payload here. We fetch the
+    // balance via /wallet/getaccount and wrap it in the v1 envelope the snap
+    // expects.
     await mockServer
       .forGet(tronInfuraUrl(`/v1/accounts/${accountAddress}`))
       .always()
@@ -121,7 +114,7 @@ export async function proxyTronBlockchainCalls(
         },
       })),
 
-    // TRC20 token transaction history — always empty on the local private chain.
+    // TRC20 token transaction history — always empty on the local TRE chain.
     await mockServer
       .forGet(
         tronInfuraUrl(`/v1/accounts/${accountAddress}/transactions/trc20`),
