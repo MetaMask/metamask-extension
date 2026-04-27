@@ -11,13 +11,19 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
     >
       <div
         class="flex flex-row gap-2 justify-between"
-        style="flex: 1; align-self: center;"
+        style="align-items: center;"
       >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+        <div
+          class="flex flex-row gap-2"
+          style="flex: 1; min-width: 0; align-items: center;"
         >
-          localhost:8000
-        </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+            style="min-width: 0;"
+          >
+            localhost:8000
+          </p>
+        </div>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
           role="button"
@@ -201,13 +207,19 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
     >
       <div
         class="flex flex-row gap-2 justify-between"
-        style="flex: 1; align-self: center;"
+        style="align-items: center;"
       >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+        <div
+          class="flex flex-row gap-2"
+          style="flex: 1; min-width: 0; align-items: center;"
         >
-          localhost:8000
-        </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+            style="min-width: 0;"
+          >
+            localhost:8000
+          </p>
+        </div>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
           role="button"
@@ -396,13 +408,19 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
     >
       <div
         class="flex flex-row gap-2 justify-between"
-        style="flex: 1; align-self: center;"
+        style="align-items: center;"
       >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+        <div
+          class="flex flex-row gap-2"
+          style="flex: 1; min-width: 0; align-items: center;"
         >
-          localhost:8000
-        </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+            style="min-width: 0;"
+          >
+            localhost:8000
+          </p>
+        </div>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
           role="button"
@@ -565,13 +583,19 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
     >
       <div
         class="flex flex-row gap-2 justify-between"
-        style="flex: 1; align-self: center;"
+        style="align-items: center;"
       >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+        <div
+          class="flex flex-row gap-2"
+          style="flex: 1; min-width: 0; align-items: center;"
         >
-          localhost:8000
-        </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+            style="min-width: 0;"
+          >
+            localhost:8000
+          </p>
+        </div>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
           role="button"
@@ -755,13 +779,19 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
     >
       <div
         class="flex flex-row gap-2 justify-between"
-        style="flex: 1; align-self: center;"
+        style="align-items: center;"
       >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+        <div
+          class="flex flex-row gap-2"
+          style="flex: 1; min-width: 0; align-items: center;"
         >
-          localhost:8000
-        </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+            style="min-width: 0;"
+          >
+            localhost:8000
+          </p>
+        </div>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
           role="button"
@@ -945,13 +975,19 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
     >
       <div
         class="flex flex-row gap-2 justify-between"
-        style="flex: 1; align-self: center;"
+        style="align-items: center;"
       >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+        <div
+          class="flex flex-row gap-2"
+          style="flex: 1; min-width: 0; align-items: center;"
         >
-          localhost:8000
-        </p>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+            style="min-width: 0;"
+          >
+            localhost:8000
+          </p>
+        </div>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
           role="button"
