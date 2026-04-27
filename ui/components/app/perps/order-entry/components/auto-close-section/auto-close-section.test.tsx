@@ -338,11 +338,7 @@ describe('AutoCloseSection', () => {
 
     it('does not show SL clear button when stopLossPrice is empty', () => {
       renderWithProvider(
-        <AutoCloseSection
-          {...defaultProps}
-          enabled={true}
-          stopLossPrice=""
-        />,
+        <AutoCloseSection {...defaultProps} enabled={true} stopLossPrice="" />,
         mockStore,
       );
 
