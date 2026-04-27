@@ -425,19 +425,22 @@ describe('NetworkForm Component', () => {
     fireEvent.click(saveButton);
     await waitFor(() => {
       expect(addNetwork).toHaveBeenCalledTimes(1);
-      expect(addNetwork).toHaveBeenCalledWith({
-        chainId: '0x64',
-        name: 'Ethereum',
-        nativeCurrency: 'ETH',
-        rpcEndpoints: [
-          {
-            url: 'https://mainnet.infura.io/v3/',
-          },
-        ],
-        defaultRpcEndpointIndex: 0,
-        blockExplorerUrls: [],
-        defaultBlockExplorerUrlIndex: undefined,
-      });
+      expect(addNetwork).toHaveBeenCalledWith(
+        {
+          chainId: '0x64',
+          name: 'Ethereum',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              url: 'https://mainnet.infura.io/v3/',
+            },
+          ],
+          defaultRpcEndpointIndex: 0,
+          blockExplorerUrls: [],
+          defaultBlockExplorerUrlIndex: undefined,
+        },
+        { setActive: true },
+      );
     });
   });
 

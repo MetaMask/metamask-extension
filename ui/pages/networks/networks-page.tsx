@@ -28,6 +28,9 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain/networks';
 import { getEditedNetwork } from '../../selectors/selectors';
 import ActionableMessageOriginal from '../../components/ui/actionable-message/actionable-message';
+import { SettingsV2Header } from '../settings-v2/shared/settings-v2-header';
+import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
+import { NetworksPageList } from './networks-page-list';
 
 // `ActionableMessage` is a JS component whose PropTypes default `message=''`
 // makes TS infer the prop as `string`, which prevents passing JSX. The
@@ -42,9 +45,6 @@ const ActionableMessage =
     dataTestId?: string;
     message?: React.ReactNode;
   }>;
-import { SettingsV2Header } from '../settings-v2/shared/settings-v2-header';
-import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
-import { NetworksPageList } from './networks-page-list';
 
 const getViewAfterRpcAdd = (view: string) =>
   view === 'edit-rpc' ? 'edit' : 'add';
