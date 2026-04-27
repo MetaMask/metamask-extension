@@ -1582,7 +1582,7 @@ class Driver {
    * @returns {Promise<void>} promise resolving after all other windows are closed
    */
   async closeAllOtherTabs() {
-    const handles = await this.driver.getAllWindowHandles();
+    const handles = await this.getAllWindowHandles();
     const current = await this.driver.getWindowHandle();
     for (const h of handles) {
       if (h !== current) {
@@ -1591,6 +1591,7 @@ class Driver {
       }
     }
     await this.driver.switchTo().window(current);
+    await this.getAllWindowHandles();
   }
 
   /**
