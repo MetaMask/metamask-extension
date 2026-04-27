@@ -141,25 +141,6 @@ function normalizeSmartContracts(smartContract) {
  */
 
 /**
- * Returns a mainnet native ETH (human) balance string so aggregated fiat matches `expectedFiatUsd`
- * when the unified UI prices ETH at `ethConversionInUsd` (same as `withFixtures({ ethConversionInUsd })`
- * and the default `price.api` v3 mock for `eip155:1/slip44:60`).
- *
- * Use with `withFixtures({ unifiedEvmAccountsApiBalances: { mainnetNativeEthHuman: getUnifiedMainnetNativeEthHumanForFiatTotal(...) } })`
- * when calling `login(driver, { expectedBalance: '$…' })` with assets-unify-state enabled.
- *
- * @param {number} expectedFiatUsd
- * @param {number} ethConversionInUsd
- * @returns {string}
- */
-function getUnifiedMainnetNativeEthHumanForFiatTotal(
-  expectedFiatUsd,
-  ethConversionInUsd,
-) {
-  return String(expectedFiatUsd / ethConversionInUsd);
-}
-
-/**
  * @param {object} options
  * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
  */
@@ -869,7 +850,6 @@ module.exports = {
   generateRandNumBetween,
   getCleanAppState,
   getEventPayloads,
-  getUnifiedMainnetNativeEthHumanForFiatTotal,
   isSidePanelEnabled,
   largeDelayMs,
   regularDelayMs,
