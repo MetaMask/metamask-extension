@@ -307,4 +307,12 @@ describe('formatChartTimestamp', () => {
     const dayOfMonth = formatChartTimestamp(FIXED_TS_SECONDS, 2, false, 'cs');
     expect(dayOfMonth).toContain(csMonthName);
   });
+
+  it('formats midnight as 00:00 not 24:00 (h23 hour-cycle)', () => {
+    clearFormatterCache();
+    const localMidnight = new Date(2025, 0, 15, 0, 0, 0, 0);
+    const midnightSeconds = Math.floor(localMidnight.getTime() / 1000);
+    const result = formatChartTimestamp(midnightSeconds, 4, false, 'en-US');
+    expect(result).toMatch(/^00:00:00$/u);
+  });
 });

@@ -192,7 +192,7 @@ function createFormatters(locale: string, timezone: string): Formatters {
     time24h: new Intl.DateTimeFormat(locale, {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: false,
+      hourCycle: 'h23',
       timeZone: timezone,
     }),
     crosshair: new Intl.DateTimeFormat(locale, {
@@ -200,7 +200,7 @@ function createFormatters(locale: string, timezone: string): Formatters {
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      hour12: false,
+      hourCycle: 'h23',
       timeZone: timezone,
     }),
     year: new Intl.DateTimeFormat(locale, {
@@ -215,7 +215,7 @@ function createFormatters(locale: string, timezone: string): Formatters {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-      hour12: false,
+      hourCycle: 'h23',
       timeZone: timezone,
     }),
   };
