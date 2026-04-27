@@ -250,9 +250,7 @@ describe('MarketListView', () => {
         expect(screen.getByTestId('market-row-xyz-TSLA')).toBeInTheDocument();
         expect(screen.getByTestId('market-row-xyz-AAPL')).toBeInTheDocument();
         // BTC is a crypto market and should be absent
-        expect(
-          screen.queryByTestId('market-row-BTC'),
-        ).not.toBeInTheDocument();
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
       });
     });
 
@@ -267,13 +265,9 @@ describe('MarketListView', () => {
       await waitFor(() => {
         // GOLD and SILVER are commodity markets in mockHip3Markets
         expect(screen.getByTestId('market-row-xyz-GOLD')).toBeInTheDocument();
-        expect(
-          screen.getByTestId('market-row-xyz-SILVER'),
-        ).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-xyz-SILVER')).toBeInTheDocument();
         // BTC is crypto and should be absent
-        expect(
-          screen.queryByTestId('market-row-BTC'),
-        ).not.toBeInTheDocument();
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
       });
     });
 
