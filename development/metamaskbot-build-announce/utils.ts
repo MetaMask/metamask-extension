@@ -248,7 +248,7 @@ export function resolveBaseline(
  * Parses a CI artifact filename into its component parts.
  *
  * @param artifactFileName - CI artifact filename without extension
- * (e.g., 'benchmark-chrome-browserify-interactionUserActions').
+ * (e.g., 'benchmark-chrome-webpack-interactionUserActions').
  * @returns Parsed components, or undefined if not a valid artifact filename.
  */
 export function parseArtifactName(
