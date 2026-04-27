@@ -16,6 +16,11 @@ import { isHardwareAccount } from '../../../../../components/app/rewards/utils/i
 
 const PAY_HARDWARE_ALERT_TRANSACTION_TYPES: TransactionType[] = [
   TransactionType.musdConversion,
+  TransactionType.perpsDeposit,
+  TransactionType.perpsRelayDeposit,
+  TransactionType.perpsWithdraw,
+  TransactionType.predictDeposit,
+  TransactionType.predictWithdraw,
 ];
 
 export function usePayHardwareAccountAlert(): Alert[] {
@@ -25,20 +30,18 @@ export function usePayHardwareAccountAlert(): Alert[] {
   const transactionType = currentConfirmation?.type;
   const fromAddress = currentConfirmation?.txParams?.from as Hex | undefined;
 
-  const isApplicableType =
-    transactionType !== undefined &&
-    PAY_HARDWARE_ALERT_TRANSACTION_TYPES.includes(transactionType);
-
   const account = useSelector((state) =>
-    fromAddress && isApplicableType
-      ? getInternalAccountByAddress(state, fromAddress)
-      : undefined,
+    fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
   );
 
   const isHardwareWallet = account ? isHardwareAccount(account) : false;
 
+  const isApplicableType =
+    transactionType !== undefined &&
+    PAY_HARDWARE_ALERT_TRANSACTION_TYPES.includes(transactionType);
+
   return useMemo(() => {
-    if (!isHardwareWallet) {
+    if (!isApplicableType || !isHardwareWallet) {
       return [];
     }
 
@@ -52,5 +55,5 @@ export function usePayHardwareAccountAlert(): Alert[] {
         isBlocking: true,
       },
     ];
-  }, [isHardwareWallet, t]);
+  }, [isApplicableType, isHardwareWallet, t]);
 }
