@@ -40,7 +40,11 @@ import {
   type WebVitalsMetrics,
 } from '../../../../../shared/constants/benchmarks';
 import { collectWebVitals } from '../../utils';
-import { waitForAccountListRenderComplete } from '../../utils/render-complete';
+import {
+  BENCHMARK_ACCOUNT_LIST_RENDER_TIMEOUT,
+  BENCHMARK_ACCOUNT_LIST_STABLE_FOR,
+  waitForAccountListRenderComplete,
+} from '../../utils/render-complete';
 import { WITH_STATE_POWER_USER } from '../../utils/constants';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
@@ -193,8 +197,8 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
               await waitForAccountListRenderComplete({
                 driver,
                 expectedCount: expectedAccountCount,
-                timeout: 120000,
-                stableFor: 500,
+                timeout: BENCHMARK_ACCOUNT_LIST_RENDER_TIMEOUT,
+                stableFor: BENCHMARK_ACCOUNT_LIST_STABLE_FOR,
               });
             },
           ),

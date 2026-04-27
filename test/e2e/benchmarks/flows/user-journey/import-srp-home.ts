@@ -28,7 +28,11 @@ import {
 } from '../../../../../shared/constants/benchmarks';
 import { WITH_STATE_POWER_USER } from '../../utils/constants';
 import { collectWebVitals } from '../../utils';
-import { waitForAccountListRenderComplete } from '../../utils/render-complete';
+import {
+  BENCHMARK_ACCOUNT_LIST_RENDER_TIMEOUT,
+  BENCHMARK_ACCOUNT_LIST_STABLE_FOR,
+  waitForAccountListRenderComplete,
+} from '../../utils/render-complete';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
 const SECOND_SRP = process.env.TEST_SRP_2;
@@ -92,8 +96,8 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
               await waitForAccountListRenderComplete({
                 driver,
                 expectedCount: WITH_STATE_POWER_USER.withAccounts,
-                timeout: 120000,
-                stableFor: 500,
+                timeout: BENCHMARK_ACCOUNT_LIST_RENDER_TIMEOUT,
+                stableFor: BENCHMARK_ACCOUNT_LIST_STABLE_FOR,
               });
             },
           ),

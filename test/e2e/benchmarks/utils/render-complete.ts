@@ -7,6 +7,9 @@ const SWAP_PAGE_QUOTE_DETAILS_SELECTOR =
   '[data-testid="network-fees"], [data-testid="minimum-received"], [data-testid="slippage-edit-button"]';
 
 const EXPECTED_SWAP_QUOTE_DETAILS_COUNT = 3;
+export const BENCHMARK_ACCOUNT_LIST_RENDER_TIMEOUT = 120000;
+export const BENCHMARK_ACCOUNT_LIST_STABLE_FOR = 500;
+export const BENCHMARK_SWAP_PAGE_RENDER_TIMEOUT = 60000;
 
 type WaitForFunctionDriver = Pick<Driver, 'waitForFunction'>;
 
@@ -17,7 +20,8 @@ function isInputEditable(
     input &&
       !input.disabled &&
       !input.readOnly &&
-      input.getAttribute('aria-disabled') !== 'true',
+      (!input.hasAttribute('aria-disabled') ||
+        input.getAttribute('aria-disabled') === 'false'),
   );
 }
 

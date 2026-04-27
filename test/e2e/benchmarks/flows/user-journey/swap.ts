@@ -29,7 +29,10 @@ import {
 } from '../../../../../shared/constants/benchmarks';
 import { WITH_STATE_POWER_USER } from '../../utils/constants';
 import { collectWebVitals } from '../../utils';
-import { waitForSwapPageRenderComplete } from '../../utils/render-complete';
+import {
+  BENCHMARK_SWAP_PAGE_RENDER_TIMEOUT,
+  waitForSwapPageRenderComplete,
+} from '../../utils/render-complete';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 import { registerSwapInterceptor } from '../../mocks/swap-mocks';
 
@@ -99,7 +102,7 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
             async () => {
               await waitForSwapPageRenderComplete({
                 driver,
-                timeout: 60000,
+                timeout: BENCHMARK_SWAP_PAGE_RENDER_TIMEOUT,
               });
             },
           ),

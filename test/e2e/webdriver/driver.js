@@ -499,7 +499,9 @@ class Driver {
     { args = [], interval = 100, stableFor = 0, timeout = this.timeout } = {},
   ) {
     if (typeof pageFunction !== 'function') {
-      throw new TypeError('waitForFunction only accepts page functions');
+      throw new TypeError(
+        `waitForFunction expects a function, received ${typeof pageFunction}`,
+      );
     }
 
     let result;
