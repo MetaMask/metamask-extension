@@ -105,7 +105,9 @@ export function useTransactionDisplayData(transactionGroup) {
   const selectedAddress = useSelector(getSelectedAddress);
   const knownNfts = useSelector(getNfts);
   const tokenListAllChains = useSelector(selectERC20TokensByChain);
-  const fiatFormatter = useFiatFormatter();
+  const metamaskPayFiatFormatter = useFiatFormatter({
+    overrideCurrency: 'usd',
+  });
 
   const t = useI18nContext();
 
@@ -434,7 +436,9 @@ export function useTransactionDisplayData(transactionGroup) {
 
     if (metamaskPay?.targetFiat) {
       primaryDisplayValue = metamaskPay.targetFiat;
-      secondaryDisplayValue = fiatFormatter(Number(metamaskPay.targetFiat));
+      secondaryDisplayValue = metamaskPayFiatFormatter(
+        Number(metamaskPay.targetFiat),
+      );
     }
   } else {
     dispatch(

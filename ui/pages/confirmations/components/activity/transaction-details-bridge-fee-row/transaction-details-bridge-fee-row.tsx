@@ -10,7 +10,7 @@ import { useTransactionDetails } from '../transaction-details-context';
 export function TransactionDetailsBridgeFeeRow() {
   const t = useI18nContext();
   const { transactionMeta } = useTransactionDetails();
-  const fiatFormatter = useFiatFormatter();
+  const fiatFormatter = useFiatFormatter({ overrideCurrency: 'usd' });
 
   const { metamaskPay } = transactionMeta;
   const { bridgeFeeFiat } = metamaskPay || {};

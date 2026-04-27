@@ -9,7 +9,7 @@ const mockStore = configureMockStore([]);
 
 const mockState = {
   metamask: {
-    currentCurrency: 'usd',
+    currentCurrency: 'brl',
     currencyRates: {
       ETH: { conversionRate: 2000 },
     },
@@ -48,9 +48,10 @@ describe('TransactionDetailsBridgeFeeRow', () => {
   });
 
   it('renders with correct test id when bridgeFeeFiat is provided', () => {
-    const { getByTestId } = render('2.50');
+    const { getByTestId, getByText } = render('2.50');
     expect(
       getByTestId('transaction-details-bridge-fee-row'),
     ).toBeInTheDocument();
+    expect(getByText(/\$2[.,]50/u)).toBeInTheDocument();
   });
 });
