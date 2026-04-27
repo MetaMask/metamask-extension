@@ -169,7 +169,8 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * @param payload - The device feature payload to validate
    */
   #validateDeviceState(payload: TrezorFeaturesPayload): void {
-    if (!payload.unlocked) {
+    // NOTE: Model one is always locked, it will only become unlocked when performing a transaction.
+    if (!payload.unlocked && !isTrezorModelOne(payload.model)) {
       throw createHardwareWalletError(
         ErrorCode.AuthenticationDeviceLocked,
         HardwareWalletType.Trezor,

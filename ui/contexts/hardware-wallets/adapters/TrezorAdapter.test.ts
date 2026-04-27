@@ -249,6 +249,22 @@ describe('TrezorAdapter', () => {
       );
     });
 
+    it('allows locked Model One because it unlocks during transaction signing', async () => {
+      mockGetTrezorFeatures.mockResolvedValue(
+        createMockFeaturesResponse({
+          model: 'T1B1',
+          unlocked: false,
+        }),
+      );
+
+      await expect(adapter.ensureDeviceReady()).resolves.toBe(true);
+      expect(mockOptions.onDeviceEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: DeviceEvent.DeviceLocked,
+        }),
+      );
+    });
+
     it('throws DeviceNotReady when device is not initialized', async () => {
       mockGetTrezorFeatures.mockResolvedValue(
         createMockFeaturesResponse({
