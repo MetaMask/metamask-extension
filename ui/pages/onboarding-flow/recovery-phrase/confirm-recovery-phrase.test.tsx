@@ -3,13 +3,14 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
-  REVEAL_SRP_LIST_ROUTE,
+  MANAGE_WALLET_RECOVERY_ROUTE,
 } from '../../../helpers/constants/routes';
-import * as BrowserRuntimeUtils from '../../../../shared/modules/browser-runtime.utils';
+import * as BrowserRuntimeUtils from '../../../../shared/lib/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import ConfirmRecoveryPhrase from './confirm-recovery-phrase';
 
@@ -212,7 +213,7 @@ describe('Confirm Recovery Phrase Component', () => {
     expect(confirmRecoveryPhraseButton).not.toBeDisabled();
     fireEvent.click(confirmRecoveryPhraseButton as HTMLElement);
 
-    const gotItButton = getByText('Got it');
+    const gotItButton = getByText(messages.gotIt.message);
     expect(gotItButton).toBeInTheDocument();
     fireEvent.click(gotItButton);
 
@@ -249,7 +250,7 @@ describe('Confirm Recovery Phrase Component', () => {
     );
 
     fireEvent.click(confirmRecoveryPhraseButton as HTMLElement);
-    fireEvent.click(getByText('Got it'));
+    fireEvent.click(getByText(messages.gotIt.message));
 
     expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
     expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE, {
@@ -273,7 +274,7 @@ describe('Confirm Recovery Phrase Component', () => {
 
     fireEvent.click(closeButton);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(REVEAL_SRP_LIST_ROUTE, {
+    expect(mockUseNavigate).toHaveBeenCalledWith(MANAGE_WALLET_RECOVERY_ROUTE, {
       replace: true,
     });
   });

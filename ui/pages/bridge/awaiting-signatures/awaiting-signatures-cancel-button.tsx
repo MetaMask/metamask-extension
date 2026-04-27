@@ -1,20 +1,16 @@
 import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
 import { Button } from '../../../components/component-library';
 import { I18nContext } from '../../../contexts/i18n';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 
 const AwaitingSignaturesCancelButton = () => {
   const t = useContext(I18nContext);
-  const navigate = useNavigate();
+  const { navigateToBridgePage } = useBridgeNavigation();
 
   return (
     <Button
       onClick={() => {
-        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
+        navigateToBridgePage();
       }}
     >
       {t('cancel')}

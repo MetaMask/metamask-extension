@@ -3,32 +3,9 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { openWindow } from '../../../helpers/utils/window';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { AppHeader } from '.';
-
-// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
-// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
-const mockIsMultichainAccountsFeatureEnabled = jest.fn();
-jest.mock(
-  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-    ),
-    isMultichainAccountsFeatureEnabled: () =>
-      mockIsMultichainAccountsFeatureEnabled(),
-  }),
-);
-
-jest.mock('../../../../app/scripts/lib/util', () => ({
-  ...jest.requireActual('../../../../app/scripts/lib/util'),
-  getEnvironmentType: jest.fn(),
-}));
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -64,9 +41,6 @@ const render = ({
 };
 
 describe('App Header', () => {
-  beforeEach(() => {
-    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(true);
-  });
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -107,15 +81,6 @@ describe('App Header', () => {
         );
         expect(settingsMenu).toBeInTheDocument();
       });
-    });
-
-    it('can open the dapp connection', () => {
-      getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
-      const { container } = render();
-      const connectionPickerButton = container.querySelector(
-        '[data-testid="connection-menu"]',
-      );
-      expect(connectionPickerButton).toBeInTheDocument();
     });
 
     describe('Drawer support button', () => {
@@ -185,7 +150,9 @@ describe('App Header', () => {
         fireEvent.click(rejectButton);
 
         await waitFor(() => {
-          expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
+          // When user doesn't consent, non-personal params (utm_source) are preserved
+          const expectedUrl = SUPPORT_LINK;
+          expect(openWindow).toHaveBeenCalledWith(expectedUrl);
         });
       });
     });
@@ -210,16 +177,6 @@ describe('App Header', () => {
         '[data-testid="account-options-menu-button"]',
       );
       expect(settingsButton).not.toBeInTheDocument();
-    });
-
-    it('does not show dapp connection', () => {
-      const { container } = render({
-        isUnlocked: false,
-      });
-      const connectionPickerButton = container.querySelector(
-        '[data-testid="connection-menu"]',
-      );
-      expect(connectionPickerButton).not.toBeInTheDocument();
     });
   });
 });

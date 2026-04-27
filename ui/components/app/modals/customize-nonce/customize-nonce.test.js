@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import CustomizeNonce from '.';
 
 const mockHideModal = jest.fn();
@@ -61,7 +62,7 @@ describe('Customize Nonce', () => {
     fireEvent.change(nonceInput, nonceInputEvent);
     expect(nonceInput).toHaveValue(101);
 
-    const saveButton = queryByText('Save');
+    const saveButton = queryByText(messages.save.message);
     fireEvent.click(saveButton);
 
     expect(props.updateCustomNonce).toHaveBeenCalledWith('101');
@@ -84,7 +85,7 @@ describe('Customize Nonce', () => {
     const nonceInput = queryByTestId('custom-nonce-input');
     fireEvent.change(nonceInput, nonceInputEvent);
 
-    const saveButton = queryByText('Save');
+    const saveButton = queryByText(messages.save.message);
 
     fireEvent.click(saveButton);
 
@@ -99,7 +100,7 @@ describe('Customize Nonce', () => {
       mockStore,
     );
 
-    const modalClose = queryByText('Cancel');
+    const modalClose = queryByText(messages.cancel.message);
 
     fireEvent.click(modalClose);
 

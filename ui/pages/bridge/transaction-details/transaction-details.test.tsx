@@ -1,7 +1,11 @@
 import React from 'react';
 import type { Location as RouterLocation } from 'react-router-dom';
+import * as locationUtils from 'react-router-dom';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
-import { TransactionStatus } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -9,6 +13,7 @@ import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transacti
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { TransactionGroup } from '../../../hooks/useTransactionDisplayData';
 import CrossChainSwapTxDetails from './transaction-details';
@@ -16,6 +21,15 @@ import CrossChainSwapTxDetails from './transaction-details';
 const mockNavigate = jest.fn();
 const mockLocation = jest.fn();
 const mockParams = jest.fn();
+const getTransactionWithoutNonce = (
+  transaction: TransactionGroup['initialTransaction'],
+) => ({
+  ...transaction,
+  txParams: {
+    ...transaction.txParams,
+    nonce: undefined,
+  },
+});
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -27,7 +41,7 @@ jest.mock('react-router-dom', () => ({
 const getMockStore = (
   transactionGroup: TransactionGroup,
   srcTxMetaId: string,
-  txHistoryItem: BridgeHistoryItem,
+  txHistoryItem?: BridgeHistoryItem,
 ) => {
   return configureStore(
     createBridgeMockStore({
@@ -45,17 +59,22 @@ const getMockStore = (
           },
           selectedAccount: 'id',
         },
-        transactions: [transactionGroup.primaryTransaction],
+        transactions: [
+          transactionGroup.primaryTransaction,
+          transactionGroup.initialTransaction,
+        ].filter(Boolean),
         currencyRates: {},
         preferences: {},
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
         completedOnboarding: true,
-        txHistory: {
-          [srcTxMetaId]: {
-            ...txHistoryItem,
-            account: '0x30e8ccad5a980bdf30447f8c2c48e70989d9d294',
-          },
-        },
+        txHistory: txHistoryItem
+          ? {
+              [srcTxMetaId]: {
+                ...txHistoryItem,
+                account: '0x30e8ccad5a980bdf30447f8c2c48e70989d9d294',
+              },
+            }
+          : {},
       },
     }),
   );
@@ -65,21 +84,64 @@ describe('transaction-details', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLocation.mockReturnValue({
-      pathname: '/cross-chain/tx-details/test-id',
+      pathname: `/cross-chain/tx-details/${mockBridgeTxData.transactionGroup.initialTransaction.hash}`,
       search: '',
       hash: '',
       state: {
-        transactionGroup: mockBridgeTxData.transactionGroup,
-        isEarliestNonce: true,
+        transaction: {
+          ...mockBridgeTxData.transactionGroup.initialTransaction,
+          transactionCategory: 'BRIDGE_OUT',
+        },
       },
       key: 'test-key',
     } as RouterLocation);
     mockParams.mockReturnValue({
-      srcTxMetaId: mockBridgeTxData.srcTxMetaId,
+      txHash: mockBridgeTxData.transactionGroup.primaryTransaction.hash,
     });
   });
 
   describe('bridge snapshots', () => {
+    it('uses originalTransactionId lookup for intent transaction details', () => {
+      mockLocation.mockReturnValue({
+        pathname: '/cross-chain/tx-details/intent-tx-meta-id',
+        search: '',
+        hash: '',
+        state: {
+          transaction: {
+            ...mockBridgeTxData.transactionGroup.initialTransaction,
+            id: 'intent-tx-meta-id',
+            hash: undefined,
+            transactionCategory: 'BRIDGE_OUT',
+          },
+        },
+        key: 'test-key',
+      } as RouterLocation);
+      mockParams.mockReturnValue({
+        txHash: 'intent-tx-meta-id',
+      });
+
+      const { queryAllByTestId, getByText } = renderWithProvider(
+        <CrossChainSwapTxDetails />,
+        getMockStore(mockBridgeTxData.transactionGroup, 'intent-order-uid', {
+          ...mockBridgeTxData.bridgeHistoryItem,
+          originalTransactionId: 'intent-tx-meta-id',
+        } as never),
+      );
+
+      expect(queryAllByTestId('transaction-detail-row')).toHaveLength(7);
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(messages.bridgeTxDetailsYouReceived.message),
+      ).toBeInTheDocument();
+      expect(getByText('1.981 USDC on')).toBeInTheDocument();
+      expect(
+        getByText(messages.bridgeTxDetailsStatus.message),
+      ).toBeInTheDocument();
+      expect(getByText('complete')).toBeInTheDocument();
+    });
+
     it('should render completed bridge tx', () => {
       const { queryAllByTestId, getByText } = renderWithProvider(
         <CrossChainSwapTxDetails />,
@@ -103,9 +165,25 @@ describe('transaction-details', () => {
         expect(row).toHaveTextContent(expectedRows[i]);
       });
 
-      expect(getByText('Bridge details')).toBeInTheDocument();
-      expect(getByText('View on PolygonScan')).toBeInTheDocument();
-      expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'PolygonScan',
+          ),
+        ),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'Optimism Explorer',
+          ),
+        ),
+      ).toBeInTheDocument();
     });
 
     it('should render pending bridge snapshot', () => {
@@ -142,9 +220,25 @@ describe('transaction-details', () => {
         expect(row).toHaveTextContent(expectedRows[i]);
       });
 
-      expect(getByText('Bridge details')).toBeInTheDocument();
-      expect(getByText('View on PolygonScan')).toBeInTheDocument();
-      expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'PolygonScan',
+          ),
+        ),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'Optimism Explorer',
+          ),
+        ),
+      ).toBeInTheDocument();
     });
 
     it('should render confirmed bridge tx', () => {
@@ -181,9 +275,25 @@ describe('transaction-details', () => {
         expect(row).toHaveTextContent(expectedRows[i]);
       });
 
-      expect(getByText('Bridge details')).toBeInTheDocument();
-      expect(getByText('View on PolygonScan')).toBeInTheDocument();
-      expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'PolygonScan',
+          ),
+        ),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'Optimism Explorer',
+          ),
+        ),
+      ).toBeInTheDocument();
     });
 
     it('should render bridge tx that failed on src', () => {
@@ -220,9 +330,25 @@ describe('transaction-details', () => {
         expect(row).toHaveTextContent(expectedRows[i]);
       });
 
-      expect(getByText('Bridge details')).toBeInTheDocument();
-      expect(getByText('View on PolygonScan')).toBeInTheDocument();
-      expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'PolygonScan',
+          ),
+        ),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'Optimism Explorer',
+          ),
+        ),
+      ).toBeInTheDocument();
     });
 
     it('should render bridge tx that failed on dest', () => {
@@ -260,9 +386,190 @@ describe('transaction-details', () => {
         expect(row).toHaveTextContent(expectedRows[i]);
       });
 
-      expect(getByText('Bridge details')).toBeInTheDocument();
-      expect(getByText('View on PolygonScan')).toBeInTheDocument();
-      expect(getByText('View on Optimism Explorer')).toBeInTheDocument();
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'PolygonScan',
+          ),
+        ),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'Optimism Explorer',
+          ),
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it('should hide nonce row for intent swap details without nonce', () => {
+      const nonceFreeTransaction = getTransactionWithoutNonce(
+        mockBridgeTxData.transactionGroup.initialTransaction,
+      );
+      mockLocation.mockReturnValue({
+        pathname: `/cross-chain/tx-details/${nonceFreeTransaction.hash}`,
+        search: '',
+        hash: '',
+        state: {
+          transaction: {
+            ...nonceFreeTransaction,
+            transactionCategory: 'BRIDGE_OUT',
+          },
+        },
+        key: 'test-key',
+      } as RouterLocation);
+      mockParams.mockReturnValue({
+        txHash: nonceFreeTransaction.hash,
+      });
+
+      const { queryAllByTestId, queryByText } = renderWithProvider(
+        <CrossChainSwapTxDetails />,
+        getMockStore(
+          {
+            ...mockBridgeTxData.transactionGroup,
+            initialTransaction: {
+              ...nonceFreeTransaction,
+              status: TransactionStatus.approved,
+            },
+            primaryTransaction: {
+              ...getTransactionWithoutNonce(
+                mockBridgeTxData.transactionGroup.primaryTransaction,
+              ),
+              status: TransactionStatus.approved,
+            },
+          },
+          mockBridgeTxData.srcTxMetaId,
+          {
+            ...mockBridgeTxData.bridgeHistoryItem,
+            quote: {
+              ...mockBridgeTxData.bridgeHistoryItem.quote,
+              intent: {
+                protocol: 'cowswap',
+              },
+            },
+            status: {
+              ...mockBridgeTxData.bridgeHistoryItem.status,
+              status: StatusTypes.PENDING,
+            },
+          } as never,
+        ),
+      );
+
+      const expectedRows = [
+        'Statuspending',
+        'BridgingPolygonOP',
+        'Time stamp',
+        'You sent2 USDC onPolygon',
+        'Total gas fee0.00446 POL',
+      ];
+      expect(queryAllByTestId('transaction-detail-row')).toHaveLength(5);
+      queryAllByTestId('transaction-detail-row').forEach((row, i) => {
+        expect(row).toHaveTextContent(expectedRows[i]);
+      });
+      expect(
+        queryByText(messages.bridgeTxDetailsNonce.message),
+      ).not.toBeInTheDocument();
+    });
+
+    it('should render confirmed bridge tx when transactionCategory does not resolve to a Bridge transaction', () => {
+      jest.spyOn(locationUtils, 'useLocation').mockReturnValue({
+        ...mockLocation(),
+        state: {
+          transaction: {
+            ...mockBridgeTxData.transactionGroup.initialTransaction,
+            type: TransactionType.contractInteraction,
+            transactionCategory: 'DEPOSIT',
+          },
+        },
+      } as RouterLocation);
+      const { queryAllByTestId, getByText } = renderWithProvider(
+        <CrossChainSwapTxDetails />,
+        getMockStore({}, mockBridgeTxData.srcTxMetaId, {
+          ...mockBridgeTxData.bridgeHistoryItem,
+          status: {
+            ...mockBridgeTxData.bridgeHistoryItem.status,
+            status: StatusTypes.COMPLETE,
+          },
+        } as never),
+      );
+      const expectedRows = [
+        'Statuscomplete',
+        'BridgedPolygonOP',
+        'Time stamp',
+        'You sent2 USDC onPolygon',
+        'You received1.981 USDC onOP',
+        'Total gas fee0.00446 POL',
+        'Nonce3',
+      ];
+      expect(queryAllByTestId('transaction-detail-row')).toHaveLength(7);
+      queryAllByTestId('transaction-detail-row').forEach((row, i) => {
+        expect(row).toHaveTextContent(expectedRows[i]);
+      });
+
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'PolygonScan',
+          ),
+        ),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'Optimism Explorer',
+          ),
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it('should render confirmed bridge tx when transactionCategory does not resolve to a Bridge transaction and bridgeHistoryItem is not found', () => {
+      jest.spyOn(locationUtils, 'useLocation').mockReturnValue({
+        ...mockLocation(),
+        state: {
+          transaction: {
+            ...mockBridgeTxData.transactionGroup.initialTransaction,
+            type: TransactionType.contractInteraction,
+            transactionCategory: 'BRIDGE_OUT',
+          },
+        },
+      } as RouterLocation);
+      const { queryAllByTestId, getByText } = renderWithProvider(
+        <CrossChainSwapTxDetails />,
+        getMockStore({}, mockBridgeTxData.srcTxMetaId),
+      );
+      const expectedRows = [
+        'Statusconfirmed',
+        'Time stampJun 21, 2025 at 12:43 AM',
+        'You sent onPolygon',
+        'Total gas fee0.00446 POL',
+        'Nonce3',
+      ];
+      expect(queryAllByTestId('transaction-detail-row')).toHaveLength(5);
+      queryAllByTestId('transaction-detail-row').forEach((row, i) => {
+        expect(row).toHaveTextContent(expectedRows[i]);
+      });
+
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'PolygonScan',
+          ),
+        ),
+      ).toBeInTheDocument();
     });
   });
 });

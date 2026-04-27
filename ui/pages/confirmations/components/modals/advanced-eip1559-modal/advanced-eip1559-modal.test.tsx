@@ -6,6 +6,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { GasModalType } from '../../../constants/gas';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { AdvancedEIP1559Modal } from './advanced-eip1559-modal';
 
 jest.mock('../../max-base-fee-input/max-base-fee-input', () => ({
@@ -58,7 +59,9 @@ describe('AdvancedEIP1559Modal', () => {
 
   it('renders the modal with header', () => {
     const { getByText } = render();
-    expect(getByText('Advanced network fee')).toBeInTheDocument();
+    expect(
+      getByText(messages.advancedEIP1559ModalTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('renders all gas input components', () => {
@@ -72,14 +75,14 @@ describe('AdvancedEIP1559Modal', () => {
   it('renders Cancel and Save buttons', () => {
     const { getByText } = render();
 
-    expect(getByText('Cancel')).toBeInTheDocument();
-    expect(getByText('Save')).toBeInTheDocument();
+    expect(getByText(messages.cancel.message)).toBeInTheDocument();
+    expect(getByText(messages.save.message)).toBeInTheDocument();
   });
 
   it('navigates to EstimatesModal when Cancel is clicked', () => {
     const { getByText, mockSetActiveModal } = render();
 
-    fireEvent.click(getByText('Cancel'));
+    fireEvent.click(getByText(messages.cancel.message));
 
     expect(mockSetActiveModal).toHaveBeenCalledWith(
       GasModalType.EstimatesModal,

@@ -1,6 +1,9 @@
 import React from 'react';
 
-import { ConfirmInfoRow, ConfirmInfoRowVariant } from '../../../../../../components/app/confirm/info/row';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowVariant,
+} from '../../../../../../components/app/confirm/info/row';
 import { unapprovedTypedSignMsgV4 } from '../../../../../../../test/data/confirmations/typed_sign';
 import { ConfirmInfoRowTypedSignData } from './typedSignData';
 

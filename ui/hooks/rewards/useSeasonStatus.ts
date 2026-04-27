@@ -51,6 +51,8 @@ export const useSeasonStatus = ({
       subscriptionId === 'pending' ||
       subscriptionId === 'retry' ||
       subscriptionId === 'error' ||
+      subscriptionId ===
+        'error-existing-subscription-hardware-wallet-explicit-sign' ||
       !isRewardsEnabled
     ) {
       dispatch(setSeasonStatus(null));

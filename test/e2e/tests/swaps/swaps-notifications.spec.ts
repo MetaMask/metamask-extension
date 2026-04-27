@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import {
@@ -20,11 +20,11 @@ const UNSTABLE_TOKEN_PRICE_DESCRIPTION =
   'The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it.';
 
 const getBridgeFixturesWithTokenAlertWarning = (title?: string) => {
-  const fixtures = getBridgeFixtures(
+  const fixtures = getBridgeFixtures({
     title,
-    BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-    false,
-  );
+    featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+    withErc20: false,
+  });
 
   return {
     ...fixtures,
@@ -59,7 +59,7 @@ describe('Swaps - notifications', function () {
     await withFixtures(
       getBridgeFixturesWithTokenAlertWarning(this.test?.fullTitle()),
       async ({ driver, mockedEndpoint }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+        await login(driver, { expectedBalance: '$225,730.11' });
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
@@ -99,7 +99,7 @@ describe('Swaps - notifications', function () {
         this.test?.fullTitle(),
       ),
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
@@ -130,7 +130,7 @@ describe('Swaps - notifications', function () {
         ),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
@@ -149,12 +149,12 @@ describe('Swaps - notifications', function () {
 
   it('shows low slippage warning in transaction settings', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+      }),
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+        await login(driver, { expectedBalance: '$225,730.11' });
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 

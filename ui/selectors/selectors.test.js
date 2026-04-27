@@ -16,12 +16,12 @@ import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
-import * as networkSelectors from '../../shared/modules/selectors/networks';
+import * as networkSelectors from '../../shared/lib/selectors/networks';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import {
   DEFAULT_FEATURE_FLAG_VALUES,
   FeatureFlagNames,
-} from '../../shared/modules/feature-flags';
+} from '../../shared/lib/feature-flags';
 
 import {
   SOLANA_WALLET_NAME,
@@ -29,8 +29,8 @@ import {
 } from '../../shared/lib/accounts';
 import * as selectors from './selectors';
 
-jest.mock('../../shared/modules/selectors/networks', () => ({
-  ...jest.requireActual('../../shared/modules/selectors/networks'),
+jest.mock('../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../shared/lib/selectors/networks'),
 }));
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -38,8 +38,8 @@ jest.mock('../../app/scripts/lib/util', () => ({
   getEnvironmentType: jest.fn().mockReturnValue('popup'),
 }));
 
-jest.mock('../../shared/modules/network.utils', () => {
-  const actual = jest.requireActual('../../shared/modules/network.utils');
+jest.mock('../../shared/lib/network.utils', () => {
+  const actual = jest.requireActual('../../shared/lib/network.utils');
   return {
     ...actual,
     shouldShowLineaMainnet: jest.fn().mockResolvedValue(true),
@@ -3828,6 +3828,41 @@ describe('getInternalAccountsSortedByKeyring', () => {
       solanaAccount2,
     ]);
   });
+
+  it('filters out undefined entries when a hardware wallet address has no matching internal account', () => {
+    // Hardware wallet stores addresses in checksummed EIP-55 format;
+    // AccountsController stores them lowercase — lookup returns undefined.
+    const hwChecksummedAddress = '0x67B2fAf7959fB61eb9746571041476Bbd0672569';
+    const hwAccount = {
+      ...createMockInternalAccount({
+        address: hwChecksummedAddress.toLowerCase(),
+        keyringType: KeyringType.ledger,
+      }),
+      balance: '0x0',
+    };
+    const hwKeyring = {
+      type: KeyringType.ledger,
+      accounts: [hwChecksummedAddress], // checksummed — will not match lowercase key
+      metadata: { id: 'ledger-keyring', name: '' },
+    };
+
+    const state = {
+      metamask: {
+        internalAccounts: {
+          accounts: { [hwAccount.id]: hwAccount },
+          selectedAccount: hwAccount.id,
+        },
+        keyrings: [hwKeyring],
+        networkConfigurationsByChainId:
+          mockState.metamask.networkConfigurationsByChainId,
+        selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
+      },
+    };
+
+    const result = selectors.getInternalAccountsSortedByKeyring(state);
+    expect(result).not.toContain(undefined);
+    expect(result).toHaveLength(0); // address mismatch: account not found
+  });
 });
 
 describe('getUrlScanCacheResult', () => {
@@ -4378,6 +4413,32 @@ describe('getShowUpdateModal', () => {
       },
     };
     expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+});
+
+describe('getPendingRedirectRoute', () => {
+  it('returns the route when set', () => {
+    const route = { path: '/shield-plan' };
+    const state = {
+      metamask: {
+        pendingRedirectRoute: route,
+      },
+    };
+    expect(selectors.getPendingRedirectRoute(state)).toStrictEqual(route);
+  });
+
+  it('returns null when not set', () => {
+    const state = {
+      metamask: {
+        pendingRedirectRoute: null,
+      },
+    };
+    expect(selectors.getPendingRedirectRoute(state)).toBeNull();
+  });
+
+  it('returns null when metamask is undefined', () => {
+    const state = {};
+    expect(selectors.getPendingRedirectRoute(state)).toBeNull();
   });
 });
 

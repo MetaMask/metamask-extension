@@ -6,14 +6,10 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { Button, ButtonSize } from '@metamask/design-system-react';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
-import Disclosure from '../../ui/disclosure';
-import { DisclosureVariant } from '../../ui/disclosure/disclosure.constants';
-import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
-import { Box } from '../../component-library/box';
 import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
@@ -40,7 +36,6 @@ export default class TransactionListItemDetails extends PureComponent {
      * @see {@link https://github.com/MetaMask/metamask-extension/issues/28615}
      */
     // showRetry: PropTypes.bool,
-    isEarliestNonce: PropTypes.bool,
     primaryCurrency: PropTypes.string,
     transactionGroup: PropTypes.object,
     title: PropTypes.string.isRequired,
@@ -55,6 +50,7 @@ export default class TransactionListItemDetails extends PureComponent {
     blockExplorerLinkText: PropTypes.object,
     chainId: PropTypes.string,
     networkConfiguration: PropTypes.object,
+    isHardwareWalletAccount: PropTypes.bool,
   };
 
   state = {
@@ -155,13 +151,13 @@ export default class TransactionListItemDetails extends PureComponent {
       // showRetry,
       recipientAddress,
       senderAddress,
-      isEarliestNonce,
       senderNickname,
       title,
       onClose,
       showCancel,
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
+      isHardwareWalletAccount,
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -261,6 +257,7 @@ export default class TransactionListItemDetails extends PureComponent {
             </div>
             <div className="transaction-list-item-details__cards-container">
               <TransactionBreakdown
+                isHardwareWalletAccount={isHardwareWalletAccount}
                 nonce={transactionGroup.initialTransaction.txParams.nonce}
                 isTokenApprove={
                   type === TransactionType.tokenMethodApprove ||
@@ -271,25 +268,6 @@ export default class TransactionListItemDetails extends PureComponent {
                 className="transaction-list-item-details__transaction-breakdown"
                 chainId={chainId}
               />
-              {transactionGroup.initialTransaction.type !==
-                TransactionType.incoming && (
-                <Box marginTop={3} marginBottom={3}>
-                  <Disclosure
-                    title={t('activityLog')}
-                    size="small"
-                    variant={DisclosureVariant.Arrow}
-                    isScrollToBottomOnOpen
-                  >
-                    <TransactionActivityLog
-                      transactionGroup={transactionGroup}
-                      className="transaction-list-item-details__transaction-activity-log"
-                      onCancel={this.handleCancel}
-                      onRetry={this.handleRetry}
-                      isEarliestNonce={isEarliestNonce}
-                    />
-                  </Disclosure>
-                </Box>
-              )}
             </div>
           </div>
         </div>

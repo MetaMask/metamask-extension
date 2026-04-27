@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -29,7 +29,7 @@ describe('dApp Request Gas Limit', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -92,7 +92,7 @@ describe('dApp Request Gas Limit', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -155,7 +155,7 @@ describe('dApp Request Gas Limit', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -218,7 +218,7 @@ describe('dApp Request Gas Limit', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();

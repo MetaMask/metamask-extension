@@ -1,14 +1,21 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import { DefaultRootState } from 'react-redux';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 
 import {
+  getMockConfirmStateForTransaction,
   getMockContractInteractionConfirmState,
   getMockTokenTransferConfirmState,
   getMockTypedSignConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../store/store';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import Header from './header';
 
 jest.mock('react-router-dom', () => ({
@@ -62,16 +69,33 @@ describe('Header', () => {
 
   it('contains account info icon', async () => {
     const { getByLabelText } = render();
-    expect(getByLabelText('Account details')).toBeInTheDocument();
+    expect(getByLabelText(messages.accountDetails.message)).toBeInTheDocument();
   });
 
   it('shows modal when account info icon is clicked', async () => {
     const { getByLabelText, queryByTestId } = render();
     expect(queryByTestId('account-details-modal')).not.toBeInTheDocument();
-    const accountInfoIcon = getByLabelText('Account details');
+    const accountInfoIcon = getByLabelText(messages.accountDetails.message);
     fireEvent.click(accountInfoIcon);
     await waitFor(() => {
       expect(queryByTestId('account-details-modal')).toBeInTheDocument();
     });
+  });
+
+  it('renders the wallet-initiated header for perpsWithdraw transactions from the wallet', () => {
+    const base = genUnapprovedContractInteractionConfirmation({
+      chainId: '0x1',
+    });
+    const state = getMockConfirmStateForTransaction({
+      ...base,
+      type: TransactionType.perpsWithdraw,
+      origin: 'metamask',
+    } as TransactionMeta);
+
+    const { getByTestId } = render(state);
+
+    expect(
+      getByTestId('wallet-initiated-header-back-button'),
+    ).toBeInTheDocument();
   });
 });

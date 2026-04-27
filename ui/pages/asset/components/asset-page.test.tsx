@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import nock from 'nock';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
@@ -18,7 +19,23 @@ import {
   mockMultichainNetworkState,
 } from '../../../../test/stub/networks';
 import useMultiPolling from '../../../hooks/useMultiPolling';
+import { getAssetsBySelectedAccountGroup } from '../../../selectors/assets';
+import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import AssetPage from './asset-page';
+
+jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
+  ...jest.requireActual('../../../hooks/musd/useMusdGeoBlocking'),
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
+}));
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
@@ -48,6 +65,31 @@ jest.mock('../../../../shared/constants/network', () => ({
   },
 }));
 
+jest.mock('../../../hooks/musd', () => {
+  const actual = jest.requireActual<typeof import('../../../hooks/musd')>(
+    '../../../hooks/musd',
+  );
+  return {
+    ...actual,
+    useMusdCtaVisibility: () => ({
+      shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
+      shouldShowAssetOverviewCta: jest.fn().mockReturnValue(false),
+    }),
+    useMusdBalance: () => ({
+      hasMusdBalance: false,
+    }),
+    useMusdConversionTokens: () => ({
+      tokens: [],
+    }),
+    useMusdConversion: () => ({
+      startConversionFlow: jest.fn().mockResolvedValue(undefined),
+    }),
+  };
+});
+jest.mock('../../../components/multichain/activity-v2/activity-list', () => ({
+  ActivityList: () => <div data-testid="mock-activity-list" />,
+}));
+
 jest.mock('../../../hooks/useMultiPolling', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -55,11 +97,31 @@ jest.mock('../../../hooks/useMultiPolling', () => ({
   default: jest.fn(),
 }));
 
+jest.mock('../../../components/app/musd/hooks/useMerklRewards', () => ({
+  useMerklRewards: jest.fn(() => ({
+    hasClaimableReward: false,
+    rewardAmountFiat: null,
+    lifetimeClaimedFiat: 0,
+    isLoading: false,
+    isEligible: false,
+    refetch: jest.fn(),
+    hasClaimedBefore: false,
+    claimableRewardDisplay: null,
+  })),
+}));
+
+jest.mock('../../../components/app/musd/hooks/useMerklClaim', () => ({
+  useMerklClaim: jest.fn(() => ({
+    claimRewards: jest.fn(),
+    isClaiming: false,
+    error: null,
+  })),
+}));
+
 const selectedAccountAddress = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 
-jest.mock('../../../selectors/assets', () => ({
-  ...jest.requireActual('../../../selectors/assets'),
-  getAssetsBySelectedAccountGroup: jest.fn().mockReturnValue({
+function mockGetDefaultAssetsBySelectedAccountGroup() {
+  return {
     '0x1': [
       {
         assetId: '0x0000000000000000000000000000000000000000',
@@ -85,8 +147,23 @@ jest.mock('../../../selectors/assets', () => ({
           balance: 0,
         },
       },
+      {
+        assetId: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+        rawBalance: '0x0',
+        balance: '0',
+        fiat: {
+          balance: 0,
+        },
+      },
     ],
-  }),
+  };
+}
+
+jest.mock('../../../selectors/assets', () => ({
+  ...jest.requireActual('../../../selectors/assets'),
+  getAssetsBySelectedAccountGroup: jest.fn(() =>
+    mockGetDefaultAssetsBySelectedAccountGroup(),
+  ),
 }));
 
 describe('AssetPage', () => {
@@ -139,6 +216,7 @@ describe('AssetPage', () => {
       enabledNetworkMap: {
         eip155: {},
       },
+      selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       accountTree: {
         wallets: {
           'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
@@ -156,6 +234,7 @@ describe('AssetPage', () => {
                   },
                   hidden: false,
                   pinned: false,
+                  lastSelected: 0,
                 },
               },
             },
@@ -167,7 +246,6 @@ describe('AssetPage', () => {
             },
           },
         },
-        selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       },
       internalAccounts: {
         accounts: {
@@ -217,11 +295,18 @@ describe('AssetPage', () => {
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
       getTokenSymbol: jest.fn(),
+      getBearerToken: jest.fn().mockResolvedValue('mock-bearer-token'),
     } as never);
   });
 
   beforeEach(() => {
     openTabSpy.mockClear();
+
+    nock('https://price.api.cx.metamask.io')
+      .get(/\/v3\/historical-prices\//u)
+      .query(true)
+      .reply(200, {})
+      .persist();
 
     // Mocking Date.now would not be sufficient, since it would render differently
     // depending on the machine's timezone. Mock the formatter instead.
@@ -256,6 +341,7 @@ describe('AssetPage', () => {
   afterEach(() => {
     store.clearActions();
     jest.restoreAllMocks();
+    nock.cleanAll();
   });
 
   const native = {
@@ -416,12 +502,6 @@ describe('AssetPage', () => {
   it('should render an ERC20 asset without prices', async () => {
     const address = '0x309375769E79382beFDEc5bdab51063AeBDC4936';
 
-    // Mock no price history
-    nock('https://price.api.cx.metamask.io')
-      .get(`/v1/chains/${CHAIN_IDS.MAINNET}/historical-prices/${address}`)
-      .query(true)
-      .reply(200, {});
-
     const { container, queryByTestId } = renderWithProvider(
       <AssetPage asset={{ ...token, address }} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -439,9 +519,9 @@ describe('AssetPage', () => {
       }),
     );
 
-    // Verify we show the loading state
+    // Verify loading finishes and we show the empty state (API returned no prices)
     await waitFor(() => {
-      const chart = queryByTestId('asset-chart-loading');
+      const chart = queryByTestId('asset-chart-empty-state');
       expect(chart).toBeInTheDocument();
     });
 
@@ -461,9 +541,11 @@ describe('AssetPage', () => {
     const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
     const marketCap = 456;
 
-    // Mock price history
+    // Mock price history (v3 CAIP path; address must match checksummed segment from useHistoricalPrices)
     nock('https://price.api.cx.metamask.io')
-      .get(`/v1/chains/${CHAIN_IDS.MAINNET}/historical-prices/${address}`)
+      .get(
+        `/v3/historical-prices/eip155:1/erc20:${toChecksumHexAddress(address)}`,
+      )
       .query(true)
       .reply(200, { prices: [[1, 1]] });
 
@@ -506,5 +588,240 @@ describe('AssetPage', () => {
       el.setAttribute('aria-describedby', 'static-tooltip-id'),
     );
     expect(container).toMatchSnapshot();
+  });
+
+  describe('mUSD asset page feature flags', () => {
+    const musdToken = {
+      type: AssetType.token,
+      chainId: CHAIN_IDS.MAINNET,
+      address: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+      symbol: 'MUSD',
+      decimals: 6,
+      image: '',
+      balance: {
+        value: '0',
+        display: '0',
+        fiat: '',
+      },
+    } as const;
+
+    const musdRemoteFlags = (overrides: {
+      earnMusdConversionFlowEnabled?: boolean;
+      earnMerklCampaignClaiming?: boolean;
+    }) => ({
+      bridgeConfig: {
+        support: true,
+      },
+      earnMusdConversionFlowEnabled: true,
+      earnMerklCampaignClaiming: true,
+      ...overrides,
+    });
+
+    it('falls back to standard balance layout when conversion flow is off', () => {
+      const { queryByTestId, getByText } = renderWithProvider(
+        <AssetPage asset={musdToken} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            remoteFeatureFlags: musdRemoteFlags({
+              earnMusdConversionFlowEnabled: false,
+            }),
+          },
+        }),
+      );
+
+      expect(getByText(messages.yourBalance.message)).toBeInTheDocument();
+      expect(queryByTestId('musd-position-section')).not.toBeInTheDocument();
+      expect(queryByTestId('musd-bonus-section')).not.toBeInTheDocument();
+      expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
+    });
+
+    it('hides bonus section when Merkl claiming is off but shows position and convert', () => {
+      const { queryByTestId } = renderWithProvider(
+        <AssetPage asset={musdToken} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            remoteFeatureFlags: musdRemoteFlags({
+              earnMerklCampaignClaiming: false,
+            }),
+          },
+        }),
+      );
+
+      expect(queryByTestId('musd-position-section')).toBeInTheDocument();
+      expect(queryByTestId('musd-convert-section')).toBeInTheDocument();
+      expect(queryByTestId('musd-bonus-section')).not.toBeInTheDocument();
+    });
+
+    it('renders position, bonus, and convert when flow and Merkl claiming are on', () => {
+      const { queryByTestId } = renderWithProvider(
+        <AssetPage asset={musdToken} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            remoteFeatureFlags: musdRemoteFlags({}),
+          },
+        }),
+      );
+
+      expect(queryByTestId('musd-position-section')).toBeInTheDocument();
+      expect(queryByTestId('musd-convert-section')).toBeInTheDocument();
+      expect(queryByTestId('musd-bonus-section')).toBeInTheDocument();
+    });
+  });
+
+  describe('mUSD bonus cross-chain aggregation', () => {
+    const musdRemoteFlags = (overrides: {
+      earnMusdConversionFlowEnabled?: boolean;
+      earnMerklCampaignClaiming?: boolean;
+    }) => ({
+      bridgeConfig: {
+        support: true,
+      },
+      earnMusdConversionFlowEnabled: true,
+      earnMerklCampaignClaiming: true,
+      ...overrides,
+    });
+
+    const musdBaseAsset = {
+      type: AssetType.token,
+      chainId: CHAIN_IDS.MAINNET,
+      address: MUSD_TOKEN_ADDRESS,
+      symbol: 'MUSD',
+      decimals: 6,
+      image: '',
+      balance: {
+        value: '0',
+        display: '0',
+        fiat: '',
+      },
+    } as const;
+
+    const musdLineaAsset = {
+      ...musdBaseAsset,
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+    };
+
+    const buildMusdAssetsByChain = (options: {
+      mainnetFiat: number;
+      lineaFiat: number;
+      mainnetPositive: boolean;
+      lineaPositive: boolean;
+    }) => {
+      const { mainnetFiat, lineaFiat, mainnetPositive, lineaPositive } =
+        options;
+      const mainnetRaw = mainnetPositive ? '0x01' : '0x0';
+      const lineaRaw = lineaPositive ? '0x01' : '0x0';
+      const defaultMainnet =
+        mockGetDefaultAssetsBySelectedAccountGroup()['0x1'];
+      return {
+        [CHAIN_IDS.MAINNET]: [
+          ...defaultMainnet.slice(0, 3),
+          {
+            assetId: MUSD_TOKEN_ADDRESS,
+            address: MUSD_TOKEN_ADDRESS,
+            rawBalance: mainnetRaw,
+            balance: mainnetPositive ? '1' : '0',
+            fiat: { balance: mainnetFiat },
+          },
+        ],
+        [CHAIN_IDS.LINEA_MAINNET]: [
+          {
+            assetId: MUSD_TOKEN_ADDRESS,
+            address: MUSD_TOKEN_ADDRESS,
+            rawBalance: lineaRaw,
+            balance: lineaPositive ? '1' : '0',
+            fiat: { balance: lineaFiat },
+          },
+        ],
+      };
+    };
+
+    afterEach(() => {
+      (
+        getAssetsBySelectedAccountGroup as unknown as jest.Mock
+      ).mockImplementation(() => mockGetDefaultAssetsBySelectedAccountGroup());
+    });
+
+    it('shows estimated annual bonus as 3% of combined Mainnet and Linea fiat when viewing Mainnet mUSD', () => {
+      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
+        buildMusdAssetsByChain({
+          mainnetFiat: 1000,
+          lineaFiat: 500,
+          mainnetPositive: true,
+          lineaPositive: true,
+        }),
+      );
+
+      const { getByText } = renderWithProvider(
+        <AssetPage asset={musdBaseAsset} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            remoteFeatureFlags: musdRemoteFlags({}),
+          },
+        }),
+      );
+
+      expect(
+        getByText(messages.musdAssetBonusEstimatedAnnual.message),
+      ).toBeInTheDocument();
+      expect(getByText(/\+\$45\.00/u)).toBeInTheDocument();
+    });
+
+    it('shows the same estimated annual bonus when viewing Linea mUSD as when viewing Mainnet', () => {
+      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
+        buildMusdAssetsByChain({
+          mainnetFiat: 1000,
+          lineaFiat: 500,
+          mainnetPositive: true,
+          lineaPositive: true,
+        }),
+      );
+
+      const { getByText } = renderWithProvider(
+        <AssetPage asset={musdLineaAsset} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            remoteFeatureFlags: musdRemoteFlags({}),
+          },
+        }),
+      );
+
+      expect(getByText(/\+\$45\.00/u)).toBeInTheDocument();
+    });
+
+    it('shows Accruing next bonus on Linea when mUSD is only on Mainnet', () => {
+      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
+        buildMusdAssetsByChain({
+          mainnetFiat: 100,
+          lineaFiat: 0,
+          mainnetPositive: true,
+          lineaPositive: false,
+        }),
+      );
+
+      const { getByText } = renderWithProvider(
+        <AssetPage asset={musdLineaAsset} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            remoteFeatureFlags: musdRemoteFlags({}),
+          },
+        }),
+      );
+
+      expect(
+        getByText(messages.musdAssetBonusAccruing.message),
+      ).toBeInTheDocument();
+    });
   });
 });

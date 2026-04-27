@@ -1,5 +1,5 @@
 import { getSnapPrefix, stripSnapPrefix } from '@metamask/snaps-utils';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';

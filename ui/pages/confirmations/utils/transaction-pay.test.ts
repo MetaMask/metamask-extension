@@ -1,15 +1,12 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import type {
   TransactionPayRequiredToken,
   TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Asset, AssetStandard } from '../types/send';
 import {
-  hasTransactionType,
   getTokenTransferData,
   getTokenAddress,
   getAvailableTokens,
@@ -75,49 +72,6 @@ function createMockRequiredToken(
 }
 
 describe('transaction-pay utils', () => {
-  describe('hasTransactionType', () => {
-    it('returns true when transaction type matches', () => {
-      const transactionMeta = {
-        type: TransactionType.simpleSend,
-      } as TransactionMeta;
-
-      expect(
-        hasTransactionType(transactionMeta, [TransactionType.simpleSend]),
-      ).toBe(true);
-    });
-
-    it('returns true when transaction type is in the list', () => {
-      const transactionMeta = {
-        type: TransactionType.tokenMethodTransfer,
-      } as TransactionMeta;
-
-      expect(
-        hasTransactionType(transactionMeta, [
-          TransactionType.simpleSend,
-          TransactionType.tokenMethodTransfer,
-        ]),
-      ).toBe(true);
-    });
-
-    it('returns false when transaction type does not match', () => {
-      const transactionMeta = {
-        type: TransactionType.simpleSend,
-      } as TransactionMeta;
-
-      expect(
-        hasTransactionType(transactionMeta, [
-          TransactionType.tokenMethodTransfer,
-        ]),
-      ).toBe(false);
-    });
-
-    it('returns false when transactionMeta is undefined', () => {
-      expect(hasTransactionType(undefined, [TransactionType.simpleSend])).toBe(
-        false,
-      );
-    });
-  });
-
   describe('getTokenTransferData', () => {
     it('returns token transfer data from txParams when data starts with transfer selector', () => {
       const transactionMeta = {
@@ -215,10 +169,14 @@ describe('transaction-pay utils', () => {
   });
 
   describe('getAvailableTokens', () => {
-    it('filters out non-ERC20 tokens', () => {
+    it('filters out NFT tokens but keeps native and ERC20', () => {
       const tokens = [
-        createMockAsset({ standard: AssetStandard.Native }),
+        createMockAsset({
+          standard: AssetStandard.Native,
+          address: '0xnative',
+        }),
         createMockAsset({ standard: AssetStandard.ERC721 }),
+        createMockAsset({ standard: AssetStandard.ERC1155 }),
         createMockAsset({
           standard: AssetStandard.ERC20,
           address: TOKEN_ADDRESS_MOCK,
@@ -227,8 +185,11 @@ describe('transaction-pay utils', () => {
 
       const result = getAvailableTokens({ tokens });
 
-      expect(result).toHaveLength(1);
-      expect(result[0].address).toBe(TOKEN_ADDRESS_MOCK);
+      expect(result).toHaveLength(2);
+      expect(result.map((t) => t.address)).toStrictEqual([
+        '0xnative',
+        TOKEN_ADDRESS_MOCK,
+      ]);
     });
 
     it('filters out tokens without eip155 account type', () => {
@@ -304,14 +265,6 @@ describe('transaction-pay utils', () => {
       expect(result[0].address).toBe(TOKEN_ADDRESS_2_MOCK);
     });
 
-    it('marks token as disabled when no native balance', () => {
-      const tokens = [createMockAsset({ address: TOKEN_ADDRESS_MOCK })];
-
-      const result = getAvailableTokens({ tokens });
-
-      expect(result[0].disabled).toBe(true);
-    });
-
     it('marks token as enabled when native token has balance', () => {
       const tokens = [
         createMockAsset({ address: TOKEN_ADDRESS_MOCK }),
@@ -347,6 +300,47 @@ describe('transaction-pay utils', () => {
 
     it('returns empty array when tokens is empty', () => {
       const result = getAvailableTokens({ tokens: [] });
+
+      expect(result).toHaveLength(0);
+    });
+
+    it('excludes tokens on testnet chains, keeping mainnet tokens', () => {
+      const tokens = [
+        createMockAsset({
+          address: TOKEN_ADDRESS_MOCK,
+          chainId: CHAIN_IDS.SEPOLIA,
+        }),
+        createMockAsset({
+          address: TOKEN_ADDRESS_MOCK,
+          chainId: CHAIN_IDS.LINEA_SEPOLIA,
+        }),
+        createMockAsset({
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_IDS.MAINNET,
+        }),
+      ];
+
+      const result = getAvailableTokens({ tokens });
+
+      expect(result).toHaveLength(1);
+      expect(result[0].address).toBe(TOKEN_ADDRESS_2_MOCK);
+      expect(result[0].chainId).toBe(CHAIN_IDS.MAINNET);
+    });
+
+    it('excludes testnet tokens even when selected as the pay token', () => {
+      const payToken = createMockPaymentToken({
+        address: TOKEN_ADDRESS_MOCK,
+        chainId: CHAIN_IDS.SEPOLIA,
+      });
+      const tokens = [
+        createMockAsset({
+          address: TOKEN_ADDRESS_MOCK,
+          chainId: CHAIN_IDS.SEPOLIA,
+          balance: '1000000000000000000',
+        }),
+      ];
+
+      const result = getAvailableTokens({ payToken, tokens });
 
       expect(result).toHaveLength(0);
     });

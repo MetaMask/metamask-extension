@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 import { MenuItem } from '../../ui/menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -21,7 +21,7 @@ export const AccountDetailsMenuItem = ({
 }) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
+  const accountGroupId = useSelector(getSelectedAccountGroup);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const navigate = useNavigate();
 
@@ -37,9 +37,12 @@ export const AccountDetailsMenuItem = ({
       },
     });
 
-    navigate(
-      `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}`,
-    );
+    navigate({
+      pathname: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+      search: createSearchParams({
+        accountGroupId,
+      }).toString(),
+    });
 
     closeMenu?.();
   }, [
@@ -47,7 +50,7 @@ export const AccountDetailsMenuItem = ({
     hdEntropyIndex,
     navigate,
     metricsLocation,
-    selectedAccountGroup,
+    accountGroupId,
     trackEvent,
   ]);
 

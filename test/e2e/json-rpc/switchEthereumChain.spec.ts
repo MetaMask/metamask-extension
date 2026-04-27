@@ -6,21 +6,21 @@ import {
   WINDOW_TITLES,
 } from '../constants';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../page-objects/pages/dialog/network-permission-select-modal';
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 
 describe('Switch Ethereum Chain for two dapps', function () {
   it('switches the chainId of two dapps when switchEthereumChain of one dapp is confirmed', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
@@ -42,7 +42,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         // open two dapps
         const dappOne = new TestDapp(driver);
         await dappOne.openTestDappPage({ url: DAPP_URL });
@@ -93,13 +93,10 @@ describe('Switch Ethereum Chain for two dapps', function () {
   it('queues switchEthereumChain request from second dapp after send tx request', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
-          .withPreferencesControllerSmartTransactionsOptedOut()
+          .withSmartTransactionsOptedOut()
           .build(),
-        manifestFlags: {
-          testing: { disableSmartTransactionsOverride: true },
-        },
         dappOptions: { numberOfTestDapps: 2 },
         localNodeOptions: [
           {
@@ -120,7 +117,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // open two dapps
         const dappOne = new TestDapp(driver);
@@ -214,7 +211,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
   it('queues send tx after switchEthereum request with a warning, if switchEthereum request is cancelled should show pending tx', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         dappOptions: { numberOfTestDapps: 2 },
@@ -237,7 +234,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // open two dapps
         const dappTwo = new TestDapp(driver);

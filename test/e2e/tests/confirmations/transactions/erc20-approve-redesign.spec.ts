@@ -4,7 +4,7 @@ import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/erc20-approve-transaction-confirmation';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
@@ -37,7 +37,7 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);
 
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();

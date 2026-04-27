@@ -1,11 +1,7 @@
 import path from 'path';
 import fs from 'fs-extra';
 import { withFixtures } from '../helpers';
-import {
-  LOCAL_NODE_MNEMONIC,
-  WALLET_PASSWORD,
-  WINDOW_TITLES,
-} from '../constants';
+import { E2E_SRP, WALLET_PASSWORD, WINDOW_TITLES } from '../constants';
 import StartOnboardingPage from '../page-objects/pages/onboarding/start-onboarding-page';
 import {
   computeSchemaDiff,
@@ -141,7 +137,7 @@ describe('Wallet State', function () {
   });
   it('export default fixture', async function () {
     const networkName = 'Localhost 8545';
-    const networkUrl = 'http://127.0.0.1:8545';
+    const networkUrl = 'http://localhost:8545';
     const currencySymbol = 'ETH';
     const chainId = 1337;
     await withFixtures(
@@ -159,7 +155,7 @@ describe('Wallet State', function () {
         // Perform the onboarding manual steps with e2e SRP and password to generate the logged in state
         await importSRPOnboardingFlow({
           driver,
-          seedPhrase: LOCAL_NODE_MNEMONIC,
+          seedPhrase: E2E_SRP,
           password: WALLET_PASSWORD,
           participateInMetaMetrics: true,
           dataCollectionForMarketing: true,
@@ -184,7 +180,6 @@ describe('Wallet State', function () {
         // Set the settings to match the desired fixture state:
         // 1. enabled native balance and 2. enabled test networks
         await enableNativeTokenAsMainBalance(driver);
-        await enableTestNetworks(driver);
 
         // Action needed to apply the changes in the balance as doesn't happen right away (potential bug)
         await switchToNetworkFromNetworkSelect(
@@ -192,6 +187,8 @@ describe('Wallet State', function () {
           'Popular',
           'All popular networks',
         );
+
+        await enableTestNetworks(driver);
 
         await switchToNetworkFromNetworkSelect(
           driver,

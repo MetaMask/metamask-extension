@@ -1,5 +1,8 @@
 import semver from 'semver';
-import { isPerpsFeatureEnabled, PerpsFeatureFlag } from './perps-feature-flags';
+import {
+  isPerpsRemoteConfigSatisfied,
+  PerpsFeatureFlag,
+} from './perps-feature-flags';
 
 jest.mock('semver');
 jest.mock('../../package.json', () => ({
@@ -13,37 +16,37 @@ describe('perps-feature-flags', () => {
     jest.clearAllMocks();
   });
 
-  describe('isPerpsFeatureEnabled', () => {
+  describe('isPerpsRemoteConfigSatisfied', () => {
     describe('falsy input', () => {
       it('returns false when flagValue is null', () => {
-        expect(isPerpsFeatureEnabled(null)).toBe(false);
+        expect(isPerpsRemoteConfigSatisfied(null)).toBe(false);
         expect(semverGteMock).not.toHaveBeenCalled();
       });
 
       it('returns false when flagValue is undefined', () => {
-        expect(isPerpsFeatureEnabled(undefined)).toBe(false);
+        expect(isPerpsRemoteConfigSatisfied(undefined)).toBe(false);
         expect(semverGteMock).not.toHaveBeenCalled();
       });
 
       it('returns false when flagValue is an empty string', () => {
-        expect(isPerpsFeatureEnabled('')).toBe(false);
+        expect(isPerpsRemoteConfigSatisfied('')).toBe(false);
         expect(semverGteMock).not.toHaveBeenCalled();
       });
 
       it('returns false when flagValue is 0', () => {
-        expect(isPerpsFeatureEnabled(0)).toBe(false);
+        expect(isPerpsRemoteConfigSatisfied(0)).toBe(false);
         expect(semverGteMock).not.toHaveBeenCalled();
       });
     });
 
     describe('boolean flags (backward compatibility)', () => {
       it('returns true when flagValue is true', () => {
-        expect(isPerpsFeatureEnabled(true)).toBe(true);
+        expect(isPerpsRemoteConfigSatisfied(true)).toBe(true);
         expect(semverGteMock).not.toHaveBeenCalled();
       });
 
       it('returns false when flagValue is false', () => {
-        expect(isPerpsFeatureEnabled(false)).toBe(false);
+        expect(isPerpsRemoteConfigSatisfied(false)).toBe(false);
         expect(semverGteMock).not.toHaveBeenCalled();
       });
     });
@@ -56,7 +59,7 @@ describe('perps-feature-flags', () => {
             minimumVersion: '12.0.0',
           };
 
-          expect(isPerpsFeatureEnabled(flag)).toBe(false);
+          expect(isPerpsRemoteConfigSatisfied(flag)).toBe(false);
           expect(semverGteMock).not.toHaveBeenCalled();
         });
 
@@ -66,7 +69,7 @@ describe('perps-feature-flags', () => {
             minimumVersion: '',
           };
 
-          expect(isPerpsFeatureEnabled(flag)).toBe(false);
+          expect(isPerpsRemoteConfigSatisfied(flag)).toBe(false);
           expect(semverGteMock).not.toHaveBeenCalled();
         });
       });
@@ -80,7 +83,7 @@ describe('perps-feature-flags', () => {
             minimumVersion: '12.0.0',
           };
 
-          expect(isPerpsFeatureEnabled(flag)).toBe(true);
+          expect(isPerpsRemoteConfigSatisfied(flag)).toBe(true);
           expect(semverGteMock).toHaveBeenCalledTimes(1);
           expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.0.0');
         });
@@ -93,7 +96,7 @@ describe('perps-feature-flags', () => {
             minimumVersion: '13.0.0',
           };
 
-          expect(isPerpsFeatureEnabled(flag)).toBe(false);
+          expect(isPerpsRemoteConfigSatisfied(flag)).toBe(false);
           expect(semverGteMock).toHaveBeenCalledTimes(1);
           expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '13.0.0');
         });
@@ -104,7 +107,7 @@ describe('perps-feature-flags', () => {
             minimumVersion: '',
           };
 
-          expect(isPerpsFeatureEnabled(flag)).toBe(false);
+          expect(isPerpsRemoteConfigSatisfied(flag)).toBe(false);
           expect(semverGteMock).not.toHaveBeenCalled();
         });
 
@@ -113,7 +116,7 @@ describe('perps-feature-flags', () => {
             enabled: true,
           };
 
-          expect(isPerpsFeatureEnabled(flag)).toBe(false);
+          expect(isPerpsRemoteConfigSatisfied(flag)).toBe(false);
           expect(semverGteMock).not.toHaveBeenCalled();
         });
       });
@@ -124,7 +127,7 @@ describe('perps-feature-flags', () => {
             minimumVersion: '12.0.0',
           };
 
-          expect(isPerpsFeatureEnabled(flag)).toBe(false);
+          expect(isPerpsRemoteConfigSatisfied(flag)).toBe(false);
           expect(semverGteMock).not.toHaveBeenCalled();
         });
 
@@ -133,12 +136,12 @@ describe('perps-feature-flags', () => {
             enabled: true,
           };
 
-          expect(isPerpsFeatureEnabled(flag)).toBe(false);
+          expect(isPerpsRemoteConfigSatisfied(flag)).toBe(false);
           expect(semverGteMock).not.toHaveBeenCalled();
         });
 
         it('returns false for an empty object', () => {
-          expect(isPerpsFeatureEnabled({})).toBe(false);
+          expect(isPerpsRemoteConfigSatisfied({})).toBe(false);
           expect(semverGteMock).not.toHaveBeenCalled();
         });
       });
@@ -154,7 +157,7 @@ describe('perps-feature-flags', () => {
             minimumVersion: 'invalid-version',
           };
 
-          expect(isPerpsFeatureEnabled(flag)).toBe(false);
+          expect(isPerpsRemoteConfigSatisfied(flag)).toBe(false);
           expect(semverGteMock).toHaveBeenCalledTimes(1);
           expect(semverGteMock).toHaveBeenCalledWith(
             '12.5.0',
@@ -173,7 +176,7 @@ describe('perps-feature-flags', () => {
             minimumVersion: '12.0.0',
           };
 
-          expect(isPerpsFeatureEnabled(flag)).toBe(false);
+          expect(isPerpsRemoteConfigSatisfied(flag)).toBe(false);
           expect(semverGteMock).toHaveBeenCalledTimes(1);
         });
       });
@@ -187,7 +190,7 @@ describe('perps-feature-flags', () => {
             minimumVersion: '12.5.0',
           };
 
-          expect(isPerpsFeatureEnabled(flag)).toBe(true);
+          expect(isPerpsRemoteConfigSatisfied(flag)).toBe(true);
           expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.5.0');
         });
 
@@ -199,7 +202,7 @@ describe('perps-feature-flags', () => {
             minimumVersion: '12.5.0-beta.1',
           };
 
-          expect(isPerpsFeatureEnabled(flag)).toBe(true);
+          expect(isPerpsRemoteConfigSatisfied(flag)).toBe(true);
           expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.5.0-beta.1');
         });
       });
@@ -207,20 +210,20 @@ describe('perps-feature-flags', () => {
 
     describe('unsupported types', () => {
       it('returns false for a number', () => {
-        expect(isPerpsFeatureEnabled(42)).toBe(false);
+        expect(isPerpsRemoteConfigSatisfied(42)).toBe(false);
       });
 
       it('returns false for a string', () => {
-        expect(isPerpsFeatureEnabled('true')).toBe(false);
+        expect(isPerpsRemoteConfigSatisfied('true')).toBe(false);
       });
 
       it('returns false for an array', () => {
-        expect(isPerpsFeatureEnabled([true])).toBe(false);
+        expect(isPerpsRemoteConfigSatisfied([true])).toBe(false);
         expect(semverGteMock).not.toHaveBeenCalled();
       });
 
       it('returns false for a function', () => {
-        expect(isPerpsFeatureEnabled(() => true)).toBe(false);
+        expect(isPerpsRemoteConfigSatisfied(() => true)).toBe(false);
       });
     });
   });

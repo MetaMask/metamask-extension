@@ -19,8 +19,18 @@ const { DAPP_PATHS, ERC_4337_ACCOUNT } = require('./constants');
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
-const LocalWebSocketServer = require('./websocket-server').default;
-const { setupSolanaWebsocketMocks } = require('./websocket-solana-mocks');
+const WebSocketRegistry = require('./websocket/registry').default;
+const { solanaWebSocketConfig } = require('./websocket/solana-mocks');
+const {
+  accountActivityWebSocketConfig,
+} = require('./websocket/account-activity-mocks');
+const { perpsWebSocketConfig } = require('./websocket/perps-mocks');
+const { WEBSOCKET_SERVICES } = require('./websocket/constants');
+
+// Register each WebSocket service explicitly.
+WebSocketRegistry.register(solanaWebSocketConfig);
+WebSocketRegistry.register(accountActivityWebSocketConfig);
+WebSocketRegistry.register(perpsWebSocketConfig);
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -125,7 +135,12 @@ function normalizeSmartContracts(smartContract) {
  */
 
 /**
- *
+ * @typedef {object} UnifiedEvmAccountsApiBalances
+ * @property {string} [mainnetNativeEthHuman] - Mainnet (eip155:1) native balance string for the default fixture account (Accounts API v5).
+ * @property {{ assetId: string, balance: string }[]} [mainnetAdditionalBalances] - Extra v5 rows for mainnet (e.g. ERC-20s).
+ */
+
+/**
  * @param {object} options
  * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
  */
@@ -150,7 +165,10 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
+    accountActivityWebSocketSpecificMocks = [],
+    perpsWebSocketSpecificMocks = [],
     extendedTimeoutMultiplier = 1,
+    unifiedEvmAccountsApiBalances,
   } = options;
 
   // Normalize localNodeOptions
@@ -186,8 +204,6 @@ async function withFixtures(options, testSuite) {
 
   let localNode;
   const localNodes = [];
-
-  let webSocketServer;
 
   try {
     // Start servers based on the localNodes array
@@ -313,10 +329,14 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    // Start WebSocket server and apply Solana mocks (defaults + overrides)
-    webSocketServer = LocalWebSocketServer.getServerInstance();
-    webSocketServer.start();
-    await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
+    // Start all registered WebSocket servers and apply mocks
+    await WebSocketRegistry.startAll({
+      [WEBSOCKET_SERVICES.solana]: { mocks: solanaWebSocketSpecificMocks },
+      [WEBSOCKET_SERVICES.accountActivity]: {
+        mocks: accountActivityWebSocketSpecificMocks,
+      },
+      [WEBSOCKET_SERVICES.perps]: { mocks: perpsWebSocketSpecificMocks },
+    });
 
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough
@@ -333,6 +353,7 @@ async function withFixtures(options, testSuite) {
       chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
       ethConversionInUsd,
       monConversionInUsd,
+      unifiedEvmAccountsApiBalances,
     });
 
     if ((await detectPort(8000)) !== 8000) {
@@ -342,12 +363,33 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
-    // Log every request hitting the mock server
+    // Log every request hitting the mock server.
+    // In pass-through mode (benchmarks), group duplicates by host to reduce noise.
     const requestLogLabel = useMockingPassThrough
       ? 'Request going to a live server ============'
       : 'Request sent to mock server ============';
+    const hostCounts = useMockingPassThrough ? new Map() : null;
+    const logColor = useMockingPassThrough ? '\x1b[32m' : '\x1b[38;5;216m';
     mockServer.on('request', (req) => {
-      console.log(`\x1b[32m${requestLogLabel} ${req.url}\x1b[0m`);
+      if (hostCounts) {
+        let host;
+        try {
+          host = new URL(req.url).host;
+        } catch {
+          host = req.url;
+        }
+        const count = (hostCounts.get(host) || 0) + 1;
+        hostCounts.set(host, count);
+        if (count <= 3) {
+          console.log(`${logColor}${requestLogLabel} ${req.url}\x1b[0m`);
+        } else if (count === 4) {
+          console.log(
+            `\x1b[33m${requestLogLabel} ${host} (repeated, suppressing further logs)\x1b[0m`,
+          );
+        }
+      } else {
+        console.log(`${logColor}${requestLogLabel} ${req.url}\x1b[0m`);
+      }
     });
 
     await setManifestFlags(manifestFlags);
@@ -529,14 +571,9 @@ async function withFixtures(options, testSuite) {
       shutdownTasks.push(
         (async () => {
           try {
-            if (
-              webSocketServer &&
-              typeof webSocketServer.stopAndCleanup === 'function'
-            ) {
-              await webSocketServer.stopAndCleanup();
-            }
+            await WebSocketRegistry.stopAll();
           } catch (e) {
-            console.log('WebSocket server already stopped or not initialized');
+            console.log('WebSocket servers already stopped or not initialized');
           }
         })(),
       );

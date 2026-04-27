@@ -1,113 +1,88 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   BoxFlexDirection,
   IconColor,
   BoxJustifyContent,
   TextColor,
-  TextAlign,
   TextVariant,
   BoxBackgroundColor,
   Box,
-  BoxAlignItems,
   Text,
   ButtonIcon,
-  AvatarNetwork,
-  AvatarNetworkSize,
   ButtonIconSize,
   IconName,
   Button,
 } from '@metamask/design-system-react';
 import {
-  Erc20TokenPeriodicPermission,
-  Erc20TokenStreamPermission,
-  NativeTokenPeriodicPermission,
-  NativeTokenStreamPermission,
-  PermissionTypesWithCustom,
-  StoredGatorPermissionSanitized,
+  GatorPermissionStatus,
+  PermissionInfoWithMetadata,
 } from '@metamask/gator-permissions-controller';
-import { getImageForChainId } from '../../../../../selectors/multichain';
-import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
+import { getURLHost } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getInternalAccountByAddress } from '../../../../../selectors';
 import {
-  convertTimestampToReadableDate,
-  getPeriodFrequencyValueTranslationKey,
-  convertAmountPerSecondToAmountPerPeriod,
-  getDecimalizedHexValue,
-  extractExpiryToReadableDate,
-  GatorPermissionRule,
-} from '../../../../../../shared/lib/gator-permissions';
-import { PreferredAvatar } from '../../../../app/preferred-avatar';
-import { BackgroundColor } from '../../../../../helpers/constants/design-system';
+  BackgroundColor,
+  TextColor as DesignSystemTextColor,
+} from '../../../../../helpers/constants/design-system';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
-import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
-import { Skeleton } from '../../../../component-library/skeleton';
-
-// Shared row style for permission details
-const rowStyle = { flex: '1', alignSelf: 'center' } as const;
-
-type PermissionDetailRowProps = {
-  label: string;
-  value: React.ReactNode;
-  testId?: string;
-  isLoading?: boolean;
-};
+import { useBoolean } from '../../../../../hooks/useBoolean';
+import { Tag } from '../../../../component-library';
+import { ReviewPermissionRenderer } from './review-permission-renderer';
 
 /**
- * Reusable row component for permission details
+ * Permission `data` for the shared schema renderer.
+ * Schema validation runs in `ReviewPermissionRenderer`.
  *
- * @param options - The component options
- * @param options.label - The label text to display
- * @param options.value - The value to display
- * @param options.testId - Optional test ID for the value element
- * @param options.isLoading - Whether to show a loading skeleton
- * @returns The permission detail row component
+ * @param permission - Gator permission whose `data` is passed into `PERMISSION_SCHEMAS`.
+ * @param permission.data - Raw permission payload; coerced to a plain object for the schema.
  */
-const PermissionDetailRow = ({
-  label,
-  value,
-  testId,
-  isLoading = false,
-}: PermissionDetailRowProps): JSX.Element => {
-  return (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      justifyContent={BoxJustifyContent.Between}
-      style={rowStyle}
-      gap={4}
-      marginTop={2}
-    >
-      <Text
-        textAlign={TextAlign.Left}
-        color={TextColor.TextAlternative}
-        variant={TextVariant.BodyMd}
-      >
-        {label}
-      </Text>
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.End}
-        style={rowStyle}
-        gap={2}
-        alignItems={BoxAlignItems.Center}
-      >
-        <Skeleton isLoading={isLoading} width="100px" height="16px">
-          <Text
-            variant={TextVariant.BodyMd}
-            color={TextColor.TextAlternative}
-            textAlign={TextAlign.Right}
-            data-testid={testId}
-          >
-            {value}
-          </Text>
-        </Skeleton>
-      </Box>
-    </Box>
-  );
+function permissionDataForReview(permission: {
+  data: unknown;
+}): Record<string, unknown> {
+  if (
+    permission.data !== null &&
+    typeof permission.data === 'object' &&
+    !Array.isArray(permission.data)
+  ) {
+    return permission.data as Record<string, unknown>;
+  }
+  return {};
+}
+
+type InactivePermissionStatusTag = {
+  label: string;
+  backgroundColor: BackgroundColor;
+  labelColor: TextColor;
 };
+
+function getInactivePermissionStatusTag(
+  permissionStatus: GatorPermissionStatus,
+  translate: ReturnType<typeof useI18nContext>,
+): InactivePermissionStatusTag | null {
+  switch (permissionStatus) {
+    case 'Active':
+      return null;
+    case 'Expired':
+      return {
+        label: translate('gatorPermissionsStatusExpired'),
+        backgroundColor: BackgroundColor.warningMuted,
+        labelColor: TextColor.WarningDefault,
+      };
+    case 'Revoked':
+      return {
+        label: translate('gatorPermissionsStatusRevoked'),
+        backgroundColor: BackgroundColor.errorMuted,
+        labelColor: TextColor.ErrorDefault,
+      };
+    default: {
+      throw new Error(
+        `Unexpected gator permission status: ${String(permissionStatus)}`,
+      );
+    }
+  }
+}
 
 type ReviewGatorPermissionItemProps = {
   /**
@@ -118,7 +93,7 @@ type ReviewGatorPermissionItemProps = {
   /**
    * The gator permission to display
    */
-  gatorPermission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>;
+  gatorPermission: PermissionInfoWithMetadata;
 
   /**
    * The function to call when the revoke is clicked
@@ -131,29 +106,6 @@ type ReviewGatorPermissionItemProps = {
   hasRevokeBeenClicked?: boolean;
 };
 
-type PermissionExpandedDetails = Record<
-  string,
-  {
-    translationKey: string;
-    value: string;
-    testId: string;
-  }
->;
-
-type PermissionDetails = {
-  amountLabel: {
-    translationKey: string;
-    value: string;
-    testId: string;
-  };
-  frequencyLabel: {
-    translationKey: string;
-    valueTranslationKey: string;
-    testId: string;
-  };
-  expandedDetails: PermissionExpandedDetails;
-};
-
 export const ReviewGatorPermissionItem = ({
   networkName,
   gatorPermission,
@@ -162,26 +114,19 @@ export const ReviewGatorPermissionItem = ({
 }: ReviewGatorPermissionItemProps) => {
   const t = useI18nContext();
 
-  const { permissionResponse, siteOrigin } = gatorPermission;
+  const { permissionResponse, siteOrigin, status } = gatorPermission;
   const {
     chainId,
     permission: {
       type: permissionType,
-      data: { justification, tokenAddress },
+      data: { tokenAddress },
     },
     context: permissionContext,
     from: permissionAccount = '0x',
   } = permissionResponse;
 
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { value: isExpanded, toggle } = useBoolean();
   const pendingRevocations = useSelector(getPendingRevocations);
-  const internalAccount = useSelector((state) =>
-    getInternalAccountByAddress(state, permissionAccount),
-  );
-
-  const accountText = useMemo(() => {
-    return internalAccount?.metadata?.name || shortenAddress(permissionAccount);
-  }, [internalAccount, permissionAccount]);
 
   // Use the hook to fetch token information (handles both native and ERC-20 tokens)
   const { tokenInfo: tokenMetadata, loading } = useGatorPermissionTokenInfo(
@@ -199,204 +144,45 @@ export const ReviewGatorPermissionItem = ({
     );
   }, [pendingRevocations, permissionContext, hasRevokeBeenClicked]);
 
-  /**
-   * Handles the click event for the expand/collapse button
-   */
-  const handleExpandClick = () => {
-    setIsExpanded(!isExpanded);
-  };
-
-  /**
-   * Returns the expiration date from the rules
-   */
-  const getExpirationDate = useCallback(
-    (rules: GatorPermissionRule[] | undefined | null): string => {
-      if (!rules?.length) {
-        return t('gatorPermissionNoExpiration');
-      }
-      const expiryDate = extractExpiryToReadableDate(rules);
-      return expiryDate || t('gatorPermissionNoExpiration');
-    },
-    [t],
-  );
-
-  /**
-   * Returns the token stream permission details
-   *
-   * @param permission - The stream permission data
-   * @returns The permission details
-   */
-  const getTokenStreamPermissionDetails = useCallback(
-    (
-      permission: NativeTokenStreamPermission | Erc20TokenStreamPermission,
-    ): PermissionDetails => {
-      const { symbol, decimals } = tokenMetadata;
-      const amountPerPeriod = convertAmountPerSecondToAmountPerPeriod(
-        permission.data.amountPerSecond,
-        'weekly',
-      );
-
-      return {
-        amountLabel: {
-          translationKey: 'gatorPermissionsStreamingAmountLabel',
-          value: `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`,
-          testId: 'review-gator-permission-amount-label',
-        },
-        frequencyLabel: {
-          translationKey: 'gatorPermissionTokenStreamFrequencyLabel',
-          valueTranslationKey: 'gatorPermissionWeeklyFrequency',
-          testId: 'review-gator-permission-frequency-label',
-        },
-        expandedDetails: {
-          initialAllowance: {
-            translationKey: 'gatorPermissionsInitialAllowance',
-            value: `${getDecimalizedHexValue(
-              permission.data.initialAmount || '0x0',
-              decimals,
-            )} ${symbol}`,
-            testId: 'review-gator-permission-initial-allowance',
-          },
-          maxAllowance: {
-            translationKey: 'gatorPermissionsMaxAllowance',
-            value: permission.data.maxAmount
-              ? `${getDecimalizedHexValue(
-                  permission.data.maxAmount,
-                  decimals,
-                )} ${symbol}`
-              : t('unlimited'),
-            testId: 'review-gator-permission-max-allowance',
-          },
-          startDate: {
-            translationKey: 'gatorPermissionsStartDate',
-            value: convertTimestampToReadableDate(
-              permission.data.startTime ?? 0,
-            ),
-            testId: 'review-gator-permission-start-date',
-          },
-
-          expirationDate: {
-            translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(permissionResponse.rules),
-            testId: 'review-gator-permission-expiration-date',
-          },
-          streamRate: {
-            translationKey: 'gatorPermissionsStreamRate',
-            value: `${getDecimalizedHexValue(
-              permission.data.amountPerSecond,
-              decimals,
-            )} ${symbol}/sec`,
-            testId: 'review-gator-permission-stream-rate',
-          },
-        },
-      };
-    },
-    [tokenMetadata, t, getExpirationDate, permissionResponse.rules],
-  );
-
-  /**
-   * Returns the token periodic permission details
-   *
-   * @param permission - The periodic permission data
-   * @returns The permission details
-   */
-  const getTokenPeriodicPermissionDetails = useCallback(
-    (
-      permission: NativeTokenPeriodicPermission | Erc20TokenPeriodicPermission,
-    ): PermissionDetails => {
-      const { symbol, decimals } = tokenMetadata;
-      return {
-        amountLabel: {
-          translationKey: 'amount',
-          value: `${getDecimalizedHexValue(
-            permission.data.periodAmount,
-            decimals,
-          )} ${symbol}`,
-          testId: 'review-gator-permission-amount-label',
-        },
-        frequencyLabel: {
-          translationKey: 'gatorPermissionTokenPeriodicFrequencyLabel',
-          valueTranslationKey: getPeriodFrequencyValueTranslationKey(
-            permission.data.periodDuration,
-          ),
-          testId: 'review-gator-permission-frequency-label',
-        },
-        expandedDetails: {
-          startDate: {
-            translationKey: 'gatorPermissionsStartDate',
-            value: convertTimestampToReadableDate(
-              permission.data.startTime ?? 0,
-            ),
-            testId: 'review-gator-permission-start-date',
-          },
-
-          expirationDate: {
-            translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(permissionResponse.rules),
-            testId: 'review-gator-permission-expiration-date',
-          },
-        },
-      };
-    },
-    [tokenMetadata, getExpirationDate, permissionResponse.rules],
-  );
-
-  /**
-   * Returns the token revocation permission details
-   *
-   * @returns The permission details for erc20-token-revocation
-   */
-  const getTokenRevocationPermissionDetails =
-    useCallback((): PermissionDetails => {
-      return {
-        amountLabel: {
-          translationKey: 'revokeTokenApprovals',
-          value: t('allTokens'),
-          testId: 'review-gator-permission-amount-label',
-        },
-        frequencyLabel: {
-          translationKey: '',
-          valueTranslationKey: '',
-          testId: 'review-gator-permission-frequency-label',
-        },
-        expandedDetails: {
-          expirationDate: {
-            translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(permissionResponse.rules),
-            testId: 'review-gator-permission-expiration-date',
-          },
-        },
-      };
-    }, [t, getExpirationDate, permissionResponse.rules]);
-
-  /**
-   * Returns the permission details
-   *
-   * @returns The permission details
-   */
-  const permissionDetails = useMemo((): PermissionDetails => {
-    switch (permissionType) {
-      case 'native-token-stream':
-      case 'erc20-token-stream':
-        return getTokenStreamPermissionDetails(
-          permissionResponse.permission as Erc20TokenStreamPermission,
-        );
-      case 'native-token-periodic':
-      case 'erc20-token-periodic':
-        return getTokenPeriodicPermissionDetails(
-          permissionResponse.permission as Erc20TokenPeriodicPermission,
-        );
-      case 'erc20-token-revocation':
-        return getTokenRevocationPermissionDetails();
-      default:
-        throw new Error(`Invalid permission type: ${permissionType}`);
+  const revokeButtonLabel = useMemo(() => {
+    if (isPendingRevocation) {
+      return t('gatorPermissionsRevocationPending');
     }
-  }, [
-    permissionType,
-    getTokenStreamPermissionDetails,
-    permissionResponse.permission,
-    getTokenPeriodicPermissionDetails,
-    getTokenRevocationPermissionDetails,
-  ]);
+    if (status === 'Revoked') {
+      return t('remove');
+    }
+    return t('gatorPermissionsRevoke');
+  }, [isPendingRevocation, status, t]);
+
+  const permissionData = useMemo(
+    () => permissionDataForReview(permissionResponse.permission),
+    [permissionResponse.permission],
+  );
+
+  const statusTag = getInactivePermissionStatusTag(status, t);
+
+  const commonRendererProps = useMemo(
+    () => ({
+      permissionType,
+      permissionData,
+      chainId,
+      rules: permissionResponse.rules,
+      tokenInfo: tokenMetadata,
+      tokenLoading: loading,
+      permissionAccount,
+      networkName,
+    }),
+    [
+      permissionType,
+      permissionData,
+      chainId,
+      permissionResponse.rules,
+      tokenMetadata,
+      loading,
+      permissionAccount,
+      networkName,
+    ],
+  );
 
   return (
     <Card
@@ -409,16 +195,34 @@ export const ReviewGatorPermissionItem = ({
         <Box
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
-          style={{ flex: '1', alignSelf: 'center' }}
           gap={2}
+          style={{ alignItems: 'center' }}
         >
-          <Text
-            variant={TextVariant.BodyMd}
-            textAlign={TextAlign.Left}
-            ellipsis
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            gap={2}
+            style={{
+              flex: 1,
+              minWidth: 0,
+              alignItems: 'center',
+            }}
           >
-            {getURLHost(siteOrigin)}
-          </Text>
+            <Text variant={TextVariant.BodyMd} ellipsis style={{ minWidth: 0 }}>
+              {getURLHost(siteOrigin)}
+            </Text>
+            {statusTag ? (
+              <Tag
+                data-testid="review-gator-permission-status-tag"
+                label={statusTag.label}
+                backgroundColor={statusTag.backgroundColor}
+                labelProps={{
+                  color: statusTag.labelColor as DesignSystemTextColor,
+                }}
+                textVariant={TextVariant.BodySm}
+                style={{ flexShrink: 0 }}
+              />
+            ) : null}
+          </Box>
           <Button
             onClick={onRevokeClick}
             disabled={isPendingRevocation}
@@ -436,65 +240,18 @@ export const ReviewGatorPermissionItem = ({
               }
               variant={TextVariant.BodyMd}
             >
-              {isPendingRevocation
-                ? t('gatorPermissionsRevocationPending')
-                : t('gatorPermissionsRevoke')}
+              {revokeButtonLabel}
             </Text>
           </Button>
         </Box>
       </Box>
 
-      {/* Permission details */}
+      {/* Summary: always visible, schema-driven */}
       <Box backgroundColor={BoxBackgroundColor.BackgroundDefault}>
-        <PermissionDetailRow
-          label={t(permissionDetails.amountLabel.translationKey)}
-          value={permissionDetails.amountLabel.value}
-          testId={permissionDetails.amountLabel.testId}
-          isLoading={loading}
+        <ReviewPermissionRenderer
+          {...commonRendererProps}
+          viewMode="reviewSummary"
         />
-        {permissionDetails.frequencyLabel.translationKey && (
-          <PermissionDetailRow
-            label={t(permissionDetails.frequencyLabel.translationKey)}
-            value={t(permissionDetails.frequencyLabel.valueTranslationKey)}
-            testId={permissionDetails.frequencyLabel.testId}
-          />
-        )}
-        {/* Account row - custom layout with avatar and copy icon */}
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          style={rowStyle}
-          gap={4}
-          marginTop={2}
-        >
-          <Text
-            textAlign={TextAlign.Left}
-            color={TextColor.TextAlternative}
-            variant={TextVariant.BodyMd}
-          >
-            {t('account')}
-          </Text>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.End}
-            style={rowStyle}
-            gap={2}
-            alignItems={BoxAlignItems.Center}
-          >
-            <PreferredAvatar address={permissionAccount} />
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              data-testid="review-gator-permission-account-name"
-            >
-              {accountText}
-            </Text>
-            <CopyIcon
-              copyText={permissionAccount}
-              style={{ position: 'static', right: 'auto', top: 'auto' }}
-            />
-          </Box>
-        </Box>
       </Box>
 
       {/* Expanded permission details */}
@@ -511,7 +268,7 @@ export const ReviewGatorPermissionItem = ({
             justifyContent={BoxJustifyContent.Between}
             style={{ flex: '1', alignSelf: 'center', cursor: 'pointer' }}
             gap={2}
-            onClick={handleExpandClick}
+            onClick={toggle}
           >
             <Text color={TextColor.PrimaryDefault} variant={TextVariant.BodyMd}>
               {isExpanded
@@ -522,79 +279,16 @@ export const ReviewGatorPermissionItem = ({
               iconName={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
               color={IconColor.IconMuted}
               size={ButtonIconSize.Sm}
-              onClick={handleExpandClick}
               ariaLabel="expand"
             />
           </Box>
         </Box>
 
         {isExpanded && (
-          <>
-            {justification && (
-              <PermissionDetailRow
-                label={t('gatorPermissionsJustification')}
-                value={justification}
-                testId="review-gator-permission-justification"
-              />
-            )}
-
-            {/* Network name row - custom layout with avatar */}
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              style={rowStyle}
-              gap={4}
-              marginTop={2}
-            >
-              <Text
-                textAlign={TextAlign.Left}
-                color={TextColor.TextAlternative}
-                variant={TextVariant.BodyMd}
-              >
-                {t('networks')}
-              </Text>
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Baseline}
-                justifyContent={BoxJustifyContent.End}
-                style={rowStyle}
-                gap={2}
-              >
-                <AvatarNetwork
-                  src={getImageForChainId(chainId)}
-                  name={chainId}
-                  size={AvatarNetworkSize.Xs}
-                />
-                <Text
-                  textAlign={TextAlign.Right}
-                  color={TextColor.TextAlternative}
-                  variant={TextVariant.BodyMd}
-                  data-testid="review-gator-permission-network-name"
-                >
-                  {networkName}
-                </Text>
-              </Box>
-            </Box>
-
-            {Object.entries(permissionDetails.expandedDetails).map(
-              ([key, detail]) => {
-                const isLoadingValue =
-                  loading &&
-                  ['initialAllowance', 'maxAllowance', 'streamRate'].includes(
-                    key,
-                  );
-                return (
-                  <PermissionDetailRow
-                    key={key}
-                    label={t(detail.translationKey)}
-                    value={detail.value}
-                    testId={detail.testId}
-                    isLoading={isLoadingValue}
-                  />
-                );
-              },
-            )}
-          </>
+          <ReviewPermissionRenderer
+            {...commonRendererProps}
+            viewMode="reviewDetail"
+          />
         )}
       </Box>
     </Card>

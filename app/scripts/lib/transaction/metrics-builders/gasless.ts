@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { add0x } from '@metamask/utils';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../shared/constants/transaction';
-import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
-import { Numeric } from '../../../../../shared/modules/Numeric';
-import { addHexes } from '../../../../../shared/modules/conversion.utils';
+import { getMaximumGasTotalInHexWei } from '../../../../../shared/lib/gas.utils';
+import { Numeric } from '../../../../../shared/lib/Numeric';
+import { addHexes } from '../../../../../shared/lib/conversion.utils';
 import type { MetricsProperties, TransactionMetricsBuilder } from './types';
 
 export const getGaslessMetricsProperties: TransactionMetricsBuilder = ({

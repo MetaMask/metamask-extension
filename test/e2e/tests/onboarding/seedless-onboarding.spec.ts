@@ -1,5 +1,5 @@
 import { Mockttp } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
@@ -24,7 +24,7 @@ describe('Metamask onboarding (with social login)', function () {
   it('Creates a new wallet with Google login and completes the onboarding process', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
@@ -56,8 +56,8 @@ describe('Metamask onboarding (with social login)', function () {
   it('Imports an existing wallet with Google login and completes the onboarding process', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withShowNativeTokenAsMainBalanceEnabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),

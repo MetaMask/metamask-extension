@@ -4,10 +4,10 @@ import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import NotificationsListPage from '../page-objects/pages/notifications-list-page';
 import { mockNotificationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 
 describe('Test Snap Notification', function () {
@@ -17,12 +17,14 @@ describe('Test Snap Notification', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockNotificationSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);
@@ -61,7 +63,9 @@ describe('Test Snap Notification', function () {
   it('can send in-app notification with expanded view', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockNotificationSnap,
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
@@ -69,7 +73,7 @@ describe('Test Snap Notification', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);

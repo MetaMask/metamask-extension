@@ -51,6 +51,8 @@ export type TabsProps<TKey extends string = string> = Omit<
   tabContentProps?: Omit<BoxProps, 'children' | 'ref'>;
   /** CSS class name for the tabs container */
   className?: string;
+  /** Enable transition animation when switching tabs */
+  animated?: boolean;
 };
 
 export type TabsHandle<TKey extends string = string> = {

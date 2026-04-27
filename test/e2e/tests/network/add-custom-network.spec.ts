@@ -8,8 +8,8 @@ import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-networ
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
+import { login } from '../../page-objects/flows/login.flow';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 describe('Add Custom network', function (this: Suite) {
   it('should add mainnet network', async function () {
@@ -34,8 +34,9 @@ describe('Add Custom network', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await login(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -58,6 +59,7 @@ describe('Add Custom network', function (this: Suite) {
         await addRpcUrlModal.saveAddRpcUrl();
         await addEditNetworkModal.addExplorerUrl('https://test.com');
         await addEditNetworkModal.saveEditedNetwork();
+        await selectNetworkDialog.clickCloseButton();
 
         // Validate the network was added
         const homepage = new HomePage(driver);
@@ -89,8 +91,9 @@ describe('Add Custom network', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await login(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -144,8 +147,9 @@ describe('Add Custom network', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await login(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -176,6 +180,7 @@ describe('Add Custom network', function (this: Suite) {
           true,
         );
         await addEditNetworkModal.saveEditedNetwork();
+        await selectNetworkDialog.clickCloseButton();
 
         // Validate the network was added
         const homepage = new HomePage(driver);

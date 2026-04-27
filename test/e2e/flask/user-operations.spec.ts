@@ -13,7 +13,7 @@ import {
   WINDOW_TITLES,
 } from '../constants';
 import { withFixtures, convertETHToHexGwei } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
@@ -21,7 +21,7 @@ import { Mockttp } from '../mock-e2e';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { mockSnapAccountAbstractionKeyRingAndSite } from '../mock-response-data/snaps/snap-local-sites/account-abstraction-keyring-site-mocks';
 import { createInternalTransaction } from '../page-objects/flows/transaction';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../page-objects/flows/test-dapp.flow';
 
 enum TransactionDetailRowIndex {
@@ -194,7 +194,7 @@ async function withAccountSnap(
 ) {
   await withFixtures(
     {
-      fixtures: new FixtureBuilder().build(),
+      fixtures: new FixtureBuilderV2().build(),
       title,
       useBundler: true,
       usePaymaster: Boolean(paymaster),
@@ -220,7 +220,7 @@ async function withAccountSnap(
       bundlerServer: Bundler;
     }) => {
       // Todo: use POM and consolidate balance check when balance is 0 ('fund your wallet' is displayed)
-      await loginWithoutBalanceValidation(driver);
+      await login(driver, { validateBalance: false });
       await installExampleSnap(driver);
 
       await setSnapConfig(driver, {

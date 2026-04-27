@@ -1,7 +1,7 @@
 // ESLint complains that we are mixing imports and runtime code, which we are,
 // but we need to initialize React Devtools before importing React (which
 // happens in the UI code).
-/* eslint-disable import/first */
+/* eslint-disable import-x/first */
 
 // This import sets up safe intrinsics required for LavaDome to function securely.
 // It must be run before any less trusted code so that no such code can undermine it.
@@ -33,10 +33,11 @@ import {
   launchMetamaskUi,
   CriticalStartupErrorHandler,
   connectToBackground,
+  connectToBackgroundViaPatchStoreSubstream,
   displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -44,8 +45,8 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
+import { isManifestV3 } from '../../shared/lib/mv3.utils';
+import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
@@ -115,6 +116,7 @@ async function start() {
   const subStreams = connectSubstreams(connectionStream);
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
   connectToBackground(backgroundConnection, handleStartUISync);
+  connectToBackgroundViaPatchStoreSubstream(subStreams.patch);
 
   async function handleStartUISync(initialState) {
     endTrace({ name: TraceName.BackgroundConnect });
@@ -134,7 +136,7 @@ async function start() {
 
     await initializeUiWithTab(
       activeTab,
-      backgroundConnection,
+      subStreams.patch,
       windowType,
       traceContext,
       initialState,
@@ -237,7 +239,7 @@ async function loadPhishingWarningPage() {
 
 async function initializeUiWithTab(
   activeTab,
-  backgroundConnection,
+  patchSubstream,
   windowType,
   traceContext,
   initialState,
@@ -246,7 +248,7 @@ async function initializeUiWithTab(
     const store = await launchMetamaskUi({
       activeTab,
       container,
-      backgroundConnection,
+      patchSubstream,
       traceContext,
       initialState,
     });
@@ -329,12 +331,14 @@ function connectSubstreams(connectionStream) {
 
   const controllerSubstream = mx.createStream('controller');
   const providerSubstream = mx.createStream('provider');
+  const patchSubstream = mx.createStream('patch-store');
   mx.ignoreStream('background-liveness');
   mx.ignoreStream('app-init-liveness');
 
   return {
     controller: controllerSubstream,
     provider: providerSubstream,
+    patch: patchSubstream,
   };
 }
 

@@ -11,6 +11,7 @@ import { TransactionDetails } from '../shared/transaction-details/transaction-de
 import { TransactionAccountDetails } from '../batch/transaction-account-details';
 import { BatchSimulationDetails } from '../batch/batch-simulation-details/batch-simulation-details';
 import { EstimatedPointsSection } from '../../../estimated-points';
+import { EnforcedSimulationsRow } from '../../../rows/enforced-simulations-row';
 
 const BaseTransactionInfo = () => {
   const { currentConfirmation: transactionMeta } =
@@ -28,6 +29,7 @@ const BaseTransactionInfo = () => {
         <>
           <TransactionAccountDetails />
           <BatchSimulationDetails />
+          <EnforcedSimulationsRow />
           <TransactionDetails />
         </>
       )}

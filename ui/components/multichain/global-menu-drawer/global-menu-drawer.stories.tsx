@@ -29,7 +29,9 @@ const meta: Meta<typeof GlobalMenuDrawer> = {
 export default meta;
 type Story = StoryObj<typeof GlobalMenuDrawer>;
 
-const DefaultWrapper = (args: React.ComponentProps<typeof GlobalMenuDrawer>) => {
+const DefaultWrapper = (
+  args: React.ComponentProps<typeof GlobalMenuDrawer>,
+) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -46,9 +48,9 @@ const DefaultWrapper = (args: React.ComponentProps<typeof GlobalMenuDrawer>) => 
             Drawer Content
           </Text>
           <Text>
-            This is an example drawer built with Headless UI Dialog. It
-            provides accessibility features like focus management and keyboard
-            navigation out of the box.
+            This is an example drawer built with Headless UI Dialog. It provides
+            accessibility features like focus management and keyboard navigation
+            out of the box.
           </Text>
         </div>
       </GlobalMenuDrawer>
@@ -73,7 +75,9 @@ const WithoutCloseButtonWrapper = () => {
         title="Drawer without close button"
       >
         <div className="p-4">
-          <Text>This drawer doesn&apos;t have a close button in the header.</Text>
+          <Text>
+            This drawer doesn&apos;t have a close button in the header.
+          </Text>
           <Button onClick={() => setIsOpen(false)} className="mt-4">
             Close Drawer
           </Button>

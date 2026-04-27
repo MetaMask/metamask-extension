@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
@@ -12,22 +12,34 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../shared/constants/perps-events';
+import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
-import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
+import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+} from '../../helpers/constants/routes';
 import { TransactionCard } from '../../components/app/perps/transaction-card';
 import { PerpsActivityPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   groupTransactionsByDate,
   filterTransactionsByType,
 } from '../../components/app/perps/utils';
-import type { PerpsTransactionFilter } from '../../components/app/perps/types';
+import type {
+  PerpsTransaction,
+  PerpsTransactionFilter,
+} from '../../components/app/perps/types';
 import { usePerpsTransactionHistory } from '../../hooks/perps/usePerpsTransactionHistory';
+import { usePerpsEventTracking } from '../../hooks/perps';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   Dropdown,
   type DropdownOption,
@@ -41,18 +53,28 @@ import {
 const PerpsActivityPage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const [activeFilter, setActiveFilter] =
     useState<PerpsTransactionFilter>('trade');
+  // Fetch real transaction data from the Perps controller.
+  // forceFreshOnMount: user opening the Activity page must see the latest
+  // orders/funding/deposits even if PerpsView ("Recent activity") grabbed a
+  // snapshot inside the 10s TTL. Orders/funding/userHistory do not update via
+  // the live-fills WebSocket merge, so without this the page could render a
+  // stale snapshot. The hook's in-flight dedup still suppresses bursts.
+  const { transactions, isLoading, error } = usePerpsTransactionHistory({
+    forceFreshOnMount: true,
+  });
 
-  // Fetch real transaction data from the Perps controller
-  const { transactions, isLoading, error, refetch } =
-    usePerpsTransactionHistory();
-
-  // Refetch on mount to ensure fresh data
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !isLoading,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.ACTIVITY,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+    },
+  });
 
   // Filter options for dropdown
   const filterOptions: DropdownOption<PerpsTransactionFilter>[] = useMemo(
@@ -82,11 +104,23 @@ const PerpsActivityPage: React.FC = () => {
 
   // Navigation handlers
   const handleBackClick = useCallback(() => {
-    navigate(DEFAULT_ROUTE);
+    navigate(-1);
   }, [navigate]);
 
+  // Navigate to the market detail page when an order transaction is clicked
+  const handleTransactionClick = useCallback(
+    (transaction: PerpsTransaction) => {
+      if (transaction.type === 'order') {
+        navigate(
+          `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(transaction.symbol)}`,
+        );
+      }
+    },
+    [navigate],
+  );
+
   // Guard: redirect if perps feature is disabled
-  if (!isPerpsEnabled) {
+  if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
@@ -189,6 +223,11 @@ const PerpsActivityPage: React.FC = () => {
                     <TransactionCard
                       key={transaction.id}
                       transaction={transaction}
+                      onClick={
+                        transaction.type === 'order'
+                          ? handleTransactionClick
+                          : undefined
+                      }
                     />
                   ))}
                 </Box>

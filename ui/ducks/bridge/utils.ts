@@ -7,21 +7,20 @@ import {
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
-  ChainId,
   BridgeClientId,
   getNativeAssetForChainId,
   isNonEvmChainId,
   formatChainIdToHex,
   formatAddressToCaipReference,
+  ChainId,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
-import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
+import { Numeric } from '../../../shared/lib/Numeric';
 import {
-  TRON_RESOURCE_SYMBOLS_SET,
-  type TronResourceSymbol,
-} from '../../../shared/constants/multichain/assets';
+  ALL_ALLOWED_BRIDGE_CHAIN_IDS,
+  BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
+} from '../../../shared/constants/bridge';
+import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 import type { TokenPayload, BridgeToken } from './types';
 
 // Re-export isNonEvmChainId from bridge-controller for backward compatibility
@@ -29,23 +28,6 @@ export { isNonEvmChainId as isNonEvmChain } from '@metamask/bridge-controller';
 
 // Re-export isTronChainId from confirmations utils for consistency
 export { isTronChainId } from '../../pages/confirmations/utils/network';
-
-/**
- * Checks if a token is a Tron Energy or Bandwidth resource (not tradeable assets)
- *
- * @param chainId - The chain ID to check
- * @param symbol - The token symbol to check
- * @returns true if the token is a Tron Energy/Bandwidth resource
- */
-export const isTronEnergyOrBandwidthResource = (
-  chainId: ChainId | Hex | CaipChainId | string | undefined,
-  symbol: string | undefined,
-): boolean => {
-  return (
-    Boolean(chainId?.toString()?.includes('tron:')) &&
-    TRON_RESOURCE_SYMBOLS_SET.has(symbol?.toLowerCase() as TronResourceSymbol)
-  );
-};
 
 /**
  *
@@ -229,6 +211,7 @@ export const toBridgeToken = (
     tokenFiatAmount,
     accountType,
     rwaData,
+    isVerified,
   } = payload;
   const { chainId } = parseCaipAssetType(assetId);
   return {
@@ -242,6 +225,7 @@ export const toBridgeToken = (
     tokenFiatAmount: tokenMetadata?.tokenFiatAmount ?? tokenFiatAmount,
     accountType: tokenMetadata?.accountType ?? accountType,
     rwaData: tokenMetadata?.rwaData ?? rwaData,
+    isVerified: tokenMetadata?.isVerified ?? isVerified,
   };
 };
 
@@ -260,4 +244,26 @@ export const getDefaultToToken = (
 
   // Last resort: native token
   return toBridgeToken(getNativeAssetForChainId(toChainId));
+};
+
+/**
+ * Returns true when the chain is in the set of chains MetaMask supports for
+ * bridge/swap, false for any malformed, unknown, or unsupported chain ID.
+ *
+ * ALL_ALLOWED_BRIDGE_CHAIN_IDS contains chain IDs in three forms:
+ * - hex strings      ("0x1", "0xa4b1", …)       from ALLOWED_EVM_BRIDGE_CHAIN_IDS
+ * - CAIP strings     ("eip155:1", "solana:…", …) from ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP
+ * - numeric ChainId  (1, 1151111081099710, …)     from Object.values(ChainId)
+ *
+ * getNativeAssetForChainId returns tokens whose chainId is a numeric ChainId enum value
+ * (e.g. ChainId.SOLANA = 1151111081099710), so we must check direct inclusion first
+ * before attempting any hex conversion — otherwise the numeric value gets converted to an
+ * obscure hex string that is absent from the list and the check incorrectly returns false.
+ *
+ * @param caipChainId - Chain ID to validate in any supported form.
+ */
+export const isSupportedBridgeChain = (
+  caipChainId: string | ChainId,
+): boolean => {
+  return ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(caipChainId);
 };

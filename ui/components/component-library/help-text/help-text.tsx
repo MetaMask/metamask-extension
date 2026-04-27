@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   TextVariant,
   TextColor,

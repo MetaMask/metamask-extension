@@ -6,6 +6,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { useSendContext } from '../../../context/send';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { AssetList } from './asset-list';
 
 jest.mock('../../../../../hooks/useI18nContext');
@@ -117,7 +118,7 @@ describe('AssetList', () => {
 
     const assetComponents = getAllByTestId('asset-component');
     expect(assetComponents).toHaveLength(3);
-    expect(getByText('NFTs')).toBeInTheDocument();
+    expect(getByText(messages.nfts.message)).toBeInTheDocument();
   });
 
   it('renders only tokens when no nfts', () => {
@@ -133,7 +134,7 @@ describe('AssetList', () => {
 
     const assetComponents = getAllByTestId('asset-component');
     expect(assetComponents).toHaveLength(2);
-    expect(queryByText('NFTs')).not.toBeInTheDocument();
+    expect(queryByText(messages.nfts.message)).not.toBeInTheDocument();
   });
 
   it('renders no results message when no filtered assets but has all assets', () => {
@@ -228,7 +229,7 @@ describe('AssetList', () => {
 
       const assetComponents = getAllByTestId('asset-component');
       expect(assetComponents).toHaveLength(2);
-      expect(queryByText('NFTs')).not.toBeInTheDocument();
+      expect(queryByText(messages.nfts.message)).not.toBeInTheDocument();
     });
 
     it('shows NFTs section when hideNfts is false', () => {
@@ -244,7 +245,7 @@ describe('AssetList', () => {
 
       const assetComponents = getAllByTestId('asset-component');
       expect(assetComponents).toHaveLength(3);
-      expect(getByText('NFTs')).toBeInTheDocument();
+      expect(getByText(messages.nfts.message)).toBeInTheDocument();
     });
 
     it('renders empty when hideNfts is true and only NFTs exist', () => {

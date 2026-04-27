@@ -6,24 +6,34 @@ import {
 } from '@metamask/transaction-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
 import {
+  isCorrectDeveloperTransactionType,
+  isCorrectSignatureApprovalType,
+} from '../../shared/lib/confirmation.utils';
+import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
   EXCLUDED_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
 import txHelper from '../helpers/utils/tx-helper';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
-import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../shared/lib/conversion.utils';
 import {
   getProviderConfig,
   getCurrentChainId,
-} from '../../shared/modules/selectors/networks';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+} from '../../shared/lib/selectors/networks';
+
 import {
+  createDeepEqualSelector,
   createShallowEqualInputAndResultSelector,
   createParameterizedShallowEqualSelector,
-} from '../../shared/modules/selectors/selector-creators';
+} from '../../shared/lib/selectors/selector-creators';
+import { oldestPendingConfirmationSelector } from '../pages/confirmations/selectors/confirm';
 import { getSelectedInternalAccount } from './accounts';
-import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
+import {
+  hasPendingApprovals,
+  getApprovalRequestsByType,
+  getPendingApprovals,
+} from './approvals';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 /**
@@ -760,3 +770,22 @@ function getProviderConfigSafe(state) {
     return null;
   }
 }
+
+const selectIsTransactionTypeRedesigned = createSelector(
+  (state, transactionId) =>
+    selectTransactionMetadata(state, transactionId)?.type,
+  (transactionType) => isCorrectDeveloperTransactionType(transactionType),
+);
+
+export const selectIsRedesignedConfirmationType = createSelector(
+  (state, paramsId) => {
+    const id = paramsId ?? oldestPendingConfirmationSelector(state)?.id;
+    return selectIsTransactionTypeRedesigned(state, id);
+  },
+  (state, paramsId) => {
+    const id = paramsId ?? oldestPendingConfirmationSelector(state)?.id;
+    return getPendingApprovals(state).find((a) => a.id === id)?.type;
+  },
+  (isRedesignedTx, approvalType) =>
+    isRedesignedTx || isCorrectSignatureApprovalType(approvalType),
+);

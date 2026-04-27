@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { Box, type PolymorphicRef, BoxProps } from '../box';
 import { Popover, PopoverPosition } from '../popover';
 import {

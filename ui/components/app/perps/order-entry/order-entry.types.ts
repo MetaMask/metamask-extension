@@ -50,6 +50,8 @@ export type OrderFormState = {
   asset: string;
   /** Order direction - long or short */
   direction: OrderDirection;
+  /** Percentage of the existing position to close in close mode */
+  closePercent: number;
   /** USD amount to trade (string for input handling) */
   amount: string;
   /** Leverage multiplier (1-50x typically) */
@@ -77,8 +79,10 @@ export type OrderCalculations = {
   positionSize: string | null;
   /** Margin required for the position */
   marginRequired: string | null;
-  /** Estimated liquidation price */
+  /** Estimated liquidation price (formatted) */
   liquidationPrice: string | null;
+  /** Raw estimated liquidation price as a number (for comparisons) */
+  liquidationPriceRaw: number | null;
   /** Total order value in USD */
   orderValue: string | null;
   /** Estimated trading fees */
@@ -103,20 +107,34 @@ export type OrderEntryProps = {
   onSubmit?: (formState: OrderFormState) => void;
   /** Callback when form state changes (used when showSubmitButton is false) */
   onFormStateChange?: (formState: OrderFormState) => void;
+  /** Callback when calculated values change (liquidation price, margin, fees) */
+  onCalculationsChange?: (calculations: OrderCalculations) => void;
   /** Whether to show the internal submit button (defaults to true) */
   showSubmitButton?: boolean;
+  /** Whether to show the order summary inside the form (defaults to true) */
+  showOrderSummary?: boolean;
   /** Order mode: 'new' for opening, 'modify' for adjusting, 'close' for closing (defaults to 'new') */
   mode?: OrderMode;
   /** Existing position data for pre-populating form in modify/close modes */
   existingPosition?: ExistingPositionData;
   /** Order type: 'market' or 'limit' (defaults to 'market') */
   orderType?: OrderType;
-  /** Mid price from top-of-book for limit order presets */
+  /** Mid price from top-of-book for limit order Mid button */
   midPrice?: number;
-  /** Best bid price from top-of-book for limit order presets */
-  bidPrice?: number;
-  /** Best ask price from top-of-book for limit order presets */
-  askPrice?: number;
+  /** Callback when user changes order type (Market/Limit) */
+  onOrderTypeChange?: (orderType: OrderType) => void;
+  /** Callback when add-funds icon is pressed in the amount input */
+  onAddFunds?: () => void;
+  /** Initial leverage override for new orders (e.g. last used leverage for this market) */
+  initialLeverage?: number;
+  /** Market size decimals for controller-based position-size formatting */
+  sizeDecimals?: number;
+  /**
+   * Oracle mark price (oraclePx from HyperLiquid's activeAssetCtx feed).
+   * Used for margin calculation to match mobile's source of truth.
+   * Falls back to currentPrice when not yet available.
+   */
+  markPrice?: number;
 };
 
 /**
@@ -133,7 +151,7 @@ export type DirectionTabsProps = {
  * Props for AmountInput component
  */
 export type AmountInputProps = {
-  /** Current amount value */
+  /** Current amount value (USD) */
   amount: string;
   /** Callback when amount changes */
   onAmountChange: (amount: string) => void;
@@ -149,6 +167,15 @@ export type AmountInputProps = {
   asset: string;
   /** Current asset price for token conversion */
   currentPrice: number;
+  /**
+   * HyperLiquid size decimals for the asset (from MarketInfo.szDecimals). Used
+   * to cap the token-input display precision so PUMP (szDecimals=0) never shows
+   * fractional token counts and ETH (szDecimals=4) stops at 4 decimals instead
+   * of the previous hard-coded 6.
+   */
+  szDecimals?: number;
+  /** Callback when add-funds icon is pressed */
+  onAddFunds?: () => void;
 };
 
 /**
@@ -199,6 +226,16 @@ export type AutoCloseSectionProps = {
   currentPrice: number;
   /** Position entry price (for modify mode - use instead of currentPrice for accurate % calc) */
   entryPrice?: number;
+  /** Signed position size in asset units (positive=long, negative=short) for estimated PnL */
+  estimatedSize?: number;
+  /** Order type – used to pick the correct validation reference price */
+  orderType?: OrderType;
+  /** Limit price string – used as the reference price for limit-order TP/SL validation */
+  limitPrice?: string;
+  /** Leverage multiplier - used to convert RoE % to price change % (RoE% = priceChange% * leverage) */
+  leverage: number;
+  /** Asset symbol (e.g. 'BTC', 'ETH') – used to fetch dynamic closing fee rates */
+  asset: string;
 };
 
 /**
@@ -216,4 +253,6 @@ export type CloseAmountSectionProps = {
   asset: string;
   /** Current asset price for USD value calculation */
   currentPrice: number;
+  /** Market size decimals for controller-based position-size formatting */
+  sizeDecimals?: number;
 };

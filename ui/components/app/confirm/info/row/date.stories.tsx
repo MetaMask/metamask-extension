@@ -18,7 +18,9 @@ const ConfirmInfoRowDateStory = {
   },
 };
 
-export const DefaultStory = ({ date }) => <ConfirmInfoRowDate unixTimestamp={date} />;
+export const DefaultStory = ({ date }) => (
+  <ConfirmInfoRowDate unixTimestamp={date} />
+);
 DefaultStory.args = {
   date: 1633019124,
 };

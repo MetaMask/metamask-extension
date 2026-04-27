@@ -24,17 +24,13 @@ import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-// TODO: Migrate to shared directory and remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
-import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
+import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import {
   formatCaptureShieldPaymentMethodChangeEventProps,
   getSubscriptionRequestTrackingProps,
   getUserAccountTypeAndCategory,
   getUserBalanceCategory,
-} from '../../../../shared/modules/shield/metrics';
+} from '../../../../shared/lib/shield/metrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -44,18 +40,26 @@ import {
   getIsShieldSubscriptionActive,
   getIsShieldSubscriptionPaused,
   getShieldSubscription,
+  SHIELD_ERROR,
 } from '../../../../shared/lib/shield';
-import { SHIELD_ERROR } from '../../../../shared/modules/shield';
 import {
-  SubscriptionServiceAction,
-  SubscriptionServiceEvent,
   SubscriptionServiceOptions,
   SERVICE_NAME,
   ServiceName,
+  SubscriptionServiceMessenger,
 } from './types';
 
 const SUBSCRIPTION_POLL_INTERVAL = 5 * SECOND;
 const SUBSCRIPTION_POLL_TIMEOUT = 60 * SECOND;
+
+const MESSENGER_EXPOSED_METHODS = [
+  'updateSubscriptionCardPaymentMethod',
+  'updateSubscriptionCryptoPaymentMethod',
+  'startSubscriptionWithCard',
+  'handlePostTransaction',
+  'submitSubscriptionSponsorshipIntent',
+  'linkRewardToExistingSubscription',
+] as const;
 
 export class SubscriptionService {
   // Required for modular initialisation.
@@ -63,11 +67,7 @@ export class SubscriptionService {
 
   state = null;
 
-  #messenger: Messenger<
-    typeof SERVICE_NAME,
-    SubscriptionServiceAction,
-    SubscriptionServiceEvent
-  >;
+  #messenger: SubscriptionServiceMessenger;
 
   #platform: ExtensionPlatform;
 
@@ -82,16 +82,16 @@ export class SubscriptionService {
     this.#platform = platform;
     this.#webAuthenticator = webAuthenticator;
 
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:submitSubscriptionSponsorshipIntent`,
-      this.submitSubscriptionSponsorshipIntent.bind(this),
+    this.#messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 
   async updateSubscriptionCardPaymentMethod(
     params: Extract<UpdatePaymentMethodOpts, { paymentType: 'card' }>,
     currentTabId?: number,
-  ) {
+  ): Promise<Subscription[]> {
     try {
       const { paymentType } = params;
       if (paymentType !== PAYMENT_TYPES.byCard) {
@@ -148,7 +148,7 @@ export class SubscriptionService {
 
   async updateSubscriptionCryptoPaymentMethod(
     params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
-  ) {
+  ): Promise<Subscription[]> {
     try {
       const { paymentType } = params;
       if (paymentType !== PAYMENT_TYPES.byCrypto) {
@@ -198,11 +198,22 @@ export class SubscriptionService {
 
       // skipping redirect and open new tab in test environment
       if (!process.env.IN_TEST) {
+        // Set pending redirect so the UI navigates back to shield plan page if user abandons checkout
+        this.#messenger.call('AppStateController:setPendingRedirectRoute', {
+          path: '/shield-plan',
+        });
+
         await this.#openAndWaitForTabToClose({
           url: checkoutSessionUrl,
           successUrl: redirectUrl,
           cancelUrl,
         });
+
+        // Clear pending redirect on successful checkout
+        this.#messenger.call(
+          'AppStateController:setPendingRedirectRoute',
+          null,
+        );
 
         if (!currentTabId) {
           // open extension browser shield settings if open from pop up (no current tab)
@@ -530,10 +541,8 @@ export class SubscriptionService {
   }
 
   async #getIsSmartTransactionEnabled(chainId: `0x${string}`) {
-    const swapsControllerState = await this.#getSwapsFeatureFlagsFromNetwork();
     const uiState = {
       metamask: {
-        ...swapsControllerState,
         ...this.#messenger.call('AccountsController:getState'),
         ...this.#messenger.call('PreferencesController:getState'),
         ...this.#messenger.call('SmartTransactionsController:getState'),
@@ -546,36 +555,6 @@ export class SubscriptionService {
     const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
 
     return isSendBundleSupportedChain && isSmartTransaction;
-  }
-
-  // Deprecated: remove in follow-up clean up task
-  // Clean-up task https://consensyssoftware.atlassian.net/browse/STX-371
-  async #getSwapsFeatureFlagsFromNetwork(): Promise<
-    SwapsControllerState | undefined
-  > {
-    const swapsControllerState = this.#messenger.call(
-      'SwapsController:getState',
-    );
-    const { swapsFeatureFlags } = swapsControllerState.swapsState;
-    try {
-      if (!swapsFeatureFlags || Object.keys(swapsFeatureFlags).length === 0) {
-        const updatedSwapsFeatureFlags = await fetchSwapsFeatureFlags();
-        if (!updatedSwapsFeatureFlags) {
-          return swapsControllerState;
-        }
-        return {
-          ...swapsControllerState,
-          swapsState: {
-            ...swapsControllerState.swapsState,
-            swapsFeatureFlags: updatedSwapsFeatureFlags,
-          },
-        };
-      }
-    } catch (error) {
-      log.error('Failed to fetch swaps feature flags', error);
-      return swapsControllerState;
-    }
-    return swapsControllerState;
   }
 
   #getAccountTypeAndCategoryForMetrics() {

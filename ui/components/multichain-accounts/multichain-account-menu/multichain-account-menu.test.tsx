@@ -1,6 +1,6 @@
 import React from 'react';
 import { AccountGroupId } from '@metamask/account-api';
-import { fireEvent, act, within } from '@testing-library/react';
+import { fireEvent, act, within, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
@@ -9,6 +9,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainAccountMenu } from './multichain-account-menu';
 import type { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
@@ -33,7 +35,6 @@ const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
 const menuIconSelector = '.multichain-account-cell-popover-menu-button-icon';
 const menuItemSelector = '.multichain-account-cell-menu-item';
-const errorColorSelector = '.mm-box--color-error-default';
 
 const mockState = {
   metamask: {
@@ -46,6 +47,7 @@ const mockState = {
                 name: 'Test Account',
                 pinned: false,
                 hidden: false,
+                lastSelected: 0,
               },
             },
           },
@@ -195,8 +197,9 @@ describe('MultichainAccountMenu', () => {
     const menuItems = document.querySelectorAll(menuItemSelector);
     expect(menuItems.length).toBe(6);
 
-    const removeOption = document.querySelector(errorColorSelector);
-    expect(removeOption).toBeInTheDocument();
+    expect(
+      screen.getByTestId('multichain-account-menu-item-remove'),
+    ).toBeInTheDocument();
   });
 
   it('navigates to account details page when clicking the account details option', async () => {
@@ -216,9 +219,10 @@ describe('MultichainAccountMenu', () => {
       });
     }
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      '/multichain-account-details/entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ%2Fdefault',
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith({
+      pathname: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+      search: 'accountGroupId=entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ%2Fdefault',
+    });
   });
 
   it('calls handleAccountRenameAction when clicking the rename option', async () => {
@@ -511,7 +515,7 @@ describe('MultichainAccountMenu', () => {
   });
 
   describe('tracing', () => {
-    const groupId = mockDefaultState.metamask.accountTree
+    const groupId = mockDefaultState.metamask
       .selectedAccountGroup as AccountGroupId;
 
     beforeEach(() => {
@@ -538,7 +542,7 @@ describe('MultichainAccountMenu', () => {
       expect(popover).toBeInTheDocument();
 
       const addressesItem = popover
-        ? within(popover as HTMLElement).getByText('Addresses')
+        ? within(popover as HTMLElement).getByText(messages.addresses.message)
         : null;
       expect(addressesItem).toBeInTheDocument();
 

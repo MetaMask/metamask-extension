@@ -28,7 +28,25 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-      {/* Margin Row */}
+      {/* Liquidation price */}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {t('perpsLiquidationPrice')}
+        </Text>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextDefault}
+          data-testid="perps-order-summary-liquidation-price"
+        >
+          {liquidationPrice ?? '-'}
+        </Text>
+      </Box>
+
+      {/* Margin */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
@@ -37,12 +55,16 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('perpsMargin')}
         </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextDefault}
+          data-testid="perps-order-summary-margin-required"
+        >
           {marginRequired ?? '-'}
         </Text>
       </Box>
 
-      {/* Fees Row */}
+      {/* Fees */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
@@ -51,22 +73,12 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('perpsFees')}
         </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextDefault}
+          data-testid="perps-order-summary-estimated-fees"
+        >
           {estimatedFees ?? '-'}
-        </Text>
-      </Box>
-
-      {/* Liquidation Price Row */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-      >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsLiquidationPriceEst')}
-        </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
-          {liquidationPrice ?? '-'}
         </Text>
       </Box>
     </Box>

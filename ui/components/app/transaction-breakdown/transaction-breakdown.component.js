@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { SuccessPill } from '../../component-library';
 import CurrencyDisplay from '../../ui/currency-display';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
@@ -72,14 +72,14 @@ export default class TransactionBreakdown extends PureComponent {
     return (
       <div className={classnames('transaction-breakdown', className)}>
         <div className="transaction-breakdown__title">{t('transaction')}</div>
-        <TransactionBreakdownRow divider title={t('nonce')}>
-          {typeof nonce === 'undefined' ? null : (
+        {nonce !== undefined && (
+          <TransactionBreakdownRow divider title={t('nonce')}>
             <HexToDecimal
               className="transaction-breakdown__value"
               value={nonce}
             />
-          )}
-        </TransactionBreakdownRow>
+          </TransactionBreakdownRow>
+        )}
         {sourceAmountFormatted && (
           <TransactionBreakdownRow title={t('amountSent')}>
             <span

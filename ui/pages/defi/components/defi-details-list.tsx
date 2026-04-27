@@ -131,7 +131,6 @@ const DefiDetailsList = React.memo(
                         onClick={undefined}
                         fixCurrencyToUSD
                         safeChains={safeChains}
-                        showMerklBadge
                       />
                     ))}
                   </Box>

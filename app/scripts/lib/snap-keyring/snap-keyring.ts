@@ -15,14 +15,15 @@ import {
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../../../shared/lib/translate';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
-import MetaMetricsController from '../../controllers/metametrics-controller';
+import { MetaMetricsController } from '../../controllers/metametrics-controller';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import {
   getSnapName,
   isMultichainWalletSnap,
 } from '../../../../shared/lib/accounts/snaps';
+import { isFlask } from '../../../../shared/lib/build-types';
 import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
@@ -217,7 +218,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     onceSaved: Promise<string>;
   }) {
     const learnMoreLink =
-      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/';
+      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/?utm_source=extension';
 
     const snapName = getSnapName(snapId, this.#messenger);
 
@@ -398,7 +399,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     );
 
     const learnMoreLink =
-      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-remove-an-account-from-your-metamask-wallet/';
+      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-remove-an-account-from-your-metamask-wallet/?utm_source=extension';
 
     const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
       this.#trackEvent({
@@ -523,11 +524,9 @@ export function snapKeyringBuilder(
     return new SnapKeyring({
       messenger,
       callbacks: new SnapKeyringImpl(messenger, helpers),
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       // Enables generic account creation for new chain integration. It's
       // Flask-only since production should use defined account types.
-      isAnyAccountTypeAllowed: true,
-      ///: END:ONLY_INCLUDE_IF
+      isAnyAccountTypeAllowed: isFlask(),
     });
   }) as SnapKeyringBuilder;
 

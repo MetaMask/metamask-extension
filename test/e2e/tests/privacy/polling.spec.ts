@@ -3,11 +3,11 @@ import { JsonRpcRequest } from '@metamask/utils';
 import { MockedEndpoint } from 'mockttp';
 import { expect } from '@playwright/test';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { ACCOUNTS_PROD_API_BASE_URL } from '../../../../shared/constants/accounts';
 
 const infuraMainnetUrl =
@@ -278,9 +278,8 @@ describe('Account Tracker API polling', function () {
   it('should make the expected RPC calls to infura', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -292,7 +291,7 @@ describe('Account Tracker API polling', function () {
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
         // Want to wait long enough  to pull requests relevant to a single loop cycle
@@ -364,8 +363,7 @@ describe('Account Tracker API polling', function () {
     if (process.env.PORTFOLIO_VIEW) {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
-            .withNetworkControllerOnMainnet()
+          fixtures: new FixtureBuilderV2()
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -377,7 +375,7 @@ describe('Account Tracker API polling', function () {
           testSpecificMock: mockAccountApiForPortfolioView,
         },
         async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-          await loginWithoutBalanceValidation(driver);
+          await login(driver, { validateBalance: false });
           const homepage = new HomePage(driver);
           await homepage.checkPageIsLoaded();
           await driver.delay(DELAY_UNTIL_NEXT_POLL);

@@ -2,14 +2,11 @@ import { Messenger } from '@metamask/messenger';
 import { KeyringController } from '@metamask/keyring-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { cloneDeep } from 'lodash';
-import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../shared/lib/conversion.utils';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
-import { WALLET_PASSWORD } from '../../../test/e2e/constants';
-import {
-  E2E_SRP,
-  defaultFixture,
-} from '../../../test/e2e/fixtures/default-fixture';
-import FixtureBuilder from '../../../test/e2e/fixtures/fixture-builder';
+import { E2E_SRP, WALLET_PASSWORD } from '../../../test/e2e/constants';
+import defaultFixtureJson from '../../../test/e2e/fixtures/default-fixture.json';
+import FixtureBuilderV2 from '../../../test/e2e/fixtures/fixture-builder-v2';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { normalizeSafeAddress } from '../lib/multichain/address';
 import { getRootMessenger } from '../lib/messenger';
@@ -29,10 +26,10 @@ let FIXTURES_CONFIG = {};
  *
  * @param {object} withState - The fixture configuration state
  * @param {boolean} fromTest - Whether this is being called from a test
- * @returns {Promise<FixtureBuilder>} The generated FixtureBuilder object
+ * @returns {Promise<FixtureBuilderV2>} The generated fixture builder
  */
 export async function generateWalletState(withState, fromTest) {
-  const fixtureBuilder = new FixtureBuilder({ inputChainId: '0xaa36a7' });
+  const fixtureBuilder = new FixtureBuilderV2();
 
   if (withState) {
     FIXTURES_CONFIG = withState;
@@ -53,7 +50,7 @@ export async function generateWalletState(withState, fromTest) {
     .withNotificationServicesController(
       generateNotificationControllerState(accounts[0]),
     )
-    .withPreferencesController(generatePreferencesControllerState(accounts))
+    .withPreferencesController(generatePreferencesControllerState())
     .withTokensController(generateTokensControllerState(accounts[0]))
     .withTransactionController(generateTransactionControllerState(accounts[0]))
     .withEnabledNetworks(ALL_POPULAR_NETWORKS)
@@ -117,7 +114,7 @@ function generateKeyringControllerState(vault) {
   console.log('Generating KeyringController state');
 
   return {
-    ...defaultFixture().data.KeyringController,
+    ...defaultFixtureJson.data.KeyringController,
     vault,
   };
 }
@@ -230,7 +227,7 @@ function generateNetworkControllerState() {
   console.log('Generating NetworkController state');
 
   const defaultNetworkState = {
-    ...defaultFixture().data.NetworkController,
+    ...defaultFixtureJson.data.NetworkController,
     networkConfigurations: {},
     networksMetadata: {
       sepolia: {
@@ -255,37 +252,15 @@ function generateNetworkControllerState() {
 /**
  * Generates the state for the PreferencesController.
  *
- * @param {Array<string>} accounts - The account addresses.
  * @returns {object} The generated PreferencesController state.
  */
-function generatePreferencesControllerState(accounts) {
+function generatePreferencesControllerState() {
   console.log('Generating PreferencesController state');
   let preferencesControllerState = {};
 
   if (FIXTURES_CONFIG.withPreferences) {
     preferencesControllerState = FIXTURES_PREFERENCES;
   }
-
-  // Add account identities
-  preferencesControllerState.identities = Object.assign(
-    ...accounts.map((address, index) => ({
-      [address]: {
-        address,
-        lastSelected: 1725363500048,
-        name: `Account ${index + 1}`,
-      },
-    })),
-  );
-
-  preferencesControllerState.lostIdentities = Object.assign(
-    ...accounts.map((address, index) => ({
-      [address]: {
-        address,
-        lastSelected: 1725363500048,
-        name: `Account ${index + 1}`,
-      },
-    })),
-  );
 
   return preferencesControllerState;
 }

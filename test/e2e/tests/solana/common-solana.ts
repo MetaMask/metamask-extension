@@ -3,18 +3,9 @@ import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { Readable } from 'stream';
 import * as fs from 'fs/promises';
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { withFixtures } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import { DAPP_PATH } from '../../constants';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import Homepage from '../../page-objects/pages/home/homepage';
-import NetworkManager from '../../page-objects/pages/network-manager';
+import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
 
 /**
  * Holds the actual transaction signature captured from sendTransaction.
@@ -105,6 +96,9 @@ export enum SendFlowPlaceHolders {
   RECIPIENT = 'Enter receiving address',
   LOADING = 'Preparing transaction',
 }
+
+const SECURITY_ALERT_BULK_SCAN_URL =
+  'https://security-alerts.api.cx.metamask.io/token/scan-bulk';
 
 export const SIMPLEHASH_URL = 'https://api.simplehash.com';
 
@@ -435,10 +429,13 @@ export async function mockMultiCoinPrice(mockServer: Mockttp) {
   });
 }
 
-export async function mockSolanaBalanceQuote(
-  mockServer: Mockttp,
-  mockZeroBalance: boolean = false,
-) {
+export async function mockSolanaBalanceQuote({
+  mockServer,
+  balance = SOL_BALANCE,
+}: {
+  mockServer: Mockttp;
+  balance?: number;
+}) {
   const response = {
     statusCode: 200,
     json: {
@@ -449,7 +446,7 @@ export async function mockSolanaBalanceQuote(
           apiVersion: '2.0.18',
           slot: 308460925,
         },
-        value: mockZeroBalance ? 0 : SOL_BALANCE,
+        value: balance,
       },
     },
   };
@@ -458,6 +455,7 @@ export async function mockSolanaBalanceQuote(
     .withJsonBodyIncluding({
       method: 'getBalance',
     })
+    .always()
     .thenCallback(() => {
       return response;
     });
@@ -939,6 +937,13 @@ export async function mockSendSwapSolanaTransaction(
     });
 }
 
+/**
+ * `getTransaction` response for USDC → SOL swaps. Uses a captured Jupiter-style
+ * tx so activity shows the USDC leg (e.g. -1 USDC) instead of a bare SOL send.
+ *
+ * @param mockServer - Mockttp server.
+ * @param signatureHolder - Optional; live signature from `sendTransaction` overrides the mock.
+ */
 export async function mockGetUSDCSOLTransaction(
   mockServer: Mockttp,
   signatureHolder?: SignatureHolder,
@@ -1437,6 +1442,7 @@ export async function mockGetMintAccountInfo(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       method: 'getAccountInfo',
     })
+    .always()
     .thenCallback(async (req) => {
       const body = (await req.body.getJson()) as {
         params?: [string];
@@ -1623,6 +1629,28 @@ export async function mockGetMultipleAccounts(mockServer: Mockttp) {
     });
 }
 
+export async function mockSecurityAlertBulkScan(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(SECURITY_ALERT_BULK_SCAN_URL)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          results: {
+            EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: {
+              address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+              chain: 'solana',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              malicious_score: '0.0',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              result_type: 'Verified',
+            },
+          },
+        },
+      };
+    });
+}
+
 export async function mockSecurityAlertSwap(mockServer: Mockttp) {
   console.log('mockSecurityAlertSwap');
   const securityAlertSwapResponse = await readResponseJsonFile(
@@ -1640,22 +1668,27 @@ export async function mockSecurityAlertSwap(mockServer: Mockttp) {
 }
 
 export async function mockPriceApiSpotPriceSwap(mockServer: Mockttp) {
-  return await mockServer.forGet(SPOT_PRICE_API).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-          {
-            id: 'usd-coin',
-            price: 0.999761,
+  return await mockServer
+    .forGet(SPOT_PRICE_API)
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+            {
+              id: 'usd-coin',
+              price: 0.999761,
+              usd: 0.999761,
+            },
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+            id: 'solana',
+            price: 168.88,
+            usd: 168.88,
           },
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-          id: 'solana',
-          price: 168.88,
         },
-      },
-    };
-  });
+      };
+    });
 }
 
 const SOLANA_BRIDGE_TOKENS = [
@@ -1713,11 +1746,6 @@ export async function mockBridgeSearchTokens(mockServer: Mockttp) {
   });
 }
 
-/**
- * Mocks the Bridge getTxStatus endpoint to return a COMPLETE status.
- *
- * @param mockServer - The mockttp server instance.
- */
 const SOL_TOKEN_INFO = {
   address: '0x0000000000000000000000000000000000000000',
   chainId: 1151111081099710,
@@ -1740,13 +1768,32 @@ const USDC_TOKEN_INFO = {
   priceUSD: '1.0',
 };
 
+/**
+ * Mocks the Bridge getTxStatus endpoint to return a COMPLETE status.
+ *
+ * `srcChain.txHash` must match the signature from `sendTransaction` (see
+ * {@link mockSendSwapSolanaTransaction}) or bridge activity will not merge with
+ * the snap transaction and the activity list can stay empty.
+ *
+ * @param mockServer - The mockttp server instance.
+ * @param direction - Swap direction (default SOL → USDC).
+ * @param signatureHolder - When non-empty after submit, used as `srcChain.txHash`.
+ */
 export async function mockBridgeTxStatus(
   mockServer: Mockttp,
   direction: 'SOL_TO_USDC' | 'USDC_TO_SOL' = 'SOL_TO_USDC',
+  signatureHolder?: SignatureHolder,
 ) {
   const isSolToUsdc = direction === 'SOL_TO_USDC';
   return await mockServer.forGet(BRIDGE_TX_STATUS).thenCallback(() => {
-    console.log('mockBridgeTxStatus', direction);
+    const fallbackHash = isSolToUsdc
+      ? SOL_TO_USDC_SWAP_SIGNATURE
+      : USDC_TO_SOL_SWAP_SIGNATURE;
+    const srcTxHash =
+      signatureHolder?.value && signatureHolder.value.length > 0
+        ? signatureHolder.value
+        : fallbackHash;
+    console.log('mockBridgeTxStatus', direction, { srcTxHash });
     return {
       statusCode: 200,
       json: {
@@ -1755,9 +1802,7 @@ export async function mockBridgeTxStatus(
         bridge: 'lifi',
         srcChain: {
           chainId: 1151111081099710,
-          txHash: isSolToUsdc
-            ? SOL_TO_USDC_SWAP_SIGNATURE
-            : USDC_TO_SOL_SWAP_SIGNATURE,
+          txHash: srcTxHash,
           amount: isSolToUsdc ? '1000000000' : '991250',
           token: isSolToUsdc ? SOL_TOKEN_INFO : USDC_TOKEN_INFO,
         },
@@ -1828,6 +1873,7 @@ export async function mockGetTokenAccountsUSDCOnly(
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({ method: 'getTokenAccountsByOwner' })
+    .always()
     .thenCallback(async (req) => {
       const body = (await req.body.getText()) ?? '';
       const isSplToken = body.includes(SOLANA_TOKEN_PROGRAM);
@@ -1856,6 +1902,7 @@ export async function mockGetTokenAccountBalance(mockServer: Mockttp) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({ method: 'getTokenAccountBalance' })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -1874,28 +1921,126 @@ export async function mockGetTokenAccountBalance(mockServer: Mockttp) {
     }));
 }
 
+/** Tokens API v3/assets: only these CAIP assets are mocked (see btc/mocks/tokens-api). */
+const MOCK_TOKEN_API_BTC_CAIP_ASSET_ID =
+  'bip122:000000000019d6689c085ae165831e93/slip44:0';
+const MOCK_TOKEN_API_SOL_CAIP_ASSET_ID =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+const MOCK_TOKEN_API_TRON_NATIVE_ASSET_ID = 'tron:728126428/slip44:195';
+
 /**
- * Mocks the Token API /v3/assets endpoint so the snap can resolve
- * USDC metadata (symbol, name, decimals) for the swap transaction display.
+ * Mocks GET /v3/assets for the Tokens API. Returns metadata only for Ethereum
+ * (chain 1337), Solana native, USD Coin on Solana, Bitcoin, and Tron native —
+ * matching requested `assetIds` query params.
+ *
+ * When `ASSETS_UNIFIED_STATE_ENABLED` is not `'true'`, reverts to the
+ * pre-unified behavior used on main: a static USDC-only response on the exact
+ * URL match. Keeps legacy specs (e.g. send-spl-token) behaving identically to
+ * main while the unified path's filtered regex response stays intact.
  *
  * @param mockServer - The mockttp server instance.
  */
 export async function mockTokenApiAssets(mockServer: Mockttp) {
+  const isUnifiedAssetsEnabled =
+    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true';
+
+  if (!isUnifiedAssetsEnabled) {
+    return await mockServer
+      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [
+          {
+            assetId: USDC_CAIP19,
+            name: 'USD Coin',
+            symbol: 'USDC',
+            decimals: 6,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+          },
+        ],
+      }));
+  }
+
   return await mockServer
-    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: [
-        {
+    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = url.searchParams.getAll('assetIds').join(',');
+
+      const results: {
+        assetId: string;
+        name: string;
+        symbol: string;
+        decimals: number;
+        iconUrl: string;
+        coingeckoId: string;
+      }[] = [];
+
+      if (assetIds.includes('eip155:1337')) {
+        results.push({
+          assetId: 'eip155:1337/slip44:1',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+          iconUrl:
+            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1337/slip44/60.png',
+          coingeckoId: 'ethereum',
+        });
+      }
+
+      if (assetIds.includes('bip122:000000000019d6689c085ae165831e93')) {
+        results.push({
+          assetId: MOCK_TOKEN_API_BTC_CAIP_ASSET_ID,
+          name: 'Bitcoin',
+          symbol: 'BTC',
+          decimals: 8,
+          iconUrl:
+            'https://static.cx.metamask.io/api/v1/tokenIcons/bip122/000000000019d6689c085ae165831e93/slip44/0.png',
+          coingeckoId: 'bitcoin',
+        });
+      }
+
+      if (assetIds.includes('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')) {
+        results.push({
+          assetId: MOCK_TOKEN_API_SOL_CAIP_ASSET_ID,
+          name: 'Solana',
+          symbol: 'SOL',
+          decimals: 9,
+          iconUrl:
+            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
+          coingeckoId: 'solana',
+        });
+      }
+
+      if (assetIds.includes('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')) {
+        results.push({
           assetId: USDC_CAIP19,
           name: 'USD Coin',
           symbol: 'USDC',
           decimals: 6,
           iconUrl:
             'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
-        },
-      ],
-    }));
+          coingeckoId: 'usd-coin',
+        });
+      }
+
+      if (assetIds.includes('tron:728126428')) {
+        results.push({
+          assetId: MOCK_TOKEN_API_TRON_NATIVE_ASSET_ID,
+          name: 'Tron',
+          symbol: 'TRX',
+          decimals: 6,
+          iconUrl:
+            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
+          coingeckoId: 'tron',
+        });
+      }
+
+      return { statusCode: 200, json: results };
+    });
 }
 
 /**
@@ -1947,289 +2092,153 @@ export async function mockGetSignaturesForWalletOnly(
 
 export const SHOW_SWAP_SNAP_CONFIRMATION = false;
 
-const featureFlags = {
-  refreshRate: 30000,
-  maxRefreshCount: 5,
-  support: true,
-  minimumVersion: '0.0.0',
-  chains: {
-    '1': { isActiveSrc: true, isActiveDest: true },
-    '42161': { isActiveSrc: true, isActiveDest: true },
-    '59144': { isActiveSrc: true, isActiveDest: true },
-    '1151111081099710': {
-      topAssets: [
-        'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC
-        'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN', // Jupiter
-        '7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxsDx8F8k8k3uYw1PDC',
-        '3iQL8BFS2vE7mww4ehAqQHAsbmRNCrPxizWAT2Zfyr9y',
-        '9zNQRsGLjNKwCUU5Gq5LR8beUCPzQMVMqKAi3SSZh54u',
-        'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
-        'rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof',
-        '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-      ],
-      isActiveSrc: true,
-      isActiveDest: true,
-      isSnapConfirmationEnabled: false,
-    },
-  },
+export const SOLANA_DEFAULT_DAPP_OPTIONS = {
+  numberOfTestDapps: 1,
+  customDappPaths: [DAPP_PATH.TEST_SNAPS],
 };
 
-const featureFlagsWithSnapConfirmation = {
-  ...featureFlags,
-  chains: {
-    ...featureFlags.chains,
-    '1151111081099710': {
-      ...featureFlags.chains['1151111081099710'],
-      isSnapConfirmationEnabled: true,
-    },
-  },
+export type SolanaMockOptions = {
+  mockGetTransactionSuccess?: boolean;
+  mockGetTransactionFailed?: boolean;
+  mockTokenAccountAccountInfo?: boolean;
+  balance?: number;
+  mockSwapUSDtoSOL?: boolean;
+  mockSwapSOLtoUSDC?: boolean;
+  mockSwapWithNoQuotes?: boolean;
+  walletConnect?: boolean;
+  withProtocolSnap?: boolean;
+  withCustomMocks?: (
+    mockServer: Mockttp,
+  ) =>
+    | Promise<MockedEndpoint[] | MockedEndpoint>
+    | MockedEndpoint[]
+    | MockedEndpoint;
 };
 
-export async function withSolanaAccountSnap(
-  {
-    title,
-    numberOfAccounts = 1,
-    withNetworkOnSolana = true,
-    showNativeTokenAsMainBalance = true,
-    showSnapConfirmation = false,
+export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
+  const {
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockTokenAccountAccountInfo = true,
-    mockZeroBalance,
+    balance,
     mockSwapUSDtoSOL,
     mockSwapSOLtoUSDC,
     mockSwapWithNoQuotes,
     walletConnect = false,
-    dappOptions,
     withProtocolSnap,
     withCustomMocks,
-    withFixtureBuilder,
-  }: {
-    title?: string;
-    withNetworkOnSolana?: boolean;
-    showNativeTokenAsMainBalance?: boolean;
-    showSnapConfirmation?: boolean;
-    numberOfAccounts?: number;
-    mockGetTransactionSuccess?: boolean;
-    mockGetTransactionFailed?: boolean;
-    mockTokenAccountAccountInfo?: boolean;
-    mockZeroBalance?: boolean;
-    sendFailedTransaction?: boolean;
-    mockSwapUSDtoSOL?: boolean;
-    mockSwapSOLtoUSDC?: boolean;
-    mockSwapWithNoQuotes?: boolean;
-    walletConnect?: boolean;
-    dappOptions?: {
-      numberOfTestDapps?: number;
-      customDappPaths?: string[];
-    };
-    withProtocolSnap?: boolean;
-    withCustomMocks?: (
-      mockServer: Mockttp,
-    ) =>
-      | Promise<MockedEndpoint[] | MockedEndpoint>
-      | MockedEndpoint[]
-      | MockedEndpoint;
-    withFixtureBuilder?: (builder: FixtureBuilder) => FixtureBuilder;
-  },
-  test: (
-    driver: Driver,
-    mockServer: Mockttp,
-    extensionId: string,
-  ) => Promise<void>,
-) {
-  console.log('Starting withSolanaAccountSnap');
-  let fixtures = new FixtureBuilder();
-  if (!showNativeTokenAsMainBalance) {
-    fixtures =
-      fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
-  }
-  if (withFixtureBuilder) {
-    fixtures = withFixtureBuilder(fixtures).withEnabledNetworks({
-      eip155: {
-        '0x539': true,
-      },
-      solana: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
-      },
-    });
-  }
+  } = options;
 
-  await withFixtures(
-    {
-      fixtures: fixtures.build(),
-      title,
-      dappOptions: dappOptions ?? {
-        numberOfTestDapps: 1,
-        customDappPaths: [DAPP_PATH.TEST_SNAPS],
-      },
-      manifestFlags: {
-        // This flag is used to enable/disable the remote mode for the carousel
-        // component, which will impact to the slides count.
-        // - If this flag is not set, the slides count will be 4.
-        // - If this flag is set, the slides count will be 5.
-        remoteFeatureFlags: {
-          solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          bridgeConfig: showSnapConfirmation
-            ? featureFlagsWithSnapConfirmation
-            : featureFlags,
-        },
-      },
-      testSpecificMock: async (mockServer: Mockttp) => {
-        const mockList: MockedEndpoint[] = [];
-        const isExecutedSwapScenario = Boolean(
-          mockSwapUSDtoSOL || mockSwapSOLtoUSDC,
-        );
-        const isSwapScenario = Boolean(
-          isExecutedSwapScenario || mockSwapWithNoQuotes,
-        );
-        mockList.push(await simulateSolanaTransaction(mockServer));
-        if (walletConnect) {
-          mockList.push(await mockGetTokenAccountsByOwnerDevnet(mockServer));
-          mockList.push(await mockGetAccountInfoDevnet(mockServer));
-        }
-        mockList.push(await mockGetMultipleAccounts(mockServer));
-        if (mockGetTransactionSuccess) {
-          console.log('mockGetTransactionSuccess');
-          mockList.push(await mockSendSolanaTransaction(mockServer));
-          mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
-          mockList.push(await mockGetSuccessTransaction(mockServer));
-        }
-        if (mockGetTransactionFailed) {
-          console.log('mockGetTransactionFailed');
-          mockList.push(await mockSendSolanaFailedTransaction(mockServer));
-          mockList.push(await mockGetFailedSignaturesForAddress(mockServer));
-          mockList.push(await mockGetFailedTransaction(mockServer));
-        }
+  return async (mockServer: Mockttp): Promise<MockedEndpoint[]> => {
+    const mockList: MockedEndpoint[] = [];
+    const isExecutedSwapScenario = Boolean(
+      mockSwapUSDtoSOL || mockSwapSOLtoUSDC,
+    );
+    const isSwapScenario = Boolean(
+      isExecutedSwapScenario || mockSwapWithNoQuotes,
+    );
+    mockList.push(await simulateSolanaTransaction(mockServer));
+    if (walletConnect) {
+      mockList.push(await mockGetTokenAccountsByOwnerDevnet(mockServer));
+      mockList.push(await mockGetAccountInfoDevnet(mockServer));
+    }
+    mockList.push(await mockGetMultipleAccounts(mockServer));
+    if (mockGetTransactionSuccess) {
+      mockList.push(await mockSendSolanaTransaction(mockServer));
+      mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
+      mockList.push(await mockGetSuccessTransaction(mockServer));
+    }
+    if (mockGetTransactionFailed) {
+      mockList.push(await mockSendSolanaFailedTransaction(mockServer));
+      mockList.push(await mockGetFailedSignaturesForAddress(mockServer));
+      mockList.push(await mockGetFailedTransaction(mockServer));
+    }
 
-        if (!isExecutedSwapScenario) {
-          mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
-        }
-        mockList.push(
-          await mockSolanaBalanceQuote(mockServer, mockZeroBalance),
-        );
+    if (!isExecutedSwapScenario) {
+      mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
+    }
+    mockList.push(await mockSolanaBalanceQuote({ mockServer, balance }));
 
-        mockList.push(
-          await mockGetMinimumBalanceForRentExemption(mockServer),
-          await mockMultiCoinPrice(mockServer),
-          await mockGetLatestBlockhash(mockServer),
-          await mockGetFeeForMessage(mockServer),
-          isSwapScenario
-            ? await mockPriceApiSpotPriceSwap(mockServer)
-            : await mockPriceApiSpotPrice(mockServer),
-          await mockPriceApiExchangeRates(mockServer),
-          await mockClientSideDetectionApi(mockServer),
-          await mockPhishingDetectionApi(mockServer),
-        );
+    mockList.push(
+      await mockGetMinimumBalanceForRentExemption(mockServer),
+      await mockMultiCoinPrice(mockServer),
+      await mockGetLatestBlockhash(mockServer),
+      await mockGetFeeForMessage(mockServer),
+      isSwapScenario
+        ? await mockPriceApiSpotPriceSwap(mockServer)
+        : await mockPriceApiSpotPrice(mockServer),
+      await mockPriceApiExchangeRates(mockServer),
+      await mockClientSideDetectionApi(mockServer),
+      await mockPhishingDetectionApi(mockServer),
+    );
 
-        if (mockTokenAccountAccountInfo) {
-          await mockGetTokenAccountInfo(mockServer);
-        }
+    if (mockTokenAccountAccountInfo) {
+      await mockGetTokenAccountInfo(mockServer);
+    }
 
-        mockList.push(
-          await mockTokenApiMainnetTest(mockServer),
-          await mockAccountsApi(mockServer),
-          await mockGetMultipleAccounts(mockServer),
-          await mockGetAccountInfoDevnet(mockServer),
-        );
+    mockList.push(
+      await mockTokensV2SupportedNetworks(mockServer),
+      await mockTokenApiMainnetTest(mockServer),
+      await mockAccountsApi(mockServer),
+      await mockGetMultipleAccounts(mockServer),
+      await mockGetAccountInfoDevnet(mockServer),
+    );
 
-        if (mockSwapWithNoQuotes) {
-          mockList.push(await mockBridgeGetTokens(mockServer));
-          mockList.push(await mockBridgeSearchTokens(mockServer));
-          mockList.push(await mockNoQuotesAvailable(mockServer));
-        }
-        if (mockSwapUSDtoSOL) {
-          mockList.push(
-            ...[
-              await mockQuoteFromUSDCtoSOL(mockServer),
-              await mockSendSwapSolanaTransaction(mockServer),
-              await mockGetUSDCSOLTransaction(mockServer),
-              await mockSecurityAlertSwap(mockServer),
-              await mockGetSignaturesSuccessSwap(
-                mockServer,
-                USDC_TO_SOL_SWAP_SIGNATURE,
-              ),
-              await mockBridgeGetTokens(mockServer),
-              await mockBridgeSearchTokens(mockServer),
-            ],
-          );
-        }
-        if (mockSwapSOLtoUSDC) {
-          mockList.push(
-            ...[
-              await mockQuoteFromSoltoUSDC(mockServer),
-              await mockSendSwapSolanaTransaction(
-                mockServer,
-                undefined,
-                SOL_TO_USDC_SWAP_SIGNATURE,
-              ),
-              await mockGetSOLUSDCTransaction(mockServer),
-              await mockSecurityAlertSwap(mockServer),
-              await mockGetSignaturesSuccessSwap(
-                mockServer,
-                SOL_TO_USDC_SWAP_SIGNATURE,
-              ),
-              await mockBridgeGetTokens(mockServer),
-              await mockBridgeSearchTokens(mockServer),
-            ],
-          );
-        }
+    if (mockSwapWithNoQuotes) {
+      mockList.push(await mockBridgeGetTokens(mockServer));
+      mockList.push(await mockBridgeSearchTokens(mockServer));
+      mockList.push(await mockNoQuotesAvailable(mockServer));
+    }
+    if (mockSwapUSDtoSOL) {
+      mockList.push(
+        ...[
+          await mockQuoteFromUSDCtoSOL(mockServer),
+          await mockSendSwapSolanaTransaction(mockServer),
+          await mockGetUSDCSOLTransaction(mockServer),
+          await mockSecurityAlertSwap(mockServer),
+          await mockGetSignaturesSuccessSwap(
+            mockServer,
+            USDC_TO_SOL_SWAP_SIGNATURE,
+          ),
+          await mockBridgeGetTokens(mockServer),
+          await mockBridgeSearchTokens(mockServer),
+        ],
+      );
+    }
+    if (mockSwapSOLtoUSDC) {
+      mockList.push(
+        ...[
+          await mockQuoteFromSoltoUSDC(mockServer),
+          await mockSendSwapSolanaTransaction(
+            mockServer,
+            undefined,
+            SOL_TO_USDC_SWAP_SIGNATURE,
+          ),
+          await mockGetSOLUSDCTransaction(mockServer),
+          await mockSecurityAlertSwap(mockServer),
+          await mockGetSignaturesSuccessSwap(
+            mockServer,
+            SOL_TO_USDC_SWAP_SIGNATURE,
+          ),
+          await mockBridgeGetTokens(mockServer),
+          await mockBridgeSearchTokens(mockServer),
+        ],
+      );
+    }
 
-        if (withProtocolSnap) {
-          mockList.push(await mockProtocolSnap(mockServer));
+    if (withProtocolSnap) {
+      mockList.push(await mockProtocolSnap(mockServer));
+    }
+    if (withCustomMocks) {
+      const customMocksResult = await withCustomMocks(mockServer);
+      if (customMocksResult) {
+        if (Array.isArray(customMocksResult)) {
+          mockList.push(...customMocksResult.filter((m) => m));
+        } else {
+          mockList.push(customMocksResult);
         }
-        if (withCustomMocks) {
-          const customMocksResult = await withCustomMocks(mockServer);
-          if (customMocksResult) {
-            if (Array.isArray(customMocksResult)) {
-              mockList.push(...customMocksResult.filter((m) => m));
-            } else {
-              mockList.push(customMocksResult);
-            }
-          }
-        }
-        return mockList;
-      },
-      ignoredConsoleErrors: [
-        'SES_UNHANDLED_REJECTION: 0, never, undefined, index, Array(1)',
-        'SES_UNHANDLED_REJECTION: 1, never, undefined, index, Array(1)',
-        'No custom network client was found with the ID',
-        'No Infura network client was found with the ID "linea-mainnet"',
-      ],
-    },
-    async ({
-      driver,
-      mockServer,
-      extensionId,
-    }: {
-      driver: Driver;
-      mockServer: Mockttp;
-      extensionId: string;
-    }) => {
-      if (showNativeTokenAsMainBalance) {
-        await loginWithBalanceValidation(driver);
-      } else {
-        await loginWithoutBalanceValidation(driver);
       }
-      if (withNetworkOnSolana) {
-        // Change network to Solana
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Solana');
-      }
-      if (numberOfAccounts === 2) {
-        const homepage = new Homepage(driver);
-        await homepage.checkExpectedBalanceIsDisplayed();
-        // create 2nd account
-        await homepage.headerNavbar.openAccountMenu();
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
-        await accountListPage.addMultichainAccount();
-        await accountListPage.selectAccount('Account 1');
-      }
-
-      await test(driver, mockServer, extensionId);
-    },
-  );
+    }
+    return mockList;
+  };
 }

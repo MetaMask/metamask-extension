@@ -1,11 +1,11 @@
-import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { HandlerType } from '@metamask/snaps-utils';
 import { TRON_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts';
 import { signTronRewardsMessage, SignRewardsMessageResult } from './tron-snap';
 
 // Mock the snap request handler
 const mockHandleSnapRequest = jest.fn() as jest.MockedFunction<
-  HandleSnapRequest['handler']
+  SnapControllerHandleRequestAction['handler']
 >;
 
 // Mock console.error to avoid test noise

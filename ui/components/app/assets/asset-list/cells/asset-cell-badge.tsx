@@ -10,7 +10,7 @@ import {
 } from '../../../../component-library';
 import { getNativeCurrencyForChain } from '../../../../../selectors';
 import { getImageForChainId } from '../../../../../selectors/multichain';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
   getAssetImageUrl,
   isEvmChainId,

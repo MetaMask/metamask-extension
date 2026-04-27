@@ -3,8 +3,8 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { TransactionApprovalAmountType } from '../../../../shared/constants/transaction';
 import { buildTransactionMetricsContext } from './metrics-context';
 
-jest.mock('../../../../shared/modules/transaction.utils', () => ({
-  ...jest.requireActual('../../../../shared/modules/transaction.utils'),
+jest.mock('../../../../shared/lib/transaction.utils', () => ({
+  ...jest.requireActual('../../../../shared/lib/transaction.utils'),
   determineTransactionAssetType: jest.fn().mockResolvedValue({
     assetType: 'native',
     tokenStandard: 'ERC20',
@@ -72,5 +72,57 @@ describe('buildTransactionMetricsContext', () => {
     expect(context.isContractInteraction).toBe(false);
     expect(context.transactionTypeForMetrics).toBe('simpleSend');
     expect(context.contractMethodName).toBeUndefined();
+  });
+
+  it('returns musdConversion as transaction type for mUSD conversion transactions', async () => {
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        type: TransactionType.musdConversion,
+        txParams: { data: '0xa9059cbb' },
+      }),
+      transactionMetricsRequest: createRequest(),
+    });
+
+    expect(context.transactionTypeForMetrics).toBe('musdConversion');
+    expect(context.isContractInteraction).toBe(false);
+  });
+
+  it('returns musdClaim as transaction type for mUSD claim transactions', async () => {
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        type: TransactionType.musdClaim,
+        txParams: { data: '0x12345678' },
+      }),
+      transactionMetricsRequest: createRequest(),
+    });
+
+    expect(context.transactionTypeForMetrics).toBe('musdClaim');
+    expect(context.isContractInteraction).toBe(false);
+  });
+
+  it('returns perpsDeposit as transaction type for perps deposit transactions', async () => {
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        type: TransactionType.perpsDeposit,
+        txParams: { data: '0xa9059cbb' },
+      }),
+      transactionMetricsRequest: createRequest(),
+    });
+
+    expect(context.transactionTypeForMetrics).toBe('perpsDeposit');
+    expect(context.isContractInteraction).toBe(false);
+  });
+
+  it('returns perpsWithdraw as transaction type for perps withdraw transactions', async () => {
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        type: TransactionType.perpsWithdraw,
+        txParams: { data: '0xa9059cbb' },
+      }),
+      transactionMetricsRequest: createRequest(),
+    });
+
+    expect(context.transactionTypeForMetrics).toBe('perpsWithdraw');
+    expect(context.isContractInteraction).toBe(false);
   });
 });

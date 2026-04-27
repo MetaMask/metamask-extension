@@ -14,96 +14,105 @@ import {
   getFirstParentDirectoryThatExists,
   isWritable,
 } from '../../helpers/file';
-import { runBenchmarkWithIterations } from './utils';
+import type {
+  BenchmarkResults,
+  ThresholdViolation,
+} from '../../../shared/constants/benchmarks';
 import {
-  ONBOARDING_IMPORT_THRESHOLDS,
-  ONBOARDING_NEW_WALLET_THRESHOLDS,
-  IMPORT_SRP_HOME_THRESHOLDS,
-  SWAP_THRESHOLDS,
-  SEND_TRANSACTIONS_THRESHOLDS,
-  ASSET_DETAILS_THRESHOLDS,
-  SOLANA_ASSET_DETAILS_THRESHOLDS,
+  DEFAULT_BENCHMARK_BROWSER_LOADS,
+  DEFAULT_BENCHMARK_ITERATIONS,
+  DEFAULT_BENCHMARK_PAGE_LOADS,
+} from '../../../shared/constants/benchmarks';
+import { toCamelCase } from '../../../shared/lib/string-utils';
+import { runBenchmarkWithIterations, convertSummaryToResults } from './utils';
+import {
   STARTUP_PRESETS,
   INTERACTION_PRESETS,
   USER_JOURNEY_PRESETS,
+  DAPP_PAGE_LOAD_PRESETS,
+  DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH,
+  DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME,
 } from './utils/constants';
-import type {
-  BenchmarkResults,
-  BenchmarkSummary,
-  BenchmarkType,
-  Persona,
-  StatisticalResult,
-  ThresholdConfig,
-} from './utils/types';
+import { THRESHOLD_REGISTRY } from './utils/thresholds';
+import {
+  validateResultThresholds,
+  logThresholdResult,
+} from './utils/statistics';
 
 /**
- * Convert BenchmarkSummary (from runBenchmarkWithIterations) to BenchmarkResults format
- * for consistent output with send-to-sentry.ts
- *
- * @param summary
- * @param testTitle
- * @param persona
- * @param benchmarkType
- */
-function convertSummaryToResults(
-  summary: BenchmarkSummary,
-  testTitle: string,
-  persona: Persona = 'standard',
-  benchmarkType?: BenchmarkType,
-): BenchmarkResults {
-  const mean: StatisticalResult = {};
-  const min: StatisticalResult = {};
-  const max: StatisticalResult = {};
-  const stdDev: StatisticalResult = {};
-  const p75: StatisticalResult = {};
-  const p95: StatisticalResult = {};
-
-  for (const timer of summary.timers) {
-    mean[timer.id] = timer.mean;
-    min[timer.id] = timer.min;
-    max[timer.id] = timer.max;
-    stdDev[timer.id] = timer.stdDev;
-    p75[timer.id] = timer.p75;
-    p95[timer.id] = timer.p95;
-  }
-
-  return {
-    testTitle,
-    persona,
-    benchmarkType,
-    mean,
-    min,
-    max,
-    stdDev,
-    p75,
-    p95,
-  };
-}
-
-/**
- * Check if a benchmark file supports iterations (performance or user-actions)
+ * Startup benchmarks handle their own iteration internally (browserLoads x pageLoads).
+ * All other benchmarks need external iteration + aggregation via runBenchmarkWithIterations.
  *
  * @param filePath
  */
 function supportsIterations(filePath: string): boolean {
+  return !filePath.includes('/startup/');
+}
+
+/**
+ * Playwright benchmark specs are run via `yarn playwright test` (not imported as modules).
+ * Includes specs under `test/e2e/playwright/...` and the colocated dapp page-load spec.
+ * @param filePath
+ */
+function isPlaywrightBenchmarkFile(filePath: string): boolean {
+  const normalized = filePath.replace(/\\/gu, '/');
   return (
-    filePath.includes('/user-journey/') || filePath.includes('/interaction/')
+    normalized.includes('/playwright/') ||
+    normalized.endsWith(`/${DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME}`) ||
+    normalized.endsWith(DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME)
   );
 }
 
-function getThresholdConfig(filePath: string): ThresholdConfig | undefined {
-  const fileName = path.basename(filePath, path.extname(filePath));
-  const thresholdMap: Record<string, ThresholdConfig> = {
-    'onboarding-import-wallet': ONBOARDING_IMPORT_THRESHOLDS,
-    'onboarding-new-wallet': ONBOARDING_NEW_WALLET_THRESHOLDS,
-    'import-srp-home': IMPORT_SRP_HOME_THRESHOLDS,
-    swap: SWAP_THRESHOLDS,
-    'send-transactions': SEND_TRANSACTIONS_THRESHOLDS,
-    'asset-details': ASSET_DETAILS_THRESHOLDS,
-    'solana-asset-details': SOLANA_ASSET_DETAILS_THRESHOLDS,
-  };
+/**
+ * Extracts platform and buildType from output filename.
+ * Expected format: benchmark-{platform}-{buildType}-{preset}.json
+ * @param outputFilename - Output filename from --out arg
+ * @returns Object with platform and buildType, or empty object if not found
+ */
+function extractPlatformBuildType(outputFilename?: string): {
+  platform?: string;
+  buildType?: string;
+} {
+  if (!outputFilename) {
+    return {};
+  }
 
-  return thresholdMap[fileName];
+  const outputBasename = path.basename(outputFilename, '.json');
+  const match = outputBasename.match(/^benchmark-([^-]+)-([^-]+)-/u);
+  if (match) {
+    const [, platform, buildType] = match;
+    return { platform, buildType };
+  }
+
+  return {};
+}
+
+/**
+ * Builds the registry key for threshold lookup and JSON output.
+ *
+ * @param fileName - Benchmark flow filename (e.g., 'standard-home', 'load-new-account')
+ * @param filePath - Full file path (to detect startup benchmarks)
+ * @param preset - Preset name (e.g., 'startupStandardHome', 'interactionUserActions')
+ * @returns Registry key (e.g., 'startupStandardHome', 'loadNewAccount', 'onboardingImportWallet')
+ */
+function buildRegistryKey(
+  fileName: string,
+  filePath: string,
+  preset?: string,
+): string {
+  const baseName = toCamelCase(fileName);
+  const isStartup =
+    (preset &&
+      Object.values(STARTUP_PRESETS).includes(
+        preset as (typeof STARTUP_PRESETS)[keyof typeof STARTUP_PRESETS],
+      )) ||
+    filePath.includes('/startup/');
+
+  if (isStartup) {
+    return `startup${baseName.charAt(0).toUpperCase()}${baseName.slice(1)}`;
+  }
+
+  return baseName;
 }
 
 const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
@@ -147,10 +156,8 @@ const PRESETS: Record<string, string[]> = {
     `${BENCHMARK_DIR}/interaction/confirm-tx.ts`,
     `${BENCHMARK_DIR}/interaction/bridge-user-actions.ts`,
   ],
-  // Playwright page-load benchmark (for local use; CI runs this separately)
-  pageLoadBenchmark: [
-    'test/e2e/playwright/benchmark/page-load-benchmark.spec.ts',
-  ],
+  // Dapp page-load benchmark (Playwright-based; runs separately in CI)
+  [DAPP_PAGE_LOAD_PRESETS.PAGE_LOAD]: [DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH],
 };
 
 PRESETS.all = Object.values(PRESETS).flat();
@@ -163,12 +170,13 @@ async function runBenchmarkFile(
     browserLoads: number;
     pageLoads: number;
   },
+  preset?: string,
+  outputFilename?: string,
 ): Promise<unknown> {
   const absolutePath = pathToFileURL(path.resolve(filePath)).href;
   const fileName = path.basename(filePath, path.extname(filePath));
 
-  // Playwright benchmarks run via yarn playwright
-  if (filePath.includes('/playwright/')) {
+  if (isPlaywrightBenchmarkFile(filePath)) {
     await runPlaywrightBenchmark(filePath);
     return undefined; // Playwright writes its own output file
   }
@@ -180,8 +188,19 @@ async function runBenchmarkFile(
   }
 
   const { run: runFn } = benchmark;
+  const registryKey = buildRegistryKey(fileName, filePath, preset);
+  const thresholdConfig = THRESHOLD_REGISTRY[registryKey];
+  if (!thresholdConfig) {
+    throw new Error(
+      `No threshold config for "${fileName}" (registry key "${registryKey}"). Add an entry to THRESHOLD_REGISTRY in thresholds.ts.`,
+    );
+  }
 
-  // For benchmarks that support iterations, use runBenchmarkWithIterations to run multiple times
+  const { platform, buildType } = extractPlatformBuildType(outputFilename);
+
+  let result: BenchmarkResults;
+  let violations: ThresholdViolation[];
+
   if (supportsIterations(filePath) && options.iterations > 0) {
     const testTitle = benchmark.testTitle || fileName;
     const { persona } = benchmark;
@@ -195,36 +214,34 @@ async function runBenchmarkFile(
       runFn,
       options.iterations,
       options.retries,
-      getThresholdConfig(filePath),
+      thresholdConfig,
     );
 
     console.log(
       `Completed: ${summary.successfulRuns}/${summary.iterations} successful runs`,
     );
 
-    // Log threshold violations if any
-    if (summary.thresholdViolations && summary.thresholdViolations.length > 0) {
-      console.log('\n⚠️  Threshold Violations:');
-      summary.thresholdViolations.forEach((v) => {
-        const icon = v.severity === 'fail' ? '❌' : '⚠️';
-        console.log(
-          `  ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(2)}ms > ${v.threshold}ms`,
-        );
-      });
-    } else if (summary.thresholdsPassed !== undefined) {
-      console.log('✅ All thresholds passed');
-    }
-
-    return convertSummaryToResults(
+    violations = summary.thresholdViolations;
+    result = convertSummaryToResults(
       summary,
       testTitle,
       persona,
       summary.benchmarkType,
+      platform,
+      buildType,
     );
+  } else {
+    result = (await runFn({
+      ...options,
+      platform,
+      buildType,
+    })) as BenchmarkResults;
+    violations = validateResultThresholds(result, thresholdConfig).violations;
   }
 
-  // For other benchmarks (page-load), run once with options
-  return runFn(options);
+  logThresholdResult(violations);
+
+  return result;
 }
 
 /**
@@ -274,18 +291,18 @@ async function main(): Promise<void> {
     })
     .option('iterations', {
       alias: 'i',
-      default: 5,
+      default: DEFAULT_BENCHMARK_ITERATIONS,
       description:
         'Number of iterations (for performance and user-action benchmarks)',
       type: 'number',
     })
     .option('browserLoads', {
-      default: 10,
+      default: DEFAULT_BENCHMARK_BROWSER_LOADS,
       description: 'Number of browser loads (for page load benchmarks)',
       type: 'number',
     })
     .option('pageLoads', {
-      default: 10,
+      default: DEFAULT_BENCHMARK_PAGE_LOADS,
       description:
         'Number of page loads per browser (for page load benchmarks)',
       type: 'number',
@@ -336,14 +353,17 @@ async function main(): Promise<void> {
 
   for (const filePath of filesToRun) {
     const fileName = path.basename(filePath, path.extname(filePath));
-    const resultKey = fileName.replace(/-([a-z])/gu, (_, letter) =>
-      letter.toUpperCase(),
-    );
+    const resultKey = buildRegistryKey(fileName, filePath, argv.preset);
 
     try {
-      const result = await runBenchmarkFile(filePath, options);
+      const result = await runBenchmarkFile(
+        filePath,
+        options,
+        argv.preset,
+        argv.out,
+      );
       // Playwright benchmarks write their own output file, skip storing
-      if (filePath.includes('/playwright/')) {
+      if (isPlaywrightBenchmarkFile(filePath)) {
         continue;
       }
       allResults[resultKey] = result;

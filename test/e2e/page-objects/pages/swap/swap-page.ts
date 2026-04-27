@@ -25,10 +25,9 @@ export type SwapQuoteOptions = {
 };
 
 export type SwapQuote = {
-  amount: string;
   totalCost: string;
   receivedAmount: string;
-  estimatedTime?: string;
+  receivedAmountInCurrency?: string;
   provider?: string;
 };
 
@@ -50,9 +49,7 @@ class SwapPage {
   private readonly assetPickerSearchInput =
     '[data-testid="bridge-asset-picker-search-input"]';
 
-  private readonly bridgeAsset = '[data-testid="bridge-asset"]';
-
-  private readonly fromToText = '[data-testid="bridge-asset"] p';
+  private readonly bridgeAsset = '[data-testid^="bridge-asset--"]';
 
   private readonly moreQuotesButton = '[aria-label="More quotes"]';
 
@@ -62,8 +59,8 @@ class SwapPage {
   };
 
   private readonly gasIncludedLabel = {
-    text: 'included',
-    tag: 'h6',
+    text: 'Included',
+    tag: 'p',
   };
 
   private readonly rateMessage = {
@@ -84,7 +81,7 @@ class SwapPage {
     '[data-testid="swap-smart-transaction-status-description"]';
 
   private readonly swapButton = {
-    tag: 'button',
+    css: '[data-testid="bridge-cta-button"]',
     text: 'Swap',
   };
 
@@ -116,6 +113,16 @@ class SwapPage {
   private readonly quotesModalRow =
     '.quotes-modal [style*="position: relative"]';
 
+  private readonly viewActivityButton = {
+    tag: 'button',
+    text: 'View activity',
+  };
+
+  private readonly transactionCompleteHeader = {
+    tag: 'h4',
+    text: 'Your transaction is complete',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -143,15 +150,15 @@ class SwapPage {
 
   async checkQuote(quote: SwapQuote): Promise<void> {
     await this.driver.waitForSelector({
-      text: `${quote.totalCost} total cost`,
+      text: `Total cost: ${quote.totalCost}`,
       tag: 'p',
     });
     await this.driver.waitForSelector({
-      text: `${quote.receivedAmount} receive amount`,
+      text: `${quote.receivedAmount}`,
       tag: 'p',
     });
     await this.driver.waitForSelector({
-      text: quote.estimatedTime,
+      text: quote.receivedAmountInCurrency,
       tag: 'p',
     });
     await this.driver.waitForSelector({
@@ -168,6 +175,11 @@ class SwapPage {
     console.log('Entering swap amount');
     const stxToggle = await this.driver.findElement(this.reviewFromAmount);
     stxToggle.sendKeys(amount);
+  }
+
+  async waitForQuote(): Promise<void> {
+    console.log('Wait for quote to be displayed');
+    await this.driver.waitForSelector(this.swapButton, { timeout: 30000 });
   }
 
   async selectSourceToken(sourceToken: string): Promise<void> {
@@ -249,27 +261,15 @@ class SwapPage {
     await this.driver.clickElement(this.closeButton);
   }
 
-  async waitForSmartTransactionToComplete(tokenName: string): Promise<void> {
+  async clickViewActivity(): Promise<void> {
+    await this.driver.clickElement(this.viewActivityButton);
+  }
+
+  async waitForSmartTransactionToComplete(): Promise<void> {
     console.log('Wait for Smart Transaction to complete');
-
-    await this.driver.waitForSelector({
-      css: this.transactionStatusHeader,
-      text: 'Privately submitting your Swap',
+    await this.driver.waitForSelector(this.transactionCompleteHeader, {
+      timeout: 30000,
     });
-
-    await this.driver.waitForSelector(
-      {
-        css: this.transactionStatusHeader,
-        text: 'Swap complete!',
-      },
-      { timeout: 30000 },
-    );
-
-    await this.driver.findElement({
-      css: this.transactionStatusDescription,
-      text: `${tokenName}`,
-    });
-    await this.driver.clickElement(this.closeButton);
   }
 
   async fillSwapAmount(amount: string): Promise<void> {
@@ -279,8 +279,12 @@ class SwapPage {
 
   async selectDestinationTokenByContract(
     contractAddress: string,
+    options: { pickerAlreadyOpen?: boolean } = {},
   ): Promise<void> {
-    await this.driver.clickElement(this.bridgeDestinationButton);
+    const { pickerAlreadyOpen = false } = options;
+    if (!pickerAlreadyOpen) {
+      await this.driver.clickElement(this.bridgeDestinationButton);
+    }
     await this.driver.waitForSelector(this.assetPickerSearchInput);
     await this.driver.fill(this.assetPickerSearchInput, contractAddress);
 
@@ -372,17 +376,48 @@ class SwapPage {
     await this.driver.clickElement(this.bridgeSourceButton);
     const bridgeQuotePage = new BridgeQuotePage(this.driver);
     await bridgeQuotePage.selectNetwork(options.network);
+    await this.driver.waitForSelector(this.assetPickerSearchInput, {
+      timeout: 30000,
+    });
+    await this.driver.fill(this.assetPickerSearchInput, options.swapFrom);
+    await this.driver.waitForSelector(
+      {
+        css: this.bridgeAsset,
+        text: options.swapFrom,
+      },
+      { timeout: 30000 },
+    );
     await this.driver.clickElement({
+      css: this.bridgeAsset,
       text: options.swapFrom,
-      css: this.fromToText,
     });
 
     await this.driver.clickElement(this.bridgeDestinationButton);
     await bridgeQuotePage.selectNetwork(options.network);
-    await this.driver.clickElement({
-      text: options.swapTo,
-      css: this.fromToText,
-    });
+    if (options.swapToContractAddress) {
+      await this.selectDestinationTokenByContract(
+        options.swapToContractAddress,
+        {
+          pickerAlreadyOpen: true,
+        },
+      );
+    } else {
+      await this.driver.waitForSelector(this.assetPickerSearchInput, {
+        timeout: 30000,
+      });
+      await this.driver.fill(this.assetPickerSearchInput, options.swapTo);
+      await this.driver.waitForSelector(
+        {
+          css: this.bridgeAsset,
+          text: options.swapTo,
+        },
+        { timeout: 30000 },
+      );
+      await this.driver.clickElement({
+        css: this.bridgeAsset,
+        text: options.swapTo,
+      });
+    }
 
     await this.driver.waitForSelector(this.reviewFromAmount);
     await this.driver.fill(this.reviewFromAmount, options.amount.toString());

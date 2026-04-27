@@ -6,60 +6,20 @@ import {
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { Interface } from '@ethersproject/abi';
 import { calcTokenAmount } from '../../../../../shared/lib/transactions-controller-utils';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatAmount } from '../../components/simulation-details/formatAmount';
 import {
-  DISTRIBUTOR_CLAIM_ABI,
   MERKL_CLAIM_CHAIN_ID,
   MUSD_TOKEN_ADDRESS,
 } from '../../../../components/app/musd/constants';
 import { getClaimedAmountFromContract } from '../../../../components/app/musd/merkl-client';
+import { decodeMerklClaimParams } from '../../../../hooks/musd/transaction-amount-utils';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 
 /** mUSD has 6 decimals */
 const MUSD_DECIMALS = 6;
-
-type MerklClaimParams = {
-  totalAmount: string;
-  userAddress: string;
-  tokenAddress: string;
-};
-
-/**
- * Decode Merkl claim parameters from transaction calldata.
- * claim(address[] users, address[] tokens, uint256[] amounts, bytes32[][] proofs)
- *
- * @param data - The transaction data hex string
- * @returns Decoded claim parameters, or null if decoding fails
- */
-function decodeMerklClaimParams(
-  data: string | undefined,
-): MerklClaimParams | null {
-  if (!data || typeof data !== 'string') {
-    return null;
-  }
-
-  try {
-    const contractInterface = new Interface(DISTRIBUTOR_CLAIM_ABI);
-    const decoded = contractInterface.decodeFunctionData('claim', data);
-    const [users, tokens, amounts] = decoded;
-
-    if (!users?.length || !tokens?.length || !amounts?.length) {
-      return null;
-    }
-
-    return {
-      totalAmount: amounts[0].toString(),
-      userAddress: users[0],
-      tokenAddress: tokens[0],
-    };
-  } catch {
-    return null;
-  }
-}
 
 type UseMerklClaimAmountResult = {
   /** Whether the async contract call is still pending */

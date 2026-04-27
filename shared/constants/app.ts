@@ -20,6 +20,10 @@ export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
 export const ENVIRONMENT_TYPE_SIDEPANEL = 'sidepanel';
 export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
 
+export const POPUP_FILE = 'popup.html';
+export const POPUP_INIT_FILE = 'popup-init.html';
+export const SIDEPANEL_FILE = 'sidepanel.html';
+
 export const PLATFORM_BRAVE = 'Brave';
 export const PLATFORM_CHROME = 'Chrome';
 export const PLATFORM_CHROMIUM = 'Chromium';
@@ -149,6 +153,11 @@ export const MESSAGE_TYPE = {
   WALLET_REVOKE_SESSION: 'wallet_revokeSession',
   WALLET_SEND_CALLS: 'wallet_sendCalls',
   WALLET_SESSION_CHANGED: 'wallet_sessionChanged',
+  WALLET_REQUEST_EXECUTION_PERMISSIONS: 'wallet_requestExecutionPermissions',
+  WALLET_GET_SUPPORTED_EXECUTION_PERMISSIONS:
+    'wallet_getSupportedExecutionPermissions',
+  WALLET_GET_GRANTED_EXECUTION_PERMISSIONS:
+    'wallet_getGrantedExecutionPermissions',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
   SNAP_DIALOG_ALERT: DIALOG_APPROVAL_TYPES.alert,
@@ -168,13 +177,11 @@ export const HYPERLIQUID_APPROVAL_TYPE =
 export const ASTERDEX_APPROVAL_TYPE = MESSAGE_TYPE.ASTERDEX_REFERRAL_CONSENT;
 export const GMX_APPROVAL_TYPE = MESSAGE_TYPE.GMX_REFERRAL_CONSENT;
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',
   confirmAccountRemoval: 'snap_manageAccounts:confirmAccountRemoval',
   showSnapAccountRedirect: 'snap_manageAccounts:showSnapAccountRedirect',
 };
-///: END:ONLY_INCLUDE_IF
 
 export const SMART_TRANSACTION_CONFIRMATION_TYPES = {
   showSmartTransactionStatusPage:

@@ -38,7 +38,7 @@ const mockGetAccountByAddress = jest.fn();
 const mockListMultichainAccounts = jest.fn();
 const mockLocale = 'en';
 const mockPreferencesControllerGetState = jest.fn();
-const mockSnapControllerGet = jest.fn();
+const mockSnapControllerGetSnap = jest.fn();
 const mockSnapControllerHandleRequest = jest.fn();
 const mockRemoteFeatureFlagsGetStateRequest = jest.fn();
 
@@ -68,18 +68,6 @@ const mockInternalAccount = {
     importTime: 0,
   },
 };
-
-// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
-// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
-jest.mock(
-  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-    ),
-    isMultichainAccountsFeatureEnabled: () => false,
-  }),
-);
 
 jest.mock('../../../../shared/lib/snaps/snaps', () => ({
   ...jest.requireActual('../../../../shared/lib/snaps/snaps'),
@@ -122,7 +110,7 @@ const createControllerMessenger = ({
       'AccountsController:getAccountByAddress',
       'AccountsController:listMultichainAccounts',
       'PreferencesController:getState',
-      'SnapController:get',
+      'SnapController:getSnap',
       'SnapController:handleRequest',
       'RemoteFeatureFlagController:getState',
     ],
@@ -171,8 +159,8 @@ const createControllerMessenger = ({
           locale: mockLocale,
         })(params);
 
-      case 'SnapController:get':
-        return mockSnapControllerGet.mockReturnValue({
+      case 'SnapController:getSnap':
+        return mockSnapControllerGetSnap.mockReturnValue({
           id: mockSnapId,
           manifest: {
             proposedName: mockSnapName,
@@ -442,6 +430,31 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
       expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
+    });
+  });
+
+  describe('removeAccount', () => {
+    it('starts and ends an approval flow when the user accepts removal', async () => {
+      mockAddRequest.mockReturnValue(true);
+      const builder = createSnapKeyringBuilder();
+      const keyring = builder();
+      // Seed the keyring state so the account exists before removing it.
+      await keyring.deserialize({
+        accounts: {
+          [mockAccount.id]: { account: mockAccount, snapId: mockSnapId },
+        },
+      });
+
+      await keyring.handleKeyringSnapMessage(mockSnapId, {
+        method: 'notify:accountDeleted',
+        params: { id: mockAccount.id },
+      });
+
+      expect(mockStartFlow).toHaveBeenCalledTimes(1);
+      expect(mockEndFlow).toHaveBeenCalledTimes(1);
+      expect(mockRemoveAccountHelper).toHaveBeenCalledWith(
+        address.toLowerCase(),
+      );
     });
   });
 });

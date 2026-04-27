@@ -10,6 +10,8 @@ import { type BridgeAppState } from '../../ducks/bridge/selectors';
 import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { fetchTokensBySearchQuery } from '../../pages/bridge/utils/tokens';
+import { getBearerToken } from '../../store/actions';
+import { useAsyncResult } from '../useAsync';
 
 /**
  * Returns a list of tokens from the bridge api that match the search query
@@ -35,7 +37,7 @@ export const useTokenSearchResults = ({
     getAccountGroupsByAddress(state, [accountAddress]),
   );
   const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
-    getBridgeAssetsByAssetId(state, accountGroup.id),
+    getBridgeAssetsByAssetId(state, accountGroup?.id),
   );
 
   const abortControllerRef = useRef<AbortController>(new AbortController());
@@ -54,6 +56,10 @@ export const useTokenSearchResults = ({
     string | undefined
   >(undefined);
 
+  const { value: jwt } = useAsyncResult(async () => {
+    return await getBearerToken();
+  }, []);
+
   const fetchSearchResults = useCallback(
     (
       query: string,
@@ -68,7 +74,9 @@ export const useTokenSearchResults = ({
         chainIds: Array.from(chainIds),
         assetsWithBalances: filteredAssetsToInclude,
         query,
+        jwt,
         clientId: BridgeClientId.EXTENSION,
+        clientVersion: process.env.METAMASK_VERSION,
         signal: abortControllerRef.current?.signal,
         bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
         after: cursor,
@@ -97,15 +105,17 @@ export const useTokenSearchResults = ({
           setIsSearchResultsLoading(false);
         });
     },
-    [ownedAssetsByAssetId, chainIds, abortControllerRef],
+    [ownedAssetsByAssetId, chainIds, abortControllerRef, jwt],
   );
 
-  const debouncedFetchSearchResults = useRef(
+  const debouncedFetchSearchResults = useCallback(
+    // eslint-disable-next-line react-compiler/react-compiler
     debounce(
       (query: string, assets: BridgeToken[]) =>
         fetchSearchResults(query, assets),
       300,
     ),
+    [fetchSearchResults],
   );
 
   const filteredAssetsToInclude = useMemo(() => {
@@ -119,6 +129,9 @@ export const useTokenSearchResults = ({
   }, [searchQuery, assetsToInclude]);
 
   useEffect(() => {
+    if (!jwt) {
+      return;
+    }
     // Reset state on search query change
     abortControllerRef.current.abort('Search query changed');
     setSearchResultsWithBalance([]);
@@ -128,12 +141,12 @@ export const useTokenSearchResults = ({
       setIsSearchResultsLoading(true);
       setSearchResultsWithBalance(filteredAssetsToInclude);
       // Debounce the initial fetch until the user stops typing
-      debouncedFetchSearchResults.current(searchQuery, filteredAssetsToInclude);
+      debouncedFetchSearchResults(searchQuery, filteredAssetsToInclude);
     }
-  }, [searchQuery, filteredAssetsToInclude]);
+  }, [searchQuery, filteredAssetsToInclude, jwt]);
 
   useEffect(() => {
-    const debouncedFn = debouncedFetchSearchResults.current;
+    const debouncedFn = debouncedFetchSearchResults;
     return () => {
       abortControllerRef.current.abort('Page unmounted');
       debouncedFn.cancel();

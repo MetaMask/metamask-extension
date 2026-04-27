@@ -6,7 +6,10 @@ alwaysApply: false
 
 Reference: [MetaMask Extension E2E Test Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/e2e/extension-e2e-guidelines.md)
 
-**See also:** [Test i18n Usage Guidelines](../test-i18n-usage/RULE.md) - For i18n patterns in test assertions
+**See also:**
+
+- [Test i18n Usage Guidelines](../test-i18n-usage/RULE.md) - For i18n patterns in test assertions
+- [Extension CI Flakiness Patterns](../extension-flakiness-patterns/RULE.md) - Known flakiness patterns and anti-patterns to avoid
 
 # MetaMask Extension E2E Testing Guidelines
 
@@ -78,9 +81,9 @@ Reference: [MetaMask Extension E2E Test Guidelines](https://github.com/MetaMask/
 
 ```typescript
 // GOOD: Use fixture to set up prerequisites
-new FixtureBuilder()
-  .withAddressBookControllerContactBob()
-  .withTokensControllerERC20()
+new FixtureBuilderV2()
+  .withPreferencesController({ useCurrencyRateCheck: false })
+  .withPermissionControllerConnectedToTestDapp()
   .build();
 
 // Then test only the essential steps:
@@ -89,7 +92,7 @@ new FixtureBuilder()
 // Assertion
 
 // BAD: Building all state through UI
-new FixtureBuilder().build();
+new FixtureBuilderV2().build();
 // Login
 // Add Contact
 // Open test dapp
@@ -419,7 +422,7 @@ async function mockTokenPriceApi(
 
 await withFixtures(
   {
-    fixtures: new FixtureBuilder().build(),
+    fixtures: new FixtureBuilderV2().build(),
     title: this.test?.fullTitle(),
     testSpecificMock: mockTokenPriceApi, // Layered on top of global mocks
   },
@@ -452,6 +455,7 @@ Before submitting E2E tests, ensure:
 - [ ] Proper waiting strategies used (waitForSelector, waitForMultipleSelectors)
 - [ ] Mock responses used for network calls instead of real API dependencies
 - [ ] Use fixtures to set up test state instead of UI interactions
+- [ ] Prefer `FixtureBuilderV2` when the required fixture methods are supported
 - [ ] Error handling for expected failure scenarios
 
 ## Debugging Failed Tests

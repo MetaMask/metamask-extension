@@ -7,6 +7,370 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.28.0]
+
+### Added
+
+- Extended notification account toggles to all wallet keyrings (#40762)
+- Added post–smart transaction toast notifications (#41757)
+- Added gas-sponsored transactions on the token details page (#41730)
+- Added Mantle Mainnet as a featured network (#41135)
+- Updated the Perps deposit confirmation screen to use a single “Add funds” button that stays disabled until an amount is entered, and removed the extra token amount line below the fiat total (#41686)
+- Updated the swap and bridge amount input to fill the available width with stepped font sizing, and fixed scientific-notation and zero-rounding display issues in the fiat amount row (#41722)
+- Replaced disabled-button Perps geo-blocking with an informational modal for restricted users, and allowed withdrawals regardless of geo-block status (#41646)
+- Set the extension side panel as the default UI (#41617)
+- Updated `wallet_requestSupportedExecutionPermissions` to include all supported chains (#41643)
+- Added initial Perps metrics for the extension (#41337)
+- Wired up Sentry events for Perps (#41528)
+- Added percentage input to the mUSD conversion flow (#41624)
+- Added validation when TP/SL triggers are set on the wrong side of the market price (#41615)
+
+### Changed
+
+- Bumped `@metamask/assets-controllers` to v6.0.0 (#41818)
+- Bumped `@metamask/assets-controllers` to v5.0.0 (#41575)
+- Added hover state styles to the default address row in the account list and app header (#41766)
+- Bumped the institutional Snap to v1.5.0 (#39652)
+- Added a caching layer for Perps fills and market info (#41797)
+
+### Fixed
+
+- Fixed Perps geo-blocking using the GeolocationController so user location resolves correctly (#41831)
+- Fixed navigation from Manage Wallet Recovery when the SRP is not backed up (#41832)
+- Fixed Perps market prices and related data stopping updates while the popup stayed open (#41802)
+- Fixed the dapp connection bar appearing on the wrong Chrome window when multiple windows are open (#41644)
+- Improved Perps trading toast notifications to show correct in-progress and success messages and return to the market detail page after order submission (#41822)
+- Fixed TP/SL percentage inputs on limit orders to calculate from the limit entry price (#41825)
+- Fixed Perps total balance miscalculation (#41796)
+- Fixed the reverse position modal to show the computed flip fee and use a Confirm label (#41685)
+- Fixed TP/SL presets and editing in non-English locales for perpetuals trading (#41605)
+- Unified “Reduce exposure” and “Close position” to use the same close-position modal (#41779)
+- Fixed the wallet-imported toast briefly showing the wrong wallet (#41664)
+- Fixed spacing between balance and address for Ledger accounts during connection (#41710)
+- Updated animation loader styling (#41771)
+- Fixed ERC-20 approval display on device (#41698)
+- Fixed the Perps client sometimes entering an unrecoverable “not initialized” state until restart (#41672)
+- Fixed “Paid by MetaMask” incorrectly showing on failed or rejected hardware wallet transactions (#41592)
+- Displayed all swap-supported networks in the bridge asset picker and enabled networks when selecting a token on a new chain (#41650)
+- Fixed 24h change display for market rows on the Perps landing view (#41723)
+- Replaced the “Transaction Already Confirmed” modal with a toast for cancel and speed-up errors (#41241)
+- Fixed close-position PnL double counting (#41705)
+- Fixed the Reduce exposure flow on the Perps order entry page (#41671)
+- Fixed the add margin slider (#41706)
+- Fixed a crash when opening a swap deeplink for a network not yet added to MetaMask (#41574)
+- Fixed zero-balance Perps order entry enabling trade instead of prompting to add funds (#41692)
+- Fixed Perps order entry not restricting size above available margin (#41697)
+- Fixed the 24h price change `%` disappearing on the Perps market header after first render (#41695)
+- Fixed position ROE showing 100× too small and added ROE% on position rows (#41696)
+- Fixed TP/SL formatting and PnL calculation (#41497)
+- Fixed Perps position card dropdown and interval selection (#41590)
+- Surfaced MetaMask fee in the bridge fee tooltip for MetaMask Pay (#41642)
+
+## [13.27.0]
+
+### Added
+
+- Added improved gas-included metrics for send and transfer flows (#41581)
+- Added transaction metrics for smart transactions and submission method details (#41465)
+- Added clearer “no quotes available” messaging on the bridge and swap page for amount, slippage, and token support limits (#41412)
+- Added navigation to the Activity tab when the failed-transaction badge is clicked (#41531)
+- Added a fiat loss amount to the bridge high price impact warning in the user’s local currency (#41492)
+- Added a “See All” control for Recent Activity on the perps market detail page and fixed the activity back navigation (#41541)
+- Added Tempo support (7702 and gasless) when no native token is present on the extension (#40449)
+- Added cancel-order flow from the perps market detail entry point (#41484)
+- Added the updated mUSD claim modal design (#41158)
+- Added the perps first-time user experience (#41429)
+- Added a button-style control to re-fetch bridge quotes (#41379)
+- Enabled the extension side panel for social-login rehydration (#41491)
+
+### Changed
+
+- Changed default address font weight and icon sizing on the account list (#41580)
+- Updated extension typography and design-system dependencies for the v27 semibold migration (#41467)
+- Updated the default address row to open the multichain account menu on click instead of hover (#41540)
+- Removed the `es` locale and pointed `es-419` at `es` translations (#41506)
+
+### Fixed
+
+- Fixed TRC20 send confirmation details, including token icon sizing (#41547)
+- Fixed hover and active styles on the fullscreen Settings view (#41603)
+- Fixed incorrect margin on the perps order entry when leverage is applied (#41350)
+- Fixed the Perps Explore Markets section to rank markets by 24h volume (#41606)
+- Replaced the perps market list flat sort control with a two-section sort modal (#41385)
+- Updated margin toast copy on perps flows (#41562)
+- Fixed Perps deposit completion returning to the home page instead of the prior screen (#41517)
+- Fixed bridge token balances appearing slightly high due to double rounding in the amount formatter (#41505)
+- On gas-sponsored networks, allowed sending the full native balance using Max (#41299)
+- Fixed the perps market detail header staying visible while scrolling (#41555)
+- Fixed Activity tab speed-up and pending status using the wrong earliest nonce when completed local transactions remained in the list (#41444)
+- Fixed the welcome screen fox animation clipping or distorting when resizing the browser without reloading (#41499)
+- Replaced placeholder data in the perps Recent Activity section with real trade history (#41508)
+- Filtered inactive zero-volume markets out of the perpetuals market list (#41502)
+- Included `ClientVersion` in swap token endpoint requests (#41516)
+- Fixed dapp connection control bar flicker when switching home tabs (#41501)
+- Fixed gas handling reliability when canceling or speeding up a pending transaction (#41437)
+- Fixed a crash when selecting an external recipient during cross-chain bridge transactions (#41442)
+- Fixed order and funding transactions incorrectly appearing in perps Recent Activity (#41446)
+- Fixed cancel-all and close-all controls on perps (#41430)
+
+## [13.26.0]
+
+### Added
+
+- Added warnings for outdated Chrome, Edge, Firefox, and Opera to update before support ends, and announced that official Firefox support on Windows 7–8.1 and macOS 10.12–10.14 will end in the next release (#41063)
+- Added transaction toast notification (#40886)
+- Added settings v2 to replace legacy settings (#41194)
+- Added banners localization (#41387)
+- Defaulted perpetuals leverage to 3x for new users and added per-market leverage memory so the order form starts at the last-used leverage (#41394)
+- Added missing support links into the perps tab (#41286)
+- Added warnings when setting a perps limit price above/below current price or near the liquidation price (#41230)
+- Added Perps withdrawal flow (#41214)
+- Added legacy transaction support to the new cancel/speedup (#40925)
+- Added Enter key navigation, migrated to design-system-react and a unit test suite for the password form (#41296)
+- Added real-time dapp scanning warning with acknowledgment checkbox on the SRP reveal page for malicious websites (#40209)
+- Added dapp connection control bar (#40617)
+- Added asset verified badge in swaps asset picker (#41169)
+- Added export data button (#41427)
+- Added ability to close all positions and cancel all open orders (#41287)
+
+### Changed
+
+- Removed useBlockie (#40544)
+- Updated survey banner (#41403)
+- Removed deprecated Snap methods `snap_getCurrencyRate` and `snap_experimentalProviderRequest` (#41313)
+- Adjusted dapp connection control bar styling (#41390)
+- Filtered out native token transfers (#41164)
+
+### Fixed
+
+- Fixed a bug that was causing issues with TRC20 token transfers (#41103)
+- Fixed design and estimate calculation for add/remove margin flows (#41285)
+- Fixed Bitcoin PSBT build errors to include the underlying cause for better diagnostics (#41422)
+- Fixed an issue where choosing Try again on some error screens could show the browser’s default page inside the MetaMask window instead of restarting the extension (#41364)
+- Fixed a crash that could occur for users with corrupted wallet state after a password reset or Snap keyring usage (#41405)
+- Localized `Looking for your <device>` message (#41417)
+- Fixed Review Permissions screen incorrectly showing non-EVM networks instead of the requested testnet during chain switch (#41236)
+- Fixed tooltip icon in claimable bonus row for Firefox compatibility (#41404)
+- Fixed asset list and select quotes list behavior (#41155)
+- Fixed bridge page inputs not resetting after submitting a transaction (#41222)
+- Fixed close position modal design and partial-close behavior (#41279)
+- Fixed position size display to show USD value instead of token units (#41380)
+- Fixed TP/SL form reset bug (#41283)
+
+## [13.25.0]
+
+### Added
+
+- Recent Activity on the Perps tab and related UI improvements (#41174)
+- Default address shown by default with a hoverable network group (optional default address) below each account name on the account list (#41138)
+- Perps watchlist (#40991)
+- Deep links for Perps: open the Perps tab, a specific market, or the market list with a pre-selected filter (#41143)
+- Search in Settings V2 (#41080)
+- Logos for Stable network and its native token (#40879)
+- Bridging from EVM chains to other wallet addresses (#40990)
+- Perps live stream hooks in the UI (#40779)
+- "Paid by MetaMask" on the Activity "Total gas fee" row when the transaction was a gas-sponsored swap (#40757)
+
+### Changed
+
+- mUSD conversion education and confirmation copy: clearer bonus layout, Relay attribution in the header, wider info popover, accessible bonus tooltip labels, aligned home mUSD CTA with the asset overview CTA, and removed unused `musdEarnBonusPercentage` locale keys (#41233)
+- Migrated stock and market closure components to the design-system-react library and adjusted styling to design guidelines (#41059)
+- Migrated to historical prices v3 (#41112)
+- Multichain network avatars remain visible when default address mode is enabled (#41238)
+- Reverted the asset verified badge in the swaps asset picker (#41163)
+- mUSD education splash screen no longer shows extra empty space at the bottom on shorter screens (#41077)
+
+### Fixed
+
+- Activity tab error state (#41266)
+- NFT detail page in fullscreen (#41210)
+- Gas editor from cancel or speed-up flow aligned with the main transaction confirmation flow (#40734)
+- Order exposure increase bug (#41028)
+- Perps positions and balance not updating when switching between accounts (#41168)
+- Order entry header visuals and persisted order values (#41025)
+- Canceling Solana transactions no longer leaves the wallet loading indefinitely (#41055)
+- Translation error on the Reveal Secret Recovery Phrase page that could crash the extension for the Irish (ga) locale (#41047)
+
+## [13.24.0]
+
+### Added
+
+- Added check for hiding Cancel and Speed up in the activity list when the user has selected another token to pay for gas (#40804)
+- Added Security & Password page to the redesigned settings (#40959)
+- Authenticate transaction submission to sentinel and transaction API (#40667)
+- Enable hardware wallet error management in send and dapp flow. (#40836)
+
+### Changed
+
+- Updates wording and styles in basic functionality modal (#40954)
+- Use design-system-react components on shield confirmation screens (#40832)
+
+### Fixed
+
+- Fixed banner display in sidebar view (#40988)
+- Fixed EIP-712 typed data signing for Ledger Nano S devices (#41017)
+- Fixed MegaETH explorer button to display "View on Megaeth Explorer" instead of "View on MEGA Mainnet Explorer" (#41003)
+- Fixed non-EVM account changed notifications not selecting the correct account on page reload for Tron and Solana (#40927)
+- Fixed "Proposed nicknames" appearing as a non-functional result in Settings search (#40772)
+- Swap activity history details (#40993)
+- Refresh token list immediately after import when assetsUnifyState is enabled (#40919)
+- (import-tokens) validate duplicate token checks by selected network (#40969)
+- Resolve slip44 key mismatch for native tokens in assets-unify-state selectors (#40964)
+- Fixed a Sentry error during startup for users upgrading from older versions without TransactionController state (#40765)
+- Fixed a crash on the contacts page when an internal account had corrupted or missing metadata. (#40955)
+- Fixed an issue with Snaps links (#40950)
+- Fix missing locale. (#40923)
+
+## [13.23.0]
+
+### Added
+
+- Add support for additional icon colors in Snaps `Icon` component (#40790)
+- Enables token permissions via EIP-7715 (#40813)
+- Prevent MUSD reward claiming in geoblocked regions (#40634)
+- Improves the loading experience during quote fetching (#40702)
+- Link asset details page from bridge asset list (#40356)
+- Update the bridge quotes list modal UI (#40720)
+- Replaced the Settings contacts tab with a standalone Contacts page accessible from the global menu (#40714)
+- Added CowSwap intent submission through the bridge status controller (#40483)
+- Added market-closed handling and stock badges for Ondo RWA tokens in token details and token selection views (#40493)
+- When no expiry is specified for an EIP-7715 `wallet_requestExecutionPermissions` permission, show "Never expires" (#40703)
+- Increase swap submission friction when price impact is high (#40586)
+- Trigger malicious website scanning when any EIP-7715 RPC method is executed (#40587)
+- Tab transitions (#40611)
+- Added confirmation modals for `block` trust signals on the connect page (#40348)
+
+### Changed
+
+- UI transitions (#40588)
+- Replace deprecated identicon in suggested token page (#40687)
+
+### Fixed
+
+- Fix 'claim bonus' transactions being displayed as 'contract interaction' after reload (#40834)
+- Disable closing price impact modal while submitting a trade (#40811)
+- Fix memoization issue in top-level context provider that was causing cascading re-renders (#39309)
+- Fixed background-to-UI state sync starvation that caused UI to become stuck indefinitely during large account syncs (#40331)
+- Remove thrown exceptions in migration 196 when `NetworkEnablementController` is absent or `NetworkEnablementController.nativeAssetIdentifiers` is missing (#40764)
+- Maintain activity tab scroll position (#40681)
+- NFT tab scroll position (#40643)
+- Network list migration (#40579)
+
+## [13.22.0]
+
+### Added
+
+- Replace activity list in asset page (#40542)
+- Added AsterDEX to the DeFi referral program (#40563)
+- Add network name and logo for Tempo Mainnet (#40571)
+- Adds "CHZ" to `CHAIN_ID_TO_CURRENCY_SYMBOL_MAP` (#40528)
+- UI updates for the Reveal SRP feature, specifically the Quiz Component and Reveal SRP views (#40243)
+- Updated the UI for speeding up and cancelling transactions (#39918)
+- Use chain-agnostic gas fee estimates for calculating swap and bridge network fees (#40172)
+
+### Changed
+
+- Changed styling of the MUSD rewards claiming modal (#40291)
+- Moved the Claim Bonus CTA to cover token percent change, rather than token quantity (#40535)
+- Remove activity log from activity details (#40380)
+
+### Fixed
+
+- Allow users to remove snap accounts if they are from a snap account wallet (#40404)
+- Reject `wallet_requestExecutionPermissions` requests that include chains that do not support EIP-7702 (#40152)
+- Fix error message displayed for Ledger hardware wallets (#40597)
+- Fixed infinite loader when using QR hardware wallets in popup mode after signing bridge transactions (#40014)
+- Fixed a bug when cancelling a hardware wallet tx that would cause swaps button to not display (#40501)
+- Fixed an issue where abandoning the Shield card payment checkout would not return users to the Shield plan page on next extension open (#39899)
+- Only show claim bonus CTA if there is at least 1 cent to claim (#40444)
+- Limit smart account navigation to entropy and simple accounts (#40487)
+- Non-EVM transaction details account display name (#40498)
+- Add enable networks null guards (#40402)
+- Clean up spammy Migration 164 Sentry logging (#40405)
+
+## [13.21.0]
+
+### Added
+
+- Bump assets controller to v2.1.0 (#40439)
+- Bump @metamask/core-backend and set up ApiPlatformClient (#40262)
+- Sets Infura RPC for HyperEVM with Quicknode failover (#39635)
+- Implement safe state management for notification hooks (#40401)
+- `@metamask/seedless-onboarding-controller` upgrade to v8.1 (#40425)
+- Add gasless bridge with EIP-7702 (#40354)
+- Adds foundational layer for the mUSD stablecoin conversion feature (#40223)
+- Support for hardware wallets in rewards feature for extension. (#40202)
+- Use new state for aggregated balance (#40239)
+- Added a new sell deeplink (#40231)
+- Added a Settings option to choose which network type to show as your default address in the extension header and account list (#40196)
+- Refresh new state (#40230)
+- Support import/hide tokens for the new controller (#40228)
+- Adds Chiliz chain logo for network and token (#40144)
+- Added the ability to view and claim mUSD Merkl conversion bonuses from the token list and asset details page (behind feature flag) (#39901)
+
+### Changed
+
+- Update NFT transaction labels (#40350)
+- Small styling tweaks to default address feature (#40393)
+- Updated Experimental Settings styles and Snaps settings content (#40369)
+- Map staking transaction icon (#40339)
+- Remove fil locale (#40333)
+- chore: update delete button from red to white (#40261)
+
+### Fixed
+
+- Nft image `startsWith` error (#40413)
+- When Basic functionality is off, protected routes now redirect to a “Basic functionality is off” page with an inline toggle and optional “Open the [feature] page” action instead of showing the feature. (#39975)
+- Handle non-evm bridge details (#40383)
+- Fixes syncing failure caused by the sidepanel being opened in multiple browser windows, and then one of the sidepanels being closed, causing syncing to stop. (#40305)
+- Refactors the Perps tutorial modal to align with the mobile implementation pattern (#40174)
+- Only show MUSD claim bonus CTA if there are rewards to claim (#40299)
+- Fixed blurry MMPoly font rendering on mobile devices by preventing browser font synthesis (#40349)
+- Inconsistent decimals between and and selected network (#40341)
+- Bump assets and phishing controllers versions (#40132)
+- Migrates `NetworkEnablementController.nativeAssetIdentifiers['eip155:999']` to value `eip155:999/slip44:2457` if applicable. (#40206)
+- Adjusts update modal logic to use the pending extension version and only show when a newer version is available. (#39884)
+
+## [13.20.1]
+
+### Fixed
+
+- Prevent re-sync account removal dialogs (#40572)
+
+## [13.20.0]
+
+### Added
+
+- Activity view with infinite scroll (#39930)
+- Gas sponsorship UI (#40210)
+- Added initial Perps UI (#40076)
+- Added deferred deep links (#38458)
+- Replaced global-menu with global-menu-drawer (#39991)
+- Added Perps tutorial modal with animated walkthrough explaining perpetual futures trading (#39693)
+- Added toast notifications for mUSD reward claim transaction status (in-progress, success, failed); fixed a bug where the "network added" home notification would reappear after navigation (#39979)
+- Optimized gas fees for Shield crypto subscription transactions to reduce sponsorship costs (#39931)
+- Added vertical scroll to drawer (#40301)
+
+### Changed
+
+- Updated GMX referral image and subtitle (#40208)
+- Use `StorageService` in Snap Controller (#39804)
+- Remove network dropdown from Activity tab (#39945)
+
+### Fixed
+
+- Remove unintended "Dapp suggested" label from gas speed labels (#39934)
+- Fixed the "Paste" button not working in Chrome side panel mode during wallet import (#40222)
+- Swap tx submission fails if page navigates to Activity log before QuotesReceived event is published (#40173)
+- Fixed an issue where approvals would be closed too soon (#40139)
+- Fixed access token not persisting across lock/unlock cycles for seedless onboarding users (#40013)
+- Fixed a security issue where users could skip onboarding by navigating directly to the completion route (#40012)
+- Remove pinned swap token from asset picker (#40211)
+- Fixed activity year format (#40329)
+- Fixed list item disappearing in token page (#40316)
+- Fixed error when importing tokens on EVM networks when chainId is provided as decimal string (#40325)
+- AccountsApiBalanceFetcher stricter zero out conditions (#40411)
+
 ## [13.19.0]
 
 ### Added
@@ -1803,7 +2167,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.19.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.28.0...HEAD
+[13.28.0]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...v13.28.0
+[13.27.0]: https://github.com/MetaMask/metamask-extension/compare/v13.26.0...v13.27.0
+[13.26.0]: https://github.com/MetaMask/metamask-extension/compare/v13.25.0...v13.26.0
+[13.25.0]: https://github.com/MetaMask/metamask-extension/compare/v13.24.0...v13.25.0
+[13.24.0]: https://github.com/MetaMask/metamask-extension/compare/v13.23.0...v13.24.0
+[13.23.0]: https://github.com/MetaMask/metamask-extension/compare/v13.22.0...v13.23.0
+[13.22.0]: https://github.com/MetaMask/metamask-extension/compare/v13.21.0...v13.22.0
+[13.21.0]: https://github.com/MetaMask/metamask-extension/compare/v13.20.1...v13.21.0
+[13.20.1]: https://github.com/MetaMask/metamask-extension/compare/v13.20.0...v13.20.1
+[13.20.0]: https://github.com/MetaMask/metamask-extension/compare/v13.19.0...v13.20.0
 [13.19.0]: https://github.com/MetaMask/metamask-extension/compare/v13.18.1...v13.19.0
 [13.18.1]: https://github.com/MetaMask/metamask-extension/compare/v13.18.0...v13.18.1
 [13.18.0]: https://github.com/MetaMask/metamask-extension/compare/v13.17.0...v13.18.0

@@ -1,9 +1,9 @@
 import { strict as assert } from 'assert';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 
@@ -14,7 +14,7 @@ describe('Request Queueing', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
@@ -33,7 +33,7 @@ describe('Request Queueing', function () {
       },
 
       async ({ driver, localNodes }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // Connect to dapp
         const testDapp = new TestDapp(driver);

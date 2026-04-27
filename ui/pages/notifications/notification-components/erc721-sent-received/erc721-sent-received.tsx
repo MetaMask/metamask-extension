@@ -121,7 +121,6 @@ export const components: NotificationComponent<ERC721Notification> = {
         return (
           <NotificationDetailNft
             networkSrc={nativeCurrencyLogo}
-            tokenId={notification.payload.data.nft.token_id}
             tokenName={notification.payload.data.nft.name}
             tokenSrc={notification.payload.data.nft.image}
             networkName={networkName}

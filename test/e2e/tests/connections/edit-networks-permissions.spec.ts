@@ -4,13 +4,13 @@ import {
   WINDOW_TITLES,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import Homepage from '../../page-objects/pages/home/homepage';
+import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Edit Networks Permissions', function () {
@@ -18,11 +18,11 @@ describe('Edit Networks Permissions', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -36,7 +36,7 @@ describe('Edit Networks Permissions', function () {
         await new Homepage(driver).checkPageIsLoaded();
 
         // Open permission page for dapp
-        new HeaderNavbar(driver).openPermissionsPage();
+        await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
@@ -46,8 +46,8 @@ describe('Edit Networks Permissions', function () {
         // Disconnect Mainnet
         await sitePermissionPage.editPermissionsForNetwork(['Ethereum']);
 
-        // Default Chains Connected: Ethereum, Linea, Base, Arbitrum, BSC, Optimism, Polygon, Solana, BTC, Tron, Sei
-        await sitePermissionPage.checkConnectedNetworksNumber(11);
+        // Default Chains Connected: Linea, Base, Arbitrum, BSC, Optimism, Polygon, Solana, BTC, Tron, Sei
+        await sitePermissionPage.checkConnectedNetworksNumber(10);
       },
     );
   });

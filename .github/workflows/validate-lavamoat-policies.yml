@@ -23,21 +23,29 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Validate LavaMoat build policy
         run: yarn lavamoat:build:auto
 
       - name: Check working tree
+        id: check-working-tree
         run: |
-          if ! git diff --exit-code; then
+          if ! git diff --exit-code > lavamoat-policy-diff-build.patch; then
+              cat lavamoat-policy-diff-build.patch
               echo "::error::Working tree dirty."
               exit 1
           fi
+
+      - name: Upload policy diff on failure
+        if: ${{ failure() && steps.check-working-tree.outcome == 'failure' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: lavamoat-policy-diff-build
+          path: lavamoat-policy-diff-build.patch
 
   validate-lavamoat-policy-webapp:
     name: Validate LavaMoat webapp policy
@@ -45,21 +53,29 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Validate LavaMoat webapp policy
         run: yarn lavamoat:webapp:auto
 
       - name: Check working tree
+        id: check-working-tree
         run: |
-          if ! git diff --exit-code; then
+          if ! git diff --exit-code > lavamoat-policy-diff-webapp.patch; then
+              cat lavamoat-policy-diff-webapp.patch
               echo "::error::Working tree dirty."
               exit 1
           fi
+
+      - name: Upload policy diff on failure
+        if: ${{ failure() && steps.check-working-tree.outcome == 'failure' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: lavamoat-policy-diff-webapp
+          path: lavamoat-policy-diff-webapp.patch
 
   validate-lavamoat-policy-webpack-build:
     name: Validate LavaMoat webpack build policy
@@ -67,21 +83,29 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Validate LavaMoat webpack build policy
         run: yarn webpack:tsc && yarn webpack:lavamoat:policy:build
 
       - name: Check working tree
+        id: check-working-tree
         run: |
-          if ! git diff --exit-code; then
+          if ! git diff --exit-code > lavamoat-policy-diff-webpack-build.patch; then
+              cat lavamoat-policy-diff-webpack-build.patch
               echo "::error::Working tree dirty."
               exit 1
           fi
+
+      - name: Upload policy diff on failure
+        if: ${{ failure() && steps.check-working-tree.outcome == 'failure' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: lavamoat-policy-diff-webpack-build
+          path: lavamoat-policy-diff-webpack-build.patch
 
   validate-lavamoat-policy-webpack-mv2:
     name: Validate LavaMoat webpack MV2 policy
@@ -89,21 +113,29 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Validate LavaMoat webpack MV2 policy
         run: yarn webpack:tsc && yarn webpack:lavamoat:policy:mv2
 
       - name: Check working tree
+        id: check-working-tree
         run: |
-          if ! git diff --exit-code; then
+          if ! git diff --exit-code > lavamoat-policy-diff-webpack-mv2.patch; then
+              cat lavamoat-policy-diff-webpack-mv2.patch
               echo "::error::Working tree dirty."
               exit 1
           fi
+
+      - name: Upload policy diff on failure
+        if: ${{ failure() && steps.check-working-tree.outcome == 'failure' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: lavamoat-policy-diff-webpack-mv2
+          path: lavamoat-policy-diff-webpack-mv2.patch
 
   validate-lavamoat-policy-webpack-mv3:
     name: Validate LavaMoat webpack MV3 policy
@@ -111,18 +143,26 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Validate LavaMoat webpack MV3 policy
         run: yarn webpack:tsc && yarn webpack:lavamoat:policy:mv3
 
       - name: Check working tree
+        id: check-working-tree
         run: |
-          if ! git diff --exit-code; then
+          if ! git diff --exit-code > lavamoat-policy-diff-webpack-mv3.patch; then
+              cat lavamoat-policy-diff-webpack-mv3.patch
               echo "::error::Working tree dirty."
               exit 1
           fi
+
+      - name: Upload policy diff on failure
+        if: ${{ failure() && steps.check-working-tree.outcome == 'failure' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: lavamoat-policy-diff-webpack-mv3
+          path: lavamoat-policy-diff-webpack-mv3.patch

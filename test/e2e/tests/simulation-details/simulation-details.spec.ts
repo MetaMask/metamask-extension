@@ -2,10 +2,10 @@ import { hexToNumber } from '@metamask/utils';
 import { Mockttp, MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Fixtures, withFixtures } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import {
   BUY_ERC1155_REQUEST_1_MOCK,
@@ -56,19 +56,25 @@ async function withFixturesForSimulationDetails(
 ) {
   await withFixtures(
     {
-      fixtures: new FixtureBuilder({ inputChainId })
-        .withPermissionControllerConnectedToTestDapp()
+      fixtures: new FixtureBuilderV2()
+        .withEnabledNetworks({
+          eip155: {
+            [inputChainId]: true,
+          },
+        })
+        .withPermissionControllerConnectedToTestDapp({
+          chainIds: [hexToNumber(inputChainId)],
+        })
         .build(),
       title,
       testSpecificMock: mockRequests,
       dappOptions: { numberOfTestDapps: 1 },
       localNodeOptions: {
-        hardfork: 'london',
         chainId: hexToNumber(inputChainId),
       },
     },
     async ({ driver, mockServer }) => {
-      await loginWithBalanceValidation(driver);
+      await login(driver);
       await runTestWithFixtures({ driver, mockServer });
     },
   );

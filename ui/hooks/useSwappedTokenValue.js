@@ -4,8 +4,8 @@ import { getSwapsTokensReceivedFromTxMeta } from '../../shared/lib/transactions-
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
-} from '../../shared/modules/swaps.utils';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+} from '../../shared/lib/swaps.utils';
+import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 
 /**

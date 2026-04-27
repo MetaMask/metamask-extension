@@ -7,7 +7,7 @@
  */
 
 export {
-  getIsPerpsEnabled,
+  getIsPerpsExperienceAvailable,
   getHip3AllowedSources,
   getHip3AllowedSourcesSet,
 } from './feature-flags';

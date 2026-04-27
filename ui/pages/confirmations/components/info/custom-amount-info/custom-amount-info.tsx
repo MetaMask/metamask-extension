@@ -40,7 +40,6 @@ import {
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
-import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useConfirmContext } from '../../../context/confirm';
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -48,29 +47,40 @@ import { useConfirmContext } from '../../../context/confirm';
 export type CustomAmountInfoProps = {
   children?: ReactNode;
   currency?: string;
+  /**
+   * When true, it prevents automatic selection of payment token based on balance and feature flags
+   */
+  disableAutomaticToken?: boolean;
+  /**
+   * When true, it disables MetaMask Pay for transactions that just need custom amount input
+   */
   disablePay?: boolean;
   hasMax?: boolean;
+  hidePayTokenAmount?: boolean;
   preferredToken?: SetPayTokenRequest;
-  overrideContent?: (amountHuman: string) => ReactNode;
+  overrideBottomContent?: ReactNode;
+  overrideCenterContent?: (amountHuman: string) => ReactNode;
 };
 
 export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
   ({
     children,
     currency,
+    disableAutomaticToken,
     disablePay,
     hasMax,
-    overrideContent,
+    hidePayTokenAmount,
+    overrideBottomContent,
+    overrideCenterContent,
     preferredToken,
   }) => {
     useAutomaticTransactionPayToken({
-      disable: disablePay,
+      disable: Boolean(disablePay) || Boolean(disableAutomaticToken),
       preferredToken,
     });
     useTransactionPayMetrics();
 
     const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-    const { isNative: isNativePayToken } = useTransactionPayToken();
     const availableTokens = useTransactionPayAvailableTokens();
     const hasTokens = availableTokens.length > 0;
 
@@ -113,15 +123,16 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
           amountHuman={amountHuman}
           currency={currency}
           disablePay={disablePay}
-          hasMax={hasMax && !isNativePayToken}
+          hasMax={hasMax}
           hasTokens={hasTokens}
+          hidePayTokenAmount={hidePayTokenAmount}
           onAmountChange={handleAmountChange}
           onPercentageClick={handlePercentageClick}
-          overrideContent={overrideContent}
+          overrideCenterContent={overrideCenterContent}
         >
           {children}
         </CenterContainer>
-        <BottomContainer />
+        {overrideBottomContent ?? <BottomContainer />}
       </Box>
     );
   },
@@ -148,9 +159,10 @@ type CenterContainerProps = {
   disablePay?: boolean;
   hasMax?: boolean;
   hasTokens: boolean;
+  hidePayTokenAmount?: boolean;
   onAmountChange: (value: string) => void;
   onPercentageClick: (percentage: number) => void;
-  overrideContent?: (amountHuman: string) => ReactNode;
+  overrideCenterContent?: (amountHuman: string) => ReactNode;
 };
 
 function CenterContainer({
@@ -161,9 +173,10 @@ function CenterContainer({
   disablePay,
   hasMax,
   hasTokens,
+  hidePayTokenAmount,
   onAmountChange,
   onPercentageClick,
-  overrideContent,
+  overrideCenterContent,
 }: CenterContainerProps) {
   return (
     <Box
@@ -181,8 +194,8 @@ function CenterContainer({
         onChange={onAmountChange}
       />
 
-      {overrideContent ? (
-        overrideContent(amountHuman)
+      {overrideCenterContent ? (
+        overrideCenterContent(amountHuman)
       ) : (
         <Box
           display={Display.Flex}
@@ -190,18 +203,19 @@ function CenterContainer({
           alignItems={AlignItems.center}
           gap={3}
         >
-          {disablePay !== true && (
+          {disablePay !== true && !hidePayTokenAmount && (
             <PayTokenAmount amountHuman={amountHuman} disabled={!hasTokens} />
           )}
           {children}
-          {disablePay !== true && hasTokens && <PayWithRow />}
+          {disablePay !== true && hasTokens && (
+            <PayWithRow variant={ConfirmInfoRowSize.Small} />
+          )}
         </Box>
       )}
 
       {hasTokens && hasMax && (
         <PercentageButtons onPercentageClick={onPercentageClick} />
       )}
-
       <AlertMessage />
     </Box>
   );

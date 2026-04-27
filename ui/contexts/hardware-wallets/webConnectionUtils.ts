@@ -2,6 +2,7 @@ import {
   LEDGER_USB_VENDOR_ID,
   TREZOR_USB_VENDOR_IDS,
 } from '../../../shared/constants/hardware-wallets';
+import { CameraPermissionState } from './constants';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
 
 /**
@@ -24,6 +25,49 @@ export function isWebUsbAvailable(): boolean {
     typeof window.navigator !== 'undefined' &&
     'usb' in window.navigator
   );
+}
+
+/**
+ * Check if camera APIs are available in the current browser.
+ */
+export function isCameraAvailable(): boolean {
+  if (globalThis.window === undefined) {
+    return false;
+  }
+  const { navigator } = globalThis;
+  return (
+    navigator.mediaDevices !== undefined &&
+    typeof navigator.mediaDevices.getUserMedia === 'function'
+  );
+}
+
+/** Message for the error thrown by {@link checkCameraPermission} when the probe fails. */
+const CAMERA_PERMISSION_PROBE_FAILED_MESSAGE =
+  'Unable to determine camera permission state';
+
+/**
+ * Shared probe for the browser camera permission. Returns `null` when
+ * `permissions.query` throws so callers can map to `Unknown` vs surface an error.
+ */
+async function queryCameraPermissionDomState(): Promise<PermissionState | null> {
+  if (!isCameraAvailable()) {
+    return CameraPermissionState.Denied;
+  }
+
+  try {
+    const { navigator } = globalThis;
+    const { permissions } = navigator;
+    if (!permissions?.query) {
+      return CameraPermissionState.Prompt;
+    }
+
+    const result = await permissions.query({
+      name: 'camera' as PermissionName,
+    });
+    return result.state;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -84,8 +128,29 @@ export async function checkHardwareWalletPermission(
       return await checkWebHidPermission(walletType);
     case HardwareWalletType.Trezor:
       return await checkWebUsbPermission(walletType);
+    case HardwareWalletType.Qr:
+      return await checkCameraPermissionState();
     default:
       return HardwareConnectionPermissionState.Denied;
+  }
+}
+
+/**
+ * Check camera permission state for hardware-wallet permission UI.
+ */
+export async function checkCameraPermissionState(): Promise<HardwareConnectionPermissionState> {
+  const domState = await queryCameraPermissionDomState();
+  if (domState === null) {
+    return HardwareConnectionPermissionState.Unknown;
+  }
+
+  switch (domState) {
+    case CameraPermissionState.Granted:
+      return HardwareConnectionPermissionState.Granted;
+    case CameraPermissionState.Denied:
+      return HardwareConnectionPermissionState.Denied;
+    default:
+      return HardwareConnectionPermissionState.Prompt;
   }
 }
 
@@ -165,9 +230,62 @@ export async function requestHardwareWalletPermission(
       return requestWebHidPermission(walletType);
     case HardwareWalletType.Trezor:
       return requestWebUsbPermission(walletType);
+    case HardwareWalletType.Qr:
+      return requestCameraPermission();
     default:
       return false;
   }
+}
+
+/**
+ * Opens a temporary video stream for permission or capability checks.
+ * Call {@link stopMediaStreamTracks} when finished.
+ *
+ * @returns Stream from `getUserMedia({ video: true })`.
+ * @throws When camera APIs are unavailable or `getUserMedia` rejects (e.g. `NotAllowedError`).
+ */
+export async function openCameraVideoStream(): Promise<MediaStream> {
+  if (!isCameraAvailable()) {
+    throw new Error('Camera capture is not available in this context');
+  }
+  const { navigator } = globalThis;
+  return await navigator.mediaDevices.getUserMedia({ video: true });
+}
+
+/**
+ * Stops every track on a media stream (e.g. after a probe or permission request).
+ *
+ * @param stream - Stream returned from {@link openCameraVideoStream}.
+ */
+export function stopMediaStreamTracks(stream: MediaStream): void {
+  stream.getTracks().forEach((track) => track.stop());
+}
+
+/**
+ * Request camera permission from the user.
+ */
+export async function requestCameraPermission(): Promise<boolean> {
+  try {
+    const stream = await openCameraVideoStream();
+    stopMediaStreamTracks(stream);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Return browser camera permission state for adapter readiness checks.
+ *
+ * @throws {Error} When the permission probe fails (equivalent to
+ * `HardwareConnectionPermissionState.Unknown` from `checkCameraPermissionState`).
+ */
+export async function checkCameraPermission(): Promise<PermissionState> {
+  const domState = await queryCameraPermissionDomState();
+  if (domState === null) {
+    throw new Error(CAMERA_PERMISSION_PROBE_FAILED_MESSAGE);
+  }
+  return domState;
 }
 
 /**
@@ -327,7 +445,7 @@ export function subscribeToWebHidEvents(
  * Subscribe to native WebUSB connect/disconnect events
  *
  * @param walletType - The hardware wallet type to filter events for
- * @param onConnect - Callback when a device is connected
+ * @param onConnect - Synchronous callback when a device is connected; schedule async work inside the callback and attach `.catch()` as needed (no Promise return).
  * @param onDisconnect - Callback when a device is disconnected
  * @returns Unsubscribe function to clean up event listeners
  */

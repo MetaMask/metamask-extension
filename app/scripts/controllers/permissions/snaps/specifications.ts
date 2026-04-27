@@ -5,13 +5,14 @@ import {
 import { ControllerGetStateAction } from '@metamask/base-controller';
 import { CurrencyRateController } from '@metamask/assets-controllers';
 import {
-  ClearSnapState,
-  GetSnap,
-  GetSnapState,
-  HandleSnapRequest,
-  UpdateSnapState,
-  CreateInterface,
-  GetInterface,
+  SnapControllerClearSnapStateAction,
+  SnapControllerGetSnapAction,
+  SnapControllerGetSnapStateAction,
+  SnapControllerHandleRequestAction,
+  SnapControllerUpdateSnapStateAction,
+  SnapInterfaceControllerCreateInterfaceAction,
+  SnapInterfaceControllerGetInterfaceAction,
+  SnapInterfaceControllerSetInterfaceDisplayedAction,
 } from '@metamask/snaps-controllers';
 import {
   KeyringControllerGetKeyringsByTypeAction,
@@ -30,29 +31,30 @@ import {
 } from '../../../../../shared/constants/snaps/permissions';
 import { PreferencesControllerGetStateAction } from '../../preferences-controller';
 import { KeyringType } from '../../../../../shared/constants/keyring';
-import { AppStateControllerGetUnlockPromiseAction } from '../../app-state-controller';
+import { AppStateControllerGetUnlockPromiseAction } from '../../app-state-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 import { getMnemonic, getMnemonicSeed } from './utils';
 
 export type SnapPermissionSpecificationsActions =
   | AppStateControllerGetUnlockPromiseAction
-  | ClearSnapState
+  | SnapControllerClearSnapStateAction
   | ControllerGetStateAction<
       'CurrencyRateController',
       CurrencyRateController['state']
     >
-  | CreateInterface
-  | GetInterface
-  | GetSnap
-  | GetSnapState
-  | HandleSnapRequest
+  | SnapInterfaceControllerCreateInterfaceAction
+  | SnapInterfaceControllerGetInterfaceAction
+  | SnapControllerGetSnapAction
+  | SnapControllerGetSnapStateAction
+  | SnapControllerHandleRequestAction
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerWithKeyringAction
   | MaybeUpdateState
   | PreferencesControllerGetStateAction
   | RateLimitControllerCallApiAction<RateLimitedApiMap>
+  | SnapInterfaceControllerSetInterfaceDisplayedAction
   | TestOrigin
-  | UpdateSnapState;
+  | SnapControllerUpdateSnapStateAction;
 
 type SnapPermissionSpecificationsHooks = {
   addAndShowApprovalRequest(request: unknown): Promise<unknown>;
@@ -130,7 +132,7 @@ export function getSnapPermissionSpecifications(
           'AppStateController:getUnlockPromise',
         ),
 
-        getSnap: messenger.call.bind(messenger, 'SnapController:get'),
+        getSnap: messenger.call.bind(messenger, 'SnapController:getSnap'),
         handleSnapRpcRequest: messenger.call.bind(
           messenger,
           'SnapController:handleRequest',
@@ -260,7 +262,6 @@ export function getSnapPermissionSpecifications(
          */
         getClientCryptography: () => ({}),
 
-        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         getSnapKeyring: async () => {
           // TODO: Use `withKeyring` instead.
           const [snapKeyring] = messenger.call(
@@ -279,7 +280,11 @@ export function getSnapPermissionSpecifications(
 
           return snapKeyring;
         },
-        ///: END:ONLY_INCLUDE_IF
+
+        setInterfaceDisplayed: messenger.call.bind(
+          messenger,
+          'SnapInterfaceController:setInterfaceDisplayed',
+        ),
       },
     ),
   };

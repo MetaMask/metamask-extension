@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 /**
  * @deprecated The `<IconBorder />` component has been deprecated in favor of the `AvatarBase` component from `@metamask/design-system-react`.

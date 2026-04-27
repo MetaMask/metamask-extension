@@ -8,8 +8,8 @@ import {
   StateMetadata,
 } from '@metamask/base-controller';
 import {
-  AcceptRequest,
-  AddApprovalRequest,
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerAddRequestAction,
 } from '@metamask/approval-controller';
 import {
   DeferredPromise,
@@ -29,10 +29,8 @@ import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profil
 
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { isBeta } from '../../../ui/helpers/utils/build-types';
+import { isManifestV3 } from '../../../shared/lib/mv3.utils';
+import { isBeta } from '../../../shared/lib/build-types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
@@ -62,13 +60,15 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
-import { ShieldSubscriptionError } from '../../../shared/modules/shield';
+import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
+import { ShieldSubscriptionError } from '../../../shared/lib/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
+import { AppStateControllerMethodActions } from './app-state-controller-method-action-types';
 
 export type DappSwapComparisonData = {
   quotes?: QuoteResponse[];
@@ -102,10 +102,6 @@ export type AppStateControllerState = {
   currentExtensionPopupId: number;
   currentPopupId?: number;
   defaultHomeActiveTabName: AccountOverviewTabKey | null;
-  enableEnforcedSimulations: boolean;
-  enableEnforcedSimulationsForTransactions: Record<string, boolean>;
-  enforcedSimulationsSlippage: number;
-  enforcedSimulationsSlippageForTransactions: Record<string, number>;
   fullScreenGasPollTokens: string[];
   // This key is only used for checking if the user had set advancedGasFee
   // prior to Migration 92.3 where we split out the setting to support
@@ -153,7 +149,14 @@ export type AppStateControllerState = {
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
+  musdConversionEducationSeen: boolean;
+  musdConversionDismissedCtaKeys: string[];
   showShieldEntryModalOnce: boolean | null;
+  /**
+   * The pending redirect route to be applied after the default page is loaded.
+   * If this is set, next time default page is loaded, the redirect will be applied.
+   */
+  pendingRedirectRoute: PendingRedirectRoute | null;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
@@ -191,48 +194,19 @@ export type AppStateControllerGetStateAction = ControllerGetStateAction<
   AppStateControllerState
 >;
 
-export type AppStateControllerGetUnlockPromiseAction = {
-  type: 'AppStateController:getUnlockPromise';
-  handler: (shouldShowUnlockRequest: boolean) => Promise<void>;
-};
-
-export type AppStateControllerRequestQrCodeScanAction = {
-  type: 'AppStateController:requestQrCodeScan';
-  handler: (request: QrScanRequest) => Promise<SerializedUR>;
-};
-
-export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
-  type: 'AppStateController:setCanTrackWalletFundsObtained';
-  handler: AppStateController['setCanTrackWalletFundsObtained'];
-};
-
-export type AppStateControllerSetPendingShieldCohortAction = {
-  type: 'AppStateController:setPendingShieldCohort';
-  handler: AppStateController['setPendingShieldCohort'];
-};
-
-export type AppStateControllerSetShieldSubscriptionErrorAction = {
-  type: 'AppStateController:setShieldSubscriptionError';
-  handler: AppStateController['setShieldSubscriptionError'];
-};
-
 /**
  * Actions exposed by the {@link AppStateController}.
  */
 export type AppStateControllerActions =
   | AppStateControllerGetStateAction
-  | AppStateControllerGetUnlockPromiseAction
-  | AppStateControllerRequestQrCodeScanAction
-  | AppStateControllerSetCanTrackWalletFundsObtainedAction
-  | AppStateControllerSetPendingShieldCohortAction
-  | AppStateControllerSetShieldSubscriptionErrorAction;
+  | AppStateControllerMethodActions;
 
 /**
  * Actions that this controller is allowed to call.
  */
 export type AllowedActions =
-  | AddApprovalRequest
-  | AcceptRequest
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerAcceptRequestAction
   | KeyringControllerGetStateAction
   | PreferencesControllerGetStateAction
   | ProfileMetricsControllerSkipInitialDelayAction;
@@ -300,10 +274,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   browserEnvironment: {},
   connectedStatusPopoverHasBeenShown: true,
   defaultHomeActiveTabName: null,
-  enableEnforcedSimulations: true,
-  enableEnforcedSimulationsForTransactions: {},
-  enforcedSimulationsSlippage: 10,
-  enforcedSimulationsSlippageForTransactions: {},
   fullScreenGasPollTokens: [],
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -342,7 +312,10 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
+  musdConversionEducationSeen: false,
+  musdConversionDismissedCtaKeys: [],
   showShieldEntryModalOnce: null,
+  pendingRedirectRoute: null,
   pendingShieldCohort: null,
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
@@ -416,30 +389,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   defaultHomeActiveTabName: {
     includeInStateLogs: true,
     persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enableEnforcedSimulations: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enableEnforcedSimulationsForTransactions: {
-    includeInStateLogs: true,
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enforcedSimulationsSlippage: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enforcedSimulationsSlippageForTransactions: {
-    includeInStateLogs: true,
-    persist: false,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
@@ -697,9 +646,27 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
     includeInStateLogs: true,
   },
+  musdConversionEducationSeen: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
+  musdConversionDismissedCtaKeys: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
   showShieldEntryModalOnce: {
     includeInStateLogs: true,
     persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  pendingRedirectRoute: {
+    includeInStateLogs: true,
+    persist: false,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
@@ -753,6 +720,80 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   },
 };
 
+const MESSENGER_EXPOSED_METHODS = [
+  'addAddressSecurityAlertResponse',
+  'addMusdConversionDismissedCtaKey',
+  'addPollingToken',
+  'addSignatureSecurityAlertResponse',
+  'cancelQrCodeScan',
+  'clearAppActiveTab',
+  'clearPollingTokens',
+  'completeQrCodeScan',
+  'deleteDappSwapComparisonData',
+  'getAddressSecurityAlertResponse',
+  'getCurrentPopupId',
+  'getDappSwapComparisonData',
+  'getIsWalletResetInProgress',
+  'getLastInteractedConfirmationInfo',
+  'getSignatureSecurityAlertResponse',
+  'getThrottledOriginState',
+  'getUnlockPromise',
+  'removeDeferredDeepLink',
+  'removePollingToken',
+  'removeSlide',
+  'requestQrCodeScan',
+  'setAppActiveTab',
+  'setBrowserEnvironment',
+  'setCanTrackWalletFundsObtained',
+  'setConnectedStatusPopoverHasBeenShown',
+  'setCurrentExtensionPopupId',
+  'setCurrentPopupId',
+  'setDappSwapComparisonData',
+  'setDefaultHomeActiveTabName',
+  'setDefaultSubscriptionPaymentOptions',
+  'setDeferredDeepLink',
+  'setHasShownMultichainAccountsIntroModal',
+  'setIsWalletResetInProgress',
+  'setLastActiveTime',
+  'setLastInteractedConfirmationInfo',
+  'setLastUpdatedAt',
+  'setLastUpdatedFromVersion',
+  'setLastViewedUserSurvey',
+  'setMusdConversionEducationSeen',
+  'setNewPrivacyPolicyToastClickedOrClosed',
+  'setNewPrivacyPolicyToastShownDate',
+  'setOnboardingDate',
+  'setOutdatedBrowserWarningLastShown',
+  'setPendingExtensionVersion',
+  'setPendingRedirectRoute',
+  'setPendingShieldCohort',
+  'setPna25Acknowledged',
+  'setProductTour',
+  'setRampCardClosed',
+  'setRecoveryPhraseReminderHasBeenShown',
+  'setRecoveryPhraseReminderLastShown',
+  'setShieldEndingToastLastClickedOrClosed',
+  'setShieldPausedToastLastClickedOrClosed',
+  'setShieldSubscriptionError',
+  'setShieldSubscriptionMetricsProps',
+  'setShowAccountBanner',
+  'setShowBetaHeader',
+  'setShowNetworkBanner',
+  'setShowPermissionsTour',
+  'setShowShieldEntryModalOnce',
+  'setShowTestnetMessageInDropdown',
+  'setSnapsInstallPrivacyWarningShownStatus',
+  'setStorageWriteErrorType',
+  'setSurveyLinkLastClickedOrClosed',
+  'setTermsOfUseLastAgreed',
+  'setTrezorModel',
+  'setUpdateModalLastDismissedAt',
+  'updateNetworkConnectionBanner',
+  'updateNftDropDownState',
+  'updateSlides',
+  'updateThrottledOriginState',
+] as const;
+
 export class AppStateController extends BaseController<
   typeof controllerName,
   AppStateControllerState,
@@ -793,6 +834,18 @@ export class AppStateController extends BaseController<
     this.#onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.#timer = null;
 
+    // Clearing an alarm does not remove the listeners, so we only need to register the listener once.
+    if (isManifestV3) {
+      this.#extension.alarms.onAlarm.addListener(
+        (alarmInfo: { name: string }) => {
+          if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
+            this.#onInactiveTimeout();
+            this.#extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+          }
+        },
+      );
+    }
+
     this.waitingForUnlock = [];
 
     messenger.subscribe(
@@ -818,29 +871,9 @@ export class AppStateController extends BaseController<
       this.#setInactiveTimeout(preferences.autoLockTimeLimit);
     }
 
-    this.messenger.registerActionHandler(
-      'AppStateController:getUnlockPromise',
-      this.getUnlockPromise.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'AppStateController:requestQrCodeScan',
-      this.#requestQrCodeScan.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'AppStateController:setCanTrackWalletFundsObtained',
-      this.setCanTrackWalletFundsObtained.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'AppStateController:setPendingShieldCohort',
-      this.setPendingShieldCohort.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'AppStateController:setShieldSubscriptionError',
-      this.setShieldSubscriptionError.bind(this),
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
 
     this.#approvalRequestId = null;
@@ -1201,14 +1234,6 @@ export class AppStateController extends BaseController<
         delayInMinutes: timeoutToSet,
         periodInMinutes: timeoutToSet,
       });
-      this.#extension.alarms.onAlarm.addListener(
-        (alarmInfo: { name: string }) => {
-          if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
-            this.#onInactiveTimeout();
-            this.#extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
-          }
-        },
-      );
     } else {
       this.#timer = setTimeout(
         () => this.#onInactiveTimeout(),
@@ -1358,6 +1383,31 @@ export class AppStateController extends BaseController<
   setHasShownMultichainAccountsIntroModal(hasShown: boolean): void {
     this.update((state) => {
       state.hasShownMultichainAccountsIntroModal = hasShown;
+    });
+  }
+
+  /**
+   * Sets whether the mUSD conversion education screen has been seen.
+   *
+   * @param value - Whether the education screen has been seen
+   */
+  setMusdConversionEducationSeen(value: boolean): void {
+    this.update((state) => {
+      state.musdConversionEducationSeen = value;
+    });
+  }
+
+  /**
+   * Adds a dismissed mUSD asset-detail CTA key (chainId-tokenAddress format).
+   * Used to hide the CTA for that token on that chain once dismissed.
+   *
+   * @param key - Key in format "chainId-tokenAddress" (e.g. "0x1-0xa0b86991...")
+   */
+  addMusdConversionDismissedCtaKey(key: string): void {
+    this.update((state) => {
+      if (!state.musdConversionDismissedCtaKeys.includes(key)) {
+        state.musdConversionDismissedCtaKeys.push(key);
+      }
     });
   }
 
@@ -1634,7 +1684,7 @@ export class AppStateController extends BaseController<
    * @param request - The QR code scan request.
    * @returns The scanned QR code data.
    */
-  #requestQrCodeScan(request: QrScanRequest): Promise<SerializedUR> {
+  requestQrCodeScan(request: QrScanRequest): Promise<SerializedUR> {
     if (this.#qrCodeScanPromise) {
       return this.#qrCodeScanPromise.promise;
     }
@@ -1647,36 +1697,6 @@ export class AppStateController extends BaseController<
     });
 
     return deferredPromise.promise;
-  }
-
-  setEnableEnforcedSimulations(enabled: boolean): void {
-    this.update((state) => {
-      state.enableEnforcedSimulations = enabled;
-    });
-  }
-
-  setEnableEnforcedSimulationsForTransaction(
-    transactionId: string,
-    enabled: boolean,
-  ): void {
-    this.update((state) => {
-      state.enableEnforcedSimulationsForTransactions[transactionId] = enabled;
-    });
-  }
-
-  setEnforcedSimulationsSlippage(value: number): void {
-    this.update((state) => {
-      state.enforcedSimulationsSlippage = value;
-    });
-  }
-
-  setEnforcedSimulationsSlippageForTransaction(
-    transactionId: string,
-    value: number,
-  ): void {
-    this.update((state) => {
-      state.enforcedSimulationsSlippageForTransactions[transactionId] = value;
-    });
   }
 
   /**
@@ -1712,6 +1732,17 @@ export class AppStateController extends BaseController<
   setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
     this.update((state) => {
       state.showShieldEntryModalOnce = showShieldEntryModalOnce;
+    });
+  }
+
+  /**
+   * Sets the pending redirect route to be applied after the default page is loaded.
+   *
+   * @param route - The pending redirect route.
+   */
+  setPendingRedirectRoute(route: PendingRedirectRoute | null): void {
+    this.update((state) => {
+      state.pendingRedirectRoute = route;
     });
   }
 

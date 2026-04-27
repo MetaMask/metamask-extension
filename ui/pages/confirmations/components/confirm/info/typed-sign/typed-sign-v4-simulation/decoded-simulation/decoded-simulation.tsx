@@ -113,7 +113,7 @@ const StateChangeRow = ({
           ? getStateChangeLabelMap(t, changeType, nftTransactionType)
           : ''
       }
-      tooltip={tooltip}
+      tooltip={shouldDisplayLabel ? tooltip : undefined}
     >
       {(assetType === TokenStandard.ERC20 ||
         assetType === TokenStandard.ERC721 ||
@@ -174,6 +174,7 @@ const DecodedSimulation: React.FC<object> = () => {
     return Object.entries(stateChangesGrouped).flatMap(([_, changeList]) =>
       changeList.map((change: DecodingDataStateChange, index: number) => (
         <StateChangeRow
+          key={`${change.changeType}-${change.assetType}-${index}`}
           stateChangeList={decodingData?.stateChanges ?? []}
           stateChange={change}
           chainId={chainId}

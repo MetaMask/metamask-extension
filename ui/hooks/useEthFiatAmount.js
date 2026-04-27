@@ -7,7 +7,7 @@ import {
   getConversionRate,
   getCurrentCurrency,
 } from '../ducks/metamask/metamask';
-import { decEthToConvertedCurrency } from '../../shared/modules/conversion.utils';
+import { decEthToConvertedCurrency } from '../../shared/lib/conversion.utils';
 
 /**
  * Get an Eth amount converted to fiat and formatted for display

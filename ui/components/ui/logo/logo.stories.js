@@ -11,15 +11,8 @@ import LogoQRBased from './logo-qr-based';
 import LogoTrezor from './logo-trezor';
 import LogoLattice from './logo-lattice';
 
-import README from './README.mdx';
-
 export default {
   title: 'Components/UI/Logo',
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     color: {
       control: 'text',

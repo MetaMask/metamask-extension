@@ -50,7 +50,6 @@ export const handleTransactionConfirmed = async (
     eventName: TransactionMetaMetricsEvent.finalized,
     transactionMetricsRequest,
     transactionEventPayload: {
-      actionId: transactionEventPayload.actionId,
       transactionMeta: transactionEventPayload,
     },
   });
@@ -114,7 +113,6 @@ async function trackTransactionEvent({
     category: MetaMetricsEventCategory.Transactions,
     properties,
     sensitiveProperties,
-    actionId: transactionEventPayload.actionId,
   });
 }
 

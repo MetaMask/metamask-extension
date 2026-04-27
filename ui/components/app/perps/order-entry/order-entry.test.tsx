@@ -1,11 +1,13 @@
-import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
+import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
-import mockState from '../../../../../test/data/mock-state.json';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import { OrderEntry } from './order-entry';
 
-// Mock hooks that depend on @metamask/perps-controller to avoid ESM transform issues
 jest.mock('../../../../hooks/perps/useUserHistory', () => ({
   useUserHistory: () => ({
     userHistory: [],
@@ -22,6 +24,18 @@ jest.mock('../../../../hooks/perps/usePerpsTransactionHistory', () => ({
     error: null,
     refetch: jest.fn(),
   }),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsMarketInfo', () => ({
+  usePerpsMarketInfo: () => undefined,
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
+}));
+
+jest.mock('../../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn(),
 }));
 
 const mockStore = configureStore({
@@ -41,6 +55,31 @@ describe('OrderEntry', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.mocked(submitRequestToBackground).mockImplementation((method) => {
+      function immediate<ResolvedValue>(
+        value: ResolvedValue,
+      ): Promise<ResolvedValue> {
+        return {
+          then(onFulfilled: (resolved: ResolvedValue) => unknown) {
+            const result = onFulfilled(value);
+            return immediate(result as ResolvedValue);
+          },
+          catch() {
+            return immediate(value);
+          },
+          finally(onFinally: () => void) {
+            onFinally();
+            return immediate(value);
+          },
+        } as Promise<ResolvedValue>;
+      }
+
+      if (method === 'perpsCalculateLiquidationPrice') {
+        return immediate('40000') as Promise<never>;
+      }
+
+      return immediate(undefined) as Promise<never>;
+    });
   });
 
   describe('rendering', () => {
@@ -48,12 +87,16 @@ describe('OrderEntry', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('order-entry')).toBeInTheDocument();
-      expect(screen.getByText('Order Amount')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsSize.message)).toBeInTheDocument();
       expect(screen.getByTestId('amount-input-field')).toBeInTheDocument();
       expect(screen.getByTestId('leverage-slider')).toBeInTheDocument();
-      expect(screen.getByText('Margin')).toBeInTheDocument();
-      expect(screen.getByText('Fees')).toBeInTheDocument();
-      expect(screen.getByText('Liquidation Price Est.')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsMargin.message),
+      ).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsFees.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLiquidationPrice.message),
+      ).toBeInTheDocument();
       expect(screen.getByTestId('auto-close-toggle')).toBeInTheDocument();
       expect(
         screen.getByTestId('order-entry-submit-button'),
@@ -63,14 +106,14 @@ describe('OrderEntry', () => {
     it('displays available balance', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('$10,000.00')).toBeInTheDocument();
+      expect(screen.getByText(/10,000\.00.*USDC/u)).toBeInTheDocument();
     });
 
     it('displays correct submit button text for long direction', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
-        'Open Long BTC',
+        'Open long BTC',
       );
     });
 
@@ -81,8 +124,22 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
-        'Open Short BTC',
+        'Open short BTC',
       );
+    });
+
+    it('strips the dex prefix from HIP-3 symbols in the submit button label', () => {
+      renderWithProvider(
+        <OrderEntry {...defaultProps} asset="xyz:BRENTOIL" />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
+        'Open long BRENTOIL',
+      );
+      expect(
+        screen.getByTestId('order-entry-submit-button'),
+      ).not.toHaveTextContent('xyz:BRENTOIL');
     });
   });
 
@@ -100,6 +157,20 @@ describe('OrderEntry', () => {
       expect(input).toHaveValue('1000');
     });
 
+    it('normalizes amount on blur', () => {
+      renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(input).toHaveValue('1000.00');
+    });
+
     it('shows token conversion when amount is entered', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
@@ -110,16 +181,20 @@ describe('OrderEntry', () => {
         target: { value: '45250' },
       });
 
-      // $45250 / $45250 = 1 BTC - real formatter uses compact format
-      expect(screen.getByText(/≈.*1.*BTC/u)).toBeInTheDocument();
+      const tokenContainer = screen.getByTestId('amount-input-token-field');
+      const tokenInput = tokenContainer.querySelector('input');
+      // Amount is treated as position size (TAT-2684 fix), so token = size / price = $45250 / $45250 = 1 BTC
+      expect(tokenInput).toHaveValue('1');
     });
   });
 
   describe('leverage slider', () => {
-    it('defaults to 1x leverage', () => {
+    it('defaults to 3x leverage', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('1x')).toBeInTheDocument();
+      const container = screen.getByTestId('leverage-input');
+      const input = container.querySelector('input');
+      expect(input).toHaveValue('3');
     });
   });
 
@@ -141,10 +216,10 @@ describe('OrderEntry', () => {
         target: { value: '1000' },
       });
 
-      // Should show calculated margin (1000 / 1 leverage = $1000)
-      expect(screen.getByText('$1,000.00')).toBeInTheDocument();
-      // Should show calculated fees (0.05% of 1000 = $0.50)
-      expect(screen.getByText('$0.50')).toBeInTheDocument();
+      // Margin = notional / leverage = $1,000 / 3 = $333.33 (fees are a separate line item)
+      expect(screen.getByText('$333.33')).toBeInTheDocument();
+      // Fees = HyperLiquid taker (0.045%) + MetaMask builder (0.1%) = 0.145% of $1,000 = $1.45
+      expect(screen.getByText('$1.45')).toBeInTheDocument();
     });
   });
 
@@ -219,8 +294,9 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      // Should show 3x leverage (pre-populated from existing position)
-      expect(screen.getByText('3x')).toBeInTheDocument();
+      const container = screen.getByTestId('leverage-input');
+      const input = container.querySelector('input');
+      expect(input).toHaveValue('3');
     });
 
     it('shows amount input in modify mode', () => {
@@ -249,7 +325,7 @@ describe('OrderEntry', () => {
       expect(screen.getByTestId('leverage-slider')).toBeInTheDocument();
     });
 
-    it('auto-expands auto-close section when TP/SL exists', () => {
+    it('does not show auto-close section when TP/SL exists in modify mode', () => {
       renderWithProvider(
         <OrderEntry
           {...defaultProps}
@@ -259,9 +335,10 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      // Should show TP/SL inputs because existing position has TP/SL
-      expect(screen.getByTestId('tp-price-input')).toBeInTheDocument();
-      expect(screen.getByTestId('sl-price-input')).toBeInTheDocument();
+      // Auto-close is hidden in modify mode — existing TP/SL carries over untouched
+      expect(screen.queryByTestId('auto-close-toggle')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('tp-price-input')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('sl-price-input')).not.toBeInTheDocument();
     });
   });
 
@@ -314,8 +391,9 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Position Size')).toBeInTheDocument();
-      expect(screen.getByText('Close Amount')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsAvailableToClose.message),
+      ).toBeInTheDocument();
       expect(screen.getByTestId('close-amount-slider')).toBeInTheDocument();
     });
 
@@ -360,6 +438,19 @@ describe('OrderEntry', () => {
       expect(screen.queryByTestId('auto-close-toggle')).not.toBeInTheDocument();
     });
 
+    it('hides auto-close section in modify mode', () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          mode="modify"
+          existingPosition={existingPosition}
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('auto-close-toggle')).not.toBeInTheDocument();
+    });
+
     it('defaults to 100% close', () => {
       renderWithProvider(
         <OrderEntry
@@ -370,12 +461,12 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      // Both the close amount display and the 100% preset button show "100%"
+      // Close amount chip reflects default 100% close
       const percentElements = screen.getAllByText(/100.*%/u);
       expect(percentElements.length).toBeGreaterThanOrEqual(1);
     });
 
-    it('shows close percentage preset buttons', () => {
+    it('does not render close percentage preset buttons', () => {
       renderWithProvider(
         <OrderEntry
           {...defaultProps}
@@ -385,12 +476,18 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      expect(screen.getByTestId('close-percent-preset-25')).toBeInTheDocument();
-      expect(screen.getByTestId('close-percent-preset-50')).toBeInTheDocument();
-      expect(screen.getByTestId('close-percent-preset-75')).toBeInTheDocument();
       expect(
-        screen.getByTestId('close-percent-preset-100'),
-      ).toBeInTheDocument();
+        screen.queryByTestId('close-percent-preset-25'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('close-percent-preset-50'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('close-percent-preset-75'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('close-percent-preset-100'),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -402,7 +499,9 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByTestId('limit-price-input')).toBeInTheDocument();
-      expect(screen.getByText('Limit Price')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPrice.message),
+      ).toBeInTheDocument();
     });
 
     it('hides limit price input when orderType is market', () => {
@@ -433,7 +532,7 @@ describe('OrderEntry', () => {
       expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
     });
 
-    it('shows direction-aware presets for long orders', () => {
+    it('shows Mid button for long limit orders', () => {
       renderWithProvider(
         <OrderEntry
           {...defaultProps}
@@ -443,13 +542,11 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Mid')).toBeInTheDocument();
-      expect(screen.getByText('Bid')).toBeInTheDocument();
-      expect(screen.getByText('-1%')).toBeInTheDocument();
-      expect(screen.getByText('-2%')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsMid.message)).toBeInTheDocument();
+      expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
     });
 
-    it('shows direction-aware presets for short orders', () => {
+    it('shows Mid button for short limit orders', () => {
       renderWithProvider(
         <OrderEntry
           {...defaultProps}
@@ -459,10 +556,8 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Mid')).toBeInTheDocument();
-      expect(screen.getByText('Ask')).toBeInTheDocument();
-      expect(screen.getByText('+1%')).toBeInTheDocument();
-      expect(screen.getByText('+2%')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsMid.message)).toBeInTheDocument();
+      expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
     });
 
     it('submits form with limit type when orderType is limit', () => {

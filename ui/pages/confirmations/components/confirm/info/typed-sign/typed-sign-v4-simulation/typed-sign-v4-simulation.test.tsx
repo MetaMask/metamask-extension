@@ -14,6 +14,7 @@ import {
   seaportSignatureMsg,
 } from '../../../../../../../../test/data/confirmations/typed_sign';
 import { memoizedGetTokenStandardAndDetails } from '../../../../../utils/token';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import TypedSignV4Simulation from './typed-sign-v4-simulation';
 
 jest.mock('../../../../../../../store/actions', () => {
@@ -68,11 +69,11 @@ describe('PermitSimulation', () => {
       );
 
       expect(await findByText('30')).toBeInTheDocument();
-      expect(await findByText('Estimated changes')).toBeInTheDocument();
       expect(
-        await findByText(
-          "You're giving the spender permission to spend this many tokens from your account.",
-        ),
+        await findByText(messages.estimatedChanges.message),
+      ).toBeInTheDocument();
+      expect(
+        await findByText(messages.permitSimulationDetailInfo.message),
       ).toBeInTheDocument();
     });
   });
@@ -103,11 +104,11 @@ describe('PermitSimulation', () => {
       );
 
       expect(await findByText('30')).toBeInTheDocument();
-      expect(await findByText('Estimated changes')).toBeInTheDocument();
       expect(
-        await findByText(
-          "You're giving the spender permission to spend this many tokens from your account.",
-        ),
+        await findByText(messages.estimatedChanges.message),
+      ).toBeInTheDocument();
+      expect(
+        await findByText(messages.permitSimulationDetailInfo.message),
       ).toBeInTheDocument();
     });
   });
@@ -153,8 +154,12 @@ describe('PermitSimulation', () => {
         mockStore,
       );
 
-      expect(await findByText('Estimated changes')).toBeInTheDocument();
-      expect(await findByText('Spending cap')).toBeInTheDocument();
+      expect(
+        await findByText(messages.estimatedChanges.message),
+      ).toBeInTheDocument();
+      expect(
+        await findByText(messages.permitSimulationChange_approve.message),
+      ).toBeInTheDocument();
     });
   });
 
@@ -170,8 +175,12 @@ describe('PermitSimulation', () => {
         mockStore,
       );
 
-      expect(await findByText('Listing price')).toBeInTheDocument();
-      expect(await findByText('You list')).toBeInTheDocument();
+      expect(
+        await findByText(messages.permitSimulationChange_nft_listing.message),
+      ).toBeInTheDocument();
+      expect(
+        await findByText(messages.permitSimulationChange_listing.message),
+      ).toBeInTheDocument();
     });
   });
 });

@@ -16,6 +16,7 @@ import { DecodedTransactionDataMethod } from '../../../../../../../../shared/typ
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 import { Confirmation } from '../../../../../types/confirm';
 import * as DappSwapContextModule from '../../../../../context/dapp-swap';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { BatchedApprovalFunction } from './batched-approval-function';
 
 const DATA_MOCK = '0x123456';
@@ -96,9 +97,9 @@ describe('BatchedApprovalFunction', () => {
 
     await waitFor(() => {
       expect(getByText('approve')).toBeInTheDocument();
-      expect(getByText('Spender')).toBeInTheDocument();
+      expect(getByText(messages.spender.message)).toBeInTheDocument();
       expect(getByText('0x1231D...F4EaE')).toBeInTheDocument();
-      expect(getByText('Amount')).toBeInTheDocument();
+      expect(getByText(messages.amount.message)).toBeInTheDocument();
       expect(getByText('10000000 ETH')).toBeInTheDocument();
     });
   });
@@ -161,9 +162,9 @@ describe('BatchedApprovalFunction', () => {
 
     await waitFor(() => {
       expect(getByText('approve')).toBeInTheDocument();
-      expect(getByText('Spender')).toBeInTheDocument();
+      expect(getByText(messages.spender.message)).toBeInTheDocument();
       expect(getByText('0x12345...67891')).toBeInTheDocument();
-      expect(getByText('Amount')).toBeInTheDocument();
+      expect(getByText(messages.amount.message)).toBeInTheDocument();
       expect(getByText('0.000123 ETH')).toBeInTheDocument();
     });
   });
@@ -191,10 +192,10 @@ describe('BatchedApprovalFunction', () => {
 
     await waitFor(() => {
       expect(getByText('approve')).toBeInTheDocument();
-      expect(getByText('Spender')).toBeInTheDocument();
+      expect(getByText(messages.spender.message)).toBeInTheDocument();
       expect(getByText('0x12345...67890')).toBeInTheDocument();
-      expect(getByText('Amount')).toBeInTheDocument();
-      expect(getByText('All')).toBeInTheDocument();
+      expect(getByText(messages.amount.message)).toBeInTheDocument();
+      expect(getByText(messages.all.message)).toBeInTheDocument();
     });
   });
 });

@@ -4,10 +4,10 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { TransactionGroupStatus } from '../../../shared/constants/transaction';
-import { readAddressAsContract } from '../../../shared/modules/contract-utils';
+import { readAddressAsContract } from '../../../shared/lib/contract-utils';
 
 /**
  * Returns four-byte method signature from data
