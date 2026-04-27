@@ -85,8 +85,8 @@ export function isSwapPageRenderComplete(): boolean {
   const hasEditableQuoteInput = isInputEditable(fromAmountInput);
 
   const hasRenderedQuoteDetails =
-    Array.from(document.querySelectorAll(SWAP_PAGE_QUOTE_DETAILS_SELECTOR))
-      .length >= EXPECTED_SWAP_QUOTE_DETAILS_COUNT;
+    document.querySelectorAll(SWAP_PAGE_QUOTE_DETAILS_SELECTOR).length >=
+    EXPECTED_SWAP_QUOTE_DETAILS_COUNT;
 
   return (
     fromTokenText.length > 0 &&
