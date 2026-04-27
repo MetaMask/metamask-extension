@@ -1944,57 +1944,6 @@
         "terser-webpack-plugin": true
       }
     },
-    "postcss-loader>jiti": {
-      "builtin": {
-        "assert": true,
-        "fs": true,
-        "module": true,
-        "node:assert": true,
-        "node:crypto": true,
-        "node:fs": true,
-        "node:module.Module": true,
-        "node:module.builtinModules": true,
-        "node:module.createRequire": true,
-        "node:os.platform": true,
-        "node:os.tmpdir": true,
-        "node:path": true,
-        "node:perf_hooks.performance.now": true,
-        "node:process": true,
-        "node:tty.WriteStream.prototype.hasColors": true,
-        "node:url": true,
-        "node:util.format": true,
-        "node:util.inspect": true,
-        "node:v8": true,
-        "node:vm": true,
-        "os": true,
-        "path": true,
-        "process": true,
-        "tty": true,
-        "url": true,
-        "util": true,
-        "v8": true
-      },
-      "globals": {
-        "Buffer": true,
-        "Bun": true,
-        "Deno": true,
-        "EdgeRuntime": true,
-        "Netlify": true,
-        "TextDecoder": true,
-        "URL": true,
-        "__env__": true,
-        "atob": true,
-        "btoa": true,
-        "console": true,
-        "document": true,
-        "fastly": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true,
-        "structuredClone": true,
-        "value": true
-      }
-    },
     "tailwindcss>jiti": {
       "builtin": {
         "assert": true,
@@ -2389,7 +2338,6 @@
       },
       "packages": {
         "postcss-loader>cosmiconfig": true,
-        "postcss-loader>jiti": true,
         "tailwindcss>jiti": true,
         "postcss": true,
         "semver": true
