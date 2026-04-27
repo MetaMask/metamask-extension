@@ -258,9 +258,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]:
-        account && Number.parseFloat(account.availableBalance) > 0
-          ? 'yes'
-          : 'no',
+        account !== null && Number.parseFloat(account.availableBalance) > 0,
     },
     resetKey: decodedSymbol,
   });
