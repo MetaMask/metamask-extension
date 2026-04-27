@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Add a custom network"
   },
-  "addAHardwareWallet": {
-    "message": "Add a hardware wallet"
-  },
   "addANetwork": {
     "message": "Add a network"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "Add a URL"
+  },
+  "addAWallet": {
+    "message": "Add a wallet"
   },
   "addAccount": {
     "message": "Add account"
@@ -1732,6 +1732,12 @@
   },
   "connect": {
     "message": "Connect"
+  },
+  "connectAHardwareWallet": {
+    "message": "Connect a hardware wallet"
+  },
+  "connectAHardwareWalletDescription": {
+    "message": "Using USB or a QR Code"
   },
   "connectAccounts": {
     "message": "Connect accounts"
@@ -3373,6 +3379,9 @@
   "importAWallet": {
     "message": "Import a wallet"
   },
+  "importAWalletDescription": {
+    "message": "Using a 12, 18 or 24-word seed phrase"
+  },
   "importAccountError": {
     "message": "Error importing account."
   },
@@ -3403,6 +3412,9 @@
   },
   "importAnAccount": {
     "message": "Import an account"
+  },
+  "importAnAccountDescription": {
+    "message": "Via a private key"
   },
   "importNFT": {
     "message": "Import NFT"

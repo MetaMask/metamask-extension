@@ -47,7 +47,7 @@ describe('compare-benchmarks', () => {
     it('passes when results are within thresholds', () => {
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
+          name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
           data: {
             onboardingImportWallet: makeBenchmarkResults({
               p75: { importWalletToSocialScreen: 1500 },
@@ -106,7 +106,7 @@ describe('compare-benchmarks', () => {
       // fail breach is downgraded to warn and does not affect anyFailed.
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
+          name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
           data: {
             onboardingImportWallet: makeBenchmarkResults({
               p75: { importWalletToSocialScreen: 99999 },
@@ -131,7 +131,7 @@ describe('compare-benchmarks', () => {
     it('includes relative metrics when baseline is available', () => {
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
+          name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
           data: {
             onboardingImportWallet: makeBenchmarkResults({
               p75: { importWalletToSocialScreen: 1500 },
@@ -171,7 +171,7 @@ describe('compare-benchmarks', () => {
     it('resolves page-load baseline for startup benchmarks', () => {
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-startupStandardHome',
+          name: 'benchmark-chrome-webpack-startupStandardHome',
           data: {
             startupStandardHome: makeBenchmarkResults({
               p75: { uiStartup: 1800 },
