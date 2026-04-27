@@ -274,6 +274,16 @@
     "@metamask/messenger@npm:^0.3.0": "^1.1.1",
     "@metamask/perps-controller": "^3.0.0"
   },
+  "previewBuilds": {
+    "@metamask/json-rpc-engine": {
+      "type": "non-breaking",
+      "previewVersion": "10.2.4-preview-dc38a2562"
+    },
+    "@metamask/permission-controller": {
+      "type": "breaking",
+      "previewVersion": "12.3.0-preview-dc38a2562"
+    }
+  },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
     "@blockaid/ppom_release": "^1.5.3",

@@ -6828,17 +6828,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^10.0.0, @metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.0.3, @metamask/json-rpc-engine@npm:^10.1.0, @metamask/json-rpc-engine@npm:^10.1.1, @metamask/json-rpc-engine@npm:^10.2.2, @metamask/json-rpc-engine@npm:^10.2.3, @metamask/json-rpc-engine@npm:^10.2.4":
-  version: 10.2.4
-  resolution: "@metamask/json-rpc-engine@npm:10.2.4"
+"@metamask/json-rpc-engine@npm:@metamask-previews/json-rpc-engine@10.2.4-preview-dc38a2562":
+  version: 10.2.4-preview-dc38a2562
+  resolution: "@metamask-previews/json-rpc-engine@npm:10.2.4-preview-dc38a2562"
   dependencies:
+    "@metamask/messenger": "npm:^1.1.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
     "@metamask/utils": "npm:^11.9.0"
     "@types/deep-freeze-strict": "npm:^1.1.0"
     deep-freeze-strict: "npm:^1.1.1"
     klona: "npm:^2.0.6"
-  checksum: 10/b207dd2a9a44674c141c2e027c082974464a37beada98a27e80fe59c9bd44e2c2a992edf8a8d7e3ed461fa27ed372c95d4e27df18752b558c10bf540b7fe7bcd
+  checksum: 10/1b5cff512b606c90b31e4e91619f778f8869f23f1c9c925ecf96b2eb680d15a08859fcd34ee3fb03083a4ac79ca825665107e273873b20b894087891b64ae363
   languageName: node
   linkType: hard
 
@@ -7439,6 +7440,25 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.0.0"
     readable-stream: "npm:^3.6.2"
   checksum: 10/1c202a5bbdc79a6b8b3fba946c09dc5521e87260956d30db6543e7bf3d95bd44ebd958f509e3e7332041845176487fe78d3b40bdedbc213061ba849fd978e468
+  languageName: node
+  linkType: hard
+
+"@metamask/permission-controller@npm:@metamask-previews/permission-controller@12.3.0-preview-dc38a2562":
+  version: 12.3.0-preview-dc38a2562
+  resolution: "@metamask-previews/permission-controller@npm:12.3.0-preview-dc38a2562"
+  dependencies:
+    "@metamask/approval-controller": "npm:^9.0.1"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^11.20.0"
+    "@metamask/json-rpc-engine": "npm:^10.2.4"
+    "@metamask/messenger": "npm:^1.1.1"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.9.0"
+    "@types/deep-freeze-strict": "npm:^1.1.0"
+    deep-freeze-strict: "npm:^1.1.1"
+    immer: "npm:^9.0.6"
+    nanoid: "npm:^3.3.8"
+  checksum: 10/cea0937500f049c821c81ef4833f15cec7267baf681a20f044a636417da65f691e43068ca0e9250263371d733db27bbbabd9de0704097aaea7edeebbb6bfd855
   languageName: node
   linkType: hard
 
