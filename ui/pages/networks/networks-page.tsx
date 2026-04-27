@@ -3,7 +3,7 @@ import {
   RpcEndpointType,
   UpdateNetworkFields,
 } from '@metamask/network-controller';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -27,30 +27,18 @@ import { Header } from '../../components/multichain/pages/page';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain/networks';
 import { getEditedNetwork } from '../../selectors/selectors';
-import ActionableMessageOriginal from '../../components/ui/actionable-message/actionable-message';
+import { StatusIcon } from '../../components/ui/icon/status-icon';
 import { SettingsV2Header } from '../settings-v2/shared/settings-v2-header';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 import { NetworksPageList } from './networks-page-list';
-
-// `ActionableMessage` is a JS component whose PropTypes default `message=''`
-// makes TS infer the prop as `string`, which prevents passing JSX. The
-// component actually accepts `PropTypes.node`. Cast to a permissive component
-// type to keep this call site readable.
-const ActionableMessage =
-  ActionableMessageOriginal as unknown as React.ComponentType<{
-    type?: string;
-    className?: string;
-    autoHideTime?: number;
-    onAutoHide?: () => void;
-    dataTestId?: string;
-    message?: React.ReactNode;
-  }>;
 
 const getViewAfterRpcAdd = (view: string) =>
   view === 'edit-rpc' ? 'edit' : 'add';
 
 const getViewAfterExplorerAdd = (view: string) =>
   view === 'edit-explorer-url' ? 'edit' : 'add';
+
+const NETWORKS_PAGE_TOAST_DURATION_MS = 5000;
 
 const NetworksPageFormHeader = ({
   title,
@@ -203,6 +191,19 @@ export const NetworksPage = () => {
     dispatch(setEditedNetwork());
   }, [dispatch]);
 
+  const showSuccessToast = view === '' && rawEditedNetwork?.editCompleted;
+
+  useEffect(() => {
+    if (!showSuccessToast) {
+      return undefined;
+    }
+    const timeoutId = setTimeout(
+      handleClearEditedNetwork,
+      NETWORKS_PAGE_TOAST_DURATION_MS,
+    );
+    return () => clearTimeout(timeoutId);
+  }, [handleClearEditedNetwork, showSuccessToast]);
+
   // When the user picks an RPC from the Networks page select-rpc view, only
   // switch the active network client when they're already on this chain. This
   // intentionally avoids changing chains (and therefore the homepage network
@@ -241,39 +242,6 @@ export const NetworksPage = () => {
     );
   }, [dispatch, navigate, searchParams]);
 
-  const networksPageToast =
-    view === '' && rawEditedNetwork?.editCompleted ? (
-      <ActionableMessage
-        type="success"
-        className="mt-0"
-        autoHideTime={5000}
-        onAutoHide={handleClearEditedNetwork}
-        dataTestId="networks-page-network-success-toast"
-        message={
-          <Box className="flex w-full items-center justify-between gap-2">
-            <Box className="flex min-w-0 items-center gap-2">
-              <i className="fa fa-check-circle text-success-default text-base" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6 className="truncate">
-                  {rawEditedNetwork.newNetwork
-                    ? t('newNetworkAdded', [rawEditedNetwork.nickname])
-                    : t('newNetworkEdited', [rawEditedNetwork.nickname])}
-                </h6>
-              </Text>
-            </Box>
-            <button
-              type="button"
-              aria-label={t('close')}
-              onClick={handleClearEditedNetwork}
-              className="ml-2 shrink-0 border-0 bg-transparent p-0 text-icon-default"
-            >
-              <span className="text-2xl leading-none">&times;</span>
-            </button>
-          </Box>
-        }
-      />
-    ) : null;
-
   return (
     <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background-default">
       {view === '' ? (
@@ -291,7 +259,27 @@ export const NetworksPage = () => {
           />
           <NetworksPageList
             searchQuery={searchValue}
-            footerContent={networksPageToast}
+            footerContent={
+              showSuccessToast ? (
+                <Box
+                  data-testid="networks-page-network-success-toast"
+                  className="flex w-full items-center gap-3 rounded-xl border border-border-muted bg-background-section p-3"
+                >
+                  <StatusIcon state="success" />
+                  <Text variant={TextVariant.BodyMd} className="flex-1">
+                    {rawEditedNetwork.newNetwork
+                      ? t('newNetworkAdded', [rawEditedNetwork.nickname])
+                      : t('newNetworkEdited', [rawEditedNetwork.nickname])}
+                  </Text>
+                  <ButtonIcon
+                    ariaLabel={t('close')}
+                    iconName={IconName.Close}
+                    size={ButtonIconSize.Sm}
+                    onClick={handleClearEditedNetwork}
+                  />
+                </Box>
+              ) : null
+            }
           />
         </>
       ) : null}

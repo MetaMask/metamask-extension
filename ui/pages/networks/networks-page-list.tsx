@@ -326,8 +326,12 @@ export const NetworksPageList = ({
         ) : null}
       </Box>
 
-      <Box padding={4}>
-        {footerContent ? <Box marginBottom={4}>{footerContent}</Box> : null}
+      <Box
+        padding={4}
+        gap={4}
+        flexDirection={BoxFlexDirection.Column}
+      >
+        {footerContent}
         <Button
           className="w-full"
           variant={ButtonVariant.Secondary}
