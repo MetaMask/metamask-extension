@@ -16,9 +16,7 @@ import {
   getNewNetworkAdded,
   getIsSigningQRHardwareTransaction,
   getIsHardwareWalletErrorModalVisible,
-  getNewNftAddedMessage,
   getNewTokensImported,
-  getRemoveNftMessage,
   getApprovalFlows,
   getNewTokensImportedError,
   hasPendingApprovals,
@@ -41,8 +39,6 @@ import {
   setTermsOfUseLastAgreed,
   setOutdatedBrowserWarningLastShown,
   setNewNetworkAdded,
-  setNewNftAddedMessage,
-  setRemoveNftMessage,
   setNewTokensImported,
   setActiveNetwork,
   setNewTokensImportedError,
@@ -155,8 +151,6 @@ const mapStateToProps = (state) => {
     isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
     isHardwareWalletErrorModalVisible:
       getIsHardwareWalletErrorModalVisible(state),
-    newNftAddedMessage: getNewNftAddedMessage(state),
-    removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
     newTokensImportedError: getNewTokensImportedError(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
@@ -199,14 +193,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     setOutdatedBrowserWarningLastShown: (lastShown) => {
       dispatch(setOutdatedBrowserWarningLastShown(lastShown));
-    },
-    setNewNftAddedMessage: (message) => {
-      dispatch(setRemoveNftMessage(''));
-      dispatch(setNewNftAddedMessage(message));
-    },
-    setRemoveNftMessage: (message) => {
-      dispatch(setNewNftAddedMessage(''));
-      dispatch(setRemoveNftMessage(message));
     },
     setNewTokensImported: (newTokens) => {
       dispatch(setNewTokensImported(newTokens));
