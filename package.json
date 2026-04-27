@@ -269,6 +269,7 @@
     "fast-xml-parser": "^5.7.1",
     "minimatch@npm:^10.1.1": "10.2.4",
     "protobufjs": "7.5.5",
+    "postcss-loader/jiti": "npm:npm-empty-package@1.0.0",
     "@metamask/snaps-controllers": "^20.0.1",
     "@metamask/messenger@npm:^0.3.0": "^1.1.1",
     "@metamask/perps-controller": "^3.0.0"
