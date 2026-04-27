@@ -5187,28 +5187,9 @@
     "message": "Biometrics don't match your current wallet lock. Set up biometrics again in Settings.",
     "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
   },
-  "passkeyErrorVerificationFailed": {
-    "message": "Biometrics verification failed. Try again",
-    "description": "Shown when biometrics authentication fails with an unknown error (after specific biometrics error messages)."
-  },
-  "passkeySettingDescription": {
-    "message": "Use biometrics to unlock MetaMask on this device instead of your password. When turned on, we’ll store a secure passkey on this device"
-  },
-  "passkeySettingsFailedGeneric": {
-    "message": "We couldn't update biometrics. Try again, or use your password under Security & password.",
-    "description": "Toast when enabling or disabling biometrics in Security settings fails with an unknown error."
-  },
   "passkeyTroubleshoot": {
     "message": "Having trouble with biometrics?",
     "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
-  },
-  "passkeyTurnedOff": {
-    "message": "Biometrics turned off",
-    "description": "Toast after the user disables biometrics unlock; shown as “Biometrics” to users."
-  },
-  "passkeyTurnedOn": {
-    "message": "Biometrics turned on",
-    "description": "Toast after the user enables biometrics unlock in Security settings; shown as “Biometrics” to users."
   },
   "passkeyUnlockFailed": {
     "message": "Biometrics unlock failed. Try your password."
