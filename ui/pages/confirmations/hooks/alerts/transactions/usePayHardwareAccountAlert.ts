@@ -17,7 +17,6 @@ import { isHardwareAccount } from '../../../../../components/app/rewards/utils/i
 const PAY_HARDWARE_ALERT_TRANSACTION_TYPES: TransactionType[] = [
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
-  TransactionType.perpsRelayDeposit,
   TransactionType.perpsWithdraw,
   TransactionType.predictDeposit,
   TransactionType.predictWithdraw,
