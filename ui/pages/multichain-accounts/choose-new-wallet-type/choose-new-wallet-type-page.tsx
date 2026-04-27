@@ -69,88 +69,50 @@ export const ChooseNewWalletTypePage = () => {
     getIsWatchEthereumAccountEnabled,
   );
 
-  const walletOptions: WalletTypeOption[] = useMemo(
-    () => [
-      {
-        id: 'import-wallet',
-        titleKey: 'importAWallet',
-        descriptionKey: 'importAWalletDescription',
-        iconName: IconName.Wallet,
-        route: IMPORT_SRP_ROUTE,
+  const handleImportWallet = useCallback(async () => {
+    await trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
+      properties: {
+        status: 'started',
+        location: 'Add Wallet Modal',
       },
-      {
-        id: 'import-account',
-        titleKey: 'importAnAccount',
-        descriptionKey: 'importAnAccountDescription',
-        iconName: IconName.Download,
-        route: ADD_WALLET_PAGE_ROUTE,
-      },
-      {
-        id: 'hardware-wallet',
-        titleKey: 'connectAHardwareWallet',
-        descriptionKey: 'connectAHardwareWalletDescription',
-        iconName: IconName.Hardware,
-        route: CONNECT_HARDWARE_ROUTE,
-        metricsEvent: {
-          event: MetaMetricsEventName.AddHardwareWalletClicked,
-          category: MetaMetricsEventCategory.Navigation,
-        },
-      },
-      ...(institutionalWalletsEnabled
-        ? [
-            {
-              id: 'institutional-wallet',
-              titleKey: 'manageInstitutionalWallets',
-              iconName: IconName.Add,
-              route: getSnapRoute(INSTITUTIONAL_WALLET_SNAP_ID),
-            },
-          ]
-        : []),
-    ],
-    [institutionalWalletsEnabled],
-  );
+    });
+    navigate(IMPORT_SRP_ROUTE);
+  }, [trackEvent, navigate]);
 
-  const handleOptionClick = useCallback(
-    (option: WalletTypeOption) => {
-      if (option.metricsEvent) {
-        trackEvent(option.metricsEvent);
-      }
+  const handleImportAccount = useCallback(() => {
+    navigate(ADD_WALLET_PAGE_ROUTE);
+  }, [navigate]);
 
-      if (option.id === 'import-wallet') {
-        trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
-          properties: {
-            status: 'started',
-            location: 'Add Wallet Modal',
-          },
-        });
-      }
+  const handleConnectHardwareWallet = useCallback(async () => {
+    await trackEvent({
+      event: MetaMetricsEventName.AddHardwareWalletClicked,
+      category: MetaMetricsEventCategory.Navigation,
+    });
 
-      if (option.id === 'hardware-wallet') {
-        if (
-          getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
-          getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
-        ) {
-          const keepWindowOpen =
-            getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
-          globalThis.platform.openExtensionInBrowser?.(
-            option.route,
-            null,
-            keepWindowOpen,
-          );
-        } else {
-          navigate(option.route);
-        }
-      } else {
-        navigate(option.route);
-      }
-    },
-    [trackEvent, navigate],
-  );
+    if (
+      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+    ) {
+      const keepWindowOpen =
+        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+      globalThis.platform.openExtensionInBrowser?.(
+        CONNECT_HARDWARE_ROUTE,
+        null,
+        keepWindowOpen,
+      );
+    } else {
+      navigate(CONNECT_HARDWARE_ROUTE);
+    }
+  }, [trackEvent, navigate]);
 
-  const handleSnapAccountLinkClick = useCallback(() => {
-    trackEvent({
+  const handleManageInstitutionalWallets = useCallback(() => {
+    navigate(getSnapRoute(INSTITUTIONAL_WALLET_SNAP_ID));
+  }, [navigate]);
+
+  const handleAddSnapAccount = useCallback(async () => {
+    await trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.AccountAddSelected,
       properties: {
@@ -168,8 +130,8 @@ export const ChooseNewWalletTypePage = () => {
     });
   }, [trackEvent]);
 
-  const handleAddWatchAccount = useCallback(() => {
-    trackEvent({
+  const handleAddWatchAccount = useCallback(async () => {
+    await trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.AccountAddSelected,
       properties: {
@@ -190,6 +152,73 @@ export const ChooseNewWalletTypePage = () => {
     });
     navigate(getSnapRoute(ACCOUNT_WATCHER_SNAP_ID));
   }, [trackEvent, navigate]);
+
+  const walletOptions: WalletTypeOption[] = useMemo(
+    () => [
+      {
+        id: 'import-wallet',
+        titleKey: 'importAWallet',
+        descriptionKey: 'importAWalletDescription',
+        iconName: IconName.Wallet,
+        onClick: handleImportWallet,
+      },
+      {
+        id: 'import-account',
+        titleKey: 'importAnAccount',
+        descriptionKey: 'importAnAccountDescription',
+        iconName: IconName.Download,
+        onClick: handleImportAccount,
+      },
+      {
+        id: 'hardware-wallet',
+        titleKey: 'connectAHardwareWallet',
+        descriptionKey: 'connectAHardwareWalletDescription',
+        iconName: IconName.Hardware,
+        onClick: handleConnectHardwareWallet,
+      },
+      ...(institutionalWalletsEnabled
+        ? [
+            {
+              id: 'institutional-wallet',
+              titleKey: 'manageInstitutionalWallets',
+              iconName: IconName.Add,
+              onClick: handleManageInstitutionalWallets,
+            },
+          ]
+        : []),
+      ...(addSnapAccountEnabled
+        ? [
+            {
+              id: 'snap-account',
+              titleKey: 'settingAddSnapAccount',
+              iconName: IconName.Snaps,
+              onClick: handleAddSnapAccount,
+            },
+          ]
+        : []),
+      ...(isAddWatchEthereumAccountEnabled
+        ? [
+            {
+              id: 'watch-ethereum-account',
+              titleKey: 'addEthereumWatchOnlyAccount',
+              iconName: IconName.Eye,
+              onClick: handleAddWatchAccount,
+            },
+          ]
+        : []),
+    ],
+    [
+      institutionalWalletsEnabled,
+      addSnapAccountEnabled,
+      isAddWatchEthereumAccountEnabled,
+      handleImportWallet,
+      handleImportAccount,
+      handleConnectHardwareWallet,
+      handleManageInstitutionalWallets,
+      handleAddSnapAccount,
+      handleAddWatchAccount,
+    ],
+  );
 
   return (
     <Page className="choose-new-wallet-type-page">
@@ -214,11 +243,11 @@ export const ChooseNewWalletTypePage = () => {
           {walletOptions.map((option) => (
             <Box
               key={option.id}
-              onClick={() => handleOptionClick(option)}
+              onClick={option.onClick}
               onKeyDown={(e: React.KeyboardEvent) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  handleOptionClick(option);
+                  option.onClick();
                 }
               }}
               alignItems={BoxAlignItems.Center}
@@ -267,98 +296,6 @@ export const ChooseNewWalletTypePage = () => {
               </Box>
             </Box>
           ))}
-          {addSnapAccountEnabled && (
-            <Box
-              onClick={handleSnapAccountLinkClick}
-              onKeyDown={(e: React.KeyboardEvent) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleSnapAccountLinkClick();
-                }
-              }}
-              alignItems={BoxAlignItems.Center}
-              paddingLeft={4}
-              paddingRight={4}
-              paddingTop={3}
-              paddingBottom={3}
-              gap={4}
-              backgroundColor={BoxBackgroundColor.BackgroundMuted}
-              flexDirection={BoxFlexDirection.Row}
-              className="rounded-xl cursor-pointer"
-              tabIndex={0}
-              data-testid="choose-wallet-type-snap-account"
-            >
-              <Box
-                alignItems={BoxAlignItems.Center}
-                backgroundColor={BoxBackgroundColor.BackgroundMuted}
-                className="flex items-center justify-center w-10 h-10 shrink-0 rounded-xl"
-              >
-                <Icon
-                  name={IconName.Snaps}
-                  size={IconSize.Md}
-                  color={IconColor.IconAlternative}
-                />
-              </Box>
-              <Box
-                flexDirection={BoxFlexDirection.Column}
-                className="flex-1 min-w-0"
-              >
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.TextDefault}
-                >
-                  {t('settingAddSnapAccount')}
-                </Text>
-              </Box>
-            </Box>
-          )}
-          {isAddWatchEthereumAccountEnabled && (
-            <Box
-              onClick={handleAddWatchAccount}
-              onKeyDown={(e: React.KeyboardEvent) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleAddWatchAccount();
-                }
-              }}
-              alignItems={BoxAlignItems.Center}
-              paddingLeft={4}
-              paddingRight={4}
-              paddingTop={3}
-              paddingBottom={3}
-              gap={4}
-              backgroundColor={BoxBackgroundColor.BackgroundMuted}
-              flexDirection={BoxFlexDirection.Row}
-              className="rounded-xl cursor-pointer"
-              tabIndex={0}
-              data-testid="choose-wallet-type-watch-ethereum-account"
-            >
-              <Box
-                alignItems={BoxAlignItems.Center}
-                backgroundColor={BoxBackgroundColor.BackgroundMuted}
-                className="flex items-center justify-center w-10 h-10 shrink-0 rounded-xl"
-              >
-                <Icon
-                  name={IconName.Eye}
-                  size={IconSize.Md}
-                  color={IconColor.IconAlternative}
-                />
-              </Box>
-              <Box
-                flexDirection={BoxFlexDirection.Column}
-                className="flex-1 min-w-0"
-              >
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.TextDefault}
-                >
-                  {t('addEthereumWatchOnlyAccount')}
-                </Text>
-              </Box>
-            </Box>
-          )}
         </Box>
       </Content>
     </Page>

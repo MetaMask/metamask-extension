@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
@@ -160,12 +160,14 @@ describe('ChooseNewWalletTypePage', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
 
-    it('navigates to import SRP route when import wallet is clicked', () => {
+    it('navigates to import SRP route when import wallet is clicked', async () => {
       renderComponent();
 
       fireEvent.click(screen.getByTestId('choose-wallet-type-import-wallet'));
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
+      });
     });
 
     it('navigates to add wallet page when import account is clicked', () => {
@@ -176,45 +178,51 @@ describe('ChooseNewWalletTypePage', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(ADD_WALLET_PAGE_ROUTE);
     });
 
-    it('navigates to hardware wallet route in fullscreen mode', () => {
+    it('navigates to hardware wallet route in fullscreen mode', async () => {
       mockGetEnvironmentType.mockReturnValue('fullscreen');
       renderComponent();
 
       fireEvent.click(screen.getByTestId('choose-wallet-type-hardware-wallet'));
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
+      });
     });
 
-    it('opens extension in browser for hardware wallet in popup mode', () => {
+    it('opens extension in browser for hardware wallet in popup mode', async () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
       renderComponent();
 
       fireEvent.click(screen.getByTestId('choose-wallet-type-hardware-wallet'));
 
-      expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
-        CONNECT_HARDWARE_ROUTE,
-        null,
-        false,
-      );
+      await waitFor(() => {
+        expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
+          CONNECT_HARDWARE_ROUTE,
+          null,
+          false,
+        );
+      });
       expect(mockUseNavigate).not.toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
     });
 
-    it('opens extension in browser with keep-open for hardware wallet in sidepanel mode', () => {
+    it('opens extension in browser with keep-open for hardware wallet in sidepanel mode', async () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
       renderComponent();
 
       fireEvent.click(screen.getByTestId('choose-wallet-type-hardware-wallet'));
 
-      expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
-        CONNECT_HARDWARE_ROUTE,
-        null,
-        true,
-      );
+      await waitFor(() => {
+        expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
+          CONNECT_HARDWARE_ROUTE,
+          null,
+          true,
+        );
+      });
     });
   });
 
   describe('keyboard interaction', () => {
-    it('activates option on Enter key', () => {
+    it('activates option on Enter key', async () => {
       renderComponent();
 
       const importWalletOption = screen.getByTestId(
@@ -222,7 +230,9 @@ describe('ChooseNewWalletTypePage', () => {
       );
       fireEvent.keyDown(importWalletOption, { key: 'Enter' });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
+      });
     });
 
     it('activates option on Space key', () => {
