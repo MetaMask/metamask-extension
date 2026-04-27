@@ -1,4 +1,3 @@
-import type { Driver } from '../../webdriver/driver';
 import {
   isAccountListRenderComplete,
   isSwapPageRenderComplete,
@@ -6,10 +5,14 @@ import {
   waitForSwapPageRenderComplete,
 } from './render-complete';
 
-function createMockDriver(): Driver {
+type MockDriver = {
+  waitForFunction: jest.Mock;
+};
+
+function createMockDriver(): MockDriver {
   return {
     waitForFunction: jest.fn().mockResolvedValue(true),
-  } as unknown as Driver;
+  };
 }
 
 describe('benchmark render-complete helpers', () => {

@@ -6,6 +6,21 @@ const ACCOUNT_LIST_ITEM_SELECTOR =
 const SWAP_PAGE_QUOTE_DETAILS_SELECTOR =
   '[data-testid="network-fees"], [data-testid="minimum-received"], [data-testid="slippage-edit-button"]';
 
+const EXPECTED_SWAP_QUOTE_DETAILS_COUNT = 3;
+
+type WaitForFunctionDriver = Pick<Driver, 'waitForFunction'>;
+
+function isInputEditable(
+  input: HTMLInputElement | null,
+): input is HTMLInputElement {
+  return Boolean(
+    input &&
+      !input.disabled &&
+      !input.readOnly &&
+      input.getAttribute('aria-disabled') !== 'true',
+  );
+}
+
 /**
  * Returns whether the account menu has rendered at least the expected number
  * of accounts.
@@ -35,7 +50,7 @@ export async function waitForAccountListRenderComplete({
   timeout = 10000,
   stableFor = 0,
 }: {
-  driver: Driver;
+  driver: WaitForFunctionDriver;
   expectedCount: number;
   timeout?: number;
   stableFor?: number;
@@ -63,16 +78,11 @@ export function isSwapPageRenderComplete(): boolean {
   );
   const fromTokenText = fromTokenSelector?.textContent?.trim() ?? '';
 
-  const hasEditableQuoteInput = Boolean(
-    fromAmountInput &&
-      !fromAmountInput.disabled &&
-      !fromAmountInput.readOnly &&
-      fromAmountInput.getAttribute('aria-disabled') !== 'true',
-  );
+  const hasEditableQuoteInput = isInputEditable(fromAmountInput);
 
   const hasRenderedQuoteDetails =
     Array.from(document.querySelectorAll(SWAP_PAGE_QUOTE_DETAILS_SELECTOR))
-      .length >= 3;
+      .length >= EXPECTED_SWAP_QUOTE_DETAILS_COUNT;
 
   return (
     fromTokenText.length > 0 &&
@@ -93,7 +103,7 @@ export async function waitForSwapPageRenderComplete({
   driver,
   timeout = 30000,
 }: {
-  driver: Driver;
+  driver: WaitForFunctionDriver;
   timeout?: number;
 }): Promise<void> {
   await driver.waitForFunction(isSwapPageRenderComplete, { timeout });

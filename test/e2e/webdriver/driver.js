@@ -485,7 +485,7 @@ class Driver {
   /**
    * Waits until a page function evaluates to a truthy value.
    *
-   * @param {string | Function} pageFunction - Function or script executed in the page context.
+   * @param {Function} pageFunction - Function executed in the page context.
    * @param {object} [options] - Optional configuration.
    * @param {Array<unknown>} [options.args] - Arguments passed to the page function.
    * @param {number} [options.interval] - Polling interval in milliseconds.
@@ -498,6 +498,10 @@ class Driver {
     pageFunction,
     { args = [], interval = 100, stableFor = 0, timeout = this.timeout } = {},
   ) {
+    if (typeof pageFunction !== 'function') {
+      throw new TypeError('waitForFunction only accepts page functions');
+    }
+
     let result;
     let lastError;
 
