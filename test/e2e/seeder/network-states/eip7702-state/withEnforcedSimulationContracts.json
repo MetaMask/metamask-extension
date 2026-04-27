@@ -520,9 +520,7 @@
         "traces": [
           {
             "parent": null,
-            "children": [
-              1
-            ],
+            "children": [1],
             "idx": 0,
             "trace": {
               "depth": 0,
