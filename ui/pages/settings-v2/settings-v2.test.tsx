@@ -170,5 +170,23 @@ describe('SettingsV2', () => {
         expect(mockNavigate).toHaveBeenCalledWith(ASSETS_ROUTE);
       });
     });
+
+    it('navigates to home with the drawer open when back is clicked on a fullscreen sub-page', async () => {
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+      mockPathname = CURRENCY_ROUTE;
+      renderSettingsV2(mockStore);
+
+      const backButton = await screen.findByTestId(
+        'settings-v2-header-back-button',
+      );
+
+      fireEvent.click(backButton);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith(
+          `${DEFAULT_ROUTE}?drawerOpen=true`,
+        );
+      });
+    });
   });
 });

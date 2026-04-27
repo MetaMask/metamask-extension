@@ -100,11 +100,14 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
     environmentType === ENVIRONMENT_TYPE_POPUP ||
     environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+  const isFullscreen = !isPopupOrSidepanel;
   const isOnSettingsRoot = normalizedPathname === SETTINGS_V2_ROUTE;
   const showRootLandingPage = isOnSettingsRoot && isPopupOrSidepanel;
-  const backRoute = isOnSettingsRoot
-    ? `${DEFAULT_ROUTE}?drawerOpen=true`
-    : (meta?.parentPath ?? SETTINGS_V2_ROUTE);
+  let backRoute = meta?.parentPath ?? SETTINGS_V2_ROUTE;
+
+  if (isFullscreen || isOnSettingsRoot) {
+    backRoute = `${DEFAULT_ROUTE}?drawerOpen=true`;
+  }
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
