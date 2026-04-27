@@ -1,5 +1,5 @@
 import { SignatureController } from '@metamask/signature-controller';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   SignatureControllerInitMessenger,
   SignatureControllerMessenger,
@@ -15,12 +15,12 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
  * @param request.initMessenger
  * @returns The initialized controller.
  */
-export const SignatureControllerInit: ControllerInitFunction<
+export const SignatureControllerInit: MessengerClientInitFunction<
   SignatureController,
   SignatureControllerMessenger,
   SignatureControllerInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
-  const controller = new SignatureController({
+  const messengerClient = new SignatureController({
     messenger: controllerMessenger,
     decodingApiUrl: process.env.DECODING_API_URL,
     isDecodeSignatureRequestEnabled: () => {
@@ -32,20 +32,23 @@ export const SignatureControllerInit: ControllerInitFunction<
     trace,
   });
 
-  controller.hub.on('cancelWithReason', ({ metadata: message, reason }) => {
-    initMessenger.call('MetaMetricsController:trackEvent', {
-      event: reason,
-      category: MetaMetricsEventCategory.Transactions,
-      properties: {
-        action: 'Sign Request',
-        type: message.type,
-      },
-    });
-  });
+  messengerClient.hub.on(
+    'cancelWithReason',
+    ({ metadata: message, reason }) => {
+      initMessenger.call('MetaMetricsController:trackEvent', {
+        event: reason,
+        category: MetaMetricsEventCategory.Transactions,
+        properties: {
+          action: 'Sign Request',
+          type: message.type,
+        },
+      });
+    },
+  );
 
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller,
+    messengerClient,
   };
 };

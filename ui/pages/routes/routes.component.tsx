@@ -54,6 +54,7 @@ import {
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
+  NETWORKS_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
@@ -134,6 +135,7 @@ import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import { Toaster } from '../../components/ui/toast/toast';
+import { ToastListener } from '../../app/toast-listener/toast-listener';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -148,6 +150,7 @@ const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
 const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
+const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
 );
@@ -297,6 +300,10 @@ export const routeConfig = [
       {
         path: IMPORT_SRP_ROUTE,
         element: <ImportSrpPage />,
+      },
+      {
+        path: NETWORKS_ROUTE,
+        element: <NetworksPage />,
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
@@ -689,6 +696,7 @@ export default function Routes() {
       dir={textDirection}
     >
       <ConfirmationHandler />
+      <ToastListener />
 
       <QRHardwarePopover />
       <Modal />

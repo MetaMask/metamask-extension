@@ -5,9 +5,11 @@ import {
   formatOrderType,
   formatStatus,
   getStatusColor,
+  formatChangePercent,
+  formatSignedChangePercent,
   getChangeColor,
   getDisplaySymbol,
-  getAssetIconUrl,
+  getAssetIconUrls,
   safeDecodeURIComponent,
   normalizeTpslPrices,
   filterMarketsByQuery,
@@ -15,10 +17,15 @@ import {
   filterTransactionsByType,
   getTransactionStatusColor,
   getTransactionAmountColor,
+  getPnlDisplayColor,
   parseVolume,
   hasVolume,
+  formatRoePercent,
 } from './utils';
-import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
+import {
+  HYPERLIQUID_ASSET_ICONS_BASE_URL,
+  METAMASK_PERPS_ICONS_BASE_URL,
+} from './constants';
 import type { PerpsMarketData, PerpsTransaction } from './types';
 
 const createMockMarket = (
@@ -109,6 +116,30 @@ describe('Perps Utils', () => {
     });
   });
 
+  describe('formatChangePercent', () => {
+    it('returns the value unchanged when it already includes %', () => {
+      expect(formatChangePercent('+2.84%')).toBe('+2.84%');
+      expect(formatChangePercent('-1.23%')).toBe('-1.23%');
+      expect(formatChangePercent('0.00%')).toBe('0.00%');
+    });
+
+    it('appends % when the value does not include it', () => {
+      expect(formatChangePercent('+2.84')).toBe('+2.84%');
+      expect(formatChangePercent('-1.23')).toBe('-1.23%');
+      expect(formatChangePercent('0.00')).toBe('0.00%');
+    });
+
+    it('returns empty string unchanged', () => {
+      expect(formatChangePercent('')).toBe('');
+    });
+
+    it('returns non-numeric strings unchanged', () => {
+      expect(formatChangePercent('—')).toBe('—');
+      expect(formatChangePercent('-')).toBe('-');
+      expect(formatChangePercent('N/A')).toBe('N/A');
+    });
+  });
+
   describe('getChangeColor', () => {
     it('returns SuccessDefault for positive percentages with + prefix', () => {
       expect(getChangeColor('+2.84%')).toBe(TextColor.SuccessDefault);
@@ -131,6 +162,41 @@ describe('Perps Utils', () => {
       expect(getChangeColor('+0%')).toBe(TextColor.SuccessDefault);
       expect(getChangeColor('-0%')).toBe(TextColor.SuccessDefault);
     });
+
+    it('returns TextAlternative for non-numeric fallback values', () => {
+      expect(getChangeColor('N/A')).toBe(TextColor.TextAlternative);
+      expect(getChangeColor('—')).toBe(TextColor.TextAlternative);
+      expect(getChangeColor('')).toBe(TextColor.TextAlternative);
+    });
+  });
+
+  describe('formatSignedChangePercent', () => {
+    it('preserves explicit positive prefixes', () => {
+      expect(formatSignedChangePercent('+2.84%')).toBe('+2.84%');
+      expect(formatSignedChangePercent('+2.84')).toBe('+2.84%');
+    });
+
+    it('adds a plus prefix to unsigned positive values', () => {
+      expect(formatSignedChangePercent('2.84%')).toBe('+2.84%');
+      expect(formatSignedChangePercent('2.84')).toBe('+2.84%');
+    });
+
+    it('preserves negative values', () => {
+      expect(formatSignedChangePercent('-1.23%')).toBe('-1.23%');
+      expect(formatSignedChangePercent('-1.23')).toBe('-1.23%');
+    });
+
+    it('preserves zero values without adding a plus prefix', () => {
+      expect(formatSignedChangePercent('0%')).toBe('0%');
+      expect(formatSignedChangePercent('0.00')).toBe('0.00%');
+      expect(formatSignedChangePercent('0.00%')).toBe('0.00%');
+    });
+
+    it('returns non-numeric strings unchanged', () => {
+      expect(formatSignedChangePercent('—')).toBe('—');
+      expect(formatSignedChangePercent('N/A')).toBe('N/A');
+      expect(formatSignedChangePercent('')).toBe('');
+    });
   });
 
   describe('getDisplaySymbol', () => {
@@ -150,27 +216,31 @@ describe('Perps Utils', () => {
     });
   });
 
-  describe('getAssetIconUrl', () => {
-    it('generates correct URL for regular assets', () => {
-      expect(getAssetIconUrl('BTC')).toBe(
-        `${HYPERLIQUID_ASSET_ICONS_BASE_URL}BTC.svg`,
-      );
-      expect(getAssetIconUrl('eth')).toBe(
-        `${HYPERLIQUID_ASSET_ICONS_BASE_URL}ETH.svg`,
-      );
+  describe('getAssetIconUrls', () => {
+    it('returns primary (MetaMask CDN) and fallback (HyperLiquid) URLs for regular assets', () => {
+      expect(getAssetIconUrls('BTC')).toStrictEqual({
+        primary: `${METAMASK_PERPS_ICONS_BASE_URL}BTC.svg`,
+        fallback: `${HYPERLIQUID_ASSET_ICONS_BASE_URL}BTC.svg`,
+      });
+      expect(getAssetIconUrls('eth')).toStrictEqual({
+        primary: `${METAMASK_PERPS_ICONS_BASE_URL}ETH.svg`,
+        fallback: `${HYPERLIQUID_ASSET_ICONS_BASE_URL}ETH.svg`,
+      });
     });
 
-    it('generates correct URL for HIP-3 assets', () => {
-      expect(getAssetIconUrl('xyz:TSLA')).toBe(
-        `${HYPERLIQUID_ASSET_ICONS_BASE_URL}xyz:TSLA.svg`,
-      );
-      expect(getAssetIconUrl('ABC:aapl')).toBe(
-        `${HYPERLIQUID_ASSET_ICONS_BASE_URL}abc:AAPL.svg`,
-      );
+    it('uses hip3:{dex}_{symbol} format for MetaMask CDN and dex:symbol for HyperLiquid', () => {
+      expect(getAssetIconUrls('xyz:TSLA')).toStrictEqual({
+        primary: `${METAMASK_PERPS_ICONS_BASE_URL}hip3:xyz_TSLA.svg`,
+        fallback: `${HYPERLIQUID_ASSET_ICONS_BASE_URL}xyz:TSLA.svg`,
+      });
+      expect(getAssetIconUrls('ABC:aapl')).toStrictEqual({
+        primary: `${METAMASK_PERPS_ICONS_BASE_URL}hip3:abc_AAPL.svg`,
+        fallback: `${HYPERLIQUID_ASSET_ICONS_BASE_URL}abc:AAPL.svg`,
+      });
     });
 
-    it('returns empty string for empty input', () => {
-      expect(getAssetIconUrl('')).toBe('');
+    it('returns null for empty input', () => {
+      expect(getAssetIconUrls('')).toBeNull();
     });
   });
 
@@ -521,6 +591,22 @@ describe('Perps Utils', () => {
     });
   });
 
+  describe('getPnlDisplayColor', () => {
+    it('returns SuccessDefault for positive PnL', () => {
+      expect(getPnlDisplayColor(100)).toBe(TextColor.SuccessDefault);
+      expect(getPnlDisplayColor(0.01)).toBe(TextColor.SuccessDefault);
+    });
+
+    it('returns ErrorDefault for negative PnL', () => {
+      expect(getPnlDisplayColor(-50)).toBe(TextColor.ErrorDefault);
+      expect(getPnlDisplayColor(-0.01)).toBe(TextColor.ErrorDefault);
+    });
+
+    it('returns TextDefault for zero PnL', () => {
+      expect(getPnlDisplayColor(0)).toBe(TextColor.TextDefault);
+    });
+  });
+
   describe('parseVolume', () => {
     it('parses suffixed volume strings into numeric values', () => {
       expect(parseVolume('$500K')).toBe(500_000);
@@ -587,6 +673,32 @@ describe('Perps Utils', () => {
 
     it('returns false for markets with unparseable volume', () => {
       expect(hasVolume(createMockMarket({ volume: '--' }))).toBe(false);
+    });
+  });
+
+  describe('formatRoePercent', () => {
+    it('formats positive integers without decimals', () => {
+      expect(formatRoePercent(10)).toBe('10');
+      expect(formatRoePercent(100)).toBe('100');
+    });
+
+    it('formats positive non-integers with 2 decimal places', () => {
+      expect(formatRoePercent(25.5)).toBe('25.50');
+      expect(formatRoePercent(3.33)).toBe('3.33');
+    });
+
+    it('formats negative values with sign preserved', () => {
+      expect(formatRoePercent(-25.5)).toBe('-25.50');
+      expect(formatRoePercent(-100)).toBe('-100');
+    });
+
+    it('formats zero as "0" without sign', () => {
+      expect(formatRoePercent(0)).toBe('0');
+    });
+
+    it('returns "0" (not "-0") when a small negative value rounds to zero', () => {
+      expect(formatRoePercent(-0.004)).toBe('0');
+      expect(formatRoePercent(-0.001)).toBe('0');
     });
   });
 });

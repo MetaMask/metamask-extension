@@ -13,6 +13,12 @@ import {
   stringifyBalance,
 } from './useTokenBalances';
 
+// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
+// so these hook tests exercise the real feature-flag gating logic.
+jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () =>
+  jest.requireActual('../../shared/lib/assets-unify-state/remote-feature-flag'),
+);
+
 jest.mock('../store/actions', () => ({
   tokenBalancesStartPolling: jest
     .fn()

@@ -12,9 +12,8 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { login } from '../../page-objects/flows/login.flow';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { mockSpotPrices } from '../tokens/utils/mocks';
+import { mockEthPrices } from '../tokens/utils/mocks';
 import { Driver } from '../../webdriver/driver';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
@@ -24,13 +23,15 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Anvil } from '../../seeder/anvil';
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+
+const ETH_USD_PRICE = 1700;
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
+    showConfirmationAdvancedDetails: true,
     showFiatInTestnets: true,
   },
-  // Enables advanced details due to migration 123
-  useNonceField: true,
 };
 
 describe('Send ETH - Advanced', function () {
@@ -85,7 +86,7 @@ describe('Send ETH - Advanced', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController(PREFERENCES_STATE_MOCK)
             .build(),
@@ -94,13 +95,10 @@ describe('Send ETH - Advanced', function () {
             hardfork: 'muirGlacier',
           },
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
+            await mockEthPrices(mockServer, ETH_USD_PRICE, [
+              CHAIN_IDS.MAINNET,
+              CHAIN_IDS.LOCALHOST,
+            ]);
           },
         },
         async ({ driver }: { driver: Driver }) => {
@@ -147,19 +145,16 @@ describe('Send ETH - Advanced', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController(PREFERENCES_STATE_MOCK)
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
+            await mockEthPrices(mockServer, ETH_USD_PRICE, [
+              CHAIN_IDS.MAINNET,
+              CHAIN_IDS.LOCALHOST,
+            ]);
           },
         },
         async ({ driver }: { driver: Driver }) => {
@@ -212,7 +207,7 @@ describe('Send ETH - Advanced', function () {
     it('renders correct recipient with ERC20 transfer signature in hex data', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               featureFlags: {
                 sendHexData: true,

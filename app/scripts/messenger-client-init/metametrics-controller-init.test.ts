@@ -1,17 +1,17 @@
-import MetaMetricsController from '../controllers/metametrics-controller';
-import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
-import { buildControllerInitRequestMock } from './test/utils';
 import {
-  getMetaMetricsControllerMessenger,
+  MetaMetricsController,
   MetaMetricsControllerMessenger,
-} from './messengers';
+} from '../controllers/metametrics-controller';
+import { getRootMessenger } from '../lib/messenger';
+import { MessengerClientInitRequest } from './types';
+import { buildControllerInitRequestMock } from './test/utils';
+import { getMetaMetricsControllerMessenger } from './messengers';
 import { MetaMetricsControllerInit } from './metametrics-controller-init';
 
 jest.mock('../controllers/metametrics-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<MetaMetricsControllerMessenger>
+  MessengerClientInitRequest<MetaMetricsControllerMessenger>
 > {
   const baseMessenger = getRootMessenger();
 
@@ -26,8 +26,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('MetaMetricsControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = MetaMetricsControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(MetaMetricsController);
+    const { messengerClient } = MetaMetricsControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(MetaMetricsController);
   });
 
   it('passes the proper arguments to the controller', () => {

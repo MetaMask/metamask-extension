@@ -1,9 +1,9 @@
 import { ClaimsService } from '@metamask/claims-controller';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { ClaimsServiceMessengerType } from '../messengers/claims/claims-service-messenger';
 import { loadShieldConfig } from '../../../../shared/lib/shield/config';
 
-export const ClaimsServiceInit: ControllerInitFunction<
+export const ClaimsServiceInit: MessengerClientInitFunction<
   ClaimsService,
   ClaimsServiceMessengerType
 > = (request) => {
@@ -11,14 +11,14 @@ export const ClaimsServiceInit: ControllerInitFunction<
 
   const { claimsEnv } = loadShieldConfig();
 
-  const service = new ClaimsService({
+  const messengerClient = new ClaimsService({
     messenger: controllerMessenger,
     env: claimsEnv,
     fetchFunction: fetch.bind(globalThis),
   });
 
   return {
-    controller: service,
+    messengerClient,
     memStateKey: null,
     persistedStateKey: null,
   };

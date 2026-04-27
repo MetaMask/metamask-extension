@@ -5,7 +5,7 @@ import {
 import { getRootMessenger } from '../../lib/messenger';
 import { getClaimsServiceMessenger } from '../messengers/claims/claims-service-messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { ClaimsServiceInit } from './claims-service-init';
 
 jest.mock('@metamask/claims-controller');
@@ -17,7 +17,9 @@ function buildInitRequestMock() {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getClaimsServiceMessenger(baseControllerMessenger),
     initMessenger: undefined,
-  } as unknown as jest.Mocked<ControllerInitRequest<ClaimsServiceMessenger>>;
+  } as unknown as jest.Mocked<
+    MessengerClientInitRequest<ClaimsServiceMessenger>
+  >;
 }
 
 describe('ClaimsServiceInit', () => {
@@ -27,7 +29,7 @@ describe('ClaimsServiceInit', () => {
 
   it('should return Service instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(ClaimsServiceInit(requestMock).controller).toBeInstanceOf(
+    expect(ClaimsServiceInit(requestMock).messengerClient).toBeInstanceOf(
       ClaimsService,
     );
   });

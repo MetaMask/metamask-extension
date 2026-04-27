@@ -2,7 +2,7 @@ import {
   CodefiTokenPricesServiceV2,
   TokenRatesController,
 } from '@metamask/assets-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   TokenRatesControllerMessenger,
   TokenRatesControllerInitMessenger,
@@ -17,7 +17,7 @@ import { previousValueComparator } from '../../lib/util';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const TokenRatesControllerInit: ControllerInitFunction<
+export const TokenRatesControllerInit: MessengerClientInitFunction<
   TokenRatesController,
   TokenRatesControllerMessenger,
   TokenRatesControllerInitMessenger
@@ -25,7 +25,7 @@ export const TokenRatesControllerInit: ControllerInitFunction<
   const { controllerMessenger, initMessenger, persistedState } = request;
   const preferencesState = initMessenger.call('PreferencesController:getState');
 
-  const controller = new TokenRatesController({
+  const messengerClient = new TokenRatesController({
     messenger: controllerMessenger,
     state: persistedState.TokenRatesController,
     tokenPricesService: new CodefiTokenPricesServiceV2(),
@@ -38,9 +38,9 @@ export const TokenRatesControllerInit: ControllerInitFunction<
       const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
       const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
       if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
-        controller.enable();
+        messengerClient.enable();
       } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
-        controller.disable();
+        messengerClient.disable();
       }
 
       return true;
@@ -48,6 +48,6 @@ export const TokenRatesControllerInit: ControllerInitFunction<
   );
 
   return {
-    controller,
+    messengerClient,
   };
 };

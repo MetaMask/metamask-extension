@@ -104,6 +104,10 @@ function determineTransactionTypeAndContractInteraction(
     'gasPayment',
     'batch',
     'shieldSubscriptionApprove',
+    'musdConversion',
+    'musdClaim',
+    'perpsDeposit',
+    'perpsWithdraw',
   ];
 
   if (directTypeMappings.includes(type)) {

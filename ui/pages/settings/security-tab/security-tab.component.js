@@ -55,7 +55,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   ADD_POPULAR_CUSTOM_NETWORK,
-  REVEAL_SRP_LIST_ROUTE,
+  MANAGE_WALLET_RECOVERY_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
@@ -290,7 +290,7 @@ export default class SecurityTab extends PureComponent {
                       location: 'Settings',
                     },
                   });
-                  navigate(REVEAL_SRP_LIST_ROUTE);
+                  navigate(MANAGE_WALLET_RECOVERY_ROUTE);
                 }}
               >
                 {getButtonText()}

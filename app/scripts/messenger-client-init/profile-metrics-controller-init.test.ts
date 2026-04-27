@@ -3,7 +3,7 @@ import {
   ProfileMetricsControllerMessenger,
 } from '@metamask/profile-metrics-controller';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import { getProfileMetricsControllerMessenger } from './messengers';
 import { ProfileMetricsControllerInit } from './profile-metrics-controller-init';
@@ -11,7 +11,7 @@ import { ProfileMetricsControllerInit } from './profile-metrics-controller-init'
 jest.mock('@metamask/profile-metrics-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<ProfileMetricsControllerMessenger>
+  MessengerClientInitRequest<ProfileMetricsControllerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
@@ -26,8 +26,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('ProfileMetricsControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = ProfileMetricsControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(ProfileMetricsController);
+    const { messengerClient } =
+      ProfileMetricsControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(ProfileMetricsController);
   });
 
   it('passes the proper arguments to the controller', () => {

@@ -49,13 +49,14 @@
  *   - Sends a structured log to Sentry (when SENTRY_DSN_PERFORMANCE is set)
  */
 
-import { readFileSync, appendFileSync } from 'node:fs';
+import { appendFileSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
-import { getGitHubToken } from './shared/github-token.mts';
 import { ghApi } from './shared/gh-api.mts';
+import { getGitHubToken } from './shared/github-token.mts';
+import { stripJsonComments } from './shared/json-tools.mts';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -70,6 +71,8 @@ interface Job {
 interface Annotation {
   message?: string;
   title?: string;
+  path?: string;
+  start_line?: number;
 }
 
 type Category = 'alwaysRetryable' | 'retryableOnTransientError' | 'optional';
@@ -82,6 +85,7 @@ interface JobClassification {
   reason: string;
   errorSnippet?: string;
   unmatched?: boolean;
+  deterministic?: boolean;
 }
 
 interface CategoryConfig {
@@ -92,6 +96,7 @@ interface RetryConfig {
   jobClassification: Record<Category, CategoryConfig>;
   blockerPatterns: string[];
   transientErrorPatterns: string[];
+  deterministicErrorPatterns: string[];
   defaults: { unmatchedCategory: Category };
 }
 
@@ -211,22 +216,6 @@ async function flushSentry(
 // Config
 // ---------------------------------------------------------------------------
 
-/**
- * Strip full-line // comments and trailing commas from JSONC for JSON.parse().
- *
- * Limitations (acceptable for our config file):
- *   - Does NOT handle // inside string values (no URLs in values).
- *   - Trailing-comma regex operates on full text, so ,] or ,} inside a
- *     string value would be corrupted. No current patterns contain these.
- */
-function stripJsonComments(jsonc: string): string {
-  return jsonc
-    .split('\n')
-    .filter((line) => !line.trim().startsWith('//'))
-    .join('\n')
-    .replace(/,\s*([\]}])/g, '$1');
-}
-
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const configPath = join(scriptDir, '..', 'rules', 'retry-config.jsonc');
 const config: RetryConfig = JSON.parse(
@@ -246,6 +235,9 @@ const compiledPatterns = Object.fromEntries(
   ]),
 ) as Record<Category, RegExp[]>;
 const transientErrorRegexes = config.transientErrorPatterns.map(
+  (p) => new RegExp(p, 'i'),
+);
+const deterministicErrorRegexes = config.deterministicErrorPatterns.map(
   (p) => new RegExp(p, 'i'),
 );
 
@@ -420,18 +412,96 @@ function classifyJob(job: Job): JobClassification {
   }
 
   // No transient pattern matched. Capture the first annotation message or
-  // the last few log lines so the dashboard can surface what the actual
+  // a meaningful log line so the dashboard can surface what the actual
   // error was — useful for identifying new patterns to add.
   // Skip the generic "Process completed with exit code N" annotation —
   // it appears on every failed job and provides no diagnostic value.
   const firstAnnotation = annotations.find(
-    (a) => a.message?.trim() && !/^Process completed with exit code \d+/.test(a.message.trim()),
+    (a) =>
+      a.message?.trim() &&
+      !/^Process completed with exit code \d+/.test(a.message.trim()),
   );
-  const fallbackSnippet = firstAnnotation
-    ? firstAnnotation.message!.trim().slice(0, 200)
-    : logs
-      ? logs.trim().split('\n').slice(-3).join(' | ').slice(0, 200)
-      : undefined;
+  let fallbackSnippet: string | undefined;
+  if (firstAnnotation) {
+    fallbackSnippet = firstAnnotation.message!.trim().slice(0, 200);
+  } else if (logs) {
+    // Scan from the bottom for a line that looks like an actual error.
+    // The last few lines are often just the checkout/cleanup step —
+    // the real error is usually a few lines above.
+    const errorLineRe =
+      /\b(?:error|ERR!|FATAL|fatal|failed|FAILED|Error:|Cannot |Unable to )/i;
+    const lines = logs.trim().split('\n');
+    for (let i = lines.length - 1; i >= 0; i--) {
+      const line = lines[i].trim();
+      // Strip the GHA timestamp prefix (e.g. "2026-04-09T20:48:51.437Z ")
+      const stripped = line.replace(/^\d{4}-\d{2}-\d{2}T[\d:.]+Z\s*/, '');
+      if (
+        stripped &&
+        errorLineRe.test(stripped) &&
+        !/Process completed with exit code \d+/.test(stripped) &&
+        !/^\[command\]/.test(stripped)
+      ) {
+        fallbackSnippet = stripped.slice(0, 200);
+        break;
+      }
+    }
+    // Last resort: use the last 3 lines if no error-like line was found
+    if (!fallbackSnippet) {
+      fallbackSnippet = lines.slice(-3).join(' | ').slice(0, 200);
+    }
+  }
+
+  // Check for deterministic (non-transient) failure signals.
+  //
+  // STRUCTURAL: If any annotation references a source file (has a real
+  // path + line number), this is a compiler/linter error — deterministic
+  // by nature. This catches ALL TypeScript, ESLint, and Stylelint errors
+  // without needing to enumerate every possible error message.
+  // Prefer "failure"-level annotations over "warning"-level ones —
+  // warnings (e.g. React Hook missing dependency) don't cause the job
+  // to fail and shouldn't be reported as the root cause.
+  const isSourceAnnotation = (a: (typeof annotations)[number]) =>
+    a.path &&
+    a.path !== '.github' &&
+    a.start_line != null &&
+    a.start_line > 0 &&
+    a.message?.trim() &&
+    !/^Process completed with exit code \d+/.test(a.message.trim());
+  const sourceFileAnnotation =
+    annotations.find(
+      (a) => isSourceAnnotation(a) && a.annotation_level === 'failure',
+    ) ?? annotations.find(isSourceAnnotation);
+  if (sourceFileAnnotation) {
+    return {
+      jobName,
+      jobId,
+      category,
+      jobRetryable: false,
+      reason: `Deterministic: code error in ${sourceFileAnnotation.path}:${sourceFileAnnotation.start_line}`,
+      errorSnippet: sourceFileAnnotation.message!.trim().slice(0, 200),
+      unmatched,
+      deterministic: true,
+    };
+  }
+
+  // Log-only deterministic signals (no source-file annotation).
+  // Patterns live in retry-config.jsonc → deterministicErrorPatterns.
+  const combinedText = [annotationText, logs ?? ''].join('\n');
+  for (const re of deterministicErrorRegexes) {
+    const deterministicMatch = re.exec(combinedText);
+    if (deterministicMatch) {
+      return {
+        jobName,
+        jobId,
+        category,
+        jobRetryable: false,
+        reason: `Deterministic: ${deterministicMatch[0]}`,
+        errorSnippet: deterministicMatch[0],
+        unmatched,
+        deterministic: true,
+      };
+    }
+  }
 
   return {
     jobName,
@@ -509,18 +579,117 @@ if (WORKFLOW_CONCLUSION === 'cancelled' && Number(ATTEMPT) > 1) {
   process.exit(0);
 }
 
+// ---------------------------------------------------------------------------
+// Manual-dequeue early exit
+// ---------------------------------------------------------------------------
+// When a user manually removes a PR from the merge queue, GitHub cancels
+// the merge_group run and the workflow concludes as 'failure' (because
+// get-requirements fails with "not in the merge queue"). There's nothing
+// to triage — the user intentionally abandoned this queue entry.
+//
+// Detection: the PR timeline's `removed_from_merge_queue` event has the
+// actor who did it.  If it's a real user (not github-merge-queue[bot]),
+// it was a manual dequeue.
+if (WORKFLOW_EVENT === 'merge_group') {
+  const prNum = resolvePrNumber();
+  if (prNum) {
+    try {
+      const raw = ghApi(`${repoApi}/issues/${prNum}/events?per_page=100`);
+      const events = JSON.parse(raw) as Array<{
+        event: string;
+        actor: { login: string };
+        created_at: string;
+      }>;
+      const lastRemoval = events
+        .filter((e) => e.event === 'removed_from_merge_queue')
+        .pop();
+      const lastAdded = events
+        .filter((e) => e.event === 'added_to_merge_queue')
+        .pop();
+      if (
+        lastRemoval &&
+        (!lastAdded || lastRemoval.created_at > lastAdded.created_at) &&
+        lastRemoval.actor?.login !== 'github-merge-queue[bot]'
+      ) {
+        console.log(
+          `PR #${prNum} was manually dequeued by ${lastRemoval.actor?.login} — skipping triage.`,
+        );
+
+        // The PR is already out of the queue at this point, so this status
+        // is purely defensive: it ensures the orphaned merge-group commit
+        // doesn't keep an "All jobs pass" check stuck in pending if
+        // ci-status-gate was cancelled before it could post.
+        const headSha = getRunHeadSha();
+        if (headSha) {
+          try {
+            ghApi(`${repoApi}/statuses/${headSha}`, {
+              method: 'POST',
+              body: {
+                state: 'failure',
+                context: 'All jobs pass',
+                description: `Manually dequeued by ${lastRemoval.actor?.login}`,
+              },
+            });
+            console.log(
+              `Posted failure commit status on ${headSha} to unblock merge queue.`,
+            );
+          } catch (err) {
+            console.warn('Failed to post failure commit status:', err);
+          }
+        }
+
+        if (GITHUB_OUTPUT) {
+          appendFileSync(
+            GITHUB_OUTPUT,
+            'is-retryable=false\nhas-retry-label=false\nwill-retry=false\npr-number=\n',
+          );
+        }
+        process.exit(0);
+      }
+    } catch (err) {
+      console.warn('Could not check merge queue removal events:', err);
+      // Fall through to normal classification
+    }
+  }
+}
+
 console.log(`Classifying failures for run ${MAIN_RUN_ID}...`);
 
 const failedJobs = getFailedJobs();
 
 if (failedJobs.length === 0) {
-  // No jobs with conclusion === 'failure'. This is the normal path for
-  // cancelled runs on attempt 1 (cancelled jobs have conclusion 'cancelled',
-  // not 'failure'). Safe to exit: if the run was cancelled before
-  // ci-status-gate could defer the commit status, there's nothing stuck —
-  // deferral requires ci-status-gate to run its retry-gate step, which
-  // makes the overall conclusion 'failure', not 'cancelled'.
+  // No jobs with conclusion === 'failure'. This happens when the run was
+  // cancelled (jobs get conclusion 'cancelled', not 'failure').
+  //
+  // IMPORTANT: if this was a merge_group run, ci-status-gate was likely
+  // skipped by the cancellation (its `if: !cancelled()` condition becomes
+  // false). That means no "All jobs pass" commit status was posted. The
+  // merge queue requires that status, so it will stall until the 60-minute
+  // timeout unless we post a failure status here to unblock ejection.
   console.log('No failed jobs found.');
+
+  if (WORKFLOW_EVENT === 'merge_group' && WORKFLOW_CONCLUSION === 'cancelled') {
+    const headSha = getRunHeadSha();
+    if (headSha) {
+      try {
+        ghApi(`${repoApi}/statuses/${headSha}`, {
+          method: 'POST',
+          body: {
+            state: 'failure',
+            context: 'All jobs pass',
+            description:
+              'Run was cancelled — posting failure to unblock merge queue',
+          },
+        });
+        console.log(
+          `Posted failure commit status on ${headSha} to unblock merge queue.`,
+        );
+      } catch (err) {
+        console.warn('Failed to post failure commit status:', err);
+      }
+    }
+  }
+
   if (GITHUB_OUTPUT) {
     appendFileSync(
       GITHUB_OUTPUT,
@@ -848,8 +1017,17 @@ console.log('\n' + report);
 // ---------------------------------------------------------------------------
 // Create Check Run on the triggering commit
 //
-// TODO: This is untestable in a fork repo, and we won't really know if this works
-// until we merge it and see it run in the real repo.
+// This creates a "Triage and Retry System" check on the PR's Checks tab:
+//   - conclusion=neutral  → appears under "N neutral check(s)", visible
+//     separately from the 190+ successful checks.
+//   - conclusion=failure  → appears in the red "N failed check(s)" section
+//     at the top of the page.
+//
+// The check is attributed to "CLA Signature Bot" in the PR Checks tab
+// because GitHub groups check runs by app/check-suite, and the CLA bot's
+// suite appears to claim this check. Using a dedicated GitHub App token
+// instead of github.token might fix the attribution, but it's not worth
+// the extra workflow step just for cosmetics.
 // ---------------------------------------------------------------------------
 
 if (process.env.CI === 'true' && REPO === 'MetaMask/metamask-extension') {
@@ -958,6 +1136,7 @@ if (Sentry) {
       'ci.job.reason': job.reason,
       ...(job.errorSnippet ? { 'ci.job.errorSnippet': job.errorSnippet } : {}),
       ...(job.unmatched ? { 'ci.job.unmatched': true } : {}),
+      ...(job.deterministic ? { 'ci.job.deterministic': true } : {}),
     });
   }
 

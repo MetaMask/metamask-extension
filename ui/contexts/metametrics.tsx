@@ -37,7 +37,11 @@ import {
   type MetaMetricsEventPayload,
 } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
-import { getMetaMetricsId, getParticipateInMetaMetrics } from '../selectors';
+import {
+  getIsParticipateInMetaMetricsSet,
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
+} from '../selectors';
 import {
   generateActionId,
   submitRequestToBackground,
@@ -144,10 +148,15 @@ type MetaMetricsProviderProps = {
 export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const location = useLocation();
   const context = useSegmentContext();
+  const isParticipateInMetaMetricsSet = useSelector(
+    getIsParticipateInMetaMetricsSet,
+  );
   const isMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const metaMetricsId = useSelector(getMetaMetricsId);
-  // Buffer events until the background has minted the MetaMetrics ID used to submit them.
   const canTrackImmediately = isMetricsEnabled && Boolean(metaMetricsId);
+  // Buffer events until we know whether or not we can submit them.
+  const canMaybeTrackLater =
+    !isParticipateInMetaMetricsSet || (isMetricsEnabled && !metaMetricsId);
 
   const onboardingParentContext = useRef<TraceParentContext>(null);
 
@@ -185,14 +194,18 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
       ) {
         // If metrics are enabled, track immediately
         trackMetaMetricsEvent(fullPayload as MetaMetricsEventPayload, options);
-      } else {
-        // If metrics are not enabled, buffer the event
+      } else if (canMaybeTrackLater) {
         await submitRequestToBackground('addEventBeforeMetricsOptIn', [
           { ...fullPayload, actionId: generateActionId() },
         ]);
       }
     },
-    [addContextPropsIntoEventProperties, canTrackImmediately, context],
+    [
+      addContextPropsIntoEventProperties,
+      canMaybeTrackLater,
+      canTrackImmediately,
+      context,
+    ],
   );
 
   const bufferedTrace: UITraceMethod = useCallback((request, fn) => {
