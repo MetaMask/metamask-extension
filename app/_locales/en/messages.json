@@ -5155,6 +5155,10 @@
     "message": "We couldn't verify your biometrics. Try again.",
     "description": "Shown when passkey authentication response verification fails."
   },
+  "passkeyErrorVerificationFailed": {
+    "message": "We couldn't verify your biometrics. Try again or use your password.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
+  },
   "passkeyErrorMissingKeyMaterial": {
     "message": "Your biometrics response was incomplete. Try again.",
     "description": "Shown when the passkey assertion is missing required key material."
@@ -5193,6 +5197,12 @@
   },
   "passkeyUnlockFailed": {
     "message": "Biometrics unlock failed. Try your password."
+  },
+  "passkeyTurnedOn": {
+    "message": "Biometrics turned on"
+  },
+  "passkeyTurnedOff": {
+    "message": "Biometrics turned off"
   },
   "password": {
     "message": "Password"

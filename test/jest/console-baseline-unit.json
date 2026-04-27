@@ -1556,6 +1556,9 @@
     "ui/pages/settings-v2/privacy-tab/third-party-apis-sub-page.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/pages/settings-v2/security-and-password-tab/passkey-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1
+    },
     "ui/pages/settings-v2/security-and-password-tab/security-and-password-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
