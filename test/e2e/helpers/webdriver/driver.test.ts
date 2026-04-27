@@ -1,6 +1,6 @@
 /** @jest-environment node */
 
-import { Browser } from 'selenium-webdriver';
+import { Browser, ThenableWebDriver } from 'selenium-webdriver';
 
 import { Driver, isAllowedBenchmarkCdpRequest } from '../../webdriver/driver';
 
@@ -17,7 +17,7 @@ describe('webdriver Driver CDP helpers', () => {
     const sendDevToolsCommand = jest.fn().mockResolvedValue(undefined);
     const driver = new Driver({
       browser: Browser.CHROME,
-      driver: { sendDevToolsCommand },
+      driver: { sendDevToolsCommand } as unknown as ThenableWebDriver,
       extensionUrl: 'chrome-extension://test',
       disableServerMochaToBackground: true,
     });
@@ -35,7 +35,7 @@ describe('webdriver Driver CDP helpers', () => {
       .mockResolvedValue({ data: 'ok' });
     const driver = new Driver({
       browser: Browser.CHROME,
-      driver: { sendAndGetDevToolsCommand },
+      driver: { sendAndGetDevToolsCommand } as unknown as ThenableWebDriver,
       extensionUrl: 'chrome-extension://test',
       disableServerMochaToBackground: true,
     });
@@ -66,7 +66,7 @@ describe('webdriver Driver CDP helpers', () => {
     };
     const driver = new Driver({
       browser: Browser.CHROME,
-      driver: seleniumDriver,
+      driver: seleniumDriver as unknown as ThenableWebDriver,
       extensionUrl: 'chrome-extension://test',
       disableServerMochaToBackground: true,
     });
