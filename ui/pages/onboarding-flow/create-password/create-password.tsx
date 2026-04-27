@@ -10,7 +10,6 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
-  ONBOARDING_SETUP_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getFirstTimeFlowType,
@@ -20,8 +19,6 @@ import {
   getIsSocialLoginFlow,
   getSocialLoginType,
   getIsParticipateInMetaMetricsSet,
-  getIsPasskeyFeatureAvailable,
-  getIsPasskeyRegistered,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -75,8 +72,6 @@ export default function CreatePassword({
   } = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
-  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
-  const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const socialLoginType = useSelector(getSocialLoginType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
 
@@ -113,17 +108,6 @@ export default function CreatePassword({
       !newAccountCreationInProgress &&
       !isWalletResetInProgress
     ) {
-      // route to passkey setup if passkey is not registered
-      if (
-        isPasskeyFeatureAvailable &&
-        !isPasskeyRegistered &&
-        (firstTimeFlowType === FirstTimeFlowType.import ||
-          firstTimeFlowType === FirstTimeFlowType.create)
-      ) {
-        navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
-        return;
-      }
-
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.socialImport
@@ -161,9 +145,6 @@ export default function CreatePassword({
     secretRecoveryPhrase,
     isParticipateInMetaMetricsSet,
     isWalletResetInProgress,
-    isPasskeyFeatureAvailable,
-    isPasskeyRegistered,
-    isSocialLoginFlow,
   ]);
 
   useEffect(() => {
@@ -224,9 +205,7 @@ export default function CreatePassword({
       },
     });
 
-    if (isPasskeyFeatureAvailable && !isSocialLoginFlow) {
-      navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
-    } else if (isFirefox || isSocialLoginFlow) {
+    if (isFirefox || isSocialLoginFlow) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
       navigate(ONBOARDING_METAMETRICS, { replace: true });
@@ -304,8 +283,6 @@ export default function CreatePassword({
         dispatch(setDataCollectionForMarketing(true));
       }
       navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
-    } else if (isPasskeyFeatureAvailable) {
-      navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
     } else {
       navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
     }
