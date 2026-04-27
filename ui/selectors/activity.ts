@@ -10,6 +10,7 @@ import {
 import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
+import type { MetaMaskReduxState } from '../store/store';
 import {
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
@@ -19,10 +20,14 @@ import {
   selectOrderedTransactions,
   selectRequiredTransactionHashes,
 } from './transactionController';
-import { getTokenScanResultsForCacheKeys } from './token-trust-signals';
-import { getMarketData, getCurrencyRates } from './selectors';
+import type { TokenScanCacheResults } from './token-scan';
+import {
+  getMarketData,
+  getCurrencyRates,
+  getTokenScanCache,
+} from './selectors';
 import { getSelectedInternalAccount } from './accounts';
-import { EMPTY_ARRAY } from './shared';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   // Ported from selectedAddressTxListSelector
@@ -75,9 +80,14 @@ export const selectLocalTransactions = createSelector(
 );
 
 export const selectNonEvmTransactionsForActivity = createSelector(
-  [selectCurrentAccountNonEvmTransactions, (state) => state],
-  (nonEvmTransactions, state) => {
-    const tokenScanCacheKeys: MultichainTokenScanKey[] = [
+  [
+    selectCurrentAccountNonEvmTransactions,
+    (state: MetaMaskReduxState) =>
+      (getTokenScanCache(state) as TokenScanCacheResults | undefined) ??
+      (EMPTY_OBJECT as TokenScanCacheResults),
+  ],
+  (nonEvmTransactions, tokenScanCache) => {
+    const tokenScanKeys: MultichainTokenScanKey[] = [
       ...new Set(
         nonEvmTransactions.flatMap((transaction) =>
           collectTransactionTokenScanKeys(transaction),
@@ -85,21 +95,16 @@ export const selectNonEvmTransactionsForActivity = createSelector(
       ),
     ];
 
-    const tokenScanResults = getTokenScanResultsForCacheKeys(
-      state,
-      tokenScanCacheKeys,
+    const maliciousTokenKeys = new Set<MultichainTokenScanKey>(
+      tokenScanKeys.filter(
+        (key) =>
+          tokenScanCache[key]?.data?.result_type === ResultType.Malicious,
+      ),
     );
 
-    const maliciousTokenKeys = new Set<MultichainTokenScanKey>(
-      Object.entries(tokenScanResults)
-        .filter(
-          ([, tokenScanResult]) =>
-            tokenScanResult.data?.result_type === ResultType.Malicious,
-        )
-        .map(
-          ([tokenScanCacheKey]) => tokenScanCacheKey as MultichainTokenScanKey,
-        ),
-    );
+    if (maliciousTokenKeys.size === 0) {
+      return nonEvmTransactions;
+    }
 
     return filterMaliciousTransactions(nonEvmTransactions, maliciousTokenKeys);
   },

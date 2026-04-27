@@ -1,6 +1,7 @@
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import type { MultichainTokenScanKey } from '../helpers/utils/token-scan';
 import type { MetaMaskReduxState } from '../store/store';
+import { getTokenScanCache } from './selectors';
 import { EMPTY_OBJECT } from './shared';
 
 type TokenScanCacheResult = {
@@ -16,24 +17,10 @@ export type TokenScanCacheResults = Record<
   TokenScanCacheResult
 >;
 
-type MetaMaskWithTokenScanCache = {
-  tokenScanCache?: TokenScanCacheResults;
-};
-
-const getTokenScanCache = (
-  state: MetaMaskReduxState,
-): TokenScanCacheResults => {
-  const metamaskState = state.metamask as unknown as
-    | MetaMaskWithTokenScanCache
-    | undefined;
-
-  return (
-    metamaskState?.tokenScanCache ?? (EMPTY_OBJECT as TokenScanCacheResults)
-  );
-};
-
-export const getTokenScanResultsForCacheKeys = createDeepEqualSelector(
-  getTokenScanCache,
+export const selectTokenScanResults = createDeepEqualSelector(
+  (state: MetaMaskReduxState) =>
+    (getTokenScanCache(state) as TokenScanCacheResults | undefined) ??
+    (EMPTY_OBJECT as TokenScanCacheResults),
   (_state: MetaMaskReduxState, tokenScanCacheKeys?: MultichainTokenScanKey[]) =>
     tokenScanCacheKeys,
   (tokenScanCache, tokenScanCacheKeys): TokenScanCacheResults => {
@@ -41,18 +28,16 @@ export const getTokenScanResultsForCacheKeys = createDeepEqualSelector(
       return EMPTY_OBJECT as TokenScanCacheResults;
     }
 
-    const tokenScanResults: TokenScanCacheResults = {};
+    const results: TokenScanCacheResults = {};
 
-    for (const tokenScanCacheKey of tokenScanCacheKeys) {
-      const tokenScanResult = tokenScanCacheKey
-        ? tokenScanCache[tokenScanCacheKey]
-        : undefined;
+    for (const key of tokenScanCacheKeys) {
+      const tokenScanResult = key ? tokenScanCache[key] : undefined;
 
       if (tokenScanResult) {
-        tokenScanResults[tokenScanCacheKey] = tokenScanResult;
+        results[key] = tokenScanResult;
       }
     }
 
-    return tokenScanResults;
+    return results;
   },
 );

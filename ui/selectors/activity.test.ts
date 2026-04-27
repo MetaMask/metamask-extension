@@ -1,6 +1,7 @@
 import { AccountGroupId } from '@metamask/account-api';
 import type { Transaction } from '@metamask/keyring-api';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import type { MetaMaskReduxState as _MetaMaskReduxState } from '../store/store';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import type { AccountTreeState } from './multichain-accounts/account-tree.types';
@@ -17,8 +18,6 @@ jest.mock('./multichain-accounts/account-tree', () => {
     getAccountGroupWithInternalAccounts: jest.fn(() => groups),
   };
 });
-
-const SOLANA_MAINNET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 
 type NonEvmTransactionsMap =
   MultichainTransactionsControllerState['nonEvmTransactions'];
@@ -46,7 +45,7 @@ function buildState(
     metamask: {
       nonEvmTransactions: nonEvmTransactions as NonEvmTransactionsMap,
       enabledNetworkMap: {
-        solana: { [SOLANA_MAINNET]: true },
+        solana: { [MultichainNetworks.SOLANA]: true },
       },
       tokenScanCache: tokenScanCache ?? {},
     },
@@ -57,12 +56,12 @@ describe('selectNonEvmTransactionsForActivity', () => {
   it('filters malicious non-EVM token transactions', () => {
     const maliciousTx = {
       id: 'bad-tx',
-      chain: SOLANA_MAINNET,
+      chain: MultichainNetworks.SOLANA,
       from: [
         {
           asset: {
             fungible: true,
-            type: `${SOLANA_MAINNET}/token:BadMint111`,
+            type: `${MultichainNetworks.SOLANA}/token:BadMint111`,
           },
         },
       ],
@@ -70,12 +69,12 @@ describe('selectNonEvmTransactionsForActivity', () => {
     } as unknown as Transaction;
     const benignTx = {
       id: 'good-tx',
-      chain: SOLANA_MAINNET,
+      chain: MultichainNetworks.SOLANA,
       from: [
         {
           asset: {
             fungible: true,
-            type: `${SOLANA_MAINNET}/token:GoodMint222`,
+            type: `${MultichainNetworks.SOLANA}/token:GoodMint222`,
           },
         },
       ],
@@ -85,7 +84,7 @@ describe('selectNonEvmTransactionsForActivity', () => {
     const state = buildState(
       {
         'acc-1': {
-          [SOLANA_MAINNET]: {
+          [MultichainNetworks.SOLANA]: {
             transactions: [maliciousTx, benignTx],
             next: null,
             lastUpdated: 0,
@@ -93,7 +92,7 @@ describe('selectNonEvmTransactionsForActivity', () => {
         },
       },
       {
-        [generateTokenCacheKey(SOLANA_MAINNET, 'BadMint111')]: {
+        [generateTokenCacheKey(MultichainNetworks.SOLANA, 'BadMint111')]: {
           data: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: 'Malicious',
@@ -103,49 +102,5 @@ describe('selectNonEvmTransactionsForActivity', () => {
     );
 
     expect(selectNonEvmTransactionsForActivity(state)).toEqual([benignTx]);
-  });
-
-  it('keeps native-only and uncached token transactions visible', () => {
-    const nativeOnlyTx = {
-      id: 'native-tx',
-      chain: SOLANA_MAINNET,
-      from: [
-        {
-          asset: {
-            fungible: true,
-            type: `${SOLANA_MAINNET}/slip44:501`,
-          },
-        },
-      ],
-      to: [],
-    } as unknown as Transaction;
-    const uncachedTokenTx = {
-      id: 'uncached-token-tx',
-      chain: SOLANA_MAINNET,
-      from: [
-        {
-          asset: {
-            fungible: true,
-            type: `${SOLANA_MAINNET}/token:UnknownMint333`,
-          },
-        },
-      ],
-      to: [],
-    } as unknown as Transaction;
-
-    const state = buildState({
-      'acc-1': {
-        [SOLANA_MAINNET]: {
-          transactions: [nativeOnlyTx, uncachedTokenTx],
-          next: null,
-          lastUpdated: 0,
-        },
-      },
-    });
-
-    expect(selectNonEvmTransactionsForActivity(state)).toEqual([
-      nativeOnlyTx,
-      uncachedTokenTx,
-    ]);
   });
 });

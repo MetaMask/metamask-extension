@@ -1,4 +1,4 @@
-import { getTokenScanResultsForCacheKeys } from './token-trust-signals';
+import { selectTokenScanResults } from './token-scan';
 
 describe('token trust signal selectors', () => {
   it('returns only entries matching the requested cache keys', () => {
@@ -22,7 +22,7 @@ describe('token trust signal selectors', () => {
     } as never;
 
     expect(
-      getTokenScanResultsForCacheKeys(state, [
+      selectTokenScanResults(state, [
         'solana:mainnet:badmint111',
         'solana:mainnet:missing333',
       ]),
@@ -50,7 +50,7 @@ describe('token trust signal selectors', () => {
       },
     } as never;
 
-    expect(getTokenScanResultsForCacheKeys(state, [])).toEqual({});
-    expect(getTokenScanResultsForCacheKeys(state, undefined)).toEqual({});
+    expect(selectTokenScanResults(state, [])).toEqual({});
+    expect(selectTokenScanResults(state, undefined)).toEqual({});
   });
 });
