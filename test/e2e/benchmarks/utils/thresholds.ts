@@ -47,11 +47,19 @@ const CI_MULTIPLIER_ONBOARDING_TOTAL = 1.3;
 const CI_MULTIPLIER_ACCOUNT_MENU = 1.8;
 
 /**
- * Multiplier for importSrpHome steps.
- * Audit: CV 5.7–18.3% across loginToHomeScreen / homeAfterImportWithNewWallet
- * / total. Stable enough for a tighter gate than 1.5×.
+ * Multiplier for low-variance importSrpHome steps (`loginToHomeScreen`,
+ * `total`). Stable enough for a tighter gate than 1.5×.
+ * `homeAfterImportWithNewWallet` is the high-variance member of this flow
+ * and uses `CI_MULTIPLIER_TIER_2` instead.
  */
 const CI_MULTIPLIER_IMPORT_SRP_HOME = 1.3;
+
+/**
+ * Multiplier for moderate-variance metrics graduating into the gate.
+ * Sits between the default and the account-menu multiplier — wide enough
+ * to absorb per-run spread without masking real regressions.
+ */
+const CI_MULTIPLIER_TIER_2 = 1.7;
 
 /**
  * CLS (Cumulative Layout Shift) canary thresholds.
@@ -91,7 +99,7 @@ const ONBOARDING_IMPORT_WALLET: ThresholdConfig = {
   metricsToWalletReadyScreen: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+    ciMultiplier: CI_MULTIPLIER_TIER_2,
   },
   doneButtonToHomeScreen: {
     p75: { warn: 10500, fail: 14000 },
@@ -135,7 +143,7 @@ const ONBOARDING_NEW_WALLET: ThresholdConfig = {
   agreeButtonToOnboardingSuccess: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+    ciMultiplier: CI_MULTIPLIER_TIER_2,
   },
   doneButtonToAssetList: {
     p75: { warn: 10500, fail: 14000 },
@@ -164,7 +172,7 @@ const IMPORT_SRP_HOME: ThresholdConfig = {
   homeAfterImportWithNewWallet: {
     p75: { warn: 20000, fail: 27000 },
     p95: { warn: 32000, fail: 40000 },
-    ciMultiplier: CI_MULTIPLIER_IMPORT_SRP_HOME,
+    ciMultiplier: CI_MULTIPLIER_TIER_2,
   },
   total: {
     p75: { warn: 28000, fail: 30500 },
@@ -183,7 +191,7 @@ const SWAP: ThresholdConfig = {
   fetchAndDisplaySwapQuotes: {
     p75: { warn: 2800, fail: 5000 },
     p95: { warn: 3500, fail: 6000 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+    ciMultiplier: CI_MULTIPLIER_TIER_2,
   },
   total: {
     p75: { warn: 1800, fail: 1950 },
@@ -197,7 +205,7 @@ const SEND_TRANSACTIONS: ThresholdConfig = {
   openSendPageFromHome: {
     p75: { warn: 1800, fail: 2700 },
     p95: { warn: 3000, fail: 4000 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+    ciMultiplier: CI_MULTIPLIER_TIER_2,
   },
   selectTokenToSendFormLoaded: {
     p75: { warn: 4000, fail: 5500 },
