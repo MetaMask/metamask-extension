@@ -33,6 +33,19 @@ function translatePasskeyCode(
   return null;
 }
 
+function getCauseCode(data: unknown): unknown {
+  if (!data || typeof data !== 'object' || !('cause' in data)) {
+    return undefined;
+  }
+
+  const { cause } = data as { cause?: unknown };
+  if (!cause || typeof cause !== 'object' || !('code' in cause)) {
+    return undefined;
+  }
+
+  return (cause as { code?: unknown }).code;
+}
+
 /**
  * Translate a passkey error to a user-facing string using the extension i18n system.
  *
@@ -57,33 +70,19 @@ export function translatePasskeyError(
   if (error === null || typeof error !== 'object') {
     return null;
   }
-  const err = error as {
-    code?: unknown;
-    data?: unknown;
-  };
+  const err = error as { code?: unknown; data?: unknown };
+  const causeCode = getCauseCode(err.data);
+  let code: string | null = null;
 
-  if ('code' in err && typeof err.code === 'string') {
-    const translated = translatePasskeyCode(err.code, t);
-    if (translated !== null) {
-      return translated;
-    }
+  if (typeof err.code === 'string') {
+    code = err.code;
+  } else if (typeof causeCode === 'string') {
+    code = causeCode;
   }
 
-  if ('data' in err && err.data !== undefined) {
-    const { data } = err;
-    if (data && typeof data === 'object' && 'cause' in data) {
-      const { cause } = data as { cause?: unknown };
-      if (cause && typeof cause === 'object' && 'code' in cause) {
-        const causeCode = (cause as { code?: unknown }).code;
-        if (typeof causeCode === 'string') {
-          const translated = translatePasskeyCode(causeCode, t);
-          if (translated !== null) {
-            return translated;
-          }
-        }
-      }
-    }
+  if (code === null) {
+    return null;
   }
 
-  return null;
+  return translatePasskeyCode(code, t);
 }

@@ -60,6 +60,7 @@
     "notificationGasPollTokens": "object",
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
+    "passkeyAutoUnlockSuppressed": "boolean",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
     "pendingShieldCohort": null,
@@ -251,6 +252,7 @@
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },
+  "PasskeyController": { "passkeyRecord": "object" },
   "PPOMController": { "storageMetadata": "object" },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {

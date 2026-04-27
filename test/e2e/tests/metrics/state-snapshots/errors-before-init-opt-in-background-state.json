@@ -49,6 +49,7 @@
       "newPrivacyPolicyToastShownDate": "number",
       "nftsDetectionNoticeDismissed": false,
       "outdatedBrowserWarningLastShown": "object",
+      "passkeyAutoUnlockSuppressed": "boolean",
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": "boolean",
@@ -178,6 +179,7 @@
       "firstTimeFlowType": "import",
       "seedPhraseBackedUp": null
     },
+    "PasskeyController": { "passkeyRecord": "object" },
     "PPOMController": { "storageMetadata": "object" },
     "PermissionController": {},
     "PermissionLogController": { "permissionHistory": "object" },
