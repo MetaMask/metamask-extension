@@ -49,6 +49,42 @@ describe('translatePasskeyError', () => {
     expect(translatePasskeyError(new Error('x'), t)).toBeNull();
   });
 
+  it('returns null when code is not a string', () => {
+    expect(
+      translatePasskeyError(
+        {
+          code: 42,
+          data: {
+            cause: {
+              code: 99,
+            },
+          },
+        },
+        t,
+      ),
+    ).toBeNull();
+  });
+
+  it('returns null when string code is unknown', () => {
+    expect(translatePasskeyError({ code: 'UnknownPasskeyCode' }, t)).toBeNull();
+  });
+
+  it('prefers root string code over data.cause.code', () => {
+    expect(
+      translatePasskeyError(
+        {
+          code: PasskeyControllerErrorCode.NoAuthenticationCeremony,
+          data: {
+            cause: {
+              code: PasskeyControllerErrorCode.VaultKeyMismatch,
+            },
+          },
+        },
+        t,
+      ),
+    ).toBe('t:passkeyErrorNoAuthenticationCeremony');
+  });
+
   it('supports the usual UI fallback with nullish coalescing', () => {
     expect(
       translatePasskeyError(
