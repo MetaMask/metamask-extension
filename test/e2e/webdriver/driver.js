@@ -241,7 +241,7 @@ class Driver {
    * @param {!ThenableWebDriver} args.driver - A {@code WebDriver} instance
    * @param {string} args.browser - The type of browser this driver is controlling
    * @param {string} args.extensionUrl
-   * @param {number} args.timeout - Defaults to 10000 milliseconds (10 seconds)
+   * @param {number} [args.timeout] - Defaults to 10000 milliseconds (10 seconds)
    * @param {boolean} args.disableServerMochaToBackground - Determines whether the background mocha
    * server is used.
    */
