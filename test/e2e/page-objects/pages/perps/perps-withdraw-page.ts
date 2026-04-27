@@ -106,4 +106,22 @@ export class PerpsWithdrawPage {
       this.summaryReceiveRow,
     ]);
   }
+
+  /**
+   * Clicks the primary Withdraw submit button once it is enabled (valid amount).
+   */
+  async clickSubmit(): Promise<void> {
+    await this.driver.waitForSelector(this.submitButton, { state: 'enabled' });
+    await this.driver.clickElement(this.submitButton);
+  }
+
+  /**
+   * Waits for the post-success toast on wallet home (`PerpsWithdrawToast`).
+   */
+  async waitForWithdrawSubmittedToast(): Promise<void> {
+    await this.driver.waitForSelector({
+      testId: 'perps-withdraw-toast',
+      text: 'Withdrawal submitted',
+    });
+  }
 }

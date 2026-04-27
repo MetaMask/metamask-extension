@@ -1647,6 +1647,41 @@ async function setupMocking(
           totalRawUsd: '0',
           totalMarginUsed: '0',
         };
+        // Align REST with Perps WS mocks (e.g. WS_USER_WITH_FUNDED_ACCOUNT): background
+        // `getAccountState` / withdraw use InfoClient, not only WebSocket stream data.
+        const e2ePerpsUser =
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+        const reqUser =
+          parsed && typeof parsed.user === 'string'
+            ? parsed.user.toLowerCase()
+            : '';
+        if (reqUser === e2ePerpsUser) {
+          return {
+            statusCode: 200,
+            json: {
+              marginSummary: {
+                accountValue: '10000.0',
+                totalNtlPos: '0.0',
+                totalRawUsd: '10000.0',
+                totalMarginUsed: '0.0',
+                withdrawable: '10000.0',
+                totalVaultEquity: '0.0',
+              },
+              crossMarginSummary: {
+                accountValue: '10000.0',
+                totalNtlPos: '0.0',
+                totalRawUsd: '10000.0',
+                totalMarginUsed: '0.0',
+                withdrawable: '10000.0',
+                totalVaultEquity: '0.0',
+              },
+              crossMaintenanceMarginUsed: '0.0',
+              withdrawable: '10000.0',
+              assetPositions: [],
+              time: Date.now(),
+            },
+          };
+        }
         return {
           statusCode: 200,
           json: {
@@ -1717,6 +1752,13 @@ async function setupMocking(
               },
             },
           },
+        };
+      }
+
+      if (actionType === 'withdraw3') {
+        return {
+          statusCode: 200,
+          json: { status: 'ok', response: { type: 'default' } },
         };
       }
 

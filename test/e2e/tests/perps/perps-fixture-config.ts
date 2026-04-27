@@ -26,9 +26,16 @@ const PERPS_GEO_BLOCKED_FLAG = {
 };
 
 /**
- * Default withFixtures config for Perps E2E tests (feature flag enabled).
- * Sets isFirstTimeUser to false to prevent the tutorial modal from auto-opening
- * and potentially intercepting clicks in tests that don't cover the tutorial flow.
+ * Perps E2E fixture: Perps enabled, geo-block flags, and HTTP flags mock.
+ * Sets `useExternalServices: false` so eligibility monitoring never starts:
+ * without `GeolocationController:getGeolocation` on PerpsControllerMessenger,
+ * `refreshEligibility()` would fail and perps-controller would set `isEligible`
+ * to true, hiding the geo-block modal. Deferred checks keep `isEligible: false`.
+ * Callers must use `login(..., { waitForNonEvmAccounts: false })` because the
+ * home flow otherwise waits for non-EVM account icons that do not load when
+ * basic functionality is off.
+ *
+ * Also sets isFirstTimeUser to false so the tutorial modal does not intercept clicks.
  *
  * @param title - The test title (e.g. this.test?.fullTitle()) for debugging.
  * @returns Partial withFixtures config to spread into withFixtures().
@@ -36,8 +43,12 @@ const PERPS_GEO_BLOCKED_FLAG = {
 export function getPerpsConfig(title?: string) {
   return {
     fixtures: new FixtureBuilderV2()
+      .withPreferencesController({
+        useExternalServices: false,
+      })
       .withPerpsController({
         isFirstTimeUser: { mainnet: false, testnet: false },
+        isEligible: false,
       })
       .build(),
     title,

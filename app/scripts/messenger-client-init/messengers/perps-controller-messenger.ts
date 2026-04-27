@@ -3,7 +3,6 @@ import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
-import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
 import {
   KeyringControllerGetStateAction,
   KeyringControllerSignTypedMessageAction,
@@ -14,7 +13,6 @@ import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
 } from '@metamask/network-controller';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
-import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
 import {
   RemoteFeatureFlagControllerGetStateAction,
   RemoteFeatureFlagControllerStateChangeEvent,
@@ -36,9 +34,7 @@ type AllowedActions =
   | KeyringControllerSignTypedMessageAction
   | TransactionControllerAddTransactionAction
   | RemoteFeatureFlagControllerGetStateAction
-  | GeolocationControllerGetGeolocationAction
   | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
-  | GeolocationControllerGetGeolocationAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
   | MetaMetricsControllerTrackEventAction
   | StorageServiceGetItemAction
@@ -84,9 +80,7 @@ export function getPerpsControllerMessenger(
       'KeyringController:signTypedMessage',
       'TransactionController:addTransaction',
       'RemoteFeatureFlagController:getState',
-      'GeolocationController:getGeolocation',
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
-      'GeolocationController:getGeolocation',
       'AuthenticationController:getBearerToken',
       'MetaMetricsController:trackEvent',
       'StorageService:getItem',
