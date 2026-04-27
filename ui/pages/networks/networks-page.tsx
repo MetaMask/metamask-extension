@@ -9,7 +9,10 @@ import {
   BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
+  Icon,
+  IconColor,
   IconName,
+  IconSize,
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -27,7 +30,6 @@ import { Header } from '../../components/multichain/pages/page';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain/networks';
 import { getEditedNetwork } from '../../selectors/selectors';
-import { StatusIcon } from '../../components/ui/icon/status-icon';
 import { SettingsV2Header } from '../settings-v2/shared/settings-v2-header';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 import { NetworksPageList } from './networks-page-list';
@@ -265,7 +267,11 @@ export const NetworksPage = () => {
                   data-testid="networks-page-network-success-toast"
                   className="flex w-full items-center gap-3 rounded-xl border border-border-muted bg-background-section p-3"
                 >
-                  <StatusIcon state="success" />
+                  <Icon
+                    name={IconName.Confirmation}
+                    size={IconSize.Md}
+                    color={IconColor.SuccessDefault}
+                  />
                   <Text variant={TextVariant.BodyMd} className="flex-1">
                     {rawEditedNetwork.newNetwork
                       ? t('newNetworkAdded', [rawEditedNetwork.nickname])
