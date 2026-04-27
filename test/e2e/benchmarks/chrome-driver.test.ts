@@ -57,6 +57,7 @@ describe('ChromeDriver.build', () => {
       Builder: jest.fn(() => builderInstance),
     }));
 
+    // eslint-disable-next-line import-x/extensions
     ({ default: ChromeDriver } = await import('../webdriver/chrome.js'));
     jest
       .spyOn(ChromeDriver, '_computeExtensionId')
