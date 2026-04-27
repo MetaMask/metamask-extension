@@ -13,6 +13,7 @@ import type {
   WebVitalsSummary,
 } from '../../../../shared/constants/benchmarks';
 import { BENCHMARK_PERSONA } from '../../../../shared/constants/benchmarks';
+import type { Driver } from '../../webdriver/driver';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -96,6 +97,47 @@ async function runWithRetries(
     });
   } catch {
     return lastResult;
+  }
+}
+
+/**
+ * Force a GC cycle outside the measurement window so heap debt is less likely
+ * to spill into the next page-load iteration.
+ *
+ * Prefers `window.gc()` when Chrome is launched with `--expose-gc`, and falls
+ * back to ChromeDriver CDP heap collection when available.
+ *
+ * @param driver - MetaMask Selenium driver wrapper for the current benchmark page
+ */
+export async function collectGarbageBetweenIterations(
+  driver: Driver,
+): Promise<void> {
+  try {
+    const didRunWindowGc = await driver.executeScript(function () {
+      if (typeof window.gc === 'function') {
+        window.gc();
+        return true;
+      }
+      return false;
+    });
+
+    if (didRunWindowGc) {
+      return;
+    }
+  } catch {
+    // Fall back to CDP heap collection below.
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const innerDriver = (driver as any).driver;
+  if (!innerDriver?.sendDevToolsCommand) {
+    return;
+  }
+
+  try {
+    await innerDriver.sendDevToolsCommand('HeapProfiler.collectGarbage');
+  } catch {
+    // Best-effort normalization only.
   }
 }
 

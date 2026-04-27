@@ -19,7 +19,11 @@ import {
   WITH_STATE_POWER_USER,
   POWER_USER_NUM_BROWSER_LOADS,
 } from '../../utils/constants';
-import { runPageLoadBenchmark, collectWebVitals } from '../../utils';
+import {
+  runPageLoadBenchmark,
+  collectWebVitals,
+  collectGarbageBetweenIterations,
+} from '../../utils';
 import type {
   Metrics,
   PageLoadBenchmarkOptions,
@@ -80,6 +84,10 @@ async function measurePagePowerUser(
           webVitalsRuns.push(await collectWebVitals(driver));
         } catch (error) {
           console.error(`Error collecting web vitals for ${pageName}:`, error);
+        }
+
+        if (i < pageLoads - 1) {
+          await collectGarbageBetweenIterations(driver);
         }
       }
     },
