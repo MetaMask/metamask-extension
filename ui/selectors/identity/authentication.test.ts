@@ -15,6 +15,7 @@ describe('Authentication Selectors', () => {
             identifierId: 'identifierId',
             profileId: 'profileId',
             metaMetricsId: 'metaMetricsId',
+            canonicalProfileId: 'profileId',
           },
         },
         entropySourceId2: {
@@ -27,6 +28,7 @@ describe('Authentication Selectors', () => {
             identifierId: 'identifierId2',
             profileId: 'profileId2',
             metaMetricsId: 'metaMetricsId2',
+            canonicalProfileId: 'profileId2',
           },
         },
       },
