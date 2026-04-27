@@ -1282,7 +1282,7 @@
     "rewardsSubscriptions": {},
     "securityAlertsEnabled": "boolean",
     "seedPhraseBackedUp": "null",
-    "passkeyRecord": "object",
+    "passkeyRecord": "null",
     "segmentApiCalls": {},
     "selectedAccountGroup": "string",
     "selectedMultichainNetworkChainId": "string",

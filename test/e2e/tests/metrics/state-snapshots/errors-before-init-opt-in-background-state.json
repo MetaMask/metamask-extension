@@ -180,7 +180,7 @@
       "seedPhraseBackedUp": null
     },
     "PPOMController": { "storageMetadata": "object" },
-    "PasskeyController": { "passkeyRecord": "object" },
+    "PasskeyController": { "passkeyRecord": null },
     "PermissionController": {},
     "PermissionLogController": { "permissionHistory": "object" },
     "PerpsController": "object",

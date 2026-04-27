@@ -289,7 +289,7 @@
     "overrideContentSecurityPolicyHeader": true,
     "participateInMetaMetrics": true,
     "passkeyAutoUnlockSuppressed": "boolean",
-    "passkeyRecord": "object",
+    "passkeyRecord": null,
     "pendingApprovalCount": "number",
     "pendingApprovals": "object",
     "pendingExtensionVersion": null,
