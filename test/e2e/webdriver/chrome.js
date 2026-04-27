@@ -31,14 +31,18 @@ class ChromeDriver {
     constrainWindowSize,
     port,
     proxyPort,
+    isBenchmark = false,
   }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
       '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
       '--disable-dev-shm-usage',
-      '--js-flags=--expose-gc',
     ];
+
+    if (isBenchmark) {
+      args.push('--js-flags=--expose-gc');
+    }
 
     if (process.env.MULTIPROVIDER) {
       args.push(

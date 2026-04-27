@@ -397,6 +397,7 @@ async function withFixtures(options, testSuite) {
     const wd = await buildWebDriver({
       ...driverOptions,
       disableServerMochaToBackground,
+      isBenchmark: title?.startsWith('benchmark-'),
     });
 
     driver = wd.driver;
