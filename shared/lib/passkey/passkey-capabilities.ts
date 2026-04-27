@@ -18,8 +18,17 @@ export async function isPasskeyPRFSupported(): Promise<boolean | undefined> {
     return false;
   }
 
-  if (typeof PublicKeyCredential.getClientCapabilities === 'function') {
-    const caps = await PublicKeyCredential.getClientCapabilities();
+  const publicKeyCredentialWithCapabilities =
+    PublicKeyCredential as typeof PublicKeyCredential & {
+      getClientCapabilities?: () => Promise<Record<string, boolean>>;
+    };
+
+  if (
+    typeof publicKeyCredentialWithCapabilities.getClientCapabilities ===
+    'function'
+  ) {
+    const caps =
+      await publicKeyCredentialWithCapabilities.getClientCapabilities();
     return caps['extension:prf'] === true;
   }
 
