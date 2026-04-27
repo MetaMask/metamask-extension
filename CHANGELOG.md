@@ -7,6 +7,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.28.0]
+
+### Added
+
+- Extended notification account toggles to all wallet keyrings (#40762)
+- Added post–smart transaction toast notifications (#41757)
+- Added gas-sponsored transactions on the token details page (#41730)
+- Added Mantle Mainnet as a featured network (#41135)
+- Updated the Perps deposit confirmation screen to use a single “Add funds” button that stays disabled until an amount is entered, and removed the extra token amount line below the fiat total (#41686)
+- Updated the swap and bridge amount input to fill the available width with stepped font sizing, and fixed scientific-notation and zero-rounding display issues in the fiat amount row (#41722)
+- Replaced disabled-button Perps geo-blocking with an informational modal for restricted users, and allowed withdrawals regardless of geo-block status (#41646)
+- Set the extension side panel as the default UI (#41617)
+- Updated `wallet_requestSupportedExecutionPermissions` to include all supported chains (#41643)
+- Added initial Perps metrics for the extension (#41337)
+- Wired up Sentry events for Perps (#41528)
+- Added percentage input to the mUSD conversion flow (#41624)
+- Added validation when TP/SL triggers are set on the wrong side of the market price (#41615)
+
+### Changed
+
+- Bumped `@metamask/assets-controllers` to v6.0.0 (#41818)
+- Bumped `@metamask/assets-controllers` to v5.0.0 (#41575)
+- Added hover state styles to the default address row in the account list and app header (#41766)
+- Bumped the institutional Snap to v1.5.0 (#39652)
+- Added a caching layer for Perps fills and market info (#41797)
+
+### Fixed
+
+- Fixed Perps geo-blocking using the GeolocationController so user location resolves correctly (#41831)
+- Fixed navigation from Manage Wallet Recovery when the SRP is not backed up (#41832)
+- Fixed Perps market prices and related data stopping updates while the popup stayed open (#41802)
+- Fixed the dapp connection bar appearing on the wrong Chrome window when multiple windows are open (#41644)
+- Improved Perps trading toast notifications to show correct in-progress and success messages and return to the market detail page after order submission (#41822)
+- Fixed TP/SL percentage inputs on limit orders to calculate from the limit entry price (#41825)
+- Fixed Perps total balance miscalculation (#41796)
+- Fixed the reverse position modal to show the computed flip fee and use a Confirm label (#41685)
+- Fixed TP/SL presets and editing in non-English locales for perpetuals trading (#41605)
+- Unified “Reduce exposure” and “Close position” to use the same close-position modal (#41779)
+- Fixed the wallet-imported toast briefly showing the wrong wallet (#41664)
+- Fixed spacing between balance and address for Ledger accounts during connection (#41710)
+- Updated animation loader styling (#41771)
+- Fixed ERC-20 approval display on device (#41698)
+- Fixed the Perps client sometimes entering an unrecoverable “not initialized” state until restart (#41672)
+- Fixed “Paid by MetaMask” incorrectly showing on failed or rejected hardware wallet transactions (#41592)
+- Displayed all swap-supported networks in the bridge asset picker and enabled networks when selecting a token on a new chain (#41650)
+- Fixed 24h change display for market rows on the Perps landing view (#41723)
+- Replaced the “Transaction Already Confirmed” modal with a toast for cancel and speed-up errors (#41241)
+- Fixed close-position PnL double counting (#41705)
+- Fixed the Reduce exposure flow on the Perps order entry page (#41671)
+- Fixed the add margin slider (#41706)
+- Fixed a crash when opening a swap deeplink for a network not yet added to MetaMask (#41574)
+- Fixed zero-balance Perps order entry enabling trade instead of prompting to add funds (#41692)
+- Fixed Perps order entry not restricting size above available margin (#41697)
+- Fixed the 24h price change `%` disappearing on the Perps market header after first render (#41695)
+- Fixed position ROE showing 100× too small and added ROE% on position rows (#41696)
+- Fixed TP/SL formatting and PnL calculation (#41497)
+- Fixed Perps position card dropdown and interval selection (#41590)
+- Surfaced MetaMask fee in the bridge fee tooltip for MetaMask Pay (#41642)
+
 ## [13.27.0]
 
 ### Added
@@ -2108,7 +2167,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.28.0...HEAD
+[13.28.0]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...v13.28.0
 [13.27.0]: https://github.com/MetaMask/metamask-extension/compare/v13.26.0...v13.27.0
 [13.26.0]: https://github.com/MetaMask/metamask-extension/compare/v13.25.0...v13.26.0
 [13.25.0]: https://github.com/MetaMask/metamask-extension/compare/v13.24.0...v13.25.0

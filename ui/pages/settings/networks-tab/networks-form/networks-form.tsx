@@ -2,6 +2,11 @@ import log from 'loglevel';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  Button as DSButton,
+  ButtonSize as DSButtonSize,
+  ButtonVariant as DSButtonVariant,
+} from '@metamask/design-system-react';
+import {
   type UpdateNetworkFields,
   RpcEndpointType,
 } from '@metamask/network-controller';
@@ -86,6 +91,7 @@ export const NetworksForm = ({
   onRpcAdd,
   onBlockExplorerAdd,
   toggleNetworkMenuAfterSubmit = true,
+  usePageFooterStyle = false,
   onComplete,
   onEdit,
 }: {
@@ -95,6 +101,7 @@ export const NetworksForm = ({
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
   toggleNetworkMenuAfterSubmit?: boolean;
+  usePageFooterStyle?: boolean;
   onComplete?: () => void;
   onEdit?: () => void;
 }) => {
@@ -414,6 +421,13 @@ export const NetworksForm = ({
       onComplete?.();
     }
   };
+
+  const isSaveDisabled =
+    !name ||
+    !chainId ||
+    !ticker ||
+    !rpcUrls?.rpcEndpoints?.length ||
+    Object.values(errors).some((error) => error);
 
   return (
     <Box
@@ -759,27 +773,43 @@ export const NetworksForm = ({
         />
       </Box>
       <Box
-        className="networks-tab__network-form__footer"
-        backgroundColor={BackgroundColor.backgroundDefault}
+        className={`networks-tab__network-form__footer${
+          usePageFooterStyle ? ' networks-tab__network-form__footer--page' : ''
+        }`}
+        backgroundColor={
+          usePageFooterStyle
+            ? BackgroundColor.transparent
+            : BackgroundColor.backgroundDefault
+        }
         padding={4}
         width={BlockSize.Full}
       >
-        <ButtonPrimary
-          disabled={
-            !name ||
-            !chainId ||
-            !ticker ||
-            !rpcUrls?.rpcEndpoints?.length ||
-            Object.values(errors).some((e) => e)
-          }
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClick={onSubmit}
-          size={ButtonPrimarySize.Lg}
-          width={BlockSize.Full}
-        >
-          {t('save')}
-        </ButtonPrimary>
+        {usePageFooterStyle ? (
+          <DSButton
+            variant={DSButtonVariant.Primary}
+            size={DSButtonSize.Lg}
+            isDisabled={isSaveDisabled}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={onSubmit}
+            className="w-full rounded-xl"
+            data-testid="page-container-footer-next"
+          >
+            {t('save')}
+          </DSButton>
+        ) : (
+          <ButtonPrimary
+            disabled={isSaveDisabled}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={onSubmit}
+            size={ButtonPrimarySize.Lg}
+            width={BlockSize.Full}
+            data-testid="page-container-footer-next"
+          >
+            {t('save')}
+          </ButtonPrimary>
+        )}
       </Box>
     </Box>
   );
