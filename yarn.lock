@@ -5778,7 +5778,7 @@ __metadata:
 
 "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A104.2.0#~/.yarn/patches/@metamask-assets-controllers-npm-104.2.0-c375051533.patch":
   version: 104.2.0
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A104.2.0#~/.yarn/patches/@metamask-assets-controllers-npm-104.2.0-c375051533.patch::version=104.2.0&hash=f48105"
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A104.2.0#~/.yarn/patches/@metamask-assets-controllers-npm-104.2.0-c375051533.patch::version=104.2.0&hash=0d31be"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5828,7 +5828,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/0161ca3c3797207d0fc1e8f020ba224073379fdc92f350cdca250a0ded5b5df69e0f2a58d642e2a3d5582fc4c0569c284e3e0f04a0e22bf86e6e02f08c07e85b
+  checksum: 10/98ef344fa6f4188e07d02a5ff81b5ca5fd37a17ed61d35252cb23c36459c0e5ea840f417a8eb8f73c1a0cbdf3e4dec8f9d0be4b74d0a4e10af5b1b003a38286d
   languageName: node
   linkType: hard
 
