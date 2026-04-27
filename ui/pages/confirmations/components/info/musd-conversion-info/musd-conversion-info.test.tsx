@@ -132,7 +132,6 @@ function setupDefaultMocks({
       useTransactionCustomAmountAlertsModule.useTransactionCustomAmountAlerts,
     )
     .mockReturnValue({
-      alertMessage: undefined,
       hideResults,
       disableUpdate: false,
     });
@@ -243,6 +242,14 @@ describe('MusdConversionInfo', () => {
         },
       }),
     );
+  });
+
+  it('passes usd as currency to CustomAmountInfo so the hero symbol is always $', () => {
+    render();
+
+    expect(
+      useTransactionCustomAmountModule.useTransactionCustomAmount,
+    ).toHaveBeenCalledWith(expect.objectContaining({ currency: 'usd' }));
   });
 
   it('renders the custom amount input', () => {

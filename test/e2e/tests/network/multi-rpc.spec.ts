@@ -296,7 +296,6 @@ describe('MultiRpc:', function (this: Suite) {
         const usedUrl = await mockedEndpoint[0].getSeenRequests();
         // check the url first request send on the background to the mocked rpc after switch
         assert.equal(usedUrl[0].url, 'https://responsive-rpc.test/');
-
         // check that requests are sent on the background for the url https://responsive-rpc.test/
         await expectMockRequest(driver, mockedEndpoint[0], { timeout: 5000 });
       },
@@ -411,6 +410,7 @@ describe('MultiRpc:', function (this: Suite) {
         await editNetworkModal.selectRPCInEditNetworkModal(
           'Arbitrum mainnet 2',
         );
+        await selectNetworkDialog.clickCloseButton();
 
         // validate the network was successfully edited
         const homePage = new HomePage(driver);

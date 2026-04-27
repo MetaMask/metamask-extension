@@ -5,6 +5,7 @@ import * as fs from 'fs/promises';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { DAPP_PATH } from '../../constants';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
 
 /**
  * Holds the actual transaction signature captured from sendTransaction.
@@ -95,6 +96,9 @@ export enum SendFlowPlaceHolders {
   RECIPIENT = 'Enter receiving address',
   LOADING = 'Preparing transaction',
 }
+
+const SECURITY_ALERT_BULK_SCAN_URL =
+  'https://security-alerts.api.cx.metamask.io/token/scan-bulk';
 
 export const SIMPLEHASH_URL = 'https://api.simplehash.com';
 
@@ -451,6 +455,7 @@ export async function mockSolanaBalanceQuote({
     .withJsonBodyIncluding({
       method: 'getBalance',
     })
+    .always()
     .thenCallback(() => {
       return response;
     });
@@ -932,6 +937,13 @@ export async function mockSendSwapSolanaTransaction(
     });
 }
 
+/**
+ * `getTransaction` response for USDC → SOL swaps. Uses a captured Jupiter-style
+ * tx so activity shows the USDC leg (e.g. -1 USDC) instead of a bare SOL send.
+ *
+ * @param mockServer - Mockttp server.
+ * @param signatureHolder - Optional; live signature from `sendTransaction` overrides the mock.
+ */
 export async function mockGetUSDCSOLTransaction(
   mockServer: Mockttp,
   signatureHolder?: SignatureHolder,
@@ -1430,6 +1442,7 @@ export async function mockGetMintAccountInfo(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       method: 'getAccountInfo',
     })
+    .always()
     .thenCallback(async (req) => {
       const body = (await req.body.getJson()) as {
         params?: [string];
@@ -1616,6 +1629,28 @@ export async function mockGetMultipleAccounts(mockServer: Mockttp) {
     });
 }
 
+export async function mockSecurityAlertBulkScan(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(SECURITY_ALERT_BULK_SCAN_URL)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          results: {
+            EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: {
+              address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+              chain: 'solana',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              malicious_score: '0.0',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              result_type: 'Verified',
+            },
+          },
+        },
+      };
+    });
+}
+
 export async function mockSecurityAlertSwap(mockServer: Mockttp) {
   console.log('mockSecurityAlertSwap');
   const securityAlertSwapResponse = await readResponseJsonFile(
@@ -1633,22 +1668,27 @@ export async function mockSecurityAlertSwap(mockServer: Mockttp) {
 }
 
 export async function mockPriceApiSpotPriceSwap(mockServer: Mockttp) {
-  return await mockServer.forGet(SPOT_PRICE_API).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-          {
-            id: 'usd-coin',
-            price: 0.999761,
+  return await mockServer
+    .forGet(SPOT_PRICE_API)
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+            {
+              id: 'usd-coin',
+              price: 0.999761,
+              usd: 0.999761,
+            },
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+            id: 'solana',
+            price: 168.88,
+            usd: 168.88,
           },
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-          id: 'solana',
-          price: 168.88,
         },
-      },
-    };
-  });
+      };
+    });
 }
 
 const SOLANA_BRIDGE_TOKENS = [
@@ -1706,11 +1746,6 @@ export async function mockBridgeSearchTokens(mockServer: Mockttp) {
   });
 }
 
-/**
- * Mocks the Bridge getTxStatus endpoint to return a COMPLETE status.
- *
- * @param mockServer - The mockttp server instance.
- */
 const SOL_TOKEN_INFO = {
   address: '0x0000000000000000000000000000000000000000',
   chainId: 1151111081099710,
@@ -1733,13 +1768,32 @@ const USDC_TOKEN_INFO = {
   priceUSD: '1.0',
 };
 
+/**
+ * Mocks the Bridge getTxStatus endpoint to return a COMPLETE status.
+ *
+ * `srcChain.txHash` must match the signature from `sendTransaction` (see
+ * {@link mockSendSwapSolanaTransaction}) or bridge activity will not merge with
+ * the snap transaction and the activity list can stay empty.
+ *
+ * @param mockServer - The mockttp server instance.
+ * @param direction - Swap direction (default SOL → USDC).
+ * @param signatureHolder - When non-empty after submit, used as `srcChain.txHash`.
+ */
 export async function mockBridgeTxStatus(
   mockServer: Mockttp,
   direction: 'SOL_TO_USDC' | 'USDC_TO_SOL' = 'SOL_TO_USDC',
+  signatureHolder?: SignatureHolder,
 ) {
   const isSolToUsdc = direction === 'SOL_TO_USDC';
   return await mockServer.forGet(BRIDGE_TX_STATUS).thenCallback(() => {
-    console.log('mockBridgeTxStatus', direction);
+    const fallbackHash = isSolToUsdc
+      ? SOL_TO_USDC_SWAP_SIGNATURE
+      : USDC_TO_SOL_SWAP_SIGNATURE;
+    const srcTxHash =
+      signatureHolder?.value && signatureHolder.value.length > 0
+        ? signatureHolder.value
+        : fallbackHash;
+    console.log('mockBridgeTxStatus', direction, { srcTxHash });
     return {
       statusCode: 200,
       json: {
@@ -1748,9 +1802,7 @@ export async function mockBridgeTxStatus(
         bridge: 'lifi',
         srcChain: {
           chainId: 1151111081099710,
-          txHash: isSolToUsdc
-            ? SOL_TO_USDC_SWAP_SIGNATURE
-            : USDC_TO_SOL_SWAP_SIGNATURE,
+          txHash: srcTxHash,
           amount: isSolToUsdc ? '1000000000' : '991250',
           token: isSolToUsdc ? SOL_TOKEN_INFO : USDC_TOKEN_INFO,
         },
@@ -1821,6 +1873,7 @@ export async function mockGetTokenAccountsUSDCOnly(
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({ method: 'getTokenAccountsByOwner' })
+    .always()
     .thenCallback(async (req) => {
       const body = (await req.body.getText()) ?? '';
       const isSplToken = body.includes(SOLANA_TOKEN_PROGRAM);
@@ -1849,6 +1902,7 @@ export async function mockGetTokenAccountBalance(mockServer: Mockttp) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({ method: 'getTokenAccountBalance' })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -1867,28 +1921,126 @@ export async function mockGetTokenAccountBalance(mockServer: Mockttp) {
     }));
 }
 
+/** Tokens API v3/assets: only these CAIP assets are mocked (see btc/mocks/tokens-api). */
+const MOCK_TOKEN_API_BTC_CAIP_ASSET_ID =
+  'bip122:000000000019d6689c085ae165831e93/slip44:0';
+const MOCK_TOKEN_API_SOL_CAIP_ASSET_ID =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+const MOCK_TOKEN_API_TRON_NATIVE_ASSET_ID = 'tron:728126428/slip44:195';
+
 /**
- * Mocks the Token API /v3/assets endpoint so the snap can resolve
- * USDC metadata (symbol, name, decimals) for the swap transaction display.
+ * Mocks GET /v3/assets for the Tokens API. Returns metadata only for Ethereum
+ * (chain 1337), Solana native, USD Coin on Solana, Bitcoin, and Tron native —
+ * matching requested `assetIds` query params.
+ *
+ * When `ASSETS_UNIFIED_STATE_ENABLED` is not `'true'`, reverts to the
+ * pre-unified behavior used on main: a static USDC-only response on the exact
+ * URL match. Keeps legacy specs (e.g. send-spl-token) behaving identically to
+ * main while the unified path's filtered regex response stays intact.
  *
  * @param mockServer - The mockttp server instance.
  */
 export async function mockTokenApiAssets(mockServer: Mockttp) {
+  const isUnifiedAssetsEnabled =
+    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true';
+
+  if (!isUnifiedAssetsEnabled) {
+    return await mockServer
+      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [
+          {
+            assetId: USDC_CAIP19,
+            name: 'USD Coin',
+            symbol: 'USDC',
+            decimals: 6,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+          },
+        ],
+      }));
+  }
+
   return await mockServer
-    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: [
-        {
+    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = url.searchParams.getAll('assetIds').join(',');
+
+      const results: {
+        assetId: string;
+        name: string;
+        symbol: string;
+        decimals: number;
+        iconUrl: string;
+        coingeckoId: string;
+      }[] = [];
+
+      if (assetIds.includes('eip155:1337')) {
+        results.push({
+          assetId: 'eip155:1337/slip44:1',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+          iconUrl:
+            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1337/slip44/60.png',
+          coingeckoId: 'ethereum',
+        });
+      }
+
+      if (assetIds.includes('bip122:000000000019d6689c085ae165831e93')) {
+        results.push({
+          assetId: MOCK_TOKEN_API_BTC_CAIP_ASSET_ID,
+          name: 'Bitcoin',
+          symbol: 'BTC',
+          decimals: 8,
+          iconUrl:
+            'https://static.cx.metamask.io/api/v1/tokenIcons/bip122/000000000019d6689c085ae165831e93/slip44/0.png',
+          coingeckoId: 'bitcoin',
+        });
+      }
+
+      if (assetIds.includes('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')) {
+        results.push({
+          assetId: MOCK_TOKEN_API_SOL_CAIP_ASSET_ID,
+          name: 'Solana',
+          symbol: 'SOL',
+          decimals: 9,
+          iconUrl:
+            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
+          coingeckoId: 'solana',
+        });
+      }
+
+      if (assetIds.includes('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')) {
+        results.push({
           assetId: USDC_CAIP19,
           name: 'USD Coin',
           symbol: 'USDC',
           decimals: 6,
           iconUrl:
             'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
-        },
-      ],
-    }));
+          coingeckoId: 'usd-coin',
+        });
+      }
+
+      if (assetIds.includes('tron:728126428')) {
+        results.push({
+          assetId: MOCK_TOKEN_API_TRON_NATIVE_ASSET_ID,
+          name: 'Tron',
+          symbol: 'TRX',
+          decimals: 6,
+          iconUrl:
+            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
+          coingeckoId: 'tron',
+        });
+      }
+
+      return { statusCode: 200, json: results };
+    });
 }
 
 /**
@@ -2025,6 +2177,7 @@ export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
     }
 
     mockList.push(
+      await mockTokensV2SupportedNetworks(mockServer),
       await mockTokenApiMainnetTest(mockServer),
       await mockAccountsApi(mockServer),
       await mockGetMultipleAccounts(mockServer),
