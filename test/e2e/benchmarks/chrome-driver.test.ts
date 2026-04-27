@@ -10,7 +10,7 @@ const isolationFlags = [
 ];
 
 describe('ChromeDriver.build', () => {
-  let ChromeDriver: typeof import('../webdriver/chrome.js').default;
+  let ChromeDriver: Awaited<typeof import('../webdriver/chrome.js')>;
   let optionsInstance: { args?: string[]; [key: string]: unknown };
   let serviceInstance: Record<string, unknown>;
   let builderInstance: Record<string, unknown>;
