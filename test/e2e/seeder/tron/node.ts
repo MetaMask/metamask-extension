@@ -19,6 +19,11 @@ type TronFundingAccount = {
   privateKey: string;
 };
 
+type TronAccountResponse = {
+  address?: string;
+  balance?: number;
+};
+
 type FetchJsonOptions = RequestInit & {
   timeoutMs?: number;
 };
@@ -90,7 +95,11 @@ export class TronNode {
           timeoutMs: 5_000,
         })) as { block_header?: unknown };
         const accounts = await this.getTreAccounts();
-        if (data.block_header && accounts.privateKeys?.length) {
+        if (
+          data.block_header &&
+          accounts.privateKeys?.length &&
+          (await this.hasFundedTreAccount())
+        ) {
           return;
         }
       } catch {
@@ -101,6 +110,21 @@ export class TronNode {
     throw new Error(
       `Tron local node did not become ready within ${timeoutMs}ms`,
     );
+  }
+
+  async hasFundedTreAccount(): Promise<boolean> {
+    const fundingAccount = await this.getFundingAccount();
+    const account = (await this.fetchJson('/wallet/getaccount', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        address: fundingAccount.address,
+        visible: true,
+      }),
+      timeoutMs: 5_000,
+    })) as TronAccountResponse;
+
+    return Boolean(account.address && (account.balance ?? 0) > 0);
   }
 
   async fundAccount(toAddress: string, amountInSun: number): Promise<void> {
