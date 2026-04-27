@@ -192,7 +192,7 @@ export const MarketListView: React.FC = () => {
         PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
       [PERPS_EVENT_PROPERTY.SOURCE]:
         PERPS_EVENT_VALUE.SOURCE.WALLET_HOME_PERPS_TAB,
-      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance ? 'yes' : 'no',
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
       [PERPS_EVENT_PROPERTY.MARKET_CATEGORY_FILTER]: selectedFilter,
     },
   });
