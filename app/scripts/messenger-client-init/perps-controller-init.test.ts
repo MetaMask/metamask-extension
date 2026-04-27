@@ -182,6 +182,32 @@ describe('PerpsControllerInit', () => {
       });
     });
 
+    /**
+     * Data-layer guard: the UI categorization filter (Stocks/Commodities/Forex)
+     * intentionally does NOT re-check the HIP-3 allowlist and trusts the
+     * controller to limit which HIP-3 markets reach the UI. If this fallback
+     * is ever weakened (e.g. set to []), markets from non-allowlisted DEXes
+     * could surface in the UI before LaunchDarkly responds. Lock it in here.
+     *
+     * See ui/pages/perps/market-list/index.tsx :: filterByType.
+     */
+    it('always wires a non-empty fallbackHip3AllowlistMarkets so the controller can gate HIP-3 markets before LD loads', () => {
+      const request = getInitRequestMock();
+      PerpsControllerInit(request);
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(constructorCall.clientConfig.fallbackHip3Enabled).toBe(true);
+      expect(constructorCall.clientConfig.fallbackHip3AllowlistMarkets).toEqual(
+        ['xyz:*'],
+      );
+      expect(
+        constructorCall.clientConfig.fallbackHip3AllowlistMarkets,
+      ).not.toEqual([]);
+      expect(
+        constructorCall.clientConfig.fallbackHip3AllowlistMarkets,
+      ).not.toBeUndefined();
+    });
+
     it('passes deferEligibilityCheck true when onboarding is not complete', () => {
       const request = getInitRequestMock();
       request.persistedState.OnboardingController = {
