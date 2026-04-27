@@ -1080,7 +1080,7 @@
         "webpack-dev-server>compression>debug": true,
         "webpack-dev-server>compression>negotiator": true,
         "webpack-dev-server>compression>on-headers": true,
-        "koa>content-disposition>safe-buffer": true,
+        "mockttp>express>safe-buffer": true,
         "koa>vary": true
       }
     },
@@ -1092,12 +1092,12 @@
         "console": true
       }
     },
-    "koa>content-disposition": {
+    "mockttp>express>content-disposition": {
       "builtin": {
         "path.basename": true
       },
       "packages": {
-        "koa>content-disposition>safe-buffer": true
+        "mockttp>express>safe-buffer": true
       }
     },
     "@babel/core>convert-source-map": {
@@ -1150,7 +1150,7 @@
       "packages": {
         "postcss-loader>cosmiconfig>env-paths": true,
         "eslint>@eslint/eslintrc>import-fresh": true,
-        "eslint>js-yaml": true,
+        "mocha>js-yaml": true,
         "depcheck>cosmiconfig>parse-json": true,
         "typescript": true
       }
@@ -1512,7 +1512,7 @@
         "koa>accepts": true,
         "mockttp>express>array-flatten": true,
         "mockttp>body-parser": true,
-        "koa>content-disposition": true,
+        "mockttp>express>content-disposition": true,
         "koa>content-type": true,
         "mockttp>express>cookie-signature": true,
         "mockttp>express>cookie": true,
@@ -1532,7 +1532,7 @@
         "mockttp>express>proxy-addr": true,
         "mockttp>express>qs": true,
         "mockttp>express>range-parser": true,
-        "koa>content-disposition>safe-buffer": true,
+        "mockttp>express>safe-buffer": true,
         "mockttp>express>send": true,
         "mockttp>express>serve-static": true,
         "koa>http-errors>setprototypeof": true,
@@ -2520,7 +2520,7 @@
         "setTimeout": true
       }
     },
-    "koa>content-disposition>safe-buffer": {
+    "mockttp>express>safe-buffer": {
       "builtin": {
         "buffer": true
       }
@@ -3482,7 +3482,7 @@
       },
       "packages": {
         "webpack-dev-server>sockjs>websocket-driver>http-parser-js": true,
-        "koa>content-disposition>safe-buffer": true,
+        "mockttp>express>safe-buffer": true,
         "webpack-dev-server>sockjs>websocket-driver>websocket-extensions": true
       }
     },
