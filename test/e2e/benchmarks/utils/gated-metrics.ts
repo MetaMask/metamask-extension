@@ -23,23 +23,20 @@
  * days. Demote (gated → warn) when CV > 35% OR FP rate > 10% for 2+
  * consecutive weeks. Cadence: monthly review. Output: PR updating this file.
  *
- * Initial allowlist sourced from the April 2026 variance audit
- * (`benchmark-variance-audit.md`) — Tier 1 entries with CV < 15%.
- *
  * Deliberately deferred (out of scope for the initial allowlist):
- * `startupPowerUserHome.*` (CV 30–34%, blocked on outlier filtering #7185
- * and harness fixes); per-flow `tbt` gating (graduates via #7195 once
- * observation window completes); `*.total` and `domContentLoaded` entries
- * (not yet present in THRESHOLD_REGISTRY); and the send-page step timers
- * (anomalous within-run stdDev — investigate harness before gating).
+ * `startupPowerUserHome.*` (high variance, blocked on outlier filtering
+ * #7185 and harness fixes); per-flow `tbt` gating (graduates via #7195
+ * once observation window completes); `domContentLoaded` (not yet present
+ * in THRESHOLD_REGISTRY); `sendTransactions.total` and the send-page step
+ * timers (anomalous within-run stdDev — investigate harness before gating).
  */
 export const GATED_METRICS: ReadonlySet<string> = new Set([
-  // Startup standard persona (CV 8–9%) — powerUser excluded pending #7185
+  // Startup standard persona — powerUser excluded pending #7185
   'startupStandardHome.uiStartup',
   'startupStandardHome.load',
   'startupStandardHome.loadScripts',
 
-  // CLS canary — always 0, zero variance, applied across journey + startup
+  // CLS canary — extension pages should produce CLS ≈ 0
   'startupStandardHome.cls',
   'onboardingImportWallet.cls',
   'onboardingNewWallet.cls',
@@ -49,8 +46,14 @@ export const GATED_METRICS: ReadonlySet<string> = new Set([
   'assetDetails.cls',
   'solanaAssetDetails.cls',
 
-  // Onboarding form-to-form transitions (CV 5.7–13.7%)
+  // Onboarding form-to-form transitions
   'onboardingImportWallet.doneButtonToHomeScreen',
   'onboardingNewWallet.doneButtonToAssetList',
   'importSrpHome.loginToHomeScreen',
+
+  // Flow totals
+  'onboardingImportWallet.total',
+  'onboardingNewWallet.total',
+  'importSrpHome.total',
+  'swap.total',
 ]);
