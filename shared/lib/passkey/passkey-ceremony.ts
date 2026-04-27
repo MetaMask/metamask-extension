@@ -31,12 +31,10 @@ export class PasskeyCeremonyTimeoutError extends Error {
 }
 
 /**
- * Returns true when a WebAuthn ceremony failed in a way that should not surface
- * as a user-facing error (dismissed prompt, abort, or app-side ceremony timeout).
+ * Whether a failed ceremony should be treated as a non-error in the UI (user left the
+ * flow, the request was superseded, or the app gave up waiting).
  *
- * Use after {@link startPasskeyRegistration} / {@link startPasskeyAuthentication}.
- *
- * @param error - Rejection from the browser ceremony or timeout wrapper.
+ * @param error - Rejection from a passkey registration or authentication attempt.
  */
 export function isPasskeyCeremonySilentError(error: unknown): boolean {
   if (error instanceof PasskeyCeremonyTimeoutError) {
@@ -47,8 +45,8 @@ export function isPasskeyCeremonySilentError(error: unknown): boolean {
 }
 
 /**
- * Aborts the in-flight WebAuthn request without starting a new ceremony.
- * Call from unmount, “use password”, or when leaving the passkey step.
+ * Cancels any in-flight passkey ceremony, for example when the user leaves the step or
+ * chooses another path.
  */
 export function cancelPasskeyCeremony(): void {
   WebAuthnAbortService.cancelCeremony();
@@ -65,6 +63,12 @@ type PrfExtensionClient = {
   };
 };
 
+/**
+ * Runs a ceremony but fails it if it does not finish within the given time limit.
+ *
+ * @param ceremony - Async work that performs the WebAuthn call.
+ * @param timeoutMs - Maximum time to wait before treating the ceremony as failed.
+ */
 async function withPasskeyCeremonyTimeout<TResult>(
   ceremony: () => Promise<TResult>,
   timeoutMs: number,
@@ -85,6 +89,12 @@ async function withPasskeyCeremonyTimeout<TResult>(
   }
 }
 
+/**
+ * Runs a passkey ceremony with stricter completion expectations where the UI is most
+ * likely to get stuck waiting on the OS prompt.
+ *
+ * @param ceremony - Async work that performs the WebAuthn call.
+ */
 async function runPasskeyCeremony<TResult>(
   ceremony: () => Promise<TResult>,
 ): Promise<TResult> {
@@ -98,23 +108,21 @@ async function runPasskeyCeremony<TResult>(
 }
 
 /**
- * Starts the WebAuthn registration ceremony.
- * Delegates to `@simplewebauthn/browser`, converting PRF extension
- * inputs from base64url strings to BufferSource (for the browser API)
- * and PRF outputs from ArrayBuffer back to base64url strings (for RPC).
+ * Runs passkey registration in the browser from controller options and returns a
+ * response the controller can verify and persist.
  *
- * @param options - Registration options from the PasskeyController.
+ * @param options - Registration options from PasskeyController.
  * @see https://simplewebauthn.dev/docs/packages/browser#startregistration
  */
 export async function startPasskeyRegistration(
   options: PasskeyRegistrationOptions,
 ): Promise<PasskeyRegistrationResponse> {
   return runPasskeyCeremony(async () => {
-    const optionsJSON = preparePrfForBrowser(options);
+    const optionsJSON = decodePrfEvalInPasskeyOptions(options);
     const response = await startRegistration({ optionsJSON });
     return {
       ...response,
-      clientExtensionResults: preparePrfForTransport(
+      clientExtensionResults: encodePrfInClientExtensionResults(
         response.clientExtensionResults,
       ),
     };
@@ -122,30 +130,33 @@ export async function startPasskeyRegistration(
 }
 
 /**
- * Starts the WebAuthn authentication ceremony.
- * Delegates to `@simplewebauthn/browser`, converting PRF extension
- * inputs from base64url strings to BufferSource (for the browser API)
- * and PRF outputs from ArrayBuffer back to base64url strings (for RPC).
+ * Runs passkey authentication in the browser from controller options and returns a
+ * response the controller can verify.
  *
- * @param options - Authentication options from the PasskeyController.
+ * @param options - Authentication options from PasskeyController.
  * @see https://simplewebauthn.dev/docs/packages/browser#startauthentication
  */
 export async function startPasskeyAuthentication(
   options: PasskeyAuthenticationOptions,
 ): Promise<PasskeyAuthenticationResponse> {
   return runPasskeyCeremony(async () => {
-    const optionsJSON = preparePrfForBrowser(options);
+    const optionsJSON = decodePrfEvalInPasskeyOptions(options);
     const response = await startAuthentication({ optionsJSON });
     return {
       ...response,
-      clientExtensionResults: preparePrfForTransport(
+      clientExtensionResults: encodePrfInClientExtensionResults(
         response.clientExtensionResults,
       ),
     };
   });
 }
 
-function preparePrfForBrowser<
+/**
+ * Ensures optional PRF inputs on passkey options match what a browser ceremony expects.
+ *
+ * @param options - Registration or authentication options from PasskeyController.
+ */
+function decodePrfEvalInPasskeyOptions<
   Options extends PasskeyRegistrationOptions | PasskeyAuthenticationOptions,
 >(options: Options): Options {
   const prfExt = (options.extensions as ExtensionsWithPrf | undefined)?.prf;
@@ -163,7 +174,13 @@ function preparePrfForBrowser<
   } as Options;
 }
 
-function preparePrfForTransport(
+/**
+ * Ensures optional PRF outputs on credential extension results match what PasskeyController
+ * expects when the ceremony completes.
+ *
+ * @param results - Extension results from the WebAuthn ceremony.
+ */
+function encodePrfInClientExtensionResults(
   results: AuthenticationExtensionsClientOutputs,
 ): PasskeyRegistrationResponse['clientExtensionResults'] {
   const { prf } = results as PrfExtensionClient;
