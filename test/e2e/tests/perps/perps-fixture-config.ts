@@ -61,6 +61,7 @@ export function getPerpsConfig(title?: string) {
      * manifestFlags.remoteFeatureFlags only affects the UI selector; the
      * background controller reads from the HTTP endpoint, which is why this
      * testSpecificMock is required for the geo-block to take effect.
+     * @param server
      */
     testSpecificMock: async (server: Mockttp) => {
       const geoBlockedFlags = [

@@ -98,7 +98,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await marketDetailPage.waitForCloseSummaryRows();
         await marketDetailPage.submitClosePosition();
 
-
         // Simulate the HyperLiquid WS push with zero positions after close fill
         pushPositionClosed(perpsServer);
 
@@ -206,7 +205,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
     );
   });
 
-
   // ─── Close position flows ──────────────────────────────────────────────────
 
   // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
@@ -281,7 +279,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
       },
     );
   });
-
 
   // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
   it('reduces exposure (partial close) via Modify menu on an ETH long position', async function () {

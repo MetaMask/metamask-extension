@@ -46,6 +46,7 @@ export class PerpsActivityPage {
   /**
    * Waits for a trade row title fragment (e.g. `"Closed long"`, `"Closed short"`)
    * as produced by `transformFillsToTransactions`.
+   * @param fragment
    */
   async waitForActivityTradeTitleContaining(fragment: string): Promise<void> {
     await this.driver.waitForSelector({

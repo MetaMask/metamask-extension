@@ -7,6 +7,13 @@ import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-mark
  * After a simulated position change in E2E, pushes a `userFills` snapshot via
  * `pushUserFills`, then opens Perps Activity and asserts a trade row appears
  * with the expected title fragment (same navigation pattern as other lifecycle tests).
+ * @param options
+ * @param options.driver
+ * @param options.perpsHomePage
+ * @param options.marketDetailPage
+ * @param options.pushUserFills
+ * @param options.expectedTitleContains
+ * @param options.settleDelayMs
  */
 export async function assertPerpsActivityShowsCloseFill(options: {
   driver: Driver;

@@ -266,15 +266,12 @@ export const WS_USER_WITH_ETH_LONG_POSITION: WebSocketMessageMock[] = [
     dynamicResponse: (message: string) => {
       const req = parseWsPost(message);
       return req
-        ? buildWsPostResponse(
-            req.id,
-            req.type,
-            ETH_LONG_CLEARING_HOUSE_STATE,
-          )
+        ? buildWsPostResponse(req.id, req.type, ETH_LONG_CLEARING_HOUSE_STATE)
         : null;
     },
     delay: 50,
-    logMessage: 'Perps ETH long mock: clearinghouseState POST with ETH position',
+    logMessage:
+      'Perps ETH long mock: clearinghouseState POST with ETH position',
   },
 ];
 
@@ -394,11 +391,7 @@ export const WS_USER_WITH_BTC_SHORT_POSITION: WebSocketMessageMock[] = [
     dynamicResponse: (message: string) => {
       const req = parseWsPost(message);
       return req
-        ? buildWsPostResponse(
-            req.id,
-            req.type,
-            BTC_SHORT_CLEARING_HOUSE_STATE,
-          )
+        ? buildWsPostResponse(req.id, req.type, BTC_SHORT_CLEARING_HOUSE_STATE)
         : null;
     },
     delay: 50,
@@ -413,10 +406,10 @@ export const WS_USER_WITH_BTC_SHORT_POSITION: WebSocketMessageMock[] = [
  * With fallbackHip3Enabled=true the controller uses individual
  * `clearinghouseState` and `openOrders` subscriptions (not webData2).
  * This mock overrides:
- *  - clearinghouseState subscription → funded follow-up data
- *  - clearinghouseState WS POST     → funded response
- *  - webData2 subscription           → funded follow-up (fallback path)
- *  - webData3 subscription           → funded perpDexStates (HIP-3 OI caps)
+ * - clearinghouseState subscription → funded follow-up data
+ * - clearinghouseState WS POST → funded response
+ * - webData2 subscription → funded follow-up (fallback path)
+ * - webData3 subscription → funded perpDexStates (HIP-3 OI caps)
  */
 export const WS_USER_WITH_FUNDED_ACCOUNT: WebSocketMessageMock[] = [
   {
@@ -452,8 +445,7 @@ export const WS_USER_WITH_FUNDED_ACCOUNT: WebSocketMessageMock[] = [
     },
     followUpDelay: 50,
     delay: 50,
-    logMessage:
-      'Perps funded account mock: webData2 with 10000 USDC balance',
+    logMessage: 'Perps funded account mock: webData2 with 10000 USDC balance',
   },
   {
     messageIncludes: ['"method":"subscribe"', '"type":"webData3"'],
@@ -477,8 +469,7 @@ export const WS_USER_WITH_FUNDED_ACCOUNT: WebSocketMessageMock[] = [
     },
     followUpDelay: 50,
     delay: 50,
-    logMessage:
-      'Perps funded account mock: webData3 with 10000 USDC balance',
+    logMessage: 'Perps funded account mock: webData3 with 10000 USDC balance',
   },
   {
     messageIncludes: ['"method":"post"', '"type":"clearinghouseState"'],
@@ -500,8 +491,20 @@ export const WS_USER_WITH_FUNDED_ACCOUNT: WebSocketMessageMock[] = [
  * real-time subscription update that HyperLiquid would send.
  *
  * @param server - The LocalWebSocketServer for the perps service
- *                 (e.g. `WebSocketRegistry.getServer('perps')`)
- * @param opts   - Position parameters
+ * (e.g. `WebSocketRegistry.getServer('perps')`).
+ * @param server.sendMessage - Sends a raw JSON string on the perps WS.
+ * @param opts - Position parameters
+ * @param opts.user
+ * @param opts.coin
+ * @param opts.szi
+ * @param opts.entryPx
+ * @param opts.leverage
+ * @param opts.positionValue
+ * @param opts.accountValue
+ * @param opts.totalMarginUsed
+ * @param opts.withdrawable
+ * @param opts.liquidationPx
+ * @param opts.unrealizedPnl
  */
 export function pushPositionUpdate(
   server: { sendMessage: (msg: string) => void },
@@ -565,8 +568,7 @@ export function pushPositionUpdate(
     time: Date.now(),
   };
 
-  const user =
-    opts.user ?? '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+  const user = opts.user ?? '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 
   server.sendMessage(
     JSON.stringify({
@@ -581,8 +583,12 @@ export function pushPositionUpdate(
  * WebSocket server.  Use after closing a position to simulate the
  * real-time subscription update that HyperLiquid would send.
  *
- * @param server - The LocalWebSocketServer for the perps service
- * @param opts   - Optional account values after close
+ * @param server - The LocalWebSocketServer for the perps service.
+ * @param server.sendMessage - Sends a raw JSON string on the perps WS.
+ * @param opts - Optional account values after close
+ * @param opts.user
+ * @param opts.accountValue
+ * @param opts.withdrawable
  */
 export function pushPositionClosed(
   server: { sendMessage: (msg: string) => void },
@@ -592,8 +598,7 @@ export function pushPositionClosed(
     withdrawable?: string;
   },
 ): void {
-  const user =
-    opts?.user ?? '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+  const user = opts?.user ?? '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
   const accountValue = opts?.accountValue ?? '10000.0';
   const withdrawable = opts?.withdrawable ?? '10000.0';
 
@@ -622,8 +627,7 @@ export function pushPositionClosed(
   );
 }
 
-const WS_MOCK_DEFAULT_USER =
-  '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+const WS_MOCK_DEFAULT_USER = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 
 const MOCK_L1_FILL_HASH = `0x${'b'.repeat(64)}`;
 
@@ -650,6 +654,7 @@ export type PushUserFillsClosePositionSnapshotOpts = {
  * Shape matches `@nktkas/hyperliquid` `UserFillsEvent` (user + fills + isSnapshot).
  *
  * @param server - The LocalWebSocketServer for the perps service
+ * @param server.sendMessage
  * @param opts - Wire fill fields for one close (or partial-close) fill
  */
 export function pushUserFillsClosePositionSnapshot(
@@ -734,7 +739,6 @@ export const WS_USER_WITH_ETH_LONG_AND_TPSL: WebSocketMessageMock[] = [
       time: Date.now(),
     }),
     delay: 100,
-    logMessage:
-      'Perps user mock: ETH long with TP=$3200 / SL=$2600',
+    logMessage: 'Perps user mock: ETH long with TP=$3200 / SL=$2600',
   },
 ];

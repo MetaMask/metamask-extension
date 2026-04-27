@@ -301,10 +301,7 @@ class FixtureBuilderV2 {
   }
 
   withPerpsController(data: Record<string, unknown>): this {
-    merge(
-      (this.fixture.data as Record<string, unknown>).PerpsController,
-      data,
-    );
+    merge((this.fixture.data as Record<string, unknown>).PerpsController, data);
     return this;
   }
 

@@ -58,7 +58,8 @@ export class PerpsOrderEntryPage {
   /**
    * Waits for the order entry page to be fully loaded.
    *
-   * @param options.timeout - Max wait in ms (default 60_000; Perps can be slow after in-app navigation).
+   * @param [options]
+   * @param [options.timeout] - Max wait in ms (default 60_000; Perps can be slow after in-app navigation).
    */
   async checkPageIsLoaded(options?: { timeout?: number }): Promise<void> {
     await this.driver.waitForSelector(this.orderEntryPage, {

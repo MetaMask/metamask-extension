@@ -79,7 +79,9 @@ export class PerpsWithdrawPage {
     const button = await this.driver.findElement(this.submitButton);
     const isDisabled = await button.getAttribute('disabled');
     if (!isDisabled) {
-      throw new Error('Expected submit button to be disabled but it was enabled');
+      throw new Error(
+        'Expected submit button to be disabled but it was enabled',
+      );
     }
   }
 

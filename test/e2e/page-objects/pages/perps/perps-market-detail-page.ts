@@ -193,6 +193,7 @@ export class PerpsMarketDetailPage {
   /**
    * Asserts that the position liquidation price row contains the given text fragment
    * (e.g. "2,400" for $2,400-style formatting).
+   * @param textFragment
    */
   async checkPositionLiquidationContains(textFragment: string): Promise<void> {
     await this.driver.waitForSelector({
@@ -452,6 +453,7 @@ export class PerpsMarketDetailPage {
 
   /**
    * Waits until the TP/SL update modal is removed from the DOM after save or dismiss.
+   * @param timeout
    */
   async waitForUpdateTpslModalClosed(timeout = 15000): Promise<void> {
     await this.driver.waitForElementNotPresent(this.updateTpslModal, timeout);
@@ -459,6 +461,7 @@ export class PerpsMarketDetailPage {
 
   /**
    * Asserts the auto-close row body text includes a fragment (e.g. formatted fiat "3,500").
+   * @param textFragment
    */
   async checkAutoCloseRowContains(textFragment: string): Promise<void> {
     const row = await this.driver.findVisibleElement(this.autoCloseRow);
@@ -549,7 +552,10 @@ export class PerpsMarketDetailPage {
   ): Promise<void> {
     const modalTestId =
       mode === 'add' ? 'perps-add-margin-modal' : 'perps-decrease-margin-modal';
-    await this.driver.waitForElementNotPresent({ testId: modalTestId }, timeout);
+    await this.driver.waitForElementNotPresent(
+      { testId: modalTestId },
+      timeout,
+    );
   }
 
   /**
@@ -558,7 +564,10 @@ export class PerpsMarketDetailPage {
    * @param timeout - Max wait in ms (default 15_000).
    */
   async waitForReversePositionModalClosed(timeout = 15000): Promise<void> {
-    await this.driver.waitForElementNotPresent(this.reversePositionModal, timeout);
+    await this.driver.waitForElementNotPresent(
+      this.reversePositionModal,
+      timeout,
+    );
   }
 
   /**

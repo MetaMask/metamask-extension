@@ -1649,8 +1649,7 @@ async function setupMocking(
         };
         // Align REST with Perps WS mocks (e.g. WS_USER_WITH_FUNDED_ACCOUNT): background
         // `getAccountState` / withdraw use InfoClient, not only WebSocket stream data.
-        const e2ePerpsUser =
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+        const e2ePerpsUser = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
         const reqUser =
           parsed && typeof parsed.user === 'string'
             ? parsed.user.toLowerCase()
