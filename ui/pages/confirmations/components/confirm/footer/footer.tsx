@@ -213,6 +213,7 @@ const Footer = () => {
       <SingleActionFooter
         onSubmit={onSubmit}
         isGaslessLoading={isGaslessLoading}
+        isHardwareWalletAccount={isHardwareWalletAccount}
       />
     );
   }

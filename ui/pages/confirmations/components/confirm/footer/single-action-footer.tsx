@@ -12,6 +12,7 @@ import {
   useTransactionPayRequiredTokens,
 } from '../../../hooks/pay/useTransactionPayData';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
+import { HardwareWalletActionButton } from './hardware-wallet-footer';
 
 type ButtonState = {
   buttonText: string;
@@ -77,11 +78,13 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
 type SingleActionFooterProps = {
   onSubmit: () => void;
   isGaslessLoading: boolean;
+  isHardwareWalletAccount?: boolean;
 };
 
 export const SingleActionFooter = ({
   onSubmit,
   isGaslessLoading,
+  isHardwareWalletAccount,
 }: SingleActionFooterProps) => {
   const { buttonText, isDisabled, isLoading } =
     useSingleActionButtonState(isGaslessLoading);
@@ -91,16 +94,20 @@ export const SingleActionFooter = ({
       className="confirm-footer_page-footer"
       flexDirection={FlexDirection.Column}
     >
-      <Button
-        className="w-full"
-        data-testid="confirm-footer-button"
-        disabled={isDisabled}
-        isLoading={isLoading && !isDisabled}
-        onClick={isLoading ? undefined : onSubmit}
-        size={ButtonSize.Lg}
-      >
-        {buttonText}
-      </Button>
+      {isHardwareWalletAccount ? (
+        <HardwareWalletActionButton disabled={isDisabled} />
+      ) : (
+        <Button
+          className="w-full"
+          data-testid="confirm-footer-button"
+          disabled={isDisabled}
+          isLoading={isLoading && !isDisabled}
+          onClick={isLoading ? undefined : onSubmit}
+          size={ButtonSize.Lg}
+        >
+          {buttonText}
+        </Button>
+      )}
     </PageFooter>
   );
 };
