@@ -56,4 +56,11 @@ export const GATED_METRICS: ReadonlySet<string> = new Set([
   'onboardingNewWallet.total',
   'importSrpHome.total',
   'swap.total',
+
+  // Tier 2 — gated with CI_MULTIPLIER_TIER_2 to absorb moderate variance
+  'onboardingImportWallet.metricsToWalletReadyScreen',
+  'onboardingNewWallet.agreeButtonToOnboardingSuccess',
+  'importSrpHome.homeAfterImportWithNewWallet',
+  'swap.fetchAndDisplaySwapQuotes',
+  'sendTransactions.openSendPageFromHome',
 ]);
