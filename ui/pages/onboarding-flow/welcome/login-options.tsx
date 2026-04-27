@@ -124,8 +124,29 @@ export default function LoginOptions({
             ? t('onboardingSignInWith', ['Apple'])
             : t('onboardingContinueWith', ['Apple'])
         }
-        btnClass="mb-2"
+        btnClass="mb-4"
         onClick={() => handleLogin(LOGIN_TYPE.APPLE)}
+      />
+      <SocialButton
+        data-testid={
+          loginOption === LOGIN_OPTION.EXISTING
+            ? 'onboarding-import-with-telegram-button'
+            : 'onboarding-create-with-telegram-button'
+        }
+        icon={
+          <img
+            src="images/icons/telegram.svg"
+            className="options-modal__social-icon"
+            alt={t('onboardingOptionIcon', ['Telegram'])}
+          />
+        }
+        label={
+          loginOption === LOGIN_OPTION.EXISTING
+            ? t('onboardingSignInWith', ['Telegram'])
+            : t('onboardingContinueWith', ['Telegram'])
+        }
+        btnClass="mb-2"
+        onClick={() => handleLogin(LOGIN_TYPE.TELEGRAM)}
       />
       <Box
         flexDirection={BoxFlexDirection.Row}

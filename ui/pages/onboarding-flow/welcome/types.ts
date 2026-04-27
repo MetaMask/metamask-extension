@@ -1,6 +1,7 @@
 export const LOGIN_TYPE = {
   GOOGLE: 'google',
   APPLE: 'apple',
+  TELEGRAM: 'telegram',
   SRP: 'srp',
 } as const;
 

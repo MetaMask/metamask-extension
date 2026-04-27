@@ -32,6 +32,7 @@ import { loadOAuthConfig } from './config';
 
 const AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH =
   '/api/v1/oauth/marketing_opt_in_status';
+const AUTH_SERVER_PROFILE_PAIR_PATH = '/api/v2/profile/pair';
 
 const MESSENGER_EXPOSED_METHODS = [
   'startOAuthLogin',
@@ -64,6 +65,12 @@ export class OAuthService {
 
   #getParticipateInMetaMetrics: OAuthServiceOptions['getParticipateInMetaMetrics'];
 
+  #storePendingSocialLoginProfileJwt: OAuthServiceOptions['storePendingSocialLoginProfileJwt'];
+
+  #getPendingSocialLoginProfileJwt: OAuthServiceOptions['getPendingSocialLoginProfileJwt'];
+
+  #clearPendingSocialLoginProfileJwt: OAuthServiceOptions['clearPendingSocialLoginProfileJwt'];
+
   constructor({
     messenger,
     env,
@@ -73,6 +80,9 @@ export class OAuthService {
     trackEvent,
     addEventBeforeMetricsOptIn,
     getParticipateInMetaMetrics,
+    storePendingSocialLoginProfileJwt,
+    getPendingSocialLoginProfileJwt,
+    clearPendingSocialLoginProfileJwt,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
 
@@ -87,6 +97,12 @@ export class OAuthService {
     this.#trackEvent = trackEvent;
     this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
     this.#getParticipateInMetaMetrics = getParticipateInMetaMetrics;
+    this.#storePendingSocialLoginProfileJwt =
+      storePendingSocialLoginProfileJwt ?? (async () => undefined);
+    this.#getPendingSocialLoginProfileJwt =
+      getPendingSocialLoginProfileJwt ?? (async () => []);
+    this.#clearPendingSocialLoginProfileJwt =
+      clearPendingSocialLoginProfileJwt ?? (async () => undefined);
 
     this.#messenger.registerMethodActionHandlers(
       this,
@@ -229,6 +245,41 @@ export class OAuthService {
   }
 
   /**
+   * Pair all pending social login profiles with the signed-in SRP profile.
+   *
+   * @param bearerToken - Authenticated bearer token for the SRP profile.
+   */
+  async pairPendingSocialLoginProfiles(bearerToken: string): Promise<void> {
+    const pendingProfileJwts = await this.#getPendingSocialLoginProfileJwt();
+
+    if (pendingProfileJwts.length === 0) {
+      return;
+    }
+
+    const response = await fetch(
+      `${this.#env.telegramAuthenticationServerUrl}${AUTH_SERVER_PROFILE_PAIR_PATH}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${bearerToken}`,
+        },
+        body: JSON.stringify({
+          jwts: pendingProfileJwts,
+        }),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to pair Telegram profile: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    await this.#clearPendingSocialLoginProfileJwt();
+  }
+
+  /**
    * Handle the OAuth login for the given social login type.
    *
    * For Google login, we will use the `PKCE` flow to get the Authorization Code.
@@ -245,6 +296,7 @@ export class OAuthService {
     authConnection: AuthConnection,
   ) {
     const authUrl = await loginHandler.getAuthUrl();
+
     const isRehydration = this.#isRehydrationFlow();
 
     let providerLoginSuccess = false;
@@ -254,41 +306,11 @@ export class OAuthService {
         name: TraceName.OnboardingOAuthProviderLogin,
         op: TraceOperation.OnboardingSecurityOp,
       });
-      // launch the web auth flow to get the Authorization Code from the social login provider
-      redirectUrlFromOAuth = await new Promise<string>((resolve, reject) => {
-        // since promise returns aren't supported until MV3, we need to use a callback function to support MV2
-        this.#webAuthenticator.launchWebAuthFlow(
-          {
-            interactive: true,
-            url: authUrl,
-          },
-          (responseUrl) => {
-            try {
-              if (responseUrl) {
-                try {
-                  loginHandler.validateState(responseUrl);
-                  resolve(responseUrl);
-                } catch (error) {
-                  reject(error);
-                }
-              } else {
-                const userCancelledLoginError =
-                  this.#getUserCancelledLoginError();
-                if (userCancelledLoginError) {
-                  reject(userCancelledLoginError);
-                  return;
-                }
-                // Throw default error for no redirect URL found
-                reject(
-                  new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),
-                );
-              }
-            } catch (error: unknown) {
-              reject(error);
-            }
-          },
-        );
-      });
+      redirectUrlFromOAuth = await this.#launchAuthFlow(
+        authConnection,
+        authUrl,
+        loginHandler,
+      );
       providerLoginSuccess = true;
     } catch (error: unknown) {
       // Track provider login failure
@@ -376,12 +398,8 @@ export class OAuthService {
   /**
    * Handle the OAuth response from the social login provider and get the Jwt Token in exchange.
    *
-   * The Social Login Auth Server returned the Authorization Code in the redirect URL.
-   * This function will extract the Authorization Code from the redirect URL,
-   * use it to get the Jwt Token from the Web3Auth Authentication Server.
-   *
    * @param loginHandler - The login handler to use.
-   * @param redirectUrl - The redirect URL from webAuthFlow which includes the Authorization Code.
+   * @param redirectUrl - The redirect URL from webAuthFlow.
    * @returns The login result.
    */
   async #handleOAuthResponse(
@@ -390,15 +408,12 @@ export class OAuthService {
   ): Promise<OAuthLoginResult> {
     const { authConnection } = loginHandler;
 
-    // We still need to extract the Authorization Code from the redirect URL for Google login (PKCE flow)
-    // For Apple login (BFF flow), the Authorization Code is returned to the Authentication Server in the redirect URL
     const authCode =
-      authConnection === AuthConnection.Google
+      authConnection === AuthConnection.Google || authConnection === AuthConnection.Telegram
         ? this.#getRedirectUrlAuthCode(redirectUrl)
         : null;
 
-    const res = await this.#getAuthIdToken(loginHandler, authCode);
-    return res;
+    return await this.#getAuthIdToken(loginHandler, authCode);
   }
 
   /**
@@ -428,11 +443,20 @@ export class OAuthService {
     } else if (loginHandler.authConnection === AuthConnection.Apple) {
       authConnectionId = this.#env.appleAuthConnectionId;
       groupedAuthConnectionId = this.#env.appleGroupedAuthConnectionId;
+    } else if (loginHandler.authConnection === AuthConnection.Telegram) {
+      authConnectionId = this.#env.telegramAuthConnectionId;
+      groupedAuthConnectionId = this.#env.telegramGroupedAuthConnectionId;
     }
 
     const authTokenData = await loginHandler.getAuthIdToken(authCode);
     const idToken = authTokenData.id_token;
     const userInfo = await loginHandler.getUserInfo(idToken);
+
+    if (authTokenData.profile_pairing_token) {
+      await this.#storePendingSocialLoginProfileJwt(
+        authTokenData.profile_pairing_token,
+      );
+    }
 
     return {
       authConnectionId,
@@ -445,6 +469,7 @@ export class OAuthService {
       revokeToken: authTokenData.revoke_token,
       accessToken: authTokenData.access_token,
       metadataAccessToken: authTokenData.metadata_access_token,
+      profilePairingToken: authTokenData.profile_pairing_token,
     };
   }
 
@@ -455,10 +480,128 @@ export class OAuthService {
 
   #getUserCancelledLoginError(): Error | undefined {
     const error = checkForLastError();
-    if (isUserCancelledLoginError(error)) {
-      return error;
+    return isUserCancelledLoginError(error) ? error : undefined;
+  }
+
+  async #launchAuthFlow(
+    authConnection: AuthConnection,
+    authUrl: string,
+    loginHandler: BaseLoginHandler,
+  ): Promise<string> {
+    if (authConnection === AuthConnection.Telegram) {
+      return this.#launchTabAuthFlow(
+        authUrl,
+        this.#webAuthenticator.getRedirectURL(),
+        loginHandler,
+      );
     }
-    return undefined;
+
+    return new Promise((resolve, reject) => {
+      this.#webAuthenticator.launchWebAuthFlow(
+        { interactive: true, url: authUrl },
+        (responseUrl) => {
+          if (!responseUrl) {
+            reject(
+              this.#getUserCancelledLoginError() ??
+                new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),
+            );
+            return;
+          }
+
+          try {
+            loginHandler.validateState(responseUrl);
+            resolve(responseUrl);
+          } catch (error) {
+            reject(error);
+          }
+        },
+      );
+    });
+  }
+
+  /**
+   * Telegram login needs a real browser tab instead of the standard
+   * `launchWebAuthFlow` popup because of "Authorization page could not be loaded"
+   * @param authUrl
+   * @param extensionRedirectURL
+   * @param loginHandler
+   */
+  #launchTabAuthFlow(
+    authUrl: string,
+    extensionRedirectURL: string,
+    loginHandler: BaseLoginHandler,
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      /* eslint-disable @typescript-eslint/no-explicit-any */
+      const chromeTabs = (globalThis as any)?.chrome?.tabs;
+
+      let createdTabId: number | undefined;
+      const cleanup = (): void => {
+        try {
+          chromeTabs.onUpdated.removeListener(onUpdated);
+          chromeTabs.onRemoved.removeListener(onRemoved);
+        } catch {
+          // ignore — listeners may already be detached
+        }
+      };
+
+      const rejectNoRedirect = (): void => {
+        cleanup();
+        reject(new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR));
+      };
+
+      const finish = (callback: () => void): void => {
+        cleanup();
+        if (createdTabId !== undefined) {
+          try {
+            chromeTabs.remove(createdTabId);
+          } catch {
+            // ignore
+          }
+        }
+        callback();
+      };
+
+      function onUpdated(
+        tabId: number,
+        changeInfo: chrome.tabs.TabChangeInfo,
+        tab: chrome.tabs.Tab,
+      ): void {
+        if (tabId !== createdTabId) {
+          return;
+        }
+        const candidateUrl =
+          changeInfo?.url || changeInfo?.pendingUrl || tab?.url;
+        if (!candidateUrl?.startsWith(extensionRedirectURL)) {
+          return;
+        }
+        try {
+          loginHandler.validateState(candidateUrl);
+          finish(() => resolve(candidateUrl));
+        } catch (error) {
+          reject(error);
+        }
+      }
+
+      function onRemoved(tabId: number): void {
+        if (tabId !== createdTabId) {
+          return;
+        }
+        rejectNoRedirect();
+      }
+
+      chromeTabs.onUpdated.addListener(onUpdated);
+      chromeTabs.onRemoved.addListener(onRemoved);
+
+      try {
+        chromeTabs.create({ url: authUrl, active: true }, (tab) => {
+          createdTabId = tab?.id;
+        });
+      } catch (err) {
+        cleanup();
+        reject(err);
+      }
+    });
   }
 
   async setMarketingConsent(

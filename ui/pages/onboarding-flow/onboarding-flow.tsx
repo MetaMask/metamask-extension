@@ -51,6 +51,7 @@ import {
   setCompletedOnboarding,
   setUseSidePanelAsDefault,
   setCompletedOnboardingWithSidepanel,
+  performSeedlessOnboardingProfilePair,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
@@ -240,6 +241,7 @@ export default function OnboardingFlow() {
     if (isSidePanelEnabled) {
       await dispatch(setUseSidePanelAsDefault(true));
       await dispatch(setCompletedOnboardingWithSidepanel());
+      await dispatch(performSeedlessOnboardingProfilePair());
 
       // for sidepanel, we need to navigate to the next route (i.e. Home)
       navigate(nextRoute, { replace: true });
@@ -248,6 +250,7 @@ export default function OnboardingFlow() {
       // The useEffect watching completedOnboarding will handle navigation to DEFAULT_ROUTE
       // Don't navigate here - let the useEffect handle it to avoid duplicate navigations
       await dispatch(setCompletedOnboarding());
+      await dispatch(performSeedlessOnboardingProfilePair());
     }
   };
 

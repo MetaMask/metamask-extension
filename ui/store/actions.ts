@@ -7343,6 +7343,26 @@ export function performSignIn(): ThunkAction<
   };
 }
 
+export function performSeedlessOnboardingProfilePair(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('performSeedlessOnboardingProfilePair');
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Unknown error occurred during seedless onboarding sign-in.';
+      logErrorWithMessage(errorMessage);
+      throw error;
+    }
+  };
+}
+
 /**
  * Initiates the sign-out process.
  *
