@@ -1,41 +1,27 @@
 import type { Driver } from '../../webdriver/driver';
 
-const ACCOUNT_LIST_ITEM_SELECTOR =
-  '[data-testid="account-item"], [data-testid="account-list-item"]';
-
-const SWAP_PAGE_QUOTE_DETAILS_SELECTOR =
-  '[data-testid="network-fees"], [data-testid="minimum-received"], [data-testid="slippage-edit-button"]';
-
-const EXPECTED_SWAP_QUOTE_DETAILS_COUNT = 3;
 export const BENCHMARK_ACCOUNT_LIST_RENDER_TIMEOUT = 120000;
 export const BENCHMARK_ACCOUNT_LIST_STABLE_FOR = 500;
 export const BENCHMARK_SWAP_PAGE_RENDER_TIMEOUT = 60000;
 
 type WaitForFunctionDriver = Pick<Driver, 'waitForFunction'>;
 
-function isInputEditable(
-  input: HTMLInputElement | null,
-): input is HTMLInputElement {
-  return Boolean(
-    input &&
-      !input.disabled &&
-      !input.readOnly &&
-      (!input.hasAttribute('aria-disabled') ||
-        input.getAttribute('aria-disabled') === 'false'),
-  );
-}
-
 /**
  * Returns whether the account menu has rendered at least the expected number
  * of accounts.
+ *
+ * Selectors and counts are inlined so this function serializes correctly when
+ * passed to `driver.executeScript`, which runs it in the browser context where
+ * module-level variables are not in scope.
  *
  * @param expectedCount - The number of account rows expected to be rendered.
  * @returns Whether the account menu render is complete.
  */
 export function isAccountListRenderComplete(expectedCount: number): boolean {
   return (
-    document.querySelectorAll(ACCOUNT_LIST_ITEM_SELECTOR).length >=
-    expectedCount
+    document.querySelectorAll(
+      '[data-testid="account-item"], [data-testid="account-list-item"]',
+    ).length >= expectedCount
   );
 }
 
@@ -71,6 +57,10 @@ export async function waitForAccountListRenderComplete({
  * The swap screen reuses the bridge prepare-page test IDs for its source token
  * button and quote details.
  *
+ * Selectors, counts, and the editability check are inlined so this function
+ * serializes correctly when passed to `driver.executeScript`, which runs it in
+ * the browser context where module-level variables are not in scope.
+ *
  * @returns Whether the swap page render is complete.
  */
 export function isSwapPageRenderComplete(): boolean {
@@ -82,11 +72,18 @@ export function isSwapPageRenderComplete(): boolean {
   );
   const fromTokenText = fromTokenSelector?.textContent?.trim() ?? '';
 
-  const hasEditableQuoteInput = isInputEditable(fromAmountInput);
+  const hasEditableQuoteInput = Boolean(
+    fromAmountInput &&
+      !fromAmountInput.disabled &&
+      !fromAmountInput.readOnly &&
+      (!fromAmountInput.hasAttribute('aria-disabled') ||
+        fromAmountInput.getAttribute('aria-disabled') === 'false'),
+  );
 
   const hasRenderedQuoteDetails =
-    document.querySelectorAll(SWAP_PAGE_QUOTE_DETAILS_SELECTOR).length >=
-    EXPECTED_SWAP_QUOTE_DETAILS_COUNT;
+    document.querySelectorAll(
+      '[data-testid="network-fees"], [data-testid="minimum-received"], [data-testid="slippage-edit-button"]',
+    ).length >= 3;
 
   return (
     fromTokenText.length > 0 &&
