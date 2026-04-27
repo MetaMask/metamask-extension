@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Tambahkan jaringan khusus"
   },
-  "addAHardwareWallet": {
-    "message": "Tambahkan dompet perangkat keras"
-  },
   "addANetwork": {
     "message": "Tambahkan jaringan"
   },
