@@ -59,9 +59,7 @@ describe('wrapMessengerWithTracing', () => {
     });
     shouldSampleWrappersMock.mockReturnValue(true);
     traceMock.mockClear();
-    traceMock.mockImplementation((_request: unknown, fn: () => unknown) =>
-      fn(),
-    );
+    traceMock.mockImplementation((_request, fn) => (fn as () => unknown)());
   });
 
   it('skips trace when no active span (avoids overhead when tracing disabled)', () => {
@@ -69,7 +67,7 @@ describe('wrapMessengerWithTracing', () => {
     const messenger = new Messenger<'Test', TestActions, never>({
       namespace: 'Test',
     });
-    const handler = jest.fn().mockReturnValue('result');
+    const handler = jest.fn<() => string>().mockReturnValue('result');
     messenger.registerActionHandler('Test:getState', handler);
 
     const wrapped = wrapMessengerWithTracing(messenger);
@@ -83,7 +81,7 @@ describe('wrapMessengerWithTracing', () => {
     const messenger = new Messenger<'Test', TestActions, never>({
       namespace: 'Test',
     });
-    const handler = jest.fn().mockReturnValue('result');
+    const handler = jest.fn<() => string>().mockReturnValue('result');
     messenger.registerActionHandler('Test:getState', handler);
 
     const wrapped = wrapMessengerWithTracing(messenger);
@@ -160,7 +158,7 @@ describe('wrapMessengerWithTracing', () => {
     const messenger = new Messenger<'Test', TestActions, never>({
       namespace: 'Test',
     });
-    const handler = jest.fn().mockReturnValue('done');
+    const handler = jest.fn<() => string>().mockReturnValue('done');
     messenger.registerActionHandler('Test:doWork', handler);
 
     wrapMessengerWithTracing(messenger);
