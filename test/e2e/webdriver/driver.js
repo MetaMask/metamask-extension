@@ -490,6 +490,7 @@ class Driver {
    * @param {Array<unknown>} [options.args] - Arguments passed to the page function.
    * @param {number} [options.interval] - Polling interval in milliseconds.
    * @param {number} [options.stableFor] - Optional stability window in milliseconds.
+   * When set, the page function must stay truthy for that duration before the wait resolves.
    * @param {number} [options.timeout] - Maximum time to wait in milliseconds.
    * @returns {Promise<unknown>} The last truthy result returned by the page function.
    */

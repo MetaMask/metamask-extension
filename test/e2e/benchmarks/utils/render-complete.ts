@@ -7,8 +7,8 @@ const SWAP_PAGE_QUOTE_DETAILS_SELECTOR =
   '[data-testid="network-fees"], [data-testid="minimum-received"], [data-testid="slippage-edit-button"]';
 
 /**
- * Returns whether the account menu has rendered the expected number of
- * accounts.
+ * Returns whether the account menu has rendered at least the expected number
+ * of accounts.
  *
  * @param expectedCount - The number of account rows expected to be rendered.
  * @returns Whether the account menu render is complete.
@@ -49,6 +49,8 @@ export async function waitForAccountListRenderComplete({
 
 /**
  * Returns whether the swap page has finished rendering its initial state.
+ * The swap screen reuses the bridge prepare-page test IDs for its source token
+ * button and quote details.
  *
  * @returns Whether the swap page render is complete.
  */
