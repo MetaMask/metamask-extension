@@ -6,12 +6,16 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import { Json } from '@metamask/utils';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
+import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
+import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { EMPTY_OBJECT } from './shared';
 
 export type ApprovalsMetaMaskState = {
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
+    remoteFeatureFlags?: Record<string, unknown>;
   };
 };
 
@@ -72,14 +76,32 @@ export const pendingApprovalsSortedSelector = createSelector(
   (approvals) => [...approvals].sort((a1, a2) => a1.time - a2.time),
 );
 
+const getSkipSmartTransactionStatusPage = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    getBooleanFeatureFlag(
+      remoteFeatureFlags?.extensionSkipTransactionStatusPage,
+      false,
+    ),
+);
+
 /**
  * Returns pending approvals sorted by time for use in confirmation navigation.
  * Excludes duplicate watch asset approvals as they are combined into a single confirmation.
  */
 export const selectPendingApprovalsForNavigation = createDeepEqualSelector(
   pendingApprovalsSortedSelector,
-  (sortedPendingApprovals) =>
+  getSkipSmartTransactionStatusPage,
+  (sortedPendingApprovals, skipSmartTransactionStatusPage) =>
     sortedPendingApprovals.filter((approval, index) => {
+      if (
+        skipSmartTransactionStatusPage &&
+        approval.type ===
+          SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
+      ) {
+        return false;
+      }
+
       if (
         isWatchNftApproval(approval) &&
         sortedPendingApprovals.findIndex(isWatchNftApproval) !== index

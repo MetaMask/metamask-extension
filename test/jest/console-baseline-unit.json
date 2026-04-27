@@ -1452,6 +1452,10 @@
     "ui/pages/musd/screens/education.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 3
     },
+    "ui/pages/networks/networks-page.test.tsx": {
+      "MetaMask: Background connection not initialized": 1,
+      "React: Act warnings (component updates not wrapped)": 2
+    },
     "ui/pages/notifications-settings/notifications-settings-allow-notifications.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 2

@@ -54,6 +54,7 @@ import {
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
+  NETWORKS_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
@@ -149,6 +150,7 @@ const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
 const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
+const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
 );
@@ -298,6 +300,10 @@ export const routeConfig = [
       {
         path: IMPORT_SRP_ROUTE,
         element: <ImportSrpPage />,
+      },
+      {
+        path: NETWORKS_ROUTE,
+        element: <NetworksPage />,
       },
       {
         path: `${SETTINGS_ROUTE}/*`,

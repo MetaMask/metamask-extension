@@ -12,7 +12,6 @@ import * as useAutomaticTransactionPayTokenModule from '../../../hooks/pay/useAu
 import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransactionPayMetrics';
 import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
-import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
 import {
   CustomAmountInfo,
   CustomAmountInfoSkeleton,
@@ -24,7 +23,6 @@ jest.mock('../../../hooks/pay/useAutomaticTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayMetrics');
 jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../hooks/pay/useTransactionPayData');
-jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../transactions/custom-amount/custom-amount', () => ({
   CustomAmount: ({ amountFiat }: { amountFiat: string }) => (
     <div data-testid="custom-amount">{amountFiat}</div>
@@ -76,12 +74,6 @@ const MOCK_AVAILABLE_TOKEN = {
   balanceUsd: '100',
 };
 
-const DEFAULT_PAY_TOKEN_HOOK_RETURN = {
-  isNative: false,
-  payToken: undefined,
-  setPayToken: jest.fn(),
-};
-
 const DEFAULT_ALERTS_HOOK_RETURN: {
   alertMessage?: string;
   hideResults: boolean;
@@ -99,7 +91,6 @@ function render({
   hidePayTokenAmount = false,
   availableTokens = [MOCK_AVAILABLE_TOKEN],
   customAmountHookReturn = DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
-  payTokenHookReturn = DEFAULT_PAY_TOKEN_HOOK_RETURN,
   alertsHookReturn = DEFAULT_ALERTS_HOOK_RETURN,
   isQuotesLoading = false,
   hasQuotes = false,
@@ -112,7 +103,6 @@ function render({
   hidePayTokenAmount?: boolean;
   availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
   customAmountHookReturn?: typeof DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN;
-  payTokenHookReturn?: typeof DEFAULT_PAY_TOKEN_HOOK_RETURN;
   alertsHookReturn?: typeof DEFAULT_ALERTS_HOOK_RETURN;
   isQuotesLoading?: boolean;
   hasQuotes?: boolean;
@@ -164,9 +154,6 @@ function render({
         typeof useTransactionPayDataModule.useTransactionPaySourceAmounts
       >,
     );
-  jest
-    .mocked(useTransactionPayTokenModule.useTransactionPayToken)
-    .mockReturnValue(payTokenHookReturn);
 
   const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 
@@ -387,9 +374,6 @@ describe('CustomAmountInfo', () => {
       jest
         .mocked(useTransactionPayDataModule.useTransactionPaySourceAmounts)
         .mockReturnValue([]);
-      jest
-        .mocked(useTransactionPayTokenModule.useTransactionPayToken)
-        .mockReturnValue(DEFAULT_PAY_TOKEN_HOOK_RETURN);
 
       const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 

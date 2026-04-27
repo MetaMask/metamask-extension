@@ -19,34 +19,39 @@ import {
   GasFeeModalContextProvider,
   GasFeeModalWrapper,
 } from '../context/gas-fee-modal';
+import { useHideToasts } from '../../../hooks/useHideToasts';
 
-const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => (
-  <ConfirmContextProvider confirmationId={confirmationId}>
-    <DappSwapContextProvider>
-      <GasFeeModalContextProvider>
-        <TransactionModalContextProvider>
-          <ConfirmAlerts>
-            <>
-              <Page className="confirm_wrapper">
-                <ConfirmNav />
-                <Header />
-                <SmartTransactionsBannerAlert marginType="noTop" />
-                <ScrollToBottom>
-                  <BlockaidLoadingIndicator />
-                  <Title />
-                  <Info />
-                  <PluggableSection />
-                </ScrollToBottom>
-                <GasFeeTokenToast />
-                <Footer />
-              </Page>
-              <GasFeeModalWrapper />
-            </>
-          </ConfirmAlerts>
-        </TransactionModalContextProvider>
-      </GasFeeModalContextProvider>
-    </DappSwapContextProvider>
-  </ConfirmContextProvider>
-);
+const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => {
+  useHideToasts();
+
+  return (
+    <ConfirmContextProvider confirmationId={confirmationId}>
+      <DappSwapContextProvider>
+        <GasFeeModalContextProvider>
+          <TransactionModalContextProvider>
+            <ConfirmAlerts>
+              <>
+                <Page className="confirm_wrapper">
+                  <ConfirmNav />
+                  <Header />
+                  <SmartTransactionsBannerAlert marginType="noTop" />
+                  <ScrollToBottom>
+                    <BlockaidLoadingIndicator />
+                    <Title />
+                    <Info />
+                    <PluggableSection />
+                  </ScrollToBottom>
+                  <GasFeeTokenToast />
+                  <Footer />
+                </Page>
+                <GasFeeModalWrapper />
+              </>
+            </ConfirmAlerts>
+          </TransactionModalContextProvider>
+        </GasFeeModalContextProvider>
+      </DappSwapContextProvider>
+    </ConfirmContextProvider>
+  );
+};
 
 export default Confirm;

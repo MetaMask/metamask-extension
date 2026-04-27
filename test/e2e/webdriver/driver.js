@@ -825,39 +825,6 @@ class Driver {
   }
 
   /**
-   * Like {@link clickElementAndWaitToDisappear}, but retries when the element does not
-   * become hidden within `disappearTimeout` (e.g. slow UI). Waits `retryDelayMs` between attempts.
-   *
-   * @param rawLocator - The locator used to identify the element to be clicked.
-   * @param {object} [options]
-   * @param {number} [options.disappearTimeout] - Max ms to wait for hidden after each click.
-   * @param {number} [options.maxAttempts] - Maximum click + wait cycles.
-   * @param {number} [options.retryDelayMs] - Delay before retrying after a failed wait.
-   */
-  async clickElementAndWaitToDisappearWithRetry(
-    rawLocator,
-    { disappearTimeout = 3000, maxAttempts = 3, retryDelayMs = 1000 } = {},
-  ) {
-    let lastError;
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      try {
-        await this.clickElementAndWaitToDisappear(rawLocator, disappearTimeout);
-        return;
-      } catch (error) {
-        lastError = error;
-        if (attempt === maxAttempts) {
-          break;
-        }
-        console.log(
-          `clickElementAndWaitToDisappearWithRetry: attempt ${attempt}/${maxAttempts} failed (${error?.message ?? error}), waiting ${retryDelayMs}ms before retry`,
-        );
-        await this.delay(retryDelayMs);
-      }
-    }
-    throw lastError;
-  }
-
-  /**
    * Clicks on an element if it's present. If the element is not found,
    * catch the exception, log the failure to the console, but do not cause the test to fail.
    * For scenario where an element such as a scroll button does not
