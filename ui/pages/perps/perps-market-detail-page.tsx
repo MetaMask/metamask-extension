@@ -377,7 +377,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
       }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
-      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance ? 'yes' : 'no',
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
     },
     resetKey: decodedSymbol,
   });
@@ -512,9 +512,6 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   const [isModifyMenuOpen, setIsModifyMenuOpen] = useState(false);
   const [isMarginMenuOpen, setIsMarginMenuOpen] = useState(false);
-  /** Popover anchor must live in state so `referenceElement` updates after the card mounts (ref snapshot alone stays null). */
-  const [marginMenuAnchor, setMarginMenuAnchor] =
-    useState<HTMLDivElement | null>(null);
   const [marginModalMode, setMarginModalMode] = useState<
     'add' | 'remove' | null
   >(null);
@@ -525,6 +522,7 @@ const PerpsMarketDetailPage: React.FC = () => {
     null,
   );
   const modifyMenuRef = useRef<HTMLDivElement>(null);
+  const marginMenuRef = useRef<HTMLDivElement>(null);
   const isInWatchlist = useSelector((state: MetaMaskReduxState) =>
     selectPerpsIsWatchlistMarket(state as PerpsState, decodedSymbol ?? ''),
   );
@@ -1246,7 +1244,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
                 {/* Margin Card - click to open Add/Remove margin popover */}
                 <Box
-                  ref={setMarginMenuAnchor}
+                  ref={marginMenuRef}
                   className="relative flex-1 rounded-xl bg-muted px-4 py-3 cursor-pointer hover:bg-muted-hover active:bg-muted-pressed transition-colors"
                   flexDirection={BoxFlexDirection.Column}
                   onClick={handleOpenMarginMenu}
@@ -1268,7 +1266,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     {formatPerpsFiatMinimal(position.marginUsed)}
                   </Text>
                   <Popover
-                    referenceElement={marginMenuAnchor}
+                    referenceElement={marginMenuRef.current}
                     isOpen={isMarginMenuOpen}
                     isPortal
                     onClickOutside={() => setIsMarginMenuOpen(false)}
