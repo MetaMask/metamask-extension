@@ -100,6 +100,22 @@ async function runWithRetries(
   }
 }
 
+type CdpInnerDriver = {
+  sendDevToolsCommand?: (
+    command: string,
+    params?: Record<string, unknown>,
+  ) => Promise<unknown>;
+};
+
+const invokeWindowGc = () => {
+  const windowWithGc = window as Window & { gc?: () => void };
+  if (typeof windowWithGc.gc === 'function') {
+    windowWithGc.gc();
+    return true;
+  }
+  return false;
+};
+
 /**
  * Force a GC cycle outside the measurement window so heap debt is less likely
  * to spill into the next page-load iteration.
@@ -113,13 +129,7 @@ export async function collectGarbageBetweenIterations(
   driver: Driver,
 ): Promise<void> {
   try {
-    const didRunWindowGc = await driver.executeScript(function () {
-      if (typeof window.gc === 'function') {
-        window.gc();
-        return true;
-      }
-      return false;
-    });
+    const didRunWindowGc = await driver.executeScript(invokeWindowGc);
 
     if (didRunWindowGc) {
       return;
@@ -128,8 +138,7 @@ export async function collectGarbageBetweenIterations(
     // Fall back to CDP heap collection below.
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const innerDriver = (driver as any).driver;
+  const innerDriver = driver.driver as CdpInnerDriver | undefined;
   if (!innerDriver?.sendDevToolsCommand) {
     return;
   }
