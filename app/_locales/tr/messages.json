@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Özel bir ağ ekle"
   },
-  "addAHardwareWallet": {
-    "message": "Bir donanım cüzdanı ekle"
-  },
   "addANetwork": {
     "message": "Ağ ekle"
   },

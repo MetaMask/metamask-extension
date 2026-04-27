@@ -519,8 +519,9 @@ describe('buildBenchmarkSection', () => {
     expect(html).toContain('<summary><b>Test</b></summary>');
     expect(html).toContain('<table style=');
     expect(html).toContain('<th>chrome-browserify</th>');
-    expect(html).toContain('<td>loadNewAccount</td>');
-    expect(html).toContain('<td>confirmTx</td>');
+    expect(html).toContain('<td align="left">loadNewAccount<br>');
+    expect(html).toContain('<td align="left">confirmTx<br>');
+    expect(html).toContain('[Sentry log · main/release]');
   });
 
   it('shows 🟢 in the cell when p95 is above baseline but within absolute threshold', () => {
@@ -694,7 +695,7 @@ describe('buildBenchmarkSection', () => {
     expect(html).toContain('–');
   });
 
-  it('links each cell to the entry artifact URL as [Show logs]', () => {
+  it('links each cell to the entry artifact URL as CI log', () => {
     const ARTIFACT =
       'https://cdn.example.com/benchmark-chrome-browserify-foo.json';
     const html = buildBenchmarkSection(
@@ -704,10 +705,10 @@ describe('buildBenchmarkSection', () => {
     );
 
     expect(html).toContain(`href="${ARTIFACT}"`);
-    expect(html).toContain('[Show logs]');
+    expect(html).toContain('>[CI log]</a>');
   });
 
-  it('falls back to runUrl for [Show logs] when entry has no artifactUrl', () => {
+  it('falls back to runUrl for CI log when entry has no artifactUrl', () => {
     const RUN_URL = 'https://github.com/actions/runs/123';
     const html = buildBenchmarkSection(
       withEntries([makeEntry({ p95: { loadNewAccount: 672 } })]),
@@ -717,7 +718,7 @@ describe('buildBenchmarkSection', () => {
     );
 
     expect(html).toContain(`href="${RUN_URL}"`);
-    expect(html).toContain('[Show logs]');
+    expect(html).toContain('>[CI log]</a>');
   });
 
   it('resolves startup baseline via pageLoad/* key format and shows delta in bullet section', () => {
@@ -864,24 +865,46 @@ describe('buildBenchmarkSection', () => {
       expect(html).toContain('<code>fetchAndDisplaySwapQuotes</code>');
     });
 
-    it('shows [Show logs] without icon when timers are present', () => {
+    it('shows row health icon and CI log before timer details when breakdown is present', () => {
       const entry = makeEntry({
         benchmarkName: 'swap',
-        mean: { timer1: 100, timer2: 200 },
-        p75: { timer1: 110, timer2: 220 },
-        p95: { timer1: 120, timer2: 240 },
+        mean: {
+          openSwapPageFromHome: 310,
+          fetchAndDisplaySwapQuotes: 5000,
+        },
+        p75: {
+          openSwapPageFromHome: 340,
+          fetchAndDisplaySwapQuotes: 4500,
+        },
+        p95: {
+          openSwapPageFromHome: 400,
+          fetchAndDisplaySwapQuotes: 5500,
+        },
       });
 
+      const runUrl = 'https://github.com/actions/runs/123';
       const html = buildBenchmarkSection(
         withEntries([entry]),
         'Test',
         undefined,
-        'https://github.com/actions/runs/123',
+        runUrl,
       );
-      expect(html).not.toMatch(/🟢 <a href=.*\[Show logs\]<br\/>/u);
+
+      const health = computeEntryHealth(entry, undefined);
+      let rowIcon: string = COMPARISON_SEVERITY.Pass.icon;
+      if (health === EntryHealth.Fail) {
+        rowIcon = COMPARISON_SEVERITY.Regression.icon;
+      } else if (health === EntryHealth.Warn) {
+        rowIcon = COMPARISON_SEVERITY.Warn.icon;
+      }
+
+      // Cell layout: `${icon} ${rowLinks}<br>${timerDetails}` (literal <br>, not <br/>)
+      expect(html).toContain(`${rowIcon} <a href="${runUrl}"`);
+      expect(html).toContain('[CI log]</a><br>');
+      expect(html).toContain('<code>fetchAndDisplaySwapQuotes</code>');
     });
 
-    it('shows icon with [Show logs] when no timers present', () => {
+    it('shows icon with CI log when no timers present', () => {
       const entry = makeEntry({
         benchmarkName: 'loadNewAccount',
         mean: {},
@@ -892,7 +915,7 @@ describe('buildBenchmarkSection', () => {
 
       const html = buildBenchmarkSection(withEntries([entry]), 'Test');
 
-      expect(html).toContain('[Show logs]');
+      expect(html).toContain('>[CI log]</a>');
       expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
       expect(html).not.toContain('<ul');
     });
@@ -937,9 +960,150 @@ describe('buildBenchmarkSection', () => {
       );
 
       expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
-      expect(html).toContain('[Show logs]');
+      expect(html).toContain('>[CI log]</a>');
       expect(html).not.toContain('<code>uiStartup</code>');
       expect(html).not.toContain('<ul');
+    });
+  });
+
+  describe('artifact and Sentry links', () => {
+    const mockDsn = 'https://fake@metamask.sentry.io/4510302346608640';
+    let savedBranch: string | undefined;
+    let savedHeadRef: string | undefined;
+    let savedRefName: string | undefined;
+    let savedSentryDsn: string | undefined;
+
+    beforeEach(() => {
+      savedBranch = process.env.BRANCH;
+      savedHeadRef = process.env.GITHUB_HEAD_REF;
+      savedRefName = process.env.GITHUB_REF_NAME;
+      savedSentryDsn = process.env.SENTRY_DSN_PERFORMANCE;
+    });
+
+    afterEach(() => {
+      if (savedBranch === undefined) {
+        delete process.env.BRANCH;
+      } else {
+        process.env.BRANCH = savedBranch;
+      }
+      if (savedHeadRef === undefined) {
+        delete process.env.GITHUB_HEAD_REF;
+      } else {
+        process.env.GITHUB_HEAD_REF = savedHeadRef;
+      }
+      if (savedRefName === undefined) {
+        delete process.env.GITHUB_REF_NAME;
+      } else {
+        process.env.GITHUB_REF_NAME = savedRefName;
+      }
+      if (savedSentryDsn === undefined) {
+        delete process.env.SENTRY_DSN_PERFORMANCE;
+      } else {
+        process.env.SENTRY_DSN_PERFORMANCE = savedSentryDsn;
+      }
+    });
+
+    it('includes Sentry Logs Explorer link when BRANCH and SENTRY_DSN_PERFORMANCE are set', () => {
+      process.env.BRANCH = 'feat/test';
+      process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+      const html = buildBenchmarkSection(
+        withEntries([
+          makeEntry({ artifactUrl: 'https://cdn.example.com/benchmark.json' }),
+        ]),
+        'Test',
+        BASELINE_PASS,
+      );
+      expect(html).toContain('>[CI log]</a>');
+      expect(html).toContain('>[Sentry log · main/release]</a>');
+      expect(html).toContain('metamask.sentry.io/explore/logs');
+    });
+
+    it('uses GITHUB_REF_NAME for Sentry when BRANCH is unset', () => {
+      delete process.env.BRANCH;
+      delete process.env.GITHUB_HEAD_REF;
+      process.env.GITHUB_REF_NAME = 'release/1.0.0';
+      process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+      const html = buildBenchmarkSection(
+        withEntries([
+          makeEntry({ artifactUrl: 'https://cdn.example.com/benchmark.json' }),
+        ]),
+        'Test',
+        BASELINE_PASS,
+      );
+      expect(html).toContain('>[Sentry log · main/release]</a>');
+    });
+
+    it('shows Sentry row label as non-link span when SENTRY_DSN_PERFORMANCE is unset', () => {
+      process.env.BRANCH = 'feat/test';
+      delete process.env.SENTRY_DSN_PERFORMANCE;
+      const html = buildBenchmarkSection(
+        withEntries([
+          makeEntry({ artifactUrl: 'https://cdn.example.com/benchmark.json' }),
+        ]),
+        'Test',
+        BASELINE_PASS,
+      );
+      expect(html).toContain('>[CI log]</a>');
+      expect(html).toContain('[Sentry log · main/release]</span>');
+      expect(html).toContain('requires SENTRY_DSN_PERFORMANCE');
+      expect(html).not.toContain('metamask.sentry.io/explore/logs');
+    });
+
+    it('still includes Sentry row link when branch env vars are unset (ORs main and release/* in URL)', () => {
+      // Force-empty so CI-injected GITHUB_HEAD_REF cannot satisfy `||` chain (delete is not always enough).
+      process.env.BRANCH = '';
+      process.env.GITHUB_HEAD_REF = '';
+      process.env.GITHUB_REF_NAME = '';
+      process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+      const html = buildBenchmarkSection(
+        withEntries([
+          makeEntry({ artifactUrl: 'https://cdn.example.com/benchmark.json' }),
+        ]),
+        'Test',
+        BASELINE_PASS,
+      );
+      expect(html).toContain('>[CI log]</a>');
+      expect(html).toContain('metamask.sentry.io/explore/logs');
+      expect(html).toContain('ci.branch%3Amain');
+      expect(html).toContain('OR+ci.branch%3Arelease%2F*');
+      expect(html).toContain('message%3Abenchmark.loadNewAccount');
+    });
+
+    it('puts row Sentry under the benchmark name; single CI log above timer detail lines', () => {
+      process.env.BRANCH = 'main';
+      process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+      const entry = makeEntry({
+        benchmarkName: 'swap',
+        mean: {
+          openSwapPageFromHome: 310,
+          fetchAndDisplaySwapQuotes: 5000,
+        },
+        p75: {
+          openSwapPageFromHome: 340,
+          fetchAndDisplaySwapQuotes: 4500,
+        },
+        p95: {
+          openSwapPageFromHome: 400,
+          fetchAndDisplaySwapQuotes: 5500,
+        },
+        artifactUrl: 'https://cdn.example.com/swap.json',
+      });
+      const html = buildBenchmarkSection(
+        withEntries([entry]),
+        'Test',
+        undefined,
+        'https://github.com/actions/runs/999',
+      );
+      expect(html).toContain('<code>fetchAndDisplaySwapQuotes</code>');
+      expect(html).toContain('>[CI log]</a>');
+      expect(html).toContain(
+        'swap<br><a href="https://metamask.sentry.io/explore/logs/',
+      );
+      expect(html).toContain('message%3Abenchmark.swap');
+      expect(html).toContain('>[Sentry log · main/release]</a>');
+      expect(html).not.toMatch(
+        /<code>fetchAndDisplaySwapQuotes<\/code><br>\[Sentry log/u,
+      );
     });
   });
 });
@@ -1156,6 +1320,36 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       expect(html).toContain('Regressions');
       expect(html).toContain('startupStandardHome');
+    });
+
+    it('includes Sentry Logs Explorer links in matrix and regression list when BRANCH and SENTRY_DSN_PERFORMANCE are set', async () => {
+      const mockDsn = 'https://fake@metamask.sentry.io/4510302346608640';
+      const savedBranch = process.env.BRANCH;
+      const savedSentry = process.env.SENTRY_DSN_PERFORMANCE;
+      try {
+        process.env.BRANCH = 'main';
+        process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+        mockFetch.mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve(FAILING_PAYLOAD),
+        } as unknown as Response);
+
+        const html = await buildPerformanceBenchmarksSection(HOST);
+
+        expect(html).toContain('>[Sentry log · main/release]</a>');
+        expect(html).toContain('metamask.sentry.io/explore/logs');
+      } finally {
+        if (savedBranch === undefined) {
+          delete process.env.BRANCH;
+        } else {
+          process.env.BRANCH = savedBranch;
+        }
+        if (savedSentry === undefined) {
+          delete process.env.SENTRY_DSN_PERFORMANCE;
+        } else {
+          process.env.SENTRY_DSN_PERFORMANCE = savedSentry;
+        }
+      }
     });
 
     it('exercises getEntryRegressions with baseline data when entry is non-pass', async () => {
