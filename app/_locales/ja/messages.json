@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "カスタムネットワークを追加"
   },
-  "addAHardwareWallet": {
-    "message": "ハードウェアウォレットを追加"
-  },
   "addANetwork": {
     "message": "ネットワークを追加"
   },
