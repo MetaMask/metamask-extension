@@ -61,7 +61,12 @@ class ChromeDriver {
     args.push('--enable-logging');
 
     if (process.env.CI || process.env.CODESPACES) {
-      args.push('--disable-gpu');
+      args.push(
+        '--disable-gpu',
+        '--disable-renderer-backgrounding',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-background-timer-throttling',
+      );
     }
 
     if (isHeadless('SELENIUM')) {

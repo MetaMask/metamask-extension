@@ -68,10 +68,15 @@ jobs:
             buildType: webpack
             pageType: userJourneyAccountManagement
             mainOnly: true
+    # Keep the standard runner until a 15-run power-user startup trial shows
+    # >=2pp CV improvement that justifies larger-runner billing.
     runs-on: ubuntu-latest
     timeout-minutes: 30
     container:
       image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
+      # Chrome itself is currently pinned by Selenium Manager via
+      # test/e2e/webdriver/chrome.js (browserVersion 126); this image pins the
+      # surrounding Node/Yarn/Xvfb toolchain.
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -176,6 +181,8 @@ jobs:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: chrome-browserify-pageLoadBenchmark
     continue-on-error: true
+    # Page-load benchmarks follow the same runner policy while the larger-runner
+    # trial is still pending measurement.
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
