@@ -296,7 +296,21 @@ describe('TrezorAdapter', () => {
       });
     });
 
-    it('allows Model One when required capabilities are missing', async () => {
+    it('allows Model One name when only Solana capability is missing', async () => {
+      mockGetTrezorFeatures.mockResolvedValue(
+        createMockFeaturesResponse({
+          model: 'Trezor Model One',
+          capabilities: ['Capability_Bitcoin', 'Capability_Ethereum'],
+        }),
+      );
+
+      await expect(adapter.ensureDeviceReady()).resolves.toBe(true);
+      expect(mockOptions.onDeviceEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({ error: expect.anything() }),
+      );
+    });
+
+    it('throws DeviceMissingCapability when Model One is missing a supported capability', async () => {
       mockGetTrezorFeatures.mockResolvedValue(
         createMockFeaturesResponse({
           model: 'T1B1',
@@ -304,7 +318,12 @@ describe('TrezorAdapter', () => {
         }),
       );
 
-      await expect(adapter.ensureDeviceReady()).resolves.toBe(true);
+      await expect(adapter.ensureDeviceReady()).rejects.toMatchObject({
+        code: ErrorCode.DeviceMissingCapability,
+        metadata: expect.objectContaining({
+          missingCapabilities: ['Capability_Ethereum'],
+        }),
+      });
     });
 
     it('rejects oversized messages on Model One preflight', async () => {

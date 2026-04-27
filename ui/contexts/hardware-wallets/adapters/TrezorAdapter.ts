@@ -206,7 +206,7 @@ export class TrezorAdapter implements HardwareWalletAdapter {
     // NOTE: Not all Trezor models support all capabilities, so we skip validation for Model One
     // Model one does not support solana.
     // This is to unblock the usage of model one to send devices.
-    if (isTrezorModelOne(model)) {
+    if (isTrezorModelOne(model) && missing.includes('Capability_Solana')) {
       return;
     }
 
