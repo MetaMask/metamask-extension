@@ -29,6 +29,7 @@ import {
 } from '../../../../../shared/constants/benchmarks';
 import { WITH_STATE_POWER_USER } from '../../utils/constants';
 import { collectWebVitals } from '../../utils';
+import { waitForSwapPageRenderComplete } from '../../utils/render-complete';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 import { registerSwapInterceptor } from '../../mocks/swap-mocks';
 
@@ -96,8 +97,10 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
             driver,
             'openSwapPageFromHome',
             async () => {
-              const swapPage = new SwapPage(driver);
-              await swapPage.checkPageIsLoaded();
+              await waitForSwapPageRenderComplete({
+                driver,
+                timeout: 60000,
+              });
             },
           ),
         );

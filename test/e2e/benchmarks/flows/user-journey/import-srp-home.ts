@@ -28,6 +28,7 @@ import {
 } from '../../../../../shared/constants/benchmarks';
 import { WITH_STATE_POWER_USER } from '../../utils/constants';
 import { collectWebVitals } from '../../utils';
+import { waitForAccountListRenderComplete } from '../../utils/render-complete';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
 const SECOND_SRP = process.env.TEST_SRP_2;
@@ -88,8 +89,12 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
             driver,
             'openAccountMenuAfterLogin',
             async () => {
-              const accountListPage = new AccountListPage(driver);
-              await accountListPage.checkPageIsLoaded();
+              await waitForAccountListRenderComplete({
+                driver,
+                expectedCount: WITH_STATE_POWER_USER.withAccounts,
+                timeout: 120000,
+                stableFor: 500,
+              });
             },
           ),
         );

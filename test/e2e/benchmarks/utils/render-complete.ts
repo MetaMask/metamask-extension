@@ -1,0 +1,98 @@
+import type { Driver } from '../../webdriver/driver';
+
+const ACCOUNT_LIST_ITEM_SELECTOR =
+  '[data-testid="account-item"], [data-testid="account-list-item"]';
+
+const SWAP_PAGE_QUOTE_DETAILS_SELECTOR =
+  '[data-testid="network-fees"], [data-testid="minimum-received"], [data-testid="slippage-edit-button"]';
+
+/**
+ * Returns whether the account menu has rendered the expected number of
+ * accounts.
+ *
+ * @param expectedCount - The number of account rows expected to be rendered.
+ * @returns Whether the account menu render is complete.
+ */
+export function isAccountListRenderComplete(expectedCount: number): boolean {
+  return (
+    document.querySelectorAll(ACCOUNT_LIST_ITEM_SELECTOR).length >=
+    expectedCount
+  );
+}
+
+/**
+ * Waits for the account menu to render the expected number of accounts.
+ *
+ * @param options - Wait options.
+ * @param options.driver - The webdriver instance.
+ * @param options.expectedCount - The number of account rows expected.
+ * @param options.timeout - Optional timeout override.
+ * @param options.stableFor - Optional stability window in milliseconds.
+ */
+export async function waitForAccountListRenderComplete({
+  driver,
+  expectedCount,
+  timeout = 10000,
+  stableFor = 0,
+}: {
+  driver: Driver;
+  expectedCount: number;
+  timeout?: number;
+  stableFor?: number;
+}): Promise<void> {
+  await driver.waitForFunction(isAccountListRenderComplete, {
+    args: [expectedCount],
+    stableFor,
+    timeout,
+  });
+}
+
+/**
+ * Returns whether the swap page has finished rendering its initial state.
+ *
+ * @returns Whether the swap page render is complete.
+ */
+export function isSwapPageRenderComplete(): boolean {
+  const fromTokenSelector = document.querySelector<HTMLElement>(
+    '[data-testid="bridge-source-button"]',
+  );
+  const fromAmountInput = document.querySelector<HTMLInputElement>(
+    '[data-testid="from-amount"]',
+  );
+  const fromTokenText = fromTokenSelector?.textContent?.trim() ?? '';
+
+  const hasEditableQuoteInput = Boolean(
+    fromAmountInput &&
+      !fromAmountInput.disabled &&
+      !fromAmountInput.readOnly &&
+      fromAmountInput.getAttribute('aria-disabled') !== 'true',
+  );
+
+  const hasRenderedQuoteDetails =
+    Array.from(document.querySelectorAll(SWAP_PAGE_QUOTE_DETAILS_SELECTOR))
+      .length >= 3;
+
+  return (
+    fromTokenText.length > 0 &&
+    !fromTokenText.includes('Select token') &&
+    hasEditableQuoteInput &&
+    hasRenderedQuoteDetails
+  );
+}
+
+/**
+ * Waits for the swap page to finish rendering its initial quote-ready state.
+ *
+ * @param options - Wait options.
+ * @param options.driver - The webdriver instance.
+ * @param options.timeout - Optional timeout override.
+ */
+export async function waitForSwapPageRenderComplete({
+  driver,
+  timeout = 30000,
+}: {
+  driver: Driver;
+  timeout?: number;
+}): Promise<void> {
+  await driver.waitForFunction(isSwapPageRenderComplete, { timeout });
+}

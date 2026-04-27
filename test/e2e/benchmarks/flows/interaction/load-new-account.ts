@@ -10,6 +10,7 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { Driver } from '../../../webdriver/driver';
 import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
+import { waitForAccountListRenderComplete } from '../../utils/render-complete';
 import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
@@ -40,8 +41,11 @@ export async function run(): Promise<BenchmarkRunResult> {
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
+        await waitForAccountListRenderComplete({
+          driver,
+          expectedCount: 1,
+        });
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
 
         await driver.resetLongTaskMetrics();
         const timestampBeforeAction = new Date();
