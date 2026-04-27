@@ -103,6 +103,11 @@ const ONBOARDING_IMPORT_WALLET: ThresholdConfig = {
     p95: { warn: 50000, fail: 60000 },
     ciMultiplier: CI_MULTIPLIER_ACCOUNT_MENU,
   },
+  total: {
+    p75: { warn: 6800, fail: 7400 },
+    p95: { warn: 7300, fail: 7900 },
+    ciMultiplier: CI_MULTIPLIER_ONBOARDING_TOTAL,
+  },
   ...CLS_THRESHOLDS,
 };
 
@@ -137,6 +142,11 @@ const ONBOARDING_NEW_WALLET: ThresholdConfig = {
     p95: { warn: 16000, fail: 21000 },
     ciMultiplier: CI_MULTIPLIER_ONBOARDING_TOTAL,
   },
+  total: {
+    p75: { warn: 3300, fail: 3600 },
+    p95: { warn: 3650, fail: 3950 },
+    ciMultiplier: CI_MULTIPLIER_ONBOARDING_TOTAL,
+  },
   ...CLS_THRESHOLDS,
 };
 
@@ -156,6 +166,11 @@ const IMPORT_SRP_HOME: ThresholdConfig = {
     p95: { warn: 32000, fail: 40000 },
     ciMultiplier: CI_MULTIPLIER_IMPORT_SRP_HOME,
   },
+  total: {
+    p75: { warn: 28000, fail: 30500 },
+    p95: { warn: 30000, fail: 32500 },
+    ciMultiplier: CI_MULTIPLIER_IMPORT_SRP_HOME,
+  },
   ...CLS_THRESHOLDS,
 };
 
@@ -168,6 +183,11 @@ const SWAP: ThresholdConfig = {
   fetchAndDisplaySwapQuotes: {
     p75: { warn: 2800, fail: 5000 },
     p95: { warn: 3500, fail: 6000 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+  total: {
+    p75: { warn: 1800, fail: 1950 },
+    p95: { warn: 1900, fail: 2050 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   ...CLS_THRESHOLDS,
