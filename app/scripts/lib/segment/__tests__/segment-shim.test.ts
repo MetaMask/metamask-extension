@@ -1,5 +1,12 @@
-import { SECOND } from '../../../../shared/constants/time';
-import { createSegmentMock } from '.';
+import { SECOND } from '../../../../../shared/constants/time';
+import { createSegmentMock } from '..';
+
+/** Dynamic re-import after `resetModules`/`doMock`. TS + ESLint disagree on `import('..')` / `../index`, so the path is built at runtime. */
+function importSegmentIndexModule(): Promise<typeof import('..')> {
+  const parentDir = '..';
+  const entryName = 'index';
+  return import(`${parentDir}/${entryName}`);
+}
 
 /** Large enough that a few track() calls do not trigger auto-flush */
 const MANUAL_FLUSH_AT = 100;
@@ -93,7 +100,7 @@ describe('segment module export', () => {
   it('uses createSegmentMock when SEGMENT_WRITE_KEY is unset', async () => {
     jest.resetModules();
     delete process.env.SEGMENT_WRITE_KEY;
-    const mod = await import('.');
+    const mod = await importSegmentIndexModule();
     expect('queue' in mod.segment).toBe(true);
   });
 
@@ -105,7 +112,7 @@ describe('segment module export', () => {
     jest.doMock('@segment/analytics-node', () => ({
       Analytics: analyticsConstructor,
     }));
-    await import('.');
+    await importSegmentIndexModule();
     expect(analyticsConstructor).toHaveBeenCalledWith({
       writeKey: 'test-write-key',
       host: 'https://segment.example/',
@@ -122,7 +129,7 @@ describe('segment module export', () => {
     jest.doMock('@segment/analytics-node', () => ({
       Analytics: analyticsConstructor,
     }));
-    await import('.');
+    await importSegmentIndexModule();
     expect(analyticsConstructor).toHaveBeenCalledWith({
       writeKey: 'prod-key',
       host: undefined,
@@ -138,7 +145,7 @@ describe('segment module export', () => {
     jest.doMock('@segment/analytics-node', () => ({
       Analytics: analyticsConstructor,
     }));
-    const { segment: client } = await import('.');
+    const { segment: client } = await importSegmentIndexModule();
     const payload = {
       event: 'evt',
       context: Object.freeze({ app: Object.freeze({ name: 'x' }) }),
@@ -170,7 +177,7 @@ describe('segment module export', () => {
     jest.doMock('@segment/analytics-node', () => ({
       Analytics: analyticsConstructor,
     }));
-    const { segment: client } = await import('.');
+    const { segment: client } = await importSegmentIndexModule();
     const identifyPayload = {
       userId: 'u',
       traits: Object.freeze({ plan: 'free' }),
@@ -195,7 +202,7 @@ describe('segment module export', () => {
     jest.doMock('@segment/analytics-node', () => ({
       Analytics: analyticsConstructor,
     }));
-    const { segment: client } = await import('.');
+    const { segment: client } = await importSegmentIndexModule();
     await client.flush();
     expect(analyticsInstance.flush).toHaveBeenCalledTimes(1);
   });
@@ -207,7 +214,7 @@ describe('segment module export', () => {
     jest.doMock('@segment/analytics-node', () => ({
       Analytics: analyticsConstructor,
     }));
-    const { segment: client } = await import('.');
+    const { segment: client } = await importSegmentIndexModule();
     const onTrack = jest.fn();
     const onIdentify = jest.fn();
     const onPage = jest.fn();
