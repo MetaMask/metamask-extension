@@ -175,14 +175,33 @@ const DEFAULT_BENCHMARK_CDP_URL_PATTERNS = [
   'https://acl.execution.metamask.io/*',
 ];
 
+/**
+ * Escapes special regular-expression characters in a literal string.
+ *
+ * @param {string} value - The literal string to escape.
+ * @returns {string} The escaped string safe for embedding in a regex.
+ */
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
 }
 
+/**
+ * Converts a wildcard URL pattern using `*` into a regular expression.
+ *
+ * @param {string} pattern - Wildcard pattern to convert.
+ * @returns {RegExp} A regular expression that matches the wildcard pattern.
+ */
 function wildcardPatternToRegExp(pattern) {
   return new RegExp(`^${escapeRegExp(pattern).replaceAll('\\*', '.*')}$`, 'u');
 }
 
+/**
+ * Checks whether a URL matches any benchmark CDP allowlist pattern.
+ *
+ * @param {string} url - URL being evaluated.
+ * @param {string[]} [allowedUrlPatterns] - Wildcard URL patterns.
+ * @returns {boolean} True if the URL matches at least one allowed pattern.
+ */
 function isAllowedBenchmarkCdpRequest(
   url,
   allowedUrlPatterns = DEFAULT_BENCHMARK_CDP_URL_PATTERNS,
@@ -192,6 +211,13 @@ function isAllowedBenchmarkCdpRequest(
   );
 }
 
+/**
+ * Formats the error message emitted when the benchmark guard blocks a request.
+ *
+ * @param {string} url - Blocked request URL.
+ * @param {string[]} allowedUrlPatterns - Wildcard URL allowlist.
+ * @returns {string} Multi-line error text for test failures and logs.
+ */
 function buildBlockedBenchmarkRequestError(url, allowedUrlPatterns) {
   return [
     `[benchmark-cdp] Blocked unexpected network request: ${url}`,
@@ -206,6 +232,10 @@ function buildBlockedBenchmarkRequestError(url, allowedUrlPatterns) {
  * https://www.selenium.dev/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
  */
 class Driver {
+  #cdpConnectionPromise = null;
+
+  #benchmarkCdpGuardEnabled = false;
+
   /**
    * @param {object} args - Constructor arguments.
    * @param {!ThenableWebDriver} args.driver - A {@code WebDriver} instance
@@ -232,8 +262,6 @@ class Driver {
     this.windowHandles = disableServerMochaToBackground
       ? null
       : new WindowHandles(this.driver);
-    this._cdpConnectionPromise = null;
-    this._benchmarkCdpGuardEnabled = false;
 
     // The following values are found in
     // https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/lib/input.js#L50-L110
@@ -256,14 +284,28 @@ class Driver {
     return this.driver.executeScript(script, args);
   }
 
+  /**
+   * Lazily creates and caches a CDP connection for Chrome-specific helpers.
+   *
+   * @returns {Promise<object>} The active CDP connection.
+   */
   async getCdpConnection() {
-    if (!this._cdpConnectionPromise) {
-      this._cdpConnectionPromise = this.driver.createCDPConnection('page');
+    if (!this.#cdpConnectionPromise) {
+      this.#cdpConnectionPromise = this.driver.createCDPConnection('page');
     }
 
-    return this._cdpConnectionPromise;
+    return this.#cdpConnectionPromise;
   }
 
+  /**
+   * Executes a Chrome DevTools Protocol command through Selenium.
+   *
+   * @param {string} command - CDP command name.
+   * @param {object} [params] - CDP command parameters.
+   * @param {object} [options] - Command execution options.
+   * @param {boolean} [options.returnValue] - Set true for commands that return a payload.
+   * @returns {Promise<unknown>} The command result, if any.
+   */
   async executeCdpCommand(command, params = {}, { returnValue = false } = {}) {
     if (returnValue && this.driver.sendAndGetDevToolsCommand) {
       return this.driver.sendAndGetDevToolsCommand(command, params);
@@ -277,12 +319,21 @@ class Driver {
     return cdpConnection.execute(command, params, null);
   }
 
+  /**
+   * Enables a benchmark-only CDP guard that blocks unexpected network requests.
+   *
+   * The allowlist uses `*` wildcards and only applies in Chrome. Any request
+   * outside the allowlist is failed immediately and recorded as a driver error.
+   *
+   * @param {string[]} [allowedUrlPatterns] - Wildcard URL patterns to allow.
+   * @returns {Promise<void>}
+   */
   async enableBenchmarkCdpNetworkGuard(
     allowedUrlPatterns = DEFAULT_BENCHMARK_CDP_URL_PATTERNS,
   ) {
     if (
       this.browser !== Browser.CHROME ||
-      this._benchmarkCdpGuardEnabled ||
+      this.#benchmarkCdpGuardEnabled ||
       !this.driver?.createCDPConnection
     ) {
       return;
@@ -293,9 +344,17 @@ class Driver {
         ? allowedUrlPatterns
         : DEFAULT_BENCHMARK_CDP_URL_PATTERNS;
     const cdpConnection = await this.getCdpConnection();
-    const cdpWsConnection = this.driver._cdpWsConnection;
+    let cdpWsConnection;
+    // Selenium exposes the live CDP event stream on this internal field, but
+    // does not provide a higher-level subscription helper for Fetch events.
+    // Fail fast below if a future Selenium version removes or renames it.
+    try {
+      cdpWsConnection = this.driver._cdpWsConnection;
+    } catch {
+      cdpWsConnection = null;
+    }
 
-    if (!cdpWsConnection) {
+    if (!cdpWsConnection?.on) {
       throw new Error(
         'Benchmark CDP network guard could not access the browser CDP WebSocket connection.',
       );
@@ -363,7 +422,7 @@ class Driver {
       cacheDisabled: true,
     });
 
-    this._benchmarkCdpGuardEnabled = true;
+    this.#benchmarkCdpGuardEnabled = true;
   }
 
   /**

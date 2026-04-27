@@ -22,6 +22,8 @@ import bridgeTokensSearch from './bridge-tokens-search.json';
 import swapQuoteEthUsdc from './swap-quote-eth-usdc.json';
 import swapQuoteSolUsdc from './swap-quote-sol-usdc.json';
 
+const SOLANA_CHAIN_ID = '1151111081099710';
+
 /**
  * Build a static SSE response body from an array of quote events.
  *
@@ -37,12 +39,26 @@ export function buildSseResponseBody(events: unknown[]): string {
     .join('');
 }
 
+/**
+ * Selects the deterministic quote fixture that matches the bridge request URL.
+ *
+ * @param url - Swap/bridge request URL.
+ * @returns The Solana or Ethereum quote fixture for that request.
+ */
 function getBenchmarkSwapQuote(url: string) {
-  return url.includes('srcChainId=1151111081099710')
+  return url.includes(`srcChainId=${SOLANA_CHAIN_ID}`)
     ? swapQuoteSolUsdc
     : swapQuoteEthUsdc;
 }
 
+/**
+ * Returns a benchmark swap mock response for recognized bridge API requests.
+ *
+ * @param req - Request metadata from the pass-through interceptor.
+ * @param req.url
+ * @param req.method
+ * @returns A mock response for handled URLs, or `null` when the request should pass through.
+ */
 export function getSwapBenchmarkInterceptorResponse(req: {
   url: string;
   method: string;

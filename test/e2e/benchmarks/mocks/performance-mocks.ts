@@ -59,7 +59,7 @@ export const SOLANA_SPOT_PRICES_URL_REGEX =
   /price\.api\.cx\.metamask\.io\/v\d+\/spot-prices\/solana(?:$|\?)/u;
 
 export const V3_HISTORICAL_PRICES_URL_REGEX =
-  /https:\/\/price\.api\.cx\.metamask\.io\/v3\/historical-prices\/[^?]+(?:\?.*)?$/u;
+  /price\.api\.cx\.metamask\.io\/v3\/historical-prices\/[^?]+(?:\?.*)?$/u;
 
 const AuthMocks = AuthenticationController.Mocks;
 

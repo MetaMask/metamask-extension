@@ -1,5 +1,9 @@
 import { PRICES, POWER_USER_PRICES, type PriceData } from './price-data';
 
+const HISTORICAL_PRICE_WAVE_PERIOD_HOURS = 12;
+const HISTORICAL_PRICE_WAVE_CENTER = 6;
+const HISTORICAL_PRICE_WAVE_STEP = 0.001;
+
 export function jsonRpcResponse(result: unknown) {
   return {
     statusCode: 200,
@@ -133,7 +137,11 @@ export function buildHistoricalPricesResponse(): {
   const startTimestamp = Date.UTC(2024, 0, 1, 0, 0, 0, 0);
   const prices: [number, number][] = [];
   for (let i = 0; i < 168; i++) {
-    const offset = ((i % 12) - 6) * 0.001;
+    // Creates a deterministic 12-hour wave oscillating between 0.994 and 1.005.
+    const offset =
+      ((i % HISTORICAL_PRICE_WAVE_PERIOD_HOURS) -
+        HISTORICAL_PRICE_WAVE_CENTER) *
+      HISTORICAL_PRICE_WAVE_STEP;
     prices.push([
       startTimestamp - i * 3600000,
       Number((1 + offset).toFixed(6)),
