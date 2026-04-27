@@ -10,6 +10,8 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  Text,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -17,6 +19,7 @@ import * as URI from 'uri-js';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useNetworkFormState } from '../settings/networks-tab/networks-form/networks-form-state';
 import { setActiveNetwork, setEditedNetwork } from '../../store/actions';
+import { getSelectedMultichainNetworkChainId } from '../../selectors';
 import AddBlockExplorerModal from '../../components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import { SelectRpcUrlModal } from '../../components/multichain/network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
 import { AddNetwork } from '../../components/multichain/network-manager/components/add-network';
@@ -24,6 +27,21 @@ import { Header } from '../../components/multichain/pages/page';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain/networks';
 import { getEditedNetwork } from '../../selectors/selectors';
+import ActionableMessageOriginal from '../../components/ui/actionable-message/actionable-message';
+
+// `ActionableMessage` is a JS component whose PropTypes default `message=''`
+// makes TS infer the prop as `string`, which prevents passing JSX. The
+// component actually accepts `PropTypes.node`. Cast to a permissive component
+// type to keep this call site readable.
+const ActionableMessage =
+  ActionableMessageOriginal as unknown as React.ComponentType<{
+    type?: string;
+    className?: string;
+    autoHideTime?: number;
+    onAutoHide?: () => void;
+    dataTestId?: string;
+    message?: React.ReactNode;
+  }>;
 import { SettingsV2Header } from '../settings-v2/shared/settings-v2-header';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 import { NetworksPageList } from './networks-page-list';
@@ -90,8 +108,11 @@ export const NetworksPage = () => {
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const { chainId: editingChainId, editCompleted } =
-    useSelector(getEditedNetwork) ?? {};
+  const rawEditedNetwork = useSelector(getEditedNetwork);
+  const { chainId: editingChainId, editCompleted } = rawEditedNetwork ?? {};
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
 
   const editedNetwork = useMemo((): UpdateNetworkFields | undefined => {
     if (view === 'add') {
@@ -178,14 +199,25 @@ export const NetworksPage = () => {
     navigate(DEFAULT_ROUTE);
   }, [dispatch, navigate]);
 
-  // The select-rpc page already updates the network configuration. We only
-  // need to point the active network at the chosen RPC client before closing.
+  const handleClearEditedNetwork = useCallback(() => {
+    dispatch(setEditedNetwork());
+  }, [dispatch]);
+
+  // When the user picks an RPC from the Networks page select-rpc view, only
+  // switch the active network client when they're already on this chain. This
+  // intentionally avoids changing chains (and therefore the homepage network
+  // filter) — switching networks from the Networks page is not allowed; it's
+  // reserved for the homepage network modal. For the same-chain case we still
+  // need to update the active client so the wallet starts using the freshly
+  // selected RPC URL (which is what the user expects when they pick an RPC).
   const handleSelectRpc = useCallback(
-    (_chainId: string, networkClientId: string) => {
-      dispatch(setActiveNetwork(networkClientId));
+    (caipChainId: string, networkClientId: string) => {
+      if (caipChainId === currentMultichainChainId) {
+        dispatch(setActiveNetwork(networkClientId));
+      }
       handleClose();
     },
-    [dispatch, handleClose],
+    [currentMultichainChainId, dispatch, handleClose],
   );
 
   const handleGoHome = useCallback(() => {
@@ -201,12 +233,46 @@ export const NetworksPage = () => {
   }, [setView]);
 
   const handleRootBack = useCallback(() => {
+    dispatch(setEditedNetwork());
     navigate(
       searchParams.get('drawerOpen') === 'true'
         ? `${DEFAULT_ROUTE}?drawerOpen=true`
         : DEFAULT_ROUTE,
     );
-  }, [navigate, searchParams]);
+  }, [dispatch, navigate, searchParams]);
+
+  const networksPageToast =
+    view === '' && rawEditedNetwork?.editCompleted ? (
+      <ActionableMessage
+        type="success"
+        className="mt-0"
+        autoHideTime={5000}
+        onAutoHide={handleClearEditedNetwork}
+        dataTestId="networks-page-network-success-toast"
+        message={
+          <Box className="flex w-full items-center justify-between gap-2">
+            <Box className="flex min-w-0 items-center gap-2">
+              <i className="fa fa-check-circle text-success-default text-base" />
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6 className="truncate">
+                  {rawEditedNetwork.newNetwork
+                    ? t('newNetworkAdded', [rawEditedNetwork.nickname])
+                    : t('newNetworkEdited', [rawEditedNetwork.nickname])}
+                </h6>
+              </Text>
+            </Box>
+            <button
+              type="button"
+              aria-label={t('close')}
+              onClick={handleClearEditedNetwork}
+              className="ml-2 shrink-0 border-0 bg-transparent p-0 text-icon-default"
+            >
+              <span className="text-2xl leading-none">&times;</span>
+            </button>
+          </Box>
+        }
+      />
+    ) : null;
 
   return (
     <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background-default">
@@ -223,7 +289,10 @@ export const NetworksPage = () => {
             onSearchClear={() => setSearchValue('')}
             showSearchBorder={false}
           />
-          <NetworksPageList searchQuery={searchValue} />
+          <NetworksPageList
+            searchQuery={searchValue}
+            footerContent={networksPageToast}
+          />
         </>
       ) : null}
       {view === 'add' ? (

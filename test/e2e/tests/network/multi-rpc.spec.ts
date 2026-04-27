@@ -10,6 +10,7 @@ import {
   expectNoMockRequest,
 } from '../../helpers/mock-server';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
@@ -262,6 +263,9 @@ describe('MultiRpc:', function (this: Suite) {
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        const assetListPage = new AssetListPage(driver);
+        const originalFilterLabel =
+          await assetListPage.getNetworksFilterLabel();
 
         const usedUrlBeforeSwitch = await mockedEndpoint[1].getSeenRequests();
 
@@ -298,6 +302,10 @@ describe('MultiRpc:', function (this: Suite) {
         assert.equal(usedUrl[0].url, 'https://responsive-rpc.test/');
         // check that requests are sent on the background for the url https://responsive-rpc.test/
         await expectMockRequest(driver, mockedEndpoint[0], { timeout: 5000 });
+
+        // The Networks page must not change the homepage network filter when
+        // switching the active RPC for the chain the user is already on.
+        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
       },
     );
   });
@@ -396,6 +404,9 @@ describe('MultiRpc:', function (this: Suite) {
 
       async ({ driver }) => {
         await login(driver);
+        const assetListPage = new AssetListPage(driver);
+        const originalFilterLabel =
+          await assetListPage.getNetworksFilterLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
         const selectNetworkDialog = new SelectNetwork(driver);
@@ -410,20 +421,15 @@ describe('MultiRpc:', function (this: Suite) {
         await editNetworkModal.selectRPCInEditNetworkModal(
           'Arbitrum mainnet 2',
         );
+        await selectNetworkDialog.checkEditNetworkMessageIsDisplayed(
+          'Arbitrum',
+        );
         await selectNetworkDialog.clickCloseButton();
 
         // validate the network was successfully edited
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-
-        // Check for edit network toast (may not appear with sidepanel due to appState loss)
-        if (await isSidePanelEnabled()) {
-          console.log('Skipping edit network toast check for sidepanel build');
-        } else {
-          await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
-        }
-
-        await homePage.closeUseNetworkNotificationModal();
+        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
 
         // check that the second rpc is selected in the network dialog
         await headerNavbar.openGlobalNetworksMenu();

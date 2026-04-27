@@ -2614,18 +2614,54 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Adds a network and sets it as the active network.
+   * Adds a network and (optionally) sets it as the active network.
    *
    * @param {object} networkConfiguration - The network configuration to add.
+   * @param {object} [options0] - Options for post-add behavior.
+   * @param {boolean} [options0.setActive] - Whether to switch to the added network.
    * @returns {Promise<object>} The added network configuration.
    */
-  async _addNetworkAndSetActive(networkConfiguration) {
-    const addedNetwork =
-      await this.networkController.addNetwork(networkConfiguration);
-    const { networkClientId } =
-      addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ?? {};
-    await this.networkController.setActiveNetwork(networkClientId);
-    return addedNetwork;
+  async _addNetworkAndSetActive(
+    networkConfiguration,
+    { setActive = true } = {},
+  ) {
+    if (setActive) {
+      const addedNetwork =
+        await this.networkController.addNetwork(networkConfiguration);
+      const { networkClientId } =
+        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
+        {};
+      await this.networkController.setActiveNetwork(networkClientId);
+      return addedNetwork;
+    }
+    const previousEnabledNetworkMap = Object.fromEntries(
+      Object.entries(
+        this.networkEnablementController.state.enabledNetworkMap,
+      ).map(([namespace, networks]) => [namespace, { ...networks }]),
+    );
+    let onStateChange;
+    const stateChange = new Promise((resolve) => {
+      onStateChange = resolve;
+    });
+    this.controllerMessenger.subscribe(
+      'NetworkEnablementController:stateChange',
+      onStateChange,
+    );
+
+    try {
+      const addedNetwork =
+        await this.networkController.addNetwork(networkConfiguration);
+      await stateChange;
+      this.networkEnablementController.update((state) => {
+        state.enabledNetworkMap = previousEnabledNetworkMap;
+      });
+      return addedNetwork;
+    } finally {
+      this.controllerMessenger.unsubscribe(
+        'NetworkEnablementController:stateChange',
+        onStateChange,
+      );
+    }
   }
 
   /**
