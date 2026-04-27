@@ -3,6 +3,7 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
+import { Hex } from '@metamask/utils';
 import {
   CachedScanAddressResponse,
   createCacheKey,
@@ -17,6 +18,7 @@ const DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE = 10;
  */
 export type EnforcedSimulationsState = {
   addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
+  eip7702SupportedChains: Hex[];
 };
 
 /**
@@ -46,7 +48,7 @@ export function isEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
   state?: EnforcedSimulationsState,
 ): boolean {
-  const { delegationAddress, origin, simulationData } = transactionMeta;
+  const { chainId, origin, simulationData } = transactionMeta;
 
   if (!process.env.ENABLE_ENFORCED_SIMULATIONS) {
     return false;
@@ -56,7 +58,11 @@ export function isEnforcedSimulationsEligible(
     return false;
   }
 
-  if (!delegationAddress) {
+  if (
+    !state?.eip7702SupportedChains?.some(
+      (supported) => supported.toLowerCase() === chainId?.toLowerCase(),
+    )
+  ) {
     return false;
   }
 
@@ -64,11 +70,22 @@ export function isEnforcedSimulationsEligible(
     return false;
   }
 
+  // When forcing is enabled, skip the trust signal check so enforced
+  // simulations always applies as long as balance changes are present.
+  // Intended for local development and QA only.
+  if (isForceEnabled()) {
+    return true;
+  }
+
   if (state && isTrusted(transactionMeta, state)) {
     return false;
   }
 
   return true;
+}
+
+function isForceEnabled(): boolean {
+  return process.env.FORCE_ENABLE_SIMULATIONS === 'true';
 }
 
 function isTrusted(

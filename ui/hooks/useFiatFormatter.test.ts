@@ -97,6 +97,19 @@ describe('useFiatFormatter', () => {
     expect(getCurrentCurrency).toHaveBeenCalledTimes(1);
   });
 
+  it('uses overrideCurrency instead of Redux currency when provided', () => {
+    mockGetIntlLocale.mockReturnValue('en-US');
+    mockGetCurrentCurrency.mockReturnValue('EUR');
+
+    const { result } = renderHook(() =>
+      useFiatFormatter({ overrideCurrency: 'usd' }),
+    );
+    const formatFiat = result.current;
+
+    expect(formatFiat(1.23)).toBe('$1.23');
+    expect(formatFiat(0)).toBe('$0.00');
+  });
+
   it('should gracefully handle unknown currencies by returning amount followed by currency code', () => {
     mockGetCurrentCurrency.mockReturnValue('storj');
     mockGetIntlLocale.mockReturnValue('en-US');
