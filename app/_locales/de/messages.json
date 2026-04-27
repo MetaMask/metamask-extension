@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Benutzerdefiniertes Netzwerk hinzufügen"
   },
-  "addAHardwareWallet": {
-    "message": "Eine Hardware-Wallet hinzufügen"
-  },
   "addANetwork": {
     "message": "Ein Netzwerk hinzufügen"
   },

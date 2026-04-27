@@ -139,7 +139,8 @@ jobs:
       contents: read
       id-token: write # required for S3 upload of audit baseline
       issues: write # create tracking issues for new audit advisories
-      actions: read # download audit-baseline artifact from prior push-to-main runs
+      actions: write # download baseline artifact + re-run health-checks to refresh baseline
+      pull-requests: write # add retry-ci label when ambient CVEs block a yarn.lock PR
     uses: ./.github/workflows/repository-health-checks.yml
     secrets: inherit
 
