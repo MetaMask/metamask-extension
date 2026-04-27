@@ -89,10 +89,17 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
+import type {
+  PasskeyAuthenticationResponse,
+  PasskeyRegistrationOptions,
+  PasskeyAuthenticationOptions,
+  PasskeyRegistrationResponse,
+} from '@metamask/passkey-controller';
 import { toHardwareWalletError } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
+import { isPasskeyPRFSupported } from '../../shared/lib/passkey';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -992,6 +999,29 @@ export function tryUnlockMetamask(
   };
 }
 
+export function tryUnlockMetamaskWithPasskey(
+  authenticationResponse: PasskeyAuthenticationResponse,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    dispatch(unlockInProgress());
+
+    try {
+      await submitRequestToBackground('unlockWithPasskey', [
+        authenticationResponse,
+      ]);
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(unlockSucceeded());
+      dispatch(hideWarning());
+    } catch (error) {
+      dispatch(unlockFailed(getErrorMessage(error)));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 /**
  * Checks if the seedless onboarding user is authenticated.
  *
@@ -1167,6 +1197,93 @@ export function unlockAndGetSeedPhrase(
 
 export function submitPassword(password: string): Promise<void> {
   return submitRequestToBackground('submitPassword', [password]);
+}
+
+/**
+ * Generates passkey registration options.
+ *
+ * @returns Passkey registration options.
+ */
+export async function generatePasskeyRegistrationOptions(): Promise<PasskeyRegistrationOptions> {
+  const prfSupported = await isPasskeyPRFSupported();
+  return submitRequestToBackground('generatePasskeyRegistrationOptions', [
+    { prfAvailable: prfSupported !== false },
+  ]);
+}
+
+/**
+ * Generates passkey authentication options.
+ *
+ * @returns Passkey authentication options.
+ */
+export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthenticationOptions> {
+  return submitRequestToBackground('generatePasskeyAuthenticationOptions');
+}
+
+/**
+ * Protects the vault key with a passkey.
+ *
+ * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
+ * @param password - When onboarding is complete, the wallet password (step-up). Omit during onboarding.
+ */
+export function protectVaultKeyWithPasskey(
+  registrationResponse: PasskeyRegistrationResponse,
+  password?: string,
+): Promise<void> {
+  return submitRequestToBackground('protectVaultKeyWithPasskey', [
+    registrationResponse,
+    password,
+  ]);
+}
+
+/**
+ * Removes the passkey from the vault using the passkey authentication response.
+ *
+ * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.
+ */
+export function removePasskeyWithPasskeyVerification(
+  authenticationResponse: PasskeyAuthenticationResponse,
+): Promise<void> {
+  return submitRequestToBackground('removePasskeyWithPasskeyVerification', [
+    authenticationResponse,
+  ]);
+}
+
+/**
+ * Removes the passkey from the vault using the wallet password.
+ *
+ * @param password - The wallet password.
+ */
+export function removePasskeyWithPasswordVerification(
+  password: string,
+): Promise<void> {
+  return submitRequestToBackground('removePasskeyWithPasswordVerification', [
+    password,
+  ]);
+}
+
+/**
+ * Changes wallet password using a verified passkey assertion, then re-wraps the passkey
+ * record for the new vault encryption key (non–social-login, passkey already enrolled).
+ *
+ * @param newPassword - The new wallet password.
+ * @param authenticationResponse - WebAuthn authentication response from `navigator.credentials.get`.
+ */
+export function changePasswordWithPasskeyVerification(
+  newPassword: string,
+  authenticationResponse: PasskeyAuthenticationResponse,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('changePasswordWithPasskeyVerification', [
+        newPassword,
+        authenticationResponse,
+      ]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
 }
 
 /**
