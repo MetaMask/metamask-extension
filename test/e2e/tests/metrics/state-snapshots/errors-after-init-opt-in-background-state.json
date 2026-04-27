@@ -252,8 +252,8 @@
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },
-  "PasskeyController": { "passkeyRecord": "object" },
   "PPOMController": { "storageMetadata": "object" },
+  "PasskeyController": { "passkeyRecord": "object" },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
     "permissionActivityLog": "object",

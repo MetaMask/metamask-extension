@@ -179,8 +179,8 @@
       "firstTimeFlowType": "import",
       "seedPhraseBackedUp": null
     },
-    "PasskeyController": { "passkeyRecord": "object" },
     "PPOMController": { "storageMetadata": "object" },
+    "PasskeyController": { "passkeyRecord": "object" },
     "PermissionController": {},
     "PermissionLogController": { "permissionHistory": "object" },
     "PerpsController": "object",
