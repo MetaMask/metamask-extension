@@ -508,6 +508,21 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 {tpErrorMessage}
               </Text>
             )}
+            {Boolean(takeProfitPrice.trim()) && (
+              <button
+                type="button"
+                className="cursor-pointer self-start bg-transparent border-none p-0"
+                onClick={() => onTakeProfitPriceChange('')}
+                data-testid="tp-clear-button"
+              >
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={TextColor.PrimaryDefault}
+                >
+                  {t('clear')}
+                </Text>
+              </button>
+            )}
           </Box>
 
           {/* Stop Loss Section */}
@@ -613,6 +628,21 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
               >
                 {slErrorMessage}
               </Text>
+            )}
+            {Boolean(stopLossPrice.trim()) && (
+              <button
+                type="button"
+                className="cursor-pointer self-start bg-transparent border-none p-0"
+                onClick={() => onStopLossPriceChange('')}
+                data-testid="sl-clear-button"
+              >
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={TextColor.PrimaryDefault}
+                >
+                  {t('clear')}
+                </Text>
+              </button>
             )}
           </Box>
         </Box>
