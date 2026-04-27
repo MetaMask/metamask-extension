@@ -408,22 +408,26 @@ class HomePage {
    *
    * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
+   * @param timeout - Max ms to wait for the balance; defaults to `driver.timeout` (10s unless the test overrides `Driver` construction).
    */
   async checkExpectedBalanceIsDisplayed(
     expectedBalance: string = '25',
     symbol: string = 'ETH',
+    timeout: number = this.driver.timeout,
   ): Promise<void> {
     if (expectedBalance === '0') {
-      await this.driver.waitForSelector(this.fundYourWalletBanner);
+      await this.driver.waitForSelector(this.fundYourWalletBanner, { timeout });
       return;
     }
     try {
-      await this.driver.waitForSelector({
-        css: this.balance,
-        text: expectedBalance,
-      });
+      await this.driver.waitForSelector(
+        { css: this.balance, text: expectedBalance },
+        { timeout },
+      );
     } catch (e) {
-      const balance = await this.driver.waitForSelector(this.balance);
+      const balance = await this.driver.waitForSelector(this.balance, {
+        timeout,
+      });
       const currentBalance = parseFloat(await balance.getText());
       const errorMessage = `Expected balance ${expectedBalance} ${symbol}, got balance ${currentBalance} ${symbol}`;
       console.log(errorMessage, e);

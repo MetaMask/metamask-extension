@@ -6263,6 +6263,7 @@
         "process.versions.pnp": true
       },
       "packages": {
+        "string.prototype.matchall>es-errors": true,
         "depcheck>is-core-module": true,
         "depcheck>resolve>path-parse": true
       }

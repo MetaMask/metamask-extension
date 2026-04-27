@@ -1,8 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
-import { Interface } from '@ethersproject/abi';
-import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import {
@@ -16,23 +14,7 @@ import {
   ConfirmationLoader,
   useConfirmationNavigation,
 } from '../../../hooks/useConfirmationNavigation';
-
-const ERC20_ABI = ['function transfer(address to, uint256 amount)'];
-const erc20Interface = new Interface(ERC20_ABI);
-
-const generateERC20TransferData = (
-  recipient: Hex,
-  amount: string,
-  decimals: number,
-): Hex => {
-  const multiplier = new BigNumber(10).pow(decimals);
-  const amountRaw = new BigNumber(amount).times(multiplier);
-
-  return erc20Interface.encodeFunctionData('transfer', [
-    recipient,
-    `0x${amountRaw.toString(16)}`,
-  ]) as Hex;
-};
+import { generateERC20TransferData } from '../utils';
 
 export const MusdConversionButton = () => {
   const { navigateToTransaction } = useConfirmationNavigation();

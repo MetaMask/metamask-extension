@@ -28,6 +28,7 @@ type SettingsV2HeaderProps = {
   searchPlaceholder?: string;
   onSearchChange?: (text: string) => void;
   onSearchClear?: () => void;
+  showSearchBorder?: boolean;
 };
 
 export const SettingsV2Header = ({
@@ -42,6 +43,7 @@ export const SettingsV2Header = ({
   searchPlaceholder,
   onSearchChange,
   onSearchClear,
+  showSearchBorder = true,
 }: SettingsV2HeaderProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -51,7 +53,7 @@ export const SettingsV2Header = ({
     return (
       <HeaderSearch
         variant={HeaderSearchVariant.Inline}
-        className="border-b border-border-muted"
+        className={showSearchBorder ? 'border-b border-border-muted' : ''}
         padding={3}
         paddingHorizontal={4}
         onClickCancelButton={() => {
