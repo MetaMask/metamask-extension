@@ -54,7 +54,7 @@ export const GATED_METRICS: ReadonlySet<string> = new Set([
   'importSrpHome.total',
   'swap.total',
 
-  // Tier 2 — gated with CI_MULTIPLIER_TIER_2 to absorb moderate variance
+  // Moderate-variance entries (calibrated via `CI_MULTIPLIER.TIER_2`)
   'onboardingImportWallet.metricsToWalletReadyScreen',
   'onboardingNewWallet.agreeButtonToOnboardingSuccess',
   'importSrpHome.homeAfterImportWithNewWallet',
