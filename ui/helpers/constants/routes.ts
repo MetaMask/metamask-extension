@@ -82,8 +82,6 @@ export const SECURITY_PASSWORD_CHANGE_ROUTE =
   '/settings/security-and-privacy/password-change';
 export const BACKUPANDSYNC_ROUTE =
   '/settings/security-and-privacy/backup-and-sync';
-export const SECURITY_REGISTER_PASSKEY_ROUTE =
-  '/settings/security-and-privacy/register-passkey';
 export const REVEAL_SEED_ROUTE = '/seed';
 export const IMPORT_SRP_ROUTE = '/import-srp';
 export const RESTORE_VAULT_ROUTE = '/restore-vault';
@@ -361,11 +359,6 @@ export const ROUTES = [
   {
     path: SECURITY_PASSWORD_CHANGE_ROUTE,
     label: 'Change Password',
-    trackInAnalytics: true,
-  },
-  {
-    path: SECURITY_REGISTER_PASSKEY_ROUTE,
-    label: 'Register Passkey',
     trackInAnalytics: true,
   },
   {
