@@ -409,7 +409,7 @@ export class OAuthService {
     const { authConnection } = loginHandler;
 
     const authCode =
-      authConnection === AuthConnection.Google
+      authConnection === AuthConnection.Google || authConnection === AuthConnection.Telegram
         ? this.#getRedirectUrlAuthCode(redirectUrl)
         : null;
 
