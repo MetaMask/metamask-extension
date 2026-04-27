@@ -142,7 +142,7 @@ export class TrezorAdapter implements HardwareWalletAdapter {
     try {
       const payload = await this.#fetchDeviceFeatures();
       this.#validateDeviceState(payload);
-      this.#validateCapabilities(payload.capabilities);
+      this.#validateCapabilities(payload.capabilities, payload.model);
       this.#validateModelOneMessageSize(payload.model, options);
       return true;
     } catch (error) {
@@ -198,9 +198,18 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * Validate that the device reports all required capabilities.
    *
    * @param capabilities - Raw capabilities list from device features
+   * @param model - The device model identifier
    */
-  #validateCapabilities(capabilities: unknown): void {
+  #validateCapabilities(capabilities: unknown, model: string): void {
     const missing = getMissingCapabilities(capabilities);
+
+    // NOTE: Not all Trezor models support all capabilities, so we skip validation for Model One
+    // Model one does not support solana.
+    // This is to unblock the usage of model one to send devices.
+    if (isTrezorModelOne(model)) {
+      return;
+    }
+
     if (missing.length > 0) {
       throw createHardwareWalletError(
         ErrorCode.DeviceMissingCapability,

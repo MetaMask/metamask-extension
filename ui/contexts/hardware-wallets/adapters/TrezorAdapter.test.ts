@@ -296,6 +296,17 @@ describe('TrezorAdapter', () => {
       });
     });
 
+    it('allows Model One when required capabilities are missing', async () => {
+      mockGetTrezorFeatures.mockResolvedValue(
+        createMockFeaturesResponse({
+          model: 'T1B1',
+          capabilities: ['Capability_Bitcoin'],
+        }),
+      );
+
+      await expect(adapter.ensureDeviceReady()).resolves.toBe(true);
+    });
+
     it('rejects oversized messages on Model One preflight', async () => {
       mockGetTrezorFeatures.mockResolvedValue(
         createMockFeaturesResponse({
