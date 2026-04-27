@@ -53,12 +53,14 @@ function filterSrc(decl, keep) {
  * @param {Set<string>} keep
  */
 function keepEntry(entry, keep) {
-  const match = /url\(\s*(['"]?)(.+?)\1\s*\)/u.exec(entry);
+  const match = /url\(\s*(?:'([^']*)'|"([^"]*)"|([^'"()\s]+))\s*\)/u.exec(
+    entry,
+  );
   if (!match) {
     // Non-url() entry (e.g. `local(...)`); leave it alone.
     return true;
   }
-  let url = match[2];
+  let url = match[1] || match[2] || match[3];
   const hash = url.lastIndexOf('#');
   if (hash !== -1) {
     url = url.slice(0, hash);
