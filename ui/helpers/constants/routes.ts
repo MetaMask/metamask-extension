@@ -67,11 +67,11 @@ export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
 } as const;
 export const SECURITY_ROUTE = '/settings/security';
 export const ABOUT_US_ROUTE = '/settings/about-us';
-export const NETWORKS_ROUTE = '/settings/networks';
-export const NETWORKS_FORM_ROUTE = '/settings/networks/form';
-export const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
+export const NETWORKS_ROUTE = '/networks';
+export const NETWORKS_FORM_ROUTE = '/networks/form';
+export const ADD_NETWORK_ROUTE = '/networks/add-network';
 export const ADD_POPULAR_CUSTOM_NETWORK =
-  '/settings/networks/add-popular-custom-network';
+  '/networks/add-popular-custom-network';
 // Contacts (global menu)
 export const CONTACTS_ROUTE = '/contacts';
 export const CONTACTS_ADD_ROUTE = '/contacts/add';
