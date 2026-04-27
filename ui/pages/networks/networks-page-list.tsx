@@ -103,6 +103,14 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
       justifyContent={BoxJustifyContent.Start}
       onClick={async () => {
         await dispatch(addNetwork(network, { setActive: false }));
+        dispatch(
+          setEditedNetwork({
+            chainId: network.chainId,
+            nickname: network.name,
+            editCompleted: true,
+            newNetwork: true,
+          }),
+        );
       }}
       paddingTop={4}
       paddingBottom={4}
