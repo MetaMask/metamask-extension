@@ -1384,17 +1384,11 @@
   "bridgeTokenIsMaliciousModalDescription": {
     "message": "$1 is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
   },
-  "bridgeTokenIsMaliciousTitle": {
-    "message": "Malicious token"
-  },
   "bridgeTokenIsSuspiciousBanner": {
     "message": "$1 is a suspicious token."
   },
   "bridgeTokenIsSuspiciousModalDescription": {
     "message": "$1 is flagged as suspicious. Take a look at the risks before you continue."
-  },
-  "bridgeTokenIsSuspiciousTitle": {
-    "message": "Suspicious token"
   },
   "bridgeTokenNotFound": {
     "message": "No tokens match \"$1\""
