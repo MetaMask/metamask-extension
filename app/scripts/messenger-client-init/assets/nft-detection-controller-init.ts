@@ -1,5 +1,5 @@
 import { NftDetectionController } from '@metamask/assets-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { NftDetectionControllerMessenger } from '../messengers/assets';
 
 /**
@@ -7,19 +7,20 @@ import { NftDetectionControllerMessenger } from '../messengers/assets';
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
- * @param request.getController - The function to get the controller.
+ * @param request.getMessengerClient - The function to get the controller.
  * @returns The initialized controller.
  */
-export const NftDetectionControllerInit: ControllerInitFunction<
+export const NftDetectionControllerInit: MessengerClientInitFunction<
   NftDetectionController,
   NftDetectionControllerMessenger
 > = (request) => {
-  const { controllerMessenger, getController } = request;
+  const { controllerMessenger, getMessengerClient } = request;
 
-  const preferencesController = () => getController('PreferencesController');
-  const nftController = () => getController('NftController');
+  const preferencesController = () =>
+    getMessengerClient('PreferencesController');
+  const nftController = () => getMessengerClient('NftController');
 
-  const controller = new NftDetectionController({
+  const messengerClient = new NftDetectionController({
     messenger: controllerMessenger,
     addNfts: (...args) => nftController().addNfts(...args),
     getNftState: () => nftController().state,
@@ -28,7 +29,7 @@ export const NftDetectionControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
     persistedStateKey: null,
   };
 };

@@ -2,22 +2,22 @@ import {
   SubscriptionController,
   SubscriptionService,
 } from '@metamask/subscription-controller';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getSubscriptionControllerInitMessenger,
   getSubscriptionControllerMessenger,
-  SubscriptionControllerMessenger,
   SubscriptionControllerInitMessenger,
 } from '../messengers/subscription';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ENVIRONMENT } from '../../../../development/build/constants';
+import { SubscriptionControllerMessenger } from '../messengers/subscription/subscription-controller-messenger';
 import { SubscriptionControllerInit } from './subscription-controller-init';
 
 jest.mock('@metamask/subscription-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     SubscriptionControllerMessenger,
     SubscriptionControllerInitMessenger
   >
@@ -48,9 +48,9 @@ describe('SubscriptionControllerInit', () => {
 
   it('should return controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(SubscriptionControllerInit(requestMock).controller).toBeInstanceOf(
-      SubscriptionController,
-    );
+    expect(
+      SubscriptionControllerInit(requestMock).messengerClient,
+    ).toBeInstanceOf(SubscriptionController);
   });
 
   it('initializes with correct messenger and state', () => {

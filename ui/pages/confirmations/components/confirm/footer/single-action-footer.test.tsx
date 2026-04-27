@@ -5,6 +5,7 @@ import { DefaultRootState } from 'react-redux';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import {
@@ -27,24 +28,40 @@ function genMusdConversion() {
   return { ...base, type: TransactionType.musdConversion, origin: 'metamask' };
 }
 
+function genPerpsDeposit() {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return { ...base, type: TransactionType.perpsDeposit, origin: 'metamask' };
+}
+
+function genPerpsWithdraw() {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return { ...base, type: TransactionType.perpsWithdraw, origin: 'metamask' };
+}
+
 function render({
   isGaslessLoading = false,
+  confirmation = genMusdConversion(),
   alerts = [] as {
     key: string;
     severity: string;
+    reason?: string;
     message: string;
     isBlocking?: boolean;
   }[],
 }: {
   isGaslessLoading?: boolean;
+  confirmation?:
+    | ReturnType<typeof genMusdConversion>
+    | ReturnType<typeof genPerpsDeposit>
+    | ReturnType<typeof genPerpsWithdraw>;
   alerts?: {
     key: string;
     severity: string;
+    reason?: string;
     message: string;
     isBlocking?: boolean;
   }[];
 } = {}) {
-  const confirmation = genMusdConversion();
   const baseState = getMockConfirmStateForTransaction(
     confirmation,
   ) as DefaultRootState;
@@ -107,13 +124,14 @@ describe('<SingleActionFooter />', () => {
     expect(getByTestId('confirm-footer-button')).not.toBeDisabled();
   });
 
-  it('disables button when there is a blocking alert', () => {
+  it('prefers alert reason as button text when blocking alert has both reason and message', () => {
     const { getByTestId } = render({
       alerts: [
         {
           key: 'some-blocking-alert',
           severity: Severity.Danger,
-          message: 'Something is wrong',
+          reason: 'No quotes',
+          message: 'This payment route is not available right now.',
           isBlocking: true,
         },
       ],
@@ -121,7 +139,43 @@ describe('<SingleActionFooter />', () => {
 
     const button = getByTestId('confirm-footer-button');
     expect(button).toBeDisabled();
-    expect(button).toHaveTextContent('Convert');
+    expect(button).toHaveTextContent('No quotes');
+  });
+
+  it('falls back to alert message as button text when reason is absent', () => {
+    const { getByTestId } = render({
+      alerts: [
+        {
+          key: 'some-blocking-alert',
+          severity: Severity.Danger,
+          message: 'Insufficient funds',
+          isBlocking: true,
+        },
+      ],
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Insufficient funds');
+  });
+
+  it('shows alert reason on perpsDeposit button when there is a blocking alert', () => {
+    const { getByTestId } = render({
+      confirmation: genPerpsDeposit(),
+      alerts: [
+        {
+          key: 'some-blocking-alert',
+          severity: Severity.Danger,
+          reason: 'Insufficient funds',
+          message: 'Some longer description',
+          isBlocking: true,
+        },
+      ],
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Insufficient funds');
   });
 
   it('disables button when amount is zero', () => {
@@ -144,5 +198,21 @@ describe('<SingleActionFooter />', () => {
     const { getByTestId } = render();
 
     expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
+  it('shows Add funds label for perpsDeposit transaction type', () => {
+    const { getByTestId } = render({ confirmation: genPerpsDeposit() });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
+    );
+  });
+
+  it('shows Withdraw label for perpsWithdraw transaction type', () => {
+    const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.perpsWithdraw.message,
+    );
   });
 });

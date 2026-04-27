@@ -100,6 +100,7 @@ import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
+import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -223,6 +224,8 @@ const PrepareBridgePage = ({
   } = useDestinationAccount();
 
   useLatestBalance();
+
+  const ensureNetworkEnabled = useEnsureNetworkEnabled();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
@@ -425,7 +428,8 @@ const PrepareBridgePage = ({
           onAmountChange={(e) => {
             dispatch(setFromTokenInputValue(e));
           }}
-          onAssetChange={(token) => {
+          onAssetChange={async (token) => {
+            await ensureNetworkEnabled(token.chainId);
             dispatch(setFromToken(token));
           }}
           networks={fromChains}
@@ -584,7 +588,10 @@ const PrepareBridgePage = ({
                 ? fromChain.chainId
                 : undefined
             }
-            onAssetChange={(newToToken) => dispatch(setToToken(newToToken))}
+            onAssetChange={async (newToToken) => {
+              await ensureNetworkEnabled(newToToken.chainId);
+              dispatch(setToToken(newToToken));
+            }}
             networks={toChains}
             amountInFiat={
               unvalidatedQuote?.toTokenAmount?.valueInCurrency ?? undefined

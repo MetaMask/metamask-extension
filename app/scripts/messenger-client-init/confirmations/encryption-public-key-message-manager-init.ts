@@ -1,5 +1,5 @@
 import { EncryptionPublicKeyManager } from '@metamask/message-manager';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { EncryptionPublicKeyManagerMessenger } from '../messengers';
 
 /**
@@ -9,11 +9,11 @@ import { EncryptionPublicKeyManagerMessenger } from '../messengers';
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @returns The initialized controller.
  */
-export const EncryptionPublicKeyManagerInit: ControllerInitFunction<
+export const EncryptionPublicKeyManagerInit: MessengerClientInitFunction<
   EncryptionPublicKeyManager,
   EncryptionPublicKeyManagerMessenger
 > = ({ controllerMessenger }) => {
-  const controller = new EncryptionPublicKeyManager({
+  const messengerClient = new EncryptionPublicKeyManager({
     additionalFinishStatuses: ['received'],
     messenger: controllerMessenger,
   });
@@ -21,6 +21,6 @@ export const EncryptionPublicKeyManagerInit: ControllerInitFunction<
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller,
+    messengerClient,
   };
 };

@@ -1,8 +1,10 @@
-import { Messenger } from '@metamask/messenger';
-import type { SubscriptionControllerEvents } from '@metamask/subscription-controller';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import {
   SERVICE_NAME,
-  SubscriptionServiceAction,
   SubscriptionServiceMessenger,
 } from '../../../services/subscription/types';
 import { RootMessenger } from '../../../lib/messenger';
@@ -16,16 +18,11 @@ import { RootMessenger } from '../../../lib/messenger';
  */
 export function getSubscriptionServiceMessenger(
   messenger: RootMessenger<
-    SubscriptionServiceAction,
-    SubscriptionControllerEvents
+    MessengerActions<SubscriptionServiceMessenger>,
+    MessengerEvents<SubscriptionServiceMessenger>
   >,
 ): SubscriptionServiceMessenger {
-  const serviceMessenger = new Messenger<
-    'SubscriptionService',
-    SubscriptionServiceAction,
-    SubscriptionControllerEvents,
-    typeof messenger
-  >({
+  const serviceMessenger: SubscriptionServiceMessenger = new Messenger({
     namespace: SERVICE_NAME,
     parent: messenger,
   });

@@ -1,9 +1,9 @@
-import EncryptionPublicKeyController from '../../controllers/encryption-public-key';
-import { ControllerInitFunction } from '../types';
 import {
+  EncryptionPublicKeyController,
   EncryptionPublicKeyControllerMessenger,
-  EncryptionPublicKeyControllerInitMessenger,
-} from '../messengers';
+} from '../../controllers/encryption-public-key';
+import { MessengerClientInitFunction } from '../types';
+import { EncryptionPublicKeyControllerInitMessenger } from '../messengers';
 
 /**
  * Initialize the encryption public key controller.
@@ -11,19 +11,24 @@ import {
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.initMessenger - The messenger to use for initialization.
- * @param request.getController - Function to get other initialized controllers.
+ * @param request.getMessengerClient - Function to get other initialized controllers.
  * @param request.getUIState - Function to get the UI state.
  * @returns The initialized controller.
  */
-export const EncryptionPublicKeyControllerInit: ControllerInitFunction<
+export const EncryptionPublicKeyControllerInit: MessengerClientInitFunction<
   EncryptionPublicKeyController,
   EncryptionPublicKeyControllerMessenger,
   EncryptionPublicKeyControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, getController, getUIState }) => {
-  const manager = getController('EncryptionPublicKeyManager');
-  const keyringController = getController('KeyringController');
+> = ({
+  controllerMessenger,
+  initMessenger,
+  getMessengerClient,
+  getUIState,
+}) => {
+  const manager = getMessengerClient('EncryptionPublicKeyManager');
+  const keyringController = getMessengerClient('KeyringController');
 
-  const controller = new EncryptionPublicKeyController({
+  const messengerClient = new EncryptionPublicKeyController({
     messenger: controllerMessenger,
     manager,
     getState: getUIState,
@@ -45,6 +50,6 @@ export const EncryptionPublicKeyControllerInit: ControllerInitFunction<
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller,
+    messengerClient,
   };
 };

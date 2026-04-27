@@ -6,24 +6,22 @@ import {
 import PropTypes from 'prop-types';
 import {
   BannerAlert,
+  BannerAlertSeverity,
   Box,
+  BoxAlignItems,
+  BoxBorderColor,
+  BoxFlexDirection,
+  Button,
   ButtonIcon,
-  ButtonPrimary,
-  HelpText,
-  HelpTextSeverity,
+  ButtonIconSize,
+  ButtonVariant,
   IconName,
+  OverflowWrap,
   Text,
-} from '../../component-library';
-
-import {
-  AlignItems,
-  BorderColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  Severity,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { HelpText, HelpTextSeverity } from '../../component-library';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
@@ -43,26 +41,25 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
   return (
     <>
       <Text
-        marginTop={6}
-        variant={TextVariant.bodySm}
-        style={{ wordBreak: 'break-word' }}
+        className="mt-6"
+        variant={TextVariant.BodySm}
+        overflowWrap={OverflowWrap.BreakWord}
       >
         {t('privateKeyCopyWarning', [accountName])}
       </Text>
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        borderRadius={BorderRadius.SM}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         borderWidth={1}
-        borderColor={BorderColor.default}
+        borderColor={BoxBorderColor.BorderDefault}
         padding={4}
         gap={4}
+        className="rounded-sm"
       >
         <Text
           data-testid="account-details-key"
-          variant={TextVariant.bodySm}
-          style={{ wordBreak: 'break-word' }}
+          variant={TextVariant.BodySm}
+          overflowWrap={OverflowWrap.BreakWord}
           onClick={() => setShowDisableSelectWarn(true)}
         >
           <LavaDomeReact
@@ -75,6 +72,7 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
             setShowDisableSelectWarn(false) || handlePrivateKeyCopy(privateKey)
           }
           iconName={privateKeyCopied ? IconName.CopySuccess : IconName.Copy}
+          size={ButtonIconSize.Md}
           ariaLabel={t('copyPrivateKey')}
         />
       </Box>
@@ -83,12 +81,17 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
           {t('lavaDomeCopyWarning')}
         </HelpText>
       )}
-      <BannerAlert severity={Severity.Danger} marginTop={4}>
-        <Text variant={TextVariant.bodySm}>{t('privateKeyWarning')}</Text>
+      <BannerAlert severity={BannerAlertSeverity.Danger} marginTop={4}>
+        <Text variant={TextVariant.BodySm}>{t('privateKeyWarning')}</Text>
       </BannerAlert>
-      <ButtonPrimary marginTop={6} onClick={onClose} block>
+      <Button
+        variant={ButtonVariant.Primary}
+        className="mt-6"
+        onClick={onClose}
+        isFullWidth
+      >
         {t('done')}
-      </ButtonPrimary>
+      </Button>
     </>
   );
 };

@@ -3,7 +3,7 @@ import {
   EnsControllerInitMessenger,
   EnsControllerMessenger,
 } from '../messengers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 
 /**
  * Initialize the ENS controller.
@@ -13,12 +13,12 @@ import { ControllerInitFunction } from '../types';
  * @param request.initMessenger - The messenger to use for initialization.
  * @returns The initialized controller.
  */
-export const EnsControllerInit: ControllerInitFunction<
+export const EnsControllerInit: MessengerClientInitFunction<
   EnsController,
   EnsControllerMessenger,
   EnsControllerInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
-  const controller = new EnsController({
+  const messengerClient = new EnsController({
     messenger: controllerMessenger,
     onNetworkDidChange: (listener) =>
       initMessenger.subscribe('NetworkController:networkDidChange', listener),
@@ -26,6 +26,6 @@ export const EnsControllerInit: ControllerInitFunction<
 
   return {
     persistedStateKey: null,
-    controller,
+    messengerClient,
   };
 };

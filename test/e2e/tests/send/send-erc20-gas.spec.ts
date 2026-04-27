@@ -9,6 +9,7 @@
 
 import { Mockttp } from 'mockttp';
 import { mockedSourcifyTokenSend } from '../confirmations/helpers';
+import { mockEmptyPrices } from '../tokens/utils/mocks';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -87,6 +88,13 @@ describe('Send ERC20 - Gas Customization', function () {
         await homePage.goToActivityList();
         await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
         await activityListPage.checkTxAmountInActivity(valueWithSymbol('-1'));
+
+        // check token amount is correct after transaction
+        await homePage.goToTokensTab();
+        await assetListPage.checkTokenExistsInList(
+          symbol,
+          valueWithSymbol('9'),
+        );
       },
     );
   });
@@ -228,6 +236,16 @@ describe('Send ERC20 - Gas Customization', function () {
   });
 
   async function mocks(server: Mockttp) {
-    return [await mockedSourcifyTokenSend(server)];
+    return [
+      await mockedSourcifyTokenSend(server),
+      await mockEmptyPrices(server),
+      await server
+        .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+        .always()
+        .thenJson(200, {
+          fullSupport: [],
+          partialSupport: { balances: [] },
+        }),
+    ];
   }
 });

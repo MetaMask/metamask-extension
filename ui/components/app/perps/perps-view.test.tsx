@@ -5,8 +5,15 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
 import * as streamHooks from '../../../hooks/perps/stream';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
 import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
+import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
 const mockGetPerpsStreamManager = jest.fn();
@@ -56,17 +63,26 @@ jest.mock('../../../hooks/perps/stream', () => {
       account: streamMocks.mockAccountState,
       isInitialLoading: false,
     })),
-    usePerpsLiveMarketData: jest.fn(() => ({
-      markets: [
-        ...streamMocks.mockCryptoMarkets,
-        ...streamMocks.mockHip3Markets,
-      ],
-      cryptoMarkets: streamMocks.mockCryptoMarkets,
-      hip3Markets: streamMocks.mockHip3Markets,
-      isInitialLoading: false,
-    })),
   };
 });
+
+jest.mock('./hooks/usePerpsTabExploreData', () => ({
+  usePerpsTabExploreData: jest.fn(() => ({
+    exploreMarkets: [
+      ...mocks.mockCryptoMarkets,
+      ...mocks.mockHip3Markets,
+    ].slice(0, 5),
+    watchlistMarkets: mocks.mockCryptoMarkets.filter((market) =>
+      ['BTC', 'ETH'].includes(market.symbol),
+    ),
+    isInitialLoading: false,
+  })),
+}));
+
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+jest.mock('../../../hooks/perps/usePerpsEligibility', () => ({
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
+}));
 
 jest.mock('./perps-tutorial-modal', () => ({
   PerpsTutorialModal: () => null,
@@ -87,6 +103,7 @@ const mockStore = configureStore({
 describe('PerpsView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
     jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
       positions: mocks.mockPositions,
@@ -94,6 +111,17 @@ describe('PerpsView', () => {
     });
     jest.mocked(streamHooks.usePerpsLiveOrders).mockReturnValue({
       orders: mocks.mockOrders,
+      isInitialLoading: false,
+    });
+    jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+      account: mocks.mockAccountState,
+      isInitialLoading: false,
+    });
+    jest.mocked(usePerpsTabExploreData).mockReturnValue({
+      exploreMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
+      watchlistMarkets: mocks.mockCryptoMarkets.filter((market) =>
+        ['BTC', 'ETH'].includes(market.symbol),
+      ),
       isInitialLoading: false,
     });
     mockGetPerpsStreamManager.mockReturnValue({
@@ -157,6 +185,15 @@ describe('PerpsView', () => {
 
       // Check that at least the first order is rendered
       expect(screen.getByTestId('order-card-order-001')).toBeInTheDocument();
+    });
+
+    it('filters TP/SL trigger orders from Open orders on the Perps tab', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('order-card-order-001')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('order-card-order-004'),
+      ).not.toBeInTheDocument();
     });
 
     it('displays position section header', () => {
@@ -457,6 +494,125 @@ describe('PerpsView', () => {
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
         'perpsGetOpenOrders',
         [],
+      );
+    });
+  });
+
+  describe('geo-blocking', () => {
+    it('renders the geo-block modal element (closed by default)', () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('perps-view')).toBeInTheDocument();
+    });
+  });
+
+  it('passes tab explore and watchlist markets from the tab hook', () => {
+    jest.mocked(usePerpsTabExploreData).mockReturnValue({
+      exploreMarkets: [mocks.mockCryptoMarkets[0]],
+      watchlistMarkets: [mocks.mockCryptoMarkets[1]],
+      isInitialLoading: false,
+    });
+
+    renderWithProvider(<PerpsView />, mockStore);
+
+    expect(screen.getByTestId('explore-markets-BTC')).toBeInTheDocument();
+    expect(screen.queryByTestId('explore-markets-ETH')).not.toBeInTheDocument();
+    expect(screen.getByTestId('perps-watchlist-ETH')).toBeInTheDocument();
+    expect(screen.queryByTestId('perps-watchlist-BTC')).not.toBeInTheDocument();
+  });
+
+  describe('analytics tracking', () => {
+    it('fires Perp Screen Viewed with wallet_home_perps_tab screen_type once loading completes', () => {
+      const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <PerpsView />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      const screenViewedCalls = mockTrackEvent.mock.calls.filter(
+        ([arg]) => arg?.event === MetaMetricsEventName.PerpsScreenViewed,
+      );
+
+      expect(screenViewedCalls).toHaveLength(1);
+      expect(screenViewedCalls[0][0]).toEqual(
+        expect.objectContaining({
+          event: MetaMetricsEventName.PerpsScreenViewed,
+          category: MetaMetricsEventCategory.Perps,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: 'wallet_home_perps_tab',
+            [PERPS_EVENT_PROPERTY.OPEN_POSITION]: expect.any(Number),
+            [PERPS_EVENT_PROPERTY.OPEN_ORDER]: expect.any(Number),
+            [PERPS_EVENT_PROPERTY.SOURCE]: 'homescreen_tab',
+            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+          }),
+        }),
+      );
+    });
+
+    it('does not fire Perp Screen Viewed while loading', () => {
+      const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
+      jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
+        positions: mocks.mockPositions,
+        isInitialLoading: true,
+      });
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <PerpsView />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.PerpsScreenViewed,
+        }),
+      );
+    });
+
+    it('does not fire Perp Screen Viewed while account data is still loading', () => {
+      const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
+      // positions/orders/markets are ready but account hasn't arrived yet
+      jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+        account: null,
+        isInitialLoading: true,
+      });
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <PerpsView />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.PerpsScreenViewed,
+        }),
       );
     });
   });

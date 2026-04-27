@@ -54,6 +54,7 @@ import {
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
+  NETWORKS_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
@@ -105,7 +106,6 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
-import { isInteractiveUI } from '../../../shared/lib/environment-type';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -150,6 +150,7 @@ const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
 const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
+const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
 );
@@ -299,6 +300,10 @@ export const routeConfig = [
       {
         path: IMPORT_SRP_ROUTE,
         element: <ImportSrpPage />,
+      },
+      {
+        path: NETWORKS_ROUTE,
+        element: <NetworksPage />,
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
@@ -691,7 +696,7 @@ export default function Routes() {
       dir={textDirection}
     >
       <ConfirmationHandler />
-      {isInteractiveUI() && <ToastListener />}
+      <ToastListener />
 
       <QRHardwarePopover />
       <Modal />

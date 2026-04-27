@@ -2,7 +2,7 @@ import {
   SnapInterfaceController,
   SnapInterfaceControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { getSnapInterfaceControllerMessenger } from '../messengers/snaps';
 import { getRootMessenger } from '../../lib/messenger';
@@ -11,7 +11,7 @@ import { SnapInterfaceControllerInit } from './snap-interface-controller-init';
 jest.mock('@metamask/snaps-controllers');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<SnapInterfaceControllerMessenger>
+  MessengerClientInitRequest<SnapInterfaceControllerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
@@ -26,8 +26,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('SnapInterfaceControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = SnapInterfaceControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(SnapInterfaceController);
+    const { messengerClient } =
+      SnapInterfaceControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(SnapInterfaceController);
   });
 
   it('passes the proper arguments to the controller', () => {

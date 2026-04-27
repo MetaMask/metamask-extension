@@ -1,12 +1,12 @@
 import { TokenDetectionController } from '@metamask/assets-controllers';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import {
   TokenDetectionControllerMessenger,
   TokenDetectionControllerInitMessenger,
 } from './messengers';
 
-export const TokenDetectionControllerInit: ControllerInitFunction<
+export const TokenDetectionControllerInit: MessengerClientInitFunction<
   TokenDetectionController,
   TokenDetectionControllerMessenger,
   TokenDetectionControllerInitMessenger
@@ -17,7 +17,7 @@ export const TokenDetectionControllerInit: ControllerInitFunction<
       'PreferencesController:getState',
     ) as unknown as PreferencesControllerState;
 
-  const controller = new TokenDetectionController({
+  const messengerClient = new TokenDetectionController({
     messenger: controllerMessenger,
     disabled: false,
     getBalancesInSingleCall: (...args) =>
@@ -35,6 +35,6 @@ export const TokenDetectionControllerInit: ControllerInitFunction<
   return {
     memStateKey: null,
     persistedStateKey: null,
-    controller,
+    messengerClient,
   };
 };

@@ -50,6 +50,12 @@ export const DEFAULT_NUM_BROWSER_LOADS = DEFAULT_BENCHMARK_BROWSER_LOADS;
 /** Same as {@link DEFAULT_BENCHMARK_PAGE_LOADS} in `shared/constants/benchmarks`. */
 export const DEFAULT_NUM_PAGE_LOADS = DEFAULT_BENCHMARK_PAGE_LOADS;
 
+/** Browser loads for the POWER_USER_HOME preset (higher than default to offset warm-up exclusion). */
+export const POWER_USER_NUM_BROWSER_LOADS = 15;
+
+/** Number of leading browser-load sessions to discard as warm-up before computing stats. */
+export const WARMUP_RUNS = 1;
+
 export const ALL_METRICS = {
   uiStartup: 'UI Startup',
   load: 'navigation[0].load',

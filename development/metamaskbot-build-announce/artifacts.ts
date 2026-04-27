@@ -200,7 +200,7 @@ function formatBuildLinks(buildLinks: BuildLinks): string[] {
  * @param options.version - The extension version string (from package.json).
  * @param options.shortSha - Abbreviated commit hash.
  * @param options.artifacts - Artifact links from getArtifactLinks.
- * @param options.postNewBuilds - Whether to include extension build links.
+ * @param options.buildsFromSha - The short SHA of the commit that produced the builds (differs from shortSha when builds are reused).
  * @returns Collapsible HTML string.
  */
 export function buildArtifactsBody({
@@ -208,19 +208,17 @@ export function buildArtifactsBody({
   version,
   shortSha,
   artifacts,
-  postNewBuilds,
+  buildsFromSha,
 }: {
   hostUrl: string;
   version: string;
   shortSha: string;
   artifacts: ArtifactLinks;
-  postNewBuilds: boolean;
+  buildsFromSha: string;
 }) {
   const contentRows: string[] = [];
 
-  if (postNewBuilds) {
-    contentRows.push(...formatBuildLinks(getBuildLinks({ hostUrl, version })));
-  }
+  contentRows.push(...formatBuildLinks(getBuildLinks({ hostUrl, version })));
 
   contentRows.push(
     `bundle size: ${artifacts.link('bundleSizeStats')}`,
@@ -231,9 +229,17 @@ export function buildArtifactsBody({
     artifacts.link('allArtifacts'),
   );
 
-  const hiddenContent = `<ul>${contentRows
+  const isReused = buildsFromSha !== shortSha;
+  const reusedTag = isReused ? ` [reused from ${buildsFromSha}]` : '';
+
+  const warningItem =
+    `<li>⚠️ Make sure the build is safe before downloading and running this build.` +
+    `<ul><li>Please do not use these builds with accounts that contain significant real money.</li>\n` +
+    `<li>Beware the security risks of <a href="https://adnanthekhan.com/2024/05/06/the-monsters-in-your-build-cache-github-actions-cache-poisoning/">cache poisoning</a>.</li></ul></li>`;
+
+  const hiddenContent = `<ul>${warningItem}\n${contentRows
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;
 
-  return `<details><summary>Builds ready [${shortSha}]</summary>${hiddenContent}</details>\n\n`;
+  return `<details><summary>Builds ready [${shortSha}]${reusedTag}</summary>${hiddenContent}</details>\n\n`;
 }

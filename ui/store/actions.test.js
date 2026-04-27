@@ -33,12 +33,13 @@ import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+import { getStatePatches } from './patch-store-substream-connection';
 
 jest.mock(
   '../../app/scripts/messenger-client-init/perps-controller-init',
   () => ({
     PerpsControllerInit: jest.fn().mockReturnValue({
-      controller: {
+      messengerClient: {
         state: {},
         name: 'PerpsController',
       },
@@ -46,6 +47,9 @@ jest.mock(
     }),
   }),
 );
+jest.mock('./patch-store-substream-connection');
+
+const getStatePatchesMock = jest.mocked(getStatePatches);
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -131,7 +135,6 @@ describe('Actions', () => {
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
-    background.getStatePatches = sinon.stub().resolves([]);
     background.removePermittedChain = sinon.stub();
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
@@ -225,7 +228,7 @@ describe('Actions', () => {
       expect(
         background.setDataCollectionForMarketing.calledOnceWith(true),
       ).toStrictEqual(true);
-      expect(background.getStatePatches.calledOnce).toStrictEqual(true);
+      expect(getStatePatchesMock).toHaveBeenCalled();
       expect(store.getActions()).toStrictEqual([
         {
           type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
@@ -1414,7 +1417,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         updateTransaction: updateTransactionStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1437,7 +1439,6 @@ describe('Actions', () => {
         updateTransaction: () => {
           throw new Error('error');
         },
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1764,7 +1765,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1793,7 +1793,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1828,7 +1827,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         ignoreTokens: ignoreTokensStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1844,7 +1842,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         ignoreTokens: sinon.stub().rejects(new Error('error')),
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1877,7 +1874,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         hideAsset: hideAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1896,7 +1892,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         hideAsset: sinon.stub().rejects(error),
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1928,7 +1923,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addCustomAsset: addCustomAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1948,7 +1942,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addCustomAsset: sinon.stub().rejects(error),
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1975,7 +1968,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         unhideAsset: unhideAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1994,7 +1986,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         unhideAsset: sinon.stub().rejects(error),
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2022,7 +2013,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         removeCustomAsset: removeCustomAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2044,7 +2034,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         removeCustomAsset: sinon.stub().rejects(error),
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2072,7 +2061,6 @@ describe('Actions', () => {
       background.getApi.returns({
         unhideAsset: unhideAssetStub,
         addCustomAsset: addCustomAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2118,7 +2106,6 @@ describe('Actions', () => {
       background.getApi.returns({
         unhideAsset: sinon.stub().rejects(new Error('unhide failed')),
         addCustomAsset: addCustomAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2498,7 +2485,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         setAddressBook: setAddressBookStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -3125,7 +3111,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         rejectPendingApproval: sinon.stub().resolves(),
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -3159,7 +3144,7 @@ describe('Actions', () => {
   });
 
   describe('#createCancelTransaction', () => {
-    it('shows TRANSACTION_ALREADY_CONFIRMED modal if createCancelTransaction throws with an error', async () => {
+    it('dispatches DISPLAY_WARNING and rethrows when createCancelTransaction fails', async () => {
       const store = mockStore();
 
       const createCancelTransactionStub = sinon
@@ -3171,20 +3156,19 @@ describe('Actions', () => {
 
       const txId = '123-456';
 
-      try {
-        await store.dispatch(actions.createCancelTransaction(txId));
-      } catch (error) {
-        /* eslint-disable-next-line jest/no-conditional-expect */
-        expect(error.message).toBe('Previous transaction is already confirmed');
-      }
+      await expect(
+        store.dispatch(actions.createCancelTransaction(txId)),
+      ).rejects.toThrow('Previous transaction is already confirmed');
 
       const resultantActions = store.getActions();
-      const expectedAction = resultantActions.find(
-        (action) => action.type === actionConstants.MODAL_OPEN,
+      const warningAction = resultantActions.find(
+        (action) => action.type === actionConstants.DISPLAY_WARNING,
       );
 
-      expect(expectedAction.payload.name).toBe('TRANSACTION_ALREADY_CONFIRMED');
-      expect(expectedAction.payload.originalTransactionId).toBe(txId);
+      expect(warningAction).toBeDefined();
+      expect(warningAction.payload).toBe(
+        'Previous transaction is already confirmed',
+      );
     });
   });
 
@@ -4618,7 +4602,6 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'HIDE_WARNING' },
-        { type: 'SET_SHOW_NEW_SRP_ADDED_TOAST', payload: true },
       ];
 
       await store.dispatch(actions.importMnemonicToVault(mnemonic));
@@ -4819,6 +4802,19 @@ describe('Actions', () => {
     });
   });
 
+  describe('#perpsToggleTestnet', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls perpsToggleTestnet in the background', async () => {
+      background.perpsToggleTestnet = sinon.stub().resolves();
+      setBackgroundConnection(background);
+      await actions.perpsToggleTestnet();
+      expect(background.perpsToggleTestnet.callCount).toStrictEqual(1);
+    });
+  });
+
   describe('#setPendingRedirectRoute', () => {
     afterEach(() => {
       sinon.restore();
@@ -4827,7 +4823,6 @@ describe('Actions', () => {
     it('calls background setPendingRedirectRoute with a route', async () => {
       const store = mockStore();
       background.setPendingRedirectRoute = sinon.stub().resolves();
-      background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
       const route = { path: '/shield-plan' };
@@ -4841,7 +4836,6 @@ describe('Actions', () => {
     it('calls background setPendingRedirectRoute with null', async () => {
       const store = mockStore();
       background.setPendingRedirectRoute = sinon.stub().resolves();
-      background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
       await store.dispatch(actions.setPendingRedirectRoute(null));
@@ -4856,7 +4850,6 @@ describe('Actions', () => {
       background.setPendingRedirectRoute = sinon
         .stub()
         .rejects(new Error('error'));
-      background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
       const expectedActions = [{ type: 'DISPLAY_WARNING', payload: 'error' }];

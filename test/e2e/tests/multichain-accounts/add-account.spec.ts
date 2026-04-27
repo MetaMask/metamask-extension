@@ -1,23 +1,21 @@
-import { E2E_SRP } from '../../fixtures/default-fixture';
-import { WALLET_PASSWORD } from '../../constants';
+import { Mockttp } from 'mockttp';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
+import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
 import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
-import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
-import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
-import { Driver } from '../../webdriver/driver';
 import {
   login,
   lockAndWaitForLoginPage,
 } from '../../page-objects/flows/login.flow';
-import { mockPriceApi } from '../tokens/utils/mocks';
-import {
-  withImportedAccount,
-  withMultichainAccountsDesignEnabled,
-} from './common';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import HomePage from '../../page-objects/pages/home/homepage';
+import LoginPage from '../../page-objects/pages/login-page';
+import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
+import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
+import { Driver } from '../../webdriver/driver';
+import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
 
 const SECOND_ACCOUNT_NAME = 'Account 2';
 const IMPORTED_ACCOUNT_NAME = 'Imported Account 1';
@@ -34,12 +32,32 @@ describe('Add account', function () {
   // BUG #38568 - Sending token crashes the Extension with BigNumber error
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
-    await withMultichainAccountsDesignEnabled(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withKeyringControllerMultiSRP()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withCurrencyController({
+            currencyRates: {
+              ETH: {
+                conversionDate: Date.now(),
+                conversionRate: MOCK_ETH_CONVERSION_RATE,
+                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
+              },
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockPriceApi,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return [await mockPriceApi(mockServer)];
+        },
       },
-      async (driver: Driver) => {
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { expectedBalance: '$85,025.00' });
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
@@ -60,7 +78,6 @@ describe('Add account', function () {
         });
 
         const homePage = new HomePage(driver);
-        const headerNavbar = new HeaderNavbar(driver);
         await homePage.checkPageIsLoaded();
         const activityList = new ActivityListPage(driver);
         await activityList.checkTxAmountInActivity('-2.8 ETH');
@@ -97,14 +114,27 @@ describe('Add account', function () {
   });
 
   it('should remove imported private key account successfully', async function () {
-    await withImportedAccount(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withKeyringControllerMultiSRP()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
         title: this.test?.fullTitle(),
-        privateKey: TEST_PRIVATE_KEY,
-        testSpecificMock: mockPriceApi,
       },
-      async (driver: Driver) => {
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+
         const accountListPage = new AccountListPage(driver);
+        await accountListPage.addNewImportedAccount(
+          TEST_PRIVATE_KEY,
+          undefined,
+          { isMultichainAccountsState2Enabled: true },
+        );
+
         await accountListPage.checkPageIsLoaded();
         await accountListPage.openMultichainAccountMenu({
           accountLabel: importedAccount.name,
@@ -129,12 +159,32 @@ describe('Add account', function () {
     const testPrivateKey: string =
       '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
 
-    await withMultichainAccountsDesignEnabled(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withKeyringControllerMultiSRP()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withCurrencyController({
+            currencyRates: {
+              ETH: {
+                conversionDate: Date.now(),
+                conversionRate: MOCK_ETH_CONVERSION_RATE,
+                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
+              },
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockPriceApi,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return [await mockPriceApi(mockServer)];
+        },
       },
-      async (driver: Driver) => {
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
@@ -179,11 +229,9 @@ describe('Add account', function () {
           accountLabel: IMPORTED_ACCOUNT_NAME,
         });
         await accountListPage.clickMultichainAccountMenuItem('Account details');
-        // Check user cannot delete 2nd account
         await accountDetailsPage.checkPageIsLoaded();
         await accountDetailsPage.removeAccount();
 
-        const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountNotDisplayedInAccountList(
@@ -194,12 +242,20 @@ describe('Add account', function () {
   });
 
   it('added account should persist after wallet lock', async function () {
-    await withMultichainAccountsDesignEnabled(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withKeyringControllerMultiSRP()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockPriceApi,
       },
-      async (driver: Driver) => {
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
@@ -214,7 +270,6 @@ describe('Add account', function () {
         );
         await accountListPage.switchToAccount(CUSTOM_ACCOUNT_NAME);
 
-        const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);
 
         // Lock and unlock wallet

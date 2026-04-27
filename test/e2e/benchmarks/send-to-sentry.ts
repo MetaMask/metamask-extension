@@ -30,7 +30,7 @@ import type {
 } from '../../../shared/constants/benchmarks';
 import { getGitBranch, getGitCommitHash } from './utils/git';
 import type { UserActionResult } from './utils/types';
-import { aggregateWebVitals } from './utils/statistics';
+import { aggregateWebVitals, assessDataQuality } from './utils/statistics';
 
 const packageJsonPath = path.resolve(__dirname, '../../../package.json');
 const { version } = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as {
@@ -241,12 +241,49 @@ async function main() {
         }
       }
 
+      // Derived reliability metrics: CV, dataQuality, tailRatio
+      // CV = (stdDev / mean) * 100 — coefficient of variation, directly
+      // comparable across steps with different magnitudes.
+      // dataQuality: 'good' (CV<30), 'poor' (30-50), 'unreliable' (>50).
+      // tailRatio = p95/p75 — tail heaviness; closer to 1.0 = tighter.
+      const derivedMetrics: Record<string, number | string> = {};
+      if (benchmark.mean && benchmark.stdDev) {
+        for (const [key, meanVal] of Object.entries(benchmark.mean)) {
+          const stdDevVal = benchmark.stdDev[key];
+          if (meanVal > 0 && stdDevVal !== undefined) {
+            const cv = (stdDevVal / meanVal) * 100;
+            derivedMetrics[`${type}.cv.${key}`] = cv;
+            derivedMetrics[`${type}.dataQuality.${key}`] =
+              assessDataQuality(cv);
+          }
+        }
+      }
+      if (benchmark.p95 && benchmark.p75) {
+        for (const [key, p95Val] of Object.entries(benchmark.p95)) {
+          const p75Val = benchmark.p75[key];
+          if (p75Val !== undefined && p75Val > 0) {
+            derivedMetrics[`${type}.tailRatio.${key}`] = p95Val / p75Val;
+          }
+        }
+      }
+      if (benchmark.trimmedCount) {
+        for (const [key, count] of Object.entries(benchmark.trimmedCount)) {
+          derivedMetrics[`${type}.trimmedCount.${key}`] = count;
+        }
+      }
+      if (benchmark.outliers) {
+        for (const [key, count] of Object.entries(benchmark.outliers)) {
+          derivedMetrics[`${type}.outliers.${key}`] = count;
+        }
+      }
+
       // Timer data: structured logs (existing path, unchanged)
       Sentry.logger.info(message, {
         ...baseCiAttributes,
         'ci.persona': benchmark.persona || BENCHMARK_PERSONA.STANDARD,
         'ci.testTitle': benchmark.testTitle,
         ...allMetrics,
+        ...derivedMetrics,
       });
 
       // Web vitals: separate reporting path via spans

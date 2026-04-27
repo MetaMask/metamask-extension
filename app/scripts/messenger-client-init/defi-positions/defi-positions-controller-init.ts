@@ -1,5 +1,5 @@
 import { DeFiPositionsController } from '@metamask/assets-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   DeFiPositionsControllerMessenger,
   DeFiPositionsControllerInitMessenger,
@@ -9,15 +9,17 @@ import {
   FeatureFlagNames,
 } from '../../../../shared/lib/feature-flags';
 
-export const DeFiPositionsControllerInit: ControllerInitFunction<
+export const DeFiPositionsControllerInit: MessengerClientInitFunction<
   DeFiPositionsController,
   DeFiPositionsControllerMessenger,
   DeFiPositionsControllerInitMessenger
-> = ({ initMessenger, controllerMessenger, getController }) => {
-  const getPreferencesController = () => getController('PreferencesController');
-  const getOnboardingController = () => getController('OnboardingController');
+> = ({ initMessenger, controllerMessenger, getMessengerClient }) => {
+  const getPreferencesController = () =>
+    getMessengerClient('PreferencesController');
+  const getOnboardingController = () =>
+    getMessengerClient('OnboardingController');
 
-  const controller = new DeFiPositionsController({
+  const messengerClient = new DeFiPositionsController({
     messenger: controllerMessenger,
     isEnabled: () => {
       const {
@@ -46,7 +48,7 @@ export const DeFiPositionsControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
     persistedStateKey: null,
   };
 };

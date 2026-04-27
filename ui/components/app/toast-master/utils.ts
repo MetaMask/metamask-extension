@@ -71,7 +71,7 @@ export function submitRequestToBackgroundAndCatch(
   });
 }
 
-export function setShowNewSrpAddedToast(value: boolean) {
+export function setShowNewSrpAddedToast(value: number | false) {
   return {
     type: SET_SHOW_NEW_SRP_ADDED_TOAST,
     payload: value,
@@ -115,4 +115,8 @@ export function setShieldEndingToastLastClickedOrClosed(time: number) {
 
 export function setPna25Acknowledged(acknowledged: boolean) {
   submitRequestToBackgroundAndCatch('setPna25Acknowledged', [acknowledged]);
+}
+
+export function dismissSidePanelMigrationToast() {
+  submitRequestToBackgroundAndCatch('dismissSidePanelMigrationToast');
 }

@@ -3,7 +3,7 @@ import {
   InstitutionalSnapControllerMessenger,
 } from '../../controllers/institutional-snap/InstitutionalSnapController';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { getInstitutionalSnapControllerMessenger } from '../messengers/accounts/institutional-snap-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { InstitutionalSnapControllerInit } from './institutional-snap-controller-init';
@@ -11,7 +11,7 @@ import { InstitutionalSnapControllerInit } from './institutional-snap-controller
 jest.mock('../../controllers/institutional-snap/InstitutionalSnapController');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<InstitutionalSnapControllerMessenger>
+  MessengerClientInitRequest<InstitutionalSnapControllerMessenger>
 > {
   const baseControllerMessenger = getRootMessenger();
 
@@ -36,7 +36,7 @@ describe('InstitutionalSnapControllerInit', () => {
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
     expect(
-      InstitutionalSnapControllerInit(requestMock).controller,
+      InstitutionalSnapControllerInit(requestMock).messengerClient,
     ).toBeInstanceOf(InstitutionalSnapController);
   });
 

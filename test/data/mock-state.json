@@ -1035,9 +1035,30 @@
     },
     "ticker": "ETH",
     "currentCurrency": "usd",
+    "selectedCurrency": "usd",
     "currencyRates": {
       "ETH": {
         "conversionRate": 556.12
+      }
+    },
+    "assetsInfo": {
+      "eip155:1/slip44:60": {
+        "type": "native",
+        "decimals": 18,
+        "symbol": "ETH"
+      },
+      "eip155:5/slip44:60": {
+        "type": "native",
+        "decimals": 18,
+        "symbol": "GoerliETH"
+      }
+    },
+    "assetsPrice": {
+      "eip155:1/slip44:60": {
+        "assetPriceType": "fungible",
+        "price": 556.12,
+        "usdPrice": 556.12,
+        "lastUpdated": 1721393858000
       }
     },
     "addressBook": {

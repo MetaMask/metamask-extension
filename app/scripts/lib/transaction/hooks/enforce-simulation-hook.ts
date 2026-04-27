@@ -1,5 +1,4 @@
 import {
-  AfterSimulateHook,
   BeforeSignHook,
   TransactionContainerType,
   TransactionMeta,
@@ -7,84 +6,67 @@ import {
 import { createProjectLogger } from '@metamask/utils';
 import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
 import { applyTransactionContainers } from '../containers/util';
-import { isEnforcedSimulationsEligible } from '../../../../../shared/lib/transaction/enforced-simulations';
 
 const log = createProjectLogger('enforce-simulation-hook');
 
 export class EnforceSimulationHook {
-  #messenger: TransactionControllerInitMessenger;
+  readonly #messenger: TransactionControllerInitMessenger;
+
+  readonly #isEligible: (transactionMeta: TransactionMeta) => boolean;
 
   constructor({
     messenger,
+    isEligible,
   }: {
     messenger: TransactionControllerInitMessenger;
+    isEligible: (transactionMeta: TransactionMeta) => boolean;
   }) {
     this.#messenger = messenger;
-  }
-
-  getAfterSimulateHook(): AfterSimulateHook {
-    return this.#hook.bind(this, {});
+    this.#isEligible = isEligible;
   }
 
   getBeforeSignHook(): BeforeSignHook {
-    return this.#hook.bind(this, { isFinal: true });
+    return this.#hook.bind(this);
   }
 
-  async #hook(
-    options: { isFinal?: boolean },
-    request: {
-      transactionMeta: TransactionMeta;
-    },
-  ) {
+  async #hook(request: {
+    transactionMeta: TransactionMeta;
+  }): Promise<Awaited<ReturnType<BeforeSignHook>>> {
     const { transactionMeta } = request;
-    const { isFinal } = options;
-
     const { containerTypes, txParamsOriginal } = transactionMeta;
 
-    const isEligible = isEnforcedSimulationsEligible(transactionMeta);
-
-    if (!isEligible) {
-      log('Skipping as not eligible for enforced simulations');
-      return {
-        skipSimulation: false,
-      };
+    if (!this.#isEligible(transactionMeta)) {
+      log('Skipping as not eligible');
+      return {};
     }
 
-    if (containerTypes) {
-      const hasEnforcedSimulations = containerTypes.includes(
-        TransactionContainerType.EnforcedSimulations,
-      );
-
-      if (!isFinal && hasEnforcedSimulations) {
-        log('Skipping as simulation already enforced');
-        return {};
-      }
-
-      if (!hasEnforcedSimulations) {
-        log('Skipping as user opted out of enforced simulations');
-        return {};
-      }
+    if (!containerTypes) {
+      log('Skipping as no container types set');
+      return {};
     }
 
-    if (isFinal && !txParamsOriginal) {
+    const hasEnforcedSimulations = containerTypes.includes(
+      TransactionContainerType.EnforcedSimulations,
+    );
+
+    if (!hasEnforcedSimulations) {
+      log('Skipping as user has not enabled enforced simulations');
+      return {};
+    }
+
+    if (!txParamsOriginal) {
       log('Cannot find original transaction parameters');
       throw new Error('Original transaction parameters not found');
     }
 
-    const newContainerTypes = [
-      ...(containerTypes ?? []),
-      TransactionContainerType.EnforcedSimulations,
-    ];
-
     const { updateTransaction } = await applyTransactionContainers({
-      isApproved: isFinal ?? false,
+      isApproved: true,
       messenger: this.#messenger,
       transactionMeta,
-      types: newContainerTypes,
+      types: containerTypes,
     });
 
     return {
-      skipSimulation: true,
       updateTransaction,
     };
   }
