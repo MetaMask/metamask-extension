@@ -172,6 +172,73 @@ describe('compare-benchmarks', () => {
       ).toBe(1700);
     });
 
+    it('applies CV-adaptive widening when the derived CV is in the adaptive band', () => {
+      const originalCI = process.env.CI;
+      process.env.CI = 'true';
+      try {
+        // startupPowerUserHome.uiStartup: warn=4000, fail=4700, ciMultiplier=2.0.
+        // mean=3000, stdDev=1200 → CV=40 → adjustment=1.2.
+        // Effective fail = 4700 × 2.0 × 1.2 = 11280; p75=12000 exceeds it.
+        const benchmarks = [
+          {
+            name: 'benchmark-chrome-browserify-startupPowerUserHome',
+            data: {
+              startupPowerUserHome: makeBenchmarkResults({
+                persona: 'powerUser',
+                mean: { uiStartup: 3000 },
+                stdDev: { uiStartup: 1200 },
+                p75: { uiStartup: 12000 },
+                p95: { uiStartup: 12000 },
+              }),
+            },
+          },
+        ];
+
+        const result = runComparison(benchmarks, {});
+        const violation = result.comparisons[0].absoluteViolations.find(
+          (v) => v.metricId === 'uiStartup' && v.percentile === 'p75',
+        );
+        expect(violation).toBeDefined();
+        expect(violation?.severity).toBe(THRESHOLD_SEVERITY.Fail);
+        expect(violation?.cvAdjustment).toBeCloseTo(1.2);
+        expect(violation?.threshold).toBeCloseTo(11280);
+        expect(result.anyFailed).toBe(true);
+      } finally {
+        process.env.CI = originalCI;
+      }
+    });
+
+    it('does not record cvAdjustment when the derived CV is outside the adaptive band', () => {
+      const originalCI = process.env.CI;
+      process.env.CI = 'true';
+      try {
+        // mean=3000, stdDev=300 → CV=10 — below the 25% floor, no adjustment.
+        const benchmarks = [
+          {
+            name: 'benchmark-chrome-browserify-startupPowerUserHome',
+            data: {
+              startupPowerUserHome: makeBenchmarkResults({
+                persona: 'powerUser',
+                mean: { uiStartup: 3000 },
+                stdDev: { uiStartup: 300 },
+                p75: { uiStartup: 12000 },
+                p95: { uiStartup: 12000 },
+              }),
+            },
+          },
+        ];
+
+        const result = runComparison(benchmarks, {});
+        const violation = result.comparisons[0].absoluteViolations.find(
+          (v) => v.metricId === 'uiStartup' && v.percentile === 'p75',
+        );
+        expect(violation).toBeDefined();
+        expect(violation?.cvAdjustment).toBeUndefined();
+      } finally {
+        process.env.CI = originalCI;
+      }
+    });
+
     it('skips entries with no matching threshold config', () => {
       const benchmarks = [
         {

@@ -834,6 +834,18 @@ export class AppStateController extends BaseController<
     this.#onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.#timer = null;
 
+    // Clearing an alarm does not remove the listeners, so we only need to register the listener once.
+    if (isManifestV3) {
+      this.#extension.alarms.onAlarm.addListener(
+        (alarmInfo: { name: string }) => {
+          if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
+            this.#onInactiveTimeout();
+            this.#extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+          }
+        },
+      );
+    }
+
     this.waitingForUnlock = [];
 
     messenger.subscribe(
@@ -1222,14 +1234,6 @@ export class AppStateController extends BaseController<
         delayInMinutes: timeoutToSet,
         periodInMinutes: timeoutToSet,
       });
-      this.#extension.alarms.onAlarm.addListener(
-        (alarmInfo: { name: string }) => {
-          if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
-            this.#onInactiveTimeout();
-            this.#extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
-          }
-        },
-      );
     } else {
       this.#timer = setTimeout(
         () => this.#onInactiveTimeout(),

@@ -194,7 +194,7 @@ export const PerpsCandlePeriodModal: React.FC<PerpsCandlePeriodModalProps> = ({
                       className={twMerge(
                         'h-9 min-w-0 rounded-xl bg-muted px-0 py-0 transition-colors hover:bg-muted-hover active:bg-muted-pressed',
                         isSelected &&
-                          'bg-overlay-inverse hover:bg-overlay-inverse active:bg-overlay-inverse',
+                          'bg-icon-default hover:bg-icon-default active:bg-icon-default',
                       )}
                       onClick={() => handlePeriodSelect(period.value)}
                       data-testid={`perps-candle-period-modal-${period.value}`}

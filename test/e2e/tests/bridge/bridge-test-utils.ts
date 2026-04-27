@@ -37,6 +37,7 @@ import {
   EXPECTED_INPUT_CHANGES,
   BRIDGE_REFRESH_RATE,
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+  getMockAssetsPrice,
 } from './constants';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc-gas-included.json';
@@ -240,6 +241,21 @@ async function mockGetPopularTokens(mockServer: Mockttp) {
   }));
 }
 
+function filterTokensByQuery<Token extends { symbol: string; name: string }>(
+  tokens: Token[],
+  query: string,
+): Token[] {
+  if (!query) {
+    return tokens;
+  }
+  const q = query.toLowerCase();
+  return tokens.filter(
+    (token) =>
+      token.symbol.toLowerCase() === q ||
+      token.name.toLowerCase().startsWith(q),
+  );
+}
+
 async function mockSearchTokens(mockServer: Mockttp) {
   return [
     await mockServer
@@ -247,13 +263,16 @@ async function mockSearchTokens(mockServer: Mockttp) {
       .withJsonBodyIncluding({
         chainIds: ['eip155:1'],
       })
-      .thenCallback(() => {
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as { query?: string };
+        const tokens = filterTokensByQuery(
+          MOCK_TOKENS_ETHEREUM,
+          body.query ?? '',
+        );
         return {
           statusCode: 200,
           json: {
-            data: MOCK_TOKENS_ETHEREUM.map((token) =>
-              toBridgeTokenResponse(1, token),
-            ),
+            data: tokens.map((token) => toBridgeTokenResponse(1, token)),
             pageInfo: {
               hasNextPage: false,
               endCursor: null,
@@ -263,17 +282,16 @@ async function mockSearchTokens(mockServer: Mockttp) {
       }),
     await mockServer
       .forPost(/getTokens\/search/u)
-
       .withJsonBodyIncluding({
         chainIds: ['eip155:59144'],
       })
-      .thenCallback(() => {
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as { query?: string };
+        const tokens = filterTokensByQuery(MOCK_TOKENS_LINEA, body.query ?? '');
         return {
           statusCode: 200,
           json: {
-            data: MOCK_TOKENS_LINEA.map((token) =>
-              toBridgeTokenResponse(59144, token),
-            ),
+            data: tokens.map((token) => toBridgeTokenResponse(59144, token)),
             pageInfo: {
               hasNextPage: false,
               endCursor: null,
@@ -283,17 +301,20 @@ async function mockSearchTokens(mockServer: Mockttp) {
       }),
     await mockServer
       .forPost(/getTokens\/search/u)
-
       .withJsonBodyIncluding({
         chainIds: ['eip155:42161'],
       })
-      .thenCallback(() => {
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as { query?: string };
+        const allArbitrum = [
+          MOCK_TOKENS_ARBITRUM,
+          MOCK_GET_TOKEN_ARBITRUM,
+        ].flat();
+        const tokens = filterTokensByQuery(allArbitrum, body.query ?? '');
         return {
           statusCode: 200,
           json: {
-            data: [MOCK_TOKENS_ARBITRUM, MOCK_GET_TOKEN_ARBITRUM]
-              .flat()
-              .map((token) => toBridgeTokenResponse(42161, token)),
+            data: tokens.map((token) => toBridgeTokenResponse(42161, token)),
             pageInfo: {
               hasNextPage: false,
               endCursor: null,
@@ -769,38 +790,78 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
 }
 
 async function mockPriceSpotPricesV3(mockServer: Mockttp) {
+  const resolvedEthPrice =
+    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
+      ? ETH_CONVERSION_RATE_USD
+      : 1;
+
+  const tokenEntry = (
+    id: string,
+    price: number,
+    pricePercentChange1d: number = 0.1,
+  ) => ({
+    assetPriceType: 'fungible',
+    id,
+    price,
+    usdPrice: price,
+    pricePercentChange1d,
+  });
+
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
-            usd: 1.0,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            usd_24h_change: 0.1,
-          },
-          'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
-            usd: 1.0,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            usd_24h_change: 0.1,
-          },
-          'eip155:1/slip44:60': {
-            usd: 2000.0,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            usd_24h_change: 2.5,
-          },
-          'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': {
-            usd: 0.9999,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            usd_24h_change: 0.1,
-          },
-        },
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const vsCurrency = url.searchParams.get('vsCurrency')?.toLowerCase();
+
+      const stablecoins: Record<string, ReturnType<typeof tokenEntry>> = {
+        'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': tokenEntry(
+          'dai',
+          1.0,
+        ),
+        'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f':
+          tokenEntry('dai', 1.0),
+        'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': tokenEntry(
+          'musd',
+          0.9999,
+        ),
       };
+
+      const json =
+        vsCurrency === 'usd'
+          ? {
+              'eip155:1/slip44:60': tokenEntry(
+                'ethereum',
+                resolvedEthPrice,
+                2.5,
+              ),
+              'eip155:59144/slip44:60': tokenEntry(
+                'ethereum',
+                resolvedEthPrice,
+                2.5,
+              ),
+              'eip155:42161/slip44:60': tokenEntry(
+                'ethereum',
+                resolvedEthPrice,
+                2.5,
+              ),
+              ...stablecoins,
+            }
+          : {
+              'eip155:1/slip44:60': tokenEntry('ethereum', resolvedEthPrice, 0),
+              'eip155:59144/slip44:60': tokenEntry(
+                'ethereum',
+                resolvedEthPrice,
+                0,
+              ),
+              'eip155:42161/slip44:60': tokenEntry(
+                'ethereum',
+                resolvedEthPrice,
+                0,
+              ),
+              ...stablecoins,
+            };
+
+      return { statusCode: 200, json };
     });
 }
 
@@ -1194,6 +1255,16 @@ export const getBridgeFixtures = ({
         '0xe708': true,
         '0xa4b1': true,
       },
+    })
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:59144/slip44:60': { amount: '25' },
+          'eip155:42161/slip44:60': { amount: '25' },
+        },
+      },
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
   if (withErc20) {
@@ -1275,6 +1346,9 @@ export const getBridgeFixtures = ({
       },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    unifiedEvmAccountsApiBalances: {
+      mainnetNativeEthHuman: String(225730.11 / ETH_CONVERSION_RATE_USD),
+    },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -1520,6 +1594,16 @@ export const getBridgeL2Fixtures = (
         '0xe708': true,
         '0xa4b1': true,
       },
+    })
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:59144/slip44:60': { amount: '25' },
+          'eip155:42161/slip44:60': { amount: '25' },
+        },
+      },
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
   return {
@@ -1572,6 +1656,9 @@ export const getBridgeL2Fixtures = (
       },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    unifiedEvmAccountsApiBalances: {
+      mainnetNativeEthHuman: String(225750 / ETH_CONVERSION_RATE_USD),
+    },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -1688,6 +1775,16 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
         '0xe708': true,
         '0xa4b1': true,
       },
+    })
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:59144/slip44:60': { amount: '25' },
+          'eip155:42161/slip44:60': { amount: '25' },
+        },
+      },
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
   return {
@@ -1777,6 +1874,16 @@ export const getGasless7702SwapFixtures = (title?: string) => {
         '0xe708': true,
         '0xa4b1': true,
       },
+    })
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:59144/slip44:60': { amount: '25' },
+          'eip155:42161/slip44:60': { amount: '25' },
+        },
+      },
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
   return {

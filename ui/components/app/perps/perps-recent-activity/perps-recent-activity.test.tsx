@@ -179,7 +179,9 @@ describe('PerpsRecentActivity', () => {
       mockStore,
     );
 
-    expect(screen.getByText(messages.perpsSeeAll.message)).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-recent-activity-see-all'),
+    ).toBeInTheDocument();
   });
 
   it('limits displayed transactions to maxTransactions', () => {
@@ -243,7 +245,7 @@ describe('PerpsRecentActivity', () => {
       mockStore,
     );
 
-    const seeAllButton = screen.getByText(messages.perpsSeeAll.message);
+    const seeAllButton = screen.getByTestId('perps-recent-activity-see-all');
     fireEvent.click(seeAllButton);
 
     expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);

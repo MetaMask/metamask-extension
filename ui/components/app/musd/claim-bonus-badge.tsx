@@ -1,9 +1,5 @@
 import {
   FontWeight,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -57,7 +53,7 @@ export const ClaimBonusBadge = ({
   const networkName = networkConfig?.name ?? 'Unknown Network';
 
   // Refetch rewards when a pending claim is confirmed
-  useOnMerklClaimConfirmed(refetchRewards);
+  const { isClaimInFlight } = useOnMerklClaimConfirmed(refetchRewards);
 
   const { claimRewards, isClaiming, error } = useMerklClaim({
     tokenAddress,
@@ -67,6 +63,7 @@ export const ClaimBonusBadge = ({
   useEffect(() => {
     if (
       hasFiredCtaDisplayedEvent.current ||
+      isClaimInFlight ||
       isClaiming ||
       error ||
       !bonusAmountRange
@@ -99,6 +96,7 @@ export const ClaimBonusBadge = ({
     chainId,
     error,
     hasClaimedBefore,
+    isClaimInFlight,
     isClaiming,
     label,
     analyticsLocation,
@@ -132,16 +130,8 @@ export const ClaimBonusBadge = ({
     [claimRewards, trackEvent, label, chainId, networkName, analyticsLocation],
   );
 
-  if (isClaiming) {
-    return (
-      <Icon
-        name={IconName.Loading}
-        size={IconSize.Sm}
-        color={IconColor.PrimaryDefault}
-        style={{ animation: 'spin 1.2s linear infinite' }}
-        data-testid="claim-bonus-spinner"
-      />
-    );
+  if (isClaimInFlight || isClaiming) {
+    return null;
   }
 
   if (error) {
