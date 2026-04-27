@@ -30,6 +30,8 @@ function discardFontFace(keepExtensions) {
 discardFontFace.postcss = true;
 
 /**
+ * Filter a `src` declaration to keep only entries whose URL extension is in `keep`.
+ *
  * @param {import('postcss').Declaration} decl
  * @param {Set<string>} keep
  */
@@ -45,11 +47,13 @@ function filterSrc(decl, keep) {
 }
 
 /**
+ * Return whether a single `src` entry should be kept based on its URL extension.
+ *
  * @param {string} entry
  * @param {Set<string>} keep
  */
 function keepEntry(entry, keep) {
-  const match = /url\(\s*(['"]?)([^'"()\s]+)\1\s*\)/u.exec(entry);
+  const match = /url\(\s*(['"]?)(.+?)\1\s*\)/u.exec(entry);
   if (!match) {
     // Non-url() entry (e.g. `local(...)`); leave it alone.
     return true;
@@ -82,12 +86,12 @@ function splitTopLevelCommas(value) {
   let depth = 0;
   let start = 0;
   for (let i = 0; i < value.length; i += 1) {
-    const c = value[i];
-    if (c === '(') {
+    const char = value[i];
+    if (char === '(') {
       depth += 1;
-    } else if (c === ')') {
+    } else if (char === ')') {
       depth -= 1;
-    } else if (c === ',' && depth === 0) {
+    } else if (char === ',' && depth === 0) {
       out.push(value.slice(start, i).trim());
       start = i + 1;
     }
