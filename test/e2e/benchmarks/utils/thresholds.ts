@@ -5,8 +5,8 @@ import { type ThresholdConfig } from '../../../../shared/constants/benchmarks';
  *
  * Threshold values are calibrated against local timings; this multiplier
  * scales them at gate time to absorb the additional variance CI machines
- * introduce. Assign by tier band when a metric's variance fits cleanly;
- * use a flow- or circumstance-specific value where bands don't apply.
+ * introduce. Use a tier band when a metric's variance fits cleanly; use
+ * `DEFAULT` for uncharacterized metrics.
  *
  * Band guidance: Tier 1 is for sustained low variance — tighter than
  * `DEFAULT` to catch real regressions that 1.5× would hide. Tier 2 is for
@@ -14,22 +14,20 @@ import { type ThresholdConfig } from '../../../../shared/constants/benchmarks';
  * adaptive `(1 + CV/200)` widening in `getEffectiveThreshold` further
  * compensates for per-run spread. Above-band variance is classified
  * "unreliable" and skipped in `validateThresholds`; no multiplier applies.
+ * `STARTUP_POWER_USER` is a context-specific interim value (CV 30–34%)
+ * expected to tighten to `TIER_2` once outlier filtering lands.
  */
 export const CI_MULTIPLIER = {
   /** No widening — time-independent metrics (counts, ratios, unitless scores). */
   NONE: 1.0,
   /** Tier 1 band — sustained low variance; tighter gate than `DEFAULT`. */
   TIER_1: 1.3,
-  /** Tier 2 band — moderate variance; calibrated headroom. */
-  TIER_2: 1.7,
   /** Fallback for uncharacterized metrics. */
   DEFAULT: 1.5,
-  /** Startup, standard persona — CI envelope tighter than `DEFAULT`. */
-  STARTUP_STANDARD: 1.2,
-  /** Startup, powerUser persona — wider envelope to absorb machine + state variance. */
+  /** Tier 2 band — moderate variance; calibrated headroom. */
+  TIER_2: 1.7,
+  /** Startup, powerUser persona — interim; wider envelope pending outlier filtering. */
   STARTUP_POWER_USER: 2.0,
-  /** Account-menu rendering — interim band pending harness determinism work. */
-  ACCOUNT_MENU: 1.8,
 } as const;
 
 /**
@@ -80,7 +78,7 @@ const ONBOARDING_IMPORT_WALLET: ThresholdConfig = {
   openAccountMenuToAccountListLoaded: {
     p75: { warn: 43000, fail: 50000 },
     p95: { warn: 50000, fail: 60000 },
-    ciMultiplier: CI_MULTIPLIER.ACCOUNT_MENU,
+    ciMultiplier: CI_MULTIPLIER.TIER_2, // interim: render depends on controller state-sync timing
   },
   total: {
     p75: { warn: 6800, fail: 7400 },
@@ -138,7 +136,7 @@ const IMPORT_SRP_HOME: ThresholdConfig = {
   openAccountMenuAfterLogin: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
-    ciMultiplier: CI_MULTIPLIER.ACCOUNT_MENU,
+    ciMultiplier: CI_MULTIPLIER.TIER_2, // interim: render depends on controller state-sync timing
   },
   homeAfterImportWithNewWallet: {
     p75: { warn: 20000, fail: 27000 },
@@ -213,17 +211,17 @@ const STANDARD_HOME: ThresholdConfig = {
   uiStartup: {
     p75: { warn: 2000, fail: 2500 },
     p95: { warn: 2500, fail: 3200 },
-    ciMultiplier: CI_MULTIPLIER.STARTUP_STANDARD,
+    ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
   load: {
     p75: { warn: 1600, fail: 2200 },
     p95: { warn: 2200, fail: 2800 },
-    ciMultiplier: CI_MULTIPLIER.STARTUP_STANDARD,
+    ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
   loadScripts: {
     p75: { warn: 1400, fail: 1800 },
     p95: { warn: 1800, fail: 2400 },
-    ciMultiplier: CI_MULTIPLIER.STARTUP_STANDARD,
+    ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
   ...CLS_THRESHOLDS,
 };
