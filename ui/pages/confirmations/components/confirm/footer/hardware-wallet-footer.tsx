@@ -28,7 +28,7 @@ import {
   useHardwareWalletError,
   useHardwareWalletState,
 } from '../../../../../contexts/hardware-wallets';
-import { ConfirmButton } from './footer';
+import { ConfirmButton } from './confirm-button';
 
 export const HardwareWalletActionButton = ({
   disabled,
