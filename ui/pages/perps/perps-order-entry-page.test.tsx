@@ -333,7 +333,7 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
-        'Open Long ETH',
+        'Open long ETH',
       );
     });
 
@@ -432,7 +432,7 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
-        'Open Long',
+        'Open long',
       );
     });
 
@@ -442,7 +442,7 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
-        'Open Short',
+        'Open short',
       );
     });
 
