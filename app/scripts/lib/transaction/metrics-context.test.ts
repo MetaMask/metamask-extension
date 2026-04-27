@@ -112,4 +112,17 @@ describe('buildTransactionMetricsContext', () => {
     expect(context.transactionTypeForMetrics).toBe('perpsDeposit');
     expect(context.isContractInteraction).toBe(false);
   });
+
+  it('returns perpsWithdraw as transaction type for perps withdraw transactions', async () => {
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        type: TransactionType.perpsWithdraw,
+        txParams: { data: '0xa9059cbb' },
+      }),
+      transactionMetricsRequest: createRequest(),
+    });
+
+    expect(context.transactionTypeForMetrics).toBe('perpsWithdraw');
+    expect(context.isContractInteraction).toBe(false);
+  });
 });

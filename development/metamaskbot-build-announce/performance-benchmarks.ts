@@ -318,7 +318,12 @@ export function computeEntryHealth(
   const thresholdConfig = THRESHOLD_REGISTRY[entry.benchmarkName];
   if (thresholdConfig) {
     const { violations } = validateResultThresholds(
-      { p75: entry.p75, p95: entry.p95 } as BenchmarkResults,
+      {
+        mean: entry.mean,
+        stdDev: entry.stdDev,
+        p75: entry.p75,
+        p95: entry.p95,
+      } as BenchmarkResults,
       thresholdConfig,
     );
     if (violations.some((v) => v.severity === THRESHOLD_SEVERITY.Fail)) {
@@ -963,7 +968,12 @@ function getWorstViolationLabel(
   const thresholdConfig = THRESHOLD_REGISTRY[entry.benchmarkName];
   if (thresholdConfig) {
     const { violations } = validateResultThresholds(
-      { p75: entry.p75, p95: entry.p95 } as BenchmarkResults,
+      {
+        mean: entry.mean,
+        stdDev: entry.stdDev,
+        p75: entry.p75,
+        p95: entry.p95,
+      } as BenchmarkResults,
       thresholdConfig,
     );
     const worst = violations

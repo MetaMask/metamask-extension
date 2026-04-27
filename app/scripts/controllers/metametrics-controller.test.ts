@@ -41,6 +41,7 @@ import {
   AB_TEST_ANALYTICS_MAPPINGS,
   clearABTestAnalyticsMappings,
 } from '../../../shared/lib/ab-testing/ab-test-analytics';
+import { createActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
 import * as ManifestFlags from '../../../shared/lib/manifestFlags';
 import * as Utils from '../lib/util';
 import { mockNetworkState } from '../../../test/stub/networks';
@@ -992,10 +993,10 @@ describe('MetaMetricsController', function () {
               properties: expect.objectContaining({
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 active_ab_tests: [
-                  {
-                    key: TEST_BADGE_FLAG_KEY,
-                    value: 'withBadge',
-                  },
+                  createActiveABTestAssignment(
+                    TEST_BADGE_FLAG_KEY,
+                    'withBadge',
+                  ),
                 ],
               }),
             }),
@@ -1039,14 +1040,11 @@ describe('MetaMetricsController', function () {
               properties: expect.objectContaining({
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 active_ab_tests: [
-                  {
-                    key: TEST_QUICK_AMOUNTS_FLAG_KEY,
-                    value: 'treatment',
-                  },
-                  {
-                    key: TEST_LAYOUT_FLAG_KEY,
-                    value: 'control',
-                  },
+                  createActiveABTestAssignment(
+                    TEST_QUICK_AMOUNTS_FLAG_KEY,
+                    'treatment',
+                  ),
+                  createActiveABTestAssignment(TEST_LAYOUT_FLAG_KEY, 'control'),
                 ],
               }),
             }),
@@ -1089,6 +1087,8 @@ describe('MetaMetricsController', function () {
                 {
                   key: TEST_QUICK_AMOUNTS_FLAG_KEY,
                   value: 'manual-value',
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  key_value_pair: 'incorrect=value',
                 },
               ],
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -1103,14 +1103,14 @@ describe('MetaMetricsController', function () {
                 quote_count: 3,
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 active_ab_tests: [
-                  {
-                    key: TEST_QUICK_AMOUNTS_FLAG_KEY,
-                    value: 'manual-value',
-                  },
-                  {
-                    key: TEST_LAYOUT_FLAG_KEY,
-                    value: 'treatment',
-                  },
+                  createActiveABTestAssignment(
+                    TEST_QUICK_AMOUNTS_FLAG_KEY,
+                    'manual-value',
+                  ),
+                  createActiveABTestAssignment(
+                    TEST_LAYOUT_FLAG_KEY,
+                    'treatment',
+                  ),
                 ],
               }),
             }),
@@ -1181,6 +1181,103 @@ describe('MetaMetricsController', function () {
       });
     });
 
+    it('normalizes existing active_ab_tests for unmapped events without fetching feature flags', async function () {
+      const getManifestFlagsSpy = jest
+        .spyOn(ManifestFlags, 'getManifestFlags')
+        .mockReturnValue({});
+
+      await withController(({ controller }) => {
+        const spy = jest.spyOn(segmentMock, 'track');
+
+        controller.trackEvent({
+          event: 'Unrelated Event',
+          category: 'Unit Test',
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            active_ab_tests: [
+              {
+                key: TEST_BADGE_FLAG_KEY,
+                value: 'withBadge',
+              },
+            ],
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            test_prop: 'value',
+          },
+        });
+
+        expect(getManifestFlagsSpy).not.toHaveBeenCalled();
+        expect(spy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              active_ab_tests: [
+                createActiveABTestAssignment(TEST_BADGE_FLAG_KEY, 'withBadge'),
+              ],
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              test_prop: 'value',
+            }),
+          }),
+          expect.anything(),
+        );
+      });
+    });
+
+    it('normalizes existing active_ab_tests on anonymous sensitive-property events', async function () {
+      const getManifestFlagsSpy = jest
+        .spyOn(ManifestFlags, 'getManifestFlags')
+        .mockReturnValue({});
+
+      await withController(({ controller }) => {
+        const spy = jest.spyOn(segmentMock, 'track');
+
+        controller.trackEvent({
+          event: 'Unrelated Event',
+          category: 'Unit Test',
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            active_ab_tests: [
+              {
+                key: TEST_BADGE_FLAG_KEY,
+                value: 'withBadge',
+              },
+            ],
+          },
+          sensitiveProperties: {
+            sensitive: 'value',
+          },
+        });
+
+        const normalizedAssignment = createActiveABTestAssignment(
+          TEST_BADGE_FLAG_KEY,
+          'withBadge',
+        );
+
+        expect(getManifestFlagsSpy).not.toHaveBeenCalled();
+        expect(spy).toHaveBeenCalledTimes(2);
+        expect(spy).toHaveBeenNthCalledWith(
+          1,
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              active_ab_tests: [normalizedAssignment],
+              sensitive: 'value',
+            }),
+          }),
+          expect.anything(),
+        );
+        expect(spy).toHaveBeenNthCalledWith(
+          2,
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              active_ab_tests: [normalizedAssignment],
+            }),
+          }),
+          expect.anything(),
+        );
+      });
+    });
+
     it('preserves sensitiveProperties and only enriches the identified event', async function () {
       AB_TEST_ANALYTICS_MAPPINGS.push({
         flagKey: TEST_BADGE_FLAG_KEY,
@@ -1232,10 +1329,7 @@ describe('MetaMetricsController', function () {
                 button_type: 'card',
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 active_ab_tests: [
-                  {
-                    key: TEST_BADGE_FLAG_KEY,
-                    value: 'control',
-                  },
+                  createActiveABTestAssignment(TEST_BADGE_FLAG_KEY, 'control'),
                 ],
               }),
             }),
@@ -1276,10 +1370,10 @@ describe('MetaMetricsController', function () {
               properties: expect.objectContaining({
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 active_ab_tests: [
-                  {
-                    key: TEST_QUICK_AMOUNTS_FLAG_KEY,
-                    value: 'treatment',
-                  },
+                  createActiveABTestAssignment(
+                    TEST_QUICK_AMOUNTS_FLAG_KEY,
+                    'treatment',
+                  ),
                 ],
               }),
             }),

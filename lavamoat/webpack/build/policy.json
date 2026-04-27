@@ -225,20 +225,6 @@
         "nock>debug": true
       }
     },
-    "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@babel/code-frame": true,
-        "@babel/core>@babel/generator": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/parser": true,
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true,
-        "nock>debug": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>globals": true
-      }
-    },
     "@babel/core>@babel/types": {
       "globals": {
         "console.warn": true,
@@ -329,7 +315,7 @@
         "process._rawDebug": true
       },
       "packages": {
-        "@lavamoat/webpack>@babel/parser": true,
+        "@babel/core>@babel/parser": true,
         "@lavamoat/webpack>@lavamoat/aa": true,
         "browserify>browser-resolve": true,
         "@lavamoat/webpack>lavamoat-core": true,
@@ -2086,8 +2072,8 @@
         "console.log": true
       },
       "packages": {
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/parser": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": true
+        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/traverse": true
       }
     },
     "webpack>loader-runner": {
@@ -2558,6 +2544,7 @@
         "process.versions.pnp": true
       },
       "packages": {
+        "string.prototype.matchall>es-errors": true,
         "depcheck>is-core-module": true,
         "depcheck>resolve>path-parse": true
       }
