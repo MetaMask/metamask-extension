@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Add a custom network"
   },
-  "addAHardwareWallet": {
-    "message": "Add a hardware wallet"
-  },
   "addANetwork": {
     "message": "Add a network"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "Add a URL"
+  },
+  "addAWallet": {
+    "message": "Add a wallet"
   },
   "addAccount": {
     "message": "Add account"
@@ -1733,6 +1733,12 @@
   "connect": {
     "message": "Connect"
   },
+  "connectAHardwareWallet": {
+    "message": "Connect a hardware wallet"
+  },
+  "connectAHardwareWalletDescription": {
+    "message": "Using USB or a QR Code"
+  },
   "connectAccounts": {
     "message": "Connect accounts"
   },
@@ -2228,9 +2234,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "the perps market page"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "the perps market list page"
   },
   "deepLink_thePerpsPage": {
     "message": "the perps page"
@@ -3089,6 +3092,14 @@
     "message": "Start date",
     "description": "Label for the start date of a permission"
   },
+  "gatorPermissionsStatusExpired": {
+    "message": "Expired",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Revoked",
+    "description": "Tag label for a gator permission that has been revoked"
+  },
   "gatorPermissionsStreamRate": {
     "message": "Stream rate",
     "description": "Label for the stream rate of a permission"
@@ -3368,6 +3379,9 @@
   "importAWallet": {
     "message": "Import a wallet"
   },
+  "importAWalletDescription": {
+    "message": "Using a 12, 18 or 24-word seed phrase"
+  },
   "importAccountError": {
     "message": "Error importing account."
   },
@@ -3398,6 +3412,9 @@
   },
   "importAnAccount": {
     "message": "Import an account"
+  },
+  "importAnAccountDescription": {
+    "message": "Via a private key"
   },
   "importNFT": {
     "message": "Import NFT"
@@ -4866,6 +4883,14 @@
     "message": "View on $1",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "Transaction failed! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "Transaction confirmed!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
+  },
   "notifications": {
     "message": "Notifications"
   },
@@ -5529,7 +5554,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Available Perps balance: "
+    "message": "Available balance: "
   },
   "perpsAvailableToAdd": {
     "message": "Available to add"
@@ -5598,6 +5623,12 @@
   "perpsContactSupport": {
     "message": "Contact support"
   },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "MetaMask Perps only support trading with isolated margin. You need to first close your cross margin position before you can trade on MetaMask."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Cross margin not supported"
+  },
   "perpsDateToday": {
     "message": "Today"
   },
@@ -5627,6 +5658,12 @@
   },
   "perpsDepositToastPendingTitle": {
     "message": "Adding funds to Perps"
+  },
+  "perpsDepositToastSubmittedDescription": {
+    "message": "Your funds are being added to Perps."
+  },
+  "perpsDepositToastSubmittedTitle": {
+    "message": "Deposit submitted"
   },
   "perpsDepositToastSuccessDescription": {
     "message": "Your funds are ready to trade."
@@ -5694,7 +5731,7 @@
     "message": "Funding payments"
   },
   "perpsFundingRate": {
-    "message": "Funding Rate"
+    "message": "Funding rate"
   },
   "perpsFundingRateTooltip": {
     "message": "An hourly fee paid between traders to keep prices in line with the market. If the rate is positive, longs pay shorts. If negative, shorts pay longs."
@@ -5788,24 +5825,24 @@
     "message": "No transactions yet"
   },
   "perpsOpenInterest": {
-    "message": "Open Interest"
+    "message": "Open interest"
   },
   "perpsOpenInterestTooltip": {
     "message": "The combined value of all open positions for this perp"
   },
   "perpsOpenLong": {
-    "message": "Open Long $1",
+    "message": "Open long $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOpenOrders": {
     "message": "Open Orders"
   },
   "perpsOpenShort": {
-    "message": "Open Short $1",
+    "message": "Open short $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOraclePrice": {
-    "message": "Oracle Price"
+    "message": "Oracle price"
   },
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
@@ -5844,7 +5881,7 @@
     "message": "Too many requests. Please wait and try again."
   },
   "perpsRecentActivity": {
-    "message": "Recent Activity"
+    "message": "Recent activity"
   },
   "perpsReduceExposure": {
     "message": "Reduce exposure"
@@ -5887,7 +5924,8 @@
     "message": "Search markets"
   },
   "perpsSeeAll": {
-    "message": "See All"
+    "message": "See all",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Service temporarily unavailable. Please try again later."

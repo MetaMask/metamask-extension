@@ -3828,6 +3828,41 @@ describe('getInternalAccountsSortedByKeyring', () => {
       solanaAccount2,
     ]);
   });
+
+  it('filters out undefined entries when a hardware wallet address has no matching internal account', () => {
+    // Hardware wallet stores addresses in checksummed EIP-55 format;
+    // AccountsController stores them lowercase — lookup returns undefined.
+    const hwChecksummedAddress = '0x67B2fAf7959fB61eb9746571041476Bbd0672569';
+    const hwAccount = {
+      ...createMockInternalAccount({
+        address: hwChecksummedAddress.toLowerCase(),
+        keyringType: KeyringType.ledger,
+      }),
+      balance: '0x0',
+    };
+    const hwKeyring = {
+      type: KeyringType.ledger,
+      accounts: [hwChecksummedAddress], // checksummed — will not match lowercase key
+      metadata: { id: 'ledger-keyring', name: '' },
+    };
+
+    const state = {
+      metamask: {
+        internalAccounts: {
+          accounts: { [hwAccount.id]: hwAccount },
+          selectedAccount: hwAccount.id,
+        },
+        keyrings: [hwKeyring],
+        networkConfigurationsByChainId:
+          mockState.metamask.networkConfigurationsByChainId,
+        selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
+      },
+    };
+
+    const result = selectors.getInternalAccountsSortedByKeyring(state);
+    expect(result).not.toContain(undefined);
+    expect(result).toHaveLength(0); // address mismatch: account not found
+  });
 });
 
 describe('getUrlScanCacheResult', () => {

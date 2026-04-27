@@ -194,6 +194,7 @@ jest.mock('../../providers/perps', () => ({
 }));
 
 const mockReplacePerpsToastByKey = jest.fn();
+const mockSetPendingOrder = jest.fn();
 jest.mock('../../components/app/perps/perps-toast', () => {
   const { PERPS_TOAST_KEYS } = jest.requireActual(
     '../../components/app/perps/perps-toast/perps-toast-provider',
@@ -203,6 +204,8 @@ jest.mock('../../components/app/perps/perps-toast', () => {
     PERPS_TOAST_KEYS,
     usePerpsToast: () => ({
       replacePerpsToastByKey: mockReplacePerpsToastByKey,
+      setPendingOrder: mockSetPendingOrder,
+      pendingOrder: null,
     }),
   };
 });
@@ -575,7 +578,7 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('navigates back when back button is clicked', async () => {
+    it('navigates back in history when back button is clicked', async () => {
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = await renderPage(store);
@@ -583,7 +586,7 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/');
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
     });
 
     it('uses market 24h change as fallback when no live percent update exists', async () => {
@@ -813,9 +816,6 @@ describe('PerpsMarketDetailPage', () => {
         'perps-market-detail-view-all-activity',
       );
       expect(viewAllButton).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.perpsSeeAll.message),
-      ).toBeInTheDocument();
 
       fireEvent.click(viewAllButton);
       expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
@@ -906,6 +906,31 @@ describe('PerpsMarketDetailPage', () => {
       );
       expect(mockUseNavigate).toHaveBeenCalledWith(
         expect.stringContaining('direction=long'),
+      );
+    });
+
+    it('shows cross-margin toast and does not navigate when Add exposure is clicked on a cross-margin position', async () => {
+      const crossPosition = {
+        ...mockPositions[0],
+        leverage: { type: 'cross' as const, value: 5 },
+      };
+      mockLivePositions.mockReturnValue({
+        positions: [crossPosition, ...mockPositions.slice(1)],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+      fireEvent.click(screen.getByTestId('perps-modify-menu-add-exposure'));
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsCrossMarginNotSupportedTitle',
+        description: messages.perpsCrossMarginNotSupportedDescription.message,
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(
+        expect.stringContaining('mode=modify'),
       );
     });
 
@@ -1100,10 +1125,12 @@ describe('PerpsMarketDetailPage', () => {
 
       // ETH is long, entry=2850, leverage=3.
       // RoE formula: targetPrice = 2850 * (1 + 25/(3*100)) = 2850 * 1.08333 = 3087.50
+      // formatPerpsFiat/PRICE_RANGES_UNIVERSAL caps $1k-$10k range at 1 decimal
+      // (5 sig digs) and strips the comma for input display → "3087.5".
       const presetButton = screen.getByText('+25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('3087.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('3087.5')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for long position', async () => {
@@ -1117,10 +1144,11 @@ describe('PerpsMarketDetailPage', () => {
 
       // ETH is long, entry=2850, leverage=3.
       // RoE formula: targetPrice = 2850 * (1 - 25/(3*100)) = 2850 * 0.91667 = 2612.50
+      // formatPerpsFiat/PRICE_RANGES_UNIVERSAL (1 decimal for $1k-$10k).
       const presetButton = screen.getByText('-25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('2612.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('2612.5')).toBeInTheDocument();
     });
 
     it('populates TP price from preset button for short position', async () => {
@@ -1132,10 +1160,11 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
       // RoE formula (short TP): targetPrice = 45000 * (1 - 10/(15*100)) = 45000 * 0.99333 = 44700.00
+      // formatPerpsFiat/PRICE_RANGES_UNIVERSAL (0 decimals for > $10k).
       const presetButton = screen.getByText('+10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('44700.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('44700')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for short position', async () => {
@@ -1147,10 +1176,11 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
       // RoE formula (short SL): targetPrice = 45000 * (1 + 10/(15*100)) = 45000 * 1.00667 = 45300.00
+      // formatPerpsFiat/PRICE_RANGES_UNIVERSAL (0 decimals for > $10k).
       const presetButton = screen.getByText('-10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('45300.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('45300')).toBeInTheDocument();
     });
 
     it('shows TP/SL success toast without in-progress toast when saving', async () => {
@@ -1235,7 +1265,7 @@ describe('PerpsMarketDetailPage', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('shows an add funds CTA instead of Long/Short when balance is zero', async () => {
+    it('shows Long/Short buttons even when balance is zero', async () => {
       mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
       mockLiveAccount.mockReturnValue({
         account: {
@@ -1249,33 +1279,9 @@ describe('PerpsMarketDetailPage', () => {
 
       await renderPage(store);
 
-      expect(
-        screen.queryByTestId('perps-trade-cta-buttons'),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.getByTestId('perps-add-funds-cta-button'),
-      ).toHaveTextContent(messages.addFunds.message);
-    });
-
-    it('starts deposit flow from add funds CTA when balance is zero', async () => {
-      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
-      mockLiveAccount.mockReturnValue({
-        account: {
-          ...mockAccountState,
-          availableBalance: '0',
-          totalBalance: '0',
-        },
-        isInitialLoading: false,
-      });
-      const store = mockStore(createMockState(true));
-
-      await renderPage(store);
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('perps-add-funds-cta-button'));
-      });
-
-      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('perps-trade-cta-buttons')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-long-cta-button')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-short-cta-button')).toBeInTheDocument();
     });
 
     it('navigates to order entry when Long button is clicked', async () => {
@@ -1518,29 +1524,6 @@ describe('PerpsMarketDetailPage', () => {
         expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
       });
       expect(mockUseNavigate).not.toHaveBeenCalled();
-    });
-
-    it('shows geo-block modal when clicking Add Funds while not eligible', async () => {
-      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
-      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
-      mockLiveAccount.mockReturnValue({
-        account: {
-          ...mockAccountState,
-          availableBalance: '0',
-          totalBalance: '0',
-        },
-        isInitialLoading: false,
-      });
-      const store = mockStore(createMockState(true));
-      await renderPage(store);
-
-      const addFundsButton = screen.getByTestId('perps-add-funds-cta-button');
-      fireEvent.click(addFundsButton);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
-      });
-      expect(mockTriggerDeposit).not.toHaveBeenCalled();
     });
 
     it('shows geo-block modal when clicking Close while not eligible', async () => {
