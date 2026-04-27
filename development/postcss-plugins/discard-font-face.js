@@ -60,7 +60,7 @@ function keepEntry(entry, keep) {
     // Non-url() entry (e.g. `local(...)`); leave it alone.
     return true;
   }
-  let url = match[1] || match[2] || match[3];
+  let url = match[1] ?? match[2] ?? match[3];
   const hash = url.lastIndexOf('#');
   if (hash !== -1) {
     url = url.slice(0, hash);
