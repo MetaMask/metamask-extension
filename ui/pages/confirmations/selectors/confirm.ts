@@ -1,5 +1,6 @@
+import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
-import { Hex } from '@metamask/utils';
+import { Hex, Json } from '@metamask/utils';
 import { QuoteResponse } from '@metamask/bridge-controller';
 
 import { createSelector } from 'reselect';
@@ -23,7 +24,8 @@ export const pendingConfirmationsSortedSelector = createSelector(
 
 export const firstPendingConfirmationSelector = createSelector(
   pendingConfirmationsSortedSelector,
-  (pendingConfirmations) => pendingConfirmations[0],
+  (pendingConfirmations): ApprovalRequest<Record<string, Json>> | undefined =>
+    pendingConfirmations[0],
 );
 
 export function selectDappSwapComparisonData(
