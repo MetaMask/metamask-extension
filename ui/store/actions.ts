@@ -1224,12 +1224,15 @@ export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthentic
  * Protects the vault key with a passkey.
  *
  * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
+ * @param password - When onboarding is complete, the wallet password (step-up). Omit during onboarding.
  */
 export function protectVaultKeyWithPasskey(
   registrationResponse: PasskeyRegistrationResponse,
+  password?: string,
 ): Promise<void> {
   return submitRequestToBackground('protectVaultKeyWithPasskey', [
     registrationResponse,
+    password,
   ]);
 }
 

@@ -4424,15 +4424,27 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Protects the vault encryption key with a passkey after the UI runs WebAuthn credential creation.
+   * Wraps the vault encryption key with a passkey after WebAuthn registration in the UI.
+   * If `completedOnboarding`, `password` is required and verified first.
    *
-   * @param {import('@metamask/passkey-controller').PasskeyRegistrationResponse} registrationResponse - Wire response from the UI.
+   * @param {import('@metamask/passkey-controller').PasskeyRegistrationResponse} registrationResponse - Registration response from the UI.
+   * @param {string} [password] - Wallet password when onboarding is complete (step-up).
    * @returns {Promise<void>}
    */
-  async protectVaultKeyWithPasskey(registrationResponse) {
+  async protectVaultKeyWithPasskey(registrationResponse, password) {
     if (!getIsPasskeyFeatureEnabled()) {
       throw new Error('Passkey feature is not enabled');
     }
+    const { completedOnboarding } = this.onboardingController.state;
+    if (completedOnboarding) {
+      // password is required when onboarding is complete
+      if (!password) {
+        throw new Error('Password required to register passkey');
+      }
+      // verify password
+      await this.verifyPassword(password);
+    }
+
     const vaultKey = await this.keyringController.exportEncryptionKey();
     await this.passkeyController.protectVaultKeyWithPasskey({
       registrationResponse,
