@@ -1,66 +1,68 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { execSync } from 'child_process';
-import { join } from 'path';
+import bs58 from 'bs58';
+import { keccak256 } from 'ethereum-cryptography/keccak';
 import { sha256 } from 'ethereum-cryptography/sha256';
 import { secp256k1 } from 'ethereum-cryptography/secp256k1';
 
-// Must match the `localwitness` entry in tron/config/private_net_config.conf
-// Zion witness account from genesis block (95 billion TRX in private chain)
-const GENESIS_PRIVATE_KEY =
-  'da146374a75310b9666e834ee4ad0866d6f4035967bfc76217c5a495fff9f0d0';
-const GENESIS_ADDRESS = 'TPL66VK2gCXNCD7EJg9pgJRfqcRazjhUZY';
-
-const CONTAINER_NAME = 'tron-private-e2e';
-const HTTP_PORT = 18090;
-const CONFIG_DIR = join(__dirname, 'config');
+const CONTAINER_NAME = 'tron-tre-e2e';
+const HTTP_PORT = 9090;
 
 export const TRON_LOCAL_NODE_URL = `http://localhost:${HTTP_PORT}`;
 
+type TreAccountsResponse = {
+  privateKeys?: string[];
+};
+
+type TronFundingAccount = {
+  address: string;
+  privateKey: string;
+};
+
+type FetchJsonOptions = RequestInit & {
+  timeoutMs?: number;
+};
+
 export class TronNode {
+  #fundingAccount: TronFundingAccount | undefined;
+
   readonly baseUrl = TRON_LOCAL_NODE_URL;
 
   /**
-   * Starts the java-tron Docker container, waits for the node to be ready,
-   * and seeds any requested initial balances — matching the async start()
-   * contract used by Ganache and Anvil so that withFixtures can manage the
-   * lifecycle automatically.
+   * Starts a TronBox Runtime Environment (TRE) Docker container, waits for it
+   * to finish generating prefunded accounts, and seeds any requested balances
+   * into the MetaMask-controlled Tron account. This keeps the same async
+   * start() contract that Ganache and Anvil expose to withFixtures.
    *
    * @param options - Start options.
    * @param options.initialBalances - Map of Tron address to amount in SUN to
-   * fund from the genesis witness account after the node is ready.
+   * fund from TRE's first prefunded account after the node is ready.
    */
   async start(
     options: { initialBalances?: Record<string, number> } = {},
   ): Promise<void> {
-    // Remove any leftover container and stale blockchain data from a previous
-    // run. Both must be cleared together: the container holds port 18090, and
-    // the data directory holds chain state that would inflate account balances
-    // if reused (fundAccount would add on top of an existing balance).
+    this.#fundingAccount = undefined;
+
+    // Remove any leftover TRE container from a previous run so we can safely
+    // rebind port 9090.
     try {
       execSync(`docker rm -f ${CONTAINER_NAME}`, { stdio: 'pipe' });
     } catch {
       // Container didn't exist — that's fine
     }
-    try {
-      execSync('rm -rf /tmp/tron-output-e2e', { stdio: 'pipe' });
-    } catch {
-      // Directory didn't exist — that's fine
-    }
 
     execSync(
       [
         'docker run -d',
+        '--rm',
         `--name ${CONTAINER_NAME}`,
-        `-v ${CONFIG_DIR}:/java-tron/config`,
-        `-v /tmp/tron-output-e2e:/java-tron/output-directory`,
-        `-p ${HTTP_PORT}:16667`,
-        'tronprotocol/java-tron:latest',
-        '-c /java-tron/config/private_net_config.conf --witness',
+        `-p ${HTTP_PORT}:9090`,
+        'tronbox/tre',
       ].join(' '),
       { stdio: 'pipe' },
     );
 
-    await this.waitForReady(90_000);
+    await this.waitForReady(120_000);
 
     for (const [address, amountInSun] of Object.entries(
       options.initialBalances ?? {},
@@ -75,20 +77,20 @@ export class TronNode {
     } catch {
       // Already gone
     }
-    try {
-      execSync('rm -rf /tmp/tron-output-e2e', { stdio: 'pipe' });
-    } catch {
-      // Ignore
-    }
   }
 
   async waitForReady(timeoutMs = 60_000): Promise<void> {
     const deadline = Date.now() + timeoutMs;
     while (Date.now() < deadline) {
       try {
-        const resp = await fetch(`${this.baseUrl}/wallet/getnowblock`);
-        const data = (await resp.json()) as { block_header?: unknown };
-        if (data.block_header) {
+        const data = (await this.fetchJson('/wallet/getnowblock', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: '{}',
+          timeoutMs: 5_000,
+        })) as { block_header?: unknown };
+        const accounts = await this.getTreAccounts();
+        if (data.block_header && accounts.privateKeys?.length) {
           return;
         }
       } catch {
@@ -102,12 +104,14 @@ export class TronNode {
   }
 
   async fundAccount(toAddress: string, amountInSun: number): Promise<void> {
+    const fundingAccount = await this.getFundingAccount();
+
     // 1. Build an unsigned TransferContract transaction
     const createResp = await fetch(`${this.baseUrl}/wallet/createtransaction`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        owner_address: GENESIS_ADDRESS,
+        owner_address: fundingAccount.address,
         to_address: toAddress,
         amount: amountInSun,
         visible: true,
@@ -126,7 +130,7 @@ export class TronNode {
     if (!tx.raw_data_hex) {
       throw new Error(
         `createtransaction failed: ${JSON.stringify(tx)}\n` +
-          `Check that the genesis address (${GENESIS_ADDRESS}) is funded and the node has produced at least one block.`,
+          `Check that the TRE funding address (${fundingAccount.address}) is funded and the node has produced at least one block.`,
       );
     }
 
@@ -134,7 +138,7 @@ export class TronNode {
     //    Tron uses SHA256 (not keccak), same secp256k1 curve as Ethereum
     const rawBytes = Buffer.from(tx.raw_data_hex, 'hex');
     const hash = sha256(rawBytes);
-    const privKeyBytes = Buffer.from(GENESIS_PRIVATE_KEY, 'hex');
+    const privKeyBytes = Buffer.from(fundingAccount.privateKey, 'hex');
     const sig = secp256k1.sign(hash, privKeyBytes);
     // Layout: r (32 bytes) || s (32 bytes) || recovery (1 byte)
     const sigBytes = new Uint8Array(65);
@@ -189,5 +193,64 @@ export class TronNode {
     }
     // If no txId in response, fall back to a single block wait
     await new Promise((r) => setTimeout(r, 3_500));
+  }
+
+  async getFundingAccount(): Promise<TronFundingAccount> {
+    if (this.#fundingAccount) {
+      return this.#fundingAccount;
+    }
+
+    const accounts = await this.getTreAccounts();
+    const privateKey = accounts.privateKeys?.[0];
+
+    if (!privateKey) {
+      throw new Error('TRE did not expose any prefunded private keys');
+    }
+
+    this.#fundingAccount = {
+      address: this.deriveAddressFromPrivateKey(privateKey),
+      privateKey,
+    };
+
+    return this.#fundingAccount;
+  }
+
+  async getTreAccounts(): Promise<TreAccountsResponse> {
+    return (await this.fetchJson('/admin/accounts-json', {
+      timeoutMs: 5_000,
+    })) as TreAccountsResponse;
+  }
+
+  deriveAddressFromPrivateKey(privateKeyHex: string): string {
+    const privateKeyBytes = Buffer.from(privateKeyHex, 'hex');
+    const publicKey = secp256k1.getPublicKey(privateKeyBytes, false);
+    const publicKeyHash = keccak256(publicKey.slice(1));
+    const tronAddressPayload = Buffer.concat([
+      Buffer.from([0x41]),
+      Buffer.from(publicKeyHash.slice(-20)),
+    ]);
+    const checksum = Buffer.from(
+      sha256(sha256(tronAddressPayload)).slice(0, 4),
+    );
+
+    return bs58.encode(Buffer.concat([tronAddressPayload, checksum]));
+  }
+
+  async fetchJson(
+    path: string,
+    { timeoutMs = 15_000, ...init }: FetchJsonOptions = {},
+  ): Promise<unknown> {
+    const response = await fetch(`${this.baseUrl}${path}`, {
+      ...init,
+      signal: AbortSignal.timeout(timeoutMs),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `${path} failed with HTTP ${response.status}: ${await response.text()}`,
+      );
+    }
+
+    return await response.json();
   }
 }
