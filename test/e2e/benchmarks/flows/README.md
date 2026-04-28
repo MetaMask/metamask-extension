@@ -103,7 +103,7 @@ const MY_BENCHMARK: ThresholdConfig = {
   myTimerId: {
     p75: { warn: 1000, fail: 1500 },
     p95: { warn: 2000, fail: 3000 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
 };
 
@@ -116,6 +116,10 @@ const BENCHMARK_THRESHOLDS = {
 The key must be **camelCase matching the filename**: `my-benchmark.ts` → `myBenchmark`.
 
 For startup benchmarks, use the `startup` prefix: `standard-home.ts` → `startupStandardHome`.
+
+**Quality Gate enforcement:**
+
+To make a metric block PRs on regression by failing the `quality-gate` CI job, add its dotted key (`<benchmarkName>.<metricId>`) to `GATED_METRICS` in `test/e2e/benchmarks/utils/gated-metrics.ts`. Metrics not in that set are informational, meaning threshold breaches will appear as warnings in the PR comment but will not fail the `quality-gate` job.
 
 ### 3. Add to a preset (optional)
 
