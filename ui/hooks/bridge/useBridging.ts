@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   formatChainIdToCaip,
@@ -12,7 +12,9 @@ import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
+  type BridgeAppState,
   getBip44DefaultPairsConfig,
+  getFromAccount,
   getFromChain,
   getFromChains,
   getLastSelectedChainId,
@@ -23,6 +25,9 @@ import {
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
+import { getBridgeSortedAssets } from '../../ducks/bridge/asset-selectors';
+import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
+import { usePopularTokensFetch } from './usePopularTokensFetch';
 import {
   BridgeNavigationOptions,
   useBridgeNavigation,
@@ -51,6 +56,23 @@ const useBridging = () => {
       ),
     [fromChains],
   );
+
+  // Pre-fetch the popular tokens list
+  const { address } = useSelector(getFromAccount);
+  const groupId = useSelector((state: BridgeAppState) =>
+    getAccountGroupsByAddress(state, [address]),
+  )[0]?.id;
+  const chainIds = useMemo(
+    () => new Set(fromChains.map((chain) => chain.chainId)),
+    [fromChains],
+  );
+  const assetsToInclude = useSelector((state: BridgeAppState) =>
+    getBridgeSortedAssets(state, groupId, chainIds),
+  );
+  usePopularTokensFetch({
+    assetsToInclude,
+    chainIds,
+  });
 
   /**
    * Navigates to the bridge page
