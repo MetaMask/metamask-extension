@@ -2,7 +2,7 @@ import { fetchWithTimeout, retryUntil } from '@metamask/client-mcp-core';
 import type { FixtureCapability, WalletState } from '@metamask/client-mcp-core';
 
 import FixtureServerClass from '../../../fixtures/fixture-server';
-import { FIXTURE_STATE_METADATA_VERSION } from '../../../fixtures/default-fixture';
+import { FIXTURE_STATE_METADATA_VERSION } from '../../../constants';
 import {
   FixturePresets,
   buildDefaultFixture,
@@ -23,7 +23,7 @@ export type MetaMaskFixtureCapabilityOptions = {
 export class MetaMaskFixtureCapability implements FixtureCapability {
   private server: InstanceType<typeof FixtureServerClass> | undefined;
 
-  private readonly port: number;
+  private port: number;
 
   private readonly fetchWithTimeout: (
     url: string,
@@ -34,6 +34,10 @@ export class MetaMaskFixtureCapability implements FixtureCapability {
   constructor(options: MetaMaskFixtureCapabilityOptions = {}) {
     this.port = options.port ?? 12345;
     this.fetchWithTimeout = options.fetchWithTimeout ?? fetchWithTimeout;
+  }
+
+  setPort(port: number): void {
+    this.port = port;
   }
 
   async start(state: WalletState): Promise<void> {

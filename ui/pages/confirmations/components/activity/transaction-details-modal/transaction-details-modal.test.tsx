@@ -86,7 +86,16 @@ describe('TransactionDetailsModal', () => {
     const { getByRole } = render(TransactionType.musdConversion);
     expect(
       getByRole('heading', {
-        name: messages.musdConversionActivityTitle.message,
+        name: messages.musdConversionTitle.message,
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it('renders mUSD Claim title for musdClaim transactions', () => {
+    const { getByRole } = render(TransactionType.musdClaim);
+    expect(
+      getByRole('heading', {
+        name: messages.musdClaimTitle.message,
       }),
     ).toBeInTheDocument();
   });
@@ -95,6 +104,15 @@ describe('TransactionDetailsModal', () => {
     const { getByRole } = render(TransactionType.perpsDeposit);
     expect(
       getByRole('heading', { name: messages.perpsDepositTitle.message }),
+    ).toBeInTheDocument();
+  });
+
+  it('renders Withdraw title for perpsWithdraw transactions', () => {
+    const { getByRole } = render(TransactionType.perpsWithdraw);
+    expect(
+      getByRole('heading', {
+        name: messages.perpsWithdrawFundsTitle.message,
+      }),
     ).toBeInTheDocument();
   });
 

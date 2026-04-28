@@ -45,7 +45,6 @@ describe('Account Exist Seedless Onboarding View', () => {
     // should show the correct button
     const loginButton = getByText(messages.accountAlreadyExistsLogin.message);
     expect(loginButton).toBeInTheDocument();
-    expect(loginButton.nodeName).toBe('BUTTON');
   });
 
   it('should navigate to the unlock page when the button is clicked', async () => {

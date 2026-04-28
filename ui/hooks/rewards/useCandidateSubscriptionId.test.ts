@@ -815,7 +815,6 @@ describe('useCandidateSubscriptionId', () => {
     it('handles non-Error thrown object', async () => {
       (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
         () => async () => {
-          // eslint-disable-next-line @typescript-eslint/no-throw-literal
           throw 'string error';
         },
       );

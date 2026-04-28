@@ -17,7 +17,6 @@ export const ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: MetaMetricsEventName.TokenScreenOpened,
   [AccountOverviewTabKey.DeFi]: MetaMetricsEventName.DeFiScreenOpened,
   [AccountOverviewTabKey.Activity]: MetaMetricsEventName.ActivityScreenOpened,
-  [AccountOverviewTabKey.Perps]: MetaMetricsEventName.PerpsScreenOpened,
 } as const;
 
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP = {

@@ -45,16 +45,13 @@ import {
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
 import { getHardwareWalletType } from '../../selectors/selectors';
-import {
-  ALL_ALLOWED_BRIDGE_CHAIN_IDS,
-  ALLOWED_BRIDGE_CHAIN_IDS,
-} from '../../../shared/constants/bridge';
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getCurrencyRateControllerCurrencyRates,
   getTokenRatesControllerMarketData,
-} from '../../../shared/modules/selectors/assets-migration';
+} from '../../../shared/lib/selectors/assets-migration';
 import {
   getMultichainBalances,
   getMultichainCoinRates,
@@ -66,18 +63,19 @@ import {
   HardwareKeyringNames,
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   getIsSmartTransaction,
   type SmartTransactionsMetaMaskState,
-} from '../../../shared/modules/selectors';
+} from '../../../shared/lib/selectors';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
 import {
   getInternalAccountsByScope,
   getSelectedInternalAccount,
 } from '../../selectors/accounts';
+import { isHardwareWallet } from '../../selectors';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import {
   getAllAccountGroups,
@@ -86,7 +84,17 @@ import {
 } from '../../selectors/multichain-accounts/account-tree';
 import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
 import { type MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
-import { formatPriceImpact } from '../../pages/bridge/utils/price-impact';
+import { getIsRWATokensEnabled } from '../../selectors/rwa/feature-flags';
+import {
+  isStockRWAToken,
+  isTokenTradingOpenAt,
+} from '../../pages/bridge/hooks/useRWAToken';
+import { getQuoteStreamReasonString } from '../../pages/bridge/utils/quote-stream';
+import {
+  formatPriceImpactFiat,
+  formatPriceImpactPercentage,
+} from '../../pages/bridge/utils/price-impact';
+import { getCurrentCurrency } from '../metamask/metamask';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -95,6 +103,7 @@ import {
   isNonEvmChain,
   isTronChainId,
   getMaybeHexChainId,
+  isSupportedBridgeChain,
 } from './utils';
 import type { BridgeNetwork, BridgeState } from './types';
 
@@ -173,9 +182,7 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
   ],
   (priceImpactThreshold) => ({
     ...(priceImpactThreshold ?? {}),
-    // @ts-expect-error - priceImpactThreshold type has not been updated yet
     warning: priceImpactThreshold?.warning ?? 0.05,
-    // @ts-expect-error - priceImpactThreshold type has not been updated yet
     error: priceImpactThreshold?.error ?? 0.25,
   }),
 );
@@ -213,8 +220,30 @@ export const getFromChains = createDeepEqualSelector(
     hasBitcoinAccount,
     hasTronAccount,
   ) => {
+    const allChains: Record<CaipChainId, BridgeNetwork> = {
+      ...Object.fromEntries(
+        FEATURED_RPCS.filter(({ chainId }) =>
+          isSupportedBridgeChain(chainId),
+        ).map((rpc) => {
+          const caipChainId = formatChainIdToCaip(rpc.chainId);
+          return [
+            caipChainId,
+            {
+              chainId: caipChainId,
+              name: rpc.name,
+            },
+          ];
+        }),
+      ),
+      ...allBridgeableNetworks,
+    };
+
     const filteredNetworks: BridgeNetwork[] = [];
+    const seen = new Set<CaipChainId>();
     chainRanking?.forEach(({ chainId, name }) => {
+      if (seen.has(chainId)) {
+        return;
+      }
       const shouldAddSolana = isSolanaChainId(chainId)
         ? hasSolanaAccount
         : true;
@@ -222,8 +251,7 @@ export const getFromChains = createDeepEqualSelector(
         ? hasBitcoinAccount
         : true;
       const shouldAddTron = isTronChainId(chainId) ? hasTronAccount : true;
-      const matchedNetwork = allBridgeableNetworks[chainId];
-      // If all conditions are met, add the network to the list
+      const matchedNetwork = allChains[chainId];
       if (
         [
           shouldAddSolana,
@@ -232,6 +260,7 @@ export const getFromChains = createDeepEqualSelector(
           matchedNetwork,
         ].every(Boolean)
       ) {
+        seen.add(chainId);
         filteredNetworks.push({
           chainId,
           name,
@@ -299,26 +328,32 @@ export const getToChains = createDeepEqualSelector(
   [getAllBridgeableNetworks, getChainRanking],
   (allBridgeableNetworks, chainRanking) => {
     const allChains: Record<CaipChainId, BridgeNetwork> = {
-      ...allBridgeableNetworks,
       ...Object.fromEntries(
         FEATURED_RPCS.filter(({ chainId }) =>
-          ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
+          isSupportedBridgeChain(chainId),
         ).map((rpc) => {
           const caipChainId = formatChainIdToCaip(rpc.chainId);
           return [
             caipChainId,
             {
               chainId: caipChainId,
+              name: rpc.name,
             },
           ];
         }),
       ),
+      ...allBridgeableNetworks,
     };
     const filteredChains: BridgeNetwork[] = [];
+    const seen = new Set<CaipChainId>();
     chainRanking?.forEach(({ chainId, name }) => {
+      if (seen.has(chainId)) {
+        return;
+      }
       if (allChains[chainId]) {
+        seen.add(chainId);
         filteredChains.push({
-          ...allChains[chainId],
+          chainId,
           name,
         });
       }
@@ -588,17 +623,44 @@ export const getIsQuoteExpired = (
   currentTimeInMs: number,
 ) => selectIsQuoteExpired(metamask, {}, currentTimeInMs);
 
+export const getIsStockMarketClosed = (
+  state: BridgeAppState,
+  currentTimeInMs: number,
+): boolean => {
+  const isRWAEnabled = getIsRWATokensEnabled(state);
+  if (!isRWAEnabled) {
+    return false;
+  }
+  const fromToken = getFromToken(state);
+  const toToken = getToToken(state);
+  const isFromClosed =
+    isStockRWAToken(fromToken) &&
+    !isTokenTradingOpenAt(fromToken, currentTimeInMs);
+  const isToClosed =
+    isStockRWAToken(toToken) && !isTokenTradingOpenAt(toToken, currentTimeInMs);
+  return isFromClosed || isToClosed;
+};
+
 export const getBridgeQuotes = createSelector(
   [
     ({ metamask }: BridgeAppState) => metamask,
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
     ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
   ],
-  (controllerStates, sortOrder, selectedQuote) =>
-    selectBridgeQuotes(controllerStates, {
+  (controllerStates, sortOrder, selectedQuote) => {
+    const quotes = selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
-    }),
+    });
+    return {
+      ...quotes,
+      activeQuote:
+        // TODO move this to controller
+        quotes.sortedQuotes.find(
+          (q) => q.quote.requestId === selectedQuote?.quote.requestId,
+        ) ?? quotes.recommendedQuote,
+    };
+  },
 );
 
 export const getValidatedFromValue = createSelector(
@@ -674,12 +736,24 @@ export const getPriceImpact = createSelector(
   },
 );
 
-export const getFormattedPriceImpact = createSelector(
+export const getFormattedPriceImpactPercentage = createSelector(
   [getPriceImpact],
-  (priceImpact) => formatPriceImpact(priceImpact),
+  (priceImpact) => formatPriceImpactPercentage(priceImpact),
 );
 
-export const getValidationErrors = createDeepEqualSelector(
+export const getFormattedPriceImpactFiat = createSelector(
+  [
+    (state: BridgeAppState) => getBridgeQuotes(state).activeQuote,
+    getCurrentCurrency,
+  ],
+  (activeQuote, currentCurrency) =>
+    formatPriceImpactFiat(activeQuote, currentCurrency),
+);
+
+const getQuoteStreamComplete = (state: BridgeAppState) =>
+  state.metamask.quoteStreamComplete;
+
+const _getBaseValidationErrors = createDeepEqualSelector(
   [
     getBridgeQuotes,
     _getValidatedSrcAmount,
@@ -694,6 +768,8 @@ export const getValidationErrors = createDeepEqualSelector(
     ({ bridge: { txAlertStatus } }: BridgeAppState) => txAlertStatus,
     getPriceImpact,
     getPriceImpactThresholds,
+    (state: BridgeAppState) => isHardwareWallet(state as never),
+    getQuoteStreamComplete,
   ],
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
@@ -708,28 +784,49 @@ export const getValidationErrors = createDeepEqualSelector(
     txAlertStatus,
     priceImpactNumber,
     { warning, error },
+    isHardwareWalletAccount,
+    quoteStreamCompleteData,
   ) => {
     const { gasIncluded, gasIncluded7702, gasSponsored } =
       activeQuote?.quote ?? {};
-    const isGasless = gasIncluded7702 || gasIncluded || gasSponsored;
+    // gasIncluded7702 and gasSponsored are gated at request time via
+    // useGasIncluded7702 (returns false for HW), so the backend won't
+    // return those flags for HW accounts.
+    // gasIncluded (STX path) works for HW wallets; only 7702/sponsored
+    // need gating. We also gate 7702/sponsored here as defense-in-depth.
+    const isGasless = isHardwareWalletAccount
+      ? gasIncluded
+      : gasIncluded || gasIncluded7702 || gasSponsored;
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
-    const minimumBalanceToUse =
+    let minimumBalanceToUse =
       srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
         : '0';
 
+    // Monad requires >= 10 MON native reserve for 7702 sponsored txs.
+    // Without this balance the relay rejects the tx on-chain.
+    const MONAD_MIN_RESERVE = '10';
+    const srcHexChainId = srcChainId
+      ? getMaybeHexChainId(String(srcChainId))
+      : undefined;
+    if (srcHexChainId === CHAIN_IDS.MONAD && quoteRequest.gasIncluded7702) {
+      minimumBalanceToUse = MONAD_MIN_RESERVE;
+    }
+
     return {
       isTxAlertPresent: Boolean(txAlert),
       isTxAlertLoading: txAlertStatus === RequestStatus.LOADING,
-      isNoQuotesAvailable: Boolean(
-        !activeQuote &&
-          isValidQuoteRequest(quoteRequest) &&
-          quotesLastFetchedMs &&
-          !isLoading &&
-          quotesRefreshCount > 0,
-      ),
+      isNoQuotesAvailable:
+        quoteStreamCompleteData?.hasQuotes === false ||
+        Boolean(
+          !activeQuote &&
+            isValidQuoteRequest(quoteRequest) &&
+            quotesLastFetchedMs &&
+            !isLoading &&
+            quotesRefreshCount > 0,
+        ),
       // Shown prior to fetching quotes
       isInsufficientGasBalance: Boolean(
         nativeBalance &&
@@ -788,9 +885,35 @@ export const getValidationErrors = createDeepEqualSelector(
   },
 );
 
-export const getWarningLabels = createSelector(
-  [getValidationErrors],
-  ({
+/**
+ * Returns all validation errors for the current bridge/swap form state.
+ * Pass `currentTimeInMs` to include stock market-closed status (follows
+ * the same pattern as {@link getIsQuoteExpired}).
+ * @param state
+ * @param currentTimeInMs
+ */
+export const getValidationErrors = (
+  state: BridgeAppState,
+  currentTimeInMs?: number,
+) => ({
+  ..._getBaseValidationErrors(state),
+  isStockMarketClosed:
+    currentTimeInMs === undefined
+      ? false
+      : getIsStockMarketClosed(state, currentTimeInMs),
+});
+
+/**
+ * Returns warning labels for metrics. Pass `currentTimeInMs` to include
+ * the market_closed warning alongside the standard QuoteWarning values.
+ * @param state
+ * @param currentTimeInMs
+ */
+export const getWarningLabels = (
+  state: BridgeAppState,
+  currentTimeInMs?: number,
+): (QuoteWarning | 'market_closed')[] => {
+  const {
     isEstimatedReturnLow,
     isNoQuotesAvailable,
     isInsufficientGasBalance,
@@ -799,20 +922,21 @@ export const getWarningLabels = createSelector(
     isPriceImpactWarning,
     isPriceImpactError,
     isTxAlertPresent,
-  }) => {
-    const warnings: QuoteWarning[] = [];
-    isEstimatedReturnLow && warnings.push('low_return');
-    isNoQuotesAvailable && warnings.push('no_quotes');
-    isInsufficientGasBalance && warnings.push('insufficient_gas_balance');
-    isInsufficientGasForQuote &&
-      warnings.push('insufficient_gas_for_selected_quote');
-    isInsufficientBalance && warnings.push('insufficient_balance');
-    isPriceImpactWarning && warnings.push('price_impact');
-    isPriceImpactError && warnings.push('price_impact');
-    isTxAlertPresent && warnings.push('tx_alert');
-    return warnings;
-  },
-);
+    isStockMarketClosed,
+  } = getValidationErrors(state, currentTimeInMs);
+  const warnings: (QuoteWarning | 'market_closed')[] = [];
+  isEstimatedReturnLow && warnings.push('low_return');
+  isNoQuotesAvailable && warnings.push('no_quotes');
+  isInsufficientGasBalance && warnings.push('insufficient_gas_balance');
+  isInsufficientGasForQuote &&
+    warnings.push('insufficient_gas_for_selected_quote');
+  isInsufficientBalance && warnings.push('insufficient_balance');
+  isPriceImpactWarning && warnings.push('price_impact');
+  isPriceImpactError && warnings.push('price_impact');
+  isTxAlertPresent && warnings.push('tx_alert');
+  isStockMarketClosed && warnings.push('market_closed');
+  return warnings;
+};
 
 export const getWasTxDeclined = (state: BridgeAppState): boolean => {
   return state.bridge.wasTxDeclined;
@@ -916,4 +1040,20 @@ export const getIsGasIncluded = createSelector(
   (isStxEnabled, isGasIncludedSwapSupported) => {
     return isStxEnabled && isGasIncludedSwapSupported;
   },
+);
+
+export const getIsSrcAssetPickerOpen = (state: BridgeAppState) =>
+  state.bridge.isSrcAssetPickerOpen;
+
+export const getIsDestAssetPickerOpen = (state: BridgeAppState) =>
+  state.bridge.isDestAssetPickerOpen;
+
+export const getBridgeState = (state: BridgeAppState) => state.bridge;
+
+export const getBridgeUnavailableQuoteReason = createSelector(
+  [getQuoteStreamComplete],
+  (quoteStreamComplete) =>
+    quoteStreamComplete?.reason
+      ? getQuoteStreamReasonString(quoteStreamComplete.reason)
+      : 'noOptionsAvailableMessage',
 );

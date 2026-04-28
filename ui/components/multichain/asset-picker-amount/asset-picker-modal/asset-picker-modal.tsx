@@ -69,7 +69,7 @@ import {
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
-import { Numeric } from '../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../shared/lib/Numeric';
 import {
   isEvmChainId,
   isTronSpecialAsset,

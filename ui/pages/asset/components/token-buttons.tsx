@@ -36,10 +36,13 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 const TokenButtons = ({
   token,
   disableSendForNonEvm = false,
+  isMarketClosed = false,
 }: {
   token: Asset & { type: AssetType.token };
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
+  /** When true, disables the swap button because the stock market is closed */
+  isMarketClosed?: boolean;
 }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -118,7 +121,6 @@ const TokenButtons = ({
   }, [trackEvent, navigate, token]);
 
   const handleSwapOnClick = useCallback(async () => {
-    // Handle clicking from the asset details page
     openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
   }, [token, openBridgeExperience]);
 
@@ -175,7 +177,7 @@ const TokenButtons = ({
         onClick={handleSwapOnClick}
         data-testid="token-overview-swap"
         label={t('swap')}
-        disabled={!isExternalServicesEnabled}
+        disabled={!isExternalServicesEnabled || isMarketClosed}
       />
     </Box>
   );

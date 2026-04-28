@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import TestDapp from '../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../constants';
 import { mockEip7702FeatureFlag } from '../tests/confirmations/helpers';
 
@@ -18,7 +18,7 @@ describe('wallet_getCapabilities', function () {
         testSpecificMock: mockEip7702FeatureFlag,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -49,7 +49,7 @@ describe('wallet_getCapabilities', function () {
         testSpecificMock: mockEip7702FeatureFlag,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();

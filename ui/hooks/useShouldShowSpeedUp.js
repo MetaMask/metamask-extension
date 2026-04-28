@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { SECOND } from '../../shared/constants/time';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 
 /**
  * Evaluates whether the transaction is eligible to be sped up, and registers

@@ -9,15 +9,15 @@ import {
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
 import {
-  TransactionController,
   TransactionControllerGetNonceLockAction,
+  TransactionControllerIsAtomicBatchSupportedAction,
   TransactionControllerUpdateTransactionAction,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { getDeleGatorEnvironment } from '../../../../../shared/lib/delegation';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
-import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
 import {
   RelayStatus,
   submitRelayTransaction,
@@ -76,7 +76,7 @@ describe('Delegation 7702 Publish Hook', () => {
   > = jest.fn();
 
   const isAtomicBatchSupportedMock: jest.MockedFn<
-    TransactionController['isAtomicBatchSupported']
+    TransactionControllerIsAtomicBatchSupportedAction['handler']
   > = jest.fn();
 
   const getNonceLockMock: jest.MockedFn<
@@ -103,6 +103,7 @@ describe('Delegation 7702 Publish Hook', () => {
       | KeyringControllerSignEip7702AuthorizationAction
       | KeyringControllerSignTypedMessageAction
       | TransactionControllerGetNonceLockAction
+      | TransactionControllerIsAtomicBatchSupportedAction
       | TransactionControllerUpdateTransactionAction,
       never
     >({
@@ -115,6 +116,7 @@ describe('Delegation 7702 Publish Hook', () => {
       | KeyringControllerSignEip7702AuthorizationAction
       | KeyringControllerSignTypedMessageAction
       | TransactionControllerGetNonceLockAction
+      | TransactionControllerIsAtomicBatchSupportedAction
       | TransactionControllerUpdateTransactionAction,
       never,
       typeof baseMessenger
@@ -129,6 +131,7 @@ describe('Delegation 7702 Publish Hook', () => {
         'KeyringController:signTypedMessage',
         'DelegationController:signDelegation',
         'TransactionController:getNonceLock',
+        'TransactionController:isAtomicBatchSupported',
         'TransactionController:updateTransaction',
       ] as never,
     });
@@ -158,8 +161,12 @@ describe('Delegation 7702 Publish Hook', () => {
       getNonceLockMock,
     );
 
+    baseMessenger.registerActionHandler(
+      'TransactionController:isAtomicBatchSupported',
+      isAtomicBatchSupportedMock,
+    );
+
     hookClass = new Delegation7702PublishHook({
-      isAtomicBatchSupported: isAtomicBatchSupportedMock,
       messenger,
     });
 

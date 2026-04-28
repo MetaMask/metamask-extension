@@ -335,6 +335,37 @@ describe('MUSD Feature Flag Selectors', () => {
         fullFlags,
       );
     });
+
+    it('filters out non-mUSD flags from remote feature flags', () => {
+      // Simulate state with both mUSD and non-mUSD flags
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            earnMusdConversionFlowEnabled: true,
+            earnMusdCtaEnabled: true,
+            // Non-mUSD flags that should be filtered out
+            someOtherFeatureFlag: true,
+            bridgeEnabled: false,
+            swapsEnabled: true,
+          },
+        },
+      };
+      const result = selectAllMusdFeatureFlags(state as never);
+
+      // Should include mUSD flags
+      expect(result.earnMusdConversionFlowEnabled).toBe(true);
+      expect(result.earnMusdCtaEnabled).toBe(true);
+
+      // Should NOT include non-mUSD flags
+      expect(result).not.toHaveProperty('someOtherFeatureFlag');
+      expect(result).not.toHaveProperty('bridgeEnabled');
+      expect(result).not.toHaveProperty('swapsEnabled');
+
+      // Should only have keys from MusdFeatureFlags
+      const resultKeys = Object.keys(result);
+      const expectedKeys = Object.keys(DEFAULT_MUSD_REMOTE_FEATURE_FLAGS);
+      expect(resultKeys.sort()).toStrictEqual(expectedKeys.sort());
+    });
   });
 
   describe('selectShouldShowAnyMusdCta', () => {

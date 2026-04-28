@@ -6,7 +6,8 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { BuyGetMusdCtaVariant } from '../../../hooks/musd/useMusdCtaVisibility';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
+import { MUSD_CONVERSION_APY } from './constants';
 import { MusdBuyGetCta } from './musd-buy-get-cta';
 
 // Mock useI18nContext
@@ -15,6 +16,7 @@ jest.mock('../../../hooks/useI18nContext', () => ({
     const translations: Record<string, string> = {
       musdBuyMusd: 'Buy mUSD',
       musdGetMusd: 'Get mUSD',
+      musdMetaMaskUsd: 'MetaMask USD',
       musdEarnBonusPercentage: `Earn a ${values?.[0] || '3'}% bonus`,
     };
     return translations[key] || key;
@@ -57,10 +59,14 @@ const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
 
 // Mock useMusdConversion
 const mockStartConversionFlow = jest.fn();
+const mockDefaultPaymentToken = { address: '0xUsdc', chainId: '0x1' };
 jest.mock('../../../hooks/musd', () => ({
   useMusdConversion: () => ({
     startConversionFlow: mockStartConversionFlow,
     educationSeen: false,
+  }),
+  useMusdConversionTokens: () => ({
+    defaultPaymentToken: mockDefaultPaymentToken,
   }),
   useMusdGeoBlocking: () => ({
     isBlocked: false,
@@ -126,7 +132,7 @@ describe('MusdBuyGetCta', () => {
   });
 
   describe('GET variant', () => {
-    it('renders "Get mUSD" text for GET variant', () => {
+    it('renders MetaMask USD headline and Get mUSD button', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
@@ -136,11 +142,15 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      const elements = screen.getAllByText(messages.musdGetMusd.message);
-      expect(elements.length).toBeGreaterThanOrEqual(1);
+      expect(
+        screen.getByText(messages.musdMetaMaskUsd.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: messages.musdGetMusd.message }),
+      ).toBeInTheDocument();
     });
 
-    it('calls startConversionFlow when clicked', () => {
+    it('calls startConversionFlow when row is clicked', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
@@ -155,6 +165,33 @@ describe('MusdBuyGetCta', () => {
 
       expect(mockStartConversionFlow).toHaveBeenCalledWith({
         entryPoint: 'home',
+        preferredToken: {
+          address: mockDefaultPaymentToken.address,
+          chainId: mockDefaultPaymentToken.chainId,
+        },
+      });
+    });
+
+    it('calls startConversionFlow when inner CTA button is clicked', () => {
+      const store = createMockStore();
+      renderWithProvider(
+        <MusdBuyGetCta
+          variant={BuyGetMusdCtaVariant.GET}
+          selectedChainId="0x1"
+        />,
+        store,
+      );
+
+      fireEvent.click(
+        screen.getByRole('button', { name: messages.musdGetMusd.message }),
+      );
+
+      expect(mockStartConversionFlow).toHaveBeenCalledWith({
+        entryPoint: 'home',
+        preferredToken: {
+          address: mockDefaultPaymentToken.address,
+          chainId: mockDefaultPaymentToken.chainId,
+        },
       });
     });
 
@@ -188,7 +225,7 @@ describe('MusdBuyGetCta', () => {
   });
 
   describe('BUY variant', () => {
-    it('renders "Buy mUSD" text for BUY variant', () => {
+    it('renders MetaMask USD headline and Buy mUSD button', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
@@ -198,11 +235,15 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      const elements = screen.getAllByText(messages.musdBuyMusd.message);
-      expect(elements.length).toBeGreaterThanOrEqual(1);
+      expect(
+        screen.getByText(messages.musdMetaMaskUsd.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: messages.musdBuyMusd.message }),
+      ).toBeInTheDocument();
     });
 
-    it('opens buy crypto page when clicked for BUY variant', () => {
+    it('opens buy crypto page when row is clicked for BUY variant', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
@@ -221,6 +262,61 @@ describe('MusdBuyGetCta', () => {
         }),
       );
     });
+
+    it('opens buy crypto page when inner CTA button is clicked for BUY variant', () => {
+      const store = createMockStore();
+      renderWithProvider(
+        <MusdBuyGetCta
+          variant={BuyGetMusdCtaVariant.BUY}
+          selectedChainId="0x1"
+        />,
+        store,
+      );
+
+      fireEvent.click(
+        screen.getByRole('button', { name: messages.musdBuyMusd.message }),
+      );
+
+      expect(mockOpenTab).toHaveBeenCalledWith(
+        expect.objectContaining({
+          url: expect.stringContaining('/buy'),
+        }),
+      );
+    });
+  });
+
+  describe('CTA button', () => {
+    it('renders a native button labeled with GET copy', () => {
+      const store = createMockStore();
+      renderWithProvider(
+        <MusdBuyGetCta
+          variant={BuyGetMusdCtaVariant.GET}
+          selectedChainId="0x1"
+        />,
+        store,
+      );
+
+      const button = screen.getByRole('button', {
+        name: messages.musdGetMusd.message,
+      });
+      expect(button).toHaveClass('musd-buy-get-cta__button');
+    });
+
+    it('renders a native button labeled with BUY copy', () => {
+      const store = createMockStore();
+      renderWithProvider(
+        <MusdBuyGetCta
+          variant={BuyGetMusdCtaVariant.BUY}
+          selectedChainId="0x1"
+        />,
+        store,
+      );
+
+      const button = screen.getByRole('button', {
+        name: messages.musdBuyMusd.message,
+      });
+      expect(button).toHaveClass('musd-buy-get-cta__button');
+    });
   });
 
   describe('icon', () => {
@@ -235,7 +331,7 @@ describe('MusdBuyGetCta', () => {
       );
 
       expect(screen.getByTestId('musd-buy-get-cta-icon')).toBeInTheDocument();
-      expect(screen.getByAltText('mUSD')).toBeInTheDocument();
+      expect(screen.getByAltText('mUSD logo')).toBeInTheDocument();
     });
 
     it('renders network badge when selectedChainId is provided', () => {
@@ -248,7 +344,7 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      expect(screen.getByAltText('Ethereum Mainnet')).toBeInTheDocument();
+      expect(screen.getByAltText('Ethereum Mainnet logo')).toBeInTheDocument();
     });
 
     it('does not render network badge when selectedChainId is null', () => {
@@ -262,12 +358,14 @@ describe('MusdBuyGetCta', () => {
       );
 
       expect(screen.getByTestId('musd-buy-get-cta-icon')).toBeInTheDocument();
-      expect(screen.queryByAltText('Ethereum Mainnet')).not.toBeInTheDocument();
+      expect(
+        screen.queryByAltText('Ethereum Mainnet logo'),
+      ).not.toBeInTheDocument();
     });
   });
 
   describe('bonus text', () => {
-    it('displays bonus percentage in subtitle', () => {
+    it('displays MetaMask USD headline and earn-bonus subtitle', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
@@ -277,12 +375,19 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      expect(screen.getByText('Earn a 3% bonus')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.musdMetaMaskUsd.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          tEn('musdEarnBonusPercentage', [String(MUSD_CONVERSION_APY)]),
+        ),
+      ).toBeInTheDocument();
     });
   });
 
   describe('accessibility', () => {
-    it('renders as a clickable anchor element with hover styling', () => {
+    it('renders row as clickable div with hover styling and inner button', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
@@ -295,6 +400,9 @@ describe('MusdBuyGetCta', () => {
       const ctaElement = screen.getByTestId('multichain-token-list-button');
       expect(ctaElement.tagName).toBe('DIV');
       expect(ctaElement.className).toContain('hover:bg-hover');
+      expect(
+        screen.getByRole('button', { name: messages.musdGetMusd.message }),
+      ).toBeInTheDocument();
     });
   });
 

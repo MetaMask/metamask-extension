@@ -1,5 +1,6 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices } from '@playwright/test';
+import { DAPP_PAGE_LOAD_BENCHMARK_DIR } from './test/e2e/benchmarks/utils/constants';
 import { isHeadless } from './test/helpers/env';
 
 const logOutputFolder = './public/playwright/playwright-reports';
@@ -67,7 +68,8 @@ const config: PlaywrightTestConfig = {
     },
     {
       name: 'benchmark',
-      testMatch: '/benchmark/**/*.spec.ts',
+      testDir: DAPP_PAGE_LOAD_BENCHMARK_DIR,
+      testMatch: '**/*.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
         headless: Boolean(process.env.CI),

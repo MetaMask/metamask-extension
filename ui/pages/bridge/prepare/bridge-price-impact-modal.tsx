@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -22,7 +25,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AlignItems } from '../../../helpers/constants/design-system';
 import {
   getBridgeQuotes,
-  getFormattedPriceImpact,
+  getFormattedPriceImpactFiat,
+  getFormattedPriceImpactPercentage,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { Column, Row } from '../layout';
@@ -42,7 +46,10 @@ export const BridgePriceImpactWarningModal = ({
   const { activeQuote } = useSelector(getBridgeQuotes);
   const { isPriceImpactError, isPriceImpactWarning } =
     useSelector(getValidationErrors);
-  const formattedPriceImpact = useSelector(getFormattedPriceImpact);
+  const formattedPriceImpactPercentage = useSelector(
+    getFormattedPriceImpactPercentage,
+  );
+  const formattedPriceImpactFiat = useSelector(getFormattedPriceImpactFiat);
 
   const shouldShowModal = useMemo(() => {
     // Hide the modal if the user closes it or if it has not been opened
@@ -65,7 +72,7 @@ export const BridgePriceImpactWarningModal = ({
     return true;
   }, [variant, isPriceImpactError, isPriceImpactWarning]);
 
-  const shouldAllowClose = !(isSubmitting && variant === 'submit-cta');
+  const shouldAllowClose = variant !== 'submit-cta';
 
   return (
     <Modal
@@ -80,7 +87,7 @@ export const BridgePriceImpactWarningModal = ({
         <ModalHeader
           onClose={onClose}
           closeButtonProps={{
-            disabled: isSubmitting && variant === 'submit-cta',
+            disabled: isSubmitting && !shouldAllowClose,
           }}
         >
           <Column alignItems={AlignItems.center} gap={2}>
@@ -106,9 +113,17 @@ export const BridgePriceImpactWarningModal = ({
               isPriceImpactError
                 ? 'bridgePriceImpactVeryHighDescription'
                 : 'bridgePriceImpactHighDescription',
-              [formattedPriceImpact ?? ''],
+              [formattedPriceImpactPercentage ?? ''],
             )}
           </Text>
+          {formattedPriceImpactFiat && isPriceImpactError && (
+            <BannerAlert
+              severity={BannerAlertSeverity.Danger}
+              description={t('bridgePriceImpactFiatAlert', [
+                formattedPriceImpactFiat,
+              ])}
+            />
+          )}
         </Column>
         <ModalFooter>
           <Row gap={4}>
@@ -123,7 +138,6 @@ export const BridgePriceImpactWarningModal = ({
                   if (activeQuote) {
                     await submitBridgeTransaction(activeQuote);
                   }
-                  onClose();
                 }}
               >
                 {t('proceed')}

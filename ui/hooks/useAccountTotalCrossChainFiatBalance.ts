@@ -14,9 +14,9 @@ import { TokenWithBalance } from '../components/multichain/asset-picker-amount/a
 import {
   getValueFromWeiHex,
   sumDecimals,
-} from '../../shared/modules/conversion.utils';
+} from '../../shared/lib/conversion.utils';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 
 type AddressBalances = {

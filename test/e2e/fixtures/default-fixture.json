@@ -29,7 +29,7 @@
         },
         "0x38": {
           "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x0"
+            "balance": "0x15af1d78b58c40000"
           }
         },
         "0x539": {
@@ -39,12 +39,12 @@
         },
         "0x89": {
           "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x0"
+            "balance": "0x15af1d78b58c40000"
           }
         },
         "0xa": {
           "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "balance": "0x0"
+            "balance": "0x15af1d78b58c40000"
           }
         },
         "0xa4b1": {
@@ -71,8 +71,12 @@
     },
     "AccountTreeController": {
       "accountGroupsMetadata": {},
+      "accountTree": {
+        "wallets": {}
+      },
       "accountWalletsMetadata": {},
-      "hasAccountTreeSyncingSyncedAtLeastOnce": true
+      "hasAccountTreeSyncingSyncedAtLeastOnce": true,
+      "selectedAccountGroup": "entropy:01KMMTZZ3ZEF3008S2RXXR2CXS/0"
     },
     "AccountsController": {
       "internalAccounts": {
@@ -170,7 +174,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 198,
+      "currentMigrationVersion": 206,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -191,7 +195,8 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
-      "newPrivacyPolicyToastClickedOrClosed": null,
+      "newPrivacyPolicyToastClickedOrClosed": true,
+      "newPrivacyPolicyToastShownDate": 1770282512702,
       "nftsDetectionNoticeDismissed": false,
       "outdatedBrowserWarningLastShown": null,
       "pendingShieldCohort": null,
@@ -362,7 +367,31 @@
       }
     },
     "MultichainAssetsRatesController": {
-      "conversionRates": {}
+      "conversionRates": {
+        "bip122:000000000019d6689c085ae165831e93/slip44:0": {
+          "conversionTime": 1776106420,
+          "currency": "swift:0/iso4217:USD",
+          "expirationTime": 1776106480,
+          "marketData": {
+            "allTimeHigh": "126080",
+            "allTimeLow": "67.81",
+            "circulatingSupply": "19975290",
+            "fungible": true,
+            "marketCap": "1836592437357",
+            "pricePercentChange": {
+              "P14D": 4.795747124043681,
+              "P1D": 1.6980683447716627,
+              "P1Y": -1.0484081200296924,
+              "P200D": -14.088182161660676,
+              "P30D": 2.1388997840239408,
+              "P7D": -1.6285705945180806,
+              "PT1H": -0.09840133404969334
+            },
+            "totalVolume": "45216146754"
+          },
+          "rate": "106763"
+        }
+      }
     },
     "MultichainBalancesController": {
       "balances": {
@@ -826,6 +855,40 @@
     "PermissionLogController": {
       "permissionHistory": {}
     },
+    "PerpsController": {
+      "accountState": null,
+      "activeProvider": "hyperliquid",
+      "depositRequests": [],
+      "hasPlacedFirstOrder": {
+        "mainnet": false,
+        "testnet": false
+      },
+      "hip3ConfigVersion": 1,
+      "isFirstTimeUser": {
+        "mainnet": true,
+        "testnet": true
+      },
+      "isTestnet": false,
+      "marketFilterPreferences": {
+        "direction": "desc",
+        "optionId": "volume"
+      },
+      "perpsBalances": {},
+      "tradeConfigurations": {
+        "mainnet": {},
+        "testnet": {}
+      },
+      "watchlistMarkets": {
+        "mainnet": [],
+        "testnet": []
+      },
+      "withdrawalProgress": {
+        "activeWithdrawalId": null,
+        "lastUpdated": 0,
+        "progress": 0
+      },
+      "withdrawalRequests": []
+    },
     "PhishingController": {
       "addressScanCache": {},
       "c2DomainBlocklistLastFetched": 1770282505,
@@ -859,10 +922,9 @@
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "hideZeroBalanceTokens": false,
-        "petnamesEnabled": true,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
-        "showDefaultAddress": false,
+        "showDefaultAddress": true,
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": false,
@@ -888,12 +950,12 @@
         "hyperliquid": {}
       },
       "securityAlertsEnabled": true,
+      "showSidePanelMigrationToast": false,
       "snapRegistryList": {},
       "snapsAddSnapAccountModalDismissed": false,
       "theme": "os",
       "use4ByteResolution": true,
       "useAddressBarEnsResolution": true,
-      "useBlockie": false,
       "useCurrencyRateCheck": true,
       "useExternalNameSources": true,
       "useExternalServices": true,
@@ -955,9 +1017,12 @@
         "http://localhost:3000": "mainnet",
         "http://localhost:8000": "mainnet",
         "https://alpha.mycactus.io": "mainnet",
+        "https://app-beta.signer.cubist.dev": "mainnet",
+        "https://app-gamma.signer.cubist.dev": "mainnet",
         "https://app.bitgo-test.com": "mainnet",
         "https://app.bitgo.com": "mainnet",
         "https://app.metamask.io": "mainnet",
+        "https://app.signer.cubist.dev": "mainnet",
         "https://apps-portal.safe.global": "mainnet",
         "https://console.dev.mpcvault.com": "mainnet",
         "https://console.fireblocks.io": "mainnet",
@@ -1009,27 +1074,7 @@
       "trialedProducts": []
     },
     "TokenBalancesController": {
-      "tokenBalances": {
-        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-          "0x1": {
-            "0x0000000000000000000000000000000000000000": "0x15af1d78b58c40000",
-            "0x4FEF9D741011476750A243aC70b9789a63dd47Df": "0x0"
-          },
-          "0x2105": {},
-          "0x38": {},
-          "0x539": {
-            "0x0000000000000000000000000000000000000000": "0x15af1d78b58c40000"
-          },
-          "0x89": {},
-          "0xa": {},
-          "0xa4b1": {
-            "0x0000000000000000000000000000000000000000": "0x15af1d78b58c40000"
-          },
-          "0xe708": {
-            "0x0000000000000000000000000000000000000000": "0x15af1d78b58c40000"
-          }
-        }
-      }
+      "tokenBalances": {}
     },
     "TokenRatesController": {
       "marketData": {
@@ -1067,6 +1112,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 198
+    "version": 206
   }
 }

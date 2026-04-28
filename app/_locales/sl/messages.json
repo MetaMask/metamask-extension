@@ -339,9 +339,6 @@
   "links": {
     "message": "Povezave"
   },
-  "loadMore": {
-    "message": "Naloži več"
-  },
   "loading": {
     "message": "Nalaganje ..."
   },
@@ -382,9 +379,6 @@
   "newAccountNumberName": {
     "message": "Račun $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Nov stik"
   },
   "newContract": {
     "message": "Nova pogodba"
@@ -643,12 +637,6 @@
   },
   "usedByClients": {
     "message": "Uporabljen s strani večih različnih odjemalcev"
-  },
-  "userName": {
-    "message": "Uporabniško ime"
-  },
-  "viewContact": {
-    "message": "Ogled stika"
   },
   "visitWebSite": {
     "message": "Obiščite našo spletno stran"

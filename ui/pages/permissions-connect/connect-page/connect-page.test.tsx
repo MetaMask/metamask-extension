@@ -64,7 +64,6 @@ const render = (
       permissionsRequestId: '1',
       rejectPermissionsRequest: jest.fn(),
       approveConnection: jest.fn(),
-      activeTabOrigin: mockTestDappUrl,
       targetSubjectMetadata: mockTargetSubjectMetadata,
     },
     state,
@@ -116,7 +115,6 @@ describe('ConnectPage', () => {
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
-        activeTabOrigin: mockTestDappUrl,
         targetSubjectMetadata: {
           ...mockTargetSubjectMetadata,
           iconUrl: null,
@@ -135,7 +133,6 @@ describe('ConnectPage', () => {
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
-        activeTabOrigin: mockTestDappUrl,
         targetSubjectMetadata: {
           ...mockTargetSubjectMetadata,
           iconUrl: null,
@@ -266,7 +263,6 @@ describe('ConnectPage', () => {
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
-        activeTabOrigin: mockTestDappUrl,
         targetSubjectMetadata: mockTargetSubjectMetadata,
       },
     });
@@ -311,7 +307,6 @@ describe('ConnectPage', () => {
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
-        activeTabOrigin: mockTestDappUrl,
         targetSubjectMetadata: mockTargetSubjectMetadata,
       },
     });
@@ -352,7 +347,6 @@ describe('ConnectPage', () => {
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
-        activeTabOrigin: mockTestDappUrl,
         targetSubjectMetadata: mockTargetSubjectMetadata,
       },
     });
@@ -393,7 +387,6 @@ describe('ConnectPage', () => {
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
-        activeTabOrigin: mockTestDappUrl,
         targetSubjectMetadata: mockTargetSubjectMetadata,
       },
     });
@@ -438,7 +431,6 @@ describe('ConnectPage', () => {
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
-        activeTabOrigin: mockTestDappUrl,
         targetSubjectMetadata: mockTargetSubjectMetadata,
       },
     });

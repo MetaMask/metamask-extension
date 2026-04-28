@@ -27,4 +27,5 @@ export type ContactListItemProps = {
   name: string;
   chainId: string;
   onSelect: () => void;
+  isDuplicate?: boolean;
 };

@@ -155,8 +155,6 @@ const HeaderWithAlert = ({
         label={label}
         ownerId={transactionId}
         tooltip={tooltip}
-        tooltipIcon={isEnforced && IconName.SecurityTick}
-        tooltipIconColor={isEnforced && IconColor.infoDefault}
         style={{
           paddingLeft: 0,
           paddingRight: 0,
@@ -469,7 +467,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     return null;
   }
 
-  if (error && !hasStaticData) {
+  if (
+    error &&
+    (error.code === SimulationErrorCode.Reverted || !hasStaticData)
+  ) {
     const inHeaderProp = error.code !== SimulationErrorCode.Reverted && {
       inHeader: <ErrorContent error={error} />,
     };

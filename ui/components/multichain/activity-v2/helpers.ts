@@ -8,6 +8,7 @@ import type {
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
+import { resolveTransactionType as resolveMusdClaimType } from '../../app/transaction-list-item/helpers';
 import { formatUnits } from '../../../../shared/lib/unit';
 
 export type AssetScope =
@@ -224,10 +225,18 @@ export function matchesLocalTransaction(
       txType === TransactionType.incoming
     );
   }
-  return (
-    group.initialTransaction.txParams?.to?.toLowerCase() ===
-    scope.tokenAddress.toLowerCase()
-  );
+  const addr = scope.tokenAddress.toLowerCase();
+  if (group.initialTransaction.txParams?.to?.toLowerCase() === addr) {
+    return true;
+  }
+  // For batched/delegated transactions (EIP-7702),
+  // txParams.to points to the user's own address. Check nestedTransactions
+  // to see if any inner call targets the token contract.
+  const nested = group.initialTransaction.nestedTransactions;
+  if (nested?.length) {
+    return nested.some((call) => call.to?.toLowerCase() === addr);
+  }
+  return false;
 }
 
 /**
@@ -322,5 +331,13 @@ export function resolveTransactionType(
     }
   }
 
-  return TransactionType.contractInteraction;
+  // Detect Merkl claim transactions — only when the tx would otherwise be
+  // a generic contractInteraction, matching the legacy activity list guard.
+  return (
+    resolveMusdClaimType(
+      TransactionType.contractInteraction,
+      tx.txParams?.to,
+      tx.txParams?.data,
+    ) ?? TransactionType.contractInteraction
+  );
 }

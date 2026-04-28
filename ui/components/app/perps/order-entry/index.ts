@@ -25,15 +25,3 @@ export { LeverageSlider } from './components/leverage-slider';
 export { OrderSummary } from './components/order-summary';
 export { AutoCloseSection } from './components/auto-close-section';
 export { CloseAmountSection } from './components/close-amount-section';
-
-// Mock data exports (for development/testing)
-export {
-  mockOrderFormDefaults,
-  mockPriceData,
-  mockMaxLeverage,
-  mockAvailableBalance,
-  calculatePositionSize,
-  calculateMarginRequired,
-  calculateMaxAmount,
-  estimateLiquidationPrice,
-} from './order-entry.mocks';

@@ -15,6 +15,15 @@
  * Or better yet, update hooks/perps/stream/index.ts to export from here conditionally.
  */
 
+import type {
+  OrderFill,
+  Position,
+  Order,
+  AccountState,
+  PerpsMarketData,
+  CandleData,
+  CandleStick,
+} from '@metamask/perps-controller';
 import {
   CandlePeriod,
   TimeDuration,
@@ -26,15 +35,6 @@ import {
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../../components/app/perps/mocks';
-import type {
-  OrderFill,
-  Position,
-  Order,
-  AccountState,
-  PerpsMarketData,
-  CandleData,
-  CandleStick,
-} from '@metamask/perps-controller';
 
 // ============================================================================
 // Position Hook
@@ -154,6 +154,16 @@ export function usePerpsLiveMarketData(
       console.log('[Mock] Market data refresh requested (no-op)');
     },
   };
+}
+
+export type UsePerpsLiveMarketListDataOptions = {
+  refreshIntervalMs?: number;
+};
+
+export function usePerpsLiveMarketListData(
+  _options: UsePerpsLiveMarketListDataOptions = {},
+): UsePerpsLiveMarketDataReturn {
+  return usePerpsLiveMarketData();
 }
 
 // ============================================================================

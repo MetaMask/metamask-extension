@@ -29,6 +29,11 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
     text: tEn('requestFrom'),
   };
 
+  private readonly revokeTitle = {
+    css: 'h2',
+    text: tEn('confirmTitleRevokeApproveTransaction'),
+  };
+
   private readonly spenderSection = {
     css: 'p',
     text: tEn('spender'),
@@ -75,6 +80,11 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   async checkRequestFromSection(): Promise<void> {
     console.log('Verify request from section is displayed');
     await this.driver.waitForSelector(this.requestFromSection);
+  }
+
+  async checkRevokeTitle(): Promise<void> {
+    console.log('Verify revoke title "Remove permission" is displayed');
+    await this.driver.waitForSelector(this.revokeTitle);
   }
 
   async checkSpenderSection(): Promise<void> {

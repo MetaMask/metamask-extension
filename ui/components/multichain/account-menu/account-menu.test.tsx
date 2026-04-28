@@ -120,7 +120,7 @@ const render = (
       state: 'OPEN',
     },
   };
-  const store = configureStore(merge(defaultState, state));
+  const store = configureStore(merge({}, defaultState, state));
   return renderWithProvider(<AccountMenu {...props} />, store, location);
 };
 

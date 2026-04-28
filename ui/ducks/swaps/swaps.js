@@ -48,11 +48,11 @@ import {
   decimalToHex,
   getValueFromWeiHex,
   hexWEIToDecGWEI,
-} from '../../../shared/modules/conversion.utils';
+} from '../../../shared/lib/conversion.utils';
 import {
   getCurrentChainId,
   getSelectedNetworkClientId,
-} from '../../../shared/modules/selectors/networks';
+} from '../../../shared/lib/selectors/networks';
 import {
   getSelectedAccount,
   getTokenExchangeRates,
@@ -70,7 +70,7 @@ import {
   getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsOptInStatusForMetrics,
   getSmartTransactionsPreferenceEnabled,
-} from '../../../shared/modules/selectors';
+} from '../../../shared/lib/selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -97,7 +97,7 @@ import {
   calcTokenAmount,
 } from '../../../shared/lib/transactions-controller-utils';
 import { EtherDenomination } from '../../../shared/constants/common';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { calculateMaxGasLimit } from '../../../shared/lib/swaps-utils';
 import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
 

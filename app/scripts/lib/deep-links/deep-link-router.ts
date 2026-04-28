@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import {
   type ParsedDeepLink,
   parse,

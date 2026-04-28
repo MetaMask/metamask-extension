@@ -6,7 +6,7 @@ import {
   TokenStandard,
   TransactionApprovalAmountType,
 } from '../../../../shared/constants/transaction';
-import { determineTransactionAssetType } from '../../../../shared/modules/transaction.utils';
+import { determineTransactionAssetType } from '../../../../shared/lib/transaction.utils';
 import type { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import type { TransactionMetricsBuilderRequest } from './metrics-builders/types';
 
@@ -104,6 +104,10 @@ function determineTransactionTypeAndContractInteraction(
     'gasPayment',
     'batch',
     'shieldSubscriptionApprove',
+    'musdConversion',
+    'musdClaim',
+    'perpsDeposit',
+    'perpsWithdraw',
   ];
 
   if (directTypeMappings.includes(type)) {

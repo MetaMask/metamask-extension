@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
 import BigNumber from 'bignumber.js';
 import {
-  getAllDetectedTokens,
   getAllTokens,
   getKnownMethodData,
   getSelectedAddress,
@@ -27,16 +26,20 @@ import {
 } from '../helpers/constants/transactions';
 import { getNfts } from '../ducks/metamask/metamask';
 import { captureSingleException } from '../store/actions';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
 import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
 import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
-import { selectBridgeHistoryItemForTxMetaId } from '../ducks/bridge-status/selectors';
+import {
+  selectBridgeHistoryForOriginalTxMetaId,
+  selectBridgeHistoryItemForTxMetaId,
+} from '../ducks/bridge-status/selectors';
 
 import { PAY_TRANSACTION_TYPES } from '../pages/confirmations/constants/pay';
+import { resolveTransactionType } from '../components/app/transaction-list-item/helpers';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -101,7 +104,6 @@ export function useTransactionDisplayData(transactionGroup) {
   const knownTokens = useSelector(getAllTokens);
   const selectedAddress = useSelector(getSelectedAddress);
   const knownNfts = useSelector(getNfts);
-  const allDetectedTokens = useSelector(getAllDetectedTokens);
   const tokenListAllChains = useSelector(selectERC20TokensByChain);
   const fiatFormatter = useFiatFormatter();
 
@@ -109,9 +111,14 @@ export function useTransactionDisplayData(transactionGroup) {
 
   // Bridge data
   const srcTxMetaId = transactionGroup.initialTransaction.id;
-  const bridgeHistoryItem = useSelector((state) =>
+  const bridgeHistoryItemByTxMetaId = useSelector((state) =>
     selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
   );
+  const bridgeHistoryItemByOriginalTxMetaId = useSelector((state) =>
+    selectBridgeHistoryForOriginalTxMetaId(state, srcTxMetaId),
+  );
+  const bridgeHistoryItem =
+    bridgeHistoryItemByTxMetaId ?? bridgeHistoryItemByOriginalTxMetaId;
   const { destNetwork } = useBridgeChainInfo({
     transaction: transactionGroup.initialTransaction,
   });
@@ -120,8 +127,14 @@ export function useTransactionDisplayData(transactionGroup) {
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
-  const { transferInformation, type } = initialTransaction;
+  const { transferInformation, type: rawType } = initialTransaction;
   const { from: senderAddress, to } = initialTransaction.txParams || {};
+
+  const type = resolveTransactionType(
+    rawType,
+    to,
+    initialTransaction.txParams?.data,
+  );
 
   const isUnifiedSwapTx =
     [TransactionType.swap, TransactionType.bridge].includes(type) &&
@@ -158,11 +171,6 @@ export function useTransactionDisplayData(transactionGroup) {
   if (isTokenCategory) {
     token =
       knownTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
-        selectedAddress
-      ]?.find(({ address }) =>
-        isEqualCaseInsensitive(address, recipientAddress),
-      ) ||
-      allDetectedTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
         selectedAddress
       ]?.find(({ address }) =>
         isEqualCaseInsensitive(address, recipientAddress),
@@ -401,8 +409,10 @@ export function useTransactionDisplayData(transactionGroup) {
 
     if (type === TransactionType.perpsDeposit) {
       title = t('perpsDepositActivityTitle');
+    } else if (type === TransactionType.perpsWithdraw) {
+      title = t('perpsWithdrawFundsTitle');
     } else if (type === TransactionType.musdClaim) {
-      title = t('musdClaimActivityTitle');
+      title = t('musdClaimTitle');
     } else {
       title = t('musdConversionActivityTitle', [
         sourceToken?.symbol ?? 'Token',

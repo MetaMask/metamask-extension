@@ -9,7 +9,7 @@ import { PreferencesController } from '../../controllers/preferences-controller'
 import {
   parseTypedDataMessage,
   parseApprovalTransactionData,
-} from '../../../../shared/modules/transaction.utils';
+} from '../../../../shared/lib/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
 import { PRIMARY_TYPE_DELEGATION } from '../transaction/delegation';

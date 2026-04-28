@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -7,13 +7,6 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { createSelectItem, SelectItemConfig } from './create-select-item';
-
-const mockNavigate = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate,
-}));
 
 const createMockStore = (overrides = {}) =>
   configureMockStore([thunk])({
@@ -36,10 +29,6 @@ const testConfig: SelectItemConfig = {
 const TestSelectItem = createSelectItem(testConfig);
 
 describe('createSelectItem', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('renders label from translation key', () => {
     const mockStore = createMockStore();
     renderWithProvider(<TestSelectItem />, mockStore);
@@ -54,13 +43,12 @@ describe('createSelectItem', () => {
     expect(screen.getByText('my-value')).toBeInTheDocument();
   });
 
-  it('navigates to route on press', () => {
+  it('renders a link to the route', () => {
     const mockStore = createMockStore();
     renderWithProvider(<TestSelectItem />, mockStore);
 
-    fireEvent.click(screen.getByRole('button'));
-
-    expect(mockNavigate).toHaveBeenCalledWith('/test-route');
+    const link = screen.getByRole('link');
+    expect(link).toHaveAttribute('href', '/test-route');
   });
 
   it('applies formatValue when provided', () => {

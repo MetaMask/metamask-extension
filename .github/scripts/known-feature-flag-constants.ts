@@ -9,7 +9,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { FeatureFlagNames } from '../../shared/modules/feature-flags';
+import { FeatureFlagNames } from '../../shared/lib/feature-flags';
 
 /** Auto-populated from the FeatureFlagNames enum. Key = `FeatureFlagNames.Member`. */
 const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(
@@ -29,16 +29,6 @@ const FILE_SOURCES: Array<{
     key: 'ASSETS_UNIFY_STATE_FLAG',
     file: 'shared/lib/assets-unify-state/remote-feature-flag.ts',
     exportName: 'ASSETS_UNIFY_STATE_FLAG',
-  },
-  {
-    key: 'STATE_1_FLAG',
-    file: 'ui/selectors/multichain-accounts/feature-flags.ts',
-    exportName: 'STATE_1_FLAG',
-  },
-  {
-    key: 'STATE_2_FLAG',
-    file: 'ui/selectors/multichain-accounts/feature-flags.ts',
-    exportName: 'STATE_2_FLAG',
   },
   {
     key: 'MERKL_FEATURE_FLAG_KEY',

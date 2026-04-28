@@ -20,7 +20,7 @@ import { createMockMultichainAccountsState } from '../../../selectors/multichain
 import {
   getAllNetworkConfigurationsByCaipChainId,
   type EvmAndMultichainNetworkConfigurationsWithCaipChainId,
-} from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/selectors/networks';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
@@ -187,8 +187,8 @@ jest.mock('../../../hooks/useAccountGroupsForPermissions', () => ({
   },
 }));
 
-jest.mock('../../../../shared/modules/selectors/networks', () => ({
-  ...jest.requireActual('../../../../shared/modules/selectors/networks'),
+jest.mock('../../../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/networks'),
   getAllNetworkConfigurationsByCaipChainId: jest.fn(() => ({
     'eip155:1': {
       chainId: 'eip155:1',
@@ -321,6 +321,7 @@ const mockAccountTreeState = {
             entropy: { groupIndex: 0 },
             pinned: false,
             hidden: false,
+            lastSelected: 0,
           },
         },
       },
@@ -330,9 +331,9 @@ const mockAccountTreeState = {
       },
     },
   },
-  selectedAccountGroup:
-    'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId,
 };
+const mockSelectedAccountGroup =
+  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
 
 const mockInternalAccountsState = {
   accounts: {
@@ -408,6 +409,7 @@ const render = (
     mockAccountTreeState,
     mockInternalAccountsState,
     mockNetworkConfigurations,
+    mockSelectedAccountGroup,
   );
 
   const store = configureStore({

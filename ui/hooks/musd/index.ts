@@ -30,6 +30,11 @@ export {
 export { useMusdBalance, type UseMusdBalanceResult } from './useMusdBalance';
 
 export {
+  useMusdMerklPosition,
+  type UseMusdMerklPositionResult,
+} from './useMusdMerklPosition';
+
+export {
   useMusdNetworkFilter,
   type MusdNetworkFilterResult,
 } from './useMusdNetworkFilter';
@@ -53,3 +58,12 @@ export {
 } from './useCustomAmount';
 
 export { useCanBuyMusd, type UseCanBuyMusdResult } from './useCanBuyMusd';
+
+export { useMusdConversionConfirmTrace } from './useMusdConversionConfirmTrace';
+
+export {
+  useMusdPaymentToken,
+  type UseMusdPaymentTokenResult,
+} from './useMusdPaymentToken';
+
+export { isMerklClaimTransaction } from '../../components/app/musd/utils';

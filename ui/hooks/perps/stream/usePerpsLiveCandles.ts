@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
+import type { CandleData } from '@metamask/perps-controller';
 import type {
   CandlePeriod,
   TimeDuration,
 } from '../../../components/app/perps/constants/chartConfig';
 import { getPerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
-import type { CandleData } from '@metamask/perps-controller';
 
 /**
  * Options for usePerpsLiveCandles hook

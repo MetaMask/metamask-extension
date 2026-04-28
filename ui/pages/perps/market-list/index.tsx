@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, useSearchParams } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -16,8 +16,16 @@ import {
   TextColor,
   ButtonBase,
 } from '@metamask/design-system-react';
+import type { PerpsMarketData } from '@metamask/perps-controller';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../shared/constants/perps-events';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { usePerpsLiveMarketData } from '../../../hooks/perps/stream';
+import {
+  usePerpsLiveAccount,
+  usePerpsLiveMarketListData,
+} from '../../../hooks/perps/stream';
 import {
   filterMarketsByQuery,
   isHip3Market,
@@ -29,7 +37,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  getIsPerpsEnabled,
+  getIsPerpsExperienceAvailable,
   getHip3AllowedSourcesSet,
 } from '../../../selectors/perps/feature-flags';
 import {
@@ -37,16 +45,17 @@ import {
   type SortField,
   type SortDirection,
 } from '../utils/sortMarkets';
+import {
+  VALID_MARKET_FILTERS,
+  type MarketFilter,
+} from '../../../../shared/constants/perps';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { usePerpsEventTracking } from '../../../hooks/perps';
 import { MarketRow } from './components/market-row';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
-import {
-  SortDropdown,
-  SORT_OPTIONS,
-  type SortOptionId,
-} from './components/sort-dropdown';
+import { SortDropdown } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';
-import { FilterSelect, type MarketFilter } from './components/filter-select';
-import type { PerpsMarketData } from '@metamask/perps-controller';
+import { FilterSelect } from './components/filter-select';
 
 /**
  * Get the resolved market type for a market.
@@ -80,14 +89,15 @@ const isUncategorizedHip3Market = (
  * Filter markets by market type
  *
  * Crypto markets have no marketSource (main DEX).
- * HIP-3 markets (stocks, commodities, forex) come from allowed DEX providers.
- * Market type is resolved using HIP3_ASSET_MARKET_TYPES mapping first,
- * then falls back to the market's own marketType property.
- * "New" category shows HIP-3 assets that haven't been categorized yet.
+ * Stocks / commodities / forex are identified purely by resolved market type —
+ * intentionally not gated on the allowlist so categories work even when the
+ * remote feature flag has not yet loaded (the controller's own fallback already
+ * limits which HIP-3 markets reach the UI).
+ * "New" category shows HIP-3 assets from allowed sources that haven't been categorized yet.
  *
  * @param markets - Array of markets to filter
  * @param filter - Market type filter
- * @param allowedHip3Sources - Set of allowed HIP-3 market sources from feature flag
+ * @param allowedHip3Sources - Set of allowed HIP-3 market sources (used for "new" tab only)
  * @returns Filtered array of markets
  */
 const filterByType = (
@@ -103,25 +113,13 @@ const filterByType = (
       return markets.filter(isCryptoMarket);
     }
     case 'stocks': {
-      return markets.filter(
-        (m) =>
-          isHip3Market(m, allowedHip3Sources) &&
-          getResolvedMarketType(m) === 'equity',
-      );
+      return markets.filter((m) => getResolvedMarketType(m) === 'equity');
     }
     case 'commodities': {
-      return markets.filter(
-        (m) =>
-          isHip3Market(m, allowedHip3Sources) &&
-          getResolvedMarketType(m) === 'commodity',
-      );
+      return markets.filter((m) => getResolvedMarketType(m) === 'commodity');
     }
     case 'forex': {
-      return markets.filter(
-        (m) =>
-          isHip3Market(m, allowedHip3Sources) &&
-          getResolvedMarketType(m) === 'forex',
-      );
+      return markets.filter((m) => getResolvedMarketType(m) === 'forex');
     }
     case 'new': {
       return markets.filter((m) =>
@@ -140,26 +138,53 @@ const filterByType = (
 export const MarketListView: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const [searchParams] = useSearchParams();
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const allowedHip3Sources = useSelector(getHip3AllowedSourcesSet);
+  const { track } = usePerpsEventTracking();
 
   // Use stream hooks for real-time market data
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
-    usePerpsLiveMarketData();
+    usePerpsLiveMarketListData();
+  const { account } = usePerpsLiveAccount();
+
+  // Read initial filter from URL params (set by deeplink)
+  const initialFilter = useMemo<MarketFilter>(() => {
+    const filterParam = searchParams.get('filter');
+    if (
+      filterParam &&
+      VALID_MARKET_FILTERS.includes(filterParam as MarketFilter)
+    ) {
+      return filterParam as MarketFilter;
+    }
+    return 'all';
+  }, [searchParams]);
 
   // State
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSortId, setSelectedSortId] =
-    useState<SortOptionId>('volumeHigh');
-  const [selectedFilter, setSelectedFilter] = useState<MarketFilter>('all');
-
-  // Get current sort option
-  const currentSortOption = SORT_OPTIONS.find(
-    (option) => option.id === selectedSortId,
-  );
+  const [sortField, setSortField] = useState<SortField>('volume');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [selectedFilter, setSelectedFilter] =
+    useState<MarketFilter>(initialFilter);
 
   // Use stream loading state
   const isLoading = marketsLoading;
+
+  const hasPerpBalance = Boolean(
+    account && Number.parseFloat(account.availableBalance) > 0,
+  );
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !isLoading && account !== null,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+      [PERPS_EVENT_PROPERTY.SOURCE]:
+        PERPS_EVENT_VALUE.SOURCE.WALLET_HOME_PERPS_TAB,
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+      [PERPS_EVENT_PROPERTY.MARKET_CATEGORY_FILTER]: selectedFilter,
+    },
+  });
 
   // Check if there are any uncategorized HIP-3 markets (for showing "New" filter)
   const hasUncategorizedMarkets = useMemo(() => {
@@ -182,20 +207,19 @@ export const MarketListView: React.FC = () => {
       markets = filterByType(allMarkets, selectedFilter, allowedHip3Sources);
     }
 
-    if (currentSortOption) {
-      markets = sortMarkets({
-        markets,
-        sortBy: currentSortOption.field,
-        direction: currentSortOption.direction,
-      });
-    }
+    markets = sortMarkets({
+      markets,
+      sortBy: sortField,
+      direction: sortDirection,
+    });
     return markets;
   }, [
     allMarkets,
     selectedFilter,
     allowedHip3Sources,
     searchQuery,
-    currentSortOption,
+    sortField,
+    sortDirection,
   ]);
 
   // Handlers
@@ -212,27 +236,53 @@ export const MarketListView: React.FC = () => {
   }, []);
 
   const handleSortChange = useCallback(
-    (optionId: SortOptionId, _field: SortField, _direction: SortDirection) => {
-      setSelectedSortId(optionId);
+    (field: SortField, direction: SortDirection) => {
+      setSortField(field);
+      setSortDirection(direction);
     },
     [],
   );
 
-  const handleFilterChange = useCallback((filter: MarketFilter) => {
-    setSelectedFilter(filter);
-  }, []);
+  const handleFilterChange = useCallback(
+    (filter: MarketFilter) => {
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.TAB_NAME]: filter,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]: filter,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+          PERPS_EVENT_VALUE.BUTTON_LOCATION.MARKET_LIST,
+      });
+      setSelectedFilter(filter);
+    },
+    [track],
+  );
 
   const handleMarketSelect = useCallback(
     (market: PerpsMarketData) => {
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
+        [PERPS_EVENT_PROPERTY.ASSET]: market.symbol,
+      });
       navigate(
         `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(market.symbol)}`,
       );
     },
-    [navigate],
+    [navigate, track],
   );
 
+  const handleSearchClick = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.SEARCH_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.MARKET_LIST,
+    });
+  }, [track]);
+
   // Guard: redirect if perps feature is disabled
-  if (!isPerpsEnabled) {
+  if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
@@ -274,6 +324,7 @@ export const MarketListView: React.FC = () => {
           value={searchQuery}
           onChange={handleSearchChange}
           onClear={handleSearchClear}
+          onInputClick={handleSearchClick}
           autoFocus
         />
       </Box>
@@ -294,8 +345,9 @@ export const MarketListView: React.FC = () => {
             showNewFilter={hasUncategorizedMarkets}
           />
           <SortDropdown
-            selectedOptionId={selectedSortId}
-            onOptionChange={handleSortChange}
+            selectedField={sortField}
+            direction={sortDirection}
+            onChange={handleSortChange}
           />
         </Box>
       )}
@@ -318,7 +370,7 @@ export const MarketListView: React.FC = () => {
             <MarketRow
               key={market.symbol}
               market={market}
-              displayMetric={currentSortOption?.field || 'volume'}
+              displayMetric={sortField}
               onPress={handleMarketSelect}
             />
           ))}

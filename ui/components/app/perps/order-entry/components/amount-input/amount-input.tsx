@@ -1,4 +1,3 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Text,
@@ -12,16 +11,23 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import { TextField, TextFieldSize } from '../../../../../component-library';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../../../helpers/constants/design-system';
-import { PerpsSlider } from '../../../perps-slider';
-import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { TextField, TextFieldSize } from '../../../../../component-library';
+import { PerpsSlider } from '../../../perps-slider';
+import { getDisplaySymbol } from '../../../utils';
 import type { AmountInputProps } from '../../order-entry.types';
-import { calculatePositionSize } from '../../order-entry.mocks';
+import {
+  formatNumberForInput,
+  isDigitsOnlyInput,
+  isUnsignedDecimalInput,
+} from '../../utils';
 
 /**
  * AmountInput - Size section with dual USD/token inputs and percentage slider
@@ -38,6 +44,7 @@ import { calculatePositionSize } from '../../order-entry.mocks';
  * @param options0.asset
  * @param options0.currentPrice
  * @param options0.onAddFunds
+ * @param options0.szDecimals
  */
 export const AmountInput: React.FC<AmountInputProps> = ({
   amount,
@@ -48,6 +55,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   leverage,
   asset,
   currentPrice,
+  szDecimals,
   onAddFunds,
 }) => {
   const t = useI18nContext();
@@ -61,106 +69,118 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   }, [balancePercent]);
 
   const tokenAmount = useMemo(() => {
-    const cleanAmount = amount.replace(/,/gu, '');
-    const numAmount = parseFloat(cleanAmount) || 0;
+    const numAmount = Number.parseFloat(amount.replace(/,/gu, '')) || 0;
     if (numAmount === 0 || currentPrice === 0) {
       return null;
     }
-    const positionValue = numAmount * leverage;
-    return calculatePositionSize(positionValue, currentPrice);
-  }, [amount, currentPrice, leverage]);
+    return currentPrice > 0 ? numAmount / currentPrice : null;
+  }, [amount, currentPrice]);
 
-  const tokenDisplayValue = useMemo(() => {
+  // Uses a locale-neutral formatter (always ".") so the value is always
+  // editable by isUnsignedDecimalInput regardless of the user's locale.
+  // Cap the max fractional digits to the asset's szDecimals so PUMP shows
+  // integer token counts ("6081") and ETH stops at 4 decimals instead of the
+  // previous hard-coded 6 (matches mobile's formatPositionSize behaviour).
+  const unGroupedTokenDisplay = useMemo(() => {
     if (tokenAmount === null || tokenAmount === 0) {
       return '';
     }
-    return formatNumber(tokenAmount, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 6,
-    });
-  }, [tokenAmount, formatNumber]);
+    return formatNumberForInput(tokenAmount, szDecimals);
+  }, [tokenAmount, szDecimals]);
+
+  // Local draft for the token input so intermediate values (e.g. "0", "0.") are
+  // preserved while the user is actively typing.
+  const [isEditingToken, setIsEditingToken] = useState(false);
+  const [tokenInputValue, setTokenInputValue] = useState(unGroupedTokenDisplay);
+
+  // When not editing, derive the displayed token value from the current amount
+  // rather than syncing via an effect — avoids a stale intermediate render.
+  const displayedTokenValue = isEditingToken
+    ? tokenInputValue
+    : unGroupedTokenDisplay;
+
+  const formatAmount = useCallback(
+    (value: number): string => value.toFixed(2),
+    [],
+  );
 
   const handleAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
-        onAmountChange(value);
-        const cleanValue = value.replace(/,/gu, '');
-        if (cleanValue && availableBalance > 0) {
-          const numValue = parseFloat(cleanValue);
-          if (!isNaN(numValue) && numValue > 0) {
-            const pct = Math.min(
-              Math.round((numValue / availableBalance) * 100),
-              100,
-            );
-            onBalancePercentChange(pct);
-            setPercentInputValue(String(pct));
-          } else {
-            onBalancePercentChange(0);
-            setPercentInputValue('0');
-          }
-        } else {
-          onBalancePercentChange(0);
-          setPercentInputValue('0');
-        }
+      if (!(value === '' || isUnsignedDecimalInput(value))) {
+        return;
       }
-    },
-    [onAmountChange, onBalancePercentChange, availableBalance],
-  );
 
-  const formatAmount = useCallback(
-    (value: number): string =>
-      formatNumber(value, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }),
-    [formatNumber],
-  );
+      onAmountChange(value);
 
-  const handleAmountBlur = useCallback(() => {
-    if (amount) {
-      const numValue = parseFloat(amount.replace(/,/gu, ''));
-      if (!isNaN(numValue) && numValue > 0) {
-        onAmountChange(formatAmount(numValue));
-      }
-    }
-  }, [amount, onAmountChange, formatAmount]);
-
-  const handleTokenAmountChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = event.target;
-      if (value === '' || /^\d+(\.\d*)?$|^\.\d*$/u.test(value)) {
-        if (value === '' || value === '.') {
-          onAmountChange('');
-          onBalancePercentChange(0);
-          setPercentInputValue('0');
-          return;
-        }
-        const numToken = parseFloat(value);
-        if (
-          isNaN(numToken) ||
-          numToken <= 0 ||
-          currentPrice === 0 ||
-          leverage === 0
-        ) {
-          onAmountChange('');
-          onBalancePercentChange(0);
-          setPercentInputValue('0');
-          return;
-        }
-        const usdMargin = (numToken * currentPrice) / leverage;
-        onAmountChange(formatAmount(usdMargin));
-        if (availableBalance > 0) {
-          const pct = Math.min(
-            Math.round((usdMargin / availableBalance) * 100),
-            100,
-          );
+      const maxSize = availableBalance * leverage;
+      if (value && maxSize > 0) {
+        const numValue = Number.parseFloat(value);
+        if (!Number.isNaN(numValue) && numValue > 0) {
+          const pct = Math.min(Math.round((numValue / maxSize) * 100), 100);
           onBalancePercentChange(pct);
           setPercentInputValue(String(pct));
         } else {
           onBalancePercentChange(0);
           setPercentInputValue('0');
         }
+      } else {
+        onBalancePercentChange(0);
+        setPercentInputValue('0');
+      }
+    },
+    [onAmountChange, onBalancePercentChange, availableBalance, leverage],
+  );
+
+  const handleAmountBlur = useCallback(() => {
+    if (!amount) {
+      onAmountChange('');
+      return;
+    }
+
+    const numValue = Number.parseFloat(amount.replace(/,/gu, ''));
+    if (Number.isFinite(numValue) && numValue > 0) {
+      onAmountChange(numValue.toFixed(2));
+      return;
+    }
+
+    onAmountChange('');
+  }, [amount, onAmountChange]);
+
+  const handleTokenAmountChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      if (value !== '' && !isUnsignedDecimalInput(value)) {
+        return;
+      }
+
+      // Always update the local draft so partial inputs like "0", "0.", "0.0"
+      // are preserved in the field while the user is still typing.
+      setTokenInputValue(value);
+
+      if (value === '' || value === '.') {
+        onAmountChange('');
+        onBalancePercentChange(0);
+        setPercentInputValue('0');
+        return;
+      }
+      const numToken = parseFloat(value);
+      if (!Number.isFinite(numToken) || numToken <= 0 || currentPrice === 0) {
+        onAmountChange('');
+        onBalancePercentChange(0);
+        setPercentInputValue('0');
+        return;
+      }
+      const usdSize = numToken * currentPrice;
+      onAmountChange(formatAmount(usdSize));
+      const maxSize = availableBalance * leverage;
+      if (maxSize > 0) {
+        const pct = Math.min(Math.round((usdSize / maxSize) * 100), 100);
+        onBalancePercentChange(pct);
+        setPercentInputValue(String(pct));
+      } else {
+        onBalancePercentChange(0);
+        setPercentInputValue('0');
       }
     },
     [
@@ -173,8 +193,13 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     ],
   );
 
+  const handleTokenFocus = useCallback(() => {
+    setTokenInputValue(unGroupedTokenDisplay);
+    setIsEditingToken(true);
+  }, [unGroupedTokenDisplay]);
+
   const handleTokenBlur = useCallback(() => {
-    // Token value is derived from amount; no need to sync back on blur
+    setIsEditingToken(false);
   }, []);
 
   const handleSliderChange = useCallback(
@@ -185,17 +210,24 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       if (percent === 0) {
         onAmountChange('');
       } else {
-        const newAmount = (availableBalance * percent) / 100;
+        const maxSize = availableBalance * leverage;
+        const newAmount = (maxSize * percent) / 100;
         onAmountChange(formatAmount(newAmount));
       }
     },
-    [onAmountChange, onBalancePercentChange, availableBalance, formatAmount],
+    [
+      onAmountChange,
+      onBalancePercentChange,
+      availableBalance,
+      leverage,
+      formatAmount,
+    ],
   );
 
   const handlePercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^\d*$/u.test(value)) {
+      if (value === '' || isDigitsOnlyInput(value)) {
         setPercentInputValue(value);
         const num = parseInt(value, 10);
         if (!isNaN(num) && num >= 0 && num <= 100) {
@@ -203,13 +235,20 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           if (num === 0) {
             onAmountChange('');
           } else {
-            const newAmount = (availableBalance * num) / 100;
+            const maxSize = availableBalance * leverage;
+            const newAmount = (maxSize * num) / 100;
             onAmountChange(formatAmount(newAmount));
           }
         }
       }
     },
-    [onAmountChange, onBalancePercentChange, availableBalance, formatAmount],
+    [
+      onAmountChange,
+      onBalancePercentChange,
+      availableBalance,
+      leverage,
+      formatAmount,
+    ],
   );
 
   const handlePercentInputBlur = useCallback(() => {
@@ -221,7 +260,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     } else if (num > 100) {
       onBalancePercentChange(100);
       setPercentInputValue('100');
-      onAmountChange(formatAmount(availableBalance));
+      onAmountChange(formatAmount(availableBalance * leverage));
     } else {
       onBalancePercentChange(num);
       setPercentInputValue(String(num));
@@ -231,47 +270,41 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     onAmountChange,
     onBalancePercentChange,
     availableBalance,
+    leverage,
     formatAmount,
   ]);
 
-  const formattedPlaceholder = useMemo(() => formatAmount(0), [formatAmount]);
-
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
-      {/* Header: Size, then Available to trade below (both left-aligned) */}
-      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-        <Text variant={TextVariant.BodySm}>{t('perpsSize')}</Text>
+      {/* Available to trade row */}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Text variant={TextVariant.BodySm}>{t('perpsAvailableToTrade')}</Text>
         <Box
           flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
           gap={2}
         >
-          <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-            {t('perpsAvailableToTrade')}
+          <Text variant={TextVariant.BodySm}>
+            {`${formatNumber(availableBalance, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC`}
           </Text>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={1}
-          >
-            <Text
-              variant={TextVariant.BodyXs}
-              color={TextColor.TextAlternative}
-            >
-              {`${formatCurrencyWithMinThreshold(availableBalance, 'USD')} USDC`}
-            </Text>
-            <Icon
-              name={IconName.AddCircle}
-              size={IconSize.Sm}
-              color={IconColor.IconMuted}
-              aria-label="Add Funds"
-              onClick={onAddFunds}
-              className="bg-transparent border-0 p-0 cursor-pointer flex items-center"
-              data-testid="amount-input-add-funds"
-            />
-          </Box>
+          <Icon
+            name={IconName.AddCircle}
+            size={IconSize.Sm}
+            color={IconColor.IconAlternative}
+            aria-label="Add Funds"
+            onClick={onAddFunds}
+            className="bg-transparent border-0 p-0 cursor-pointer flex items-center"
+            data-testid="amount-input-add-funds"
+          />
         </Box>
       </Box>
+
+      {/* Size label */}
+      <Text variant={TextVariant.BodySm}>{t('perpsSize')}</Text>
 
       {/* Two side-by-side inputs: USD (left), Token (right) */}
       <Box
@@ -285,7 +318,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             value={amount}
             onChange={handleAmountChange}
             onBlur={handleAmountBlur}
-            placeholder={formattedPlaceholder}
+            placeholder="0.00"
             borderRadius={BorderRadius.MD}
             borderWidth={0}
             backgroundColor={BackgroundColor.backgroundMuted}
@@ -305,8 +338,9 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         <Box className="flex-1 min-w-0">
           <TextField
             size={TextFieldSize.Md}
-            value={tokenDisplayValue}
+            value={displayedTokenValue}
             onChange={handleTokenAmountChange}
+            onFocus={handleTokenFocus}
             onBlur={handleTokenBlur}
             placeholder="0"
             borderRadius={BorderRadius.MD}
@@ -320,7 +354,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextAlternative}
               >
-                {asset}
+                {getDisplaySymbol(asset)}
               </Text>
             }
           />
@@ -341,7 +375,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             onChange={handleSliderChange}
           />
         </Box>
-        <Box className="shrink-0 w-20">
+        <Box className="shrink-0" style={{ width: '4.5rem' }}>
           <TextField
             size={TextFieldSize.Sm}
             value={percentInputValue}
@@ -354,7 +388,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             data-testid="balance-percent-input"
             inputProps={{
               inputMode: 'numeric',
-              style: { textAlign: 'center' },
+              style: { textAlign: 'right', paddingLeft: '8px' },
             }}
             endAccessory={
               <Text

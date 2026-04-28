@@ -6,7 +6,11 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { formatChainIdToHex, StatusTypes } from '@metamask/bridge-controller';
+import {
+  formatChainIdToHex,
+  isCrossChain,
+  StatusTypes,
+} from '@metamask/bridge-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -21,6 +25,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  SuccessPill,
   Text,
 } from '../../../components/component-library';
 import {
@@ -29,13 +34,14 @@ import {
   Page,
 } from '../../../components/multichain/pages/page';
 import {
+  selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
   selectLocalTxForTxHash,
   selectReceivedSwapsTokenAmountFromTxMeta,
 } from '../../../ducks/bridge-status/selectors';
 import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
 import type { MetaMaskReduxState } from '../../../store/store';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -49,7 +55,7 @@ import {
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getNativeTokenInfo } from '../../../selectors';
+import { getNativeTokenInfo, isHardwareWallet } from '../../../selectors';
 import { getTransactions } from '../../../selectors/transactions';
 import {
   MetaMetricsContextProp,
@@ -64,9 +70,9 @@ import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
   type AllowedBridgeChainIds,
 } from '../../../../shared/constants/bridge';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../shared/lib/Numeric';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { formatTokenAmount } from '../utils/quote';
+import { resolveTransactionType } from '../../../components/multichain/activity-v2/helpers';
 import {
   getBlockExplorerUrl,
   getBridgeAmountReceivedFormatted,
@@ -74,6 +80,7 @@ import {
   getIsDelayed,
   STATUS_TO_COLOR_MAP,
 } from '../utils/tx-details';
+import { formatTokenAmount } from '../utils/quote';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -83,6 +90,7 @@ const CrossChainSwapTxDetails = () => {
   const locale = useSelector(getIntlLocale);
   const { trackEvent } = useContext(MetaMetricsContext);
   const rootState = useSelector((state) => state);
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
 
   const { txHash } = useParams<{ txHash: string }>();
   const location = useLocation() as {
@@ -107,14 +115,28 @@ const CrossChainSwapTxDetails = () => {
     destNetwork,
   } = useBridgeActivityData({ transaction });
 
-  const bridgeHistoryItem = useSelector((state: MetaMaskReduxState) =>
+  const bridgeHistoryItemByHash = useSelector((state: MetaMaskReduxState) =>
     selectBridgeHistoryItemByHash(state, srcChainTxMeta?.hash),
   );
+  const bridgeHistoryItemByOriginalTxMetaId = useSelector(
+    (state: MetaMaskReduxState) =>
+      selectBridgeHistoryForOriginalTxMetaId(state, srcChainTxMeta?.id),
+  );
+  const bridgeHistoryItem =
+    bridgeHistoryItemByHash ?? bridgeHistoryItemByOriginalTxMetaId;
   const approvalTxMeta = allTransactions.find(
     (tx) => tx.id === bridgeHistoryItem?.approvalTxId,
   );
 
-  const isBridgeTx = srcChainTxMeta?.type === TransactionType.bridge;
+  const isBridgeTx =
+    srcChainTxMeta?.type === TransactionType.bridge ||
+    (transaction?.transactionCategory &&
+      resolveTransactionType(transaction) === TransactionType.bridge) ||
+    (bridgeHistoryItem &&
+      isCrossChain(
+        bridgeHistoryItem.status.srcChain?.chainId,
+        bridgeHistoryItem.status.destChain?.chainId,
+      ));
 
   const srcTxHash = srcChainTxMeta?.hash;
   const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
@@ -122,11 +144,15 @@ const CrossChainSwapTxDetails = () => {
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
   const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
 
-  const bridgeStatus = bridgeHistoryItem
-    ? bridgeHistoryItem?.status.status
-    : StatusTypes.PENDING;
-  // Show src tx status for swaps
-  const status = isBridgeTx ? bridgeStatus : srcChainTxMeta?.status;
+  // Either the local tx or the transaction from accounts-api
+  const transactionStatus = srcChainTxMeta?.status || transaction?.status;
+  // Use txHistory status for bridge txs, fallback to src tx status if not a local bridge tx
+  const bridgeStatus =
+    (bridgeHistoryItem ? bridgeHistoryItem.status.status : transactionStatus) ??
+    StatusTypes.PENDING;
+
+  // Show src tx status for swaps, but use txHistory status for bridge txs
+  const status = isBridgeTx ? bridgeStatus : transactionStatus;
 
   const srcChainIconUrl = srcNetwork
     ? getImageForChainId(
@@ -158,6 +184,7 @@ const CrossChainSwapTxDetails = () => {
         state: rootState as MetaMaskReduxState,
         transaction: srcChainTxMeta,
         isTokenApprove: false,
+        isHardwareWalletAccount,
       })
     : undefined;
 
@@ -428,19 +455,23 @@ const CrossChainSwapTxDetails = () => {
             <TransactionDetailRow
               title={t('bridgeTxDetailsTotalGasFee')}
               value={
-                <>
-                  {data?.hexGasTotal &&
-                    gasCurrency?.decimals &&
-                    gasCurrency?.symbol &&
-                    formatTokenAmount(
-                      locale,
-                      new Numeric(data.hexGasTotal, 16)
-                        .toBase(10)
-                        .shiftedBy(gasCurrency.decimals ?? 0)
-                        .toString(),
-                      gasCurrency?.symbol,
-                    )}
-                </>
+                data?.isGasFeeSponsored ? (
+                  <SuccessPill label={t('swapGasFeesSponsored')} />
+                ) : (
+                  <>
+                    {data?.hexGasTotal &&
+                      gasCurrency?.decimals &&
+                      gasCurrency?.symbol &&
+                      formatTokenAmount(
+                        locale,
+                        new Numeric(data.hexGasTotal, 16)
+                          .toBase(10)
+                          .shiftedBy(gasCurrency.decimals ?? 0)
+                          .toString(),
+                        gasCurrency?.symbol,
+                      )}
+                  </>
+                )
               }
             />
           </Box>
@@ -453,14 +484,12 @@ const CrossChainSwapTxDetails = () => {
             flexDirection={FlexDirection.Column}
             gap={2}
           >
-            <TransactionDetailRow
-              title={t('bridgeTxDetailsNonce')}
-              value={
-                srcChainTxMeta?.txParams.nonce
-                  ? hexToDecimal(srcChainTxMeta?.txParams.nonce)
-                  : undefined
-              }
-            />
+            {srcChainTxMeta?.txParams.nonce ? (
+              <TransactionDetailRow
+                title={t('bridgeTxDetailsNonce')}
+                value={hexToDecimal(srcChainTxMeta.txParams.nonce)}
+              />
+            ) : null}
           </Box>
         </React.Fragment>
       </Content>

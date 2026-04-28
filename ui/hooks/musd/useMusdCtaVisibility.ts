@@ -240,8 +240,8 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
         };
       }
 
-      // Geo-blocking check
-      if (isGeoBlocked) {
+      // Hide while geo check is in progress to avoid showing a CTA the user cannot act on
+      if (isGeoBlockingLoading || isGeoBlocked) {
         return {
           ...HIDDEN_BUY_GET_CTA_STATE,
           isEmptyWallet,
@@ -289,7 +289,12 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
         isEmptyWallet,
       };
     },
-    [isMusdConversionFlowEnabled, isMusdCtaEnabled, isGeoBlocked],
+    [
+      isMusdConversionFlowEnabled,
+      isMusdCtaEnabled,
+      isGeoBlockingLoading,
+      isGeoBlocked,
+    ],
   );
 
   /**
@@ -307,8 +312,8 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
         return false;
       }
 
-      // Geo-blocking check
-      if (isGeoBlocked) {
+      // Hide while geo check is in progress to avoid showing a CTA the user cannot act on
+      if (isGeoBlockingLoading || isGeoBlocked) {
         return false;
       }
 
@@ -333,6 +338,7 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
     [
       isMusdConversionFlowEnabled,
       isMusdTokenListItemCtaEnabled,
+      isGeoBlockingLoading,
       isGeoBlocked,
       isTokenEligibleForCta,
     ],
@@ -348,8 +354,8 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
         return false;
       }
 
-      // Geo-blocking check
-      if (isGeoBlocked) {
+      // Hide while geo check is in progress to avoid showing a CTA the user cannot act on
+      if (isGeoBlockingLoading || isGeoBlocked) {
         return false;
       }
 
@@ -374,6 +380,7 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
     [
       isMusdConversionFlowEnabled,
       isMusdAssetOverviewCtaEnabled,
+      isGeoBlockingLoading,
       isGeoBlocked,
       isCtaDismissed,
       isTokenEligibleForCta,

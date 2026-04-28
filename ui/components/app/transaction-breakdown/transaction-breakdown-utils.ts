@@ -5,12 +5,12 @@ import {
 } from '@metamask/transaction-controller';
 import { getShouldShowFiat } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
-import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
+import { isEIP1559Transaction } from '../../../../shared/lib/transaction.utils';
 
 import {
   subtractHexes,
   sumHexes,
-} from '../../../../shared/modules/conversion.utils';
+} from '../../../../shared/lib/conversion.utils';
 import {
   calcTokenAmount,
   getSwapsTokensReceivedFromTxMeta,
@@ -22,10 +22,12 @@ export const getTransactionBreakdownData = ({
   state,
   transaction,
   isTokenApprove,
+  isHardwareWalletAccount,
 }: {
   state: MetaMaskReduxState;
   transaction: TransactionMeta;
   isTokenApprove: boolean;
+  isHardwareWalletAccount: boolean;
 }) => {
   const {
     txParams: { gas, gasPrice, maxFeePerGas, value } = {},
@@ -66,7 +68,6 @@ export const getTransactionBreakdownData = ({
         destinationTokenDecimals,
         undefined,
         undefined,
-        // @ts-expect-error TODO: fix this, ported directly from original code
         null,
       );
 
@@ -109,6 +110,12 @@ export const getTransactionBreakdownData = ({
     l1HexGasTotal ?? 0,
   );
 
+  const isGasActuallySponsored =
+    isGasFeeSponsored &&
+    !isHardwareWalletAccount &&
+    status !== TransactionStatus.rejected &&
+    !(status === TransactionStatus.failed && !transaction.txReceipt?.gasUsed);
+
   return {
     nativeCurrency: getNativeCurrency(state),
     showFiat: getShouldShowFiat(state),
@@ -122,7 +129,7 @@ export const getTransactionBreakdownData = ({
     priorityFee,
     baseFee: baseFeePerGas,
     isEIP1559Transaction: isEIP1559Transaction(transaction),
-    isGasFeeSponsored,
+    isGasFeeSponsored: isGasActuallySponsored,
     l1HexGasTotal,
     sourceAmountFormatted,
     destinationAmountFormatted,

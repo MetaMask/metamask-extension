@@ -1,0 +1,5 @@
+{
+  "curve": "secp256k1",
+  "format": "DER",
+  "signature": "0x30450221008eaada670c822238ffcecc570e8f543183e05ab84897a53ffa87464cdcee0a8202201263be7d836be6cee4ac1dd5e7afd51b228777ab6b65fe620a577a40329cb750"
+}

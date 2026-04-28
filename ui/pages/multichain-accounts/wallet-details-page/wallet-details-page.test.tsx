@@ -8,16 +8,11 @@ import { WalletDetailsPage } from './wallet-details-page';
 
 const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
 
-const mockUseParams = jest.fn().mockImplementation(() => ({
-  id: encodeURIComponent(walletId),
-}));
-
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
-    useParams: () => mockUseParams(),
   };
 });
 
@@ -26,7 +21,10 @@ describe('WalletDetailsPage', () => {
     jest.clearAllMocks();
   });
 
-  const renderComponent = (customMockedState = {}) => {
+  const renderComponent = (
+    customMockedState = {},
+    customWalletId: string = walletId,
+  ) => {
     const state = {
       activeTab: mockState.activeTab,
       metamask: {
@@ -37,7 +35,10 @@ describe('WalletDetailsPage', () => {
       },
     };
 
-    return renderWithProvider(<WalletDetailsPage />, configureStore(state));
+    return renderWithProvider(
+      <WalletDetailsPage params={{ id: encodeURIComponent(customWalletId) }} />,
+      configureStore(state),
+    );
   };
 
   it('renders the page with correct components and wallet information', () => {
@@ -76,11 +77,7 @@ describe('WalletDetailsPage', () => {
   it('does not render SRP button for non-entropy wallets', () => {
     const ledgerWalletId = 'keyring:Ledger Hardware';
 
-    mockUseParams.mockImplementationOnce(() => ({
-      id: encodeURIComponent(ledgerWalletId),
-    }));
-
-    renderComponent();
+    renderComponent({}, ledgerWalletId);
 
     expect(
       screen.queryByText(messages.secretRecoveryPhrase.message),

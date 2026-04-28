@@ -3,23 +3,27 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import classnames from 'clsx';
-import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+} from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
-import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
+import { SECOND } from '../../../../shared/constants/time';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   PRIVACY_POLICY_LINK,
   SURVEY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
-  BorderColor,
   BorderRadius,
   IconColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
+  PERPS_ROUTE,
   REVEAL_SEED_ROUTE,
   REVIEW_PERMISSIONS,
   SETTINGS_ROUTE,
@@ -27,42 +31,27 @@ import {
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
-  getMetaMaskHdKeyrings,
   getOriginOfCurrentTab,
-  getPermissions,
   getUseNftDetection,
 } from '../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
-  addPermittedAccount,
   hidePermittedNetworkToast,
+  toggleDefaultView,
 } from '../../../store/actions';
-import {
-  AvatarNetwork,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../component-library';
-import { PreferredAvatar } from '../preferred-avatar';
+import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
+import { PerpsDepositToast } from '../perps/perps-deposit-toast';
 import {
-  PasswordChangeToastType,
   ClaimSubmitToastType,
   StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
 import { MerklClaimToast, MusdConversionToast } from '../musd';
+import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
-import {
-  getAccountGroupWithInternalAccounts,
-  getIconSeedAddressByAccountGroupId,
-  getSelectedAccountGroup,
-} from '../../../selectors/multichain-accounts/account-tree';
-import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
-import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
 import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -93,15 +82,14 @@ import {
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
   selectNewSrpAdded,
-  selectPasswordChangeToast,
   selectShowCopyAddressToast,
-  selectShowConnectAccountGroupToast,
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
   selectShowStorageErrorToast,
   selectStorageWriteErrorType,
   selectShowInfuraSwitchToast,
+  selectShowSidePanelMigrationToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -109,12 +97,12 @@ import {
   setShowNftDetectionEnablementToast,
   setSurveyLinkLastClickedOrClosed,
   setShowNewSrpAddedToast,
-  setShowPasswordChangeToast,
   setShowCopyAddressToast,
   setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
+  dismissSidePanelMigrationToast,
 } from './utils';
 
 export function ToastMaster() {
@@ -127,6 +115,7 @@ export function ToastMaster() {
   // Get current pathname from React Router
   const currentPathname = location?.pathname ?? DEFAULT_ROUTE;
   const onHomeScreen = currentPathname === DEFAULT_ROUTE;
+  const onPerpsScreen = currentPathname.startsWith(PERPS_ROUTE);
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
   // Storage error toast should show on ALL screens
@@ -137,7 +126,6 @@ export function ToastMaster() {
       <ToastContainer>
         {storageErrorToast}
         <SurveyToast />
-        <ConnectAccountGroupToast />
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
         <NftEnablementToast />
@@ -145,10 +133,23 @@ export function ToastMaster() {
         <NewSrpAddedToast />
         <InfuraSwitchToast />
         <CopyAddressToast />
+        <PerpsDepositToast />
         <MerklClaimToast />
         <MusdConversionToast />
+        <PerpsWithdrawToast />
         <ShieldPausedToast />
         <ShieldEndingToast />
+        <SidePanelMigrationToast />
+      </ToastContainer>
+    );
+  }
+
+  if (onPerpsScreen) {
+    return (
+      <ToastContainer>
+        {storageErrorToast}
+        <PerpsDepositToast />
+        <PerpsWithdrawToast />
       </ToastContainer>
     );
   }
@@ -157,7 +158,6 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         {storageErrorToast}
-        <PasswordChangeToast />
         <ClaimSubmitToast />
       </ToastContainer>
     );
@@ -170,103 +170,6 @@ export function ToastMaster() {
   }
 
   return null;
-}
-
-function ConnectAccountGroupToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const [hideConnectAccountToast, setHideConnectAccountToast] = useState(false);
-  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
-  const selectedAccountGroupInternalAccounts = useSelector((state) =>
-    getAccountGroupWithInternalAccounts(state, selectedAccountGroup),
-  )?.find((accountGroup) => accountGroup.id === selectedAccountGroup);
-
-  // If the account has changed, allow the connect account toast again
-  const prevAccountGroup = usePrevious(selectedAccountGroup);
-  if (selectedAccountGroup !== prevAccountGroup && hideConnectAccountToast) {
-    setHideConnectAccountToast(false);
-  }
-
-  const showConnectAccountToast = useSelector((state) =>
-    selectedAccountGroupInternalAccounts
-      ? selectShowConnectAccountGroupToast(
-          state,
-          selectedAccountGroupInternalAccounts,
-        )
-      : false,
-  );
-
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const existingPermissions = useSelector((state) =>
-    getPermissions(state, activeTabOrigin),
-  );
-  const existingCaip25CaveatValue = existingPermissions
-    ? getCaip25CaveatValueFromPermissions(existingPermissions)
-    : null;
-  const existingChainIds = useMemo(
-    () =>
-      existingCaip25CaveatValue
-        ? getAllScopesFromCaip25CaveatValue(existingCaip25CaveatValue)
-        : [],
-    [existingCaip25CaveatValue],
-  );
-
-  const addressesToPermit = useMemo(() => {
-    if (!selectedAccountGroupInternalAccounts?.accounts) {
-      return [];
-    }
-    return selectedAccountGroupInternalAccounts.accounts
-      .filter((account) => hasChainIdSupport(account.scopes, existingChainIds))
-      .map((account) => account.address);
-  }, [existingChainIds, selectedAccountGroupInternalAccounts?.accounts]);
-
-  const seedAddress = useSelector((state) =>
-    getIconSeedAddressByAccountGroupId(
-      state,
-      selectedAccountGroupInternalAccounts?.id,
-    ),
-  );
-
-  // Early return if selectedAccountGroupInternalAccounts is undefined
-  if (!selectedAccountGroupInternalAccounts || !seedAddress) {
-    return null;
-  }
-
-  return (
-    Boolean(!hideConnectAccountToast && showConnectAccountToast) && (
-      <Toast
-        dataTestId="connect-account-toast"
-        key="connect-account-toast"
-        startAdornment={
-          <PreferredAvatar address={seedAddress} className="self-center" />
-        }
-        text={t('accountIsntConnectedToastText', [
-          selectedAccountGroupInternalAccounts.metadata?.name,
-          getURLHost(activeTabOrigin),
-        ])}
-        actionText={t('connectAccount')}
-        onActionClick={() => {
-          // Connect this account
-          addressesToPermit.forEach((address) => {
-            dispatch(addPermittedAccount(activeTabOrigin, address));
-          });
-          // Use setTimeout to prevent React re-render from
-          // hiding the tooltip
-          setTimeout(() => {
-            // Trigger a mouseenter on the header's connection icon
-            // to display the informative connection tooltip
-            document
-              .querySelector(
-                '[data-testid="connection-menu"] [data-tooltipped]',
-              )
-              ?.dispatchEvent(new CustomEvent('mouseenter', {}));
-          }, 250 * MILLISECOND);
-        }}
-        onClose={() => setHideConnectAccountToast(true)}
-      />
-    )
-  );
 }
 
 function SurveyToastMayDelete() {
@@ -395,8 +298,8 @@ function PermittedNetworkToast() {
         key="switched-permitted-network-toast"
         startAdornment={
           <AvatarNetwork
-            size={AvatarAccountSize.Md}
-            borderColor={BorderColor.transparent}
+            size={AvatarNetworkSize.Md}
+            className="border-transparent"
             src={getNetworkImageUrl()}
             name={displayNetwork?.name || displayNetwork?.nickname}
           />
@@ -408,7 +311,7 @@ function PermittedNetworkToast() {
         actionText={t('editPermissions')}
         onActionClick={() => {
           dispatch(hidePermittedNetworkToast());
-          navigate(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+          navigate(`${REVIEW_PERMISSIONS}?origin=${safeEncodedHost}`);
         }}
         onClose={() => dispatch(hidePermittedNetworkToast())}
       />
@@ -420,11 +323,8 @@ function NewSrpAddedToast() {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const showNewSrpAddedToast = useSelector(selectNewSrpAdded);
+  const walletNumber = useSelector(selectNewSrpAdded);
   const autoHideDelay = 5 * SECOND;
-
-  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
-  const latestHdKeyringNumber = hdKeyrings.length;
 
   // This will close the toast if the user clicks the account menu.
   useEffect(() => {
@@ -444,10 +344,10 @@ function NewSrpAddedToast() {
   }, [dispatch]);
 
   return (
-    showNewSrpAddedToast && (
+    walletNumber && (
       <Toast
         key="new-srp-added-toast"
-        text={t('importWalletSuccess', [latestHdKeyringNumber])}
+        text={t('importWalletSuccess', [walletNumber])}
         startAdornment={
           <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
         }
@@ -482,51 +382,6 @@ function InfuraSwitchToast() {
     )
   );
 }
-
-const PasswordChangeToast = () => {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showPasswordChangeToast = useSelector(selectPasswordChangeToast);
-  const autoHideToastDelay = 5 * SECOND;
-
-  return (
-    showPasswordChangeToast !== null && (
-      <Toast
-        dataTestId={
-          showPasswordChangeToast === PasswordChangeToastType.Success
-            ? 'password-change-toast-success'
-            : 'password-change-toast-error'
-        }
-        className={classnames({
-          'toasts-container--password-change-toast--error':
-            showPasswordChangeToast === PasswordChangeToastType.Errored,
-        })}
-        key="password-change-toast"
-        text={
-          showPasswordChangeToast === PasswordChangeToastType.Success
-            ? t('securityChangePasswordToastSuccess')
-            : t('securityChangePasswordToastError')
-        }
-        startAdornment={
-          showPasswordChangeToast ===
-          PasswordChangeToastType.Success ? undefined : (
-            <Icon name={IconName.Danger} color={IconColor.iconDefault} />
-          )
-        }
-        borderRadius={BorderRadius.LG}
-        textVariant={TextVariant.bodyMd}
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() => {
-          dispatch(setShowPasswordChangeToast(null));
-        }}
-        onClose={() => {
-          dispatch(setShowPasswordChangeToast(null));
-        }}
-      />
-    )
-  );
-};
 
 function CopyAddressToast() {
   const t = useI18nContext();
@@ -891,6 +746,51 @@ function StorageErrorToast() {
         borderRadius={BorderRadius.LG}
         textVariant={TextVariant.bodyMd}
         onClose={handleClose}
+      />
+    )
+  );
+}
+
+function SidePanelMigrationToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showSidePanelMigrationToast = useSelector(
+    selectShowSidePanelMigrationToast,
+  );
+
+  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+
+  const handleSwitchBackToPopup = async () => {
+    try {
+      await dispatch(toggleDefaultView());
+    } finally {
+      dismissSidePanelMigrationToast();
+    }
+  };
+
+  return (
+    showSidePanelMigrationToast &&
+    isSidePanel && (
+      <Toast
+        key="side-panel-migration-toast"
+        dataTestId="side-panel-migration-toast"
+        startAdornment={
+          <Icon name={IconName.Info} color={IconColor.iconDefault} />
+        }
+        text={t('sidePanelMigrationToast', [
+          <button
+            key="side-panel-migration-switch-back"
+            type="button"
+            onClick={handleSwitchBackToPopup}
+            className="inline h-auto min-h-0 cursor-pointer bg-transparent p-0 align-baseline text-inherit underline underline-offset-[0.25em]"
+          >
+            {t('switchBackToPopup')}
+          </button>,
+        ])}
+        borderRadius={BorderRadius.LG}
+        textVariant={TextVariant.bodyMd}
+        onClose={() => dismissSidePanelMigrationToast()}
       />
     )
   );

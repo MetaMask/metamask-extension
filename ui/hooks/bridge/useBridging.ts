@@ -11,7 +11,6 @@ import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametri
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
-import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import {
   getBip44DefaultPairsConfig,
   getFromChain,
@@ -19,20 +18,25 @@ import {
   getLastSelectedChainId,
 } from '../../ducks/bridge/selectors';
 import {
-  resetBridgeControllerAndCache,
   resetInputFields,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
+import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
 import {
   BridgeNavigationOptions,
   useBridgeNavigation,
 } from './useBridgeNavigation';
 
+/**
+ * This hook is the entrypoint for the bridge experience
+ *
+ * @returns a function to navigate to the bridge page
+ */
 const useBridging = () => {
   const dispatch = useDispatch();
 
-  const { navigateToBridgePage } = useBridgeNavigation();
+  const { navigateToBridgePage, bridgeState } = useBridgeNavigation();
   const lastSelectedChainId = useSelector(getLastSelectedChainId);
   const fromChain = useSelector(getFromChain);
   const fromChains = useSelector(getFromChains);
@@ -40,7 +44,7 @@ const useBridging = () => {
 
   const isChainIdEnabledForBridging = useCallback(
     (chainId: string | number) =>
-      ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId) &&
+      isSupportedBridgeChain(chainId) &&
       fromChains.some(
         (chain) =>
           formatChainIdToCaip(chain.chainId) === formatChainIdToCaip(chainId),
@@ -48,10 +52,16 @@ const useBridging = () => {
     [fromChains],
   );
 
+  /**
+   * Navigates to the bridge page
+   *
+   * @param location - the entrypoint from which the bridge experience was triggered
+   * @param token - the token to set as the source token for the bridge experience
+   */
   const openBridgeExperience = useCallback(
     (
       location: MetaMetricsSwapsEventSource | 'Carousel',
-      srcToken?: {
+      token?: {
         symbol: string;
         address: string;
         decimals?: number;
@@ -59,8 +69,7 @@ const useBridging = () => {
         chainId: GenericQuoteRequest['srcChainId'];
       },
     ) => {
-      dispatch(resetInputFields());
-      dispatch(resetBridgeControllerAndCache());
+      !bridgeState && dispatch(resetInputFields());
       trace({
         name: TraceName.SwapViewLoaded,
         startTime: Date.now(),
@@ -70,7 +79,7 @@ const useBridging = () => {
           location: location as never,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_source: srcToken?.symbol ?? 'ETH',
+          token_symbol_source: token?.symbol ?? 'ETH',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol_destination: '',
@@ -80,22 +89,27 @@ const useBridging = () => {
       let tokenToUse: BridgeNavigationOptions['state']['token'] = null;
       const search = new URLSearchParams('');
 
+      /**
+       * Defined if the token is a valid src or dest token
+       */
       const assetId =
-        srcToken?.chainId && isChainIdEnabledForBridging(srcToken.chainId)
-          ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
+        token?.chainId && isSupportedBridgeChain(token.chainId)
+          ? toAssetId(token.address, formatChainIdToCaip(token.chainId))
           : undefined;
 
-      if (srcToken && assetId) {
+      if (token && assetId) {
         // If token is supported for bridging, propagate it to the bridge experience
         const tokenWithAssetId = {
-          ...srcToken,
+          ...token,
           assetId,
-          name: srcToken.name ?? srcToken.symbol,
-          chainId: formatChainIdToCaip(srcToken.chainId),
+          name: token.name ?? token.symbol,
+          chainId: formatChainIdToCaip(token.chainId),
         };
         if (validateMinimalAssetObject(tokenWithAssetId)) {
           tokenToUse = tokenWithAssetId;
-        } else {
+        } else if (!bridgeState && isChainIdEnabledForBridging(token.chainId)) {
+          // If bridgeState is defined, it means the user is returning to the bridge page
+          // If the token is not in an enabled chain then it can't be used as the source token
           // Otherwise, set the `from` query param to use the bridge page's deep linking logic
           search.set(BridgeQueryParams.From, assetId);
         }
@@ -120,7 +134,7 @@ const useBridging = () => {
       navigateToBridgePage({
         token: tokenToUse,
         search,
-        preventBackNavigation: false,
+        isEntrypoint: true,
       });
     },
     [
@@ -129,6 +143,8 @@ const useBridging = () => {
       fromChain?.chainId,
       isChainIdEnabledForBridging,
       bip44DefaultPairsConfig,
+      bridgeState,
+      dispatch,
     ],
   );
 

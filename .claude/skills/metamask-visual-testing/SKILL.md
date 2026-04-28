@@ -1,6 +1,6 @@
 ---
 name: metamask-visual-testing
-description: Launch and test MetaMask Chrome extension with Playwright. Use for visual validation of UI changes, testing onboarding/unlock flows, and capturing screenshots.
+description: Launch and test MetaMask Chrome extension with Playwright in headless sidepanel mode. Use for visual validation of UI changes, testing onboarding/unlock flows, confirmations, and capturing screenshots.
 compatibility: opencode
 metadata:
   location: test/e2e/playwright/llm-workflow/mcp-server
@@ -19,12 +19,25 @@ Use this skill when you need to:
 
 ## Prerequisites
 
-Run from repository root (macOS/Linux):
+**Validate that there's an Extension build** (required before any MCP tool will work):
+
+Extension build is on `dist/chrome/` folder.
+
+- If there is NO build, then proceed and build the Extension
+- If there is a build, then:
+- if the user has asked to build proceed with rebuilding the Extension
+- if the user has asked to NOT build, then proceed WITHOUT building the Extension and re-use the existing build
+- if the user was not explicit about it, then ASK the user how he wants to proceed. Use existing build or re-build the Extension.
+
+**Build the extension** (required before any MCP tool will work):
 
 ```bash
-yarn install      # Install dependencies
-yarn build:test   # Build the extension (or use mm_build tool)
+yarn install      # Install dependencies (first time only)
+yarn build:test   # Build extension to dist/chrome/
 ```
+
+You only need to rebuild after source code changes. `mm_launch` validates the
+build exists and returns a clear error with the exact command if it's missing.
 
 If ports are in use from previous runs:
 
@@ -38,12 +51,11 @@ The MetaMask MCP server provides tools for browser automation:
 
 | Tool                        | Description                                                 |
 | --------------------------- | ----------------------------------------------------------- |
-| `mm_build`                  | Build extension using `yarn build:test`                     |
 | `mm_launch`                 | Launch MetaMask in headed Chrome                            |
 | `mm_cleanup`                | Stop browser and all services                               |
 | `mm_get_state`              | Get current extension state (includes tab info)             |
 | `mm_navigate`               | Navigate to home, settings, notification, or URL            |
-| `mm_wait_for_notification`  | Wait for notification popup and set it as active page       |
+| `mm_wait_for_notification`  | Wait for sidepanel confirmation route and set it as active  |
 | `mm_switch_to_tab`          | Switch active page to a different tab (by role or URL)      |
 | `mm_close_tab`              | Close a tab (notification, dapp, or other)                  |
 | `mm_list_testids`           | List visible data-testid attributes                         |
@@ -75,7 +87,6 @@ The MCP server supports two execution contexts with different capabilities:
 
 ### E2E Context Capabilities (Default)
 
-- `build` - Build the extension
 - `fixture` - Wallet state management with presets
 - `chain` - Local Anvil blockchain (port 8545)
 - `contractSeeding` - Deploy test contracts (ERC-20, NFTs, etc.)
@@ -85,7 +96,6 @@ The MCP server supports two execution contexts with different capabilities:
 ### Prod Context Capabilities
 
 - `stateSnapshot` - Extension state detection
-- `build` - Optional, if configured
 
 ### Switching Contexts
 
@@ -202,6 +212,36 @@ mm_set_context {
 mm_launch { "stateMode": "default" }
 ```
 
+## Sidepanel Mode (Default)
+
+The MCP server runs in **headless mode by default**, which means the extension uses Chrome's side panel (`sidepanel.html`) instead of the traditional popup (`notification.html`). This is the default behavior — no configuration is needed.
+
+### Sidepanel vs Popup: Key Differences
+
+| Behavior                         | Sidepanel (headless, default)                                    | Popup (legacy)                                  |
+| -------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------- |
+| **Confirmation UI**              | Renders inside `sidepanel.html`                                  | Opens separate `notification.html` popup window |
+| **After confirming**             | Sidepanel stays open and navigates back to the home page (route) | Popup auto-closes                               |
+| **After rejecting**              | Sidepanel stays open and navigates back to the home page (route) | Popup auto-closes                               |
+| **Page lifecycle**               | Single persistent page, URL hash changes between routes          | New page opens, closes on completion            |
+| **Confirmation route detection** | Checks URL hash against known confirmation route prefixes        | Waits for `notification.html` page event        |
+
+### What This Means for Testing
+
+1. **No tab closing after confirmation**: In sidepanel mode, the confirmation page does not close. After clicking confirm/reject, the sidepanel navigates back to the home route within `sidepanel.html`. You do NOT need to switch tabs after a confirmation — just continue interacting with the sidepanel page.
+
+2. **`mm_wait_for_notification` behavior**: This tool opens or finds the `sidepanel.html` page and waits for a confirmation route to appear in its URL hash (e.g., `#/confirm-transaction/...`). It does NOT wait for a new popup window.
+
+3. **Post-confirmation state**: After a confirmation action, use `mm_describe_screen` to verify the extension returned to the home screen. The sidepanel page remains the active page.
+
+4. **Confirmation routes detected**:
+   - `/connect`
+   - `/confirm-transaction`
+   - `/confirmation`
+   - `/confirm-import-token`
+   - `/confirm-add-suggested-token`
+   - `/confirm-add-suggested-nft`
+
 ## Core Workflow
 
 ### 0. Reuse Existing Knowledge (REQUIRED)
@@ -226,13 +266,16 @@ If you need to discover which sessions exist:
 mm_knowledge_sessions { "limit": 10, "filters": { "sinceHours": 48 } }
 ```
 
-### 1. Build Extension (if needed)
+### 1. Build Extension (prerequisite — run outside MCP)
 
-```
-mm_build
+Build the extension before using any MCP tools:
+
+```bash
+yarn build:test
 ```
 
-Builds the extension using `yarn build:test`. Skip if already built.
+Skip if already built. `mm_launch` validates the build and returns an
+actionable error if it's missing.
 
 ### 2. Launch Extension (ALWAYS TAG THE SESSION)
 
@@ -357,31 +400,32 @@ Options:
 - `selector`: Capture specific element
 - `includeBase64`: Include base64 in response
 
-### 6. Handle Notifications (Dapp flows)
+### 6. Handle Confirmations (Dapp flows)
 
-When a dapp triggers a notification (connect, sign, send), wait for it:
+When a dapp triggers a confirmation (connect, sign, send), wait for it:
 
 ```
 mm_wait_for_notification { "timeoutMs": 10000 }
 ```
 
-This automatically sets the notification as the **active page**, so subsequent `mm_click`, `mm_type`, and `mm_describe_screen` calls operate on the notification popup.
+This opens or finds the `sidepanel.html` page, waits for a confirmation route to appear in the URL hash, and sets it as the **active page**. Subsequent `mm_click`, `mm_type`, and `mm_describe_screen` calls operate on the sidepanel.
 
-**Dapp connection flow example:**
+**Dapp connection flow example (sidepanel mode):**
 
 ```
 mm_navigate { "screen": "url", "url": "https://test-dapp.io" }  → Opens dapp in new tab, sets as active
-mm_click { "testId": "connectButton" }                          → Triggers notification
-mm_wait_for_notification                                        → Active page = notification
-mm_describe_screen                                              → Shows notification elements
-mm_click { "testId": "confirm-btn" }                            → Clicks on notification
+mm_click { "testId": "connectButton" }                          → Triggers confirmation
+mm_wait_for_notification                                        → Active page = sidepanel (on confirmation route)
+mm_describe_screen                                              → Shows confirmation elements
+mm_click { "testId": "confirm-btn" }                            → Confirms action
+mm_describe_screen                                              → Sidepanel navigates back to home page
 mm_switch_to_tab { "role": "dapp" }                             → Switch back to dapp
 mm_describe_screen                                              → Verify connected state
 ```
 
-**Note:** Notification popups typically close automatically after clicking confirm or cancel. After the action, switch to another tab (e.g., `mm_switch_to_tab { "role": "dapp" }`) to continue interacting.
+**Important sidepanel behavior:** After clicking confirm or reject, the sidepanel does **NOT** close. It stays open and navigates back to the home page (route). Use `mm_describe_screen` to verify the sidepanel returned to home, then switch to the dapp tab to continue.
 
-**Tab roles:** `extension` (home), `notification` (popups), `dapp` (external sites), `other`
+**Tab roles:** `extension` (home), `notification` (sidepanel), `dapp` (external sites), `other`
 
 ### 7. Navigate
 
@@ -404,7 +448,7 @@ Stops browser and all background services.
 
 ```
 0. mm_knowledge_search { "query": "unlock", "scope": "all", "sinceHours": 48 }
-1. mm_build
+1. [prerequisite] yarn build:test (run via Bash if not already built)
 2. mm_launch { "stateMode": "default", "goal": "Unlock smoke", "flowTags": ["unlock"], "tags": ["smoke"] }
 3. mm_describe_screen
 4. mm_type { "testId": "unlock-password", "text": "correct horse battery staple" }
@@ -535,7 +579,6 @@ The MCP server is a long-lived process. If you update the MCP server code (inclu
 
 | Code                         | Meaning                                     |
 | ---------------------------- | ------------------------------------------- |
-| `MM_BUILD_FAILED`            | Build command failed                        |
 | `MM_SESSION_ALREADY_RUNNING` | Session exists, call mm_cleanup first       |
 | `MM_NO_ACTIVE_SESSION`       | No session, call mm_launch first            |
 | `MM_LAUNCH_FAILED`           | Browser launch failed                       |
@@ -627,7 +670,7 @@ Error responses:
 
 ## Known Limitations
 
-1. **Headed mode only**: Chrome extensions cannot run headless. Requires display (use XVFB on Linux CI).
+1. **Headless mode (default)**: The extension runs in headless mode using the Chrome side panel (`sidepanel.html`) instead of the popup (`notification.html`). This is the default and does not require a visible display.
 2. **Single session**: Only one browser session at a time. Call `mm_cleanup` before `mm_launch`.
 3. **macOS/Linux**: Port cleanup commands (`lsof`) are Unix-specific.
 
@@ -637,7 +680,7 @@ Error responses:
 | ---------------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------- |
 | `MM_SESSION_ALREADY_RUNNING`                         | Previous session not cleaned                   | Call `mm_cleanup` first                                                           |
 | `MM_NO_ACTIVE_SESSION`                               | No browser running                             | Call `mm_launch` first                                                            |
-| Extension not loading                                | Extension not built                            | Call `mm_build` or `yarn build:test`                                              |
+| Extension not loading                                | Extension not built                            | Run `yarn build:test` then retry `mm_launch`                                      |
 | `EADDRINUSE` port error                              | Orphan processes                               | `lsof -ti:8545,12345,8000 \| xargs kill -9`                                       |
 | `MM_TARGET_NOT_FOUND`                                | Element not visible                            | Use `mm_describe_screen` to check state                                           |
 | `MM_WAIT_TIMEOUT`                                    | Slow environment or UI change                  | Increase timeout, check screenshot                                                |

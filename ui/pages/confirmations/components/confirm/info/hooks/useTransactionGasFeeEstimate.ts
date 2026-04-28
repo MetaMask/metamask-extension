@@ -5,8 +5,8 @@ import {
   addHexes,
   decGWEIToHexWEI,
   multiplyHexes,
-} from '../../../../../../../shared/modules/conversion.utils';
-import { Numeric } from '../../../../../../../shared/modules/Numeric';
+} from '../../../../../../../shared/lib/conversion.utils';
+import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import { HEX_ZERO } from '../shared/constants';
 

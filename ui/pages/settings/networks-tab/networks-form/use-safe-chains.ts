@@ -6,7 +6,7 @@ import { getUseSafeChainsListValidation } from '../../../../selectors';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 import { CHAIN_SPEC_URL } from '../../../../../shared/constants/network';
 import { DAY } from '../../../../../shared/constants/time';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
 
 export type SafeChain = {
   chainId: string;

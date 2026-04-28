@@ -7,6 +7,7 @@ import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
@@ -17,7 +18,7 @@ import Button from '../../components/ui/button';
 import Popover from '../../components/ui/popover';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
-import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
+import { isMv3ButOffscreenDocIsMissing } from '../../../shared/lib/mv3.utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import { ScrollContainer } from '../../contexts/scroll-container';
 import {
@@ -92,6 +93,8 @@ export default class Home extends PureComponent {
   static propTypes = {
     navigate: PropTypes.func,
     forgottenPassword: PropTypes.bool,
+    isNotification: PropTypes.bool,
+    hasApprovalFlows: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
@@ -104,8 +107,6 @@ export default class Home extends PureComponent {
     showMultiRpcModal: PropTypes.bool.isRequired,
     showUpdateModal: PropTypes.bool.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
@@ -123,16 +124,8 @@ export default class Home extends PureComponent {
     setOutdatedBrowserWarningLastShown: PropTypes.func.isRequired,
     newNetworkAddedName: PropTypes.string,
     editedNetwork: PropTypes.object,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
     isHardwareWalletErrorModalVisible: PropTypes.bool,
-    newNftAddedMessage: PropTypes.string,
-    setNewNftAddedMessage: PropTypes.func.isRequired,
-    removeNftMessage: PropTypes.string,
-    setRemoveNftMessage: PropTypes.func.isRequired,
     attemptCloseNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     newTokensImportedError: PropTypes.string,
@@ -174,8 +167,23 @@ export default class Home extends PureComponent {
   constructor(props) {
     super(props);
 
-    const { attemptCloseNotificationPopup } = this.props;
-    if (shouldCloseNotificationPopup(props)) {
+    const {
+      attemptCloseNotificationPopup,
+      isNotification,
+      totalUnapprovedCount,
+      hasApprovalFlows,
+      isSigningQRHardwareTransaction,
+      isHardwareWalletErrorModalVisible,
+    } = this.props;
+    if (
+      shouldCloseNotificationPopup({
+        isNotification,
+        totalUnapprovedCount,
+        hasApprovalFlows,
+        isSigningQRHardwareTransaction,
+        isHardwareWalletErrorModalVisible,
+      })
+    ) {
       this.state.notificationClosing = true;
       attemptCloseNotificationPopup();
     }
@@ -234,8 +242,20 @@ export default class Home extends PureComponent {
     }
   }
 
-  static getDerivedStateFromProps(props) {
-    const shouldClose = shouldCloseNotificationPopup(props);
+  static getDerivedStateFromProps({
+    isNotification,
+    totalUnapprovedCount,
+    hasApprovalFlows,
+    isSigningQRHardwareTransaction,
+    isHardwareWalletErrorModalVisible,
+  }) {
+    const shouldClose = shouldCloseNotificationPopup({
+      isNotification,
+      totalUnapprovedCount,
+      hasApprovalFlows,
+      isSigningQRHardwareTransaction,
+      isHardwareWalletErrorModalVisible,
+    });
     if (shouldClose) {
       return { notificationClosing: true };
     }
@@ -348,12 +368,8 @@ export default class Home extends PureComponent {
       disableWeb3ShimUsageAlert,
       infuraBlocked,
       showOutdatedBrowserWarning,
-      newNftAddedMessage,
-      setNewNftAddedMessage,
       newNetworkAddedName,
       editedNetwork,
-      removeNftMessage,
-      setRemoveNftMessage,
       newTokensImported,
       newTokensImportedError,
       setNewTokensImported,
@@ -364,8 +380,6 @@ export default class Home extends PureComponent {
     } = this.props;
 
     const onAutoHide = () => {
-      setNewNftAddedMessage('');
-      setRemoveNftMessage('');
       setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
       setNewTokensImportedError('');
       clearEditedNetwork(); // dispatches setEditedNetwork(), setting editedNetwork to undefined, which clears the editedNetwork state
@@ -387,75 +401,6 @@ export default class Home extends PureComponent {
       );
 
     const items = [
-      newNftAddedMessage === 'success' ? (
-        <ActionableMessage
-          key="new-nft-added"
-          type="success"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('newNftAddedMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
-          }
-        />
-      ) : null,
-      removeNftMessage === 'success' ? (
-        <ActionableMessage
-          key="remove-nft"
-          type="success"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('removeNftMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
-          }
-        />
-      ) : null,
-      removeNftMessage === 'error' ? (
-        <ActionableMessage
-          key="remove-nft-error"
-          type="danger"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('removeNftErrorMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
-          }
-        />
-      ) : null,
       newNetworkAddedName ? (
         <ActionableMessage
           key="new-network-added"
@@ -655,7 +600,7 @@ export default class Home extends PureComponent {
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          has_marketing_consent: false,
+          [MetaMetricsUserTrait.HasMarketingConsent]: false,
           location: 'marketing_consent_modal',
         },
       });
@@ -667,7 +612,7 @@ export default class Home extends PureComponent {
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          has_marketing_consent: consent,
+          [MetaMetricsUserTrait.HasMarketingConsent]: consent,
           location: 'marketing_consent_modal',
         },
       });

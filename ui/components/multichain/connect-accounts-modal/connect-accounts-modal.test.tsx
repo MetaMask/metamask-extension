@@ -8,7 +8,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { shortenAddress } from '../../../helpers/utils/util';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { ConnectAccountsModal } from './connect-accounts-modal';
 

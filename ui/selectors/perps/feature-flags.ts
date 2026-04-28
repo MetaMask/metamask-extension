@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
-import { isPerpsFeatureEnabled } from '../../../shared/lib/perps-feature-flags';
+import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
+import { isPerpsRemoteConfigSatisfied } from '../../../shared/lib/perps-feature-flags';
 import { getRemoteFeatureFlags } from '../remote-feature-flags';
 
 /**
@@ -9,16 +10,18 @@ import { getRemoteFeatureFlags } from '../remote-feature-flags';
 const DEFAULT_HIP3_SOURCES: string[] = [];
 
 /**
- * Get the state of the `perpsEnabledVersion` remote feature flag.
- * Expects a JSON flag with enabled/minimumVersion properties for version gating.
+ * Perps is available in the UI only when **both** are true:
+ * - Compile-time: `getIsPerpsIncludedInBuild()` (`PERPS_ENABLED` at build)
+ * - Remote rollout: `perpsEnabledVersion` satisfies `isPerpsRemoteConfigSatisfied`
  *
  * @param _state - The MetaMask state object
- * @returns `true` if Perps trading is enabled and meets version requirements, `false` otherwise.
+ * @returns Whether the user should see and use the perps experience.
  */
-export const getIsPerpsEnabled = createSelector(
+export const getIsPerpsExperienceAvailable = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags) =>
-    isPerpsFeatureEnabled(remoteFeatureFlags.perpsEnabledVersion),
+    getIsPerpsIncludedInBuild() &&
+    isPerpsRemoteConfigSatisfied(remoteFeatureFlags.perpsEnabledVersion),
 );
 
 /**

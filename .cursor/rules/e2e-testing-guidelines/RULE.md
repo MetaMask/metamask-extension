@@ -6,7 +6,10 @@ alwaysApply: false
 
 Reference: [MetaMask Extension E2E Test Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/e2e/extension-e2e-guidelines.md)
 
-**See also:** [Test i18n Usage Guidelines](../test-i18n-usage/RULE.md) - For i18n patterns in test assertions
+**See also:**
+
+- [Test i18n Usage Guidelines](../test-i18n-usage/RULE.md) - For i18n patterns in test assertions
+- [Extension CI Flakiness Patterns](../extension-flakiness-patterns/RULE.md) - Known flakiness patterns and anti-patterns to avoid
 
 # MetaMask Extension E2E Testing Guidelines
 
@@ -73,44 +76,6 @@ Reference: [MetaMask Extension E2E Test Guidelines](https://github.com/MetaMask/
 - Use fixtures to set up test prerequisites instead of UI steps
 - Minimize UI interactions to reduce potential breaking points
 - Improve test stability by reducing timing and synchronization issues
-- Prefer `FixtureBuilderV2` for new or updated specs
-- Use legacy `FixtureBuilder` only when a required method is not yet available in `FixtureBuilderV2`
-
-### Fixture Builder Migration Guidance
-
-For new test code, use `FixtureBuilderV2` by default.
-
-`FixtureBuilderV2` currently supports:
-
-- `withAccountsController`
-- `withAddressBookController`
-- `withAppStateController`
-- `withCurrencyController`
-- `withKeyringController`
-- `withMetaMetricsController`
-- `withNetworkController`
-- `withOnboardingController`
-- `withPermissionController`
-- `withPreferencesController`
-- `withSelectedNetworkController`
-- `withTransactionController`
-- `withConversionRateDisabled`
-- `withEnabledNetworks`
-- `withLedgerAccount`
-- `withNetworkControllerDoubleNode`
-- `withNetworkControllerTripleNode`
-- `withPermissionControllerConnectedToTestDapp`
-- `withSelectedNetwork`
-- `withSelectedNetworkControllerPerDomain`
-- `withShowNativeTokenAsMainBalanceDisabled`
-- `withShowNativeTokenAsMainBalanceEnabled`
-- `withSmartTransactionsOptedOut`
-- `withTransactionControllerApprovedTransaction`
-- `withTransactionControllerCompletedAndIncomingTransaction`
-- `withTransactionControllerCompletedTransaction`
-- `withTransactionControllerIncomingTransaction`
-
-If your test only needs these methods (or just `.build()`), prefer `FixtureBuilderV2` instead of the legacy builder.
 
 ### Example:
 

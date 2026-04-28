@@ -20,9 +20,9 @@ import ExtensionPlatform from '../../platforms/extension';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { WebAuthenticator } from '../oauth/types';
 import { createSwapsMockStore } from '../../../../test/jest';
-import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import { DAY } from '../../../../shared/constants/time';
-import { SHIELD_ERROR } from '../../../../shared/modules/shield';
+import { SHIELD_ERROR } from '../../../../shared/lib/shield';
 import { SubscriptionService } from './subscription-service';
 import { SubscriptionServiceMessenger } from './types';
 
@@ -34,7 +34,7 @@ type RootMessenger = Messenger<MockAnyNamespace, Actions, Events>;
 
 jest.mock('../../platforms/extension');
 
-jest.mock('../../../../shared/modules/fetch-with-timeout');
+jest.mock('../../../../shared/lib/fetch-with-timeout');
 
 const MAINNET_BASE = {
   name: 'Mainnet',

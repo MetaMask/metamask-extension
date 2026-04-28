@@ -1,11 +1,11 @@
 import { Suite } from 'mocha';
 import { MockttpServer, CompletedRequest } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
 
@@ -228,20 +228,9 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction', function (this:
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withNetworkController({
-            selectedNetworkClientId: 'networkConfigurationId',
-          })
-          .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
-            },
-          })
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
-          })
-          .withPreferencesController({
-            securityAlertsEnabled: true,
           })
           .build(),
         testSpecificMock: mockInfura,
@@ -249,7 +238,7 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction', function (this:
       },
 
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
         await testDapp.checkPageIsLoaded();

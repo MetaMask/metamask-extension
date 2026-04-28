@@ -1,12 +1,15 @@
-import React, { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useContext, useMemo } from 'react';
+import { useSelector, shallowEqual } from 'react-redux';
 import {
   Button,
-  ButtonLink,
   ButtonSize,
   ButtonVariant,
   Text,
-} from '../../../components/component-library';
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../shared/constants/metametrics';
 import {
   getFromAmount,
   getToToken,
@@ -17,37 +20,30 @@ import {
   BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
-import {
-  AlignItems,
-  BlockSize,
-  JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
-import { Row } from '../layout';
 import {
   ConnectionStatus,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
-import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
+import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
   onOpenRecipientModal,
   onOpenPriceImpactWarningModal,
+  onOpenMarketClosedModal,
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
-  onOpenRecipientModal?: () => void;
+  onOpenRecipientModal: () => void;
   onOpenPriceImpactWarningModal: () => void;
+  onOpenMarketClosedModal: () => void;
 }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
 
   const toToken = useSelector(getToToken);
 
@@ -66,14 +62,18 @@ export const BridgeCTAButton = ({
     isInsufficientBalance,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
-    isTxAlertPresent,
-    isTxAlertLoading,
+    isStockMarketClosed: isMarketClosed,
     isPriceImpactError,
-  } = useSelector(getValidationErrors);
+  } = useSelector(
+    (state) => getValidationErrors(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
   const isTxSubmittable = useIsTxSubmittable();
+
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   const { connectionState } = useHardwareWalletState();
@@ -92,145 +92,146 @@ export const BridgeCTAButton = ({
     );
   }, [connectionState.status, isHardwareWalletAccount]);
 
-  const label = useMemo(() => {
-    if (wasTxDeclined) {
-      return { key: 'youDeclinedTheTransaction' };
-    }
-
-    if (!fromAmount) {
-      if (!toToken) {
-        return {
-          key: needsDestinationAddress
-            ? 'bridgeSelectTokenAmountAndAccount'
-            : 'bridgeSelectTokenAndAmount',
-        };
-      }
+  /**
+   * Defines the behavior of the CTA button based on the current state
+   */
+  const buttonProps = useMemo(() => {
+    if (!isLoading && (wasTxDeclined || isQuoteExpired)) {
       return {
-        key: needsDestinationAddress
-          ? 'bridgeSelectDestinationAccount'
-          : 'bridgeEnterAmount',
+        disabled: false,
+        onClick: onFetchNewQuotes,
+        children: t('bridgeGetNewQuote'),
       };
     }
 
     if (needsDestinationAddress) {
-      return { key: 'bridgeSelectDestinationAccount' };
+      return {
+        disabled: false,
+        onClick: onOpenRecipientModal,
+        children: t('bridgeSelectDestinationAccount'),
+      };
     }
 
-    if (isQuoteExpired && !isLoading) {
-      return { key: 'bridgeQuoteExpired' };
+    if (isMarketClosed) {
+      return {
+        disabled: false,
+        onClick: onOpenMarketClosedModal,
+        children: t('bridgeMarketClosedAction'),
+      };
     }
 
-    if (isLoading && !isTxSubmittable && !activeQuote) {
+    if (!activeQuote) {
       return undefined;
     }
 
-    if (isInsufficientGasBalance || isNoQuotesAvailable) {
-      return undefined;
+    if (
+      isInsufficientBalance ||
+      isInsufficientGasForQuote ||
+      isInsufficientGasBalance
+    ) {
+      return {
+        disabled: true,
+        children: t('alertReasonInsufficientBalance'),
+      };
     }
 
-    if (isInsufficientBalance || isInsufficientGasForQuote) {
-      return { key: 'alertReasonInsufficientBalance' };
-    }
-
-    if (isTxSubmittable || isTxAlertPresent || isTxAlertLoading) {
+    const submitHandler = async () => {
       if (isHardwareWalletAccount && !isHardwareWalletReady) {
-        return hardwareWalletName
-          ? { key: 'connectHardwareDevice', args: [hardwareWalletName] }
-          : { key: 'connect' };
+        trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
+          location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
+          walletType,
+          connectionState,
+        });
       }
-      return { key: 'swap' };
+      await submitBridgeTransaction(activeQuote);
+    };
+
+    if (isHardwareWalletAccount && !isHardwareWalletReady) {
+      return {
+        disabled: false,
+        onClick: submitHandler,
+        children: hardwareWalletName
+          ? t('connectHardwareDevice', [hardwareWalletName])
+          : t('connect'),
+      };
     }
 
-    return { key: 'swapSelectToken' };
+    return {
+      disabled: !isTxSubmittable || isSubmitting,
+      onClick: isPriceImpactError
+        ? onOpenPriceImpactWarningModal
+        : submitHandler,
+      children: t('swap'),
+    };
   }, [
+    activeQuote,
+    connectionState,
     isLoading,
-    isTxAlertPresent,
-    isTxAlertLoading,
-    fromAmount,
-    toToken,
-    isTxSubmittable,
+    isMarketClosed,
+    isQuoteExpired,
+    needsDestinationAddress,
+    onOpenRecipientModal,
+    hardwareWalletName,
+    isHardwareWalletAccount,
+    isHardwareWalletReady,
     isInsufficientBalance,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
+    isPriceImpactError,
+    isSubmitting,
+    isTxSubmittable,
+    onFetchNewQuotes,
+    onOpenMarketClosedModal,
+    onOpenPriceImpactWarningModal,
+    submitBridgeTransaction,
+    t,
+    trackEvent,
+    walletType,
     wasTxDeclined,
-    isQuoteExpired,
-    needsDestinationAddress,
-    activeQuote,
-    isNoQuotesAvailable,
-    isHardwareWalletAccount,
-    isHardwareWalletReady,
-    hardwareWalletName,
   ]);
 
-  // Label for the secondary button that re-starts quote fetching
-  const secondaryButtonLabel = useMemo(() => {
-    if (wasTxDeclined || isQuoteExpired) {
-      return 'bridgeFetchNewQuotes';
+  /**
+   * These labels are displayed when there are no quotes available
+   */
+  const label = useMemo(() => {
+    if (!fromAmount) {
+      if (!toToken) {
+        return needsDestinationAddress
+          ? t('bridgeSelectTokenAmountAndAccount')
+          : t('bridgeSelectTokenAndAmount');
+      }
+      return needsDestinationAddress
+        ? t('bridgeSelectDestinationAccount')
+        : t('bridgeEnterAmount');
     }
-    return undefined;
-  }, [wasTxDeclined, isQuoteExpired]);
 
-  return (activeQuote || needsDestinationAddress) && !secondaryButtonLabel ? (
+    return t('swapSelectToken');
+  }, [fromAmount, toToken, needsDestinationAddress, t]);
+
+  // Hide the CTA if the quotes are loading or if there are no quotes available
+  if ((isNoQuotesAvailable && !isQuoteExpired) || (isLoading && !activeQuote)) {
+    return null;
+  }
+
+  return buttonProps ? (
     <Button
-      width={BlockSize.Full}
       size={ButtonSize.Lg}
       variant={ButtonVariant.Primary}
       data-testid="bridge-cta-button"
+      isFullWidth
       style={{ boxShadow: 'none' }}
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onClick={async () => {
-        if (needsDestinationAddress && onOpenRecipientModal) {
-          onOpenRecipientModal();
-          return;
-        }
-
-        if (activeQuote && isTxSubmittable && !isSubmitting) {
-          // If price impact is too high, open the price impact warning modal and submit
-          // the transaction through the modal.
-          if (isPriceImpactError) {
-            onOpenPriceImpactWarningModal();
-          } else {
-            await submitBridgeTransaction(activeQuote);
-          }
-        }
-      }}
-      loading={isSubmitting}
-      disabled={
-        (!needsDestinationAddress && (!isTxSubmittable || isQuoteExpired)) ||
-        isSubmitting
-      }
-    >
-      {label?.key ? t(label.key, label.args) : ''}
-    </Button>
+      isLoading={isSubmitting}
+      disabled={buttonProps.disabled}
+      onClick={async () => await buttonProps.onClick?.()}
+      children={buttonProps.children}
+    />
   ) : (
-    <Row
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      gap={1}
+    <Text
+      variant={TextVariant.BodyMd}
+      textAlign={TextAlign.Center}
+      color={TextColor.TextAlternative}
     >
-      <Text
-        variant={TextVariant.bodyMd}
-        textAlign={TextAlign.Center}
-        color={TextColor.textAlternative}
-      >
-        {label?.key ? t(label.key, label.args) : ''}
-      </Text>
-      {secondaryButtonLabel && (
-        <ButtonLink
-          as="a"
-          variant={TextVariant.bodyMd}
-          style={{ whiteSpace: 'nowrap' }}
-          onClick={() => {
-            if (wasTxDeclined) {
-              dispatch(setWasTxDeclined(false));
-            }
-            onFetchNewQuotes();
-          }}
-        >
-          {t(secondaryButtonLabel)}
-        </ButtonLink>
-      )}
-    </Row>
+      {label}
+    </Text>
   );
 };

@@ -50,6 +50,7 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
     id: transactionId,
     gasFeeTokens,
     selectedGasFeeToken,
+    excludeNativeTokenForFee,
   } = currentConfirmation;
 
   const hasFutureNativeToken =
@@ -109,38 +110,42 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
           paddingLeft={0}
           paddingRight={0}
         >
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.center}
-            marginInline={4}
-          >
-            <Title text={t('confirmGasFeeTokenModalPayETH')} noMargin />
-            {hasFutureNativeToken && (
-              <NativeToggle
-                isFuture={futureNativeSelected}
-                onChange={setFutureNativeSelected}
+          {!excludeNativeTokenForFee && (
+            <>
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Row}
+                justifyContent={JustifyContent.spaceBetween}
+                alignItems={AlignItems.center}
+                marginInline={4}
+              >
+                <Title text={t('confirmGasFeeTokenModalPayETH')} noMargin />
+                {hasFutureNativeToken && (
+                  <NativeToggle
+                    isFuture={futureNativeSelected}
+                    onChange={setFutureNativeSelected}
+                  />
+                )}
+              </Box>
+              <GasFeeTokenListItem
+                tokenAddress={
+                  futureNativeSelected ? NATIVE_TOKEN_ADDRESS : undefined
+                }
+                isSelected={
+                  !selectedGasFeeToken ||
+                  selectedGasFeeToken?.toLowerCase() === NATIVE_TOKEN_ADDRESS
+                }
+                onClick={handleTokenClick}
+                warning={
+                  hasInsufficientNative &&
+                  !futureNativeSelected &&
+                  t('confirmGasFeeTokenInsufficientBalance')
+                }
               />
-            )}
-          </Box>
-          <GasFeeTokenListItem
-            tokenAddress={
-              futureNativeSelected ? NATIVE_TOKEN_ADDRESS : undefined
-            }
-            isSelected={
-              !selectedGasFeeToken ||
-              selectedGasFeeToken?.toLowerCase() === NATIVE_TOKEN_ADDRESS
-            }
-            onClick={handleTokenClick}
-            warning={
-              hasInsufficientNative &&
-              !futureNativeSelected &&
-              t('confirmGasFeeTokenInsufficientBalance')
-            }
-          />
-          {hasGasFeeTokens && (
-            <Title text={t('confirmGasFeeTokenModalPayToken')} />
+              {hasGasFeeTokens && (
+                <Title text={t('confirmGasFeeTokenModalPayToken')} />
+              )}
+            </>
           )}
           {gasFeeTokenAddresses.map((tokenAddress) => (
             <GasFeeTokenListItem

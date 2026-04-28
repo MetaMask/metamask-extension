@@ -33,23 +33,29 @@ import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-
 import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useHideToasts } from '../../../hooks/useHideToasts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getMemoizedUnapprovedTemplatedConfirmations,
+  getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
   getUseSafeChainsListValidation,
   getSnapsMetadata,
   getHideSnapBranding,
+  getIsHardwareWalletErrorModalVisible,
 } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import Callout from '../../../components/ui/callout';
 import { Box } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
 import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
+import {
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+} from '../../../../shared/constants/app';
+import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
 import { DAY } from '../../../../shared/constants/time';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
@@ -229,21 +235,27 @@ function Header({ confirmation, isSnapCustomUIDialog, onCancel }) {
 export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
 }) {
+  useHideToasts();
+
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const pendingConfirmations = useSelector(
-    getMemoizedUnapprovedTemplatedConfirmations,
-  );
+  const pendingConfirmations = useSelector(getUnapprovedTemplatedConfirmations);
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
+  const isHardwareWalletErrorModalVisible = useSelector(
+    getIsHardwareWalletErrorModalVisible,
+  );
   const useSafeChainsListValidation = useSelector(
     getUseSafeChainsListValidation,
   );
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
+  );
+  const skipSmartTransactionStatusPage = useSelector(
+    getExtensionSkipTransactionStatusPage,
   );
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
 
@@ -303,6 +315,10 @@ export default function ConfirmationPage({
 
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName = isSnapDialog && name;
+
+  const isSmartTransactionStatus =
+    pendingConfirmation?.type ===
+    SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage;
 
   const hasHeaderMaybe = isSnapDialog;
   const hasHeader =
@@ -372,11 +388,14 @@ export default function ConfirmationPage({
     // return them to the default route. Otherwise, if the number of pending
     // confirmations reduces to a number that is less than the currently
     // viewed index, reset the index.
-    if (
+    // Don't navigate away if:
+    // - Hardware wallet error modal is visible (for retry functionality)
+    const wouldNavigate =
       pendingConfirmations.length === 0 &&
       (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
-      redirectToHomeOnZeroConfirmations
-    ) {
+      redirectToHomeOnZeroConfirmations;
+
+    if (wouldNavigate && !isHardwareWalletErrorModalVisible) {
       const to = shouldShowActivity
         ? `${DEFAULT_ROUTE}?tab=activity`
         : DEFAULT_ROUTE;
@@ -390,6 +409,7 @@ export default function ConfirmationPage({
     navigate,
     redirectToHomeOnZeroConfirmations,
     shouldShowActivity,
+    isHardwareWalletErrorModalVisible,
   ]);
 
   useEffect(() => {
@@ -462,6 +482,10 @@ export default function ConfirmationPage({
       return <Loading loadingMessage={approvalFlowLoadingText} />;
     }
 
+    return null;
+  }
+
+  if (isSmartTransactionStatus && skipSmartTransactionStatusPage) {
     return null;
   }
 

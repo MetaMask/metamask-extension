@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
@@ -24,7 +24,7 @@ describe('Perps', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -43,11 +43,14 @@ describe('Perps', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
+
+        const marketListPage = new PerpsMarketListPage(driver);
+        await marketListPage.navigateToMarketList();
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.navigateToMarket('AVAX');
@@ -67,7 +70,7 @@ describe('Perps', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -86,7 +89,7 @@ describe('Perps', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -105,15 +108,14 @@ describe('Perps', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickSearchButton();
 
         const marketListPage = new PerpsMarketListPage(driver);
-        await marketListPage.waitForPageLoaded();
+        await marketListPage.navigateToMarketList();
         await marketListPage.waitForFilterSortRow();
         await marketListPage.selectFilter('crypto');
         await marketListPage.selectSortByVolumeHigh();
@@ -129,7 +131,7 @@ describe('Perps', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -147,11 +149,14 @@ describe('Perps', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
+
+        const marketListPage = new PerpsMarketListPage(driver);
+        await marketListPage.navigateToMarketList();
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.navigateToMarket('ETH');

@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import type {
   TransactionPayRequiredToken,
@@ -9,26 +6,10 @@ import type {
 } from '@metamask/transaction-pay-controller';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
+import { isTestNetwork } from '../../../helpers/utils/network-helper';
 import { Asset, AssetStandard } from '../types/send';
 
 const FOUR_BYTE_TOKEN_TRANSFER = '0xa9059cbb';
-
-export function hasTransactionType(
-  transactionMeta: TransactionMeta | undefined,
-  types: TransactionType[],
-) {
-  const { nestedTransactions, type } = transactionMeta ?? {};
-
-  if (types.includes(type as TransactionType)) {
-    return true;
-  }
-
-  return (
-    nestedTransactions?.some((tx) =>
-      types.includes(tx.type as TransactionType),
-    ) ?? false
-  );
-}
 
 export function getTokenTransferData(
   transactionMeta: TransactionMeta | undefined,
@@ -98,6 +79,13 @@ export function getAvailableTokens({
         return false;
       }
 
+      // MetaMask Pay can't source funds from testnets (quotes route through
+      // bridges/swaps that don't support them), so exclude testnet tokens
+      // from both the Pay-with list and the auto-selected default.
+      if (token.chainId && isTestNetwork(token.chainId as Hex)) {
+        return false;
+      }
+
       const isSelected =
         payToken?.address.toLowerCase() === token.address?.toLowerCase() &&
         payToken?.chainId === token.chainId;
@@ -127,10 +115,12 @@ export function getAvailableTokens({
           t.chainId === chainId && t.address === getNativeTokenAddress(chainId),
       );
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const noNativeBalance =
         !nativeToken || new BigNumber(nativeToken.balance ?? 0).isZero();
 
-      const disabled = noNativeBalance;
+      // Temporary pending gas station feature flag integration.
+      const disabled = false;
 
       const isSelected =
         payToken?.address.toLowerCase() === token.address?.toLowerCase() &&

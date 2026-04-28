@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Wallet Revoke Permissions', function (this: Suite) {
   it('should revoke "eth_accounts" permissions via test dapp', async function () {
@@ -17,7 +17,7 @@ describe('Wallet Revoke Permissions', function (this: Suite) {
       async ({ driver, localNodes }) => {
         const addresses = await localNodes[0].getAccounts();
         const publicAddress = addresses[0].toLowerCase();
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Get initial accounts permissions
         const testDapp = new TestDapp(driver);
@@ -42,7 +42,7 @@ describe('Wallet Revoke Permissions', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();

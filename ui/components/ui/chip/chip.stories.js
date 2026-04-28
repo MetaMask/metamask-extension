@@ -1,5 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
 
 import {
   TypographyVariant,
@@ -12,7 +16,6 @@ import {
 
 import { BannerAlert } from '../../component-library';
 import ApproveIcon from '../icon/approve-icon.component';
-import Identicon from '../identicon/identicon.component';
 
 import Chip from '.';
 
@@ -43,12 +46,12 @@ export default {
       control: {
         type: 'select',
       },
-      options: ['Identicon'],
+      options: ['AvatarAccount'],
       mapping: {
-        Identicon: (
-          <Identicon
+        AvatarAccount: (
+          <AvatarAccount
             address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
-            diameter={25}
+            size={AvatarAccountSize.Sm}
           />
         ),
       },

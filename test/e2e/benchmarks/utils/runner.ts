@@ -1,11 +1,26 @@
 import get from 'lodash/get';
 import { retry } from '../../../../development/lib/retry';
+import type {
+  BenchmarkResults,
+  BenchmarkType,
+  Persona,
+  StatisticalResult,
+  ThresholdConfig,
+  TimerStatistics,
+  WebVitalsAggregated,
+  WebVitalsMetrics,
+  WebVitalsRun,
+  WebVitalsSummary,
+} from '../../../../shared/constants/benchmarks';
+import { BENCHMARK_PERSONA } from '../../../../shared/constants/benchmarks';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
   DEFAULT_NUM_PAGE_LOADS,
+  WARMUP_RUNS,
 } from './constants';
 import {
+  aggregateWebVitals,
   calcMaxResult,
   calcMeanResult,
   calcMinResult,
@@ -13,24 +28,41 @@ import {
   calcStdDevResult,
   calculateTimerStatistics,
   checkExclusionRate,
+  detectOutliersIQR,
   MAX_EXCLUSION_RATE,
   MAX_TOTAL_DURATION_MS,
   validateThresholds,
+  WEB_VITALS_NUMERIC_KEYS,
 } from './statistics';
 import type {
   BenchmarkFunction,
-  BenchmarkResults,
   BenchmarkRunResult,
   BenchmarkSummary,
-  BenchmarkType,
+  MeasurePageResult,
   Metrics,
-  Persona,
-  StatisticalResult,
-  ThresholdConfig,
-  TimerResult,
-  TimerStatistics,
+  UserActionMeasurement,
 } from './types';
 import { performanceTracker } from './performance-tracker';
+
+/**
+ * Promote web vitals aggregated stats into a TimerStatistics array.
+ * This allows web vitals to flow through the same threshold validation
+ * pipeline as traditional timers.
+ *
+ * @param aggregated - Aggregated web vitals from {@link aggregateWebVitals}
+ */
+function extractWebVitalsAsTimerStats(
+  aggregated: WebVitalsAggregated,
+): TimerStatistics[] {
+  const stats: TimerStatistics[] = [];
+  for (const key of WEB_VITALS_NUMERIC_KEYS) {
+    const metric = aggregated[key];
+    if (metric) {
+      stats.push(metric);
+    }
+  }
+  return stats;
+}
 
 /**
  * Run a benchmark function with retries
@@ -94,9 +126,13 @@ export async function runBenchmarkWithIterations(
     }
   }
 
-  // Aggregate timer results
+  // Aggregate timer results and collect per-run web vitals
   const timerMap = new Map<string, number[]>();
-  for (const result of allResults) {
+  const zeroAllowedTimers = new Set<string>();
+  const webVitalsRuns: WebVitalsRun[] = [];
+
+  for (let idx = 0; idx < allResults.length; idx++) {
+    const result = allResults[idx];
     if (result.success) {
       for (const timer of result.timers) {
         if (!timerMap.has(timer.id)) {
@@ -104,8 +140,15 @@ export async function runBenchmarkWithIterations(
         }
         const timerDurations = timerMap.get(timer.id);
         if (timerDurations) {
-          timerDurations.push(timer.duration);
+          timerDurations.push(timer.value);
         }
+        if (timer.unit) {
+          zeroAllowedTimers.add(timer.id);
+        }
+      }
+
+      if (result.webVitals) {
+        webVitalsRuns.push({ ...result.webVitals, iteration: idx });
       }
     }
   }
@@ -114,7 +157,9 @@ export async function runBenchmarkWithIterations(
   let excludedDueToQuality = 0;
 
   for (const [timerId, durations] of timerMap) {
-    const stats = calculateTimerStatistics(timerId, durations);
+    const stats = calculateTimerStatistics(timerId, durations, {
+      ...(zeroAllowedTimers.has(timerId) ? { minDurationMs: 0 } : {}),
+    });
     timerStats.push(stats);
 
     if (stats.dataQuality === 'unreliable') {
@@ -128,7 +173,7 @@ export async function runBenchmarkWithIterations(
       MAX_EXCLUSION_RATE,
     );
 
-    if (!exclusionCheck.passed && stats.dataQuality !== 'unreliable') {
+    if (exclusionCheck.passed === false && stats.dataQuality !== 'unreliable') {
       // Mark as unreliable if too many exclusions (only if not already unreliable)
       stats.dataQuality = 'unreliable';
       excludedDueToQuality += 1;
@@ -140,7 +185,12 @@ export async function runBenchmarkWithIterations(
   const perRunTotalDurations: number[] = [];
   for (const result of allResults) {
     if (result.success && result.timers.length > 0) {
-      const runTotal = result.timers.reduce((acc, t) => acc + t.duration, 0);
+      // Exclude long task diagnostic metrics (tagged with unit) from the
+      // per-run total. They represent blocking time already captured within
+      // the timed steps and would double-count if summed.
+      const runTotal = result.timers
+        .filter((t) => !t.unit)
+        .reduce((acc, t) => acc + t.value, 0);
       perRunTotalDurations.push(runTotal);
     }
   }
@@ -158,8 +208,17 @@ export async function runBenchmarkWithIterations(
     MAX_EXCLUSION_RATE,
   );
 
-  const thresholdResult = validateThresholds(timerStats, thresholdConfig);
+  // Aggregate web vitals if any runs reported them
+  let webVitalsSummary: WebVitalsSummary | undefined;
+  if (webVitalsRuns.length > 0) {
+    const aggregated = aggregateWebVitals(webVitalsRuns);
+    webVitalsSummary = { runs: webVitalsRuns, aggregated };
 
+    // Promote web vitals into timerStats so they flow through threshold validation
+    timerStats.push(...extractWebVitalsAsTimerStats(aggregated));
+  }
+
+  const thresholdResult = validateThresholds(timerStats, thresholdConfig);
   // Extract benchmarkType from the first result (same across all iterations)
   const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
 
@@ -173,9 +232,75 @@ export async function runBenchmarkWithIterations(
     excludedDueToQuality,
     exclusionRatePassed: overallExclusionCheck.passed,
     exclusionRate: overallExclusionCheck.rate,
-    thresholdViolations: thresholdResult.violations,
-    thresholdsPassed: thresholdResult.passed,
+    thresholdViolations: thresholdResult?.violations ?? [],
+    thresholdsPassed: thresholdResult?.passed ?? true,
+    ...(webVitalsSummary && { webVitals: webVitalsSummary }),
     benchmarkType,
+  };
+}
+
+/**
+ * Maps aggregated timer statistics to `BenchmarkResults` (shared with send-to-sentry and CI JSON).
+ * Used by Selenium benchmarks and Playwright dapp page-load benchmarks.
+ *
+ * @param timers - One {@link TimerStatistics} per metric id (e.g. timer name or web vital key)
+ * @param testTitle - Benchmark label written to JSON
+ * @param persona - Wallet persona for this run
+ * @param benchmarkType - Optional benchmark category
+ * @param platform - Optional platform label
+ * @param buildType - Optional build label
+ * @param webVitals - Optional aggregated web vitals (from {@link BenchmarkSummary.webVitals})
+ */
+export function convertTimerStatisticsToBenchmarkResults(
+  timers: TimerStatistics[],
+  testTitle: string,
+  persona: Persona = BENCHMARK_PERSONA.STANDARD,
+  benchmarkType?: BenchmarkType,
+  platform?: string,
+  buildType?: string,
+  webVitals?: WebVitalsSummary,
+): BenchmarkResults {
+  const mean: StatisticalResult = {};
+  const min: StatisticalResult = {};
+  const max: StatisticalResult = {};
+  const stdDev: StatisticalResult = {};
+  const p75: StatisticalResult = {};
+  const p95: StatisticalResult = {};
+  const trimmedCount: StatisticalResult = {};
+  const outliers: StatisticalResult = {};
+
+  // timers already includes promoted web vitals from runBenchmarkWithIterations
+  for (const timer of timers) {
+    mean[timer.id] = timer.mean;
+    min[timer.id] = timer.min;
+    max[timer.id] = timer.max;
+    stdDev[timer.id] = timer.stdDev;
+    p75[timer.id] = timer.p75;
+    p95[timer.id] = timer.p95;
+    if (timer.trimmedCount !== undefined) {
+      trimmedCount[timer.id] = timer.trimmedCount;
+    }
+    outliers[timer.id] = timer.outliers;
+  }
+
+  const hasTrimmedCounts = Object.keys(trimmedCount).length > 0;
+  const hasOutliers = Object.keys(outliers).length > 0;
+
+  return {
+    testTitle,
+    persona,
+    benchmarkType,
+    platform,
+    buildType,
+    mean,
+    min,
+    max,
+    stdDev,
+    p75,
+    p95,
+    ...(hasTrimmedCounts && { trimmedCount }),
+    ...(hasOutliers && { outliers }),
+    ...(webVitals && { webVitals }),
   };
 }
 
@@ -187,48 +312,56 @@ export async function runBenchmarkWithIterations(
  * @param testTitle
  * @param persona
  * @param benchmarkType
+ * @param platform
+ * @param buildType
  */
 export function convertSummaryToResults(
   summary: BenchmarkSummary,
   testTitle: string,
-  persona: Persona = 'standard',
+  persona: Persona = BENCHMARK_PERSONA.STANDARD,
   benchmarkType?: BenchmarkType,
+  platform?: string,
+  buildType?: string,
 ): BenchmarkResults {
-  const mean: StatisticalResult = {};
-  const min: StatisticalResult = {};
-  const max: StatisticalResult = {};
-  const stdDev: StatisticalResult = {};
-  const p75: StatisticalResult = {};
-  const p95: StatisticalResult = {};
-
-  for (const timer of summary.timers) {
-    mean[timer.id] = timer.mean;
-    min[timer.id] = timer.min;
-    max[timer.id] = timer.max;
-    stdDev[timer.id] = timer.stdDev;
-    p75[timer.id] = timer.p75;
-    p95[timer.id] = timer.p95;
-  }
-
-  return {
+  return convertTimerStatisticsToBenchmarkResults(
+    summary.timers,
     testTitle,
     persona,
     benchmarkType,
-    mean,
-    min,
-    max,
-    stdDev,
-    p75,
-    p95,
-  };
+    platform,
+    buildType,
+    summary.webVitals,
+  );
 }
 
-export type MeasurePageResult = {
-  metrics: Metrics[];
-  title: string;
-  persona: Persona;
-};
-
+/**
+ * Run the dApp page-load benchmark and aggregate results.
+ *
+ * Uses IQR-only outlier trimming (`trimmedCount`). Z-score is intentionally
+ * excluded for two reasons:
+ *
+ * 1. Serial correlation: page loads run serially within each browser session
+ * (shared JIT cache, extension state). A slow startup elevates all `pageLoads`
+ * measurements in a session as a correlated cluster. Z-score assumes i.i.d.
+ * samples and would flag the cluster as outliers even when the elevation has a
+ * real underlying cause. IQR is rank-based and distribution-free, making it
+ * robust to correlated samples.
+ *
+ * 2. Multimodal distributions: `longTask*`, `tbt`, and `numNetworkReqs` are
+ * zero or near-zero most runs with occasional real spikes. Z-score would flag
+ * those spikes as noise, removing genuine signal.
+ *
+ * `calculateTimerStatistics` (iteration-based benchmarks) applies both IQR and
+ * z-score because each run is an independent browser session.
+ *
+ * @param measurePageFn - Function that drives one browser session and returns metrics
+ * @param options - Benchmark configuration
+ * @param options.browserLoads - Number of full browser sessions to run
+ * @param options.pageLoads - Number of page loads per browser session
+ * @param options.retries - Number of retries per browser session on failure
+ * @param options.platform - Optional platform label written to results
+ * @param options.buildType - Optional build label written to results
+ */
 export async function runPageLoadBenchmark(
   measurePageFn: (
     pageName: string,
@@ -238,68 +371,130 @@ export async function runPageLoadBenchmark(
     browserLoads?: number;
     pageLoads?: number;
     retries?: number;
+    platform?: string;
+    buildType?: string;
   },
 ): Promise<BenchmarkResults> {
   const {
     browserLoads = DEFAULT_NUM_BROWSER_LOADS,
     pageLoads = DEFAULT_NUM_PAGE_LOADS,
     retries = 0,
+    platform,
+    buildType,
   } = options;
+
+  if (browserLoads <= WARMUP_RUNS) {
+    throw new Error(
+      `browserLoads (${browserLoads}) must be greater than WARMUP_RUNS (${WARMUP_RUNS})`,
+    );
+  }
 
   const pageName = 'home';
   let runResults: Metrics[] = [];
+  let allWebVitalsRuns: WebVitalsRun[] = [];
   let testTitle = '';
-  let resultPersona: Persona = 'standard';
+  let resultPersona: Persona = BENCHMARK_PERSONA.STANDARD;
 
   for (let i = 0; i < browserLoads; i += 1) {
     console.log('Starting browser load', i + 1, 'of', browserLoads);
-    const { metrics, title, persona } = await retry({ retries }, () =>
-      measurePageFn(pageName, pageLoads),
+    const { metrics, title, persona, webVitalsRuns } = await retry(
+      { retries },
+      () => measurePageFn(pageName, pageLoads),
     );
     runResults = runResults.concat(metrics);
+    if (webVitalsRuns) {
+      const indexed = webVitalsRuns.map((wv: WebVitalsMetrics, j: number) => ({
+        ...wv,
+        iteration: i * pageLoads + j,
+      }));
+      allWebVitalsRuns = allWebVitalsRuns.concat(indexed);
+    }
     testTitle = title;
     resultPersona = persona;
   }
 
-  if (runResults.some((result) => result.navigation.length > 1)) {
+  // Discard the first WARMUP_RUNS browser-load sessions before computing stats.
+  // Each session contributes exactly pageLoads metric objects to runResults.
+  const warmupSize = WARMUP_RUNS * pageLoads;
+  const measuredResults = runResults.slice(warmupSize);
+  // Web vitals entries are sparse (collection can fail silently), so filter by
+  // iteration index rather than slicing by position to avoid off-by-N errors.
+  const measuredWebVitalsRuns = allWebVitalsRuns.filter(
+    (wv) => wv.iteration >= warmupSize,
+  );
+
+  if (measuredResults.some((result) => result.navigation.length > 1)) {
     throw new Error(`Multiple navigations not supported`);
-  } else if (
-    runResults.some((result) => result.navigation[0].type !== 'navigate')
-  ) {
+  }
+  const firstNonNavigate = measuredResults.find(
+    (result) => result.navigation[0].type !== 'navigate',
+  );
+  if (firstNonNavigate !== undefined) {
     throw new Error(
-      `Navigation type ${
-        runResults.find((result) => result.navigation[0].type !== 'navigate')
-          ?.navigation[0].type
-      } not supported`,
+      `Navigation type ${firstNonNavigate.navigation[0].type} not supported`,
     );
   }
 
   const result: Record<string, number[]> = {};
+  const trimmedCounts: StatisticalResult = {};
   for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
-    result[key] = runResults
-      .map((m) => get(m, tracePath) as number)
-      .sort((a, b) => a - b);
+    const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
+    const { filtered, outlierCount } = detectOutliersIQR(rawSamples);
+    result[key] = [...filtered].sort((a, b) => a - b);
+    trimmedCounts[key] = outlierCount;
+  }
+
+  let webVitals: WebVitalsSummary | undefined;
+  if (measuredWebVitalsRuns.length > 0) {
+    webVitals = {
+      runs: measuredWebVitalsRuns,
+      aggregated: aggregateWebVitals(measuredWebVitalsRuns),
+    };
+  }
+
+  const mean = calcMeanResult(result);
+  const min = calcMinResult(result);
+  const max = calcMaxResult(result);
+  const stdDevResult = calcStdDevResult(result);
+  const p75 = calcPResult(result, 75);
+  const p95 = calcPResult(result, 95);
+
+  // Promote web vitals aggregated stats into the top-level maps
+  if (webVitals?.aggregated) {
+    for (const wv of extractWebVitalsAsTimerStats(webVitals.aggregated)) {
+      mean[wv.id] = wv.mean;
+      min[wv.id] = wv.min;
+      max[wv.id] = wv.max;
+      stdDevResult[wv.id] = wv.stdDev;
+      p75[wv.id] = wv.p75;
+      p95[wv.id] = wv.p95;
+    }
   }
 
   return {
     testTitle,
     persona: resultPersona,
-    mean: calcMeanResult(result),
-    min: calcMinResult(result),
-    max: calcMaxResult(result),
-    stdDev: calcStdDevResult(result),
-    p75: calcPResult(result, 75),
-    p95: calcPResult(result, 95),
+    platform,
+    buildType,
+    mean,
+    min,
+    max,
+    stdDev: stdDevResult,
+    p75,
+    p95,
+    trimmedCount: trimmedCounts,
+    outliers: { ...trimmedCounts },
+    ...(webVitals && { webVitals }),
   };
 }
 
 export async function runUserActionBenchmark(
-  measureFn: () => Promise<TimerResult[]>,
+  measureFn: () => Promise<UserActionMeasurement>,
   benchmarkType?: BenchmarkType,
 ): Promise<BenchmarkRunResult> {
   try {
-    const timers = await measureFn();
-    return { timers, success: true, benchmarkType };
+    const { timers, webVitals } = await measureFn();
+    return { timers, webVitals, success: true, benchmarkType };
   } catch (error) {
     return {
       timers: [],

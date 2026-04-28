@@ -1,3 +1,3 @@
 module.exports = {
-  TEST_SNAPS_WEBSITE_URL: 'https://metamask.github.io/snaps/test-snaps/2.28.1',
+  TEST_SNAPS_WEBSITE_URL: 'https://metamask.github.io/snaps/test-snaps/3.4.1',
 };

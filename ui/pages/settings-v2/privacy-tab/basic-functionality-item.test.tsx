@@ -6,6 +6,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { CONSENSYS_PRIVACY_LINK } from '../../../../shared/lib/ui-utils';
 import { BasicFunctionalityToggleItem } from './basic-functionality-item';
 
 const mockToggleExternalServices = jest.fn();
@@ -55,7 +56,7 @@ describe('BasicFunctionalityToggleItem', () => {
       name: messages.privacyMsg.message,
     });
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', 'https://consensys.io/privacy-policy');
+    expect(link).toHaveAttribute('href', CONSENSYS_PRIVACY_LINK);
   });
 
   it('renders toggle in enabled state when useExternalServices is true', () => {

@@ -5,7 +5,7 @@ import { Snap } from '@metamask/snaps-utils';
 import { userEvent } from '@testing-library/user-event';
 import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import KeyringSnapRemovalWarning from './keyring-snap-removal-warning';
 

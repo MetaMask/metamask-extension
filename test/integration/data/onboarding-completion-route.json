@@ -267,7 +267,7 @@
   "preferences": {
     "defaultAddressScope": "eip155",
     "hideZeroBalanceTokens": false,
-    "showDefaultAddress": false,
+    "showDefaultAddress": true,
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": false,
@@ -309,6 +309,7 @@
       }
     }
   },
+  "selectedCurrency": "usd",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
   "shieldEndingToastLastClickedOrClosed": null,
@@ -495,7 +496,6 @@
   "unencryptedSnapStates": {},
   "use4ByteResolution": true,
   "useAddressBarEnsResolution": true,
-  "useBlockie": false,
   "useCurrencyRateCheck": true,
   "useExternalNameSources": true,
   "useExternalServices": true,

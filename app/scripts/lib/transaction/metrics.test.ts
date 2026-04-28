@@ -9,7 +9,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
 } from '../../../../shared/constants/metametrics';
-import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
+import { hexWEIToDecGWEI } from '../../../../shared/lib/conversion.utils';
 import { TransactionMetaMetricsEvent } from '../../../../shared/constants/transaction';
 import type { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
@@ -23,8 +23,8 @@ import {
   handleTransactionSubmitted,
 } from './metrics';
 
-jest.mock('../../../../shared/modules/transaction.utils', () => ({
-  ...jest.requireActual('../../../../shared/modules/transaction.utils'),
+jest.mock('../../../../shared/lib/transaction.utils', () => ({
+  ...jest.requireActual('../../../../shared/lib/transaction.utils'),
   determineTransactionAssetType: jest.fn().mockResolvedValue({
     assetType: 'native',
     tokenStandard: null,
@@ -345,5 +345,45 @@ describe('transaction metrics handlers', () => {
     await handlePostTransactionBalanceUpdate(request, { transactionMeta });
 
     expect(request.trackEvent).not.toHaveBeenCalled();
+  });
+
+  describe('does not include actionId in trackEvent payload', () => {
+    const handlers = [
+      { name: 'added', handler: handleTransactionAdded },
+      { name: 'approved', handler: handleTransactionApproved },
+      { name: 'submitted', handler: handleTransactionSubmitted },
+      { name: 'rejected', handler: handleTransactionRejected },
+      { name: 'failed', handler: handleTransactionFailed },
+      { name: 'dropped', handler: handleTransactionDropped },
+    ];
+
+    for (const { name, handler } of handlers) {
+      it(`${name}`, async () => {
+        const request = createRequest();
+        await handler(request, {
+          actionId: 'some-action-id',
+          transactionMeta: createTxMeta(),
+        });
+
+        const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+        expect(payload).not.toHaveProperty('actionId');
+      });
+    }
+
+    it('confirmed', async () => {
+      const request = createRequest();
+      const now = Date.now();
+      await handleTransactionConfirmed(request, {
+        ...createTxMeta({
+          actionId: 'some-action-id',
+          status: TransactionStatus.confirmed,
+          submittedTime: now - 3000,
+          txReceipt: { gasUsed: '0x5208', blockNumber: '0x10', status: '0x1' },
+        }),
+      } as any);
+
+      const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+      expect(payload).not.toHaveProperty('actionId');
+    });
   });
 });

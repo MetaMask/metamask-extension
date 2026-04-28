@@ -13,9 +13,14 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 type SendHeadingLayoutProps = {
   children: React.ReactNode;
   image: React.ReactNode;
+  label?: string;
 };
 
-const SendHeadingLayout = ({ children, image }: SendHeadingLayoutProps) => {
+const SendHeadingLayout = ({
+  children,
+  image,
+  label,
+}: SendHeadingLayoutProps) => {
   const t = useI18nContext();
 
   return (
@@ -27,7 +32,7 @@ const SendHeadingLayout = ({ children, image }: SendHeadingLayoutProps) => {
     >
       <Box marginBottom={1}>
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {t('confirmTitleSending')}
+          {label ?? t('confirmTitleSending')}
         </Text>
       </Box>
       <Box

@@ -1,9 +1,7 @@
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import {
-  bridgeTransaction,
-  getBridgeFixtures,
-} from '../bridge/bridge-test-utils';
+import { login } from '../../page-objects/flows/login.flow';
+import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
+import { getBridgeFixtures } from '../bridge/bridge-test-utils';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from '../bridge/constants';
 
 describe('Swap', function () {
@@ -39,14 +37,12 @@ describe('Swap', function () {
   swapTestCases.forEach((testCase) => {
     it(testCase.name, async function () {
       await withFixtures(
-        getBridgeFixtures(this.test?.fullTitle(), DEFAULT_BRIDGE_FEATURE_FLAGS),
+        getBridgeFixtures({
+          title: this.test?.fullTitle(),
+          featureFlags: DEFAULT_BRIDGE_FEATURE_FLAGS,
+        }),
         async ({ driver }) => {
-          await loginWithBalanceValidation(
-            driver,
-            undefined,
-            undefined,
-            '$225,730.11',
-          );
+          await login(driver, { expectedBalance: '$225,730.11' });
 
           await bridgeTransaction({
             driver,

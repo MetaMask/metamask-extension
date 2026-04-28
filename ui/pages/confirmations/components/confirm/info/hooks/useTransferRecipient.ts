@@ -4,7 +4,7 @@ import {
   NestedTransactionMetadata,
 } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../context/confirm';
-import { getTransactionDataRecipient } from '../../../../../../../shared/modules/transaction.utils';
+import { getTransactionDataRecipient } from '../../../../../../../shared/lib/transaction.utils';
 
 export function useTransferRecipient(): string | undefined {
   const { currentConfirmation: transactionMetadata } =
@@ -40,12 +40,16 @@ function getRecipientFromNestedTransactionMetadata(
 function getRecipientFromTransactionMetadata(
   transactionMetadata: TransactionMeta,
 ): string | undefined {
-  const { type, txParams } = transactionMetadata;
-  return getRecipientByType(
-    type as TransactionType,
-    txParams?.data ?? '',
-    txParams?.to ?? '',
-  );
+  const { type, txParams, txParamsOriginal } = transactionMetadata;
+
+  // Prefer the original params when container wrapping (e.g. enforced
+  // simulations) has replaced `to`/`data` with the delegation manager
+  // address and payload, so the UI keeps showing the user-intended
+  // recipient.
+  const data = txParamsOriginal?.data ?? txParams?.data ?? '';
+  const to = txParamsOriginal?.to ?? txParams?.to ?? '';
+
+  return getRecipientByType(type as TransactionType, data, to);
 }
 
 function getRecipientByType(

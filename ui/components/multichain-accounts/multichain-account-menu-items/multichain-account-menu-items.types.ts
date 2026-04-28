@@ -1,6 +1,5 @@
-import React from 'react';
-import { IconName } from '../../component-library';
-import { TextColor } from '../../../helpers/constants/design-system';
+import type { MouseEventHandler } from 'react';
+import type { IconName, TextColor } from '@metamask/design-system-react';
 
 export type MultichainAccountMenuItemsProps = {
   /**
@@ -23,7 +22,7 @@ export type MenuItemConfig = {
   /**
    * Function to execute when the menu item is clicked.
    */
-  onClick: (mouseEvent: React.MouseEvent) => void;
+  onClick: MouseEventHandler<HTMLDivElement>;
 
   /**
    * Optional color for the menu item text.

@@ -3,8 +3,8 @@ import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../multichain-api/
 import { DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
 import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 
@@ -12,7 +12,9 @@ describe('Test Protocol Snaps', function () {
   it('can call getBlockHeight exposed by Snap', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         title: this.test?.fullTitle(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         testSpecificMock: buildSolanaTestSpecificMock({
@@ -20,7 +22,7 @@ describe('Test Protocol Snaps', function () {
         }),
       },
       async ({ driver, mockServer, extensionId }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const mockBlockHeight = 368556246;
         await mockServer
           .forPost('https://api.devnet.solana.com/')

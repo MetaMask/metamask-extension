@@ -28,7 +28,7 @@ import {
   PLATFORM_WHALE,
   PLATFORM_YANDEX,
 } from '../../../shared/constants/app';
-import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
+import { isPrefixedFormattedHexString } from '../../../shared/lib/network.utils';
 import * as FourBiteUtils from '../../../shared/lib/four-byte';
 import { withResolvers } from '../../../shared/lib/promise-with-resolvers';
 import {

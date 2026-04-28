@@ -53,12 +53,18 @@ import {
   getIsShieldSubscriptionActive,
   getSubscriptionDurationInDays,
   getSubscriptionPaymentData,
+  determineSubscriptionMetricsSourceFromMarketingUtmParams,
+  getIsSubscriptionCancelNotAllowed,
+  getShieldMarketingUtmParamsForMetrics,
+  getUserBalanceCategory,
+  isNonUISubscriptionError,
+  SHIELD_ERROR,
 } from '../../../shared/lib/shield';
 import { generateERC20ApprovalData } from '../../pages/confirmations/send-utils/send.utils';
 import {
   decimalToHex,
   decGWEIToHexWEI,
-} from '../../../shared/modules/conversion.utils';
+} from '../../../shared/lib/conversion.utils';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
@@ -77,22 +83,14 @@ import {
   ShieldSubscriptionRequestSubscriptionStateEnum,
 } from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
-import {
-  determineSubscriptionMetricsSourceFromMarketingUtmParams,
-  getIsSubscriptionCancelNotAllowed,
-  getShieldMarketingUtmParamsForMetrics,
-  getUserBalanceCategory,
-  isNonUISubscriptionError,
-  SHIELD_ERROR,
-} from '../../../shared/modules/shield';
 import { useI18nContext } from '../useI18nContext';
 import { openWindow } from '../../helpers/utils/window';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
-import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -743,23 +741,19 @@ export const useHandleSubscriptionSupportAction = () => {
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
   const handleClickContactSupport = useCallback(() => {
-    let supportLinkWithUserId = SUPPORT_LINK as string;
-    const queryParams = new URLSearchParams();
-    queryParams.append('metamask_version', version);
+    const url = new URL(SUPPORT_LINK as string);
+    url.searchParams.append('metamask_version', version);
     if (profileId) {
-      queryParams.append('metamask_profile_id', profileId);
+      url.searchParams.append('metamask_profile_id', profileId);
     }
     if (metaMetricsId) {
-      queryParams.append('metamask_metametrics_id', metaMetricsId);
+      url.searchParams.append('metamask_metametrics_id', metaMetricsId);
     }
     if (shieldCustomerId) {
-      queryParams.append('shield_id', shieldCustomerId);
+      url.searchParams.append('shield_id', shieldCustomerId);
     }
 
-    const queryString = queryParams.toString();
-    if (queryString) {
-      supportLinkWithUserId += `?${queryString}`;
-    }
+    const supportLinkWithUserId = url.toString();
 
     openWindow(supportLinkWithUserId);
   }, [version, profileId, metaMetricsId, shieldCustomerId]);

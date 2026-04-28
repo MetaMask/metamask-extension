@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -8,12 +8,6 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { CURRENCY_ROUTE } from '../../../helpers/constants/routes';
 import { LocalCurrencyItem } from './local-currency-item';
-
-const mockNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate,
-}));
 
 const backgroundConnectionMock = new Proxy(
   {},
@@ -42,19 +36,17 @@ describe('LocalCurrencyItem', () => {
     expect(screen.getByText('USD')).toBeInTheDocument();
   });
 
-  it('renders navigation button', () => {
+  it('renders navigation link', () => {
     renderWithProvider(<LocalCurrencyItem />, mockStore);
 
-    const button = screen.getByRole('button');
-    expect(button).toBeInTheDocument();
+    const link = screen.getByRole('link');
+    expect(link).toBeInTheDocument();
   });
 
-  it('navigates to currency page when clicked', () => {
+  it('links to currency page', () => {
     renderWithProvider(<LocalCurrencyItem />, mockStore);
 
-    const button = screen.getByRole('button');
-    fireEvent.click(button);
-
-    expect(mockNavigate).toHaveBeenCalledWith(CURRENCY_ROUTE);
+    const link = screen.getByRole('link');
+    expect(link).toHaveAttribute('href', CURRENCY_ROUTE);
   });
 });

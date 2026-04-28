@@ -61,6 +61,16 @@ export const UI_DIR_RE = new RegExp(
 );
 
 /**
+ * Regular expression to match UI component source files, excluding test files,
+ * stories, container files, type declarations, mocks, and spec files.
+ * Used with `UI_DIR_RE` to scope thread-loader and React Compiler to UI components.
+ */
+export const UI_COMPONENT_RE = new RegExp(
+  `^(?!.*(?:\\.(?:test|spec|stories|container)\\.|__mocks__${slash}|\\.d\\.[jt]s$)).*\\.(?:m?[jt]s|[jt]sx)$`,
+  'u',
+);
+
+/**
  * No Operation. A function that does nothing and returns nothing.
  *
  * @returns `undefined`

@@ -6,7 +6,7 @@ import NetworkSwitchAlertModal from '../page-objects/pages/dialog/network-switch
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
 import SwitchNetworkConfirmation from '../page-objects/pages/confirmations/switch-network-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 
 describe('Switch Ethereum Chain for two dapps with pending confirmation in the old network', function () {
   it('show alerts on permission network if user does not have permission on new network', async function () {
@@ -36,7 +36,7 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -116,7 +116,7 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();

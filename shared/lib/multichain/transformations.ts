@@ -47,7 +47,7 @@ export function parseValueTransfers(
     }
 
     const { amount, decimal, symbol, from, to, contractAddress } = transfer;
-    const tokenAddress = contractAddress?.toLowerCase() ?? NATIVE_TOKEN_ADDRESS;
+    const tokenAddress = contractAddress?.toLowerCase() || NATIVE_TOKEN_ADDRESS;
 
     const token = {
       chainId: hexChainId,
@@ -175,6 +175,7 @@ export function normalizeTransaction(
 }
 
 const INCLUDE_TOKEN_TRANSFERS = false;
+const INCLUDE_NATIVE_TRANSFERS = false;
 const EXCLUDED_TRANSACTION_TYPES = ['SPAM_TOKEN_TRANSFER'];
 
 // Transform and filter raw API response
@@ -231,6 +232,18 @@ export function selectTransactions({
 
         // Enrich with amounts and raw API classification
         const amounts = parseValueTransfers(addr, raw);
+
+        // Filter out incoming native coin transfers (address poisoning defence).
+        // Same logic as the ERC-20 token-transfer block above: hide transfers
+        // where the account is the recipient but not the initiator.
+        if (
+          !INCLUDE_NATIVE_TRANSFERS &&
+          rawFrom !== addr &&
+          amounts.to?.token.address === NATIVE_TOKEN_ADDRESS &&
+          !amounts.from
+        ) {
+          return result;
+        }
 
         const transactionProtocol =
           raw.transactionProtocol ||

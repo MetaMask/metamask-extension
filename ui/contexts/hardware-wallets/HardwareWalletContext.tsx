@@ -7,6 +7,7 @@ import React, {
   useRef,
   type ReactNode,
 } from 'react';
+import { resetHardwareWalletRecoveryInlineCtaViewCount } from '../../../shared/lib/hardware-wallet-recovery-metrics';
 import { ConnectionState } from './connectionState';
 import { useHardwareWalletStateManager } from './HardwareWalletStateManager';
 import { useDeviceEventHandlers } from './HardwareWalletEventHandlers';
@@ -38,6 +39,7 @@ export type HardwareWalletActionsContextType = {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   clearError: () => void;
+  setConnectionReady: () => void;
   checkHardwareWalletPermission: (
     walletType: HardwareWalletType,
   ) => Promise<HardwareConnectionPermissionState>;
@@ -63,6 +65,7 @@ export type HardwareWalletContextType = {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   clearError: () => void;
+  setConnectionReady: () => void;
   checkHardwareWalletPermission: (
     walletType: HardwareWalletType,
   ) => Promise<HardwareConnectionPermissionState>;
@@ -197,10 +200,16 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       handleDisconnect,
     });
 
+  const setConnectionReady = useCallback(() => {
+    resetHardwareWalletRecoveryInlineCtaViewCount();
+    updateConnectionState(ConnectionState.ready());
+  }, [updateConnectionState]);
+
   const stableActionsRef = useRef({
     connect,
     disconnect,
     clearError,
+    setConnectionReady,
     checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
     requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
     ensureDeviceReady,
@@ -211,6 +220,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     connect,
     disconnect,
     clearError,
+    setConnectionReady,
     checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
     requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
     ensureDeviceReady,
@@ -242,6 +252,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   const resetHardwareWalletConnection = useCallback(() => {
+    resetHardwareWalletRecoveryInlineCtaViewCount();
     if (refs.adapterRef.current) {
       refs.adapterRef.current.destroy();
       refs.adapterRef.current = null;
@@ -301,6 +312,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       connect: stableActionsRef.current.connect,
       disconnect: stableActionsRef.current.disconnect,
       clearError: stableActionsRef.current.clearError,
+      setConnectionReady: stableActionsRef.current.setConnectionReady,
       checkHardwareWalletPermission:
         stableActionsRef.current.checkHardwareWalletPermission,
       requestHardwareWalletPermission:
@@ -348,6 +360,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       connect: stableActionsRef.current.connect,
       disconnect: stableActionsRef.current.disconnect,
       clearError: stableActionsRef.current.clearError,
+      setConnectionReady: stableActionsRef.current.setConnectionReady,
       checkHardwareWalletPermission:
         stableActionsRef.current.checkHardwareWalletPermission,
       requestHardwareWalletPermission:

@@ -10,7 +10,7 @@ import {
   calcGasTotal,
   getSwapsTokensReceivedFromTxMeta,
 } from '../../../../shared/lib/transactions-controller-utils';
-import { hexWEIToDecETH } from '../../../../shared/modules/conversion.utils';
+import { hexWEIToDecETH } from '../../../../shared/lib/conversion.utils';
 
 export async function handleSwapPostTransactionMetricHandler(
   {
