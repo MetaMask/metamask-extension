@@ -6,6 +6,12 @@ import {
 } from '@metamask/bridge-controller';
 
 import {
+  BannerAlert,
+  IconName,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
+import {
   getBridgeQuotes,
   getHardwareWalletName,
 } from '../../../../ducks/bridge/selectors';
@@ -19,12 +25,6 @@ import { useDismissableAlerts } from '../../hooks/useDismissableBanners';
 import { useBridgeAlerts } from '../../hooks/useBridgeAlerts';
 import { type BridgeAlert } from '../types';
 import { BridgeAlertModal } from './bridge-alert-modal';
-import {
-  BannerAlert,
-  IconName,
-  Text,
-  TextVariant,
-} from '@metamask/design-system-react';
 
 const LocalBannerAlert = ({
   alert,
