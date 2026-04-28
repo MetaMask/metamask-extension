@@ -301,6 +301,7 @@ jobs:
 
   # Pushes benchmark results to extension_benchmark_stats (performance_data.json) for
   # historical comparison in PR comments. Runs on main/release branch pushes only.
+  # Skip on fork repos — only store stats on the canonical repository.
   store-benchmark-stats:
     name: store-benchmark-stats (main/release only)
     continue-on-error: true
@@ -312,7 +313,7 @@ jobs:
         !cancelled() &&
         github.event_name == 'push' &&
         (github.ref_name == 'main' || startsWith(github.ref, 'refs/heads/release/')) &&
-        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+        !github.event.repository.fork
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 10

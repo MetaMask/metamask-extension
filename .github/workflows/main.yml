@@ -29,9 +29,6 @@ env:
   # For a `pull_request` event, the branch is `github.head_ref``.
   # For a `push` event, the branch is `github.ref_name`.
   BRANCH: ${{ github.head_ref || github.ref_name }}
-  # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
-  # For a `push` event, the fork is `github.event.repository.fork`.
-  IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
   # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
   # For a `push` event, the head commit hash is `github.sha`.
   HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -408,12 +405,16 @@ jobs:
     name: SonarCloud
     needs:
       - run-tests
+    # Run SonarCloud on same-repo PRs and pushes to main on the canonical repo.
     if: >-
       ${{
         !cancelled() &&
-        (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main')) &&
         needs.run-tests.result == 'success' &&
-        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+        !github.event.repository.fork &&
+        (
+          (github.event_name == 'push' && github.ref_name == 'main') ||
+          (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+        )
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -464,7 +465,8 @@ jobs:
         run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
 
       - name: Record bundle size at commit
-        if: ${{ env.BRANCH == 'main' && env.IS_FORK == 'false'}}
+        # Skip on fork repos — only record stats on the canonical repository.
+        if: ${{ env.BRANCH == 'main' && !github.event.repository.fork }}
         run: ./.github/scripts/bundle-stats-commit.sh
 
       - name: Upload 'bundle-size' to S3
@@ -615,10 +617,21 @@ jobs:
 
   trigger-regression-validation:
     name: Trigger Regression Validation
-    # Only run for release branches, not forks.
+    # Guard: three conditions must all be true.
+    #  1. Release branch — only release/* branches need regression validation.
+    #  2. Not a fork repo — fork repos don't have the release-ci environment
+    #     or its METAMASK_REGRESSION_TRIGGER_TEST secret.
+    #  3. Not a cross-repo PR — GitHub withholds environment secrets from PRs
+    #     whose head branch lives in a different repository, so the job would
+    #     fail trying to read the dispatch token.
     # Build reuse is banned on release/* branches (in get-requirements.yml),
     # so build-dist-browserify always runs here — no !cancelled() needed.
-    if: ${{ (startsWith(github.head_ref || github.ref_name, 'release/') && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)) }}
+    if: >-
+      ${{
+        startsWith(github.head_ref || github.ref_name, 'release/')
+        && !github.event.repository.fork
+        && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+      }}
     needs:
       - get-requirements
       - build-dist-webpack
