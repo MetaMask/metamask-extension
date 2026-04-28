@@ -228,6 +228,14 @@ async function withFixtures(options, testSuite) {
           localNodes.push(localNode);
           break;
 
+        case 'bitcoin':
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
+          const { BitcoinNode } = require('./seeder/bitcoin/node');
+          localNode = new BitcoinNode();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
+          break;
+
         case 'none':
           break;
 
@@ -349,12 +357,16 @@ async function withFixtures(options, testSuite) {
       getPrivacyReport,
       getNetworkReport,
       clearNetworkReport,
-    } = await mockingSetupFunction(mockServer, testSpecificMock, {
-      chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
-      ethConversionInUsd,
-      monConversionInUsd,
-      unifiedEvmAccountsApiBalances,
-    });
+    } = await mockingSetupFunction(
+      mockServer,
+      (server) => testSpecificMock(server, { localNodes }),
+      {
+        chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
+        ethConversionInUsd,
+        monConversionInUsd,
+        unifiedEvmAccountsApiBalances,
+      },
+    );
 
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
