@@ -17,9 +17,22 @@ yarn build          # production build
 Then load the unpacked extension in Chrome:
 - `chrome://extensions` → Enable Developer Mode → Load unpacked → point at `dist/chrome`
 
-### 2. Open the test page
+### 2. Serve the test page locally
 
-Open `poc/state-log-export.html` directly in Chrome (File → Open, or drag into browser tab).
+From the repository root, start a simple local web server:
+
+```bash
+cd poc
+python3 -m http.server 5500
+```
+
+Then open:
+
+```text
+http://127.0.0.1:5500/state-log-export.html
+```
+
+Do not open the page with `file://`. The RPC-only flow uses the injected provider, and local file pages resolve to a `null` origin.
 
 ### 3. Click "Download State Logs"
 

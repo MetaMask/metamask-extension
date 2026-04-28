@@ -171,8 +171,24 @@
 
       let metamaskDetected = false;
 
+      function isSupportedDemoOrigin() {
+        return window.location.protocol === 'http:' || window.location.protocol === 'https:';
+      }
+
       // Detect MetaMask via window.ethereum
       function detectMetaMask() {
+        if (!isSupportedDemoOrigin()) {
+          metamaskDetected = false;
+          badge.className = 'detection-badge not-found';
+          badgeText.textContent = 'Serve this page over http://localhost:5500 or http://127.0.0.1:5500';
+          exportBtn.disabled = true;
+          setStatus(
+            'error',
+            'The RPC-only demo does not work from file:// pages. Start a local web server in the poc directory and open this page over http://127.0.0.1:5500 or http://localhost:5500.',
+          );
+          return;
+        }
+
         const detected = typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask;
         metamaskDetected = detected;
         if (detected) {

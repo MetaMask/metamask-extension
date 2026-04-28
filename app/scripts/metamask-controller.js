@@ -6438,8 +6438,42 @@ export default class MetamaskController extends EventEmitter {
       requestData: {},
     });
 
-    const state = this.getState();
-    return JSON.stringify(state, null, 2);
+    const { appActiveTab } = this.appStateController.state;
+    const activeTab = appActiveTab
+      ? {
+          id: appActiveTab.id,
+          title: appActiveTab.title,
+          origin: appActiveTab.origin,
+          protocol: appActiveTab.protocol,
+          url: appActiveTab.url,
+        }
+      : null;
+
+    const stateLogs = {
+      invalidCustomNetwork: {
+        state: 'CLOSED',
+        networkName: '',
+      },
+      unconnectedAccount: {
+        state: 'CLOSED',
+      },
+      activeTab,
+      metamask: {
+        ...this.getState(),
+        socialLoginEmail: undefined,
+      },
+      version: this.extension.runtime.getManifest().version,
+      browser: globalThis.navigator?.userAgent ?? '',
+    };
+
+    const { logs = {} } = this.loggingController.state;
+    stateLogs.logs = Object.values(logs).sort((a, b) => {
+      return a.timestamp - b.timestamp;
+    });
+
+    stateLogs.platform = await this.extension.runtime.getPlatformInfo();
+
+    return JSON.stringify(stateLogs, null, 2);
   };
 
   handleWatchAssetRequest = async ({

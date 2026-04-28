@@ -74,6 +74,7 @@ describe('PermissionController specifications', () => {
     it('defines the unrestricted methods', () => {
       expect(Array.isArray(unrestrictedMethods)).toBe(true);
       expect(Object.isFrozen(unrestrictedMethods)).toBe(true);
+      expect(unrestrictedMethods).toContain('metamask_getStateLogs');
     });
   });
 });
