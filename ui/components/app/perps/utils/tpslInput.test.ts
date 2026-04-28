@@ -8,8 +8,10 @@ describe('tpslInput', () => {
       expect(isSignedDecimalInput('-.')).toBe(true);
       expect(isSignedDecimalInput('+')).toBe(true);
       expect(isSignedDecimalInput('+.')).toBe(true);
+      expect(isSignedDecimalInput('.')).toBe(true);
       expect(isSignedDecimalInput('-12.5')).toBe(true);
       expect(isSignedDecimalInput('+12.5')).toBe(true);
+      expect(isSignedDecimalInput('+15')).toBe(true);
       expect(isSignedDecimalInput('12.5')).toBe(true);
     });
 
