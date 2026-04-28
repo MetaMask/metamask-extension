@@ -30,14 +30,14 @@ export function createActiveABTestAssignment(key: string, value: string): Active
 
 const isActiveABTestAssignment = (
   value: unknown,
-): value is Pick<ActiveABTestAssignment, "key" | "value"> =>
+): value is Pick<ActiveABTestAssignment, 'key' | 'value'> =>
   Boolean(
     value &&
-    typeof value === "object" &&
-    "key" in value &&
-    typeof value.key === "string" &&
-    "value" in value &&
-    typeof value.value === "string",
+    typeof value === 'object' &&
+    'key' in value &&
+    typeof value.key === 'string' &&
+    'value' in value &&
+    typeof value.value === 'string',
   );
 
 /**
