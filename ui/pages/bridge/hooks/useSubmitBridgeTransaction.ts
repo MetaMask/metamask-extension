@@ -20,6 +20,7 @@ import {
   getFromAccount,
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
+  getToToken,
   getWarningLabels,
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
@@ -79,6 +80,7 @@ export default function useSubmitBridgeTransaction() {
     shallowEqual,
   );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
+  const toToken = useSelector(getToToken);
   const enableMissingNetwork = useEnableMissingNetwork();
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
@@ -131,6 +133,7 @@ export default function useSubmitBridgeTransaction() {
           submitBridgeIntent({
             quoteResponse,
             accountAddress: fromAccount.address,
+            tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
           }),
         );
       } else {
@@ -146,6 +149,7 @@ export default function useSubmitBridgeTransaction() {
               recommendedQuote,
               fromTokenBalanceInUsd,
             ),
+            toToken?.securityData?.type ?? null,
           ),
         );
       }
