@@ -200,4 +200,22 @@ describe('NFTAsset', () => {
 
     expect(getByText('Native SegWit')).toBeInTheDocument();
   });
+
+  it('renders fallback when both image and collection imageUrl are missing', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutImages = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        name: 'Test Collection',
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(<Asset asset={assetWithoutImages} />);
+
+    expect(getByTestId('nft-asset')).toBeInTheDocument();
+    // Verify that the AvatarToken fallback is rendered instead of null
+    const avatarToken = getByTestId('nft-asset').querySelector('.mm-avatar-token');
+    expect(avatarToken).toBeInTheDocument();
+  });
 });
