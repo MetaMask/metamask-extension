@@ -19,11 +19,8 @@ import {
   TRON_RECIPIENT_ADDRESS,
 } from '../tron/mocks/common-tron';
 import { proxyTronBlockchainCalls } from '../tron/mocks/local-tron-node-mocks';
-import { TRON_LOCAL_NODE_URL } from '../../seeder/tron/node';
-
-// Fund the test account with the same SUN value the original mock uses,
-// so the balance display assertion ('6.072 TRX') requires no change.
-const FUND_AMOUNT_SUN = 6_072_392;
+import { TronNode } from '../../seeder/tron/node';
+import { createTronPortfolioNodeOptions } from '../../seeder/tron/profiles';
 
 describe('Send Tron (local blockchain)', function (this: Suite) {
   this.timeout(180_000); // covers Docker startup and the test run
@@ -37,25 +34,35 @@ describe('Send Tron (local blockchain)', function (this: Suite) {
           'anvil',
           {
             type: 'tron',
-            options: {
-              initialBalances: { [TRON_ACCOUNT_ADDRESS]: FUND_AMOUNT_SUN },
-            },
+            options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
           },
         ],
-        testSpecificMock: async (mockServer: Mockttp) => [
-          // ── External service mocks (unchanged from original test) ──────────
-          await mockTronFeatureFlags(mockServer),
-          await mockExchangeRates(mockServer),
-          await mockFiatExchangeRates(mockServer),
-          await mockTrxNativeSpotPrices(mockServer),
-          await mockTronAssets(mockServer),
-          // ── Blockchain calls proxied to local Tron node ───────────────────
-          ...(await proxyTronBlockchainCalls(
-            mockServer,
-            TRON_LOCAL_NODE_URL,
-            TRON_ACCOUNT_ADDRESS,
-          )),
-        ],
+        testSpecificMock: async (
+          mockServer: Mockttp,
+          { localNodes }: { localNodes: unknown[] },
+        ) => {
+          const tronNode = localNodes.find(
+            (node): node is TronNode => node instanceof TronNode,
+          );
+          if (!tronNode) {
+            throw new Error('Tron local node was not started');
+          }
+
+          return [
+            // ── External service mocks (unchanged from original test) ──────────
+            await mockTronFeatureFlags(mockServer),
+            await mockExchangeRates(mockServer),
+            await mockFiatExchangeRates(mockServer),
+            await mockTrxNativeSpotPrices(mockServer),
+            await mockTronAssets(mockServer, tronNode),
+            // ── Blockchain calls proxied to local Tron node ───────────────────
+            ...(await proxyTronBlockchainCalls(
+              mockServer,
+              tronNode,
+              TRON_ACCOUNT_ADDRESS,
+            )),
+          ];
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);

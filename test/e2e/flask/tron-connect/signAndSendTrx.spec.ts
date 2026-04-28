@@ -3,7 +3,7 @@ import { WINDOW_TITLES, DEFAULT_TRON_ADDRESS_2 } from '../../constants';
 import { connectTronTestDapp } from '../../page-objects/flows/tron-dapp.flow';
 import SnapSignTransactionConfirmation from '../../page-objects/pages/confirmations/snap-sign-transaction-confirmation';
 import { DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS } from './testHelpers';
-import { withTronAccountSnap, TRANSACTION_HASH_MOCK } from './common-tron';
+import { withTronAccountSnap } from './common-tron';
 
 describe('Tron Connect - Sign/Send TRX - e2e tests', function () {
   it('Signs a TRX transaction', async function () {
@@ -73,7 +73,8 @@ describe('Tron Connect - Sign/Send TRX - e2e tests', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TronTestDApp);
 
-        await testDappTron.findTRXTransactionHash(TRANSACTION_HASH_MOCK);
+        const transactionHash = await testDappTron.getTRXTransactionHash();
+        expect(transactionHash).toMatch(/^[0-9a-f]{64}$/u);
       },
     );
   });
