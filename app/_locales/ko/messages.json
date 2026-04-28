@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "사용자 지정 네트워크 추가"
   },
-  "addAHardwareWallet": {
-    "message": "하드웨어 지갑 추가"
-  },
   "addANetwork": {
     "message": "네트워크 추가"
   },

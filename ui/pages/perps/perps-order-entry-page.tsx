@@ -258,9 +258,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]:
-        account && Number.parseFloat(account.availableBalance) > 0
-          ? 'yes'
-          : 'no',
+        account !== null && Number.parseFloat(account.availableBalance) > 0,
     },
     resetKey: decodedSymbol,
   });
@@ -1277,7 +1275,7 @@ const PerpsOrderEntryPage: React.FC = () => {
             </Text>
             {displayChange && (
               <Text
-                variant={TextVariant.BodyXs}
+                variant={TextVariant.BodySm}
                 color={getChangeColor(displayChange)}
                 data-testid="perps-order-entry-change"
               >
@@ -1334,9 +1332,9 @@ const PerpsOrderEntryPage: React.FC = () => {
         paddingLeft={4}
         paddingRight={4}
         paddingBottom={4}
-        paddingTop={2}
+        paddingTop={3}
         flexDirection={BoxFlexDirection.Column}
-        gap={2}
+        gap={4}
         className="shrink-0"
       >
         {orderCalculations && (

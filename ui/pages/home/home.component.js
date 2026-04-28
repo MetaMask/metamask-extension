@@ -126,10 +126,6 @@ export default class Home extends PureComponent {
     editedNetwork: PropTypes.object,
     isSigningQRHardwareTransaction: PropTypes.bool,
     isHardwareWalletErrorModalVisible: PropTypes.bool,
-    newNftAddedMessage: PropTypes.string,
-    setNewNftAddedMessage: PropTypes.func.isRequired,
-    removeNftMessage: PropTypes.string,
-    setRemoveNftMessage: PropTypes.func.isRequired,
     attemptCloseNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     newTokensImportedError: PropTypes.string,
@@ -372,12 +368,8 @@ export default class Home extends PureComponent {
       disableWeb3ShimUsageAlert,
       infuraBlocked,
       showOutdatedBrowserWarning,
-      newNftAddedMessage,
-      setNewNftAddedMessage,
       newNetworkAddedName,
       editedNetwork,
-      removeNftMessage,
-      setRemoveNftMessage,
       newTokensImported,
       newTokensImportedError,
       setNewTokensImported,
@@ -388,8 +380,6 @@ export default class Home extends PureComponent {
     } = this.props;
 
     const onAutoHide = () => {
-      setNewNftAddedMessage('');
-      setRemoveNftMessage('');
       setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
       setNewTokensImportedError('');
       clearEditedNetwork(); // dispatches setEditedNetwork(), setting editedNetwork to undefined, which clears the editedNetwork state
@@ -411,75 +401,6 @@ export default class Home extends PureComponent {
       );
 
     const items = [
-      newNftAddedMessage === 'success' ? (
-        <ActionableMessage
-          key="new-nft-added"
-          type="success"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('newNftAddedMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
-          }
-        />
-      ) : null,
-      removeNftMessage === 'success' ? (
-        <ActionableMessage
-          key="remove-nft"
-          type="success"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('removeNftMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
-          }
-        />
-      ) : null,
-      removeNftMessage === 'error' ? (
-        <ActionableMessage
-          key="remove-nft-error"
-          type="danger"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('removeNftErrorMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
-          }
-        />
-      ) : null,
       newNetworkAddedName ? (
         <ActionableMessage
           key="new-network-added"
