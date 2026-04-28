@@ -10,6 +10,11 @@ import {
   Token,
   TokensControllerState,
 } from '@metamask/assets-controllers';
+import {
+  EthAccountType,
+  BtcAccountType,
+  SolAccountType,
+} from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Browser } from 'webextension-polyfill';
 import { deriveStateFromMetadata } from '@metamask/base-controller';
@@ -46,6 +51,10 @@ import * as ManifestFlags from '../../../shared/lib/manifestFlags';
 import * as Utils from '../lib/util';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { flushPromises } from '../../../test/lib/timer-helpers';
+import {
+  createMockInternalAccount,
+  createMockInternalAccounts,
+} from '../../../test/data/mock-accounts';
 import {
   MetaMetricsController,
   AllowedActions,
@@ -1892,6 +1901,35 @@ describe('MetaMetricsController', function () {
     };
   }
 
+  const buildKeyringAccount = (id: string, keyringType: string) => ({
+    id,
+    metadata: { keyring: { type: keyringType } },
+  });
+
+  const buildMnemonicEntropyAccount = ({
+    id,
+    entropyId,
+    groupIndex,
+    derivationPath,
+    keyringType = KeyringType.hdKeyTree,
+  }: {
+    id: string;
+    entropyId: string;
+    groupIndex: number;
+    derivationPath?: string;
+    keyringType?: string;
+  }) => ({
+    ...buildKeyringAccount(id, keyringType),
+    options: {
+      entropy: {
+        type: 'mnemonic' as const,
+        id: entropyId,
+        groupIndex,
+        ...(derivationPath ? { derivationPath } : {}),
+      },
+    },
+  });
+
   describe('_buildUserTraitsObject', function () {
     beforeEach(() => {
       jest.spyOn(Utils, 'getPlatform').mockReturnValue(PLATFORM_CHROME);
@@ -2391,81 +2429,73 @@ describe('MetaMetricsController', function () {
     });
 
     it('should count BIP44 multichain accounts as one account group per entropy+index pair', async function () {
-      // Simulate 2 account groups from 1 SRP, each with EVM + BTC + SOL addresses.
       const srp1 = 'entropy-source-id-1';
-      const mockAccounts = {
-        'evm-0': {
-          id: 'evm-0',
-          metadata: { keyring: { type: KeyringType.hdKeyTree } },
+      function mockBip44Account(
+        id: string,
+        type: InternalAccount['type'],
+        keyringType: InternalAccount['metadata']['keyring']['type'],
+        groupIndex: number,
+      ) {
+        return createMockInternalAccount({
+          id,
+          type,
+          metadata: { keyring: { type: keyringType } },
           options: {
             entropy: {
               type: 'mnemonic',
               id: srp1,
-              groupIndex: 0,
-              derivationPath: "m/44'/60'/0'/0/0",
+              groupIndex,
+              derivationPath: '',
             },
           },
-        } as unknown as InternalAccount,
-        'btc-0': {
-          id: 'btc-0',
-          metadata: { keyring: { type: KeyringType.snap } },
-          options: {
-            entropy: {
-              type: 'mnemonic',
-              id: srp1,
-              groupIndex: 0,
-              derivationPath: "m/44'/0'/0'/0/0",
-            },
-          },
-        } as unknown as InternalAccount,
-        'sol-0': {
-          id: 'sol-0',
-          metadata: { keyring: { type: KeyringType.snap } },
-          options: {
-            entropy: {
-              type: 'mnemonic',
-              id: srp1,
-              groupIndex: 0,
-              derivationPath: "m/44'/501'/0'/0'",
-            },
-          },
-        } as unknown as InternalAccount,
-        'evm-1': {
-          id: 'evm-1',
-          metadata: { keyring: { type: KeyringType.hdKeyTree } },
-          options: {
-            entropy: {
-              type: 'mnemonic',
-              id: srp1,
-              groupIndex: 1,
-              derivationPath: "m/44'/60'/1'/0/0",
-            },
-          },
-        } as unknown as InternalAccount,
-        'btc-1': {
-          id: 'btc-1',
-          metadata: { keyring: { type: KeyringType.snap } },
-          options: {
-            entropy: {
-              type: 'mnemonic',
-              id: srp1,
-              groupIndex: 1,
-              derivationPath: "m/44'/0'/1'/0/0",
-            },
-          },
-        } as unknown as InternalAccount,
-        'sol-1': {
-          id: 'sol-1',
-          metadata: { keyring: { type: KeyringType.snap } },
-          options: {
-            entropy: {
-              type: 'mnemonic',
-              id: srp1,
-              groupIndex: 1,
-              derivationPath: "m/44'/501'/1'/0'",
-            },
-          },
-        } as unknown as InternalAccount,
+        });
+      }
+
+      // 2 account groups from 1 SRP, each with EVM + BTC + SOL addresses.
+      const evm0 = mockBip44Account(
+        'evm-0',
+        EthAccountType.Eoa,
+        KeyringType.hdKeyTree,
+        0,
+      );
+      const btc0 = mockBip44Account(
+        'btc-0',
+        BtcAccountType.P2wpkh,
+        KeyringType.snap,
+        0,
+      );
+      const sol0 = mockBip44Account(
+        'sol-0',
+        SolAccountType.DataAccount,
+        KeyringType.snap,
+        0,
+      );
+      const evm1 = mockBip44Account(
+        'evm-1',
+        EthAccountType.Eoa,
+        KeyringType.hdKeyTree,
+        1,
+      );
+      const btc1 = mockBip44Account(
+        'btc-1',
+        BtcAccountType.P2wpkh,
+        KeyringType.snap,
+        1,
+      );
+      const sol1 = mockBip44Account(
+        'sol-1',
+        SolAccountType.DataAccount,
+        KeyringType.snap,
+        1,
+      );
+
+      const mockAccounts: Record<string, InternalAccount> = {
+        [evm0.id]: evm0,
+        [btc0.id]: btc0,
+        [sol0.id]: sol0,
+        [evm1.id]: evm1,
+        [btc1.id]: btc1,
+        [sol1.id]: sol1,
       };
       await withController(({ controller }) => {
         const traits = controller._buildUserTraitsObject(
@@ -2483,55 +2513,21 @@ describe('MetaMetricsController', function () {
     });
 
     it('should correctly count imported and hardware wallet account types', async function () {
-      const mockAccounts = {
-        'hd-acc': {
+      const mockAccounts = createMockInternalAccounts([
+        buildMnemonicEntropyAccount({
           id: 'hd-acc',
-          metadata: { keyring: { type: KeyringType.hdKeyTree } },
-          options: {
-            entropy: {
-              type: 'mnemonic',
-              id: 'srp1',
-              groupIndex: 0,
-              derivationPath: "m/44'/60'/0'/0/0",
-            },
-          },
-        } as unknown as InternalAccount,
-        'imported-acc': {
-          id: 'imported-acc',
-          metadata: { keyring: { type: KeyringType.imported } },
-          options: {},
-        } as unknown as InternalAccount,
-        'snap-acc': {
-          id: 'snap-acc',
-          metadata: { keyring: { type: KeyringType.snap } },
-          options: {},
-        } as unknown as InternalAccount,
-        'ledger-acc': {
-          id: 'ledger-acc',
-          metadata: { keyring: { type: KeyringType.ledger } },
-          options: {},
-        } as unknown as InternalAccount,
-        'trezor-acc': {
-          id: 'trezor-acc',
-          metadata: { keyring: { type: KeyringType.trezor } },
-          options: {},
-        } as unknown as InternalAccount,
-        'lattice-acc': {
-          id: 'lattice-acc',
-          metadata: { keyring: { type: KeyringType.lattice } },
-          options: {},
-        } as unknown as InternalAccount,
-        'qr-acc': {
-          id: 'qr-acc',
-          metadata: { keyring: { type: KeyringType.qr } },
-          options: {},
-        } as unknown as InternalAccount,
-        'onekey-acc': {
-          id: 'onekey-acc',
-          metadata: { keyring: { type: KeyringType.oneKey } },
-          options: {},
-        } as unknown as InternalAccount,
-      };
+          entropyId: 'srp1',
+          groupIndex: 0,
+          derivationPath: "m/44'/60'/0'/0/0",
+        }),
+        buildKeyringAccount('imported-acc', KeyringType.imported),
+        buildKeyringAccount('snap-acc', KeyringType.snap),
+        buildKeyringAccount('ledger-acc', KeyringType.ledger),
+        buildKeyringAccount('trezor-acc', KeyringType.trezor),
+        buildKeyringAccount('lattice-acc', KeyringType.lattice),
+        buildKeyringAccount('qr-acc', KeyringType.qr),
+        buildKeyringAccount('onekey-acc', KeyringType.oneKey),
+      ]);
       await withController(({ controller }) => {
         const traits = controller._buildUserTraitsObject(
           buildStateWithAccounts(mockAccounts),
@@ -2726,29 +2722,25 @@ describe('MetaMetricsController', function () {
     it('counts a single SRP with multiple account groups as one HD entropy', async function () {
       await withController(({ controller }) => {
         const traits = controller._buildUserTraitsObject(
-          buildStateWithAccounts({
-            'evm-0': {
-              id: 'evm-0',
-              metadata: { keyring: { type: KeyringType.hdKeyTree } },
-              options: {
-                entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 0 },
-              },
-            } as unknown as InternalAccount,
-            'evm-1': {
-              id: 'evm-1',
-              metadata: { keyring: { type: KeyringType.hdKeyTree } },
-              options: {
-                entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 1 },
-              },
-            } as unknown as InternalAccount,
-            'evm-2': {
-              id: 'evm-2',
-              metadata: { keyring: { type: KeyringType.hdKeyTree } },
-              options: {
-                entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 2 },
-              },
-            } as unknown as InternalAccount,
-          }),
+          buildStateWithAccounts(
+            createMockInternalAccounts([
+              buildMnemonicEntropyAccount({
+                id: 'evm-0',
+                entropyId: 'srp1',
+                groupIndex: 0,
+              }),
+              buildMnemonicEntropyAccount({
+                id: 'evm-1',
+                entropyId: 'srp1',
+                groupIndex: 1,
+              }),
+              buildMnemonicEntropyAccount({
+                id: 'evm-2',
+                entropyId: 'srp1',
+                groupIndex: 2,
+              }),
+            ]),
+          ),
         );
         expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(1);
         expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(3);
@@ -2759,29 +2751,25 @@ describe('MetaMetricsController', function () {
     it('counts multiple distinct SRPs as separate HD entropies', async function () {
       await withController(({ controller }) => {
         const traits = controller._buildUserTraitsObject(
-          buildStateWithAccounts({
-            'evm-srp1': {
-              id: 'evm-srp1',
-              metadata: { keyring: { type: KeyringType.hdKeyTree } },
-              options: {
-                entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 0 },
-              },
-            } as unknown as InternalAccount,
-            'evm-srp2': {
-              id: 'evm-srp2',
-              metadata: { keyring: { type: KeyringType.hdKeyTree } },
-              options: {
-                entropy: { type: 'mnemonic', id: 'srp2', groupIndex: 0 },
-              },
-            } as unknown as InternalAccount,
-            'evm-srp3': {
-              id: 'evm-srp3',
-              metadata: { keyring: { type: KeyringType.hdKeyTree } },
-              options: {
-                entropy: { type: 'mnemonic', id: 'srp3', groupIndex: 0 },
-              },
-            } as unknown as InternalAccount,
-          }),
+          buildStateWithAccounts(
+            createMockInternalAccounts([
+              buildMnemonicEntropyAccount({
+                id: 'evm-srp1',
+                entropyId: 'srp1',
+                groupIndex: 0,
+              }),
+              buildMnemonicEntropyAccount({
+                id: 'evm-srp2',
+                entropyId: 'srp2',
+                groupIndex: 0,
+              }),
+              buildMnemonicEntropyAccount({
+                id: 'evm-srp3',
+                entropyId: 'srp3',
+                groupIndex: 0,
+              }),
+            ]),
+          ),
         );
         expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(3);
         expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(3);
@@ -2791,38 +2779,16 @@ describe('MetaMetricsController', function () {
     it('does not count hardware wallets toward HD entropies', async function () {
       await withController(({ controller }) => {
         const traits = controller._buildUserTraitsObject(
-          buildStateWithAccounts({
-            'ledger-1': {
-              id: 'ledger-1',
-              metadata: { keyring: { type: KeyringType.ledger } },
-              options: {},
-            } as unknown as InternalAccount,
-            'ledger-2': {
-              id: 'ledger-2',
-              metadata: { keyring: { type: KeyringType.ledger } },
-              options: {},
-            } as unknown as InternalAccount,
-            'trezor-1': {
-              id: 'trezor-1',
-              metadata: { keyring: { type: KeyringType.trezor } },
-              options: {},
-            } as unknown as InternalAccount,
-            'lattice-1': {
-              id: 'lattice-1',
-              metadata: { keyring: { type: KeyringType.lattice } },
-              options: {},
-            } as unknown as InternalAccount,
-            'qr-1': {
-              id: 'qr-1',
-              metadata: { keyring: { type: KeyringType.qr } },
-              options: {},
-            } as unknown as InternalAccount,
-            'onekey-1': {
-              id: 'onekey-1',
-              metadata: { keyring: { type: KeyringType.oneKey } },
-              options: {},
-            } as unknown as InternalAccount,
-          }),
+          buildStateWithAccounts(
+            createMockInternalAccounts([
+              buildKeyringAccount('ledger-1', KeyringType.ledger),
+              buildKeyringAccount('ledger-2', KeyringType.ledger),
+              buildKeyringAccount('trezor-1', KeyringType.trezor),
+              buildKeyringAccount('lattice-1', KeyringType.lattice),
+              buildKeyringAccount('qr-1', KeyringType.qr),
+              buildKeyringAccount('onekey-1', KeyringType.oneKey),
+            ]),
+          ),
         );
         expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(0);
         expect(traits?.[MetaMetricsUserTrait.NumberOfLedgerAccounts]).toBe(2);
@@ -2839,18 +2805,12 @@ describe('MetaMetricsController', function () {
     it('does not count imported accounts toward HD entropies or hardware wallets', async function () {
       await withController(({ controller }) => {
         const traits = controller._buildUserTraitsObject(
-          buildStateWithAccounts({
-            'imported-1': {
-              id: 'imported-1',
-              metadata: { keyring: { type: KeyringType.imported } },
-              options: {},
-            } as unknown as InternalAccount,
-            'imported-2': {
-              id: 'imported-2',
-              metadata: { keyring: { type: KeyringType.imported } },
-              options: {},
-            } as unknown as InternalAccount,
-          }),
+          buildStateWithAccounts(
+            createMockInternalAccounts([
+              buildKeyringAccount('imported-1', KeyringType.imported),
+              buildKeyringAccount('imported-2', KeyringType.imported),
+            ]),
+          ),
         );
         expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(0);
         expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(0);
@@ -2861,43 +2821,17 @@ describe('MetaMetricsController', function () {
     it('computes number_of_hardware_wallets as the sum of all hardware wallet types', async function () {
       await withController(({ controller }) => {
         const traits = controller._buildUserTraitsObject(
-          buildStateWithAccounts({
-            'ledger-1': {
-              id: 'ledger-1',
-              metadata: { keyring: { type: KeyringType.ledger } },
-              options: {},
-            } as unknown as InternalAccount,
-            'ledger-2': {
-              id: 'ledger-2',
-              metadata: { keyring: { type: KeyringType.ledger } },
-              options: {},
-            } as unknown as InternalAccount,
-            'trezor-1': {
-              id: 'trezor-1',
-              metadata: { keyring: { type: KeyringType.trezor } },
-              options: {},
-            } as unknown as InternalAccount,
-            'lattice-1': {
-              id: 'lattice-1',
-              metadata: { keyring: { type: KeyringType.lattice } },
-              options: {},
-            } as unknown as InternalAccount,
-            'lattice-2': {
-              id: 'lattice-2',
-              metadata: { keyring: { type: KeyringType.lattice } },
-              options: {},
-            } as unknown as InternalAccount,
-            'qr-1': {
-              id: 'qr-1',
-              metadata: { keyring: { type: KeyringType.qr } },
-              options: {},
-            } as unknown as InternalAccount,
-            'onekey-1': {
-              id: 'onekey-1',
-              metadata: { keyring: { type: KeyringType.oneKey } },
-              options: {},
-            } as unknown as InternalAccount,
-          }),
+          buildStateWithAccounts(
+            createMockInternalAccounts([
+              buildKeyringAccount('ledger-1', KeyringType.ledger),
+              buildKeyringAccount('ledger-2', KeyringType.ledger),
+              buildKeyringAccount('trezor-1', KeyringType.trezor),
+              buildKeyringAccount('lattice-1', KeyringType.lattice),
+              buildKeyringAccount('lattice-2', KeyringType.lattice),
+              buildKeyringAccount('qr-1', KeyringType.qr),
+              buildKeyringAccount('onekey-1', KeyringType.oneKey),
+            ]),
+          ),
         );
         // 1 Ledger device + 1 Trezor + 1 Lattice + 1 QR (includes OneKey) = 4 distinct hardware wallets.
         expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(4);
@@ -2908,13 +2842,11 @@ describe('MetaMetricsController', function () {
       await withController(({ controller }) => {
         expect(() =>
           controller._buildUserTraitsObject(
-            buildStateWithAccounts({
-              'unknown-acc': {
-                id: 'unknown-acc',
-                metadata: { keyring: { type: 'SomeUnknownKeyring' } },
-                options: {},
-              } as unknown as InternalAccount,
-            }),
+            buildStateWithAccounts(
+              createMockInternalAccounts([
+                buildKeyringAccount('unknown-acc', 'SomeUnknownKeyring'),
+              ]),
+            ),
           ),
         ).not.toThrow();
       });
@@ -2924,13 +2856,17 @@ describe('MetaMetricsController', function () {
       await withController(({ controller }) => {
         expect(() =>
           controller._buildUserTraitsObject(
-            buildStateWithAccounts({
-              'no-metadata-acc': {
-                id: 'no-metadata-acc',
-                metadata: undefined,
-                options: {},
-              } as unknown as InternalAccount,
-            }),
+            buildStateWithAccounts(
+              createMockInternalAccounts([
+                {
+                  ...buildKeyringAccount(
+                    'no-metadata-acc',
+                    KeyringType.hdKeyTree,
+                  ),
+                  metadata: undefined,
+                },
+              ]),
+            ),
           ),
         ).not.toThrow();
       });
@@ -2939,38 +2875,24 @@ describe('MetaMetricsController', function () {
     it('derives total wallets from hd_entropies + hardware_wallets + imported_accounts', async function () {
       await withController(({ controller }) => {
         const traits = controller._buildUserTraitsObject(
-          buildStateWithAccounts({
-            'evm-0': {
-              id: 'evm-0',
-              metadata: { keyring: { type: KeyringType.hdKeyTree } },
-              options: {
-                entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 0 },
-              },
-            } as unknown as InternalAccount,
-            'evm-1': {
-              id: 'evm-1',
-              metadata: { keyring: { type: KeyringType.hdKeyTree } },
-              options: {
-                entropy: { type: 'mnemonic', id: 'srp2', groupIndex: 0 },
-              },
-            } as unknown as InternalAccount,
-            'ledger-1': {
-              id: 'ledger-1',
-              metadata: { keyring: { type: KeyringType.ledger } },
-              options: {},
-            } as unknown as InternalAccount,
-            'imported-1': {
-              id: 'imported-1',
-              metadata: { keyring: { type: KeyringType.imported } },
-              options: {},
-            } as unknown as InternalAccount,
-            // Snap accounts are excluded from total wallet count.
-            'snap-1': {
-              id: 'snap-1',
-              metadata: { keyring: { type: KeyringType.snap } },
-              options: {},
-            } as unknown as InternalAccount,
-          }),
+          buildStateWithAccounts(
+            createMockInternalAccounts([
+              buildMnemonicEntropyAccount({
+                id: 'evm-0',
+                entropyId: 'srp1',
+                groupIndex: 0,
+              }),
+              buildMnemonicEntropyAccount({
+                id: 'evm-1',
+                entropyId: 'srp2',
+                groupIndex: 0,
+              }),
+              buildKeyringAccount('ledger-1', KeyringType.ledger),
+              buildKeyringAccount('imported-1', KeyringType.imported),
+              // Snap accounts are excluded from total wallet count.
+              buildKeyringAccount('snap-1', KeyringType.snap),
+            ]),
+          ),
         );
         const hdEntropies =
           traits?.[MetaMetricsUserTrait.NumberOfHDEntropies] ?? 0;
