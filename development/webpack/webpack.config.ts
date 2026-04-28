@@ -207,20 +207,10 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
 ];
-// SelfInjectPlugin previously wrapped `inpage.js` in a content-script trick
-// that creates a `<script>` element with the inpage source as `textContent`
-// and appends it to the page DOM. Firefox enforces the page's CSP on that
-// element, so dApps with strict `script-src` (no `'unsafe-inline'`) silently
-// broke for MetaMask Firefox users.
-//
-// Our MV2 build is Firefox-only in practice (every consumer of an `mv2-*`
-// build artifact in CI is `e2e-firefox.yml` or the Firefox MV2 release jobs
-// in `publish-release-from-release-head.yml`; the `chrome` MV2 dist that
-// `index.js` happens to produce is never loaded). Firefox 128+ supports
-// `content_scripts[].world: "MAIN"` declaratively in MV2, so we now ship
-// `inpage.js` as raw code and load it into the page main world via the
-// declarative content_scripts entry in `app/manifest/v2/_base.json` — same
-// shape as our MV3 manifest. No more inline injection, no CSP race.
+// `inpage.js` is loaded into the page main world via the declarative
+// `content_scripts[].world: "MAIN"` entry in `app/manifest/v2/_base.json`
+// (Firefox 128+) and `app/manifest/v3/_base.json` (Chrome). See
+// https://github.com/MetaMask/metamask-extension/pull/42222 for context.
 if (args.lavamoat) {
   const {
     lavamoatPlugin,
