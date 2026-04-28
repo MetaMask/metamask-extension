@@ -25,10 +25,10 @@ import {
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
   getIsPasskeyFeatureAvailable,
+  getIsPasskeyRegistered,
 } from '../../selectors';
 import {
   getCompletedOnboarding,
-  getIsPasskeyRegistered,
   getIsWalletResetInProgress,
   getPasskeyAutoUnlockSuppressed,
 } from '../../ducks/metamask/metamask';

@@ -163,7 +163,6 @@ export default function CreatePassword({
     isWalletResetInProgress,
     isPasskeyFeatureAvailable,
     isPasskeyRegistered,
-    isSocialLoginFlow,
   ]);
 
   useEffect(() => {

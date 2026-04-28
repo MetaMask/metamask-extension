@@ -1,4 +1,7 @@
-import { getIsPasskeyFeatureAvailable } from './selectors';
+import {
+  getIsPasskeyFeatureAvailable,
+  getIsPasskeyRegistered,
+} from './selectors';
 
 jest.mock('../../shared/lib/environment', () => ({
   getIsPasskeyFeatureEnabled: jest.fn(),
@@ -73,5 +76,27 @@ describe('getIsPasskeyFeatureAvailable', () => {
     getIsSocialLoginFlow.mockReturnValue(true);
 
     expect(getIsPasskeyFeatureAvailable(mockState)).toBe(false);
+  });
+});
+
+describe('getIsPasskeyRegistered', () => {
+  it('returns true when a passkey record exists', () => {
+    const state = {
+      metamask: {
+        passkeyRecord: { credentialId: 'credential-id' },
+      },
+    };
+
+    expect(getIsPasskeyRegistered(state)).toBe(true);
+  });
+
+  it('returns false when no passkey record exists', () => {
+    const state = {
+      metamask: {
+        passkeyRecord: null,
+      },
+    };
+
+    expect(getIsPasskeyRegistered(state)).toBe(false);
   });
 });

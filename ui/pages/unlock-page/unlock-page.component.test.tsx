@@ -72,6 +72,7 @@ describe('UnlockPage component (passkey UI)', () => {
           authenticatorData: 'AA',
           signature: 'AQ',
         },
+        clientExtensionResults: {},
       });
   });
 
