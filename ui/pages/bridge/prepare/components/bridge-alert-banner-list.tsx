@@ -9,16 +9,7 @@ import {
   getBridgeQuotes,
   getHardwareWalletName,
 } from '../../../../ducks/bridge/selectors';
-import {
-  BannerAlert,
-  IconName,
-  Text,
-} from '../../../../components/component-library';
-import {
-  BackgroundColor,
-  TextAlign,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
+import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Column } from '../../layout';
 import { getCurrentKeyring } from '../../../../selectors';
@@ -28,6 +19,55 @@ import { useDismissableAlerts } from '../../hooks/useDismissableBanners';
 import { useBridgeAlerts } from '../../hooks/useBridgeAlerts';
 import { type BridgeAlert } from '../types';
 import { BridgeAlertModal } from './bridge-alert-modal';
+import {
+  BannerAlert,
+  IconName,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
+
+const LocalBannerAlert = ({
+  alert,
+  onClose,
+}: {
+  alert: BridgeAlert;
+  onClose?: () => void;
+}) => {
+  const bannerProps = alert.bannerAlertProps;
+  const closeButtonProps = alert.openModalOnClick
+    ? { iconProps: { name: IconName.ArrowRight } }
+    : undefined;
+
+  if (
+    bannerProps &&
+    'actionButtonLabel' in bannerProps &&
+    'actionButtonOnClick' in bannerProps
+  ) {
+    return (
+      <BannerAlert
+        data-testid={`bridge-${alert.id}`}
+        onClose={onClose}
+        closeButtonProps={closeButtonProps}
+        title={alert.title}
+        description={alert.description}
+        severity={bannerProps.severity}
+        actionButtonLabel={bannerProps.actionButtonLabel}
+        actionButtonOnClick={bannerProps.actionButtonOnClick}
+      />
+    );
+  }
+
+  return (
+    <BannerAlert
+      data-testid={`bridge-${alert.id}`}
+      onClose={onClose}
+      closeButtonProps={closeButtonProps}
+      title={alert.title}
+      description={alert.description}
+      severity={bannerProps?.severity}
+    />
+  );
+};
 
 export const BridgeAlertBannerList = ({
   quoteParams,
@@ -68,20 +108,17 @@ export const BridgeAlertBannerList = ({
           isTxSubmittable &&
           hardwareWalletName &&
           activeQuote && (
-            <BannerAlert
-              title={t('hardwareWalletSubmissionWarningTitle')}
-              textAlign={TextAlign.Left}
-            >
+            <BannerAlert title={t('hardwareWalletSubmissionWarningTitle')}>
               <ul style={{ listStyle: 'disc' }}>
                 <li>
-                  <Text variant={TextVariant.bodyMd}>
+                  <Text variant={TextVariant.BodyMd}>
                     {t('hardwareWalletSubmissionWarningStep1', [
                       hardwareWalletName,
                     ])}
                   </Text>
                 </li>
                 <li>
-                  <Text variant={TextVariant.bodyMd}>
+                  <Text variant={TextVariant.BodyMd}>
                     {t('hardwareWalletSubmissionWarningStep2', [
                       hardwareWalletName,
                     ])}
@@ -103,19 +140,10 @@ export const BridgeAlertBannerList = ({
               }
 
               return (
-                <BannerAlert
+                <LocalBannerAlert
                   key={`${alert.id}-${index}`}
-                  textAlign={TextAlign.Left}
-                  data-testid={`bridge-${alert.id}`}
+                  alert={alert}
                   onClose={onClose}
-                  closeButtonProps={
-                    alert.openModalOnClick
-                      ? { iconName: IconName.ArrowRight }
-                      : undefined
-                  }
-                  title={alert.title}
-                  description={alert.description}
-                  {...alert.bannerAlertProps}
                 />
               );
             })}

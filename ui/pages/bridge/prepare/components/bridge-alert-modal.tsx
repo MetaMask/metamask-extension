@@ -147,7 +147,14 @@ export const BridgeAlertModal = ({
           </Column>
         </ModalHeader>
         <Column gap={3} paddingInline={4} paddingBottom={4}>
-          <Text variant={TextVariant.BodySm}>{modalDescription}</Text>
+          {activeAlert.modalProps?.alertModalDescriptionType === 'banner' ? (
+            <BannerAlert
+              severity={BannerAlertSeverity.Danger}
+              description={modalDescription}
+            />
+          ) : (
+            <Text variant={TextVariant.BodySm}>{modalDescription}</Text>
+          )}
           <Column>
             {modalInfoList?.map((item) => (
               <Row
