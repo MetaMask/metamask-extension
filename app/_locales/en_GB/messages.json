@@ -1089,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "Lowest cost"
   },
+  "bridgeMalicious": {
+    "message": "Malicious"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Malicious token"
+  },
   "bridgeMarketClosedAction": {
     "message": "Market closed"
   },
@@ -1109,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "No MM fee"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "No price information"
   },
   "bridgePoints": {
     "message": "Est. points",
@@ -1137,6 +1146,9 @@
   "bridgePoints_tooltip_content_2": {
     "message": "Keep in mind this value is an estimate and will be finalized once the transaction is complete. Points can take up to 1 hour to be confirmed in your Rewards balance.",
     "description": "Second part of tooltip content explaining how points are calculated"
+  },
+  "bridgePriceDataUnavailableError": {
+    "message": "We couldn't get price information for this token. Make sure the amount received is what you expect before continuing."
   },
   "bridgePriceImpact": {
     "message": "Price impact"
@@ -1205,6 +1217,102 @@
   "bridgeReceiveLoading": {
     "message": "Receiving on destination chain"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Suspicious airdrop"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Concentrated supply"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Suspicious behavior"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Inflated trader count"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Fake volume"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Heavy bot activity"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Undisclosed supply"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "High buy fee"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "High sell fee"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "High transfer fee"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Honeypot risk"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Impersonator"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Impersonates a sensitive asset"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Likely impersonator"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Possible impersonator"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Inappropriate content"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Artificial volume"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Low locked liquidity"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "Creator has low reputation"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Known malicious"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Suspicious metadata"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Possible price manipulation"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Rugpull risk"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Sanctioned creator"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Resembles malicious contract"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Bot activity at launch"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Spam text"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Suspicious code"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Token backdoor"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Unsellable token"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Unstable price"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Wash trading"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Select a destination account"
   },
@@ -1261,8 +1369,26 @@
     "message": "Swapping $1 for $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
+  "bridgeSuspicious": {
+    "message": "Suspicious"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Suspicious token"
+  },
   "bridgeTo": {
     "message": "Bridge to"
+  },
+  "bridgeTokenIsMaliciousBanner": {
+    "message": "$1 is a malicious token."
+  },
+  "bridgeTokenIsMaliciousModalDescription": {
+    "message": "$1 is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
+  },
+  "bridgeTokenIsSuspiciousBanner": {
+    "message": "$1 is a suspicious token."
+  },
+  "bridgeTokenIsSuspiciousModalDescription": {
+    "message": "$1 is flagged as suspicious. Take a look at the risks before you continue."
   },
   "bridgeTokenNotFound": {
     "message": "No tokens match \"$1\""
