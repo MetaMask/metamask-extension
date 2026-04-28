@@ -24,50 +24,18 @@ jobs:
         # Preset names are defined in test/e2e/benchmarks/utils/constants.ts
         # and must stay in sync with benchmark-command (startupPowerUserHome uses extra flags).
         #
-        # Startup + Interaction benchmarks run on all 4 browser/buildType combinations.
-        # User journey benchmarks run on Chrome + Browserify (every trigger)
-        # and Chrome + Webpack (main/release push only, gated by mainOnly flag).
+        # Startup + interaction + user journeys: chrome/firefox × webpack × preset (test build: build-test-webpack / build-test-mv2-webpack).
         browser: [chrome, firefox]
-        buildType: [browserify, webpack]
+        buildType: [webpack]
         pageType:
-          [startupStandardHome, startupPowerUserHome, interactionUserActions]
-        include:
-          - browser: chrome
-            buildType: browserify
-            pageType: userJourneyOnboardingImport
-          - browser: chrome
-            buildType: browserify
-            pageType: userJourneyOnboardingNew
-          - browser: chrome
-            buildType: browserify
-            pageType: userJourneyAssets
-          - browser: chrome
-            buildType: browserify
-            pageType: userJourneyTransactions
-          - browser: chrome
-            buildType: browserify
-            pageType: userJourneyAccountManagement
-          # Webpack user journeys — compare webpack vs browserify on main/release only
-          - browser: chrome
-            buildType: webpack
-            pageType: userJourneyOnboardingImport
-            mainOnly: true
-          - browser: chrome
-            buildType: webpack
-            pageType: userJourneyOnboardingNew
-            mainOnly: true
-          - browser: chrome
-            buildType: webpack
-            pageType: userJourneyAssets
-            mainOnly: true
-          - browser: chrome
-            buildType: webpack
-            pageType: userJourneyTransactions
-            mainOnly: true
-          - browser: chrome
-            buildType: webpack
-            pageType: userJourneyAccountManagement
-            mainOnly: true
+          - startupStandardHome
+          - startupPowerUserHome
+          - interactionUserActions
+          - userJourneyOnboardingImport
+          - userJourneyOnboardingNew
+          - userJourneyAssets
+          - userJourneyTransactions
+          - userJourneyAccountManagement
     runs-on: ubuntu-latest
     timeout-minutes: 30
     container:
@@ -84,17 +52,16 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
       GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
-      BENCHMARK_GATED: ${{ !matrix.mainOnly || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))) }}
+      # main or release/* only — for S3 / AWS CLI (same ref semantics as Sentry).
+      MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
     steps:
       - name: Checkout and setup environment
-        if: ${{ env.BENCHMARK_GATED == 'true' }}
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
       - name: Restore .metamask folder
-        if: ${{ env.BENCHMARK_GATED == 'true' }}
         id: restore-metamask
         uses: actions/cache/restore@v5
         with:
@@ -103,12 +70,11 @@ jobs:
           fail-on-cache-miss: false
 
       - name: Install anvil if cache missed
-        if: ${{ env.BENCHMARK_GATED == 'true' && steps.restore-metamask.outputs.cache-hit != 'true' }}
+        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true' }}
         run: yarn mm-foundryup
         shell: bash
 
       - name: Download build artifact
-        if: ${{ env.BENCHMARK_GATED == 'true' }}
         uses: actions/download-artifact@v7
         with:
           name: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-${{ matrix.buildType }}
@@ -116,17 +82,21 @@ jobs:
           run-id: ${{ inputs.builds-from-run }}
 
       - name: Configure Xvfb
-        if: ${{ env.BENCHMARK_GATED == 'true' }}
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
         shell: bash
 
-      - name: Install AWS CLI (needed in the container)
-        if: ${{ env.BENCHMARK_GATED == 'true' }}
+      - name: Install AWS CLI (needed for S3 upload on main/release only)
+        if: >-
+          ${{
+            env.MAIN_OR_RELEASE == 'true' &&
+            vars.AWS_REGION != '' &&
+            vars.AWS_IAM_ROLE != '' &&
+            vars.AWS_S3_BUCKET != ''
+          }}
         run: sudo apt-get update && sudo apt-get install python3-pip && sudo pip install awscli --break-system-packages
         shell: bash
 
       - name: Run the benchmark
-        if: ${{ env.BENCHMARK_GATED == 'true' }}
         run: >-
           ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
         shell: bash
@@ -134,8 +104,8 @@ jobs:
       - name: Send benchmark results to Sentry (main/release only)
         if: >-
           ${{
-            env.SENTRY_DSN_PERFORMANCE &&
-            (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))
+            vars.SENTRY_DSN_PERFORMANCE &&
+            env.MAIN_OR_RELEASE == 'true'
           }}
         run: |
           export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
@@ -151,7 +121,7 @@ jobs:
       - name: Upload benchmark to S3
         if: >-
           ${{
-            env.BENCHMARK_GATED == 'true' &&
+            env.MAIN_OR_RELEASE == 'true' &&
             vars.AWS_REGION != '' &&
             vars.AWS_IAM_ROLE != '' &&
             vars.AWS_S3_BUCKET != ''
@@ -164,7 +134,7 @@ jobs:
           path: test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
 
       - name: Upload benchmark result as GitHub artifact
-        if: ${{ always() && env.BENCHMARK_GATED == 'true' }}
+        if: ${{ always() }}
         uses: actions/upload-artifact@v6
         with:
           name: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
@@ -174,7 +144,7 @@ jobs:
 
   benchmarks-page-load:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
-    name: chrome-browserify-pageLoadBenchmark
+    name: chrome-webpack-pageLoadBenchmark
     continue-on-error: true
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -188,7 +158,8 @@ jobs:
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       BENCHMARK_BROWSER_LOADS: '10'
       BENCHMARK_PAGE_LOADS: '10'
-      DAPP_BENCHMARK_JSON: benchmark-chrome-browserify-pageLoadBenchmark.json
+      DAPP_BENCHMARK_JSON: benchmark-chrome-webpack-pageLoadBenchmark.json
+      MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -196,10 +167,10 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Download artifact 'build-test-browserify'
+      - name: Download artifact 'build-test-webpack'
         uses: actions/download-artifact@v7
         with:
-          name: build-test-browserify
+          name: build-test-webpack
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ inputs.builds-from-run }}
 
@@ -212,15 +183,15 @@ jobs:
       - name: Send benchmark results to Sentry (main/release only)
         if: >-
           ${{
-            env.SENTRY_DSN_PERFORMANCE &&
-            (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))
+            vars.SENTRY_DSN_PERFORMANCE &&
+            env.MAIN_OR_RELEASE == 'true'
           }}
         run: |
           export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
           yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
             --results "test-artifacts/benchmarks/${{ env.DAPP_BENCHMARK_JSON }}" \
             --browser "chrome" \
-            --buildType "browserify"
+            --buildType "webpack"
         shell: bash
         env:
           GH_HEAD_REF: ${{ github.head_ref }}
@@ -229,6 +200,7 @@ jobs:
       - name: Upload benchmark to S3
         if: >-
           ${{
+            env.MAIN_OR_RELEASE == 'true' &&
             vars.AWS_REGION != '' &&
             vars.AWS_IAM_ROLE != '' &&
             vars.AWS_S3_BUCKET != ''

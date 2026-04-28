@@ -8,14 +8,17 @@ import React, {
 } from 'react';
 import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
+  Icon,
+  IconName,
+  IconColor,
+  IconSize,
+} from '@metamask/design-system-react';
+import {
   Text,
   Box,
   Button,
   ButtonVariant,
   ButtonSize,
-  IconName,
-  Icon,
-  IconSize,
   Modal,
   ModalBody,
   ModalContent,
@@ -31,7 +34,6 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-  IconColor,
   BlockSize,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -56,7 +58,99 @@ import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../../../contexts/hardware-wallets';
-import { buildErrorContent } from './error-content-builder';
+import {
+  getChromiumExtensionCameraSiteSettingsUrl,
+  getMozExtensionOriginForDisplay,
+  isFirefoxBrowser,
+} from '../../../../../shared/lib/browser-runtime.utils';
+import {
+  CameraAccessErrorContent,
+  CameraAccessErrorContentVariant,
+} from '../../camera-access-error-content';
+import {
+  buildErrorContent,
+  HardwareWalletErrorContentVariant,
+} from './error-content-builder';
+
+/**
+ * Checks whether the error code represents a QR camera permission flow error.
+ *
+ * @param code - The hardware wallet error code.
+ * @returns `true` when the error is camera-denied or camera-prompt-dismissed.
+ */
+function isQrCameraFlowErrorCode(code: ErrorCode | undefined): boolean {
+  return (
+    code === ErrorCode.PermissionCameraDenied ||
+    code === ErrorCode.PermissionCameraPromptDismissed
+  );
+}
+
+/**
+ * Determines whether the "blocked" (rather than "needed") camera-access
+ * variant should be shown, accounting for Firefox's prompt-stays-prompt quirk.
+ *
+ * @param code - The hardware wallet error code.
+ * @returns `true` when the blocked variant is appropriate.
+ */
+function shouldShowQrCameraBlockedVariant(
+  code: ErrorCode | undefined,
+): boolean {
+  return (
+    code === ErrorCode.PermissionCameraDenied ||
+    (isFirefoxBrowser() && code === ErrorCode.PermissionCameraPromptDismissed)
+  );
+}
+
+/**
+ * Renders the appropriate `CameraAccessErrorContent` variant for QR camera
+ * permission errors (blocked vs. needed).
+ *
+ * @param params - Render parameters.
+ * @param params.errorCode - The hardware wallet error code.
+ * @param params.onRetry - Callback invoked when the user clicks Continue.
+ * @param params.isLoading - Whether the retry action is in progress.
+ * @returns The camera-access error content element.
+ */
+function renderQrCameraFlowContent({
+  errorCode,
+  onRetry,
+  isLoading,
+}: {
+  errorCode: ErrorCode | undefined;
+  onRetry: () => Promise<void>;
+  isLoading: boolean;
+}): React.JSX.Element {
+  const handleOpenSettings = () => {
+    globalThis.platform.openTab({
+      url: getChromiumExtensionCameraSiteSettingsUrl(),
+    });
+  };
+
+  if (shouldShowQrCameraBlockedVariant(errorCode)) {
+    return (
+      <CameraAccessErrorContent
+        variant={CameraAccessErrorContentVariant.Blocked}
+        isFirefox={isFirefoxBrowser()}
+        mozExtensionDisplay={getMozExtensionOriginForDisplay()}
+        onOpenSettings={handleOpenSettings}
+        onContinue={onRetry}
+        continueLoading={isLoading}
+        rootPaddingHorizontal={0}
+        rootPaddingBottom={0}
+      />
+    );
+  }
+
+  return (
+    <CameraAccessErrorContent
+      variant={CameraAccessErrorContentVariant.Needed}
+      onContinue={onRetry}
+      continueLoading={isLoading}
+      rootPaddingHorizontal={0}
+      rootPaddingBottom={0}
+    />
+  );
+}
 
 type HardwareWalletErrorModalProps = {
   isOpen?: boolean;
@@ -325,32 +419,39 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       return null;
     }
 
-    const errorContent = buildErrorContent(
-      error,
-      displayWalletType,
-      t as (key: string, ...args: unknown[]) => string,
-    );
+    const isQrCameraFlow = isQrCameraFlowErrorCode(error.code);
 
-    const headerContent = errorContent.icon ? (
-      <Icon
-        name={errorContent.icon}
-        color={errorContent.iconColor}
-        size={IconSize.Xl}
-      />
-    ) : (
-      <Text
-        variant={TextVariant.headingMd}
-        textAlign={TextAlign.Center}
-        color={TextColor.textDefault}
-      >
-        {errorContent.title}
-      </Text>
-    );
+    const standardErrorContent = isQrCameraFlow
+      ? null
+      : buildErrorContent(
+          error,
+          displayWalletType,
+          t as (key: string, ...args: unknown[]) => string,
+        );
+
+    const headerContent =
+      standardErrorContent &&
+      (standardErrorContent.icon ? (
+        <Icon
+          name={standardErrorContent.icon}
+          color={standardErrorContent.iconColor}
+          size={IconSize.Xl}
+        />
+      ) : (
+        <Text
+          variant={TextVariant.headingMd}
+          textAlign={TextAlign.Center}
+          color={TextColor.textDefault}
+        >
+          {standardErrorContent.title}
+        </Text>
+      ));
 
     const retryButtonText =
       error.code === ErrorCode.DeviceDisconnected
         ? t('hardwareWalletErrorContinueButton')
         : t('hardwareWalletErrorReconnectButton');
+
     const retryButtonContent = isLoading ? (
       <Icon
         name={IconName.Loading}
@@ -378,7 +479,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
               >
                 <Icon
                   name={IconName.Confirmation}
-                  color={IconColor.successDefault}
+                  color={IconColor.SuccessDefault}
                   size={IconSize.Xl}
                 />
               </Box>
@@ -414,13 +515,15 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
         <ModalOverlay />
         <ModalContent>
           <ModalHeader onClose={handleClose}>
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-            >
-              {headerContent}
-            </Box>
+            {headerContent && (
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+              >
+                {headerContent}
+              </Box>
+            )}
           </ModalHeader>
 
           <ModalBody>
@@ -430,94 +533,107 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
               alignItems={AlignItems.center}
               gap={4}
             >
-              {errorContent.icon && (
-                <Text
-                  variant={TextVariant.headingMd}
-                  textAlign={TextAlign.Center}
-                  color={TextColor.textDefault}
-                >
-                  {errorContent.title}
-                </Text>
-              )}
-              {errorContent.variant === 'description' && (
-                <Text
-                  variant={TextVariant.bodyMd}
-                  textAlign={TextAlign.Center}
-                  color={TextColor.textDefault}
-                >
-                  {errorContent.description}
-                </Text>
-              )}
-
-              {/* Recovery Instructions */}
-              {errorContent.variant === 'recovery' && (
-                <Box
-                  width={BlockSize.Full}
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                  gap={2}
-                >
-                  <Text
-                    variant={TextVariant.bodyMdMedium}
-                    color={TextColor.textDefault}
-                  >
-                    {t('hardwareWalletErrorRecoveryTitle')}
-                  </Text>
-                  {errorContent.recoveryInstructions.map(
-                    (instruction, index) => (
-                      <Box
-                        key={index}
-                        display={Display.Flex}
-                        flexDirection={FlexDirection.Row}
-                        gap={2}
-                        paddingLeft={4}
-                        paddingRight={4}
-                        alignItems={AlignItems.flexStart}
-                      >
-                        <Box as="li" key={index}>
-                          <Text
-                            variant={TextVariant.bodyMd}
-                            color={TextColor.textDefault}
-                          >
-                            {instruction}
-                          </Text>
-                        </Box>
-                      </Box>
-                    ),
+              {isQrCameraFlow &&
+                renderQrCameraFlowContent({
+                  errorCode: error.code,
+                  onRetry: handleRetry,
+                  isLoading,
+                })}
+              {!isQrCameraFlow && standardErrorContent ? (
+                <>
+                  {standardErrorContent.icon && (
+                    <Text
+                      variant={TextVariant.headingMd}
+                      textAlign={TextAlign.Center}
+                      color={TextColor.textDefault}
+                    >
+                      {standardErrorContent.title}
+                    </Text>
                   )}
-                </Box>
-              )}
+                  {standardErrorContent.variant ===
+                    HardwareWalletErrorContentVariant.Description && (
+                    <Text
+                      variant={TextVariant.bodyMd}
+                      textAlign={TextAlign.Center}
+                      color={TextColor.textDefault}
+                    >
+                      {standardErrorContent.description}
+                    </Text>
+                  )}
+
+                  {standardErrorContent.variant ===
+                    HardwareWalletErrorContentVariant.Recovery && (
+                    <Box
+                      width={BlockSize.Full}
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      gap={2}
+                    >
+                      <Text
+                        variant={TextVariant.bodyMdMedium}
+                        color={TextColor.textDefault}
+                      >
+                        {t('hardwareWalletErrorRecoveryTitle')}
+                      </Text>
+                      {standardErrorContent.recoveryInstructions.map(
+                        (instruction, index) => (
+                          <Box
+                            key={index}
+                            display={Display.Flex}
+                            flexDirection={FlexDirection.Row}
+                            gap={2}
+                            paddingLeft={4}
+                            paddingRight={4}
+                            alignItems={AlignItems.flexStart}
+                          >
+                            <Box as="li" key={index}>
+                              <Text
+                                variant={TextVariant.bodyMd}
+                                color={TextColor.textDefault}
+                              >
+                                {instruction}
+                              </Text>
+                            </Box>
+                          </Box>
+                        ),
+                      )}
+                    </Box>
+                  )}
+                </>
+              ) : null}
             </Box>
           </ModalBody>
 
-          <ModalFooter>
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              gap={2}
-              width={BlockSize.Full}
-            >
-              {isRetryableHardwareWalletError(error) ? (
-                <Button
-                  variant={ButtonVariant.Primary}
-                  size={ButtonSize.Lg}
-                  block
-                  onClick={handleRetry}
-                >
-                  {retryButtonContent}
-                </Button>
-              ) : (
-                <Button
-                  variant={ButtonVariant.Primary}
-                  size={ButtonSize.Lg}
-                  block
-                  onClick={handleClose}
-                >
-                  {t('confirm')}
-                </Button>
-              )}
-            </Box>
-          </ModalFooter>
+          {!isQrCameraFlow && (
+            <ModalFooter>
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Row}
+                gap={2}
+                width={BlockSize.Full}
+              >
+                {isRetryableHardwareWalletError(error) ? (
+                  <Button
+                    variant={ButtonVariant.Primary}
+                    size={ButtonSize.Lg}
+                    block
+                    onClick={handleRetry}
+                  >
+                    {retryButtonContent}
+                  </Button>
+                ) : (
+                  <Button
+                    variant={ButtonVariant.Primary}
+                    size={ButtonSize.Lg}
+                    block
+                    onClick={handleClose}
+                  >
+                    {t('confirm')}
+                  </Button>
+                )}
+              </Box>
+            </ModalFooter>
+          )}
         </ModalContent>
       </Modal>
     );

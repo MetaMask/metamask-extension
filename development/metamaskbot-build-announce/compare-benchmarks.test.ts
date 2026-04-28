@@ -66,7 +66,7 @@ describe('compare-benchmarks', () => {
     it('sets source from artifact filename', () => {
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
+          name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
           data: {
             onboardingImportWallet: makeBenchmarkResults({
               p75: { importWalletToSocialScreen: 1500 },
@@ -78,7 +78,7 @@ describe('compare-benchmarks', () => {
       ];
 
       const result = runComparison(benchmarks, {});
-      expect(result.comparisons[0].source).toBe('chrome-browserify');
+      expect(result.comparisons[0].source).toBe('chrome-webpack');
     });
 
     it('fails when p75 exceeds fail threshold', () => {
@@ -181,7 +181,7 @@ describe('compare-benchmarks', () => {
         // Effective fail = 4700 × 2.0 × 1.2 = 11280; p75=12000 exceeds it.
         const benchmarks = [
           {
-            name: 'benchmark-chrome-browserify-startupPowerUserHome',
+            name: 'benchmark-chrome-webpack-startupPowerUserHome',
             data: {
               startupPowerUserHome: makeBenchmarkResults({
                 persona: 'powerUser',
@@ -215,7 +215,7 @@ describe('compare-benchmarks', () => {
         // mean=3000, stdDev=300 → CV=10 — below the 25% floor, no adjustment.
         const benchmarks = [
           {
-            name: 'benchmark-chrome-browserify-startupPowerUserHome',
+            name: 'benchmark-chrome-webpack-startupPowerUserHome',
             data: {
               startupPowerUserHome: makeBenchmarkResults({
                 persona: 'powerUser',
@@ -256,7 +256,7 @@ describe('compare-benchmarks', () => {
     it('skips entries from failed benchmark runs (missing p75/p95)', () => {
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-startupStandardHome',
+          name: 'benchmark-chrome-webpack-startupStandardHome',
           data: {
             startupStandardHome: { error: 'Browser crashed' } as never,
           },
@@ -365,7 +365,7 @@ describe('printReport', () => {
       comparisons: [
         makeComparison({
           benchmarkName: 'loadNewAccount',
-          source: 'chrome-browserify',
+          source: 'chrome-webpack',
           absoluteFailed: false,
         }),
       ],
@@ -375,7 +375,7 @@ describe('printReport', () => {
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
     expect(allCalls).toContain('1 benchmarks within thresholds');
     expect(allCalls).toContain('loadNewAccount');
-    expect(allCalls).toContain('chrome-browserify');
+    expect(allCalls).toContain('chrome-webpack');
   });
 
   it('shows failing comparison with source label and FAIL prefix', () => {
@@ -414,7 +414,7 @@ describe('printReport', () => {
       comparisons: [
         makeComparison({
           benchmarkName: 'standardHome',
-          source: 'chrome-browserify',
+          source: 'chrome-webpack',
           relativeMetrics: [
             {
               metric: 'uiStartup',
@@ -434,7 +434,7 @@ describe('printReport', () => {
 
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
     expect(allCalls).toContain('1 benchmarks within thresholds');
-    expect(allCalls).toContain('standardHome: chrome-browserify');
+    expect(allCalls).toContain('standardHome: chrome-webpack');
     expect(allCalls).not.toContain('[Show logs]');
   });
 
@@ -449,7 +449,7 @@ describe('printReport', () => {
       comparisons: [
         makeComparison({
           benchmarkName: 'standardHome',
-          source: 'chrome-browserify',
+          source: 'chrome-webpack',
           absoluteFailed: true,
           absoluteViolations: [
             {
@@ -466,7 +466,7 @@ describe('printReport', () => {
     });
 
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
-    expect(allCalls).toContain('FAIL  standardHome [chrome-browserify]');
+    expect(allCalls).toContain('FAIL  standardHome [chrome-webpack]');
     expect(allCalls).toContain('uiStartup');
     expect(allCalls).toContain(SEV.Regression.icon);
   });
@@ -507,11 +507,11 @@ describe('printReport', () => {
       comparisons: [
         makeComparison({
           benchmarkName: 'startupStandardHome',
-          source: 'chrome-browserify',
+          source: 'chrome-webpack',
         }),
         makeComparison({
           benchmarkName: 'startupStandardHome',
-          source: 'firefox-browserify',
+          source: 'firefox-webpack',
         }),
       ],
       anyFailed: false,
@@ -520,7 +520,7 @@ describe('printReport', () => {
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
     expect(allCalls).toContain('2 benchmarks within thresholds');
     expect(allCalls).toContain(
-      'startupStandardHome: chrome-browserify, firefox-browserify',
+      'startupStandardHome: chrome-webpack, firefox-webpack',
     );
   });
 });

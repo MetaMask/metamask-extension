@@ -390,8 +390,6 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
-      - build-test-browserify
-      - build-test-mv2-browserify
       - build-test-webpack
       - build-test-mv2-webpack
     with:

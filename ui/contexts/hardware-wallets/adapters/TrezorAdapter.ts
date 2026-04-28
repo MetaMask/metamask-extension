@@ -142,7 +142,7 @@ export class TrezorAdapter implements HardwareWalletAdapter {
     try {
       const payload = await this.#fetchDeviceFeatures();
       this.#validateDeviceState(payload);
-      this.#validateCapabilities(payload.capabilities);
+      this.#validateCapabilities(payload.capabilities, payload.model);
       this.#validateModelOneMessageSize(payload.model, options);
       return true;
     } catch (error) {
@@ -169,7 +169,8 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * @param payload - The device feature payload to validate
    */
   #validateDeviceState(payload: TrezorFeaturesPayload): void {
-    if (!payload.unlocked) {
+    // NOTE: Model one is always locked, it will only become unlocked when performing a transaction.
+    if (!payload.unlocked && !isTrezorModelOne(payload.model)) {
       throw createHardwareWalletError(
         ErrorCode.AuthenticationDeviceLocked,
         HardwareWalletType.Trezor,
@@ -198,15 +199,25 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * Validate that the device reports all required capabilities.
    *
    * @param capabilities - Raw capabilities list from device features
+   * @param model - The device model identifier
    */
-  #validateCapabilities(capabilities: unknown): void {
+  #validateCapabilities(capabilities: unknown, model: string): void {
     const missing = getMissingCapabilities(capabilities);
-    if (missing.length > 0) {
+
+    // Trezor Model One does not support Solana, but it must still support
+    // the other required capabilities.
+    const missingForModel = isTrezorModelOne(model)
+      ? missing.filter((capability) => capability !== 'Capability_Solana')
+      : missing;
+
+    if (missingForModel.length > 0) {
       throw createHardwareWalletError(
         ErrorCode.DeviceMissingCapability,
         HardwareWalletType.Trezor,
-        `Trezor device is missing required capabilities: ${missing.join(', ')}.`,
-        { metadata: { capabilities, missingCapabilities: missing } },
+        `Trezor device is missing required capabilities: ${missingForModel.join(
+          ', ',
+        )}.`,
+        { metadata: { capabilities, missingCapabilities: missingForModel } },
       );
     }
   }
