@@ -29,22 +29,23 @@ const useCurrentConfirmation = (providedConfirmationId?: string) => {
   const oldestPendingApproval = useSelector(firstPendingConfirmationSelector);
   const confirmationId =
     providedConfirmationId ?? paramsConfirmationId ?? oldestPendingApproval?.id;
+  const confirmationIdForSelectors = confirmationId ?? '';
 
   const pendingApproval = useSelector((state) =>
     internalSelectPendingApproval(
       state as ApprovalsMetaMaskState,
-      confirmationId,
+      confirmationIdForSelectors,
     ),
   );
 
   const transactionMetadata = useSelector((state) =>
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getUnapprovedTransaction as any)(state, confirmationId),
+    (getUnapprovedTransaction as any)(state, confirmationIdForSelectors),
   ) as TransactionMeta | undefined;
 
   const signatureMessage = useSelector((state) =>
-    internalSelectUnapprovedMessage(state, confirmationId),
+    internalSelectUnapprovedMessage(state, confirmationIdForSelectors),
   );
 
   const useRedesignedForSignatures = shouldUseRedesignForSignatures({
