@@ -147,7 +147,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   }, [position]);
 
   const liquidationPrice = useMemo(() => {
-    if (!position.liquidationPrice) {
+    if (!position?.liquidationPrice) {
       return null;
     }
     const parsed = Number.parseFloat(
