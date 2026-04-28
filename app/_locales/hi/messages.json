@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "एक कस्टम नेटवर्क जोड़ें"
   },
-  "addAHardwareWallet": {
-    "message": "हार्डवेयर वॉलेट जोड़ें"
-  },
   "addANetwork": {
     "message": "एक नेटवर्क जोड़ें"
   },
@@ -2228,9 +2225,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "द पर्प्स मार्केट पेज"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "द पर्प्स मार्केट लिस्ट पेज"
   },
   "deepLink_thePerpsPage": {
     "message": "पर्प्स पेज"
@@ -5781,7 +5775,8 @@
     "message": "मार्केट्स खोजें"
   },
   "perpsSeeAll": {
-    "message": "सभी को देखें"
+    "message": "सभी को देखें",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "सेवा अस्थायी रूप से अनुपलब्ध है। कृपया बाद में फिर से कोशिश करें।"

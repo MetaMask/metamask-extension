@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Benutzerdefiniertes Netzwerk hinzufügen"
   },
-  "addAHardwareWallet": {
-    "message": "Eine Hardware-Wallet hinzufügen"
-  },
   "addANetwork": {
     "message": "Ein Netzwerk hinzufügen"
   },
@@ -2228,9 +2225,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "die Tätermarktseite"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "die Seite mit der Tätermarktliste"
   },
   "deepLink_thePerpsPage": {
     "message": "die Perps-Seite"
@@ -5781,7 +5775,8 @@
     "message": "Märkte durchsuchen"
   },
   "perpsSeeAll": {
-    "message": "Alle sehen"
+    "message": "Alle sehen",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Service vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut."

@@ -161,6 +161,7 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
   PLATFORM_FIREFOX,
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -5676,6 +5677,44 @@ export default class MetamaskController extends EventEmitter {
       this.accountsController.getSelectedAccount().address;
 
     const globalChainId = this.#getGlobalChainId();
+
+    const matchingSmartTransactionApprovals = Object.values(
+      this.approvalController.state.pendingApprovals ?? {},
+    ).filter((approval) => {
+      if (
+        approval.type !==
+        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
+      ) {
+        return false;
+      }
+
+      const txId = approval.requestState?.txId;
+      if (typeof txId !== 'string') {
+        return false;
+      }
+
+      const transaction = this.txController.state.transactions.find(
+        ({ id }) => id === txId,
+      );
+
+      return (
+        transaction?.chainId === globalChainId &&
+        isEqualCaseInsensitive(transaction.txParams?.from, selectedAddress)
+      );
+    });
+
+    for (const approval of matchingSmartTransactionApprovals) {
+      try {
+        this.approvalController.rejectRequest(
+          approval.id,
+          new Error('Transaction activity reset'),
+        );
+      } catch (error) {
+        if (!(error instanceof ApprovalRequestNotFoundError)) {
+          throw error;
+        }
+      }
+    }
 
     this.txController.wipeTransactions({
       address: selectedAddress,

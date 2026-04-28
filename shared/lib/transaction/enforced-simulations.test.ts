@@ -94,6 +94,7 @@ describe('enforced-simulations', () => {
 
     afterEach(() => {
       delete process.env.ENABLE_ENFORCED_SIMULATIONS;
+      delete process.env.FORCE_ENABLE_SIMULATIONS;
     });
 
     it('returns true when all conditions are met', () => {
@@ -386,6 +387,72 @@ describe('enforced-simulations', () => {
             }),
           ),
         ).toBe(true);
+      });
+    });
+
+    describe('with FORCE_ENABLE_SIMULATIONS', () => {
+      beforeEach(() => {
+        process.env.FORCE_ENABLE_SIMULATIONS = 'true';
+      });
+
+      it('returns true even when recipient is trusted', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            BASE_TRANSACTION_META,
+            buildState(ResultType.Trusted),
+          ),
+        ).toBe(true);
+      });
+
+      it('returns true even when all nested addresses are trusted', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              nestedTransactions: [
+                { to: NESTED_ADDRESS_A as `0x${string}` },
+                { to: NESTED_ADDRESS_B as `0x${string}` },
+              ],
+            },
+            buildStateForAddresses({
+              [TO_ADDRESS]: ResultType.Trusted,
+              [NESTED_ADDRESS_A]: ResultType.Trusted,
+              [NESTED_ADDRESS_B]: ResultType.Trusted,
+            }),
+          ),
+        ).toBe(true);
+      });
+
+      it('still returns false when there are no balance changes', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              simulationData: { tokenBalanceChanges: [] },
+            },
+            buildState(ResultType.Trusted),
+          ),
+        ).toBe(false);
+      });
+
+      it('still returns false when origin is MetaMask internal', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            { ...BASE_TRANSACTION_META, origin: ORIGIN_METAMASK },
+            buildState(ResultType.Trusted),
+          ),
+        ).toBe(false);
+      });
+
+      it('is ignored when value is not the string "true"', () => {
+        process.env.FORCE_ENABLE_SIMULATIONS = '1';
+
+        expect(
+          isEnforcedSimulationsEligible(
+            BASE_TRANSACTION_META,
+            buildState(ResultType.Trusted),
+          ),
+        ).toBe(false);
       });
     });
   });

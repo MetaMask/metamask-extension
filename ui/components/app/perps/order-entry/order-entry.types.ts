@@ -167,6 +167,13 @@ export type AmountInputProps = {
   asset: string;
   /** Current asset price for token conversion */
   currentPrice: number;
+  /**
+   * HyperLiquid size decimals for the asset (from MarketInfo.szDecimals). Used
+   * to cap the token-input display precision so PUMP (szDecimals=0) never shows
+   * fractional token counts and ETH (szDecimals=4) stops at 4 decimals instead
+   * of the previous hard-coded 6.
+   */
+  szDecimals?: number;
   /** Callback when add-funds icon is pressed */
   onAddFunds?: () => void;
 };

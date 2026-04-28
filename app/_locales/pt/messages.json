@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Adicionar uma rede personalizada"
   },
-  "addAHardwareWallet": {
-    "message": "Adicionar uma carteira de hardware"
-  },
   "addANetwork": {
     "message": "Adicionar uma rede"
   },
@@ -2228,9 +2225,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "a página de mercado de perps"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "a página da lista de mercado de perps"
   },
   "deepLink_thePerpsPage": {
     "message": "a página de perps"
@@ -5781,7 +5775,8 @@
     "message": "Pesquisar mercados"
   },
   "perpsSeeAll": {
-    "message": "Ver tudo"
+    "message": "Ver tudo",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Serviço temporariamente indisponível. Tente novamente mais tarde."

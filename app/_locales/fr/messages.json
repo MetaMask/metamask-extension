@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Ajouter un réseau personnalisé"
   },
-  "addAHardwareWallet": {
-    "message": "Ajouter un portefeuille matériel"
-  },
   "addANetwork": {
     "message": "Ajouter un réseau"
   },
@@ -2228,9 +2225,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "la page du marché des contrats à terme perpétuels"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "la liste des actifs pouvant être négociés sur le marché de contrats à terme perpétuels"
   },
   "deepLink_thePerpsPage": {
     "message": "la page des contrats à terme perpétuels"
@@ -5781,7 +5775,8 @@
     "message": "Rechercher des marchés"
   },
   "perpsSeeAll": {
-    "message": "Tout afficher"
+    "message": "Tout afficher",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Le service est temporairement indisponible. Veuillez réessayer plus tard."

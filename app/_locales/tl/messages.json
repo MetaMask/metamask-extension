@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Magdagdag ng custom na network"
   },
-  "addAHardwareWallet": {
-    "message": "Magdagdag ng wallet na hardware"
-  },
   "addANetwork": {
     "message": "Magdagdag ng network"
   },
@@ -2228,9 +2225,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "ang page ng perps market"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "ang listahan ng page ng perps market"
   },
   "deepLink_thePerpsPage": {
     "message": "pahina ng perps"
@@ -5781,7 +5775,8 @@
     "message": "Maghanap ng mga market"
   },
   "perpsSeeAll": {
-    "message": "Tingnan Lahat"
+    "message": "Tingnan Lahat",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Pansamantalang hindi available ang serbisyo. Pakisubukan muli mamaya."

@@ -231,6 +231,27 @@ describe('useTransactionPayMetrics', () => {
     );
   });
 
+  it('includes custom_amount use case and sending value for perpsWithdraw transactions', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: PAY_TOKEN_MOCK,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
+
+    renderHook(() => useTransactionPayMetrics(), {
+      wrapper: createWrapper(TransactionType.perpsWithdraw),
+    });
+
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+      TRANSACTION_ID_MOCK,
+      {
+        properties: expect.objectContaining({
+          mm_pay_use_case: 'custom_amount',
+          simulation_sending_assets_total_value: expect.any(Number),
+        }),
+      },
+    );
+  });
+
   it('does not include custom_amount use case for non-perpsDeposit transactions', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: PAY_TOKEN_MOCK,

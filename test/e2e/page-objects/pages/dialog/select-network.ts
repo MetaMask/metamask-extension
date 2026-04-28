@@ -3,14 +3,13 @@ import { Driver } from '../../../webdriver/driver';
 class SelectNetwork {
   private driver: Driver;
 
-  private readonly addCustomNetworkButton = {
-    text: 'Add a custom network',
-    tag: 'button',
-  };
+  private readonly addCustomNetworkButton =
+    '[data-testid="networks-page-add-custom-network-button"]';
 
   private readonly addNetworkButton = '[data-testid="test-add-button"]';
 
-  private readonly closeButton = 'button[aria-label="Close"]';
+  private readonly closeButton =
+    '[data-testid="settings-v2-header-back-button"]';
 
   private readonly confirmDeleteNetworkButton = {
     text: 'Delete',
@@ -37,17 +36,20 @@ class SelectNetwork {
 
   private readonly rpcUrlItem = '.select-rpc-url__item';
 
+  private readonly searchButton =
+    '[data-testid="settings-v2-header-search-button"]';
+
   private readonly searchInput =
-    '[data-testid="network-redesign-modal-search-input"]';
+    '[data-testid="settings-v2-header-search-input"]';
 
   private readonly selectNetworkMessage = {
-    text: 'Manage networks',
-    tag: 'h4',
+    text: 'Networks',
+    tag: 'p',
   };
 
   private readonly selectRpcMessage = {
     text: 'Select RPC URL',
-    tag: 'h4',
+    tag: 'p',
   };
 
   private readonly yourNetworksMessage = {
@@ -58,7 +60,7 @@ class SelectNetwork {
   private readonly showTestNetworksToggle = '.toggle-button';
 
   private readonly addPopularNetworkByChainIdIcon = (chainId: string) =>
-    `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"] button`;
+    `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"]`;
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -68,7 +70,7 @@ class SelectNetwork {
     try {
       await this.driver.waitForMultipleSelectors([
         this.selectNetworkMessage,
-        this.searchInput,
+        this.addCustomNetworkButton,
       ]);
     } catch (e) {
       console.log(
@@ -107,7 +109,7 @@ class SelectNetwork {
     console.log('Click Add Button for Popular Network');
 
     const buttonSelector = this.addPopularNetworkByChainIdIcon(chainId);
-
+    const addButton = await this.driver.findElement(buttonSelector);
     await this.driver.clickElementAndWaitToDisappear(buttonSelector);
   }
 
@@ -124,19 +126,20 @@ class SelectNetwork {
   async deleteNetwork(chainId: string): Promise<void> {
     console.log(`Delete network ${chainId} from network list`);
     await this.openNetworkListOptions(chainId);
-    await this.driver.clickElementAndWaitToDisappear(this.deleteNetworkButton);
+    await this.driver.clickElement(this.deleteNetworkButton);
     await this.driver.waitForSelector(this.confirmDeleteNetworkModal);
     // Ensure drawer overlay is not present to avoid ElementClickInterceptedError
     await this.driver.assertElementNotPresent(this.drawerOverlay, {
       waitAtLeastGuard: 200,
     });
-    await this.driver.clickElementAndWaitToDisappear(
-      this.confirmDeleteNetworkButton,
-    );
+    await this.driver.clickElement(this.confirmDeleteNetworkButton);
+    await this.driver.assertElementNotPresent(this.confirmDeleteNetworkModal);
   }
 
   async fillNetworkSearchInput(networkName: string): Promise<void> {
     console.log(`Fill network search input with ${networkName}`);
+    await this.driver.clickElement(this.searchButton);
+    await this.driver.waitForSelector(this.searchInput);
     await this.driver.fill(this.searchInput, networkName);
   }
 
