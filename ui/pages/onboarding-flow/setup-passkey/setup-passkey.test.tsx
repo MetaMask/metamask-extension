@@ -235,6 +235,17 @@ describe('SetupPasskey', () => {
         },
       );
     });
+
+    it('navigates to MetaMetrics when flow type is not create or import', () => {
+      const mockStore = buildMockStore(FirstTimeFlowType.socialCreate);
+      const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
+
+      fireEvent.click(getByText(messages.maybeLater.message));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
+        replace: true,
+      });
+    });
   });
 
   describe('set up biometrics', () => {

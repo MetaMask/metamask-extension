@@ -13,6 +13,7 @@ import {
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { getIsPasskeyFeatureEnabled } from '../../../../shared/lib/environment';
 import * as Actions from '../../../store/actions';
 import CreatePassword from './create-password';
 
@@ -456,6 +457,52 @@ describe('Onboarding Create Password', () => {
         );
       });
     });
+
+    it('navigates to review SRP when passkey feature is unavailable after wallet creation', async () => {
+      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValueOnce(false);
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.create,
+        },
+      });
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        mockStore,
+      );
+
+      const password = '12345678';
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
+
+      expect(mockCreateNewAccount).toHaveBeenCalled();
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          ONBOARDING_REVIEW_SRP_ROUTE,
+          {
+            replace: true,
+          },
+        );
+      });
+    });
   });
 
   describe('Import Wallet', () => {
@@ -523,6 +570,44 @@ describe('Onboarding Create Password', () => {
             replace: true,
           },
         );
+      });
+    });
+
+    it('navigates to MetaMetrics after import when passkey feature is unavailable', async () => {
+      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValueOnce(false);
+      const mockStore = configureMockStore([thunk])(importMockState);
+
+      const props = {
+        importWithRecoveryPhrase: jest.fn().mockResolvedValue(undefined),
+        secretRecoveryPhrase: 'SRP',
+        createNewAccount: jest.fn().mockResolvedValue(''),
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword {...props} />,
+        mockStore,
+      );
+
+      const password = '12345678';
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
+          replace: true,
+        });
       });
     });
   });

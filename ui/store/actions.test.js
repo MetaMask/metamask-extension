@@ -30,6 +30,7 @@ import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
+import * as passkeyCapabilities from '../../shared/lib/passkey/passkey-capabilities';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -347,6 +348,219 @@ describe('Actions', () => {
           authenticationResponse,
         ),
       ).toStrictEqual(true);
+    });
+
+    it('dispatches a warning and rethrows when the background rejects', async () => {
+      const store = mockStore();
+      const err = new Error('passkey verification failed');
+      background.changePasswordWithPasskeyVerification.rejects(err);
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(
+          actions.changePasswordWithPasskeyVerification('pw', {
+            id: 'cred',
+            rawId: 'cred',
+            response: {
+              clientDataJSON: 'e30',
+              authenticatorData: 'AA',
+              signature: 'sig',
+            },
+            type: 'public-key',
+          }),
+        ),
+      ).rejects.toThrow('passkey verification failed');
+
+      expect(store.getActions()).toStrictEqual([
+        { type: actionConstants.DISPLAY_WARNING, payload: err.message },
+      ]);
+    });
+  });
+
+  describe('passkey background requests', () => {
+    afterEach(() => {
+      sinon.restore();
+      jest.restoreAllMocks();
+    });
+
+    it('#tryUnlockMetamaskWithPasskey dispatches success actions when unlock succeeds', async () => {
+      getStatePatchesMock.mockResolvedValue([]);
+      const store = mockStore();
+      background.unlockWithPasskey.resolves();
+      setBackgroundConnection(background);
+
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+
+      await store.dispatch(
+        actions.tryUnlockMetamaskWithPasskey(authenticationResponse),
+      );
+
+      expect(
+        background.unlockWithPasskey.calledOnceWith(authenticationResponse),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([
+        { type: actionConstants.SHOW_LOADING, payload: undefined },
+        { type: actionConstants.UNLOCK_IN_PROGRESS },
+        { type: actionConstants.UNLOCK_SUCCEEDED, value: undefined },
+        { type: actionConstants.HIDE_WARNING },
+        { type: actionConstants.HIDE_LOADING },
+      ]);
+    });
+
+    it('#tryUnlockMetamaskWithPasskey dispatches failure and rethrows when unlock fails', async () => {
+      getStatePatchesMock.mockResolvedValue([]);
+      const store = mockStore();
+      background.unlockWithPasskey.rejects(new Error('unlock failed'));
+      setBackgroundConnection(background);
+
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+
+      await expect(
+        store.dispatch(
+          actions.tryUnlockMetamaskWithPasskey(authenticationResponse),
+        ),
+      ).rejects.toThrow('unlock failed');
+
+      expect(store.getActions()).toStrictEqual([
+        { type: actionConstants.SHOW_LOADING, payload: undefined },
+        { type: actionConstants.UNLOCK_IN_PROGRESS },
+        { type: actionConstants.UNLOCK_FAILED, value: 'unlock failed' },
+        { type: actionConstants.HIDE_LOADING },
+      ]);
+    });
+
+    it('#generatePasskeyRegistrationOptions passes prfAvailable true when PRF support is true', async () => {
+      jest
+        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
+        .mockResolvedValue(true);
+      background.generatePasskeyRegistrationOptions.resolves({
+        rp: { name: 'MM' },
+      });
+      setBackgroundConnection(background);
+
+      await actions.generatePasskeyRegistrationOptions();
+
+      expect(
+        background.generatePasskeyRegistrationOptions.calledOnceWith({
+          prfAvailable: true,
+        }),
+      ).toBe(true);
+    });
+
+    it('#generatePasskeyRegistrationOptions passes prfAvailable false when PRF support is false', async () => {
+      jest
+        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
+        .mockResolvedValue(false);
+      background.generatePasskeyRegistrationOptions.resolves({
+        rp: { name: 'MM' },
+      });
+      setBackgroundConnection(background);
+
+      await actions.generatePasskeyRegistrationOptions();
+
+      expect(
+        background.generatePasskeyRegistrationOptions.calledOnceWith({
+          prfAvailable: false,
+        }),
+      ).toBe(true);
+    });
+
+    it('#generatePasskeyAuthenticationOptions forwards to the background', async () => {
+      const opts = { challenge: 'AQ', allowCredentials: [] };
+      background.generatePasskeyAuthenticationOptions.resolves(opts);
+      setBackgroundConnection(background);
+
+      const result = await actions.generatePasskeyAuthenticationOptions();
+
+      expect(result).toStrictEqual(opts);
+      expect(background.generatePasskeyAuthenticationOptions.calledOnce).toBe(
+        true,
+      );
+    });
+
+    it('#protectVaultKeyWithPasskey forwards registration response and optional password', async () => {
+      const registrationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          attestationObject: 'e30',
+        },
+        type: 'public-key',
+      };
+      background.protectVaultKeyWithPasskey.resolves();
+      setBackgroundConnection(background);
+
+      await actions.protectVaultKeyWithPasskey(registrationResponse, 'secret');
+
+      expect(
+        background.protectVaultKeyWithPasskey.calledOnceWith(
+          registrationResponse,
+          'secret',
+        ),
+      ).toBe(true);
+
+      await actions.protectVaultKeyWithPasskey(registrationResponse);
+
+      expect(
+        background.protectVaultKeyWithPasskey.secondCall.args,
+      ).toStrictEqual([registrationResponse, undefined]);
+    });
+
+    it('#removePasskeyWithPasskeyVerification forwards the authentication response', async () => {
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+      background.removePasskeyWithPasskeyVerification.resolves();
+      setBackgroundConnection(background);
+
+      await actions.removePasskeyWithPasskeyVerification(
+        authenticationResponse,
+      );
+
+      expect(
+        background.removePasskeyWithPasskeyVerification.calledOnceWith(
+          authenticationResponse,
+        ),
+      ).toBe(true);
+    });
+
+    it('#removePasskeyWithPasswordVerification forwards the password', async () => {
+      background.removePasskeyWithPasswordVerification.resolves();
+      setBackgroundConnection(background);
+
+      await actions.removePasskeyWithPasswordVerification('wallet-password');
+
+      expect(
+        background.removePasskeyWithPasswordVerification.calledOnceWith(
+          'wallet-password',
+        ),
+      ).toBe(true);
     });
   });
 
