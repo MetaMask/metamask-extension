@@ -35,7 +35,7 @@ export const version = 207;
 
 const SEI_MAINNET_CHAIN_ID: Hex = '0x531'; // 1329
 const OLD_HOSTNAME = 'seitrace.com';
-const NEW_HOSTNAME = 'seiscan.io';
+const NEW_URL = 'https://seiscan.io/';
 
 /**
  * Migration 207: replace the deprecated Seitrace block explorer URL
@@ -108,21 +108,18 @@ function transformState(
     return state;
   }
 
+  let didChange = false;
   const rewritten = seiConfig.blockExplorerUrls.map((url) => {
     try {
-      const parsed = new URL(url);
-      if (parsed.hostname === OLD_HOSTNAME) {
-        parsed.hostname = NEW_HOSTNAME;
-        return parsed.toString();
+      if (new URL(url).hostname === OLD_HOSTNAME) {
+        didChange = true;
+        return NEW_URL;
       }
     } catch {
-      return url;
+      // not a valid URL, leave as-is
     }
     return url;
   });
-  const didChange = rewritten.some(
-    (url, index) => url !== seiConfig.blockExplorerUrls[index],
-  );
 
   if (didChange) {
     seiConfig.blockExplorerUrls = rewritten;

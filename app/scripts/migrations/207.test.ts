@@ -4,6 +4,23 @@ const SEI_MAINNET_CHAIN_ID = '0x531';
 const OLD_URL = 'https://seitrace.com';
 const NEW_URL = 'https://seiscan.io/';
 
+type StateWithNetworkController = {
+  meta: { version: number };
+  data: {
+    NetworkController: {
+      selectedNetworkClientId: string;
+      networkConfigurationsByChainId: Record<
+        string,
+        { blockExplorerUrls: string[] }
+      >;
+    };
+  };
+};
+
+const seiBlockExplorerUrls = (state: { data: Record<string, unknown> }) =>
+  (state as StateWithNetworkController).data.NetworkController
+    .networkConfigurationsByChainId[SEI_MAINNET_CHAIN_ID].blockExplorerUrls;
+
 describe(`migration #${version}`, () => {
   it('bumps the state version', async () => {
     const state = { meta: { version: version - 1 }, data: {} };
@@ -35,11 +52,7 @@ describe(`migration #${version}`, () => {
     };
     const changed = new Set<string>();
     await migrate(state, changed);
-    expect(
-      (state.data.NetworkController as any).networkConfigurationsByChainId[
-        SEI_MAINNET_CHAIN_ID
-      ].blockExplorerUrls,
-    ).toEqual([NEW_URL]);
+    expect(seiBlockExplorerUrls(state)).toEqual([NEW_URL]);
     expect(changed.has('NetworkController')).toBe(true);
   });
 
@@ -92,11 +105,7 @@ describe(`migration #${version}`, () => {
     };
     const changed = new Set<string>();
     await migrate(state, changed);
-    expect(
-      (state.data.NetworkController as any).networkConfigurationsByChainId[
-        SEI_MAINNET_CHAIN_ID
-      ].blockExplorerUrls,
-    ).toEqual(['https://seistream.app']);
+    expect(seiBlockExplorerUrls(state)).toEqual(['https://seistream.app']);
     expect(changed.size).toBe(0);
   });
 
@@ -129,11 +138,7 @@ describe(`migration #${version}`, () => {
     };
     const changed = new Set<string>();
     await migrate(state, changed);
-    expect(
-      (state.data.NetworkController as any).networkConfigurationsByChainId[
-        SEI_MAINNET_CHAIN_ID
-      ].blockExplorerUrls,
-    ).toEqual(lookalikes);
+    expect(seiBlockExplorerUrls(state)).toEqual(lookalikes);
     expect(changed.size).toBe(0);
   });
 });
