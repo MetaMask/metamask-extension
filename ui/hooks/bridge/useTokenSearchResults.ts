@@ -9,8 +9,10 @@ import { BridgeToken } from '../../ducks/bridge/types';
 import { toBridgeToken } from '../../ducks/bridge/utils';
 import { type BridgeAppState } from '../../ducks/bridge/selectors';
 import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
-import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
-import { fetchTokensBySearchQuery } from '../../pages/bridge/utils/tokens';
+import {
+  fetchTokensBySearchQuery,
+  toMinimalAsset,
+} from '../../pages/bridge/utils/tokens';
 import { getBearerToken } from '../../store/actions';
 import { useAsyncResult } from '../useAsync';
 
@@ -126,6 +128,10 @@ export const useTokenSearchResults = ({
     });
   }, [searchQuery, assetsToInclude]);
 
+  const minimalAssetsToInclude = useMemo(() => {
+    return assetsToInclude.map(toMinimalAsset);
+  }, [filteredAssetsToInclude]);
+
   useEffect(() => {
     if (!jwt) {
       return;
@@ -141,7 +147,7 @@ export const useTokenSearchResults = ({
       // Debounce the initial fetch until the user stops typing
       debouncedFetchSearchResults(searchQuery, filteredAssetsToInclude);
     }
-  }, [searchQuery, filteredAssetsToInclude, jwt]);
+  }, [searchQuery, minimalAssetsToInclude.toString(), jwt]);
 
   useEffect(() => {
     const debouncedFn = debouncedFetchSearchResults;
