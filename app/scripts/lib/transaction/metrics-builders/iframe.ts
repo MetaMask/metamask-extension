@@ -1,9 +1,6 @@
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
 import { getIframeProperties } from '../../getIframeProperties';
-import {
-  consumeDappRequestFrameContext,
-  getDappRequestFrameContext,
-} from '../dapp-request-frame-context';
+import { consumeDappRequestFrameContext } from '../dapp-request-frame-context';
 import type { TransactionMetricsBuilder } from './types';
 
 type TransactionMetaWithFrameContext = {
@@ -25,7 +22,7 @@ export const getIframeMetricsProperties: TransactionMetricsBuilder = ({
   const frameContext =
     eventName === TransactionMetaMetricsEvent.added
       ? consumeDappRequestFrameContext(frameContextRequestId)
-      : getDappRequestFrameContext(frameContextRequestId);
+      : undefined;
 
   return {
     properties: getIframeProperties({

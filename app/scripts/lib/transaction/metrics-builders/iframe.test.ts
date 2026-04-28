@@ -72,4 +72,31 @@ describe('iframe builder', () => {
       top_level_origin: 'https://top-level.example',
     });
   });
+
+  it('does not use pending dapp request frame context for non-added events', async () => {
+    setDappRequestFrameContext({
+      requestId: 'request-2',
+      frameId: 1,
+      frameOrigin: 'https://iframe.example',
+      mainFrameOrigin: 'https://top-level.example',
+    });
+
+    const result = await getIframeMetricsProperties(
+      createBuilderRequest({
+        eventName: TransactionMetaMetricsEvent.approved,
+        transactionMeta: {
+          ...createBuilderRequest().transactionMeta,
+          origin: 'https://iframe.example',
+          requestId: 'request-2',
+        } as any,
+      }),
+    );
+
+    expect(result.properties).toStrictEqual({
+      is_iframe: false,
+      is_cross_origin_iframe: false,
+      iframe_origin: null,
+      top_level_origin: null,
+    });
+  });
 });

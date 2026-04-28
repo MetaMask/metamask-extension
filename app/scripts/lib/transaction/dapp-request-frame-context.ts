@@ -32,14 +32,6 @@ export function setDappRequestFrameContext({
   });
 }
 
-export function getDappRequestFrameContext(requestId: string | undefined) {
-  if (!requestId) {
-    return undefined;
-  }
-
-  return frameContextByRequestId.get(requestId);
-}
-
 export function consumeDappRequestFrameContext(requestId: string | undefined) {
   if (!requestId) {
     return undefined;
