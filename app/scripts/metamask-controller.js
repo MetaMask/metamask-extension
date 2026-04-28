@@ -4497,6 +4497,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async removePasskeyWithPasswordVerification(password) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new Error('Passkey is not registered');
+    }
     await this.verifyPassword(password);
     this.passkeyController.removePasskey();
   }

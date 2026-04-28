@@ -1480,7 +1480,26 @@ describe('MetaMaskController', function () {
     });
 
     describe('#removePasskeyWithPasswordVerification', function () {
+      it('throws when passkey is not registered', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(false);
+        const verifyPasswordSpy = jest.spyOn(
+          metamaskController,
+          'verifyPassword',
+        );
+
+        await expect(
+          metamaskController.removePasskeyWithPasswordVerification('password'),
+        ).rejects.toThrow('Passkey is not registered');
+
+        expect(verifyPasswordSpy).not.toHaveBeenCalled();
+      });
+
       it('verifies password then removes passkey', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
         const verifyPasswordSpy = jest
           .spyOn(metamaskController, 'verifyPassword')
           .mockResolvedValue(true);
