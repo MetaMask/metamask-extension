@@ -36,11 +36,6 @@ describe('Settings', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
-          .withEnabledNetworks({
-            eip155: {
-              '0x1': true,
-            },
-          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockEns,
@@ -57,25 +52,28 @@ describe('Settings', function () {
         // immediately), getCleanAppState reflects the running controller
         // state that has been synced to the UI after background init.
         // Wait until NetworkController state resolves to mainnet.
-        await driver.waitUntil(async () => {
-          const uiState = await getCleanAppState(driver);
-          const m = uiState?.metamask;
-          if (
-            m?.ipfsGateway !== 'dweb.link' ||
-            m?.useAddressBarEnsResolution !== true
-          ) {
-            return false;
-          }
-          try {
-            return getCurrentChainId({ metamask: m }) === CHAIN_IDS.MAINNET;
-          } catch {
-            return false;
-          }
-        }, {
-          interval: 1000,
-          timeout: 10000,
-          stableFor: 1000,
-        });
+        await driver.waitUntil(
+          async () => {
+            const uiState = await getCleanAppState(driver);
+            const m = uiState?.metamask;
+            if (
+              m?.ipfsGateway !== 'dweb.link' ||
+              m?.useAddressBarEnsResolution !== true
+            ) {
+              return false;
+            }
+            try {
+              return getCurrentChainId({ metamask: m }) === CHAIN_IDS.MAINNET;
+            } catch {
+              return false;
+            }
+          },
+          {
+            interval: 1000,
+            stableFor: 1000,
+            timeout: 10000,
+          },
+        );
 
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
