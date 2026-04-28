@@ -124,8 +124,12 @@ describe('SetupPasskey', () => {
     renderWithProvider(<SetupPasskey />, mockStore);
 
     expect(screen.getByTestId('passkey-set-up-button')).toBeInTheDocument();
-    expect(screen.getByTestId('passkey-maybe-later-button')).toBeInTheDocument();
-    expect(screen.queryByTestId('passkey-registration-error')).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId('passkey-maybe-later-button'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('passkey-registration-error'),
+    ).not.toBeInTheDocument();
   });
 
   it('renders the heading text', () => {

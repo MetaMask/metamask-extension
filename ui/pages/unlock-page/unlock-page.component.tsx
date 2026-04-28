@@ -33,7 +33,6 @@ import {
   ButtonIconSize,
   IconColor,
   IconSize,
-  Icon,
 } from '@metamask/design-system-react';
 import {
   FormTextField,
@@ -632,7 +631,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
   openUnlockInFullScreen = () => {
     cancelPasskeyCeremony();
-    global.platform?.openExtensionInBrowser?.(UNLOCK_ROUTE, 'from=sidepanel');
+    globalThis.platform.openExtensionInBrowser(UNLOCK_ROUTE, 'from=sidepanel');
   };
 
   onForgotPasswordOrLoginWithDiffMethods = async () => {
