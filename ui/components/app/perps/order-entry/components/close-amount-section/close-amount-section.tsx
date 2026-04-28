@@ -109,7 +109,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
         <Box
           className="min-w-0 flex-1"
           paddingHorizontal={1}
-          data-testid="close-amount-slider"
+          data-testid={`close-amount-slider-pct-${closePercent}`}
         >
           <PerpsSlider
             min={0}

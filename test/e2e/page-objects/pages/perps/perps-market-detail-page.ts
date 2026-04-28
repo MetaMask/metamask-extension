@@ -23,11 +23,20 @@ export class PerpsMarketDetailPage {
     testId: 'perps-close-position-modal',
   };
 
-  private readonly closeAmountSlider = '[data-testid="close-amount-slider"]';
-
   private readonly closePositionModalSubmit = {
     testId: 'perps-close-position-modal-submit',
   };
+
+  /**
+   * `CloseAmountSection` slider wrapper. Full `data-testid` is
+   * `{closeAmountSliderPctTestIdPrefix}{0-100}`.
+   *
+   * @see ui/components/app/perps/order-entry/components/close-amount-section/close-amount-section.tsx
+   */
+  private static readonly closeAmountSliderPctTestIdPrefix =
+    'close-amount-slider-pct-';
+
+  private readonly closeAmountSliderByPrefix = `[data-testid^="${PerpsMarketDetailPage.closeAmountSliderPctTestIdPrefix}"]`;
 
   private readonly decreaseMarginModal = {
     testId: 'perps-decrease-margin-modal',
@@ -400,29 +409,34 @@ export class PerpsMarketDetailPage {
   }
 
   /**
+   * Locator for the close-amount slider at a specific percentage (0–100).
+   *
+   * @param percent - Value appended to `closeAmountSliderPctTestIdPrefix`.
+   */
+  private closeAmountSliderAtPercent(percent: number) {
+    return {
+      testId: `${PerpsMarketDetailPage.closeAmountSliderPctTestIdPrefix}${percent}`,
+    };
+  }
+
+  /**
    * Sets the close-position slider to the given percentage (0–100).
    *
-   * Dispatches synthetic mouse events on the MUI Slider rail so React
-   * state updates exactly as if the user had clicked on the track.
+   * Uses WebDriver pointer actions (not in-page `MouseEvent`) so the test does not
+   * hit LavaMoat scuttling (`globalThis.MouseEvent` is inaccessible in the extension UI).
+   * Offsets are from the element center per W3C WebDriver pointer actions.
    *
    * @param percent - Target percentage (e.g. 50 for half the position).
    */
   async setClosePercent(percent: number): Promise<void> {
-    await this.driver.executeScript(
-      `
-      const pct = arguments[0][0];
-      const container = document.querySelector('${this.closeAmountSlider}');
-      const thumb = container.querySelector('[role="slider"]');
-      const rail = thumb.parentElement;
-      const rect = rail.getBoundingClientRect();
-      const x = rect.left + (rect.width * pct / 100);
-      const y = rect.top + rect.height / 2;
-      const opts = { clientX: x, clientY: y, bubbles: true, cancelable: true };
-      rail.dispatchEvent(new MouseEvent('mousedown', opts));
-      document.dispatchEvent(new MouseEvent('mouseup', opts));
-      `,
-      percent,
+    await this.driver.waitForSelector(this.closeAmountSliderByPrefix);
+    const element = await this.driver.findElement(
+      this.closeAmountSliderByPrefix,
     );
+    const rect = await element.getRect();
+    const xOffset = Math.round((percent / 100 - 0.5) * rect.width);
+    await this.driver.clickPoint(this.closeAmountSliderByPrefix, xOffset, 0);
+    await this.driver.waitForSelector(this.closeAmountSliderAtPercent(percent));
     await this.driver.delay(500);
   }
 
