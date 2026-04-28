@@ -129,7 +129,7 @@ export const useTokenSearchResults = ({
   }, [searchQuery, assetsToInclude]);
 
   const minimalAssetsToInclude = useMemo(() => {
-    return assetsToInclude.map(toMinimalAsset);
+    return filteredAssetsToInclude.map(toMinimalAsset);
   }, [filteredAssetsToInclude]);
 
   useEffect(() => {
