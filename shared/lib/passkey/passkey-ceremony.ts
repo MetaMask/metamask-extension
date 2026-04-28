@@ -4,6 +4,8 @@ import {
   base64URLStringToBuffer,
   bufferToBase64URLString,
   WebAuthnAbortService,
+  PublicKeyCredentialCreationOptionsJSON as SwaPublicKeyCredentialCreationOptionsJSON,
+  PublicKeyCredentialRequestOptionsJSON as SwaPublicKeyCredentialRequestOptionsJSON,
 } from '@simplewebauthn/browser';
 import type {
   PasskeyAuthenticationOptions,
@@ -118,7 +120,14 @@ export async function startPasskeyRegistration(
   options: PasskeyRegistrationOptions,
 ): Promise<PasskeyRegistrationResponse> {
   return runPasskeyCeremony(async () => {
-    const optionsJSON = decodePrfEvalInPasskeyOptions(options);
+    const optionsJSON: SwaPublicKeyCredentialCreationOptionsJSON = {
+      ...options,
+      rp: {
+        ...options.rp,
+        id: undefined, // leave blank to accept the extension's default RP ID
+      },
+      extensions: decodePrfInExtensionOptions(options.extensions),
+    };
     const response = await startRegistration({ optionsJSON });
     return {
       ...response,
@@ -140,7 +149,11 @@ export async function startPasskeyAuthentication(
   options: PasskeyAuthenticationOptions,
 ): Promise<PasskeyAuthenticationResponse> {
   return runPasskeyCeremony(async () => {
-    const optionsJSON = decodePrfEvalInPasskeyOptions(options);
+    const optionsJSON: SwaPublicKeyCredentialRequestOptionsJSON = {
+      ...options,
+      rpId: undefined, // leave blank to accept the browser extension's default RP ID
+      extensions: decodePrfInExtensionOptions(options.extensions),
+    };
     const response = await startAuthentication({ optionsJSON });
     return {
       ...response,
@@ -154,24 +167,23 @@ export async function startPasskeyAuthentication(
 /**
  * Ensures optional PRF inputs on passkey options match what a browser ceremony expects.
  *
- * @param options - Registration or authentication options from PasskeyController.
+ * @param extensions - Optional passkey extensions from PasskeyController options.
  */
-function decodePrfEvalInPasskeyOptions<
-  Options extends PasskeyRegistrationOptions | PasskeyAuthenticationOptions,
->(options: Options): Options {
-  const prfExt = (options.extensions as ExtensionsWithPrf | undefined)?.prf;
+function decodePrfInExtensionOptions<
+  Extensions extends
+    | PasskeyRegistrationOptions['extensions']
+    | PasskeyAuthenticationOptions['extensions'],
+>(extensions: Extensions): Extensions {
+  const prfExt = (extensions as ExtensionsWithPrf | undefined)?.prf;
   if (!prfExt?.eval?.first || typeof prfExt.eval.first !== 'string') {
-    return options;
+    return extensions;
   }
   return {
-    ...options,
-    extensions: {
-      ...options.extensions,
-      prf: {
-        eval: { first: base64URLStringToBuffer(prfExt.eval.first) },
-      },
+    ...extensions,
+    prf: {
+      eval: { first: base64URLStringToBuffer(prfExt.eval.first) },
     },
-  } as Options;
+  } as Extensions;
 }
 
 /**

@@ -2,7 +2,6 @@ import { PasskeyController } from '@metamask/passkey-controller';
 import type { PasskeyControllerMessenger } from './messengers';
 import { MessengerClientInitFunction } from './types';
 
-const PASSKEY_RP_ID = 'metamask.io';
 const PASSKEY_RP_NAME = 'MetaMask';
 const PASSKEY_USER_NAME = 'MetaMask Wallet';
 const PASSKEY_USER_DISPLAY_NAME = 'MetaMask Wallet';
@@ -21,14 +20,14 @@ export const PasskeyControllerInit: MessengerClientInitFunction<
   PasskeyControllerMessenger
 > = ({ controllerMessenger, persistedState, extension }) => {
   const extensionUrl = extension.runtime?.getURL?.('');
-  const expectedOrigin = extensionUrl ? extensionUrl.replace(/\/$/u, '') : '';
+  const extensionOrigin = extensionUrl ? extensionUrl.replace(/\/$/u, '') : '';
 
   const messengerClient = new PasskeyController({
     state: persistedState.PasskeyController,
     messenger: controllerMessenger,
-    rpID: PASSKEY_RP_ID,
+    rpID: extensionOrigin, // used to match the RP ID in the passkey ceremony
     rpName: PASSKEY_RP_NAME,
-    expectedOrigin,
+    expectedOrigin: extensionOrigin,
     userName: PASSKEY_USER_NAME,
     userDisplayName: PASSKEY_USER_DISPLAY_NAME,
   });

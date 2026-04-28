@@ -25,7 +25,7 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('PasskeyControllerInit', () => {
-  it('initializes the passkey controller with trimmed expectedOrigin', () => {
+  it('initializes the passkey controller with extension origin', () => {
     const requestMock = getInitRequestMock();
     requestMock.extension.runtime = {
       getURL: jest.fn().mockReturnValue('chrome-extension://mock-id/'),
@@ -37,7 +37,7 @@ describe('PasskeyControllerInit', () => {
     expect(jest.mocked(PasskeyController)).toHaveBeenCalledWith({
       state: undefined,
       messenger: expect.any(Object),
-      rpID: 'metamask.io',
+      rpID: 'chrome-extension://mock-id',
       rpName: 'MetaMask',
       expectedOrigin: 'chrome-extension://mock-id',
       userName: 'MetaMask Wallet',
