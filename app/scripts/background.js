@@ -2067,7 +2067,7 @@ async function triggerUi() {
   }
 }
 
-// It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
+// It queues the "App Installed" event before consent, or tracks it immediately if consent already exists.
 const addAppInstalledEvent = async (installAttributionPromise) => {
   const { deferredDeepLink, traits: installAttributionTraits } =
     await installAttributionPromise;
@@ -2086,11 +2086,19 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
     eventProperties.deeplink_path = deferredDeepLink.referringLink;
   }
 
-  controller.metaMetricsController.addEventBeforeMetricsOptIn({
+  const appInstalledEvent = {
     category: MetaMetricsEventCategory.App,
     event: MetaMetricsEventName.AppInstalled,
     properties: eventProperties,
-  });
+  };
+
+  if (controller.metaMetricsController.state.participateInMetaMetrics) {
+    controller.metaMetricsController.trackEvent(appInstalledEvent);
+  } else {
+    controller.metaMetricsController.addEventBeforeMetricsOptIn(
+      appInstalledEvent,
+    );
+  }
 };
 
 /**
@@ -2122,17 +2130,10 @@ async function onInstall() {
     platform.openExtensionInBrowser();
   }
 
-  // The controller must exist before we can persist install attribution or
-  // register the opt-in barrier that prevents first identify from racing ahead.
+  // The controller must exist before we can persist install attribution.
   await isInitialized;
 
-  const appInstalledEventPromise = addAppInstalledEvent(
-    installAttributionPromise,
-  );
-  controller.metaMetricsController.setInstallAttributionReadyPromise(
-    appInstalledEventPromise,
-  );
-  await appInstalledEventPromise;
+  await addAppInstalledEvent(installAttributionPromise);
 }
 
 /**

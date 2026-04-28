@@ -13,7 +13,6 @@ import {
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Browser } from 'webextension-polyfill';
 import { deriveStateFromMetadata } from '@metamask/base-controller';
-import { createDeferredPromise } from '@metamask/utils';
 import {
   MOCK_ANY_NAMESPACE,
   Messenger,
@@ -639,32 +638,6 @@ describe('MetaMetricsController', function () {
         );
       });
     });
-    it('waits for install attribution readiness before opting in', async function () {
-      await withController(
-        {
-          options: {
-            state: {
-              participateInMetaMetrics: null,
-              metaMetricsId: null,
-            },
-          },
-        },
-        async ({ controller }) => {
-          const { promise, resolve } = createDeferredPromise<void>();
-          controller.setInstallAttributionReadyPromise(promise);
-
-          const optInPromise = controller.setParticipateInMetaMetrics(true);
-          await flushPromises();
-
-          expect(controller.state.participateInMetaMetrics).toStrictEqual(null);
-
-          resolve();
-          await optInPromise;
-
-          expect(controller.state.participateInMetaMetrics).toStrictEqual(true);
-        },
-      );
-    });
     it('should nullify the marketingCampaignCookieId when participateInMetaMetrics is toggled off', async function () {
       await withController(
         {
@@ -691,7 +664,7 @@ describe('MetaMetricsController', function () {
   });
 
   describe('handleMetaMaskStateUpdate', function () {
-    it('includes install attribution traits in the first identify payload after opt-in when marketing consent is off', async function () {
+    it('updates the profile when install attribution traits arrive after opt-in', async function () {
       await withController(
         {
           options: {
@@ -699,10 +672,7 @@ describe('MetaMetricsController', function () {
               participateInMetaMetrics: null,
               metaMetricsId: TEST_META_METRICS_ID,
               dataCollectionForMarketing: false,
-              traits: {
-                [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
-                [MetaMetricsUserTrait.GaClientId]: '12345.67890',
-              },
+              traits: {},
             },
           },
         },
@@ -712,7 +682,7 @@ describe('MetaMetricsController', function () {
             .spyOn(controller, 'identify')
             .mockImplementation(() => undefined);
 
-          controller.handleMetaMaskStateUpdate({
+          const metaMaskState = {
             addressBook: {},
             allNfts: {},
             allTokens: {},
@@ -748,16 +718,24 @@ describe('MetaMetricsController', function () {
             } as Preferences,
             srpSessionData: undefined,
             keyrings: [],
-          });
+          };
+
+          controller.handleMetaMaskStateUpdate(metaMaskState);
 
           expect(identifySpy).toHaveBeenCalledTimes(1);
-          expect(identifySpy).toHaveBeenCalledWith(
-            expect.objectContaining({
-              [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
-              [MetaMetricsUserTrait.GaClientId]: '12345.67890',
-              [MetaMetricsUserTrait.HasMarketingConsent]: false,
-            }),
-          );
+
+          controller.updateTraits({
+            [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
+            [MetaMetricsUserTrait.GaClientId]: '12345.67890',
+          });
+
+          controller.handleMetaMaskStateUpdate(metaMaskState);
+
+          expect(identifySpy).toHaveBeenCalledTimes(2);
+          expect(identifySpy).toHaveBeenLastCalledWith({
+            [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
+            [MetaMetricsUserTrait.GaClientId]: '12345.67890',
+          });
         },
       );
     });
