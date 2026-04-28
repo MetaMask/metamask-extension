@@ -1,4 +1,3 @@
-import { Rule } from '@metamask/7715-permission-types';
 import type { Hex } from '@metamask/utils';
 import type { BigNumber } from 'bignumber.js';
 

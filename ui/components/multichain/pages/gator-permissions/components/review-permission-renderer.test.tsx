@@ -59,14 +59,14 @@ describe('ReviewPermissionRenderer', () => {
     ).toBeInTheDocument();
   });
 
-  it('skips divider in reviewDetail when schema lists it for that view (no throw)', () => {
+  it('does not reach unhandled divider handling in reviewDetail when divider is confirmation-only', () => {
     const entry: PermissionSchemaEntry = {
       tokenVariant: 'none',
       tokenResolution: { kind: 'none' },
       sections: [
         {
           testId: 'test-section-divider',
-          elements: [{ type: 'divider', includeInViews: ['reviewDetail'] }],
+          elements: [{ type: 'divider', includeInViews: ['confirmation'] }],
         },
       ],
     };
@@ -91,6 +91,107 @@ describe('ReviewPermissionRenderer', () => {
         TEST_REVIEW_DETAIL_DIVIDER_TYPE
       ];
     }
+  });
+
+  it('renders justification as a plain string when provided', () => {
+    renderWithProvider(
+      <ReviewPermissionRenderer
+        permissionType="native-token-stream"
+        permissionData={{
+          initialAmount: '0x6f05b59d3b20000',
+          maxAmount: '0x22b1c8c1227a0000',
+          amountPerSecond: '0x6f05b59d3b20000',
+          startTime: 1736271776,
+          justification: 'Project payroll',
+        }}
+        chainId="0x1"
+        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
+        tokenLoading={false}
+      />,
+      store,
+    );
+    expect(
+      screen.getByTestId('review-gator-permission-justification'),
+    ).toHaveTextContent('Project payroll');
+  });
+
+  it('shows no expiration label when expiry is absent from rules', () => {
+    renderWithProvider(
+      <ReviewPermissionRenderer
+        permissionType="native-token-stream"
+        permissionData={{
+          initialAmount: '0x6f05b59d3b20000',
+          maxAmount: '0x22b1c8c1227a0000',
+          amountPerSecond: '0x6f05b59d3b20000',
+          startTime: 1736271776,
+        }}
+        chainId="0x1"
+        rules={[]}
+        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
+        tokenLoading={false}
+      />,
+      store,
+    );
+    expect(
+      screen.getByTestId('review-gator-permission-expiration-date'),
+    ).toHaveTextContent('No expiration');
+  });
+
+  it('renders periodic reviewSummary amount, frequency text, and account row', () => {
+    renderWithProvider(
+      <ReviewPermissionRenderer
+        permissionType="native-token-periodic"
+        permissionData={{
+          periodAmount: '0xde0b6b3a7640000',
+          periodDuration: 86400,
+          startTime: 1736271776,
+        }}
+        chainId="0x1"
+        rules={[]}
+        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
+        tokenLoading={false}
+        viewMode="reviewSummary"
+        permissionAccount="0xc42edfcc21ed14dda456aa0756c153f7985d8813"
+      />,
+      store,
+    );
+    expect(
+      screen.getByTestId('review-gator-permission-amount-label'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('review-gator-permission-frequency-label'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('review-gator-permission-account-name'),
+    ).toBeInTheDocument();
+  });
+
+  it('renders network and redeemer rows when props and rules are present', () => {
+    const redeemerAddr = '0x0000000000000000000000000000000000000001';
+    renderWithProvider(
+      <ReviewPermissionRenderer
+        permissionType="native-token-stream"
+        permissionData={{
+          initialAmount: '0x6f05b59d3b20000',
+          maxAmount:
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+          amountPerSecond: '0x1',
+          startTime: 1736271776,
+        }}
+        chainId="0x1"
+        rules={[{ type: 'redeemer', data: { addresses: [redeemerAddr] } }]}
+        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
+        tokenLoading={false}
+        networkName="Ethereum Mainnet"
+      />,
+      store,
+    );
+    expect(
+      screen.getByTestId('review-gator-permission-network-name'),
+    ).toHaveTextContent('Ethereum Mainnet');
+    expect(
+      screen.getAllByTestId('review-gator-permission-redeemer-address'),
+    ).toHaveLength(1);
   });
 
   it('places /sec before (raw units) when token decimals are unknown', () => {

@@ -1,5 +1,4 @@
-import { Rule } from "@metamask/7715-permission-types";
-
+import { Rule } from '@metamask/7715-permission-types';
 
 /**
  * Extracts redeemer addresses from an array of rules.
@@ -17,7 +16,10 @@ export function extractRedeemerAddressesFromRules(
     return null;
   }
   const { addresses } = redeemer.data;
-  if (!Array.isArray(addresses) || addresses.some((address) => typeof address !== 'string')) {
+  if (
+    !Array.isArray(addresses) ||
+    addresses.some((address) => typeof address !== 'string')
+  ) {
     return null;
   }
   return addresses;
