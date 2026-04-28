@@ -2903,6 +2903,88 @@ describe('MetaMaskController', () => {
           ignoreNetwork: false,
         });
       });
+
+      it('rejects matching smart transaction status page approvals when wiping activity', async () => {
+        const selectedAddressMock =
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
+        jest
+          .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+          .mockReturnValue({ address: selectedAddressMock });
+
+        metamaskController.txController.update((state) => {
+          state.transactions = [
+            {
+              id: 'matching-tx',
+              chainId: CHAIN_IDS.MAINNET,
+              txParams: {
+                from: selectedAddressMock,
+              },
+            },
+            {
+              id: 'other-chain-tx',
+              chainId: CHAIN_IDS.LINEA_MAINNET,
+              txParams: {
+                from: selectedAddressMock,
+              },
+            },
+            {
+              id: 'other-address-tx',
+              chainId: CHAIN_IDS.MAINNET,
+              txParams: {
+                from: '0x1111111111111111111111111111111111111111',
+              },
+            },
+          ];
+        });
+
+        metamaskController.approvalController.update((state) => {
+          state.pendingApprovals = {
+            matchingApproval: {
+              id: 'matching-approval',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {
+                txId: 'matching-tx',
+              },
+            },
+            otherChainApproval: {
+              id: 'other-chain-approval',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {
+                txId: 'other-chain-tx',
+              },
+            },
+            otherAddressApproval: {
+              id: 'other-address-approval',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {
+                txId: 'other-address-tx',
+              },
+            },
+            otherApprovalType: {
+              id: 'other-approval-type',
+              type: 'eth_signTypedData',
+              requestState: {
+                txId: 'matching-tx',
+              },
+            },
+          };
+        });
+
+        jest.spyOn(metamaskController.approvalController, 'rejectRequest');
+
+        await metamaskController.resetAccount();
+
+        expect(
+          metamaskController.approvalController.rejectRequest,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          metamaskController.approvalController.rejectRequest,
+        ).toHaveBeenCalledWith(
+          'matching-approval',
+          new Error('Transaction activity reset'),
+        );
+      });
     });
 
     describe('#removeAccount', () => {
