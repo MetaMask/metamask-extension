@@ -1,5 +1,4 @@
 import { MockedEndpoint, MockttpServer } from 'mockttp';
-import { NetworkStatus } from '@metamask/network-controller';
 import { getCleanAppState, tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -57,28 +56,15 @@ describe('Settings', function () {
         // Unlike getPersistedState (which reads IndexedDB fixture data
         // immediately), getCleanAppState reflects the running controller
         // state that has been synced to the UI after background init.
-        // Wait for Mainnet to be fully initialized
+        // Wait until NetworkController state resolves to mainnet.
         await driver.wait(async () => {
           const uiState = await getCleanAppState(driver);
-          const m = uiState?.metamask;
-          if (
-            m?.ipfsGateway !== 'dweb.link' ||
-            m?.useAddressBarEnsResolution !== true ||
-            m?.selectedNetworkClientId !== NETWORK_CLIENT_ID.MAINNET
-          ) {
-            return false;
-          }
-          if (
-            m.networksMetadata?.[NETWORK_CLIENT_ID.MAINNET]?.status !==
-            NetworkStatus.Available
-          ) {
-            return false;
-          }
-          try {
-            return getCurrentChainId({ metamask: m }) === CHAIN_IDS.MAINNET;
-          } catch {
-            return false;
-          }
+          return (
+            uiState?.metamask?.ipfsGateway === 'dweb.link' &&
+            uiState?.metamask?.useAddressBarEnsResolution === true &&
+            getCurrentChainId({ metamask: uiState?.metamask }) ===
+              CHAIN_IDS.MAINNET
+          );
         }, 10000);
 
         const loginPage = new LoginPage(driver);
