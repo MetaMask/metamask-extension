@@ -427,7 +427,11 @@ class TransactionConfirmation extends Confirmation {
 
   async clickEnforcedSimulationsToggle(): Promise<void> {
     console.log(`Clicking the enforced simulations toggle.`);
-    await this.driver.clickElement(this.enforcedSimulationsToggle);
+    const toggle = await this.driver.findElement(
+      this.enforcedSimulationsToggle,
+    );
+    await this.driver.scrollToElement(toggle);
+    await toggle.click();
   }
 
   async clickGasFeeTokenPill() {
