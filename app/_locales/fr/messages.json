@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Ajouter un réseau personnalisé"
   },
-  "addAHardwareWallet": {
-    "message": "Ajouter un portefeuille matériel"
-  },
   "addANetwork": {
     "message": "Ajouter un réseau"
   },

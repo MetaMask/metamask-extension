@@ -61,6 +61,7 @@ import {
   CorruptionHandler,
   hasVault,
 } from './lib/state-corruption/state-corruption-recovery';
+import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
@@ -1989,7 +1990,9 @@ export function setupController(
     try {
       const pendingApprovalCount =
         controller.appStateController.waitingForUnlock.length +
-        controller.approvalController.getTotalApprovalCount();
+        getAttentionRequiredApprovalCount({
+          approvalController: controller.approvalController,
+        });
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);

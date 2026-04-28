@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Thêm mạng tùy chỉnh"
   },
-  "addAHardwareWallet": {
-    "message": "Thêm ví cứng"
-  },
   "addANetwork": {
     "message": "Thêm mạng"
   },
