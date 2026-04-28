@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Add a custom network"
   },
-  "addAHardwareWallet": {
-    "message": "Add a hardware wallet"
-  },
   "addANetwork": {
     "message": "Add a network"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "Add a URL"
+  },
+  "addAWallet": {
+    "message": "Add a wallet"
   },
   "addAccount": {
     "message": "Add account"
@@ -1733,6 +1733,12 @@
   "connect": {
     "message": "Connect"
   },
+  "connectAHardwareWallet": {
+    "message": "Connect a hardware wallet"
+  },
+  "connectAHardwareWalletDescription": {
+    "message": "Using USB or a QR Code"
+  },
   "connectAccounts": {
     "message": "Connect accounts"
   },
@@ -3086,6 +3092,14 @@
     "message": "Start date",
     "description": "Label for the start date of a permission"
   },
+  "gatorPermissionsStatusExpired": {
+    "message": "Expired",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Revoked",
+    "description": "Tag label for a gator permission that has been revoked"
+  },
   "gatorPermissionsStreamRate": {
     "message": "Stream rate",
     "description": "Label for the stream rate of a permission"
@@ -3365,6 +3379,9 @@
   "importAWallet": {
     "message": "Import a wallet"
   },
+  "importAWalletDescription": {
+    "message": "Using a 12, 18 or 24-word seed phrase"
+  },
   "importAccountError": {
     "message": "Error importing account."
   },
@@ -3395,6 +3412,9 @@
   },
   "importAnAccount": {
     "message": "Import an account"
+  },
+  "importAnAccountDescription": {
+    "message": "Via a private key"
   },
   "importNFT": {
     "message": "Import NFT"
@@ -5580,7 +5600,7 @@
     "message": "Close Amount"
   },
   "perpsCloseLong": {
-    "message": "Close Long"
+    "message": "Close long"
   },
   "perpsClosePartialMinNotional": {
     "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
@@ -5589,13 +5609,13 @@
     "message": "Close position"
   },
   "perpsCloseShort": {
-    "message": "Close Short"
+    "message": "Close short"
   },
   "perpsConfirmCloseLong": {
-    "message": "Close Long"
+    "message": "Close long"
   },
   "perpsConfirmCloseShort": {
-    "message": "Close Short"
+    "message": "Close short"
   },
   "perpsConnectionTimeout": {
     "message": "Connection timed out. Please try again."
@@ -5744,7 +5764,7 @@
     "message": "Limit"
   },
   "perpsLimitPrice": {
-    "message": "Limit Price"
+    "message": "Limit price"
   },
   "perpsLimitPriceAboveCurrentPrice": {
     "message": "Limit price is above current price"
@@ -5901,7 +5921,7 @@
     "message": "Flip your short position to a long"
   },
   "perpsSaveChanges": {
-    "message": "Save Changes",
+    "message": "Save changes",
     "description": "Button text for saving TP/SL changes"
   },
   "perpsSearchMarkets": {
@@ -5978,7 +5998,7 @@
     "message": "Triggered"
   },
   "perpsStopLoss": {
-    "message": "Stop Loss",
+    "message": "Stop loss",
     "description": "Label for stop loss price input"
   },
   "perpsStopLossInvalidPrice": {
@@ -5990,7 +6010,7 @@
     "description": "Loading text shown while an order is being submitted"
   },
   "perpsTakeProfit": {
-    "message": "Take Profit",
+    "message": "Take profit",
     "description": "Label for take profit price input"
   },
   "perpsTakeProfitInvalidPrice": {
