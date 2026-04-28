@@ -21,13 +21,16 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useNetworkFormState } from '../settings/networks-tab/networks-form/networks-form-state';
-import { setEditedNetwork } from '../../store/actions';
+import { setActiveNetwork, setEditedNetwork } from '../../store/actions';
 import AddBlockExplorerModal from '../../components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import { SelectRpcUrlModal } from '../../components/multichain/network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
 import { AddNetwork } from '../../components/multichain/network-manager/components/add-network';
 import { Header } from '../../components/multichain/pages/page';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain/networks';
+import {
+  getMultichainNetworkConfigurationsByChainId,
+  getSelectedMultichainNetworkChainId,
+} from '../../selectors/multichain/networks';
 import { getEditedNetwork } from '../../selectors/selectors';
 import { SettingsV2Header } from '../settings-v2/shared/settings-v2-header';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
@@ -96,6 +99,9 @@ export const NetworksPage = () => {
 
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
+  );
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
   );
   const rawEditedNetwork = useSelector(getEditedNetwork);
   const { chainId: editingChainId, editCompleted } = rawEditedNetwork ?? {};
@@ -216,16 +222,22 @@ export const NetworksPage = () => {
     dispatch(setEditedNetwork());
   }, [dispatch, rawEditedNetwork, view]);
 
-  const handleSelectRpc = useCallback(() => {
-    if (editedNetwork?.chainId) {
-      setPageToast({
-        chainId: editedNetwork.chainId,
-        nickname: editedNetwork.name ?? '',
-        newNetwork: false,
-      });
-    }
-    setView();
-  }, [editedNetwork, setView]);
+  const handleSelectRpc = useCallback(
+    (caipChainId: string, networkClientId: string) => {
+      if (caipChainId === currentMultichainChainId) {
+        dispatch(setActiveNetwork(networkClientId));
+      }
+      if (editedNetwork?.chainId) {
+        setPageToast({
+          chainId: editedNetwork.chainId,
+          nickname: editedNetwork.name ?? '',
+          newNetwork: false,
+        });
+      }
+      setView();
+    },
+    [currentMultichainChainId, dispatch, editedNetwork, setView],
+  );
 
   const handleGoHome = useCallback(() => {
     setView();

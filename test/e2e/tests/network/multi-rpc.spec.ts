@@ -287,15 +287,13 @@ describe('MultiRpc:', function (this: Suite) {
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openNetworkRPC('eip155:42161');
         await selectNetworkDialog.checkNetworkRPCNumber(2);
-
-        // select second rpc for Arbitrum network in the network dialog
         await selectNetworkDialog.selectRPC('Arbitrum mainnet 2');
-        await homePage.checkPageIsLoaded();
-        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
-        await headerNavbar.openGlobalNetworksMenu();
-
-        // check that the second rpc is selected in the network dialog
         await selectNetworkDialog.checkPageIsLoaded();
+        await selectNetworkDialog.checkEditNetworkMessageIsDisplayed(
+          'Arbitrum mainnet',
+        );
+        // Re-open the chain's RPC list to confirm the new RPC is selected.
+        await selectNetworkDialog.openNetworkRPC('eip155:42161');
         await selectNetworkDialog.checkRpcIsSelected('Arbitrum mainnet 2');
 
         const usedUrl = await mockedEndpoint[0].getSeenRequests();
