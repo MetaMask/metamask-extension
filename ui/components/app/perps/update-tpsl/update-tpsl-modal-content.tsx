@@ -53,9 +53,15 @@ import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
+  isStopLossSafeFromLiquidation,
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
+  getStopLossLiquidationErrorDirection,
 } from '../utils/tpslValidation';
+import {
+  applyDefaultStopLossSign,
+  isSignedDecimalInput,
+} from '../utils/tpslInput';
 
 // RoE (Return on Equity) preset percentages - matching mobile
 const TP_PRESETS = [10, 25, 50, 100];
@@ -139,6 +145,16 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     }
     return Number.parseFloat(position.size) >= 0 ? 'long' : 'short';
   }, [position]);
+
+  const liquidationPrice = useMemo(() => {
+    if (!position.liquidationPrice) {
+      return null;
+    }
+    const parsed = Number.parseFloat(
+      position.liquidationPrice.replaceAll(',', ''),
+    );
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+  }, [position.liquidationPrice]);
 
   // Presets populate the input with a raw numeric string (the `$` renders as a
   // sibling icon). Use PRICE_RANGES_UNIVERSAL so BTC collapses to no decimals
@@ -279,7 +295,19 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     [editingSlPrice, currentPrice, positionDirection],
   );
 
-  const hasInvalidTPSL = isTpInvalid || isSlInvalid;
+  const isSlLiquidationInvalid = useMemo(
+    () =>
+      Boolean(
+        editingSlPrice.replaceAll(',', '').trim() &&
+          !isStopLossSafeFromLiquidation(editingSlPrice, {
+            liquidationPrice,
+            direction: positionDirection,
+          }),
+      ),
+    [editingSlPrice, liquidationPrice, positionDirection],
+  );
+
+  const hasInvalidTPSL = isTpInvalid || isSlInvalid || isSlLiquidationInvalid;
 
   useEffect(() => {
     return () => {
@@ -317,7 +345,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const handleTpPercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^[+-]?\d*(?:\.\d*)?$/u.test(value)) {
+      if (value === '' || isSignedDecimalInput(value)) {
         setRawTpPercent(value);
         setTpPresetPercent(null);
         const numValue = Number.parseFloat(value);
@@ -345,8 +373,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const handleSlPercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = event.target;
-      if (value === '' || /^[+-]?\d*(?:\.\d*)?$/u.test(value)) {
+      const value = applyDefaultStopLossSign(event.target.value, rawSlPercent);
+      if (value === '' || isSignedDecimalInput(value)) {
         setRawSlPercent(value);
         setSlPresetPercent(null);
         const numValue = Number.parseFloat(value);
@@ -358,7 +386,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
         }
       }
     },
-    [percentToPriceForEdit],
+    [percentToPriceForEdit, rawSlPercent],
   );
 
   const handleSlPercentFocus = useCallback(() => {
@@ -766,16 +794,21 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
             </Text>
           </Box>
         )}
-        {isSlInvalid && (
+        {(isSlInvalid || isSlLiquidationInvalid) && (
           <Text
             variant={TextVariant.BodyXs}
             color={TextColor.ErrorDefault}
             data-testid="sl-validation-error"
           >
-            {t('perpsStopLossInvalidPrice', [
-              getStopLossErrorDirection(positionDirection),
-              'current',
-            ])}
+            {isSlInvalid
+              ? t('perpsStopLossInvalidPrice', [
+                  getStopLossErrorDirection(positionDirection),
+                  'current',
+                ])
+              : t('perpsStopLossInvalidPrice', [
+                  getStopLossLiquidationErrorDirection(positionDirection),
+                  'liquidation',
+                ])}
           </Text>
         )}
       </Box>
