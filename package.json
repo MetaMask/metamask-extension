@@ -163,7 +163,7 @@
   "resolutions": {
     "@metamask/bridge-controller": "70.2.0",
     "@metamask/bridge-status-controller": "71.0.0",
-    "@metamask/messenger": "1.1.1",
+    "@metamask/messenger": "npm:@metamask-previews/messenger@1.1.1-preview-127dac8",
     "@metamask/network-controller": "30.0.1",
     "follow-redirects": "^1.16.0",
     "@unrs/resolver-binding-wasm32-wasi": "npm:npm-empty-package@1.0.0",
@@ -288,7 +288,6 @@
     "protobufjs": "7.5.5",
     "postcss-loader/jiti": "npm:npm-empty-package@1.0.0",
     "@metamask/snaps-controllers": "^20.0.3",
-    "@metamask/messenger@npm:^0.3.0": "^1.1.1",
     "@metamask/perps-controller": "^4.0.0"
   },
   "dependencies": {

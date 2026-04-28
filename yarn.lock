@@ -7230,9 +7230,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/messenger@npm:1.1.1":
-  version: 1.1.1
-  resolution: "@metamask/messenger@npm:1.1.1"
+"@metamask/messenger@npm:@metamask-previews/messenger@1.1.1-preview-127dac8":
+  version: 1.1.1-preview-127dac8
+  resolution: "@metamask-previews/messenger@npm:1.1.1-preview-127dac8"
   dependencies:
     "@metamask/utils": "npm:^11.9.0"
     yargs: "npm:^17.7.2"
@@ -7240,7 +7240,7 @@ __metadata:
     typescript: ">=5.0.0"
   bin:
     messenger-generate-action-types: ./dist/generate-action-types/cli.mjs
-  checksum: 10/a959af95e9e117aa0f7ad1c280f7817fef2c0b575c76837b1a6c884c9c9ef1dd0faeaef0c2c0c2035f68c7638d1f87cd172956ee962dec97d8ab6176fa6964e3
+  checksum: 10/5dc1a8a4371bfcf2cf22025e95004fd5d73b7947390014f193c70e111de025f293633969b1d6cd197f79653ff0eedbb45255e276d097b6393db84c618118b81f
   languageName: node
   linkType: hard
 
