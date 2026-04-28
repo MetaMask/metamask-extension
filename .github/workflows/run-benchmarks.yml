@@ -256,7 +256,7 @@ jobs:
   # - Phase 4: continue-on-error: false + added to branch protection required checks.
   quality-gate:
     name: quality-gate
-    continue-on-error: true # Phase 2 — non-blocking, informational
+    continue-on-error: false
     needs:
       - benchmarks
       - benchmarks-page-load
