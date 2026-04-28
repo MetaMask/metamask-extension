@@ -853,10 +853,12 @@
     "@metamask/assets-controller": {
       "globals": {
         "clearInterval": true,
+        "clearTimeout": true,
         "console.error": true,
         "fetch.bind": true,
         "performance.now": true,
-        "setInterval": true
+        "setInterval": true,
+        "setTimeout": true
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
