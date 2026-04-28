@@ -160,6 +160,9 @@ async function withFixtures(options, testSuite) {
     title,
     ignoredConsoleErrors = [],
     disableServerMochaToBackground = false,
+    afterLocalNodesStart = async function () {
+      // do nothing.
+    },
     testSpecificMock = function () {
       // do nothing.
     },
@@ -252,6 +255,8 @@ async function withFixtures(options, testSuite) {
           );
       }
     }
+
+    await afterLocalNodesStart({ localNodes });
 
     let contractRegistry;
     let seeder;
@@ -369,12 +374,16 @@ async function withFixtures(options, testSuite) {
       getPrivacyReport,
       getNetworkReport,
       clearNetworkReport,
-    } = await mockingSetupFunction(mockServer, testSpecificMock, {
-      chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
-      ethConversionInUsd,
-      monConversionInUsd,
-      unifiedEvmAccountsApiBalances: effectiveUnifiedEvmAccountsApiBalances,
-    });
+    } = await mockingSetupFunction(
+      mockServer,
+      (server) => testSpecificMock(server, { localNodes }),
+      {
+        chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
+        ethConversionInUsd,
+        monConversionInUsd,
+        unifiedEvmAccountsApiBalances: effectiveUnifiedEvmAccountsApiBalances,
+      },
+    );
 
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(

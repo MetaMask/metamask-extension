@@ -4,6 +4,7 @@ import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
 } from '../../btc/mocks/tokens-api';
+import { TronNode } from '../../../seeder/tron/node';
 
 export const TRON_ACCOUNT_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
 export const TRON_RECIPIENT_ADDRESS = 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq';
@@ -34,6 +35,42 @@ const TRON_BLOCK_RESPONSE = {
     },
     witness_signature:
       'b93cc232e26d2a1751dbaea8985aac5bac9d64b2c644021e96343c14f59212eb359ff52a6d46464bf61d56275ea26e38f903ffc253fca4f55097d0824136271b00',
+  },
+};
+
+const DEFAULT_TRC10_ASSETS = {
+  GAS_FREE: {
+    decimals: 6,
+    name: 'GasFreeTransferSolution',
+    symbol: 'GasFree4uCOM',
+    tokenId: '1005074',
+  },
+};
+
+const DEFAULT_TRC20_ASSETS = {
+  HTX: {
+    address: 'TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6',
+    decimals: 18,
+    name: 'HTX DAO',
+    symbol: 'HTX',
+  },
+  SEED: {
+    address: 'TBwoSTyywvLrgjSgaatxrBhxt3DGpVuENh',
+    decimals: 6,
+    name: 'SEED',
+    symbol: 'SEED',
+  },
+  USDD: {
+    address: 'TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+    decimals: 18,
+    name: 'USDD',
+    symbol: 'USDD',
+  },
+  USDT: {
+    address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    decimals: 6,
+    name: 'Tether',
+    symbol: 'USDT',
   },
 };
 
@@ -666,103 +703,102 @@ export async function mockFiatExchangeRates(
 
 export async function mockTronSpotPrices(
   mockServer: Mockttp,
+  tronNode?: Pick<TronNode, 'trc10Tokens' | 'trc20Tokens'>,
 ): Promise<MockedEndpoint> {
+  const trc10Assets = { ...DEFAULT_TRC10_ASSETS, ...tronNode?.trc10Tokens };
+  const trc20Assets = { ...DEFAULT_TRC20_ASSETS, ...tronNode?.trc20Tokens };
+  const htxAssetId = `tron:728126428/trc20:${trc20Assets.HTX.address}`;
+  const seedAssetId = `tron:728126428/trc20:${trc20Assets.SEED.address}`;
+  const usddAssetId = `tron:728126428/trc20:${trc20Assets.USDD.address}`;
+  const usdtAssetId = `tron:728126428/trc20:${trc20Assets.USDT.address}`;
+  const gasFreeAssetId = `tron:728126428/trc10:${trc10Assets.GAS_FREE.tokenId}`;
+  const pricesByAssetId = {
+    [gasFreeAssetId]: null,
+    [seedAssetId]: null,
+    [htxAssetId]: {
+      id: 'htx-dao',
+      price: 0.00000168,
+      marketCap: 1564644183,
+      allTimeHigh: 0.00000375,
+      allTimeLow: 8.00816e-7,
+      totalVolume: 8401090,
+      high1d: 0.00000169,
+      low1d: 0.00000168,
+      circulatingSupply: 930149437822426.1,
+      dilutedMarketCap: 1564644183,
+      marketCapPercentChange1d: -0.24658,
+      priceChange1d: -5.256468957e-9,
+      pricePercentChange1h: -0.018039112904324334,
+      pricePercentChange1d: -0.31163572893346203,
+      pricePercentChange7d: 2.5024956056778302,
+      pricePercentChange14d: 2.5292823808168077,
+      pricePercentChange30d: 3.0195398109184906,
+      pricePercentChange200d: 0.6818433770786526,
+      pricePercentChange1y: -32.576284326979135,
+    },
+    [usdtAssetId]: {
+      id: 'tether',
+      price: 0.999176,
+      marketCap: 186948908128,
+      allTimeHigh: 1.32,
+      allTimeLow: 0.572521,
+      totalVolume: 82810499462,
+      high1d: 0.999233,
+      low1d: 0.99864,
+      circulatingSupply: 187095381424.3697,
+      dilutedMarketCap: 192411564831,
+      marketCapPercentChange1d: 0.00738,
+      priceChange1d: 0.0000249,
+      pricePercentChange1h: 0.020930266600212476,
+      pricePercentChange1d: 0.0024917010333802407,
+      pricePercentChange7d: 0.0353800081960735,
+      pricePercentChange14d: -0.02819624194849003,
+      pricePercentChange30d: -0.11081103419080159,
+      pricePercentChange200d: -0.09316658601991926,
+      pricePercentChange1y: -0.18071863167121408,
+    },
+    [usddAssetId]: {
+      id: 'usdd',
+      price: 0.999959,
+      marketCap: 850324158,
+      allTimeHigh: 1.052,
+      allTimeLow: 0.928067,
+      totalVolume: 4965944,
+      high1d: 1.001,
+      low1d: 0.997736,
+      circulatingSupply: 849721383,
+      dilutedMarketCap: 855111059,
+      marketCapPercentChange1d: -1.16704,
+      priceChange1d: 0.00091697,
+      pricePercentChange1h: 0.08168027068663826,
+      pricePercentChange1d: 0.09178502072533638,
+      pricePercentChange7d: 0.13273041638231686,
+      pricePercentChange14d: 0.03518940190469397,
+      pricePercentChange30d: -0.008525700123439886,
+      pricePercentChange200d: -0.00280303064037531,
+      pricePercentChange1y: 0.5583576483408966,
+    },
+  };
+
   return mockServer
     .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
     .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'tron:728126428/slip44:195': {
-          id: 'tron',
-          price: TRX_TO_USD_RATE,
-          marketCap: 26501571090,
-          allTimeHigh: 0.431288,
-          allTimeLow: 0.00180434,
-          totalVolume: 584039469,
-          high1d: 0.281458,
-          low1d: 0.278801,
-          circulatingSupply: 94683395974.3822,
-          dilutedMarketCap: 26501570979,
-          marketCapPercentChange1d: -0.25,
-          priceChange1d: -0.000716844753300194,
-          pricePercentChange1h: 0.357582350741983,
-          pricePercentChange1d: -0.255462049152282,
-          pricePercentChange7d: 0.862835815143018,
-          pricePercentChange14d: 0.395394234400669,
-          pricePercentChange30d: -4.69037102835574,
-          pricePercentChange200d: 4.7347558395209,
-          pricePercentChange1y: -1.29971018156079,
-        },
-        'tron:3448148188/slip44:195': null,
-        'tron:2494104990/slip44:195': null,
-        'tron:728126428/trc10:1005074': null,
-        'tron:728126428/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6': {
-          id: 'htx-dao',
-          price: 0.00000168,
-          marketCap: 1564644183,
-          allTimeHigh: 0.00000375,
-          allTimeLow: 8.00816e-7,
-          totalVolume: 8401090,
-          high1d: 0.00000169,
-          low1d: 0.00000168,
-          circulatingSupply: 930149437822426.1,
-          dilutedMarketCap: 1564644183,
-          marketCapPercentChange1d: -0.24658,
-          priceChange1d: -5.256468957e-9,
-          pricePercentChange1h: -0.018039112904324334,
-          pricePercentChange1d: -0.31163572893346203,
-          pricePercentChange7d: 2.5024956056778302,
-          pricePercentChange14d: 2.5292823808168077,
-          pricePercentChange30d: 3.0195398109184906,
-          pricePercentChange200d: 0.6818433770786526,
-          pricePercentChange1y: -32.576284326979135,
-        },
-        'tron:728126428/trc20:TBwoSTyywvLrgjSgaatxrBhxt3DGpVuENh': null,
-        'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t': {
-          id: 'tether',
-          price: 0.999176,
-          marketCap: 186948908128,
-          allTimeHigh: 1.32,
-          allTimeLow: 0.572521,
-          totalVolume: 82810499462,
-          high1d: 0.999233,
-          low1d: 0.99864,
-          circulatingSupply: 187095381424.3697,
-          dilutedMarketCap: 192411564831,
-          marketCapPercentChange1d: 0.00738,
-          priceChange1d: 0.0000249,
-          pricePercentChange1h: 0.020930266600212476,
-          pricePercentChange1d: 0.0024917010333802407,
-          pricePercentChange7d: 0.0353800081960735,
-          pricePercentChange14d: -0.02819624194849003,
-          pricePercentChange30d: -0.11081103419080159,
-          pricePercentChange200d: -0.09316658601991926,
-          pricePercentChange1y: -0.18071863167121408,
-        },
-        'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz': {
-          id: 'usdd',
-          price: 0.999959,
-          marketCap: 850324158,
-          allTimeHigh: 1.052,
-          allTimeLow: 0.928067,
-          totalVolume: 4965944,
-          high1d: 1.001,
-          low1d: 0.997736,
-          circulatingSupply: 849721383,
-          dilutedMarketCap: 855111059,
-          marketCapPercentChange1d: -1.16704,
-          priceChange1d: 0.00091697,
-          pricePercentChange1h: 0.08168027068663826,
-          pricePercentChange1d: 0.09178502072533638,
-          pricePercentChange7d: 0.13273041638231686,
-          pricePercentChange14d: 0.03518940190469397,
-          pricePercentChange30d: -0.008525700123439886,
-          pricePercentChange200d: -0.00280303064037531,
-          pricePercentChange1y: 0.5583576483408966,
-        },
-      },
-    }));
+    .thenCallback((request) => {
+      const assetIds = new URL(request.url).searchParams
+        .get('assetIds')
+        ?.split(',');
+      const requestedPrices = Object.fromEntries(
+        (assetIds ?? Object.keys(pricesByAssetId)).map((assetId) => [
+          assetId,
+          pricesByAssetId[assetId as keyof typeof pricesByAssetId] ?? null,
+        ]),
+      );
+
+      return {
+        statusCode: 200,
+        json: requestedPrices,
+      };
+    });
 }
 
 export async function mockTrxNativeSpotPrices(
@@ -831,7 +867,11 @@ export async function mockTrxNativeSpotPrices(
 
 export async function mockTronAssets(
   mockServer: Mockttp,
+  tronNode?: Pick<TronNode, 'trc10Tokens' | 'trc20Tokens'>,
 ): Promise<MockedEndpoint> {
+  const trc10Assets = { ...DEFAULT_TRC10_ASSETS, ...tronNode?.trc10Tokens };
+  const trc20Assets = { ...DEFAULT_TRC20_ASSETS, ...tronNode?.trc20Tokens };
+
   return mockServer
     .forGet('https://tokens.api.cx.metamask.io/v3/assets')
     .always()
@@ -839,34 +879,34 @@ export async function mockTronAssets(
       statusCode: 200,
       json: [
         {
-          assetId: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-          decimals: 6,
-          name: 'Tether',
-          symbol: 'USDT',
+          assetId: `tron:728126428/trc20:${trc20Assets.USDT.address}`,
+          decimals: trc20Assets.USDT.decimals,
+          name: trc20Assets.USDT.name,
+          symbol: trc20Assets.USDT.symbol,
         },
         {
-          assetId: 'tron:728126428/trc10:1005074',
-          decimals: 6,
-          name: 'GasFreeTransferSolution',
-          symbol: 'GasFree4uCOM',
+          assetId: `tron:728126428/trc10:${trc10Assets.GAS_FREE.tokenId}`,
+          decimals: trc10Assets.GAS_FREE.decimals,
+          name: trc10Assets.GAS_FREE.name,
+          symbol: trc10Assets.GAS_FREE.symbol,
         },
         {
-          assetId: 'tron:728126428/trc20:TBwoSTyywvLrgjSgaatxrBhxt3DGpVuENh',
-          decimals: 6,
-          name: 'SEED',
-          symbol: 'SEED',
+          assetId: `tron:728126428/trc20:${trc20Assets.SEED.address}`,
+          decimals: trc20Assets.SEED.decimals,
+          name: trc20Assets.SEED.name,
+          symbol: trc20Assets.SEED.symbol,
         },
         {
-          assetId: 'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
-          decimals: 18,
-          name: 'USDD',
-          symbol: 'USDD',
+          assetId: `tron:728126428/trc20:${trc20Assets.USDD.address}`,
+          decimals: trc20Assets.USDD.decimals,
+          name: trc20Assets.USDD.name,
+          symbol: trc20Assets.USDD.symbol,
         },
         {
-          assetId: 'tron:728126428/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6',
-          decimals: 18,
-          name: 'HTX DAO',
-          symbol: 'HTX',
+          assetId: `tron:728126428/trc20:${trc20Assets.HTX.address}`,
+          decimals: trc20Assets.HTX.decimals,
+          name: trc20Assets.HTX.name,
+          symbol: trc20Assets.HTX.symbol,
         },
       ],
     }));
