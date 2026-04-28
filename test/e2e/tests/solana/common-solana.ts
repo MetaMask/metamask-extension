@@ -1629,25 +1629,6 @@ export async function mockGetMultipleAccounts(mockServer: Mockttp) {
     });
 }
 
-export async function mockSecurityAlertBulkScan(mockServer: Mockttp) {
-  return await mockServer
-    .forPost(SECURITY_ALERT_BULK_SCAN_URL)
-    .thenCallback(async (req) => {
-      const body = (await req.body.getJson()) as { tokens: string[] };
-      const tokens = Array.isArray(body.tokens) ? body.tokens : [];
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const results: Record<string, { result_type: string }> = {};
-      for (const address of tokens) {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        results[address] = { result_type: 'Verified' };
-      }
-      return {
-        statusCode: 200,
-        json: { results },
-      };
-    });
-}
-
 export async function mockSecurityAlertSwap(mockServer: Mockttp) {
   console.log('mockSecurityAlertSwap');
   const securityAlertSwapResponse = await readResponseJsonFile(
