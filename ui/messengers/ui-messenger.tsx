@@ -71,41 +71,28 @@ export class UIMessenger extends Messenger<
   }
 
   /**
-   * Call an action on the background.
+   * Get the handler for a given action type.
    *
-   * This function will call the action handler corresponding to the given
-   * action type, passing along any parameters given.
+   * This is called when `call` is invoked on the messenger. We override it here
+   * to route all calls through the background connection, except for the
+   * excluded actions.
    *
    * @param actionType - The action type. This is a unique identifier for this
    * action.
-   * @param params - The action parameters. These must match the type of the
-   * parameters of the registered action handler.
-   * @throws Will throw when no handler has been registered for the given type.
-   * @template ActionType - A type union of Action type strings.
-   * @returns The action return value.
+   * @returns The handler for this action type, or undefined if this action type
+   * is excluded or not found.
    */
-  async call<ActionType extends UIMessengerActions['type']>(
-    actionType: ActionType,
-    ...params: ExtractActionParameters<UIMessengerActions, ActionType>
-  ): Promise<Awaited<ExtractActionResponse<UIMessengerActions, ActionType>>> {
-    const anyActionType: string = actionType;
-
-    if (EXCLUDED_ACTIONS.includes(anyActionType)) {
-      throw new Error(`Action "${actionType}" has not been exposed to the UI.`);
+  protected override getAction(
+    actionType: UIMessengerActions['type'],
+  ): ActionConstraint['handler'] | undefined {
+    if (EXCLUDED_ACTIONS.includes(actionType)) {
+      throw new Error(
+        `The action "${actionType}" has not been exposed to the UI.`,
+      );
     }
 
-    const result = await submitRequestToBackground('messengerCall', [
-      actionType,
-      params,
-    ]);
-
-    // Type assertion: The type that MetaRPCClient associates with this value
-    // doesn't match the return type we've declared above due to some subtle
-    // differences in the types, but that's okay. There are some assumptions we
-    // have to make anyway.
-    return result as Awaited<
-      ExtractActionResponse<UIMessengerActions, ActionType>
-    >;
+    return (...args: unknown[]) =>
+      submitRequestToBackground('messengerCall', [actionType, args]);
   }
 
   /**

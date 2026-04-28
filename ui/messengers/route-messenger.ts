@@ -1,5 +1,4 @@
 import { Messenger } from '@metamask/messenger';
-import type { ExtractActionParameters } from '@metamask/messenger';
 import type {
   UIMessenger,
   UIMessengerActions,
@@ -72,27 +71,11 @@ export function createRouteMessenger<
     throw new Error('There are no actions or events to delegate.');
   }
 
-  // `UIMessenger` overrides call() rather than registering handlers in its
-  // action map, so `uiMessenger.delegate()` would fail: It looks up handlers
-  // from the parent's `#actions` map, which is always empty on `UIMessenger`.
-  // Instead, we register handlers directly on the route messenger that call
-  // through to `uiMessenger.call()`, which is what actually forwards the call
-  // to the background.
-  for (const actionType of actions) {
-    routeMessenger._internalRegisterDelegatedActionHandler(
-      actionType,
-      (
-        ...args: ExtractActionParameters<UIMessengerActions, typeof actionType>
-      ) => uiMessenger.call(actionType, ...args) as never,
-    );
-  }
-
-  if (events.length > 0) {
-    uiMessenger.delegate({
-      messenger: routeMessenger,
-      events,
-    });
-  }
+  uiMessenger.delegate({
+    messenger: routeMessenger,
+    actions,
+    events,
+  });
 
   return routeMessenger;
 }
