@@ -38,7 +38,6 @@ import {
 import { useSuppressNavigation } from '../../hooks/useSuppressConfirmNavigate';
 
 const EXEMPTED_ROUTES = [
-  CROSS_CHAIN_SWAP_ROUTE,
   UNLOCK_ROUTE,
   CONNECT_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
