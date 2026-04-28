@@ -3,11 +3,10 @@ import {
   Icon,
   IconColor,
   IconName,
-  IconSize,
+  IconSize
 } from '@metamask/design-system-react';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
-import { BridgeAssetSecurityDataType } from '../../../utils/tokens';
-import { Tag } from '../../../../../components/component-library';
+import { IconSize as IconSizeLegacy , Tag } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   BackgroundColor,
@@ -48,7 +47,7 @@ export const AssetBanner = ({ asset }: AssetBannerProps) => {
         }}
         startIconProps={{
           className: 'text-warning-default',
-          size: IconSize.Sm,
+          size: IconSizeLegacy.Sm,
         }}
       />
     );
@@ -64,7 +63,7 @@ export const AssetBanner = ({ asset }: AssetBannerProps) => {
           color: TextColor.errorDefault,
           fontWeight: FontWeight.Medium,
         }}
-        startIconProps={{ className: 'text-error-default', size: IconSize.Sm }}
+        startIconProps={{ className: 'text-error-default', size: IconSizeLegacy.Sm }}
       />
     );
   }
