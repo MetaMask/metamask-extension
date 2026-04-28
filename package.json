@@ -2,12 +2,6 @@
   "name": "metamask-crx",
   "version": "13.30.0",
   "private": true,
-  "previewBuilds": {
-    "@metamask/passkey-controller": {
-      "type": "non-breaking",
-      "previewVersion": "0.0.0-preview-4c0846313"
-    }
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/metamask-extension.git"
@@ -378,7 +372,7 @@
     "@metamask/notification-services-controller": "^23.1.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
-    "@metamask/passkey-controller": "npm:@metamask-previews/passkey-controller@0.0.0-preview-4c0846313",
+    "@metamask/passkey-controller": "^1.0.0",
     "@metamask/permission-controller": "^12.2.1",
     "@metamask/permission-log-controller": "^5.0.0",
     "@metamask/permissions-kernel-snap": "^1.1.0",
