@@ -45,7 +45,7 @@ describe('Settings', function () {
         await driver.navigate();
 
         // Wait for the live controller state (via Redux) to confirm the
-        // ipfsGateway and useAddressBarEnsResolution settings are active.
+        // ipfsGateway and useAddressBarEnsResolution settings are active and mainnet is selected.
         // Unlike getPersistedState (which reads IndexedDB fixture data
         // immediately), getCleanAppState reflects the running controller
         // state that has been synced to the UI after background init.
@@ -53,7 +53,9 @@ describe('Settings', function () {
           const uiState = await getCleanAppState(driver);
           return (
             uiState?.metamask?.ipfsGateway === 'dweb.link' &&
-            uiState?.metamask?.useAddressBarEnsResolution === true
+            uiState?.metamask?.useAddressBarEnsResolution === true &&
+            uiState?.metamask?.selectedNetworkClientId ===
+              NETWORK_CLIENT_ID.MAINNET
           );
         }, 10000);
 
