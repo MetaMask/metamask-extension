@@ -16,6 +16,7 @@ import {
   isStrictHexString,
   parseCaipAssetType,
 } from '@metamask/utils';
+import { uniqBy } from 'lodash';
 import { ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { isTronSpecialAsset, toAssetId } from '../../../shared/lib/asset-utils';
 import {
@@ -34,7 +35,7 @@ import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-acc
 import { EMPTY_ARRAY } from '../../selectors/shared';
 import { type BridgeAppState, getFromChains } from './selectors';
 import { type BridgeToken } from './types';
-import { getMaybeHexChainId } from './utils';
+import { getMaybeHexChainId, toBridgeToken } from './utils';
 
 const createSelector = untypedCreateSelector.withTypes<BridgeAppState>();
 
@@ -367,11 +368,23 @@ const getBridgeAssetsForAccountGroupId = createSelector(
  * @returns The sorted assets for the given account group and selected asset.
  */
 export const getBridgeSortedAssets = createSelector(
-  [getBridgeAssetsForAccountGroupId],
-  (assetsWithBalances) =>
-    assetsWithBalances.sort(
+  [
+    getBridgeAssetsForAccountGroupId,
+    (_, __, chainIds: Set<CaipChainId>) => chainIds,
+  ],
+  (assetsWithBalances, chainIds) => {
+    const sortedAssets = assetsWithBalances.sort(
       (a, b) => (b.tokenFiatAmount ?? 0) - (a.tokenFiatAmount ?? 0),
-    ),
+    );
+    return uniqBy(
+      sortedAssets.filter(({ chainId }) => {
+        const matchesChainIdFilter = chainIds.has(chainId);
+
+        return matchesChainIdFilter;
+      }),
+      ({ assetId }) => assetId?.toLowerCase(),
+    ).map((token) => toBridgeToken(token));
+  },
 );
 
 /**

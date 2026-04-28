@@ -77,9 +77,6 @@ export const BridgeAssetPicker = ({
   const [accountGroup] = useSelector((state: BridgeAppState) =>
     getAccountGroupsByAddress(state, [accountAddress]),
   );
-  const assetsWithBalance = useSelector((state: BridgeAppState) =>
-    getBridgeSortedAssets(state, accountGroup?.id),
-  );
 
   const t = useI18nContext();
   const { isStockToken, isTokenTradingOpen } = useRWAToken();
@@ -106,18 +103,8 @@ export const BridgeAssetPicker = ({
     return new Set(chainIdsList);
   }, [chainIdsList]);
 
-  const assetsToInclude = useMemo(
-    () =>
-      uniqBy(
-        assetsWithBalance.filter((token) => {
-          const matchesChainIdFilter = chainIdsSet.has(token.chainId);
-
-          return matchesChainIdFilter;
-        }),
-        (a) => a.assetId?.toLowerCase(),
-      ).map((token) => toBridgeToken(token)),
-    // Ignore warnings about assetsWithBalance to prevent re-fetching token list excessively
-    [chainIdsSet, accountGroup?.id, accountAddress],
+  const assetsToInclude = useSelector((state: BridgeAppState) =>
+    getBridgeSortedAssets(state, accountGroup?.id, chainIdsSet),
   );
 
   const { popularTokensList, isLoading: isPopularTokensLoading } =
