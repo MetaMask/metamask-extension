@@ -106,7 +106,9 @@ export async function onboardThenExecuteScript(
   await homePage.waitForLoadingOverlayToDisappear();
 
   const headerNavbar = new HeaderNavbar(driver);
-  const firstAddress = await getFirstAddress(driver, headerNavbar);
+  const firstAddress = await getFirstAddress(driver, headerNavbar, {
+    waitForSync: false,
+  });
   await lockAndWaitForLoginPage(driver);
 
   // use the home page to destroy the vault
