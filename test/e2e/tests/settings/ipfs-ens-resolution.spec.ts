@@ -1,4 +1,5 @@
 import { MockedEndpoint, MockttpServer } from 'mockttp';
+import { NetworkStatus } from '@metamask/network-controller';
 import { getCleanAppState, tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -7,6 +8,8 @@ import PrivacySettings from '../../page-objects/pages/settings/privacy-settings'
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../constants';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 
 describe('Settings', function () {
   const ENS_NAME = 'metamask.eth';
@@ -34,6 +37,11 @@ describe('Settings', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockEns,
@@ -44,22 +52,32 @@ describe('Settings', function () {
       async ({ driver }) => {
         await driver.navigate();
 
-        // Wait for the live controller state (via Redux) to confirm the
-        // ipfsGateway and useAddressBarEnsResolution settings are active and mainnet is selected.
-        // Unlike getPersistedState (which reads IndexedDB fixture data
-        // immediately), getCleanAppState reflects the running controller
-        // state that has been synced to the UI after background init.
+        // Wait for live UI Redux to match what the ENS webRequest handler needs.
+        // selectedNetworkClientId alone is not enough: webRequestDidFail always
+        // calls getCurrentChainId() (via getProviderConfig) before IN_TEST logic;
+        // that throws until NetworkController state is fully hydrated.
         await driver.wait(async () => {
           const uiState = await getCleanAppState(driver);
-          return (
-            uiState?.metamask?.ipfsGateway === 'dweb.link' &&
-            uiState?.metamask?.useAddressBarEnsResolution === true &&
-            uiState?.metamask?.selectedNetworkClientId ===
-              NETWORK_CLIENT_ID.MAINNET
-          );
+          const m = uiState?.metamask;
+          if (
+            m?.ipfsGateway !== 'dweb.link' ||
+            m?.useAddressBarEnsResolution !== true ||
+            m?.selectedNetworkClientId !== NETWORK_CLIENT_ID.MAINNET
+          ) {
+            return false;
+          }
+          if (
+            m.networksMetadata?.[NETWORK_CLIENT_ID.MAINNET]?.status !==
+            NetworkStatus.Available
+          ) {
+            return false;
+          }
+          try {
+            return getCurrentChainId({ metamask: m }) === CHAIN_IDS.MAINNET;
+          } catch {
+            return false;
+          }
         }, 10000);
-
-        await driver.delay(2000);
 
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
