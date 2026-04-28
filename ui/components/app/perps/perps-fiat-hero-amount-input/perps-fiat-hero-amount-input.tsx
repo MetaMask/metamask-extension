@@ -104,6 +104,7 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
     ({
       value,
       onChange,
+      autoFocus = false,
       disabled = false,
       hasAlert = false,
       isLoading = false,
@@ -146,6 +147,7 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
             {fiatSymbol}
           </Text>
           <input
+            autoFocus={autoFocus}
             data-testid="perps-fiat-hero-amount-input"
             type="text"
             inputMode="decimal"

@@ -450,6 +450,7 @@ const PerpsWithdrawPage: React.FC = () => {
             style={{ flex: 1, minHeight: 0 }}
           >
             <PerpsFiatHeroAmountInput
+              autoFocus
               value={amount}
               onChange={handleHeroAmountChange}
               disabled={isSubmitting}
