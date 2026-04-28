@@ -1,11 +1,32 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Mockttp, MockedEndpoint } from 'mockttp';
+import {
+  createEmptyTronGridTransactionsResponse,
+  createTronGridAccountResponse,
+  TronNativeAccount,
+} from '../../../seeder/tron/assets';
+import { TronNode, TRON_LOCAL_NODE_URL } from '../../../seeder/tron/node';
 
-// Same regex pattern used in common-tron.ts — matches any Infura project ID
-const TRON_INFURA_BASE_URL = 'https://tron-mainnet\\.infura\\.io/v3/[^/]+';
+type TronNodeLike = Pick<
+  TronNode,
+  | 'baseUrl'
+  | 'getTrc10Balances'
+  | 'getTrc20Balances'
+  | 'getTronGridAccountResponse'
+  | 'trc10Tokens'
+  | 'trc20Tokens'
+>;
 
-function tronInfuraUrl(path: string): RegExp {
-  return new RegExp(`^${TRON_INFURA_BASE_URL}${path}$`, 'u');
+// Matches Infura Tron mainnet plus the public TronGrid hosts used by the Tron dapp.
+const TRON_PROVIDER_BASE_URLS = [
+  'https://tron-mainnet\\.infura\\.io/v3/[^/]+',
+  'https://api\\.trongrid\\.io',
+  'https://api\\.shasta\\.trongrid\\.io',
+  'https://nile\\.trongrid\\.io',
+];
+
+function tronProviderUrl(path: string): RegExp {
+  return new RegExp(`^(${TRON_PROVIDER_BASE_URLS.join('|')})${path}$`, 'u');
 }
 
 async function proxyPost(
@@ -29,104 +50,90 @@ async function proxyPost(
  * add them separately in testSpecificMock as usual.
  *
  * @param mockServer - The mockttp server instance
- * @param localNodeUrl - Base URL of the local Tron node (e.g. http://localhost:9090)
+ * @param localNode - Local Tron node instance, or its base URL.
  * @param accountAddress - Tron account address used to scope history endpoints
  * @returns Array of registered MockedEndpoints
  */
 export async function proxyTronBlockchainCalls(
   mockServer: Mockttp,
-  localNodeUrl: string,
+  localNode: TronNodeLike | string,
   accountAddress: string,
 ): Promise<MockedEndpoint[]> {
-  return [
-    // Block data
-    await mockServer
-      .forPost(tronInfuraUrl('/wallet/getblock'))
-      .always()
-      .thenCallback(async (req) =>
-        proxyPost(localNodeUrl, '/wallet/getblock', await req.body.getText()),
-      ),
-
-    // Account resources (bandwidth, energy)
-    await mockServer
-      .forPost(tronInfuraUrl('/wallet/getaccountresource'))
-      .always()
-      .thenCallback(async (req) =>
-        proxyPost(
-          localNodeUrl,
-          '/wallet/getaccountresource',
-          await req.body.getText(),
+  const localNodeUrl =
+    typeof localNode === 'string' ? localNode : localNode.baseUrl;
+  const endpoints: MockedEndpoint[] = [];
+  const proxyPostPath = async (path: string) => {
+    endpoints.push(
+      await mockServer
+        .forPost(tronProviderUrl(path))
+        .always()
+        .thenCallback(async (req) =>
+          proxyPost(localNodeUrl, path, await req.body.getText()),
         ),
-      ),
+    );
+  };
 
-    // Broadcast transaction — returns real txid from local node
-    await mockServer
-      .forPost(tronInfuraUrl('/wallet/broadcasttransaction'))
-      .always()
-      .thenCallback(async (req) =>
-        proxyPost(
-          localNodeUrl,
-          '/wallet/broadcasttransaction',
-          await req.body.getText(),
-        ),
-      ),
+  await proxyPostPath('/wallet/getblock');
+  await proxyPostPath('/wallet/getaccountresource');
+  await proxyPostPath('/wallet/broadcasttransaction');
+  await proxyPostPath('/wallet/triggersmartcontract');
+  await proxyPostPath('/wallet/triggerconstantcontract');
 
-    // Account balance + TRC20 holdings
-    // TRE exposes the same wallet APIs the snap already uses, but its HTTP
-    // proxy does not give us a usable v1 account payload here. We fetch the
-    // balance via /wallet/getaccount and wrap it in the v1 envelope the snap
-    // expects.
+  endpoints.push(
     await mockServer
-      .forGet(tronInfuraUrl(`/v1/accounts/${accountAddress}`))
+      .forGet(tronProviderUrl(`/v1/accounts/${accountAddress}`))
       .always()
       .thenCallback(async () => {
-        const resp = await fetch(`${localNodeUrl}/wallet/getaccount`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ address: accountAddress, visible: true }),
-        });
-        const account = await resp.json();
-        const data =
-          account && (account as Record<string, unknown>).address
-            ? [account]
-            : [];
+        if (typeof localNode !== 'string') {
+          return {
+            statusCode: 200,
+            json: await localNode.getTronGridAccountResponse(accountAddress),
+          };
+        }
+
+        const { json: account } = await proxyPost(
+          localNodeUrl,
+          '/wallet/getaccount',
+          JSON.stringify({ address: accountAddress, visible: true }),
+        );
         return {
           statusCode: 200,
-          json: {
-            data,
-            success: true,
-            meta: { at: Date.now(), page_size: data.length },
-          },
+          json: createTronGridAccountResponse({
+            address: accountAddress,
+            nativeAccount: account as TronNativeAccount,
+          }),
         };
       }),
 
-    // Native TRX transaction history — return empty; the snap tracks submitted
-    // transactions locally so the activity list does not depend on node history.
     await mockServer
-      .forGet(tronInfuraUrl(`/v1/accounts/${accountAddress}/transactions`))
+      .forGet(tronProviderUrl(`/v1/accounts/${accountAddress}/transactions`))
       .always()
       .thenCallback(async () => ({
         statusCode: 200,
-        json: {
-          data: [],
-          success: true,
-          meta: { at: Date.now(), page_size: 0 },
-        },
+        json: createEmptyTronGridTransactionsResponse(),
       })),
 
-    // TRC20 token transaction history — always empty on the local TRE chain.
     await mockServer
       .forGet(
-        tronInfuraUrl(`/v1/accounts/${accountAddress}/transactions/trc20`),
+        tronProviderUrl(`/v1/accounts/${accountAddress}/transactions/trc20`),
       )
       .always()
       .thenCallback(async () => ({
         statusCode: 200,
-        json: {
-          data: [],
-          success: true,
-          meta: { at: Date.now(), page_size: 0 },
-        },
+        json: createEmptyTronGridTransactionsResponse(),
       })),
-  ];
+  );
+
+  return endpoints;
+}
+
+export async function proxyDefaultTronBlockchainCalls(
+  mockServer: Mockttp,
+  accountAddress: string,
+): Promise<MockedEndpoint[]> {
+  return proxyTronBlockchainCalls(
+    mockServer,
+    TRON_LOCAL_NODE_URL,
+    accountAddress,
+  );
 }

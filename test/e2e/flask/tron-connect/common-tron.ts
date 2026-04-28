@@ -7,21 +7,18 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { DAPP_PATH } from '../../constants';
+import { proxyTronBlockchainCalls } from '../../tests/tron/mocks/local-tron-node-mocks';
+import { TronNode } from '../../seeder/tron/node';
+import { createTronDappUsdtNodeOptions } from '../../seeder/tron/profiles';
 import { mockTronFeatureFlag } from './mocks/feature-flag';
+import { prepareLocalTronDapp } from './local-tron-dapp';
 import {
   mockExchangeRates,
   mockHistoricalPrices1d,
   mockHistoricalPrices7d,
-  mockAccountRequest,
-  mockTransactionsRequest,
-  mockTransactionsTRC20Request,
   mockExchangeRatesV1,
-  mockAccountResourcesRequest,
   mockTokens,
-  mockGetBlock,
   mockScanTransaction,
-  mockBroadcastTransaction,
-  mockTriggerSmartContract,
 } from './mocks';
 
 export const TRANSACTION_HASH_MOCK =
@@ -45,6 +42,10 @@ export const withTronAccountSnap = async (
   },
   test: (driver: Driver) => Promise<void>,
 ) => {
+  const resolvedDappOptions = dappOptions ?? {
+    customDappPaths: [DAPP_PATH.TEST_DAPP_TRON],
+  };
+
   await withFixtures(
     {
       forceBip44Version: false,
@@ -62,26 +63,58 @@ export const withTronAccountSnap = async (
         .build(),
       title,
       dapp: true,
-      dappOptions: dappOptions ?? {
-        numberOfTestDapps: 1,
-        customDappPaths: [DAPP_PATH.TEST_DAPP_TRON],
-      },
-      testSpecificMock: async (mockServer: Mockttp) => [
-        await mockTronFeatureFlag(mockServer),
-        await mockExchangeRates(mockServer),
-        await mockExchangeRatesV1(mockServer),
-        await mockHistoricalPrices1d(mockServer),
-        await mockHistoricalPrices7d(mockServer),
-        await mockAccountRequest(mockServer),
-        await mockTransactionsRequest(mockServer),
-        await mockTransactionsTRC20Request(mockServer),
-        await mockAccountResourcesRequest(mockServer),
-        await mockTokens(mockServer),
-        await mockGetBlock(mockServer),
-        await mockScanTransaction(mockServer),
-        await mockBroadcastTransaction(mockServer),
-        await mockTriggerSmartContract(mockServer),
+      dappOptions: resolvedDappOptions,
+      localNodeOptions: [
+        'anvil',
+        {
+          type: 'tron',
+          options: createTronDappUsdtNodeOptions(
+            'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3',
+          ),
+        },
       ],
+      afterLocalNodesStart: async ({
+        localNodes,
+      }: {
+        localNodes: unknown[];
+      }) => {
+        const tronNode = localNodes.find(
+          (node): node is TronNode => node instanceof TronNode,
+        );
+        if (!tronNode) {
+          throw new Error('Tron local node was not started');
+        }
+
+        resolvedDappOptions.customDappPaths = [
+          await prepareLocalTronDapp(tronNode),
+        ];
+      },
+      testSpecificMock: async (
+        mockServer: Mockttp,
+        { localNodes }: { localNodes: unknown[] },
+      ) => {
+        const tronNode = localNodes.find(
+          (node): node is TronNode => node instanceof TronNode,
+        );
+        if (!tronNode) {
+          throw new Error('Tron local node was not started');
+        }
+
+        return [
+          await mockTronFeatureFlag(mockServer),
+          await mockExchangeRates(mockServer),
+          await mockExchangeRatesV1(mockServer),
+          await mockHistoricalPrices1d(mockServer),
+          await mockHistoricalPrices7d(mockServer),
+          await mockTokens(mockServer, tronNode),
+          await mockScanTransaction(mockServer),
+          ...(await proxyTronBlockchainCalls(
+            mockServer,
+            tronNode,
+            'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3',
+          )),
+        ];
+      },
     },
     async ({ driver }: { driver: Driver }) => {
       await login(driver);

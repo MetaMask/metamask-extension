@@ -1,0 +1,51 @@
+import { TronLocalNodeOptions } from './assets';
+
+export const TRON_PORTFOLIO_TRX_BALANCE_IN_SUN = 6_072_392;
+
+export function createEmptyTronNodeOptions(
+  address: string,
+): TronLocalNodeOptions {
+  return {
+    initialBalances: {
+      [address]: 0,
+    },
+  };
+}
+
+export function createTronPortfolioNodeOptions(
+  address: string,
+): TronLocalNodeOptions {
+  return {
+    initialBalances: {
+      [address]: TRON_PORTFOLIO_TRX_BALANCE_IN_SUN,
+    },
+    trc10Balances: {
+      [address]: {
+        GAS_FREE: '33333333',
+      },
+    },
+    trc20Balances: {
+      [address]: {
+        HTX: '3156454956836360132407885',
+        SEED: '89851311',
+        USDD: '289757448699320931',
+        USDT: '2804595',
+      },
+    },
+  };
+}
+
+export function createTronDappUsdtNodeOptions(
+  address: string,
+): TronLocalNodeOptions {
+  return {
+    initialBalances: {
+      [address]: 45_811_016,
+    },
+    trc20Balances: {
+      [address]: {
+        USDT: '70270000',
+      },
+    },
+  };
+}
