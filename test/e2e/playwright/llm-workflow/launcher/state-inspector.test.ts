@@ -270,9 +270,7 @@ describe('state-inspector', () => {
         '[data-testid="account-menu-icon"]',
       ]);
 
-      await expect(detectUnlockState(page, 'unknown')).resolves.toBe(
-        false,
-      );
+      await expect(detectUnlockState(page, 'unknown')).resolves.toBe(false);
     });
   });
 
