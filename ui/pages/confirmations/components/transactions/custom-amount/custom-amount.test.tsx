@@ -138,13 +138,24 @@ describe('CustomAmount', () => {
     expect(amountElement).toHaveStyle({ fontSize: '64px' });
   });
 
-  it('does not include decimal separators when calculating input width', () => {
+  it('mirrors the typed value in a hidden sizer span so the input width matches the rendered text exactly', () => {
     const store = mockStore(getMockState());
 
     renderWithProvider(<CustomAmount amountFiat="1.33" />, store);
 
-    const amountElement = screen.getByTestId('custom-amount-input');
-    expect(amountElement).toHaveStyle({ width: '3ch' });
+    const sizer = screen.getByTestId('custom-amount-input-sizer');
+    expect(sizer).toHaveTextContent('1.33');
+    expect(sizer).toHaveStyle({ visibility: 'hidden' });
+    expect(sizer).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('falls back to "0" in the sizer when amount is empty so the input keeps a visible width', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmount amountFiat="" />, store);
+
+    const sizer = screen.getByTestId('custom-amount-input-sizer');
+    expect(sizer).toHaveTextContent('0');
   });
 });
 

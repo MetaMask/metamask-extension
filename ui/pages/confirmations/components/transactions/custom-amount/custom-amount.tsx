@@ -94,7 +94,6 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
     const currency = currencyProp ?? selectedCurrency;
     const fiatSymbol = getCurrencySymbol(currency);
     const amountLength = amountFiat.length;
-    const amountCharacterLength = amountFiat.replaceAll(/[.,]/gu, '').length;
 
     const showLoader = isLoading || (isMaxAmount && isQuotesLoading);
 
@@ -133,28 +132,45 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
         >
           {fiatSymbol}
         </Text>
-        <input
-          data-testid="custom-amount-input"
-          type="text"
-          inputMode="decimal"
-          value={amountFiat}
-          onChange={handleChange}
-          disabled={disabled}
-          style={
-            {
+        <span style={{ position: 'relative', display: 'inline-block' }}>
+          <span
+            data-testid="custom-amount-input-sizer"
+            aria-hidden="true"
+            style={{
               fontSize,
               lineHeight,
               fontWeight: 500,
-              color: textColor ? `var(--color-${textColor})` : 'inherit',
-              textAlign: 'left',
-              border: 'none',
-              background: 'transparent',
-              outline: 'none',
-              width: `${Math.max(1, amountCharacterLength)}ch`,
-              cursor: disabled ? 'default' : 'text',
-            } as React.CSSProperties
-          }
-        />
+              visibility: 'hidden',
+              whiteSpace: 'pre',
+            }}
+          >
+            {amountFiat || '0'}
+          </span>
+          <input
+            data-testid="custom-amount-input"
+            type="text"
+            inputMode="decimal"
+            value={amountFiat}
+            onChange={handleChange}
+            disabled={disabled}
+            style={
+              {
+                position: 'absolute',
+                inset: 0,
+                fontSize,
+                lineHeight,
+                fontWeight: 500,
+                color: textColor ? `var(--color-${textColor})` : 'inherit',
+                textAlign: 'left',
+                border: 'none',
+                background: 'transparent',
+                outline: 'none',
+                padding: 0,
+                cursor: disabled ? 'default' : 'text',
+              } as React.CSSProperties
+            }
+          />
+        </span>
       </Box>
     );
   },
