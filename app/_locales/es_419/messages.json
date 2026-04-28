@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Agregar una red personalizada"
   },
-  "addAHardwareWallet": {
-    "message": "Agregar billetera física"
-  },
   "addANetwork": {
     "message": "Agregar una red"
   },
@@ -2228,9 +2225,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "la página del mercado de contratos perpetuos"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "la página de la lista del mercado de contratos perpetuos"
   },
   "deepLink_thePerpsPage": {
     "message": "la página de contratos perpetuos"
@@ -5784,7 +5778,8 @@
     "message": "Buscar mercados"
   },
   "perpsSeeAll": {
-    "message": "Ver todo"
+    "message": "Ver todo",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "El servicio no está disponible temporalmente. Vuelve a intentarlo más tarde."

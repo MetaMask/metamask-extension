@@ -24,6 +24,21 @@ type UseHardwareFooterArgs = {
   onUserRejectedHardwareWalletError: () => Promise<void>;
 };
 
+/**
+ * Returns true when the transport is established (`Connected`) or when a full
+ * readiness probe has succeeded (`Ready`). `Connected` alone is enough to show
+ * the primary "Confirm" CTA: `ensureDeviceReady` still runs on submit before signing.
+ *
+ * @param status - Current `ConnectionStatus` from hardware wallet context.
+ */
+export function isHardwareConnectionReadyForConfirmFooter(
+  status: ConnectionStatus,
+): boolean {
+  return (
+    status === ConnectionStatus.Ready || status === ConnectionStatus.Connected
+  );
+}
+
 export type SubmitPreflightCheckOptions = {
   /**
    * When true, runs hardware-wallet Connect-CTA metrics before device readiness (e.g. dedicated “Connect device” button).
@@ -109,7 +124,7 @@ export const useHardwareFooter = ({
       return true;
     }
 
-    return ConnectionStatus.Ready === connectionState.status;
+    return isHardwareConnectionReadyForConfirmFooter(connectionState.status);
   }, [
     connectionState.status,
     hasPreflightSucceeded,

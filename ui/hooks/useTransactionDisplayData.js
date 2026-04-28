@@ -409,6 +409,8 @@ export function useTransactionDisplayData(transactionGroup) {
 
     if (type === TransactionType.perpsDeposit) {
       title = t('perpsDepositActivityTitle');
+    } else if (type === TransactionType.perpsWithdraw) {
+      title = t('perpsWithdrawFundsTitle');
     } else if (type === TransactionType.musdClaim) {
       title = t('musdClaimTitle');
     } else {
