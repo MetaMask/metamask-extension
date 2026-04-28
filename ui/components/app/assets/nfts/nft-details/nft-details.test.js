@@ -84,6 +84,15 @@ describe('NFT Details', () => {
     });
   });
 
+  it('does not render description when nft description is missing', () => {
+    const { queryByTestId } = renderWithProvider(
+      <NftDetails {...props} />,
+      mockStore,
+    );
+
+    expect(queryByTestId('nft-details__description')).not.toBeInTheDocument();
+  });
+
   it(`should route to '/' route when the back button is clicked`, () => {
     const { queryByTestId } = renderWithProvider(
       <NftDetails {...props} />,
