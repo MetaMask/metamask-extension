@@ -52,7 +52,7 @@ export const HeaderSearch: React.FC<HeaderSearchProps> = (props) => {
   const rootClassName = classnames('mm-header-search w-full', className);
 
   const baseLayoutProps = {
-    flexDirection: BoxFlexDirection.Row as const,
+    flexDirection: BoxFlexDirection.Row,
     alignItems: BoxAlignItems.Center,
     gap: 2 as const,
     paddingHorizontal: 4 as const,

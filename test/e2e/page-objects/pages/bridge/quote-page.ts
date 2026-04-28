@@ -193,10 +193,9 @@ class BridgeQuotePage {
     console.log(`Opening asset info icon for asset ${token}`);
     await this.driver.clickElement(assetPicker);
     await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
-    await this.driver.waitForSelector(
-      { testId: `bridge-asset-info-icon-${assetId}` },
-      { timeout: 30000 },
-    );
+    await this.driver.waitForSelector({
+      testId: `bridge-asset-info-icon-${assetId}`,
+    });
     await this.driver.clickElement(this.assetInfoIcon(assetId));
   }
 

@@ -647,13 +647,16 @@ export async function mockGasIncludedTransactionRequests(
   await mockSentinelNetworks(mockServer);
 
   // Mock getQuoteStream (SSE) so the swap page receives a quote (ETH -> MUSD).
+  // thenStream only supports a single read, so use thenCallback with the SSE
+  // payload serialized as a string body so every request gets a fresh response.
   await mockServer
     .forGet(/getQuoteStream/u)
-    .thenStream(
-      200,
-      mockSseEventSource(MOCK_ETH_MUSD_QUOTE_STREAM),
-      SSE_RESPONSE_HEADER,
-    );
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      headers: SSE_RESPONSE_HEADER,
+      body: ssePayload(MOCK_ETH_MUSD_QUOTE_STREAM),
+    }));
 
   await mockServer
     .forPost(
@@ -936,6 +939,15 @@ const MOCK_ETH_DAI_QUOTE = [
     estimatedProcessingTimeInSeconds: 0,
   },
 ];
+
+function ssePayload(mockQuotes: unknown[]): string {
+  return mockQuotes
+    .map(
+      (quote, i) =>
+        `event: quote\nid: ${Date.now().toString()}-${i + 1}\ndata: ${JSON.stringify(quote)}\n\n`,
+    )
+    .join('');
+}
 
 function mockSseEventSource(mockQuotes: unknown[], delay: number = 2000) {
   let index = 0;

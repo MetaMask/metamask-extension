@@ -28,7 +28,7 @@ Checks changed files for A/B testing implementation compliance.
 
 Rules:
   - Fail: New ab_tests payload additions in checked code diffs
-  - Fail: Malformed literal active_ab_tests objects missing key/value
+  - Fail: Malformed literal active_ab_tests objects missing key/value/key_value_pair
   - Fail: Inline useABTest variants object missing control
   - Warn: Flag key naming mismatch for Abtest keys
   - Warn: Risky A/B integration changes without test-file updates`;
@@ -186,6 +186,47 @@ function printList(title: string, items: string[]): void {
   }
 }
 
+function extractActiveABTestsPayload(
+  addedLines: string[],
+  startIndex: number,
+): string | null {
+  const line = addedLines[startIndex];
+  const match = line.match(/active_ab_tests\s*:\s*(\[|\{)/u);
+
+  if (!match) {
+    return null;
+  }
+
+  const openingCharacter = match[1];
+  const closingCharacter = openingCharacter === '[' ? ']' : '}';
+  const payloadStartIndex =
+    (match.index ?? 0) + match[0].lastIndexOf(openingCharacter);
+  let payload = line.slice(payloadStartIndex);
+  const closingIndex = payload.indexOf(closingCharacter);
+
+  if (closingIndex !== -1) {
+    return payload.slice(0, closingIndex + 1);
+  }
+
+  for (
+    let index = startIndex + 1;
+    index < addedLines.length && index <= startIndex + 8;
+    index += 1
+  ) {
+    const nextLine = addedLines[index];
+    const nextClosingIndex = nextLine.indexOf(closingCharacter);
+
+    if (nextClosingIndex !== -1) {
+      payload += `\n${nextLine.slice(0, nextClosingIndex + 1)}`;
+      break;
+    }
+
+    payload += `\n${nextLine}`;
+  }
+
+  return payload;
+}
+
 function main(): void {
   let mode: Mode | null = null;
   let filesArg = '';
@@ -315,10 +356,19 @@ function main(): void {
 
       if (/active_ab_tests\s*:/.test(line)) {
         if (/active_ab_tests\s*:\s*(\[|\{)/.test(line)) {
-          const window = addedLines.slice(index, index + 9).join('\n');
-          if (!/key\s*:/.test(window) || !/value\s*:/.test(window)) {
+          const payload = extractActiveABTestsPayload(addedLines, index) ?? '';
+          const hasLiteralAssignmentFields =
+            /key\s*:/.test(payload) ||
+            /value\s*:/.test(payload) ||
+            /key_value_pair\s*:/.test(payload);
+          const hasCompleteLiteralAssignment =
+            /key\s*:/.test(payload) &&
+            /value\s*:/.test(payload) &&
+            /key_value_pair\s*:/.test(payload);
+
+          if (hasLiteralAssignmentFields && !hasCompleteLiteralAssignment) {
             failures.push(
-              `${file}: malformed literal active_ab_tests object (expected key and value).`,
+              `${file}: malformed literal active_ab_tests object (expected key, value, and key_value_pair).`,
             );
           }
         }

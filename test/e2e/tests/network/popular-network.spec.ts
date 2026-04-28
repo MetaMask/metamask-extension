@@ -76,8 +76,11 @@ describe('Popular Networks', function (this: Suite) {
         await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
+
         await selectNetworkDialog.checkPageIsLoaded();
+
         await selectNetworkDialog.clickAddButtonForPopularNetwork('0xa86a');
+        await selectNetworkDialog.clickCloseButton();
 
         // verify network is switched
         await new Homepage(driver).checkPageIsLoaded();
@@ -100,6 +103,8 @@ describe('Popular Networks', function (this: Suite) {
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.deleteNetwork('eip155:42161');
+        await selectNetworkDialog.clickCloseButton();
+        await headerNavbar.clickDrawerBackButton();
 
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
