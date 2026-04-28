@@ -30,7 +30,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { parseChangelog } from '@metamask/auto-changelog';
 import packageJson from '../../package.json';
-import { getBuildLinks } from '../../development/metamaskbot-build-announce/artifacts';
+import artifactsModule from '../../development/metamaskbot-build-announce/artifacts';
+
+const { getBuildLinks } = artifactsModule;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.join(__dirname, '..', '..');

@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { context, getOctokit } from '@actions/github';
 import * as core from '@actions/core';
 
@@ -122,6 +123,6 @@ async function storeGitDiffOutputAndPrBody() {
 }
 
 // If main module (i.e. this is the TS file that was run directly)
-if (require.main === module) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   storeGitDiffOutputAndPrBody();
 }

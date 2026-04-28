@@ -54,8 +54,8 @@
  *   }
  */
 
-import { collectE2EMetaMetricsEventCoverage } from './collect-qa-stats-metametrics';
-import { PATTERN_E2E_SPEC_FILE, walkFiles } from './collect-qa-stats-walk-files';
+import { collectE2EMetaMetricsEventCoverage } from './collect-qa-stats-metametrics.mts';
+import { PATTERN_E2E_SPEC_FILE, walkFiles } from './collect-qa-stats-walk-files.mts';
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { execFileSync } from 'child_process';
 import { join } from 'path';

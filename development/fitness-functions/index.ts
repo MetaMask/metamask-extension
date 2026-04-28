@@ -4,8 +4,8 @@ import { IRule, RULES, runFitnessFunctionRule } from './rules';
 
 const automationType: AUTOMATION_TYPE = process.argv[2] as AUTOMATION_TYPE;
 
-const diff = getDiffByAutomationType(automationType);
-
-if (typeof diff === 'string') {
-  RULES.forEach((rule: IRule): void => runFitnessFunctionRule(rule, diff));
-}
+getDiffByAutomationType(automationType).then((diff) => {
+  if (typeof diff === 'string') {
+    RULES.forEach((rule: IRule): void => runFitnessFunctionRule(rule, diff));
+  }
+});

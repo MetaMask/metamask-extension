@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
 import { getOctokit } from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
 
@@ -262,7 +263,7 @@ async function main(): Promise<void> {
   console.log(`Wrote report to ${env.OUTPUT_PATH} under key "${weekKey}"`);
 }
 
-if (require.main === module) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   main().catch((error) => {
     console.error(error);
     process.exit(1);

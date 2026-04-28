@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
 
-import { createIssue, retrieveIssueByTitle } from './shared/issue';
+import { createIssue, retrieveIssueByTitle } from './shared/issue.mts';
 import {
   Label,
   RegressionStage,
@@ -10,9 +10,9 @@ import {
   craftTeamLabel,
   createOrRetrieveLabel,
   typeBugLabel,
-} from './shared/label';
-import { codeRepoToPlanningRepo, codeRepoToPlatform, getCurrentDateFormatted, isValidVersionFormat } from './shared/utils';
-import { addIssueToGithubProject, GithubProject, GithubProjectField, retrieveGithubProject, updateGithubProjectDateFieldValue } from './shared/project';
+} from './shared/label.mts';
+import { codeRepoToPlanningRepo, codeRepoToPlatform, getCurrentDateFormatted, isValidVersionFormat } from './shared/utils.mts';
+import { addIssueToGithubProject, GithubProject, GithubProjectField, retrieveGithubProject, updateGithubProjectDateFieldValue } from './shared/project.mts';
 
 main().catch((error: Error): void => {
   console.error(error);

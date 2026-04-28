@@ -6,7 +6,8 @@ import {
   readFileSync,
 } from 'fs';
 import path from 'path';
-import { normalizeTestPath, XML } from './shared/utils';
+import { fileURLToPath } from 'url';
+import { normalizeTestPath, XML } from './shared/utils.mts';
 
 /**
  * Merges test results from a previous run into the current results directory.
@@ -112,7 +113,7 @@ async function getTestFilesFromXml(xmlPath: string): Promise<string[]> {
 /**
  * CLI entry point
  */
-if (require.main === module) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const previousDir =
     process.argv[2] || './previous-test-results/test/test-results/e2e';
   const currentDir = process.argv[3] || './test/test-results/e2e';

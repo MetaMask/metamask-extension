@@ -190,7 +190,7 @@ jobs:
           GITHUB_BASE_REF: ${{ github.base_ref }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn tsx .github/scripts/check-feature-flag-registry.ts
+        run: yarn tsx .github/scripts/check-feature-flag-registry.mts
 
       - name: Check working tree
         if: ${{ !cancelled() }}
