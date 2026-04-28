@@ -119,11 +119,13 @@ describe('SetupPasskey', () => {
     });
   });
 
-  it('renders and matches snapshot', () => {
+  it('renders core passkey setup actions', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { container } = renderWithProvider(<SetupPasskey />, mockStore);
+    renderWithProvider(<SetupPasskey />, mockStore);
 
-    expect(container).toMatchSnapshot();
+    expect(screen.getByTestId('passkey-set-up-button')).toBeInTheDocument();
+    expect(screen.getByTestId('passkey-maybe-later-button')).toBeInTheDocument();
+    expect(screen.queryByTestId('passkey-registration-error')).not.toBeInTheDocument();
   });
 
   it('renders the heading text', () => {

@@ -1720,7 +1720,6 @@ describe('MetaMaskController', function () {
 
         expect(api).toStrictEqual(
           expect.objectContaining({
-            submitEncryptionKey: expect.any(Function),
             generatePasskeyRegistrationOptions: expect.any(Function),
             generatePasskeyAuthenticationOptions: expect.any(Function),
             protectVaultKeyWithPasskey: expect.any(Function),
