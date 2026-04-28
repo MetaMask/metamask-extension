@@ -2912,14 +2912,14 @@
     "@segment/analytics-node": {
       "globals": {
         "AbortController": true,
-        "EdgeRuntime": true,
+        "EdgeRuntime": false,
         "URL": true,
-        "WebSocketPair": true,
-        "WorkerGlobalScope": true,
+        "WebSocketPair": false,
+        "WorkerGlobalScope": false,
         "clearTimeout": true,
         "console.warn": true,
         "fetch": true,
-        "importScripts": true,
+        "importScripts": false,
         "setTimeout": true
       },
       "packages": {
