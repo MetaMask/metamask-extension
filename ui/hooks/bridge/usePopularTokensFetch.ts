@@ -4,10 +4,7 @@ import { BridgeClientId } from '@metamask/bridge-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getBearerToken } from '../../store/actions';
 import { BridgeToken } from '../../ducks/bridge/types';
-import {
-  fetchPopularTokens,
-  toMinimalAsset,
-} from '../../pages/bridge/utils/tokens';
+import { fetchPopularTokens } from '../../pages/bridge/utils/tokens';
 import { useAsyncResult } from '../useAsync';
 
 /**
@@ -30,10 +27,13 @@ export const usePopularTokensFetch = ({
     return await getBearerToken();
   }, []);
 
-  const minimalAssetsToInclude = useMemo(
-    () => assetsToInclude.map(toMinimalAsset),
-    [assetsToInclude],
-  );
+  /*
+   * Combine asset IDs into a string to avoid re-fetching
+   * results whenever the balance or fiat balance amount changes
+   */
+  const stableMinimalAssetsString = useMemo(() => {
+    return assetsToInclude.map(({ assetId }) => assetId).join('|');
+  }, [assetsToInclude]);
 
   const { value: tokenList, pending: isTokenListLoading } =
     useAsyncResult(async () => {
@@ -52,7 +52,7 @@ export const usePopularTokensFetch = ({
         bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       });
       return response;
-    }, [minimalAssetsToInclude.toString(), jwt]);
+    }, [stableMinimalAssetsString, jwt]);
 
   useEffect(() => {
     return () => {

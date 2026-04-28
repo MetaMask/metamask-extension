@@ -569,8 +569,11 @@
     "ui/helpers/utils/tags.test.ts": {
       "Reselect: Input stability warnings": 1
     },
+    "ui/hooks/bridge/useBridging.test.ts": {
+      "Reselect: Input stability warnings": 1
+    },
     "ui/hooks/bridge/usePopularTokens.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 14,
+      "React: Act warnings (component updates not wrapped)": 4,
       "Reselect: Input stability warnings": 1
     },
     "ui/hooks/bridge/useTokenSearchResults.test.ts": {
@@ -691,7 +694,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/index.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 4,
+      "React: Act warnings (component updates not wrapped)": 6,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1
     },

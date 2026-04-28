@@ -25,6 +25,7 @@ import {
   getTokenBalancesControllerTokenBalances,
   getTokenRatesControllerMarketData,
 } from '../../../shared/lib/selectors/assets-migration';
+import { createShallowResultSelector } from '../../../shared/lib/selectors/selector-creators';
 import { getMultichainBalances } from '../../selectors/multichain';
 import {
   getAccountAssets,
@@ -367,7 +368,7 @@ const getBridgeAssetsForAccountGroupId = createSelector(
  * @param accountGroupId - The ID of the account group to get the assets for.
  * @returns The sorted assets for the given account group and selected asset.
  */
-export const getBridgeSortedAssets = createSelector(
+export const getBridgeSortedAssets = createShallowResultSelector(
   [
     getBridgeAssetsForAccountGroupId,
     (_, __, chainIds: Set<CaipChainId>) => chainIds,

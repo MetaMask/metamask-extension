@@ -58,9 +58,9 @@ const useBridging = () => {
   );
 
   // Pre-fetch the popular tokens list
-  const { address } = useSelector(getFromAccount);
+  const fromAccount = useSelector(getFromAccount);
   const groupId = useSelector((state: BridgeAppState) =>
-    getAccountGroupsByAddress(state, [address]),
+    getAccountGroupsByAddress(state, [fromAccount?.address]),
   )[0]?.id;
   const chainIds = useMemo(
     () => new Set(fromChains.map((chain) => chain.chainId)),

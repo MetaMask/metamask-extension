@@ -96,7 +96,7 @@ export const validateMinimalAssetObject = (
   return is(data, MinimalAssetSchema);
 };
 
-export const toMinimalAsset = (token: BridgeAssetV2): MinimalAsset => {
+const toMinimalAsset = (token: BridgeAssetV2): MinimalAsset => {
   const { assetId, symbol, name, decimals } = token;
   return { assetId, symbol, name, decimals };
 };

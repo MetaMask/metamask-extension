@@ -11,7 +11,7 @@ import { type BridgeAppState } from '../../ducks/bridge/selectors';
 import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
 import {
   fetchTokensBySearchQuery,
-  toMinimalAsset,
+  MinimalAsset,
 } from '../../pages/bridge/utils/tokens';
 import { getBearerToken } from '../../store/actions';
 import { useAsyncResult } from '../useAsync';
@@ -118,6 +118,9 @@ export const useTokenSearchResults = ({
     [fetchSearchResults],
   );
 
+  /*
+   * Placeholder assets while fetching search results
+   */
   const filteredAssetsToInclude = useMemo(() => {
     return assetsToInclude.filter((token) => {
       return (
@@ -128,8 +131,12 @@ export const useTokenSearchResults = ({
     });
   }, [searchQuery, assetsToInclude]);
 
-  const minimalAssetsToInclude = useMemo(() => {
-    return filteredAssetsToInclude.map(toMinimalAsset);
+  /*
+   * Combine asset IDs into a string to avoid re-fetching
+   * results whenever the balance or fiat balance amount changes
+   */
+  const stableMinimalAssetsString = useMemo(() => {
+    return filteredAssetsToInclude.map(({ assetId }) => assetId).join('|');
   }, [filteredAssetsToInclude]);
 
   useEffect(() => {
@@ -147,7 +154,7 @@ export const useTokenSearchResults = ({
       // Debounce the initial fetch until the user stops typing
       debouncedFetchSearchResults(searchQuery, filteredAssetsToInclude);
     }
-  }, [searchQuery, minimalAssetsToInclude.toString(), jwt]);
+  }, [searchQuery, stableMinimalAssetsString, jwt]);
 
   useEffect(() => {
     const debouncedFn = debouncedFetchSearchResults;
