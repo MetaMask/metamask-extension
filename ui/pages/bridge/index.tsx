@@ -6,6 +6,7 @@ import { I18nContext } from '../../contexts/i18n';
 import {
   PREPARE_SWAP_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
@@ -35,7 +36,8 @@ import { transitionBack } from '../../components/ui/transition';
 import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
-import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
+import AwaitingSignatures from './awaiting-signatures';
+import HardwareWalletSignatures from './hardware-wallet-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTransactionsLiveness';
 import { clearAllBridgeCacheItems } from './utils/cache';
@@ -145,6 +147,14 @@ const CrossChainSwap = () => {
                   <AwaitingSignaturesCancelButton />
                 </Footer>
               </>
+            }
+          />
+          <Route
+            path={toRelativeRoutePath(HARDWARE_WALLET_SIGNATURES_ROUTE)}
+            element={
+              <Content>
+                <HardwareWalletSignatures />
+              </Content>
             }
           />
         </Routes>

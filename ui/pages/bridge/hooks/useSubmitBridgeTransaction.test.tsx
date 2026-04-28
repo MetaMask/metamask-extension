@@ -13,9 +13,9 @@ import {
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
 import {
-  AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
 } from '../../../helpers/constants/routes';
 import * as sharedSelectors from '../../../../shared/lib/selectors';
 import * as sentry from '../../../../shared/lib/sentry';
@@ -24,6 +24,11 @@ import * as bridgeActions from '../../../ducks/bridge/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { HardwareWalletProvider } from '../../../contexts/hardware-wallets';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
+
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../../shared/lib/sentry'),
+  captureException: jest.fn(),
+}));
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -281,7 +286,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockResetState).not.toHaveBeenCalled();
     });
 
-    it('routes to awaiting signatures for hardware wallets', async () => {
+    it('routes to hardware wallet signatures for hardware wallets without submitting immediately', async () => {
       const store = makeMockStore({
         metamaskStateOverrides: {
           internalAccounts: {
@@ -309,26 +314,113 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "/cross-chain/swaps/awaiting-signatures",
+            "/cross-chain/swaps/hardware-wallet-signatures",
             {
               "state": {},
-            },
-          ],
-          [
-            "/?tab=activity",
-            {
-              "replace": true,
-              "state": {
-                "stayOnHomePage": true,
-              },
             },
           ],
         ]
       `);
       expect(result.current.isSubmitting).toBe(false);
-      expect(submitTxSpy).toHaveBeenCalledTimes(1);
+      expect(submitTxSpy).not.toHaveBeenCalled();
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
+    });
+
+    it('submits hardware-wallet transactions from the hardware wallet signatures page', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      const onHardwareWalletSubmitted = jest.fn();
+      isHardwareWalletSpy.mockImplementation(() => true);
+      const { result } = renderHook(
+        () =>
+          useSubmitBridgeTransaction({
+            submitOnHardwareWalletSigningPage: true,
+            onHardwareWalletSubmitted,
+          }),
+        {
+          wrapper: makeWrapper(store),
+        },
+      );
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+        );
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+        state: {
+          stayOnHomePage: true,
+        },
+      });
+      expect(submitTxSpy).toHaveBeenCalledTimes(1);
+      expect(onHardwareWalletSubmitted).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not mark hardware-wallet signing as submitted when submission fails', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      const onHardwareWalletSubmitted = jest.fn();
+      const onHardwareWalletFailed = jest.fn();
+      const submitTx = jest.fn(async () => {
+        throw new Error('transport disconnected');
+      });
+      setBackgroundConnection({
+        submitTx,
+        submitIntent: submitIntentSpy,
+        getStatePatches: jest.fn(),
+        setEnabledAllPopularNetworks: jest.fn(),
+        resetState: () => mockResetState(),
+      } as never);
+      isHardwareWalletSpy.mockImplementation(() => true);
+      const { result } = renderHook(
+        () =>
+          useSubmitBridgeTransaction({
+            submitOnHardwareWalletSigningPage: true,
+            onHardwareWalletSubmitted,
+            onHardwareWalletFailed,
+          }),
+        {
+          wrapper: makeWrapper(store),
+        },
+      );
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+        );
+      });
+
+      expect(onHardwareWalletSubmitted).not.toHaveBeenCalled();
+      expect(onHardwareWalletFailed).toHaveBeenCalledTimes(1);
+      expect(captureExceptionSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'transport disconnected' }),
+      );
+      expect(mockUseNavigate).not.toHaveBeenCalled();
     });
 
     it('returns early if hardware device is not ready', async () => {
@@ -409,11 +501,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
     it('routes to default route with replace when non-HW intent submission fails', async () => {
       const store = makeMockStore();
-      const consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementationOnce(() => jest.fn());
+      const submitError = new Error('submit failed');
       submitIntentSpy.mockImplementationOnce((async () => {
-        throw new Error('submit failed');
+        throw submitError;
       }) as never);
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
@@ -448,16 +538,10 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
-      expect(consoleErrorSpy.mock.calls).toMatchInlineSnapshot(`
-              [
-                [
-                  [Error: submit failed],
-                ],
-              ]
-          `);
+      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError);
     });
 
-    it('routes hardware-wallet intent quotes to default route after submit', async () => {
+    it('blocks hardware-wallet intent quotes without routing to hardware wallet signatures', async () => {
       const store = makeMockStore();
       isHardwareWalletSpy.mockImplementation(() => true);
       submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
@@ -483,20 +567,15 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      expect(mockUseNavigate).toHaveBeenNthCalledWith(
-        1,
-        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
-        { state: {} },
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(
+        `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+        expect.anything(),
       );
-      expect(mockUseNavigate).toHaveBeenNthCalledWith(
-        2,
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-          },
-        },
+      expect(submitIntentSpy).not.toHaveBeenCalled();
+      expect(captureExceptionSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Hardware wallets cannot submit bridge intent quotes',
+        }),
       );
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();

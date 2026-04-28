@@ -141,6 +141,8 @@ export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
 export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
 export const SWAP_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
+export const HARDWARE_WALLET_SIGNATURES_ROUTE =
+  '/swaps/hardware-wallet-signatures';
 export const ONBOARDING_ROUTE = '/onboarding';
 export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
 export const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
@@ -647,6 +649,11 @@ export const ROUTES = [
   {
     path: AWAITING_SIGNATURES_ROUTE,
     label: 'Swaps Awaiting Signatures',
+    trackInAnalytics: false,
+  },
+  {
+    path: HARDWARE_WALLET_SIGNATURES_ROUTE,
+    label: 'Swaps Hardware Wallet Signatures',
     trackInAnalytics: false,
   },
   {

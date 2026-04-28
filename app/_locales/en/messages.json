@@ -1083,6 +1083,42 @@
   "bridgeGetNewQuote": {
     "message": "Get new quote"
   },
+  "bridgeHwApproveAmount": {
+    "message": "Approve $1 $2",
+    "description": "Label for the first hardware-wallet bridge signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "bridgeHwApprovedAmount": {
+    "message": "Approved $1 $2",
+    "description": "Label for a completed hardware-wallet bridge approval signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "bridgeHwRejected": {
+    "message": "Rejected",
+    "description": "Label for a rejected hardware-wallet bridge signature."
+  },
+  "bridgeHwSendAmount": {
+    "message": "Send $1 $2",
+    "description": "Label for a pending hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "bridgeHwSendingAmount": {
+    "message": "Sending $1 $2",
+    "description": "Label for the active hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "bridgeHwSentAmount": {
+    "message": "Sent $1 $2",
+    "description": "Label for a submitted hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "bridgeHwSpender": {
+    "message": "Spender: $1",
+    "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
+  },
+  "bridgeHwToAddress": {
+    "message": "To: $1",
+    "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "bridgeHwTransactionRejected": {
+    "message": "You rejected this transaction on your device",
+    "description": "Title shown after a hardware-wallet bridge transaction is rejected on the device."
+  },
   "bridgeLowestCost": {
     "message": "Lowest cost"
   },
@@ -1176,6 +1212,14 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Price impact warning"
+  },
+  "bridgeQrHardwareScanSignature": {
+    "message": "I've signed, scan signature",
+    "description": "Button label for scanning a QR hardware-wallet signature after the user signs on their device."
+  },
+  "bridgeQrHardwareSignTitle": {
+    "message": "Scan QR code below and sign on your device ($1/$2)",
+    "description": "Title for a QR hardware-wallet bridge signature step. $1 is the current signature step and $2 is the total signature count."
   },
   "bridgeQuoteStreamCompleteAmountTooHigh": {
     "message": "No quotes available. Try a smaller amount."

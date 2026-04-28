@@ -37,6 +37,13 @@ import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
 
+type UseSubmitBridgeTransactionOptions = {
+  submitOnHardwareWalletSigningPage?: boolean;
+  onHardwareWalletSubmitted?: () => void;
+  onHardwareWalletRejected?: () => void;
+  onHardwareWalletFailed?: () => void;
+};
+
 export const isAllowanceResetError = (error: unknown): boolean => {
   const errorMessage = (error as Error).message ?? '';
   return errorMessage.includes(ALLOWANCE_RESET_ERROR);
@@ -64,7 +71,12 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
   );
 };
 
-export default function useSubmitBridgeTransaction() {
+export default function useSubmitBridgeTransaction({
+  submitOnHardwareWalletSigningPage = false,
+  onHardwareWalletSubmitted,
+  onHardwareWalletRejected,
+  onHardwareWalletFailed,
+}: UseSubmitBridgeTransactionOptions = {}) {
   const navigate = useNavigate();
   const { navigateToBridgePage, navigateToHwSigningPage } =
     useBridgeNavigation();
@@ -122,10 +134,23 @@ export default function useSubmitBridgeTransaction() {
 
     const intentData = quoteResponse.quote.intent;
 
-    if (hardwareWalletUsed) {
+    if (hardwareWalletUsed && intentData) {
+      captureException(
+        new Error('Hardware wallets cannot submit bridge intent quotes'),
+      );
+      dispatch(setWasTxDeclined(true));
+      onHardwareWalletFailed?.();
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (hardwareWalletUsed && !submitOnHardwareWalletSigningPage) {
       navigateToHwSigningPage();
       setIsSubmitting(false);
+      return;
     }
+
+    let submissionSucceeded = false;
 
     try {
       if (intentData) {
@@ -153,18 +178,44 @@ export default function useSubmitBridgeTransaction() {
           ),
         );
       }
+      submissionSucceeded = true;
     } catch (e) {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        navigateToBridgePage();
+        onHardwareWalletRejected?.();
+        if (!submitOnHardwareWalletSigningPage) {
+          navigateToBridgePage();
+        }
+        return;
+      }
+
+      if (hardwareWalletUsed) {
+        dispatch(setWasTxDeclined(true));
+        onHardwareWalletFailed?.();
         return;
       }
     } finally {
       setIsSubmitting(false);
     }
 
-    const to = toastEnabled ? DEFAULT_ROUTE : `${DEFAULT_ROUTE}?tab=activity`;
+    const to =
+      submitOnHardwareWalletSigningPage || toastEnabled
+        ? DEFAULT_ROUTE
+        : `${DEFAULT_ROUTE}?tab=activity`;
+
+    if (submissionSucceeded && hardwareWalletUsed) {
+      onHardwareWalletSubmitted?.();
+
+      if (submitOnHardwareWalletSigningPage) {
+        navigate(to, {
+          state: { stayOnHomePage: true },
+          replace: true,
+        });
+        return;
+      }
+    }
+
     navigate(to, {
       state: { stayOnHomePage: true },
       replace: true,

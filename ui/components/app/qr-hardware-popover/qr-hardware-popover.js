@@ -1,5 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { getActiveQrCodeScanRequest } from '../../../selectors';
@@ -15,6 +16,10 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../shared/constants/app';
+import {
+  CROSS_CHAIN_SWAP_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
+} from '../../../helpers/constants/routes';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
 
@@ -22,6 +27,9 @@ const QRHardwarePopover = () => {
   const t = useI18nContext();
 
   const activeScanRequest = useSelector(getActiveQrCodeScanRequest);
+  const { pathname } = useLocation();
+  const isBridgeHardwareWalletSigningPage =
+    pathname === `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`;
 
   const environmentType = getEnvironmentType();
   const isRestrictedEnv =
@@ -35,9 +43,13 @@ const QRHardwarePopover = () => {
   // the confirmTransaction's life cycle is not consistent with QR hardware wallet;
   // the confirmTransaction will change after the previous tx is confirmed or cancel,
   // we want to block the changing by sign request id;
-  const _txData = useMemo(() => {
-    return txData;
-  }, [activeScanRequest?.requestId]);
+  const txDataRef = useRef(txData);
+  const requestIdRef = useRef(activeScanRequest?.requestId);
+  if (requestIdRef.current !== activeScanRequest?.requestId) {
+    requestIdRef.current = activeScanRequest?.requestId;
+    txDataRef.current = txData;
+  }
+  const _txData = txDataRef.current;
 
   const dispatch = useDispatch();
   const walletImporterCancel = useCallback(
@@ -74,6 +86,13 @@ const QRHardwarePopover = () => {
   // checkEnvironment() to open a duplicate fullscreen tab, stealing focus
   // from the tab that shows the "Select an account" list after scanning.
   if (isRestrictedEnv && activeScanRequest?.type === QrScanRequestType.PAIR) {
+    return null;
+  }
+
+  if (
+    isBridgeHardwareWalletSigningPage &&
+    activeScanRequest?.type === QrScanRequestType.SIGN
+  ) {
     return null;
   }
 
