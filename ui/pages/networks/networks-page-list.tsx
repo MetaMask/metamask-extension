@@ -326,11 +326,7 @@ export const NetworksPageList = ({
         ) : null}
       </Box>
 
-      <Box
-        padding={4}
-        gap={4}
-        flexDirection={BoxFlexDirection.Column}
-      >
+      <Box padding={4} gap={4} flexDirection={BoxFlexDirection.Column}>
         {footerContent}
         <Button
           className="w-full"

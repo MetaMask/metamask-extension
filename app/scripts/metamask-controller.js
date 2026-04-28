@@ -2639,28 +2639,42 @@ export default class MetamaskController extends EventEmitter {
         this.networkEnablementController.state.enabledNetworkMap,
       ).map(([namespace, networks]) => [namespace, { ...networks }]),
     );
-    let onStateChange;
-    const stateChange = new Promise((resolve) => {
-      onStateChange = resolve;
-    });
+    const restorePreviousEnabledNetworkMap = () => {
+      this.controllerMessenger.unsubscribe(
+        'NetworkEnablementController:stateChange',
+        restorePreviousEnabledNetworkMap,
+      );
+      this.networkEnablementController.update((state) => {
+        Object.entries(state.enabledNetworkMap).forEach(
+          ([namespace, currentNetworks]) => {
+            Object.keys(currentNetworks).forEach((chainId) => {
+              const previousValue =
+                previousEnabledNetworkMap[namespace]?.[chainId];
+              state.enabledNetworkMap[namespace][chainId] =
+                previousValue ?? false;
+            });
+          },
+        );
+      });
+    };
+
     this.controllerMessenger.subscribe(
       'NetworkEnablementController:stateChange',
-      onStateChange,
+      restorePreviousEnabledNetworkMap,
     );
 
     try {
       const addedNetwork =
         await this.networkController.addNetwork(networkConfiguration);
-      await stateChange;
-      this.networkEnablementController.update((state) => {
-        state.enabledNetworkMap = previousEnabledNetworkMap;
-      });
+      await this.lookupSelectedNetworks();
       return addedNetwork;
-    } finally {
+    } catch (error) {
+      // `addNetwork` rejected, so `networkAdded` was not published
       this.controllerMessenger.unsubscribe(
         'NetworkEnablementController:stateChange',
-        onStateChange,
+        restorePreviousEnabledNetworkMap,
       );
+      throw error;
     }
   }
 

@@ -21,8 +21,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useNetworkFormState } from '../settings/networks-tab/networks-form/networks-form-state';
-import { setActiveNetwork, setEditedNetwork } from '../../store/actions';
-import { getSelectedMultichainNetworkChainId } from '../../selectors';
+import { setEditedNetwork } from '../../store/actions';
 import AddBlockExplorerModal from '../../components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import { SelectRpcUrlModal } from '../../components/multichain/network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
 import { AddNetwork } from '../../components/multichain/network-manager/components/add-network';
@@ -100,9 +99,6 @@ export const NetworksPage = () => {
   );
   const rawEditedNetwork = useSelector(getEditedNetwork);
   const { chainId: editingChainId, editCompleted } = rawEditedNetwork ?? {};
-  const currentMultichainChainId = useSelector(
-    getSelectedMultichainNetworkChainId,
-  );
 
   const editedNetwork = useMemo((): UpdateNetworkFields | undefined => {
     if (view === 'add') {
@@ -189,39 +185,47 @@ export const NetworksPage = () => {
     navigate(DEFAULT_ROUTE);
   }, [dispatch, navigate]);
 
-  const handleClearEditedNetwork = useCallback(() => {
-    dispatch(setEditedNetwork());
-  }, [dispatch]);
+  const [pageToast, setPageToast] = useState<{
+    chainId: string;
+    nickname: string;
+    newNetwork: boolean;
+  } | null>(null);
 
-  const showSuccessToast = view === '' && rawEditedNetwork?.editCompleted;
+  const dismissPageToast = useCallback(() => setPageToast(null), []);
 
   useEffect(() => {
-    if (!showSuccessToast) {
+    if (!pageToast) {
       return undefined;
     }
     const timeoutId = setTimeout(
-      handleClearEditedNetwork,
+      dismissPageToast,
       NETWORKS_PAGE_TOAST_DURATION_MS,
     );
     return () => clearTimeout(timeoutId);
-  }, [handleClearEditedNetwork, showSuccessToast]);
+  }, [dismissPageToast, pageToast]);
 
-  // When the user picks an RPC from the Networks page select-rpc view, only
-  // switch the active network client when they're already on this chain. This
-  // intentionally avoids changing chains (and therefore the homepage network
-  // filter) — switching networks from the Networks page is not allowed; it's
-  // reserved for the homepage network modal. For the same-chain case we still
-  // need to update the active client so the wallet starts using the freshly
-  // selected RPC URL (which is what the user expects when they pick an RPC).
-  const handleSelectRpc = useCallback(
-    (caipChainId: string, networkClientId: string) => {
-      if (caipChainId === currentMultichainChainId) {
-        dispatch(setActiveNetwork(networkClientId));
-      }
-      handleClose();
-    },
-    [currentMultichainChainId, dispatch, handleClose],
-  );
+  useEffect(() => {
+    if (view !== '' || !rawEditedNetwork?.editCompleted) {
+      return;
+    }
+    setPageToast({
+      chainId: rawEditedNetwork.chainId,
+      nickname: rawEditedNetwork.nickname ?? '',
+      newNetwork: Boolean(rawEditedNetwork.newNetwork),
+    });
+    dispatch(setEditedNetwork());
+  }, [dispatch, rawEditedNetwork, view]);
+
+  const handleSelectRpc = useCallback(() => {
+    if (editedNetwork?.chainId) {
+      setPageToast({
+        chainId: editedNetwork.chainId,
+        nickname: editedNetwork.name ?? '',
+        newNetwork: false,
+      });
+    }
+    setView();
+  }, [editedNetwork, setView]);
 
   const handleGoHome = useCallback(() => {
     setView();
@@ -262,7 +266,7 @@ export const NetworksPage = () => {
           <NetworksPageList
             searchQuery={searchValue}
             footerContent={
-              showSuccessToast ? (
+              pageToast ? (
                 <Box
                   data-testid="networks-page-network-success-toast"
                   className="flex w-full items-center gap-3 rounded-xl border border-border-muted bg-background-section p-3"
@@ -273,15 +277,15 @@ export const NetworksPage = () => {
                     color={IconColor.SuccessDefault}
                   />
                   <Text variant={TextVariant.BodyMd} className="flex-1">
-                    {rawEditedNetwork.newNetwork
-                      ? t('newNetworkAdded', [rawEditedNetwork.nickname])
-                      : t('newNetworkEdited', [rawEditedNetwork.nickname])}
+                    {pageToast.newNetwork
+                      ? t('newNetworkAdded', [pageToast.nickname])
+                      : t('newNetworkEdited', [pageToast.nickname])}
                   </Text>
                   <ButtonIcon
                     ariaLabel={t('close')}
                     iconName={IconName.Close}
                     size={ButtonIconSize.Sm}
-                    onClick={handleClearEditedNetwork}
+                    onClick={dismissPageToast}
                   />
                 </Box>
               ) : null
