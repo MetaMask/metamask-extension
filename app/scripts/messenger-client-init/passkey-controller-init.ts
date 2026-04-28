@@ -7,6 +7,15 @@ const PASSKEY_RP_NAME = 'MetaMask';
 const PASSKEY_USER_NAME = 'MetaMask Wallet';
 const PASSKEY_USER_DISPLAY_NAME = 'MetaMask Wallet';
 
+/**
+ * Initialize the passkey controller.
+ *
+ * @param request - The request object.
+ * @param request.controllerMessenger - The messenger to use for the controller.
+ * @param request.persistedState - The persisted state of the extension.
+ * @param request.extension - The browser extension API object.
+ * @returns The initialized controller.
+ */
 export const PasskeyControllerInit: MessengerClientInitFunction<
   PasskeyController,
   PasskeyControllerMessenger

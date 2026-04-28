@@ -2940,7 +2940,6 @@ export default class MetamaskController extends EventEmitter {
 
       // vault management
       submitPassword: this.submitPassword.bind(this),
-      submitEncryptionKey: this.submitEncryptionKey.bind(this),
       verifyPassword: this.verifyPassword.bind(this),
 
       // passkey management
