@@ -148,6 +148,7 @@ export const useHardwareFooter = ({
     return isHardwareConnectionReadyForConfirmFooter(connectionState.status);
   }, [
     connectionState.status,
+    hardwareConnectionPermissionState,
     hasPreflightSucceeded,
     inE2e,
     isHardwareWalletAccount,
