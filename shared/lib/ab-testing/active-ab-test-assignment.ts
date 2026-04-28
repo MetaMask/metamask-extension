@@ -19,7 +19,10 @@ export type ActiveABTestAssignment = {
  * @param value - Assigned variant name for the active experiment.
  * @returns A normalized active A/B test assignment.
  */
-export function createActiveABTestAssignment(key: string, value: string): ActiveABTestAssignment {
+export function createActiveABTestAssignment(
+  key: string,
+  value: string,
+): ActiveABTestAssignment {
   return {
     key,
     value,
@@ -49,12 +52,16 @@ const isActiveABTestAssignment = (
  * @param value - Unknown analytics payload value.
  * @returns Normalized active A/B test assignments.
  */
-export function normalizeActiveABTestAssignments(value: unknown): ActiveABTestAssignment[] {
+export function normalizeActiveABTestAssignments(
+  value: unknown,
+): ActiveABTestAssignment[] {
   if (!Array.isArray(value)) {
     return [];
   }
 
   return value
     .filter(isActiveABTestAssignment)
-    .map(({ key, value: assignmentValue }) => createActiveABTestAssignment(key, assignmentValue));
+    .map(({ key, value: assignmentValue }) =>
+      createActiveABTestAssignment(key, assignmentValue),
+    );
 }
