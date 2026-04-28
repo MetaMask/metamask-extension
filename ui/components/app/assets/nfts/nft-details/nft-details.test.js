@@ -74,23 +74,15 @@ describe('NFT Details', () => {
     );
     shortenAddress.mockReturnValue('0xDc738...06414');
 
-    const { container } = renderWithProvider(
+    const { container, queryByTestId } = renderWithProvider(
       <NftDetails {...props} nftChainId={CHAIN_IDS.GOERLI} />,
       mockStore,
     );
 
     await waitFor(() => {
       expect(container).toMatchSnapshot();
+      expect(queryByTestId('nft-details__description')).not.toBeInTheDocument();
     });
-  });
-
-  it('does not render description when nft description is missing', () => {
-    const { queryByTestId } = renderWithProvider(
-      <NftDetails {...props} />,
-      mockStore,
-    );
-
-    expect(queryByTestId('nft-details__description')).not.toBeInTheDocument();
   });
 
   it(`should route to '/' route when the back button is clicked`, () => {
