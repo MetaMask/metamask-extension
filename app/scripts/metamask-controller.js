@@ -835,6 +835,8 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.ProfileMetricsController;
     this.legacyBackgroundApiService =
       messengerClientsByName.LegacyBackgroundApiService;
+    this.configRegistryController =
+      messengerClientsByName.ConfigRegistryController;
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -1392,6 +1394,7 @@ export default class MetamaskController extends EventEmitter {
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       DeFiPositionsController: this.deFiPositionsController,
       ProfileMetricsController: this.profileMetricsController,
+      ConfigRegistryController: this.configRegistryController,
       ...resetOnRestartStore,
       ...controllerPersistedState,
     });
@@ -1459,6 +1462,7 @@ export default class MetamaskController extends EventEmitter {
         ClaimsController: this.claimsController,
         ClaimsService: this.claimsService,
         ProfileMetricsController: this.profileMetricsController,
+        ConfigRegistryController: this.configRegistryController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
