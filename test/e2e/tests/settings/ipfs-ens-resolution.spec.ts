@@ -52,10 +52,12 @@ describe('Settings', function () {
       async ({ driver }) => {
         await driver.navigate();
 
-        // Wait for live UI Redux to match what the ENS webRequest handler needs.
-        // selectedNetworkClientId alone is not enough: webRequestDidFail always
-        // calls getCurrentChainId() (via getProviderConfig) before IN_TEST logic;
-        // that throws until NetworkController state is fully hydrated.
+        // Wait for the live controller state (via Redux) to confirm the
+        // ipfsGateway and useAddressBarEnsResolution settings are active.
+        // Unlike getPersistedState (which reads IndexedDB fixture data
+        // immediately), getCleanAppState reflects the running controller
+        // state that has been synced to the UI after background init.
+        // Wait for Mainnet to be fully initialized
         await driver.wait(async () => {
           const uiState = await getCleanAppState(driver);
           const m = uiState?.metamask;
