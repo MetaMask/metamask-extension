@@ -34,11 +34,6 @@ describe('Settings', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
-          .withEnabledNetworks({
-            eip155: {
-              '0x1': true,
-            },
-          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockEns,
@@ -63,6 +58,8 @@ describe('Settings', function () {
               NETWORK_CLIENT_ID.MAINNET
           );
         }, 10000);
+
+        await driver.delay(2000);
 
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
