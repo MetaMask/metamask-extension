@@ -43,11 +43,6 @@ export function useSigningOrSubmittingAlerts(): Alert[] {
 
   const isValidType = isCorrectDeveloperTransactionType(type);
 
-  // Only block on a previous signing/submitting transaction when it shares the
-  // current confirmation's chain and account, since transaction nonces are
-  // scoped per (chainId, from). Pending transactions on other chains or other
-  // accounts cannot affect this confirmation's nonce. The pay-token branch
-  // below intentionally still considers the pay-token chain.
   const hasSigningOrSubmittingForCurrentScope = useMemo(() => {
     if (!from) {
       return false;
