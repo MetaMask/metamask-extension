@@ -100,11 +100,9 @@ export default function SetupPasskey() {
       const registrationResponse = await startPasskeyRegistration(options);
       await protectVaultKeyWithPasskey(registrationResponse);
 
-      // update metamask state to reflect passkey registration
+      // update metamask state to reflect passkey registration; useEffect navigates
+      // when isPasskeyRegistered becomes true
       await forceUpdateMetamaskState(dispatch);
-
-      // go to next step
-      goToNextStep();
     } catch (error) {
       // silent error, do not show error to user
       if (isPasskeyCeremonySilentError(error)) {

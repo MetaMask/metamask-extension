@@ -1,6 +1,4 @@
 import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import { fireEvent, waitFor, screen } from '@testing-library/react';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -13,6 +11,8 @@ import {
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
+import configureStore from '../../../store/store';
+import { UPDATE_METAMASK_STATE } from '../../../store/actionConstants';
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
@@ -68,11 +68,23 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockUseNavigate,
 }));
 
+const testPasskeyRecord = {
+  credential: { id: 'AQ', publicKey: 'AQ', counter: 0, transports: [] },
+  encryptedVaultKey: { ciphertext: 'AQ', iv: 'AQ' },
+  keyDerivation: { method: 'prf' as const, prfSalt: 'AQ' },
+};
+
+/**
+ * Real app store with a partial metamask slice (merged with reducer initialState).
+ * Same pattern as renderHookWithProvider + UPDATE_METAMASK_STATE in usePerpsMarketInfo.test.ts.
+ * @param firstTimeFlowType
+ * @param metamaskOverrides
+ */
 const buildMockStore = (
   firstTimeFlowType: FirstTimeFlowType,
   metamaskOverrides: Record<string, unknown> = {},
 ) =>
-  configureMockStore([thunk])({
+  configureStore({
     metamask: {
       firstTimeFlowType,
       participateInMetaMetrics: null,
@@ -106,7 +118,8 @@ describe('SetupPasskey', () => {
     mockUseNavigate.mockClear();
     jest.mocked(protectVaultKeyWithPasskey).mockClear();
     jest.mocked(generatePasskeyRegistrationOptions).mockClear();
-    jest.mocked(forceUpdateMetamaskState).mockClear();
+    jest.mocked(forceUpdateMetamaskState).mockReset();
+    jest.mocked(forceUpdateMetamaskState).mockResolvedValue(undefined);
     jest.mocked(startPasskeyRegistration).mockResolvedValue({
       id: 'AQ',
       rawId: 'AQ',
@@ -251,6 +264,14 @@ describe('SetupPasskey', () => {
   describe('set up biometrics', () => {
     it('completes passkey registration using background encryption key and navigates', async () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
+      jest
+        .mocked(forceUpdateMetamaskState)
+        .mockImplementation(async (dispatch) => {
+          dispatch({
+            type: UPDATE_METAMASK_STATE,
+            value: { passkeyRecord: testPasskeyRecord },
+          });
+        });
       const { getByTestId } = renderWithProvider(<SetupPasskey />, mockStore);
 
       fireEvent.click(getByTestId('passkey-set-up-button'));
@@ -259,12 +280,14 @@ describe('SetupPasskey', () => {
         expect(protectVaultKeyWithPasskey).toHaveBeenCalled();
       });
       expect(forceUpdateMetamaskState).toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        ONBOARDING_REVIEW_SRP_ROUTE,
-        {
-          replace: true,
-        },
-      );
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          ONBOARDING_REVIEW_SRP_ROUTE,
+          {
+            replace: true,
+          },
+        );
+      });
     });
 
     it('does not navigate when the user cancels passkey registration', async () => {
