@@ -1,6 +1,7 @@
 import type {
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
+  MethodHandler,
 } from '@metamask/json-rpc-engine';
 import type {
   PendingJsonRpcResponse,
@@ -8,7 +9,6 @@ import type {
   JsonRpcRequest,
 } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandlerWrapper } from './types';
 
 export type ProviderStateHandlerRequest = JsonRpcRequest<{
   isInitializingStreamProvider?: boolean;
@@ -34,15 +34,11 @@ export type GetProviderState = (
   options?: { isInitializingStreamProvider?: boolean },
 ) => Promise<ProviderStateHandlerResult>;
 
-type GetProviderStateConstraint = {
-  implementation: (
-    _req: ProviderStateHandlerRequest,
-    res: PendingJsonRpcResponse<ProviderStateHandlerResult>,
-    _next: JsonRpcEngineNextCallback,
-    end: JsonRpcEngineEndCallback,
-    { _getProviderState }: Record<string, GetProviderState>,
-  ) => Promise<void>;
-} & HandlerWrapper;
+export type GetProviderStateHooks = {
+  getProviderState: GetProviderState;
+};
+
+type GetProviderStateConstraint = MethodHandler<GetProviderStateHooks>;
 
 /**
  * This RPC method gets background state relevant to the provider.
@@ -51,13 +47,18 @@ type GetProviderStateConstraint = {
  */
 const getProviderState = {
   methodNames: [MESSAGE_TYPE.GET_PROVIDER_STATE],
-  implementation: getProviderStateHandler,
+  implementation:
+    getProviderStateHandler as unknown as GetProviderStateConstraint['implementation'],
   hookNames: {
     getProviderState: true,
   },
 } satisfies GetProviderStateConstraint;
 
-export default getProviderState;
+const getProviderStateHandlers = {
+  [MESSAGE_TYPE.GET_PROVIDER_STATE]: getProviderState,
+};
+
+export default getProviderStateHandlers;
 
 /**
  * @param req - The JSON-RPC request object.
@@ -72,7 +73,7 @@ async function getProviderStateHandler(
   res: PendingJsonRpcResponse<ProviderStateHandlerResult>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  { getProviderState: _getProviderState }: Record<string, GetProviderState>,
+  { getProviderState: _getProviderState }: GetProviderStateHooks,
 ): Promise<void> {
   const isInitializingStreamProvider = req.params?.isInitializingStreamProvider;
   res.result = {

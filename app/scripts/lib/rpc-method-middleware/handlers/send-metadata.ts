@@ -1,6 +1,7 @@
 import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
+  MethodHandler,
 } from '@metamask/json-rpc-engine';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 import {
@@ -8,10 +9,7 @@ import {
   SubjectType,
 } from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import {
-  HandlerWrapper,
-  HandlerRequestType as SendMetadataHandlerRequest,
-} from './types';
+import { HandlerRequestType as SendMetadataHandlerRequest } from './types';
 
 export type SubjectMetadataToAdd = PermissionSubjectMetadata & {
   name?: string | null;
@@ -20,23 +18,22 @@ export type SubjectMetadataToAdd = PermissionSubjectMetadata & {
   iconUrl?: string | null;
 };
 
-type SendMetadataConstraint<
-  Params extends SubjectMetadataToAdd = SubjectMetadataToAdd,
-> = {
-  implementation: (
-    req: SendMetadataHandlerRequest<Params>,
-    res: PendingJsonRpcResponse<true>,
-    _next: JsonRpcEngineNextCallback,
-    end: JsonRpcEngineEndCallback,
-  ) => void;
-} & HandlerWrapper;
+export type SendMetadataHooks = {};
+
+type SendMetadataConstraint = MethodHandler<SendMetadataHooks>;
 
 const sendMetadata = {
   methodNames: [MESSAGE_TYPE.SEND_METADATA],
-  implementation: sendMetadataHandler,
+  implementation:
+    sendMetadataHandler as unknown as SendMetadataConstraint['implementation'],
   hookNames: {},
 } satisfies SendMetadataConstraint;
-export default sendMetadata;
+
+const sendMetadataHandlers = {
+  [MESSAGE_TYPE.SEND_METADATA]: sendMetadata,
+};
+
+export default sendMetadataHandlers;
 
 /**
  * @param _req - The JSON-RPC request object.

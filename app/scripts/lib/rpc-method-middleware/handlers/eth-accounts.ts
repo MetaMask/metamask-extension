@@ -1,6 +1,7 @@
 import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
+  MethodHandler,
 } from '@metamask/json-rpc-engine';
 import type {
   JsonRpcRequest,
@@ -8,33 +9,30 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandlerWrapper } from './types';
 
-type EthAccountsHandlerOptions = {
+export type EthAccountsHooks = {
   getAccounts: () => string[];
 };
 
-type EthAccountsConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
-  implementation: (
-    _req: JsonRpcRequest<Params>,
-    res: PendingJsonRpcResponse<string[]>,
-    _next: JsonRpcEngineNextCallback,
-    end: JsonRpcEngineEndCallback,
-    { getAccounts }: EthAccountsHandlerOptions,
-  ) => Promise<void>;
-} & HandlerWrapper;
+type EthAccountsConstraint = MethodHandler<EthAccountsHooks>;
 
 /**
  * A wrapper for `eth_accounts` that returns an empty array when permission is denied.
  */
 const ethAccounts = {
   methodNames: [MESSAGE_TYPE.ETH_ACCOUNTS],
-  implementation: ethAccountsHandler,
+  implementation:
+    ethAccountsHandler as unknown as EthAccountsConstraint['implementation'],
   hookNames: {
     getAccounts: true,
   },
 } satisfies EthAccountsConstraint;
-export default ethAccounts;
+
+const ethAccountsHandlers = {
+  [MESSAGE_TYPE.ETH_ACCOUNTS]: ethAccounts,
+};
+
+export default ethAccountsHandlers;
 
 /**
  *
@@ -50,7 +48,7 @@ async function ethAccountsHandler<Params extends JsonRpcParams = JsonRpcParams>(
   res: PendingJsonRpcResponse<string[]>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  { getAccounts }: EthAccountsHandlerOptions,
+  { getAccounts }: EthAccountsHooks,
 ): Promise<void> {
   res.result = getAccounts();
   return end();

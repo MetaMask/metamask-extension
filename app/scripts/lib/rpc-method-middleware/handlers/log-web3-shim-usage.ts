@@ -1,34 +1,22 @@
 import type {
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
+  MethodHandler,
 } from '@metamask/json-rpc-engine';
 import type { JsonRpcParams, PendingJsonRpcResponse } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import {
-  HandlerWrapper,
-  HandlerRequestType as LogWeb3ShimUsageHandlerRequest,
-} from './types';
+import { HandlerRequestType as LogWeb3ShimUsageHandlerRequest } from './types';
 
 export type GetWeb3ShimUsageState = (origin: string) => undefined | 1 | 2;
 export type SetWeb3ShimUsageRecorded = (origin: string) => void;
 
-export type LogWeb3ShimUsageOptions = {
+export type LogWeb3ShimUsageHooks = {
   getWeb3ShimUsageState: GetWeb3ShimUsageState;
   setWeb3ShimUsageRecorded: SetWeb3ShimUsageRecorded;
 };
-type LogWeb3ShimUsageConstraint<Params extends JsonRpcParams = JsonRpcParams> =
-  {
-    implementation: (
-      req: LogWeb3ShimUsageHandlerRequest<Params>,
-      res: PendingJsonRpcResponse<true>,
-      _next: JsonRpcEngineNextCallback,
-      end: JsonRpcEngineEndCallback,
-      {
-        getWeb3ShimUsageState,
-        setWeb3ShimUsageRecorded,
-      }: LogWeb3ShimUsageOptions,
-    ) => void;
-  } & HandlerWrapper;
+
+type LogWeb3ShimUsageConstraint = MethodHandler<LogWeb3ShimUsageHooks>;
+
 /**
  * This RPC method is called by the inpage provider whenever it detects the
  * accessing of a non-existent property on our window.web3 shim. We use this
@@ -37,14 +25,19 @@ type LogWeb3ShimUsageConstraint<Params extends JsonRpcParams = JsonRpcParams> =
  */
 const logWeb3ShimUsage = {
   methodNames: [MESSAGE_TYPE.LOG_WEB3_SHIM_USAGE],
-  implementation: logWeb3ShimUsageHandler,
+  implementation:
+    logWeb3ShimUsageHandler as unknown as LogWeb3ShimUsageConstraint['implementation'],
   hookNames: {
     getWeb3ShimUsageState: true,
     setWeb3ShimUsageRecorded: true,
   },
 } satisfies LogWeb3ShimUsageConstraint;
 
-export default logWeb3ShimUsage;
+const logWeb3ShimUsageHandlers = {
+  [MESSAGE_TYPE.LOG_WEB3_SHIM_USAGE]: logWeb3ShimUsage,
+};
+
+export default logWeb3ShimUsageHandlers;
 
 /**
  * @param req - The JSON-RPC request object.
@@ -62,7 +55,7 @@ function logWeb3ShimUsageHandler<Params extends JsonRpcParams = JsonRpcParams>(
   res: PendingJsonRpcResponse<true>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  { getWeb3ShimUsageState, setWeb3ShimUsageRecorded }: LogWeb3ShimUsageOptions,
+  { getWeb3ShimUsageState, setWeb3ShimUsageRecorded }: LogWeb3ShimUsageHooks,
 ): void {
   const { origin } = req;
   if (getWeb3ShimUsageState(origin) === undefined) {

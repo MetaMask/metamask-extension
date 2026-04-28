@@ -2,36 +2,6 @@ import { rpcErrors } from '@metamask/rpc-errors';
 import { selectHooks } from '@metamask/snaps-rpc-methods';
 import { hasProperty } from '@metamask/utils';
 
-import {
-  handlers as localHandlers,
-  eip1193OnlyHandlers,
-  ethAccountsHandler,
-} from './handlers';
-import { getPermissionsHandler } from './handlers/wallet-getPermissions';
-import { requestPermissionsHandler } from './handlers/wallet-requestPermissions';
-import { revokePermissionsHandler } from './handlers/wallet-revokePermissions';
-
-// The primary home of RPC method implementations for the injected 1193 provider API. MUST be subsequent
-// to our permissioning logic in the EIP-1193 JSON-RPC middleware pipeline.
-export const createEip1193MethodMiddleware = makeMethodMiddlewareMaker([
-  ...localHandlers,
-  ...eip1193OnlyHandlers,
-  // EIP-2255 Permission handlers
-  getPermissionsHandler,
-  requestPermissionsHandler,
-  revokePermissionsHandler,
-]);
-
-// A collection of RPC method implementations that, for legacy reasons, MAY precede
-// our permissioning logic in the EIP-1193 JSON-RPC middleware pipeline.
-export const createEthAccountsMethodMiddleware = makeMethodMiddlewareMaker([
-  ethAccountsHandler,
-]);
-
-// The primary home of RPC method implementations for the MultiChain API.
-export const createMultichainMethodMiddleware =
-  makeMethodMiddlewareMaker(localHandlers);
-
 /**
  * Creates a method middleware factory function given a set of method handlers.
  *

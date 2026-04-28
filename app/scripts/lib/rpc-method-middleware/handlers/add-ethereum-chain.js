@@ -10,6 +10,9 @@ import {
   switchChain,
 } from './ethereum-chain-utils';
 
+/** @typedef {import('@metamask/json-rpc-engine').MethodHandler<Record<string, unknown>>} AddEthereumChainHandler */
+
+/** @type {AddEthereumChainHandler} */
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
   implementation: addEthereumChainHandler,
@@ -29,7 +32,12 @@ const addEthereumChain = {
   },
 };
 
-export default addEthereumChain;
+/** @type {Record<MESSAGE_TYPE['ADD_ETHEREUM_CHAIN'], AddEthereumChainHandler>} */
+const addEthereumChainHandlers = {
+  [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: addEthereumChain,
+};
+
+export default addEthereumChainHandlers;
 
 async function addEthereumChainHandler(
   req,

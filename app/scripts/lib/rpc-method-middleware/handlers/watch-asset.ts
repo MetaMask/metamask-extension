@@ -3,6 +3,7 @@ import type {
   JsonRpcEngineCallbackError,
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
+  MethodHandler,
 } from '@metamask/json-rpc-engine';
 import {
   JsonRpcRequest,
@@ -11,7 +12,6 @@ import {
 } from '@metamask/utils';
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandlerWrapper } from './types';
 
 type HandleWatchAssetRequest = (
   options: Record<string, string | Record<string, string>>,
@@ -22,28 +22,27 @@ type WatchAssetRequest<Params extends JsonRpcParams> = JsonRpcRequest<Params> &
     params: { options: { tokenId: string }; type: string };
   };
 
-type WatchAssetOptions = {
+export type WatchAssetHooks = {
   handleWatchAssetRequest: HandleWatchAssetRequest;
 };
-type WatchAssetConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
-  implementation: (
-    req: WatchAssetRequest<Params>,
-    res: PendingJsonRpcResponse<true>,
-    _next: JsonRpcEngineNextCallback,
-    end: JsonRpcEngineEndCallback,
-    { handleWatchAssetRequest }: WatchAssetOptions,
-  ) => Promise<void>;
-} & HandlerWrapper;
+
+type WatchAssetConstraint = MethodHandler<WatchAssetHooks>;
 
 const watchAsset = {
   methodNames: [MESSAGE_TYPE.WATCH_ASSET, MESSAGE_TYPE.WATCH_ASSET_LEGACY],
-  implementation: watchAssetHandler,
+  implementation:
+    watchAssetHandler as unknown as WatchAssetConstraint['implementation'],
   hookNames: {
     handleWatchAssetRequest: true,
   },
 } satisfies WatchAssetConstraint;
 
-export default watchAsset;
+const watchAssetHandlers = {
+  [MESSAGE_TYPE.WATCH_ASSET]: watchAsset,
+  [MESSAGE_TYPE.WATCH_ASSET_LEGACY]: watchAsset,
+};
+
+export default watchAssetHandlers;
 
 /**
  * @param req - The JSON-RPC request object.
@@ -58,7 +57,7 @@ async function watchAssetHandler<Params extends JsonRpcParams = JsonRpcParams>(
   res: PendingJsonRpcResponse<true>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  { handleWatchAssetRequest }: WatchAssetOptions,
+  { handleWatchAssetRequest }: WatchAssetHooks,
 ): Promise<void> {
   try {
     const {

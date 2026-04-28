@@ -19,8 +19,9 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import type {
-  AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
+  JsonRpcEngineNextCallback,
+  MethodHandler,
 } from '@metamask/json-rpc-engine';
 import {
   CaveatTypes,
@@ -34,15 +35,34 @@ import type {
   RequestPermissionsForOrigin,
 } from './types';
 
-export const requestPermissionsHandler = {
+export type RequestPermissionsHooks = {
+  getAccounts: GetAccounts;
+  requestPermissionsForOrigin: RequestPermissionsForOrigin;
+  getCaip25PermissionFromLegacyPermissionsForOrigin: GetCaip25PermissionFromLegacyPermissionsForOrigin;
+};
+
+type RequestPermissionsConstraint = MethodHandler<
+  RequestPermissionsHooks,
+  never,
+  [RequestedPermissions]
+>;
+
+const requestPermissionsHandler = {
   methodNames: [MethodNames.RequestPermissions],
-  implementation: requestPermissionsImplementation,
+  implementation:
+    requestPermissionsImplementation as unknown as RequestPermissionsConstraint['implementation'],
   hookNames: {
     getAccounts: true,
     requestPermissionsForOrigin: true,
     getCaip25PermissionFromLegacyPermissionsForOrigin: true,
   },
+} satisfies RequestPermissionsConstraint;
+
+const requestPermissionsHandlers = {
+  [MethodNames.RequestPermissions]: requestPermissionsHandler,
 };
+
+export default requestPermissionsHandlers;
 
 /**
  * Request Permissions implementation to be used in JsonRpcEngine middleware.
@@ -60,7 +80,7 @@ export const requestPermissionsHandler = {
 async function requestPermissionsImplementation(
   req: JsonRpcRequest<[RequestedPermissions]> & { origin: string },
   res: PendingJsonRpcResponse<Json>,
-  _next: AsyncJsonRpcEngineNextCallback,
+  _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   {
     getAccounts,
