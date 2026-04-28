@@ -13,6 +13,7 @@ import { getBatchMetricsProperties } from './batch';
 import { getGasMetricsProperties } from './gas';
 import { getGaslessMetricsProperties } from './gasless';
 import { getHashMetricsProperties } from './hash';
+import { getIframeMetricsProperties } from './iframe';
 import { getRPCMetricsProperties } from './rpc';
 import { getSecurityMetricsProperties } from './security';
 import { getSmartTransactionProperties } from './smart-transactions';
@@ -33,6 +34,7 @@ const METRICS_BUILDERS: TransactionMetricsBuilder[] = [
   getGasMetricsProperties,
   getBatchMetricsProperties,
   getHashMetricsProperties,
+  getIframeMetricsProperties,
   getSmartTransactionProperties,
   getSecurityMetricsProperties,
   getRPCMetricsProperties,

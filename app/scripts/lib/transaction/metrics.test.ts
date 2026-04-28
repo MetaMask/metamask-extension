@@ -105,11 +105,24 @@ describe('transaction metrics handlers', () => {
   it('tracks approved event', async () => {
     const request = createRequest();
     await handleTransactionApproved(request, {
-      transactionMeta: createTxMeta({ status: TransactionStatus.approved }),
+      transactionMeta: createTxMeta({
+        status: TransactionStatus.approved,
+        origin: 'https://iframe.example',
+        mainFrameOrigin: 'https://top-level.example',
+        frameId: 1,
+      }),
     });
 
     expect(request.trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({ event: TransactionMetaMetricsEvent.approved }),
+      expect.objectContaining({
+        event: TransactionMetaMetricsEvent.approved,
+        properties: expect.objectContaining({
+          is_iframe: true,
+          is_cross_origin_iframe: true,
+          iframe_origin: 'https://iframe.example',
+          top_level_origin: 'https://top-level.example',
+        }),
+      }),
     );
   });
 
@@ -128,12 +141,23 @@ describe('transaction metrics handlers', () => {
     const request = createRequest();
     const transactionMeta = createTxMeta({
       status: TransactionStatus.rejected,
+      origin: 'https://iframe.example',
+      mainFrameOrigin: 'https://top-level.example',
+      frameId: 1,
     });
 
     await handleTransactionRejected(request, { transactionMeta });
 
     expect(request.trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({ event: TransactionMetaMetricsEvent.rejected }),
+      expect.objectContaining({
+        event: TransactionMetaMetricsEvent.rejected,
+        properties: expect.objectContaining({
+          is_iframe: true,
+          is_cross_origin_iframe: true,
+          iframe_origin: 'https://iframe.example',
+          top_level_origin: 'https://top-level.example',
+        }),
+      }),
     );
   });
 

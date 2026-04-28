@@ -83,6 +83,11 @@ export type AddDappTransactionRequest = BaseAddTransactionRequest & {
   requestContext: MiddlewareContext;
 };
 
+type TransactionMetaWithFrameContext = TransactionMeta & {
+  frameId?: number;
+  mainFrameOrigin?: string;
+};
+
 const TRANSFER_TYPES = [
   TransactionType.tokenMethodTransfer,
   TransactionType.tokenMethodTransferFrom,
@@ -100,6 +105,10 @@ export async function addDappTransaction(
   const { dappRequest, requestContext } = request;
   const { id, method } = dappRequest;
   const actionId = String(id);
+  const { frameId, mainFrameOrigin } = dappRequest as JsonRpcRequest & {
+    frameId?: number;
+    mainFrameOrigin?: string;
+  };
 
   // TODO: Find a home for and define the appropriate MiddlewareContext type
   const origin = requestContext.assertGet('origin') as string;
@@ -128,15 +137,54 @@ export async function addDappTransaction(
     },
   };
 
-  const { waitForHash } = await addTransactionOrUserOperation(
+  const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
     addTransactionRequest,
   );
+
+  persistDappRequestFrameContext({
+    transactionController: request.transactionController,
+    transactionMeta,
+    frameId,
+    mainFrameOrigin,
+  });
 
   const hash = (await waitForHash()) as string;
 
   endTrace({ name: TraceName.Transaction, id: actionId });
 
   return hash;
+}
+
+function persistDappRequestFrameContext({
+  transactionController,
+  transactionMeta,
+  frameId,
+  mainFrameOrigin,
+}: {
+  transactionController: TransactionController;
+  transactionMeta: TransactionMeta | undefined;
+  frameId: unknown;
+  mainFrameOrigin: unknown;
+}) {
+  const hasFrameId = typeof frameId === 'number';
+  const hasMainFrameOrigin = typeof mainFrameOrigin === 'string';
+
+  if (!transactionMeta || (!hasFrameId && !hasMainFrameOrigin)) {
+    return;
+  }
+
+  const updatedTransactionMeta: TransactionMetaWithFrameContext = {
+    ...transactionMeta,
+    ...(hasFrameId ? { frameId: frameId as number } : {}),
+    ...(hasMainFrameOrigin
+      ? { mainFrameOrigin: mainFrameOrigin as string }
+      : {}),
+  };
+
+  transactionController.updateTransaction(
+    updatedTransactionMeta,
+    'Add dapp request frame context',
+  );
 }
 
 async function addTransactionOnTempo(

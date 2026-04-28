@@ -167,6 +167,7 @@ function createTransactionControllerMock() {
   return {
     addTransaction: jest.fn(),
     addTransactionBatch: jest.fn(),
+    updateTransaction: jest.fn(),
     state: { transactions: [] },
   } as unknown as jest.Mocked<TransactionController>;
 }
@@ -766,6 +767,44 @@ describe('Transaction Utils', () => {
       it('returns transaction hash', async () => {
         const transactionHash = await addDappTransaction(dappRequest);
         expect(transactionHash).toStrictEqual(TRANSACTION_META_MOCK.hash);
+      });
+
+      it('persists dapp request frame context on transaction metadata', async () => {
+        dappRequest.dappRequest = {
+          ...dappRequest.dappRequest,
+          frameId: 1,
+          mainFrameOrigin: 'https://top-level.example',
+        };
+
+        await addDappTransaction(dappRequest);
+
+        expect(transactionController.updateTransaction).toHaveBeenCalledWith(
+          {
+            ...TRANSACTION_META_MOCK,
+            frameId: 1,
+            mainFrameOrigin: 'https://top-level.example',
+          },
+          'Add dapp request frame context',
+        );
+      });
+
+      it('preserves frameId 0 for top-level dapp transactions', async () => {
+        dappRequest.dappRequest = {
+          ...dappRequest.dappRequest,
+          frameId: 0,
+          mainFrameOrigin: TRANSACTION_OPTIONS_MOCK.origin,
+        };
+
+        await addDappTransaction(dappRequest);
+
+        expect(transactionController.updateTransaction).toHaveBeenCalledWith(
+          {
+            ...TRANSACTION_META_MOCK,
+            frameId: 0,
+            mainFrameOrigin: TRANSACTION_OPTIONS_MOCK.origin,
+          },
+          'Add dapp request frame context',
+        );
       });
 
       it('throws if result promise fails', async () => {
