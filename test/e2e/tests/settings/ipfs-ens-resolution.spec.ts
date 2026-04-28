@@ -57,7 +57,7 @@ describe('Settings', function () {
         // immediately), getCleanAppState reflects the running controller
         // state that has been synced to the UI after background init.
         // Wait until NetworkController state resolves to mainnet.
-        await driver.wait(async () => {
+        await driver.waitUntil(async () => {
           const uiState = await getCleanAppState(driver);
           const m = uiState?.metamask;
           if (
@@ -71,7 +71,11 @@ describe('Settings', function () {
           } catch {
             return false;
           }
-        }, 10000);
+        }, {
+          interval: 1000,
+          timeout: 10000,
+          stableFor: 1000,
+        });
 
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
