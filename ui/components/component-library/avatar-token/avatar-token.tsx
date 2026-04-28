@@ -14,6 +14,8 @@ import { AvatarTokenProps, AvatarTokenSize } from './avatar-token.types';
 
 /**
  * @deprecated Please update your code to use `AvatarToken` from `@metamask/design-system-react`
+ * See the migration guide:
+ * https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#avatartoken-component
  */
 export const AvatarToken: AvatarTokenComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

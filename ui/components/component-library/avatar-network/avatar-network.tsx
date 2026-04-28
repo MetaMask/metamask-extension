@@ -16,6 +16,8 @@ import { AvatarNetworkProps, AvatarNetworkSize } from './avatar-network.types';
 
 /**
  * @deprecated Please update your code to use `AvatarNetwork` from `@metamask/design-system-react`
+ * See the migration guide:
+ * https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#avatarnetwork-component
  */
 export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

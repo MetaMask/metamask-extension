@@ -23,6 +23,8 @@ import {
 
 /**
  * @deprecated Please update your code to use `AvatarBase` from `@metamask/design-system-react`
+ * See the migration guide:
+ * https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#avatarbase-component
  */
 export const AvatarBase: AvatarBaseComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

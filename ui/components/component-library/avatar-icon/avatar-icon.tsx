@@ -22,6 +22,8 @@ import {
 
 /**
  * @deprecated Please update your code to use `AvatarIcon` from `@metamask/design-system-react`
+ * See the migration guide:
+ * https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#avataricon-component
  */
 export const AvatarIcon: AvatarIconComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

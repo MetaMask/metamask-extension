@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isSnapId } from '@metamask/snaps-utils';
+import {
+  AvatarFavicon,
+  AvatarFaviconSize,
+} from '@metamask/design-system-react';
 import Button from '../../ui/button';
-import { AvatarFavicon, IconSize } from '../../component-library';
+import { IconSize } from '../../component-library';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 import SiteOrigin from '../../ui/site-origin';
-import { Size } from '../../../helpers/constants/design-system';
 import { SnapIcon } from '../snaps/snap-icon';
 
 export default class ConnectedSitesList extends Component {
@@ -60,7 +63,7 @@ export default class ConnectedSitesList extends Component {
             <AvatarFavicon
               className="connected-sites-list__subject-icon"
               name={subject.name}
-              size={Size.MD}
+              size={AvatarFaviconSize.Md}
               src={subject.iconUrl}
             />
             <SiteOrigin
