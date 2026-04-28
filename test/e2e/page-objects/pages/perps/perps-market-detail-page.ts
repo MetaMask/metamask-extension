@@ -20,6 +20,17 @@ export class PerpsMarketDetailPage {
 
   private readonly closeCtaButton = { testId: 'perps-close-cta-button' };
 
+  /**
+   * Perps toast (`dataTestId` default `perps-toast` → `perps-toast-banner-base`).
+   * Dismissing avoids `ElementClickInterceptedError` on CTAs in Firefox when the
+   * banner overlays the action row.
+   *
+   * @see ui/components/multichain/toast/toast.tsx
+   * @see ui/components/app/perps/perps-toast/perps-toast-provider.tsx
+   */
+  private readonly perpsToastCloseButton =
+    '[data-testid="perps-toast-banner-base"] .mm-banner-base__close-button';
+
   private readonly closePositionModal = {
     testId: 'perps-close-position-modal',
   };
@@ -226,6 +237,15 @@ export class PerpsMarketDetailPage {
   }
 
   /**
+   * Dismisses the perps toast if it is open (e.g. success toast after a fill).
+   * No-op if the toast is absent (uses {@link Driver.clickElementSafe}).
+   */
+  async dismissPerpsToastIfPresent(): Promise<void> {
+    await this.driver.clickElementSafe(this.perpsToastCloseButton, 2000);
+    await this.driver.delay(150);
+  }
+
+  /**
    * Clicks the back control on the market detail header (navigates to wallet default route).
    */
   async clickBack(): Promise<void> {
@@ -242,8 +262,10 @@ export class PerpsMarketDetailPage {
   /**
    * Clicks the Close CTA button to open the close position modal.
    * Requires an open position in this market.
+   * Dismisses a visible perps success toast first so the click is not obscured (Firefox).
    */
   async clickClose(): Promise<void> {
+    await this.dismissPerpsToastIfPresent();
     await this.driver.clickElement(this.closeCtaButton);
   }
 
