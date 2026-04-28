@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import type { Rule } from '@metamask/7715-permission-types';
 import type { Hex } from '@metamask/utils';
 import { isSnapId } from '@metamask/snaps-utils';
 import { Text, TextVariant } from '@metamask/design-system-react';
@@ -33,6 +34,7 @@ import {
   assertPermissionSchemaEntry,
 } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
+import { extractRedeemerAddressesFromRules } from '../../../../../../../../shared/lib/gator-permissions';
 import { translateI18nValue } from '../../../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 import type {
   AmountField,
@@ -43,6 +45,12 @@ import type {
   SchemaSection,
   TokenResolution,
 } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schema.types';
+import { Box } from '../../../../../../../components/component-library';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+} from '../../../../../../../helpers/constants/design-system';
 import { NativeAmountRow } from './native-amount-row';
 import { TokenAmountRow } from './token-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
@@ -245,6 +253,32 @@ function renderElement(
       );
     }
 
+    case 'redeemer': {
+      const addresses = element.getValue(ctx);
+      if (!addresses?.length) {
+        return null;
+      }
+      return (
+        <React.Fragment key={index}>
+          <ConfirmInfoRow label={t(element.labelKey)}>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.flexEnd}
+            >
+              {addresses.map((address) => (
+                <ConfirmInfoRowAddress
+                  key={address}
+                  address={address}
+                  chainId={ctx.chainId}
+                />
+              ))}
+            </Box>
+          </ConfirmInfoRow>
+        </React.Fragment>
+      );
+    }
+
     case 'network': {
       return <NetworkRow key={index} />;
     }
@@ -298,7 +332,8 @@ export const PermissionDetailRenderer: React.FC<{
   origin: string;
   to?: string;
   ownerId: string;
-}> = ({ permission, expiry, chainId, origin, to, ownerId }) => {
+  rules?: Rule[];
+}> = ({ permission, expiry, chainId, origin, to, ownerId, rules }) => {
   const t = useI18nContext() as I18nFunction;
 
   const schemaEntry = PERMISSION_SCHEMAS[permission.type];
@@ -332,9 +367,12 @@ export const PermissionDetailRenderer: React.FC<{
     tokenInfo = { symbol: '', decimals: erc20Decimals };
   }
 
+  const redeemerAddresses = extractRedeemerAddressesFromRules(rules ?? []);
+
   const ctx: PermissionRenderContext = {
     permission,
     expiry,
+    redeemerAddresses,
     chainId,
     origin,
     to,

@@ -109,6 +109,14 @@ const permissionInfoSection: SchemaSection = {
       includeInViews: ['confirmation'],
     },
     { type: 'network', includeInViews: ['confirmation', 'reviewDetail'] },
+    {
+      type: 'redeemer',
+      labelKey: 'redeemer',
+      testId: 'confirmation-redeemer',
+      getValue: (ctx) => ctx.redeemerAddresses ?? undefined,
+      isVisible: (ctx) => Boolean(ctx.redeemerAddresses?.length),
+      includeInViews: ['confirmation', 'reviewDetail'],
+    },
   ],
 };
 

@@ -40,6 +40,7 @@ import {
   convertTimestampToReadableDate,
   extractExpiryTimestampFromRules,
   formatDecimalShiftedValue,
+  extractRedeemerAddressesFromRules,
 } from '../../../../../../shared/lib/gator-permissions';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getInternalAccountByAddress } from '../../../../../selectors';
@@ -189,6 +190,71 @@ const ReviewNetworkRow: React.FC<{
   );
 };
 
+const RedeemerAddressItem: React.FC<{ address: string }> = ({ address }) => {
+  const internalAccount = useSelector((state) =>
+    getInternalAccountByAddress(state, address),
+  );
+  const accountText = useMemo(
+    () => internalAccount?.metadata?.name || shortenAddress(address),
+    [internalAccount, address],
+  );
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.End}
+      gap={2}
+      alignItems={BoxAlignItems.Center}
+    >
+      <PreferredAvatar address={address} />
+      <Text
+        variant={TextVariant.BodyMd}
+        color={TextColor.TextAlternative}
+        data-testid="review-gator-permission-redeemer-address"
+      >
+        {accountText}
+      </Text>
+      <CopyIcon
+        copyText={address}
+        style={{ position: 'static', right: 'auto', top: 'auto' }}
+      />
+    </Box>
+  );
+};
+
+const ReviewRedeemerRow: React.FC<{
+  addresses: string[];
+  label: string;
+}> = ({ addresses, label }) => {
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      style={gatorPermissionDetailRowStyle}
+      gap={4}
+      marginTop={2}
+    >
+      <Text
+        textAlign={TextAlign.Left}
+        color={TextColor.TextAlternative}
+        variant={TextVariant.BodyMd}
+      >
+        {label}
+      </Text>
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.End}
+        style={gatorPermissionDetailRowStyle}
+        gap={2}
+      >
+        {addresses.map((addr) => (
+          <RedeemerAddressItem key={addr} address={addr} />
+        ))}
+      </Box>
+    </Box>
+  );
+};
+
 // ---------------------------------------------------------------------------
 // Element renderer
 // ---------------------------------------------------------------------------
@@ -296,6 +362,19 @@ function renderElement({
           networkName={extraProps.networkName}
         />
       ) : null;
+    case 'redeemer': {
+      const addresses = element.getValue(ctx);
+      if (!addresses?.length) {
+        return null;
+      }
+      return (
+        <ReviewRedeemerRow
+          key={rowKey}
+          addresses={addresses}
+          label={t(element.labelKey)}
+        />
+      );
+    }
 
     case 'divider':
     case 'origin':
@@ -461,6 +540,7 @@ export const ReviewPermissionRenderer: React.FC<
   assertPermissionSchemaEntry(permissionType, schemaEntry);
 
   const effectiveExpiry = extractExpiryTimestampFromRules(rules ?? []);
+  const redeemerAddresses = extractRedeemerAddressesFromRules(rules ?? []);
 
   const ctx: PermissionRenderContext = {
     permission: {
@@ -469,6 +549,7 @@ export const ReviewPermissionRenderer: React.FC<
       justification: permissionData.justification as string | undefined,
     },
     expiry: effectiveExpiry,
+    redeemerAddresses,
     chainId,
     tokenInfo: {
       symbol: tokenInfo.symbol,

@@ -1,3 +1,4 @@
+import { Rule } from '@metamask/7715-permission-types';
 import type { Hex } from '@metamask/utils';
 import type { BigNumber } from 'bignumber.js';
 
@@ -36,6 +37,7 @@ export type PermissionRenderContext = {
   };
   /** Expiry timestamp in Unix seconds, or null if no expiry. */
   expiry: number | null;
+  redeemerAddresses?: string[] | null;
   /** Chain ID in hex format. */
   chainId: Hex;
   /** The origin URL of the request. Only required for confirmation views. */
@@ -182,7 +184,18 @@ export type SchemaElement =
   | AccountField
   | OriginField
   | AddressField
-  | NetworkField;
+  | NetworkField
+  | RedeemerField;
+
+/** Displays the redeemer addresses for a permission. */
+export type RedeemerField = {
+  type: 'redeemer';
+  labelKey: string;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => string[] | undefined;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
+};
 
 /** A section groups elements visually. */
 export type SchemaSection = {

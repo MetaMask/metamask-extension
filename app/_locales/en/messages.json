@@ -6603,6 +6603,9 @@
   "recoveryPhraseReminderTitle": {
     "message": "Protect your wallet"
   },
+  "redeemer": {
+    "message": "Redeemer"
+  },
   "redeposit": {
     "message": "Redeposit"
   },
