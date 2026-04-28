@@ -59,12 +59,18 @@ describe('Settings', function () {
         // Wait until NetworkController state resolves to mainnet.
         await driver.wait(async () => {
           const uiState = await getCleanAppState(driver);
-          return (
-            uiState?.metamask?.ipfsGateway === 'dweb.link' &&
-            uiState?.metamask?.useAddressBarEnsResolution === true &&
-            getCurrentChainId({ metamask: uiState?.metamask }) ===
-              CHAIN_IDS.MAINNET
-          );
+          const m = uiState?.metamask;
+          if (
+            m?.ipfsGateway !== 'dweb.link' ||
+            m?.useAddressBarEnsResolution !== true
+          ) {
+            return false;
+          }
+          try {
+            return getCurrentChainId({ metamask: m }) === CHAIN_IDS.MAINNET;
+          } catch {
+            return false;
+          }
         }, 10000);
 
         const loginPage = new LoginPage(driver);
