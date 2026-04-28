@@ -70,7 +70,7 @@ describe('Settings', function () {
           },
           {
             interval: 1000,
-            stableFor: 1000,
+            stableFor: 2000,
             timeout: 10000,
           },
         );
