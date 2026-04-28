@@ -1,4 +1,5 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
@@ -1017,10 +1018,27 @@ describe('Multichain Selectors', () => {
       );
     });
 
+    it('returns numeric conversion rate for EVM when getConversionRate returns a number', () => {
+      jest.spyOn(metamaskDuck, 'getConversionRate').mockReturnValue(3100.75);
+      expect(getMultichainConversionRate(getEvmState())).toBe(3100.75);
+    });
+
+    it('returns numeric conversion rate for EVM when getConversionRate returns a numeric string', () => {
+      jest
+        .spyOn(metamaskDuck, 'getConversionRate')
+        .mockImplementation(() => '2100.25' as never);
+      expect(getMultichainConversionRate(getEvmState())).toBe(2100.25);
+    });
+
+    it('returns undefined when EVM conversion rate is undefined', () => {
+      jest.spyOn(metamaskDuck, 'getConversionRate').mockReturnValue(undefined);
+      expect(getMultichainConversionRate(getEvmState())).toBeUndefined();
+    });
+
     it('returns undefined when EVM conversion rate is null', () => {
       jest
         .spyOn(metamaskDuck, 'getConversionRate')
-        .mockImplementation(() => null);
+        .mockImplementation(() => null as never);
       expect(getMultichainConversionRate(getEvmState())).toBeUndefined();
     });
 
@@ -1055,6 +1073,15 @@ describe('Multichain Selectors', () => {
       expect(
         getMultichainConversionRate(getTronState(MOCK_ACCOUNT_TRON_MAINNET)),
       ).toBe(0.42);
+    });
+
+    it('returns numeric conversion rate for non-EVM when rate is already a number', () => {
+      jest
+        .spyOn(utilModule, 'getConversionRatesForNativeAsset')
+        .mockReturnValue({ rate: 7.25 } as never);
+      expect(
+        getMultichainConversionRate(getTronState(MOCK_ACCOUNT_TRON_MAINNET)),
+      ).toBe(7.25);
     });
   });
 
@@ -1256,6 +1283,39 @@ describe('Multichain Selectors', () => {
       const after = getMultichainNetworkConfigurationsByChainId(modifiedState);
       expect(after).not.toBe(before);
       expect(after[CHAIN_IDS.MAINNET].name).toBe('Ethereum Mainnet Modified');
+    });
+
+    it('still exposes synthetic multichain networks when there are no EVM network configurations', () => {
+      const base = getEvmState();
+      const state: TestState = {
+        ...base,
+        metamask: {
+          ...base.metamask,
+          networkConfigurationsByChainId: {},
+        },
+      };
+
+      const configs = getMultichainNetworkConfigurationsByChainId(state);
+
+      expect(configs[CHAIN_IDS.MAINNET]).toBeUndefined();
+      expect(configs[MultichainNetworks.SOLANA]).toMatchObject({
+        nativeCurrency: 'sol',
+        chainId: MultichainNetworks.SOLANA,
+      });
+      expect(configs[MultichainNetworks.TRON]).toMatchObject({
+        nativeCurrency: 'TRX',
+      });
+    });
+
+    it('uses empty block explorer urls and placeholder RPC endpoints for synthetic non-EVM networks', () => {
+      const configs = getMultichainNetworkConfigurationsByChainId(getEvmState());
+      const solana = configs[MultichainNetworks.SOLANA];
+
+      expect(solana.blockExplorerUrls).toStrictEqual([]);
+      expect(solana.defaultRpcEndpointIndex).toBe(0);
+      expect(solana.rpcEndpoints).toStrictEqual([
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ]);
     });
   });
 });
