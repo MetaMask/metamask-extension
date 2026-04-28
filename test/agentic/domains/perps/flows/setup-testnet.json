@@ -1,0 +1,39 @@
+{
+  "title": "Setup testnet mode",
+  "description": "Toggles testnet mode via perpsToggleTestnet RPC, verifies the store reflects the change, and waits for markets to load on the new network.",
+  "validate": {
+    "workflow": {
+      "pre_conditions": [
+        "wallet.unlocked",
+        "perps.feature_enabled"
+      ],
+      "entry": "toggle-testnet",
+      "nodes": {
+        "toggle-testnet": {
+          "action": "toggle_testnet",
+          "next": "verify-testnet"
+        },
+        "verify-testnet": {
+          "action": "wait_for",
+          "expression": "(function(){var m=stateHooks.store.getState().metamask;return JSON.stringify({isTestnet:!!m.isTestnet})})()",
+          "assert": { "operator": "eq", "field": "isTestnet", "value": true },
+          "timeout_ms": 5000,
+          "poll_ms": 500,
+          "next": "verify-markets"
+        },
+        "verify-markets": {
+          "action": "wait_for",
+          "expression": "(async()=>{var r=await stateHooks.submitRequestToBackground('perpsGetMarketDataWithPrices',[]);return JSON.stringify({count:(r??[]).length})})()",
+          "assert": { "operator": "gt", "field": "count", "value": 0 },
+          "timeout_ms": 15000,
+          "poll_ms": 1000,
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass"
+        }
+      }
+    }
+  }
+}

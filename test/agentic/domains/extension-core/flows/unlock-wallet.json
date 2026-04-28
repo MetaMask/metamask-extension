@@ -1,0 +1,56 @@
+{
+  "title": "Unlock wallet with default password",
+  "validate": {
+    "workflow": {
+      "entry": "check-locked",
+      "nodes": {
+        "check-locked": {
+          "action": "ext_check_dom",
+          "test_id": "unlock-password",
+          "query": true,
+          "save_as": "lock_check",
+          "next": "branch-locked"
+        },
+        "branch-locked": {
+          "action": "switch",
+          "cases": [
+            {
+              "label": "locked",
+              "when": { "field": "vars.lock_check.visible", "operator": "truthy" },
+              "next": "type-password"
+            }
+          ],
+          "default": "verify-unlocked"
+        },
+        "type-password": {
+          "action": "set_input",
+          "test_id": "unlock-password",
+          "value": "qwerasdf",
+          "next": "press-unlock"
+        },
+        "press-unlock": {
+          "action": "press",
+          "test_id": "unlock-submit",
+          "next": "wait-home"
+        },
+        "wait-home": {
+          "action": "wait_for",
+          "test_id": "account-menu-icon",
+          "timeout_ms": 15000,
+          "next": "verify-unlocked"
+        },
+        "verify-unlocked": {
+          "action": "ext_check_dom",
+          "test_id": "account-menu-icon",
+          "visible": true,
+          "assert": { "operator": "not_null" },
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass"
+        }
+      }
+    }
+  }
+}

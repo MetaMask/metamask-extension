@@ -1,0 +1,314 @@
+{
+  "title": "Validate PR #41558 perps decimal formatting with screenshots",
+  "pr": 41558,
+  "description": "DOM-driven screenshot validation for the perps decimal-formatting fix. Captures perps home, market detail, modify menu, reverse modal, remove-margin modal, close modal, order entry, and withdraw screens for comparison against the existing before-reference assets.",
+  "validate": {
+    "workflow": {
+      "pre_conditions": [
+        "wallet.unlocked"
+      ],
+      "entry": "ac1-nav-home",
+      "nodes": {
+        "ac1-nav-home": {
+          "action": "navigate",
+          "target": "PerpsHome",
+          "next": "ac1-wait-home"
+        },
+        "ac1-wait-home": {
+          "action": "wait_for",
+          "test_id": "perps-balance-dropdown",
+          "timeout_ms": 10000,
+          "next": "ac1-shot-home"
+        },
+        "ac1-shot-home": {
+          "action": "screenshot",
+          "filename": "after-01-perps-home",
+          "next": "ac2-nav-detail"
+        },
+        "ac2-nav-detail": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": {
+            "market": {
+              "symbol": "ETH"
+            }
+          },
+          "next": "ac2-wait-detail"
+        },
+        "ac2-wait-detail": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "ac2-check-position"
+        },
+        "ac2-check-position": {
+          "action": "ext_check_dom",
+          "test_id": "perps-position-cta-buttons",
+          "query": true,
+          "save_as": "position_state",
+          "next": "ac2-branch-position"
+        },
+        "ac2-branch-position": {
+          "action": "switch",
+          "cases": [
+            {
+              "label": "position exists",
+              "when": {
+                "field": "vars.position_state.visible",
+                "operator": "truthy"
+              },
+              "next": "ac3-shot-market-detail"
+            }
+          ],
+          "default": "ac2-open-order-entry"
+        },
+        "ac2-open-order-entry": {
+          "action": "press",
+          "test_id": "perps-long-cta-button",
+          "next": "ac2-wait-order-entry"
+        },
+        "ac2-wait-order-entry": {
+          "action": "wait_for",
+          "test_id": "perps-order-entry-page",
+          "timeout_ms": 10000,
+          "next": "ac2-set-amount"
+        },
+        "ac2-set-amount": {
+          "action": "set_input",
+          "test_id": "amount-input-field",
+          "value": "10",
+          "next": "ac2-submit-order"
+        },
+        "ac2-submit-order": {
+          "action": "press",
+          "test_id": "submit-order-button",
+          "next": "ac2-wait-position"
+        },
+        "ac2-wait-position": {
+          "action": "wait_for",
+          "test_id": "perps-position-cta-buttons",
+          "timeout_ms": 15000,
+          "next": "ac3-shot-market-detail"
+        },
+        "ac3-shot-market-detail": {
+          "action": "screenshot",
+          "filename": "after-02-market-detail",
+          "next": "ac4-open-modify-menu"
+        },
+        "ac4-open-modify-menu": {
+          "action": "press",
+          "test_id": "perps-modify-cta-button",
+          "next": "ac4-wait-modify-menu"
+        },
+        "ac4-wait-modify-menu": {
+          "action": "wait_for",
+          "test_id": "perps-modify-menu",
+          "timeout_ms": 10000,
+          "next": "ac4-shot-modify-menu"
+        },
+        "ac4-shot-modify-menu": {
+          "action": "screenshot",
+          "filename": "after-03-modify-menu",
+          "next": "ac5-open-reverse"
+        },
+        "ac5-open-reverse": {
+          "action": "press",
+          "test_id": "perps-modify-menu-reverse-position",
+          "next": "ac5-wait-reverse-modal"
+        },
+        "ac5-wait-reverse-modal": {
+          "action": "wait_for",
+          "test_id": "perps-reverse-position-modal-save",
+          "timeout_ms": 10000,
+          "next": "ac5-shot-reverse-modal"
+        },
+        "ac5-shot-reverse-modal": {
+          "action": "screenshot",
+          "filename": "after-04-reverse-modal",
+          "next": "ac5-close-reverse-modal"
+        },
+        "ac5-close-reverse-modal": {
+          "action": "press",
+          "test_id": "perps-reverse-position-modal-cancel",
+          "next": "ac6-nav-detail"
+        },
+        "ac6-nav-detail": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": {
+            "market": {
+              "symbol": "ETH"
+            }
+          },
+          "next": "ac6-wait-detail"
+        },
+        "ac6-wait-detail": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "ac6-open-margin-menu"
+        },
+        "ac6-open-margin-menu": {
+          "action": "press",
+          "test_id": "perps-margin-card",
+          "next": "ac6-wait-margin-menu"
+        },
+        "ac6-wait-margin-menu": {
+          "action": "wait_for",
+          "test_id": "perps-margin-menu",
+          "timeout_ms": 10000,
+          "next": "ac6-open-remove-margin"
+        },
+        "ac6-open-remove-margin": {
+          "action": "press",
+          "test_id": "perps-margin-menu-remove",
+          "next": "ac6-wait-remove-margin-modal"
+        },
+        "ac6-wait-remove-margin-modal": {
+          "action": "wait_for",
+          "test_id": "perps-edit-margin-modal-save",
+          "timeout_ms": 10000,
+          "next": "ac6-shot-remove-margin-modal"
+        },
+        "ac6-shot-remove-margin-modal": {
+          "action": "screenshot",
+          "filename": "after-05-remove-margin-modal",
+          "next": "ac6-close-remove-margin-modal"
+        },
+        "ac6-close-remove-margin-modal": {
+          "action": "press",
+          "test_id": "perps-edit-margin-modal-cancel",
+          "next": "ac7-nav-detail"
+        },
+        "ac7-nav-detail": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": {
+            "market": {
+              "symbol": "ETH"
+            }
+          },
+          "next": "ac7-wait-detail"
+        },
+        "ac7-wait-detail": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "ac7-open-close-modal"
+        },
+        "ac7-open-close-modal": {
+          "action": "press",
+          "test_id": "perps-close-cta-button",
+          "next": "ac7-wait-close-modal"
+        },
+        "ac7-wait-close-modal": {
+          "action": "wait_for",
+          "test_id": "perps-close-position-modal-submit",
+          "timeout_ms": 10000,
+          "next": "ac7-shot-close-modal"
+        },
+        "ac7-shot-close-modal": {
+          "action": "screenshot",
+          "filename": "after-06-close-modal",
+          "next": "ac7-close-close-modal"
+        },
+        "ac7-close-close-modal": {
+          "action": "eval_sync",
+          "expression": "(function(){var buttons=Array.from(document.querySelectorAll('button[aria-label=\"Close\"],button[aria-label=\"close\"]'));var btn=buttons[0];if(btn){btn.click();}return JSON.stringify({clicked:!!btn});})()",
+          "assert": {
+            "operator": "eq",
+            "field": "clicked",
+            "value": true
+          },
+          "next": "ac8-nav-detail"
+        },
+        "ac8-nav-detail": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": {
+            "market": {
+              "symbol": "ETH"
+            }
+          },
+          "next": "ac8-wait-detail"
+        },
+        "ac8-wait-detail": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "ac8-open-modify-menu"
+        },
+        "ac8-open-modify-menu": {
+          "action": "press",
+          "test_id": "perps-modify-cta-button",
+          "next": "ac8-wait-modify-menu"
+        },
+        "ac8-wait-modify-menu": {
+          "action": "wait_for",
+          "test_id": "perps-modify-menu",
+          "timeout_ms": 10000,
+          "next": "ac8-open-add-exposure"
+        },
+        "ac8-open-add-exposure": {
+          "action": "press",
+          "test_id": "perps-modify-menu-add-exposure",
+          "next": "ac8-wait-order-entry"
+        },
+        "ac8-wait-order-entry": {
+          "action": "wait_for",
+          "test_id": "perps-order-entry-page",
+          "timeout_ms": 10000,
+          "next": "ac8-shot-order-entry"
+        },
+        "ac8-shot-order-entry": {
+          "action": "screenshot",
+          "filename": "after-07-order-entry",
+          "next": "ac9-nav-withdraw"
+        },
+        "ac9-nav-withdraw": {
+          "action": "navigate",
+          "target": "PerpsHome",
+          "next": "ac9-wait-home"
+        },
+        "ac9-wait-home": {
+          "action": "wait_for",
+          "test_id": "perps-balance-dropdown",
+          "timeout_ms": 10000,
+          "next": "ac9-open-balance-dropdown"
+        },
+        "ac9-open-balance-dropdown": {
+          "action": "press",
+          "test_id": "perps-balance-dropdown-balance",
+          "next": "ac9-wait-balance-dropdown-panel"
+        },
+        "ac9-wait-balance-dropdown-panel": {
+          "action": "wait_for",
+          "test_id": "perps-balance-dropdown-panel",
+          "timeout_ms": 10000,
+          "next": "ac9-open-withdraw"
+        },
+        "ac9-open-withdraw": {
+          "action": "press",
+          "test_id": "perps-balance-dropdown-withdraw",
+          "next": "ac9-wait-withdraw"
+        },
+        "ac9-wait-withdraw": {
+          "action": "wait_for",
+          "test_id": "perps-withdraw-page",
+          "timeout_ms": 10000,
+          "next": "ac9-shot-withdraw"
+        },
+        "ac9-shot-withdraw": {
+          "action": "screenshot",
+          "filename": "after-08-withdraw-page",
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass",
+          "message": "Captured after screenshots for the perps home, market detail, modify menu, reverse modal, remove-margin modal, close modal, order entry, and withdraw screens."
+        }
+      }
+    }
+  }
+}

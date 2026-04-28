@@ -1,0 +1,12 @@
+{
+  "_comment": "Template — copy this to a private location, fill in real values, never commit. Generate via: node test/agentic/setup/bootstrap-fixture.cjs --password '<p>' --srp '<words>' --out temp/runtime/wallet-fixture.json",
+  "password": "REPLACE_ME",
+  "address": "0xREPLACE_ME",
+  "name": "agentic-dev",
+  "vault": "REPLACE_ME (run bootstrap-fixture.cjs to generate)",
+  "accounts": [],
+  "settings": {
+    "autoLockNever": true,
+    "injectImportedAccounts": false
+  }
+}

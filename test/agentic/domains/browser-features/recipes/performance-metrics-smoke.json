@@ -1,0 +1,62 @@
+{
+  "title": "Performance metrics smoke",
+  "description": "Canonical proof recipe for browser performance metrics snapshots on the active page.",
+  "validate": {
+    "workflow": {
+      "entry": "gate-nav-dapp",
+      "nodes": {
+        "gate-nav-dapp": {
+          "action": "navigate",
+          "target": "https://example.com",
+          "next": "ac1-metrics-before"
+        },
+        "ac1-metrics-before": {
+          "action": "performance",
+          "performance_action": "metrics",
+          "target": "active",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "performance" },
+              { "operator": "eq", "field": "performanceAction", "value": "metrics" },
+              { "operator": "length_gt", "field": "applied", "value": 0 },
+              { "operator": "not_null", "field": "applied.0.metrics.Timestamp" }
+            ]
+          },
+          "save_as": "metrics_before",
+          "next": "gate-workload"
+        },
+        "gate-workload": {
+          "action": "eval_sync",
+          "target": "active",
+          "expression": "(function(){var x=0;for (var i=0;i<20000000;i++){x+=Math.sqrt(i%1000)}return JSON.stringify({checksum:Math.round(x)})})()",
+          "assert": {
+            "operator": "gt",
+            "field": "checksum",
+            "value": 0
+          },
+          "next": "ac1-metrics-after"
+        },
+        "ac1-metrics-after": {
+          "action": "performance",
+          "performance_action": "metrics",
+          "target": "active",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "performance" },
+              { "operator": "eq", "field": "performanceAction", "value": "metrics" },
+              { "operator": "length_gt", "field": "applied", "value": 0 },
+              { "operator": "not_null", "field": "applied.0.metrics.Timestamp" }
+            ]
+          },
+          "save_as": "metrics_after",
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass",
+          "message": "Performance metrics proven"
+        }
+      }
+    }
+  }
+}

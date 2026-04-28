@@ -1,0 +1,61 @@
+{
+  "title": "Page reload smoke",
+  "description": "Canonical proof recipe for active-page reload via CDP. Validates reload on a dapp page and confirms the page returns on the same route after reload.",
+  "validate": {
+    "workflow": {
+      "entry": "gate-nav-dapp",
+      "nodes": {
+        "gate-nav-dapp": {
+          "action": "navigate",
+          "target": "https://example.com",
+          "next": "ac1-capture-before"
+        },
+        "ac1-capture-before": {
+          "action": "eval_sync",
+          "target": "active",
+          "expression": "(function(){return JSON.stringify({href:location.href,title:document.title||'',ready:document.readyState})})()",
+          "assert": {
+            "all": [
+              { "operator": "matches", "field": "href", "pattern": "^https://example\\.com" },
+              { "operator": "not_null", "field": "title" }
+            ]
+          },
+          "save_as": "before_reload",
+          "next": "ac1-page-reload"
+        },
+        "ac1-page-reload": {
+          "action": "page",
+          "page_action": "reload",
+          "target": "active",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "page" },
+              { "operator": "eq", "field": "pageAction", "value": "reload" },
+              { "operator": "length_gt", "field": "applied", "value": 0 }
+            ]
+          },
+          "next": "ac1-check-after"
+        },
+        "ac1-check-after": {
+          "action": "wait_for",
+          "target": "active",
+          "expression": "(function(){return JSON.stringify({href:location.href,title:document.title||'',ready:document.readyState})})()",
+          "assert": {
+            "all": [
+              { "operator": "matches", "field": "href", "pattern": "^https://example\\.com" },
+              { "operator": "eq", "field": "ready", "value": "complete" }
+            ]
+          },
+          "timeout_ms": 10000,
+          "poll_ms": 500,
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass",
+          "message": "Page reload proven"
+        }
+      }
+    }
+  }
+}

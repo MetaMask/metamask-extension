@@ -1,0 +1,71 @@
+{
+  "title": "Parity snapshot — extension ETH close position",
+  "validate": {
+    "workflow": {
+      "pre_conditions": [
+        "wallet.unlocked"
+      ],
+      "entry": "nav",
+      "nodes": {
+        "nav": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": {
+            "market": {
+              "symbol": "ETH"
+            }
+          },
+          "next": "wait-detail"
+        },
+        "wait-detail": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "open"
+        },
+        "open": {
+          "action": "press",
+          "test_id": "perps-close-cta-button",
+          "next": "wait-modal"
+        },
+        "wait-modal": {
+          "action": "wait_for",
+          "test_id": "perps-close-position-modal-submit",
+          "timeout_ms": 10000,
+          "next": "wait-summary"
+        },
+        "wait-summary": {
+          "action": "wait_for",
+          "expression": "(function(){\n        function textByTestId(id){ var el=document.querySelector('[data-testid=\"'+id+'\"]'); return el?((el.textContent||'').trim()||''):''; }\n        var fees = textByTestId('perps-close-summary-fees-value');\n        return JSON.stringify({ready: !!fees && fees !== '-$0' && fees !== '-$0.00'});\n      })()",
+          "assert": {
+            "operator": "eq",
+            "field": "ready",
+            "value": true
+          },
+          "timeout_ms": 20000,
+          "poll_ms": 500,
+          "next": "extract"
+        },
+        "extract": {
+          "action": "eval_sync",
+          "expression": "(function(){\n        function textByTestId(id){ var el=document.querySelector('[data-testid=\"'+id+'\"]'); return el?((el.textContent||'').trim()||null):null; }\n        return JSON.stringify({symbol:'ETH',screen:'close_position',closeAmount:textByTestId('close-amount-value'),margin:textByTestId('perps-close-summary-margin-value'),fees:textByTestId('perps-close-summary-fees-value'),receive:textByTestId('perps-close-summary-receive-value')});\n      })()",
+          "next": "close"
+        },
+        "close": {
+          "action": "eval_sync",
+          "expression": "(function(){var buttons=Array.from(document.querySelectorAll('button[aria-label=\"Close\"],button[aria-label=\"close\"]'));var btn=buttons[0];if(btn){btn.click();}return JSON.stringify({clicked:!!btn});})()",
+          "assert": {
+            "operator": "eq",
+            "field": "clicked",
+            "value": true
+          },
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass"
+        }
+      }
+    }
+  }
+}

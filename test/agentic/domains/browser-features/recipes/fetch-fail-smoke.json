@@ -1,0 +1,92 @@
+{
+  "title": "Fetch fail smoke",
+  "description": "Canonical proof recipe for deterministic request failure injection on the active dapp page.",
+  "validate": {
+    "workflow": {
+      "teardown": [
+        {
+          "id": "teardown-reset-fetch",
+          "action": "fetch",
+          "fetch_action": "reset",
+          "target": "active"
+        }
+      ],
+      "entry": "gate-nav-dapp",
+      "nodes": {
+        "gate-nav-dapp": {
+          "action": "navigate",
+          "target": "https://example.com",
+          "next": "ac1-check-baseline"
+        },
+        "ac1-check-baseline": {
+          "action": "eval_async",
+          "target": "active",
+          "expression": "(async()=>{try{const r=await fetch('https://example.com/?fetch-smoke=ok',{cache:'no-store'});return JSON.stringify({ok:true,status:r.status})}catch(e){return JSON.stringify({ok:false,error:String(e&&e.message||e)})}})()",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "ok", "value": true },
+              { "operator": "eq", "field": "status", "value": 200 }
+            ]
+          },
+          "next": "ac1-apply-fetch-fail"
+        },
+        "ac1-apply-fetch-fail": {
+          "action": "fetch",
+          "fetch_action": "fail_requests",
+          "target": "active",
+          "url_pattern": "fetch-smoke=fail",
+          "error_reason": "Failed",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "fetch" },
+              { "operator": "eq", "field": "fetchAction", "value": "fail_requests" },
+              { "operator": "length_gt", "field": "applied", "value": 0 }
+            ]
+          },
+          "next": "ac1-check-failed"
+        },
+        "ac1-check-failed": {
+          "action": "eval_async",
+          "target": "active",
+          "expression": "(async()=>{try{const r=await fetch('https://example.com/?fetch-smoke=fail',{cache:'no-store'});return JSON.stringify({ok:true,status:r.status})}catch(e){return JSON.stringify({ok:false,error:String(e&&e.message||e)})}})()",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "ok", "value": false },
+              { "operator": "contains", "field": "error", "value": "Failed to fetch" }
+            ]
+          },
+          "next": "ac1-reset-fetch"
+        },
+        "ac1-reset-fetch": {
+          "action": "fetch",
+          "fetch_action": "reset",
+          "target": "active",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "fetch" },
+              { "operator": "eq", "field": "fetchAction", "value": "reset" }
+            ]
+          },
+          "next": "ac1-check-reset"
+        },
+        "ac1-check-reset": {
+          "action": "eval_async",
+          "target": "active",
+          "expression": "(async()=>{try{const r=await fetch('https://example.com/?fetch-smoke=reset',{cache:'no-store'});return JSON.stringify({ok:true,status:r.status})}catch(e){return JSON.stringify({ok:false,error:String(e&&e.message||e)})}})()",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "ok", "value": true },
+              { "operator": "eq", "field": "status", "value": 200 }
+            ]
+          },
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass",
+          "message": "Fetch failure injection proven"
+        }
+      }
+    }
+  }
+}

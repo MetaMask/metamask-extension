@@ -1,0 +1,97 @@
+{
+  "title": "Full trade lifecycle — testnet, open ETH long, close, verify BTC market",
+  "description": "End-to-end smoke test: ensures testnet, navigates to perps, opens a long position on ETH, closes it, then navigates to BTC market detail to verify multi-market navigation. Restores original network on teardown.",
+  "validate": {
+    "workflow": {
+      "pre_conditions": ["wallet.unlocked", "perps.feature_enabled"],
+      "setup": [
+        {
+          "id": "save-original-network",
+          "action": "eval_sync",
+          "expression": "(function(){var m=stateHooks.store.getState().metamask;return JSON.stringify({network:m.isTestnet?'testnet':'mainnet',provider:m.activeProvider||'hyperliquid'})})()",
+          "save_as": "original_network"
+        }
+      ],
+      "teardown": [
+        {
+          "id": "restore-network",
+          "action": "call",
+          "ref": "perps/ensure-perps-network",
+          "params": { "network": "{{vars.original_network.network}}", "provider": "{{vars.original_network.provider}}" }
+        },
+        {
+          "id": "nav-perps-home",
+          "action": "call",
+          "ref": "perps/navigate-perps-tab"
+        }
+      ],
+      "entry": "ensure-testnet",
+      "nodes": {
+        "ensure-testnet": {
+          "action": "call",
+          "ref": "perps/ensure-perps-network",
+          "params": { "network": "testnet", "provider": "hyperliquid" },
+          "next": "nav-perps"
+        },
+        "nav-perps": {
+          "action": "call",
+          "ref": "perps/navigate-perps-tab",
+          "next": "screenshot-home"
+        },
+        "screenshot-home": {
+          "action": "screenshot",
+          "filename": "01-perps-home",
+          "next": "open-long-eth"
+        },
+        "open-long-eth": {
+          "action": "call",
+          "ref": "perps/open-long-position",
+          "params": { "symbol": "ETH", "side": "long", "amount": "10" },
+          "next": "screenshot-position"
+        },
+        "screenshot-position": {
+          "action": "screenshot",
+          "filename": "02-eth-long-open",
+          "next": "close-eth"
+        },
+        "close-eth": {
+          "action": "call",
+          "ref": "perps/close-position",
+          "params": { "symbol": "ETH", "percent": "100" },
+          "next": "screenshot-closed"
+        },
+        "screenshot-closed": {
+          "action": "screenshot",
+          "filename": "03-eth-position-closed",
+          "next": "nav-btc-market"
+        },
+        "nav-btc-market": {
+          "action": "call",
+          "ref": "perps/navigate-to-market-detail",
+          "params": { "symbol": "BTC" },
+          "next": "screenshot-btc"
+        },
+        "screenshot-btc": {
+          "action": "screenshot",
+          "filename": "04-btc-market-detail",
+          "next": "nav-back-perps"
+        },
+        "nav-back-perps": {
+          "action": "call",
+          "ref": "perps/navigate-perps-tab",
+          "next": "screenshot-final"
+        },
+        "screenshot-final": {
+          "action": "screenshot",
+          "filename": "05-perps-home-final",
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass",
+          "message": "Full trade lifecycle completed: testnet setup, ETH open/close, BTC market navigation"
+        }
+      }
+    }
+  }
+}

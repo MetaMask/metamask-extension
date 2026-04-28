@@ -1,0 +1,70 @@
+{
+  "title": "Storage clear web storage smoke",
+  "description": "Canonical proof recipe for clearing localStorage and sessionStorage on the active dapp page via CDP DOMStorage. Validates seeded storage, clears it, then proves it is reset.",
+  "validate": {
+    "workflow": {
+      "entry": "gate-nav-dapp",
+      "nodes": {
+        "gate-nav-dapp": {
+          "action": "navigate",
+          "target": "https://example.com",
+          "next": "gate-seed-storage"
+        },
+        "gate-seed-storage": {
+          "action": "eval_sync",
+          "target": "active",
+          "expression": "(function(){localStorage.setItem('cdp-storage-smoke','present'); sessionStorage.setItem('cdp-storage-smoke-session','present'); return JSON.stringify({localValue:localStorage.getItem('cdp-storage-smoke'), sessionValue:sessionStorage.getItem('cdp-storage-smoke-session')})})()",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "localValue", "value": "present" },
+              { "operator": "eq", "field": "sessionValue", "value": "present" }
+            ]
+          },
+          "next": "ac1-clear-origin"
+        },
+        "ac1-clear-origin": {
+          "action": "storage",
+          "storage": "clear_web_storage",
+          "origin": "https://example.com",
+          "target": "active",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "storage" },
+              { "operator": "eq", "field": "storage", "value": "clear_web_storage" },
+              { "operator": "eq", "field": "origin", "value": "https://example.com" },
+              { "operator": "length_gt", "field": "applied", "value": 0 }
+            ]
+          },
+          "next": "ac1-reload-page"
+        },
+        "ac1-reload-page": {
+          "action": "navigate",
+          "target": "https://example.com",
+          "next": "ac1-wait-reloaded"
+        },
+        "ac1-wait-reloaded": {
+          "action": "wait",
+          "ms": 500,
+          "next": "ac1-check-cleared"
+        },
+        "ac1-check-cleared": {
+          "action": "eval_sync",
+          "target": "active",
+          "expression": "(function(){return JSON.stringify({localValue:localStorage.getItem('cdp-storage-smoke'), sessionValue:sessionStorage.getItem('cdp-storage-smoke-session')})})()",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "localValue", "value": null },
+              { "operator": "eq", "field": "sessionValue", "value": null }
+            ]
+          },
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass",
+          "message": "Origin storage cleared successfully"
+        }
+      }
+    }
+  }
+}

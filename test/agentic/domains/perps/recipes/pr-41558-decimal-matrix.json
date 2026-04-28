@@ -1,0 +1,263 @@
+{
+  "title": "PR #41558 extension decimal matrix",
+  "validate": {
+    "workflow": {
+      "pre_conditions": [
+        "wallet.unlocked"
+      ],
+      "entry": "btc-nav-market",
+      "nodes": {
+        "btc-nav-market": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": {
+            "market": {
+              "symbol": "BTC"
+            }
+          },
+          "next": "btc-wait-market"
+        },
+        "btc-wait-market": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "btc-market-data"
+        },
+        "btc-market-data": {
+          "action": "eval_sync",
+          "expression": "(function(){var price=document.querySelector('[data-testid=\"perps-market-detail-price\"]'); var change=document.querySelector('[data-testid=\"perps-market-detail-change\"]'); return JSON.stringify({symbol:'BTC',screen:'market_detail',price:price?price.textContent.trim():null,change:change?change.textContent.trim():null});})()",
+          "save_as": "btc_market",
+          "assert": { "operator": "not_null", "field": "price" },
+          "next": "btc-open-order"
+        },
+        "btc-open-order": {
+          "action": "press",
+          "test_id": "perps-long-cta-button",
+          "next": "btc-wait-order"
+        },
+        "btc-wait-order": {
+          "action": "wait_for",
+          "test_id": "perps-order-entry-page",
+          "timeout_ms": 10000,
+          "next": "btc-order-data"
+        },
+        "btc-order-data": {
+          "action": "eval_sync",
+          "expression": "(function(){var price=document.querySelector('[data-testid=\"perps-order-entry-price\"]'); var change=document.querySelector('[data-testid=\"perps-order-entry-change\"]'); return JSON.stringify({symbol:'BTC',screen:'order_entry',price:price?price.textContent.trim():null,change:change?change.textContent.trim():null});})()",
+          "save_as": "btc_order",
+          "assert": { "operator": "not_null", "field": "price" },
+          "next": "eth-nav-market"
+        },
+
+        "eth-nav-market": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": {
+            "market": {
+              "symbol": "ETH"
+            }
+          },
+          "next": "eth-wait-market"
+        },
+        "eth-wait-market": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "eth-market-data"
+        },
+        "eth-market-data": {
+          "action": "eval_sync",
+          "expression": "(function(){var price=document.querySelector('[data-testid=\"perps-market-detail-price\"]'); var change=document.querySelector('[data-testid=\"perps-market-detail-change\"]'); return JSON.stringify({symbol:'ETH',screen:'market_detail',price:price?price.textContent.trim():null,change:change?change.textContent.trim():null});})()",
+          "save_as": "eth_market",
+          "assert": { "operator": "not_null", "field": "price" },
+          "next": "eth-check-position"
+        },
+        "eth-check-position": {
+          "action": "ext_check_dom",
+          "test_id": "perps-position-cta-buttons",
+          "query": true,
+          "save_as": "eth_position_state",
+          "next": "eth-position-branch"
+        },
+        "eth-position-branch": {
+          "action": "switch",
+          "cases": [
+            {
+              "when": {
+                "field": "vars.eth_position_state.visible",
+                "operator": "truthy"
+              },
+              "next": "eth-open-modify-menu"
+            }
+          ],
+          "default": "eth-open-order-direct"
+        },
+        "eth-open-modify-menu": {
+          "action": "press",
+          "test_id": "perps-modify-cta-button",
+          "next": "eth-wait-modify-menu"
+        },
+        "eth-wait-modify-menu": {
+          "action": "wait_for",
+          "test_id": "perps-modify-menu",
+          "timeout_ms": 10000,
+          "next": "eth-open-add-exposure"
+        },
+        "eth-open-add-exposure": {
+          "action": "press",
+          "test_id": "perps-modify-menu-add-exposure",
+          "next": "eth-wait-order"
+        },
+        "eth-open-order-direct": {
+          "action": "press",
+          "test_id": "perps-long-cta-button",
+          "next": "eth-wait-order"
+        },
+        "eth-wait-order": {
+          "action": "wait_for",
+          "test_id": "perps-order-entry-page",
+          "timeout_ms": 10000,
+          "next": "eth-order-data"
+        },
+        "eth-order-data": {
+          "action": "eval_sync",
+          "expression": "(function(){var price=document.querySelector('[data-testid=\"perps-order-entry-price\"]'); var change=document.querySelector('[data-testid=\"perps-order-entry-change\"]'); return JSON.stringify({symbol:'ETH',screen:'order_entry',price:price?price.textContent.trim():null,change:change?change.textContent.trim():null});})()",
+          "save_as": "eth_order",
+          "assert": { "operator": "not_null", "field": "price" },
+          "next": "sol-nav-market"
+        },
+
+        "sol-nav-market": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": {
+            "market": {
+              "symbol": "SOL"
+            }
+          },
+          "next": "sol-wait-market"
+        },
+        "sol-wait-market": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "sol-market-data"
+        },
+        "sol-market-data": {
+          "action": "eval_sync",
+          "expression": "(function(){var price=document.querySelector('[data-testid=\"perps-market-detail-price\"]'); var change=document.querySelector('[data-testid=\"perps-market-detail-change\"]'); return JSON.stringify({symbol:'SOL',screen:'market_detail',price:price?price.textContent.trim():null,change:change?change.textContent.trim():null});})()",
+          "save_as": "sol_market",
+          "assert": { "operator": "not_null", "field": "price" },
+          "next": "sol-open-order"
+        },
+        "sol-open-order": {
+          "action": "press",
+          "test_id": "perps-long-cta-button",
+          "next": "sol-wait-order"
+        },
+        "sol-wait-order": {
+          "action": "wait_for",
+          "test_id": "perps-order-entry-page",
+          "timeout_ms": 10000,
+          "next": "sol-order-data"
+        },
+        "sol-order-data": {
+          "action": "eval_sync",
+          "expression": "(function(){var price=document.querySelector('[data-testid=\"perps-order-entry-price\"]'); var change=document.querySelector('[data-testid=\"perps-order-entry-change\"]'); return JSON.stringify({symbol:'SOL',screen:'order_entry',price:price?price.textContent.trim():null,change:change?change.textContent.trim():null});})()",
+          "save_as": "sol_order",
+          "assert": { "operator": "not_null", "field": "price" },
+          "next": "fartcoin-nav-market"
+        },
+
+        "fartcoin-nav-market": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": {
+            "market": {
+              "symbol": "FARTCOIN"
+            }
+          },
+          "next": "fartcoin-wait-market"
+        },
+        "fartcoin-wait-market": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "fartcoin-market-data"
+        },
+        "fartcoin-market-data": {
+          "action": "eval_sync",
+          "expression": "(function(){var price=document.querySelector('[data-testid=\"perps-market-detail-price\"]'); var change=document.querySelector('[data-testid=\"perps-market-detail-change\"]'); return JSON.stringify({symbol:'FARTCOIN',screen:'market_detail',price:price?price.textContent.trim():null,change:change?change.textContent.trim():null});})()",
+          "save_as": "fartcoin_market",
+          "assert": { "operator": "not_null", "field": "price" },
+          "next": "fartcoin-open-order"
+        },
+        "fartcoin-open-order": {
+          "action": "press",
+          "test_id": "perps-long-cta-button",
+          "next": "fartcoin-wait-order"
+        },
+        "fartcoin-wait-order": {
+          "action": "wait_for",
+          "test_id": "perps-order-entry-page",
+          "timeout_ms": 10000,
+          "next": "fartcoin-order-data"
+        },
+        "fartcoin-order-data": {
+          "action": "eval_sync",
+          "expression": "(function(){var price=document.querySelector('[data-testid=\"perps-order-entry-price\"]'); var change=document.querySelector('[data-testid=\"perps-order-entry-change\"]'); return JSON.stringify({symbol:'FARTCOIN',screen:'order_entry',price:price?price.textContent.trim():null,change:change?change.textContent.trim():null});})()",
+          "save_as": "fartcoin_order",
+          "assert": { "operator": "not_null", "field": "price" },
+          "next": "pump-nav-market"
+        },
+
+        "pump-nav-market": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": {
+            "market": {
+              "symbol": "PUMP"
+            }
+          },
+          "next": "pump-wait-market"
+        },
+        "pump-wait-market": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "pump-market-data"
+        },
+        "pump-market-data": {
+          "action": "eval_sync",
+          "expression": "(function(){var price=document.querySelector('[data-testid=\"perps-market-detail-price\"]'); var change=document.querySelector('[data-testid=\"perps-market-detail-change\"]'); return JSON.stringify({symbol:'PUMP',screen:'market_detail',price:price?price.textContent.trim():null,change:change?change.textContent.trim():null});})()",
+          "save_as": "pump_market",
+          "assert": { "operator": "not_null", "field": "price" },
+          "next": "pump-open-order"
+        },
+        "pump-open-order": {
+          "action": "press",
+          "test_id": "perps-long-cta-button",
+          "next": "pump-wait-order"
+        },
+        "pump-wait-order": {
+          "action": "wait_for",
+          "test_id": "perps-order-entry-page",
+          "timeout_ms": 10000,
+          "next": "pump-order-data"
+        },
+        "pump-order-data": {
+          "action": "eval_sync",
+          "expression": "(function(){var price=document.querySelector('[data-testid=\"perps-order-entry-price\"]'); var change=document.querySelector('[data-testid=\"perps-order-entry-change\"]'); return JSON.stringify({symbol:'PUMP',screen:'order_entry',price:price?price.textContent.trim():null,change:change?change.textContent.trim():null});})()",
+          "save_as": "pump_order",
+          "assert": { "operator": "not_null", "field": "price" },
+          "next": "done"
+        },
+
+        "done": {
+          "action": "end",
+          "status": "pass"
+        }
+      }
+    }
+  }
+}

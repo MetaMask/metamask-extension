@@ -29,6 +29,11 @@ package
 
 temp
 .tmp
+
+# agentic recipe runner — generated output
+test/agentic/domains/artifacts/
+test/agentic/test-artifacts/
+test/agentic/.omc/
 .sass-cache
 .DS_Store
 app/.DS_Store

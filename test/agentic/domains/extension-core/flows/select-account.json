@@ -1,0 +1,36 @@
+{
+  "title": "Select — switch to account {{address}} and verify",
+  "inputs": {
+    "address": {
+      "type": "string",
+      "description": "Ethereum address to switch to"
+    }
+  },
+  "validate": {
+    "workflow": {
+      "pre_conditions": ["wallet.unlocked"],
+      "entry": "switch-account",
+      "nodes": {
+        "switch-account": {
+          "action": "select_account",
+          "address": "{{address}}",
+          "next": "verify-selection"
+        },
+        "verify-selection": {
+          "action": "eval_ref",
+          "ref": "extension-core/accounts",
+          "assert": {
+            "operator": "eq",
+            "field": "selectedAddress",
+            "value": "{{address}}"
+          },
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass"
+        }
+      }
+    }
+  }
+}

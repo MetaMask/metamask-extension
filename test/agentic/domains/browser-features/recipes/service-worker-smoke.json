@@ -1,0 +1,43 @@
+{
+  "title": "Service worker smoke",
+  "description": "Canonical proof recipe for service worker inspection and background-state evaluation on the extension background worker.",
+  "validate": {
+    "workflow": {
+      "pre_conditions": ["wallet.unlocked"],
+      "entry": "ac1-inspect-worker",
+      "nodes": {
+        "ac1-inspect-worker": {
+          "action": "service_worker",
+          "worker": "inspect",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "service_worker" },
+              { "operator": "eq", "field": "worker", "value": "inspect" },
+              { "operator": "gt", "field": "count", "value": 0 }
+            ]
+          },
+          "next": "ac1-eval-worker"
+        },
+        "ac1-eval-worker": {
+          "action": "service_worker",
+          "worker": "eval",
+          "expression": "(function(){return {storageKind:globalThis.stateHooks.getStorageKind(), hasMetamaskGetState:typeof globalThis.stateHooks.metamaskGetState === 'function'}})()",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "service_worker" },
+              { "operator": "eq", "field": "worker", "value": "eval" },
+              { "operator": "truthy", "field": "result.hasMetamaskGetState" },
+              { "operator": "not_null", "field": "result.storageKind" }
+            ]
+          },
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass",
+          "message": "Service worker inspection and eval proven"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,207 @@
+{
+  "title": "Perps 10-market rapid-switch rate-limit proof (core + HIP-3)",
+  "description": "TAT-2986 stress repro at human-realistic pacing. Rotates through 10 perps markets — 5 core Hyperliquid (BTC, ETH, SOL, HYPE, PUMP) and 5 HIP-3 permissionless listings on the xyz dex (xyz:TSLA, xyz:NVDA, xyz:AAPL, xyz:GOLD, xyz:COIN) — in two passes with a 1500 ms dwell per market (fast-but-realistic human nav pace). Mid-rotation (after market 5 of each pass) the recipe visits the activity page to exercise usePerpsTransactionHistory, which fires getUserHistory + getOrderFills + getOrders + getFunding in parallel — another 429-prone HL weight path. Each market navigation triggers perpsActivateCandleStream, exercising the race between PerpsLayout mount, chart mount, and stream activation. The fix coalesces that race at three layers (bridge idempotency, 150 ms deferred teardown, 120 ms leading-edge UI debounce) plus a 10 s request-coalescing TTL on the transaction-history calls. Running this recipe pre-fix vs post-fix shows the delta in wasted REST calls and server 429s across ALL HL endpoints, not just candleSnapshot. The sidecar stress-10-markets.js probe provides the network-layer evidence, categorizing every Network.requestWillBeSent against api.hyperliquid.xyz by body type.",
+  "validate": {
+    "workflow": {
+      "pre_conditions": ["wallet.unlocked"],
+      "setup": [],
+      "teardown": [
+        {
+          "id": "teardown-stop-rl-probe",
+          "action": "cdp_probe",
+          "phase": "stop",
+          "name": "hl-rate-limit"
+        }
+      ],
+      "entry": "setup-install-rl-probe",
+      "nodes": {
+        "setup-install-rl-probe": {
+          "action": "cdp_probe",
+          "phase": "start",
+          "name": "hl-rate-limit",
+          "scope": "both",
+          "url_pattern": "api\\.hyperliquid\\.xyz",
+          "message_pattern": "WebSocketRequestError|HttpRequestError|Too Many Requests|\\b429\\b",
+          "status_match": [429],
+          "stream": true,
+          "assert": {
+            "all": [
+              { "operator": "gte", "field": "attached.sw", "value": 1 }
+            ]
+          },
+          "next": "setup-nav-perps"
+        },
+        "setup-nav-perps": {
+          "action": "call",
+          "ref": "perps/navigate-perps-tab",
+          "next": "setup-wait-cache"
+        },
+        "setup-wait-cache": {
+          "action": "wait",
+          "ms": 1500,
+          "next": "setup-screenshot-baseline"
+        },
+        "setup-screenshot-baseline": {
+          "action": "screenshot",
+          "filename": "evidence-00-baseline.png",
+          "note": "Baseline: perps tab loaded before the 10-market rotation begins. Establishes the starting UI state for visual diff.",
+          "next": "run1-btc"
+        },
+
+        "run1-btc":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "BTC" },      "next": "run1-btc-dwell" },
+        "run1-btc-dwell": { "action": "wait", "ms": 1500, "next": "run1-btc-assert" },
+        "run1-btc-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run1-eth" },
+
+        "run1-eth":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "ETH" },      "next": "run1-eth-dwell" },
+        "run1-eth-dwell": { "action": "wait", "ms": 1500, "next": "run1-eth-assert" },
+        "run1-eth-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run1-sol" },
+
+        "run1-sol":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "SOL" },      "next": "run1-sol-dwell" },
+        "run1-sol-dwell": { "action": "wait", "ms": 1500, "next": "run1-sol-assert" },
+        "run1-sol-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run1-hype" },
+
+        "run1-hype":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "HYPE" },    "next": "run1-hype-dwell" },
+        "run1-hype-dwell": { "action": "wait", "ms": 1500, "next": "run1-hype-assert" },
+        "run1-hype-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run1-pump" },
+
+        "run1-pump":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "PUMP" },    "next": "run1-pump-dwell" },
+        "run1-pump-dwell": { "action": "wait", "ms": 1500, "next": "run1-pump-assert" },
+        "run1-pump-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run1-activity-nav" },
+
+        "run1-activity-nav":    {
+          "action": "eval_sync",
+          "expression": "(function(){try{location.hash='#/perps/activity';return JSON.stringify({navigated:true});}catch(e){return JSON.stringify({navigated:false,error:String(e&&e.message||e)});}})()",
+          "assert": { "all": [ { "operator": "eq", "field": "navigated", "value": true } ] },
+          "next": "run1-activity-dwell"
+        },
+        "run1-activity-dwell":  { "action": "wait", "ms": 1500, "next": "run1-activity-assert" },
+        "run1-activity-assert": { "action": "wait_for", "test_id": "perps-activity-page", "timeout_ms": 3000, "next": "run1-tsla" },
+
+        "run1-tsla":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "xyz:TSLA" },"next": "run1-tsla-dwell" },
+        "run1-tsla-dwell": { "action": "wait", "ms": 1500, "next": "run1-tsla-assert" },
+        "run1-tsla-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run1-nvda" },
+
+        "run1-nvda":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "xyz:NVDA" },"next": "run1-nvda-dwell" },
+        "run1-nvda-dwell": { "action": "wait", "ms": 1500, "next": "run1-nvda-assert" },
+        "run1-nvda-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run1-aapl" },
+
+        "run1-aapl":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "xyz:AAPL" },"next": "run1-aapl-dwell" },
+        "run1-aapl-dwell": { "action": "wait", "ms": 1500, "next": "run1-aapl-assert" },
+        "run1-aapl-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run1-gold" },
+
+        "run1-gold":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "xyz:GOLD" },"next": "run1-gold-dwell" },
+        "run1-gold-dwell": { "action": "wait", "ms": 1500, "next": "run1-gold-assert" },
+        "run1-gold-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run1-coin" },
+
+        "run1-coin":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "xyz:COIN" },"next": "run1-coin-dwell" },
+        "run1-coin-dwell": { "action": "wait", "ms": 1500, "next": "run1-coin-assert" },
+        "run1-coin-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run1-screenshot" },
+
+        "run1-screenshot": {
+          "action": "screenshot",
+          "filename": "evidence-01-run1-complete.png",
+          "note": "After run 1: all 10 market-detail pages visited once with 450ms dwell. Confirms UI survives the first rotation without error boundary.",
+          "next": "run2-btc"
+        },
+
+        "run2-btc":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "BTC" },      "next": "run2-btc-dwell" },
+        "run2-btc-dwell": { "action": "wait", "ms": 1500, "next": "run2-btc-assert" },
+        "run2-btc-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run2-eth" },
+
+        "run2-eth":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "ETH" },      "next": "run2-eth-dwell" },
+        "run2-eth-dwell": { "action": "wait", "ms": 1500, "next": "run2-eth-assert" },
+        "run2-eth-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run2-sol" },
+
+        "run2-sol":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "SOL" },      "next": "run2-sol-dwell" },
+        "run2-sol-dwell": { "action": "wait", "ms": 1500, "next": "run2-sol-assert" },
+        "run2-sol-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run2-hype" },
+
+        "run2-hype":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "HYPE" },    "next": "run2-hype-dwell" },
+        "run2-hype-dwell": { "action": "wait", "ms": 1500, "next": "run2-hype-assert" },
+        "run2-hype-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run2-pump" },
+
+        "run2-pump":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "PUMP" },    "next": "run2-pump-dwell" },
+        "run2-pump-dwell": { "action": "wait", "ms": 1500, "next": "run2-pump-assert" },
+        "run2-pump-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run2-activity-nav" },
+
+        "run2-activity-nav":    {
+          "action": "eval_sync",
+          "expression": "(function(){try{location.hash='#/perps/activity';return JSON.stringify({navigated:true});}catch(e){return JSON.stringify({navigated:false,error:String(e&&e.message||e)});}})()",
+          "assert": { "all": [ { "operator": "eq", "field": "navigated", "value": true } ] },
+          "next": "run2-activity-dwell"
+        },
+        "run2-activity-dwell":  { "action": "wait", "ms": 1500, "next": "run2-activity-assert" },
+        "run2-activity-assert": { "action": "wait_for", "test_id": "perps-activity-page", "timeout_ms": 3000, "next": "run2-tsla" },
+
+        "run2-tsla":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "xyz:TSLA" },"next": "run2-tsla-dwell" },
+        "run2-tsla-dwell": { "action": "wait", "ms": 1500, "next": "run2-tsla-assert" },
+        "run2-tsla-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run2-nvda" },
+
+        "run2-nvda":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "xyz:NVDA" },"next": "run2-nvda-dwell" },
+        "run2-nvda-dwell": { "action": "wait", "ms": 1500, "next": "run2-nvda-assert" },
+        "run2-nvda-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run2-aapl" },
+
+        "run2-aapl":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "xyz:AAPL" },"next": "run2-aapl-dwell" },
+        "run2-aapl-dwell": { "action": "wait", "ms": 1500, "next": "run2-aapl-assert" },
+        "run2-aapl-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run2-gold" },
+
+        "run2-gold":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "xyz:GOLD" },"next": "run2-gold-dwell" },
+        "run2-gold-dwell": { "action": "wait", "ms": 1500, "next": "run2-gold-assert" },
+        "run2-gold-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "run2-coin" },
+
+        "run2-coin":       { "action": "call", "ref": "perps/navigate-to-market-detail", "params": { "symbol": "xyz:COIN" },"next": "run2-coin-dwell" },
+        "run2-coin-dwell": { "action": "wait", "ms": 1500, "next": "run2-coin-assert" },
+        "run2-coin-assert":{ "action": "wait_for", "test_id": "perps-market-detail-page", "timeout_ms": 3000, "next": "ac-final-screenshot" },
+
+        "ac-final-screenshot": {
+          "action": "screenshot",
+          "filename": "evidence-02-run2-complete.png",
+          "note": "After run 2: 20 total navigations complete. Final market-detail page should render chart + header without error boundary, proving the candle-subscribe race coalescing holds under sustained rotation.",
+          "next": "ac-no-error-boundary"
+        },
+
+        "ac-no-error-boundary": {
+          "action": "eval_sync",
+          "expression": "(function(){try{var hasError=!!document.querySelector('[data-testid=\"error-boundary\"], [data-testid=\"perps-error-fallback\"]');var onDetail=!!document.querySelector('[data-testid=\"perps-market-detail-page\"]');return JSON.stringify({hasError:hasError,onDetail:onDetail,finalSymbol:location.hash});}catch(e){return JSON.stringify({hasError:true,onDetail:false,error:String(e&&e.message||e)});}})()",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "hasError", "value": false },
+              { "operator": "eq", "field": "onDetail", "value": true }
+            ]
+          },
+          "save_as": "final_state",
+          "next": "ac-stream-manager-health"
+        },
+
+        "ac-stream-manager-health": {
+          "action": "eval_sync",
+          "expression": "(function(){try{var sm=stateHooks.getPerpsStreamManager&&stateHooks.getPerpsStreamManager();if(!sm)return JSON.stringify({smReady:false,error:'no-stream-manager'});var markets=sm.markets&&sm.markets.getCachedData&&sm.markets.getCachedData()||[];var account=sm.account&&sm.account.getCachedData&&sm.account.getCachedData()||null;return JSON.stringify({smReady:true,marketsCount:markets.length,accountReady:!!(account&&account.totalBalance)});}catch(e){return JSON.stringify({smReady:false,error:String(e&&e.message||e)});}})()",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "smReady", "value": true },
+              { "operator": "gt", "field": "marketsCount", "value": 0 }
+            ]
+          },
+          "save_as": "stream_health",
+          "next": "ac-rate-limit-probe"
+        },
+
+        "ac-rate-limit-probe": {
+          "action": "cdp_probe",
+          "phase": "stop",
+          "name": "hl-rate-limit",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "network.matchedStatus", "value": 0 },
+              { "operator": "eq", "field": "messages.total", "value": 0 }
+            ]
+          },
+          "save_as": "rl_probe",
+          "next": "done"
+        },
+
+        "done": { "action": "end", "status": "pass" }
+      }
+    }
+  }
+}

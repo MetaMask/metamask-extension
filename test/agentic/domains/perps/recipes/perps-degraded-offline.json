@@ -1,0 +1,176 @@
+{
+  "title": "Perps network control proof",
+  "description": "Canonical proof recipe for perps network control on the fullscreen extension UI. Trusts Chrome/CDP as the source of truth for applied throttling and proves the perps surface remains mounted through degraded, offline, and reset transitions.",
+  "validate": {
+    "workflow": {
+      "pre_conditions": ["wallet.unlocked", "perps.feature_enabled"],
+      "setup": [],
+      "teardown": [
+        {
+          "id": "teardown-reset-browser-control",
+          "action": "network",
+          "throttling": "reset",
+          "target": "all-extension"
+        }
+      ],
+      "entry": "gate-nav-perps",
+      "nodes": {
+        "gate-nav-perps": {
+          "action": "call",
+          "ref": "perps/navigate-perps-tab",
+          "next": "gate-wait-for-perps-cache"
+        },
+        "gate-wait-for-perps-cache": {
+          "action": "wait",
+          "ms": 2000,
+          "next": "ac1-nav-perps-home"
+        },
+        "ac1-nav-perps-home": {
+          "action": "call",
+          "ref": "perps/navigate-perps-tab",
+          "next": "ac1-check-online-state"
+        },
+        "ac1-check-online-state": {
+          "action": "eval_sync",
+          "expression": "(function(){try{var sm=stateHooks.getPerpsStreamManager();var markets=sm?.markets?.getCachedData?.()??[];var account=sm?.account?.getCachedData?.()??null;return JSON.stringify({marketsCount:markets.length,accountReady:!!(account&&account.totalBalance),error:null})}catch(e){return JSON.stringify({marketsCount:0,accountReady:false,error:String(e&&e.message||e)})}})()",
+          "assert": {
+            "all": [
+              { "operator": "gt", "field": "marketsCount", "value": 0 },
+              { "operator": "eq", "field": "accountReady", "value": true },
+              { "operator": "eq", "field": "error", "value": null }
+            ]
+          },
+          "save_as": "online_connection",
+          "next": "ac1-screenshot-online-home"
+        },
+        "ac1-screenshot-online-home": {
+          "action": "screenshot",
+          "filename": "evidence-ac1-online-home.png",
+          "next": "gate-nav-market-detail"
+        },
+        "gate-nav-market-detail": {
+          "action": "call",
+          "ref": "perps/navigate-to-market-detail",
+          "params": { "symbol": "BTC" },
+          "next": "ac1-screenshot-online-market"
+        },
+        "ac1-screenshot-online-market": {
+          "action": "screenshot",
+          "filename": "evidence-ac1-online-market.png",
+          "next": "gate-trace-start"
+        },
+        "gate-trace-start": {
+          "action": "trace_start",
+          "label": "ac1-connection-state-market",
+          "target": "active",
+          "next": "ac1-apply-degraded-network"
+        },
+        "ac1-apply-degraded-network": {
+          "action": "network",
+          "throttling": "degraded",
+          "target": "all-extension",
+          "latency_ms": 1800,
+          "download_kbps": 64,
+          "upload_kbps": 32,
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "network" },
+              { "operator": "eq", "field": "profile", "value": "degraded" },
+              { "operator": "length_gt", "field": "applied", "value": 0 }
+            ]
+          },
+          "next": "ac1-check-degraded-state"
+        },
+        "ac1-check-degraded-state": {
+          "action": "ext_check_dom",
+          "test_id": "perps-market-detail-page",
+          "visible": true,
+          "assert": {
+            "operator": "eq",
+            "field": "visible",
+            "value": true
+          },
+          "save_as": "degraded_connection",
+          "next": "ac1-screenshot-degraded-market"
+        },
+        "ac1-screenshot-degraded-market": {
+          "action": "screenshot",
+          "filename": "evidence-ac1-degraded-market.png",
+          "next": "ac1-apply-offline-network"
+        },
+        "ac1-apply-offline-network": {
+          "action": "network",
+          "throttling": "offline",
+          "target": "all-extension",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "network" },
+              { "operator": "eq", "field": "profile", "value": "offline" },
+              { "operator": "length_gt", "field": "applied", "value": 0 }
+            ]
+          },
+          "next": "ac1-check-offline-state"
+        },
+        "ac1-check-offline-state": {
+          "action": "ext_check_dom",
+          "test_id": "perps-market-detail-page",
+          "visible": true,
+          "assert": {
+            "operator": "eq",
+            "field": "visible",
+            "value": true
+          },
+          "save_as": "offline_connection",
+          "next": "ac1-screenshot-offline-market"
+        },
+        "ac1-screenshot-offline-market": {
+          "action": "screenshot",
+          "filename": "evidence-ac1-offline-market.png",
+          "next": "ac1-reset-network"
+        },
+        "ac1-reset-network": {
+          "action": "network",
+          "throttling": "reset",
+          "target": "all-extension",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "network" },
+              { "operator": "eq", "field": "profile", "value": "reset" },
+              { "operator": "length_gt", "field": "applied", "value": 0 }
+            ]
+          },
+          "next": "ac1-check-recovered-state"
+        },
+        "ac1-check-recovered-state": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "visible": true,
+          "assert": {
+            "operator": "eq",
+            "field": "found",
+            "value": true
+          },
+          "timeout_ms": 10000,
+          "poll_ms": 1000,
+          "next": "ac1-screenshot-recovered-market"
+        },
+        "ac1-screenshot-recovered-market": {
+          "action": "screenshot",
+          "filename": "evidence-ac1-recovered-market.png",
+          "next": "gate-trace-stop"
+        },
+        "gate-trace-stop": {
+          "action": "trace_stop",
+          "label": "ac1-connection-state-market",
+          "filename": "trace-ac1-connection-state-market.json",
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass",
+          "message": "Perps network control and recovery proven"
+        }
+      }
+    }
+  }
+}

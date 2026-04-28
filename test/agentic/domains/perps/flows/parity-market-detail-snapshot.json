@@ -1,0 +1,57 @@
+{
+  "title": "Parity snapshot — extension market detail {{symbol}}",
+  "inputs": {
+    "symbol": {
+      "type": "string",
+      "default": "ETH",
+      "description": "Market symbol"
+    }
+  },
+  "validate": {
+    "workflow": {
+      "pre_conditions": [
+        "wallet.unlocked"
+      ],
+      "entry": "nav",
+      "nodes": {
+        "nav": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": {
+            "market": {
+              "symbol": "{{symbol}}"
+            }
+          },
+          "next": "wait"
+        },
+        "wait": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "wait-price"
+        },
+        "extract": {
+          "action": "eval_sync",
+          "expression": "(function(){\n        function textByTestId(id){ var el=document.querySelector('[data-testid=\"'+id+'\"]'); return el?((el.textContent||'').trim()||null):null; }\n        return JSON.stringify({symbol:'{{symbol}}',screen:'market_detail',price:textByTestId('perps-market-detail-price'),change:textByTestId('perps-market-detail-change'),oracle:textByTestId('perps-market-detail-oracle-price')});\n      })()",
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass"
+        },
+        "wait-price": {
+          "action": "wait_for",
+          "expression": "(function(){var price=(document.querySelector('[data-testid=\\\"perps-market-detail-price\\\"]')?.textContent||'').trim();var oracle=(document.querySelector('[data-testid=\\\"perps-market-detail-oracle-price\\\"]')?.textContent||'').trim();return JSON.stringify({ready:!!price && !price.includes('---') && price!=='' && !!oracle && oracle!=='—'})})()",
+          "assert": {
+            "operator": "eq",
+            "field": "ready",
+            "value": true
+          },
+          "timeout_ms": 15000,
+          "poll_ms": 500,
+          "next": "extract"
+        }
+      }
+    }
+  }
+}

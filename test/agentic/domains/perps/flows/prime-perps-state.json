@@ -1,0 +1,59 @@
+{
+  "title": "Prime Perps state — navigate to perps tab and fetch live account state",
+  "description": "Navigates to the Perps tab (triggers controller init), dismisses tutorial if present, then fetches live account state via submitRequestToBackground. Saves account state to vars.prime_balance.",
+  "validate": {
+    "workflow": {
+      "pre_conditions": [
+        "wallet.unlocked",
+        "perps.feature_enabled"
+      ],
+      "entry": "nav-perps-tab",
+      "nodes": {
+        "nav-perps-tab": {
+          "action": "navigate",
+          "target": "PerpsHome",
+          "next": "check-tutorial"
+        },
+        "check-tutorial": {
+          "action": "eval_sync",
+          "expression": "JSON.stringify({ visible: !!document.querySelector('[data-testid=\"perps-tutorial-modal\"]') })",
+          "save_as": "tutorial_state",
+          "next": "tutorial-switch"
+        },
+        "tutorial-switch": {
+          "action": "switch",
+          "cases": [{ "when": { "operator": "eq", "field": "tutorial_state.visible", "value": true }, "next": "dismiss-tutorial" }],
+          "default": "wait-tab-mount"
+        },
+        "dismiss-tutorial": {
+          "action": "press",
+          "test_id": "perps-tutorial-skip-button",
+          "next": "wait-tutorial-gone"
+        },
+        "wait-tutorial-gone": {
+          "action": "wait_for",
+          "expression": "!document.querySelector('[data-testid=\"perps-tutorial-modal\"]')",
+          "timeout_ms": 5000,
+          "next": "wait-tab-mount"
+        },
+        "wait-tab-mount": {
+          "action": "wait_for",
+          "test_id": "perps-balance-dropdown",
+          "timeout_ms": 10000,
+          "next": "fetch-account-state"
+        },
+        "fetch-account-state": {
+          "action": "eval_async",
+          "expression": "(async()=>{var r=await stateHooks.submitRequestToBackground('perpsGetAccountState',[]);return JSON.stringify({ready:!!(r&&r.totalBalance),bal:parseFloat(r?.totalBalance??'0'),accountState:r??{}})})()",
+          "assert": { "operator": "eq", "field": "ready", "value": true },
+          "save_as": "prime_balance",
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass"
+        }
+      }
+    }
+  }
+}

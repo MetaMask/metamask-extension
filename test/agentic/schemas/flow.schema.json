@@ -1,0 +1,396 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "flow.schema.json",
+  "title": "Agentic Flow",
+  "type": "object",
+  "required": ["title", "validate"],
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Human-readable title. May contain {{param}} template tokens."
+    },
+    "pr": {
+      "type": ["string", "number"],
+      "description": "Associated PR number (informational)."
+    },
+    "inputs": {
+      "type": "object",
+      "description": "Declared parameters. Every {{param}} used in steps MUST have a matching key.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": { "enum": ["string", "number", "boolean"] },
+          "default": { "description": "Default value. Single source of truth." },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "initial_conditions": {
+      "type": "object",
+      "properties": {
+        "account": { "type": "string" },
+        "testnet": { "type": "boolean" },
+        "provider": { "type": "string" }
+      }
+    },
+    "validate": {
+      "type": "object",
+      "required": ["workflow"],
+      "properties": {
+        "workflow": {
+          "type": "object",
+          "required": ["entry", "nodes"],
+          "properties": {
+            "pre_conditions": { "$ref": "#/$defs/pre_conditions" },
+            "setup": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/step" }
+            },
+            "teardown": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/step" }
+            },
+            "entry": {
+              "type": "string",
+              "description": "ID of the first node to execute."
+            },
+            "nodes": {
+              "type": "object",
+              "additionalProperties": { "$ref": "#/$defs/node" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "pre_conditions": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "description": "Named pre-condition (e.g. 'wallet.unlocked')"
+          },
+          {
+            "type": "object",
+            "required": ["name"],
+            "description": "Parameterized (e.g. { name: 'ext.element_visible', testId: 'app-header' })"
+          }
+        ]
+      }
+    },
+    "step": {
+      "type": "object",
+      "required": ["id", "action"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique kebab-case identifier for this step."
+        },
+        "action": { "$ref": "#/$defs/action" },
+        "test_id": { "type": "string" },
+        "value": { "type": "string" },
+        "target": { "type": "string" },
+        "params": { "type": "object", "additionalProperties": { "type": "string" } },
+        "ref": { "type": "string" },
+        "ms": { "type": "number" },
+        "timeout_ms": { "type": "number" },
+        "poll_ms": { "type": "number" },
+        "expression": { "type": "string" },
+        "filename": { "type": "string" },
+        "note": { "type": "string" },
+        "route": { "type": "string" },
+        "not_route": { "type": "string" },
+        "visible": { "type": "boolean" },
+        "hash": { "type": "string" },
+        "screen": { "type": "string" },
+        "role": { "type": "string" },
+        "selector": { "type": "string" },
+        "attribute": { "type": "string" },
+        "text": { "type": "string" },
+        "offset": { "type": "number" },
+        "must_not_appear": { "type": "array", "items": { "type": "string" } },
+        "watch_for": { "type": "array", "items": { "type": "string" } },
+        "window_seconds": { "type": "number" },
+        "phase": { "type": "string", "enum": ["start", "stop"] },
+        "name": { "type": "string" },
+        "scope": { "type": "string", "enum": ["sw", "home", "both"] },
+        "message_pattern": { "type": "string" },
+        "status_match": { "type": "array", "items": { "type": "number" } },
+        "stream": { "type": "boolean" },
+        "throttling": { "type": "string" },
+        "emulation": { "type": "string" },
+        "storage": { "type": "string" },
+        "worker": { "type": "string" },
+        "target_action": { "type": "string" },
+        "page_action": { "type": "string" },
+        "browser_action": { "type": "string" },
+        "fetch_action": { "type": "string" },
+        "performance_action": { "type": "string" },
+        "permission": { "type": "string" },
+        "origin": { "type": "string" },
+        "storage_types": { "type": "string" },
+        "url_pattern": { "type": "string" },
+        "error_reason": { "type": "string" },
+        "color_scheme": { "type": "string" },
+        "reduced_motion": { "type": "string" },
+        "timezone_id": { "type": "string" },
+        "rate": { "type": "number" },
+        "latency_ms": { "type": "number" },
+        "download_kbps": { "type": "number" },
+        "upload_kbps": { "type": "number" },
+        "connection_type": { "type": "string" },
+        "label": { "type": "string" },
+        "categories": { "type": "array", "items": { "type": "string" } },
+        "enabled": { "type": "boolean" },
+        "provider": { "type": "string" },
+        "address": { "type": "string" },
+        "assert": { "$ref": "#/$defs/assert" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "action": { "const": "screenshot" } },
+            "required": ["action"]
+          },
+          "then": {
+            "required": ["filename", "note"],
+            "properties": {
+              "filename": { "type": "string", "minLength": 1 },
+              "note": {
+                "type": "string",
+                "minLength": 3,
+                "description": "State-specific caption describing what the screenshot proves (e.g. 'AC1: Recent Activity skeleton with 3 shimmer rows'). Required to keep caption-confidence HIGH."
+              }
+            }
+          }
+        }
+      ]
+    },
+    "node": {
+      "type": "object",
+      "required": ["action"],
+      "properties": {
+        "action": { "$ref": "#/$defs/action" },
+        "next": {
+          "type": "string",
+          "description": "ID of the next node to execute."
+        },
+        "when": {
+          "$ref": "#/$defs/assert",
+          "description": "Execute this node only if condition is true."
+        },
+        "unless": {
+          "$ref": "#/$defs/assert",
+          "description": "Skip this node if condition is true."
+        },
+        "save_as": {
+          "type": "string",
+          "description": "Save the result of this node under this key."
+        },
+        "cases": {
+          "type": "array",
+          "description": "Branch cases for switch action.",
+          "items": {
+            "type": "object",
+            "required": ["next"],
+            "properties": {
+              "label": { "type": "string" },
+              "when": { "$ref": "#/$defs/assert" },
+              "next": { "type": "string" }
+            }
+          }
+        },
+        "default": {
+          "type": "string",
+          "description": "Default branch for switch action."
+        },
+        "status": {
+          "type": "string",
+          "description": "Status for end action (e.g. 'pass', 'fail')."
+        },
+        "test_id": { "type": "string" },
+        "value": { "type": "string" },
+        "target": { "type": "string" },
+        "params": { "type": "object", "additionalProperties": { "type": "string" } },
+        "ref": { "type": "string" },
+        "ms": { "type": "number" },
+        "timeout_ms": { "type": "number" },
+        "poll_ms": { "type": "number" },
+        "expression": { "type": "string" },
+        "filename": { "type": "string" },
+        "note": { "type": "string" },
+        "route": { "type": "string" },
+        "not_route": { "type": "string" },
+        "visible": { "type": "boolean" },
+        "hash": { "type": "string" },
+        "screen": { "type": "string" },
+        "role": { "type": "string" },
+        "selector": { "type": "string" },
+        "attribute": { "type": "string" },
+        "text": { "type": "string" },
+        "offset": { "type": "number" },
+        "must_not_appear": { "type": "array", "items": { "type": "string" } },
+        "watch_for": { "type": "array", "items": { "type": "string" } },
+        "window_seconds": { "type": "number" },
+        "phase": { "type": "string", "enum": ["start", "stop"] },
+        "name": { "type": "string" },
+        "scope": { "type": "string", "enum": ["sw", "home", "both"] },
+        "message_pattern": { "type": "string" },
+        "status_match": { "type": "array", "items": { "type": "number" } },
+        "stream": { "type": "boolean" },
+        "throttling": { "type": "string" },
+        "emulation": { "type": "string" },
+        "storage": { "type": "string" },
+        "worker": { "type": "string" },
+        "target_action": { "type": "string" },
+        "page_action": { "type": "string" },
+        "browser_action": { "type": "string" },
+        "fetch_action": { "type": "string" },
+        "performance_action": { "type": "string" },
+        "permission": { "type": "string" },
+        "origin": { "type": "string" },
+        "storage_types": { "type": "string" },
+        "url_pattern": { "type": "string" },
+        "error_reason": { "type": "string" },
+        "color_scheme": { "type": "string" },
+        "reduced_motion": { "type": "string" },
+        "timezone_id": { "type": "string" },
+        "rate": { "type": "number" },
+        "latency_ms": { "type": "number" },
+        "download_kbps": { "type": "number" },
+        "upload_kbps": { "type": "number" },
+        "connection_type": { "type": "string" },
+        "label": { "type": "string" },
+        "categories": { "type": "array", "items": { "type": "string" } },
+        "enabled": { "type": "boolean" },
+        "provider": { "type": "string" },
+        "address": { "type": "string" },
+        "assert": { "$ref": "#/$defs/assert" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "action": { "const": "screenshot" } },
+            "required": ["action"]
+          },
+          "then": {
+            "required": ["filename", "note"],
+            "properties": {
+              "filename": { "type": "string", "minLength": 1 },
+              "note": {
+                "type": "string",
+                "minLength": 3,
+                "description": "State-specific caption describing what the screenshot proves (e.g. 'AC1: Recent Activity skeleton with 3 shimmer rows'). Required to keep caption-confidence HIGH."
+              }
+            }
+          }
+        }
+      ]
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "press",
+        "set_input",
+        "type_keypad",
+        "clear_keypad",
+        "navigate",
+        "wait",
+        "wait_for",
+        "screenshot",
+        "eval_sync",
+        "eval_async",
+        "eval_ref",
+        "call",
+        "switch",
+        "end",
+        "log_watch",
+        "cdp_probe",
+        "network",
+        "emulation",
+        "storage",
+        "service_worker",
+        "target",
+        "page",
+        "browser",
+        "fetch",
+        "performance",
+        "trace_start",
+        "trace_stop",
+        "scroll",
+        "manual",
+        "select_account",
+        "toggle_testnet",
+        "switch_provider",
+        "ext_navigate_hash",
+        "ext_wait_for_screen",
+        "ext_switch_tab",
+        "ext_check_dom"
+      ]
+    },
+    "assert": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["operator"],
+          "properties": {
+            "operator": {
+              "type": "string",
+              "enum": [
+                "not_null",
+                "truthy",
+                "falsy",
+                "eq",
+                "neq",
+                "deep_eq",
+                "gt",
+                "lt",
+                "gte",
+                "lte",
+                "length_eq",
+                "length_gt",
+                "length_gte",
+                "contains",
+                "not_contains",
+                "matches",
+                "one_of",
+                "exists"
+              ]
+            },
+            "field": { "type": "string" },
+            "value": {},
+            "pattern": {
+              "type": "string",
+              "description": "Regex pattern for matches operator."
+            },
+            "values": {
+              "type": "array",
+              "description": "Value list for one_of operator."
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "all": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/assert" }
+            },
+            "any": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/assert" }
+            },
+            "none": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/assert" }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

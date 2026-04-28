@@ -1,0 +1,89 @@
+{
+  "title": "Close {{percent}}% of {{symbol}} position",
+  "inputs": {
+    "symbol": {
+      "type": "string",
+      "default": "ETH",
+      "description": "Market symbol"
+    },
+    "percent": {
+      "type": "string",
+      "default": "100",
+      "description": "Close percentage (25, 50, 75, 100)"
+    }
+  },
+  "validate": {
+    "workflow": {
+      "pre_conditions": [
+        "wallet.unlocked",
+        "perps.feature_enabled"
+      ],
+      "setup": [
+        {
+          "id": "setup-prime-perps",
+          "action": "call",
+          "ref": "perps/prime-perps-state"
+        }
+      ],
+      "entry": "call-nav-detail",
+      "nodes": {
+        "call-nav-detail": {
+          "action": "call",
+          "ref": "perps/navigate-to-market-detail",
+          "params": { "symbol": "{{symbol}}" },
+          "next": "check-close-btn"
+        },
+        "check-close-btn": {
+          "action": "ext_check_dom",
+          "test_id": "perps-close-cta-button",
+          "query": true,
+          "save_as": "close_check",
+          "next": "branch-has-position"
+        },
+        "branch-has-position": {
+          "action": "switch",
+          "cases": [
+            {
+              "label": "no position — no-op",
+              "when": { "field": "vars.close_check.visible", "operator": "falsy" },
+              "next": "done"
+            }
+          ],
+          "default": "click-close"
+        },
+        "click-close": {
+          "action": "press",
+          "test_id": "perps-close-cta-button",
+          "next": "wait-modal"
+        },
+        "wait-modal": {
+          "action": "wait_for",
+          "test_id": "perps-close-position-modal-submit",
+          "timeout_ms": 10000,
+          "next": "confirm-close"
+        },
+        "confirm-close": {
+          "action": "press",
+          "test_id": "perps-close-position-modal-submit",
+          "next": "wait-closed"
+        },
+        "wait-closed": {
+          "action": "wait_for",
+          "test_id": "perps-close-position-modal",
+          "visible": false,
+          "timeout_ms": 15000,
+          "next": "screenshot-result"
+        },
+        "screenshot-result": {
+          "action": "screenshot",
+          "filename": "close-position-{{symbol}}-{{percent}}pct",
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass"
+        }
+      }
+    }
+  }
+}

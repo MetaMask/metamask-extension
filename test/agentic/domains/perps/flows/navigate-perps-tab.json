@@ -1,0 +1,53 @@
+{
+  "title": "Navigate to Perps tab",
+  "validate": {
+    "workflow": {
+      "pre_conditions": ["wallet.unlocked"],
+      "entry": "nav-perps",
+      "nodes": {
+        "nav-perps": {
+          "action": "navigate",
+          "target": "PerpsHome",
+          "next": "check-tutorial"
+        },
+        "check-tutorial": {
+          "action": "eval_sync",
+          "expression": "JSON.stringify({ visible: !!document.querySelector('[data-testid=\"perps-tutorial-modal\"]') })",
+          "save_as": "tutorial_state",
+          "next": "tutorial-switch"
+        },
+        "tutorial-switch": {
+          "action": "switch",
+          "cases": [{ "when": { "operator": "eq", "field": "tutorial_state.visible", "value": true }, "next": "dismiss-tutorial" }],
+          "default": "wait-perps"
+        },
+        "dismiss-tutorial": {
+          "action": "press",
+          "test_id": "perps-tutorial-skip-button",
+          "next": "wait-tutorial-gone"
+        },
+        "wait-tutorial-gone": {
+          "action": "wait_for",
+          "expression": "!document.querySelector('[data-testid=\"perps-tutorial-modal\"]')",
+          "timeout_ms": 5000,
+          "next": "wait-perps"
+        },
+        "wait-perps": {
+          "action": "wait_for",
+          "test_id": "perps-balance-dropdown",
+          "timeout_ms": 10000,
+          "next": "screenshot-perps"
+        },
+        "screenshot-perps": {
+          "action": "screenshot",
+          "filename": "perps-tab",
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass"
+        }
+      }
+    }
+  }
+}

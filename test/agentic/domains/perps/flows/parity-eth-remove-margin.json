@@ -1,0 +1,65 @@
+{
+  "title": "Parity snapshot — extension ETH remove margin",
+  "validate": {
+    "workflow": {
+      "pre_conditions": [
+        "wallet.unlocked"
+      ],
+      "entry": "nav",
+      "nodes": {
+        "nav": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": {
+            "market": {
+              "symbol": "ETH"
+            }
+          },
+          "next": "wait-detail"
+        },
+        "wait-detail": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "open-margin"
+        },
+        "open-margin": {
+          "action": "press",
+          "test_id": "perps-margin-card",
+          "next": "wait-menu"
+        },
+        "wait-menu": {
+          "action": "wait_for",
+          "test_id": "perps-margin-menu",
+          "timeout_ms": 10000,
+          "next": "open-remove"
+        },
+        "open-remove": {
+          "action": "press",
+          "test_id": "perps-margin-menu-remove",
+          "next": "wait-modal"
+        },
+        "wait-modal": {
+          "action": "wait_for",
+          "test_id": "perps-edit-margin-modal-save",
+          "timeout_ms": 10000,
+          "next": "extract"
+        },
+        "extract": {
+          "action": "eval_sync",
+          "expression": "(function(){ function t(id){var el=document.querySelector('[data-testid=\"'+id+'\"]'); return el?((el.textContent||'').trim()||null):null;} return JSON.stringify({symbol:'ETH',screen:'remove_margin',available:t('perps-edit-margin-available-value'),liquidationPrice:t('perps-edit-margin-liquidation-price-value'),liquidationDistance:t('perps-edit-margin-liquidation-distance-value')}); })()",
+          "next": "close"
+        },
+        "close": {
+          "action": "press",
+          "test_id": "perps-edit-margin-modal-cancel",
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass"
+        }
+      }
+    }
+  }
+}

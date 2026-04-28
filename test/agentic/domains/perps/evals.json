@@ -1,0 +1,62 @@
+{
+  "perps-state": {
+    "description": "Perps controller state from live Redux store (activeProvider, isTestnet, positions, orders)",
+    "expression": "(function(){var m=stateHooks.store.getState().metamask;return JSON.stringify({activeProvider:m.activeProvider??null,isTestnet:m.isTestnet??false,initializationState:m.initializationState??null,cachedPositions:m.cachedPositions??[],cachedOrders:m.cachedOrders??[]})})()",
+    "async": false
+  },
+  "perps-positions": {
+    "description": "Live open perps positions via perpsGetPositions RPC",
+    "expression": "(async()=>{var r=await stateHooks.submitRequestToBackground('perpsGetPositions',[]);return JSON.stringify(r??[])})()",
+    "async": true
+  },
+  "perps-balance": {
+    "description": "Live perps account state (totalBalance, unrealizedPnl, returnOnEquity) via perpsGetAccountState RPC",
+    "expression": "(async()=>{var r=await stateHooks.submitRequestToBackground('perpsGetAccountState',[]);return JSON.stringify(r??{})})()",
+    "async": true
+  },
+  "perps-orders": {
+    "description": "Live open perps limit/stop orders via perpsGetOpenOrders RPC",
+    "expression": "(async()=>{var r=await stateHooks.submitRequestToBackground('perpsGetOpenOrders',[]);return JSON.stringify(r??[])})()",
+    "async": true
+  },
+  "perps-provider": {
+    "description": "Active perps provider mode (hyperliquid | aggregated | myx)",
+    "expression": "(function(){return JSON.stringify(stateHooks.store.getState().metamask.activeProvider??null)})()",
+    "async": false
+  },
+  "perps-testnet": {
+    "description": "Whether perps is in testnet mode",
+    "expression": "(function(){return JSON.stringify(stateHooks.store.getState().metamask.isTestnet??false)})()",
+    "async": false
+  },
+  "perps-feature-flag": {
+    "description": "Check if perpsEnabledVersion remote flag is configured in manifest._flags",
+    "expression": "(async () => { const manifest = chrome.runtime.getManifest(); const flags = manifest._flags?.remoteFeatureFlags; return JSON.stringify(flags?.perpsEnabledVersion ?? null); })()",
+    "async": true
+  },
+  "perps-markets": {
+    "description": "Live market data with prices via perpsGetMarketDataWithPrices RPC",
+    "expression": "(async()=>{var r=await stateHooks.submitRequestToBackground('perpsGetMarketDataWithPrices',[]);return JSON.stringify(r??[])})()",
+    "async": true
+  },
+  "perps-pre-trade": {
+    "description": "Pre-trade snapshot: positions + account state (capture before placing an order)",
+    "expression": "(async()=>{var p=await stateHooks.submitRequestToBackground('perpsGetPositions',[]);var a=await stateHooks.submitRequestToBackground('perpsGetAccountState',[]);return JSON.stringify({positions:p??[],accountState:a??{}})})()",
+    "async": true
+  },
+  "perps-post-trade": {
+    "description": "Post-trade snapshot: positions + account state (capture after order fills, compare with pre-trade)",
+    "expression": "(async()=>{var p=await stateHooks.submitRequestToBackground('perpsGetPositions',[]);var a=await stateHooks.submitRequestToBackground('perpsGetAccountState',[]);return JSON.stringify({positions:p??[],accountState:a??{}})})()",
+    "async": true
+  },
+  "perps-place-order": {
+    "description": "Place a perps order via perpsPlaceOrder RPC (template: requires symbol, side, amount params)",
+    "expression": "(async()=>{var r=await stateHooks.submitRequestToBackground('perpsPlaceOrder',[{symbol:'{{symbol}}',side:'{{side}}',amount:'{{amount}}'}]);return JSON.stringify(r??{})})()",
+    "async": true
+  },
+  "perps-connection-state": {
+    "description": "Live perps connection state via perpsGetConnectionState RPC, including call duration",
+    "expression": "(async()=>{var start=Date.now();try{var r=await stateHooks.submitRequestToBackground('perpsGetConnectionState',[]);return JSON.stringify({state:r??null,error:null,elapsedMs:Date.now()-start})}catch(e){return JSON.stringify({state:null,error:String(e&&e.message||e),elapsedMs:Date.now()-start})}})()",
+    "async": true
+  }
+}

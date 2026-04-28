@@ -1,0 +1,113 @@
+{
+  "title": "Emulation environment smoke",
+  "description": "Canonical proof recipe for media and timezone emulation on the active page.",
+  "validate": {
+    "workflow": {
+      "entry": "gate-nav-dapp",
+      "nodes": {
+        "gate-nav-dapp": {
+          "action": "navigate",
+          "target": "https://example.com",
+          "next": "ac1-capture-baseline"
+        },
+        "ac1-capture-baseline": {
+          "action": "eval_sync",
+          "target": "active",
+          "expression": "(function(){return JSON.stringify({colorScheme:matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light',reducedMotion:matchMedia('(prefers-reduced-motion: reduce)').matches?'reduce':'no-preference',timezone:Intl.DateTimeFormat().resolvedOptions().timeZone})})()",
+          "assert": {
+            "all": [
+              { "operator": "not_null", "field": "colorScheme" },
+              { "operator": "not_null", "field": "reducedMotion" },
+              { "operator": "not_null", "field": "timezone" }
+            ]
+          },
+          "save_as": "baseline_env",
+          "next": "ac1-apply-media"
+        },
+        "ac1-apply-media": {
+          "action": "emulation",
+          "emulation": "media",
+          "target": "active",
+          "color_scheme": "dark",
+          "reduced_motion": "reduce",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "emulation" },
+              { "operator": "eq", "field": "emulation", "value": "media" },
+              { "operator": "length_gt", "field": "applied", "value": 0 }
+            ]
+          },
+          "next": "ac1-check-media"
+        },
+        "ac1-check-media": {
+          "action": "eval_sync",
+          "target": "active",
+          "expression": "(function(){return JSON.stringify({colorScheme:matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light',reducedMotion:matchMedia('(prefers-reduced-motion: reduce)').matches?'reduce':'no-preference'})})()",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "colorScheme", "value": "dark" },
+              { "operator": "eq", "field": "reducedMotion", "value": "reduce" }
+            ]
+          },
+          "next": "ac1-apply-timezone"
+        },
+        "ac1-apply-timezone": {
+          "action": "emulation",
+          "emulation": "timezone",
+          "target": "active",
+          "timezone_id": "America/New_York",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "emulation" },
+              { "operator": "eq", "field": "emulation", "value": "timezone" },
+              { "operator": "length_gt", "field": "applied", "value": 0 }
+            ]
+          },
+          "next": "ac1-check-timezone"
+        },
+        "ac1-check-timezone": {
+          "action": "eval_sync",
+          "target": "active",
+          "expression": "(function(){return JSON.stringify({timezone:Intl.DateTimeFormat().resolvedOptions().timeZone})})()",
+          "assert": {
+            "operator": "eq",
+            "field": "timezone",
+            "value": "America/New_York"
+          },
+          "next": "ac1-reset-media"
+        },
+        "ac1-reset-media": {
+          "action": "emulation",
+          "emulation": "media",
+          "target": "active",
+          "color_scheme": "{{vars.baseline_env.colorScheme}}",
+          "reduced_motion": "{{vars.baseline_env.reducedMotion}}",
+          "next": "ac1-reset-timezone"
+        },
+        "ac1-reset-timezone": {
+          "action": "emulation",
+          "emulation": "timezone",
+          "target": "active",
+          "timezone_id": "{{vars.baseline_env.timezone}}",
+          "next": "ac1-check-reset"
+        },
+        "ac1-check-reset": {
+          "action": "eval_sync",
+          "target": "active",
+          "expression": "(function(){var colorScheme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches?'reduce':'no-preference';var timezone=Intl.DateTimeFormat().resolvedOptions().timeZone;return JSON.stringify({colorScheme:colorScheme,reducedMotion:reducedMotion,timezone:timezone,ok:colorScheme==='{{vars.baseline_env.colorScheme}}'&&reducedMotion==='{{vars.baseline_env.reducedMotion}}'&&timezone==='{{vars.baseline_env.timezone}}'})})()",
+          "assert": {
+            "operator": "eq",
+            "field": "ok",
+            "value": true
+          },
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass",
+          "message": "Environment emulation proven"
+        }
+      }
+    }
+  }
+}

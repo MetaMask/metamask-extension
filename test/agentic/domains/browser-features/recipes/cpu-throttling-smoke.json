@@ -1,0 +1,100 @@
+{
+  "title": "CPU throttling smoke",
+  "description": "Canonical proof recipe for CPU throttling emulation on the active page.",
+  "validate": {
+    "workflow": {
+      "pre_conditions": ["wallet.unlocked"],
+      "teardown": [
+        {
+          "id": "teardown-reset-emulation",
+          "action": "emulation",
+          "emulation": "reset",
+          "target": "active"
+        }
+      ],
+      "entry": "gate-nav-home",
+      "nodes": {
+        "gate-nav-home": {
+          "action": "navigate",
+          "target": "Home",
+          "next": "gate-wait-home"
+        },
+        "gate-wait-home": {
+          "action": "wait_for",
+          "test_id": "account-menu-icon",
+          "timeout_ms": 10000,
+          "next": "ac1-baseline-cpu"
+        },
+        "ac1-baseline-cpu": {
+          "action": "eval_sync",
+          "expression": "(function(){var start=performance.now();var x=0;for (var i=0;i<70000000;i++){x+=Math.sqrt(i%1000)}return JSON.stringify({elapsedMs:Math.round(performance.now()-start),checksum:Math.round(x)})})()",
+          "assert": {
+            "all": [
+              { "operator": "gt", "field": "elapsedMs", "value": 20 },
+              { "operator": "gt", "field": "checksum", "value": 0 }
+            ]
+          },
+          "save_as": "baseline_cpu",
+          "next": "ac1-apply-cpu-throttle"
+        },
+        "ac1-apply-cpu-throttle": {
+          "action": "emulation",
+          "emulation": "cpu",
+          "rate": 8,
+          "target": "active",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "emulation" },
+              { "operator": "eq", "field": "emulation", "value": "cpu" },
+              { "operator": "length_gt", "field": "applied", "value": 0 }
+            ]
+          },
+          "next": "ac1-slowed-cpu"
+        },
+        "ac1-slowed-cpu": {
+          "action": "eval_sync",
+          "expression": "(function(){var start=performance.now();var x=0;for (var i=0;i<70000000;i++){x+=Math.sqrt(i%1000)}return JSON.stringify({elapsedMs:Math.round(performance.now()-start),checksum:Math.round(x)})})()",
+          "assert": {
+            "all": [
+              { "operator": "gt", "field": "elapsedMs", "value": 80 },
+              { "operator": "gt", "field": "checksum", "value": 0 }
+            ]
+          },
+          "save_as": "slowed_cpu",
+          "next": "ac1-reset-cpu"
+        },
+        "ac1-reset-cpu": {
+          "action": "emulation",
+          "emulation": "reset",
+          "target": "active",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "emulation" },
+              { "operator": "eq", "field": "emulation", "value": "reset" },
+              { "operator": "length_gt", "field": "applied", "value": 0 }
+            ]
+          },
+          "next": "ac1-recovered-cpu"
+        },
+        "ac1-recovered-cpu": {
+          "action": "eval_sync",
+          "expression": "(function(){var start=performance.now();var x=0;for (var i=0;i<70000000;i++){x+=Math.sqrt(i%1000)}return JSON.stringify({elapsedMs:Math.round(performance.now()-start),checksum:Math.round(x)})})()",
+          "assert": {
+            "all": [
+              { "operator": "gt", "field": "elapsedMs", "value": 20 },
+              { "operator": "gt", "field": "checksum", "value": 0 },
+              { "operator": "lt", "field": "elapsedMs", "value": 200 }
+            ]
+          },
+          "save_as": "recovered_cpu",
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass",
+          "message": "CPU throttling emulation proven"
+        }
+      }
+    }
+  }
+}

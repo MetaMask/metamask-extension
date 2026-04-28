@@ -1,0 +1,17 @@
+{
+  "wallet-state": {
+    "description": "Get wallet setup state from KeyringController and OnboardingController. Note: isUnlocked is runtime-only and not persisted to storage — use mm_get_state for live lock status.",
+    "expression": "(function(){var m=stateHooks.store.getState().metamask;return JSON.stringify({hasVault:m.keyrings&&m.keyrings.length>0,completedOnboarding:m.completedOnboarding??false})})()",
+    "async": false
+  },
+  "accounts": {
+    "description": "Get selected account from AccountsController",
+    "expression": "(function(){var metamask=(stateHooks.store.getState()||{}).metamask||{};var accts=metamask.internalAccounts||{};var byId=accts.accounts||{};var selId=accts.selectedAccount||null;var selected=selId&&byId[selId]?byId[selId]:null;var list=Object.keys(byId).map(function(id){var acct=byId[id]||{};var meta=acct.metadata||{};return {id:id,name:meta.name||null,address:acct.address||null,type:acct.type||null,keyringType:(meta.keyring||{}).type||null};});return JSON.stringify({selectedAccount:selected,selectedAccountId:selId,selectedAddress:selected&&selected.address?selected.address:null,accounts:list})})()",
+    "async": false
+  },
+  "network": {
+    "description": "Get selected network from NetworkController",
+    "expression": "(function(){var m=stateHooks.store.getState().metamask;var chainId=null;if(m.selectedNetworkClientId&&m.networkConfigurationsByChainId){for(var c in m.networkConfigurationsByChainId){var cfg=m.networkConfigurationsByChainId[c];if(cfg.rpcEndpoints&&cfg.rpcEndpoints.some(function(e){return e.networkClientId===m.selectedNetworkClientId})){chainId=c;break}}}return JSON.stringify({selectedNetworkClientId:m.selectedNetworkClientId??null,chainId:chainId})})()",
+    "async": false
+  }
+}

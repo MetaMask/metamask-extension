@@ -1,0 +1,32 @@
+{
+  "title": "Target inspect smoke",
+  "description": "Canonical proof recipe for target inspection and classification across extension pages and service workers.",
+  "validate": {
+    "workflow": {
+      "pre_conditions": ["wallet.unlocked"],
+      "entry": "ac1-inspect-targets",
+      "nodes": {
+        "ac1-inspect-targets": {
+          "action": "target",
+          "target_action": "inspect",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "target" },
+              { "operator": "eq", "field": "targetAction", "value": "inspect" },
+              { "operator": "gt", "field": "pageCount", "value": 0 },
+              { "operator": "gt", "field": "workerCount", "value": 0 },
+              { "operator": "gt", "field": "roleCounts.extension", "value": 0 },
+              { "operator": "gt", "field": "roleCounts.background", "value": 0 }
+            ]
+          },
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass",
+          "message": "Target inspection proven"
+        }
+      }
+    }
+  }
+}

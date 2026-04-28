@@ -1,0 +1,83 @@
+{
+  "title": "Target switch smoke",
+  "description": "Canonical proof recipe for switching the active target by role between a dapp page and the extension page.",
+  "validate": {
+    "workflow": {
+      "pre_conditions": ["wallet.unlocked"],
+      "entry": "gate-nav-dapp",
+      "nodes": {
+        "gate-nav-dapp": {
+          "action": "navigate",
+          "target": "https://example.com",
+          "next": "ac1-check-dapp-active"
+        },
+        "ac1-check-dapp-active": {
+          "action": "eval_sync",
+          "target": "active",
+          "expression": "(function(){return JSON.stringify({href:location.href})})()",
+          "assert": {
+            "operator": "matches",
+            "field": "href",
+            "pattern": "^https://example\\.com"
+          },
+          "next": "ac1-switch-to-extension"
+        },
+        "ac1-switch-to-extension": {
+          "action": "target",
+          "target_action": "switch_role",
+          "role": "extension",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "target" },
+              { "operator": "eq", "field": "targetAction", "value": "switch_role" },
+              { "operator": "eq", "field": "role", "value": "extension" },
+              { "operator": "matches", "field": "active.url", "pattern": "^chrome-extension://" }
+            ]
+          },
+          "next": "ac1-check-extension-active"
+        },
+        "ac1-check-extension-active": {
+          "action": "eval_sync",
+          "target": "active",
+          "expression": "(function(){return JSON.stringify({href:location.href})})()",
+          "assert": {
+            "operator": "matches",
+            "field": "href",
+            "pattern": "^chrome-extension://"
+          },
+          "next": "ac1-switch-to-dapp"
+        },
+        "ac1-switch-to-dapp": {
+          "action": "target",
+          "target_action": "switch_role",
+          "role": "dapp",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "target" },
+              { "operator": "eq", "field": "targetAction", "value": "switch_role" },
+              { "operator": "eq", "field": "role", "value": "dapp" },
+              { "operator": "matches", "field": "active.url", "pattern": "^https://example\\.com" }
+            ]
+          },
+          "next": "ac1-check-dapp-restored"
+        },
+        "ac1-check-dapp-restored": {
+          "action": "eval_sync",
+          "target": "active",
+          "expression": "(function(){return JSON.stringify({href:location.href})})()",
+          "assert": {
+            "operator": "matches",
+            "field": "href",
+            "pattern": "^https://example\\.com"
+          },
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass",
+          "message": "Target role switching proven"
+        }
+      }
+    }
+  }
+}

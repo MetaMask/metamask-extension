@@ -1,0 +1,79 @@
+{
+  "title": "Browser permissions smoke",
+  "description": "Canonical proof recipe for browser permission grant/reset on the active dapp page.",
+  "validate": {
+    "workflow": {
+      "entry": "gate-nav-dapp",
+      "nodes": {
+        "gate-nav-dapp": {
+          "action": "navigate",
+          "target": "https://example.com",
+          "next": "ac1-check-baseline"
+        },
+        "ac1-check-baseline": {
+          "action": "eval_async",
+          "target": "active",
+          "expression": "(async()=>{const status=await navigator.permissions.query({name:'geolocation'});return JSON.stringify({state:status.state})})()",
+          "assert": {
+            "operator": "eq",
+            "field": "state",
+            "value": "prompt"
+          },
+          "next": "ac1-grant"
+        },
+        "ac1-grant": {
+          "action": "browser",
+          "browser_action": "grant_permission",
+          "permission": "geolocation",
+          "origin": "https://example.com",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "browser" },
+              { "operator": "eq", "field": "browserAction", "value": "grant_permission" },
+              { "operator": "eq", "field": "permission", "value": "geolocation" }
+            ]
+          },
+          "next": "ac1-check-granted"
+        },
+        "ac1-check-granted": {
+          "action": "eval_async",
+          "target": "active",
+          "expression": "(async()=>{const status=await navigator.permissions.query({name:'geolocation'});return JSON.stringify({state:status.state})})()",
+          "assert": {
+            "operator": "eq",
+            "field": "state",
+            "value": "granted"
+          },
+          "next": "ac1-reset"
+        },
+        "ac1-reset": {
+          "action": "browser",
+          "browser_action": "reset_permissions",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "browser" },
+              { "operator": "eq", "field": "browserAction", "value": "reset_permissions" }
+            ]
+          },
+          "next": "ac1-check-reset"
+        },
+        "ac1-check-reset": {
+          "action": "eval_async",
+          "target": "active",
+          "expression": "(async()=>{const status=await navigator.permissions.query({name:'geolocation'});return JSON.stringify({state:status.state})})()",
+          "assert": {
+            "operator": "eq",
+            "field": "state",
+            "value": "prompt"
+          },
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass",
+          "message": "Browser permission grant/reset proven"
+        }
+      }
+    }
+  }
+}

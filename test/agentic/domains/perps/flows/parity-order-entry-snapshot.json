@@ -1,0 +1,123 @@
+{
+  "title": "Parity snapshot — extension order entry {{symbol}}",
+  "inputs": {
+    "symbol": {
+      "type": "string",
+      "default": "ETH"
+    },
+    "amount": {
+      "type": "string",
+      "default": "11"
+    }
+  },
+  "validate": {
+    "workflow": {
+      "pre_conditions": [
+        "wallet.unlocked"
+      ],
+      "entry": "nav",
+      "nodes": {
+        "nav": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": {
+            "market": {
+              "symbol": "{{symbol}}"
+            }
+          },
+          "next": "wait-market"
+        },
+        "wait-market": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "check-position"
+        },
+        "check-position": {
+          "action": "ext_check_dom",
+          "test_id": "perps-position-cta-buttons",
+          "query": true,
+          "save_as": "position_state",
+          "next": "branch"
+        },
+        "branch": {
+          "action": "switch",
+          "cases": [
+            {
+              "when": {
+                "field": "vars.position_state.visible",
+                "operator": "truthy"
+              },
+              "next": "open-modify-menu"
+            }
+          ],
+          "default": "open-order"
+        },
+        "open-modify-menu": {
+          "action": "press",
+          "test_id": "perps-modify-cta-button",
+          "next": "wait-modify-menu"
+        },
+        "wait-modify-menu": {
+          "action": "wait_for",
+          "test_id": "perps-modify-menu",
+          "timeout_ms": 10000,
+          "next": "open-add-exposure"
+        },
+        "open-add-exposure": {
+          "action": "press",
+          "test_id": "perps-modify-menu-add-exposure",
+          "next": "wait-order"
+        },
+        "open-order": {
+          "action": "press",
+          "test_id": "perps-long-cta-button",
+          "next": "wait-order"
+        },
+        "wait-order": {
+          "action": "wait_for",
+          "expression": "(function(){var route=location.hash||'';var input=!!document.querySelector('input[inputmode=\"decimal\"]');return JSON.stringify({ready:route.includes('/perps/trade/')&&input})})()",
+          "assert": {
+            "operator": "eq",
+            "field": "ready",
+            "value": true
+          },
+          "timeout_ms": 20000,
+          "poll_ms": 500,
+          "next": "set-amount"
+        },
+        "set-amount": {
+          "action": "eval_sync",
+          "expression": "(function(){\n      var input=document.querySelector('input[inputmode=\"decimal\"]');\n      if(!input) return JSON.stringify({filled:false,error:'no decimal input'});\n      input.focus();\n      var setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value')?.set;\n      if(setter){ setter.call(input,'{{amount}}'); } else { input.value='{{amount}}'; }\n      input.dispatchEvent(new Event('input',{bubbles:true}));\n      input.dispatchEvent(new Event('change',{bubbles:true}));\n      return JSON.stringify({filled:true,value:input.value});\n    })()",
+          "assert": {
+            "operator": "eq",
+            "field": "filled",
+            "value": true
+          },
+          "next": "wait-summary"
+        },
+        "wait-summary": {
+          "action": "wait_for",
+          "expression": "(function(){\n    function textById(id){ return (document.querySelector('[data-testid=\"'+id+'\"]')?.textContent || '').trim(); }\n    const margin = textById('perps-order-summary-margin-required');\n    const liquidation = textById('perps-order-summary-liquidation-price');\n    const fees = textById('perps-order-summary-estimated-fees');\n    const feeReady = !!fees && fees !== '-' && fees !== '$0' && fees !== '$0.00';\n    return JSON.stringify({ready: !!margin && margin !== '-' && !!liquidation && liquidation !== '-' && feeReady});\n  })()",
+          "assert": {
+            "operator": "eq",
+            "field": "ready",
+            "value": true
+          },
+          "timeout_ms": 20000,
+          "poll_ms": 500,
+          "next": "extract"
+        },
+        "extract": {
+          "action": "eval_sync",
+          "expression": "(function(){\n    function text(el){ return (el?.textContent || '').trim(); }\n    function textById(id){ return (document.querySelector('[data-testid=\"'+id+'\"]')?.textContent || '').trim() || null; }\n    function lines(el){ return (el?.innerText || el?.textContent || '').split(/\\n+/).map(function(s){return s.trim();}).filter(Boolean); }\n    function labelValue(label){\n      const candidates = Array.from(document.querySelectorAll('p,span,div')).filter(function(el){ return text(el)===label; });\n      for (const el of candidates){\n        let cur = el.parentElement;\n        for(let i=0;i<4 && cur;i++,cur=cur.parentElement){\n          const l = lines(cur);\n          if(l.includes(label) && l.length<=6){\n            const vals = l.filter(function(x){ return x!==label; });\n            if(vals.length) return vals[vals.length-1];\n          }\n        }\n      }\n      return null;\n    }\n    return JSON.stringify({symbol:'{{symbol}}',screen:'order_entry',price:text(document.querySelector('[data-testid=\"perps-order-entry-price\"]')),change:text(document.querySelector('[data-testid=\"perps-order-entry-change\"]')),margin:textById('perps-order-summary-margin-required') || labelValue('Margin'),liquidationPrice:textById('perps-order-summary-liquidation-price') || labelValue('Liquidation price'),fees:textById('perps-order-summary-estimated-fees') || labelValue('Fees')});\n  })()",
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass"
+        }
+      }
+    }
+  }
+}

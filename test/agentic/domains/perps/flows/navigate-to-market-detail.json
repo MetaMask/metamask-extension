@@ -1,0 +1,34 @@
+{
+  "title": "Navigate to {{symbol}} market detail",
+  "inputs": {
+    "symbol": {
+      "type": "string",
+      "default": "ETH",
+      "description": "Market symbol"
+    }
+  },
+  "validate": {
+    "workflow": {
+      "pre_conditions": ["wallet.unlocked"],
+      "entry": "nav-detail",
+      "nodes": {
+        "nav-detail": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": { "symbol": "{{symbol}}" },
+          "next": "wait-detail"
+        },
+        "wait-detail": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass"
+        }
+      }
+    }
+  }
+}

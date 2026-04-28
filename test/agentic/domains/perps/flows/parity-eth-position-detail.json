@@ -1,0 +1,86 @@
+{
+  "title": "Parity snapshot — extension ETH position detail",
+  "validate": {
+    "workflow": {
+      "pre_conditions": [
+        "wallet.unlocked"
+      ],
+      "entry": "nav",
+      "nodes": {
+        "nav": {
+          "action": "navigate",
+          "target": "PerpsMarketDetails",
+          "params": {
+            "market": {
+              "symbol": "ETH"
+            }
+          },
+          "next": "wait-detail"
+        },
+        "wait-detail": {
+          "action": "wait_for",
+          "test_id": "perps-market-detail-page",
+          "timeout_ms": 10000,
+          "next": "check-position"
+        },
+        "check-position": {
+          "action": "ext_check_dom",
+          "test_id": "perps-position-cta-buttons",
+          "query": true,
+          "save_as": "eth_position_state",
+          "next": "branch"
+        },
+        "branch": {
+          "action": "switch",
+          "cases": [
+            {
+              "when": {
+                "field": "vars.eth_position_state.visible",
+                "operator": "truthy"
+              },
+              "next": "extract"
+            }
+          ],
+          "default": "open-order"
+        },
+        "open-order": {
+          "action": "press",
+          "test_id": "perps-long-cta-button",
+          "next": "wait-order"
+        },
+        "wait-order": {
+          "action": "wait_for",
+          "test_id": "perps-order-entry-page",
+          "timeout_ms": 10000,
+          "next": "set-amount"
+        },
+        "set-amount": {
+          "action": "set_input",
+          "test_id": "amount-input-field",
+          "value": "11",
+          "next": "submit"
+        },
+        "submit": {
+          "action": "press",
+          "test_id": "submit-order-button",
+          "next": "wait-position"
+        },
+        "wait-position": {
+          "action": "wait_for",
+          "test_id": "perps-position-cta-buttons",
+          "timeout_ms": 15000,
+          "next": "extract"
+        },
+        "extract": {
+          "action": "eval_sync",
+          "expression": "(function(){ function t(id){var el=document.querySelector('[data-testid=\"'+id+'\"]'); return el?((el.textContent||'').trim()||null):null;} function txt(el){return (el?.textContent||'').trim();} function lines(el){return (el?.innerText||el?.textContent||'').split(/\\n+/).map(s=>s.trim()).filter(Boolean);} function labelValue(label){ const candidates=Array.from(document.querySelectorAll('p,span,div')).filter(el=>txt(el)===label); for(const el of candidates){ let cur=el.parentElement; for(let i=0;i<4 && cur;i++,cur=cur.parentElement){ const l=lines(cur); if(l.includes(label)&&l.length<=6){ const vals=l.filter(x=>x!==label); if(vals.length) return vals[vals.length-1]; } } } return null; } return JSON.stringify({symbol:'ETH',screen:'position_detail',size:t('perps-position-size-value')||labelValue('Size'),margin:t('perps-position-margin-value'),entry:t('perps-position-entry-value'),liquidationPrice:t('perps-position-liquidation-value'),funding:t('perps-position-funding-value')}); })()",
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass"
+        }
+      }
+    }
+  }
+}
