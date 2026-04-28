@@ -95,10 +95,7 @@ import {
   getSubscriptionControllerMessenger,
 } from './subscription';
 import { getConnectivityControllerMessenger } from './connectivity';
-import {
-  getConfigRegistryControllerMessenger,
-  getConfigRegistryControllerInitMessenger,
-} from './config-registry-controller-messenger';
+import { getConfigRegistryControllerMessenger } from './config-registry-controller-messenger';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -217,6 +214,7 @@ import { getGeolocationControllerMessenger } from './geolocation-controller-mess
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
+import { getConfigRegistryApiServiceMessenger } from './config-registry-api-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type {
@@ -244,14 +242,7 @@ export {
   getBridgeControllerInitMessenger,
 } from './bridge-controller-messenger';
 export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
-export type {
-  ConfigRegistryControllerMessenger,
-  ConfigRegistryControllerInitMessenger,
-} from './config-registry-controller-messenger';
-export {
-  getConfigRegistryControllerMessenger,
-  getConfigRegistryControllerInitMessenger,
-} from './config-registry-controller-messenger';
+export { getConfigRegistryControllerMessenger } from './config-registry-controller-messenger';
 export type {
   CurrencyRateControllerMessenger,
   CurrencyRateControllerInitMessenger,
@@ -484,7 +475,11 @@ export const MESSENGER_FACTORIES = {
   },
   ConfigRegistryController: {
     getMessenger: getConfigRegistryControllerMessenger,
-    getInitMessenger: getConfigRegistryControllerInitMessenger,
+    getInitMessenger: noop,
+  },
+  ConfigRegistryApiService: {
+    getMessenger: getConfigRegistryApiServiceMessenger,
+    getInitMessenger: noop,
   },
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,

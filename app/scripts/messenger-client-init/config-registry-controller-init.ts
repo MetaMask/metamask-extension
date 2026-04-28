@@ -1,6 +1,8 @@
-import { ConfigRegistryController } from '@metamask/config-registry-controller';
+import {
+  ConfigRegistryController,
+  ConfigRegistryControllerMessenger,
+} from '@metamask/config-registry-controller';
 import { MessengerClientInitFunction } from './types';
-import type { ConfigRegistryControllerMessenger } from './messengers/config-registry-controller-messenger';
 
 /**
  * Initialize the Config Registry controller.
@@ -14,10 +16,6 @@ export const ConfigRegistryControllerInit: MessengerClientInitFunction<
   ConfigRegistryController,
   ConfigRegistryControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  if (!controllerMessenger) {
-    throw new Error('ConfigRegistryController requires a controllerMessenger');
-  }
-
   const persistedControllerState = persistedState.ConfigRegistryController;
 
   const messengerClient = new ConfigRegistryController({
