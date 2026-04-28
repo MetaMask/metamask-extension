@@ -401,9 +401,8 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       ]);
     }
     if (isSlLiquidationInvalid) {
-      return t('perpsStopLossInvalidPrice', [
+      return t('perpsStopLossInvalidLiquidationPrice', [
         getStopLossLiquidationErrorDirection(direction),
-        'liquidation',
       ]);
     }
     return null;

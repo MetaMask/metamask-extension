@@ -805,9 +805,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
                   getStopLossErrorDirection(positionDirection),
                   'current',
                 ])
-              : t('perpsStopLossInvalidPrice', [
+              : t('perpsStopLossInvalidLiquidationPrice', [
                   getStopLossLiquidationErrorDirection(positionDirection),
-                  'liquidation',
                 ])}
           </Text>
         )}
