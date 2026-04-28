@@ -163,6 +163,14 @@ describe('useHardwareFooter', () => {
       expect(result.current.shouldRunHardwareWalletPreflight).toBe(true);
     });
 
+    it('treats Connected transport as ready for footer CTA before ensureDeviceReady', () => {
+      mockConnectionState.status = ConnectionStatus.Connected;
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(true);
+    });
+
     it('returns preflight disabled in e2e mode', () => {
       process.env.IN_TEST = 'true';
       process.env.JEST_WORKER_ID = 'undefined';
@@ -221,7 +229,8 @@ describe('useHardwareFooter', () => {
       });
 
       expect(isReady).toBe(false);
-      expect(result.current.isHardwareWalletReady).toBe(false);
+      // Transport remains connected; footer still shows Confirm so the user can retry.
+      expect(result.current.isHardwareWalletReady).toBe(true);
     });
 
     it('returns true without calling the device check in e2e mode', async () => {
@@ -303,7 +312,8 @@ describe('useHardwareFooter', () => {
         });
       });
 
-      expect(result.current.isHardwareWalletReady).toBe(false);
+      // Transport is still up; confirm CTA stays enabled and preflight runs again on submit.
+      expect(result.current.isHardwareWalletReady).toBe(true);
     });
 
     it('resets a successful preflight when the device disconnects', async () => {

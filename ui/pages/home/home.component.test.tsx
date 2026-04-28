@@ -77,8 +77,6 @@ function buildDefaultProps(overrides: Record<string, unknown> = {}) {
     setTermsOfUseLastAgreed: jest.fn(),
     showOutdatedBrowserWarning: false,
     setOutdatedBrowserWarningLastShown: jest.fn(),
-    setNewNftAddedMessage: jest.fn(),
-    setRemoveNftMessage: jest.fn(),
     attemptCloseNotificationPopup: jest.fn(),
     setNewTokensImported: jest.fn(),
     setNewTokensImportedError: jest.fn(),

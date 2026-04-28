@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Magdagdag ng custom na network"
   },
-  "addAHardwareWallet": {
-    "message": "Magdagdag ng wallet na hardware"
-  },
   "addANetwork": {
     "message": "Magdagdag ng network"
   },
