@@ -6,7 +6,7 @@ type PasskeyCode =
 /**
  * Maps {@link PasskeyControllerErrorCode} values to extension `messages.json` keys.
  */
-export const PASSKEY_ERROR_CODE_TO_I18N_KEY: Record<PasskeyCode, string> = {
+const PASSKEY_ERROR_CODE_TO_I18N_KEY: Record<PasskeyCode, string> = {
   [PasskeyControllerErrorCode.NotEnrolled]: 'passkeyErrorNotEnrolled',
   [PasskeyControllerErrorCode.NoRegistrationCeremony]:
     'passkeyErrorNoRegistrationCeremony',
