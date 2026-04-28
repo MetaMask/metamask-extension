@@ -519,6 +519,31 @@ describe('AutoCloseSection', () => {
       expect(onStopLossPriceChange).toHaveBeenCalledWith('44550');
     });
 
+    it('normalizes leading-zero SL RoE% input before defaulting to negative', () => {
+      // -11% RoE at leverage=10: priceChange = -11/(10*100) = -1.1% -> 45000 * 0.989 = 44505
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={45000}
+          leverage={10}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '011' },
+      });
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('44505');
+    });
+
     it('preserves an explicit positive SL RoE% input', () => {
       // +10% RoE at leverage=10: priceChange = 1% -> 45000 * 1.01 = 45450
       const onStopLossPriceChange = jest.fn();

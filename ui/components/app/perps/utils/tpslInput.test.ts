@@ -25,26 +25,32 @@ describe('tpslInput', () => {
   });
 
   describe('applyDefaultStopLossSign', () => {
-    it('prefixes an unsigned non-zero value when the field was empty', () => {
-      expect(applyDefaultStopLossSign('10', '')).toBe('-10');
-      expect(applyDefaultStopLossSign('0.5', '')).toBe('-0.5');
+    it('prefixes an unsigned positive value', () => {
+      expect(applyDefaultStopLossSign('10')).toBe('-10');
+      expect(applyDefaultStopLossSign('0.5')).toBe('-0.5');
     });
 
     it('preserves explicit signed values', () => {
-      expect(applyDefaultStopLossSign('-10', '')).toBe('-10');
-      expect(applyDefaultStopLossSign('+10', '')).toBe('+10');
+      expect(applyDefaultStopLossSign('-10')).toBe('-10');
+      expect(applyDefaultStopLossSign('+10')).toBe('+10');
+      expect(applyDefaultStopLossSign('-.')).toBe('-.');
+      expect(applyDefaultStopLossSign('+.')).toBe('+.');
     });
 
     it('does not prefix zero or intermediate decimal states', () => {
-      expect(applyDefaultStopLossSign('0', '')).toBe('0');
-      expect(applyDefaultStopLossSign('0.', '')).toBe('0.');
-      expect(applyDefaultStopLossSign('.', '')).toBe('.');
-      expect(applyDefaultStopLossSign('', '')).toBe('');
+      expect(applyDefaultStopLossSign('0')).toBe('0');
+      expect(applyDefaultStopLossSign('0.')).toBe('0.');
+      expect(applyDefaultStopLossSign('.')).toBe('.');
+      expect(applyDefaultStopLossSign('')).toBe('');
     });
 
-    it('does not coerce edits after input has content', () => {
-      expect(applyDefaultStopLossSign('10', '-')).toBe('10');
-      expect(applyDefaultStopLossSign('10', '-10')).toBe('10');
+    it('normalizes leading zeros before applying the default sign', () => {
+      expect(applyDefaultStopLossSign('00')).toBe('0');
+      expect(applyDefaultStopLossSign('01')).toBe('-1');
+      expect(applyDefaultStopLossSign('011')).toBe('-11');
+      expect(applyDefaultStopLossSign('.1')).toBe('-0.1');
+      expect(applyDefaultStopLossSign('+011')).toBe('+11');
+      expect(applyDefaultStopLossSign('-011')).toBe('-11');
     });
   });
 });

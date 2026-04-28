@@ -373,7 +373,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const handleSlPercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = applyDefaultStopLossSign(event.target.value, rawSlPercent);
+      const value = applyDefaultStopLossSign(event.target.value);
       if (value === '' || isSignedDecimalInput(value)) {
         setRawSlPercent(value);
         setSlPresetPercent(null);
@@ -386,7 +386,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
         }
       }
     },
-    [percentToPriceForEdit, rawSlPercent],
+    [percentToPriceForEdit],
   );
 
   const handleSlPercentFocus = useCallback(() => {

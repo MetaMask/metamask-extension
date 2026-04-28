@@ -578,6 +578,24 @@ describe('UpdateTPSLModalContent', () => {
       expect(blurredValue).toMatch(/^-?\d+(\.\d+)?$/u);
     });
 
+    it('normalizes leading-zero SL percent input before defaulting to negative', () => {
+      // SOL: entry=95, leverage=10. 011 normalizes to -11% signed RoE
+      // -> 95*(1-11/1000) = 93.955
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const slPercentInput = screen.getAllByPlaceholderText('0')[1];
+      fireEvent.focus(slPercentInput);
+      fireEvent.change(slPercentInput, { target: { value: '011' } });
+
+      expect((slPercentInput as HTMLInputElement).value).toBe('-11');
+
+      const slPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
+      const numValue = parseFloat(slPriceInput.value.replace(/,/gu, ''));
+      expect(numValue).toBeCloseTo(93.955, 0);
+    });
+
     it('rejects non-numeric characters in TP percent input', () => {
       renderTpslModalContent({ position: positionWithoutTPSL });
 

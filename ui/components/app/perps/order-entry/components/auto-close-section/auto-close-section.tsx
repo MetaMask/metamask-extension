@@ -257,7 +257,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   // Handle SL percentage input change
   const handleSlPercentChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = applyDefaultStopLossSign(event.target.value, rawSlPercent);
+      const value = applyDefaultStopLossSign(event.target.value);
       if (value === '' || isSignedDecimalInput(value)) {
         setRawSlPercent(value);
         const numValue = parseFloat(value);
@@ -269,7 +269,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
         }
       }
     },
-    [onStopLossPriceChange, percentToPrice, rawSlPercent],
+    [onStopLossPriceChange, percentToPrice],
   );
 
   const handleSlPercentFocus = useCallback(() => {

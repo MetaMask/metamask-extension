@@ -29,32 +29,54 @@ export const isSignedDecimalInput = (value: string): boolean => {
   return true;
 };
 
+const normalizeLeadingZeros = (value: string): string => {
+  const decimalIndex = value.indexOf('.');
+  const integerPart =
+    decimalIndex === -1 ? value : value.slice(0, decimalIndex);
+  const decimalPart = decimalIndex === -1 ? '' : value.slice(decimalIndex);
+
+  if (integerPart === '') {
+    return decimalPart ? `0${decimalPart}` : value;
+  }
+
+  if (/^0+$/u.test(integerPart)) {
+    return decimalPart ? `0${decimalPart}` : '0';
+  }
+
+  return `${integerPart.replace(/^0+/u, '')}${decimalPart}`;
+};
+
 /**
- * Defaults an empty stop-loss percentage field to negative RoE when the user
- * starts with an unsigned, non-zero value. This mirrors mobile's keypad
- * convenience without coercing later edits; positive SL RoE can be intentional
- * when a user is locking in profit on an existing position.
+ * Defaults unsigned stop-loss percentage values to negative RoE and mirrors
+ * mobile keypad leading-zero behavior. Positive SL RoE remains available only
+ * through an explicit "+" sign, which can be intentional when a user is locking
+ * in profit on an existing position.
  *
  * @param value - The next raw input value
- * @param previousValue - The previous controlled input value
  */
-export const applyDefaultStopLossSign = (
-  value: string,
-  previousValue: string,
-): string => {
-  if (
-    previousValue ||
-    value === '' ||
-    value.startsWith('-') ||
-    value.startsWith('+')
-  ) {
+export const applyDefaultStopLossSign = (value: string): string => {
+  if (value === '') {
     return value;
   }
 
-  const numericValue = Number.parseFloat(value);
+  const sign = value.startsWith('-') || value.startsWith('+') ? value[0] : '';
+  const unsignedValue = sign ? value.slice(1) : value;
+
+  if (unsignedValue === '' || unsignedValue === '.') {
+    return value;
+  }
+
+  const normalizedValue = normalizeLeadingZeros(unsignedValue);
+  const signedValue = sign ? `${sign}${normalizedValue}` : normalizedValue;
+
+  if (sign) {
+    return signedValue;
+  }
+
+  const numericValue = Number.parseFloat(normalizedValue);
   if (!Number.isFinite(numericValue) || numericValue <= 0) {
-    return value;
+    return normalizedValue;
   }
 
-  return `-${value}`;
+  return `-${normalizedValue}`;
 };
