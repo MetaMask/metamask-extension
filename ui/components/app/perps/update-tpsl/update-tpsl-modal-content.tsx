@@ -343,6 +343,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     setTpPresetPercent(null);
   }, []);
 
+  // Unsigned input is treated as the loss magnitude (negative RoE) so a long
+  // typing "5" yields a stop loss below entry, mirroring the preset semantics
+  // and matching mobile (`PerpsTPSLView` auto-prepends "-" for unsigned SL
+  // input). Explicit "+"/"-" still overrides for the rare profit-side SL on an
+  // already winning position called out in the original ticket.
   const handleSlPercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
@@ -353,7 +358,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
         if (value === '' || value === '-' || value === '+') {
           setEditingSlPrice('');
         } else if (!Number.isNaN(numValue)) {
-          const newPrice = percentToPriceForEdit(numValue);
+          const startsWithSign = value.startsWith('+') || value.startsWith('-');
+          const signedPercent = startsWithSign ? numValue : -Math.abs(numValue);
+          const newPrice = percentToPriceForEdit(signedPercent);
           setEditingSlPrice(newPrice);
         }
       }

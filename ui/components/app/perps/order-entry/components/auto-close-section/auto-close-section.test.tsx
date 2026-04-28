@@ -510,6 +510,81 @@ describe('AutoCloseSection', () => {
 
       expect(onStopLossPriceChange).toHaveBeenCalledWith('2970');
     });
+
+    it('treats unsigned SL % input as loss magnitude on a long position', () => {
+      // Regression for TAT-2947: typing "5" (no sign) in SL on a long should
+      // yield SL below entry (loss direction), not above. Auto-negation is
+      // applied so the unsigned input matches the SL preset semantics.
+      // -5% RoE at 10x from $45,000: SL = $45,000 * 0.995 = $44,775
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={45000}
+          leverage={10}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, { target: { value: '5' } });
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('44775');
+    });
+
+    it('treats unsigned SL % input as loss magnitude on a short position', () => {
+      // Short SL is loss when price goes UP. Unsigned "5" → -5% RoE → price above entry.
+      // -5% RoE on short at 10x from $45,000: SL = $45,000 * (1 - -(-5/1000)) = $45,225
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="short"
+          currentPrice={45000}
+          leverage={10}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, { target: { value: '5' } });
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('45225');
+    });
+
+    it('honors explicit "+" sign on SL % input to allow profit-side stop on a long', () => {
+      // Explicit "+" preserves profit-direction interpretation for the rare
+      // "lock in profit" SL on an already-winning position (covered by ticket).
+      // +5% RoE at 10x from $45,000: SL = $45,000 * 1.005 = $45,225 (above current).
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={45000}
+          leverage={10}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, { target: { value: '+5' } });
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('45225');
+    });
   });
 
   describe('percent input focus/blur behavior (no decimal insertion)', () => {

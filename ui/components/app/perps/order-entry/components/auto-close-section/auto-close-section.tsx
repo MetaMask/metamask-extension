@@ -247,6 +247,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   }, [onStopLossPriceChange, stopLossPrice]);
 
   // Handle SL percentage input change
+  // Unsigned input is treated as the loss magnitude (negative RoE) so a long
+  // typing "5" yields a stop loss below entry. Explicit "+"/"-" overrides the
+  // default for the rare case of a profit-side SL on an already winning position.
   const handleSlPercentChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
@@ -256,7 +259,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
         if (value === '' || value === '-' || value === '+') {
           onStopLossPriceChange('');
         } else if (!isNaN(numValue)) {
-          const newPrice = percentToPrice(numValue);
+          const startsWithSign = value.startsWith('+') || value.startsWith('-');
+          const signedPercent = startsWithSign ? numValue : -Math.abs(numValue);
+          const newPrice = percentToPrice(signedPercent);
           onStopLossPriceChange(newPrice);
         }
       }

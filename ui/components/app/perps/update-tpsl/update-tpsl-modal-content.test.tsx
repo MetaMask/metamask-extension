@@ -411,8 +411,27 @@ describe('UpdateTPSLModalContent', () => {
       expect(numValue).toBeCloseTo(2375, 0);
     });
 
-    it('updates SL price when a positive RoE% is typed (SL above entry)', () => {
-      // SOL: entry=95, leverage=10, +15% signed RoE -> 95 * (1 + 15/1000) = 95 * 1.015 = 96.425
+    it('updates SL price when an explicit positive RoE% is typed (profit-side SL above entry)', () => {
+      // SOL: entry=95, leverage=10. Explicit "+15" overrides the SL auto-negation
+      // and produces a profit-side SL above entry: 95 * (1 + 15/1000) = 96.425.
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const percentInputs = screen.getAllByPlaceholderText('0');
+      const slPercentInput = percentInputs[1];
+      fireEvent.focus(slPercentInput);
+      fireEvent.change(slPercentInput, { target: { value: '+15' } });
+
+      const slPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
+      const numValue = parseFloat(slPriceInput.value.replace(/,/gu, ''));
+      expect(numValue).toBeCloseTo(96.425, 0);
+    });
+
+    it('treats unsigned SL % input as loss magnitude on a long (TAT-2947)', () => {
+      // SOL: entry=95, leverage=10. Typing "15" (no sign) on a long should be
+      // interpreted as a loss (-15% RoE) — SL below entry, not above.
+      // 95 * (1 - 15/1000) = 95 * 0.985 = 93.575
       renderTpslModalContent({ position: positionWithoutTPSL });
 
       const percentInputs = screen.getAllByPlaceholderText('0');
@@ -424,7 +443,7 @@ describe('UpdateTPSLModalContent', () => {
         '0.00',
       )[1] as HTMLInputElement;
       const numValue = parseFloat(slPriceInput.value.replace(/,/gu, ''));
-      expect(numValue).toBeCloseTo(96.425, 0);
+      expect(numValue).toBeCloseTo(93.575, 0);
     });
 
     it('clears TP price when percent input is cleared', () => {
@@ -508,9 +527,9 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('shows raw input while SL percent is focused and formatted value after blur', () => {
-      // SOL: entry=95, leverage=10. Typing +10 (SL above entry for lock-in-profit scenario)
-      // -> price = 95*(1+10/1000) = 95.95 -> blur shows priceToPercent("95.95") for long
-      // -> (95.95-95)/95*10*100 = 10 -> "10" (positive, no sign)
+      // SOL: entry=95, leverage=10. Typing "10" (unsigned) is treated as a loss
+      // (-10% RoE) so the SL price drops below entry: 95*(1-10/1000) = 94.05.
+      // Blur recomputes priceToPercent("94.05") = (94.05-95)/95*10*100 = -10 → "-10".
       renderTpslModalContent({ position: positionWithoutTPSL });
 
       const slPercentInput = screen.getAllByPlaceholderText('0')[1];
@@ -522,8 +541,8 @@ describe('UpdateTPSLModalContent', () => {
       fireEvent.blur(slPercentInput);
 
       const blurredValue = (slPercentInput as HTMLInputElement).value;
-      // After blur, shows signed RoE: positive percent stays positive (no sign prefix)
-      expect(blurredValue).toMatch(/^-?\d+(\.\d+)?$/u);
+      // After blur, shows signed RoE with the loss-direction "-" prefix.
+      expect(blurredValue).toBe('-10');
     });
 
     it('rejects non-numeric characters in TP percent input', () => {
@@ -823,6 +842,25 @@ describe('UpdateTPSLModalContent', () => {
       });
 
       fireEvent.click(screen.getByText('-10%'));
+
+      const slInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
+      const numValue = parseFloat(slInput.value.replace(/,/gu, ''));
+      expect(numValue).toBeCloseTo(45300, 0);
+    });
+
+    it('treats unsigned SL % input as loss magnitude on a short (TAT-2947)', () => {
+      // BTC short: entry=45000, leverage=15. Typing "10" (no sign) on a short
+      // should be a loss → SL above entry: 45000 * (1 + 10/(15*100)) = 45300.
+      renderTpslModalContent({
+        position: shortPosition,
+        currentPrice: 45000,
+      });
+
+      const slPercentInput = screen.getAllByPlaceholderText('0')[1];
+      fireEvent.focus(slPercentInput);
+      fireEvent.change(slPercentInput, { target: { value: '10' } });
 
       const slInput = screen.getAllByPlaceholderText(
         '0.00',
