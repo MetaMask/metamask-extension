@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Agregar una red personalizada"
   },
-  "addAHardwareWallet": {
-    "message": "Agregar billetera física"
-  },
   "addANetwork": {
     "message": "Agregar una red"
   },
