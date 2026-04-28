@@ -66,7 +66,20 @@ describe('Bridge asset selectors', () => {
       const [accountGroup] = getAccountGroupsByAddress(state, [
         MOCK_EVM_ACCOUNT.address,
       ]);
-      const assetsWithBalance = getBridgeSortedAssets(state, accountGroup.id);
+      const assetsWithBalance = getBridgeSortedAssets(
+        state,
+        accountGroup.id,
+        new Set(
+          [
+            CHAIN_IDS.MAINNET,
+            CHAIN_IDS.OPTIMISM,
+            CHAIN_IDS.POLYGON,
+            MultichainNetworks.SOLANA,
+            MultichainNetworks.BITCOIN,
+            MultichainNetworks.TRON,
+          ].map(formatChainIdToCaip),
+        ),
+      );
       const balanceByAssetId = getBridgeAssetsByAssetId(state, accountGroup.id);
       const balanceByChainId = getBridgeBalancesByChainId(
         state,
@@ -76,31 +89,44 @@ describe('Bridge asset selectors', () => {
       expect(assetsWithBalance).toMatchInlineSnapshot(`
         [
           {
+            "accountType": undefined,
             "assetId": "eip155:10/erc20:0xc00e94Cb662C3520282E6f5717214004A7f26888",
             "balance": "5.030001",
             "chainId": "eip155:10",
             "decimals": 6,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0xc00e94cb662c3520282e6f5717214004a7f26888.png",
+            "isVerified": undefined,
             "name": "Compound",
             "rwaData": undefined,
+            "securityData": undefined,
             "symbol": "COMP",
             "tokenFiatAmount": 15236.151529110364,
           },
           {
+            "accountType": undefined,
             "assetId": "eip155:10/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
             "balance": "9535.2030001",
             "chainId": "eip155:10",
             "decimals": 9,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+            "isVerified": undefined,
             "name": "Link",
             "rwaData": undefined,
+            "securityData": undefined,
             "symbol": "LINK",
             "tokenFiatAmount": 2888.265783055537,
           },
           {
+            "accountType": undefined,
             "assetId": "eip155:10/slip44:60",
             "balance": "1.0000125",
             "chainId": "eip155:10",
             "decimals": 18,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/slip44/60.png",
+            "isVerified": undefined,
             "name": "Ether",
+            "rwaData": undefined,
+            "securityData": undefined,
             "symbol": "ETH",
             "tokenFiatAmount": 2524.2443591635597,
           },
@@ -110,7 +136,11 @@ describe('Bridge asset selectors', () => {
             "balance": "1.530",
             "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
             "decimals": 18,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+            "isVerified": undefined,
             "name": "Solana",
+            "rwaData": undefined,
+            "securityData": undefined,
             "symbol": "SOL",
             "tokenFiatAmount": 210.8493,
           },
@@ -120,16 +150,25 @@ describe('Bridge asset selectors', () => {
             "balance": ".001",
             "chainId": "bip122:000000000019d6689c085ae165831e93",
             "decimals": 18,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/bip122/000000000019d6689c085ae165831e93/slip44/0.png",
+            "isVerified": undefined,
             "name": "Bitcoin",
+            "rwaData": undefined,
+            "securityData": undefined,
             "symbol": "BTC",
             "tokenFiatAmount": 91.238,
           },
           {
+            "accountType": undefined,
             "assetId": "eip155:1/slip44:60",
             "balance": "0.01",
             "chainId": "eip155:1",
             "decimals": 18,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+            "isVerified": undefined,
             "name": "Ether",
+            "rwaData": undefined,
+            "securityData": undefined,
             "symbol": "ETH",
             "tokenFiatAmount": 25.242128065034784,
           },
@@ -139,27 +178,39 @@ describe('Bridge asset selectors', () => {
             "balance": "2.043238",
             "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
             "decimals": 6,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
+            "isVerified": undefined,
             "name": "USDC",
+            "rwaData": undefined,
+            "securityData": undefined,
             "symbol": "USDC",
             "tokenFiatAmount": 2.04284978478,
           },
           {
+            "accountType": undefined,
             "assetId": "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
             "balance": "0.0000001848",
             "chainId": "eip155:1",
             "decimals": 10,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+            "isVerified": undefined,
             "name": "Uniswap",
             "rwaData": undefined,
+            "securityData": undefined,
             "symbol": "UNI",
             "tokenFiatAmount": 0.0010728914112762384,
           },
           {
+            "accountType": undefined,
             "assetId": "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
             "balance": "0.000000001",
             "chainId": "eip155:1",
             "decimals": 9,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+            "isVerified": undefined,
             "name": "Link",
             "rwaData": undefined,
+            "securityData": undefined,
             "symbol": "LINK",
             "tokenFiatAmount": 0.0000030290553678041743,
           },
@@ -296,7 +347,13 @@ describe('Bridge asset selectors', () => {
       ]);
       expect(accountGroup).toBeUndefined();
 
-      expect(getBridgeSortedAssets(state, accountGroup?.id)).toEqual([]);
+      expect(
+        getBridgeSortedAssets(
+          state,
+          accountGroup?.id,
+          new Set([formatChainIdToCaip(CHAIN_IDS.MAINNET)]),
+        ),
+      ).toEqual([]);
       expect(getBridgeAssetsByAssetId(state, accountGroup?.id)).toEqual({});
       expect(getBridgeBalancesByChainId(state, accountGroup?.id)).toEqual({});
     });

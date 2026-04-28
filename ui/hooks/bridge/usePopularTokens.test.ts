@@ -4,11 +4,12 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   createBridgeMockStore,
   MOCK_EVM_ACCOUNT,
-  MOCK_EXTERNAL_SOLANA_ADDRESS,
 } from '../../../test/data/bridge/mock-bridge-store';
+import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { usePopularTokens } from './usePopularTokens';
 
 jest.mock('../../pages/bridge/utils/tokens', () => ({
+  ...jest.requireActual('../../pages/bridge/utils/tokens'),
   fetchPopularTokens: jest.fn().mockResolvedValue([]),
 }));
 
@@ -39,7 +40,7 @@ describe('usePopularTokens', () => {
       () =>
         usePopularTokens({
           assetsToInclude: [],
-          accountAddress: MOCK_EXTERNAL_SOLANA_ADDRESS,
+          accountGroupId: undefined,
           chainIds: new Set([formatChainIdToCaip(CHAIN_IDS.MAINNET)]),
         }),
       mockStoreState,
@@ -67,11 +68,15 @@ describe('usePopularTokens', () => {
       },
     });
 
+    const accountGroupId = getAccountGroupsByAddress(mockStoreState, [
+      MOCK_EVM_ACCOUNT.address,
+    ])[0].id;
+
     const { result } = renderHookWithProvider(
       () =>
         usePopularTokens({
           assetsToInclude: [],
-          accountAddress: MOCK_EVM_ACCOUNT.address,
+          accountGroupId,
           chainIds: new Set([formatChainIdToCaip(CHAIN_IDS.MAINNET)]),
         }),
       mockStoreState,

@@ -17,6 +17,9 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import useBridging from './useBridging';
+import { setBackgroundConnection } from '../../store/background-connection';
+import { fetchPopularTokens } from '../../pages/bridge/utils/tokens';
+import * as usePopularTokensFetchUtils from './usePopularTokensFetch';
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -36,6 +39,8 @@ jest.mock('react-redux', () => ({
       mockDispatch(...args),
 }));
 
+let usePopularTokensFetchSpy: jest.SpyInstance;
+
 const resetInputFieldsSpy = jest.spyOn(bridgeActions, 'resetInputFields');
 
 const MOCK_METAMETRICS_ID = '0xtestMetaMetricsId';
@@ -52,6 +57,15 @@ describe('useBridging', () => {
         openTab: jest.fn(),
       },
     });
+  });
+
+  beforeEach(() => {
+    usePopularTokensFetchSpy = jest
+      .spyOn(usePopularTokensFetchUtils, 'usePopularTokensFetch')
+      .mockReturnValue({
+        tokenList: [],
+        isTokenListLoading: false,
+      });
   });
 
   describe('extensionConfig.support=true, chain=1', () => {
@@ -222,6 +236,17 @@ describe('useBridging', () => {
           },
         );
         expect(openTabSpy).not.toHaveBeenCalled();
+        const popularTokensArgs = usePopularTokensFetchSpy.mock.lastCall[0];
+        expect(popularTokensArgs.chainIds).toStrictEqual(
+          new Set([
+            'eip155:10',
+            'eip155:1',
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            'bip122:000000000019d6689c085ae165831e93',
+            'eip155:56',
+          ]),
+        );
+        expect(popularTokensArgs.assetsToInclude).toHaveLength(9);
       },
     );
 
@@ -445,6 +470,16 @@ describe('useBridging', () => {
           },
         });
         expect(openTabSpy).not.toHaveBeenCalled();
+        const popularTokensArgs = usePopularTokensFetchSpy.mock.lastCall[0];
+        expect(popularTokensArgs.chainIds).toStrictEqual(
+          new Set([
+            'eip155:10',
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            'bip122:000000000019d6689c085ae165831e93',
+            'eip155:56',
+          ]),
+        );
+        expect(popularTokensArgs.assetsToInclude).toHaveLength(6);
       },
     );
   });

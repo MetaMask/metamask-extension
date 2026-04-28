@@ -570,7 +570,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/hooks/bridge/usePopularTokens.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 16,
+      "React: Act warnings (component updates not wrapped)": 14,
       "Reselect: Input stability warnings": 1
     },
     "ui/hooks/bridge/useTokenSearchResults.test.ts": {

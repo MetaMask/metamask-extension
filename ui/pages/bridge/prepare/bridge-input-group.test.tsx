@@ -470,7 +470,7 @@ describe('BridgeInputGroup', () => {
         expect(networkPickerPopover).not.toBeVisible();
         expect(mockUsePopularTokens.mock.lastCall).toStrictEqual([
           expect.objectContaining({
-            accountAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            accountGroupId: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
             assetsToInclude: [
               {
                 accountType: 'solana:data-account',
@@ -505,7 +505,7 @@ describe('BridgeInputGroup', () => {
         ]);
         expect(mockUseTokenSearchResults.mock.lastCall).toStrictEqual([
           expect.objectContaining({
-            accountAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            accountGroupId: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
             assetsToInclude: [
               {
                 accountType: 'solana:data-account',

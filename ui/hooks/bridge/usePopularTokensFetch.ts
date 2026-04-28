@@ -30,9 +30,10 @@ export const usePopularTokensFetch = ({
     return await getBearerToken();
   }, []);
 
-  const minimalAssetsToInclude = useMemo(() => {
-    return assetsToInclude.map(toMinimalAsset);
-  }, [assetsToInclude]);
+  const minimalAssetsToInclude = useMemo(
+    () => assetsToInclude.map(toMinimalAsset),
+    [assetsToInclude],
+  );
 
   const { value: tokenList, pending: isTokenListLoading } =
     useAsyncResult(async () => {

@@ -359,7 +359,7 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
 exports[`BridgeInputGroup should render popular tokens 2`] = `
 [
   {
-    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "accountGroupId": "entropy:01K2FF18CTTXJYD34R78X4N1N1/0",
     "assetsToInclude": [
       {
         "accountType": undefined,
@@ -1058,7 +1058,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
 exports[`BridgeInputGroup should search for tokens 4`] = `
 [
   {
-    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "accountGroupId": "entropy:01K2FF18CTTXJYD34R78X4N1N1/0",
     "assetsToInclude": [
       {
         "accountType": undefined,
@@ -1514,7 +1514,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
 exports[`BridgeInputGroup should search for tokens with hasNextPage 3`] = `
 [
   {
-    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "accountGroupId": "entropy:01K2FF18CTTXJYD34R78X4N1N1/0",
     "assetsToInclude": [
       {
         "accountType": undefined,
