@@ -123,7 +123,7 @@ export const BridgeAssetPicker = ({
   const { popularTokensList, isLoading: isPopularTokensLoading } =
     usePopularTokens({
       assetsToInclude,
-      accountAddress,
+      accountGroupId: accountGroup?.id,
       chainIds: chainIdsSet,
     });
 
@@ -278,9 +278,9 @@ export const BridgeAssetPicker = ({
 
             {!isNetworkPickerOpen && (
               <BridgeAssetList
+                accountGroupId={accountGroup?.id}
                 assetsToInclude={assetsToInclude}
                 chainIds={chainIdsSet}
-                accountAddress={accountAddress}
                 searchQuery={searchQuery.trim()}
                 selectedAssetId={selectedAsset.assetId}
                 popularTokensList={popularTokensList}

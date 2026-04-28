@@ -27,7 +27,7 @@ export const BridgeAssetList = ({
   Pick<React.ComponentProps<typeof BridgeAsset>, 'isDestination'> &
   Pick<
     Parameters<typeof useTokenSearchResults>[0],
-    'searchQuery' | 'accountAddress' | 'chainIds'
+    'searchQuery' | 'accountGroupId' | 'chainIds'
   >) => {
   const t = useI18nContext();
   const scrollContainerRef = useRef<HTMLDivElement>(null);

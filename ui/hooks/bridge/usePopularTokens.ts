@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { type CaipChainId } from '@metamask/utils';
-import { BridgeClientId } from '@metamask/bridge-controller';
+import { type AccountGroupId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getBearerToken } from '../../store/actions';
@@ -21,23 +21,20 @@ import { useAsyncResult } from '../useAsync';
  *
  * @param params
  * @param params.chainIds - enabled src/dest chainIds to return tokens for
- * @param params.accountAddress - the account address used for balances
+ * @param params.accountGroupId - the account group id used for balances
  * @param params.assetsToInclude - the assets to show at the top of the list
  */
 export const usePopularTokens = ({
   assetsToInclude,
-  accountAddress,
+  accountGroupId,
   chainIds,
 }: {
   chainIds: Set<CaipChainId>;
   assetsToInclude: BridgeToken[];
-  accountAddress: string;
+  accountGroupId?: AccountGroupId;
 }) => {
-  const [accountGroup] = useSelector((state: BridgeAppState) =>
-    getAccountGroupsByAddress(state, [accountAddress]),
-  );
   const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
-    getBridgeAssetsByAssetId(state, accountGroup?.id),
+    getBridgeAssetsByAssetId(state, accountGroupId),
   );
 
   const abortControllerRef = useRef<AbortController | null>(null);

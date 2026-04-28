@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { type CaipChainId } from '@metamask/utils';
 import { BridgeClientId } from '@metamask/bridge-controller';
+import { type AccountGroupId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
@@ -18,26 +19,23 @@ import { useAsyncResult } from '../useAsync';
  *
  * @param params
  * @param params.chainIds - enabled src/dest chainIds to return tokens for
- * @param params.accountAddress - the account address used for balances
+ * @param params.accountGroupId - the account group id used for balances
  * @param params.searchQuery - the search query
  * @param params.assetsToInclude - the assets to show at the top of the search results
  */
 export const useTokenSearchResults = ({
   searchQuery,
-  accountAddress,
+  accountGroupId,
   chainIds,
   assetsToInclude,
 }: {
   chainIds: Set<CaipChainId>;
   searchQuery: string;
-  accountAddress: string;
+  accountGroupId?: AccountGroupId;
   assetsToInclude: BridgeToken[];
 }) => {
-  const [accountGroup] = useSelector((state: BridgeAppState) =>
-    getAccountGroupsByAddress(state, [accountAddress]),
-  );
   const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
-    getBridgeAssetsByAssetId(state, accountGroup?.id),
+    getBridgeAssetsByAssetId(state, accountGroupId),
   );
 
   const abortControllerRef = useRef<AbortController>(new AbortController());
