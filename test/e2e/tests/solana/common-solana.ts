@@ -97,9 +97,6 @@ export enum SendFlowPlaceHolders {
   LOADING = 'Preparing transaction',
 }
 
-const SECURITY_ALERT_BULK_SCAN_URL =
-  'https://security-alerts.api.cx.metamask.io/token/scan-bulk';
-
 export const SIMPLEHASH_URL = 'https://api.simplehash.com';
 
 export const SOLANA_DEVNET_URL = 'https://solana-devnet.infura.io/v3/';
