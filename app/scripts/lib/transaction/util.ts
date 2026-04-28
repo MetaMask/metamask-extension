@@ -107,18 +107,17 @@ export async function addDappTransaction(
   const { dappRequest, requestContext } = request;
   const { id, method } = dappRequest;
   const actionId = String(id);
-  const {
-    frameId,
-    mainFrameOrigin,
-    origin: frameOrigin,
-  } = dappRequest as JsonRpcRequest & {
-    frameId?: number;
-    origin?: string;
-    mainFrameOrigin?: string;
-  };
+  const { frameId: requestFrameId, mainFrameOrigin: requestMainFrameOrigin } =
+    dappRequest as JsonRpcRequest & {
+      frameId?: number;
+      mainFrameOrigin?: string;
+    };
 
   // TODO: Find a home for and define the appropriate MiddlewareContext type
   const origin = requestContext.assertGet('origin') as string;
+  const frameId = requestContext.get('frameId') ?? requestFrameId;
+  const mainFrameOrigin =
+    requestContext.get('mainFrameOrigin') ?? requestMainFrameOrigin;
   const securityAlertResponse = requestContext.get('securityAlertResponse') as
     | SecurityAlertResponse
     | undefined;
@@ -147,7 +146,7 @@ export async function addDappTransaction(
   setDappRequestFrameContext({
     requestId: actionId,
     frameId,
-    frameOrigin,
+    frameOrigin: origin,
     mainFrameOrigin,
   });
 
@@ -159,7 +158,7 @@ export async function addDappTransaction(
     transactionController: request.transactionController,
     transactionMeta,
     frameId,
-    frameOrigin,
+    frameOrigin: origin,
     mainFrameOrigin,
   });
 

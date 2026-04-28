@@ -11,7 +11,12 @@ export function setDappRequestFrameContext({
   frameId,
   frameOrigin,
   mainFrameOrigin,
-}: DappRequestFrameContext & { requestId: string }) {
+}: {
+  requestId: string;
+  frameId: unknown;
+  frameOrigin: unknown;
+  mainFrameOrigin: unknown;
+}) {
   if (
     typeof frameId !== 'number' &&
     typeof frameOrigin !== 'string' &&

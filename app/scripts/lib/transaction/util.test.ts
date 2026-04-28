@@ -135,10 +135,11 @@ const makeDappRequest = () => ({
   params: [],
 });
 
-const makeRequestContext = () =>
+const makeRequestContext = (overrides: Record<PropertyKey, unknown> = {}) =>
   new MiddlewareContext<Record<PropertyKey, unknown>>({
     origin: TRANSACTION_OPTIONS_MOCK.origin as string,
     securityAlertResponse: { test: 'value' },
+    ...overrides,
   });
 
 const TRANSACTION_META_MOCK: TransactionMeta = {
@@ -770,16 +771,11 @@ describe('Transaction Utils', () => {
       });
 
       it('persists dapp request frame context on transaction metadata', async () => {
-        dappRequest.dappRequest = {
-          ...dappRequest.dappRequest,
+        dappRequest.requestContext = makeRequestContext({
           frameId: 1,
           origin: 'https://iframe.example',
           mainFrameOrigin: 'https://top-level.example',
-        } as typeof dappRequest.dappRequest & {
-          frameId: number;
-          origin: string;
-          mainFrameOrigin: string;
-        };
+        });
 
         await addDappTransaction(dappRequest);
 
@@ -795,16 +791,11 @@ describe('Transaction Utils', () => {
       });
 
       it('preserves frameId 0 for top-level dapp transactions', async () => {
-        dappRequest.dappRequest = {
-          ...dappRequest.dappRequest,
+        dappRequest.requestContext = makeRequestContext({
           frameId: 0,
           origin: TRANSACTION_OPTIONS_MOCK.origin,
           mainFrameOrigin: TRANSACTION_OPTIONS_MOCK.origin,
-        } as typeof dappRequest.dappRequest & {
-          frameId: number;
-          origin: string;
-          mainFrameOrigin: string;
-        };
+        });
 
         await addDappTransaction(dappRequest);
 
