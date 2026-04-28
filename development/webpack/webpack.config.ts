@@ -210,7 +210,7 @@ const plugins: WebpackPluginInstance[] = [
 // `inpage.js` is loaded into the page main world via the declarative
 // `content_scripts[].world: "MAIN"` entry in `app/manifest/v2/_base.json`
 // (Firefox 128+) and `app/manifest/v3/_base.json` (Chrome). See
-// https://github.com/MetaMask/metamask-extension/pull/42222 for context.
+// https://github.com/MetaMask/metamask-extension/pull/42227 for context.
 if (args.lavamoat) {
   const {
     lavamoatPlugin,
