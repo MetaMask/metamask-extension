@@ -75,37 +75,37 @@ The `mm` CLI is the primary interface.
 
 ### Lifecycle
 
-| Command                 | Description                                      |
-| ----------------------- | ------------------------------------------------ |
-| `mm launch`             | Launch MetaMask in headed Chrome                 |
-| `mm cleanup`            | Stop browser and services                        |
-| `mm cleanup --shutdown` | Stop browser, services, and the daemon           |
-| `mm status`             | Show current daemon and session status           |
+| Command                 | Description                            |
+| ----------------------- | -------------------------------------- |
+| `mm launch`             | Launch MetaMask in headed Chrome       |
+| `mm cleanup`            | Stop browser and services              |
+| `mm cleanup --shutdown` | Stop browser, services, and the daemon |
+| `mm status`             | Show current daemon and session status |
 
 ### Interaction
 
-| Command                      | Description                                                                  |
-| ---------------------------- | ---------------------------------------------------------------------------- |
-| `mm click <ref>`             | Click element by a11y ref, testId, or selector                               |
-| `mm type <ref> <text>`       | Type text into element                                                        |
-| `mm get-text <ref>`          | Read text content of element                                                  |
-| `mm describe-screen`         | Combined state + activeTab + testIds + a11y snapshot                         |
-| `mm screenshot [--name <n>]` | Take and save screenshot                                                     |
-| `mm wait-for <ref>`          | Wait for element to be visible                                               |
-| `mm wait-for-notification`   | Wait for sidepanel confirmation route, set as active                         |
-| `mm accessibility-snapshot`  | Get trimmed a11y tree with refs                                              |
-| `mm list-testids`            | List visible `data-testid` attributes                                        |
-| `mm clipboard <action>`      | Read from or write to browser clipboard                                      |
+| Command                      | Description                                          |
+| ---------------------------- | ---------------------------------------------------- |
+| `mm click <ref>`             | Click element by a11y ref, testId, or selector       |
+| `mm type <ref> <text>`       | Type text into element                               |
+| `mm get-text <ref>`          | Read text content of element                         |
+| `mm describe-screen`         | Combined state + activeTab + testIds + a11y snapshot |
+| `mm screenshot [--name <n>]` | Take and save screenshot                             |
+| `mm wait-for <ref>`          | Wait for element to be visible                       |
+| `mm wait-for-notification`   | Wait for sidepanel confirmation route, set as active |
+| `mm accessibility-snapshot`  | Get trimmed a11y tree with refs                      |
+| `mm list-testids`            | List visible `data-testid` attributes                |
+| `mm clipboard <action>`      | Read from or write to browser clipboard              |
 
 ### Navigation & Tabs
 
-| Command                   | Description                                                            |
-| ------------------------- | ---------------------------------------------------------------------- |
-| `mm navigate <url>`       | Navigate to a specific URL                                             |
-| `mm navigate-home`        | Navigate to the extension home                                         |
-| `mm navigate-settings`    | Navigate to the extension settings                                     |
-| `mm switch-to-tab <role>` | Switch active page to a different tab by role                          |
-| `mm close-tab <role>`     | Close a tab                                                            |
+| Command                   | Description                                   |
+| ------------------------- | --------------------------------------------- |
+| `mm navigate <url>`       | Navigate to a specific URL                    |
+| `mm navigate-home`        | Navigate to the extension home                |
+| `mm navigate-settings`    | Navigate to the extension settings            |
+| `mm switch-to-tab <role>` | Switch active page to a different tab by role |
+| `mm close-tab <role>`     | Close a tab                                   |
 
 ### Context
 
@@ -116,18 +116,18 @@ The `mm` CLI is the primary interface.
 
 ### State, Knowledge, and Seeding
 
-| Command                       | Description                                     |
-| ----------------------------- | ----------------------------------------------- |
-| `mm get-state`                | Get current extension state                     |
-| `mm knowledge-search <query>` | Search steps across sessions                    |
-| `mm knowledge-last`           | Get last N step records from this session       |
-| `mm knowledge-sessions`       | List recent sessions with metadata              |
-| `mm knowledge-summarize`      | Generate session recipe                         |
-| `mm run-steps <json>`         | Execute multiple tools in sequence              |
-| `mm seed-contract <type>`     | Deploy a test contract                          |
-| `mm seed-contracts`           | Deploy multiple test contracts                  |
-| `mm get-contract-address`     | Get deployed contract address                   |
-| `mm list-contracts`           | List all deployed contracts                     |
+| Command                       | Description                               |
+| ----------------------------- | ----------------------------------------- |
+| `mm get-state`                | Get current extension state               |
+| `mm knowledge-search <query>` | Search steps across sessions              |
+| `mm knowledge-last`           | Get last N step records from this session |
+| `mm knowledge-sessions`       | List recent sessions with metadata        |
+| `mm knowledge-summarize`      | Generate session recipe                   |
+| `mm run-steps <json>`         | Execute multiple tools in sequence        |
+| `mm seed-contract <type>`     | Deploy a test contract                    |
+| `mm seed-contracts`           | Deploy multiple test contracts            |
+| `mm get-contract-address`     | Get deployed contract address             |
+| `mm list-contracts`           | List all deployed contracts               |
 
 ## Launch Modes & Fixtures
 
@@ -170,10 +170,10 @@ mm launch --state custom --preset withMultipleAccounts
 
 Two execution contexts are supported:
 
-| Context | Description                                                                  |
-| ------- | ---------------------------------------------------------------------------- |
-| `e2e`   | Default. Local Anvil blockchain, pre-onboarded wallet, fixtures, seeding     |
-| `prod`  | Production-like mode. No fixtures, no local chain, limited capabilities      |
+| Context | Description                                                              |
+| ------- | ------------------------------------------------------------------------ |
+| `e2e`   | Default. Local Anvil blockchain, pre-onboarded wallet, fixtures, seeding |
+| `prod`  | Production-like mode. No fixtures, no local chain, limited capabilities  |
 
 Use:
 
@@ -456,14 +456,14 @@ mm knowledge-last
 
 ## Common Failures & Solutions
 
-| Symptom                       | Likely Cause                    | Solution                                            |
-| ----------------------------- | ------------------------------- | --------------------------------------------------- |
-| `MM_SESSION_ALREADY_RUNNING`  | Previous session not cleaned    | Call `mm cleanup` first                             |
-| `MM_NO_ACTIVE_SESSION`        | No browser running              | Call `mm launch` first                              |
-| Extension not loading         | Extension not built             | Run `yarn build:test:webpack` then retry `mm launch` |
+| Symptom                       | Likely Cause                    | Solution                                                                                                         |
+| ----------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `MM_SESSION_ALREADY_RUNNING`  | Previous session not cleaned    | Call `mm cleanup` first                                                                                          |
+| `MM_NO_ACTIVE_SESSION`        | No browser running              | Call `mm launch` first                                                                                           |
+| Extension not loading         | Extension not built             | Run `yarn build:test:webpack` then retry `mm launch`                                                             |
 | `EADDRINUSE` port error       | Orphan processes                | Check `.mm-server` for the active daemon/sub-service ports, then kill the specific orphaned process on that port |
-| `MM_TARGET_NOT_FOUND`         | Element not visible             | Use `mm describe-screen` to check state             |
-| `MM_WAIT_TIMEOUT`             | Slow environment or UI delay    | Increase timeout, inspect screenshot                |
-| `MM_CONTEXT_SWITCH_BLOCKED`   | Switching during active session | Call `mm cleanup` before `mm set-context`           |
-| Fixtures not available        | Running in prod context         | Switch to e2e: `mm set-context e2e`                 |
-| Stale a11yRefs after navigate | Refs not refreshed              | Call `mm describe-screen` to get fresh refs         |
+| `MM_TARGET_NOT_FOUND`         | Element not visible             | Use `mm describe-screen` to check state                                                                          |
+| `MM_WAIT_TIMEOUT`             | Slow environment or UI delay    | Increase timeout, inspect screenshot                                                                             |
+| `MM_CONTEXT_SWITCH_BLOCKED`   | Switching during active session | Call `mm cleanup` before `mm set-context`                                                                        |
+| Fixtures not available        | Running in prod context         | Switch to e2e: `mm set-context e2e`                                                                              |
+| Stale a11yRefs after navigate | Refs not refreshed              | Call `mm describe-screen` to get fresh refs                                                                      |
