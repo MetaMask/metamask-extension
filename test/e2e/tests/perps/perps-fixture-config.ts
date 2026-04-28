@@ -12,6 +12,19 @@ const PERPS_ENABLED_FLAG = {
 };
 
 /**
+ * Remote feature flags for eligible (non-geo-blocked) users.
+ * Explicitly clears the geo-block list so US-TX (the E2E geolocation mock) remains eligible.
+ */
+const PERPS_ELIGIBLE_FLAG = {
+  remoteFeatureFlags: {
+    ...PERPS_ENABLED_FLAG.remoteFeatureFlags,
+    perpsPerpTradingGeoBlockedCountriesV2: {
+      blockedRegions: [],
+    },
+  },
+};
+
+/**
  * Remote feature flags for geo-blocked (ineligible) users.
  * The geolocation mock returns 'US-TX', so blocking 'US' makes the user ineligible.
  * EligibilityService.checkEligibility checks geoLocation.startsWith(blockedRegion).
@@ -26,7 +39,7 @@ const PERPS_GEO_BLOCKED_FLAG = {
 };
 
 /**
- * Perps E2E fixture: Perps enabled, geo-block flags, and HTTP flags mock.
+ * Perps E2E fixture for geo-block tests: enables perps with geo-block flags and HTTP flag mock.
  * Sets `useExternalServices: false` so eligibility monitoring never starts:
  * without `GeolocationController:getGeolocation` on PerpsControllerMessenger,
  * `refreshEligibility()` would fail and perps-controller would set `isEligible`
@@ -40,7 +53,7 @@ const PERPS_GEO_BLOCKED_FLAG = {
  * @param title - The test title (e.g. this.test?.fullTitle()) for debugging.
  * @returns Partial withFixtures config to spread into withFixtures().
  */
-export function getPerpsConfig(title?: string) {
+export function getPerpsGeoBlockConfig(title?: string) {
   return {
     fixtures: new FixtureBuilderV2()
       .withPreferencesController({
@@ -84,9 +97,10 @@ export function getPerpsConfig(title?: string) {
  * withFixtures config for Perps E2E tests with an eligible (non-geo-blocked) user.
  * Use this for tests that exercise trading actions (Long/Short, Add Funds, Close All).
  *
- * Eligibility refresh uses geolocation (`US-TX` in mock-e2e) plus client-config flags; the
- * default E2E `/v1/flags` response clears `perpsPerpTradingGeoBlockedCountriesV2` so users stay
- * eligible (see mock-e2e.js).
+ * The geolocation mock returns 'US-TX'. The production default for
+ * `perpsPerpTradingGeoBlockedCountriesV2` blocks US, so this config overrides it
+ * to `blockedRegions: []` both in `manifestFlags` (UI) and via `testSpecificMock`
+ * (background RemoteFeatureFlagController).
  *
  * @param title - The test title for debugging.
  * @returns Partial withFixtures config to spread into withFixtures().
@@ -100,6 +114,23 @@ export function getPerpsConfigEligible(title?: string) {
       })
       .build(),
     title,
-    manifestFlags: PERPS_ENABLED_FLAG,
+    manifestFlags: PERPS_ELIGIBLE_FLAG,
+    testSpecificMock: async (server: Mockttp) => {
+      const eligibleFlags = [
+        ...getProductionRemoteFlagApiResponse().filter(
+          (entry) =>
+            !('perpsPerpTradingGeoBlockedCountriesV2' in (entry as object)),
+        ),
+        { perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] } },
+      ];
+      await server
+        .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+        .withQuery({ client: 'extension', distribution: 'main' })
+        .thenCallback(() => ({
+          ok: true,
+          statusCode: 200,
+          json: eligibleFlags,
+        }));
+    },
   };
 }

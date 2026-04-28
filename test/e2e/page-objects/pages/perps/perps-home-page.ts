@@ -13,12 +13,6 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-balance-dropdown-add-funds',
   };
 
-  private readonly geoBlockModal = { testId: 'perps-geo-block-modal' };
-
-  private readonly geoBlockModalDismiss = {
-    testId: 'perps-geo-block-modal-dismiss',
-  };
-
   private readonly balanceDropdownBalanceRow = {
     testId: 'perps-balance-dropdown-balance',
   };
@@ -27,12 +21,14 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-balance-dropdown-withdraw',
   };
 
-  private readonly perpsBalanceDropdown = {
-    testId: 'perps-balance-dropdown',
+  private readonly geoBlockModal = { testId: 'perps-geo-block-modal' };
+
+  private readonly geoBlockModalDismiss = {
+    testId: 'perps-geo-block-modal-dismiss',
   };
 
-  private readonly perpsView = {
-    testId: 'perps-view',
+  private readonly perpsBalanceDropdown = {
+    testId: 'perps-balance-dropdown',
   };
 
   private readonly perpsExploreMarketsRow = {
@@ -57,6 +53,10 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   private readonly perpsTutorialModal = { testId: 'perps-tutorial-modal' };
 
+  private readonly perpsView = {
+    testId: 'perps-view',
+  };
+
   private readonly positionCardsSelector = '[data-testid^="position-card-"]';
 
   /**
@@ -66,7 +66,7 @@ export class PerpsHomePage extends PerpsPositionsBase {
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors(
       [this.perpsView, this.perpsBalanceDropdown],
-      { timeout: 60000 },
+      { timeout: 20000 },
     );
   }
 
@@ -131,7 +131,7 @@ export class PerpsHomePage extends PerpsPositionsBase {
    */
   async navigateToPerpsHome(): Promise<void> {
     await this.driver.waitForSelector(this.accountOverviewPerpsTab, {
-      timeout: 60000,
+      timeout: 20000,
     });
     await this.driver.clickElement(this.accountOverviewPerpsTab);
     await this.checkPageIsLoaded();

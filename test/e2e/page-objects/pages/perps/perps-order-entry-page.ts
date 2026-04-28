@@ -62,9 +62,12 @@ export class PerpsOrderEntryPage {
    * @param [options.timeout] - Max wait in ms (default 60_000; Perps can be slow after in-app navigation).
    */
   async checkPageIsLoaded(options?: { timeout?: number }): Promise<void> {
-    await this.driver.waitForSelector(this.orderEntryPage, {
-      timeout: options?.timeout ?? 60000,
-    });
+    await this.driver.waitForMultipleSelectors(
+      [this.orderEntryPage, this.submitOrderButton],
+      {
+        timeout: options?.timeout ?? 20000,
+      },
+    );
   }
 
   /**
@@ -73,7 +76,7 @@ export class PerpsOrderEntryPage {
    * @param timeout - Max wait in ms (default 15_000).
    */
   async waitForPageClosed(timeout = 15000): Promise<void> {
-    await this.driver.waitForElementNotPresent(this.orderEntryPage, timeout);
+    await this.driver.assertElementNotPresent(this.orderEntryPage, { timeout });
   }
 
   /**
@@ -89,8 +92,6 @@ export class PerpsOrderEntryPage {
    */
   async enableAutoClose(): Promise<void> {
     await this.driver.waitForSelector(this.autoCloseToggleLabel);
-    const toggle = await this.driver.findElement(this.autoCloseToggleLabel);
-    await this.driver.scrollToElement(toggle);
     await this.driver.clickElement(this.autoCloseToggleLabel);
     await this.driver.waitForSelector(this.tpPriceInput);
   }
@@ -103,10 +104,6 @@ export class PerpsOrderEntryPage {
    */
   async fillAmount(amount: string): Promise<void> {
     await this.driver.waitForSelector(this.amountInputField);
-    const inputElement = await this.driver.findElement(
-      this.amountInputFieldInput,
-    );
-    await this.driver.scrollToElement(inputElement);
     await this.driver.fill(this.amountInputFieldInput, amount);
   }
 
@@ -179,15 +176,20 @@ export class PerpsOrderEntryPage {
   }
 
   /**
-   * Clicks the Submit button on the order entry page and waits for it to disappear.
+   * High-level helper: waits for the order entry page to load, fills the USD amount,
+   * submits the order, and waits for the page to close.
    *
-   * @param timeout - Optional wait timeout in ms (default 20000; navigation + background order can be slow).
+   * @param amount - USD amount string (e.g. '100', '200').
+   * @param timeout - Optional submit timeout in ms (default 20000).
    */
-  async submitOrder(timeout = 20000): Promise<void> {
+  async submitOrder(amount: string, timeout = 20000): Promise<void> {
+    await this.checkPageIsLoaded();
+    await this.fillAmount(amount);
     await this.driver.clickElementAndWaitToDisappear(
       this.submitOrderButton,
       timeout,
     );
+    await this.waitForPageClosed();
   }
 
   /**

@@ -24,7 +24,7 @@ import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-mark
 import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
 import { PerpsActivityPage } from '../../page-objects/pages/perps/perps-activity-page';
 import { PerpsOrderEntryPage } from '../../page-objects/pages/perps/perps-order-entry-page';
-import { assertPerpsActivityShowsCloseFill } from './assertPerpsActivityShowsCloseFill';
+import { assertPerpsActivityShowsCloseFill } from '../../page-objects/flows/perps-activity-close-fill.flow';
 import { getPerpsConfigEligible } from './helpers';
 import {
   WS_USER_WITH_BTC_SHORT_POSITION,
@@ -36,7 +36,7 @@ import {
 } from './mocks/websocketPositionMocks';
 
 describe('Perps Position Lifecycle', function (this: Suite) {
-  this.timeout(12000000);
+  this.timeout(10 * 60 * 1000);
 
   // ─── Open position flows ───────────────────────────────────────────────────
 
@@ -48,7 +48,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         perpsWebSocketSpecificMocks: WS_USER_WITH_FUNDED_ACCOUNT,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -66,11 +66,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await marketDetailPage.clickLong();
 
         const orderEntryPage = new PerpsOrderEntryPage(driver);
-        await orderEntryPage.checkPageIsLoaded();
-        await orderEntryPage.fillAmount('100');
-        await orderEntryPage.submitOrder();
-
-        await orderEntryPage.waitForPageClosed();
+        await orderEntryPage.submitOrder('100');
 
         // Simulate the HyperLiquid WS subscription push that arrives after order fill
         const perpsServer = WebSocketRegistry.getServer(
@@ -92,11 +88,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await marketDetailPage.checkPositionCtaButtonsVisible();
 
         // ─── Close the position ─────────────────────────────────────────
-        await marketDetailPage.clickClose();
-
-        await marketDetailPage.waitForClosePositionModal();
-        await marketDetailPage.waitForCloseSummaryRows();
-        await marketDetailPage.submitClosePosition();
+        await marketDetailPage.closePosition();
 
         // Simulate the HyperLiquid WS push with zero positions after close fill
         pushPositionClosed(perpsServer);
@@ -106,8 +98,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
 
         await assertPerpsActivityShowsCloseFill({
           driver,
-          perpsHomePage,
-          marketDetailPage,
           pushUserFills: () =>
             pushUserFillsClosePositionSnapshot(perpsServer, {
               coin: 'AVAX',
@@ -133,7 +123,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         perpsWebSocketSpecificMocks: WS_USER_WITH_FUNDED_ACCOUNT,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -150,11 +140,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await marketDetailPage.clickShort();
 
         const orderEntryPage = new PerpsOrderEntryPage(driver);
-        await orderEntryPage.checkPageIsLoaded();
-        await orderEntryPage.fillAmount('100');
-        await orderEntryPage.submitOrder();
-
-        await orderEntryPage.waitForPageClosed();
+        await orderEntryPage.submitOrder('100');
 
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
@@ -174,11 +160,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await marketDetailPage.checkPositionCtaButtonsVisible();
 
         // ─── Close the position ─────────────────────────────────────────
-        await marketDetailPage.clickClose();
-
-        await marketDetailPage.waitForClosePositionModal();
-        await marketDetailPage.waitForCloseSummaryRows();
-        await marketDetailPage.submitClosePosition();
+        await marketDetailPage.closePosition();
 
         pushPositionClosed(perpsServer);
 
@@ -186,8 +168,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
 
         await assertPerpsActivityShowsCloseFill({
           driver,
-          perpsHomePage,
-          marketDetailPage,
           pushUserFills: () =>
             pushUserFillsClosePositionSnapshot(perpsServer, {
               coin: 'AVAX',
@@ -215,7 +195,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -228,12 +208,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
 
-        await marketDetailPage.clickClose();
-        await marketDetailPage.waitForClosePositionModal();
-        await marketDetailPage.waitForCloseSummaryRows();
-
-        await marketDetailPage.setClosePercent(50);
-        await marketDetailPage.submitClosePosition();
+        await marketDetailPage.closePosition(50);
 
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
@@ -255,8 +230,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
 
         await assertPerpsActivityShowsCloseFill({
           driver,
-          perpsHomePage,
-          marketDetailPage,
           pushUserFills: () =>
             pushUserFillsClosePositionSnapshot(perpsServer, {
               coin: 'ETH',
@@ -288,7 +261,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -304,11 +277,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await marketDetailPage.clickModify();
         await marketDetailPage.clickModifyMenuReduceExposure();
 
-        await marketDetailPage.waitForClosePositionModal();
-        await marketDetailPage.waitForCloseSummaryRows();
-
-        await marketDetailPage.setClosePercent(10);
-        await marketDetailPage.submitClosePosition();
+        await marketDetailPage.confirmCloseModal(10);
 
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
@@ -330,8 +299,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
 
         await assertPerpsActivityShowsCloseFill({
           driver,
-          perpsHomePage,
-          marketDetailPage,
           pushUserFills: () =>
             pushUserFillsClosePositionSnapshot(perpsServer, {
               coin: 'ETH',
@@ -364,7 +331,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         ignoredConsoleErrors: ['Value is null'],
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -380,11 +347,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await marketDetailPage.clickModifyMenuAddExposure();
 
         const orderEntryPage = new PerpsOrderEntryPage(driver);
-        await orderEntryPage.checkPageIsLoaded();
-        await orderEntryPage.fillAmount('200');
-        await orderEntryPage.submitOrder();
-
-        await orderEntryPage.waitForPageClosed();
+        await orderEntryPage.submitOrder('200');
 
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
@@ -423,7 +386,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -479,7 +442,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -517,7 +480,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         perpsWebSocketSpecificMocks: WS_USER_WITH_BTC_SHORT_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -576,7 +539,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         ignoredConsoleErrors: ['Value is null'],
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -630,7 +593,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         ignoredConsoleErrors: ['Value is null'],
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -685,7 +648,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -704,7 +667,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();

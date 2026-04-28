@@ -19,7 +19,7 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
-import { assertPerpsActivityShowsCloseFill } from './assertPerpsActivityShowsCloseFill';
+import { assertPerpsActivityShowsCloseFill } from '../../page-objects/flows/perps-activity-close-fill.flow';
 import { getPerpsConfigEligible } from './helpers';
 import {
   WS_USER_WITH_ETH_LONG_POSITION,
@@ -37,7 +37,7 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
         perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -48,13 +48,8 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
-        await marketDetailPage.waitForAutoCloseRow();
 
-        await marketDetailPage.clickAutoCloseRow();
-        await marketDetailPage.waitForUpdateTpslModal();
-        await marketDetailPage.fillTpPriceInTpslModal('3500.00');
-        await marketDetailPage.submitTpslUpdate();
-        await marketDetailPage.waitForUpdateTpslModalClosed();
+        await marketDetailPage.setTakeProfit('3500.00');
 
         await marketDetailPage.checkAutoCloseRowContains('3,500');
 
@@ -71,8 +66,6 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
 
         await assertPerpsActivityShowsCloseFill({
           driver,
-          perpsHomePage,
-          marketDetailPage,
           pushUserFills: () =>
             pushUserFillsClosePositionSnapshot(perpsServer, {
               coin: 'ETH',
@@ -97,7 +90,7 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
         perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -108,13 +101,8 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
-        await marketDetailPage.waitForAutoCloseRow();
 
-        await marketDetailPage.clickAutoCloseRow();
-        await marketDetailPage.waitForUpdateTpslModal();
-        await marketDetailPage.fillSlPriceInTpslModal('2400.00');
-        await marketDetailPage.submitTpslUpdate();
-        await marketDetailPage.waitForUpdateTpslModalClosed();
+        await marketDetailPage.setStopLoss('2400.00');
 
         await marketDetailPage.checkAutoCloseRowContains('2,400');
 
@@ -130,8 +118,6 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
 
         await assertPerpsActivityShowsCloseFill({
           driver,
-          perpsHomePage,
-          marketDetailPage,
           pushUserFills: () =>
             pushUserFillsClosePositionSnapshot(perpsServer, {
               coin: 'ETH',

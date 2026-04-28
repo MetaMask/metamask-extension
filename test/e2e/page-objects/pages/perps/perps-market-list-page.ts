@@ -16,9 +16,9 @@ export class PerpsMarketListPage {
 
   private readonly filterSortRow = { testId: 'market-list-filter-sort-row' };
 
-  private readonly marketListView = { testId: 'market-list-view' };
-
   private readonly headerBackButton = { testId: 'back-button' };
+
+  private readonly marketListView = { testId: 'market-list-view' };
 
   /** CSS selector for the search input; driver.fill() expects a string locator. */
   private readonly searchInput = '[data-testid="search-input"]';

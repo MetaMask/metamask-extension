@@ -9,36 +9,6 @@ import { Driver } from '../../../webdriver/driver';
 export class PerpsMarketDetailPage {
   private readonly driver: Driver;
 
-  private readonly addFundsCtaButton = { testId: 'perps-add-funds-cta-button' };
-
-  private readonly amountInputField = { testId: 'amount-input-field' };
-
-  private readonly amountInputFieldInput =
-    '[data-testid="amount-input-field"] input';
-
-  private readonly autoCloseRow = { testId: 'perps-auto-close-row' };
-
-  private readonly closeCtaButton = { testId: 'perps-close-cta-button' };
-
-  /**
-   * Perps toast (`dataTestId` default `perps-toast` → `perps-toast-banner-base`).
-   * Dismissing avoids `ElementClickInterceptedError` on CTAs in Firefox when the
-   * banner overlays the action row.
-   *
-   * @see ui/components/multichain/toast/toast.tsx
-   * @see ui/components/app/perps/perps-toast/perps-toast-provider.tsx
-   */
-  private readonly perpsToastCloseButton =
-    '[data-testid="perps-toast-banner-base"] .mm-banner-base__close-button';
-
-  private readonly closePositionModal = {
-    testId: 'perps-close-position-modal',
-  };
-
-  private readonly closePositionModalSubmit = {
-    testId: 'perps-close-position-modal-submit',
-  };
-
   /**
    * `CloseAmountSection` slider wrapper. Full `data-testid` is
    * `{closeAmountSliderPctTestIdPrefix}{0-100}`.
@@ -50,6 +20,20 @@ export class PerpsMarketDetailPage {
 
   private static readonly perpsClosePositionModalTestId =
     'perps-close-position-modal';
+
+  private readonly addFundsCtaButton = { testId: 'perps-add-funds-cta-button' };
+
+  private readonly addMarginAmountInput =
+    '[data-testid="perps-add-margin-modal"] [data-testid="perps-edit-margin-amount-input"]';
+
+  private readonly addMarginModal = { testId: 'perps-add-margin-modal' };
+
+  private readonly amountInputField = { testId: 'amount-input-field' };
+
+  private readonly amountInputFieldInput =
+    '[data-testid="amount-input-field"] input';
+
+  private readonly autoCloseRow = { testId: 'perps-auto-close-row' };
 
   /**
    * Close-amount slider wrapper in the open close-position modal only (avoids
@@ -63,11 +47,34 @@ export class PerpsMarketDetailPage {
    */
   private readonly closeAmountSliderRoleInCloseModal = `${this.closeAmountSliderInCloseModal} [role="slider"]`;
 
+  private readonly closeCtaButton = { testId: 'perps-close-cta-button' };
+
+  private readonly closePositionModal = {
+    testId: 'perps-close-position-modal',
+  };
+
+  private readonly closePositionModalSubmit = {
+    testId: 'perps-close-position-modal-submit',
+  };
+
+  private readonly closeSummaryFeesValue = {
+    testId: 'perps-close-summary-fees-value',
+  };
+
+  private readonly closeSummaryReceiveValue = {
+    testId: 'perps-close-summary-receive-value',
+  };
+
+  private readonly decreaseMarginAmountInput =
+    '[data-testid="perps-decrease-margin-modal"] [data-testid="perps-edit-margin-amount-input"]';
+
   private readonly decreaseMarginModal = {
     testId: 'perps-decrease-margin-modal',
   };
 
-  private readonly addMarginModal = { testId: 'perps-add-margin-modal' };
+  private readonly editMarginAvailableValue = {
+    testId: 'perps-edit-margin-available-value',
+  };
 
   private readonly editMarginModalSave = {
     testId: 'perps-edit-margin-modal-save',
@@ -113,6 +120,17 @@ export class PerpsMarketDetailPage {
 
   private readonly orderEntry = { testId: 'order-entry' };
 
+  /**
+   * Perps toast (`dataTestId` default `perps-toast` → `perps-toast-banner-base`).
+   * Dismissing avoids `ElementClickInterceptedError` on CTAs in Firefox when the
+   * banner overlays the action row.
+   *
+   * @see ui/components/multichain/toast/toast.tsx
+   * @see ui/components/app/perps/perps-toast/perps-toast-provider.tsx
+   */
+  private readonly perpsToastCloseButton =
+    '[data-testid="perps-toast-banner-base"] .mm-banner-base__close-button';
+
   private readonly positionCtaButtons = {
     testId: 'perps-position-cta-buttons',
   };
@@ -121,8 +139,20 @@ export class PerpsMarketDetailPage {
     testId: 'perps-position-leverage',
   };
 
+  private readonly positionLiquidationValue = {
+    testId: 'perps-position-liquidation-value',
+  };
+
   private readonly positionSizeValue = {
     testId: 'perps-position-size-value',
+  };
+
+  private readonly reverseEstSizeValue = {
+    testId: 'perps-reverse-est-size-value',
+  };
+
+  private readonly reverseFeeValue = {
+    testId: 'perps-reverse-fee-value',
   };
 
   private readonly reversePositionModal = {
@@ -141,24 +171,28 @@ export class PerpsMarketDetailPage {
 
   private readonly submitOrderButton = { testId: 'submit-order-button' };
 
-  private readonly tradeCtaButtons = { testId: 'perps-trade-cta-buttons' };
-
-  private readonly updateTpslModal = { testId: 'perps-update-tpsl-modal' };
-
-  private readonly updateTpslModalSubmit = {
-    testId: 'perps-update-tpsl-modal-submit',
+  private readonly tpslEstimatedTpPnlRow = {
+    testId: 'perps-update-tpsl-estimated-tp-pnl-row',
   };
 
   /**
    * Update TP/SL modal does not set data-testid on TP/SL TextFields; inputs appear in
    * order: TP price, TP %, SL price, SL % (see update-tpsl-modal-content.tsx).
    */
+  private readonly tpslModalSlPriceInputLocator = {
+    xpath: `(//*[@data-testid="perps-update-tpsl-modal"]//input[contains(@class,"mm-text-field__input")])[3]`,
+  };
+
   private readonly tpslModalTpPriceInputLocator = {
     xpath: `(//*[@data-testid="perps-update-tpsl-modal"]//input[contains(@class,"mm-text-field__input")])[1]`,
   };
 
-  private readonly tpslModalSlPriceInputLocator = {
-    xpath: `(//*[@data-testid="perps-update-tpsl-modal"]//input[contains(@class,"mm-text-field__input")])[3]`,
+  private readonly tradeCtaButtons = { testId: 'perps-trade-cta-buttons' };
+
+  private readonly updateTpslModal = { testId: 'perps-update-tpsl-modal' };
+
+  private readonly updateTpslModalSubmit = {
+    testId: 'perps-update-tpsl-modal-submit',
   };
 
   constructor(driver: Driver) {
@@ -207,7 +241,7 @@ export class PerpsMarketDetailPage {
    */
   async checkPositionSizeValue(expectedText: string): Promise<void> {
     await this.driver.waitForSelector({
-      testId: 'perps-position-size-value',
+      ...this.positionSizeValue,
       text: expectedText,
     });
   }
@@ -219,7 +253,7 @@ export class PerpsMarketDetailPage {
    */
   async checkPositionLeverage(expectedText: string): Promise<void> {
     await this.driver.waitForSelector({
-      testId: 'perps-position-leverage',
+      ...this.positionLeverage,
       text: expectedText,
     });
   }
@@ -231,7 +265,7 @@ export class PerpsMarketDetailPage {
    */
   async checkPositionLiquidationContains(textFragment: string): Promise<void> {
     await this.driver.waitForSelector({
-      testId: 'perps-position-liquidation-value',
+      ...this.positionLiquidationValue,
       text: textFragment,
     });
   }
@@ -242,14 +276,15 @@ export class PerpsMarketDetailPage {
    */
   async dismissPerpsToastIfPresent(): Promise<void> {
     await this.driver.clickElementSafe(this.perpsToastCloseButton, 2000);
-    await this.driver.delay(150);
   }
 
   /**
    * Clicks the back control on the market detail header (navigates to wallet default route).
    */
   async clickBack(): Promise<void> {
-    await this.driver.clickElement(this.marketDetailBackButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.marketDetailBackButton,
+    );
   }
 
   /**
@@ -423,21 +458,20 @@ export class PerpsMarketDetailPage {
     mode: 'add' | 'remove',
     amountUsd: string,
   ): Promise<void> {
-    const modalTestId =
-      mode === 'add' ? 'perps-add-margin-modal' : 'perps-decrease-margin-modal';
-    await this.driver.waitForSelector({ testId: modalTestId });
-    const amountInputCss = `[data-testid="${modalTestId}"] [data-testid="perps-edit-margin-amount-input"]`;
-    await this.driver.waitForSelector(amountInputCss);
-    await this.driver.fill(amountInputCss, amountUsd);
+    const modal =
+      mode === 'add' ? this.addMarginModal : this.decreaseMarginModal;
+    const amountInput =
+      mode === 'add'
+        ? this.addMarginAmountInput
+        : this.decreaseMarginAmountInput;
+    await this.driver.waitForSelector(modal);
+    await this.driver.fill(amountInput, amountUsd);
   }
 
   /**
    * Saves the margin edit modal (applies the margin change).
    */
   async saveMarginEdit(): Promise<void> {
-    await this.driver.waitForSelector(this.editMarginModalSave);
-    const saveButton = await this.driver.findElement(this.editMarginModalSave);
-    await this.driver.scrollToElement(saveButton);
     await this.driver.clickElementAndWaitToDisappear(
       this.editMarginModalSave,
       20000,
@@ -481,21 +515,19 @@ export class PerpsMarketDetailPage {
     }
     await this.driver.waitForSelector(this.closeAmountSliderInCloseModal);
     const handleCss = this.closeAmountSliderRoleInCloseModal;
-    const focusHandle = await this.driver.findElement(handleCss);
-    await focusHandle.click();
-    await (await this.driver.findElement(handleCss)).sendKeys(Key.END);
+    await this.driver.clickElement(handleCss);
+    await this.driver.press(handleCss, Key.END);
     await this.driver.wait(
       async () => (await this.getCloseAmountSliderPercentInModal()) === 100,
       8000,
     );
     for (let k = 0; k < 100 - percent; k += 1) {
-      await (await this.driver.findElement(handleCss)).sendKeys(Key.ARROW_LEFT);
+      await this.driver.press(handleCss, Key.ARROW_LEFT);
     }
     await this.driver.wait(
       async () => (await this.getCloseAmountSliderPercentInModal()) === percent,
       10000,
     );
-    await this.driver.delay(200);
   }
 
   /**
@@ -528,21 +560,19 @@ export class PerpsMarketDetailPage {
    * @param timeout
    */
   async waitForUpdateTpslModalClosed(timeout = 15000): Promise<void> {
-    await this.driver.waitForElementNotPresent(this.updateTpslModal, timeout);
+    await this.driver.assertElementNotPresent(this.updateTpslModal, {
+      timeout,
+    });
   }
 
   /**
-   * Asserts the auto-close row body text includes a fragment (e.g. formatted fiat "3,500").
+   * Waits until the auto-close row body text includes a fragment (e.g. formatted fiat "3,500").
    * @param textFragment
    */
   async checkAutoCloseRowContains(textFragment: string): Promise<void> {
-    const row = await this.driver.findVisibleElement(this.autoCloseRow);
-    const text = await row.getText();
-    if (!text.includes(textFragment)) {
-      throw new Error(
-        `Expected auto-close row to include "${textFragment}". Actual:\n${text}`,
-      );
-    }
+    await this.driver.waitForSelector({
+      xpath: `//*[@data-testid="perps-auto-close-row"][contains(normalize-space(.), "${textFragment}")]`,
+    });
   }
 
   /**
@@ -553,10 +583,6 @@ export class PerpsMarketDetailPage {
    */
   async fillAmount(amount: string): Promise<void> {
     await this.driver.waitForSelector(this.amountInputField);
-    const inputElement = await this.driver.findElement(
-      this.amountInputFieldInput,
-    );
-    await this.driver.scrollToElement(inputElement);
     await this.driver.fill(this.amountInputFieldInput, amount);
   }
 
@@ -622,12 +648,9 @@ export class PerpsMarketDetailPage {
     mode: 'add' | 'remove',
     timeout = 15000,
   ): Promise<void> {
-    const modalTestId =
-      mode === 'add' ? 'perps-add-margin-modal' : 'perps-decrease-margin-modal';
-    await this.driver.waitForElementNotPresent(
-      { testId: modalTestId },
-      timeout,
-    );
+    const modal =
+      mode === 'add' ? this.addMarginModal : this.decreaseMarginModal;
+    await this.driver.assertElementNotPresent(modal, { timeout });
   }
 
   /**
@@ -636,10 +659,9 @@ export class PerpsMarketDetailPage {
    * @param timeout - Max wait in ms (default 15_000).
    */
   async waitForReversePositionModalClosed(timeout = 15000): Promise<void> {
-    await this.driver.waitForElementNotPresent(
-      this.reversePositionModal,
+    await this.driver.assertElementNotPresent(this.reversePositionModal, {
       timeout,
-    );
+    });
   }
 
   /**
@@ -694,9 +716,7 @@ export class PerpsMarketDetailPage {
    * Confirms the modal content is fully rendered with live price data.
    */
   async waitForTpslModalEstimatedTpPnlRow(): Promise<void> {
-    await this.driver.waitForSelector({
-      testId: 'perps-update-tpsl-estimated-tp-pnl-row',
-    });
+    await this.driver.waitForSelector(this.tpslEstimatedTpPnlRow);
   }
 
   /**
@@ -705,8 +725,8 @@ export class PerpsMarketDetailPage {
    */
   async waitForCloseSummaryRows(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
-      { testId: 'perps-close-summary-fees-value' },
-      { testId: 'perps-close-summary-receive-value' },
+      this.closeSummaryFeesValue,
+      this.closeSummaryReceiveValue,
     ]);
   }
 
@@ -716,8 +736,8 @@ export class PerpsMarketDetailPage {
    */
   async waitForReversePositionSummaryRows(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
-      { testId: 'perps-reverse-est-size-value' },
-      { testId: 'perps-reverse-fee-value' },
+      this.reverseEstSizeValue,
+      this.reverseFeeValue,
     ]);
   }
 
@@ -726,8 +746,59 @@ export class PerpsMarketDetailPage {
    * Call after waitForAddMarginModal() or waitForDecreaseMarginModal().
    */
   async waitForMarginModalAvailableBalance(): Promise<void> {
-    await this.driver.waitForSelector({
-      testId: 'perps-edit-margin-available-value',
-    });
+    await this.driver.waitForSelector(this.editMarginAvailableValue);
+  }
+
+  /**
+   * High-level helper: waits for the close position modal, verifies summary rows,
+   * optionally adjusts the close percentage, then submits.
+   * Use when the modal is already open (e.g. after clickModifyMenuReduceExposure()).
+   *
+   * @param percent - Close percentage 0–100 (default 100). Pass less than 100 for a partial close.
+   */
+  async confirmCloseModal(percent = 100): Promise<void> {
+    await this.waitForClosePositionModal();
+    await this.waitForCloseSummaryRows();
+    if (percent < 100) {
+      await this.setClosePercent(percent);
+    }
+    await this.submitClosePosition();
+  }
+
+  /**
+   * High-level helper: clicks Close then confirms the close position modal.
+   * Dismisses any visible perps toast first (handled by clickClose).
+   *
+   * @param percent - Close percentage 0–100 (default 100). Pass less than 100 for a partial close.
+   */
+  async closePosition(percent = 100): Promise<void> {
+    await this.clickClose();
+    await this.confirmCloseModal(percent);
+  }
+
+  /**
+   * High-level helper: opens the TP/SL update modal, fills the take-profit price, and saves.
+   *
+   * @param price - Take profit price string (e.g. '3500.00').
+   */
+  async setTakeProfit(price: string): Promise<void> {
+    await this.clickAutoCloseRow();
+    await this.waitForUpdateTpslModal();
+    await this.fillTpPriceInTpslModal(price);
+    await this.submitTpslUpdate();
+    await this.waitForUpdateTpslModalClosed();
+  }
+
+  /**
+   * High-level helper: opens the TP/SL update modal, fills the stop-loss price, and saves.
+   *
+   * @param price - Stop loss price string (e.g. '2400.00').
+   */
+  async setStopLoss(price: string): Promise<void> {
+    await this.clickAutoCloseRow();
+    await this.waitForUpdateTpslModal();
+    await this.fillSlPriceInTpslModal(price);
+    await this.submitTpslUpdate();
+    await this.waitForUpdateTpslModalClosed();
   }
 }

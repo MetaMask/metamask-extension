@@ -31,6 +31,11 @@ export class PerpsWithdrawPage {
 
   private readonly withdrawPage = { testId: 'perps-withdraw-page' };
 
+  private readonly withdrawPageChildren =
+    '[data-testid="perps-withdraw-page"] *';
+
+  private readonly withdrawToast = { testId: 'perps-withdraw-toast' };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -76,13 +81,7 @@ export class PerpsWithdrawPage {
    * Used to verify validation prevents submission of invalid amounts.
    */
   async assertSubmitDisabled(): Promise<void> {
-    const button = await this.driver.findElement(this.submitButton);
-    const isDisabled = await button.getAttribute('disabled');
-    if (!isDisabled) {
-      throw new Error(
-        'Expected submit button to be disabled but it was enabled',
-      );
-    }
+    await this.driver.waitForSelector(this.submitButton, { state: 'disabled' });
   }
 
   /**
@@ -92,7 +91,7 @@ export class PerpsWithdrawPage {
    */
   async waitForValidationMessage(message: string): Promise<void> {
     await this.driver.waitForSelector({
-      css: `[data-testid="perps-withdraw-page"] *`,
+      css: this.withdrawPageChildren,
       text: message,
     });
   }
@@ -113,7 +112,6 @@ export class PerpsWithdrawPage {
    * Clicks the primary Withdraw submit button once it is enabled (valid amount).
    */
   async clickSubmit(): Promise<void> {
-    await this.driver.waitForSelector(this.submitButton, { state: 'enabled' });
     await this.driver.clickElement(this.submitButton);
   }
 
@@ -122,7 +120,7 @@ export class PerpsWithdrawPage {
    */
   async waitForWithdrawSubmittedToast(): Promise<void> {
     await this.driver.waitForSelector({
-      testId: 'perps-withdraw-toast',
+      ...this.withdrawToast,
       text: 'Withdrawal submitted',
     });
   }

@@ -37,6 +37,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { AssetsControllerState } from '@metamask/assets-controller';
+import type { PerpsControllerState } from '@metamask/perps-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
 import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
@@ -300,8 +301,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withPerpsController(data: Record<string, unknown>): this {
-    merge((this.fixture.data as Record<string, unknown>).PerpsController, data);
+  withPerpsController(data: Partial<PerpsControllerState>): this {
+    merge(
+      (this.fixture.data as Record<string, unknown>).PerpsController,
+      data as Record<string, unknown>,
+    );
     return this;
   }
 

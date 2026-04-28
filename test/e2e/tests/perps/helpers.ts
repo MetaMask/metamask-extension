@@ -17,13 +17,13 @@
  */
 
 /**
- * Default withFixtures config for Perps tests (feature flag enabled, geo-blocked user).
+ * withFixtures config for Perps geo-block tests (feature flag enabled, geo-blocked user).
  * Implemented in perps-fixture-config.ts; re-exported here for convenience.
  *
  * @param title - The test title (e.g. this.test?.fullTitle()) for debugging.
  * @returns Partial withFixtures config to spread into withFixtures().
  */
-export { getPerpsConfig as getConfig } from './perps-fixture-config';
+export { getPerpsGeoBlockConfig } from './perps-fixture-config';
 
 /**
  * withFixtures config for Perps tests with an eligible (non-geo-blocked) user.

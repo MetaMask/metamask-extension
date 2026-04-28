@@ -16,21 +16,19 @@ import { login } from '../../page-objects/flows/login.flow';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
-import { getConfig, getPerpsConfigEligible } from './helpers';
+import { getPerpsGeoBlockConfig, getPerpsConfigEligible } from './helpers';
 import { WS_USER_WITH_FUNDED_ACCOUNT } from './mocks/websocketPositionMocks';
 
 describe('Perps Geo-block', function (this: Suite) {
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
   it('geo-blocked user: Add funds shows geo-block modal, then Got it dismisses it', async function () {
     await withFixtures(
       {
-        ...getConfig(this.test?.fullTitle()),
+        ...getPerpsGeoBlockConfig(this.test?.fullTitle()),
         perpsWebSocketSpecificMocks: WS_USER_WITH_FUNDED_ACCOUNT,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, {
-          validateBalance: false,
-          // External services are off in getConfig so Perps eligibility does not
+          // External services are off in getPerpsGeoBlockConfig so Perps eligibility does not
           // call Geolocation (not wired on PerpsControllerMessenger); non-EVM
           // account icons are not loaded in that mode.
           waitForNonEvmAccounts: false,
@@ -50,7 +48,6 @@ describe('Perps Geo-block', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
   it('eligible user: Long on AVAX opens order entry without geo-block modal', async function () {
     await withFixtures(
       {
@@ -58,7 +55,7 @@ describe('Perps Geo-block', function (this: Suite) {
         perpsWebSocketSpecificMocks: WS_USER_WITH_FUNDED_ACCOUNT,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
