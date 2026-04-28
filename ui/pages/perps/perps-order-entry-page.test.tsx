@@ -512,21 +512,48 @@ describe('PerpsOrderEntryPage', () => {
   });
 
   describe('navigation', () => {
-    it('navigates back to market detail when back button is clicked', () => {
+    it('pops the history stack when back button is clicked and history is non-empty', () => {
       const store = mockStore(createMockState());
+      const historyLengthSpy = jest
+        .spyOn(window.history, 'length', 'get')
+        .mockReturnValue(2);
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+
+      historyLengthSpy.mockRestore();
     });
 
-    it('navigates back to market detail for encoded symbol markets', () => {
-      mockUseParams.mockReturnValue({ symbol: 'xyz%3ATSLA' });
+    it('falls back to market detail (replace) when history has no entry to pop', () => {
       const store = mockStore(createMockState());
+      const historyLengthSpy = jest
+        .spyOn(window.history, 'length', 'get')
+        .mockReturnValue(1);
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/xyz%3ATSLA');
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        replace: true,
+      });
+
+      historyLengthSpy.mockRestore();
+    });
+
+    it('falls back to encoded market detail when history has no entry to pop', () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz%3ATSLA' });
+      const store = mockStore(createMockState());
+      const historyLengthSpy = jest
+        .spyOn(window.history, 'length', 'get')
+        .mockReturnValue(1);
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/xyz%3ATSLA', {
+        replace: true,
+      });
+
+      historyLengthSpy.mockRestore();
     });
   });
 
@@ -1529,13 +1556,18 @@ describe('PerpsOrderEntryPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('navigates back to market detail when back button is clicked on market not found', () => {
+    it('pops the history stack when back button is clicked on market not found', () => {
       mockUseParams.mockReturnValue({ symbol: 'UNKNOWN' });
       const store = mockStore(createMockState());
+      const historyLengthSpy = jest
+        .spyOn(window.history, 'length', 'get')
+        .mockReturnValue(2);
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/UNKNOWN');
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+
+      historyLengthSpy.mockRestore();
     });
   });
 
