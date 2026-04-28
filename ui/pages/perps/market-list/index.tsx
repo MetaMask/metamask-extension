@@ -51,6 +51,7 @@ import {
 } from '../../../../shared/constants/perps';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { usePerpsEventTracking } from '../../../hooks/perps';
+import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { MarketRow } from './components/market-row';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
 import { SortDropdown } from './components/sort-dropdown';
@@ -171,7 +172,7 @@ export const MarketListView: React.FC = () => {
   const isLoading = marketsLoading;
 
   const hasPerpBalance = Boolean(
-    account && Number.parseFloat(account.availableBalance) > 0,
+    account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,

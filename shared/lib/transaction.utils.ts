@@ -327,20 +327,117 @@ export async function determineTransactionAssetType(
   return { assetType: AssetType.native, tokenStandard: TokenStandard.none };
 }
 
-/**
- * Regex to extract large numeric values from message.value.
- * Uses [^{}]* instead of [^}]* to prevent matching nested "value" fields -
- * by excluding both { and }, the regex stops at any nested object boundary,
- * ensuring only top-level message.value is matched.
- */
-const REGEX_MESSAGE_VALUE_LARGE =
-  /"message"\s*:\s*\{[^{}]*"value"\s*:\s*(\d{15,})/u;
+const LARGE_INTEGER_DIGIT_COUNT = 15;
 
-function extractLargeMessageValue(dataToParse: string): string | undefined {
-  if (typeof dataToParse !== 'string') {
-    return undefined;
+function isDigit(character: string | undefined): boolean {
+  return character !== undefined && character >= '0' && character <= '9';
+}
+
+function isNonZeroDigit(character: string | undefined): boolean {
+  return character !== undefined && character >= '1' && character <= '9';
+}
+
+function copyJsonString(data: string, start: number): [string, number] {
+  let cursor = start + 1;
+
+  while (cursor < data.length) {
+    const character = data[cursor];
+
+    if (character === '\\') {
+      cursor += 2;
+      continue;
+    }
+
+    cursor += 1;
+
+    if (character === '"') {
+      break;
+    }
   }
-  return dataToParse.match(REGEX_MESSAGE_VALUE_LARGE)?.[1];
+
+  return [data.slice(start, cursor), cursor];
+}
+
+function copyJsonNumber(data: string, start: number): [string, number] {
+  let cursor = start;
+
+  if (data[cursor] === '-') {
+    cursor += 1;
+  }
+
+  const integerStart = cursor;
+
+  if (data[cursor] === '0') {
+    cursor += 1;
+  } else if (isNonZeroDigit(data[cursor])) {
+    while (isDigit(data[cursor])) {
+      cursor += 1;
+    }
+  } else {
+    return [data[start], start + 1];
+  }
+
+  const integerEnd = cursor;
+  let hasFractionOrExponent = false;
+
+  if (data[cursor] === '.') {
+    hasFractionOrExponent = true;
+    cursor += 1;
+
+    while (isDigit(data[cursor])) {
+      cursor += 1;
+    }
+  }
+
+  if (data[cursor] === 'e' || data[cursor] === 'E') {
+    hasFractionOrExponent = true;
+    cursor += 1;
+
+    if (data[cursor] === '+' || data[cursor] === '-') {
+      cursor += 1;
+    }
+
+    while (isDigit(data[cursor])) {
+      cursor += 1;
+    }
+  }
+
+  const rawNumber = data.slice(start, cursor);
+  const digitCount = integerEnd - integerStart;
+
+  if (!hasFractionOrExponent && digitCount >= LARGE_INTEGER_DIGIT_COUNT) {
+    return [`"${rawNumber}"`, cursor];
+  }
+
+  return [rawNumber, cursor];
+}
+
+function quoteLargeJsonIntegers(data: string): string {
+  let result = '';
+  let cursor = 0;
+
+  while (cursor < data.length) {
+    const character = data[cursor];
+
+    if (character === '"') {
+      const [jsonString, nextCursor] = copyJsonString(data, cursor);
+      result += jsonString;
+      cursor = nextCursor;
+      continue;
+    }
+
+    if (character === '-' || isDigit(character)) {
+      const [jsonNumber, nextCursor] = copyJsonNumber(data, cursor);
+      result += jsonNumber;
+      cursor = nextCursor;
+      continue;
+    }
+
+    result += character;
+    cursor += 1;
+  }
+
+  return result;
 }
 
 /**
@@ -354,8 +451,8 @@ function extractLargeMessageValue(dataToParse: string): string | undefined {
  * Note that using JSON.parse reviver cannot help since the value will be coerced by the time it
  * reaches the reviver function.
  *
- * This function has a workaround to extract the large value from the message and replace
- * the message value with the string value.
+ * This function has a workaround to quote large integer JSON tokens before parsing so
+ * they are represented as strings instead of precision-losing JavaScript numbers.
  *
  * @param dataToParse
  * @returns
@@ -364,14 +461,12 @@ export const parseTypedDataMessage = (dataToParse: DataMessageParam) => {
   const result =
     typeof dataToParse === 'object'
       ? dataToParse
-      : JSON.parse(String(dataToParse));
-
-  const messageValue = extractLargeMessageValue(String(dataToParse));
+      : JSON.parse(quoteLargeJsonIntegers(String(dataToParse)));
 
   if (result.message?.value) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    result.message.value = messageValue || String(result.message.value);
+    result.message.value = String(result.message.value);
   }
 
   return result;

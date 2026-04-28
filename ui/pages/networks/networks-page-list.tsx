@@ -42,7 +42,11 @@ import {
   getOrderedNetworksList,
   getShowTestNetworks,
 } from '../../selectors/selectors';
-import { addNetwork, setShowTestNetworks } from '../../store/actions';
+import {
+  addNetwork,
+  setEditedNetwork,
+  setShowTestNetworks,
+} from '../../store/actions';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
@@ -97,7 +101,17 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Start}
-      onClick={() => dispatch(addNetwork(network))}
+      onClick={async () => {
+        await dispatch(addNetwork(network, { setActive: false }));
+        dispatch(
+          setEditedNetwork({
+            chainId: network.chainId,
+            nickname: network.name,
+            editCompleted: true,
+            newNetwork: true,
+          }),
+        );
+      }}
       paddingTop={4}
       paddingBottom={4}
       gap={4}
@@ -143,9 +157,13 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
 
 type NetworksPageListProps = {
   searchQuery: string;
+  footerContent?: React.ReactNode;
 };
 
-export const NetworksPageList = ({ searchQuery }: NetworksPageListProps) => {
+export const NetworksPageList = ({
+  searchQuery,
+  footerContent,
+}: NetworksPageListProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -308,7 +326,8 @@ export const NetworksPageList = ({ searchQuery }: NetworksPageListProps) => {
         ) : null}
       </Box>
 
-      <Box padding={4}>
+      <Box padding={4} gap={4} flexDirection={BoxFlexDirection.Column}>
+        {footerContent}
         <Button
           className="w-full"
           variant={ButtonVariant.Secondary}

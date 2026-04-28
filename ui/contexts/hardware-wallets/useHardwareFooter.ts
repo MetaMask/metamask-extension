@@ -15,7 +15,12 @@ import {
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
-import { ConnectionStatus, type EnsureDeviceReadyOptions } from './types';
+import {
+  ConnectionStatus,
+  HardwareConnectionPermissionState,
+  HardwareWalletType,
+  type EnsureDeviceReadyOptions,
+} from './types';
 import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
 
 type UseHardwareFooterArgs = {
@@ -68,7 +73,11 @@ export const useHardwareFooter = ({
   const inE2e =
     process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
   const { connectionState } = useHardwareWalletState();
-  const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
+  const {
+    isHardwareWalletAccount,
+    walletType,
+    hardwareConnectionPermissionState,
+  } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { showErrorModal } = useHardwareWalletError();
   const [hasPreflightSucceeded, setHasPreflightSucceeded] = useState(false);
@@ -124,12 +133,26 @@ export const useHardwareFooter = ({
       return true;
     }
 
+    // QR wallets don't need a physical device connection.
+    // Camera permission is the only prerequisite.
+    // When already granted, skip the "Connect QR"
+    // step and let the Confirm button run the preflight inline.
+    if (
+      walletType === HardwareWalletType.Qr &&
+      hardwareConnectionPermissionState ===
+        HardwareConnectionPermissionState.Granted
+    ) {
+      return true;
+    }
+
     return isHardwareConnectionReadyForConfirmFooter(connectionState.status);
   }, [
     connectionState.status,
+    hardwareConnectionPermissionState,
     hasPreflightSucceeded,
     inE2e,
     isHardwareWalletAccount,
+    walletType,
   ]);
 
   const onSubmitPreflightCheck = useCallback(
