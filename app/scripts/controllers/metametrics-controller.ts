@@ -34,6 +34,7 @@ import {
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type { Json, Hex } from '@metamask/utils';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   PLATFORM_FIREFOX,
@@ -82,7 +83,6 @@ import {
   type TraceCallback,
 } from '../../../shared/lib/trace';
 import { ENVIRONMENT } from '../../../development/build/constants';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
