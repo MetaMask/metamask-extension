@@ -6,8 +6,8 @@ import { getIframeMetricsProperties } from './iframe';
 import { createBuilderRequest } from './test-utils';
 
 describe('iframe builder', () => {
-  it('builds iframe properties for cross-origin iframe transactions', () => {
-    const result = getIframeMetricsProperties(
+  it('builds iframe properties for cross-origin iframe transactions', async () => {
+    const result = await getIframeMetricsProperties(
       createBuilderRequest({
         transactionMeta: {
           ...createBuilderRequest().transactionMeta,
@@ -26,8 +26,8 @@ describe('iframe builder', () => {
     });
   });
 
-  it('builds top-level frame properties for non-iframe transactions', () => {
-    const result = getIframeMetricsProperties(
+  it('builds top-level frame properties for non-iframe transactions', async () => {
+    const result = await getIframeMetricsProperties(
       createBuilderRequest({
         transactionMeta: {
           ...createBuilderRequest().transactionMeta,
@@ -46,7 +46,7 @@ describe('iframe builder', () => {
     });
   });
 
-  it('uses pending dapp request frame context for transaction added events', () => {
+  it('uses pending dapp request frame context for transaction added events', async () => {
     setDappRequestFrameContext({
       requestId: 'request-1',
       frameId: 1,
@@ -54,7 +54,7 @@ describe('iframe builder', () => {
       mainFrameOrigin: 'https://top-level.example',
     });
 
-    const result = getIframeMetricsProperties(
+    const result = await getIframeMetricsProperties(
       createBuilderRequest({
         eventName: TransactionMetaMetricsEvent.added,
         transactionMeta: {

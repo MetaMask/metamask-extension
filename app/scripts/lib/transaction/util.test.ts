@@ -775,6 +775,10 @@ describe('Transaction Utils', () => {
           frameId: 1,
           origin: 'https://iframe.example',
           mainFrameOrigin: 'https://top-level.example',
+        } as typeof dappRequest.dappRequest & {
+          frameId: number;
+          origin: string;
+          mainFrameOrigin: string;
         };
 
         await addDappTransaction(dappRequest);
@@ -796,6 +800,10 @@ describe('Transaction Utils', () => {
           frameId: 0,
           origin: TRANSACTION_OPTIONS_MOCK.origin,
           mainFrameOrigin: TRANSACTION_OPTIONS_MOCK.origin,
+        } as typeof dappRequest.dappRequest & {
+          frameId: number;
+          origin: string;
+          mainFrameOrigin: string;
         };
 
         await addDappTransaction(dappRequest);
