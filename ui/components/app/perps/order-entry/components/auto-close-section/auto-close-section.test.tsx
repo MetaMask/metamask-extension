@@ -279,6 +279,116 @@ describe('AutoCloseSection', () => {
     });
   });
 
+  describe('clear buttons', () => {
+    it('shows TP clear button when takeProfitPrice is set', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice="50000"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('tp-clear-button')).toBeInTheDocument();
+    });
+
+    it('does not show TP clear button when takeProfitPrice is empty', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice=""
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('tp-clear-button')).not.toBeInTheDocument();
+    });
+
+    it('calls onTakeProfitPriceChange with empty string when TP clear is clicked', () => {
+      const onTakeProfitPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice="50000"
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('tp-clear-button'));
+
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('');
+    });
+
+    it('shows SL clear button when stopLossPrice is set', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          stopLossPrice="40000"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('sl-clear-button')).toBeInTheDocument();
+    });
+
+    it('does not show SL clear button when stopLossPrice is empty', () => {
+      renderWithProvider(
+        <AutoCloseSection {...defaultProps} enabled={true} stopLossPrice="" />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('sl-clear-button')).not.toBeInTheDocument();
+    });
+
+    it('calls onStopLossPriceChange with empty string when SL clear is clicked', () => {
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          stopLossPrice="40000"
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('sl-clear-button'));
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('');
+    });
+
+    it('shows TP pnl row when takeProfitPrice has whitespace-only value (no clear button)', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice="   "
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('tp-clear-button')).not.toBeInTheDocument();
+    });
+
+    it('shows SL pnl row when stopLossPrice has whitespace-only value (no clear button)', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          stopLossPrice="   "
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('sl-clear-button')).not.toBeInTheDocument();
+    });
+  });
+
   describe('percentage calculation (RoE: priceChange% * leverage)', () => {
     it('calculates RoE% for long TP position', () => {
       // (49500 - 45000) / 45000 * 10 * 100 = 100%
