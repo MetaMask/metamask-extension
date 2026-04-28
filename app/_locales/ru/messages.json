@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Добавить пользовательскую сеть"
   },
-  "addAHardwareWallet": {
-    "message": "Добавить аппаратный кошелек"
-  },
   "addANetwork": {
     "message": "Добавить сеть"
   },

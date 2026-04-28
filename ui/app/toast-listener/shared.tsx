@@ -1,6 +1,5 @@
 import React from 'react';
 import { toast } from 'react-hot-toast';
-import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   useTransactionDisplay,
   type TransactionStatus,
@@ -24,6 +23,10 @@ export function showSuccessToast(id: string) {
 
 export function showFailedToast(id: string) {
   toast.error(<ToastContent status="failed" />, { id });
+}
+
+export function dismissToast(id: string) {
+  toast.dismiss(id);
 }
 
 export function showToast(id: string, status: ToastStatus) {
