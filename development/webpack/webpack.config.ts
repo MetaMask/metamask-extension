@@ -207,8 +207,15 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
 ];
-// MV2 requires self-injection
-if (MANIFEST_VERSION === 2) {
+// MV2 requires self-injection for browsers without `world: "MAIN"` content
+// script support. Firefox 128+ supports `world: "MAIN"` declaratively in MV2,
+// so we skip self-injection for Firefox builds and let `inpage.js` ship as
+// raw code, loaded into the page main world via a declarative content script
+// (mirrors the MV3 manifest shape). This avoids the inline-script CSP issue
+// on dApps with strict `script-src` policies. See PR description for context.
+const isFirefoxBuild =
+  args.browser.includes('firefox') || args.browser.includes('all');
+if (MANIFEST_VERSION === 2 && !isFirefoxBuild) {
   const { SelfInjectPlugin } = require('./utils/plugins/SelfInjectPlugin');
   plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
 }

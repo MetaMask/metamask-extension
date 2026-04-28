@@ -31,8 +31,15 @@
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": ["scripts/contentscript.js", "scripts/inpage.js"],
+      "js": ["scripts/contentscript.js"],
       "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "js": ["scripts/inpage.js"],
+      "run_at": "document_start",
+      "world": "MAIN",
       "all_frames": true
     },
     {
