@@ -1018,7 +1018,9 @@ describe('Multichain Selectors', () => {
     });
 
     it('returns undefined when EVM conversion rate is null', () => {
-      jest.spyOn(metamaskDuck, 'getConversionRate').mockReturnValue(null);
+      jest
+        .spyOn(metamaskDuck, 'getConversionRate')
+        .mockImplementation(() => null);
       expect(getMultichainConversionRate(getEvmState())).toBeUndefined();
     });
 
