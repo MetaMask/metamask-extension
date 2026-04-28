@@ -1,3 +1,4 @@
+import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 /**
@@ -36,7 +37,20 @@ export class PerpsMarketDetailPage {
   private static readonly closeAmountSliderPctTestIdPrefix =
     'close-amount-slider-pct-';
 
-  private readonly closeAmountSliderByPrefix = `[data-testid^="${PerpsMarketDetailPage.closeAmountSliderPctTestIdPrefix}"]`;
+  private static readonly perpsClosePositionModalTestId =
+    'perps-close-position-modal';
+
+  /**
+   * Close-amount slider wrapper in the open close-position modal only (avoids
+   * targeting any other `CloseAmountSection` in the document).
+   */
+  private readonly closeAmountSliderInCloseModal = `[data-testid="${PerpsMarketDetailPage.perpsClosePositionModalTestId}"] [data-testid^="${PerpsMarketDetailPage.closeAmountSliderPctTestIdPrefix}"]`;
+
+  /**
+   * MUI `Slider` thumb / track (`role="slider"`) inside the close modal.
+   * Keyboard handling matches @material-ui/core/Slider (End = max, ArrowLeft = step down in LTR).
+   */
+  private readonly closeAmountSliderRoleInCloseModal = `${this.closeAmountSliderInCloseModal} [role="slider"]`;
 
   private readonly decreaseMarginModal = {
     testId: 'perps-decrease-margin-modal',
@@ -409,35 +423,57 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Locator for the close-amount slider at a specific percentage (0–100).
-   *
-   * @param percent - Value appended to `closeAmountSliderPctTestIdPrefix`.
+   * Reads the close % from the wrapper `data-testid` inside the open close modal.
    */
-  private closeAmountSliderAtPercent(percent: number) {
-    return {
-      testId: `${PerpsMarketDetailPage.closeAmountSliderPctTestIdPrefix}${percent}`,
-    };
+  private async getCloseAmountSliderPercentInModal(): Promise<number> {
+    const el = await this.driver.findElement(
+      this.closeAmountSliderInCloseModal,
+    );
+    const testId = await el.getAttribute('data-testid');
+    const match = testId?.match(
+      new RegExp(
+        `^${PerpsMarketDetailPage.closeAmountSliderPctTestIdPrefix}(\\d+)$`,
+        'u',
+      ),
+    );
+    if (!match) {
+      throw new Error(
+        `Unexpected close-amount slider data-testid: ${String(testId)}`,
+      );
+    }
+    return parseInt(match[1], 10);
   }
 
   /**
-   * Sets the close-position slider to the given percentage (0–100).
+   * Sets the close-position slider to the given percentage (0–100) in the close modal.
    *
-   * Uses WebDriver pointer actions (not in-page `MouseEvent`) so the test does not
-   * hit LavaMoat scuttling (`globalThis.MouseEvent` is inaccessible in the extension UI).
-   * Offsets are from the element center per W3C WebDriver pointer actions.
+   * Uses the MUI Slider keyboard model: `End` jumps to `max` (100), then `ArrowLeft`
+   * steps by 1 (see `handleKeyDown` in @material-ui/core/Slider/Slider.js). This
+   * avoids hit-testing / coordinate issues with WebDriver in the extension.
    *
-   * @param percent - Target percentage (e.g. 50 for half the position).
+   * @param percent - Target 0–100; must match `close-amount-slider-pct-{n}` on the wrapper.
    */
   async setClosePercent(percent: number): Promise<void> {
-    await this.driver.waitForSelector(this.closeAmountSliderByPrefix);
-    const element = await this.driver.findElement(
-      this.closeAmountSliderByPrefix,
+    if (percent < 0 || percent > 100) {
+      throw new Error(`setClosePercent: ${percent} out of range 0–100`);
+    }
+    await this.driver.waitForSelector(this.closeAmountSliderInCloseModal);
+    const handleCss = this.closeAmountSliderRoleInCloseModal;
+    const focusHandle = await this.driver.findElement(handleCss);
+    await focusHandle.click();
+    await (await this.driver.findElement(handleCss)).sendKeys(Key.END);
+    await this.driver.wait(
+      async () => (await this.getCloseAmountSliderPercentInModal()) === 100,
+      8000,
     );
-    const rect = await element.getRect();
-    const xOffset = Math.round((percent / 100 - 0.5) * rect.width);
-    await this.driver.clickPoint(this.closeAmountSliderByPrefix, xOffset, 0);
-    await this.driver.waitForSelector(this.closeAmountSliderAtPercent(percent));
-    await this.driver.delay(500);
+    for (let k = 0; k < 100 - percent; k += 1) {
+      await (await this.driver.findElement(handleCss)).sendKeys(Key.ARROW_LEFT);
+    }
+    await this.driver.wait(
+      async () => (await this.getCloseAmountSliderPercentInModal()) === percent,
+      10000,
+    );
+    await this.driver.delay(200);
   }
 
   /**
