@@ -12,8 +12,10 @@ import { login } from '../../../page-objects/flows/login.flow';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
 import { MockedEndpoint } from '../../../mock-e2e';
 import { mockEip7702FeatureFlag } from '../helpers';
+import { getTransactionDetails } from '../helpers/anvil-transaction';
 import { mockSimulationApi } from '../mocks/simulation';
 import { mockTrustSignal } from '../mocks/trust-signals';
 import { SENDER_ADDRESS_MOCK } from '../../simulation-details/types';
@@ -67,12 +69,18 @@ describe('Enforced Simulations', function (this: Suite) {
         await confirmation.checkPageIsLoaded();
         await confirmation.checkEnforcedSimulationsRowIsDisplayed();
 
-        const { receipt, tx } = await confirmAndWaitForReceipt(
+        const { receipt, tx } = await confirmAndGetTransaction(
           driver,
           confirmation,
           localNodes[0],
+          'confirmed',
         );
 
+        assert.strictEqual(
+          receipt.status,
+          'success',
+          `Expected on-chain tx to succeed, got ${receipt.status}`,
+        );
         assert.strictEqual(
           receipt.to?.toLowerCase(),
           DELEGATION_MANAGER_ADDRESS,
@@ -85,6 +93,7 @@ describe('Enforced Simulations', function (this: Suite) {
         );
 
         const dataHex = (tx.input ?? '0x').toLowerCase();
+
         assert.ok(
           dataHex.startsWith(REDEEM_DELEGATIONS_SELECTOR),
           `Expected tx.input to start with redeemDelegations, got ${dataHex.slice(0, 10)}`,
@@ -115,12 +124,18 @@ describe('Enforced Simulations', function (this: Suite) {
         const confirmation = new TransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();
 
-        const { receipt, tx } = await confirmAndWaitForReceipt(
+        const { receipt, tx } = await confirmAndGetTransaction(
           driver,
           confirmation,
           localNodes[0],
+          'confirmed',
         );
 
+        assert.strictEqual(
+          receipt.status,
+          'success',
+          `Expected on-chain tx to succeed, got ${receipt.status}`,
+        );
         assert.strictEqual(
           receipt.to?.toLowerCase(),
           USDC_ADDRESS.toLowerCase(),
@@ -136,6 +151,7 @@ describe('Enforced Simulations', function (this: Suite) {
           USDC_TRANSFER_CALLDATA.toLowerCase(),
           `Expected tx.input to be original USDC transfer calldata`,
         );
+
         assert.strictEqual(tx.value, 0n, `Expected tx.value 0`);
       },
     );
@@ -149,6 +165,7 @@ describe('Enforced Simulations', function (this: Suite) {
       ),
       async ({ driver, localNodes }) => {
         const { publicClient, testClient } = localNodes[0].getProvider();
+
         await testClient.setCode({
           address: SENDER_ADDRESS_MOCK as `0x${string}`,
           bytecode: '0x',
@@ -157,6 +174,7 @@ describe('Enforced Simulations', function (this: Suite) {
         const codeBefore = await publicClient.getCode({
           address: SENDER_ADDRESS_MOCK as `0x${string}`,
         });
+
         assert.ok(
           !codeBefore || codeBefore === '0x',
           `Expected sender to start with no delegation, got ${codeBefore}`,
@@ -170,12 +188,18 @@ describe('Enforced Simulations', function (this: Suite) {
         await confirmation.checkPageIsLoaded();
         await confirmation.checkEnforcedSimulationsRowIsDisplayed();
 
-        const { receipt, tx } = await confirmAndWaitForReceipt(
+        const { receipt, tx } = await confirmAndGetTransaction(
           driver,
           confirmation,
           localNodes[0],
+          'confirmed',
         );
 
+        assert.strictEqual(
+          receipt.status,
+          'success',
+          `Expected on-chain tx to succeed, got ${receipt.status}`,
+        );
         assert.strictEqual(
           tx.type,
           'eip7702',
@@ -186,6 +210,7 @@ describe('Enforced Simulations', function (this: Suite) {
           'authorizationList' in tx
             ? ((tx.authorizationList as readonly unknown[] | undefined) ?? [])
             : [];
+
         assert.ok(authList.length > 0, `Expected non-empty authorizationList`);
 
         assert.strictEqual(
@@ -222,12 +247,18 @@ describe('Enforced Simulations', function (this: Suite) {
         await confirmation.clickEnforcedSimulationsToggle();
         await confirmation.checkEnforcedSimulationsToggleUnchecked();
 
-        const { receipt, tx } = await confirmAndWaitForReceipt(
+        const { receipt, tx } = await confirmAndGetTransaction(
           driver,
           confirmation,
           localNodes[0],
+          'confirmed',
         );
 
+        assert.strictEqual(
+          receipt.status,
+          'success',
+          `Expected on-chain tx to succeed, got ${receipt.status}`,
+        );
         assert.strictEqual(
           receipt.to?.toLowerCase(),
           USDC_ADDRESS.toLowerCase(),
@@ -243,6 +274,7 @@ describe('Enforced Simulations', function (this: Suite) {
           USDC_TRANSFER_CALLDATA.toLowerCase(),
           `Expected tx.input to be original USDC transfer calldata`,
         );
+
         assert.strictEqual(tx.value, 0n, `Expected tx.value 0`);
       },
     );
@@ -266,11 +298,11 @@ describe('Enforced Simulations', function (this: Suite) {
         await confirmation.checkPageIsLoaded();
         await confirmation.checkEnforcedSimulationsRowIsDisplayed();
 
-        const { receipt, revertReason } = await confirmAndWaitForReceipt(
+        const { receipt, revertReason } = await confirmAndGetTransaction(
           driver,
           confirmation,
           localNodes[0],
-          'reverted',
+          'failed',
         );
 
         assert.strictEqual(
@@ -324,71 +356,32 @@ function enforcedSimulationsFixtureOptions(
   };
 }
 
-async function waitForLatestSenderTxHash(
-  publicClient: ReturnType<Anvil['getProvider']>['publicClient'],
-  sender: `0x${string}`,
-  timeoutMs = 30_000,
-): Promise<`0x${string}`> {
-  const start = Date.now();
-  while (Date.now() - start < timeoutMs) {
-    const block = await publicClient.getBlock({
-      blockTag: 'latest',
-      includeTransactions: true,
-    });
-    const senderTx = [...block.transactions]
-      .reverse()
-      .find((t) => t.from?.toLowerCase() === sender.toLowerCase());
-    if (senderTx) {
-      return senderTx.hash as `0x${string}`;
-    }
-    await new Promise((r) => setTimeout(r, 250));
-  }
-  throw new Error('Timed out waiting for sender tx in Anvil');
-}
-
-async function confirmAndWaitForReceipt(
+async function confirmAndGetTransaction(
   driver: Driver,
   confirmation: TransactionConfirmation,
   anvil: Anvil,
-  expectStatus: 'success' | 'reverted' = 'success',
+  expectedStatus: 'confirmed' | 'failed',
 ) {
-  const { publicClient } = anvil.getProvider();
-
   await confirmation.clickFooterConfirmButton();
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   const activityList = new ActivityListPage(driver);
   await activityList.openActivityTab();
 
-  const txHash = await waitForLatestSenderTxHash(
-    publicClient,
-    SENDER_ADDRESS_MOCK as `0x${string}`,
-  );
-  const tx = await publicClient.getTransaction({ hash: txHash });
-
-  const receipt = await publicClient.getTransactionReceipt({ hash: txHash });
-
-  assert.strictEqual(
-    receipt.status,
-    expectStatus,
-    `Expected on-chain tx status=${expectStatus}, got status=${receipt.status} (hash=${txHash})`,
-  );
-
-  let revertReason: string | undefined;
-  if (receipt.status === 'reverted') {
-    try {
-      const trace = (await publicClient.transport.request({
-        method: 'debug_traceTransaction',
-        params: [
-          txHash,
-          { tracer: 'callTracer', tracerConfig: { withLog: true } },
-        ],
-      })) as { revertReason?: string };
-      revertReason = trace?.revertReason;
-    } catch {
-      revertReason = undefined;
-    }
+  if (expectedStatus === 'confirmed') {
+    await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+  } else {
+    await activityList.checkFailedTxNumberDisplayedInActivity(1);
   }
 
-  return { receipt, tx, revertReason };
+  await driver.switchToWindowWithTitle(
+    WINDOW_TITLES.TestDappSendIndividualRequest,
+  );
+
+  const txHash = await new TestDappIndividualRequest(
+    driver,
+  ).getResult<`0x${string}`>();
+
+  return getTransactionDetails(anvil, txHash);
 }

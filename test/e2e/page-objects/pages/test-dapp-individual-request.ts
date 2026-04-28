@@ -25,6 +25,29 @@ class TestDappIndividualRequest {
   }
 
   /**
+   * Wait for the request to resolve and return the parsed JSON-RPC result.
+   *
+   * The dapp renders `Response: <JSON.stringify(result)>` to the main element
+   * once the request resolves.
+   */
+  async getResult<Result = unknown>(): Promise<Result> {
+    await this.driver.waitForSelector({
+      tag: this.result,
+      text: 'Response: ',
+    });
+
+    const element = await this.driver.findElement(this.result);
+    const text = await element.getText();
+    const match = text.match(/^Response:\s*(.+)$/u);
+
+    if (!match) {
+      throw new Error(`Test dapp did not render a response: ${text}`);
+    }
+
+    return JSON.parse(match[1]) as Result;
+  }
+
+  /**
    * Open the test dapp individual request page.
    *
    * @param options - The options for opening the test dapp page.

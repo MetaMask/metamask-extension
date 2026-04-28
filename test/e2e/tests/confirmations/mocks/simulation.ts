@@ -4,6 +4,8 @@ import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 const ERC20_TRANSFER_EVENT_TOPIC =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
 
+const ERC20_BALANCE_OF_SELECTOR = '70a08231';
+
 const padAddressTopic = (address: string) =>
   `0x000000000000000000000000${address.toLowerCase().replace('0x', '')}`;
 
@@ -110,7 +112,7 @@ export async function mockSimulationApi(
 
   await mockServer
     .forPost(TX_SENTINEL_URL)
-    .withBodyIncluding('70a08231')
+    .withBodyIncluding(ERC20_BALANCE_OF_SELECTOR)
     .thenJson(200, sandwichResponse);
 
   await mockServer
