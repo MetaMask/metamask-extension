@@ -31,20 +31,15 @@ class TestDappIndividualRequest {
    * once the request resolves.
    */
   async getResult<Result = unknown>(): Promise<Result> {
-    await this.driver.waitForSelector({
+    const element = await this.driver.waitForSelector({
       tag: this.result,
       text: 'Response: ',
     });
 
-    const element = await this.driver.findElement(this.result);
     const text = await element.getText();
-    const match = text.match(/^Response:\s*(.+)$/u);
+    const json = text.replace('Response: ', '');
 
-    if (!match) {
-      throw new Error(`Test dapp did not render a response: ${text}`);
-    }
-
-    return JSON.parse(match[1]) as Result;
+    return JSON.parse(json) as Result;
   }
 
   /**
