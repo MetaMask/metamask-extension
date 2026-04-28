@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/naming-convention */
+import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
+import { setDappRequestFrameContext } from '../dapp-request-frame-context';
 import { getIframeMetricsProperties } from './iframe';
 import { createBuilderRequest } from './test-utils';
 
@@ -41,6 +43,33 @@ describe('iframe builder', () => {
       is_cross_origin_iframe: false,
       iframe_origin: null,
       top_level_origin: null,
+    });
+  });
+
+  it('uses pending dapp request frame context for transaction added events', () => {
+    setDappRequestFrameContext({
+      requestId: 'request-1',
+      frameId: 1,
+      frameOrigin: 'https://iframe.example',
+      mainFrameOrigin: 'https://top-level.example',
+    });
+
+    const result = getIframeMetricsProperties(
+      createBuilderRequest({
+        eventName: TransactionMetaMetricsEvent.added,
+        transactionMeta: {
+          ...createBuilderRequest().transactionMeta,
+          origin: 'https://top-level.example',
+          requestId: 'request-1',
+        } as any,
+      }),
+    );
+
+    expect(result.properties).toStrictEqual({
+      is_iframe: true,
+      is_cross_origin_iframe: true,
+      iframe_origin: 'https://iframe.example',
+      top_level_origin: 'https://top-level.example',
     });
   });
 });

@@ -773,6 +773,7 @@ describe('Transaction Utils', () => {
         dappRequest.dappRequest = {
           ...dappRequest.dappRequest,
           frameId: 1,
+          origin: 'https://iframe.example',
           mainFrameOrigin: 'https://top-level.example',
         };
 
@@ -782,6 +783,7 @@ describe('Transaction Utils', () => {
           {
             ...TRANSACTION_META_MOCK,
             frameId: 1,
+            frameOrigin: 'https://iframe.example',
             mainFrameOrigin: 'https://top-level.example',
           },
           'Add dapp request frame context',
@@ -792,6 +794,7 @@ describe('Transaction Utils', () => {
         dappRequest.dappRequest = {
           ...dappRequest.dappRequest,
           frameId: 0,
+          origin: TRANSACTION_OPTIONS_MOCK.origin,
           mainFrameOrigin: TRANSACTION_OPTIONS_MOCK.origin,
         };
 
@@ -801,6 +804,7 @@ describe('Transaction Utils', () => {
           {
             ...TRANSACTION_META_MOCK,
             frameId: 0,
+            frameOrigin: TRANSACTION_OPTIONS_MOCK.origin,
             mainFrameOrigin: TRANSACTION_OPTIONS_MOCK.origin,
           },
           'Add dapp request frame context',

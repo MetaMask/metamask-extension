@@ -48,6 +48,7 @@ import {
   isTempoChain,
   isTempoTransactionType,
 } from './tempo-tx-utils';
+import { setDappRequestFrameContext } from './dapp-request-frame-context';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -85,6 +86,7 @@ export type AddDappTransactionRequest = BaseAddTransactionRequest & {
 
 type TransactionMetaWithFrameContext = TransactionMeta & {
   frameId?: number;
+  frameOrigin?: string;
   mainFrameOrigin?: string;
 };
 
@@ -105,8 +107,13 @@ export async function addDappTransaction(
   const { dappRequest, requestContext } = request;
   const { id, method } = dappRequest;
   const actionId = String(id);
-  const { frameId, mainFrameOrigin } = dappRequest as JsonRpcRequest & {
+  const {
+    frameId,
+    mainFrameOrigin,
+    origin: frameOrigin,
+  } = dappRequest as JsonRpcRequest & {
     frameId?: number;
+    origin?: string;
     mainFrameOrigin?: string;
   };
 
@@ -137,6 +144,13 @@ export async function addDappTransaction(
     },
   };
 
+  setDappRequestFrameContext({
+    requestId: actionId,
+    frameId,
+    frameOrigin,
+    mainFrameOrigin,
+  });
+
   const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
     addTransactionRequest,
   );
@@ -145,6 +159,7 @@ export async function addDappTransaction(
     transactionController: request.transactionController,
     transactionMeta,
     frameId,
+    frameOrigin,
     mainFrameOrigin,
   });
 
@@ -159,23 +174,30 @@ function persistDappRequestFrameContext({
   transactionController,
   transactionMeta,
   frameId,
+  frameOrigin,
   mainFrameOrigin,
 }: {
   transactionController: TransactionController;
   transactionMeta: TransactionMeta | undefined;
   frameId: unknown;
+  frameOrigin: unknown;
   mainFrameOrigin: unknown;
 }) {
   const hasFrameId = typeof frameId === 'number';
+  const hasFrameOrigin = typeof frameOrigin === 'string';
   const hasMainFrameOrigin = typeof mainFrameOrigin === 'string';
 
-  if (!transactionMeta || (!hasFrameId && !hasMainFrameOrigin)) {
+  if (
+    !transactionMeta ||
+    (!hasFrameId && !hasFrameOrigin && !hasMainFrameOrigin)
+  ) {
     return;
   }
 
   const updatedTransactionMeta: TransactionMetaWithFrameContext = {
     ...transactionMeta,
     ...(hasFrameId ? { frameId: frameId as number } : {}),
+    ...(hasFrameOrigin ? { frameOrigin: frameOrigin as string } : {}),
     ...(hasMainFrameOrigin
       ? { mainFrameOrigin: mainFrameOrigin as string }
       : {}),
