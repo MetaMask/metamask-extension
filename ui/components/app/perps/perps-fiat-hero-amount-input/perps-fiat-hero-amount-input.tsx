@@ -92,6 +92,7 @@ export const PerpsFiatHeroAmountSkeleton: React.FC = () => (
     flexDirection={BoxFlexDirection.Row}
     justifyContent={BoxJustifyContent.Center}
     alignItems={BoxAlignItems.Center}
+    className="w-full"
     style={{ minHeight: '70px' }}
     data-testid="perps-fiat-hero-amount-skeleton"
   >
@@ -134,6 +135,7 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Center}
           alignItems={BoxAlignItems.Center}
+          className="w-full"
           style={{ minHeight: '70px' }}
         >
           <Text
@@ -145,27 +147,56 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
           >
             {fiatSymbol}
           </Text>
-          <input
-            data-testid="perps-fiat-hero-amount-input"
-            type="text"
-            inputMode="decimal"
-            value={value}
-            onChange={handleChange}
-            disabled={disabled}
-            className={twMerge(
-              textColor,
-              'border-none bg-transparent text-left outline-none',
-              disabled ? 'cursor-default' : 'cursor-text',
-            )}
-            style={
-              {
+          {/*
+           * Absolute-overlay pattern: the hidden clone (white-space:pre) drives
+           * the outer span's width to the exact rendered text width, while the
+           * absolutely-positioned input fills that same box.  Absolute children
+           * are out-of-flow so they don't affect the parent's max-content width,
+           * avoiding the circular-dependency that broke the inline-grid approach.
+           * Works in Chrome, Firefox, and Safari (unlike field-sizing:content).
+           */}
+          <span
+            style={{
+              position: 'relative',
+              width: 'max-content',
+              minWidth: '1ch',
+            }}
+          >
+            <span
+              aria-hidden="true"
+              style={{
+                display: 'block',
+                visibility: 'hidden',
+                whiteSpace: 'pre',
                 fontSize,
                 lineHeight,
                 fontWeight: 500,
-                width: `${Math.max(1, amountLength)}ch`,
-              } as React.CSSProperties
-            }
-          />
+                minWidth: '1ch',
+              }}
+            >
+              {value || '0'}
+            </span>
+            <input
+              data-testid="perps-fiat-hero-amount-input"
+              type="text"
+              inputMode="decimal"
+              value={value}
+              onChange={handleChange}
+              disabled={disabled}
+              className={twMerge(
+                textColor,
+                'border-none bg-transparent text-left outline-none',
+                disabled ? 'cursor-default' : 'cursor-text',
+              )}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                fontSize,
+                lineHeight,
+                fontWeight: 500,
+              }}
+            />
+          </span>
         </Box>
       );
     },
