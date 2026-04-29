@@ -321,8 +321,10 @@ export const getFromToken = createSelector(
 const getFromChainId = (state: BridgeAppState) => getFromToken(state).chainId;
 // For compatibility with old code
 export const getFromChain = createSelector(
-  [getFromChainId, getAllBridgeableNetworks],
-  (fromChainId, allBridgeableNetworks) => allBridgeableNetworks[fromChainId],
+  [getFromChainId, getAllBridgeableNetworks, getFromChains],
+  (fromChainId, allBridgeableNetworks, fromChains) =>
+    allBridgeableNetworks[fromChainId] ??
+    fromChains.find(({ chainId }) => chainId === fromChainId),
 );
 
 export const getToChains = createDeepEqualSelector(
@@ -417,12 +419,13 @@ export const getAccountGroupNameByInternalAccount = createSelector(
 
 export const getFromAccount = createSelector(
   [
-    (state: BridgeAppState) => getFromChain(state)?.chainId,
+    getFromChainId,
     (state: BridgeAppState) => state,
     getSelectedInternalAccount,
   ],
   (fromChainId, state, selectedInternalAccount) =>
-    getInternalAccountBySelectedAccountGroupAndCaip(state, fromChainId) ??
+    (fromChainId &&
+      getInternalAccountBySelectedAccountGroupAndCaip(state, fromChainId)) ??
     selectedInternalAccount,
 );
 
@@ -1019,7 +1022,7 @@ const getIsGasIncludedSwapSupported = createSelector(
       isSendBundleSupportedForChain,
   ],
   (fromChainId, isSendBundleSupportedForChain) => {
-    if (isNonEvmChainId(fromChainId)) {
+    if (!fromChainId || isNonEvmChainId(fromChainId)) {
       return false;
     }
     return isSendBundleSupportedForChain;
@@ -1065,7 +1068,8 @@ export const getBridgeUnavailableQuoteReason = createSelector(
 
 export const getIsExternalServicesEnabled = createSelector(
   [getUseExternalServices, getFromAccount],
-  (useExternalServices, { methods }) =>
-    (useExternalServices && methods.includes(EthMethod.SignTransaction)) ||
-    methods.includes(EthMethod.SignUserOperation),
+  (useExternalServices, fromAccount) =>
+    (useExternalServices &&
+      fromAccount?.methods?.includes(EthMethod.SignTransaction)) ||
+    fromAccount?.methods?.includes(EthMethod.SignUserOperation),
 );
