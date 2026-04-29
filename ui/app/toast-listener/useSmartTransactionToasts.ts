@@ -5,7 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { type TransactionStatus } from '../../helpers/utils/transaction-display';
 import { resolvePendingApproval } from '../../store/actions';
 import { selectSmartTransactions } from '../../selectors/toast';
-import { showFailedToast, showPendingToast, showSuccessToast } from './shared';
+import {
+  dismissToast,
+  showFailedToast,
+  showPendingToast,
+  showSuccessToast,
+} from './shared';
 
 function generateToastId(txId: string) {
   return `stx-${txId}`;
@@ -90,6 +95,15 @@ export function useSmartTransactionToasts() {
       if (currentStatus === 'failed') {
         showFailedToast(toastId);
         dispatch(resolvePendingApproval(tx.approvalId, true));
+      }
+    }
+
+    for (const [toastId, previousStatus] of Object.entries(
+      previousStatusesRef.current,
+    )) {
+      // Dismiss pending toasts that are no longer in the transactions list
+      if (previousStatus === 'pending' && !(toastId in nextStatuses)) {
+        dismissToast(toastId);
       }
     }
 

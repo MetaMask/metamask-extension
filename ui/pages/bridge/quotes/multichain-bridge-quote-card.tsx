@@ -112,8 +112,8 @@ export const MultichainBridgeQuoteCard = ({
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
   const isCrossChainBridge = Boolean(
     fromToken?.chainId &&
-      toToken?.chainId &&
-      fromToken.chainId !== toToken.chainId,
+    toToken?.chainId &&
+    fromToken.chainId !== toToken.chainId,
   );
 
   const isCurrentNetworkGasSponsored = useMemo(() => {
