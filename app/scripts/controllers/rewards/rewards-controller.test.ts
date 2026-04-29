@@ -459,15 +459,19 @@ describe('RewardsController', () => {
       });
     });
 
-    it('should throw error if current tier is not found', async () => {
+    it('should return null tier state if current tier is not found', async () => {
       await withController({ isDisabled: false }, ({ controller }) => {
-        expect(() => {
-          controller.calculateTierStatus(
-            MOCK_SEASON_TIERS,
-            'invalid-tier',
-            100,
-          );
-        }).toThrow('Current tier invalid-tier not found in season tiers');
+        const tierStatus = controller.calculateTierStatus(
+          MOCK_SEASON_TIERS,
+          'invalid-tier',
+          100,
+        );
+
+        expect(tierStatus).toEqual({
+          currentTier: null,
+          nextTier: null,
+          nextTierPointsNeeded: null,
+        });
       });
     });
   });
@@ -2889,6 +2893,48 @@ describe('RewardsController', () => {
         },
       );
     });
+
+    it('should mark GB as blocked region', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:fetchGeoLocation') {
+              return Promise.resolve('GB');
+            }
+            return undefined;
+          });
+
+          const result = await controller.getGeoRewardsMetadata();
+
+          expect(result).toEqual({
+            geoLocation: 'GB',
+            optinAllowedForGeo: false,
+          });
+        },
+      );
+    });
+
+    it('should mark GI as blocked region', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:fetchGeoLocation') {
+              return Promise.resolve('GI');
+            }
+            return undefined;
+          });
+
+          const result = await controller.getGeoRewardsMetadata();
+
+          expect(result).toEqual({
+            geoLocation: 'GI',
+            optinAllowedForGeo: false,
+          });
+        },
+      );
+    });
   });
 
   describe('validateReferralCode', () => {
@@ -3641,7 +3687,7 @@ describe('RewardsController', () => {
       });
     });
 
-    it('should force fresh check for opted-in accounts WITHOUT subscriptionId checked more than 60 minutes ago', async () => {
+    it('should use cached data for opted-in accounts WITHOUT subscriptionId regardless of staleness', async () => {
       const state: Partial<RewardsControllerState> = {
         rewardsAccounts: {
           [MOCK_CAIP_ACCOUNT]: {
@@ -3650,7 +3696,7 @@ describe('RewardsController', () => {
             subscriptionId: null, // Opted in but missing subscriptionId
             perpsFeeDiscount: null,
             lastPerpsDiscountRateFetched: null,
-            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 61, // 61 minutes ago (exceeds 60 minute threshold)
+            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 61, // 61 minutes ago
           },
         },
       };
@@ -3667,10 +3713,10 @@ describe('RewardsController', () => {
           addressToAccountMap,
         );
 
-        // Should force fresh check because opted-in but no subscriptionId and stale cache
-        expect(result.cachedOptInResults).toEqual([null]);
+        // hasOptedIn is true so stale-cache check only applies to hasOptedIn === false
+        expect(result.cachedOptInResults).toEqual([true]);
         expect(result.cachedSubscriptionIds).toEqual([null]);
-        expect(result.addressesNeedingFresh).toEqual([MOCK_ACCOUNT_ADDRESS]);
+        expect(result.addressesNeedingFresh).toEqual([]);
       });
     });
 
@@ -3740,7 +3786,7 @@ describe('RewardsController', () => {
       });
     });
 
-    it('should force fresh check for opted-in accounts WITHOUT subscriptionId and no lastFreshOptInStatusCheck', async () => {
+    it('should use cached data for opted-in accounts WITHOUT subscriptionId even without lastFreshOptInStatusCheck', async () => {
       const state: Partial<RewardsControllerState> = {
         rewardsAccounts: {
           [MOCK_CAIP_ACCOUNT]: {
@@ -3766,10 +3812,10 @@ describe('RewardsController', () => {
           addressToAccountMap,
         );
 
-        // Should force fresh check because opted-in without subscriptionId and never checked fresh
-        expect(result.cachedOptInResults).toEqual([null]);
+        // Should use cached data because only hasOptedIn === false triggers a fresh recheck
+        expect(result.cachedOptInResults).toEqual([true]);
         expect(result.cachedSubscriptionIds).toEqual([null]);
-        expect(result.addressesNeedingFresh).toEqual([MOCK_ACCOUNT_ADDRESS]);
+        expect(result.addressesNeedingFresh).toEqual([]);
       });
     });
   });
