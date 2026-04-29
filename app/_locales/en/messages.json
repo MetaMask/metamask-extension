@@ -5695,6 +5695,9 @@
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBasicFunctionalityOff": {
+    "message": "This feature isn't available while basic functionality is turned off."
+  },
   "perpsBatchCancelFailed": {
     "message": "Failed to cancel one or more orders. Try again."
   },
