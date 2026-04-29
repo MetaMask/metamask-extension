@@ -129,28 +129,14 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * Note: Unlike Ledger, Trezor doesn't require checking for a specific app being open.
    * The device just needs to be connected and unlocked, which is verified during signing operations.
    *
-   * @param options - Optional preflight checks (e.g. message size limits)
    * @returns true if device is ready
    */
-  async ensureDeviceReady(
-    options?: EnsureDeviceReadyOptions,
-  ): Promise<boolean> {
+  async ensureDeviceReady(): Promise<boolean> {
     if (!this.isConnected()) {
       await this.connect();
     }
 
-    try {
-      const payload = await this.#fetchDeviceFeatures();
-      this.#validateDeviceState(payload);
-      this.#validateCapabilities(payload.capabilities, payload.model);
-      this.#validateModelOneMessageSize(payload.model, options);
-      return true;
-    } catch (error) {
-      this.#handleDeviceReadyError(error);
-      throw error instanceof HardwareWalletError
-        ? error
-        : toHardwareWalletError(error, HardwareWalletType.Trezor);
-    }
+    return true;
   }
 
   /**
@@ -164,44 +150,12 @@ export class TrezorAdapter implements HardwareWalletAdapter {
   }
 
   /**
-   * Validate unlocked, initialized, and session state from device features.
-   *
-   * @param payload - The device feature payload to validate
-   */
-  #validateDeviceState(payload: TrezorFeaturesPayload): void {
-    // NOTE: Model one is always locked, it will only become unlocked when performing a transaction.
-    if (!payload.unlocked && !isTrezorModelOne(payload.model)) {
-      throw createHardwareWalletError(
-        ErrorCode.AuthenticationDeviceLocked,
-        HardwareWalletType.Trezor,
-        'Trezor is not unlocked. Please unlock your device.',
-      );
-    }
-
-    if (!payload.initialized) {
-      throw createHardwareWalletError(
-        ErrorCode.DeviceNotReady,
-        HardwareWalletType.Trezor,
-        'Trezor is not initialized.',
-      );
-    }
-
-    if (!payload.session_id && !isTrezorModelUsingTrezorSuite(payload.model)) {
-      throw createHardwareWalletError(
-        ErrorCode.ConnectionClosed,
-        HardwareWalletType.Trezor,
-        'Trezor session not established. Please reconnect your device.',
-      );
-    }
-  }
-
-  /**
    * Validate that the device reports all required capabilities.
    *
    * @param capabilities - Raw capabilities list from device features
    * @param model - The device model identifier
    */
-  #validateCapabilities(capabilities: unknown, model: string): void {
+  validateCapabilities(capabilities: unknown, model: string): void {
     const missing = getMissingCapabilities(capabilities);
 
     // Trezor Model One does not support Solana, but it must still support
@@ -218,30 +172,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
           ', ',
         )}.`,
         { metadata: { capabilities, missingCapabilities: missingForModel } },
-      );
-    }
-  }
-
-  /**
-   * Validate preflight message size for Trezor Model One devices.
-   *
-   * @param model - The device model identifier
-   * @param options - The ensureDeviceReady options containing preflightMessageBytes
-   */
-  #validateModelOneMessageSize(
-    model: string,
-    options?: EnsureDeviceReadyOptions,
-  ): void {
-    if (
-      options?.preflightMessageBytes &&
-      isTrezorModelOne(model) &&
-      options.preflightMessageBytes > TREZOR_MODEL_ONE_MAX_MESSAGE_BYTES
-    ) {
-      throw createHardwareWalletError(
-        ErrorCode.DeviceMissingCapability,
-        HardwareWalletType.Trezor,
-        `Trezor Model One does not support signing messages larger than ${TREZOR_MODEL_ONE_MAX_MESSAGE_BYTES} bytes.`,
-        { metadata: { preflightMessageBytes: options.preflightMessageBytes } },
       );
     }
   }
