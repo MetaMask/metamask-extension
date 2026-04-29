@@ -308,10 +308,10 @@ describe('tpslValidation', () => {
         ).toBe(true);
       });
 
-      it('handles formatted prices with commas and dollar signs', () => {
+      it('handles formatted stop loss prices with commas and dollar signs', () => {
         expect(
           isStopLossSafeFromLiquidation('$45,000', {
-            liquidationPrice: '$40,000',
+            liquidationPrice: 40000,
             direction: 'long',
           }),
         ).toBe(true);

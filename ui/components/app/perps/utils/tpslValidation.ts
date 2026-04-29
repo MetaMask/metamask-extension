@@ -19,7 +19,7 @@ type ValidationParams = {
 };
 
 type LiquidationValidationParams = {
-  liquidationPrice?: number | string | null;
+  liquidationPrice?: number | null;
   direction?: Direction;
 };
 
@@ -103,18 +103,13 @@ export const isStopLossSafeFromLiquidation = (
   }
 
   const slPrice = parsePrice(price);
-  const liquidationPriceValue = parsePrice(liquidationPrice);
-  if (
-    Number.isNaN(slPrice) ||
-    Number.isNaN(liquidationPriceValue) ||
-    liquidationPriceValue <= 0
-  ) {
+  if (Number.isNaN(slPrice) || liquidationPrice <= 0) {
     return true;
   }
 
   return direction === 'long'
-    ? slPrice > liquidationPriceValue
-    : slPrice < liquidationPriceValue;
+    ? slPrice > liquidationPrice
+    : slPrice < liquidationPrice;
 };
 
 /**
