@@ -88,6 +88,49 @@ function checkExtensionBuild() {
   }
 }
 
+// Chromium refuses to load an extension if any _locales/<lang>/messages.json
+// has a malformed placeholder. That's an upstream translation bug, not ours
+// (Crowdin auto-PRs occasionally ship strings like "$3を$2$1" where Chrome's
+// i18n parser reads "$2$" as a named placeholder). Quarantine offending dirs
+// so the rest of the build still loads. Set PRESERVE_LOCALES=1 to skip.
+function quarantineBrokenLocales() {
+  if (process.env.PRESERVE_LOCALES === '1') return;
+  const localesRoot = path.join(EXTENSION_DIR, '_locales');
+  if (!fs.existsSync(localesRoot)) return;
+  const quarantine = path.join(EXTENSION_DIR, '_locales-broken');
+  // Chrome's positional-placeholder rule: "$N" must be followed by a non-digit
+  // (or end of string) to disambiguate from named placeholders.
+  const badPattern = /\$\d\$\d/;
+  let movedAny = false;
+  for (const lang of fs.readdirSync(localesRoot)) {
+    const dir = path.join(localesRoot, lang);
+    const messages = path.join(dir, 'messages.json');
+    if (!fs.statSync(dir).isDirectory() || !fs.existsSync(messages)) continue;
+    let raw;
+    try {
+      raw = fs.readFileSync(messages, 'utf8');
+    } catch {
+      continue;
+    }
+    if (!badPattern.test(raw)) continue;
+    if (!movedAny) fs.mkdirSync(quarantine, { recursive: true });
+    const dest = path.join(quarantine, lang);
+    try {
+      fs.rmSync(dest, { recursive: true, force: true });
+      fs.renameSync(dir, dest);
+      console.warn(`[locale] Quarantined ${lang} (malformed placeholder) → ${path.relative(EXTENSION_DIR, dest)}`);
+      movedAny = true;
+    } catch (e) {
+      console.warn(`[locale] WARN: could not quarantine ${lang}: ${e.message}`);
+    }
+  }
+  if (movedAny) {
+    console.warn('[locale] Set PRESERVE_LOCALES=1 to skip this guard. Restore with: mv ' +
+      path.relative(process.cwd(), quarantine) + '/* ' +
+      path.relative(process.cwd(), localesRoot) + '/');
+  }
+}
+
 function generateFixture() {
   const generator = path.join(__dirname, 'generate-fixture.cjs');
   console.log('[fixture] Generating state from wallet fixture...');
@@ -169,6 +212,7 @@ async function waitForCdp(port) {
 async function main() {
   killExisting();
   checkExtensionBuild();
+  quarantineBrokenLocales();
   generateFixture();
 
   // Best-effort prefill using last-known extension ID before launch (avoids the
@@ -189,8 +233,17 @@ async function main() {
     }
   } catch {}
 
+  // Always prefill the canonical unpacked-extension ID (deterministic for the
+  // dist/chrome path used in farmslot/this repo) AND any ID we found in the
+  // existing prefs. Without the canonical write, a fresh profile gets no
+  // chrome.storage.local state at SW boot — the extension hits PerpsController
+  // disk hydration on undefined diskCache and fails with `getItemSync`.
+  const CANONICAL_EXT_ID = 'hebhblbkkdabgoldnojllkipeoacjioc';
+  const prefillIds = Array.from(new Set([knownExtId, CANONICAL_EXT_ID].filter(Boolean)));
+  for (const eid of prefillIds) {
+    await preFillStorage(eid);
+  }
   if (knownExtId) {
-    await preFillStorage(knownExtId);
     patchPrefs(knownExtId);
   }
 
@@ -238,6 +291,42 @@ async function main() {
 
   const browser = await chromium.connectOverCDP(`http://127.0.0.1:${CDP_PORT}`);
   const ctx = browser.contexts()[0];
+
+  // Stream extension page + service-worker console output to per-stream log
+  // files so each surface can be tailed individually (matches mobile's pattern
+  // of separate metro/simulator/wallet logs). Run `tail -f $AGENT_DIR/*.log` to
+  // watch them all.
+  const EXT_CONSOLE_LOG = path.join(AGENT_DIR, 'extension-console.log');
+  const SW_CONSOLE_LOG = path.join(AGENT_DIR, 'sw-console.log');
+  fs.writeFileSync(EXT_CONSOLE_LOG, `--- new run ${new Date().toISOString()} ---\n`);
+  fs.writeFileSync(SW_CONSOLE_LOG, `--- new run ${new Date().toISOString()} ---\n`);
+  const extLog = fs.createWriteStream(EXT_CONSOLE_LOG, { flags: 'a' });
+  const swLog = fs.createWriteStream(SW_CONSOLE_LOG, { flags: 'a' });
+  function attachPageLogger(page) {
+    page.on('console', (msg) => {
+      try {
+        extLog.write(`[${msg.type()}] ${page.url()} :: ${msg.text()}\n`);
+      } catch {}
+    });
+    page.on('pageerror', (err) => {
+      try {
+        extLog.write(`[error] ${page.url()} :: ${err.message}\n${err.stack || ''}\n`);
+      } catch {}
+    });
+  }
+  function attachSwLogger(sw) {
+    if (sw.__loggerAttached) return;
+    sw.__loggerAttached = true;
+    sw.on('console', (msg) => {
+      try { swLog.write(`[${msg.type()}] ${sw.url()} :: ${msg.text()}\n`); } catch {}
+    });
+  }
+  for (const sw of ctx.serviceWorkers()) attachSwLogger(sw);
+  ctx.on('serviceworker', attachSwLogger);
+  for (const p of ctx.pages()) attachPageLogger(p);
+  ctx.on('page', attachPageLogger);
+  console.log(`[logs] extension console → ${path.relative(process.cwd(), EXT_CONSOLE_LOG)}`);
+  console.log(`[logs] service worker  → ${path.relative(process.cwd(), SW_CONSOLE_LOG)}`);
 
   try {
     const browserPid = execSync(
@@ -308,6 +397,25 @@ async function main() {
     await extPage.goto(`chrome-extension://${extId}/home.html`, { waitUntil: 'load', timeout: 30000 });
   }
   await new Promise((r) => setTimeout(r, 2000));
+
+  // NOTE: This build of MetaMask currently hits an upstream bug on first boot:
+  // app/scripts/controllers/perps/infrastructure.ts does not construct
+  // `diskCache`, and @metamask/perps-controller's hydrateFromDiskSync() calls
+  // `diskCache.getItemSync` without a null-check, surfacing the
+  // "MetaMask had trouble starting" UI ("Cannot read properties of undefined
+  // (reading 'getItemSync')"). It's harmless — clicking Restart in that UI (or
+  // simply reloading home.html) clears it because state is already persisted.
+  // The launcher does NOT auto-click Restart; clicking closes the tab and
+  // breaks downstream automation. Surface the issue and move on.
+  const troubleVisible = await extPage
+    .locator('text=/trouble starting/i')
+    .first()
+    .isVisible()
+    .catch(() => false);
+  if (troubleVisible) {
+    console.warn('[ext] "MetaMask had trouble starting" detected — upstream PerpsController/diskCache bug.');
+    console.warn('       Click "Restart MetaMask" in the extension UI (or reload home.html). State is intact.');
+  }
 
   // Tag window title with sandbox label for multi-instance disambiguation.
   await extPage.evaluate((id) => {

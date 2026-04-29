@@ -10,10 +10,10 @@ New here? Read [GETTING_STARTED.md](./GETTING_STARTED.md) first.
 test/agentic/
   GETTING_STARTED.md         onboarding (start here)
   README.md                  this file
+  qa-agentic.md              manual QA walkthrough
   wallet-fixture.example.json wallet template
-  preflight.sh               env check
-  launch-sandbox.sh          idempotent Chromium launch + wallet unlock
-  stop-sandbox.sh            teardown
+  .env.example               sandbox config template (CDP_PORT, etc.)
+  sandbox.sh                 lifecycle entrypoint — up / down / status / reload / preflight
   validate-recipe.sh         recipe runner entrypoint
   validate-recipe.js         recipe runner core
   validate-flow-schema.js    schema validator for recipes/flows
@@ -25,9 +25,9 @@ test/agentic/
   debug-cdp.ts               CDP exploratory tool
   fix-extension-tabs.ts      cleans up orphan extension tabs
   setup/
-    bootstrap-fixture.cjs    build wallet-fixture.json from password + SRP
     generate-fixture.cjs     turn wallet-fixture.json into fixture-state.json
-    launch-sandbox.js        Node implementation behind launch-sandbox.sh
+                             (builds vault on the fly from srp + password)
+    launch-sandbox.js        Node implementation behind sandbox.sh up
   lib/                       runtime support (action mapper, CDP session, evaluator, ...)
   schemas/                   JSON schemas (flow.schema.json)
   domains/                   recipes + flows + evals, organized by feature area
@@ -44,7 +44,7 @@ Each Chromium instance the runner spawns is fully isolated by `--user-data-dir`.
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `CDP_PORT` | `9222` | Remote debugging port the recipe runner connects to |
+| `CDP_PORT` | `9222` (with warning) | Remote debugging port. Default collides across sandboxes — **always export a unique port per worktree** (e.g. `9223`, `9224`, …). The launcher warns when the default is used. |
 | `SANDBOX_LABEL` | `$SESSION` / `$SLOT_ID` / `agentic` | Window-title prefix for visual disambiguation |
 | `RUNTIME_DIR` | `temp/runtime` | Resolved relative to repo root unless absolute |
 | `RUNTIME_DIR_OVERRIDE` | unset | Absolute override (matches farmslot semantics) |
@@ -59,21 +59,23 @@ Each Chromium instance the runner spawns is fully isolated by `--user-data-dir`.
 **Farmslot compatibility.** When invoked from a farmslot worker the env already
 exports `RUNTIME_DIR=.agent`, `CDP_PORT=<slot port>`, `SLOT_ID=<slot id>`. The
 sandbox scripts honor those without further config so a slot's
-`launch-sandbox.sh` lands at `${REPO}/.agent/chrome-profile-pw` with the slot's
+`sandbox.sh up` lands at `${REPO}/.agent/chrome-profile-pw` with the slot's
 CDP port and a window labeled by the slot id — same paths farmslot's own
 launcher uses.
 
-`launch-sandbox.sh` is **idempotent**: re-running it kills the previous instance (via `AGENT_DIR/launcher.pid` and `browser.pid`), regenerates fixture state, prefills LevelDB, and relaunches.
+`sandbox.sh up` is **idempotent**: re-running it kills the previous instance (via `AGENT_DIR/launcher.pid` and `browser.pid`), regenerates fixture state, prefills LevelDB, and relaunches.
 
 ## Wallet seeding
 
-`launch-sandbox.sh` uses the same approach as farmslot's per-slot launcher: pre-populate the extension's `chrome.storage.local` (LevelDB) **before** the service worker boots, so MetaMask reads the seeded state on first init instead of running through onboarding.
+`sandbox.sh up` uses the same approach as farmslot's per-slot launcher: pre-populate the extension's `chrome.storage.local` (LevelDB) **before** the service worker boots, so MetaMask reads the seeded state on first init instead of running through onboarding.
 
 Pipeline:
-1. `bootstrap-fixture.cjs` builds `wallet-fixture.json` from a password + SRP (run once per worktree).
-2. `generate-fixture.cjs` reads `test/e2e/fixtures/default-fixture.json` (post-migration baseline) and patches it with the wallet's vault, address, network selection, and feature flags. Output: `fixture-state.json`.
+1. Copy `wallet-fixture.example.json` → your private location (e.g. `temp/runtime/wallet-fixture.json` or `.agent/wallet-fixture.json`) and edit `password` + `srp` (testnet only).
+2. `generate-fixture.cjs` reads `test/e2e/fixtures/default-fixture.json` (post-migration baseline), builds a fresh vault from `srp` + `password` using `@metamask/eth-hd-keyring` + `@metamask/browser-passworder`, and patches the fixture with the new keyring, address, network selection, and feature flags. Output: `fixture-state.json`.
 3. `launch-sandbox.js` writes `fixture-state.json` into the profile's LevelDB for the extension's known ID, then launches Chromium.
 4. After the SW comes up, the launcher unlocks the vault using the password from `wallet-fixture.json`.
+
+If a `vault` field is already present in the fixture (farmslot historically generates one), `generate-fixture.cjs` decrypts it instead of rebuilding from `srp` — so existing farmslot fixtures keep working unchanged.
 
 The first run does not yet know the extension ID, so it falls back to injecting via `chrome.storage.local.set()` from a foreground page after Chromium boots — slower but recovers cleanly.
 
@@ -111,6 +113,16 @@ node test/agentic/validate-flow-schema.js \
 ```
 
 Many existing perps flows currently fail strict validation (pre-existing — not introduced by this directory's promotion). Recipe authoring should follow the schema; treat new violations as bugs.
+
+## Known issues
+
+- **Stale builds on out-of-date branches.** If you're on a branch that hasn't merged recent `main` you may hit upstream bugs that have since been fixed (e.g. `PerpsController` `getItemSync` crash, malformed JA locale placeholders). Rebase onto `main` and rebuild before reporting sandbox issues.
+
+- **Webpack races during launch.** `yarn start` continuously rewrites `dist/chrome` while the launcher prepares the unpacked extension; partial bundles can crash the SW boot. The launcher does not try to manage your watcher (auto-pause attempts proved fragile across worktrees). If you hit a flaky boot:
+  1. Stop `yarn start` (`Ctrl-C` in the watcher terminal).
+  2. Wait for `dist/chrome/scripts/app-init.js` to be present and stable.
+  3. Run `bash test/agentic/sandbox.sh up`.
+  4. Restart `yarn start` once you see `[ready]` from the launcher.
 
 ## Reference
 

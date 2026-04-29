@@ -1,9 +1,8 @@
 {
-  "_comment": "Template — copy this to a private location, fill in real values, never commit. Generate via: node test/agentic/setup/bootstrap-fixture.cjs --password '<p>' --srp '<words>' --out temp/runtime/wallet-fixture.json",
+  "_comment": "Copy to a private location (e.g. temp/runtime/wallet-fixture.json or .agent/wallet-fixture.json) and edit. Testnet seed only — never paste a mainnet SRP.",
   "password": "REPLACE_ME",
-  "address": "0xREPLACE_ME",
+  "srp": "twelve word seed phrase goes here in lowercase separated by single spaces",
   "name": "agentic-dev",
-  "vault": "REPLACE_ME (run bootstrap-fixture.cjs to generate)",
   "accounts": [],
   "settings": {
     "autoLockNever": true,

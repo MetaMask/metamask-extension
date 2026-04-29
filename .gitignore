@@ -30,10 +30,11 @@ package
 temp
 .tmp
 
-# agentic recipe runner — generated output
+# agentic recipe runner — generated output + per-worktree config
 test/agentic/domains/artifacts/
 test/agentic/test-artifacts/
 test/agentic/.omc/
+test/agentic/.env
 .sass-cache
 .DS_Store
 app/.DS_Store

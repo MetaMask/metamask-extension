@@ -20,20 +20,20 @@ cp .metamaskrc.dist .metamaskrc
 
 # 2. Wallet fixture — testnet seed only, never mainnet
 mkdir -p temp/runtime
-node test/agentic/setup/bootstrap-fixture.cjs \
-  --password 'devpass' \
-  --srp 'word1 word2 word3 ... word12' \
-  --out temp/runtime/wallet-fixture.json
+cp test/agentic/wallet-fixture.example.json temp/runtime/wallet-fixture.json
+$EDITOR temp/runtime/wallet-fixture.json   # set password + srp
 
-# 3. Build watcher in one terminal — leave running
-yarn start
+# 3. Sandbox config — pick a unique CDP_PORT per worktree. Other knobs
+#    (SANDBOX_LABEL, LAUNCH_MODE, RUNTIME_DIR, ...) live here too.
+cp test/agentic/.env.example test/agentic/.env
+$EDITOR test/agentic/.env
 
-# 4. In another terminal, preflight + launch the sandbox
-bash test/agentic/preflight.sh
-bash test/agentic/launch-sandbox.sh
+# 4. Boot the sandbox. If `yarn start` isn't already running it gets
+#    started in the background; preflight waits for the build to land.
+bash test/agentic/sandbox.sh up
 ```
 
-When `launch-sandbox.sh` finishes you'll see `[ready] agentic (CDP:9222)`. A Chromium window stays open with MetaMask unlocked, isolated from your day-to-day Chrome profile.
+When `sandbox.sh up` finishes you'll see `[ready] agentic (CDP:9222)`. A Chromium window stays open with MetaMask unlocked, isolated from your day-to-day Chrome profile.
 
 ## Run a recipe
 
@@ -57,34 +57,34 @@ Terminal prints PASS, artifacts land under `test/agentic/domains/artifacts/`.
 
 ```bash
 # Health check: CDP, current screen, account state
-npx tsx test/agentic/status.ts
+bash test/agentic/sandbox.sh status
 
 # Soft reload of the extension (after a code change)
-node test/agentic/soft-refresh.js
+bash test/agentic/sandbox.sh reload
 
 # Tear down + relaunch fresh
-bash test/agentic/stop-sandbox.sh && bash test/agentic/launch-sandbox.sh
+bash test/agentic/sandbox.sh down && bash test/agentic/sandbox.sh up
 ```
 
 Common issues:
 
 - **`FAIL: No build at dist/chrome/manifest.json`** — `yarn start` not running yet. Start it and wait for the first compile.
-- **`FAIL: extension not detected after 60s`** — Chromium launched but couldn't load the unpacked extension. Confirm `dist/chrome/manifest.json` exists; run `yarn a:stop` then `yarn a:launch`.
+- **`FAIL: extension not detected after 60s`** — Chromium launched but couldn't load the unpacked extension. Confirm `dist/chrome/manifest.json` exists; run `bash test/agentic/sandbox.sh down && bash test/agentic/sandbox.sh up`.
 - **CDP port collision** — another Chromium owns 9222. Set `CDP_PORT=9223` or kill the other Chromium.
 
 ## Multi-worktree / parallel sandboxes
 
-Every knob is an env var so the same script runs in N worktrees side-by-side. Each one needs a unique `CDP_PORT` and its own `AGENT_DIR` (defaults to `<worktree>/temp/runtime` so it's already isolated):
+Each worktree has its own `test/agentic/.env` (gitignored), so configuration stays per-checkout. Pick a unique `CDP_PORT` per worktree to avoid collisions — the launcher warns when the default `9222` is used.
 
 ```bash
-# Worktree A — default ports
-bash test/agentic/launch-sandbox.sh
+# Worktree A — set once in test/agentic/.env: CDP_PORT=9222, SANDBOX_LABEL=feature-a
+bash test/agentic/sandbox.sh up
 
-# Worktree B — separate Chromium + CDP
-CDP_PORT=9223 SANDBOX_LABEL=feature-b bash test/agentic/launch-sandbox.sh
+# Worktree B — its own test/agentic/.env: CDP_PORT=9223, SANDBOX_LABEL=feature-b
+bash test/agentic/sandbox.sh up
 ```
 
-The `temp/runtime/` dir is gitignored, so each worktree carries its own profile, fixture state, and PIDs.
+The `temp/runtime/` dir (or `.agent/` on a farmslot slot) is gitignored, so each worktree carries its own profile, fixture state, and PIDs. Real shell env vars still override the file (`CDP_PORT=9999 bash test/agentic/sandbox.sh up`), so you can experiment without editing `.env`.
 
 ## How it works
 

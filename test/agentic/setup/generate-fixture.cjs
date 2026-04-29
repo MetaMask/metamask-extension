@@ -6,6 +6,21 @@
 // onboarding flag, network selection, perps controller flags. Writes the
 // result so the launcher can prefill chrome.storage.local before the SW boots.
 //
+// Wallet fixture shape (edit-friendly — copy from
+// test/agentic/wallet-fixture.example.json and fill in):
+//   {
+//     "password": "...",
+//     "srp": "twelve word seed phrase here ...",
+//     "name": "agentic-dev"            // optional — account label
+//     "accounts": [                    // optional — extra imported accounts
+//       { "type": "privateKey", "value": "0x...", "name": "..." }
+//     ],
+//     "settings": { "autoLockNever": true, "injectImportedAccounts": false }
+//   }
+//
+// Backward-compat: if "vault" is set, it is decrypted instead of building a new
+// one from "srp" — same shape farmslot has historically used.
+//
 // Usage: node generate-fixture.cjs <wallet-fixture.json> <output.json>
 'use strict';
 
@@ -19,7 +34,15 @@ if (!walletPath || !outputPath) {
 }
 
 const wallet = JSON.parse(fs.readFileSync(walletPath, 'utf8'));
-const walletAddress = wallet.address;
+if (!wallet.password) {
+  console.error('FAIL: wallet fixture missing "password"');
+  process.exit(1);
+}
+if (!wallet.vault && !wallet.srp) {
+  console.error('FAIL: wallet fixture must include either "srp" (12 word seed) or "vault"');
+  process.exit(1);
+}
+
 const accountName = wallet.name || 'agentic-dev';
 const injectImported = wallet.settings?.injectImportedAccounts === true;
 const pkAccounts = injectImported
@@ -45,13 +68,46 @@ function privateKeyToAddress(hexKey) {
 
 (async () => {
   const enc = resolveDep('@metamask/browser-passworder');
-  const keyrings = await enc.decrypt(wallet.password, wallet.vault);
+  let keyrings;
+  let primaryAddress = wallet.address;
+
+  if (wallet.vault) {
+    keyrings = await enc.decrypt(wallet.password, wallet.vault);
+    if (!primaryAddress) {
+      // Best-effort: derive from the HD keyring if present.
+      const hd = keyrings.find((k) => k.type === 'HD Key Tree');
+      if (hd) {
+        const { HdKeyring } = resolveDep('@metamask/eth-hd-keyring');
+        const ring = new HdKeyring();
+        await ring.deserialize(hd.data);
+        const accts = await ring.getAccounts();
+        primaryAddress = accts[0];
+      }
+    }
+  } else {
+    const { HdKeyring } = resolveDep('@metamask/eth-hd-keyring');
+    const ring = new HdKeyring();
+    await ring.deserialize({
+      mnemonic: wallet.srp.trim(),
+      numberOfAccounts: 1,
+      hdPath: "m/44'/60'/0'/0",
+    });
+    const accts = await ring.getAccounts();
+    primaryAddress = primaryAddress || accts[0];
+    keyrings = [{ type: 'HD Key Tree', data: await ring.serialize() }];
+  }
+
+  if (!primaryAddress) {
+    console.error('FAIL: could not determine primary account address');
+    process.exit(1);
+  }
+
   for (const acct of pkAccounts) {
     const raw = acct.value.startsWith('0x') ? acct.value.slice(2) : acct.value;
     keyrings.push({ type: 'Simple Key Pair', data: [raw] });
   }
   data.KeyringController = { vault: await enc.encrypt(wallet.password, keyrings) };
-  console.log(`[fixture] Vault: ${keyrings.length} keyring(s) (1 HD + ${pkAccounts.length} imported)`);
+  console.log(`[fixture] Vault: ${keyrings.length} keyring(s) (1 HD + ${pkAccounts.length} imported) → ${primaryAddress}`);
 
   const accts = data.AccountsController?.internalAccounts;
   if (accts) {
@@ -60,7 +116,7 @@ function privateKeyToAddress(hexKey) {
     );
     if (hdEntry) {
       const [hdId, hdAcct] = hdEntry;
-      hdAcct.address = walletAddress;
+      hdAcct.address = primaryAddress;
       if (hdAcct.metadata) hdAcct.metadata.name = accountName;
       accts.selectedAccount = hdId;
     }
@@ -96,8 +152,8 @@ function privateKeyToAddress(hexKey) {
     for (const chainId of Object.keys(data.AccountTracker.accountsByChainId)) {
       const chain = data.AccountTracker.accountsByChainId[chainId];
       for (const oldAddr of Object.keys(chain)) {
-        if (oldAddr.toLowerCase() !== walletAddress.toLowerCase()) {
-          chain[walletAddress] = { balance: '0x0' };
+        if (oldAddr.toLowerCase() !== primaryAddress.toLowerCase()) {
+          chain[primaryAddress] = { balance: '0x0' };
           delete chain[oldAddr];
         }
       }
