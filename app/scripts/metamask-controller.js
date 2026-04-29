@@ -2094,15 +2094,12 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.state,
         );
 
-        // TODO: Remove this setTimeout once https://github.com/MetaMask/core/pull/8261 is released
-        setTimeout(() => {
-          for (const [
-            origin,
-            authorization,
-          ] of authorizationsByOrigin.entries()) {
-            this._notifyAuthorizationChange(origin, authorization);
-          }
-        }, 1000);
+        for (const [
+          origin,
+          authorization,
+        ] of authorizationsByOrigin.entries()) {
+          this._notifyAuthorizationChange(origin, authorization);
+        }
 
         // TODO: Move this logic to the SnapKeyring directly.
         // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
@@ -5787,65 +5784,18 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Checks that all accounts referenced have a matching InternalAccount. Sends
-   * an error to sentry for any accounts that were expected but are missing from the wallet.
-   *
-   * @param {InternalAccount[]} [internalAccounts] - The list of evm accounts the wallet knows about.
-   * @param {Hex[]} [accounts] - The list of evm accounts addresses that should exist.
-   */
-  captureKeyringTypesWithMissingIdentities(
-    internalAccounts = [],
-    accounts = [],
-  ) {
-    const accountsMissingIdentities = accounts.filter(
-      (address) =>
-        !internalAccounts.some(
-          (account) => account.address.toLowerCase() === address.toLowerCase(),
-        ),
-    );
-    const keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
-      (address) => this.keyringController.getAccountKeyringType(address),
-    );
-
-    const internalAccountCount = internalAccounts.length;
-
-    const accountsByChainId = getAccountTrackerControllerAccountsByChainId(
-      this._getMetaMaskState(),
-    );
-    const accountsForCurrentChain = accountsByChainId[this.#getGlobalChainId()];
-
-    const accountTrackerCount = Object.keys(
-      accountsForCurrentChain || {},
-    ).length;
-
-    captureException(
-      new Error(
-        `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${internalAccountCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
-      ),
-    );
-  }
-
-  /**
-   * Sorts a list of evm account addresses by most recently selected by using
-   * the lastSelected value for the matching InternalAccount object stored in state.
-   *
-   * @param {Hex[]} [addresses] - The list of evm accounts addresses to sort.
-   * @returns {Hex[]} The sorted evm accounts addresses.
-   */
-  sortEvmAccountsByLastSelected(addresses) {
-    const internalAccounts = this.accountsController.listAccounts();
-    return this.sortAddressesWithInternalAccounts(addresses, internalAccounts);
-  }
-
-  /**
-   * Sorts a list of multichain account addresses by most recently selected by using
-   * the lastSelected value for the matching InternalAccount object stored in state.
+   * Sorts a list of account addresses by most recently selected by using
+   * the lastSelected value for the matching AccountGroup object stored in state.
    *
    * @param {string[]} [addresses] - The list of addresses (not full CAIP-10 Account IDs) to sort.
    * @returns {string[]} The sorted accounts addresses.
    */
-  sortMultichainAccountsByLastSelected(addresses) {
+  sortAddressesByLastSelected(addresses) {
+    const cachedLastSelected = new Map();
     const getLastSelected = (address) => {
+      if (cachedLastSelected.has(address)) {
+        return cachedLastSelected.get(address);
+      }
       const account = this.accountsController.getAccountByAddress(address);
       if (!account) {
         return undefined;
@@ -5854,75 +5804,19 @@ export default class MetamaskController extends EventEmitter {
       if (!context) {
         return undefined;
       }
-      // Get the group object to find the EOA account having lastSelected set
       const group = this.accountTreeController.getAccountGroupObject(
         context.groupId,
       );
       if (!group) {
         return undefined;
       }
-      // Find the EVM EOA account in this group, as it's the only one with lastSelected
-      for (const accountId of group.accounts) {
-        const groupAccount = this.accountsController.getAccount(accountId);
-        if (groupAccount && isEvmAccountType(groupAccount.type)) {
-          return groupAccount.metadata.lastSelected;
-        }
-      }
-      return undefined;
+      cachedLastSelected.set(address, group.metadata.lastSelected);
+      return group.metadata.lastSelected;
     };
 
     return addresses.sort(
       (a, b) => (getLastSelected(b) ?? 0) - (getLastSelected(a) ?? 0),
     );
-  }
-
-  /**
-   * Sorts a list of addresses by most recently selected by using the lastSelected value for
-   * the matching InternalAccount object from the list of internalAccounts provided.
-   *
-   * @param {string[]} [addresses] - The list of caip accounts addresses to sort.
-   * @param {InternalAccount[]} [internalAccounts] - The list of InternalAccounts to determine lastSelected from.
-   * @returns {string[]} The sorted accounts addresses.
-   */
-  sortAddressesWithInternalAccounts(addresses, internalAccounts) {
-    return addresses.sort((firstAddress, secondAddress) => {
-      const firstAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === firstAddress.toLowerCase(),
-      );
-
-      const secondAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === secondAddress.toLowerCase(),
-      );
-
-      if (!firstAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${firstAddress}".`);
-      } else if (!secondAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${secondAddress}".`);
-      } else if (
-        firstAccount.metadata.lastSelected ===
-        secondAccount.metadata.lastSelected
-      ) {
-        return 0;
-      } else if (firstAccount.metadata.lastSelected === undefined) {
-        return 1;
-      } else if (secondAccount.metadata.lastSelected === undefined) {
-        return -1;
-      }
-
-      return (
-        secondAccount.metadata.lastSelected - firstAccount.metadata.lastSelected
-      );
-    });
   }
 
   /**
@@ -5951,7 +5845,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const ethAccounts = getEthAccounts(caveat.value);
-    return this.sortEvmAccountsByLastSelected(ethAccounts);
+    return this.sortAddressesByLastSelected(ethAccounts);
   }
 
   /**
@@ -6441,8 +6335,9 @@ export default class MetamaskController extends EventEmitter {
           },
         );
 
-        const [accountAddressToEmit] =
-          this.sortMultichainAccountsByLastSelected(parsedPermittedAddresses);
+        const [accountAddressToEmit] = this.sortAddressesByLastSelected(
+          parsedPermittedAddresses,
+        );
 
         if (accountAddressToEmit) {
           this._notifyMultichainAccountChange(
@@ -9259,8 +9154,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     const addresses = [...new Set(addressByCaipAccountId.values())];
-    const sortedAddresses =
-      this.sortMultichainAccountsByLastSelected(addresses);
+    const sortedAddresses = this.sortAddressesByLastSelected(addresses);
     const rankByAddress = new Map(
       sortedAddresses.map((address, index) => [address, index]),
     );
@@ -9290,7 +9184,7 @@ export default class MetamaskController extends EventEmitter {
         (caipAccountId) => parseCaipAccountId(caipAccountId).address,
       ),
     );
-    return this.sortMultichainAccountsByLastSelected(addresses)?.[0];
+    return this.sortAddressesByLastSelected(addresses)?.[0];
   }
 
   async _notifyMultichainAccountChange(origin, accountAddressArray, scope) {

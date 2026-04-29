@@ -1,5 +1,5 @@
+import { BannerAlert } from '@metamask/design-system-react';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import { type BannerAlert } from '../../../components/component-library';
 
 type BaseDestinationAccount = {
   isExternal: boolean;
@@ -56,6 +56,11 @@ export type BridgeAlertModalProps = {
   infoList?: { title: string; description: string | null }[];
   /** Inner danger {@link BannerAlert} in the modal (e.g. malicious token or fiat loss). */
   alertModalErrorMessage?: string;
+  /**
+   * Render description either as an alert banner or plain text.
+   * @default text
+   */
+  alertModalDescriptionType?: 'banner' | 'text';
 };
 
 /** An alert transformed for display purposes */
@@ -82,10 +87,13 @@ export type BridgeAlert = MinimalBridgeAlert & {
   /** When shown as a BannerAlert, this indicates whether the alert can be dismissed by the user. */
   isDismissable?: boolean;
   /** If this is defined, the alert will be displayed as a BannerAlert with the props specified. */
-  bannerAlertProps?: Pick<
-    React.ComponentProps<typeof BannerAlert>,
-    'severity' | 'actionButtonLabel' | 'actionButtonOnClick' | 'data-testid'
-  >;
+  bannerAlertProps?:
+    | { severity?: React.ComponentProps<typeof BannerAlert>['severity'] }
+    | {
+        severity?: React.ComponentProps<typeof BannerAlert>['severity'];
+        actionButtonLabel: string;
+        actionButtonOnClick: React.MouseEventHandler<HTMLButtonElement>;
+      };
   /**
    * When set, non-undefined fields override top-level title, description, and infoList in the modal.
    * Top-level title and description still drive the inline {@link BannerAlert} list.

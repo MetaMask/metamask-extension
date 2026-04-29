@@ -1,6 +1,17 @@
 module.exports = {
   extends: ['@metamask/eslint-config'],
 
+  overrides: [
+    {
+      files: ['**/*-method-action-types.ts', '**/*-method-action-types.tmp.ts'],
+      rules: {
+        // Keep generated messenger action type formatting stable while the
+        // repository transitions from eslint-plugin-prettier to oxfmt.
+        'prettier/prettier': ['error', { endOfLine: 'auto' }],
+      },
+    },
+  ],
+
   plugins: ['@metamask/design-tokens'],
 
   globals: {
@@ -80,8 +91,8 @@ module.exports = {
     // if agreeable turned on upstream in @metamask/eslint-config
     'import-x/no-named-as-default-member': 'off',
 
-    // This is necessary to run eslint on Windows and not get a thousand CRLF errors
-    'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    // Formatting is handled by oxfmt, not eslint-plugin-prettier
+    'prettier/prettier': 'off',
 
     '@metamask/design-tokens/color-no-hex': 'error',
     'import-x/no-restricted-paths': [

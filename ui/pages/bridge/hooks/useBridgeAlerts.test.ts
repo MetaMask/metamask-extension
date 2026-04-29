@@ -305,7 +305,7 @@ describe('useBridgeAlerts', () => {
             title: 'bridgeMaliciousTokenTitle',
             description: `bridgeTokenIsMaliciousModalDescription:${MOCK_TO_TOKEN.symbol}`,
             infoList: [{ title: 'Honeypot', description: null }],
-            alertModalErrorMessage: `bridgeTokenIsMaliciousModalDescription:${MOCK_TO_TOKEN.symbol}`,
+            alertModalDescriptionType: 'banner',
           },
           isConfirmationAlert: true,
           openModalOnClick: true,
@@ -339,6 +339,7 @@ describe('useBridgeAlerts', () => {
           modalProps: {
             title: 'bridgeSuspiciousTokenTitle',
             description: `bridgeTokenIsSuspiciousModalDescription:${MOCK_TO_TOKEN.symbol}`,
+            alertModalDescriptionType: 'text',
             infoList: [{ title: 'Airdrop', description: null }],
           },
           bannerAlertProps: { severity: BannerAlertSeverity.Warning },
