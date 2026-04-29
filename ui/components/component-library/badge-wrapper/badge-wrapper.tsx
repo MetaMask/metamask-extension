@@ -12,7 +12,9 @@ import {
 } from './badge-wrapper.types';
 
 /**
- * @deprecated Please update your code to use `BadgeWrapper` from `@metamask/design-system-react`
+ * @deprecated Please update your code to use `BadgeWrapper` from `@metamask/design-system-react`.
+ * See the MMDS migration docs:
+ * https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#badgewrapper-component
  */
 export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
