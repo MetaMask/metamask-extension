@@ -193,6 +193,9 @@
   "addAUrl": {
     "message": "Добавить URL"
   },
+  "addAWallet": {
+    "message": "Добавить кошелек"
+  },
   "addAccount": {
     "message": "Добавить аккаунт"
   },
@@ -1086,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "Самая низкая стоимость"
   },
+  "bridgeMalicious": {
+    "message": "Вредоносный"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Вредоносный токен"
+  },
   "bridgeMarketClosedAction": {
     "message": "Рынок закрыт"
   },
@@ -1106,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "Без комиссии MM"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "Нет информации о цене"
   },
   "bridgePoints": {
     "message": "Прим. баллов",
@@ -1202,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "Получение товара в блокчейне назначения"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Подозрительный аирдроп"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Концентрированное предложение"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Подозрительное поведение"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Завышенное количество трейдеров"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Поддельный объем"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Высокая активность ботов"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Скрытое предложение"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "Высокая комиссия за покупку"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "Высокая комиссия за продажу"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "Высокая комиссия за перевод"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Риск ловушки"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Самозванец"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Выдает себя за чувствительный актив"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Вероятный самозванец"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Возможный самозванец"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Неприемлемый контент"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Искусственный объем"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Низкая заблокированная ликвидность"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "У создателя низкая репутация"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Известный вредоносный"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Подозрительные метаданные"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Возможная манипуляция ценой"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Риск экзит-скама (rugpull)"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Создатель под санкциями"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Похож на вредоносный контракт"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Активность ботов при запуске"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Спам-текст"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Подозрительный код"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Бэкдор в токене"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Непродаваемый токен"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Нестабильная цена"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Фиктивный трейдинг"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Выберите целевой счет"
   },
@@ -1257,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "Обменивается $1 на $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "Подозрительный"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Подозрительный токен"
   },
   "bridgeTo": {
     "message": "Мост к"
@@ -1556,7 +1670,7 @@
     "message": "Месячный"
   },
   "confirmFieldPeriodDurationSeconds": {
-    "message": "$1 сек.",
+    "message": "$1 секунд(-ы)",
     "description": "$1 is the number of seconds in the permission period (shown when the period is not a standard hour/day/week/etc.)"
   },
   "confirmFieldPeriodDurationWeekly": {
@@ -1729,6 +1843,9 @@
   },
   "connect": {
     "message": "Подключиться"
+  },
+  "connectAHardwareWallet": {
+    "message": "Подключить аппаратный кошелек"
   },
   "connectAccounts": {
     "message": "Подключить счета"
@@ -3008,6 +3125,9 @@
   "gasUsed": {
     "message": "Использовано газа"
   },
+  "gatorNoJustificationProvided": {
+    "message": "Обоснование для выдачи разрешения не было предоставлено"
+  },
   "gatorPermissionAnnualFrequency": {
     "message": "Годовой",
     "description": "Time period for annual recurring permissions redemption"
@@ -3079,6 +3199,14 @@
   "gatorPermissionsStartDate": {
     "message": "Дата начала",
     "description": "Label for the start date of a permission"
+  },
+  "gatorPermissionsStatusExpired": {
+    "message": "Просрочено",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Отозван",
+    "description": "Tag label for a gator permission that has been revoked"
   },
   "gatorPermissionsStreamRate": {
     "message": "Скорость потока",
@@ -3359,6 +3487,9 @@
   "importAWallet": {
     "message": "Импортировать кошелек"
   },
+  "importAWalletDescription": {
+    "message": "Используя секретную фразу из 12, 18 или 24 слов"
+  },
   "importAccountError": {
     "message": "Ошибка импорта счета."
   },
@@ -3389,6 +3520,9 @@
   },
   "importAnAccount": {
     "message": "Импортировать счет"
+  },
+  "importAnAccountDescription": {
+    "message": "С помощью закрытого ключа"
   },
   "importNFT": {
     "message": "Импорт NFT"
@@ -4090,6 +4224,102 @@
     "message": "$1 хочет использовать $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdAssetBonusAccruing": {
+    "message": "Начисление следующего бонуса",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "Получить бонус $1",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "Ожидаемый годовой бонус",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "Информация о вашем бонусе",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "Прогноз того, сколько вы заработаете за год, исходя из вашего текущего баланса и ставки. Ставка переменная и может меняться.",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "Узнайте подробнее.",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "Общая сумма бонусов, которую вы получили с момента, когда начали.",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "$1% годового бонуса за то, что вы держите mUSD. Вы можете забирать его ежедневно на Linea. $2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "Полученный бонус за все время",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "Нет начисляемых бонусов",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "$1% бонуса",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "Ваш бонус",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "Ежедневный бонус",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "Обеспечено долларом",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "Без блокировки",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "Без комиссии MetaMask",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "Бонус в размере $1% годовых",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "Получайте ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " за конвертацию USDC, USDT и DAI в mUSD.",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "Узнайте подробнее.",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "Конвертируйте свои стейблкоины",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "Баланс",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "Ваша позиция",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "Значение",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
+  },
   "musdBonusExplanation": {
     "message": "Конвертируйте стейблкоины в mUSD и зарабатывайте\nбонус до $1% годовых, который можно\nполучать ежедневно. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
@@ -4193,6 +4423,10 @@
   "musdMetaMaskUsd": {
     "message": "MetaMask USD",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "Применяются условия."
@@ -4756,6 +4990,14 @@
   "notificationTransactionSuccessView": {
     "message": "Смотреть в $1",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
+  },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "Транзакция не удалась! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "Транзакция подтверждена!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
   },
   "notifications": {
     "message": "Уведомления"
@@ -5420,7 +5662,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Доступный баланс перпов: "
+    "message": "Доступный баланс: "
   },
   "perpsAvailableToAdd": {
     "message": "Доступно для добавления"
@@ -5466,7 +5708,7 @@
     "message": "Сумма закрытия"
   },
   "perpsCloseLong": {
-    "message": "Закрыть длинную позицию"
+    "message": "Закрыть длинную"
   },
   "perpsClosePartialMinNotional": {
     "message": "Частичные закрытия должны быть на сумму не менее $1 в долл. США. Увеличьте сумму закрытия или установите ползунок на 100%."
@@ -5475,19 +5717,25 @@
     "message": "Закрыть позицию"
   },
   "perpsCloseShort": {
-    "message": "Закрыть короткую позицию"
+    "message": "Закрыть короткую"
   },
   "perpsConfirmCloseLong": {
-    "message": "Закрыть длинную позицию"
+    "message": "Закрыть длинную"
   },
   "perpsConfirmCloseShort": {
-    "message": "Закрыть короткую позицию"
+    "message": "Закрыть короткую"
   },
   "perpsConnectionTimeout": {
     "message": "Время ожидания подключения истекло. Повторите попытку."
   },
   "perpsContactSupport": {
     "message": "Связаться с поддержкой"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "Перпы MetaMask поддерживают только торговлю с изолированной маржой. Для торговли на MetaMask необходимо закрыть позицию кросс-маржи."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Кросс-маржа не поддерживается"
   },
   "perpsDateToday": {
     "message": "Сегодня"
@@ -5679,7 +5927,7 @@
     "message": "Пока нет транзакций"
   },
   "perpsOpenInterest": {
-    "message": "Процент при открытии"
+    "message": "Открытый процент"
   },
   "perpsOpenInterestTooltip": {
     "message": "Совокупная стоимость всех открытых позиций для этого бессрочного фьючерса"
@@ -5769,10 +6017,6 @@
   },
   "perpsReversePositionDescriptionShort": {
     "message": "Изменить вашу короткую позицию на длинную"
-  },
-  "perpsSaveChanges": {
-    "message": "Сохранить изменения",
-    "description": "Button text for saving TP/SL changes"
   },
   "perpsSearchMarkets": {
     "message": "Поиск рынков"
@@ -5979,6 +6223,9 @@
   },
   "perpsTrades": {
     "message": "Сделки"
+  },
+  "perpsTriggerPrice": {
+    "message": "Триггерная цена"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "Кредитное плечо увеличивает как прибыль, так и убытки. При кредитном плече 40x, изменение цены на 1% = 40% прибыли или убытка при вашей марже."

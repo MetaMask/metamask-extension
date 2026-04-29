@@ -39,11 +39,11 @@ export const DAPP_PAGE_LOAD_BENCHMARK_DIR =
 export const DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH = `${DAPP_PAGE_LOAD_BENCHMARK_DIR}/${DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME}`;
 
 /**
- * Default filename for the merged page-load benchmark JSON (Chrome + Browserify).
+ * Default filename for the merged page-load benchmark JSON (Chrome + Webpack test build).
  * Keep in sync with `.github/workflows/run-benchmarks.yml` (`DAPP_BENCHMARK_JSON`).
  */
 export const DAPP_PAGE_LOAD_BENCHMARK_ARTIFACT_FILENAME =
-  'benchmark-chrome-browserify-pageLoadBenchmark.json';
+  'benchmark-chrome-webpack-pageLoadBenchmark.json';
 
 /** Same as {@link DEFAULT_BENCHMARK_BROWSER_LOADS} in `shared/constants/benchmarks`. */
 export const DEFAULT_NUM_BROWSER_LOADS = DEFAULT_BENCHMARK_BROWSER_LOADS;

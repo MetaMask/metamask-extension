@@ -33,7 +33,7 @@ import {
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
-import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
+import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -2952,7 +2952,7 @@ export function getUrlScanCacheResult(state, hostname) {
  * @param {*} state
  * @returns The token scan cache object
  */
-function getTokenScanCache(state) {
+export function getTokenScanCache(state) {
   return state.metamask.tokenScanCache;
 }
 
