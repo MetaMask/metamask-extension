@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useState } from 'react';
 import type { Rule } from '@metamask/7715-permission-types';
-import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
   BoxFlexDirection,
@@ -43,10 +42,10 @@ import {
   extractRedeemerAddressesFromRules,
 } from '../../../../../../shared/lib/gator-permissions';
 import { getImageForChainId } from '../../../../../selectors/multichain';
-import { getInternalAccountByAddress } from '../../../../../selectors';
-import { shortenAddress } from '../../../../../helpers/utils/util';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
+import { useFallbackDisplayName } from '../../../../app/confirm/info/row/hook';
+import NicknamePopovers from '../../../../app/modals/nickname-popovers';
 import {
   GatorPermissionDetailRow,
   gatorPermissionDetailRowStyle,
@@ -97,13 +96,9 @@ function schemaElementDomKey(
 
 const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
   const t = useI18nContext() as I18nFunction;
-  const internalAccount = useSelector((state) =>
-    getInternalAccountByAddress(state, address),
-  );
-  const accountText = useMemo(
-    () => internalAccount?.metadata?.name || shortenAddress(address),
-    [internalAccount, address],
-  );
+  const { displayName, hexAddress } = useFallbackDisplayName(address);
+  const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
+  const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
 
   return (
     <Box
@@ -126,6 +121,7 @@ const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
         style={gatorPermissionDetailRowStyle}
         gap={2}
         alignItems={BoxAlignItems.Center}
+        onClick={handleDisplayNameClick}
       >
         <PreferredAvatar address={address} />
         <Text
@@ -133,13 +129,19 @@ const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
           color={TextColor.TextAlternative}
           data-testid="review-gator-permission-account-name"
         >
-          {accountText}
+          {displayName}
         </Text>
         <CopyIcon
           copyText={address}
           style={{ position: 'static', right: 'auto', top: 'auto' }}
         />
       </Box>
+      {isNicknamePopoverShown ? (
+        <NicknamePopovers
+          onClose={() => setIsNicknamePopoverShown(false)}
+          address={hexAddress}
+        />
+      ) : null}
     </Box>
   );
 };
@@ -191,34 +193,39 @@ const ReviewNetworkRow: React.FC<{
 };
 
 const RedeemerAddressItem: React.FC<{ address: string }> = ({ address }) => {
-  const internalAccount = useSelector((state) =>
-    getInternalAccountByAddress(state, address),
-  );
-  const accountText = useMemo(
-    () => internalAccount?.metadata?.name || shortenAddress(address),
-    [internalAccount, address],
-  );
+  const { displayName, hexAddress } = useFallbackDisplayName(address);
+  const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
+  const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
 
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      justifyContent={BoxJustifyContent.End}
-      gap={2}
-      alignItems={BoxAlignItems.Center}
-    >
-      <PreferredAvatar address={address} />
-      <Text
-        variant={TextVariant.BodyMd}
-        color={TextColor.TextAlternative}
-        data-testid="review-gator-permission-redeemer-address"
+    <>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.End}
+        gap={2}
+        alignItems={BoxAlignItems.Center}
+        onClick={handleDisplayNameClick}
       >
-        {accountText}
-      </Text>
-      <CopyIcon
-        copyText={address}
-        style={{ position: 'static', right: 'auto', top: 'auto' }}
-      />
-    </Box>
+        <PreferredAvatar address={address} />
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          data-testid="review-gator-permission-redeemer-address"
+        >
+          {displayName}
+        </Text>
+        <CopyIcon
+          copyText={address}
+          style={{ position: 'static', right: 'auto', top: 'auto' }}
+        />
+      </Box>
+      {isNicknamePopoverShown ? (
+        <NicknamePopovers
+          onClose={() => setIsNicknamePopoverShown(false)}
+          address={hexAddress}
+        />
+      ) : null}
+    </>
   );
 };
 

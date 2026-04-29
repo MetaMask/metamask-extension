@@ -16,11 +16,11 @@ export function extractRedeemerAddressesFromRules(
     return null;
   }
   const { addresses } = redeemer.data;
-  if (
-    !Array.isArray(addresses) ||
-    addresses.some((address) => typeof address !== 'string')
-  ) {
+  if (!Array.isArray(addresses)) {
     return null;
   }
-  return addresses;
+  const validAddresses = addresses.filter(
+    (address): address is string => typeof address === 'string',
+  );
+  return validAddresses.length ? validAddresses : null;
 }
