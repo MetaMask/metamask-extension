@@ -119,7 +119,7 @@ For startup benchmarks, use the `startup` prefix: `standard-home.ts` → `startu
 
 **Quality Gate enforcement:**
 
-To make a metric block PRs on regression by failing the `quality-gate` CI job, add its dotted key (`<benchmarkName>.<metricId>`) to `GATED_METRICS` in `test/e2e/benchmarks/utils/gated-metrics.ts`. Metrics not in that set are informational, meaning threshold breaches will appear as warnings in the PR comment but will not fail the `quality-gate` job.
+`test/e2e/benchmarks/utils/gated-metrics.ts` lists which metrics block PRs on regression. Metrics in that file fail the `quality-gate` CI job when their threshold is breached; metrics not listed surface as warnings in the PR comment but do not fail the gate. Edit that file to graduate or demote a metric — its module JSDoc covers the mechanics. Both that file and `thresholds.ts` are co-owned by `@MetaMask/qa` and `@MetaMask/extension-platform`; either team can approve.
 
 ### 3. Add to a preset (optional)
 
