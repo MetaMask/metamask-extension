@@ -40,7 +40,6 @@ import type {
 import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
-  PRICE_RANGES_MINIMAL_VIEW,
 } from '../../../shared/lib/perps-formatters';
 import {
   PERPS_EVENT_PROPERTY,
@@ -529,17 +528,17 @@ const PerpsOrderEntryPage: React.FC = () => {
 
     const tpInvalid = Boolean(
       tp?.trim() &&
-      !isValidTakeProfitPrice(tp, {
-        currentPrice: referencePrice,
-        direction: dir,
-      }),
+        !isValidTakeProfitPrice(tp, {
+          currentPrice: referencePrice,
+          direction: dir,
+        }),
     );
     const slInvalid = Boolean(
       sl?.trim() &&
-      !isValidStopLossPrice(sl, {
-        currentPrice: referencePrice,
-        direction: dir,
-      }),
+        !isValidStopLossPrice(sl, {
+          currentPrice: referencePrice,
+          direction: dir,
+        }),
     );
     const slLiquidationInvalid = Boolean(
       sl?.trim() &&

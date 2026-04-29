@@ -19,7 +19,7 @@ export const useIsTxSubmittable = () => {
   const {
     isInsufficientBalance,
     isInsufficientGasBalance,
-    isInsufficientNativeReserveError,
+    isInsufficientNativeReserve,
     isInsufficientGasForQuote,
     isTxAlertPresent,
     isTxAlertLoading,
@@ -34,7 +34,7 @@ export const useIsTxSubmittable = () => {
       !isInsufficientBalance &&
       !isInsufficientGasBalance &&
       !isInsufficientGasForQuote &&
-      !isInsufficientNativeReserveError &&
+      !isInsufficientNativeReserve &&
       !(isTxAlertLoading || isTxAlertPresent),
   );
 };

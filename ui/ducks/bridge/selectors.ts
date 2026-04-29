@@ -885,9 +885,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
         ? minimumBalanceForRentExemptionInSOL
         : '0';
 
-    const isInsufficientNativeReserveError = Boolean(
-      insufficientNativeReserveError,
-    );
+    const isInsufficientNativeReserve = Boolean(insufficientNativeReserveError);
 
     return {
       isTxAlertPresent: Boolean(txAlert),
@@ -914,7 +912,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
                 .lte(validatedSrcAmount)
             : new BigNumber(nativeBalance).lte(0)),
       ),
-      isInsufficientNativeReserveError,
+      isInsufficientNativeReserve,
       // Shown after fetching quotes
       isInsufficientGasForQuote: Boolean(
         nativeBalance &&
@@ -996,6 +994,7 @@ export const getWarningLabels = (
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isInsufficientBalance,
+    isInsufficientNativeReserve,
     isPriceImpactWarning,
     isPriceImpactError,
     isTxAlertPresent,
@@ -1016,6 +1015,9 @@ export const getWarningLabels = (
   isStockMarketClosed && warnings.push('market_closed');
   // @ts-expect-error: quote_expired is not a valid QuoteWarning yet
   isQuoteExpired && warnings.push('quote_expired');
+  isInsufficientNativeReserve &&
+    // @ts-expect-error: market_closed is not a valid QuoteWarning yet
+    warnings.push('insufficient_native_reserve');
   return warnings;
 };
 

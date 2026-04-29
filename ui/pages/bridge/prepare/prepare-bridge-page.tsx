@@ -135,7 +135,7 @@ const PrepareBridgePage = ({
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
   const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
 
-  const { isInsufficientBalance, isInsufficientNativeReserveError } =
+  const { isInsufficientBalance, isInsufficientNativeReserve } =
     useSelector(getValidationErrors);
   const { securityWarnings } = useSecurityAlerts(toToken);
   const { confirmationAlerts, alertsById } = useBridgeAlerts();
@@ -225,7 +225,7 @@ const PrepareBridgePage = ({
       // balance is less than the tenderly balance
       insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
         ? true
-        : isInsufficientBalance || isInsufficientNativeReserveError,
+        : isInsufficientBalance || isInsufficientNativeReserve,
       slippage,
       walletAddress: selectedAccount.address,
       destWalletAddress: selectedDestinationAccount?.address,
@@ -245,7 +245,7 @@ const PrepareBridgePage = ({
     effectiveGasIncluded,
     effectiveGasIncluded7702,
     isInsufficientBalance,
-    isInsufficientNativeReserveError,
+    isInsufficientNativeReserve,
   ]);
 
   // `useRef` is used here to manually memoize a function reference.
