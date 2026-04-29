@@ -36,10 +36,9 @@ yarn test:e2e:benchmark --preset userJourneyOnboardingNew --out results.json
 | `pageLoadBenchmark`            | Dapp page load (Playwright)     | `dapp-page-load/`                                                |
 | `all`                          | All benchmarks                  | Everything above                                                 |
 
-### User journey benchmarks: browserify vs webpack
+### User journey benchmarks
 
-- **PRs:** User journey benchmarks run on **Chrome + Browserify** only.
-- **Push to main/release:** User journey benchmarks also run on **Chrome + Webpack** (extra `benchmarks` matrix rows with `mainOnly: true` in `run-benchmarks.yml`) so we can compare build systems before releasing webpack to production.
+- User journey presets run on **Chrome and Firefox** with the **Webpack** test build (`build-test-webpack` / `build-test-mv2-webpack` in CI), same as startup and interaction benchmarks in `run-benchmarks.yml`.
 
 ### Special CI Requirements
 

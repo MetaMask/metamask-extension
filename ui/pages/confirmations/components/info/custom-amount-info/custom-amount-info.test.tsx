@@ -5,13 +5,13 @@ import configureMockStore from 'redux-mock-store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import * as useTransactionCustomAmountModule from '../../../hooks/transactions/useTransactionCustomAmount';
 import * as useTransactionCustomAmountAlertsModule from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import * as useAutomaticTransactionPayTokenModule from '../../../hooks/pay/useAutomaticTransactionPayToken';
 import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransactionPayMetrics';
 import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
-import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
 import {
   CustomAmountInfo,
   CustomAmountInfoSkeleton,
@@ -23,7 +23,6 @@ jest.mock('../../../hooks/pay/useAutomaticTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayMetrics');
 jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../hooks/pay/useTransactionPayData');
-jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../transactions/custom-amount/custom-amount', () => ({
   CustomAmount: ({ amountFiat }: { amountFiat: string }) => (
     <div data-testid="custom-amount">{amountFiat}</div>
@@ -75,13 +74,11 @@ const MOCK_AVAILABLE_TOKEN = {
   balanceUsd: '100',
 };
 
-const DEFAULT_PAY_TOKEN_HOOK_RETURN = {
-  isNative: false,
-  payToken: undefined,
-  setPayToken: jest.fn(),
-};
-
-const DEFAULT_ALERTS_HOOK_RETURN = {
+const DEFAULT_ALERTS_HOOK_RETURN: {
+  alertMessage?: string;
+  hideResults: boolean;
+  disableUpdate: boolean;
+} = {
   alertMessage: undefined,
   hideResults: false,
   disableUpdate: false,
@@ -94,7 +91,6 @@ function render({
   hidePayTokenAmount = false,
   availableTokens = [MOCK_AVAILABLE_TOKEN],
   customAmountHookReturn = DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
-  payTokenHookReturn = DEFAULT_PAY_TOKEN_HOOK_RETURN,
   alertsHookReturn = DEFAULT_ALERTS_HOOK_RETURN,
   isQuotesLoading = false,
   hasQuotes = false,
@@ -107,7 +103,6 @@ function render({
   hidePayTokenAmount?: boolean;
   availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
   customAmountHookReturn?: typeof DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN;
-  payTokenHookReturn?: typeof DEFAULT_PAY_TOKEN_HOOK_RETURN;
   alertsHookReturn?: typeof DEFAULT_ALERTS_HOOK_RETURN;
   isQuotesLoading?: boolean;
   hasQuotes?: boolean;
@@ -159,9 +154,6 @@ function render({
         typeof useTransactionPayDataModule.useTransactionPaySourceAmounts
       >,
     );
-  jest
-    .mocked(useTransactionPayTokenModule.useTransactionPayToken)
-    .mockReturnValue(payTokenHookReturn);
 
   const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 
@@ -317,6 +309,34 @@ describe('CustomAmountInfo', () => {
     });
   });
 
+  it('does not render alert body text when reason and message are the same', () => {
+    const { queryByText } = render({
+      alertsHookReturn: {
+        alertMessage: undefined,
+        hideResults: true,
+        disableUpdate: false,
+      },
+    });
+
+    expect(
+      queryByText(messages.alertInsufficientPayTokenBalance.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders alert message as body text when reason differs from message', () => {
+    const { getByText } = render({
+      alertsHookReturn: {
+        alertMessage: messages.alertNoPayTokenQuotesMessage.message,
+        hideResults: true,
+        disableUpdate: false,
+      },
+    });
+
+    expect(
+      getByText(messages.alertNoPayTokenQuotesMessage.message),
+    ).toBeInTheDocument();
+  });
+
   describe('overrideCenterContent', () => {
     it('renders override content when provided', () => {
       jest
@@ -354,9 +374,6 @@ describe('CustomAmountInfo', () => {
       jest
         .mocked(useTransactionPayDataModule.useTransactionPaySourceAmounts)
         .mockReturnValue([]);
-      jest
-        .mocked(useTransactionPayTokenModule.useTransactionPayToken)
-        .mockReturnValue(DEFAULT_PAY_TOKEN_HOOK_RETURN);
 
       const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 
