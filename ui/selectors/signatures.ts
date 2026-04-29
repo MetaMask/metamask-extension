@@ -5,7 +5,6 @@ import {
   type SignatureControllerState,
   type SignatureRequest,
 } from '@metamask/signature-controller';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import {
   unapprovedPersonalMsgsSelector,
   unapprovedTypedMessagesSelector,
@@ -44,14 +43,9 @@ const selectUnapprovedMessages = createSelector(
   }),
 );
 
-const internalSelectUnapprovedMessage = createSelector(
+/** @deprecated Use {@link selectSignatureRequestById} or {@link selectUnapprovedSignatureRequestById} instead. */
+export const selectUnapprovedMessage = createSelector(
   selectUnapprovedMessages,
   (_state: DefaultRootState, messageId: string) => messageId,
   (messages, messageId) => messages[messageId],
-);
-
-/** @deprecated Use {@link selectSignatureRequestById} or {@link selectUnapprovedSignatureRequestById} instead. */
-export const selectUnapprovedMessage = createDeepEqualSelector(
-  internalSelectUnapprovedMessage,
-  (message) => message,
 );
