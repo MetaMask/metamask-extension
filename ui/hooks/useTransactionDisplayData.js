@@ -117,6 +117,11 @@ export function useTransactionDisplayData(transactionGroup) {
   const marketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
   const fiatFormatter = useFiatFormatter();
+  // For post-quote pay flows (e.g. Perps Withdraw) the values surfaced
+  // through `metamaskPay` (`targetFiat`, fee `*.usd`) are explicitly USD,
+  // so use a USD-pinned formatter when rendering them — even if the user
+  // has selected a different display currency.
+  const usdFormatter = useFiatFormatter({ overrideCurrency: 'usd' });
 
   const t = useI18nContext();
 
@@ -281,6 +286,12 @@ export function useTransactionDisplayData(transactionGroup) {
   // used to display fiat amount of tx. initialized to either tokenFiatAmount or undefined
   // but can later be modified if dealing with a swap
   let secondaryDisplayValue = isTokenCategory ? tokenFiatAmount : undefined;
+  // when set, replaces the `useCurrencyDisplay`-formatted `primaryCurrency`.
+  // Used by the post-quote fallback path (e.g. Perps Withdraw without rate
+  // data) so we can render a fiat string without `useCurrencyDisplay`
+  // auto-appending the chain native ticker (which would misleadingly read
+  // as "$50 worth of ETH/BNB" instead of "$50").
+  let primaryCurrencyOverride;
 
   let title;
 
@@ -458,10 +469,6 @@ export function useTransactionDisplayData(transactionGroup) {
         tokenListAllChains,
       });
 
-    if (targetTokenSymbol) {
-      primarySuffix = targetTokenSymbol;
-    }
-
     if (isPostQuote) {
       // Post-quote withdrawals (e.g. Perps Withdraw): the completed tx does
       // not carry a destination-token amount; derive it from targetFiat /
@@ -486,15 +493,25 @@ export function useTransactionDisplayData(transactionGroup) {
 
       const formattedReceived = formatPostQuoteReceivedAmount(receivedAmount);
       if (formattedReceived !== undefined) {
+        // Successful conversion — render in destination-token units.
         primaryDisplayValue = formattedReceived;
+        if (targetTokenSymbol) {
+          primarySuffix = targetTokenSymbol;
+        }
       } else if (metamaskPay?.targetFiat) {
-        primaryDisplayValue = metamaskPay.targetFiat;
+        // Rate unavailable — render the USD value directly via the override
+        // so `useCurrencyDisplay` doesn't auto-append the chain native
+        // ticker (which would falsely render "$50" as "50 ETH" / "50 BNB").
+        primaryCurrencyOverride = usdFormatter(fiatUsd);
       }
 
       if (metamaskPay?.targetFiat) {
-        secondaryDisplayValue = fiatFormatter(fiatUsd);
+        secondaryDisplayValue = usdFormatter(fiatUsd);
       }
     } else if (metamaskPay?.targetFiat) {
+      if (targetTokenSymbol) {
+        primarySuffix = targetTokenSymbol;
+      }
       primaryDisplayValue = metamaskPay.targetFiat;
       secondaryDisplayValue = fiatFormatter(Number(metamaskPay.targetFiat));
     }
@@ -541,10 +558,12 @@ export function useTransactionDisplayData(transactionGroup) {
     recipientAddress = to;
   }
 
+  const resolvedPrimaryCurrency =
+    type === TransactionType.swap && isPending ? '' : primaryCurrency;
+
   return {
     title,
-    primaryCurrency:
-      type === TransactionType.swap && isPending ? '' : primaryCurrency,
+    primaryCurrency: primaryCurrencyOverride ?? resolvedPrimaryCurrency,
     recipientAddress,
     secondaryCurrency:
       (isTokenCategory && !tokenFiatAmount) ||
@@ -648,11 +667,15 @@ function getDestinationTokenUsdRate({
  * value. Mirrors mobile's `getPostQuoteDisplay`: amounts >= 1 use 2 decimals,
  * smaller amounts use 4 significant figures.
  *
+ * Returns `undefined` for any non-finite input (NaN, ±Infinity) to avoid
+ * `RangeError` from `toFixed`/`toPrecision` — this can happen when
+ * `tokenUsdRate` is small enough that `fiatUsd / tokenUsdRate` overflows.
+ *
  * @param {number|undefined} amount - Token amount in token units (not wei).
  * @returns {string|undefined}
  */
 function formatPostQuoteReceivedAmount(amount) {
-  if (amount === undefined) {
+  if (amount === undefined || !Number.isFinite(amount)) {
     return undefined;
   }
   return amount >= 1 ? amount.toFixed(2) : amount.toPrecision(4);

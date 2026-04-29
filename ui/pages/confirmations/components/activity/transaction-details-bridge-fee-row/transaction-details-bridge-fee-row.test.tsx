@@ -1,6 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { TransactionStatus } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetailsBridgeFeeRow } from './transaction-details-bridge-fee-row';
@@ -16,12 +19,16 @@ const mockState = {
   },
 };
 
-function createMockTransactionMeta(bridgeFeeFiat?: string) {
+function createMockTransactionMeta(
+  bridgeFeeFiat?: string,
+  type?: TransactionType,
+) {
   return {
     id: 'test-id',
     chainId: '0x1',
     status: TransactionStatus.confirmed,
     time: Date.now(),
+    type,
     txParams: {
       from: '0x123',
       to: '0x456',
@@ -30,10 +37,10 @@ function createMockTransactionMeta(bridgeFeeFiat?: string) {
   };
 }
 
-function render(bridgeFeeFiat?: string) {
+function render(bridgeFeeFiat?: string, type?: TransactionType) {
   return renderWithProvider(
     <TransactionDetailsProvider
-      transactionMeta={createMockTransactionMeta(bridgeFeeFiat) as never}
+      transactionMeta={createMockTransactionMeta(bridgeFeeFiat, type) as never}
     >
       <TransactionDetailsBridgeFeeRow />
     </TransactionDetailsProvider>,
@@ -52,5 +59,23 @@ describe('TransactionDetailsBridgeFeeRow', () => {
     expect(
       getByTestId('transaction-details-bridge-fee-row'),
     ).toBeInTheDocument();
+  });
+
+  it('renders "Bridge fee" label for non-perpsWithdraw transactions', () => {
+    const { getByText, queryByText } = render(
+      '2.50',
+      TransactionType.perpsDeposit,
+    );
+    expect(getByText('Bridge fee')).toBeInTheDocument();
+    expect(queryByText('Provider fee')).not.toBeInTheDocument();
+  });
+
+  it('renders "Provider fee" label for perpsWithdraw transactions', () => {
+    const { getByText, queryByText } = render(
+      '2.50',
+      TransactionType.perpsWithdraw,
+    );
+    expect(getByText('Provider fee')).toBeInTheDocument();
+    expect(queryByText('Bridge fee')).not.toBeInTheDocument();
   });
 });
