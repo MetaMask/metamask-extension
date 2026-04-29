@@ -242,9 +242,7 @@ async function main() {
   for (const eid of prefillIds) {
     await preFillStorage(eid);
   }
-  if (knownExtId) {
-    patchPrefs(knownExtId);
-  }
+  patchPrefs(knownExtId || CANONICAL_EXT_ID);
 
   const { chromium } = require('playwright');
 

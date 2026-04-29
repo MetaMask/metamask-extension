@@ -381,6 +381,9 @@ async function hudUpdate(ctx, nodeId, description, breadcrumbData) {
       }
     }, [nodeId, description || nodeId, breadcrumb, mode, showButton]);
   } catch (err) {
+    if ((err.message || '').includes('Execution context was destroyed')) {
+      return;
+    }
     process.stdout.write(`  [hud] update failed: ${err.message || err}\n`);
   }
 }
