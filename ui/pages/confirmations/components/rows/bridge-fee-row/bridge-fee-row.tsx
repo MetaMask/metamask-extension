@@ -46,13 +46,6 @@ export function BridgeFeeRow({
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
-  // When a caller hasn't supplied a tooltipDescription, fall back to the
-  // perpsWithdraw description so the Perps Withdraw confirmation mirrors
-  // mobile's Transaction fee tooltip copy.
-  const resolvedTooltipDescription =
-    tooltipDescription ??
-    (isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined);
-
   const feeLabel = t('transactionFee');
 
   const feeTotalUsd = useMemo(() => {
@@ -87,7 +80,7 @@ export function BridgeFeeRow({
   let tooltipContent: string | undefined;
   if (hasQuotes && totals) {
     tooltipContent = renderTooltipContent({
-      description: resolvedTooltipDescription,
+      description: tooltipDescription,
       t,
       totals,
       formatFiat,

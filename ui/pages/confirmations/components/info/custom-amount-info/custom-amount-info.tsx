@@ -44,6 +44,7 @@ import {
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import { useConfirmContext } from '../../../context/confirm';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
@@ -250,6 +251,7 @@ function CenterContainerSkeleton() {
 }
 
 function BottomContainer({ amountFiat }: { amountFiat: string }) {
+  const t = useI18nContext();
   const isResultReady = useIsResultReady();
   const { hideResults } = useTransactionCustomAmountAlerts();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -267,7 +269,12 @@ function BottomContainer({ amountFiat }: { amountFiat: string }) {
       gap={2}
       paddingBottom={4}
     >
-      <BridgeFeeRow variant={ConfirmInfoRowSize.Small} />
+      <BridgeFeeRow
+        variant={ConfirmInfoRowSize.Small}
+        tooltipDescription={
+          isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined
+        }
+      />
       <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
       {isPerpsWithdraw ? (
         <ReceiveRow
