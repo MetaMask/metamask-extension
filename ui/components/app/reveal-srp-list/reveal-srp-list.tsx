@@ -9,8 +9,8 @@ import {
   IconName,
   IconSize,
   Text,
-} from '../../../../components/component-library';
-import { SrpList } from '../../../../components/multichain/multi-srp/srp-list/srp-list';
+} from '../../../components/component-library';
+import { SrpList } from '../../../components/multichain/multi-srp/srp-list/srp-list';
 import {
   TextVariant,
   TextColor,
@@ -22,19 +22,19 @@ import {
   IconColor,
   FontWeight,
   BlockSize,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+} from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_REVIEW_SRP_ROUTE,
   REVEAL_SEED_ROUTE,
-} from '../../../../helpers/constants/routes';
+} from '../../../helpers/constants/routes';
 import {
   getIsSocialLoginFlow,
   getSocialLoginEmail,
   getSocialLoginType,
-} from '../../../../selectors';
-import Card from '../../../../components/ui/card';
-import { useSyncSRPs } from '../../../../hooks/social-sync/useSyncSRPs';
+} from '../../../selectors';
+import Card from '../../../components/ui/card';
+import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
 
 export const RevealSrpList = () => {
   const t = useI18nContext();

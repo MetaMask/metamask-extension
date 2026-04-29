@@ -1,11 +1,11 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
-import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
-import * as selectors from '../../../../selectors';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import mockState from '../../../../test/data/mock-state.json';
+import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
+import * as selectors from '../../../selectors';
 import ChangePassword from './change-password';
 
 const mockUseNavigate = jest.fn();
@@ -31,7 +31,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockUseNavigate,
 }));
 
-jest.mock('../../../../store/actions', () => ({
+jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   changePassword: (_newPwd: string, _currentPwd: string) => {
     return mockChangePassword(_newPwd, _currentPwd);
@@ -41,7 +41,7 @@ jest.mock('../../../../store/actions', () => ({
   },
 }));
 
-jest.mock('../../../../selectors', () => ({
+jest.mock('../../../selectors', () => ({
   ...jest.requireActual('../../../../selectors'),
   getIsSocialLoginFlow: jest.fn().mockReturnValue(false),
 }));

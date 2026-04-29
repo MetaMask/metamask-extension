@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { CONSENSYS_PRIVACY_LINK } from '../../../../../shared/lib/ui-utils';
-import ClearMetametricsData from '../../../../components/app/clear-metametrics-data';
+import { CONSENSYS_PRIVACY_LINK } from '../../../../shared/lib/ui-utils';
+import ClearMetametricsData from '../../../components/app/clear-metametrics-data';
 import {
   Box,
   ButtonPrimary,
@@ -11,14 +11,14 @@ import {
   PolymorphicComponentPropWithRef,
   PolymorphicRef,
   Text,
-} from '../../../../components/component-library';
+} from '../../../components/component-library';
 import {
   BlockSize,
   Display,
   FlexDirection,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+} from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
@@ -27,11 +27,11 @@ import {
   getShowDataDeletionErrorModal,
   getShowDeleteMetaMetricsDataModal,
   getLatestMetricsEventTimestamp,
-} from '../../../../selectors';
-import { openDeleteMetaMetricsDataModal } from '../../../../ducks/app/app';
-import DataDeletionErrorModal from '../../../../components/app/data-deletion-error-modal';
-import { formatDate } from '../../../../helpers/utils/util';
-import { DeleteRegulationStatus } from '../../../../../shared/constants/metametrics';
+} from '../../../selectors';
+import { openDeleteMetaMetricsDataModal } from '../../../ducks/app/app';
+import DataDeletionErrorModal from '../../../components/app/data-deletion-error-modal';
+import { formatDate } from '../../../helpers/utils/util';
+import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
