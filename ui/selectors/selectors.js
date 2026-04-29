@@ -2050,14 +2050,14 @@ export function getIsBridgeChain(state, overrideChainId) {
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
-const getBridgeFeatureFlags = createSelector(
-  [getRemoteFeatureFlags],
-  (remoteFeatureFlags) => {
-    const { bridgeConfig } = remoteFeatureFlags;
-    return selectBridgeFeatureFlags({
+// Deep-equal memo: getRemoteFeatureFlags returns a new merged object when any flag changes;
+// only bridgeConfig should invalidate consumers of bridge feature flags.
+const getBridgeFeatureFlags = createDeepEqualSelector(
+  [(state) => getRemoteFeatureFlags(state).bridgeConfig],
+  (bridgeConfig) =>
+    selectBridgeFeatureFlags({
       remoteFeatureFlags: { bridgeConfig },
-    });
-  },
+    }),
 );
 
 export const getIsBridgeEnabled = createSelector(

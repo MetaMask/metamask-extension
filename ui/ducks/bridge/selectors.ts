@@ -76,6 +76,7 @@ import {
 } from '../../selectors/accounts';
 import { isHardwareWallet } from '../../selectors';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import {
   getAllAccountGroups,
   getInternalAccountBySelectedAccountGroupAndCaip,
@@ -161,14 +162,14 @@ const getAllBridgeableNetworks = createSelector(
   },
 );
 
-const getBridgeFeatureFlags = createSelector(
-  [getRemoteFeatureFlags],
-  (remoteFeatureFlags) => {
-    const { bridgeConfig } = remoteFeatureFlags;
-    return selectBridgeFeatureFlags({
+// Deep-equal memo: getRemoteFeatureFlags returns a new merged object when any flag changes;
+// only bridgeConfig should invalidate bridge selectors.
+const getBridgeFeatureFlags = createDeepEqualSelector(
+  [(state: BridgeAppState) => getRemoteFeatureFlags(state).bridgeConfig],
+  (bridgeConfig) =>
+    selectBridgeFeatureFlags({
       remoteFeatureFlags: { bridgeConfig },
-    });
-  },
+    }),
 );
 
 const getChainRanking = createSelector(
@@ -303,8 +304,7 @@ export const getFromToken = createSelector(
   ],
   (fromToken, fromChains, providerConfig) => {
     if (fromToken) {
-      // Shallow clone avoids Reselect "identity function" dev check (returning an input unchanged).
-      return { ...fromToken };
+      return fromToken;
     }
     // When the page loads the global network always matches the network filter
     // Because useBridging checks whether the lastSelectedNetwork matches the provider config
@@ -384,7 +384,7 @@ export const getToToken = createSelector(
   (fromToken, toToken) => {
     // If the user has selected a token, return it
     if (toToken) {
-      return { ...toToken };
+      return toToken;
     }
     return getDefaultToToken(fromToken.chainId, fromToken.assetId);
   },
