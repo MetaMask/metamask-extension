@@ -57,12 +57,26 @@ describe('redeemer-utils', () => {
       expect(extractRedeemerAddressesFromRules(rules)).toBeNull();
     });
 
-    it('returns null when an address entry is not a string', () => {
+    it('filters out non-string address entries and returns valid ones', () => {
       const rules = [
         {
           type: 'redeemer',
           data: {
             addresses: ['0x0000000000000000000000000000000000000001', 1],
+          },
+        },
+      ] as Rule[];
+      expect(extractRedeemerAddressesFromRules(rules)).toStrictEqual([
+        '0x0000000000000000000000000000000000000001',
+      ]);
+    });
+
+    it('returns null when all address entries are non-strings', () => {
+      const rules = [
+        {
+          type: 'redeemer',
+          data: {
+            addresses: [1, 2, null],
           },
         },
       ] as Rule[];
