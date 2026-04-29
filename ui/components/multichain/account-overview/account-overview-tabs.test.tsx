@@ -12,13 +12,6 @@ import {
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { AccountOverviewTabs } from './account-overview-tabs';
 
-const mockGetIsPerpsExperienceAvailable = jest.fn().mockReturnValue(false);
-jest.mock('../../../selectors/perps', () => ({
-  ...jest.requireActual('../../../selectors/perps'),
-  getIsPerpsExperienceAvailable: (...args: unknown[]) =>
-    mockGetIsPerpsExperienceAvailable(...args),
-}));
-
 jest.mock('../../../store/actions', () => ({
   setDefaultHomeActiveTabName: jest.fn(),
 }));
