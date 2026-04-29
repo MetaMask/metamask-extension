@@ -77,29 +77,29 @@ function createPayRequest(overrides = {}) {
 
 describe('getMetaMaskPayProperties', () => {
   describe('core pay properties', () => {
-    it('returns empty when metamaskPay is absent', () => {
+    it('returns empty when metamaskPay is absent', async () => {
       const request = createBuilderRequest();
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties).toStrictEqual({});
       expect(result.sensitiveProperties).toStrictEqual({});
     });
 
-    it('sets mm_pay to true when metamaskPay data exists', () => {
+    it('sets mm_pay to true when metamaskPay data exists', async () => {
       const request = createPayRequest();
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay).toBe(true);
     });
 
-    it('sets mm_pay_chain_selected from metamaskPay.chainId', () => {
+    it('sets mm_pay_chain_selected from metamaskPay.chainId', async () => {
       const request = createPayRequest();
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_chain_selected).toBe('0x1');
     });
 
-    it('sets mm_pay_token_selected from txPayData.paymentToken.symbol', () => {
+    it('sets mm_pay_token_selected from txPayData.paymentToken.symbol', async () => {
       const request = createPayRequest({
         transactionMetricsRequest: {
           ...createPayRequest().transactionMetricsRequest,
@@ -109,47 +109,47 @@ describe('getMetaMaskPayProperties', () => {
           }),
         },
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_token_selected).toBe('USDC');
     });
   });
 
   describe('mm_pay_use_case', () => {
-    it('sets perps_deposit for perpsDeposit transactions', () => {
+    it('sets perps_deposit for perpsDeposit transactions', async () => {
       const request = createPayRequest();
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_use_case).toBe('perps_deposit');
     });
 
-    it('sets perps_withdraw for perpsWithdraw transactions', () => {
+    it('sets perps_withdraw for perpsWithdraw transactions', async () => {
       const request = createPayRequest({
         transactionMeta: {
           ...createPayRequest().transactionMeta,
           type: TransactionType.perpsWithdraw,
         },
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_use_case).toBe('perps_withdraw');
     });
 
-    it('does not set use_case for non-pay-type transactions', () => {
+    it('does not set use_case for non-pay-type transactions', async () => {
       const request = createPayRequest({
         transactionMeta: {
           ...createPayRequest().transactionMeta,
           type: TransactionType.contractInteraction,
         },
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_use_case).toBeUndefined();
     });
   });
 
   describe('USD values', () => {
-    it('sets mm_pay_sending_value_usd from primaryRequiredToken', () => {
+    it('sets mm_pay_sending_value_usd from primaryRequiredToken', async () => {
       const request = createPayRequest({
         transactionMetricsRequest: {
           ...createPayRequest().transactionMetricsRequest,
@@ -158,12 +158,12 @@ describe('getMetaMaskPayProperties', () => {
           }),
         },
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_sending_value_usd).toBe(100);
     });
 
-    it('sets mm_pay_receiving_value_usd from totals.targetAmount.usd', () => {
+    it('sets mm_pay_receiving_value_usd from totals.targetAmount.usd', async () => {
       const request = createPayRequest({
         transactionMetricsRequest: {
           ...createPayRequest().transactionMetricsRequest,
@@ -173,12 +173,12 @@ describe('getMetaMaskPayProperties', () => {
           }),
         },
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_receiving_value_usd).toBe(99);
     });
 
-    it('sets mm_pay_metamask_fee_usd from totals.fees.metaMask.usd', () => {
+    it('sets mm_pay_metamask_fee_usd from totals.fees.metaMask.usd', async () => {
       const request = createPayRequest({
         transactionMetricsRequest: {
           ...createPayRequest().transactionMetricsRequest,
@@ -188,12 +188,12 @@ describe('getMetaMaskPayProperties', () => {
           }),
         },
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_metamask_fee_usd).toBe(0.5);
     });
 
-    it('sets mm_pay_provider_fee_usd and mm_pay_network_fee_usd from totals', () => {
+    it('sets mm_pay_provider_fee_usd and mm_pay_network_fee_usd from totals', async () => {
       const request = createPayRequest({
         transactionMetricsRequest: {
           ...createPayRequest().transactionMetricsRequest,
@@ -203,7 +203,7 @@ describe('getMetaMaskPayProperties', () => {
           }),
         },
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_provider_fee_usd).toBe('0.3');
       expect(result.properties.mm_pay_network_fee_usd).toBe('1.2');
@@ -211,7 +211,7 @@ describe('getMetaMaskPayProperties', () => {
   });
 
   describe('strategy and steps', () => {
-    it('sets mm_pay_strategy to mm_swaps_bridge for Bridge strategy', () => {
+    it('sets mm_pay_strategy to mm_swaps_bridge for Bridge strategy', async () => {
       const request = createPayRequest({
         transactionMetricsRequest: {
           ...createPayRequest().transactionMetricsRequest,
@@ -220,12 +220,12 @@ describe('getMetaMaskPayProperties', () => {
           }),
         },
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_strategy).toBe('mm_swaps_bridge');
     });
 
-    it('sets mm_pay_strategy to relay for Relay strategy', () => {
+    it('sets mm_pay_strategy to relay for Relay strategy', async () => {
       const request = createPayRequest({
         transactionMetricsRequest: {
           ...createPayRequest().transactionMetricsRequest,
@@ -234,12 +234,12 @@ describe('getMetaMaskPayProperties', () => {
           }),
         },
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_strategy).toBe('relay');
     });
 
-    it('sets mm_pay_transaction_step_total from quotes length + 1', () => {
+    it('sets mm_pay_transaction_step_total from quotes length + 1', async () => {
       const request = createPayRequest({
         transactionMetricsRequest: {
           ...createPayRequest().transactionMetricsRequest,
@@ -248,7 +248,7 @@ describe('getMetaMaskPayProperties', () => {
           }),
         },
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_transaction_step_total).toBe(3);
       expect(result.properties.mm_pay_transaction_step).toBe(3);
@@ -256,7 +256,7 @@ describe('getMetaMaskPayProperties', () => {
   });
 
   describe('bridge quote metrics', () => {
-    it('sets mm_pay_quotes_latency from bridge quote metrics', () => {
+    it('sets mm_pay_quotes_latency from bridge quote metrics', async () => {
       const request = createPayRequest({
         transactionMeta: {
           ...createPayRequest().transactionMeta,
@@ -282,7 +282,7 @@ describe('getMetaMaskPayProperties', () => {
           ]),
         },
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_quotes_latency).toBe(1234);
       expect(result.properties.mm_pay_quotes_attempts).toBe(3);
@@ -296,7 +296,7 @@ describe('getMetaMaskPayProperties', () => {
       jest.restoreAllMocks();
     });
 
-    it('adds mm_pay_time_to_complete_s for finalized parent MM Pay transaction', () => {
+    it('adds mm_pay_time_to_complete_s for finalized parent MM Pay transaction', async () => {
       jest.spyOn(Date, 'now').mockReturnValue(1060500);
 
       const request = createPayRequest({
@@ -313,12 +313,12 @@ describe('getMetaMaskPayProperties', () => {
             .mockReturnValue([{ id: 'child-1', submittedTime: 1000000 }]),
         },
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_time_to_complete_s).toBe(60.5);
     });
 
-    it('does not add mm_pay_time_to_complete_s for non-finalized events', () => {
+    it('does not add mm_pay_time_to_complete_s for non-finalized events', async () => {
       const request = createPayRequest({
         eventName: TransactionMetaMetricsEvent.submitted,
         transactionMeta: {
@@ -326,21 +326,21 @@ describe('getMetaMaskPayProperties', () => {
           submittedTime: 1000000,
         },
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties).not.toHaveProperty('mm_pay_time_to_complete_s');
     });
 
-    it('does not add mm_pay_time_to_complete_s when submittedTime is undefined', () => {
+    it('does not add mm_pay_time_to_complete_s when submittedTime is undefined', async () => {
       const request = createPayRequest({
         eventName: TransactionMetaMetricsEvent.finalized,
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties).not.toHaveProperty('mm_pay_time_to_complete_s');
     });
 
-    it('falls back to parent submittedTime when no children have submittedTime', () => {
+    it('falls back to parent submittedTime when no children have submittedTime', async () => {
       jest.spyOn(Date, 'now').mockReturnValue(1060500);
 
       const request = createPayRequest({
@@ -350,12 +350,12 @@ describe('getMetaMaskPayProperties', () => {
           submittedTime: 1000000,
         },
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_time_to_complete_s).toBe(60.5);
     });
 
-    it('does not add mm_pay_time_to_complete_s for non-MM-Pay transactions', () => {
+    it('does not add mm_pay_time_to_complete_s for non-MM-Pay transactions', async () => {
       jest.spyOn(Date, 'now').mockReturnValue(1060000);
 
       const request = createBuilderRequest({
@@ -366,7 +366,7 @@ describe('getMetaMaskPayProperties', () => {
           submittedTime: 1000000,
         } as never,
       });
-      const result = getMetaMaskPayProperties(request);
+      const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties).not.toHaveProperty('mm_pay_time_to_complete_s');
     });

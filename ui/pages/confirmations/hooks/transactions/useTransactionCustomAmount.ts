@@ -174,10 +174,11 @@ export function useTransactionCustomAmount({
       }
 
       if (transactionId) {
-        /* eslint-disable @typescript-eslint/naming-convention */
         upsertTransactionUIMetricsFragment(transactionId, {
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             mm_pay_amount_input_type: `${percentage}%`,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             mm_pay_quote_requested: true,
           },
         });
