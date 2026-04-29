@@ -58,6 +58,7 @@ import {
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
 import {
+  selectPerpsDepositPending,
   selectPerpsTradeConfigurations,
   selectPerpsIsTestnet,
 } from '../../selectors/perps-controller';
@@ -68,6 +69,7 @@ import {
 import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
 import { usePerpsMarketInfo } from '../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
+import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
@@ -134,6 +136,12 @@ const ORDER_MODE_TOAST_KEYS: Record<
     failed: PERPS_TOAST_KEYS.CLOSE_FAILED,
   },
 };
+
+export function shouldShowPerpsOrderSubmissionToasts(
+  hasPendingPerpsDeposit: boolean,
+) {
+  return !hasPendingPerpsDeposit;
+}
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -232,6 +240,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   trackRef.current = track;
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
   const isTestnet = useSelector(selectPerpsIsTestnet);
+  const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
   const { trigger: triggerDeposit, isLoading: isDepositLoading } =
     usePerpsDepositConfirmation();
   const { formatPercentWithMinThreshold } = useFormatters();
@@ -250,6 +259,10 @@ const PerpsOrderEntryPage: React.FC = () => {
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
 
+  const hasPerpBalance = Boolean(
+    account && Number.parseFloat(getTradeableBalance(account)) > 0,
+  );
+
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: !marketsLoading && Boolean(decodedSymbol) && account !== null,
@@ -257,8 +270,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
       ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
-      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]:
-        account !== null && Number.parseFloat(account.availableBalance) > 0,
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
     },
     resetKey: decodedSymbol,
   });
@@ -455,9 +467,10 @@ const PerpsOrderEntryPage: React.FC = () => {
     return Number.isFinite(parsed) && parsed > 0 ? parsed : currentPrice;
   })();
 
-  const availableBalance = account
-    ? Number.parseFloat(account.availableBalance)
-    : 0;
+  // Order-entry surface — use tradeable balance so HyperLiquid unified accounts
+  // funded by spot USDC are recognized as tradeable. Withdraw screens still
+  // read `account.availableBalance` directly.
+  const availableBalance = Number.parseFloat(getTradeableBalance(account));
   const hasNoAvailableBalance =
     orderMode === 'new' && !isLoadingAccount && availableBalance <= 0;
   const isPrimaryTradeAction = orderMode !== 'new' || !hasNoAvailableBalance;
@@ -1023,10 +1036,16 @@ const PerpsOrderEntryPage: React.FC = () => {
         orderMode,
         position?.size,
       );
+      const shouldShowOrderSubmissionToasts =
+        shouldShowPerpsOrderSubmissionToasts(hasPendingPerpsDeposit);
       handleBackClick(
-        PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
-        tradeActionToastDescription,
-        orderFormState.type === 'market'
+        shouldShowOrderSubmissionToasts
+          ? PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS
+          : undefined,
+        shouldShowOrderSubmissionToasts
+          ? tradeActionToastDescription
+          : undefined,
+        shouldShowOrderSubmissionToasts && orderFormState.type === 'market'
           ? {
               pendingOrderSymbol: orderFormState.asset,
               pendingOrderFilledDescription: tradeActionToastDescription,
@@ -1063,14 +1082,16 @@ const PerpsOrderEntryPage: React.FC = () => {
         console.warn('[Perps] Save trade configuration failed:', e);
       });
 
-      replacePerpsToastByKey({
-        key:
-          orderFormState.type === 'limit'
-            ? PERPS_TOAST_KEYS.ORDER_PLACED
-            : PERPS_TOAST_KEYS.ORDER_SUBMITTED,
-        description: tradeActionToastDescription,
-        autoHideTime: 3000,
-      });
+      if (shouldShowOrderSubmissionToasts) {
+        replacePerpsToastByKey({
+          key:
+            orderFormState.type === 'limit'
+              ? PERPS_TOAST_KEYS.ORDER_PLACED
+              : PERPS_TOAST_KEYS.ORDER_SUBMITTED,
+          description: tradeActionToastDescription,
+          autoHideTime: 3000,
+        });
+      }
     } catch (error) {
       if (inProgressToastKey) {
         hidePerpsToast();
@@ -1130,6 +1151,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     replacePerpsToastByKey,
     t,
     closeFeeRate,
+    hasPendingPerpsDeposit,
     marketInfo?.szDecimals,
   ]);
 
@@ -1275,7 +1297,7 @@ const PerpsOrderEntryPage: React.FC = () => {
             </Text>
             {displayChange && (
               <Text
-                variant={TextVariant.BodyXs}
+                variant={TextVariant.BodySm}
                 color={getChangeColor(displayChange)}
                 data-testid="perps-order-entry-change"
               >
@@ -1332,9 +1354,9 @@ const PerpsOrderEntryPage: React.FC = () => {
         paddingLeft={4}
         paddingRight={4}
         paddingBottom={4}
-        paddingTop={2}
+        paddingTop={3}
         flexDirection={BoxFlexDirection.Column}
-        gap={2}
+        gap={4}
         className="shrink-0"
       >
         {orderCalculations && (

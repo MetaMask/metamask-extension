@@ -193,6 +193,9 @@
   "addAUrl": {
     "message": "URL hinzufügen"
   },
+  "addAWallet": {
+    "message": "Wallet hinzufügen"
+  },
   "addAccount": {
     "message": "Konto hinzufügen"
   },
@@ -1086,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "Niedrigste Kosten"
   },
+  "bridgeMalicious": {
+    "message": "Bösartig"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Bösartiges Token"
+  },
   "bridgeMarketClosedAction": {
     "message": "Markt geschlossen"
   },
@@ -1106,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "Keine MM-Gebühr"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "Keine Preisinformation"
   },
   "bridgePoints": {
     "message": "Geschätzte Punkte",
@@ -1202,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "Empfang auf der Zielkette"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Verdächtiger Airdrop"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Konzentriertes Angebot"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Verdächtiges Verhalten"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Übertriebene Traderzahl"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Gefälschtes Volumen"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Hohe Bot-Aktivität"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Nicht angegebenes Angebot"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "Hohe Kaufgebühr"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "Hohe Verkaufsgebühr"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "Hohe Transfergebühr"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Honeypot-Risiko"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Imitator"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Imitiert ein sensibles Asset"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Wahrscheinlich ein Imitator"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Möglicher Imitator"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Unangemessener Inhalt"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Künstliches Volumen"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Geringe Liquidität gesperrt"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "Ersteller hat schlechten Ruf"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Als bösartig bekannt"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Verdächtige Metadaten"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Mögliche Preismanipulation"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Rug-Pull-Risiko"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Sanktionierter Ersteller"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Ähnelt bösartigem Contract"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Bot-Aktivität bei Einführung"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Spam-Nachricht"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Verdächtiger Code"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Token-Hintertür"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Nicht verkaufbarer Token"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Instabiler Preis"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Wash-Trade"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Wählen Sie ein Zielkonto aus"
   },
@@ -1257,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "Swapping von $1 für $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "Verdächtig"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Verdächtiges Token"
   },
   "bridgeTo": {
     "message": "Bridge zu"
@@ -1729,6 +1843,9 @@
   },
   "connect": {
     "message": "Verbinden"
+  },
+  "connectAHardwareWallet": {
+    "message": "Verbinden Sie eine Hardware-Wallet"
   },
   "connectAccounts": {
     "message": "Konten verbinden"
@@ -3008,6 +3125,9 @@
   "gasUsed": {
     "message": "Verwendetes Gas"
   },
+  "gatorNoJustificationProvided": {
+    "message": "Für die Genehmigung wurde keine Begründung angegeben"
+  },
   "gatorPermissionAnnualFrequency": {
     "message": "Jährlich",
     "description": "Time period for annual recurring permissions redemption"
@@ -3079,6 +3199,14 @@
   "gatorPermissionsStartDate": {
     "message": "Startdatum",
     "description": "Label for the start date of a permission"
+  },
+  "gatorPermissionsStatusExpired": {
+    "message": "Abgelaufen",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Widerrufen",
+    "description": "Tag label for a gator permission that has been revoked"
   },
   "gatorPermissionsStreamRate": {
     "message": "Stream-Rate",
@@ -3359,6 +3487,9 @@
   "importAWallet": {
     "message": "Wallet importieren"
   },
+  "importAWalletDescription": {
+    "message": "Über einer 12-, 18- oder 24-Wort-Seedphrase"
+  },
   "importAccountError": {
     "message": "Fehler beim Importieren des Kontos."
   },
@@ -3389,6 +3520,9 @@
   },
   "importAnAccount": {
     "message": "Ein Konto importieren"
+  },
+  "importAnAccountDescription": {
+    "message": "Über privaten Schlüssel"
   },
   "importNFT": {
     "message": "NFT importieren"
@@ -4090,6 +4224,102 @@
     "message": "$1 möchte $2 Snaps verwenden",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdAssetBonusAccruing": {
+    "message": "Anfallender nächster Bonus",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "$1 Bonus einfordern",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "Geschätzter jährlicher Bonus",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "Ihre Bonusinformationen",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "Eine Hochrechnung dessen, was Sie im Laufe eines Jahres basierend auf Ihrem aktuellen Guthaben und Zinssatz verdienen würden. Der Zinssatz ist variabel und kann sich ändern.",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "Erfahren Sie mehr.",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "Der Gesamtbonus, den Sie seit Beginn eingefordert haben.",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "$1 % Bonus auf jährlicher Basis, den Sie nur für das Halten von mUSD erhalten. Sie können ihn täglich auf Linea einfordern. $2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "Lebenslänglicher Bonus eingefordert",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "Kein anfallender Bonus",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "Bonus von $1 %",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "Ihr Bonus",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "Täglich Bonus",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "US-Dollar gekoppelt",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "Ohne Sperrfristen",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "Keine MetaMask-Gebühr",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "Jährlichen Bonus von $1 %,",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "Erhalten Sie einen ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " indem Sie USDC, USDT und DAI in mUSD konvertieren.",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "Mehr erfahren",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "Konvertieren Sie Ihre Stablecoins",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "Kontostand",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "Ihre Position",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "Wert",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
+  },
   "musdBonusExplanation": {
     "message": "Tauschen Sie Ihre Stablecoins in mUSD um und sichern Sie sich\neinen jährlichen Bonus von bis zu $1 %, den Sie täglich \neinfordern können. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
@@ -4193,6 +4423,10 @@
   "musdMetaMaskUsd": {
     "message": "MetaMask USD",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "Es gelten die Nutzungsbedingungen."
@@ -4756,6 +4990,14 @@
   "notificationTransactionSuccessView": {
     "message": "Auf $1 ansehen",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
+  },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "Transaktion ist fehlgeschlagen $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "Transaktion wurde bestätigt!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
   },
   "notifications": {
     "message": "Benachrichtigungen"
@@ -5420,7 +5662,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Verfügbares Perps-Guthaben: "
+    "message": "Verfügbares Guthaben: "
   },
   "perpsAvailableToAdd": {
     "message": "Zum Hinzufügen verfügbar"
@@ -5488,6 +5730,12 @@
   },
   "perpsContactSupport": {
     "message": "Support kontaktieren"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "MetaMask-Perps unterstützen nur den Handel mit isolierter Margin. Um auf MetaMask handeln zu können, müssen Sie zunächst Ihre Cross-Margin-Position schließen."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Cross-Margin nicht unterstützt"
   },
   "perpsDateToday": {
     "message": "Heute"
@@ -5679,7 +5927,7 @@
     "message": "Noch keine Transaktionen"
   },
   "perpsOpenInterest": {
-    "message": "Offenes Interesse"
+    "message": "Open Interest"
   },
   "perpsOpenInterestTooltip": {
     "message": "Der kombinierte Wert aller offenen Positionen für diesen Perp"
@@ -5769,10 +6017,6 @@
   },
   "perpsReversePositionDescriptionShort": {
     "message": "Wandeln Sie Ihre Short-Position in eine Long-Position um"
-  },
-  "perpsSaveChanges": {
-    "message": "Änderungen speichern",
-    "description": "Button text for saving TP/SL changes"
   },
   "perpsSearchMarkets": {
     "message": "Märkte durchsuchen"
@@ -5979,6 +6223,9 @@
   },
   "perpsTrades": {
     "message": "Trades"
+  },
+  "perpsTriggerPrice": {
+    "message": "Auslösungspreis"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "Der Hebel verstärkt Gewinne und Verluste gleichermaßen. Bei einem 40-fachen Hebel bedeutet eine Preisbewegung von 1 % einen Gewinn oder Verlust von 40 % auf Ihre Margin."

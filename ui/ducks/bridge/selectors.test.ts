@@ -7,6 +7,7 @@ import {
   SortOrder,
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  selectIsQuoteExpired,
 } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
@@ -65,7 +66,6 @@ import {
   getFormattedPriceImpactFiat,
   getIsStockMarketClosed,
   getWarningLabels,
-  getIsQuoteExpired,
   getBridgeUnavailableQuoteReason,
 } from './selectors';
 import { toBridgeToken } from './utils';
@@ -612,6 +612,7 @@ describe('Bridge selectors', () => {
         tokenFiatAmount: undefined,
         rwaData: undefined,
         isVerified: undefined,
+        securityData: undefined,
       });
     });
   });
@@ -647,6 +648,7 @@ describe('Bridge selectors', () => {
           "isVerified": undefined,
           "name": "DEST",
           "rwaData": undefined,
+          "securityData": undefined,
           "symbol": "DEST",
           "tokenFiatAmount": undefined,
         }
@@ -680,6 +682,7 @@ describe('Bridge selectors', () => {
         tokenFiatAmount: undefined,
         rwaData: undefined,
         isVerified: undefined,
+        securityData: undefined,
       });
     });
 
@@ -748,6 +751,7 @@ describe('Bridge selectors', () => {
         tokenFiatAmount: undefined,
         rwaData: undefined,
         isVerified: undefined,
+        securityData: undefined,
       });
     });
   });
@@ -3342,8 +3346,10 @@ describe('Bridge selectors', () => {
           quotes: [],
         },
       });
-      const result = getIsQuoteExpired(state as never, Date.now());
-      expect(typeof result).toBe('boolean');
+      const result = getValidationErrors(state as never, Date.now());
+      expect(result.isQuoteExpired).toBe(
+        selectIsQuoteExpired(state.metamask as never, {}, Date.now()),
+      );
     });
   });
 

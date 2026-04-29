@@ -12,7 +12,6 @@ import {
   computeEntryHealth,
   EntryHealth,
   getUserJourneyBenchmarkApiModeFromBranch,
-  getUserJourneyBenchmarkBuildTypesForCurrentRun,
   type FetchBenchmarkResult,
   type BenchmarkEntry,
 } from './performance-benchmarks';
@@ -25,7 +24,7 @@ const makeEntry = (
   benchmarkName: 'loadNewAccount',
   presetName: 'interactionUserActions',
   platform: 'chrome',
-  buildType: 'browserify',
+  buildType: 'webpack',
   mean: { loadNewAccount: 523 },
   stdDev: { loadNewAccount: 45 },
   p75: { loadNewAccount: 550 },
@@ -51,71 +50,6 @@ const BASELINE_600 = {
   },
 };
 
-describe('getUserJourneyBenchmarkBuildTypesForCurrentRun', () => {
-  const originalEvent = process.env.GITHUB_EVENT_NAME;
-  const originalRef = process.env.GITHUB_REF;
-
-  afterEach(() => {
-    if (originalEvent === undefined) {
-      delete process.env.GITHUB_EVENT_NAME;
-    } else {
-      process.env.GITHUB_EVENT_NAME = originalEvent;
-    }
-    if (originalRef === undefined) {
-      delete process.env.GITHUB_REF;
-    } else {
-      process.env.GITHUB_REF = originalRef;
-    }
-  });
-
-  it('returns browserify only when env is unset (local / tests)', () => {
-    delete process.env.GITHUB_EVENT_NAME;
-    delete process.env.GITHUB_REF;
-
-    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
-      'browserify',
-    ]);
-  });
-
-  it('returns browserify only on pull_request (no webpack user-journey artifacts)', () => {
-    process.env.GITHUB_EVENT_NAME = 'pull_request';
-    process.env.GITHUB_REF = 'refs/pull/42/merge';
-
-    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
-      'browserify',
-    ]);
-  });
-
-  it('returns browserify only on push to a feature branch', () => {
-    process.env.GITHUB_EVENT_NAME = 'push';
-    process.env.GITHUB_REF = 'refs/heads/chore/foo';
-
-    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
-      'browserify',
-    ]);
-  });
-
-  it('returns browserify and webpack on push to main (webpack user-journey matrix rows)', () => {
-    process.env.GITHUB_EVENT_NAME = 'push';
-    process.env.GITHUB_REF = 'refs/heads/main';
-
-    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
-      'browserify',
-      'webpack',
-    ]);
-  });
-
-  it('returns browserify and webpack on push to release branch', () => {
-    process.env.GITHUB_EVENT_NAME = 'push';
-    process.env.GITHUB_REF = 'refs/heads/release/12.0.0';
-
-    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
-      'browserify',
-      'webpack',
-    ]);
-  });
-});
-
 const MOCK_PAYLOAD: Record<string, BenchmarkResults> = {
   loadNewAccount: {
     testTitle: 'benchmark-load-new-account',
@@ -135,13 +69,13 @@ describe('extractEntries', () => {
       MOCK_PAYLOAD,
       'interactionUserActions',
       'chrome',
-      'browserify',
+      'webpack',
     );
 
     expect(entry.benchmarkName).toBe('loadNewAccount');
     expect(entry.presetName).toBe('interactionUserActions');
     expect(entry.platform).toBe('chrome');
-    expect(entry.buildType).toBe('browserify');
+    expect(entry.buildType).toBe('webpack');
   });
 
   it('includes mean/stdDev/p75/p95 and excludes min/max', () => {
@@ -314,12 +248,12 @@ describe('fetchBenchmarkJson', () => {
       const result = await fetchBenchmarkJson(
         HOST,
         'chrome',
-        'browserify',
+        'webpack',
         'myPreset',
       );
 
       expect(readFile as jest.Mock).toHaveBeenCalledWith(
-        '/tmp/benchmarks/benchmark-chrome-browserify-myPreset.json',
+        '/tmp/benchmarks/benchmark-chrome-webpack-myPreset.json',
         'utf8',
       );
       expect(result).toStrictEqual(MOCK_PAYLOAD);
@@ -331,7 +265,7 @@ describe('fetchBenchmarkJson', () => {
       );
 
       expect(
-        await fetchBenchmarkJson(HOST, 'chrome', 'browserify', 'missing'),
+        await fetchBenchmarkJson(HOST, 'chrome', 'webpack', 'missing'),
       ).toBeNull();
     });
   });
@@ -348,7 +282,7 @@ describe('fetchBenchmarkJson', () => {
       } as unknown as Response);
 
       expect(
-        await fetchBenchmarkJson(HOST, 'chrome', 'browserify', 'myPreset'),
+        await fetchBenchmarkJson(HOST, 'chrome', 'webpack', 'myPreset'),
       ).toStrictEqual(MOCK_PAYLOAD);
     });
 
@@ -356,7 +290,7 @@ describe('fetchBenchmarkJson', () => {
       mockFetch.mockResolvedValue({ ok: false } as Response);
 
       expect(
-        await fetchBenchmarkJson(HOST, 'chrome', 'browserify', 'myPreset'),
+        await fetchBenchmarkJson(HOST, 'chrome', 'webpack', 'myPreset'),
       ).toBeNull();
     });
 
@@ -364,7 +298,7 @@ describe('fetchBenchmarkJson', () => {
       mockFetch.mockRejectedValue(new Error('network error'));
 
       expect(
-        await fetchBenchmarkJson(HOST, 'chrome', 'browserify', 'myPreset'),
+        await fetchBenchmarkJson(HOST, 'chrome', 'webpack', 'myPreset'),
       ).toBeNull();
     });
   });
@@ -410,18 +344,18 @@ describe('fetchBenchmarkEntries', () => {
     expect(missingPresets[0]).toContain('interactionUserActions');
   });
 
-  it('uses custom platforms and buildTypes (2 × 2 × 1 = 4 combinations)', async () => {
+  it('uses custom platforms and buildTypes', async () => {
     mockFetch.mockResolvedValue({ ok: false } as Response);
 
     const { missingPresets } = await fetchBenchmarkEntries(
       HOST,
       ['myPreset'],
       ['chrome', 'firefox'],
-      ['browserify', 'webpack'],
+      ['webpack'],
     );
 
-    expect(missingPresets).toHaveLength(4);
-    expect(missingPresets).toContain('chrome/browserify/myPreset');
+    expect(missingPresets).toHaveLength(2);
+    expect(missingPresets).toContain('chrome/webpack/myPreset');
     expect(missingPresets).toContain('firefox/webpack/myPreset');
   });
 });
@@ -493,11 +427,11 @@ describe('buildBenchmarkSection', () => {
 
   it('surfaces ⚠️ warning for missing presets', () => {
     const html = buildBenchmarkSection(
-      { entries: [], missingPresets: ['chrome/browserify/foo'] },
+      { entries: [], missingPresets: ['chrome/webpack/foo'] },
       'Test',
     );
     expect(html).toContain('⚠️');
-    expect(html).toContain('chrome/browserify/foo');
+    expect(html).toContain('chrome/webpack/foo');
   });
 
   it('renders a table with benchmark rows and combo columns', () => {
@@ -518,7 +452,7 @@ describe('buildBenchmarkSection', () => {
 
     expect(html).toContain('<summary><b>Test</b></summary>');
     expect(html).toContain('<table style=');
-    expect(html).toContain('<th>chrome-browserify</th>');
+    expect(html).toContain('<th>chrome-webpack</th>');
     expect(html).toContain('<td align="left">loadNewAccount<br>');
     expect(html).toContain('<td align="left">confirmTx<br>');
     expect(html).toContain('[Sentry log · main/release]');
@@ -676,11 +610,11 @@ describe('buildBenchmarkSection', () => {
         makeEntry({
           benchmarkName: 'loadNewAccount',
           platform: 'chrome',
-          buildType: 'browserify',
+          buildType: 'webpack',
         }),
         makeEntry({
           benchmarkName: 'confirmTx',
-          platform: 'chrome',
+          platform: 'firefox',
           buildType: 'webpack',
           mean: { confirmTx: 500 },
           stdDev: { confirmTx: 30 },
@@ -697,7 +631,7 @@ describe('buildBenchmarkSection', () => {
 
   it('links each cell to the entry artifact URL as CI log', () => {
     const ARTIFACT =
-      'https://cdn.example.com/benchmark-chrome-browserify-foo.json';
+      'https://cdn.example.com/benchmark-chrome-webpack-foo.json';
     const html = buildBenchmarkSection(
       withEntries([makeEntry({ artifactUrl: ARTIFACT })]),
       'Test',
@@ -723,7 +657,7 @@ describe('buildBenchmarkSection', () => {
 
   it('resolves startup baseline via pageLoad/* key format and shows delta in bullet section', () => {
     const entry = makeEntry({
-      benchmarkName: 'chrome-browserify-startupStandardHome',
+      benchmarkName: 'chrome-webpack-startupStandardHome',
       presetName: 'startupStandardHome',
       mean: { uiStartup: 1800 },
       stdDev: { uiStartup: 100 },
@@ -731,7 +665,7 @@ describe('buildBenchmarkSection', () => {
       p95: { uiStartup: 1980 },
     });
     const html = buildBenchmarkSection(withEntries([entry]), '🔌 Startup', {
-      'pageLoad/chrome-browserify-startupStandardHome': {
+      'pageLoad/chrome-webpack-startupStandardHome': {
         uiStartup: { mean: 1600, stdDev: 80, p75: 1650, p95: 1750 },
       },
     });
@@ -749,7 +683,7 @@ describe('buildBenchmarkSection', () => {
       benchmarkName: 'standardHome',
       presetName: 'startupStandardHome',
       platform: 'firefox',
-      buildType: 'browserify',
+      buildType: 'webpack',
       mean: { uiStartup: 1490 },
       stdDev: { uiStartup: 90 },
       p75: { uiStartup: 1545 },
@@ -759,10 +693,10 @@ describe('buildBenchmarkSection', () => {
       withEntries([firefoxEntry]),
       '🔌 Startup',
       {
-        'pageLoad/chrome-browserify-startupStandardHome': {
+        'pageLoad/chrome-webpack-startupStandardHome': {
           uiStartup: { mean: 1380, stdDev: 80, p75: 1430, p95: 1500 },
         },
-        'pageLoad/firefox-browserify-startupStandardHome': {
+        'pageLoad/firefox-webpack-startupStandardHome': {
           uiStartup: { mean: 1480, stdDev: 90, p75: 1540, p95: 1595 },
         },
       },
@@ -813,7 +747,7 @@ describe('buildBenchmarkSection', () => {
 
   it('returns "No regressions detected" when no entries exist but baseline is provided', () => {
     const html = buildBenchmarkSection(
-      { entries: [], missingPresets: ['chrome/browserify/somePreset'] },
+      { entries: [], missingPresets: ['chrome/webpack/somePreset'] },
       'Test',
       {
         'some/key': {
@@ -1275,7 +1209,7 @@ describe('buildPerformanceBenchmarksSection', () => {
         testTitle: 'standard-home',
         persona: 'standard',
         platform: 'chrome',
-        buildType: 'browserify',
+        buildType: 'webpack',
         mean: { uiStartup: 4500 },
         min: { uiStartup: 3000 },
         max: { uiStartup: 7000 },
@@ -1362,7 +1296,7 @@ describe('buildPerformanceBenchmarksSection', () => {
         .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
         .mockResolvedValue({
           baseline: {
-            'pageLoad/chrome-browserify-startupStandardHome': {
+            'pageLoad/chrome-webpack-startupStandardHome': {
               uiStartup: { mean: 1600, stdDev: 100, p75: 1700, p95: 1900 },
             },
           },
@@ -1471,7 +1405,7 @@ describe('buildPerformanceBenchmarksSection', () => {
         testTitle: 'standard-home',
         persona: 'standard',
         platform: 'chrome',
-        buildType: 'browserify',
+        buildType: 'webpack',
         mean: { uiStartup: 4500 },
         stdDev: { uiStartup: 500 },
         p75: { uiStartup: 4500 },
@@ -1496,7 +1430,7 @@ describe('buildPerformanceBenchmarksSection', () => {
       const html = await buildPerformanceBenchmarksSection(HOST);
 
       expect(html).toContain('<th>Benchmark</th>');
-      expect(html).toContain('<th>chrome-browserify</th>');
+      expect(html).toContain('<th>chrome-webpack</th>');
     });
 
     it('includes clickable log links in matrix cells', async () => {
@@ -1577,7 +1511,7 @@ describe('buildPerformanceBenchmarksSection', () => {
       const html = await buildPerformanceBenchmarksSection(HOST);
 
       expect(html).toContain('<th>Metrics</th>');
-      expect(html).toContain('<th>chrome-browserify</th>');
+      expect(html).toContain('<th>chrome-webpack</th>');
     });
   });
 });

@@ -193,6 +193,9 @@
   "addAUrl": {
     "message": "एक URL जोड़ें"
   },
+  "addAWallet": {
+    "message": "एक वॉलेट जोड़ें"
+  },
   "addAccount": {
     "message": "अकाउंट जोड़ें"
   },
@@ -1086,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "सबसे कम लागत"
   },
+  "bridgeMalicious": {
+    "message": "बुरी नीयत वाला"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "बुरी नीयत वाला टोकन"
+  },
   "bridgeMarketClosedAction": {
     "message": "मार्केट बंद"
   },
@@ -1106,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "कोई MM फीस नहीं"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "कीमत की कोई जानकारी नहीं"
   },
   "bridgePoints": {
     "message": "अनुमानित पॉइंट्स",
@@ -1202,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "डेस्टिनेशन चेन पर प्राप्त कर रहे हैं"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "संदिग्ध एयरड्रॉप"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "कंसन्ट्रेटेड सप्लाई"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "संदिग्ध व्यवहार"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "इन्फ्लेटेड ट्रेडर काउंट"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "नकली वॉल्यूम"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "भारी बॉट एक्टिविटी"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "अनडिस्क्लोज्ड सप्लाई"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "हाई बाई फीस"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "हाई सैल फीस"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "हाई ट्रांसफर फीस"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "हनीपॉट रिस्क"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "धोखेबाज़"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "किसी सेंसिटिव एसेट की नकल करता है"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "संभावित धोखेबाज़"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "संभावित धोखेबाज़"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "अभद्र कंटेंट"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "आर्टिफीसियल वॉल्यूम"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "कम लॉक्ड लिक्विडिटी"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "क्रिएटर की रेप्युटेशन कम है"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "जाना-माना गलत इरादे वाला"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "संदिग्ध मेटाडेटा"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "कीमत में संभावित हेरफेर"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "रगपुल रिस्क"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "सैंक्शन्ड क्रिएटर"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "गलत इरादे वाले कॉन्ट्रैक्ट जैसा दिखता है"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "लॉन्च के समय बॉट एक्टिविटी"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "स्पैम टेक्स्ट"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "संदिग्ध कोड"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "टोकन बैकडोर"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "बेचा न जा सकने वाला टोकन"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "अस्थिर कीमत"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "वॉश ट्रेडिंग"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "एक डेस्टिनेशन अकाउंट चुनें"
   },
@@ -1257,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "$1 को $2 से स्वैप किया जा रहा है",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "संदिग्ध"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "संदिग्ध टोकन"
   },
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
@@ -1729,6 +1843,9 @@
   },
   "connect": {
     "message": "कनेक्ट करें"
+  },
+  "connectAHardwareWallet": {
+    "message": "किसी hardware wallet को कनेक्ट करें"
   },
   "connectAccounts": {
     "message": "खातों को कनेक्ट करें"
@@ -3008,6 +3125,9 @@
   "gasUsed": {
     "message": "इस्तेमाल की गई गैस"
   },
+  "gatorNoJustificationProvided": {
+    "message": "अनुमति के लिए कोई वजह नहीं बताई गई"
+  },
   "gatorPermissionAnnualFrequency": {
     "message": "वार्षिक",
     "description": "Time period for annual recurring permissions redemption"
@@ -3079,6 +3199,10 @@
   "gatorPermissionsStartDate": {
     "message": "शुरु करने की तारीख",
     "description": "Label for the start date of a permission"
+  },
+  "gatorPermissionsStatusExpired": {
+    "message": "एक्सपायर हो गया",
+    "description": "Tag label for a gator permission that has expired"
   },
   "gatorPermissionsStreamRate": {
     "message": "स्ट्रीम रेट",
@@ -3359,6 +3483,9 @@
   "importAWallet": {
     "message": "एक वॉलेट इंपोर्ट करें"
   },
+  "importAWalletDescription": {
+    "message": "12, 18 या 24 शब्दों के सीड फ्रेज़ का इस्तेमाल करना"
+  },
   "importAccountError": {
     "message": "अकाउंट इम्पोर्ट करने में गड़बड़ी।"
   },
@@ -3389,6 +3516,9 @@
   },
   "importAnAccount": {
     "message": "एक खाता इम्पोर्ट करें"
+  },
+  "importAnAccountDescription": {
+    "message": "एक प्राइवेट की (key) के द्वारा"
   },
   "importNFT": {
     "message": "NFT आयात करें"
@@ -4090,6 +4220,102 @@
     "message": "$1 $2 Snaps का उपयोग करना चाहता है",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdAssetBonusAccruing": {
+    "message": "अगला बोनस अर्जित किया जा रहा है",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "$1 बोनस क्लेम करें",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "अनुमानित वार्षिक बोनस",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "आपकी बोनस जानकारी",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "आपके वर्तमान बैलेंस और ब्याज दर के आधार पर एक वर्ष में आपकी संभावित कमाई का अनुमान। रेट बदलता रहता है और बदल सकता है।",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "अधिक जानें।",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "आपने शुरुआत से लेकर अब तक कुल जितना बोनस क्लेम किया है।",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "mUSD होल्ड करने पर आपको मिलता है $1% सालाना बोनस। आपका बोनस Linea पर रोज़ाना क्लेम किया जा सकता है। $2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "लाइफटाइम बोनस क्लेम किया गया",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "अगला कोई बोनस अर्जित नहीं किया जा रहा है",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "$1% बोनस",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "आपका बोनस",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "दैनिक बोनस",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "डॉलर-समर्थित",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "कोई लॉकअप नहीं",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "कोई MetaMask फीस नहीं",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "$1% सालाना बोनस",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "एक ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " USDC, USDT और DAI को mUSD में कन्वर्ट करके।",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "ज़्यादा जानें",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "अपने स्टेबलकॉइन कन्वर्ट करें",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "बैलेंस",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "आपकी पोज़िशन",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "मूल्य",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
+  },
   "musdBonusExplanation": {
     "message": "अपने स्टेबलकॉइन्स को mUSD में बदलें और $1% तक वार्षिक बोनस कमाएं, जिसे आप रोज़ाना क्लेम कर सकते हैं।$2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
@@ -4193,6 +4419,10 @@
   "musdMetaMaskUsd": {
     "message": "MetaMask USD",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "नियम लागू।"
@@ -4756,6 +4986,14 @@
   "notificationTransactionSuccessView": {
     "message": "$1 पर देखें",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
+  },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "ट्रांसेक्शन नहीं हो पाया! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "ट्रांसेक्शन कन्फर्म हो गया!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
   },
   "notifications": {
     "message": "अपने वॉलेट का उपयोग करना"
@@ -5420,7 +5658,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "उपलब्ध पर्प्स बैलेंस: "
+    "message": "उपलब्ध बैलेंस: "
   },
   "perpsAvailableToAdd": {
     "message": "जोड़ने के लिए उपलब्ध है"
@@ -5466,7 +5704,7 @@
     "message": "अमाउंट क्लोज़ करें"
   },
   "perpsCloseLong": {
-    "message": "लॉन्ग क्लोज़ करें"
+    "message": "लॉन्ग को क्लोज़ करें"
   },
   "perpsClosePartialMinNotional": {
     "message": "आंशिक क्लोज़ की कीमत USD में कम से कम $1 होनी चाहिए। क्लोज़ अमाउंट बढ़ाएँ या स्लाइडर को 100% पर सेट करें।"
@@ -5475,19 +5713,25 @@
     "message": "पोज़िशन बंद करें"
   },
   "perpsCloseShort": {
-    "message": "शॉर्ट क्लोज़ करें"
+    "message": "शॉर्ट को क्लोज़ करें"
   },
   "perpsConfirmCloseLong": {
-    "message": "लॉन्ग क्लोज़ करें"
+    "message": "लॉन्ग को क्लोज़ करें"
   },
   "perpsConfirmCloseShort": {
-    "message": "शॉर्ट क्लोज़ करें"
+    "message": "शॉर्ट को क्लोज़ करें"
   },
   "perpsConnectionTimeout": {
     "message": "कनेक्शन टाइम आउट हो गया। कृपया फिर से कोशिश करें।"
   },
   "perpsContactSupport": {
     "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "MetaMask पर्प्स केवल आइसोलेटेड मार्जिन के साथ ट्रेडिंग का सपोर्ट करते हैं। MetaMask पर ट्रेड करने से पहले आपको अपनी क्रॉस मार्जिन पोज़िशन बंद करनी होगी।"
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "क्रॉस मार्जिन सपोर्टेड नहीं है"
   },
   "perpsDateToday": {
     "message": "आज"
@@ -5770,10 +6014,6 @@
   "perpsReversePositionDescriptionShort": {
     "message": "अपनी शॉर्ट पोज़िशन को लॉन्ग में बदलें"
   },
-  "perpsSaveChanges": {
-    "message": "बदलावों को सेव करें",
-    "description": "Button text for saving TP/SL changes"
-  },
   "perpsSearchMarkets": {
     "message": "मार्केट्स खोजें"
   },
@@ -5979,6 +6219,9 @@
   },
   "perpsTrades": {
     "message": "ट्रेड्स"
+  },
+  "perpsTriggerPrice": {
+    "message": "ट्रिगर प्राइस"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "लीवरेज आपके लाभ और हानि दोनों को बढ़ा देता है। 40x लीवरेज के साथ, प्राइस में 1% का बदलाव आपके मार्जिन पर 40% लाभ या हानि के बराबर होता है।"

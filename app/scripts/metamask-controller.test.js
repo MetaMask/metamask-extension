@@ -336,7 +336,11 @@ jest.mock('@metamask/chain-agnostic-permission', () => ({
 
 jest.mock('@metamask/core-backend', () => ({
   ...jest.requireActual('@metamask/core-backend'),
-  createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
+  createApiPlatformClient: jest.fn().mockReturnValue({
+    queryClient: { fetchQuery: jest.fn().mockResolvedValue({}) },
+    setCachedData: jest.fn(),
+    getCachedData: jest.fn().mockReturnValue({}),
+  }),
 }));
 
 jest.mock('../../shared/lib/environment', () => ({
