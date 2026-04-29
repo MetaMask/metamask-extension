@@ -6,7 +6,7 @@ import {
   trace,
 } from '../../../shared/lib/trace';
 import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
-import { isStreamWritable } from './stream-utils';
+import { isStreamWritable, type StreamLike } from './stream-utils';
 
 type ApiHandler = ((...args: unknown[]) => unknown) & {
   _controllerName?: string;
@@ -14,10 +14,7 @@ type ApiHandler = ((...args: unknown[]) => unknown) & {
 
 type MetaRpcApi = Record<string, ApiHandler>;
 
-type RpcStream = {
-  writable?: boolean;
-  destroyed?: boolean;
-  _writableState?: { ended: boolean };
+type RpcStream = StreamLike & {
   write: (data: PendingJsonRpcResponse) => void;
 };
 

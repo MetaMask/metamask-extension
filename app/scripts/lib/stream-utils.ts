@@ -7,7 +7,7 @@ import { pipeline, Duplex } from 'readable-stream';
  * {@link isStreamWritable} across different stream implementations (node:stream,
  * readable-stream v2/v3/v4 and @metamask/object-multiplex).
  */
-type StreamLike = {
+export type StreamLike = {
   writable?: boolean;
   destroyed?: boolean;
   _writableState?: { ended: boolean };
