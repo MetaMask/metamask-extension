@@ -322,6 +322,9 @@ export type SegmentEventPayload = {
     chain_id: string | null;
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
+    chain_id_caip?: string;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     environment_type?: string;
     revenue?: number;
     value?: number;
