@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Messenger } from '@metamask/messenger';
-import { getActiveSpan, trace } from './trace';
+import { sentryGetActiveSpan, trace } from './trace';
 import { shouldSampleWrappers } from './wrapper-sampling';
 import {
   isReadOnlyAction,
@@ -9,7 +9,7 @@ import {
 } from './messenger-tracing';
 
 jest.mock('./trace', () => ({
-  getActiveSpan: jest.fn(),
+  sentryGetActiveSpan: jest.fn(),
   trace: jest.fn((_request: unknown, fn: () => unknown) => fn()),
 }));
 
@@ -51,11 +51,11 @@ type TestActions =
 
 describe('wrapMessengerWithTracing', () => {
   const traceMock = trace as jest.Mock;
-  const getActiveSpanMock = getActiveSpan as jest.Mock;
+  const sentryGetActiveSpanMock = sentryGetActiveSpan as jest.Mock;
   const shouldSampleWrappersMock = shouldSampleWrappers as jest.Mock;
 
   beforeEach(() => {
-    getActiveSpanMock.mockReturnValue({
+    sentryGetActiveSpanMock.mockReturnValue({
       spanContext: () => ({ traceId: 'test-trace-id-deadbeef' }),
     });
     shouldSampleWrappersMock.mockReturnValue(true);
@@ -64,7 +64,7 @@ describe('wrapMessengerWithTracing', () => {
   });
 
   it('skips trace when no active span (avoids overhead when tracing disabled)', () => {
-    getActiveSpanMock.mockReturnValue(null);
+    sentryGetActiveSpanMock.mockReturnValue(null);
     const messenger = new Messenger<'Test', TestActions, never>({
       namespace: 'Test',
     });

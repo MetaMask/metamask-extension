@@ -3,7 +3,7 @@ import type {
   EventConstraint,
   Messenger,
 } from '@metamask/messenger';
-import { getActiveSpan, trace } from './trace';
+import { sentryGetActiveSpan, trace } from './trace';
 import { shouldSampleWrappers } from './wrapper-sampling';
 
 /**
@@ -53,7 +53,7 @@ export function wrapMessengerWithTracing<
   ) => unknown;
 
   messenger.call = ((actionType: string, ...args: unknown[]) => {
-    const activeSpan = getActiveSpan();
+    const activeSpan = sentryGetActiveSpan();
     if (!activeSpan) {
       return originalCall(actionType, ...args);
     }
