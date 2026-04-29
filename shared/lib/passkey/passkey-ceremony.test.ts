@@ -82,18 +82,22 @@ describe('passkey ceremony helpers', () => {
 
     it('times out in sidepanel and cancels ceremony', async () => {
       jest.useFakeTimers();
-      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
-      mockStartRegistration.mockImplementation(
-        () => new Promise(() => undefined) as never,
-      );
+      try {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+        mockStartRegistration.mockImplementation(
+          () => new Promise(() => undefined) as never,
+        );
 
-      const promise = startPasskeyRegistration({ challenge: 'abc' } as never);
-      jest.advanceTimersByTime(PASSKEY_SIDEPANEL_CEREMONY_TIMEOUT_MS);
+        const promise = startPasskeyRegistration({ challenge: 'abc' } as never);
+        jest.advanceTimersByTime(PASSKEY_SIDEPANEL_CEREMONY_TIMEOUT_MS);
 
-      await expect(promise).rejects.toBeInstanceOf(PasskeyCeremonyTimeoutError);
-      expect(mockCancelCeremony).toHaveBeenCalledTimes(1);
-
-      jest.useRealTimers();
+        await expect(promise).rejects.toBeInstanceOf(
+          PasskeyCeremonyTimeoutError,
+        );
+        expect(mockCancelCeremony).toHaveBeenCalledTimes(1);
+      } finally {
+        jest.useRealTimers();
+      }
     });
 
     it('decodes PRF eval.first and encodes non-empty PRF result', async () => {

@@ -16,6 +16,7 @@ import {
   RecoveryError,
   SeedlessOnboardingControllerErrorMessage,
 } from '@metamask/seedless-onboarding-controller';
+import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { Category, ErrorCode, Severity } from '@metamask/hw-wallet-sdk';
 import browser from 'webextension-polyfill';
@@ -1350,7 +1351,10 @@ describe('MetaMaskController', function () {
 
         await expect(
           metamaskController.unlockWithPasskey(authenticationResponse),
-        ).rejects.toThrow('Passkey is not registered');
+        ).rejects.toMatchObject({
+          name: 'PasskeyControllerError',
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        });
       });
 
       it('retrieves vault key and submits encryption key', async function () {
@@ -1386,7 +1390,10 @@ describe('MetaMaskController', function () {
           metamaskController.removePasskeyWithPasskeyVerification(
             authenticationResponse,
           ),
-        ).rejects.toThrow('Passkey is not registered');
+        ).rejects.toMatchObject({
+          name: 'PasskeyControllerError',
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        });
       });
 
       it('throws when passkey authentication verification fails', async function () {
@@ -1444,7 +1451,10 @@ describe('MetaMaskController', function () {
 
         await expect(
           metamaskController.removePasskeyWithPasswordVerification('password'),
-        ).rejects.toThrow('Passkey is not registered');
+        ).rejects.toMatchObject({
+          name: 'PasskeyControllerError',
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        });
 
         expect(verifyPasswordSpy).not.toHaveBeenCalled();
       });
@@ -1480,7 +1490,10 @@ describe('MetaMaskController', function () {
             'new-password',
             authenticationResponse,
           ),
-        ).rejects.toThrow('Passkey is not registered');
+        ).rejects.toMatchObject({
+          name: 'PasskeyControllerError',
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        });
       });
 
       it('throws when passkey authentication verification fails', async function () {
