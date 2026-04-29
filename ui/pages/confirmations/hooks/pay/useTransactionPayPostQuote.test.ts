@@ -1,4 +1,7 @@
-import { TransactionMeta, TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { renderHook } from '@testing-library/react-hooks';
 import { useConfirmContext } from '../../context/confirm';
 import { setPostQuote } from '../../../../store/controller-actions/transaction-pay-controller';
