@@ -11,19 +11,47 @@ describe('usePerpsMarginCalculations', () => {
   const account = mockAccountState;
 
   describe('add mode', () => {
-    it('returns available balance as maxAmount', () => {
+    const accountWithTradeableBalance = {
+      ...mockAccountState,
+      availableBalance: '10125.00',
+      availableToTradeBalance: '9000.00',
+    };
+
+    const accountWithoutTradeableBalance = {
+      ...mockAccountState,
+      availableBalance: '10125.00',
+      availableToTradeBalance: undefined,
+    };
+
+    it('returns tradeable balance as maxAmount when available', () => {
       const { result } = renderHook(() =>
         usePerpsMarginCalculations({
           position,
           currentPrice,
-          account,
+          account: accountWithTradeableBalance,
           mode: 'add',
           amount: '0',
         }),
       );
 
       expect(result.current.maxAmount).toBe(
-        parseFloat(mockAccountState.availableBalance),
+        Number.parseFloat(accountWithTradeableBalance.availableToTradeBalance),
+      );
+    });
+
+    it('falls back to available balance as maxAmount when tradeable balance is absent', () => {
+      const { result } = renderHook(() =>
+        usePerpsMarginCalculations({
+          position,
+          currentPrice,
+          account: accountWithoutTradeableBalance,
+          mode: 'add',
+          amount: '0',
+        }),
+      );
+
+      expect(result.current.maxAmount).toBe(
+        Number.parseFloat(accountWithoutTradeableBalance.availableBalance),
       );
     });
 

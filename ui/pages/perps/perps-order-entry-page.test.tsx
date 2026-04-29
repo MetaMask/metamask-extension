@@ -32,7 +32,9 @@ import {
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
-import PerpsOrderEntryPage from './perps-order-entry-page';
+import PerpsOrderEntryPage, {
+  shouldShowPerpsOrderSubmissionToasts,
+} from './perps-order-entry-page';
 
 const mockUsePerpsMarketInfo = jest.fn(() => undefined);
 
@@ -316,6 +318,16 @@ describe('PerpsOrderEntryPage', () => {
     mockLiveMarketData.mockReturnValue({
       markets: [...mockCryptoMarkets, ...mockHip3Markets],
       isInitialLoading: false,
+    });
+  });
+
+  describe('shouldShowPerpsOrderSubmissionToasts', () => {
+    it('returns true when there is no active pending perps deposit', () => {
+      expect(shouldShowPerpsOrderSubmissionToasts(false)).toBe(true);
+    });
+
+    it('returns false when a pending perps deposit already owns the flow', () => {
+      expect(shouldShowPerpsOrderSubmissionToasts(true)).toBe(false);
     });
   });
 

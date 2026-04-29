@@ -6,19 +6,19 @@ on:
       - created
 
 jobs:
-  is-fork-pull-request:
-    name: Determine whether this issue comment was on a pull request from a fork
+  is-cross-repo-pr:
+    name: Determine whether this PR is cross-repo
     if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-e2e-fixture') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
-      IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
+      IS_CROSS_REPO_PR: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR }}
     steps:
       - uses: actions/checkout@v6
 
-      - name: Determine whether this PR is from a fork
-        id: is-fork
-        run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
+      - name: Determine whether this PR is cross-repo
+        id: is-cross-repo
+        run: echo "IS_CROSS_REPO_PR=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
@@ -27,8 +27,8 @@ jobs:
     name: React to the comment
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: is-fork-pull-request
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    needs: is-cross-repo-pr
+    if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     environment: default-branch
     steps:
       - name: Checkout repository
@@ -51,8 +51,8 @@ jobs:
     name: Prepare dependencies
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: is-fork-pull-request
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    needs: is-cross-repo-pr
+    if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     environment: default-branch
     outputs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
@@ -210,9 +210,9 @@ jobs:
     timeout-minutes: 30
     needs:
       - prepare
-      - is-fork-pull-request
+      - is-cross-repo-pr
       - update-fixtures
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     environment: default-branch
     steps:
       - name: Checkout repository
@@ -270,9 +270,9 @@ jobs:
     name: Check whether the fixtures update succeeded
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: ${{ !cancelled() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    if: ${{ !cancelled() && needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     needs:
-      - is-fork-pull-request
+      - is-cross-repo-pr
       - commit-updated-fixtures
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
@@ -288,11 +288,11 @@ jobs:
 
   failure-comment:
     name: Comment about the fixtures update failure
-    if: ${{ !cancelled() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    if: ${{ !cancelled() && needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs:
-      - is-fork-pull-request
+      - is-cross-repo-pr
       - check-status
     environment: default-branch
     steps:

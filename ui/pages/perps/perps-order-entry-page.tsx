@@ -58,6 +58,7 @@ import {
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
 import {
+  selectPerpsDepositPending,
   selectPerpsTradeConfigurations,
   selectPerpsIsTestnet,
 } from '../../selectors/perps-controller';
@@ -135,6 +136,12 @@ const ORDER_MODE_TOAST_KEYS: Record<
     failed: PERPS_TOAST_KEYS.CLOSE_FAILED,
   },
 };
+
+export function shouldShowPerpsOrderSubmissionToasts(
+  hasPendingPerpsDeposit: boolean,
+) {
+  return !hasPendingPerpsDeposit;
+}
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -233,6 +240,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   trackRef.current = track;
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
   const isTestnet = useSelector(selectPerpsIsTestnet);
+  const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
   const { trigger: triggerDeposit, isLoading: isDepositLoading } =
     usePerpsDepositConfirmation();
   const { formatPercentWithMinThreshold } = useFormatters();
@@ -1028,10 +1036,16 @@ const PerpsOrderEntryPage: React.FC = () => {
         orderMode,
         position?.size,
       );
+      const shouldShowOrderSubmissionToasts =
+        shouldShowPerpsOrderSubmissionToasts(hasPendingPerpsDeposit);
       handleBackClick(
-        PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
-        tradeActionToastDescription,
-        orderFormState.type === 'market'
+        shouldShowOrderSubmissionToasts
+          ? PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS
+          : undefined,
+        shouldShowOrderSubmissionToasts
+          ? tradeActionToastDescription
+          : undefined,
+        shouldShowOrderSubmissionToasts && orderFormState.type === 'market'
           ? {
               pendingOrderSymbol: orderFormState.asset,
               pendingOrderFilledDescription: tradeActionToastDescription,
@@ -1068,14 +1082,16 @@ const PerpsOrderEntryPage: React.FC = () => {
         console.warn('[Perps] Save trade configuration failed:', e);
       });
 
-      replacePerpsToastByKey({
-        key:
-          orderFormState.type === 'limit'
-            ? PERPS_TOAST_KEYS.ORDER_PLACED
-            : PERPS_TOAST_KEYS.ORDER_SUBMITTED,
-        description: tradeActionToastDescription,
-        autoHideTime: 3000,
-      });
+      if (shouldShowOrderSubmissionToasts) {
+        replacePerpsToastByKey({
+          key:
+            orderFormState.type === 'limit'
+              ? PERPS_TOAST_KEYS.ORDER_PLACED
+              : PERPS_TOAST_KEYS.ORDER_SUBMITTED,
+          description: tradeActionToastDescription,
+          autoHideTime: 3000,
+        });
+      }
     } catch (error) {
       if (inProgressToastKey) {
         hidePerpsToast();
@@ -1135,6 +1151,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     replacePerpsToastByKey,
     t,
     closeFeeRate,
+    hasPendingPerpsDeposit,
     marketInfo?.szDecimals,
   ]);
 

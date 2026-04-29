@@ -97,9 +97,6 @@ export enum SendFlowPlaceHolders {
   LOADING = 'Preparing transaction',
 }
 
-const SECURITY_ALERT_BULK_SCAN_URL =
-  'https://security-alerts.api.cx.metamask.io/token/scan-bulk';
-
 export const SIMPLEHASH_URL = 'https://api.simplehash.com';
 
 export const SOLANA_DEVNET_URL = 'https://solana-devnet.infura.io/v3/';
@@ -1623,28 +1620,6 @@ export async function mockGetMultipleAccounts(mockServer: Mockttp) {
           result: {
             context: { apiVersion: '2.1.21', slot: 341693911 },
             value,
-          },
-        },
-      };
-    });
-}
-
-export async function mockSecurityAlertBulkScan(mockServer: Mockttp) {
-  return await mockServer
-    .forPost(SECURITY_ALERT_BULK_SCAN_URL)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          results: {
-            EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: {
-              address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-              chain: 'solana',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              malicious_score: '0.0',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              result_type: 'Verified',
-            },
           },
         },
       };
