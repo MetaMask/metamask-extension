@@ -1,6 +1,6 @@
 import type * as Sentry from '@sentry/browser';
 import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
-import { createModuleLogger } from '@metamask/utils';
+import { createModuleLogger, hasProperty, isObject } from '@metamask/utils';
 import type {
   TraceCallback as ControllerTraceCallback,
   TraceRequest as ControllerTraceRequest,
@@ -357,11 +357,12 @@ export function getSerializedTraceContext():
  * @returns Whether the value is a valid serialized trace context.
  */
 function isOurTraceContext(value: unknown): value is SerializedTraceContext {
-  return Boolean(
-    value &&
-      typeof value === 'object' &&
-      typeof (value as Record<string, unknown>)._traceId === 'string' &&
-      typeof (value as Record<string, unknown>)._spanId === 'string',
+  return (
+    isObject(value) &&
+    hasProperty(value, '_traceId') &&
+    hasProperty(value, '_spanId') &&
+    typeof value._traceId === 'string' &&
+    typeof value._spanId === 'string'
   );
 }
 
@@ -387,9 +388,8 @@ export function extractTraceContext(
 
   const lastParam = params[params.length - 1];
   if (
-    lastParam &&
-    typeof lastParam === 'object' &&
-    lastParam._traceContext &&
+    isObject(lastParam) &&
+    hasProperty(lastParam, '_traceContext') &&
     isOurTraceContext(lastParam._traceContext)
   ) {
     return {
@@ -569,10 +569,11 @@ function hasDistributedTraceIds(
   value: unknown,
 ): value is { _traceId: string; _spanId: string } {
   return (
-    typeof value === 'object' &&
-    value !== null &&
-    typeof (value as Record<string, unknown>)._traceId === 'string' &&
-    typeof (value as Record<string, unknown>)._spanId === 'string'
+    isObject(value) &&
+    hasProperty(value, '_traceId') &&
+    hasProperty(value, '_spanId') &&
+    typeof value._traceId === 'string' &&
+    typeof value._spanId === 'string'
   );
 }
 
