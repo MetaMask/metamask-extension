@@ -68,7 +68,7 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@3585ea0027e79a4abc4563a11e5920f403028441
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -151,7 +151,7 @@ jobs:
           ref: ${{ needs.prepare.outputs.BRANCH }}
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@3585ea0027e79a4abc4563a11e5920f403028441
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
