@@ -3746,9 +3746,10 @@ export default class MetamaskController extends EventEmitter {
       performSignIn: authenticationController.performSignIn.bind(
         authenticationController,
       ),
-      performProfilePairing: authenticationController.performProfilePairing.bind(
-        authenticationController,
-      ),
+      performProfilePairing:
+        authenticationController.performProfilePairing.bind(
+          authenticationController,
+        ),
       performSignOut: authenticationController.performSignOut.bind(
         authenticationController,
       ),
