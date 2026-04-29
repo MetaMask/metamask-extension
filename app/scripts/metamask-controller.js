@@ -213,7 +213,6 @@ import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
-  getIsPasskeyFeatureEnabled,
   getIsSeedlessOnboardingFeatureEnabled,
   getEnabledAdvancedPermissions,
   getIsPerpsIncludedInBuild,
@@ -4404,9 +4403,6 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialCreationOptionsJSON>}
    */
   async generatePasskeyRegistrationOptions({ prfAvailable } = {}) {
-    if (!getIsPasskeyFeatureEnabled()) {
-      throw new Error('Passkey feature is not enabled');
-    }
     return this.passkeyController.generateRegistrationOptions({ prfAvailable });
   }
 
@@ -4416,9 +4412,6 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialRequestOptionsJSON>}
    */
   async generatePasskeyAuthenticationOptions() {
-    if (!getIsPasskeyFeatureEnabled()) {
-      throw new Error('Passkey feature is not enabled');
-    }
     return this.passkeyController.generateAuthenticationOptions();
   }
 
@@ -4431,9 +4424,6 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async protectVaultKeyWithPasskey(registrationResponse, password) {
-    if (!getIsPasskeyFeatureEnabled()) {
-      throw new Error('Passkey feature is not enabled');
-    }
     const { completedOnboarding } = this.onboardingController.state;
     if (completedOnboarding) {
       // password is required when onboarding is complete
@@ -4458,9 +4448,6 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async unlockWithPasskey(authenticationResponse) {
-    if (!getIsPasskeyFeatureEnabled()) {
-      throw new Error('Passkey feature is not enabled');
-    }
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new Error('Passkey is not registered');
     }
@@ -4516,9 +4503,6 @@ export default class MetamaskController extends EventEmitter {
     newPassword,
     authenticationResponse,
   ) {
-    if (!getIsPasskeyFeatureEnabled()) {
-      throw new Error('Passkey feature is not enabled');
-    }
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new Error('Passkey is not registered');
     }

@@ -22,7 +22,6 @@ import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
-import * as environment from '../../shared/lib/environment';
 import MetaMaskController from './metamask-controller';
 
 const mockToHardwareWalletError = jest.fn();
@@ -1226,23 +1225,7 @@ describe('MetaMaskController', function () {
     const registrationResponse = { id: 'credential-id' };
     const authenticationResponse = { id: 'assertion-id' };
 
-    beforeEach(function () {
-      jest
-        .spyOn(environment, 'getIsPasskeyFeatureEnabled')
-        .mockReturnValue(true);
-    });
-
     describe('#generatePasskeyRegistrationOptions', function () {
-      it('throws when passkey feature is disabled', async function () {
-        jest
-          .spyOn(environment, 'getIsPasskeyFeatureEnabled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.generatePasskeyRegistrationOptions(),
-        ).rejects.toThrow('Passkey feature is not enabled');
-      });
-
       it('delegates to passkey controller with prf availability', async function () {
         const generateRegistrationOptionsSpy = jest
           .spyOn(
@@ -1264,16 +1247,6 @@ describe('MetaMaskController', function () {
     });
 
     describe('#generatePasskeyAuthenticationOptions', function () {
-      it('throws when passkey feature is disabled', async function () {
-        jest
-          .spyOn(environment, 'getIsPasskeyFeatureEnabled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.generatePasskeyAuthenticationOptions(),
-        ).rejects.toThrow('Passkey feature is not enabled');
-      });
-
       it('delegates to passkey controller', async function () {
         const generateAuthenticationOptionsSpy = jest
           .spyOn(
@@ -1291,16 +1264,6 @@ describe('MetaMaskController', function () {
     });
 
     describe('#protectVaultKeyWithPasskey', function () {
-      it('throws when passkey feature is disabled', async function () {
-        jest
-          .spyOn(environment, 'getIsPasskeyFeatureEnabled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.protectVaultKeyWithPasskey(registrationResponse),
-        ).rejects.toThrow('Passkey feature is not enabled');
-      });
-
       it('requires password when onboarding is complete', async function () {
         jest
           .spyOn(metamaskController.onboardingController, 'state', 'get')
@@ -1380,16 +1343,6 @@ describe('MetaMaskController', function () {
     });
 
     describe('#unlockWithPasskey', function () {
-      it('throws when passkey feature is disabled', async function () {
-        jest
-          .spyOn(environment, 'getIsPasskeyFeatureEnabled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.unlockWithPasskey(authenticationResponse),
-        ).rejects.toThrow('Passkey feature is not enabled');
-      });
-
       it('throws when passkey is not registered', async function () {
         jest
           .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
@@ -1517,19 +1470,6 @@ describe('MetaMaskController', function () {
     });
 
     describe('#changePasswordWithPasskeyVerification', function () {
-      it('throws when passkey feature is disabled', async function () {
-        jest
-          .spyOn(environment, 'getIsPasskeyFeatureEnabled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.changePasswordWithPasskeyVerification(
-            'new-password',
-            authenticationResponse,
-          ),
-        ).rejects.toThrow('Passkey feature is not enabled');
-      });
-
       it('throws when passkey is not registered', async function () {
         jest
           .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
