@@ -857,7 +857,7 @@ async function main() {
       issueReview = computeIssueReview(partitioned.unexpected, partitioned.informational, failOn);
       const paths = writeIssueArtifacts(artifactsDir, { ...partitioned, review: issueReview });
       issueReview.artifactFiles = paths;
-      if (issueReview.status === 'review') {
+      if (issueReview.status === 'review' && process.env.RECIPE_SHOW_ISSUE_REVIEW === '1') {
         process.stdout.write(`\n[auto-issues] review — ${issueReview.observed.total} unexpected event(s). See ${paths.reviewMd}\n`);
       } else if (issueReview.status === 'gating') {
         process.stdout.write(`\n[auto-issues] GATING — ${issueReview.gating.total} event(s) matched fail_on_unexpected. See ${paths.reviewMd}\n`);

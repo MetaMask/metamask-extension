@@ -6,8 +6,8 @@
 #             Preflight (waits for build), launch isolated Chromium, unlock wallet.
 #             If no `yarn start` is running and dist/chrome is stale, starts one
 #             in the background (log: $AGENT_DIR/watcher.log). Refuses if a
-#             healthy sandbox is already running on this CDP_PORT — pass --force
-#             (or -f) to relaunch the sandbox tracked by this AGENT_DIR. A
+#             healthy sandbox is already running on this CDP_PORT, reuses it.
+#             Pass --force (or -f) to relaunch the sandbox tracked by this AGENT_DIR. A
 #             lockfile under $AGENT_DIR/.sandbox.lock blocks concurrent invocations.
 #   down      Kill the sandbox Chromium + launcher; clean PID files.
 #   clean [--yes]
@@ -210,12 +210,9 @@ cmd_up() {
       cdp_alive=1
     fi
     if [ "$launcher_alive" -eq 1 ] && [ "$cdp_alive" -eq 1 ]; then
-      echo "Sandbox already running (CDP:${CDP_PORT}, launcher PID ${launcher_pid:-?}, browser PID ${browser_pid:-?})." >&2
-      echo "  Use one of:" >&2
-      echo "    bash test/agentic/sandbox.sh status              # health check" >&2
-      echo "    bash test/agentic/sandbox.sh down                # stop, then up" >&2
-      echo "    bash test/agentic/sandbox.sh up --force          # relaunch tracked sandbox" >&2
-      exit 1
+      echo "Sandbox already running (CDP:${CDP_PORT}, launcher PID ${launcher_pid:-?}, browser PID ${browser_pid:-?})."
+      echo "  Reusing existing sandbox. Use --force to relaunch."
+      return 0
     fi
     if [ "$launcher_alive" -eq 1 ] || [ "$cdp_alive" -eq 1 ]; then
       echo "[up] Detected partial state (launcher_alive=$launcher_alive, cdp_alive=$cdp_alive) — proceeding to relaunch."

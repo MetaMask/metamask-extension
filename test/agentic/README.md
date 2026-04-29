@@ -73,7 +73,7 @@ Each Chromium instance the runner spawns is fully isolated by `--user-data-dir`.
 | `CHROME_BIN`           | Playwright bundled               | Override Chromium binary                                                                                 |
 | `BUILD_TIMEOUT`        | `180`                            | Seconds preflight waits for the build to finish                                                          |
 
-`sandbox.sh up` refuses an already-running sandbox unless `--force`; an mkdir-atomic lockfile under `$AGENT_DIR/.sandbox.lock` blocks concurrent invocations. `sandbox.sh clean` requires `--yes` (or an interactive TTY) before deleting the profile dir. `sandbox.sh down` SIGTERMs the launcher + browser PIDs, waits up to 5s, then SIGKILLs and sweeps any chromium still bound to the profile dir.
+`sandbox.sh up` reuses an already-running sandbox; pass `--force` to relaunch the sandbox tracked by `$AGENT_DIR`. An mkdir-atomic lockfile under `$AGENT_DIR/.sandbox.lock` blocks concurrent invocations. `sandbox.sh clean` requires `--yes` (or an interactive TTY) before deleting the profile dir. `sandbox.sh down` SIGTERMs the launcher + browser PIDs, waits up to 5s, then SIGKILLs and sweeps any chromium still bound to the profile dir.
 
 ### Per-stream logs
 
