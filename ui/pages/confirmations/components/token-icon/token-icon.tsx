@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
+import { BadgeWrapper } from '@metamask/design-system-react';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
   AvatarTokenSize,
-  BadgeWrapper,
 } from '../../../../components/component-library';
 import { selectNetworkConfigurationByChainId } from '../../../../selectors';
 import { useSendTokens } from '../../hooks/send/useSendTokens';
