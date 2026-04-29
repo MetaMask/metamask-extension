@@ -369,11 +369,12 @@ function isOurTraceContext(value: unknown): value is SerializedTraceContext {
 /**
  * Extract trace context appended by submitRequestToBackground from RPC params.
  * Returns the clean params (without trace context) and the trace context if present.
- * Only strips when the last param has _traceContext with our expected shape
- * (_traceId, _spanId) to avoid eating legitimate params.
+ * Only strips when the last param has `_traceContext` with our expected shape
+ * (`_traceId`, `_spanId`) to avoid eating legitimate params.
  *
- * @param {Array} params - RPC call parameters.
- * @returns {{ cleanParams: Array, traceContext: object | undefined }}
+ * @param params - RPC call parameters.
+ * @returns Clean params (without the trace wrapper) and the extracted context
+ * if present, or `undefined` if no valid trace context was found.
  */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
