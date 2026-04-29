@@ -46,6 +46,14 @@ test/agentic/
 
 Recipes and flows are JSON. The replay runner and shared runtime modules are plain JavaScript so `validate-recipe.sh` can execute them directly with `node`. TypeScript is reserved for standalone developer probes invoked with `tsx`, such as `status.ts` and `check-extension.ts`.
 
+## Review expectations
+
+This toolkit is opt-in developer/test infrastructure. It does not change extension runtime behavior unless a developer explicitly starts the sandbox or runs a recipe. Live sandbox execution requires a built extension, a test wallet fixture, and a unique CDP port for the current worktree.
+
+`@MetaMask/perps` owns `test/agentic/` during incubation. The runner, schema, sandbox, and `domains/` layout are intentionally product-agnostic so other teams can add domain recipes without changing the replay engine.
+
+Offline validation covers every checked-in recipe and flow. Live smoke evidence uses the browser-feature page-reload recipe because product recipes can depend on testnet account state, balances, or feature flags.
+
 ## Sandbox model
 
 Each Chromium instance the runner spawns is fully isolated by `--user-data-dir`. Defaults are repo-local (`<repo>/temp/runtime/chrome-profile-pw`), so multiple worktrees never share state. Override these env vars (in `test/agentic/.env` or your shell) to run several sandboxes concurrently:
