@@ -3843,6 +3843,15 @@
   "loginErrorSessionExpiredTitle": {
     "message": "Session has expired"
   },
+  "loginErrorTelegramOutdatedButton": {
+    "message": "Update Telegram"
+  },
+  "loginErrorTelegramOutdatedDescription": {
+    "message": "We couldn't connect to Telegram. This usually happens when your Telegram app is out of date. Please update Telegram and try again."
+  },
+  "loginErrorTelegramOutdatedTitle": {
+    "message": "Couldn't sign in with Telegram"
+  },
   "logo": {
     "message": "$1 logo",
     "description": "$1 is the name of the ticker"
@@ -5035,10 +5044,6 @@
   "onboardingMetametricsTitle": {
     "message": "Help improve MetaMask"
   },
-  "onboardingOptionIcon": {
-    "message": "$1 icon",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Sign in with $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -5093,6 +5098,9 @@
   },
   "openWallet": {
     "message": "Open wallet"
+  },
+  "opensInNewTab": {
+    "message": "opens in new tab"
   },
   "options": {
     "message": "Options"
@@ -7104,11 +7112,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Use your $1 login and MetaMask password to recover your account and Secret Recovery Phrases.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 RECOVERY",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpDescription": {
     "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."

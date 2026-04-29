@@ -146,6 +146,7 @@ jest.mock('../../store/actions', () => ({
   getIsSeedlessOnboardingUserAuthenticated: jest.fn(
     () => async () => Promise.resolve(false),
   ),
+  performSeedlessOnboardingProfilePair: jest.fn(() => async () => null),
 }));
 
 jest.mock('../../../shared/lib/environment', () => ({

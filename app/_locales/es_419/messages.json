@@ -4792,10 +4792,6 @@
   "onboardingMetametricsTitle": {
     "message": "Ayuda a mejorar MetaMask"
   },
-  "onboardingOptionIcon": {
-    "message": "Ícono $1",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Inicia sesión con $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -6513,11 +6509,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Utiliza tu nombre de usuario de $1 y tu contraseña de MetaMask para recuperar tu cuenta y tus frases secretas de recuperación.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "RECUPERACIÓN DE $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpDescription": {
     "message": "Haz una copia de seguridad de tu frase secreta de recuperación para no perder nunca el acceso a tu billetera. Asegúrate de guardarla en un lugar seguro al que solo tú puedas acceder y que no olvides."

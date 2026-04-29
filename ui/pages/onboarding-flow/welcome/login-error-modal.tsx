@@ -33,6 +33,8 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getSocialLoginType } from '../../../selectors';
 import { LOGIN_ERROR, LoginErrorType } from './types';
 
+const TELEGRAM_DESKTOP_UPDATE_URL = 'https://desktop.telegram.org/';
+
 type LoginErrorModalProps = {
   onDone: () => void;
   loginError: LoginErrorType;
@@ -48,12 +50,17 @@ export default function LoginErrorModal({
   const { trackEvent } = useContext(MetaMetricsContext);
   const socialLoginType = useSelector(getSocialLoginType);
 
+  const isTelegramOutdated = loginError === LOGIN_ERROR.TELEGRAM_OUTDATED;
+
   const getTitle = () => {
     if (loginError === LOGIN_ERROR.UNABLE_TO_CONNECT) {
       return t('loginErrorConnectTitle');
     }
     if (loginError === LOGIN_ERROR.SESSION_EXPIRED) {
       return t('loginErrorSessionExpiredTitle');
+    }
+    if (isTelegramOutdated) {
+      return t('loginErrorTelegramOutdatedTitle');
     }
     return t('loginErrorGenericTitle');
   };
@@ -67,6 +74,9 @@ export default function LoginErrorModal({
     }
     if (loginError === LOGIN_ERROR.RESET_WALLET && socialLoginType) {
       return t('loginErrorResetWalletDescription', [socialLoginType]);
+    }
+    if (isTelegramOutdated) {
+      return t('loginErrorTelegramOutdatedDescription');
     }
 
     return t('loginErrorGenericDescription', [
@@ -110,6 +120,19 @@ export default function LoginErrorModal({
     return t('loginErrorGenericButton');
   };
 
+  const handleUpdateTelegramClick = () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.SupportLinkClicked,
+      properties: {
+        url: TELEGRAM_DESKTOP_UPDATE_URL,
+        location: 'Telegram outdated modal',
+      },
+    });
+    global.platform.openTab({ url: TELEGRAM_DESKTOP_UPDATE_URL });
+    onDone();
+  };
+
   return (
     <Modal isOpen onClose={onDone} data-testid="login-error-modal">
       <ModalOverlay />
@@ -133,15 +156,27 @@ export default function LoginErrorModal({
         <Box paddingLeft={4} paddingRight={4}>
           <Text variant={TextVariant.BodyMd}>{getDescription()}</Text>
           <Box marginTop={6}>
-            <Button
-              data-testid="login-error-modal-button"
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              onClick={onDone}
-              className="w-full"
-            >
-              {getButtonText()}
-            </Button>
+            {isTelegramOutdated ? (
+              <Button
+                data-testid="login-error-modal-update-telegram-button"
+                variant={ButtonVariant.Primary}
+                size={ButtonSize.Lg}
+                onClick={handleUpdateTelegramClick}
+                className="w-full"
+              >
+                {t('loginErrorTelegramOutdatedButton')}
+              </Button>
+            ) : (
+              <Button
+                data-testid="login-error-modal-button"
+                variant={ButtonVariant.Primary}
+                size={ButtonSize.Lg}
+                onClick={onDone}
+                className="w-full"
+              >
+                {getButtonText()}
+              </Button>
+            )}
           </Box>
         </Box>
       </ModalContent>
