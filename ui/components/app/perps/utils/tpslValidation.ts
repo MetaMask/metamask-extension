@@ -155,5 +155,5 @@ export const getStopLossLiquidationErrorDirection = (
   if (!direction) {
     return '';
   }
-  return direction === 'long' ? 'above' : 'below';
+  return getStopLossErrorDirection(direction === 'long' ? 'short' : 'long');
 };

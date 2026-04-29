@@ -17,7 +17,6 @@ import {
 import {
   BorderRadius,
   BackgroundColor,
-  TextVariant as TextVariantLegacy,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { usePerpsOrderFees } from '../../../../../../hooks/perps/usePerpsOrderFees';
@@ -38,6 +37,8 @@ import {
   isSignedDecimalInput,
 } from '../../../utils/tpslInput';
 import { formatRoePercent, getPnlDisplayColor } from '../../../utils';
+
+const INPUT_TEXT_VARIANT = 'body-sm';
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
@@ -459,7 +460,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   className="w-full"
                   data-testid="tp-price-input"
                   inputProps={{
-                    textVariant: TextVariantLegacy.bodySm,
+                    textVariant: INPUT_TEXT_VARIANT,
                     inputMode: 'decimal',
                   }}
                   startAccessory={
@@ -488,7 +489,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   className="w-full"
                   data-testid="tp-percent-input"
                   inputProps={{
-                    textVariant: TextVariantLegacy.bodySm,
+                    textVariant: INPUT_TEXT_VARIANT,
                     inputMode: 'decimal',
                   }}
                   endAccessory={
@@ -593,7 +594,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   className="w-full"
                   data-testid="sl-price-input"
                   inputProps={{
-                    textVariant: TextVariantLegacy.bodySm,
+                    textVariant: INPUT_TEXT_VARIANT,
                     inputMode: 'decimal',
                   }}
                   startAccessory={
@@ -622,7 +623,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   className="w-full"
                   data-testid="sl-percent-input"
                   inputProps={{
-                    textVariant: TextVariantLegacy.bodySm,
+                    textVariant: INPUT_TEXT_VARIANT,
                     inputMode: 'decimal',
                   }}
                   endAccessory={
