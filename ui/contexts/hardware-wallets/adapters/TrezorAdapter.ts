@@ -1,11 +1,9 @@
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
-import { getTrezorFeatures } from '../../../store/actions';
 import { createHardwareWalletError, getDeviceEventForError } from '../errors';
 import { toHardwareWalletError } from '../rpcErrorUtils';
 import {
   DeviceEvent,
   HardwareWalletType,
-  type EnsureDeviceReadyOptions,
   type HardwareWalletAdapter,
   type HardwareWalletAdapterOptions,
 } from '../types';
@@ -13,27 +11,7 @@ import {
   getConnectedTrezorDevices,
   isWebUsbAvailable,
 } from '../webConnectionUtils';
-import {
-  getMissingCapabilities,
-  isTrezorModelOne,
-  isTrezorModelUsingTrezorSuite,
-} from './trezorUtils';
-
-const TREZOR_MODEL_ONE_MAX_MESSAGE_BYTES = 1024;
-
-const CONNECTION_RESET_ERROR_CODES: ReadonlySet<ErrorCode> = new Set([
-  ErrorCode.DeviceDisconnected,
-  ErrorCode.ConnectionClosed,
-]);
-
-type TrezorFeaturesPayload = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  session_id: string | null;
-  model: string;
-  initialized: boolean;
-  capabilities: string[];
-  unlocked: boolean;
-};
+import { getMissingCapabilities, isTrezorModelOne } from './trezorUtils';
 
 /**
  * Trezor adapter implementation.
@@ -140,16 +118,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
   }
 
   /**
-   * Fetch the device feature payload from the Trezor Connect session.
-   *
-   * @returns Normalized feature payload (model, sessionId, capabilities, etc.)
-   */
-  async #fetchDeviceFeatures(): Promise<TrezorFeaturesPayload> {
-    const features = await getTrezorFeatures();
-    return features.payload;
-  }
-
-  /**
    * Validate that the device reports all required capabilities.
    *
    * @param capabilities - Raw capabilities list from device features
@@ -173,36 +141,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
         )}.`,
         { metadata: { capabilities, missingCapabilities: missingForModel } },
       );
-    }
-  }
-
-  /**
-   * Handle errors during ensureDeviceReady by emitting device events
-   * and resetting connection state when appropriate.
-   *
-   * @param error - The error caught during device readiness check
-   */
-  #handleDeviceReadyError(error: unknown): void {
-    const hwError =
-      error instanceof HardwareWalletError
-        ? error
-        : toHardwareWalletError(error, HardwareWalletType.Trezor);
-
-    const deviceEvent = getDeviceEventForError(
-      hwError.code,
-      DeviceEvent.Disconnected,
-    );
-
-    this.options.onDeviceEvent({
-      event: deviceEvent,
-      error: hwError,
-    });
-
-    if (
-      CONNECTION_RESET_ERROR_CODES.has(hwError.code) ||
-      deviceEvent === DeviceEvent.Disconnected
-    ) {
-      this.connected = false;
     }
   }
 

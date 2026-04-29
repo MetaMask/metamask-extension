@@ -1,11 +1,7 @@
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { DeviceEvent, type HardwareWalletAdapterOptions } from '../types';
 import * as webConnectionUtils from '../webConnectionUtils';
-import {
-  getMissingCapabilities,
-  isTrezorModelOne,
-  isTrezorModelUsingTrezorSuite,
-} from './trezorUtils';
+import { getMissingCapabilities, isTrezorModelOne } from './trezorUtils';
 import { TrezorAdapter } from './TrezorAdapter';
 
 jest.mock('../webConnectionUtils', () => ({
@@ -246,21 +242,6 @@ describe('TrezorAdapter', () => {
 });
 
 describe('trezorUtils', () => {
-  describe('isTrezorModelUsingTrezorSuite', () => {
-    it('returns true for safe 7', () => {
-      expect(isTrezorModelUsingTrezorSuite('safe 7')).toBe(true);
-    });
-
-    it('returns true for Safe 7 (case insensitive)', () => {
-      expect(isTrezorModelUsingTrezorSuite('Safe 7')).toBe(true);
-    });
-
-    it('returns false for other models', () => {
-      expect(isTrezorModelUsingTrezorSuite('T')).toBe(false);
-      expect(isTrezorModelUsingTrezorSuite('1')).toBe(false);
-    });
-  });
-
   describe('getMissingCapabilities', () => {
     it('returns empty array when all capabilities are present', () => {
       expect(
