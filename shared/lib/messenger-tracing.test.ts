@@ -1,18 +1,18 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Messenger } from '@metamask/messenger';
-import { getActiveSpan, trace } from '../../../shared/lib/trace';
-import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
+import { getActiveSpan, trace } from './trace';
+import { shouldSampleWrappers } from './wrapper-sampling';
 import {
   isReadOnlyAction,
   wrapMessengerWithTracing,
 } from './messenger-tracing';
 
-jest.mock('../../../shared/lib/trace', () => ({
+jest.mock('./trace', () => ({
   getActiveSpan: jest.fn(),
   trace: jest.fn((_request: unknown, fn: () => unknown) => fn()),
 }));
 
-jest.mock('../../../shared/lib/wrapper-sampling', () => ({
+jest.mock('./wrapper-sampling', () => ({
   shouldSampleWrappers: jest.fn(),
 }));
 

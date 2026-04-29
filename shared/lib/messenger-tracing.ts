@@ -3,8 +3,8 @@ import type {
   EventConstraint,
   Messenger,
 } from '@metamask/messenger';
-import { getActiveSpan, trace } from '../../../shared/lib/trace';
-import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
+import { getActiveSpan, trace } from './trace';
+import { shouldSampleWrappers } from './wrapper-sampling';
 
 /**
  * Read-only verb prefixes that produce noise in trace waterfalls without

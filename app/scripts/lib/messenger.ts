@@ -4,7 +4,7 @@ import {
   Messenger,
 } from '@metamask/messenger';
 import { captureException } from '../../../shared/lib/sentry';
-import { wrapMessengerWithTracing } from './messenger-tracing';
+import { wrapMessengerWithTracing } from '../../../shared/lib/messenger-tracing';
 
 export const ROOT_MESSENGER_NAMESPACE = 'Root';
 
