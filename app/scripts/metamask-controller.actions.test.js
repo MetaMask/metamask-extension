@@ -1639,7 +1639,7 @@ describe('MetaMaskController', function () {
     });
 
     describe('#changePassword', function () {
-      it('removes passkey when non-social login flow has enrolled passkey', async function () {
+      it('does not remove passkey after keyring password change', async function () {
         const releaseLock = jest.fn();
         jest
           .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
@@ -1650,7 +1650,7 @@ describe('MetaMaskController', function () {
             'getIsSocialLoginFlow',
           )
           .mockReturnValue(false);
-        jest
+        const changePasswordSpy = jest
           .spyOn(metamaskController.keyringController, 'changePassword')
           .mockResolvedValue();
         jest
@@ -1662,7 +1662,8 @@ describe('MetaMaskController', function () {
 
         await metamaskController.changePassword('new-password', 'old-password');
 
-        expect(removePasskeySpy).toHaveBeenCalledTimes(1);
+        expect(changePasswordSpy).toHaveBeenCalledWith('new-password');
+        expect(removePasskeySpy).not.toHaveBeenCalled();
         expect(releaseLock).toHaveBeenCalledTimes(1);
       });
     });

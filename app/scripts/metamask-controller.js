@@ -4791,11 +4791,6 @@ export default class MetamaskController extends EventEmitter {
           throw err;
         }
       }
-
-      // Passkey is registered but not authenticated when changing password, remove it
-      if (!isSocialLoginFlow && this.passkeyController.isPasskeyEnrolled()) {
-        this.passkeyController.removePasskey();
-      }
     } catch (error) {
       log.error('error while changing password', error);
       throw error;
