@@ -14,11 +14,11 @@ concurrency:
 
 jobs:
   identify-codeowners:
-    # Avoid running on forks since we need to write a PR comment
+    # Avoid running on cross-repo PRs since we need to write a PR comment
     # Avoid running on release branches and bot PRs
     if: >-
       ${{
-        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+        github.event.pull_request.head.repo.full_name == github.repository
         && !startsWith(github.head_ref, 'release/')
         && github.event.pull_request.user.login != 'metamaskbot'
         && github.event.pull_request.user.login != 'runway-github[bot]'

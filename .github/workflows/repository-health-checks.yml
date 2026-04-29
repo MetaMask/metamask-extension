@@ -47,7 +47,7 @@ jobs:
         run: yarn --check-resolutions
 
       # --- Baseline download (PR, push-to-main, and cron) ---
-      # When the download fails (first rollout, expired artifact, or fork PR
+      # When the download fails (first rollout, expired artifact, or cross-repo PR
       # with read-only token), NO_BASELINE=true tells the triage script to
       # fall back to the same criteria as the package.json `audit` script:
       #   yarn audit --environment production --severity moderate

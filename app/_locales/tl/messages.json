@@ -193,6 +193,9 @@
   "addAUrl": {
     "message": "Magdagdag ng URL"
   },
+  "addAWallet": {
+    "message": "Magdagdag ng wallet"
+  },
   "addAccount": {
     "message": "Magdagdag ng account"
   },
@@ -801,14 +804,14 @@
     "message": "basic functionality"
   },
   "backupAndSyncEnable": {
-    "message": "I-on ang backup at sync"
+    "message": "I-on ang mag-back up at mag-sync"
   },
   "backupAndSyncEnableConfirmation": {
     "message": "Kapag in-on mo ang backup at sync, mao-on din ang $1. Gusto mo bang magpatuloy?",
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
-    "message": "Sa backup at sync, makakapagtago ka ng na-encrypt na data para sa mga custom na setting at feature mo. Pinapanatili nitong pareho ang karanasan mo sa MetaMask sa lahat ng device at ibinabalik ang mga setting at feature kung kailangan mong i-install muli ang MetaMask. Hindi nito naiba-back up ang iyong Secret Recovery Phrase. $1.",
+    "message": "Nagbibigay-daan sa amin ang mag-back up at mag-sync na ma-store ang naka-encrypt na data para sa mga custom na setting at feature mo. Pinapanatili nitong pareho ang experience mo sa MetaMask sa lahat ng device at nire-restore ang mga setting at feature kung kailanganin mo mang i-reinstall ang MetaMask. Hindi nito maba-back up ang Mga Sikretong Salita sa Pag-recover. $1.",
     "description": "$1 is link to the backup and sync privacy policy."
   },
   "backupAndSyncEnableDescriptionUpdatePreferences": {
@@ -831,7 +834,7 @@
     "message": "I-on ang na-sync mo sa mga device mo."
   },
   "backupAndSyncPrivacyLink": {
-    "message": "Matutunan kung paano namin protektahan ang iyong privacy"
+    "message": "Alamin kung paano namin pinoprotektahan ang privacy mo"
   },
   "backupApprovalInfo": {
     "message": "Ang lihim na code na ito ay kinakailangan para ma-recover ang iyong wallet sakaling maiwala mo ang iyong device, makalimutan ang iyong password, kailanganin mong i-install ulit ang MetaMask, o gusto mong i-access ang iyong wallet sa ibang device."
@@ -1086,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "Pinakamababang halaga"
   },
+  "bridgeMalicious": {
+    "message": "Mapaminsala"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Mapanganib na token"
+  },
   "bridgeMarketClosedAction": {
     "message": "Sarado ang market"
   },
@@ -1106,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "Walang bayad sa MM"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "Walang impormasyon sa presyo"
   },
   "bridgePoints": {
     "message": "Tinatayang mga point",
@@ -1202,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "Tumatanggap sa chain ng destinasyon"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Kahina-hinalang airdrop"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Concentrated supply"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Kahina-hinalang gawi"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Na-inflate na bilang ng trader"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Pekeng dami"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Matinding aktibidad ng bot"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Hindi inihayag na supply"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "Mataas na bayad sa pagbili"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "Mataas na bayad sa pagbebenta"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "Mataas na bayad sa transfer"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Panganib ng honeypot"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Nagpapanggap na ibang tao"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Nagpapanggap na isang sensitibong asset"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Malamang na nagpapanggap na ibang tao"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Posibleng nangpapanggap na ibang tao"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Hindi naangkop na content"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Artipisyal na dami"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Mababang naka-lock na liquidity"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "Hindi maganda ang reputasyon ng creator"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Kilalang mapaminsala"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Kahina-hinalang metadata"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Posibleng pagmamanipula ng presyo"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Panganib ng rugpull"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Pinarusahang creator"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Mukhang mapaminsalang kontrata"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Paglulunsad ng aktibidad ng bot"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Spam text"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Kahina-hinalang code"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Backdoor ng token"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Hindi maibentang token"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Pabago-bagong presyo"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Wash na pag-trade"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Pumili ng destinasyong account"
   },
@@ -1257,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "Nagsa-swap ng $1 para sa $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "Kahina-hinala"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Kahina-hinalang token"
   },
   "bridgeTo": {
     "message": "I-bridge sa"
@@ -1428,7 +1542,7 @@
     "message": "Piliin ang iyong network"
   },
   "chooseYourNetworkDescription": {
-    "message": "Kapag ginagamit mo ang aming mga default na setting at configuration, ginagamit namin ang Infura bilang aming default na remote procedure call (RPC) provider para mag-alok ng pinakamaasahan at pribadong access sa data ng Ethereum sa abot ng aming makakaya. Sa mga limitadong pangyayari, maaari kaming gumamit ng ibang mga RPC provider upang makapagbigay ng pinakamainam na karanasan para sa aming mga user. Maaari kang pumili ng iyong sariling RPC, ngunit tandaan na ang anumang RPC ay makakatanggap ng iyong IP address at Ethereum wallet upang makapagsagawa ng mga transaksyon. Para matuto pa tungkol sa kung paano pinangangasiwaan ng Infura ang data para sa mga EVM account, basahin ang aming $1, at para sa mga Solana account, $2.",
+    "message": "Kapag ginamit mo ang mga default na setting at configuration namin, ginagamit namin ang Infura bilang default na remote procedure call (RPC) provider namin para mag-alok ng pinakamaaasahan at pribadong access sa data ng Etheeum hangga’t kaya namin. Sa mga limitadong kaso, posibleng gumamit kami ng ibang RPC provider para maibigay ang pinakamagandang experience sa mga user namin. Puwede kang pumili ng sarili mong RPC, pero tandaan na matatanggap ng sinumang RPC ang IP address at Ethereum wallet mo para para makagawa ng mga transaksyon. Para matuto pa kung paano nangangasiwa ang Infura ng data para sa mga EVM account, basahin ang $1, para sa mga Solana account, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chooseYourNetworkDescriptionCallToAction": {
@@ -1556,7 +1670,7 @@
     "message": "Buwanan"
   },
   "confirmFieldPeriodDurationSeconds": {
-    "message": "$1 (na) segundo",
+    "message": "$1 na segundo",
     "description": "$1 is the number of seconds in the permission period (shown when the period is not a standard hour/day/week/etc.)"
   },
   "confirmFieldPeriodDurationWeekly": {
@@ -1729,6 +1843,9 @@
   },
   "connect": {
     "message": "Kumonekta"
+  },
+  "connectAHardwareWallet": {
+    "message": "Magkonekta ng wallet na hardware"
   },
   "connectAccounts": {
     "message": "Ikonekta ang mga account"
@@ -3008,6 +3125,9 @@
   "gasUsed": {
     "message": "Nagamit na Gas"
   },
+  "gatorNoJustificationProvided": {
+    "message": "Walang katwiran na ibinigay para sa pahintulot"
+  },
   "gatorPermissionAnnualFrequency": {
     "message": "Taunan",
     "description": "Time period for annual recurring permissions redemption"
@@ -3080,6 +3200,14 @@
     "message": "Petsa ng pagsisimula",
     "description": "Label for the start date of a permission"
   },
+  "gatorPermissionsStatusExpired": {
+    "message": "Nag-expire",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Binawi",
+    "description": "Tag label for a gator permission that has been revoked"
+  },
   "gatorPermissionsStreamRate": {
     "message": "Rate ng pag-stream",
     "description": "Label for the stream rate of a permission"
@@ -3098,7 +3226,7 @@
     "message": "Mayroong nang mali...."
   },
   "generalDescription": {
-    "message": "I-sync ang mga setting sa lahat ng device, pumili ng mga kagustuhan sa network, at subaybayan ang data ng token"
+    "message": "I-sync ang mga setting sa lahat ng device, pumili ng mga preference sa network, at i-track ang data ng token"
   },
   "genericExplorerView": {
     "message": "Tingnan ang account sa $1"
@@ -3359,6 +3487,9 @@
   "importAWallet": {
     "message": "I-import ang wallet"
   },
+  "importAWalletDescription": {
+    "message": "Paggamit ng 12, 18, 0 24 na salitang seed phrase"
+  },
   "importAccountError": {
     "message": "Error sa pag-import ng account."
   },
@@ -3389,6 +3520,9 @@
   },
   "importAnAccount": {
     "message": "Mag-import ng account"
+  },
+  "importAnAccountDescription": {
+    "message": "Sa pamamagitan ng pribadong key"
   },
   "importNFT": {
     "message": "Mag-import ng NFT"
@@ -4090,6 +4224,102 @@
     "message": "Si $1 ay gustong gumamit ng $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdAssetBonusAccruing": {
+    "message": "Naipon na susunod na bonus",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "I-claim ang $1 na bonus",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "Tinatayang taunang bonus",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "Ang impormasyon ng iyong bonus",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "Ang pagtataya sa kikitain mo sa isang taon batay sa kasalukuyan mong balanse at rate. Nag-iiba-iba ang rate at posibleng magbago.",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "Matuto pa.",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "Ang kabuuang bonus na na-claim mo mula ng magsimula ka.",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "$1% taunang bonus na kinita mo sa pagho-hold ng mUSD. Pwedeng mo itong i-claim sa Linea araw-araw. $2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "Na-claim ang taunang bonus",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "Walang naipon na bonus",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "$1% bonus",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "Iyong bonus",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "Araw-araw na bonus",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "Sinusuportahan ng Dolyar",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "Walang mga lockup",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "Walang bayad sa MetaMask",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "$1% taunang bonus",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "Makakuha ng ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " sa pamamagitan ng pag-convert ng USDC, USDT, at DAI sa mUSD.",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "Matuto pa.",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "I-convert ang iyong mga stablecoin",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "Balanse",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "Posisyon mo",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "Halaga",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
+  },
   "musdBonusExplanation": {
     "message": "I-convert ang mga stablecoin mo sa mUSD at kumita\nng hanggang $1% taunang bonus na puwede mong\nma-claim araw-araw. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
@@ -4193,6 +4423,10 @@
   "musdMetaMaskUsd": {
     "message": "MetaMask USD",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "Nalalapat ang mga tuntunin."
@@ -4757,6 +4991,14 @@
     "message": "Tingnan sa $1",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "Nabigo ang transaksyon! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "Nakumpirma ang transaksyon!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
+  },
   "notifications": {
     "message": "Mga notipikasyon"
   },
@@ -4854,7 +5096,7 @@
     "message": "Ang URL ng IPFS gateway ay wasto"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
-    "message": "Kapag ginagamit mo ang aming mga default na setting at configuration, ginagamit namin ang Infura bilang aming default na remote procedure call (RPC) provider para mag-alok ng pinakamaasahan at pribadong access sa data ng Ethereum sa abot ng aming makakaya. Sa mga limitadong pangyayari, maaari kaming gumamit ng ibang mga RPC provider upang makapagbigay ng pinakamainam na karanasan para sa aming mga user. Maaari kang pumili ng iyong sariling RPC, ngunit tandaan na ang anumang RPC ay makakatanggap ng iyong IP address at Ethereum wallet upang makapagsagawa ng mga transaksyon. Para matuto pa tungkol sa kung paano pinangangasiwaan ng Infura ang data para sa mga EVM account, basahin ang aming $1; para sa mga Solana account, $2."
+    "message": "Kapag ginamit mo ang mga default na setting at configuration namin, ginagamit namin ang Infura bilang default na remote procedure call (RPC) provider namin para mag-alok ng pinakamaaasahan at pribadong access sa data ng Etheeum hangga’t kaya namin. Sa mga limitadong kaso, posibleng gumamit kami ng ibang RPC provider para maibigay ang pinakamagandang experience sa mga user namin. Puwede kang pumili ng sarili mong RPC, pero tandaan na matatanggap ng sinumang RPC ang IP address at Ethereum wallet mo para para makagawa ng mga transaksyon. Para matuto pa kung paano nangangasiwa ang Infura ng data para sa mga EVM account, basahin ang $1; para sa mga Solana account, $2."
   },
   "onboardingAdvancedPrivacyNetworkDescriptionCallToAction": {
     "message": "mag-click dito"
@@ -5420,7 +5662,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Available na balanse sa Perps: "
+    "message": "Available na balanse: "
   },
   "perpsAvailableToAdd": {
     "message": "Available para idagdag"
@@ -5466,7 +5708,7 @@
     "message": "Isara ang Halaga"
   },
   "perpsCloseLong": {
-    "message": "Isara ang Long"
+    "message": "Isara ang long"
   },
   "perpsClosePartialMinNotional": {
     "message": "Ang mga bahagyang pagsasara ay dapat na hindi bababa sa $1 sa halaga ng USD. Dagdagan ang halaga ng pagsasara o itakda ang slider sa 100%."
@@ -5475,19 +5717,25 @@
     "message": "Isara ang posisyon"
   },
   "perpsCloseShort": {
-    "message": "Isara ang Short"
+    "message": "Isara ang short"
   },
   "perpsConfirmCloseLong": {
-    "message": "Isara ang Long"
+    "message": "Isara ang long"
   },
   "perpsConfirmCloseShort": {
-    "message": "Isara ang Short"
+    "message": "Isara ang short"
   },
   "perpsConnectionTimeout": {
     "message": "Nag-time out ang koneksyon. Subukan ulit."
   },
   "perpsContactSupport": {
     "message": "Kontakin ang suporta"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "Sinusuportahan lang ng MetaMask Perps ang pag-trade gamit ang isolated margin. Kailangan mo munang isara ang iyong posisyon na cross margin para makapag-trade sa MetaMask."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Hindi suportado ang cross margin"
   },
   "perpsDateToday": {
     "message": "Ngayong araw"
@@ -5585,7 +5833,7 @@
     "message": "Mga pagbabayad sa pagpopondo"
   },
   "perpsFundingRate": {
-    "message": "Rate ng Pagpopondo"
+    "message": "Rate ng pagpopondo"
   },
   "perpsFundingRateTooltip": {
     "message": "Bayad kada oras na ibinabayad ng mga trader para mapanatiling naaayon ang mga presyo sa market. Kung positibo ang rate, magbabayad ang mga nag-long sa mga nag-short. Kung negatibo, magbabayad ang mga nag-short sa mga nag-long."
@@ -5618,7 +5866,7 @@
     "message": "Limit"
   },
   "perpsLimitPrice": {
-    "message": "Limit Price"
+    "message": "Limit price"
   },
   "perpsLimitPriceAboveCurrentPrice": {
     "message": "Ang limit price ay mataas sa kasalukuyang presyo"
@@ -5679,24 +5927,24 @@
     "message": "Wala pang mga transaksyon"
   },
   "perpsOpenInterest": {
-    "message": "Bukas na Interes"
+    "message": "Bukas na interes"
   },
   "perpsOpenInterestTooltip": {
     "message": "Ang pinagsamang halaga ng lahat ng bukas na posisyon para sa perp na ito"
   },
   "perpsOpenLong": {
-    "message": "Magbukasng Long na $1",
+    "message": "Magbukas ng long na $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOpenOrders": {
     "message": "Mga Bukas na Order"
   },
   "perpsOpenShort": {
-    "message": "Magbukas ng Short na $1",
+    "message": "Magbukas ng short na $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOraclePrice": {
-    "message": "Oracle Price"
+    "message": "Presyo ng orakulo"
   },
   "perpsOraclePriceTooltip": {
     "message": "Ang panggitna ng mga panlabas na presyong iniulat ng mga nagpapatibay, na ginagamit para sa pagkukuwenta ng rate ng pagpopondo"
@@ -5735,7 +5983,7 @@
     "message": "Masyado nang maraming kahilingan. Pakihintayin at subukang muli."
   },
   "perpsRecentActivity": {
-    "message": "Kamakailang Aktibidad"
+    "message": "Kamakailang aktibidad"
   },
   "perpsReduceExposure": {
     "message": "Bawasan ang exposure"
@@ -5770,15 +6018,11 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Gawing long ang short na posisyon mo"
   },
-  "perpsSaveChanges": {
-    "message": "I-save ang Mga pagbabago",
-    "description": "Button text for saving TP/SL changes"
-  },
   "perpsSearchMarkets": {
     "message": "Maghanap ng mga market"
   },
   "perpsSeeAll": {
-    "message": "Tingnan Lahat",
+    "message": "Tingnan lahat",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
@@ -5848,7 +6092,7 @@
     "message": "Na-trigger"
   },
   "perpsStopLoss": {
-    "message": "Stop Loss",
+    "message": "Stop loss",
     "description": "Label for stop loss price input"
   },
   "perpsStopLossInvalidPrice": {
@@ -5860,7 +6104,7 @@
     "description": "Loading text shown while an order is being submitted"
   },
   "perpsTakeProfit": {
-    "message": "Take Profit",
+    "message": "Take profit",
     "description": "Label for take profit price input"
   },
   "perpsTakeProfitInvalidPrice": {
@@ -5979,6 +6223,9 @@
   },
   "perpsTrades": {
     "message": "Mga Trade"
+  },
+  "perpsTriggerPrice": {
+    "message": "Trigger price"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "Pinaiigting ng leverage ang parehong kita at pagkalugi. Sa 40x na leverage, ang 1% paggalaw ng presyo ay katumbas ng 40% na kita o pagkalugi sa margin mo."
@@ -6169,7 +6416,7 @@
     "message": "Pagkapribado"
   },
   "privacyMsg": {
-    "message": "Patakaran sa pagkapribado"
+    "message": "Patakaran sa Privacy namin"
   },
   "privateKey": {
     "message": "Pribadong Key",
