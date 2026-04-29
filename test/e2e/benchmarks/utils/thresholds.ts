@@ -44,7 +44,7 @@ const CLS_THRESHOLDS = {
   },
 } satisfies ThresholdConfig;
 
-const ONBOARDING_IMPORT_WALLET: ThresholdConfig = {
+const ONBOARDING_IMPORT_WALLET = {
   importWalletToSocialScreen: {
     p75: { warn: 1800, fail: 2400 },
     p95: { warn: 2800, fail: 3500 },
@@ -86,9 +86,9 @@ const ONBOARDING_IMPORT_WALLET: ThresholdConfig = {
     ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
   ...CLS_THRESHOLDS,
-};
+} satisfies ThresholdConfig;
 
-const ONBOARDING_NEW_WALLET: ThresholdConfig = {
+const ONBOARDING_NEW_WALLET = {
   createWalletToSocialScreen: {
     p75: { warn: 1800, fail: 2400 },
     p95: { warn: 2800, fail: 3500 },
@@ -125,9 +125,9 @@ const ONBOARDING_NEW_WALLET: ThresholdConfig = {
     ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
   ...CLS_THRESHOLDS,
-};
+} satisfies ThresholdConfig;
 
-const IMPORT_SRP_HOME: ThresholdConfig = {
+const IMPORT_SRP_HOME = {
   loginToHomeScreen: {
     p75: { warn: 5000, fail: 7000 },
     p95: { warn: 8000, fail: 10500 },
@@ -149,9 +149,9 @@ const IMPORT_SRP_HOME: ThresholdConfig = {
     ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
   ...CLS_THRESHOLDS,
-};
+} satisfies ThresholdConfig;
 
-const SWAP: ThresholdConfig = {
+const SWAP = {
   openSwapPageFromHome: {
     p75: { warn: 3000, fail: 4500 },
     p95: { warn: 5000, fail: 7000 },
@@ -168,9 +168,9 @@ const SWAP: ThresholdConfig = {
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
   ...CLS_THRESHOLDS,
-};
+} satisfies ThresholdConfig;
 
-const SEND_TRANSACTIONS: ThresholdConfig = {
+const SEND_TRANSACTIONS = {
   openSendPageFromHome: {
     p75: { warn: 1800, fail: 2700 },
     p95: { warn: 3000, fail: 4000 },
@@ -187,27 +187,27 @@ const SEND_TRANSACTIONS: ThresholdConfig = {
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
   ...CLS_THRESHOLDS,
-};
+} satisfies ThresholdConfig;
 
-const ASSET_DETAILS: ThresholdConfig = {
+const ASSET_DETAILS = {
   assetClickToPriceChart: {
     p75: { warn: 500, fail: 1500 },
     p95: { warn: 1500, fail: 3000 },
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
   ...CLS_THRESHOLDS,
-};
+} satisfies ThresholdConfig;
 
-const SOLANA_ASSET_DETAILS: ThresholdConfig = {
+const SOLANA_ASSET_DETAILS = {
   assetClickToPriceChart: {
     p75: { warn: 500, fail: 1500 },
     p95: { warn: 1500, fail: 3000 },
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
   ...CLS_THRESHOLDS,
-};
+} satisfies ThresholdConfig;
 
-const STANDARD_HOME: ThresholdConfig = {
+const STANDARD_HOME = {
   uiStartup: {
     p75: { warn: 2000, fail: 2500 },
     p95: { warn: 2500, fail: 3200 },
@@ -224,9 +224,9 @@ const STANDARD_HOME: ThresholdConfig = {
     ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
   ...CLS_THRESHOLDS,
-};
+} satisfies ThresholdConfig;
 
-const POWER_USER_HOME: ThresholdConfig = {
+const POWER_USER_HOME = {
   uiStartup: {
     p75: { warn: 4000, fail: 4700 },
     p95: { warn: 7000, fail: 10000 },
@@ -243,30 +243,30 @@ const POWER_USER_HOME: ThresholdConfig = {
     ciMultiplier: CI_MULTIPLIER.STARTUP_POWER_USER,
   },
   ...CLS_THRESHOLDS,
-};
+} satisfies ThresholdConfig;
 
 // Threshold keys must match timer IDs emitted by the benchmark flows (snake_case).
 /* eslint-disable @typescript-eslint/naming-convention */
 // Interaction benchmarks: no CLS thresholds. Short single-action measurements
 // capture layout shifts from the benchmark harness (INP probe, navigation),
 // not from application rendering behavior. CLS applies to startup + journey only.
-const LOAD_NEW_ACCOUNT: ThresholdConfig = {
+const LOAD_NEW_ACCOUNT = {
   load_new_account: {
     p75: { warn: 800, fail: 1200 },
     p95: { warn: 1200, fail: 1800 },
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
-};
+} satisfies ThresholdConfig;
 
-const CONFIRM_TX: ThresholdConfig = {
+const CONFIRM_TX = {
   confirm_tx: {
     p75: { warn: 7000, fail: 9000 },
     p95: { warn: 9000, fail: 12000 },
     ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
-};
+} satisfies ThresholdConfig;
 
-const BRIDGE_USER_ACTIONS: ThresholdConfig = {
+const BRIDGE_USER_ACTIONS = {
   bridge_load_page: {
     p75: { warn: 500, fail: 800 },
     p95: { warn: 800, fail: 1200 },
@@ -282,9 +282,9 @@ const BRIDGE_USER_ACTIONS: ThresholdConfig = {
     p95: { warn: 1800, fail: 2500 },
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
-};
+} satisfies ThresholdConfig;
 
-const DAPP_PAGE_LOAD: ThresholdConfig = {
+const DAPP_PAGE_LOAD = {
   pageLoadTime: {
     p75: { warn: 1450, fail: 1700 },
     p95: { warn: 1700, fail: 2000 },
@@ -300,11 +300,14 @@ const DAPP_PAGE_LOAD: ThresholdConfig = {
     p95: { warn: 130, fail: 150 },
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
-};
+} satisfies ThresholdConfig;
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /**
  * Threshold configurations for all benchmarks.
+ *
+ * Each per-benchmark constant uses `satisfies ThresholdConfig` rather than a
+ * type annotation to preserve its literal metric keys.
  */
 const BENCHMARK_THRESHOLDS = {
   // Interaction benchmarks (run on all 4 combos, shared baseline)
@@ -327,7 +330,7 @@ const BENCHMARK_THRESHOLDS = {
   // Startup benchmarks (platform/buildType now stored in data, not in key)
   startupStandardHome: STANDARD_HOME,
   startupPowerUserHome: POWER_USER_HOME,
-};
+} satisfies Record<string, ThresholdConfig>;
 
 /**
  * Registry of threshold configurations keyed by benchmark name (camelCase).
@@ -336,6 +339,5 @@ const BENCHMARK_THRESHOLDS = {
  * - Add to BENCHMARK_THRESHOLDS with a camelCase key matching the filename
  * - All benchmarks now use simple keys; platform/buildType are stored as data fields
  */
-export const THRESHOLD_REGISTRY: Record<string, ThresholdConfig> = {
-  ...BENCHMARK_THRESHOLDS,
-};
+export const THRESHOLD_REGISTRY: Record<string, ThresholdConfig> =
+  BENCHMARK_THRESHOLDS;
