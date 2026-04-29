@@ -40,7 +40,7 @@ export function useAutoProfilePairing(): {
   const previousKeyringsLength = useRef(keyrings.length);
 
   useEffect(() => {
-    if (keyrings.length !== previousKeyringsLength.current) {
+    if (keyrings.length > previousKeyringsLength.current) {
       previousKeyringsLength.current = keyrings.length;
       setHasNewKeyrings(true);
     }
