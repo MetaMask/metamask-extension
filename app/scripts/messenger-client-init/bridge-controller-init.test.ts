@@ -43,8 +43,8 @@ describe('BridgeControllerInit', () => {
   });
 
   it('initializes the controller', () => {
-    const { controller } = BridgeControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(BridgeController);
+    const { messengerClient } = BridgeControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(BridgeController);
   });
 
   it('passes the proper arguments to the controller', () => {

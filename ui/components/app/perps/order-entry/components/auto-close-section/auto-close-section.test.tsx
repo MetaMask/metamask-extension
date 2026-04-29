@@ -6,6 +6,14 @@ import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { AutoCloseSection } from './auto-close-section';
 
+jest.mock('../../../../../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({
+    feeRate: 0.00145,
+    isLoading: false,
+    hasError: false,
+  }),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -23,6 +31,7 @@ describe('AutoCloseSection', () => {
     direction: 'long' as const,
     currentPrice: 45000,
     leverage: 10,
+    asset: 'BTC',
   };
 
   beforeEach(() => {
@@ -270,6 +279,116 @@ describe('AutoCloseSection', () => {
     });
   });
 
+  describe('clear buttons', () => {
+    it('shows TP clear button when takeProfitPrice is set', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice="50000"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('tp-clear-button')).toBeInTheDocument();
+    });
+
+    it('does not show TP clear button when takeProfitPrice is empty', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice=""
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('tp-clear-button')).not.toBeInTheDocument();
+    });
+
+    it('calls onTakeProfitPriceChange with empty string when TP clear is clicked', () => {
+      const onTakeProfitPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice="50000"
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('tp-clear-button'));
+
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('');
+    });
+
+    it('shows SL clear button when stopLossPrice is set', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          stopLossPrice="40000"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('sl-clear-button')).toBeInTheDocument();
+    });
+
+    it('does not show SL clear button when stopLossPrice is empty', () => {
+      renderWithProvider(
+        <AutoCloseSection {...defaultProps} enabled={true} stopLossPrice="" />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('sl-clear-button')).not.toBeInTheDocument();
+    });
+
+    it('calls onStopLossPriceChange with empty string when SL clear is clicked', () => {
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          stopLossPrice="40000"
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('sl-clear-button'));
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('');
+    });
+
+    it('shows TP pnl row when takeProfitPrice has whitespace-only value (no clear button)', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice="   "
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('tp-clear-button')).not.toBeInTheDocument();
+    });
+
+    it('shows SL pnl row when stopLossPrice has whitespace-only value (no clear button)', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          stopLossPrice="   "
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('sl-clear-button')).not.toBeInTheDocument();
+    });
+  });
+
   describe('percentage calculation (RoE: priceChange% * leverage)', () => {
     it('calculates RoE% for long TP position', () => {
       // (49500 - 45000) / 45000 * 10 * 100 = 100%
@@ -291,7 +410,7 @@ describe('AutoCloseSection', () => {
     });
 
     it('calculates RoE% for long SL position', () => {
-      // (45000 - 40500) / 45000 * 10 * 100 = 100%
+      // SL below entry: (40500 - 45000) / 45000 * 10 * 100 = -100% (loss = negative RoE)
       renderWithProvider(
         <AutoCloseSection
           {...defaultProps}
@@ -306,7 +425,7 @@ describe('AutoCloseSection', () => {
 
       const container = screen.getByTestId('sl-percent-input');
       const percentInput = container.querySelector('input');
-      expect(percentInput).toHaveValue('100');
+      expect(percentInput).toHaveValue('-100');
     });
 
     it('shows empty percent when TP price is empty', () => {
@@ -375,7 +494,8 @@ describe('AutoCloseSection', () => {
     });
 
     it('updates price when RoE% is entered for SL (long)', () => {
-      // 10% RoE at leverage=10: priceChange = 10/(10*100) = 1% -> 45000 * 0.99 = 44550
+      // -10% RoE at leverage=10: priceChange = -10/(10*100) = -1% -> 45000 * 0.99 = 44550
+      // Negative RoE = loss direction = SL below entry for long
       const onStopLossPriceChange = jest.fn();
       renderWithProvider(
         <AutoCloseSection
@@ -393,10 +513,112 @@ describe('AutoCloseSection', () => {
       const input = container.querySelector('input');
       expect(input).not.toBeNull();
       fireEvent.change(input as HTMLInputElement, {
-        target: { value: '10' },
+        target: { value: '-10' },
       });
 
       expect(onStopLossPriceChange).toHaveBeenCalledWith('44550');
+    });
+
+    it('uses limit price as baseline when typing SL % on a limit order', () => {
+      // currentPrice=$3,000 but limitPrice=$2,000 (below-market limit buy).
+      // -10% RoE at leverage=10: priceChange = -1% -> $2,000 * 0.99 = $1,980 (not $2,970)
+      // Negative RoE = loss direction = SL below entry
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={3000}
+          orderType="limit"
+          limitPrice="2000"
+          leverage={10}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, { target: { value: '-10' } });
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('1980');
+    });
+
+    it('uses limit price as baseline when typing TP % on a limit order', () => {
+      // currentPrice=$3,000 but limitPrice=$2,000.
+      // 10% RoE at leverage=10: priceChange = 1% -> $2,000 * 1.01 = $2,020 (not $3,030)
+      const onTakeProfitPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={3000}
+          orderType="limit"
+          limitPrice="2000"
+          leverage={10}
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('tp-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, { target: { value: '10' } });
+
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('2020');
+    });
+
+    it('displays SL % relative to limit price when a price is pre-set on a limit order', () => {
+      // SL at $1,980 with limit entry $2,000 at 10x leverage:
+      // RoE% = (1980 - 2000) / 2000 * 10 * 100 = -10% (loss = negative RoE for long below entry)
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={3000}
+          orderType="limit"
+          limitPrice="2000"
+          leverage={10}
+          stopLossPrice="1980"
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-percent-input');
+      const percentInput = container.querySelector('input');
+      expect(percentInput).toHaveValue('-10');
+    });
+
+    it('falls back to current price for % calculation when limit price is empty', () => {
+      // Same as regular market order when limitPrice is empty
+      // -10% RoE at 10x from $3,000: SL = $3,000 * 0.99 = $2,970
+      // Negative RoE = loss direction = SL below entry for long
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={3000}
+          orderType="limit"
+          limitPrice=""
+          leverage={10}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, { target: { value: '-10' } });
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('2970');
     });
   });
 

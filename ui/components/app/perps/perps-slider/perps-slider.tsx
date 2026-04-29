@@ -10,8 +10,12 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
 } from '@metamask/design-system-react';
-import InfoTooltip from '../../../ui/info-tooltip/info-tooltip';
+import Tooltip from '../../../ui/tooltip';
 
 /**
  * Material UI styles for the slider - uses CSS variables for theming.
@@ -20,7 +24,7 @@ import InfoTooltip from '../../../ui/info-tooltip/info-tooltip';
  */
 const sliderStyles = {
   root: {
-    height: 6,
+    height: 4,
     padding: 0,
     overflow: 'visible',
   },
@@ -29,54 +33,80 @@ const sliderStyles = {
   rail: {
     borderRadius: 50,
     background: 'var(--color-border-muted)',
-    height: 6,
+    height: 4,
     opacity: 1,
   },
   track: {
     borderRadius: 50,
     background: 'var(--color-text-default)',
-    height: 6,
+    height: 4,
   },
   thumb: {
-    height: 20,
-    width: 20,
-    marginTop: -7,
-    marginLeft: -7,
-    backgroundColor: 'var(--color-icon-muted)',
+    height: 16,
+    width: 16,
+    marginTop: -6,
+    marginLeft: -5,
+    // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+    backgroundColor: '#414243',
     border: '2px solid var(--color-text-default)',
     boxSizing: 'border-box' as const,
     boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+    '[data-theme="dark"] &': {
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+      backgroundColor: '#CCCCCC',
+    },
     '&:focus, &$active': {
-      height: 20,
-      width: 20,
-      marginTop: -7,
-      marginLeft: -7,
+      height: 16,
+      width: 16,
+      marginTop: -6,
+      marginLeft: -5,
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },
     '&:hover': {
-      height: 22,
-      width: 22,
-      marginTop: -8,
-      marginLeft: -8,
-      backgroundColor: 'var(--color-icon-muted)',
+      height: 18,
+      width: 18,
+      marginTop: -7,
+      marginLeft: -6,
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+      backgroundColor: '#414243',
       border: '2px solid var(--color-text-default)',
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+      '[data-theme="dark"] &': {
+        // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+        backgroundColor: '#CCCCCC',
+      },
     },
     '&$disabled': {
-      height: 20,
-      width: 20,
-      marginTop: -7,
-      marginLeft: -7,
-      backgroundColor: 'var(--color-icon-muted)',
+      height: 16,
+      width: 16,
+      marginTop: -6,
+      marginLeft: -5,
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+      backgroundColor: '#414243',
       border: '2px solid var(--color-text-default)',
       boxSizing: 'border-box' as const,
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+      '[data-theme="dark"] &': {
+        // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+        backgroundColor: '#CCCCCC',
+      },
       '&:hover': {
         boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
       },
     },
   },
   active: {},
+  mark: {
+    width: 2,
+    height: 2,
+    borderRadius: '50%',
+    backgroundColor: 'var(--color-icon-alternative)',
+    marginTop: 1,
+  },
+  markActive: {
+    backgroundColor: 'var(--color-icon-alternative)',
+    opacity: 1,
+  },
 };
 
 const StyledMaterialSlider = withStyles(sliderStyles)(MaterialSlider);
@@ -118,6 +148,8 @@ export type PerpsSliderProps = {
   'data-testid'?: string;
   /** When true, the slider is non-interactive */
   disabled?: boolean;
+  /** Show tick marks at every Nth step (e.g. 5 = tick every 5 steps) */
+  markInterval?: number;
 };
 
 export const PerpsSlider: React.FC<PerpsSliderProps> = ({
@@ -136,9 +168,21 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
   valueText,
   'data-testid': dataTestId,
   disabled = false,
+  markInterval,
 }) => {
   const hasHeader = titleText || tooltipText || valueText || titleDetail;
   const hasFooter = infoText || onEdit;
+
+  const marks = React.useMemo(() => {
+    if (!markInterval || markInterval * step <= 0) {
+      return undefined;
+    }
+    const result: { value: number }[] = [];
+    for (let i = min; i <= max; i += markInterval * step) {
+      result.push({ value: i });
+    }
+    return result;
+  }, [markInterval, min, max, step]);
 
   return (
     <Box className="w-full inline-block">
@@ -160,7 +204,13 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
               </Text>
             )}
             {tooltipText && typeof tooltipText === 'string' && (
-              <InfoTooltip position="top" contentText={tooltipText} />
+              <Tooltip position="top" html={tooltipText} interactive>
+                <Icon
+                  name={IconName.Info}
+                  size={IconSize.Sm}
+                  color={IconColor.IconAlternative}
+                />
+              </Tooltip>
             )}
             {valueText && (
               <Text
@@ -191,6 +241,7 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
         onChange={onChange}
         onChangeCommitted={onChangeCommitted}
         disabled={disabled}
+        marks={marks}
         data-testid={dataTestId}
       />
 

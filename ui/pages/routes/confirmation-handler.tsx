@@ -35,6 +35,7 @@ import {
   isMerklClaimTransaction,
   isMusdConversionTransaction,
 } from '../../components/app/musd/utils';
+import { useSuppressNavigation } from '../../hooks/useSuppressConfirmNavigate';
 
 const EXEMPTED_ROUTES = [
   CROSS_CHAIN_SWAP_ROUTE,
@@ -70,6 +71,7 @@ export const ConfirmationHandler = () => {
   const hasBridgeQuotes = useSelector(selectHasBridgeQuotes);
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
   const hasApprovalFlows = useSelector(selectHasApprovalFlows);
+  const suppressNavigation = useSuppressNavigation();
   const stayOnHomePage = Boolean(location.state?.stayOnHomePage);
 
   const canRedirect = !isNotification && !stayOnHomePage;
@@ -82,6 +84,10 @@ export const ConfirmationHandler = () => {
 
   // Ported from home.component - checkStatusAndNavigate()
   const checkStatusAndNavigate = useCallback(() => {
+    if (suppressNavigation(pendingApprovals?.[0]?.id, pendingApprovals)) {
+      return;
+    }
+
     if (canRedirect && hasBridgeQuotes && isPopup) {
       closeModals();
       navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
@@ -105,6 +111,7 @@ export const ConfirmationHandler = () => {
     hasBridgeQuotes,
     navigate,
     pendingApprovals,
+    suppressNavigation,
     isPopup,
   ]);
 

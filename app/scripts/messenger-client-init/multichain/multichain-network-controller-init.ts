@@ -27,13 +27,13 @@ export const MultichainNetworkControllerInit = ({
 > => {
   const networkService = MultichainNetworkServiceInit();
 
-  const controller = new MultichainNetworkController({
+  const messengerClient = new MultichainNetworkController({
     messenger: controllerMessenger,
     state: persistedState.MultichainNetworkController,
     networkService,
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

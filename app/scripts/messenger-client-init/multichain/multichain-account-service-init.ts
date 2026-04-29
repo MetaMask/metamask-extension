@@ -46,7 +46,7 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     },
   };
 
-  const controller = new MultichainAccountService({
+  const messengerClient = new MultichainAccountService({
     messenger: controllerMessenger,
     providerConfigs: {
       [SOL_ACCOUNT_PROVIDER_NAME]: {
@@ -76,7 +76,7 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
       if (prevUseExternalServices !== currUseExternalServices) {
         // Set basic functionality and trigger alignment when enabled
         // This single call handles both provider disable/enable and alignment.
-        controller
+        messengerClient
           .setBasicFunctionality(currUseExternalServices)
           .catch((error) => {
             console.error(
@@ -93,6 +93,6 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
   return {
     memStateKey: null,
     persistedStateKey: null,
-    controller,
+    messengerClient,
   };
 };

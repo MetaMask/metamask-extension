@@ -3,10 +3,7 @@ import {
   TransactionPayControllerMessenger,
   TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
-import type {
-  TransactionController,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   type DelegationMessenger,
   getDelegationTransaction,
@@ -24,49 +21,42 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
 > = (request) => {
   const { controllerMessenger, initMessenger, persistedState } = request;
 
-  const getTransactionController = () =>
-    request.getController('TransactionController') as TransactionController;
-
   const getDelegationTransactionCallback: (request: {
     transaction: TransactionMeta;
   }) => ReturnType<typeof getDelegationTransaction> = ({ transaction }) =>
     getDelegationTransaction(
       {
-        isAtomicBatchSupported:
-          getTransactionController().isAtomicBatchSupported.bind(
-            getTransactionController(),
-          ),
         messenger: initMessenger as DelegationMessenger,
       },
       transaction,
     );
 
-  const controller = new TransactionPayController({
+  const messengerClient = new TransactionPayController({
     getDelegationTransaction: getDelegationTransactionCallback,
     getStrategy,
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,
   });
 
-  const api = getApi(controller);
+  const api = getApi(messengerClient);
 
-  return { controller, api };
+  return { messengerClient, api };
 };
 
 function getApi(
-  controller: TransactionPayController,
+  messengerClient: TransactionPayController,
 ): MessengerClientInitResult<TransactionPayController>['api'] {
   return {
     setTransactionPayIsMaxAmount: (
       transactionId: string,
       isMaxAmount: boolean,
     ) => {
-      controller.setTransactionConfig(transactionId, (config) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
         config.isMaxAmount = isMaxAmount;
       });
     },
     updateTransactionPaymentToken:
-      controller.updatePaymentToken.bind(controller),
+      messengerClient.updatePaymentToken.bind(messengerClient),
   };
 }
 

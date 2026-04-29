@@ -18,11 +18,13 @@ import {
   TransactionPayPublishHook,
 } from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
+import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 import { trace } from '../../../../shared/lib/trace';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
 import { isEnforcedSimulationsEligible } from '../../../../shared/lib/transaction/enforced-simulations';
+import { getEip7702SupportedChains } from '../../../../shared/lib/eip7702-support-utils';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   getSmartTransactionCommonParams,
@@ -94,7 +96,7 @@ export const TransactionControllerInit: MessengerClientInitFunction<
     smartTransactionsController,
   } = getControllers(request);
 
-  const controller: TransactionController = new TransactionController({
+  const messengerClient: TransactionController = new TransactionController({
     getCurrentNetworkEIP1559Compatibility: () =>
       // @ts-expect-error Controller type does not support undefined return value
       initMessenger.call('NetworkController:getEIP1559Compatibility'),
@@ -130,9 +132,7 @@ export const TransactionControllerInit: MessengerClientInitFunction<
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
       includeTokenTransfers: false,
-      isEnabled: () =>
-        preferencesController().state.useExternalServices &&
-        onboardingController().state.completedOnboarding,
+      isEnabled: () => false,
       updateTransactions: true,
     },
     isAutomaticGasFeeUpdateEnabled,
@@ -177,17 +177,16 @@ export const TransactionControllerInit: MessengerClientInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
-      // Note: `#afterAdd.updateTransaction` is actually called before adding the TransactionMeta to the state
-      // Reference: https://github.com/MetaMask/core/blob/main/packages/transaction-controller/src/TransactionController.ts#L1335
-      afterAdd: async (_params: { transactionMeta: TransactionMeta }) => {
-        return {
-          updateTransaction: async (transactionMeta: TransactionMeta) => {
-            await initMessenger.call(
-              'SubscriptionService:submitSubscriptionSponsorshipIntent',
-              transactionMeta,
-            );
-          },
-        };
+      afterAdd: async ({
+        transactionMeta,
+      }: {
+        transactionMeta: TransactionMeta;
+      }) => {
+        await initMessenger.call(
+          'SubscriptionService:submitSubscriptionSponsorshipIntent',
+          transactionMeta,
+        );
+        return {};
       },
       beforePublish: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
@@ -199,10 +198,12 @@ export const TransactionControllerInit: MessengerClientInitFunction<
       beforeSign: new EnforceSimulationHook({
         messenger: initMessenger,
         isEligible: (transactionMeta) =>
-          isEnforcedSimulationsEligible(
-            transactionMeta,
-            initMessenger.call('AppStateController:getState'),
-          ),
+          isEnforcedSimulationsEligible(transactionMeta, {
+            ...initMessenger.call('AppStateController:getState'),
+            eip7702SupportedChains: getEip7702SupportedChains(
+              initMessenger.call('RemoteFeatureFlagController:getState'),
+            ),
+          }),
       }).getBeforeSignHook(),
       beforeCheckPendingTransactions: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
@@ -221,12 +222,12 @@ export const TransactionControllerInit: MessengerClientInitFunction<
           keyringController,
           signedTx,
           smartTransactionsController: smartTransactionsController(),
-          transactionController: controller,
+          transactionController: messengerClient,
           transactionMeta,
         }),
       publishBatch: async (_request: PublishBatchHookRequest) => {
         const result = await publishBatchHook({
-          transactionController: controller,
+          transactionController: messengerClient,
           smartTransactionsController: smartTransactionsController(),
           hookControllerMessenger:
             initMessenger as SmartTransactionHookMessenger,
@@ -268,34 +269,37 @@ export const TransactionControllerInit: MessengerClientInitFunction<
     getTransactionMetricsRequest,
   );
 
-  const api = getApi(controller);
+  const api = getApi(messengerClient);
 
-  return { controller, api, memStateKey: 'TxController' };
+  return { messengerClient, api, memStateKey: 'TxController' };
 };
 
 function getApi(
-  controller: TransactionController,
+  messengerClient: TransactionController,
 ): MessengerClientInitResult<TransactionController>['api'] {
   return {
     abortTransactionSigning:
-      controller.abortTransactionSigning.bind(controller),
-    getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
-    getTransactions: controller.getTransactions.bind(controller),
-    isAtomicBatchSupported: controller.isAtomicBatchSupported.bind(controller),
+      messengerClient.abortTransactionSigning.bind(messengerClient),
+    getLayer1GasFee: messengerClient.getLayer1GasFee.bind(messengerClient),
+    getTransactions: messengerClient.getTransactions.bind(messengerClient),
+    isAtomicBatchSupported:
+      messengerClient.isAtomicBatchSupported.bind(messengerClient),
     startIncomingTransactionPolling:
-      controller.startIncomingTransactionPolling.bind(controller),
+      messengerClient.startIncomingTransactionPolling.bind(messengerClient),
     stopIncomingTransactionPolling:
-      controller.stopIncomingTransactionPolling.bind(controller),
-    updateAtomicBatchData: controller.updateAtomicBatchData.bind(controller),
+      messengerClient.stopIncomingTransactionPolling.bind(messengerClient),
+    updateAtomicBatchData:
+      messengerClient.updateAtomicBatchData.bind(messengerClient),
     updateBatchTransactions:
-      controller.updateBatchTransactions.bind(controller),
-    updateEditableParams: controller.updateEditableParams.bind(controller),
+      messengerClient.updateBatchTransactions.bind(messengerClient),
+    updateEditableParams:
+      messengerClient.updateEditableParams.bind(messengerClient),
     updatePreviousGasParams:
-      controller.updatePreviousGasParams.bind(controller),
+      messengerClient.updatePreviousGasParams.bind(messengerClient),
     updateSelectedGasFeeToken:
-      controller.updateSelectedGasFeeToken.bind(controller),
+      messengerClient.updateSelectedGasFeeToken.bind(messengerClient),
     updateTransactionGasFees:
-      controller.updateTransactionGasFees.bind(controller),
+      messengerClient.updateTransactionGasFees.bind(messengerClient),
   };
 }
 
@@ -306,15 +310,17 @@ function getControllers(
   >,
 ) {
   return {
-    gasFeeController: () => request.getController('GasFeeController'),
-    keyringController: () => request.getController('KeyringController'),
-    networkController: () => request.getController('NetworkController'),
-    onboardingController: () => request.getController('OnboardingController'),
-    preferencesController: () => request.getController('PreferencesController'),
+    gasFeeController: () => request.getMessengerClient('GasFeeController'),
+    keyringController: () => request.getMessengerClient('KeyringController'),
+    networkController: () => request.getMessengerClient('NetworkController'),
+    onboardingController: () =>
+      request.getMessengerClient('OnboardingController'),
+    preferencesController: () =>
+      request.getMessengerClient('PreferencesController'),
     smartTransactionsController: () =>
-      request.getController('SmartTransactionsController'),
+      request.getMessengerClient('SmartTransactionsController'),
     institutionalSnapController: () =>
-      request.getController('InstitutionalSnapController'),
+      request.getMessengerClient('InstitutionalSnapController'),
   };
 }
 
@@ -439,15 +445,14 @@ export async function publishHook({
     transactionMeta.txParams?.from,
     keyringController,
   );
+  let attemptedHook = false;
 
   if (
     keyringSupports7702 &&
     (!isSmartTransaction || !sendBundleSupport || isExternalSign)
   ) {
+    attemptedHook = true;
     const hook = new Delegation7702PublishHook({
-      isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
-        transactionController,
-      ),
       messenger: initMessenger,
     }).getHook();
 
@@ -475,6 +480,7 @@ export async function publishHook({
     isSmartTransaction &&
     (sendBundleSupport || transactionMeta.selectedGasFeeToken === undefined)
   ) {
+    attemptedHook = true;
     const result = await submitSmartTransactionHook({
       transactionMeta,
       signedTransactionInHex: signedTx as Hex,
@@ -504,6 +510,19 @@ export async function publishHook({
     // else, fall back to regular regular transaction submission
   }
 
+  if (attemptedHook) {
+    try {
+      await initMessenger.call(
+        'AppStateController:setDefaultHomeActiveTabName',
+        AccountOverviewTabKey.Activity,
+      );
+    } catch (error) {
+      console.error(
+        'Failed to set default home active tab for fallback transaction',
+        error,
+      );
+    }
+  }
   // Default: fall back to regular transaction submission
   return { transactionHash: undefined };
 }

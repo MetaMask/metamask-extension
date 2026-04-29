@@ -6,12 +6,12 @@ export const InstitutionalSnapControllerInit: MessengerClientInitFunction<
   InstitutionalSnapController,
   InstitutionalSnapControllerMessenger
 > = (request) => {
-  const controller = new InstitutionalSnapController({
+  const messengerClient = new InstitutionalSnapController({
     messenger: request.controllerMessenger,
   });
 
   return {
-    controller,
+    messengerClient,
     persistedStateKey: null,
   };
 };

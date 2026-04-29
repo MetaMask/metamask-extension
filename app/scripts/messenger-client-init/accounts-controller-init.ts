@@ -15,13 +15,13 @@ export const AccountsControllerInit: MessengerClientInitFunction<
   AccountsController,
   AccountsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new AccountsController({
+  const messengerClient = new AccountsController({
     messenger: controllerMessenger,
     // @ts-expect-error: Accounts controller does not accept partial state.
     state: persistedState.AccountsController,
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

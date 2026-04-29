@@ -107,6 +107,7 @@ function determineTransactionTypeAndContractInteraction(
     'musdConversion',
     'musdClaim',
     'perpsDeposit',
+    'perpsWithdraw',
   ];
 
   if (directTypeMappings.includes(type)) {

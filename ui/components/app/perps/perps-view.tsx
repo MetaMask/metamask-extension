@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
-  usePerpsLiveMarketData,
+  usePerpsLiveAccount,
 } from '../../../hooks/perps/stream';
 import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../shared/constants/perps';
@@ -27,8 +27,17 @@ import {
   setTutorialModalOpen,
 } from '../../../ducks/perps';
 
+import { usePerpsEligibility } from '../../../hooks/perps';
+import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
+import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../shared/constants/perps-events';
 
+import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
@@ -42,6 +51,7 @@ import {
 import { PerpsSupportLearn } from './perps-support-learn';
 import { PerpsTutorialModal } from './perps-tutorial-modal';
 import { PerpsWatchlist } from './perps-watchlist';
+import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
 /**
  * PerpsView component displays the perpetuals trading view
@@ -62,10 +72,12 @@ export const PerpsView: React.FC = () => {
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const tutorialCompleted = useSelector(selectTutorialCompleted);
+  const { isEligible } = usePerpsEligibility();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
   const [isCloseAllPending, setIsCloseAllPending] = useState(false);
   const [isCancelAllPending, setIsCancelAllPending] = useState(false);
   const [batchActionError, setBatchActionError] = useState<string | null>(null);
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation();
 
   // Stream hooks must run before any effects that touch PerpsStreamManager.
@@ -76,8 +88,12 @@ export const PerpsView: React.FC = () => {
     usePerpsLivePositions();
   const { orders: allOrders, isInitialLoading: ordersLoading } =
     usePerpsLiveOrders();
-  const { markets: allMarkets, isInitialLoading: marketsLoading } =
-    usePerpsLiveMarketData();
+  const { account, isInitialLoading: accountLoading } = usePerpsLiveAccount();
+  const {
+    exploreMarkets,
+    watchlistMarkets,
+    isInitialLoading: marketsLoading,
+  } = usePerpsTabExploreData();
 
   const {
     transactions: allRecentActivityTransactions,
@@ -86,8 +102,9 @@ export const PerpsView: React.FC = () => {
   } = usePerpsTransactionHistory();
 
   // Recent Activity shows only trade executions, deposits, and withdrawals.
-  // Open orders are already surfaced in PerpsPositionsOrders above.
-  // Funding payments belong in the full activity page.
+  // Open limit/market orders (excluding TP/SL triggers) are in PerpsPositionsOrders;
+  // TP/SL trigger rows are listed on the per-asset market detail page only.
+  // Funding payments belong on the full activity page.
   const recentActivityTransactions = useMemo(
     () =>
       allRecentActivityTransactions.filter(
@@ -99,14 +116,15 @@ export const PerpsView: React.FC = () => {
     [allRecentActivityTransactions],
   );
 
-  // Show only user-placed limit orders resting on the orderbook.
-  // Excludes:
-  // - isTrigger: TP/SL trigger orders
-  // - isSynthetic: synthetic/virtual orders not placed directly by the user
+  // Open orders on the Perps tab: user-placed limits/markets on the book only.
+  // Excludes TP/SL (isTrigger / isPositionTpsl — those list on market detail) and synthetics.
   const orders = useMemo(() => {
     return allOrders.filter(
       (order) =>
-        order.status === 'open' && !order.isTrigger && !order.isSynthetic,
+        order.status === 'open' &&
+        !order.isTrigger &&
+        order.isPositionTpsl !== true &&
+        !order.isSynthetic,
     );
   }, [allOrders]);
 
@@ -121,6 +139,10 @@ export const PerpsView: React.FC = () => {
   }, []);
 
   const handleCloseAllPositions = useCallback(async () => {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
     if (positions.length === 0) {
       return;
     }
@@ -145,9 +167,13 @@ export const PerpsView: React.FC = () => {
     } finally {
       setIsCloseAllPending(false);
     }
-  }, [applyPositionsSnapshot, positions.length, t]);
+  }, [isEligible, applyPositionsSnapshot, positions.length, t]);
 
   const handleCancelAllOrders = useCallback(async () => {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
     if (orders.length === 0) {
       return;
     }
@@ -175,12 +201,29 @@ export const PerpsView: React.FC = () => {
     } finally {
       setIsCancelAllPending(false);
     }
-  }, [applyOrdersSnapshot, orders.length, t]);
+  }, [isEligible, applyOrdersSnapshot, orders.length, t]);
 
   const hasPositions = positions.length > 0;
-  const isLoading = positionsLoading || ordersLoading || marketsLoading;
+  const isLoading =
+    positionsLoading || ordersLoading || marketsLoading || accountLoading;
+  const hasPerpBalance = Boolean(
+    account && Number.parseFloat(getTradeableBalance(account)) > 0,
+  );
 
   usePerpsMeasurement('PerpsTabLoaded', !isLoading);
+
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !isLoading,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.WALLET_HOME_PERPS_TAB,
+      [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positions.length,
+      [PERPS_EVENT_PROPERTY.OPEN_ORDER]: orders.length,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+    },
+  });
 
   // Auto-open tutorial modal the first time a user enters the perps domain.
   // Guards on both the backend isFirstTimeUser flag (stable once propagated) and
@@ -248,10 +291,10 @@ export const PerpsView: React.FC = () => {
       />
 
       {/* Watchlist */}
-      <PerpsWatchlist />
+      <PerpsWatchlist markets={watchlistMarkets} />
 
       {/* Explore markets */}
-      <PerpsExploreMarkets markets={allMarkets} />
+      <PerpsExploreMarkets markets={exploreMarkets} />
 
       {/* Recent Activity */}
       <PerpsRecentActivity
@@ -265,6 +308,10 @@ export const PerpsView: React.FC = () => {
       <PerpsSupportLearn />
       {/* Tutorial Modal */}
       <PerpsTutorialModal />
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
     </Box>
   );
 };

@@ -1,5 +1,4 @@
-import { strict as assert } from 'assert';
-import { MockedEndpoint, Mockttp } from 'mockttp';
+import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -8,6 +7,7 @@ import {
   getBridgeFixtures,
   getInsufficientFundsFixtures,
   getQuoteNegativeCasesFixtures,
+  mockTokensWithSecurityData,
 } from '../bridge/bridge-test-utils';
 import {
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
@@ -15,78 +15,60 @@ import {
 } from '../bridge/constants';
 import { checkNotification } from './shared';
 
-const UNSTABLE_TOKEN_PRICE_TITLE = 'Unstable token price';
-const UNSTABLE_TOKEN_PRICE_DESCRIPTION =
-  'The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it.';
-
-const getBridgeFixturesWithTokenAlertWarning = (title?: string) => {
-  const fixtures = getBridgeFixtures({
-    title,
-    featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-    withErc20: false,
-  });
-
-  return {
-    ...fixtures,
-    testSpecificMock: async (mockServer: Mockttp) => {
-      const baseMocks = fixtures.testSpecificMock
-        ? await fixtures.testSpecificMock(mockServer)
-        : [];
-
-      return [
-        ...baseMocks,
-        await mockServer
-          .forPost('https://security-alerts.api.cx.metamask.io/token/scan')
-          .always()
-          .thenJson(200, {
-            features: [
-              {
-                // This maps to "Unstable token price" in i18n.
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                feature_id: 'UNSTABLE_TOKEN_PRICE',
-                type: 'Warning',
-                description: 'Unstable price warning',
-              },
-            ],
-          }),
-      ];
-    },
-  };
+const MUSD_MALICIOUS_SECURITY_DATA = {
+  type: 'Malicious',
+  metadata: {
+    features: [
+      {
+        featureId: 'HONEYPOT',
+        type: 'Malicious',
+        description: 'Honeypot risk',
+      },
+    ],
+  },
 };
 
 describe('Swaps - notifications', function () {
-  it('shows token risk warning banner for unstable token price', async function () {
+  it('shows token risk warning banner for malicious destination token', async function () {
+    const fixtures = getBridgeFixtures({
+      title: this.test?.fullTitle(),
+      featureFlags: {
+        ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        refreshRate: 30000,
+      },
+    });
+    const originalTestSpecificMock = fixtures.testSpecificMock;
+
     await withFixtures(
-      getBridgeFixturesWithTokenAlertWarning(this.test?.fullTitle()),
-      async ({ driver, mockedEndpoint }) => {
+      {
+        ...fixtures,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          const baseMocks = originalTestSpecificMock
+            ? await originalTestSpecificMock(mockServer)
+            : [];
+          await mockTokensWithSecurityData(
+            mockServer,
+            MUSD_MALICIOUS_SECURITY_DATA,
+          );
+          return baseMocks;
+        },
+      },
+      async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
         const bridgeQuotePage = new BridgeQuotePage(driver);
+        // Explicitly select mUSD so the token comes from the API with securityData
         await bridgeQuotePage.enterBridgeQuote({
           amount: '1',
+          tokenTo: 'mUSD',
         });
         await bridgeQuotePage.waitForQuote();
 
-        const allSeenRequests = (
-          await Promise.all(
-            mockedEndpoint.map((endpoint: MockedEndpoint) =>
-              endpoint.getSeenRequests(),
-            ),
-          )
-        ).flat();
-        const tokenScanRequests = allSeenRequests.filter((request: Request) =>
-          request.url.includes('security-alerts.api.cx.metamask.io/token/scan'),
-        );
-        assert.ok(
-          tokenScanRequests.length > 0,
-          'Security alerts token/scan endpoint was not called',
-        );
-
+        // Banner title is bridgeTokenIsMaliciousBanner ("$1 is a malicious token.")
         await bridgeQuotePage.checkTokenRiskWarningIsDisplayed(
-          UNSTABLE_TOKEN_PRICE_TITLE,
-          UNSTABLE_TOKEN_PRICE_DESCRIPTION,
+          'malicious token',
         );
       },
     );

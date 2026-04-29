@@ -129,7 +129,7 @@ type AppState = {
   isMultiRpcOnboarding: boolean;
   isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
-  showNewSrpAddedToast: boolean;
+  showNewSrpAddedToast: number | false;
   showPasswordChangeToast: PasswordChangeToastType | null;
   showCopyAddressToast: boolean;
   showClaimSubmitToast: ClaimSubmitToastType | null;
@@ -625,18 +625,6 @@ export default function reduceApp(
       return {
         ...appState,
         newTokensImportedError: action.payload,
-      };
-
-    case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:
-      return {
-        ...appState,
-        newNftAddedMessage: action.payload,
-      };
-
-    case actionConstants.SET_REMOVE_NFT_MESSAGE:
-      return {
-        ...appState,
-        removeNftMessage: action.payload,
       };
 
     case actionConstants.SET_REQUEST_ACCOUNT_TABS:

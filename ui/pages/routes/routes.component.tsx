@@ -50,10 +50,12 @@ import {
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
+  CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
+  NETWORKS_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
@@ -125,6 +127,7 @@ import MultichainAccountIntroModalContainer from '../../components/app/modals/mu
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
+import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-wallet-type';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
 import { LegacyLayout } from '../../layouts/legacy-layout';
@@ -134,6 +137,7 @@ import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import { Toaster } from '../../components/ui/toast/toast';
+import { ToastListener } from '../../app/toast-listener/toast-listener';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -148,6 +152,7 @@ const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
 const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
+const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
 );
@@ -299,6 +304,10 @@ export const routeConfig = [
         element: <ImportSrpPage />,
       },
       {
+        path: NETWORKS_ROUTE,
+        element: <NetworksPage />,
+      },
+      {
         path: `${SETTINGS_ROUTE}/*`,
         element: <SettingsV2 />,
       },
@@ -385,6 +394,10 @@ export const routeConfig = [
       {
         path: ADD_WALLET_PAGE_ROUTE,
         element: <AddWalletPage />,
+      },
+      {
+        path: CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
+        element: <ChooseNewWalletTypePage />,
       },
       {
         path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
@@ -689,6 +702,7 @@ export default function Routes() {
       dir={textDirection}
     >
       <ConfirmationHandler />
+      <ToastListener />
 
       <QRHardwarePopover />
       <Modal />

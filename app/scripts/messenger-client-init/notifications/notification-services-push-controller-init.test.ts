@@ -58,7 +58,7 @@ describe('NotificationServicesPushControllerInit', () => {
   it('returns controller instance', () => {
     const { requestMock } = arrange();
     const result = NotificationServicesPushControllerInit(requestMock);
-    expect(result.controller).toBeInstanceOf(
+    expect(result.messengerClient).toBeInstanceOf(
       NotificationServicesPushController,
     );
   });

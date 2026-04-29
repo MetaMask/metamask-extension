@@ -13,6 +13,7 @@ import { CancelOrderModal } from './cancel-order-modal';
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
 const mockTrack = jest.fn();
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
@@ -21,7 +22,7 @@ jest.mock('../../../../store/background-connection', () => ({
 
 jest.mock('../../../../hooks/perps', () => ({
   usePerpsEventTracking: () => ({ track: mockTrack }),
-  usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
 jest.mock('../perps-toast', () => ({
@@ -45,6 +46,7 @@ const baseOrder: Order = mockOrders[0]; // ETH limit long, open
 describe('CancelOrderModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
   });
 
@@ -108,7 +110,8 @@ describe('CancelOrderModal', () => {
       expect(
         screen.getByText(messages.perpsLimitPrice.message),
       ).toBeInTheDocument();
-      expect(screen.getAllByText('$3,000.00').length).toBeGreaterThanOrEqual(1);
+      // formatPerpsFiatUniversal strips trailing zeros for whole-dollar amounts
+      expect(screen.getAllByText('$3,000').length).toBeGreaterThanOrEqual(1);
     });
 
     it('displays the size row with symbol', () => {
@@ -167,7 +170,25 @@ describe('CancelOrderModal', () => {
       expect(
         screen.getByText(messages.perpsOrderValue.message),
       ).toBeInTheDocument();
-      expect(screen.getAllByText('$3,000.00').length).toBeGreaterThanOrEqual(1);
+      // formatPerpsFiatMinimal strips .00 for whole-dollar notional
+      expect(screen.getAllByText('$3,000').length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('keeps meaningful decimals on limit price and notional', () => {
+      const order: Order = {
+        ...baseOrder,
+        price: '3000.10',
+        size: '2.0',
+      };
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={order} />,
+        mockStore,
+      );
+
+      // Universal keeps ≤1 decimal for $1k–$10k range
+      expect(screen.getAllByText('$3,000.1').length).toBeGreaterThanOrEqual(1);
+      // Notional 6000.20 → minimal with fiatStyleStripping keeps .20
+      expect(screen.getByText('$6,000.20')).toBeInTheDocument();
     });
 
     it('hides order value row when price is zero', () => {
@@ -484,6 +505,27 @@ describe('CancelOrderModal', () => {
       await waitFor(() => {
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
+    });
+  });
+
+  describe('geo-blocking', () => {
+    it('shows geo-block modal instead of canceling when user is not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      const cancelButton = screen.getByTestId('perps-cancel-order-button');
+      expect(cancelButton).toBeEnabled();
+
+      fireEvent.click(cancelButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
   });
 

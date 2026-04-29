@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   Button,
@@ -25,10 +25,12 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
+import { getTradeableBalance } from '../../../../hooks/perps/getTradeableBalance';
 import {
   invokePerpsBalanceAction,
   type PerpsBalanceActionHandler,
 } from '../perps-balance-dropdown';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 
 type PerpsMarketBalanceActionsProps = {
   /** Whether to show the action buttons (Add funds, Withdraw) */
@@ -55,18 +57,22 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   const { formatCurrency } = useFormatters();
   const { account } = usePerpsLiveAccount();
   const { isEligible } = usePerpsEligibility();
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   // Use account data or defaults
   const totalBalance = account?.totalBalance ?? '0';
-  const unrealizedPnl = account?.unrealizedPnl ?? '0';
-  const availableBalance = account?.availableBalance ?? '0';
+  // "available" label on perps home reflects the order-entry (tradeable)
+  // balance: for HyperLiquid unified accounts this folds unreserved spot USDC
+  // on top of the withdrawable perps balance.
+  const availableBalance = getTradeableBalance(account);
 
-  // Account value = totalBalance + unrealizedPnl (includes open position PnL)
-  const accountValue = parseFloat(totalBalance) + parseFloat(unrealizedPnl);
+  // totalBalance is HL accountValue (perps equity, already includes unrealizedPnl) + spot
+  const accountValue = parseFloat(totalBalance);
   const isBalanceEmpty = accountValue === 0;
 
   const handleAddFunds = useCallback(() => {
     if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
       return;
     }
     track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -95,6 +101,13 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   const handleLearnMore = useCallback(() => {
     onLearnMore?.();
   }, [onLearnMore]);
+
+  const geoBlockModal = (
+    <PerpsGeoBlockModal
+      isOpen={isGeoBlockModalOpen}
+      onClose={() => setIsGeoBlockModalOpen(false)}
+    />
+  );
 
   // Empty state - no balance
   if (isBalanceEmpty) {
@@ -151,8 +164,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             size={ButtonSize.Lg}
             isLoading={isAddFundsLoading}
             onClick={handleAddFunds}
-            disabled={!isEligible || isAddFundsLoading}
-            title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+            disabled={isAddFundsLoading}
             style={{ width: '100%' }}
             data-testid="perps-balance-actions-add-funds-empty"
           >
@@ -169,6 +181,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             {t('perpsLearnMore')}
           </Button>
         </Box>
+        {geoBlockModal}
       </Box>
     );
   }
@@ -218,8 +231,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             size={ButtonSize.Lg}
             isLoading={isAddFundsLoading}
             onClick={handleAddFunds}
-            disabled={!isEligible || isAddFundsLoading}
-            title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+            disabled={isAddFundsLoading}
             style={{ flex: 1 }}
             data-testid="perps-balance-actions-add-funds"
           >
@@ -227,6 +239,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           </Button>
         </Box>
       )}
+      {geoBlockModal}
     </Box>
   );
 };

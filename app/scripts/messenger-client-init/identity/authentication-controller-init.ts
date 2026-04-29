@@ -25,7 +25,7 @@ export const AuthenticationControllerInit: MessengerClientInitFunction<
   AuthenticationControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
   const env = loadAuthenticationConfig();
-  const controller = new AuthenticationController({
+  const messengerClient = new AuthenticationController({
     messenger: controllerMessenger,
     state:
       persistedState.AuthenticationController as AuthenticationControllerState,
@@ -42,6 +42,6 @@ export const AuthenticationControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };
