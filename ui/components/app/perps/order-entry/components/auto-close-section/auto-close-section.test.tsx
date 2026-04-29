@@ -759,6 +759,24 @@ describe('AutoCloseSection', () => {
       );
     });
 
+    it('shows liquidation-boundary error when long SL is below liquidation price', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={50000}
+          liquidationPrice={45000}
+          stopLossPrice="44000"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('sl-validation-error')).toHaveTextContent(
+        /above.*liquidation/iu,
+      );
+    });
+
     it('uses limit price as reference for limit orders', () => {
       renderWithProvider(
         <AutoCloseSection

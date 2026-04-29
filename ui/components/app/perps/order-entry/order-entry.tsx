@@ -357,6 +357,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onStopLossPriceChange={handleStopLossPriceChange}
             direction={formState.direction}
             currentPrice={currentPrice}
+            liquidationPrice={calculations.liquidationPriceRaw}
             leverage={formState.leverage}
             entryPrice={undefined}
             estimatedSize={estimatedSize}

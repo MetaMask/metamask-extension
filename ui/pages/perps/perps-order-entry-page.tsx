@@ -97,7 +97,7 @@ import {
 } from '../../components/app/perps/order-entry/limit-price-warnings';
 import {
   isValidTakeProfitPrice,
-  isValidStopLossPrice,
+  getStopLossValidationResult,
 } from '../../components/app/perps/utils/tpslValidation';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
@@ -533,14 +533,15 @@ const PerpsOrderEntryPage: React.FC = () => {
     );
     const slInvalid = Boolean(
       sl?.trim() &&
-        !isValidStopLossPrice(sl, {
+        !getStopLossValidationResult(sl, {
           currentPrice: referencePrice,
           direction: dir,
-        }),
+          liquidationPrice: orderCalculations?.liquidationPriceRaw,
+        }).isValid,
     );
 
     return tpInvalid || slInvalid;
-  }, [orderFormState, orderType, currentPrice, orderMode]);
+  }, [orderFormState, orderType, currentPrice, orderMode, orderCalculations]);
 
   const isInsufficientFunds = useMemo(() => {
     if (!orderFormState || orderMode === 'close') {

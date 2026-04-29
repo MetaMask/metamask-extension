@@ -27,9 +27,8 @@ import type { AutoCloseSectionProps } from '../../order-entry.types';
 import { isSignedDecimalInput, isUnsignedDecimalInput } from '../../utils';
 import {
   isValidTakeProfitPrice,
-  isValidStopLossPrice,
+  getStopLossValidationResult,
   getTakeProfitErrorDirection,
-  getStopLossErrorDirection,
 } from '../../../utils/tpslValidation';
 import { formatRoePercent, getPnlDisplayColor } from '../../../utils';
 
@@ -58,6 +57,7 @@ import { formatRoePercent, getPnlDisplayColor } from '../../../utils';
  * @param props.limitPrice - Limit price string used as reference price for limit-order TP/SL validation
  * @param props.leverage - Leverage multiplier for RoE% calculation
  * @param props.asset - Asset symbol for fetching dynamic closing fee rates
+ * @param props.liquidationPrice
  */
 export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   enabled,
@@ -68,6 +68,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   onStopLossPriceChange,
   direction,
   currentPrice,
+  liquidationPrice,
   entryPrice: entryPriceProp,
   estimatedSize,
   orderType,
@@ -350,17 +351,24 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     [takeProfitPrice, validationReferencePrice, direction],
   );
 
+  const stopLossValidation = useMemo(
+    () =>
+      getStopLossValidationResult(stopLossPrice, {
+        currentPrice: validationReferencePrice,
+        direction,
+        liquidationPrice,
+      }),
+    [stopLossPrice, validationReferencePrice, direction, liquidationPrice],
+  );
+
   const isSlInvalid = useMemo(
     () =>
       Boolean(
         stopLossPrice.trim() &&
           validationReferencePrice > 0 &&
-          !isValidStopLossPrice(stopLossPrice, {
-            currentPrice: validationReferencePrice,
-            direction,
-          }),
+          !stopLossValidation.isValid,
       ),
-    [stopLossPrice, validationReferencePrice, direction],
+    [stopLossPrice, validationReferencePrice, stopLossValidation.isValid],
   );
 
   const tpErrorMessage = useMemo(() => {
@@ -377,11 +385,18 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     if (!isSlInvalid) {
       return null;
     }
-    return t('perpsStopLossInvalidPrice', [
-      getStopLossErrorDirection(direction),
-      priceLabel,
-    ]);
-  }, [isSlInvalid, direction, priceLabel, t]);
+    return t(
+      stopLossValidation.referencePrice === 'liquidation'
+        ? 'perpsStopLossInvalidLiquidationPrice'
+        : 'perpsStopLossInvalidPrice',
+      [
+        stopLossValidation.direction,
+        stopLossValidation.referencePrice === 'liquidation'
+          ? undefined
+          : priceLabel,
+      ].filter(Boolean) as string[],
+    );
+  }, [isSlInvalid, stopLossValidation, priceLabel, t]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
