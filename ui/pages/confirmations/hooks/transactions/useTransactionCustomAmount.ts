@@ -4,6 +4,7 @@ import { BigNumber } from 'bignumber.js';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { setIsMaxAmount } from '../../../../store/controller-actions/transaction-pay-controller';
+import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import { useConfirmContext } from '../../context/confirm';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
@@ -142,9 +143,16 @@ export function useTransactionCustomAmount({
         setIsMax(false);
       }
 
+      if (transactionId) {
+        upsertTransactionUIMetricsFragment(transactionId, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          properties: { mm_pay_amount_input_type: 'manual' },
+        });
+      }
+
       setAmountFiat(newAmount);
     },
-    [isMaxAmount, setIsMax],
+    [isMaxAmount, setIsMax, transactionId],
   );
 
   const updatePendingAmountPercentage = useCallback(
@@ -165,6 +173,16 @@ export function useTransactionCustomAmount({
         setIsMax(false);
       }
 
+      if (transactionId) {
+        /* eslint-disable @typescript-eslint/naming-convention */
+        upsertTransactionUIMetricsFragment(transactionId, {
+          properties: {
+            mm_pay_amount_input_type: `${percentage}%`,
+            mm_pay_quote_requested: true,
+          },
+        });
+      }
+
       setAmountFiat(newAmountFiat);
 
       const newAmountHuman = new BigNumber(newAmountFiat || '0')
@@ -182,6 +200,7 @@ export function useTransactionCustomAmount({
       isMaxAmount,
       setIsMax,
       tokenFiatRate,
+      transactionId,
       updateTokenAmountCallback,
     ],
   );
