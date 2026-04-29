@@ -3419,14 +3419,10 @@ describe('Actions', () => {
       const store = mockStore();
 
       const fetchAndUpdateMetamaskNotificationsStub = sinon.stub().resolves();
-      const forceUpdateMetamaskStateStub = sinon
-        .stub()
-        .rejects(new Error('Failed to update on-chain triggers'));
 
       background.getApi.returns({
         fetchAndUpdateMetamaskNotifications:
           fetchAndUpdateMetamaskNotificationsStub,
-        forceUpdateMetamaskState: forceUpdateMetamaskStateStub,
       });
       setBackgroundConnection(background.getApi());
 
@@ -3443,12 +3439,10 @@ describe('Actions', () => {
       const fetchAndUpdateMetamaskNotificationsStub = sinon
         .stub()
         .rejects(error);
-      const forceUpdateMetamaskStateStub = sinon.stub().rejects(error);
 
       background.getApi.returns({
         fetchAndUpdateMetamaskNotifications:
           fetchAndUpdateMetamaskNotificationsStub,
-        forceUpdateMetamaskState: forceUpdateMetamaskStateStub,
       });
       setBackgroundConnection(background.getApi());
 

@@ -1878,12 +1878,6 @@
         "@metamask/object-multiplex>readable-stream": true
       }
     },
-    "@metamask/obs-store": {
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "@metamask/obs-store>readable-stream": true
-      }
-    },
     "@metamask/permission-controller": {
       "globals": {
         "console.error": true
@@ -5699,17 +5693,6 @@
       }
     },
     "@metamask/object-multiplex>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "webpack>events": true,
-        "pumpify>inherits": true,
-        "process": true,
-        "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
-      }
-    },
-    "@metamask/obs-store>readable-stream": {
       "packages": {
         "browserify>browser-resolve": true,
         "browserify>buffer": true,

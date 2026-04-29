@@ -10,9 +10,6 @@
     "app/scripts/detect-multiple-instances.test.js": {
       "MetaMask: Multiple instances warning": 1
     },
-    "app/scripts/lib/ComposableObservableStore.test.js": {
-      "error: Error: No metadata found for": 1
-    },
     "app/scripts/lib/createRPCMethodTrackingMiddleware.test.js": {
       "MetaMask: RPC middleware errors": 15
     },
@@ -60,6 +57,9 @@
       "error: This browser doesn't support cancelAnimationFrame.": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
+    },
+    "app/scripts/metamask-controller.delegation.test.ts": {
+      "error: This browser doesn't support cancelAnimationFrame.": 1
     },
     "app/scripts/metamask-controller.test.js": {
       "MetaMask: MetaMetrics invalid trait types": 1,

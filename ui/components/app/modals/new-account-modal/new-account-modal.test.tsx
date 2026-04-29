@@ -88,7 +88,7 @@ const renderModal = (
 };
 
 describe('NewAccountModal', () => {
-  it('calls forceUpdateMetamaskState after adding account', async () => {
+  it('calls getStatePatches after adding account', async () => {
     const { render } = renderModal();
     const { getByText } = render;
     const addAccountButton = getByText(messages.save.message);

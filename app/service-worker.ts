@@ -27,8 +27,9 @@ async function runImportScripts() {
 
   const startImportScriptsTime = performance.now();
 
-  // eslint-disable-next-line import-x/extensions
-  await import('./scripts/background.js');
+  // @ts-expect-error TS2835: node16 moduleResolution requires explicit .js, but '.js' breaks
+  // webpack — it cannot resolve background.js → background.ts after the rename.
+  await import('./scripts/background');
 
   const endImportScriptsTime = performance.now();
 

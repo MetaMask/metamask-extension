@@ -7901,7 +7901,11 @@ function applyPatches(
   const immer = new Immer();
   immer.setAutoFreeze(false);
 
-  return immer.applyPatches(oldState, patches);
+  // Shallow-copy before patching so that a Redux-frozen state object does not
+  // cause Immer error 15 ("Cannot produce a new state when the current state
+  // is not yet finalized"). The copy is unfrozen; Immer drafts each nested
+  // key on demand as patches are applied.
+  return immer.applyPatches({ ...oldState }, patches);
 }
 
 export async function sendMultichainTransaction(

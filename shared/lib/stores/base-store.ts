@@ -20,6 +20,11 @@ export type MetaData = {
    * The kind of storage being used.
    */
   storageKind?: 'data' | 'split';
+  /**
+   * A flag indicating whether a gradual rollout to split state storage
+   * has been attempted on this platform instance.
+   */
+  platformSplitStateGradualRolloutAttempted?: boolean;
 };
 
 /**

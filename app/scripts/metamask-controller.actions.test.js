@@ -263,9 +263,9 @@ describe('MetaMaskController', function () {
 
       expect(result1.keyrings).toHaveLength(2);
       expect(result1.keyrings[0].metadata.id).toBe(mockULIDs[0]); // 0: Primary HD keyring
-      expect(result1.keyrings[1].metadata.id).toBe(mockULIDs[1]); // 1: Snap keyring
 
-      // On restore, a new keyring metadata is generated.
+      // On restore, new keyring metadata is generated for both HD and Snap keyrings.
+      // ULID[0]=HD1, ULID[1]=Snap1, ULID[2]=HD2, ULID[3]=Snap2
       const ulidNewIndex = 2;
       expect(result2).toStrictEqual({
         ...result1,
