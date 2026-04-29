@@ -10,6 +10,7 @@ import {
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
+import { setFromTokenInputValue } from '../../../ducks/bridge/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BannerAlertSeverity } from '../../../components/component-library';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
@@ -20,7 +21,6 @@ import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
-import { setFromTokenInputValue } from '../../../ducks/bridge/actions';
 
 /**
  * Merges tx, token, and validation alert data used for displaying {@link BannerAlert}
@@ -34,7 +34,9 @@ export const useBridgeAlerts = () => {
     getFormattedPriceImpactPercentage,
   );
   const formattedPriceImpactFiat = useSelector(getFormattedPriceImpactFiat);
-  const insufficientNativeReserveError = useSelector(getInsufficientNativeReserveError);
+  const insufficientNativeReserveError = useSelector(
+    getInsufficientNativeReserveError,
+  );
 
   const {
     isNoQuotesAvailable,
@@ -217,38 +219,37 @@ export const useBridgeAlerts = () => {
     }
 
     if (
-        !isInsufficientBalance &&
-        !isInsufficientGasForQuote &&
-        insufficientNativeReserveError &&
-        insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
-          '0') {
+      !isInsufficientBalance &&
+      !isInsufficientGasForQuote &&
+      insufficientNativeReserveError &&
+      insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
+        '0'
+    ) {
       categorizeAlert({
         id: 'insufficient-native-reserve',
         isDismissable: false,
         severity: 'warning',
-        title: t('bridgeValidationInsufficientNativeReserveTitle', [
+        title: t('bridgeValidationInsufficientNativeReserveTitle', [ticker]),
+        description: t('bridgeValidationInsufficientNativeReserveMessage', [
+          insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount,
+          insufficientNativeReserveError.maxSwappableNativeBalance,
           ticker,
         ]),
-        description: t(
-          'bridgeValidationInsufficientNativeReserveMessage',
-          [
-            insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount,
-            insufficientNativeReserveError.maxSwappableNativeBalance,
-            ticker,
-          ],
-        ),
         isConfirmationAlert: false,
         bannerAlertProps: {
           severity: BannerAlertSeverity.Warning,
-          actionButtonLabel: t('bridgeUseMaxAmountAllowedWithReserve', [ticker]),
-          actionButtonOnClick: () => dispatch(
-            setFromTokenInputValue(
-              insufficientNativeReserveError.maxSwappableNativeBalance,
+          actionButtonLabel: t('bridgeUseMaxAmountAllowedWithReserve', [
+            ticker,
+          ]),
+          actionButtonOnClick: () =>
+            dispatch(
+              setFromTokenInputValue(
+                insufficientNativeReserveError.maxSwappableNativeBalance,
+              ),
             ),
-          ),
-        }
+        },
       });
-            }
+    }
 
     if (isPriceImpactWarning) {
       categorizeAlert({
