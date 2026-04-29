@@ -1,0 +1,52 @@
+diff --git a/dist/config-registry-api-service/types.cjs b/dist/config-registry-api-service/types.cjs
+index d273d693463bb5cdab4d402834d85444dced1149..87c9b9f33b733810afa53d751be093454b533b75 100644
+--- a/dist/config-registry-api-service/types.cjs
++++ b/dist/config-registry-api-service/types.cjs
+@@ -11,7 +11,7 @@ const AssetSchema = (0, superstruct_1.type)({
+     coingeckoCoinId: (0, superstruct_1.string)(),
+ });
+ const AssetsSchema = (0, superstruct_1.type)({
+-    listUrl: (0, superstruct_1.string)(),
++    listUrl: (0, superstruct_1.optional)((0, superstruct_1.string)()),
+     native: AssetSchema,
+     governance: (0, superstruct_1.optional)(AssetSchema),
+ });
+diff --git a/dist/config-registry-api-service/types.d.cts b/dist/config-registry-api-service/types.d.cts
+index 1cecc271dba3e9747dd6efd952c68fe5001f0962..f1cae005f97bb41cc068af27b636658eda51be94 100644
+--- a/dist/config-registry-api-service/types.d.cts
++++ b/dist/config-registry-api-service/types.d.cts
+@@ -17,7 +17,7 @@ export declare const RegistryNetworkConfigSchema: import("@metamask/superstruct"
+             imageUrl: string;
+             coingeckoCoinId: string;
+         };
+-        listUrl: string;
++        listUrl?: string | undefined;
+         governance?: {
+             symbol: string;
+             name: string;
+diff --git a/dist/config-registry-api-service/types.d.mts b/dist/config-registry-api-service/types.d.mts
+index 2e18dbc85119d1d2b28bc8bf24c916cf973919fc..8cb084e3db7cd9ea9eb2d977f3ba23c852022cc5 100644
+--- a/dist/config-registry-api-service/types.d.mts
++++ b/dist/config-registry-api-service/types.d.mts
+@@ -17,7 +17,7 @@ export declare const RegistryNetworkConfigSchema: import("@metamask/superstruct"
+             imageUrl: string;
+             coingeckoCoinId: string;
+         };
+-        listUrl: string;
++        listUrl?: string | undefined;
+         governance?: {
+             symbol: string;
+             name: string;
+diff --git a/dist/config-registry-api-service/types.mjs b/dist/config-registry-api-service/types.mjs
+index b5ac5e022e95b0949d18a9220df875d5abb49822..5543cb4a9a309a46e658dcb7863269eadf02e32d 100644
+--- a/dist/config-registry-api-service/types.mjs
++++ b/dist/config-registry-api-service/types.mjs
+@@ -8,7 +8,7 @@ const AssetSchema = type({
+     coingeckoCoinId: string(),
+ });
+ const AssetsSchema = type({
+-    listUrl: string(),
++    listUrl: optional(string()),
+     native: AssetSchema,
+     governance: optional(AssetSchema),
+ });
