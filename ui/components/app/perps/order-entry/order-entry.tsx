@@ -279,7 +279,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
                     ? TextColor.textDefault
                     : TextColor.textAlternative,
               }}
-              padding={3}
+              padding={4}
               data-testid="order-type-market"
             />
             <Tag
@@ -304,7 +304,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
                     ? TextColor.textDefault
                     : TextColor.textAlternative,
               }}
-              padding={3}
+              padding={4}
               data-testid="order-type-limit"
             />
           </Box>

@@ -9,6 +9,86 @@ import BridgeQuotePage, { type BridgeQuote } from '../pages/bridge/quote-page';
 import HomePage from '../pages/home/homepage';
 import TokenOverviewPage from '../pages/token-overview-page';
 
+export const verifySubmittedSwapTransaction = async ({
+  driver,
+  quote,
+  expectedTransactionsCount = 1,
+  expectedStatus = 'success',
+  expectedWalletBalance,
+  expectedSwapTokens,
+  expectedDestAmount,
+}: {
+  driver: Driver;
+  quote: BridgeQuote;
+  expectedTransactionsCount: number;
+  expectedStatus?: 'success' | 'failed' | 'pending';
+  expectedWalletBalance?: string;
+  expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
+  expectedDestAmount?: string;
+}) => {
+  const homePage = new HomePage(driver);
+  await homePage.goToActivityList();
+
+  const activityList = new ActivityListPage(driver);
+  await activityList.checkCompletedBridgeTransactionActivity(
+    expectedTransactionsCount,
+  );
+
+  const isBridge =
+    quote.fromChain && quote.toChain
+      ? quote.fromChain !== quote.toChain
+      : false;
+
+  let action = '';
+  const expectedSrcToken = quote.tokenFrom ?? expectedSwapTokens?.tokenFrom;
+  const expectedDestToken = quote.tokenTo ?? expectedSwapTokens?.tokenTo;
+
+  if (quote.unapproved) {
+    action = isBridge
+      ? `Bridged to ${quote.toChain}`
+      : `Swapped ${expectedSrcToken} to ${expectedDestToken}`;
+    await activityList.checkTxAction({
+      action,
+      confirmedTx: expectedTransactionsCount,
+    });
+    await activityList.checkTxAction({
+      action: `Approve ${expectedSrcToken} for ${isBridge ? 'bridge' : 'swap'}`,
+      confirmedTx: expectedTransactionsCount,
+      txIndex: 2,
+    });
+  } else {
+    action = isBridge
+      ? `Bridged to ${quote.toChain}`
+      : `Swap ${expectedSrcToken} to ${expectedDestToken}`;
+    await activityList.checkTxAction({
+      action,
+      confirmedTx: expectedTransactionsCount,
+    });
+  }
+  // Check the amount of ETH deducted in the activity is correct
+  await activityList.checkTxAmountInActivity(
+    `-${quote.amount} ${quote.tokenFrom ?? expectedSwapTokens?.tokenFrom}`,
+  );
+
+  await activityList.checkBridgeTransactionDetails(
+    action,
+    isBridge,
+    expectedStatus,
+    quote.amount,
+    expectedSrcToken,
+    expectedDestAmount,
+    expectedDestToken,
+  );
+
+  // Check the wallet ETH balance is correct
+  const accountListPage = new AccountListPage(driver);
+  if (expectedWalletBalance) {
+    await accountListPage.checkAccountValueAndSuffixDisplayed(
+      expectedWalletBalance,
+    );
+  }
+};
+
 /**
  * Execute a bridge transaction and checks the activity list
  *
@@ -65,65 +145,15 @@ export const bridgeTransaction = async ({
     await bridgePage.submitQuoteAndDismiss();
   }
 
-  await homePage.goToActivityList();
-
-  const activityList = new ActivityListPage(driver);
-  await activityList.checkCompletedBridgeTransactionActivity(
+  await verifySubmittedSwapTransaction({
+    driver,
+    quote,
     expectedTransactionsCount,
-  );
-
-  const isBridge =
-    quote.fromChain && quote.toChain
-      ? quote.fromChain !== quote.toChain
-      : false;
-
-  let action = '';
-  const expectedSrcToken = quote.tokenFrom ?? expectedSwapTokens?.tokenFrom;
-  const expectedDestToken = quote.tokenTo ?? expectedSwapTokens?.tokenTo;
-
-  if (quote.unapproved) {
-    action = isBridge
-      ? `Bridged to ${quote.toChain}`
-      : `Swapped ${expectedSrcToken} to ${expectedDestToken}`;
-    await activityList.checkTxAction({
-      action,
-      confirmedTx: expectedTransactionsCount,
-    });
-    await activityList.checkTxAction({
-      action: `Approve ${expectedSrcToken} for ${isBridge ? 'bridge' : 'swap'}`,
-      confirmedTx: expectedTransactionsCount,
-      txIndex: 2,
-    });
-  } else {
-    action = isBridge
-      ? `Bridged to ${quote.toChain}`
-      : `Swap ${expectedSrcToken} to ${expectedDestToken}`;
-    await activityList.checkTxAction({
-      action,
-      confirmedTx: expectedTransactionsCount,
-    });
-  }
-
-  await activityList.checkTxAmountInActivity(
-    `-${quote.amount} ${quote.tokenFrom ?? expectedSwapTokens?.tokenFrom}`,
-  );
-
-  await activityList.checkBridgeTransactionDetails(
-    action,
-    isBridge,
     expectedStatus,
-    quote.amount,
-    expectedSrcToken,
+    expectedWalletBalance,
+    expectedSwapTokens,
     expectedDestAmount,
-    expectedDestToken,
-  );
-
-  const accountListPage = new AccountListPage(driver);
-  if (expectedWalletBalance) {
-    await accountListPage.checkAccountValueAndSuffixDisplayed(
-      expectedWalletBalance,
-    );
-  }
+  });
 };
 
 /**

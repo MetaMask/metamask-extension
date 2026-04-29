@@ -3,13 +3,18 @@ import {
   RpcEndpointType,
   UpdateNetworkFields,
 } from '@metamask/network-controller';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
+  Icon,
+  IconColor,
   IconName,
+  IconSize,
+  Text,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -22,7 +27,10 @@ import { SelectRpcUrlModal } from '../../components/multichain/network-list-menu
 import { AddNetwork } from '../../components/multichain/network-manager/components/add-network';
 import { Header } from '../../components/multichain/pages/page';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain/networks';
+import {
+  getMultichainNetworkConfigurationsByChainId,
+  getSelectedMultichainNetworkChainId,
+} from '../../selectors/multichain/networks';
 import { getEditedNetwork } from '../../selectors/selectors';
 import { SettingsV2Header } from '../settings-v2/shared/settings-v2-header';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
@@ -33,6 +41,8 @@ const getViewAfterRpcAdd = (view: string) =>
 
 const getViewAfterExplorerAdd = (view: string) =>
   view === 'edit-explorer-url' ? 'edit' : 'add';
+
+const NETWORKS_PAGE_TOAST_DURATION_MS = 5000;
 
 const NetworksPageFormHeader = ({
   title,
@@ -90,8 +100,11 @@ export const NetworksPage = () => {
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const { chainId: editingChainId, editCompleted } =
-    useSelector(getEditedNetwork) ?? {};
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+  const rawEditedNetwork = useSelector(getEditedNetwork);
+  const { chainId: editingChainId, editCompleted } = rawEditedNetwork ?? {};
 
   const editedNetwork = useMemo((): UpdateNetworkFields | undefined => {
     if (view === 'add') {
@@ -178,14 +191,52 @@ export const NetworksPage = () => {
     navigate(DEFAULT_ROUTE);
   }, [dispatch, navigate]);
 
-  // The select-rpc page already updates the network configuration. We only
-  // need to point the active network at the chosen RPC client before closing.
+  const [pageToast, setPageToast] = useState<{
+    chainId: string;
+    nickname: string;
+    newNetwork: boolean;
+  } | null>(null);
+
+  const dismissPageToast = useCallback(() => setPageToast(null), []);
+
+  useEffect(() => {
+    if (!pageToast) {
+      return undefined;
+    }
+    const timeoutId = setTimeout(
+      dismissPageToast,
+      NETWORKS_PAGE_TOAST_DURATION_MS,
+    );
+    return () => clearTimeout(timeoutId);
+  }, [dismissPageToast, pageToast]);
+
+  useEffect(() => {
+    if (view !== '' || !rawEditedNetwork?.editCompleted) {
+      return;
+    }
+    setPageToast({
+      chainId: rawEditedNetwork.chainId,
+      nickname: rawEditedNetwork.nickname ?? '',
+      newNetwork: Boolean(rawEditedNetwork.newNetwork),
+    });
+    dispatch(setEditedNetwork());
+  }, [dispatch, rawEditedNetwork, view]);
+
   const handleSelectRpc = useCallback(
-    (_chainId: string, networkClientId: string) => {
-      dispatch(setActiveNetwork(networkClientId));
-      handleClose();
+    (caipChainId: string, networkClientId: string) => {
+      if (caipChainId === currentMultichainChainId) {
+        dispatch(setActiveNetwork(networkClientId));
+      }
+      if (editedNetwork?.chainId) {
+        setPageToast({
+          chainId: editedNetwork.chainId,
+          nickname: editedNetwork.name ?? '',
+          newNetwork: false,
+        });
+      }
+      setView();
     },
-    [dispatch, handleClose],
+    [currentMultichainChainId, dispatch, editedNetwork, setView],
   );
 
   const handleGoHome = useCallback(() => {
@@ -201,12 +252,13 @@ export const NetworksPage = () => {
   }, [setView]);
 
   const handleRootBack = useCallback(() => {
+    dispatch(setEditedNetwork());
     navigate(
       searchParams.get('drawerOpen') === 'true'
         ? `${DEFAULT_ROUTE}?drawerOpen=true`
         : DEFAULT_ROUTE,
     );
-  }, [navigate, searchParams]);
+  }, [dispatch, navigate, searchParams]);
 
   return (
     <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background-default">
@@ -223,7 +275,34 @@ export const NetworksPage = () => {
             onSearchClear={() => setSearchValue('')}
             showSearchBorder={false}
           />
-          <NetworksPageList searchQuery={searchValue} />
+          <NetworksPageList
+            searchQuery={searchValue}
+            footerContent={
+              pageToast ? (
+                <Box
+                  data-testid="networks-page-network-success-toast"
+                  className="flex w-full items-center gap-3 rounded-xl border border-border-muted bg-background-section p-3"
+                >
+                  <Icon
+                    name={IconName.Confirmation}
+                    size={IconSize.Md}
+                    color={IconColor.SuccessDefault}
+                  />
+                  <Text variant={TextVariant.BodyMd} className="flex-1">
+                    {pageToast.newNetwork
+                      ? t('newNetworkAdded', [pageToast.nickname])
+                      : t('newNetworkEdited', [pageToast.nickname])}
+                  </Text>
+                  <ButtonIcon
+                    ariaLabel={t('close')}
+                    iconName={IconName.Close}
+                    size={ButtonIconSize.Sm}
+                    onClick={dismissPageToast}
+                  />
+                </Box>
+              ) : null
+            }
+          />
         </>
       ) : null}
       {view === 'add' ? (

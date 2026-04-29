@@ -15,6 +15,7 @@ const mockResolvePendingApproval = jest.fn(
 const mockShowPendingToast = jest.fn();
 const mockShowSuccessToast = jest.fn();
 const mockShowFailedToast = jest.fn();
+const mockDismissToast = jest.fn();
 
 jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
@@ -34,6 +35,7 @@ jest.mock('./shared', () => ({
   showPendingToast: (...args: [string]) => mockShowPendingToast(...args),
   showSuccessToast: (...args: [string]) => mockShowSuccessToast(...args),
   showFailedToast: (...args: [string]) => mockShowFailedToast(...args),
+  dismissToast: (...args: [string]) => mockDismissToast(...args),
 }));
 
 describe('useSmartTransactionToasts', () => {
@@ -263,5 +265,25 @@ describe('useSmartTransactionToasts', () => {
       approvalId: 'approval-1',
       value: true,
     });
+  });
+
+  it('dismisses a pending toast when the smart transaction disappears', () => {
+    mockTransactions = [
+      {
+        approvalId: 'approval-1',
+        txId: 'tx-1',
+        smartTransactionStatus: SmartTransactionStatuses.PENDING,
+      },
+    ];
+
+    const { rerender } = renderHook(() => useSmartTransactionToasts());
+
+    expect(mockShowPendingToast).toHaveBeenCalledWith('stx-tx-1');
+
+    mockTransactions = [];
+
+    rerender();
+
+    expect(mockDismissToast).toHaveBeenCalledWith('stx-tx-1');
   });
 });

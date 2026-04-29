@@ -64,7 +64,7 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
         data-testid="direction-tab-long"
       >
         <Text
-          variant={TextVariant.BodySm}
+          variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
           className={twMerge(
             'w-full',
@@ -82,7 +82,7 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
         data-testid="direction-tab-short"
       >
         <Text
-          variant={TextVariant.BodySm}
+          variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
           className={twMerge(
             'w-full',
