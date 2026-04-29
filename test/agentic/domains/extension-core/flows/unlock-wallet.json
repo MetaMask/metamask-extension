@@ -1,5 +1,12 @@
 {
   "title": "Unlock wallet with default password",
+  "inputs": {
+    "password": {
+      "type": "string",
+      "default": "{{env.WALLET_PASSWORD}}",
+      "description": "Wallet unlock password (sourced from wallet-fixture.json via env)"
+    }
+  },
   "validate": {
     "workflow": {
       "entry": "check-locked",
@@ -28,7 +35,7 @@
         "type-password": {
           "action": "set_input",
           "test_id": "unlock-password",
-          "value": "qwerasdf",
+          "value": "{{password}}",
           "next": "press-unlock"
         },
         "press-unlock": {

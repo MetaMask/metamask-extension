@@ -11,8 +11,8 @@
   },
   "perps-feature-flag": {
     "description": "Check if perpsEnabledVersion remote flag is configured in manifest._flags",
-    "expression": "(async () => { const manifest = chrome.runtime.getManifest(); const flags = manifest._flags?.remoteFeatureFlags; return JSON.stringify(flags?.perpsEnabledVersion ?? null); })()",
-    "async": true
+    "expression": "(function(){var manifest=chrome.runtime.getManifest();var flags=manifest&&manifest._flags&&manifest._flags.remoteFeatureFlags;var v=flags&&flags.perpsEnabledVersion;return JSON.stringify(v==null?null:v)})()",
+    "async": false
   },
   "perps-markets": {
     "description": "Live market data with prices via perpsGetMarketDataWithPrices RPC",

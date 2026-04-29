@@ -1,11 +1,32 @@
 {
-  "description": "Toggles testnet mode via perpsToggleTestnet RPC, verifies the store reflects the change, and waits for markets to load on the new network.",
+  "description": "Idempotently enables testnet mode via perpsToggleTestnet RPC, verifies the store reflects testnet, and waits for markets to load.",
   "title": "Setup testnet mode",
   "validate": {
     "workflow": {
       "pre_conditions": ["wallet.unlocked", "perps.feature_enabled"],
-      "entry": "toggle-testnet",
+      "entry": "check-state",
       "nodes": {
+        "check-state": {
+          "action": "eval_sync",
+          "expression": "(function(){var m=stateHooks.store.getState().metamask;return JSON.stringify({isTestnet:!!m.isTestnet})})()",
+          "save_as": "net_state",
+          "next": "branch-state"
+        },
+        "branch-state": {
+          "action": "switch",
+          "cases": [
+            {
+              "label": "already on testnet — skip toggle",
+              "when": {
+                "field": "vars.net_state.isTestnet",
+                "operator": "eq",
+                "value": true
+              },
+              "next": "verify-testnet"
+            }
+          ],
+          "default": "toggle-testnet"
+        },
         "toggle-testnet": {
           "action": "toggle_testnet",
           "next": "verify-testnet"
