@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -38,14 +38,12 @@ export function PerpsTab() {
   const navigate = useNavigate();
   const t = useI18nContext();
 
-  const prevExternalServices = useRef(useExternalServices);
   useEffect(() => {
-    if (prevExternalServices.current && !useExternalServices) {
+    if (!useExternalServices) {
       submitRequestToBackground('perpsDisconnect').catch((err: unknown) => {
         console.debug('[PerpsTab] perpsDisconnect failed:', err);
       });
     }
-    prevExternalServices.current = useExternalServices;
   }, [useExternalServices]);
 
   if (!useExternalServices) {

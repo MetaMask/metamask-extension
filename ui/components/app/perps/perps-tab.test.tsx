@@ -86,11 +86,26 @@ describe('PerpsTab', () => {
     );
   });
 
-  it('does not call perpsDisconnect on initial render with useExternalServices false', () => {
+  it('calls perpsDisconnect on initial render when useExternalServices is false', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
         useExternalServices: false,
+      },
+    });
+
+    renderWithProvider(<PerpsTab />, store);
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsDisconnect',
+    );
+  });
+
+  it('does not call perpsDisconnect when useExternalServices is true', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        useExternalServices: true,
       },
     });
 
