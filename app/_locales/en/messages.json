@@ -6120,6 +6120,10 @@
     "message": "Stop loss",
     "description": "Label for stop loss price input"
   },
+  "perpsStopLossInvalidLiquidationPrice": {
+    "message": "Stop loss must be $1 liquidation price",
+    "description": "Validation error when stop loss price is on the wrong side of the liquidation price. $1 is above/below."
+  },
   "perpsStopLossInvalidPrice": {
     "message": "Stop loss must be $1 $2 price",
     "description": "Validation error when stop loss price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."

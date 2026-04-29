@@ -1,5 +1,5 @@
 import React from 'react';
-import SnapAuthorshipPill from './snap-authorship-pill'
+import SnapAuthorshipPill from './snap-authorship-pill';
 
 export default {
   title: 'Components/App/Snaps/SnapAuthorshipPill',
