@@ -249,6 +249,22 @@ describe('TrezorAdapter', () => {
       );
     });
 
+    it('allows locked Model One because it unlocks during transaction signing', async () => {
+      mockGetTrezorFeatures.mockResolvedValue(
+        createMockFeaturesResponse({
+          model: 'T1B1',
+          unlocked: false,
+        }),
+      );
+
+      await expect(adapter.ensureDeviceReady()).resolves.toBe(true);
+      expect(mockOptions.onDeviceEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: DeviceEvent.DeviceLocked,
+        }),
+      );
+    });
+
     it('throws DeviceNotReady when device is not initialized', async () => {
       mockGetTrezorFeatures.mockResolvedValue(
         createMockFeaturesResponse({
@@ -293,6 +309,36 @@ describe('TrezorAdapter', () => {
 
       await expect(adapter.ensureDeviceReady()).rejects.toMatchObject({
         code: ErrorCode.DeviceMissingCapability,
+      });
+    });
+
+    it('allows Model One name when only Solana capability is missing', async () => {
+      mockGetTrezorFeatures.mockResolvedValue(
+        createMockFeaturesResponse({
+          model: 'Trezor Model One',
+          capabilities: ['Capability_Bitcoin', 'Capability_Ethereum'],
+        }),
+      );
+
+      await expect(adapter.ensureDeviceReady()).resolves.toBe(true);
+      expect(mockOptions.onDeviceEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({ error: expect.anything() }),
+      );
+    });
+
+    it('throws DeviceMissingCapability when Model One is missing a supported capability', async () => {
+      mockGetTrezorFeatures.mockResolvedValue(
+        createMockFeaturesResponse({
+          model: 'T1B1',
+          capabilities: ['Capability_Bitcoin'],
+        }),
+      );
+
+      await expect(adapter.ensureDeviceReady()).rejects.toMatchObject({
+        code: ErrorCode.DeviceMissingCapability,
+        metadata: expect.objectContaining({
+          missingCapabilities: ['Capability_Ethereum'],
+        }),
       });
     });
 

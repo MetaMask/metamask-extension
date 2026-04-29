@@ -291,8 +291,8 @@
     "ui/components/app/perps/perps-tutorial-modal/PerpsTutorialModal.test.tsx": {
       "MetaMask: Background connection not initialized": 4
     },
-    "ui/components/app/qr-hardware-popover/base-reader.test.js": {
-      "React: Component update warnings": 1
+    "ui/components/app/qr-hardware-popover/base-reader.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 8
     },
     "ui/components/app/rewards/onboarding/OnboardingIntroStep.test.tsx": {
       "error: Warning: React does not recognize": 1
@@ -671,6 +671,15 @@
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1
+    },
+    "ui/pages/bridge/prepare/components/bridge-alert-banner-list.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 44,
+      "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1,
+      "Third-party: Bindings failed, using pure JS": 1,
+      "error: Error: Insufficient number of substitutions": 2,
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
     },
     "ui/pages/bridge/prepare/components/destination-account-picker-modal.test.tsx": {
       "Reselect: Input stability warnings": 1

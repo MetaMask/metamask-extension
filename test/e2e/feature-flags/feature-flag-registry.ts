@@ -2464,7 +2464,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'perpsHip3BlocklistMarkets',
     type: FeatureFlagType.Remote,
     inProd: true,
-    productionDefault: 'variation 2',
+    productionDefault: '',
     status: FeatureFlagStatus.Active,
   },
 };

@@ -15,7 +15,11 @@ import {
 } from './rpcErrorUtils';
 import { useHardwareFooter } from './useHardwareFooter';
 import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
-import { ConnectionStatus, HardwareWalletType } from './types';
+import {
+  ConnectionStatus,
+  HardwareConnectionPermissionState,
+  HardwareWalletType,
+} from './types';
 
 jest.mock('./useHardwareWalletMetrics', () => ({
   useHardwareWalletMetrics: jest.fn(),
@@ -74,6 +78,8 @@ describe('useHardwareFooter', () => {
     (useHardwareWalletConfig as jest.Mock).mockReturnValue({
       isHardwareWalletAccount: true,
       walletType: HardwareWalletType.Ledger,
+      hardwareConnectionPermissionState:
+        HardwareConnectionPermissionState.Unknown,
     });
     (useHardwareWalletActions as jest.Mock).mockReturnValue({
       ensureDeviceReady: mockEnsureDeviceReady,
@@ -179,6 +185,62 @@ describe('useHardwareFooter', () => {
 
       expect(result.current.shouldRunHardwareWalletPreflight).toBe(false);
       expect(result.current.isHardwareWalletReady).toBe(true);
+    });
+
+    it('returns ready for QR wallet when camera permission is already granted', () => {
+      mockConnectionState.status = ConnectionStatus.Disconnected;
+      (useHardwareWalletConfig as jest.Mock).mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Qr,
+        hardwareConnectionPermissionState:
+          HardwareConnectionPermissionState.Granted,
+      });
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(true);
+    });
+
+    it('returns not ready for QR wallet when camera permission is not granted', () => {
+      mockConnectionState.status = ConnectionStatus.Disconnected;
+      (useHardwareWalletConfig as jest.Mock).mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Qr,
+        hardwareConnectionPermissionState:
+          HardwareConnectionPermissionState.Prompt,
+      });
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(false);
+    });
+
+    it('returns not ready for QR wallet when camera permission state is unknown', () => {
+      mockConnectionState.status = ConnectionStatus.Disconnected;
+      (useHardwareWalletConfig as jest.Mock).mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Qr,
+        hardwareConnectionPermissionState:
+          HardwareConnectionPermissionState.Unknown,
+      });
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(false);
+    });
+
+    it('returns not ready for Ledger even when camera permission is granted', () => {
+      mockConnectionState.status = ConnectionStatus.Disconnected;
+      (useHardwareWalletConfig as jest.Mock).mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+        hardwareConnectionPermissionState:
+          HardwareConnectionPermissionState.Granted,
+      });
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(false);
     });
   });
 
