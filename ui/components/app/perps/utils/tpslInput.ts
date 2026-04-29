@@ -46,15 +46,26 @@ const normalizeLeadingZeros = (value: string): string => {
   return `${integerPart.replace(/^0+/u, '')}${decimalPart}`;
 };
 
+const isZeroLikeInput = (value: string): boolean => {
+  const unsignedValue =
+    value.startsWith('-') || value.startsWith('+') ? value.slice(1) : value;
+
+  return unsignedValue === '' || /^[0.]*$/u.test(unsignedValue);
+};
+
 /**
- * Defaults unsigned stop-loss percentage values to negative RoE and mirrors
- * mobile keypad leading-zero behavior. Positive SL RoE remains available only
- * through an explicit "+" sign, which can be intentional when a user is locking
- * in profit on an existing position.
+ * Defaults initial unsigned stop-loss percentage values to negative RoE and
+ * mirrors mobile keypad leading-zero behavior. Positive SL RoE remains
+ * available when a user edits an existing signed value or enters an explicit
+ * "+" sign, which can be intentional when locking in profit on a position.
  *
  * @param value - The next raw input value
+ * @param previousValue - The previous controlled input value
  */
-export const applyDefaultStopLossSign = (value: string): string => {
+export const applyDefaultStopLossSign = (
+  value: string,
+  previousValue: string,
+): string => {
   if (value === '') {
     return value;
   }
@@ -78,5 +89,7 @@ export const applyDefaultStopLossSign = (value: string): string => {
     return normalizedValue;
   }
 
-  return `-${normalizedValue}`;
+  return isZeroLikeInput(previousValue)
+    ? `-${normalizedValue}`
+    : normalizedValue;
 };

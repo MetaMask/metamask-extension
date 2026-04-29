@@ -506,7 +506,8 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const hasInvalidTPSL = useMemo(() => {
     // In modify mode the TP/SL section is hidden and values carry over untouched,
-    // so stale prices that crossed the current market should not block submission.
+    // so stale prices that crossed the current market or liquidation price should
+    // not block submission. TP/SL edits are validated in the dedicated modal.
     if (!orderFormState?.autoCloseEnabled || orderMode === 'modify') {
       return false;
     }
@@ -524,6 +525,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     const tp = orderFormState.takeProfitPrice;
     const sl = orderFormState.stopLossPrice;
     const dir = orderFormState.direction;
+    const liquidationPrice = orderCalculations?.liquidationPriceRaw;
 
     const tpInvalid = Boolean(
       tp?.trim() &&
@@ -542,13 +544,19 @@ const PerpsOrderEntryPage: React.FC = () => {
     const slLiquidationInvalid = Boolean(
       sl?.trim() &&
         !isStopLossSafeFromLiquidation(sl, {
-          liquidationPrice: orderCalculations?.liquidationPriceRaw,
+          liquidationPrice,
           direction: dir,
         }),
     );
 
     return tpInvalid || slInvalid || slLiquidationInvalid;
-  }, [orderFormState, orderType, currentPrice, orderMode, orderCalculations]);
+  }, [
+    orderFormState,
+    orderType,
+    currentPrice,
+    orderMode,
+    orderCalculations?.liquidationPriceRaw,
+  ]);
 
   const isInsufficientFunds = useMemo(() => {
     if (!orderFormState || orderMode === 'close') {

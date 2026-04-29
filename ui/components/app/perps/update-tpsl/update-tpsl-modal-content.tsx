@@ -147,7 +147,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   }, [position]);
 
   const liquidationPrice = useMemo(() => {
-    if (!position?.liquidationPrice) {
+    if (!position.liquidationPrice) {
       return null;
     }
     const parsed = Number.parseFloat(
@@ -298,7 +298,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const isSlLiquidationInvalid = useMemo(
     () =>
       Boolean(
-        editingSlPrice.replaceAll(',', '').trim() &&
+        editingSlPrice.trim() &&
           !isStopLossSafeFromLiquidation(editingSlPrice, {
             liquidationPrice,
             direction: positionDirection,
@@ -373,7 +373,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const handleSlPercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = applyDefaultStopLossSign(event.target.value);
+      const value = applyDefaultStopLossSign(event.target.value, rawSlPercent);
       if (value === '' || isSignedDecimalInput(value)) {
         setRawSlPercent(value);
         setSlPresetPercent(null);
@@ -386,7 +386,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
         }
       }
     },
-    [percentToPriceForEdit],
+    [percentToPriceForEdit, rawSlPercent],
   );
 
   const handleSlPercentFocus = useCallback(() => {
