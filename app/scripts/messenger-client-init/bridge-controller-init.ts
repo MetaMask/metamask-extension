@@ -117,8 +117,8 @@ export const BridgeControllerInit: MessengerClientInitFunction<
         const remoteFeatureFlagController = getMessengerClient(
           'RemoteFeatureFlagController',
         );
-        const featureFlag = remoteFeatureFlagController.state
-          .remoteFeatureFlags[ASSETS_UNIFY_STATE_FLAG] as
+        const featureFlag = remoteFeatureFlagController?.state
+          ?.remoteFeatureFlags?.[ASSETS_UNIFY_STATE_FLAG] as
           | AssetsUnifyStateFeatureFlag
           | undefined;
 
