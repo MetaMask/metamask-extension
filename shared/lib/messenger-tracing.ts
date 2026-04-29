@@ -54,13 +54,11 @@ export function wrapMessengerWithTracing<
 
   messenger.call = ((actionType: string, ...args: unknown[]) => {
     const activeSpan = sentryGetActiveSpan();
-    if (!activeSpan) {
-      return originalCall(actionType, ...args);
-    }
-    if (isReadOnlyAction(actionType)) {
-      return originalCall(actionType, ...args);
-    }
-    if (!shouldSampleWrappers(activeSpan.spanContext()?.traceId)) {
+    if (
+      !activeSpan ||
+      isReadOnlyAction(actionType) ||
+      !shouldSampleWrappers(activeSpan.spanContext()?.traceId)
+    ) {
       return originalCall(actionType, ...args);
     }
     return trace(
