@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Text,
@@ -10,13 +10,8 @@ import {
   ButtonSize,
   ButtonVariant,
   Button,
-  FontWeight,
   TextVariant,
   TextColor,
-  IconName,
-  IconSize,
-  Icon,
-  IconColor,
 } from '@metamask/design-system-react';
 import {
   FormTextField,
@@ -25,14 +20,10 @@ import {
 } from '../../../components/component-library';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey';
 import {
-  startPasskeyRegistration,
-  cancelPasskeyCeremony,
-} from '../../../../shared/lib/passkey';
-import {
-  protectVaultKeyWithPasskey,
-  generatePasskeyRegistrationOptions,
   forceUpdateMetamaskState,
+  removePasskeyWithPasswordVerification,
   verifyPassword,
 } from '../../../store/actions';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
@@ -46,29 +37,26 @@ import { getIsPasskeyRegistered } from '../../../selectors';
 
 const passkeySettingsToastDurationMs = 5 * SECOND;
 
-const PasskeyRegisterSteps = {
+const PasskeyTurnOffSteps = {
   VerifyPassword: 1,
-  RegisterPasskey: 2,
+  ConfirmTurnOff: 2,
 } as const;
 
-export default function PasskeyRegisterSubPage() {
+export default function PasskeyTurnOffSubPage() {
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useDispatch();
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
+
   const [step, setStep] = useState<
-    (typeof PasskeyRegisterSteps)[keyof typeof PasskeyRegisterSteps]
-  >(PasskeyRegisterSteps.VerifyPassword);
+    (typeof PasskeyTurnOffSteps)[keyof typeof PasskeyTurnOffSteps]
+  >(PasskeyTurnOffSteps.VerifyPassword);
   const [walletPassword, setWalletPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
     useState(false);
   const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
-  const [isRegisteringPasskey, setIsRegisteringPasskey] = useState(false);
-
-  const fromChangePassword =
-    new URLSearchParams(location.search).get('from') === 'change-password';
+  const [isRemovingPasskey, setIsRemovingPasskey] = useState(false);
 
   useEffect(
     () => () => {
@@ -78,7 +66,7 @@ export default function PasskeyRegisterSubPage() {
   );
 
   useEffect(() => {
-    if (isPasskeyRegistered) {
+    if (!isPasskeyRegistered) {
       navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
     }
   }, [isPasskeyRegistered, navigate]);
@@ -93,7 +81,7 @@ export default function PasskeyRegisterSubPage() {
     setIsIncorrectPasswordError(false);
     try {
       await verifyPassword(walletPassword);
-      setStep(PasskeyRegisterSteps.RegisterPasskey);
+      setStep(PasskeyTurnOffSteps.ConfirmTurnOff);
     } catch {
       setIsIncorrectPasswordError(true);
     } finally {
@@ -101,35 +89,35 @@ export default function PasskeyRegisterSubPage() {
     }
   };
 
-  const handleRegisterPasskey = async () => {
-    setIsRegisteringPasskey(true);
+  const handleTurnOffBiometricUnlock = async () => {
+    setIsRemovingPasskey(true);
     try {
-      const options = await generatePasskeyRegistrationOptions();
-      const registrationResponse = await startPasskeyRegistration(options);
-      await protectVaultKeyWithPasskey(registrationResponse, walletPassword);
+      await removePasskeyWithPasswordVerification(walletPassword);
       setWalletPassword('');
       await forceUpdateMetamaskState(dispatch);
-      toast.success(<ToastContent title={t('passkeyTurnedOn')} />, {
+      toast.success(<ToastContent title={t('passkeyTurnedOff')} />, {
         duration: passkeySettingsToastDurationMs,
       });
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          passkey_registered: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- MetaMetrics snake_case contract
+          passkey_registered: false,
         },
       });
       goToSettings();
     } catch {
-      // User cancelled or authenticator unavailable — stay on this screen
+      toast.error(<ToastContent title={t('turnOffPasskeyFailed')} />, {
+        duration: passkeySettingsToastDurationMs,
+      });
+      goToSettings();
     } finally {
-      setIsRegisteringPasskey(false);
+      setIsRemovingPasskey(false);
     }
   };
 
-  if (isPasskeyRegistered) {
+  if (!isPasskeyRegistered) {
     return null;
   }
 
@@ -142,33 +130,7 @@ export default function PasskeyRegisterSubPage() {
       padding={4}
       className="h-full min-h-0"
     >
-      {fromChangePassword && (
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-          padding={3}
-          className="shrink-0 rounded-lg"
-          style={{ backgroundColor: 'var(--color-success-muted)' }}
-          data-testid="register-passkey-password-changed-banner"
-        >
-          <Icon
-            name={IconName.Confirmation}
-            size={IconSize.Sm}
-            color={IconColor.SuccessDefault}
-          />
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.TextDefault}
-          >
-            {t('passwordChangedRecently')}
-          </Text>
-        </Box>
-      )}
-
-      {/* Verify Password Step */}
-      {step === PasskeyRegisterSteps.VerifyPassword && (
+      {step === PasskeyTurnOffSteps.VerifyPassword && (
         <Box
           flexDirection={BoxFlexDirection.Column}
           gap={6}
@@ -183,7 +145,7 @@ export default function PasskeyRegisterSubPage() {
             }}
           >
             <FormTextField
-              id="register-passkey-current-password"
+              id="turn-off-passkey-current-password"
               label={t('enterPasswordCurrent')}
               textFieldProps={{ type: TextFieldType.Password }}
               size={FormTextFieldSize.Lg}
@@ -192,7 +154,7 @@ export default function PasskeyRegisterSubPage() {
               }}
               inputProps={{
                 autoFocus: true,
-                'data-testid': 'register-passkey-password-input',
+                'data-testid': 'turn-off-passkey-password-input',
               }}
               value={walletPassword}
               error={isIncorrectPasswordError}
@@ -211,7 +173,7 @@ export default function PasskeyRegisterSubPage() {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               className="w-full"
-              data-testid="register-passkey-verify-continue-button"
+              data-testid="turn-off-passkey-verify-continue-button"
               disabled={
                 !walletPassword ||
                 isVerifyingPassword ||
@@ -225,30 +187,29 @@ export default function PasskeyRegisterSubPage() {
         </Box>
       )}
 
-      {/* Register Passkey Step */}
-      {step === PasskeyRegisterSteps.RegisterPasskey && (
+      {step === PasskeyTurnOffSteps.ConfirmTurnOff && (
         <>
           <Text
             variant={TextVariant.BodyMd}
             color={TextColor.TextAlternative}
-            data-testid="register-passkey-description"
+            data-testid="turn-off-passkey-description"
           >
-            {t('passkeyDescription')}
+            {t('turnOffPasskeyDescription')}
           </Text>
 
           <Button
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             className="w-full shrink-0"
-            data-testid="register-passkey-set-up-button"
-            disabled={isRegisteringPasskey}
-            isLoading={isRegisteringPasskey}
-            aria-label={t('setUpPasskey')}
+            data-testid="turn-off-passkey-confirm-button"
+            disabled={isRemovingPasskey}
+            isLoading={isRemovingPasskey}
+            aria-label={t('turnOffPasskey')}
             onClick={() => {
-              handleRegisterPasskey();
+              handleTurnOffBiometricUnlock();
             }}
           >
-            {t('setUpPasskey')}
+            {t('turnOffPasskey')}
           </Button>
         </>
       )}

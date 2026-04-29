@@ -27,6 +27,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_REGISTER_PASSKEY_ROUTE,
+  SECURITY_TURN_OFF_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getIsPasskeyFeatureAvailable,
@@ -103,6 +104,8 @@ const PasskeyItem = () => {
           passkey_registered: false,
         },
       });
+
+      navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
     } catch (error: unknown) {
       if (isPasskeyCeremonySilentError(error)) {
         log.debug(
@@ -123,14 +126,8 @@ const PasskeyItem = () => {
           />,
           { duration: passkeySettingsToastDurationMs },
         );
-        if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
-          global.platform?.openExtensionInBrowser?.(
-            SECURITY_AND_PASSWORD_ROUTE,
-          );
-        } else {
-          navigate(SECURITY_AND_PASSWORD_ROUTE);
-        }
       }
+      navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE, { replace: true });
     } finally {
       setIsPasskeyOperationPending(false);
     }

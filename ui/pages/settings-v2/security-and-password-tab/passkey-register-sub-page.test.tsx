@@ -3,7 +3,10 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
-import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+import {
+  SECURITY_AND_PASSWORD_ROUTE,
+  SECURITY_REGISTER_PASSKEY_ROUTE,
+} from '../../../helpers/constants/routes';
 import { SECOND } from '../../../../shared/constants/time';
 import { toast } from '../../../components/ui/toast/toast';
 import PasskeyRegisterSubPage from './passkey-register-sub-page';
@@ -75,12 +78,39 @@ jest.mock('../../../store/actions', () => ({
   verifyPassword: (...args: unknown[]) => mockVerifyPassword(...args),
 }));
 
+const stateWithPasskeyRegistered = {
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    passkeyRecord: { credentialId: 'existing-credential' },
+  },
+};
+
 describe('PasskeyRegisterSubPage', () => {
   const mockStore = configureMockStore()(mockState);
   const mockToastSuccess = jest.mocked(toast.success);
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('redirects to security when biometrics is already registered', async () => {
+    const store = configureMockStore()(stateWithPasskeyRegistered);
+    const { queryByTestId } = renderWithProvider(
+      <PasskeyRegisterSubPage />,
+      store,
+    );
+
+    expect(
+      queryByTestId('register-passkey-password-input'),
+    ).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        SECURITY_AND_PASSWORD_ROUTE,
+        { replace: true },
+      );
+    });
   });
 
   it('renders the verify-password step first', () => {
@@ -110,7 +140,7 @@ describe('PasskeyRegisterSubPage', () => {
     const { getByTestId, getByText } = renderWithProvider(
       <PasskeyRegisterSubPage />,
       mockStore,
-      '/settings/security-and-privacy/register-passkey?from=change-password',
+      `${SECURITY_REGISTER_PASSKEY_ROUTE}?from=change-password`,
     );
 
     expect(
