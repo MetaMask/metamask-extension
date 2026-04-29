@@ -31,6 +31,7 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver, localNodes }) => {
         await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           'ETH',
@@ -66,6 +67,7 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver, localNodes }) => {
         await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           'ETH',
@@ -120,6 +122,7 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver, localNodes }) => {
         await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           'ETH',
@@ -143,12 +146,14 @@ describe('Bridge functionality', function (this: Suite) {
           },
           BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           this.test?.fullTitle(),
+          { minedTx: 'reverted', isSettled: false },
         ),
       },
       async ({ driver, localNodes }) => {
         await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           'USD',
@@ -156,8 +161,10 @@ describe('Bridge functionality', function (this: Suite) {
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
+
         await bridgePage.submitQuote();
-        await homePage.goToActivityList();
+        await bridgePage.approveModalIfPresent();
+        await driver.clickElement({ text: 'View activity' });
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkPendingBridgeTransactionActivity();
@@ -182,7 +189,6 @@ describe('Bridge functionality', function (this: Suite) {
           },
           BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           this.test?.fullTitle(),
-          true,
           { minedTx: 'reverted' },
         ),
       },
@@ -190,6 +196,7 @@ describe('Bridge functionality', function (this: Suite) {
         await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           'ETH',
@@ -197,7 +204,7 @@ describe('Bridge functionality', function (this: Suite) {
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.submitQuote();
+        await bridgePage.submitQuoteAndDismiss();
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
@@ -223,7 +230,6 @@ describe('Bridge functionality', function (this: Suite) {
           },
           BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           this.test?.fullTitle(),
-          true,
           { minedTx: 'reverted' },
         ),
       },
@@ -231,6 +237,7 @@ describe('Bridge functionality', function (this: Suite) {
         await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           'ETH',
@@ -238,7 +245,7 @@ describe('Bridge functionality', function (this: Suite) {
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.submitQuote();
+        await bridgePage.submitQuoteAndDismiss();
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);

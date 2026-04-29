@@ -3,6 +3,7 @@ import { act, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { PERPS_EVENT_PROPERTY } from '../../../../../shared/constants/perps-events';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockOrders } from '../mocks';
@@ -11,10 +12,17 @@ import { CancelOrderModal } from './cancel-order-modal';
 
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
+const mockTrack = jest.fn();
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
+}));
+
+jest.mock('../../../../hooks/perps', () => ({
+  usePerpsEventTracking: () => ({ track: mockTrack }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
 jest.mock('../perps-toast', () => ({
@@ -38,6 +46,7 @@ const baseOrder: Order = mockOrders[0]; // ETH limit long, open
 describe('CancelOrderModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
   });
 
@@ -101,7 +110,8 @@ describe('CancelOrderModal', () => {
       expect(
         screen.getByText(messages.perpsLimitPrice.message),
       ).toBeInTheDocument();
-      expect(screen.getAllByText('$3,000.00').length).toBeGreaterThanOrEqual(1);
+      // formatPerpsFiatUniversal strips trailing zeros for whole-dollar amounts
+      expect(screen.getAllByText('$3,000').length).toBeGreaterThanOrEqual(1);
     });
 
     it('displays the size row with symbol', () => {
@@ -160,7 +170,25 @@ describe('CancelOrderModal', () => {
       expect(
         screen.getByText(messages.perpsOrderValue.message),
       ).toBeInTheDocument();
-      expect(screen.getAllByText('$3,000.00').length).toBeGreaterThanOrEqual(1);
+      // formatPerpsFiatMinimal strips .00 for whole-dollar notional
+      expect(screen.getAllByText('$3,000').length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('keeps meaningful decimals on limit price and notional', () => {
+      const order: Order = {
+        ...baseOrder,
+        price: '3000.10',
+        size: '2.0',
+      };
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={order} />,
+        mockStore,
+      );
+
+      // Universal keeps ≤1 decimal for $1k–$10k range
+      expect(screen.getAllByText('$3,000.1').length).toBeGreaterThanOrEqual(1);
+      // Notional 6000.20 → minimal with fiatStyleStripping keeps .20
+      expect(screen.getByText('$6,000.20')).toBeInTheDocument();
     });
 
     it('hides order value row when price is zero', () => {
@@ -414,6 +442,90 @@ describe('CancelOrderModal', () => {
 
       // Error should not be visible since it was never triggered in this open session
       expect(screen.queryByText('Some error')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('analytics', () => {
+    it('fires PerpsOrderCancelTransaction with success on successful cancel', async () => {
+      const user = userEvent.setup();
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(mockTrack).toHaveBeenCalledWith(
+          'Perp Order Cancel Transaction',
+          expect.objectContaining({
+            asset: baseOrder.symbol,
+            status: 'success',
+            [PERPS_EVENT_PROPERTY.ORDER_TYPE]: baseOrder.orderType,
+          }),
+        );
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
+      });
+    });
+
+    it('fires PerpsOrderCancelTransaction with failed status and PerpsError on failure', async () => {
+      const user = userEvent.setup();
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error('Network error'),
+      );
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(mockTrack).toHaveBeenCalledWith(
+          'Perp Order Cancel Transaction',
+          expect.objectContaining({
+            asset: baseOrder.symbol,
+            status: 'failed',
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'Network error',
+          }),
+        );
+        expect(mockTrack).toHaveBeenCalledWith(
+          'Perp Error',
+          expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.ERROR_TYPE]: 'backend',
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'Network error',
+          }),
+        );
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
+      });
+    });
+  });
+
+  describe('geo-blocking', () => {
+    it('shows geo-block modal instead of canceling when user is not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      const cancelButton = screen.getByTestId('perps-cancel-order-button');
+      expect(cancelButton).toBeEnabled();
+
+      fireEvent.click(cancelButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
   });
 

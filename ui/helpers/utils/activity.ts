@@ -23,7 +23,10 @@ export function filterTransactionByChain(
     return enabledChainIds.includes(chainId);
   }
 
-  if (type === TransactionType.perpsDeposit) {
+  if (
+    type === TransactionType.perpsDeposit ||
+    type === TransactionType.perpsWithdraw
+  ) {
     return enabledChainIds.includes(sourceChainId);
   }
 

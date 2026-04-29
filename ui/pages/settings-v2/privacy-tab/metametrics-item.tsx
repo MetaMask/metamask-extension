@@ -23,7 +23,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
 
 export const MetametricsToggleItem = () => {
@@ -65,7 +65,6 @@ export const MetametricsToggleItem = () => {
         dispatch(setDataCollectionForMarketing(false));
       }
 
-      await disableMetametrics();
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.TurnOffMetaMetrics,
@@ -86,6 +85,8 @@ export const MetametricsToggleItem = () => {
           location: 'Settings',
         },
       });
+
+      await disableMetametrics();
     }
   };
 

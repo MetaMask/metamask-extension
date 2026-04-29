@@ -5,6 +5,7 @@ import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
 } from '../assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../environment';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
@@ -21,6 +22,17 @@ import {
   getRatesControllerRates,
   getRatesControllerFiatCurrency,
 } from './assets-migration';
+
+// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
+// so these selector tests exercise the real feature-flag gating logic.
+jest.mock('../assets-unify-state/remote-feature-flag', () =>
+  jest.requireActual('../assets-unify-state/remote-feature-flag'),
+);
+
+jest.mock('../environment', () => ({
+  ...jest.requireActual('../environment'),
+  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(() => true),
+}));
 
 const mockAccountId = 'mock-account-id-1';
 const mockAccountId2 = 'mock-account-id-2';
@@ -334,7 +346,6 @@ describe('getTokensControllerAllTokens', () => {
         metamask: {
           allTokens: legacyAllTokens,
           allIgnoredTokens: {},
-          allDetectedTokens: {},
         },
       };
       const result = getTokensControllerAllTokens(state);
@@ -356,7 +367,6 @@ describe('getTokensControllerAllTokens', () => {
           },
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 18 },
             [erc20AssetId]: {
@@ -413,7 +423,6 @@ describe('getTokensControllerAllTokens', () => {
           ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {
             [erc20AssetId]: {
               type: 'erc20',
@@ -457,7 +466,6 @@ describe('getTokensControllerAllTokens', () => {
           ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {
             [erc20AssetId]: {
               type: 'erc20',
@@ -498,7 +506,6 @@ describe('getTokensControllerAllTokens', () => {
           ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {},
           assetsBalance: {
             [mockAccountId]: {
@@ -528,7 +535,6 @@ describe('getTokensControllerAllTokens', () => {
           ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {
             [nativeEthAssetId]: {
               type: 'native',
@@ -573,7 +579,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
         metamask: {
           allIgnoredTokens: legacyAllIgnoredTokens,
           allTokens: {},
-          allDetectedTokens: {},
         },
       };
       const result = getTokensControllerAllIgnoredTokens(state);
@@ -595,7 +600,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
           },
           allIgnoredTokens: {},
           allTokens: {},
-          allDetectedTokens: {},
           assetPreferences: {
             [erc20AssetId]: { hidden: true },
             [solanaTokenAssetId]: { hidden: true },
@@ -632,7 +636,7 @@ describe('getTokensControllerAllIgnoredTokens', () => {
           ...enabledFlags,
           allIgnoredTokens: {},
           allTokens: {},
-          allDetectedTokens: {},
+
           assetPreferences: {
             [erc20AssetId]: { hidden: false },
           },
@@ -658,7 +662,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
           ...enabledFlags,
           allIgnoredTokens: {},
           allTokens: {},
-          allDetectedTokens: {},
           assetPreferences: {
             [erc20AssetId]: { hidden: true },
           },
@@ -2244,5 +2247,54 @@ describe('getRatesControllerFiatCurrency', () => {
 
       expect(result).toBe('usd');
     });
+  });
+});
+
+describe('getIsAssetsUnifiedStateIncludedInBuild compile-time gate', () => {
+  afterEach(() => {
+    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
+  });
+
+  it('returns legacy accountsByChainId when the build excludes unified state even if the remote flag is enabled', () => {
+    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(false);
+    const legacyAccountsByChainId = {
+      '0x1': {
+        [mockAccountAddressChecksummed]: {
+          balance: '0xabc' as const,
+        },
+      },
+    };
+    const state = {
+      metamask: {
+        // `getIsAssetsUnifyStateEnabled` is memoized on `remoteFeatureFlags` only; vary
+        // the object so this test does not reuse a cached `true` from earlier examples.
+        remoteFeatureFlags: {
+          ...enabledFlags.remoteFeatureFlags,
+          compileTimeGateCacheBust: 'accountsByChainId',
+        },
+        accountsByChainId: legacyAccountsByChainId,
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', decimals: 18 },
+        },
+        assetsBalance: {
+          [mockAccountId]: {
+            [nativeEthAssetId]: { amount: '999' },
+          },
+        },
+        internalAccounts: {
+          accounts: {
+            [mockAccountId]: {
+              id: mockAccountId,
+              address: mockAccountAddressLowercase,
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    };
+
+    expect(getAccountTrackerControllerAccountsByChainId(state)).toBe(
+      legacyAccountsByChainId,
+    );
   });
 });

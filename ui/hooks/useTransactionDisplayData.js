@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
 import BigNumber from 'bignumber.js';
 import {
-  getAllDetectedTokens,
   getAllTokens,
   getKnownMethodData,
   getSelectedAddress,
@@ -105,7 +104,6 @@ export function useTransactionDisplayData(transactionGroup) {
   const knownTokens = useSelector(getAllTokens);
   const selectedAddress = useSelector(getSelectedAddress);
   const knownNfts = useSelector(getNfts);
-  const allDetectedTokens = useSelector(getAllDetectedTokens);
   const tokenListAllChains = useSelector(selectERC20TokensByChain);
   const fiatFormatter = useFiatFormatter();
 
@@ -173,11 +171,6 @@ export function useTransactionDisplayData(transactionGroup) {
   if (isTokenCategory) {
     token =
       knownTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
-        selectedAddress
-      ]?.find(({ address }) =>
-        isEqualCaseInsensitive(address, recipientAddress),
-      ) ||
-      allDetectedTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
         selectedAddress
       ]?.find(({ address }) =>
         isEqualCaseInsensitive(address, recipientAddress),
@@ -416,6 +409,8 @@ export function useTransactionDisplayData(transactionGroup) {
 
     if (type === TransactionType.perpsDeposit) {
       title = t('perpsDepositActivityTitle');
+    } else if (type === TransactionType.perpsWithdraw) {
+      title = t('perpsWithdrawFundsTitle');
     } else if (type === TransactionType.musdClaim) {
       title = t('musdClaimTitle');
     } else {

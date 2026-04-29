@@ -1,11 +1,7 @@
 import { strict as assert } from 'assert';
-import { Hex } from '@metamask/utils';
 import { Key } from 'selenium-webdriver';
-import { toAssetId } from '../../../../../shared/lib/asset-utils';
-import { ASSET_ROUTE } from '../../../../../shared/lib/deep-links/routes/route';
-import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { Driver } from '../../../webdriver/driver';
-import TokenOverviewPage from '../token-overview-page';
+import { getRegistryBooleanFlag } from '../../../feature-flags/feature-flag-registry';
 
 export type BridgeQuote = {
   amount: string;
@@ -19,57 +15,53 @@ export type BridgeQuote = {
 class BridgeQuotePage {
   protected driver: Driver;
 
-  public sourceAssetPickerButton = '[data-testid="bridge-source-button"]';
+  public assetInfoIcon = (assetId: string) => ({
+    tag: 'button' as const,
+    testId: `bridge-asset-info-icon-${assetId}`,
+  });
 
-  public destinationAssetPickerButton =
-    '[data-testid="bridge-destination-button"]';
-
-  private mutlichainAssetPicker =
-    '[data-testid="multichain-asset-picker__network"]';
+  public assetPickerModal = { testId: 'bridge-asset-picker-modal' };
 
   public assetPrickerSearchInput =
     '[data-testid="bridge-asset-picker-search-input"]';
 
-  private sourceAmount = '[data-testid="from-amount"]';
+  private backButton = '[aria-label="Back"]';
 
-  private destinationAmount = '[data-testid="to-amount"]';
+  private confirmButton =
+    '[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]';
 
-  private lineaNetwork = '[data-testid="Linea"]';
+  public destinationAssetPickerButton =
+    '[data-testid="bridge-destination-button"]';
 
-  public tokenButton = '[data-testid^="bridge-asset--"]';
+  private destinationAmount = (amount: string) =>
+    `[data-testid="to-amount"][value="${amount}"]`;
 
-  private submitButton = '[data-testid="bridge-cta-button"]';
+  private fetchingQuotesLabel = {
+    tag: 'p',
+    text: 'Fetching quotes...',
+  };
+
+  private gasIncludedIndicator = '[data-testid="network-fees-included"]';
+
+  private gasSponsoredIndicator = '[data-testid="network-fees-sponsored"]';
 
   private insufficientFundsButton = {
     text: 'Insufficient funds',
     css: '[data-testid="bridge-cta-button"]',
   };
 
-  private backButton = '[aria-label="Back"]';
-
-  private gasIncludedIndicator = '[data-testid="network-fees-included"]';
-
-  private gasSponsoredIndicator = '[data-testid="network-fees-sponsored"]';
-
   private maxButton = { text: 'Max' };
 
-  private networkSelector = '[data-testid="multichain-asset-picker__network"]';
+  private moreETHneededForGas = '[data-testid="bridge-insufficient-gas"]';
 
   private networkFees = '[data-testid="network-fees"]';
 
-  private applyButton = { text: 'Apply', tag: 'button' };
+  private networkNameSelector = (network: string) =>
+    `[data-testid="${network}"]`;
 
-  private confirmButton =
-    '[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]';
+  private networkSelector = '[data-testid="multichain-asset-picker__network"]';
 
-  private noOptionAvailable = '[data-testid="bridge-no-options-available"]';
-
-  private moreETHneededForGas =
-    '[data-testid="bridge-insufficient-gas-for-quote"]';
-
-  private switchTokensButton = '[data-testid="switch-tokens"]';
-
-  private slippageEditButton = '[data-testid="slippage-edit-button"]';
+  private noOptionAvailable = '[data-testid="bridge-no-quotes"]';
 
   private slippageCustomButton =
     '[data-testid="bridge__tx-settings-modal-custom-button"]';
@@ -77,8 +69,36 @@ class BridgeQuotePage {
   private slippageCustomInput =
     'input[data-testid="bridge__tx-settings-modal-custom-input"]';
 
-  private networkNameSelector = (network: string) =>
-    `[data-testid="${network}"]`;
+  private slippageEditButton = '[data-testid="slippage-edit-button"]';
+
+  private sourceAmount = '[data-testid="from-amount"]';
+
+  public sourceAssetPickerButton = '[data-testid="bridge-source-button"]';
+
+  private statusPageCloseButton =
+    '[data-testid="smart-transaction-status-page-footer-close-button"]';
+
+  private submitButton = '[data-testid="bridge-cta-button"]';
+
+  private switchTokensButton = '[data-testid="switch-tokens"]';
+
+  public tokenButton = '[data-testid^="bridge-asset--"]';
+
+  private warningModal = '[data-testid="bridge-alert-modal"]';
+
+  private warningModalProceedButton =
+    '[data-testid="bridge-alert-modal-proceed-button"]';
+
+  private warningModalCancelButton =
+    '[data-testid="bridge-alert-modal-cancel-button"]';
+
+  private closeButton = '[aria-label="Close"]';
+
+  private tokenWarningAlert =
+    '[data-testid="bridge-banner-alerts"] > [data-testid^="bridge-"]';
+
+  private priceImpactQuoteCardButton =
+    '[data-testid="price-impact-warning-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -113,7 +133,10 @@ class BridgeQuotePage {
         await this.driver.clickElement(`[data-testid="${quote.fromChain}"]`);
       }
       if (quote.tokenFrom) {
-        await this.driver.fill(this.assetPrickerSearchInput, quote.tokenFrom);
+        await this.driver.pasteIntoField(
+          this.assetPrickerSearchInput,
+          quote.tokenFrom,
+        );
         await this.driver.clickElement({
           text: quote.tokenFrom,
           css: this.tokenButton,
@@ -141,7 +164,10 @@ class BridgeQuotePage {
         });
       }
       if (quote.tokenTo) {
-        await this.driver.fill(this.assetPrickerSearchInput, quote.tokenTo);
+        await this.driver.pasteIntoField(
+          this.assetPrickerSearchInput,
+          quote.tokenTo,
+        );
         await this.driver.clickElementAndWaitToDisappear({
           text: quote.tokenTo,
           css: this.tokenButton,
@@ -151,55 +177,42 @@ class BridgeQuotePage {
 
     // QTY
     await this.driver.fill(this.sourceAmount, quote.amount);
-    await this.driver.assertElementNotPresent(
-      {
-        tag: 'p',
-        text: 'Fetching quotes...',
-      },
-      { waitAtLeastGuard: 500 },
-    );
+    await this.driver.assertElementNotPresent(this.fetchingQuotesLabel, {
+      waitAtLeastGuard: 500,
+    });
   };
 
-  searchForAsset = async (
+  searchForAssetAndSelect = async (
     token: string,
     assetPicker = this.sourceAssetPickerButton,
   ) => {
     console.log(`Opening asset picker`);
     await this.driver.clickElement(assetPicker);
-    await this.driver.fill(this.assetPrickerSearchInput, token);
+    await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
     console.log(`Filled search input with ${token}`);
-    const assetElement = await this.driver.findElement({
+    await this.driver.clickElementAndWaitToDisappear({
       css: this.tokenButton,
       text: token,
     });
-    return assetElement;
   };
 
-  goToAssetPage = async (
-    token: string,
-    chainId: Hex,
-    address: string,
+  async searchAndClickAssetInfo({
+    token,
+    assetId,
     assetPicker = this.sourceAssetPickerButton,
-  ) => {
-    const expectedAssetId = toAssetId(address, chainId)?.toLowerCase();
-    const expectedUrl = `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(toChecksumHexAddress(address))}`;
-
-    console.log(`Opening asset picker`);
+  }: {
+    token: string;
+    assetId: string;
+    assetPicker?: string;
+  }) {
+    console.log(`Opening asset info icon for asset ${token}`);
     await this.driver.clickElement(assetPicker);
-    await this.driver.fill(this.assetPrickerSearchInput, token);
-    console.log(`Filled search input with ${token}`);
-    const assetElement = await this.driver.findElement({
-      tag: 'button',
-      testId: `bridge-asset-info-icon-${expectedAssetId}`,
+    await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
+    await this.driver.waitForSelector({
+      testId: `bridge-asset-info-icon-${assetId}`,
     });
-    console.log(`Clicked link to the asset page`);
-    await assetElement.click();
-    await this.driver.waitForUrlContaining({
-      url: expectedUrl,
-    });
-    const assetPage = new TokenOverviewPage(this.driver);
-    await assetPage.checkPageIsLoaded();
-  };
+    await this.driver.clickElement(this.assetInfoIcon(assetId));
+  }
 
   checkAssetsAreSelected = async (sourceToken: string, destToken: string) => {
     await this.driver.waitForSelector({
@@ -215,20 +228,102 @@ class BridgeQuotePage {
   };
 
   checkAssetPickerModalIsReopened = async () => {
-    await this.driver.waitForSelector({
-      testId: 'bridge-asset-picker-modal',
-    });
+    await this.driver.waitForSelector(this.assetPickerModal);
     console.log('Asset picker modal is visible');
     await this.driver.clickElementAndWaitToDisappear('[aria-label="Close"]');
     console.log('Asset picker modal closed');
   };
 
   waitForQuote = async () => {
-    await this.driver.waitForSelector(this.submitButton, { timeout: 30000 });
+    await this.driver.waitForSelector(this.submitButton);
   };
 
   submitQuote = async () => {
     await this.driver.clickElement(this.submitButton);
+  };
+
+  checkPriceImpactModalIsDisplayed = async () => {
+    await this.driver.clickElement(this.priceImpactQuoteCardButton);
+    await this.driver.waitForSelector(this.warningModal);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.warningModalCancelButton,
+    );
+  };
+
+  dismissTokenAlert = async (expectedNumberOfAlerts?: number) => {
+    await this.closeModal();
+    if (expectedNumberOfAlerts) {
+      await this.driver.elementCountBecomesN(
+        this.tokenWarningAlert,
+        expectedNumberOfAlerts,
+      );
+    }
+  };
+
+  submitQuoteWithWarning = async (warningCount: number = 0) => {
+    if (warningCount) {
+      await this.driver.elementCountBecomesN(
+        this.tokenWarningAlert,
+        warningCount,
+      );
+    }
+    await this.submitQuote();
+    await this.driver.waitForSelector(this.warningModal);
+  };
+
+  approveModal = async () => {
+    await this.driver.clickElement(this.warningModalProceedButton);
+  };
+
+  approveModalIfPresent = async () => {
+    try {
+      // Wait for an *enabled* proceed button. Using :not([disabled]) means:
+      // - No modal present           → no match → 3 s timeout → catch (no-op)
+      // - Modal open, tx in-flight   → button has [disabled] attr → no match
+      //                              → 3 s timeout → catch (no-op)
+      // - Modal open, tx not yet submitted → button is enabled → match → click
+      await this.driver.waitForSelector(
+        `${this.warningModalProceedButton}:not([disabled])`,
+      );
+      await this.driver.clickElement(this.warningModalProceedButton);
+    } catch {
+      // No confirmation modal with an enabled proceed button — nothing to do
+    }
+  };
+
+  rejectModal = async () => {
+    await this.driver.clickElement(this.warningModalCancelButton);
+  };
+
+  closeModal = async () => {
+    await this.driver.clickElement(this.closeButton);
+  };
+
+  submitQuoteAndDismiss = async () => {
+    await this.submitQuote();
+
+    // If no price data is available a confirmation modal appears before submission.
+    // Dismiss it so the transaction can proceed to the status page.
+    await this.approveModalIfPresent();
+
+    await this.dismissStatusPageIfPresent();
+  };
+
+  dismissStatusPageIfPresent = async () => {
+    const skipStatusPage = getRegistryBooleanFlag(
+      'extensionSkipTransactionStatusPage',
+    );
+
+    if (skipStatusPage) {
+      return;
+    }
+
+    try {
+      await this.driver.waitForSelector(this.statusPageCloseButton);
+      await this.driver.clickElement(this.statusPageCloseButton);
+    } catch {
+      // Status page may have auto-closed or not appeared
+    }
   };
 
   confirmBridgeTransaction = async () => {
@@ -313,9 +408,7 @@ class BridgeQuotePage {
 
   async checkGasIncludedIsDisplayed(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.gasIncludedIndicator, {
-        timeout: 30000,
-      });
+      await this.driver.waitForSelector(this.gasIncludedIndicator);
     } catch (e) {
       console.log('Expected "Gas fees included" indicator is not present');
       throw e;
@@ -325,9 +418,7 @@ class BridgeQuotePage {
 
   async checkGasSponsoredIsDisplayed(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.gasSponsoredIndicator, {
-        timeout: 30000,
-      });
+      await this.driver.waitForSelector(this.gasSponsoredIndicator);
     } catch (e) {
       console.log('Expected "Gas fees sponsored" indicator is not present');
       throw e;
@@ -336,46 +427,59 @@ class BridgeQuotePage {
   }
 
   async clickMaxButton(): Promise<void> {
-    await this.driver.waitForSelector(this.maxButton, { timeout: 30000 });
+    await this.driver.waitForSelector(this.maxButton);
     await this.driver.clickElement(this.maxButton);
     console.log('Clicked Max button');
   }
 
-  checkDestAmount = async (amount: string) => {
-    const destAmount = await this.driver.findElement(this.destinationAmount);
-    assert.equal(await destAmount.getAttribute('value'), amount);
-  };
+  async checkDestAmount(amount: string) {
+    await this.driver.waitForSelector(this.destinationAmount(amount));
+  }
 
   async switchTokens(): Promise<void> {
     await this.driver.clickElement(this.switchTokensButton);
   }
 
+  /**
+   * Asserts the destination-token security banner is shown (malicious or suspicious).
+   * The banner title is localized with the token symbol (e.g. "MUSD is a malicious token."),
+   * so we scope by data-testid and match a stable substring of the title.
+   *
+   * @param titleSubstring - Text that must appear in the banner (title is token-specific).
+   * @param descriptionSubstring - When provided, text that must also appear in the same banner.
+   */
   async checkTokenRiskWarningIsDisplayed(
-    title: string,
-    description: string,
+    titleSubstring: string,
+    descriptionSubstring?: string,
   ): Promise<void> {
-    await this.driver.waitForSelector({ text: title }, { timeout: 30000 });
-    await this.driver.waitForSelector({ text: description });
+    await this.driver.waitForSelector(
+      {
+        testId: 'bridge-token-security',
+        text: titleSubstring,
+      },
+      { timeout: 30000 },
+    );
+    if (descriptionSubstring) {
+      await this.driver.waitForSelector({
+        testId: 'bridge-token-security',
+        text: descriptionSubstring,
+      });
+    }
   }
 
   async setCustomSlippage(value: string): Promise<void> {
     await this.driver.clickElement(this.slippageEditButton);
     await this.driver.clickElement(this.slippageCustomButton);
-    const input = await this.driver.waitForSelector(this.slippageCustomInput, {
-      timeout: 1000,
-    });
+    const input = await this.driver.waitForSelector(this.slippageCustomInput);
     await input.sendKeys(Key.BACK_SPACE);
     await this.driver.fill(this.slippageCustomInput, value);
-    await this.driver.executeScript(`
-      const input = document.querySelector('${this.slippageCustomInput}');
-      if (input) { input.blur(); }
-    `);
+    await input.sendKeys(Key.TAB);
   }
 
   async selectSrcToken(token: string): Promise<void> {
     await this.driver.waitForSelector(this.sourceAssetPickerButton);
     await this.driver.clickElement(this.sourceAssetPickerButton);
-    await this.driver.fill(this.assetPrickerSearchInput, token);
+    await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
     await this.driver.clickElementAndWaitToDisappear({
       text: token,
       css: this.tokenButton,
@@ -385,7 +489,7 @@ class BridgeQuotePage {
   async selectDestToken(token: string): Promise<void> {
     await this.driver.waitForSelector(this.destinationAssetPickerButton);
     await this.driver.clickElement(this.destinationAssetPickerButton);
-    await this.driver.fill(this.assetPrickerSearchInput, token);
+    await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
     await this.driver.clickElementAndWaitToDisappear({
       text: token,
       css: this.tokenButton,

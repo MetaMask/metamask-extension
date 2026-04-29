@@ -94,6 +94,7 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
     const currency = currencyProp ?? selectedCurrency;
     const fiatSymbol = getCurrencySymbol(currency);
     const amountLength = amountFiat.length;
+    const amountCharacterLength = amountFiat.replaceAll(/[.,]/gu, '').length;
 
     const showLoader = isLoading || (isMaxAmount && isQuotesLoading);
 
@@ -149,7 +150,7 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
               border: 'none',
               background: 'transparent',
               outline: 'none',
-              width: `${Math.max(1, amountLength)}ch`,
+              width: `${Math.max(1, amountCharacterLength)}ch`,
               cursor: disabled ? 'default' : 'text',
             } as React.CSSProperties
           }

@@ -10,7 +10,7 @@ import { BigNumber } from 'bignumber.js';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import { useConfirmContext } from '../../context/confirm';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
-import { updateEventFragment } from '../../../../store/actions';
+import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
   useTransactionPayPrimaryRequiredToken,
@@ -70,7 +70,10 @@ export function useTransactionPayMetrics() {
 
     if (
       payToken &&
-      hasTransactionType(transactionMeta, [TransactionType.perpsDeposit])
+      hasTransactionType(transactionMeta, [
+        TransactionType.perpsDeposit,
+        TransactionType.perpsWithdraw,
+      ])
     ) {
       props.mm_pay_use_case = 'custom_amount';
       props.simulation_sending_assets_total_value = sendingValue;
@@ -112,7 +115,7 @@ export function useTransactionPayMetrics() {
 
   useEffect(() => {
     if (transactionId && Object.keys(properties).length > 0) {
-      updateEventFragment(transactionId, { properties });
+      upsertTransactionUIMetricsFragment(transactionId, { properties });
     }
   }, [transactionId, properties]);
 }

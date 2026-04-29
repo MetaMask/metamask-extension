@@ -72,19 +72,23 @@ export type ReactCompilerLoaderConfig = {
   target: ReactCompilerLoaderOption['target'];
   verbose: boolean;
   debug: 'all' | 'critical' | 'none';
+  /**
+   * When true, uses the wrapper loader so the same source works in
+   * thread-loader workers and the emitted CJS build. Verbose mode also uses
+   * the wrapper for logging and buildMeta tracking.
+   */
+  threadLoaderEnabled: boolean;
 };
 
 /**
  * Get the React Compiler loader configuration.
  *
- * Uses the wrapper loader when verbose logging is requested (for buildMeta
- * tracking and console output). Falls back to the direct
- * `react-compiler-webpack` loader otherwise (e.g. LavaMoat policy generation
- * where the wrapper isn't resolvable).
- *
- * NOTE: The wrapper's buildMeta tracking requires `this._module`, which is
- * null in thread-loader worker contexts. Since verbose mode already disables
- * thread-loader, the wrapper is only useful when verbose is true.
+ * Uses the wrapper loader when thread-loader is active or when verbose logging
+ * is requested. Falls back to the direct `react-compiler-webpack` loader
+ * otherwise (e.g. LavaMoat policy generation where the wrapper isn't
+ * resolvable). While worker builds still cannot record buildMeta stats, using
+ * the wrapper there keeps the loader path consistent across the direct `tsx`
+ * and emitted `.webpack` CJS execution paths.
  *
  * @param config - Configuration options for the React Compiler loader.
  * @param config.target - The target version of the React Compiler.
@@ -98,14 +102,14 @@ export type ReactCompilerLoaderConfig = {
 export function getReactCompilerLoader(
   config: ReactCompilerLoaderConfig,
 ): RuleSetUseItem {
-  const { target, verbose, debug } = config;
+  const { target, verbose, debug, threadLoaderEnabled } = config;
 
   const reactCompilerOptions = {
     target,
     panicThreshold: debug === 'none' ? undefined : `${debug}_errors`,
   } as const satisfies ReactCompilerLoaderOption;
 
-  const useWrapper = verbose;
+  const useWrapper = threadLoaderEnabled || verbose;
 
   return useWrapper
     ? {

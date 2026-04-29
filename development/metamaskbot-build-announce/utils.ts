@@ -99,13 +99,16 @@ const ENTRY_KEY_SEPARATOR = '|';
 const COMBO_SEPARATOR = '-';
 
 /**
- * Builds a platform-buildType combo string.
+ * Builds a platform–bundler combo string.
  *
  * @param platform - Browser platform (e.g., 'chrome', 'firefox').
- * @param buildType - Build type (e.g., 'browserify', 'webpack').
- * @returns Combo string (e.g., 'chrome-browserify').
+ * @param [buildType] - Bundler id (e.g. 'webpack'). Defaults to webpack.
+ * @returns Combo string (e.g., 'chrome-webpack').
  */
-export function buildCombo(platform: string, buildType: string): string {
+export function buildCombo(
+  platform: string,
+  buildType: string = BENCHMARK_BUILD_TYPES.WEBPACK,
+): string {
   return `${platform}${COMBO_SEPARATOR}${buildType}`;
 }
 
@@ -115,13 +118,13 @@ export function buildCombo(platform: string, buildType: string): string {
  *
  * @param benchmarkName - Benchmark name (e.g., 'loadNewAccount').
  * @param platform - Browser platform (e.g., 'chrome').
- * @param buildType - Build type (e.g., 'browserify').
- * @returns Entry key (e.g., 'loadNewAccount|chrome-browserify').
+ * @param [buildType] - Bundler id. Defaults to webpack.
+ * @returns Entry key (e.g., 'loadNewAccount|chrome-webpack').
  */
 export function buildEntryKey(
   benchmarkName: string,
   platform: string,
-  buildType: string,
+  buildType: string = BENCHMARK_BUILD_TYPES.WEBPACK,
 ): string {
   return `${benchmarkName}${ENTRY_KEY_SEPARATOR}${buildCombo(platform, buildType)}`;
 }
@@ -130,9 +133,9 @@ export function buildEntryKey(
  * Builds a CI artifact filename.
  *
  * @param platform - Browser platform (e.g., 'chrome').
- * @param buildType - Build type (e.g., 'browserify').
+ * @param buildType - Bundler id (e.g. 'webpack').
  * @param preset - Preset name (e.g., 'interactionUserActions').
- * @returns Artifact filename (e.g., 'benchmark-chrome-browserify-interactionUserActions.json').
+ * @returns Artifact filename (e.g., 'benchmark-chrome-webpack-interactionUserActions.json').
  */
 export function buildArtifactFilename(
   platform: string,
@@ -147,7 +150,7 @@ export function buildArtifactFilename(
  *
  * @param hostUrl - Base URL for artifacts (e.g., 'https://ci.example.com').
  * @param platform - Browser platform (e.g., 'chrome').
- * @param buildType - Build type (e.g., 'browserify').
+ * @param buildType - Bundler id (e.g. 'webpack').
  * @param preset - Preset name (e.g., 'interactionUserActions').
  * @returns Full artifact URL.
  */
@@ -174,6 +177,33 @@ function mapPresetToBaselineKey(presetName: string): string {
 }
 
 /**
+ * For user journey presets on Firefox, historical stats store inner keys as
+ * `firefox-<buildType>-<fileBase>` (see benchmark-stats-commit.sh) so they merge
+ * with Chrome keys under the same preset.
+ * @param presetName
+ * @param benchmarkName
+ * @param platform
+ * @param buildType
+ */
+function mapUserJourneyBenchmarkNameForBaseline(
+  presetName: string,
+  benchmarkName: string,
+  platform?: string,
+  buildType?: string,
+): string {
+  if (
+    presetName.startsWith('userJourney') &&
+    platform === BENCHMARK_PLATFORMS.FIREFOX
+  ) {
+    return `${buildCombo(
+      BENCHMARK_PLATFORMS.FIREFOX,
+      buildType ?? BENCHMARK_BUILD_TYPES.WEBPACK,
+    )}-${benchmarkName}`;
+  }
+  return benchmarkName;
+}
+
+/**
  * Resolves historical baseline metrics for a benchmark entry.
  *
  * Automatically maps startup preset names to 'pageLoad' since that's how
@@ -181,7 +211,9 @@ function mapPresetToBaselineKey(presetName: string): string {
  *
  * @param baseline - Full historical reference map.
  * @param presetName - Preset name (e.g., 'startupStandardHome', 'interactionUserActions').
- * @param benchmarkName - Benchmark name (e.g., 'loadNewAccount', 'chrome-browserify-startupStandardHome').
+ * @param benchmarkName - Benchmark name (e.g., 'loadNewAccount', 'chrome-webpack-startupStandardHome').
+ * @param platform - Browser (e.g. `firefox`) for user journey baseline key disambiguation.
+ * @param buildType - Bundler id for user journey Firefox key prefix when applicable.
  * @returns Baseline metrics or undefined if not found.
  *
  * @example
@@ -191,24 +223,55 @@ function mapPresetToBaselineKey(presetName: string): string {
  *
  * @example
  * // Startup benchmark - preset name is automatically mapped to 'pageLoad'
- * resolveBaseline(baseline, 'startupStandardHome', 'chrome-browserify-startupStandardHome')
- * // → looks up: 'pageLoad/chrome-browserify-startupStandardHome'
+ * resolveBaseline(baseline, 'startupStandardHome', 'chrome-webpack-startupStandardHome')
+ * // → looks up: 'pageLoad/chrome-webpack-startupStandardHome'
  */
 export function resolveBaseline(
   baseline: HistoricalBaselineReference,
   presetName: string,
   benchmarkName: string,
+  platform?: string,
+  buildType?: string,
 ): HistoricalBaselineReference[string] | undefined {
   const baselinePresetKey = mapPresetToBaselineKey(presetName);
-  const key = `${baselinePresetKey}/${benchmarkName}`;
+  const mappedBenchmarkName = mapUserJourneyBenchmarkNameForBaseline(
+    presetName,
+    benchmarkName,
+    platform,
+    buildType,
+  );
+  const key = `${baselinePresetKey}/${mappedBenchmarkName}`;
   return baseline[key];
+}
+
+/**
+ * Parses a CI artifact filename into its component parts.
+ *
+ * @param artifactFileName - CI artifact filename without extension
+ * (e.g., 'benchmark-chrome-webpack-interactionUserActions').
+ * @returns Parsed components, or undefined if not a valid artifact filename.
+ */
+export function parseArtifactName(
+  artifactFileName: string,
+): { browser: string; buildType: string; preset: string } | undefined {
+  const platforms = Object.values(BENCHMARK_PLATFORMS).join('|');
+  const buildTypes = Object.values(BENCHMARK_BUILD_TYPES).join('|');
+  const pattern = new RegExp(
+    `^benchmark-(${platforms})-(${buildTypes})-(.+)$`,
+    'u',
+  );
+  const match = pattern.exec(artifactFileName);
+  if (!match) {
+    return undefined;
+  }
+  return { browser: match[1], buildType: match[2], preset: match[3] };
 }
 
 /**
  * Extracts the preset name from a CI artifact filename.
  *
  * Examples:
- * - `benchmark-chrome-browserify-interactionUserActions` → `interactionUserActions`
+ * - `benchmark-chrome-webpack-interactionUserActions` → `interactionUserActions`
  * - `benchmark-firefox-webpack-startupStandardHome` → `pageLoad` (startup artifacts map to historical `pageLoad` key)
  *
  * @param artifactFileName - CI artifact filename without extension.
@@ -217,25 +280,33 @@ export function resolveBaseline(
 export function extractPresetFromArtifactName(
   artifactFileName: string,
 ): string | undefined {
-  const platforms = Object.values(BENCHMARK_PLATFORMS).join('|');
-  const buildTypes = Object.values(BENCHMARK_BUILD_TYPES).join('|');
-  const pattern = new RegExp(
-    `^benchmark-(?:${platforms})-(?:${buildTypes})-(.+)$`,
-    'u',
-  );
-  const match = pattern.exec(artifactFileName);
-  if (!match) {
+  const parsed = parseArtifactName(artifactFileName);
+  if (!parsed) {
     return undefined;
   }
 
-  const presetName = match[1];
-
   // Special case: startup benchmarks are stored under 'pageLoad' preset
-  if (presetName.startsWith('startup')) {
+  if (parsed.preset.startsWith('startup')) {
     return 'pageLoad';
   }
 
-  return presetName;
+  return parsed.preset;
+}
+
+/**
+ * Parses the browser segment from a benchmark artifact basename (no `.json`).
+ * @param artifactFileName
+ */
+export function extractBrowserFromArtifactFilename(
+  artifactFileName: string,
+): string | undefined {
+  const platforms = Object.values(BENCHMARK_PLATFORMS).join('|');
+  const buildTypes = Object.values(BENCHMARK_BUILD_TYPES).join('|');
+  const pattern = new RegExp(
+    `^benchmark-(${platforms})-(?:${buildTypes})-.+$`,
+    'u',
+  );
+  return pattern.exec(artifactFileName)?.[1];
 }
 
 /**
@@ -244,7 +315,7 @@ export function extractPresetFromArtifactName(
  *
  * @param baseline - Full historical reference map.
  * @param benchmarkName - Benchmark name (e.g., 'loadNewAccount').
- * @param artifactFileName - CI artifact filename (e.g., 'benchmark-chrome-browserify-interactionUserActions').
+ * @param artifactFileName - CI artifact filename (e.g., 'benchmark-chrome-webpack-interactionUserActions').
  * @returns Baseline metrics or undefined if not found.
  */
 export function resolveBaselineFromArtifactName(
@@ -257,5 +328,6 @@ export function resolveBaselineFromArtifactName(
     return undefined;
   }
 
-  return resolveBaseline(baseline, presetName, benchmarkName);
+  const platform = extractBrowserFromArtifactFilename(artifactFileName);
+  return resolveBaseline(baseline, presetName, benchmarkName, platform);
 }

@@ -98,7 +98,7 @@ export const useSendActions = () => {
         }
 
         // Success
-        navigate(DEFAULT_ROUTE);
+        navigate(`${DEFAULT_ROUTE}?tab=activity`);
       } catch (error) {
         // Check for user rejection using error code (4001) - this is language-independent
         const errorCode = (error as { code?: number })?.code;
