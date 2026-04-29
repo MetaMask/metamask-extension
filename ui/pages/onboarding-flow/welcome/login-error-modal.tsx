@@ -129,7 +129,7 @@ export default function LoginErrorModal({
         location: 'Telegram outdated modal',
       },
     });
-    global.platform.openTab({ url: TELEGRAM_DESKTOP_UPDATE_URL });
+    globalThis.platform.openTab({ url: TELEGRAM_DESKTOP_UPDATE_URL });
     onDone();
   };
 
