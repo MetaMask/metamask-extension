@@ -807,7 +807,7 @@
         "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
-    "@metamask/eth-hd-keyring": {
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring": {
       "globals": {
         "Buffer.concat": true,
         "Buffer.from": true,
@@ -816,19 +816,20 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@metamask/eth-hd-keyring>ethereum-cryptography' reexports from '@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography' reexports from '@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-sig-util": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
-        "@metamask/keyring-api": true,
+        "@metamask/keyring-controller>@metamask/keyring-api": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/keyring-sdk": true,
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
-        "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32": true,
         "buffer": true,
-        "@metamask/eth-hd-keyring>ethereum-cryptography": true
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-infura": {
@@ -941,6 +942,8 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/keyring-api": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/keyring-sdk": true,
         "@metamask/utils": true,
         "buffer": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography": true,
@@ -1110,6 +1113,20 @@
         "bitcoin-address-validation": true
       }
     },
+    "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/keyring-internal-snap-client>@metamask/keyring-api": {
       "packages": {
         "@metamask/keyring-utils": true,
@@ -1118,12 +1135,11 @@
         "bitcoin-address-validation": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk>@metamask/keyring-api": {
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/keyring-sdk>@metamask/keyring-api": {
       "packages": {
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
+        "@metamask/utils": true
       }
     },
     "@metamask/keyring-snap-client>@metamask/keyring-api": {
@@ -1141,7 +1157,7 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/base-controller": true,
-        "@metamask/eth-hd-keyring": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/utils": true,
@@ -1166,6 +1182,18 @@
         "@metamask/keyring-utils": true
       }
     },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/keyring-sdk": {
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/keyring-sdk>@metamask/keyring-api": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "mockttp>async-mutex": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/keyring-sdk>ethereum-cryptography": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/keyring-sdk>uuid": true
+      }
+    },
     "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk": {
       "globals": {
         "TextEncoder": true
@@ -1173,7 +1201,7 @@
       "packages": {
         "@ethereumjs/tx": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk>@metamask/keyring-api": true,
+        "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-api": true,
         "@metamask/scure-bip39": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1546,12 +1574,12 @@
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/curves": {
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/curves": {
       "globals": {
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/eth-sig-util>ethereum-cryptography>@noble/curves": {
@@ -1592,7 +1620,7 @@
         "crypto": true
       }
     },
-    "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": {
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -1605,6 +1633,11 @@
       }
     },
     "@metamask/keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true
       }
@@ -1760,17 +1793,17 @@
         "TextEncoder": true
       }
     },
-    "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@scure/base": {
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
       }
     },
-    "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32": {
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32": {
       "packages": {
-        "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/curves": true,
-        "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true,
-        "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@scure/base": true
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/curves": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@scure/base": true
       }
     },
     "@segment/analytics-node>@segment/analytics-core": {
@@ -2949,14 +2982,14 @@
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/eth-hd-keyring>ethereum-cryptography": {
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography": {
       "globals": {
         "TextDecoder": true,
         "crypto": true,
         "module": true
       },
       "packages": {
-        "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/eth-sig-util>ethereum-cryptography": {
@@ -2977,6 +3010,16 @@
       },
       "packages": {
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/keyring-sdk>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true,
+        "module": true
+      },
+      "packages": {
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk>ethereum-cryptography": {
@@ -4896,7 +4939,7 @@
         "crypto": true
       }
     },
-    "@metamask/keyring-api>uuid": {
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/keyring-sdk>uuid": {
       "globals": {
         "crypto": true
       }
