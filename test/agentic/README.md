@@ -340,7 +340,7 @@ Compound: `{ all: [...] }`, `{ any: [...] }`, `{ none: [...] }`.
 ```bash
 # Lifecycle
 bash test/agentic/sandbox.sh up                     # preflight + launch
-bash test/agentic/sandbox.sh up --force             # kill running + relaunch
+bash test/agentic/sandbox.sh up --force             # relaunch tracked sandbox
 bash test/agentic/sandbox.sh status                 # CDP + extension probe
 bash test/agentic/sandbox.sh reload                 # soft SW restart
 bash test/agentic/sandbox.sh down                   # stop + clean PIDs
@@ -348,7 +348,7 @@ bash test/agentic/sandbox.sh clean --yes            # down + wipe profile
 
 # Run a recipe (live)
 bash test/agentic/validate-recipe.sh \
-  test/agentic/domains/browser-features/recipes/page-reload-smoke.json \
+  test/agentic/domains/perps/recipes/perps-reload-smoke.json \
   --cdp-port "$CDP_PORT"
 
 # --dry-run prints the workflow graph + Mermaid, no browser actions

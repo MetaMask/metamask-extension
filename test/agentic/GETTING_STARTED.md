@@ -5,7 +5,7 @@ Run your first recipe end-to-end on a clean checkout. Target: ~10 minutes the fi
 ## Prerequisites
 
 - macOS or Linux, Node + Yarn (see `.tool-versions`)
-- A test seed phrase (12 words). Smoke recipes (page reload, dapp interaction) need no funds. Trade recipes need a Hyperliquid testnet wallet — get one from `https://app.hyperliquid-testnet.xyz`
+- A test seed phrase (12 words). The first smoke recipe needs an unlocked fixture wallet but no funds. Trade recipes need a Hyperliquid testnet wallet — get one from `https://app.hyperliquid-testnet.xyz`
 - Playwright's bundled Chromium (`yarn install` pulls it via the Playwright dependency)
 
 ## Setup
@@ -38,20 +38,24 @@ When `sandbox.sh up` finishes you'll see `[ready] agentic (CDP:9222)`. A Chromiu
 ## Run a recipe
 
 ```bash
-# Smallest one — page reload smoke, ~5s
+# Health check: CDP, extension, wallet, and visible screen
+bash test/agentic/sandbox.sh status
+
+# Smallest visible product proof — MetaMask Perps tab reload smoke, ~5s
 bash test/agentic/validate-recipe.sh \
-  test/agentic/domains/browser-features/recipes/page-reload-smoke.json
+  test/agentic/domains/perps/recipes/perps-reload-smoke.json
 ```
 
-Terminal prints PASS, artifacts land under `test/agentic/domains/artifacts/`.
+Terminal prints `MetaMask Perps reload smoke` and `4/4 passed`. Artifacts land under `test/agentic/domains/artifacts/`.
 
 ## What to try next
 
-| Recipe                                                    | What it shows                                      |
-| --------------------------------------------------------- | -------------------------------------------------- |
-| `domains/browser-features/recipes/page-reload-smoke.json` | navigate + reload + state assert, no wallet needed |
-| `domains/extension-core/flows/unlock-wallet.json`         | wallet unlock flow as a standalone scenario        |
-| `domains/perps/recipes/full-trade-lifecycle.json`         | open → close position; needs HL testnet wallet     |
+| Recipe                                                    | What it shows                                    |
+| --------------------------------------------------------- | ------------------------------------------------ |
+| `domains/perps/recipes/perps-reload-smoke.json`           | navigate to Perps tab + reload + UI state assert |
+| `domains/browser-features/recipes/page-reload-smoke.json` | browser page reload capability reference         |
+| `domains/extension-core/flows/unlock-wallet.json`         | wallet unlock flow as a standalone scenario      |
+| `domains/perps/recipes/full-trade-lifecycle.json`         | open → close position; needs HL testnet wallet   |
 
 ## Troubleshooting
 

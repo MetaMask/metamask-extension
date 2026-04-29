@@ -1,0 +1,74 @@
+{
+  "description": "Canonical proof recipe for MetaMask Perps reload via CDP. Validates reload on the Perps tab and confirms the product surface returns ready after reload.",
+  "title": "MetaMask Perps reload smoke",
+  "validate": {
+    "workflow": {
+      "entry": "gate-nav-perps",
+      "nodes": {
+        "gate-nav-perps": {
+          "action": "navigate",
+          "target": "PerpsHome",
+          "next": "ac1-capture-before"
+        },
+        "ac1-capture-before": {
+          "action": "eval_sync",
+          "target": "active",
+          "expression": "(function(){return JSON.stringify({href:location.href,title:document.title||'',ready:document.readyState,hasAccountMenu:!!document.querySelector('[data-testid=\"account-menu-icon\"]'),hasPerpsTab:!!document.querySelector('[data-testid=\"account-overview__perps-tab\"]'),hasPerpsContent:!!document.querySelector('[data-testid=\"perps-positions-tab\"]')||!!document.body.textContent.match(/Perps|Positions|Markets/)})})()",
+          "assert": {
+            "all": [
+              {
+                "operator": "matches",
+                "field": "href",
+                "pattern": "^chrome-extension://.*/home\\.html#/"
+              },
+              { "operator": "eq", "field": "hasAccountMenu", "value": true },
+              { "operator": "eq", "field": "hasPerpsTab", "value": true },
+              { "operator": "eq", "field": "hasPerpsContent", "value": true }
+            ]
+          },
+          "save_as": "before_reload",
+          "next": "ac1-page-reload"
+        },
+        "ac1-page-reload": {
+          "action": "page",
+          "page_action": "reload",
+          "target": "active",
+          "assert": {
+            "all": [
+              { "operator": "eq", "field": "control", "value": "page" },
+              { "operator": "eq", "field": "pageAction", "value": "reload" },
+              { "operator": "length_gt", "field": "applied", "value": 0 }
+            ]
+          },
+          "next": "ac1-check-after"
+        },
+        "ac1-check-after": {
+          "action": "wait_for",
+          "target": "active",
+          "expression": "(function(){return JSON.stringify({href:location.href,title:document.title||'',ready:document.readyState,hasAccountMenu:!!document.querySelector('[data-testid=\"account-menu-icon\"]'),hasPerpsTab:!!document.querySelector('[data-testid=\"account-overview__perps-tab\"]'),hasPerpsContent:!!document.querySelector('[data-testid=\"perps-positions-tab\"]')||!!document.body.textContent.match(/Perps|Positions|Markets/)})})()",
+          "assert": {
+            "all": [
+              {
+                "operator": "matches",
+                "field": "href",
+                "pattern": "^chrome-extension://.*/home\\.html#/"
+              },
+              { "operator": "eq", "field": "ready", "value": "complete" },
+              { "operator": "eq", "field": "hasAccountMenu", "value": true },
+              { "operator": "eq", "field": "hasPerpsTab", "value": true },
+              { "operator": "eq", "field": "hasPerpsContent", "value": true }
+            ]
+          },
+          "timeout_ms": 10000,
+          "poll_ms": 500,
+          "next": "done"
+        },
+        "done": {
+          "action": "end",
+          "status": "pass",
+          "message": "MetaMask Perps reload proven"
+        }
+      }
+    }
+  }
+}

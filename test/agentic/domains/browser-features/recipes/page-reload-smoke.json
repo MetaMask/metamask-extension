@@ -1,29 +1,27 @@
 {
-  "description": "Canonical proof recipe for MetaMask extension reload via CDP. Validates reload on the Perps tab and confirms the product surface returns ready after reload.",
-  "title": "MetaMask Perps reload smoke",
+  "description": "Canonical proof recipe for active-page reload via CDP. Validates reload on a dapp page and confirms the page returns on the same route after reload.",
+  "title": "Page reload smoke",
   "validate": {
     "workflow": {
-      "entry": "gate-nav-perps",
+      "entry": "gate-nav-dapp",
       "nodes": {
-        "gate-nav-perps": {
+        "gate-nav-dapp": {
           "action": "navigate",
-          "target": "PerpsHome",
+          "target": "https://example.com",
           "next": "ac1-capture-before"
         },
         "ac1-capture-before": {
           "action": "eval_sync",
           "target": "active",
-          "expression": "(function(){return JSON.stringify({href:location.href,title:document.title||'',ready:document.readyState,hasAccountMenu:!!document.querySelector('[data-testid=\"account-menu-icon\"]'),hasPerpsTab:!!document.querySelector('[data-testid=\"account-overview__perps-tab\"]'),hasPerpsContent:!!document.querySelector('[data-testid=\"perps-positions-tab\"]')||!!document.body.textContent.match(/Perps|Positions|Markets/)})})()",
+          "expression": "(function(){return JSON.stringify({href:location.href,title:document.title||'',ready:document.readyState})})()",
           "assert": {
             "all": [
               {
                 "operator": "matches",
                 "field": "href",
-                "pattern": "^chrome-extension://.*/home\\.html#/"
+                "pattern": "^https://example\\.com"
               },
-              { "operator": "eq", "field": "hasAccountMenu", "value": true },
-              { "operator": "eq", "field": "hasPerpsTab", "value": true },
-              { "operator": "eq", "field": "hasPerpsContent", "value": true }
+              { "operator": "not_null", "field": "title" }
             ]
           },
           "save_as": "before_reload",
@@ -45,18 +43,15 @@
         "ac1-check-after": {
           "action": "wait_for",
           "target": "active",
-          "expression": "(function(){return JSON.stringify({href:location.href,title:document.title||'',ready:document.readyState,hasAccountMenu:!!document.querySelector('[data-testid=\"account-menu-icon\"]'),hasPerpsTab:!!document.querySelector('[data-testid=\"account-overview__perps-tab\"]'),hasPerpsContent:!!document.querySelector('[data-testid=\"perps-positions-tab\"]')||!!document.body.textContent.match(/Perps|Positions|Markets/)})})()",
+          "expression": "(function(){return JSON.stringify({href:location.href,title:document.title||'',ready:document.readyState})})()",
           "assert": {
             "all": [
               {
                 "operator": "matches",
                 "field": "href",
-                "pattern": "^chrome-extension://.*/home\\.html#/"
+                "pattern": "^https://example\\.com"
               },
-              { "operator": "eq", "field": "ready", "value": "complete" },
-              { "operator": "eq", "field": "hasAccountMenu", "value": true },
-              { "operator": "eq", "field": "hasPerpsTab", "value": true },
-              { "operator": "eq", "field": "hasPerpsContent", "value": true }
+              { "operator": "eq", "field": "ready", "value": "complete" }
             ]
           },
           "timeout_ms": 10000,
@@ -66,7 +61,7 @@
         "done": {
           "action": "end",
           "status": "pass",
-          "message": "MetaMask Perps reload proven"
+          "message": "Page reload proven"
         }
       }
     }
