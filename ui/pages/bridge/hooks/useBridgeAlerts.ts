@@ -239,7 +239,7 @@ export const useBridgeAlerts = () => {
         ),
         isConfirmationAlert: false,
         bannerAlertProps: {
-          severity: BannerAlertSeverity.Danger,
+          severity: BannerAlertSeverity.Warning,
           actionButtonLabel: t('bridgeUseMaxAmountAllowedWithReserve', [ticker]),
           actionButtonOnClick: () => dispatch(
             setFromTokenInputValue(
@@ -306,6 +306,8 @@ export const useBridgeAlerts = () => {
     isPriceImpactWarning,
     isStockMarketClosed,
     isSwap,
+    insufficientNativeReserveError,
+    dispatch,
     openBuyCryptoInPdapp,
     ticker,
     toToken,
