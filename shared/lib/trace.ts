@@ -340,23 +340,6 @@ export function getSerializedTraceContext():
 }
 
 /**
- * Check if value has the expected trace context shape (traceId + spanId).
- * Only strip when we're confident it's our injected context, not a legitimate param.
- *
- * @param value - The _traceContext value to check.
- * @returns Whether the value is a valid serialized trace context.
- */
-function isOurTraceContext(value: unknown): value is SerializedTraceContext {
-  return (
-    isObject(value) &&
-    hasProperty(value, '_traceId') &&
-    hasProperty(value, '_spanId') &&
-    typeof value._traceId === 'string' &&
-    typeof value._spanId === 'string'
-  );
-}
-
-/**
  * Extract trace context appended by submitRequestToBackground from RPC params.
  * Returns the clean params (without trace context) and the trace context if present.
  * Only strips when the last param has `_traceContext` with our expected shape
@@ -379,7 +362,7 @@ export function extractTraceContext(
   if (
     isObject(lastParam) &&
     hasProperty(lastParam, '_traceContext') &&
-    isOurTraceContext(lastParam._traceContext)
+    hasDistributedTraceIds(lastParam._traceContext)
   ) {
     return {
       cleanParams: params.slice(0, -1),
