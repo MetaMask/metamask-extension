@@ -1,11 +1,11 @@
 import type { SnapId } from '@metamask/snaps-sdk';
-import { useMessenger } from '../../../../hooks/useMessenger';
-import type { RouteMessengerInstance } from '../messenger';
 import { KeyringType } from '@metamask/keyring-api';
 import { useSelector } from 'react-redux';
-import { getInternalAccounts } from '../../../../selectors';
 import { useEffect, useState } from 'react';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { getInternalAccounts } from '../../../../selectors';
+import type { RouteMessengerInstance } from '../messenger';
+import { useMessenger } from '../../../../hooks/useMessenger';
 
 /**
  * Hook to get the accounts associated with a keyring Snap.
