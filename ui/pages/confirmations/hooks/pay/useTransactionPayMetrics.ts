@@ -64,16 +64,22 @@ export function useTransactionPayMetrics() {
       props.mm_pay_token_selected = payToken.symbol;
       props.mm_pay_chain_selected = payToken.chainId;
       props.mm_pay_transaction_step_total = (quotes?.length ?? 0) + 1;
-
       props.mm_pay_transaction_step = props.mm_pay_transaction_step_total;
-
       props.mm_pay_token_presented = automaticPayToken.current?.symbol ?? null;
-
       props.mm_pay_chain_presented = automaticPayToken.current?.chainId ?? null;
-
       props.mm_pay_payment_token_list_size = availableTokens.length;
       props.mm_pay_quote_loaded = hasQuotes || hasLoadedQuoteRef.current;
-      props.mm_pay_chain_highest_balance_caip = null;
+
+      if (
+        hasTransactionType(transactionMeta, [
+          TransactionType.perpsDeposit,
+          TransactionType.perpsWithdraw,
+          TransactionType.musdConversion,
+          TransactionType.musdClaim,
+        ])
+      ) {
+        props.simulation_sending_assets_total_value = sendingValue;
+      }
     }
 
     if (nonGasQuote) {
@@ -96,18 +102,6 @@ export function useTransactionPayMetrics() {
         .toString(10);
 
       props.mm_pay_provider_fee_usd = totals.fees.provider.usd;
-    }
-
-    if (
-      payToken &&
-      hasTransactionType(transactionMeta, [
-        TransactionType.perpsDeposit,
-        TransactionType.perpsWithdraw,
-        TransactionType.musdConversion,
-        TransactionType.musdClaim,
-      ])
-    ) {
-      props.simulation_sending_assets_total_value = sendingValue;
     }
 
     return props;

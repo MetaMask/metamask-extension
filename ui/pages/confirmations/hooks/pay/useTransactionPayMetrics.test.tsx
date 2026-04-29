@@ -272,26 +272,6 @@ describe('useTransactionPayMetrics', () => {
     expect(properties).not.toHaveProperty('mm_pay_quote_requested');
   });
 
-  it('sets mm_pay_chain_highest_balance_caip to null by default', () => {
-    useTransactionPayTokenMock.mockReturnValue({
-      payToken: PAY_TOKEN_MOCK,
-      setPayToken: jest.fn(),
-    } as ReturnType<typeof useTransactionPayToken>);
-
-    renderHook(() => useTransactionPayMetrics(), {
-      wrapper: createWrapper(),
-    });
-
-    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
-      TRANSACTION_ID_MOCK,
-      {
-        properties: expect.objectContaining({
-          mm_pay_chain_highest_balance_caip: null,
-        }),
-      },
-    );
-  });
-
   it('sets mm_pay_token_selected from payToken symbol', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: PAY_TOKEN_MOCK,
