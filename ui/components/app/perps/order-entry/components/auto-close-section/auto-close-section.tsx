@@ -374,10 +374,10 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     () =>
       Boolean(
         stopLossPrice.trim() &&
-          !isStopLossSafeFromLiquidation(stopLossPrice, {
-            liquidationPrice,
-            direction,
-          }),
+        !isStopLossSafeFromLiquidation(stopLossPrice, {
+          liquidationPrice,
+          direction,
+        }),
       ),
     [stopLossPrice, liquidationPrice, direction],
   );

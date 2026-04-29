@@ -299,10 +299,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     () =>
       Boolean(
         editingSlPrice.trim() &&
-          !isStopLossSafeFromLiquidation(editingSlPrice, {
-            liquidationPrice,
-            direction: positionDirection,
-          }),
+        !isStopLossSafeFromLiquidation(editingSlPrice, {
+          liquidationPrice,
+          direction: positionDirection,
+        }),
       ),
     [editingSlPrice, liquidationPrice, positionDirection],
   );
