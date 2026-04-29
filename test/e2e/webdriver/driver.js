@@ -1079,11 +1079,9 @@ class Driver {
   async pasteIntoField(rawLocator, contentToPaste) {
     // Click to focus the field
     await this.clickElement(rawLocator);
-    await this.executeScript(
-      `navigator.clipboard.writeText("${contentToPaste.replace(
-        /"/gu,
-        '\\"',
-      )}")`,
+    await this.driver.executeScript(
+      'navigator.clipboard.writeText(arguments[0])',
+      contentToPaste,
     );
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
