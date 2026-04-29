@@ -366,8 +366,6 @@ function isOurTraceContext(value: unknown): value is SerializedTraceContext {
  * @returns Clean params (without the trace wrapper) and the extracted context
  * if present, or `undefined` if no valid trace context was found.
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function extractTraceContext(
   params: unknown,
 ):
