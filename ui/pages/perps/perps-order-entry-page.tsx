@@ -855,6 +855,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     const isPartialClose =
       orderMode === 'close' && closePercent < FULL_CLOSE_PERCENT;
 
+    const shouldShowOrderSubmissionToasts =
+      shouldShowPerpsOrderSubmissionToasts(hasPendingPerpsDeposit);
     let inProgressToastKey: PerpsToastKey | undefined;
     let inProgressToastDescription: string | undefined;
     if (orderMode === 'close') {
@@ -865,7 +867,10 @@ const PerpsOrderEntryPage: React.FC = () => {
         ? closePartialToastDescription
         : tradeActionToastDescription;
     } else {
-      inProgressToastKey = ORDER_MODE_TOAST_KEYS[orderMode].inProgress;
+      inProgressToastKey =
+        orderMode === 'new' && !shouldShowOrderSubmissionToasts
+          ? undefined
+          : ORDER_MODE_TOAST_KEYS[orderMode].inProgress;
       inProgressToastDescription =
         orderMode === 'new' ? tradeActionToastDescription : undefined;
     }
@@ -1084,8 +1089,6 @@ const PerpsOrderEntryPage: React.FC = () => {
         orderMode,
         position?.size,
       );
-      const shouldShowOrderSubmissionToasts =
-        shouldShowPerpsOrderSubmissionToasts(hasPendingPerpsDeposit);
       // Do not re-emit SUBMIT_IN_PROGRESS via route state — it was already
       // emitted above by replacePerpsToastByKey. Re-emitting from the
       // market-detail useEffect races with the ORDER_SUBMITTED replace below
