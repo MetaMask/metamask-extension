@@ -8166,6 +8166,18 @@ export default class MetamaskController extends EventEmitter {
       createMultichainMethodMiddleware(this.setupCommonMiddlewareHooks(origin)),
     );
 
+    engine.push(
+      createPPOMMiddleware(
+        this.ppomController,
+        this.preferencesController,
+        this.networkController,
+        this.appStateController,
+        this.accountsController,
+        this.updateSecurityAlertResponse.bind(this),
+        this.getSecurityAlertsConfig.bind(this),
+      ),
+    );
+
     engine.push(this.metamaskMiddleware);
 
     engine.push(this.eip5792Middleware);
