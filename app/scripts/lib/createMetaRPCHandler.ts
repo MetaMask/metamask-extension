@@ -1,4 +1,5 @@
 import { rpcErrors, serializeError } from '@metamask/rpc-errors';
+import type { JsonRpcRequest } from '@metamask/utils';
 import {
   continueTraceContext,
   extractTraceContext,
@@ -7,8 +8,21 @@ import {
 import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
 import { isStreamWritable } from './stream-utils';
 
-const createMetaRPCHandler = (api, outStream) => {
-  return async (data) => {
+type ApiHandler = ((...args: unknown[]) => unknown) & {
+  _controllerName?: string;
+};
+
+type MetaRpcApi = Record<string, ApiHandler>;
+
+type RpcStream = {
+  writable?: boolean;
+  destroyed?: boolean;
+  _writableState?: { ended: boolean };
+  write: (data: unknown) => void;
+};
+
+const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
+  return async (data: JsonRpcRequest) => {
     if (!isStreamWritable(outStream)) {
       return;
     }
@@ -26,15 +40,15 @@ const createMetaRPCHandler = (api, outStream) => {
     const { cleanParams, traceContext } = extractTraceContext(data.params);
     const handler = api[data.method];
     const controller = handler._controllerName;
-    const spanName = controller
+    const spanName: `Background RPC: ${string}` = controller
       ? `Background RPC: ${controller}.${data.method}`
       : `Background RPC: ${data.method}`;
 
-    let result;
-    let error;
+    let result: unknown;
+    let error: unknown;
     try {
       if (!traceContext) {
-        result = await handler.call(api, ...cleanParams);
+        result = await handler.call(api, ...(cleanParams as unknown[]));
       } else if (shouldSampleWrappers(traceContext._traceId)) {
         // Wrapper sub-sample passes: emit the `rpc.handler` span and
         // propagate trace context for nested spans.

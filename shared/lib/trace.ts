@@ -376,10 +376,11 @@ function isOurTraceContext(value: unknown): value is SerializedTraceContext {
  */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export function extractTraceContext(params: unknown): {
-  cleanParams: unknown;
-  traceContext: SerializedTraceContext | undefined;
-} {
+export function extractTraceContext(
+  params: unknown,
+):
+  | { cleanParams: unknown[]; traceContext: SerializedTraceContext }
+  | { cleanParams: unknown; traceContext: undefined } {
   if (!Array.isArray(params) || params.length === 0) {
     return { cleanParams: params, traceContext: undefined };
   }
