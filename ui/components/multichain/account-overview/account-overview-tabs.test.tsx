@@ -12,6 +12,13 @@ import {
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { AccountOverviewTabs } from './account-overview-tabs';
 
+const mockGetIsPerpsExperienceAvailable = jest.fn().mockReturnValue(false);
+jest.mock('../../../selectors/perps', () => ({
+  ...jest.requireActual('../../../selectors/perps'),
+  getIsPerpsExperienceAvailable: (...args: unknown[]) =>
+    mockGetIsPerpsExperienceAvailable(...args),
+}));
+
 jest.mock('../../../store/actions', () => ({
   setDefaultHomeActiveTabName: jest.fn(),
 }));
@@ -40,6 +47,10 @@ jest.mock('../../app/assets/defi-list/defi-tab', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => null,
+}));
+
+jest.mock('../../app/perps/perps-tab', () => ({
+  PerpsTab: () => <div data-testid="perps-tab-mock">PerpsTab</div>,
 }));
 
 describe('AccountOverviewTabs - event metrics', () => {
