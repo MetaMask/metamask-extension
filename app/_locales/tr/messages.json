@@ -6950,9 +6950,6 @@
   "rewardsLinkAccountError": {
     "message": "Hesap eklenemedi"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "Aktivitelerinizden puan kazanın. \nSeviyelerde ilerleyerek ödüllerin kilidini açın."
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Ülkenizin ödüller programına katılıma izin verip vermediğini belirleyemiyoruz. Lütfen bağlantınızı kontrol edin ve tekrar deneyin."
   },
@@ -6965,84 +6962,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Tekrar Dene"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "250 puan alın"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "Uygunluk kontrol ediliyor..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "Bölge kontrol ediliyor.."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "Şimdi değil"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "Ödüller burada"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "Ödüller henüz bölgenizde desteklenmiyor. Erişimi genişletmek için çalışıyoruz, bu yüzden daha sonra tekrar kontrol edin."
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Bölge desteklenmiyor"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "MetaMask'te yaptığınız her takas ve sürekli vadeli işlem sizi ödüllere yaklaştırır. Hesaplarınızı ekleyin ve puanlarınızı takip edin."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "Her işlemde puan kazanın"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "Belirli puanlara ulaştığınızda, sürekli vadeli işlem ücretlerinde %50 indirim, özel token’lar ve ücretsiz MetaMask Metal Kart gibi avantajlar kazanabilirsiniz."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "Daha büyük avantajlar için seviye yükseltin"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "Uzantıda puan kazanabilirsiniz ancak sürekli vadeli işlem sözleşmeleri ile işlem yapmak, ilerlemenizi takip etmek ve ödülleri kullanmak için mobil uygulamaya ihtiyacınız olacak."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "Mobilde ödüllerin kilidini aç"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "'Puanları al' düğmesine tıklayarak $1 bölümümüzü kabul edersiniz. Zincir içi aktivitelerinizi takip ederek sizi otomatik olarak ödüllendireceğiz. $2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "Daha fazla bilgi edin"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "Şartlar ve Gizlilik Bildirimi"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "Katılım başarısız oldu"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "Geçersiz referans kodu"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "Bir referans kodu kullanarak 250 puan kazanın"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "Referans kodu (isteğe bağlı)"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "Referans kodu doğrulanamadı."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "Bağlantınızı kontrol edin ve tekrar deneyin."
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "Kaydolduğunuzda 250 puan kazanırsınız!"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "Bir kodla kaydolduğunuzda 500 puan kazanırsınız!"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "Sonraki"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "Puanları al"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Referans kodu doğrulanıyor...",

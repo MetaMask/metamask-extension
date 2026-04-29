@@ -6950,9 +6950,6 @@
   "rewardsLinkAccountError": {
     "message": "Gagal menambahkan akun"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "Dapatkan poin untuk aktivitas Anda. \nLewati level untuk membuka reward."
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Kami tidak dapat memastikan jika negara Anda mengizinkan Anda untuk berpartisipasi dalam program reward. Periksa koneksi dan coba lagi."
   },
@@ -6965,84 +6962,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Coba lagi"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "Klaim 250 poin"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "Memeriksa kelayakan..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "Memeriksa wilayah.."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "Tidak sekarang"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "Reward ada di sini"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "Reward belum didukung di wilayah Anda. Kami sedang berupaya memperluas akses, jadi, periksa kembali nanti."
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Wilayah tidak didukung"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "Setiap swap dan perdagangan perp yang Anda lakukan di MetaMask makin mendekatkan Anda dengan reward. Tambahkan akun dan lihat poin Anda bertambah."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "Dapatkan poin pada setiap perdagangan"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "Capai tonggak poin untuk memperoleh keuntungan seperti diskon 50% untuk biaya perp, token eksklusif, dan Kartu Metal MetaMask gratis."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "Naik level dan dapatkan keuntungan lebih besar"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "Anda dapat memperoleh poin di ekstensi ini, tetapi Anda memerlukan aplikasi seluler untuk memperdagangkan perp, melacak progres, dan menukarkan reward."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "Buka reward di ponsel"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "Dengan mengklik \"Klaim poin\", Anda menyetujui $1 kami. Kami akan melacak aktivitas on-chain Anda untuk memberikan reward secara otomatis. $2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "Selengkapnya"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "Syarat dan Pemberitahuan Privasi"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "Gagal berpartisipasi"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "Kode referensi tidak valid"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "Gunakan kode referensi untuk memperoleh 250 poin"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "Kode referensi (opsional)"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "Kode referensi tidak dapat divalidasi."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "Periksa koneksi Anda dan coba lagi."
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "Anda akan memperoleh 250 poin saat mendaftar!"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "Anda akan memperoleh 500 poin saat mendaftar dengan kode!"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "Berikutnya"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "Klaim poin"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Memverifikasi kode referensi...",

@@ -298,7 +298,7 @@ describe('toast display', () => {
   const getToastDisplayTestState = (date) => ({
     ...mockState,
     rewards: {
-      onboardingModalOpen: false,
+      rewardsModalOpen: false,
     },
     metamask: {
       ...mockState.metamask,

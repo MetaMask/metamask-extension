@@ -6946,9 +6946,6 @@
   "rewardsLinkAccountError": {
     "message": "Αποτυχία προσθήκης λογαριασμού"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "Κερδίστε πόντους με τη δραστηριότητά σας. \nΑνεβείτε επίπεδα για να ξεκλειδώσετε ανταμοιβές."
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Δεν είναι δυνατόν να προσδιορίσουμε το αν η χώρα σας επιτρέπει τη συμμετοχή στο πρόγραμμα ανταμοιβών. Παρακαλούμε ελέγξτε τη σύνδεσή σας και προσπαθήστε ξανά."
   },
@@ -6961,84 +6958,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Επανάληψη"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "Διεκδικήστε 250 πόντους"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "Έλεγχος επιλεξιμότητας..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "Έλεγχος περιοχής.."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "Όχι τώρα"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "Οι ανταμοιβές είναι εδώ"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "Οι ανταμοιβές δεν υποστηρίζονται ακόμη στην περιοχή σας. Προσπαθούμε να επεκτείνουμε την πρόσβαση, οπότε ελέγξτε ξανά αργότερα."
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Η περιοχή δεν υποστηρίζεται"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "Κάθε ανταλλαγή και συναλλαγή σε perps που κάνετε στο MetaMask σας φέρνει πιο κοντά σε ανταμοιβές.\nΠροσθέστε τους λογαριασμούς σας και δείτε τους πόντους σας να αυξάνονται."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "Κερδίστε πόντους σε κάθε συναλλαγή"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "Επιτύχετε ορόσημα πόντων για να αποκτήσετε προνόμια όπως 50% έκπτωση σε χρεώσεις συμβολαίων αορίστου διάρκειας (perps), αποκλειστικά tokens και δωρεάν μια MetaMask Metal Card."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "Ανεβείτε επίπεδο για περισσότερα προνόμια"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "Μπορείτε να κερδίζετε πόντους στην επέκταση, αλλά θα χρειαστείτε την εφαρμογή για κινητά για να κάνετε συναλλαγές σε perps, να παρακολουθείτε την πρόοδό σας και να εξαργυρώνετε ανταμοιβές."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "Ξεκλειδώστε ανταμοιβές στο κινητό"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "Κάνοντας κλικ στο “Εξαργύρωση πόντων”, συμφωνείτε με τους $1. Θα παρακολουθούμε τη δραστηριότητά σας εντός αλυσίδας για να σας ανταμείβουμε αυτόματα. $2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "Μάθετε περισσότερα"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "Όροι και Ειδοποίηση Απορρήτου"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "Αποτυχία συμμετοχής"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "Μη έγκυρος κωδικός παραπομπής"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "Χρησιμοποιήστε κωδικό παραπομπής για να κερδίσετε 250 πόντους"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "Κωδικός παραπομπής (προαιρετικά)"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "Ο κωδικός παραπομπής δεν ήταν δυνατό να επαληθευτεί."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "Ελέγξτε τη σύνδεσή σας και προσπαθήστε ξανά."
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "Θα κερδίσετε 250 πόντους με την εγγραφή σας!"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "Θα κερδίσετε 500 πόντους με την εγγραφή σας με κωδικό!"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "Επόμενο"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "Διεκδίκηση πόντων"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Επαλήθευση κωδικού παραπομπής...",

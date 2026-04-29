@@ -47,7 +47,7 @@ import { useFormatters } from '../../../hooks/useFormatters';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-funds-modal';
 import { useSubscriptionPricing } from '../../../hooks/subscription/useSubscriptionPricing';
-import RewardsOnboardingModal from '../../../components/app/rewards/onboarding/OnboardingModal';
+import RewardsModal from '../../../components/app/rewards/onboarding/RewardsModal';
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
@@ -64,7 +64,7 @@ import {
 import ApiErrorHandler from '../../../components/app/api-error-handler';
 import { useHandlePayment } from '../../../hooks/subscription/useHandlePayment';
 import { MetaMaskReduxDispatch } from '../../../store/store';
-import { setOnboardingModalOpen } from '../../../ducks/rewards';
+import { setRewardsModalOpen } from '../../../ducks/rewards';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { linkRewardToShieldSubscription } from '../../../store/actions';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
@@ -218,8 +218,8 @@ const TransactionShield = () => {
 
   const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
 
-  const openRewardsOnboardingModal = useCallback(() => {
-    dispatch(setOnboardingModalOpen(true));
+  const openRewardsModal = useCallback(() => {
+    dispatch(setRewardsModalOpen(true));
   }, [dispatch]);
 
   const claimedRewardsPoints = useMemo(() => {
@@ -385,7 +385,7 @@ const TransactionShield = () => {
             variant: TextVariant.BodySm,
           }}
           onClick={() => {
-            openRewardsOnboardingModal();
+            openRewardsModal();
           }}
         >
           {t('shieldTxMembershipBenefits3SignUp')}
@@ -424,7 +424,7 @@ const TransactionShield = () => {
     displayedShieldSubscription?.rewardAccountId,
     claimedRewardsPoints,
     t,
-    openRewardsOnboardingModal,
+    openRewardsModal,
     handleLinkRewardToShieldSubscription,
   ]);
 
@@ -694,7 +694,7 @@ const TransactionShield = () => {
             }
           />
         )}
-      <RewardsOnboardingModal
+      <RewardsModal
         rewardPoints={claimedRewardsPoints ?? undefined}
         shieldSubscriptionId={displayedShieldSubscription?.id}
       />

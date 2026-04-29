@@ -6946,9 +6946,6 @@
   "rewardsLinkAccountError": {
     "message": "Не удалось добавить счет"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "Зарабатывайте баллы за активность.\nПроходите уровни, чтобы разблокировать награды."
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Мы не можем определить, разрешено ли участие в программе вознаграждений в вашей стране. Проверьте подключение и повторите попытку."
   },
@@ -6961,84 +6958,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Повтор"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "Получите 250 баллов"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "Проверка соответствия требованиям..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "Проверка региона.."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "Не сейчас"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "Награды здесь"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "Вознаграждения пока не поддерживаются в вашем регионе. Мы работаем над расширением доступа, поэтому зайдите позже."
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Регион не поддерживается"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "Каждый своп и сделка с перпами в MetaMask приближает вас к вознаграждениям. Добавьте свои счета и наблюдайте за ростом количества ваших баллов."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "Зарабатывайте баллы за каждую сделку"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "Достигайте контрольных уровней, чтобы получить такие привилегии, как скидка 50% на комиссию на первы, эксклюзивные токены и бесплатную карту MetaMask Metal."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "Повышайте уровень для получения больших преимуществ"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "В расширении вы можете зарабатывать баллы, но для торговли перпами, отслеживания прогресса и использования бонусов вам понадобится мобильное приложение."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "Разблокируйте награды на мобильном устройстве"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "Нажав кнопку «Получить баллы», вы соглашаетесь с нашими $1. Мы будем отслеживать вашу активность ончейн, чтобы автоматически начислять вам баллы. $2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "Узнайте подробнее"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "Условия использования и политика конфиденциальности"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "Не удалось согласиться"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "Недействительный реферальный код"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "Используйте реферальный код, чтобы заработать 250 баллов"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "Реферальный код (необязательно)"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "Не удалось проверить реферальный код."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "Проверьте соединение и повторите попытку."
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "Вы получите 250 баллов за регистрацию!"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "Вы получите 500 баллов за регистрацию с помощью кода!"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "Далее"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "Получить баллы"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Проверка реферального кода...",
