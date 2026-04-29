@@ -1,5 +1,6 @@
 import { rpcErrors, serializeError } from '@metamask/rpc-errors';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type { TaggedApiMethod } from '../messenger-client-init/utils';
 import {
   continueTraceContext,
   extractTraceContext,
@@ -8,11 +9,7 @@ import {
 import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
 import { isStreamWritable, type StreamLike } from './stream-utils';
 
-type ApiHandler = ((...args: unknown[]) => unknown) & {
-  _controllerName?: string;
-};
-
-type MetaRpcApi = Record<string, ApiHandler>;
+type MetaRpcApi = Record<string, TaggedApiMethod>;
 
 type RpcStream = StreamLike & {
   write: (data: PendingJsonRpcResponse) => void;
