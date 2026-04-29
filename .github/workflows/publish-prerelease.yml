@@ -158,8 +158,10 @@ jobs:
       - name: Get main merge base commit hash
         if: ${{ env.HEAD_COMMIT_HASH }}
         run: |
-          git fetch origin main
-          merge_base_commit_hash="$(git merge-base "origin/main" "${HEAD_COMMIT_HASH}")"
+          git fetch --filter=blob:none --no-tags origin \
+            main:refs/remotes/origin/main \
+            "${HEAD_COMMIT_HASH}:refs/remotes/origin/pr-head"
+          merge_base_commit_hash="$(git merge-base "origin/main" "refs/remotes/origin/pr-head")"
           echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
           echo "The merge base commit hash is '${merge_base_commit_hash}'"
 
