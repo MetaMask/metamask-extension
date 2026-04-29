@@ -450,29 +450,16 @@ export function useTransactionDisplayData(transactionGroup) {
       ? metamaskPay?.chainId
       : initialTransaction.chainId;
 
-    let targetTokenSymbol;
-
-    // Detect native destinations first (e.g. BNB on BNB chain) — they are not
-    // in the ERC-20 token list keyed by address, so look up the native ticker
-    // from the network config instead.
-    const nativeAddressForTargetChain =
-      targetLookupChainId &&
-      getNativeTokenAddress(targetLookupChainId).toLowerCase();
-    const isNativeTarget =
-      targetLookupChainId &&
-      targetLookupAddress &&
-      targetLookupAddress === nativeAddressForTargetChain;
-
-    if (isNativeTarget) {
-      const nativeInfo = getNativeTokenInfo(
+    const { symbol: targetTokenSymbol, isNative: isNativeTarget } =
+      resolveTargetToken({
+        address: targetLookupAddress,
+        chainId: targetLookupChainId,
         networkConfigurationsByChainId,
-        targetLookupChainId,
-      );
-      targetTokenSymbol = nativeInfo?.symbol;
-    } else if (targetLookupAddress && targetLookupChainId) {
-      const targetToken =
-        tokenListAllChains?.[targetLookupChainId]?.data?.[targetLookupAddress];
-      targetTokenSymbol = targetToken?.symbol;
+        tokenListAllChains,
+      });
+
+    if (targetTokenSymbol) {
+      primarySuffix = targetTokenSymbol;
     }
 
     if (isPostQuote) {
@@ -482,24 +469,14 @@ export function useTransactionDisplayData(transactionGroup) {
       // `getPostQuoteDisplay` (app/components/UI/TransactionElement/utils.js)
       // renders the Activity row.
       const fiatUsd = parseFloat(metamaskPay?.targetFiat ?? '');
-      const nativeCurrency =
-        networkConfigurationsByChainId?.[targetLookupChainId]?.nativeCurrency;
-      const nativeUsdRate =
-        currencyRates?.[nativeCurrency]?.usdConversionRate ?? 0;
-
-      let tokenUsdRate = nativeUsdRate;
-      if (!isNativeTarget && targetLookupAddress && targetLookupChainId) {
-        let checksumAddress;
-        try {
-          checksumAddress = toChecksumHexAddress(targetLookupAddress);
-        } catch {
-          checksumAddress = undefined;
-        }
-        const tokenPrice =
-          checksumAddress &&
-          marketData?.[targetLookupChainId]?.[checksumAddress]?.price;
-        tokenUsdRate = tokenPrice ? tokenPrice * nativeUsdRate : 0;
-      }
+      const tokenUsdRate = getDestinationTokenUsdRate({
+        address: targetLookupAddress,
+        chainId: targetLookupChainId,
+        isNative: isNativeTarget,
+        marketData,
+        currencyRates,
+        networkConfigurationsByChainId,
+      });
 
       const hasValidInputs =
         Number.isFinite(fiatUsd) && fiatUsd > 0 && tokenUsdRate > 0;
@@ -507,15 +484,9 @@ export function useTransactionDisplayData(transactionGroup) {
         ? fiatUsd / tokenUsdRate
         : undefined;
 
-      if (targetTokenSymbol) {
-        primarySuffix = targetTokenSymbol;
-      }
-
-      if (receivedAmount !== undefined) {
-        primaryDisplayValue =
-          receivedAmount >= 1
-            ? receivedAmount.toFixed(2)
-            : receivedAmount.toPrecision(4);
+      const formattedReceived = formatPostQuoteReceivedAmount(receivedAmount);
+      if (formattedReceived !== undefined) {
+        primaryDisplayValue = formattedReceived;
       } else if (metamaskPay?.targetFiat) {
         primaryDisplayValue = metamaskPay.targetFiat;
       }
@@ -523,14 +494,9 @@ export function useTransactionDisplayData(transactionGroup) {
       if (metamaskPay?.targetFiat) {
         secondaryDisplayValue = fiatFormatter(fiatUsd);
       }
-    } else {
-      if (targetTokenSymbol) {
-        primarySuffix = targetTokenSymbol;
-      }
-      if (metamaskPay?.targetFiat) {
-        primaryDisplayValue = metamaskPay.targetFiat;
-        secondaryDisplayValue = fiatFormatter(Number(metamaskPay.targetFiat));
-      }
+    } else if (metamaskPay?.targetFiat) {
+      primaryDisplayValue = metamaskPay.targetFiat;
+      secondaryDisplayValue = fiatFormatter(Number(metamaskPay.targetFiat));
     }
   } else {
     dispatch(
@@ -590,4 +556,104 @@ export function useTransactionDisplayData(transactionGroup) {
         : secondaryCurrency,
     isPending,
   };
+}
+
+/**
+ * Resolves the destination token's symbol and native flag from a token
+ * address + chain ID. Native targets (e.g. BNB on BNB chain) are not in the
+ * ERC-20 token list keyed by address, so they need a separate lookup via the
+ * network configuration.
+ *
+ * @param {object} args
+ * @param {string|undefined} args.address - Lower-cased token address.
+ * @param {string|undefined} args.chainId - Hex chain ID.
+ * @param {object|undefined} args.networkConfigurationsByChainId - Map keyed by chain ID.
+ * @param {object|undefined} args.tokenListAllChains - ERC-20 token lists keyed by chain ID.
+ * @returns {{ symbol: string|undefined, isNative: boolean }}
+ */
+function resolveTargetToken({
+  address,
+  chainId,
+  networkConfigurationsByChainId,
+  tokenListAllChains,
+}) {
+  if (!address || !chainId) {
+    return { symbol: undefined, isNative: false };
+  }
+
+  const nativeAddress = getNativeTokenAddress(chainId).toLowerCase();
+  const isNative = address === nativeAddress;
+
+  if (isNative) {
+    const nativeInfo = getNativeTokenInfo(
+      networkConfigurationsByChainId,
+      chainId,
+    );
+    return { symbol: nativeInfo?.symbol, isNative: true };
+  }
+
+  const targetToken = tokenListAllChains?.[chainId]?.data?.[address];
+  return { symbol: targetToken?.symbol, isNative: false };
+}
+
+/**
+ * Returns the USD value of 1 unit of the destination token, or 0 when it
+ * cannot be determined. Native targets use the chain's native USD rate
+ * directly; ERC-20 targets multiply the token's native-denominated price
+ * (from market data) by the native USD rate.
+ *
+ * @param {object} args
+ * @param {string|undefined} args.address - Lower-cased token address.
+ * @param {string|undefined} args.chainId - Hex chain ID.
+ * @param {boolean} args.isNative - Whether the destination is the chain's native token.
+ * @param {object|undefined} args.marketData - Market data keyed by chain ID, then by checksum address.
+ * @param {object|undefined} args.currencyRates - Currency rates keyed by native currency symbol.
+ * @param {object|undefined} args.networkConfigurationsByChainId - Map keyed by chain ID.
+ * @returns {number} USD per 1 token, or 0 if unavailable.
+ */
+function getDestinationTokenUsdRate({
+  address,
+  chainId,
+  isNative,
+  marketData,
+  currencyRates,
+  networkConfigurationsByChainId,
+}) {
+  const nativeCurrency =
+    networkConfigurationsByChainId?.[chainId]?.nativeCurrency;
+  const nativeUsdRate = currencyRates?.[nativeCurrency]?.usdConversionRate ?? 0;
+
+  if (isNative) {
+    return nativeUsdRate;
+  }
+
+  if (!address || !chainId) {
+    return 0;
+  }
+
+  let checksumAddress;
+  try {
+    checksumAddress = toChecksumHexAddress(address);
+  } catch {
+    checksumAddress = undefined;
+  }
+
+  const tokenPrice =
+    checksumAddress && marketData?.[chainId]?.[checksumAddress]?.price;
+  return tokenPrice ? tokenPrice * nativeUsdRate : 0;
+}
+
+/**
+ * Formats a destination token amount for the Activity row's primary display
+ * value. Mirrors mobile's `getPostQuoteDisplay`: amounts >= 1 use 2 decimals,
+ * smaller amounts use 4 significant figures.
+ *
+ * @param {number|undefined} amount - Token amount in token units (not wei).
+ * @returns {string|undefined}
+ */
+function formatPostQuoteReceivedAmount(amount) {
+  if (amount === undefined) {
+    return undefined;
+  }
+  return amount >= 1 ? amount.toFixed(2) : amount.toPrecision(4);
 }
