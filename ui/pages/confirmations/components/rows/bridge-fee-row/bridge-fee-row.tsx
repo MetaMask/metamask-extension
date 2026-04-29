@@ -44,13 +44,14 @@ export function BridgeFeeRow({
   const totals = useTransactionPayTotals();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  const isWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
+  const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   // When a caller hasn't supplied a tooltipDescription, fall back to the
   // perpsWithdraw description so the Perps Withdraw confirmation mirrors
   // mobile's Transaction fee tooltip copy.
   const resolvedTooltipDescription =
-    tooltipDescription ?? (isWithdraw ? t('perpsWithdrawTooltip') : undefined);
+    tooltipDescription ??
+    (isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined);
 
   const feeLabel = t('transactionFee');
 
@@ -93,7 +94,7 @@ export function BridgeFeeRow({
       metamaskFeeFormatted: metamaskFeeUsd,
       /** Matches prior behavior: MetaMask fee was only shown for Small variant (body row). */
       includeMetamaskFee: isSmall,
-      useProviderFeeLabel: isWithdraw,
+      useProviderFeeLabel: isPerpsWithdraw,
     });
   }
 

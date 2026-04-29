@@ -49,7 +49,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const { onPaymentTokenChange: onMusdPaymentTokenChange } =
     useMusdPaymentToken();
 
-  const isWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
+  const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   const handleClose = useCallback(() => {
     onClose();
@@ -80,7 +80,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
       // found" and the selection silently fails. Ensure the token is imported
       // first, then update the pay token.
       if (
-        isWithdraw &&
+        isPerpsWithdraw &&
         !token.isNative &&
         (token.rawBalance === '0x0' || !token.rawBalance)
       ) {
@@ -112,7 +112,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
       currentConfirmation?.type,
       dispatch,
       handleClose,
-      isWithdraw,
+      isPerpsWithdraw,
       onMusdPaymentTokenChange,
       setPayToken,
     ],

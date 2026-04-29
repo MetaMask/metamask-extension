@@ -254,7 +254,7 @@ function BottomContainer({ amountFiat }: { amountFiat: string }) {
   const { hideResults } = useTransactionCustomAmountAlerts();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  const isWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
+  const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   if (!isResultReady || hideResults) {
     return null;
@@ -269,7 +269,7 @@ function BottomContainer({ amountFiat }: { amountFiat: string }) {
     >
       <BridgeFeeRow variant={ConfirmInfoRowSize.Small} />
       <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
-      {isWithdraw ? (
+      {isPerpsWithdraw ? (
         <ReceiveRow
           inputAmountUsd={amountFiat}
           variant={ConfirmInfoRowSize.Small}

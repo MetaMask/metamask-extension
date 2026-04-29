@@ -49,7 +49,7 @@ type PayWithRowContentProps = {
   canEdit: boolean;
   from: string | undefined;
   onOpenModal: () => void;
-  isWithdraw: boolean;
+  isPerpsWithdraw: boolean;
 };
 
 type PayWithRowPillProps = PayWithRowContentProps & {
@@ -100,7 +100,7 @@ export function PayWithRow({
 
   const canEdit = fromAccount ? !isHardwareAccount(fromAccount) : true;
 
-  const isWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
+  const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   const handleOpenModal = useCallback(() => {
     if (canEdit) {
@@ -135,7 +135,7 @@ export function PayWithRow({
     canEdit,
     from,
     onOpenModal: handleOpenModal,
-    isWithdraw,
+    isPerpsWithdraw,
   };
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
@@ -166,7 +166,7 @@ function PayWithRowInline({
   from,
   onOpenModal,
   ownerId,
-  isWithdraw,
+  isPerpsWithdraw,
 }: PayWithRowContentProps & { ownerId: string }) {
   const t = useI18nContext();
 
@@ -175,7 +175,7 @@ function PayWithRowInline({
       alertKey={RowAlertKey.PayWith}
       ownerId={ownerId}
       data-testid="pay-with-row"
-      label={isWithdraw ? t('withdrawTo') : t('payWith')}
+      label={isPerpsWithdraw ? t('withdrawTo') : t('payWith')}
       rowVariant={ConfirmInfoRowSize.Default}
     >
       <Box
@@ -225,7 +225,7 @@ function PayWithRowPill({
   canEdit,
   from,
   onOpenModal,
-  isWithdraw,
+  isPerpsWithdraw,
 }: PayWithRowPillProps) {
   const t = useI18nContext();
 
@@ -257,7 +257,7 @@ function PayWithRowPill({
         color={TextColor.textDefault}
         data-testid="pay-with-symbol"
       >
-        {`${isWithdraw ? t('withdrawTo') : t('payWith')} ${displayToken.symbol}`}
+        {`${isPerpsWithdraw ? t('withdrawTo') : t('payWith')} ${displayToken.symbol}`}
       </Text>
       <Text
         variant={TextVariant.bodyMdMedium}
