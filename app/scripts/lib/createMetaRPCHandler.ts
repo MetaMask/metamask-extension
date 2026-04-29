@@ -1,5 +1,5 @@
 import { rpcErrors, serializeError } from '@metamask/rpc-errors';
-import type { JsonRpcRequest } from '@metamask/utils';
+import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import {
   continueTraceContext,
   extractTraceContext,
@@ -18,7 +18,7 @@ type RpcStream = {
   writable?: boolean;
   destroyed?: boolean;
   _writableState?: { ended: boolean };
-  write: (data: unknown) => void;
+  write: (data: PendingJsonRpcResponse) => void;
 };
 
 const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
