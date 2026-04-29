@@ -102,12 +102,13 @@ export class TrezorAdapter implements HardwareWalletAdapter {
   }
 
   /**
-   * Verify the device is ready for operations.
+   * Ensure the device is connected and ready for signing operations.
    *
-   * Note: Unlike Ledger, Trezor doesn't require checking for a specific app being open.
-   * The device just needs to be connected and unlocked, which is verified during signing operations.
+   * This only verifies a USB connection is present. All other device checks
+   * (lock state, initialization, session, capabilities) are handled by the
+   * Trezor Connect SDK during the actual signing flow.
    *
-   * @returns true if device is ready
+   * @returns true if the device is connected.
    */
   async ensureDeviceReady(): Promise<boolean> {
     if (!this.isConnected()) {
