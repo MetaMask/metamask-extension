@@ -25,6 +25,7 @@ import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
 import { parseCaipChainId, type CaipChainId, type Hex } from '@metamask/utils';
+import { EthMethod } from '@metamask/keyring-api';
 import type {
   AccountTrackerControllerState,
   CurrencyRateState,
@@ -75,7 +76,7 @@ import {
   getInternalAccountsByScope,
   getSelectedInternalAccount,
 } from '../../selectors/accounts';
-import { isHardwareWallet } from '../../selectors';
+import { getUseExternalServices, isHardwareWallet } from '../../selectors';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import {
   getAllAccountGroups,
@@ -1060,4 +1061,11 @@ export const getBridgeUnavailableQuoteReason = createSelector(
     quoteStreamComplete?.reason
       ? getQuoteStreamReasonString(quoteStreamComplete.reason)
       : 'noOptionsAvailableMessage',
+);
+
+export const getIsExternalServicesEnabled = createSelector(
+  [getUseExternalServices, getFromAccount],
+  (useExternalServices, { methods }) =>
+    (useExternalServices && methods.includes(EthMethod.SignTransaction)) ||
+    methods.includes(EthMethod.SignUserOperation),
 );

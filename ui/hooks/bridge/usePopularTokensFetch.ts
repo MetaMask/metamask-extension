@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { type CaipChainId } from '@metamask/utils';
 import { BridgeClientId } from '@metamask/bridge-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getBearerToken } from '../../store/actions';
 import { BridgeToken } from '../../ducks/bridge/types';
 import { fetchPopularTokens } from '../../pages/bridge/utils/tokens';
+import { getIsExternalServicesEnabled } from '../../ducks/bridge/selectors';
 import { useAsyncResult } from '../useAsync';
 
 /**
@@ -22,6 +24,7 @@ export const usePopularTokensFetch = ({
   assetsToInclude: BridgeToken[];
 }) => {
   const abortControllerRef = useRef<AbortController | null>(null);
+  const isExternalServicesEnabled = useSelector(getIsExternalServicesEnabled);
 
   const { value: jwt } = useAsyncResult(async () => {
     return await getBearerToken();
@@ -37,7 +40,7 @@ export const usePopularTokensFetch = ({
 
   const { value: tokenList, pending: isTokenListLoading } =
     useAsyncResult(async () => {
-      if (!jwt) {
+      if (!jwt || !isExternalServicesEnabled) {
         return assetsToInclude;
       }
       abortControllerRef.current?.abort('Asset balances changed');
@@ -52,7 +55,7 @@ export const usePopularTokensFetch = ({
         bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       });
       return response;
-    }, [stableMinimalAssetsString, jwt]);
+    }, [stableMinimalAssetsString, jwt, isExternalServicesEnabled]);
 
   useEffect(() => {
     return () => {
