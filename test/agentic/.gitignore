@@ -1,0 +1,5 @@
+# Sandbox runtime + generated output (per-worktree, never tracked)
+.env
+.omc/
+domains/artifacts/
+test-artifacts/
