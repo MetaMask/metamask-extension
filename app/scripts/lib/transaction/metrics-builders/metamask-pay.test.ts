@@ -135,6 +135,30 @@ describe('getMetaMaskPayProperties', () => {
       expect(result.properties.mm_pay_use_case).toBe('perps_withdraw');
     });
 
+    it('sets musd_conversion for musdConversion transactions', async () => {
+      const request = createPayRequest({
+        transactionMeta: {
+          ...createPayRequest().transactionMeta,
+          type: TransactionType.musdConversion,
+        },
+      });
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_use_case).toBe('musd_conversion');
+    });
+
+    it('sets musd_claim for musdClaim transactions', async () => {
+      const request = createPayRequest({
+        transactionMeta: {
+          ...createPayRequest().transactionMeta,
+          type: TransactionType.musdClaim,
+        },
+      });
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_use_case).toBe('musd_claim');
+    });
+
     it('does not set use_case for non-pay-type transactions', async () => {
       const request = createPayRequest({
         transactionMeta: {

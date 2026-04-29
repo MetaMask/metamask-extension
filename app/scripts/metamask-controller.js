@@ -8619,7 +8619,7 @@ export default class MetamaskController extends EventEmitter {
       getTransaction: (id) =>
         this.txController.state.transactions.find((tx) => tx.id === id),
       getTransactionPayData: (id) =>
-        this.txPayController.state.transactionData?.[id],
+        this.txPayController?.state?.transactionData?.[id],
       getAllTransactions: () => this.txController.state.transactions,
       getIsSmartTransaction: (chainId) => {
         return getIsSmartTransaction(this._getMetaMaskState(), chainId);
