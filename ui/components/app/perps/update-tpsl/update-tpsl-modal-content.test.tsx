@@ -193,6 +193,36 @@ describe('UpdateTPSLModalContent', () => {
       expect(priceInputs).toHaveLength(2);
       expect(percentInputs).toHaveLength(2);
     });
+
+    it('keeps the TP percent value selected after focus switches to the raw value', async () => {
+      renderTpslModalContent();
+
+      const tpPercentInput = screen.getAllByPlaceholderText(
+        '0',
+      )[0] as HTMLInputElement;
+      fireEvent.focus(tpPercentInput);
+
+      await waitFor(() => {
+        expect(tpPercentInput.value.length).toBeGreaterThan(0);
+        expect(tpPercentInput.selectionStart).toBe(0);
+        expect(tpPercentInput.selectionEnd).toBe(tpPercentInput.value.length);
+      });
+    });
+
+    it('keeps the SL percent value selected after focus switches to the raw value', async () => {
+      renderTpslModalContent();
+
+      const slPercentInput = screen.getAllByPlaceholderText(
+        '0',
+      )[1] as HTMLInputElement;
+      fireEvent.focus(slPercentInput);
+
+      await waitFor(() => {
+        expect(slPercentInput.value.length).toBeGreaterThan(0);
+        expect(slPercentInput.selectionStart).toBe(0);
+        expect(slPercentInput.selectionEnd).toBe(slPercentInput.value.length);
+      });
+    });
   });
 
   describe('initialization', () => {

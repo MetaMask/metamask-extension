@@ -658,19 +658,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   );
 
   const handleBackClick = useCallback(
-    (
-      perpsToastKey?: PerpsToastKey,
-      perpsToastDescription?: string,
-      extraState?: Partial<PerpsToastRouteState>,
-    ) => {
-      if (perpsToastKey) {
-        replacePerpsToastByKey({
-          key: perpsToastKey,
-          ...(perpsToastDescription
-            ? { description: perpsToastDescription }
-            : {}),
-        });
-      }
+    (extraState?: Partial<PerpsToastRouteState>) => {
       if (extraState?.pendingOrderSymbol) {
         setPendingOrder({
           symbol: extraState.pendingOrderSymbol,
@@ -686,25 +674,11 @@ const PerpsOrderEntryPage: React.FC = () => {
         decodedSymbol,
       )}`;
 
-      if (!perpsToastKey) {
-        // Without a perpsToastKey, market-detail's parsePerpsToastRouteState
-        // returns null and never clears location.state. Pushing extraState
-        // (pendingOrderSymbol/Description) onto the route would linger in
-        // history and replay the filled toast on browser back/forward.
-        // The pending-order data is already delivered imperatively via
-        // setPendingOrder above, so navigate without route state.
-        navigate(marketDetailPath);
-        return;
-      }
-
-      const toastRouteState: PerpsToastRouteState = {
-        perpsToastKey,
-        ...(perpsToastDescription ? { perpsToastDescription } : {}),
-        ...extraState,
-      };
-      navigate(marketDetailPath, { state: toastRouteState });
+      // Pending-order data is delivered imperatively via setPendingOrder above.
+      // Avoid route state so browser back/forward cannot replay filled toasts.
+      navigate(marketDetailPath);
     },
-    [decodedSymbol, navigate, replacePerpsToastByKey, setPendingOrder],
+    [decodedSymbol, navigate, setPendingOrder],
   );
 
   // Visible header back button: pop the history stack so the user returns to
@@ -1133,8 +1107,6 @@ const PerpsOrderEntryPage: React.FC = () => {
       // the await previously unmounted this page and orphaned the Promise
       // response, leaving the "Submitting your trade" toast stuck forever.
       handleBackClick(
-        undefined,
-        undefined,
         orderFormState.type === 'market'
           ? {
               pendingOrderSymbol: orderFormState.asset,

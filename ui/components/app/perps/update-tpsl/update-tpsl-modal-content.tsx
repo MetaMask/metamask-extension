@@ -120,6 +120,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   // Exact preset percent values, kept until the user manually edits a field
   const [tpPresetPercent, setTpPresetPercent] = useState<string | null>(null);
   const [slPresetPercent, setSlPresetPercent] = useState<string | null>(null);
+  const tpPercentInputRef = useRef<HTMLInputElement | null>(null);
+  const slPercentInputRef = useRef<HTMLInputElement | null>(null);
+  const pendingPercentSelectRef = useRef<'tp' | 'sl' | null>(null);
 
   const entryPriceForEdit = useMemo(() => {
     if (position?.entryPrice) {
@@ -281,6 +284,20 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const hasInvalidTPSL = isTpInvalid || isSlInvalid;
 
+  useLayoutEffect(() => {
+    const pendingInput = pendingPercentSelectRef.current;
+    if (!pendingInput) {
+      return;
+    }
+
+    pendingPercentSelectRef.current = null;
+    const input =
+      pendingInput === 'tp'
+        ? tpPercentInputRef.current
+        : slPercentInputRef.current;
+    input?.select();
+  });
+
   useEffect(() => {
     return () => {
       isMountedRef.current = false;
@@ -332,14 +349,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     [percentToPriceForEdit],
   );
 
-  const handleTpPercentFocus = useCallback(
-    (event: React.FocusEvent<HTMLInputElement>) => {
-      setRawTpPercent(tpPresetPercent ?? editingTpPercent);
-      setIsTpPercentFocused(true);
-      event.target.select();
-    },
-    [tpPresetPercent, editingTpPercent],
-  );
+  const handleTpPercentFocus = useCallback(() => {
+    pendingPercentSelectRef.current = 'tp';
+    setRawTpPercent(tpPresetPercent ?? editingTpPercent);
+    setIsTpPercentFocused(true);
+  }, [tpPresetPercent, editingTpPercent]);
 
   const handleTpPercentBlur = useCallback(() => {
     setIsTpPercentFocused(false);
@@ -365,14 +379,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     [percentToPriceForEdit],
   );
 
-  const handleSlPercentFocus = useCallback(
-    (event: React.FocusEvent<HTMLInputElement>) => {
-      setRawSlPercent(slPresetPercent ?? editingSlPercent);
-      setIsSlPercentFocused(true);
-      event.target.select();
-    },
-    [slPresetPercent, editingSlPercent],
-  );
+  const handleSlPercentFocus = useCallback(() => {
+    pendingPercentSelectRef.current = 'sl';
+    setRawSlPercent(slPresetPercent ?? editingSlPercent);
+    setIsSlPercentFocused(true);
+  }, [slPresetPercent, editingSlPercent]);
 
   const handleSlPercentBlur = useCallback(() => {
     setIsSlPercentFocused(false);
@@ -635,6 +646,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              inputRef={tpPercentInputRef}
               inputProps={{ onKeyDown: handleInputEnterKey }}
               endAccessory={
                 <Text
@@ -770,6 +782,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              inputRef={slPercentInputRef}
               inputProps={{ onKeyDown: handleInputEnterKey }}
               endAccessory={
                 <Text
