@@ -99,6 +99,11 @@ test/e2e/tests/perps/ @MetaMask/perps
 docs/perps/ @MetaMask/perps
 **/perps/** @MetaMask/perps
 
+# Agentic recipe runner — incubating under perps until the toolkit is
+# adopted by a second team. Companion implementation of ADR #0058.
+# Transfer ownership broadly once stabilized.
+test/agentic/ @MetaMask/perps
+
 # Snaps
 **/snaps/**                          @MetaMask/core-platform
 shared/constants/permissions.ts      @MetaMask/core-platform
