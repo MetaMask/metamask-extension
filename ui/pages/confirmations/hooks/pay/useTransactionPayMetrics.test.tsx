@@ -178,6 +178,40 @@ describe('useTransactionPayMetrics', () => {
     );
   });
 
+  it('updates mm_pay_quote_loaded from false to true when quotes arrive after initial render', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: PAY_TOKEN_MOCK,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
+
+    useTransactionPayQuotesMock.mockReturnValue([]);
+
+    const { rerender } = renderHook(() => useTransactionPayMetrics(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenLastCalledWith(
+      TRANSACTION_ID_MOCK,
+      {
+        properties: expect.objectContaining({
+          mm_pay_quote_loaded: false,
+        }),
+      },
+    );
+
+    useTransactionPayQuotesMock.mockReturnValue([QUOTE_MOCK]);
+    rerender();
+
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenLastCalledWith(
+      TRANSACTION_ID_MOCK,
+      {
+        properties: expect.objectContaining({
+          mm_pay_quote_loaded: true,
+        }),
+      },
+    );
+  });
+
   it('sets mm_pay_quote_requested to false by default', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: PAY_TOKEN_MOCK,
