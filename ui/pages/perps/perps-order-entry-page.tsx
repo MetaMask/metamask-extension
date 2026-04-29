@@ -707,6 +707,23 @@ const PerpsOrderEntryPage: React.FC = () => {
     [decodedSymbol, navigate, replacePerpsToastByKey, setPendingOrder],
   );
 
+  const handleBackButtonClick = useCallback(() => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    if (decodedSymbol) {
+      navigate(
+        `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(decodedSymbol)}`,
+        { replace: true },
+      );
+      return;
+    }
+
+    navigate(DEFAULT_ROUTE, { replace: true });
+  }, [decodedSymbol, navigate]);
+
   const getTradeActionToastDescription = useCallback(() => {
     if (orderMode === 'modify' || !orderFormState) {
       return undefined;
@@ -1266,7 +1283,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         <Box paddingLeft={2} paddingBottom={4} paddingTop={4}>
           <Box
             data-testid="perps-order-entry-back-button"
-            onClick={() => handleBackClick()}
+            onClick={handleBackButtonClick}
             aria-label={t('back')}
             className="p-2 cursor-pointer"
           >
@@ -1338,7 +1355,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       >
         <Box
           data-testid="perps-order-entry-back-button"
-          onClick={() => handleBackClick()}
+          onClick={handleBackButtonClick}
           aria-label={t('back')}
           className="w-9 shrink-0 cursor-pointer"
         >
