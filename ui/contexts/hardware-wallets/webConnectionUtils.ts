@@ -41,6 +41,28 @@ export function isCameraAvailable(): boolean {
   );
 }
 
+/**
+ * Query the Permissions API for `camera` and return the live `PermissionStatus` (for `change`
+ * listeners). Matches legacy QR `WebcamUtils` behavior: on unsupported APIs or thrown `query`,
+ * returns `prompt` with a null status.
+ */
+export async function queryCameraPermissionWithStatus(): Promise<{
+  state: PermissionState;
+  permissionStatus: PermissionStatus | null;
+}> {
+  try {
+    const permissionStatus = await globalThis.navigator.permissions.query({
+      name: 'camera' as PermissionName,
+    });
+    return {
+      state: permissionStatus.state,
+      permissionStatus,
+    };
+  } catch {
+    return { state: 'prompt', permissionStatus: null };
+  }
+}
+
 /** Message for the error thrown by {@link checkCameraPermission} when the probe fails. */
 const CAMERA_PERMISSION_PROBE_FAILED_MESSAGE =
   'Unable to determine camera permission state';

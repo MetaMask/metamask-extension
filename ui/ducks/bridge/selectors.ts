@@ -643,11 +643,6 @@ export const getFromTokenBalanceInUsd = createSelector(
   },
 );
 
-export const getIsQuoteExpired = (
-  { metamask }: BridgeAppState,
-  currentTimeInMs: number,
-) => selectIsQuoteExpired(metamask, {}, currentTimeInMs);
-
 export const getIsStockMarketClosed = (
   state: BridgeAppState,
   currentTimeInMs: number,
@@ -746,6 +741,9 @@ export const getFromAmountInCurrency = createSelector(
 );
 
 export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
+
+export const getActiveQuotePriceData = (state: BridgeAppState) =>
+  getBridgeQuotes(state).activeQuote?.quote?.priceData;
 
 export const getPriceImpact = createSelector(
   [
@@ -863,6 +861,10 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           }
         : undefined;
 
+    const isInsufficientNativeReserveError = Boolean(
+      insufficientNativeReserveError,
+    );
+
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
 
@@ -885,7 +887,8 @@ const _getBaseValidationErrors = createDeepEqualSelector(
         ),
       // Shown prior to fetching quotes
       isInsufficientGasBalance: Boolean(
-        nativeBalance &&
+        !isInsufficientNativeReserveError &&
+          nativeBalance &&
           !activeQuote &&
           validatedSrcAmount &&
           fromToken &&
@@ -897,6 +900,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
             : new BigNumber(nativeBalance).lte(0)),
       ),
       insufficientNativeReserveError,
+      isInsufficientNativeReserveError,
       // Shown after fetching quotes
       isInsufficientGasForQuote: Boolean(
         nativeBalance &&
@@ -944,8 +948,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
 
 /**
  * Returns all validation errors for the current bridge/swap form state.
- * Pass `currentTimeInMs` to include stock market-closed status (follows
- * the same pattern as {@link getIsQuoteExpired}).
+ * Pass `currentTimeInMs` to include stock market-closed status and quote expiration status
  * @param state
  * @param currentTimeInMs
  */
@@ -954,6 +957,9 @@ export const getValidationErrors = (
   currentTimeInMs?: number,
 ) => ({
   ..._getBaseValidationErrors(state),
+  isQuoteExpired: currentTimeInMs
+    ? selectIsQuoteExpired(state.metamask, {}, currentTimeInMs)
+    : false,
   isStockMarketClosed:
     currentTimeInMs === undefined
       ? false
@@ -969,7 +975,7 @@ export const getValidationErrors = (
 export const getWarningLabels = (
   state: BridgeAppState,
   currentTimeInMs?: number,
-): (QuoteWarning | 'market_closed')[] => {
+): QuoteWarning[] => {
   const {
     isEstimatedReturnLow,
     isNoQuotesAvailable,
@@ -980,8 +986,9 @@ export const getWarningLabels = (
     isPriceImpactError,
     isTxAlertPresent,
     isStockMarketClosed,
+    isQuoteExpired,
   } = getValidationErrors(state, currentTimeInMs);
-  const warnings: (QuoteWarning | 'market_closed')[] = [];
+  const warnings: QuoteWarning[] = [];
   isEstimatedReturnLow && warnings.push('low_return');
   isNoQuotesAvailable && warnings.push('no_quotes');
   isInsufficientGasBalance && warnings.push('insufficient_gas_balance');
@@ -991,7 +998,10 @@ export const getWarningLabels = (
   isPriceImpactWarning && warnings.push('price_impact');
   isPriceImpactError && warnings.push('price_impact');
   isTxAlertPresent && warnings.push('tx_alert');
+  // @ts-expect-error: market_closed is not a valid QuoteWarning yet
   isStockMarketClosed && warnings.push('market_closed');
+  // @ts-expect-error: quote_expired is not a valid QuoteWarning yet
+  isQuoteExpired && warnings.push('quote_expired');
   return warnings;
 };
 
