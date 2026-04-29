@@ -13,9 +13,9 @@ import {
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
 import {
-  MULTICHAIN_PROVIDER_CONFIGS,
+  MULTICHAIN_NETWORK_TO_NICKNAME,
+  MULTICHAIN_TOKEN_IMAGE_MAP,
   MultichainNetworks,
-  MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
 import {
   MOCK_ACCOUNTS,
@@ -201,12 +201,6 @@ function getNonEvmState(
   };
 }
 
-function getBip122ProviderConfig(): MultichainProviderConfig {
-  // For now, we only have Bitcoin non-EVM network, so we are expecting to have
-  // this one with `bip122:*` account type
-  return MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN];
-}
-
 function getTronState(
   account = MOCK_ACCOUNT_TRON_MAINNET,
   selectedChainId: SupportedCaipChainId = TrxScope.Mainnet,
@@ -226,10 +220,6 @@ function getTronState(
       selectedMultichainNetworkChainId: selectedChainId,
     },
   };
-}
-
-function getTronProviderConfig(): MultichainProviderConfig {
-  return MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON];
 }
 
 function getSolanaState(
@@ -411,15 +401,31 @@ describe('Multichain Selectors', () => {
     it('returns a MultichainProviderConfig if account is non-EVM (bip122:*)', () => {
       const state = getNonEvmState();
 
-      const bip122ProviderConfig = getBip122ProviderConfig();
-      expect(getMultichainProviderConfig(state)).toBe(bip122ProviderConfig);
+      expect(getMultichainProviderConfig(state)).toEqual(
+        expect.objectContaining({
+          chainId: MultichainNetworks.BITCOIN,
+          ticker: 'BTC',
+          nickname: MULTICHAIN_NETWORK_TO_NICKNAME[MultichainNetworks.BITCOIN],
+          rpcPrefs: expect.objectContaining({
+            imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
+          }),
+        }),
+      );
     });
 
     it('returns a MultichainProviderConfig if account is Tron', () => {
       const state = getTronState(MOCK_ACCOUNT_TRON_MAINNET);
 
-      const tronProviderConfig = getTronProviderConfig();
-      expect(getMultichainProviderConfig(state)).toBe(tronProviderConfig);
+      expect(getMultichainProviderConfig(state)).toEqual(
+        expect.objectContaining({
+          chainId: MultichainNetworks.TRON,
+          ticker: 'TRX',
+          nickname: MULTICHAIN_NETWORK_TO_NICKNAME[MultichainNetworks.TRON],
+          rpcPrefs: expect.objectContaining({
+            imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.TRON],
+          }),
+        }),
+      );
     });
 
     it('getMultichainCurrentNetwork matches getMultichainProviderConfig for EVM and non-EVM', () => {
@@ -445,10 +451,7 @@ describe('Multichain Selectors', () => {
     it('returns MultichainProviderConfig.ticker if account is non-EVM (bip122:*)', () => {
       const state = getNonEvmState();
 
-      const bip122ProviderConfig = getBip122ProviderConfig();
-      expect(getMultichainNativeCurrency(state)).toBe(
-        bip122ProviderConfig.ticker,
-      );
+      expect(getMultichainNativeCurrency(state)).toBe('BTC');
     });
 
     it('returns TRX if account is Tron', () => {
@@ -567,12 +570,11 @@ describe('Multichain Selectors', () => {
       });
     });
 
-    it('returns true if account is non-EVM (bip122:*)', () => {
+    it('returns BTC if account is non-EVM (bip122:*)', () => {
       const state = getNonEvmState();
 
-      const bip122ProviderConfig = getBip122ProviderConfig();
       expect(getMultichainDefaultToken(state)).toEqual({
-        symbol: bip122ProviderConfig.ticker,
+        symbol: 'BTC',
       });
     });
 
@@ -983,8 +985,7 @@ describe('Multichain Selectors', () => {
     it('returns provider rpcPrefs image URL when account is non-EVM', () => {
       const state = getNonEvmState();
       expect(getMultichainCurrencyImage(state)).toBe(
-        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN].rpcPrefs
-          ?.imageUrl,
+        MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
       );
     });
   });
@@ -1216,6 +1217,30 @@ describe('Multichain Selectors', () => {
       MultichainNetworks.TRON_SHASTA,
     ] as const;
 
+    const EXPECTED_SYNTHETIC_NATIVE_CURRENCY = {
+      [MultichainNetworks.SOLANA]: 'sol',
+      [MultichainNetworks.BITCOIN]: 'BTC',
+      [MultichainNetworks.BITCOIN_TESTNET]: 'tBTC',
+      [MultichainNetworks.BITCOIN_SIGNET]: 'sBTC',
+      [MultichainNetworks.TRON]: 'TRX',
+      [MultichainNetworks.TRON_NILE]: 'TRX',
+      [MultichainNetworks.TRON_SHASTA]: 'TRX',
+    } as const;
+
+    /**
+     * Display names applied in `getMultichainNetworkConfigurationsByChainId` (mirrors the
+     * provider registry until that selector reads from multichain-network-controller only).
+     */
+    const EXPECTED_SYNTHETIC_NETWORK_NAMES = {
+      [MultichainNetworks.SOLANA]: 'Solana',
+      [MultichainNetworks.BITCOIN]: 'Bitcoin',
+      [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
+      [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
+      [MultichainNetworks.TRON]: 'Tron',
+      [MultichainNetworks.TRON_NILE]: 'Tron (nile)',
+      [MultichainNetworks.TRON_SHASTA]: 'Tron (shasta)',
+    } as const;
+
     it('merges EVM network configurations with non-EVM multichain entries', () => {
       const state = getEvmState();
       const configs = getMultichainNetworkConfigurationsByChainId(state);
@@ -1245,13 +1270,13 @@ describe('Multichain Selectors', () => {
       });
     });
 
-    it('uses legacy provider display names for every synthetic non-EVM network', () => {
+    it('uses expected display names for every synthetic non-EVM network', () => {
       const configs =
         getMultichainNetworkConfigurationsByChainId(getEvmState());
 
       for (const chainId of SYNTHETIC_MULTICHAIN_CHAIN_IDS) {
         expect(configs[chainId].name).toBe(
-          MULTICHAIN_PROVIDER_CONFIGS[chainId].nickname,
+          EXPECTED_SYNTHETIC_NETWORK_NAMES[chainId],
         );
       }
     });
@@ -1346,13 +1371,13 @@ describe('Multichain Selectors', () => {
       }
     });
 
-    it('preserves legacy provider tickers on synthetic non-EVM merged rows', () => {
+    it('preserves nativeCurrency on synthetic non-EVM merged rows', () => {
       const configs =
         getMultichainNetworkConfigurationsByChainId(getEvmState());
 
       for (const chainId of SYNTHETIC_MULTICHAIN_CHAIN_IDS) {
-        expect(configs[chainId].ticker).toBe(
-          MULTICHAIN_PROVIDER_CONFIGS[chainId].ticker,
+        expect(configs[chainId].nativeCurrency).toBe(
+          EXPECTED_SYNTHETIC_NATIVE_CURRENCY[chainId],
         );
       }
     });
