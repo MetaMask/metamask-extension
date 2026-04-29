@@ -773,58 +773,23 @@ export const getFormattedPriceImpactFiat = createSelector(
     formatPriceImpactFiat(activeQuote, currentCurrency),
 );
 
-const getQuoteStreamComplete = (state: BridgeAppState) =>
-  state.metamask.quoteStreamComplete;
-
-const _getBaseValidationErrors = createDeepEqualSelector(
+// Initially for gas-sponsored networks with a native reserve balance
+// logic, such as for Monad that needs 10 MON at all times.
+export const getInsufficientNativeReserveError = createSelector(
   [
-    getBridgeQuotes,
-    _getValidatedSrcAmount,
     getFromToken,
-    getFromAmount,
-    ({ metamask }: BridgeAppState) =>
-      selectMinimumBalanceForRentExemptionInSOL(metamask),
-    getQuoteRequest,
-    getTxAlerts,
     _getFromNativeBalance,
-    getFromTokenBalance,
-    ({ bridge: { txAlertStatus } }: BridgeAppState) => txAlertStatus,
-    getPriceImpact,
-    getPriceImpactThresholds,
-    (state: BridgeAppState) => isHardwareWallet(state as never),
-    getQuoteStreamComplete,
+    _getValidatedSrcAmount,
     getGasFeesSponsoredNetworkEnabled,
+    (state: BridgeAppState) => isHardwareWallet(state as never),
   ],
   (
-    { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
-    validatedSrcAmount,
     fromToken,
-    fromTokenInputValue,
-    minimumBalanceForRentExemptionInSOL,
-    quoteRequest,
-    txAlert,
     nativeBalance,
-    fromTokenBalance,
-    txAlertStatus,
-    priceImpactNumber,
-    { warning, error },
-    isHardwareWalletAccount,
-    quoteStreamCompleteData,
+    validatedSrcAmount,
     gasFeesSponsoredNetworkEnabledMap,
+    isHardwareWalletAccount,
   ) => {
-    const { gasIncluded, gasIncluded7702, gasSponsored } =
-      activeQuote?.quote ?? {};
-    // gasIncluded7702 and gasSponsored are gated at request time via
-    // useGasIncluded7702 (returns false for HW), so the backend won't
-    // return those flags for HW accounts.
-    // gasIncluded (STX path) works for HW wallets; only 7702/sponsored
-    // need gating. We also gate 7702/sponsored here as defense-in-depth.
-    const isGasless = isHardwareWalletAccount
-      ? gasIncluded
-      : gasIncluded || gasIncluded7702 || gasSponsored;
-
-    // For Monad and other networks requiring a minimum reserve balance.
-    // This logic is designed to run regardless of a quote being present.
     const isNetworkGasSponsored =
       !fromToken?.chainId || isNonEvmChainId(fromToken.chainId)
         ? false
@@ -848,22 +813,69 @@ const _getBaseValidationErrors = createDeepEqualSelector(
       0,
     );
 
-    const insufficientNativeReserveError =
-      minimumNativeBalanceToBeKeptInAccount !== '0' &&
+    return minimumNativeBalanceToBeKeptInAccount !== '0' &&
       nativeBalance &&
       validatedSrcAmount &&
       fromToken &&
       isNativeAddress(fromToken.assetId) &&
       maxSwappableNativeBalance.lt(validatedSrcAmount)
-        ? {
-            minimumNativeBalanceToBeKeptInAccount,
-            maxSwappableNativeBalance: maxSwappableNativeBalance.toString(),
-          }
-        : undefined;
+      ? {
+          minimumNativeBalanceToBeKeptInAccount,
+          maxSwappableNativeBalance: maxSwappableNativeBalance.toString(),
+        }
+      : undefined;
+  },
+);
 
-    const isInsufficientNativeReserveError = Boolean(
-      insufficientNativeReserveError,
-    );
+const getQuoteStreamComplete = (state: BridgeAppState) =>
+  state.metamask.quoteStreamComplete;
+
+const _getBaseValidationErrors = createDeepEqualSelector(
+  [
+    getBridgeQuotes,
+    _getValidatedSrcAmount,
+    getFromToken,
+    getFromAmount,
+    ({ metamask }: BridgeAppState) =>
+      selectMinimumBalanceForRentExemptionInSOL(metamask),
+    getQuoteRequest,
+    getTxAlerts,
+    _getFromNativeBalance,
+    getFromTokenBalance,
+    ({ bridge: { txAlertStatus } }: BridgeAppState) => txAlertStatus,
+    getPriceImpact,
+    getPriceImpactThresholds,
+    (state: BridgeAppState) => isHardwareWallet(state as never),
+    getQuoteStreamComplete,
+    getInsufficientNativeReserveError,
+  ],
+  (
+    { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
+    validatedSrcAmount,
+    fromToken,
+    fromTokenInputValue,
+    minimumBalanceForRentExemptionInSOL,
+    quoteRequest,
+    txAlert,
+    nativeBalance,
+    fromTokenBalance,
+    txAlertStatus,
+    priceImpactNumber,
+    { warning, error },
+    isHardwareWalletAccount,
+    quoteStreamCompleteData,
+    insufficientNativeReserveError,
+  ) => {
+    const { gasIncluded, gasIncluded7702, gasSponsored } =
+      activeQuote?.quote ?? {};
+    // gasIncluded7702 and gasSponsored are gated at request time via
+    // useGasIncluded7702 (returns false for HW), so the backend won't
+    // return those flags for HW accounts.
+    // gasIncluded (STX path) works for HW wallets; only 7702/sponsored
+    // need gating. We also gate 7702/sponsored here as defense-in-depth.
+    const isGasless = isHardwareWalletAccount
+      ? gasIncluded
+      : gasIncluded || gasIncluded7702 || gasSponsored;
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
@@ -871,7 +883,11 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     const minimumBalanceToKeep =
       srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
-        : minimumNativeBalanceToBeKeptInAccount;
+        : '0';
+
+    const isInsufficientNativeReserveError = Boolean(
+      insufficientNativeReserveError,
+    );
 
     return {
       isTxAlertPresent: Boolean(txAlert),
@@ -899,7 +915,6 @@ const _getBaseValidationErrors = createDeepEqualSelector(
                 .lte(validatedSrcAmount)
             : new BigNumber(nativeBalance).lte(0)),
       ),
-      insufficientNativeReserveError,
       isInsufficientNativeReserveError,
       // Shown after fetching quotes
       isInsufficientGasForQuote: Boolean(

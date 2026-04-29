@@ -1897,7 +1897,7 @@ describe('Bridge selectors', () => {
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
     });
 
-    it('should return isInsufficientGasBalance=true for gasIncluded7702 on Monad when native balance after trade < 10 MON', () => {
+    it('should return isInsufficientGasBalance=false for gasIncluded7702 on Monad when native balance after trade < 10 MON', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
@@ -1927,7 +1927,8 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
-      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+      // isInsufficientGasBalance is overshadowed by isInsufficientNativeReserve
+      expect(result.isInsufficientGasBalance).toStrictEqual(false);
     });
 
     it('should return isInsufficientGasBalance=false for gasIncluded7702 on Monad when native balance after trade >= 10 MON', () => {
@@ -1963,7 +1964,7 @@ describe('Bridge selectors', () => {
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
     });
 
-    it('should return populated insufficientNativeReserveError on Monad when native balance after trade < 10 MON', () => {
+    it('should return isInsufficientNativeReserveError=true on Monad when native balance after trade < 10 MON', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
@@ -1993,13 +1994,10 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
-      expect(result.insufficientNativeReserveError).toStrictEqual({
-        maxSwappableNativeBalance: '90',
-        minimumNativeBalanceToBeKeptInAccount: '10',
-      });
+      expect(result.isInsufficientNativeReserveError).toBe(true);
     });
 
-    it('should return undefined insufficientNativeReserveError on Monad when native balance after trade < 10 MON but user is using a Hardware Wallet', () => {
+    it('should return isInsufficientNativeReserveError=false on Monad when native balance after trade < 10 MON but user is using a Hardware Wallet', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
@@ -2032,10 +2030,10 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
-      expect(result.insufficientNativeReserveError).toStrictEqual(undefined);
+      expect(result.isInsufficientNativeReserveError).toBe(false);
     });
 
-    it('should return undefined insufficientNativeReserveError on Monad when native balance after trade >= 10 MON', () => {
+    it('should return isInsufficientNativeReserveError=false on Monad when native balance after trade >= 10 MON', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
@@ -2065,10 +2063,10 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
-      expect(result.insufficientNativeReserveError).toBeUndefined();
+      expect(result.isInsufficientNativeReserveError).toBe(false);
     });
 
-    it('should return undefined insufficientNativeReserveError on Solana even when trying to use full balance', () => {
+    it('should return isInsufficientNativeReserveError=false on Solana even when trying to use full balance', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
@@ -2101,7 +2099,7 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       // We don't apply such logic in Solana because this is handled by another validator
-      expect(result.insufficientNativeReserveError).toBeUndefined();
+      expect(result.isInsufficientNativeReserveError).toBe(false);
     });
   });
 

@@ -6,6 +6,7 @@ import {
   getBridgeUnavailableQuoteReason,
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
+  getInsufficientNativeReserveError,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
@@ -33,12 +34,12 @@ export const useBridgeAlerts = () => {
     getFormattedPriceImpactPercentage,
   );
   const formattedPriceImpactFiat = useSelector(getFormattedPriceImpactFiat);
+  const insufficientNativeReserveError = useSelector(getInsufficientNativeReserveError);
 
   const {
     isNoQuotesAvailable,
     isInsufficientGasForQuote,
     isInsufficientBalance,
-    insufficientNativeReserveError,
     isStockMarketClosed,
     isQuoteExpired,
     isPriceImpactWarning,
