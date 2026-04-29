@@ -16,13 +16,13 @@ import {
   RecoveryError,
   SeedlessOnboardingControllerErrorMessage,
 } from '@metamask/seedless-onboarding-controller';
+import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { Category, ErrorCode, Severity } from '@metamask/hw-wallet-sdk';
 import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
-import * as environment from '../../shared/lib/environment';
 import MetaMaskController from './metamask-controller';
 
 const mockToHardwareWalletError = jest.fn();
@@ -1226,23 +1226,7 @@ describe('MetaMaskController', function () {
     const registrationResponse = { id: 'credential-id' };
     const authenticationResponse = { id: 'assertion-id' };
 
-    beforeEach(function () {
-      jest
-        .spyOn(environment, 'getIsPasskeyFeatureEnabled')
-        .mockReturnValue(true);
-    });
-
     describe('#generatePasskeyRegistrationOptions', function () {
-      it('throws when passkey feature is disabled', async function () {
-        jest
-          .spyOn(environment, 'getIsPasskeyFeatureEnabled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.generatePasskeyRegistrationOptions(),
-        ).rejects.toThrow('Passkey feature is not enabled');
-      });
-
       it('delegates to passkey controller with prf availability', async function () {
         const generateRegistrationOptionsSpy = jest
           .spyOn(
@@ -1264,16 +1248,6 @@ describe('MetaMaskController', function () {
     });
 
     describe('#generatePasskeyAuthenticationOptions', function () {
-      it('throws when passkey feature is disabled', async function () {
-        jest
-          .spyOn(environment, 'getIsPasskeyFeatureEnabled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.generatePasskeyAuthenticationOptions(),
-        ).rejects.toThrow('Passkey feature is not enabled');
-      });
-
       it('delegates to passkey controller', async function () {
         const generateAuthenticationOptionsSpy = jest
           .spyOn(
@@ -1291,16 +1265,6 @@ describe('MetaMaskController', function () {
     });
 
     describe('#protectVaultKeyWithPasskey', function () {
-      it('throws when passkey feature is disabled', async function () {
-        jest
-          .spyOn(environment, 'getIsPasskeyFeatureEnabled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.protectVaultKeyWithPasskey(registrationResponse),
-        ).rejects.toThrow('Passkey feature is not enabled');
-      });
-
       it('requires password when onboarding is complete', async function () {
         jest
           .spyOn(metamaskController.onboardingController, 'state', 'get')
@@ -1380,16 +1344,6 @@ describe('MetaMaskController', function () {
     });
 
     describe('#unlockWithPasskey', function () {
-      it('throws when passkey feature is disabled', async function () {
-        jest
-          .spyOn(environment, 'getIsPasskeyFeatureEnabled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.unlockWithPasskey(authenticationResponse),
-        ).rejects.toThrow('Passkey feature is not enabled');
-      });
-
       it('throws when passkey is not registered', async function () {
         jest
           .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
@@ -1397,7 +1351,10 @@ describe('MetaMaskController', function () {
 
         await expect(
           metamaskController.unlockWithPasskey(authenticationResponse),
-        ).rejects.toThrow('Passkey is not registered');
+        ).rejects.toMatchObject({
+          name: 'PasskeyControllerError',
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        });
       });
 
       it('retrieves vault key and submits encryption key', async function () {
@@ -1433,7 +1390,10 @@ describe('MetaMaskController', function () {
           metamaskController.removePasskeyWithPasskeyVerification(
             authenticationResponse,
           ),
-        ).rejects.toThrow('Passkey is not registered');
+        ).rejects.toMatchObject({
+          name: 'PasskeyControllerError',
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        });
       });
 
       it('throws when passkey authentication verification fails', async function () {
@@ -1491,7 +1451,10 @@ describe('MetaMaskController', function () {
 
         await expect(
           metamaskController.removePasskeyWithPasswordVerification('password'),
-        ).rejects.toThrow('Passkey is not registered');
+        ).rejects.toMatchObject({
+          name: 'PasskeyControllerError',
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        });
 
         expect(verifyPasswordSpy).not.toHaveBeenCalled();
       });
@@ -1517,19 +1480,6 @@ describe('MetaMaskController', function () {
     });
 
     describe('#changePasswordWithPasskeyVerification', function () {
-      it('throws when passkey feature is disabled', async function () {
-        jest
-          .spyOn(environment, 'getIsPasskeyFeatureEnabled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.changePasswordWithPasskeyVerification(
-            'new-password',
-            authenticationResponse,
-          ),
-        ).rejects.toThrow('Passkey feature is not enabled');
-      });
-
       it('throws when passkey is not registered', async function () {
         jest
           .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
@@ -1540,7 +1490,10 @@ describe('MetaMaskController', function () {
             'new-password',
             authenticationResponse,
           ),
-        ).rejects.toThrow('Passkey is not registered');
+        ).rejects.toMatchObject({
+          name: 'PasskeyControllerError',
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        });
       });
 
       it('throws when passkey authentication verification fails', async function () {
@@ -1686,7 +1639,7 @@ describe('MetaMaskController', function () {
     });
 
     describe('#changePassword', function () {
-      it('removes passkey when non-social login flow has enrolled passkey', async function () {
+      it('does not remove passkey after keyring password change', async function () {
         const releaseLock = jest.fn();
         jest
           .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
@@ -1697,7 +1650,7 @@ describe('MetaMaskController', function () {
             'getIsSocialLoginFlow',
           )
           .mockReturnValue(false);
-        jest
+        const changePasswordSpy = jest
           .spyOn(metamaskController.keyringController, 'changePassword')
           .mockResolvedValue();
         jest
@@ -1709,7 +1662,8 @@ describe('MetaMaskController', function () {
 
         await metamaskController.changePassword('new-password', 'old-password');
 
-        expect(removePasskeySpy).toHaveBeenCalledTimes(1);
+        expect(changePasswordSpy).toHaveBeenCalledWith('new-password');
+        expect(removePasskeySpy).not.toHaveBeenCalled();
         expect(releaseLock).toHaveBeenCalledTimes(1);
       });
     });

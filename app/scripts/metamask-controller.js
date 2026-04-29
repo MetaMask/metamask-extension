@@ -38,6 +38,11 @@ import {
   SubjectType,
 } from '@metamask/permission-controller';
 import {
+  PasskeyControllerError,
+  PasskeyControllerErrorCode,
+  PasskeyControllerErrorMessage,
+} from '@metamask/passkey-controller';
+import {
   METAMASK_DOMAIN,
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
@@ -155,6 +160,7 @@ import {
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
+import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../shared/constants/passkey';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -213,7 +219,6 @@ import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
-  getIsPasskeyFeatureEnabled,
   getIsSeedlessOnboardingFeatureEnabled,
   getEnabledAdvancedPermissions,
   getIsPerpsIncludedInBuild,
@@ -4404,9 +4409,6 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialCreationOptionsJSON>}
    */
   async generatePasskeyRegistrationOptions({ prfAvailable } = {}) {
-    if (!getIsPasskeyFeatureEnabled()) {
-      throw new Error('Passkey feature is not enabled');
-    }
     return this.passkeyController.generateRegistrationOptions({ prfAvailable });
   }
 
@@ -4416,9 +4418,6 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialRequestOptionsJSON>}
    */
   async generatePasskeyAuthenticationOptions() {
-    if (!getIsPasskeyFeatureEnabled()) {
-      throw new Error('Passkey feature is not enabled');
-    }
     return this.passkeyController.generateAuthenticationOptions();
   }
 
@@ -4431,9 +4430,6 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async protectVaultKeyWithPasskey(registrationResponse, password) {
-    if (!getIsPasskeyFeatureEnabled()) {
-      throw new Error('Passkey feature is not enabled');
-    }
     const { completedOnboarding } = this.onboardingController.state;
     if (completedOnboarding) {
       // password is required when onboarding is complete
@@ -4458,11 +4454,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async unlockWithPasskey(authenticationResponse) {
-    if (!getIsPasskeyFeatureEnabled()) {
-      throw new Error('Passkey feature is not enabled');
-    }
     if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new Error('Passkey is not registered');
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
     }
     const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
       authenticationResponse,
@@ -4478,7 +4474,10 @@ export default class MetamaskController extends EventEmitter {
    */
   async removePasskeyWithPasskeyVerification(authenticationResponse) {
     if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new Error('Passkey is not registered');
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
     }
     const verified = await this.passkeyController.verifyPasskeyAuthentication(
       authenticationResponse,
@@ -4498,7 +4497,10 @@ export default class MetamaskController extends EventEmitter {
    */
   async removePasskeyWithPasswordVerification(password) {
     if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new Error('Passkey is not registered');
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
     }
     await this.verifyPassword(password);
     this.passkeyController.removePasskey();
@@ -4516,11 +4518,11 @@ export default class MetamaskController extends EventEmitter {
     newPassword,
     authenticationResponse,
   ) {
-    if (!getIsPasskeyFeatureEnabled()) {
-      throw new Error('Passkey feature is not enabled');
-    }
     if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new Error('Passkey is not registered');
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
     }
 
     // verify passkey authentication
@@ -4788,11 +4790,6 @@ export default class MetamaskController extends EventEmitter {
           );
           throw err;
         }
-      }
-
-      // Passkey is registered but not authenticated when changing password, remove it
-      if (!isSocialLoginFlow && this.passkeyController.isPasskeyEnrolled()) {
-        this.passkeyController.removePasskey();
       }
     } catch (error) {
       log.error('error while changing password', error);
@@ -9051,7 +9048,7 @@ export default class MetamaskController extends EventEmitter {
       this.passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
         this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
         this.appStateController.setPasskeyAutoUnlockSuppressed(false);
-      }, 3000);
+      }, PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
     } catch (error) {
       log.error('Error setting locked state', error);
       throw error;
