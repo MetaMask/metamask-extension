@@ -19,17 +19,18 @@ jest.mock('fs', () => ({
 }));
 
 function makeBenchmarkResults(
+  metricId: string,
   overrides: Partial<BenchmarkResults> = {},
 ): BenchmarkResults {
   return {
     testTitle: 'test',
     persona: 'standard',
-    mean: { uiStartup: 1500 },
-    min: { uiStartup: 1000 },
-    max: { uiStartup: 2000 },
-    stdDev: { uiStartup: 200 },
-    p75: { uiStartup: 1800 },
-    p95: { uiStartup: 2200 },
+    mean: { [metricId]: 1500 },
+    min: { [metricId]: 1000 },
+    max: { [metricId]: 2000 },
+    stdDev: { [metricId]: 200 },
+    p75: { [metricId]: 1800 },
+    p95: { [metricId]: 2200 },
     ...overrides,
   };
 }
@@ -49,11 +50,14 @@ describe('compare-benchmarks', () => {
         {
           name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
           data: {
-            onboardingImportWallet: makeBenchmarkResults({
-              p75: { importWalletToSocialScreen: 1500 },
-              p95: { importWalletToSocialScreen: 2000 },
-              mean: { importWalletToSocialScreen: 1200 },
-            }),
+            onboardingImportWallet: makeBenchmarkResults(
+              'importWalletToSocialScreen',
+              {
+                p75: { importWalletToSocialScreen: 1500 },
+                p95: { importWalletToSocialScreen: 2000 },
+                mean: { importWalletToSocialScreen: 1200 },
+              },
+            ),
           },
         },
       ];
@@ -68,11 +72,14 @@ describe('compare-benchmarks', () => {
         {
           name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
           data: {
-            onboardingImportWallet: makeBenchmarkResults({
-              p75: { importWalletToSocialScreen: 1500 },
-              p95: { importWalletToSocialScreen: 2000 },
-              mean: { importWalletToSocialScreen: 1200 },
-            }),
+            onboardingImportWallet: makeBenchmarkResults(
+              'importWalletToSocialScreen',
+              {
+                p75: { importWalletToSocialScreen: 1500 },
+                p95: { importWalletToSocialScreen: 2000 },
+                mean: { importWalletToSocialScreen: 1200 },
+              },
+            ),
           },
         },
       ];
@@ -87,7 +94,7 @@ describe('compare-benchmarks', () => {
         {
           name: 'benchmark-chrome-browserify-startupStandardHome',
           data: {
-            startupStandardHome: makeBenchmarkResults({
+            startupStandardHome: makeBenchmarkResults('uiStartup', {
               p75: { uiStartup: 99999 },
               p95: { uiStartup: 99999 },
               mean: { uiStartup: 99999 },
@@ -108,11 +115,14 @@ describe('compare-benchmarks', () => {
         {
           name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
           data: {
-            onboardingImportWallet: makeBenchmarkResults({
-              p75: { importWalletToSocialScreen: 99999 },
-              p95: { importWalletToSocialScreen: 99999 },
-              mean: { importWalletToSocialScreen: 99999 },
-            }),
+            onboardingImportWallet: makeBenchmarkResults(
+              'importWalletToSocialScreen',
+              {
+                p75: { importWalletToSocialScreen: 99999 },
+                p95: { importWalletToSocialScreen: 99999 },
+                mean: { importWalletToSocialScreen: 99999 },
+              },
+            ),
           },
         },
       ];
@@ -133,11 +143,14 @@ describe('compare-benchmarks', () => {
         {
           name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
           data: {
-            onboardingImportWallet: makeBenchmarkResults({
-              p75: { importWalletToSocialScreen: 1500 },
-              p95: { importWalletToSocialScreen: 2000 },
-              mean: { importWalletToSocialScreen: 1200 },
-            }),
+            onboardingImportWallet: makeBenchmarkResults(
+              'importWalletToSocialScreen',
+              {
+                p75: { importWalletToSocialScreen: 1500 },
+                p95: { importWalletToSocialScreen: 2000 },
+                mean: { importWalletToSocialScreen: 1200 },
+              },
+            ),
           },
         },
       ];
@@ -173,7 +186,7 @@ describe('compare-benchmarks', () => {
         {
           name: 'benchmark-chrome-webpack-startupStandardHome',
           data: {
-            startupStandardHome: makeBenchmarkResults({
+            startupStandardHome: makeBenchmarkResults('uiStartup', {
               p75: { uiStartup: 1800 },
               p95: { uiStartup: 2200 },
               mean: { uiStartup: 1500 },
@@ -212,7 +225,7 @@ describe('compare-benchmarks', () => {
           {
             name: 'benchmark-chrome-browserify-startupPowerUserHome',
             data: {
-              startupPowerUserHome: makeBenchmarkResults({
+              startupPowerUserHome: makeBenchmarkResults('uiStartup', {
                 persona: 'powerUser',
                 mean: { uiStartup: 3000 },
                 stdDev: { uiStartup: 1200 },
@@ -250,7 +263,7 @@ describe('compare-benchmarks', () => {
           {
             name: 'benchmark-chrome-browserify-startupPowerUserHome',
             data: {
-              startupPowerUserHome: makeBenchmarkResults({
+              startupPowerUserHome: makeBenchmarkResults('uiStartup', {
                 persona: 'powerUser',
                 mean: { uiStartup: 3000 },
                 stdDev: { uiStartup: 300 },
@@ -279,11 +292,14 @@ describe('compare-benchmarks', () => {
         {
           name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
           data: {
-            onboardingImportWallet: makeBenchmarkResults({
-              p75: { importWalletToSocialScreen: 99999 },
-              p95: { importWalletToSocialScreen: 99999 },
-              mean: { importWalletToSocialScreen: 99999 },
-            }),
+            onboardingImportWallet: makeBenchmarkResults(
+              'importWalletToSocialScreen',
+              {
+                p75: { importWalletToSocialScreen: 99999 },
+                p95: { importWalletToSocialScreen: 99999 },
+                mean: { importWalletToSocialScreen: 99999 },
+              },
+            ),
           },
         },
       ];
@@ -306,7 +322,7 @@ describe('compare-benchmarks', () => {
         {
           name: 'unknown-benchmark',
           data: {
-            'unknown-benchmark': makeBenchmarkResults(),
+            'unknown-benchmark': makeBenchmarkResults('uiStartup'),
           },
         },
       ];
