@@ -6081,21 +6081,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/config-registry-controller@file:../core/packages/config-registry-controller::locator=metamask-crx%40workspace%3A.":
+"@metamask/config-registry-controller@npm:^0.2.0":
   version: 0.2.0
-  resolution: "@metamask/config-registry-controller@file:../core/packages/config-registry-controller#../core/packages/config-registry-controller::hash=10d7bf&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/config-registry-controller@npm:0.2.0"
   dependencies:
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^11.20.0"
-    "@metamask/keyring-controller": "npm:^25.2.0"
-    "@metamask/messenger": "npm:^1.1.1"
+    "@metamask/base-controller": "npm:^9.0.1"
+    "@metamask/controller-utils": "npm:^11.19.0"
+    "@metamask/keyring-controller": "npm:^25.1.1"
+    "@metamask/messenger": "npm:^1.0.0"
     "@metamask/polling-controller": "npm:^16.0.4"
-    "@metamask/profile-sync-controller": "npm:^28.0.2"
+    "@metamask/profile-sync-controller": "npm:^28.0.1"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.0"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.9.0"
     reselect: "npm:^5.1.1"
-  checksum: 10/b41de54e3201237dd4c48860295f3bd3a26c4767e0ae543a337fe86bf548d5e8e26aaf23d11f08df7a5eed0147c4a83348e74b4e6016fa9d9bc26f6e3a12f926
+  checksum: 10/37011e0c2c0e96049fe58fb6fdb5109408bebdff642f296318c40f9828708930845c9f77d13002e0fbc5f74fe33e32e36ea0ab6594943af9ce5183ebfd3624f8
   languageName: node
   linkType: hard
 
@@ -34092,7 +34092,7 @@ __metadata:
     "@metamask/claims-controller": "npm:^0.4.2"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:^0.1.1"
-    "@metamask/config-registry-controller": ../core/packages/config-registry-controller
+    "@metamask/config-registry-controller": "npm:^0.2.0"
     "@metamask/connectivity-controller": "npm:^0.1.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.18.0"
