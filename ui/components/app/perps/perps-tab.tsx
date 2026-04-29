@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -16,6 +16,7 @@ import {
 import { getUseExternalServices } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import ErrorBoundary from '../error-boundary/error-boundary';
 import { PerpsView } from './perps-view';
 import { PerpsViewStreamBoundary } from './perps-view-stream-boundary';
@@ -27,11 +28,25 @@ import { PerpsToastProvider } from './perps-toast';
  * When Basic Functionality (useExternalServices) is off, renders an
  * informational empty state instead of mounting the stream boundary,
  * which prevents the background WebSocket connection from opening.
+ *
+ * If the user toggles Basic Functionality off while the Perps tab is
+ * mounted, we also call perpsDisconnect to tear down the background
+ * WebSocket so it doesn't linger until the next page reload.
  */
 export function PerpsTab() {
   const useExternalServices = useSelector(getUseExternalServices);
   const navigate = useNavigate();
   const t = useI18nContext();
+
+  const prevExternalServices = useRef(useExternalServices);
+  useEffect(() => {
+    if (prevExternalServices.current && !useExternalServices) {
+      submitRequestToBackground('perpsDisconnect').catch((err: unknown) => {
+        console.debug('[PerpsTab] perpsDisconnect failed:', err);
+      });
+    }
+    prevExternalServices.current = useExternalServices;
+  }, [useExternalServices]);
 
   if (!useExternalServices) {
     return (
