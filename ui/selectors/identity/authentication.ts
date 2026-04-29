@@ -35,3 +35,18 @@ export const selectSessionData = createSelector([getMetamask], (metamask) =>
     ? Object.entries(metamask.srpSessionData)?.[0]?.[1]
     : undefined,
 );
+
+/**
+ * Selector to determine if profile pairing has completed at least once on this device.
+ *
+ * Monotonic flag — only ever transitions false → true, never reset.
+ * Used by `useAutoProfilePairing` to decide whether the initial pairing call
+ * is still needed after install/upgrade.
+ *
+ * @param {AppState} state - The current state of the Redux store.
+ * @returns {boolean} Returns true if `performProfilePairing` has ever succeeded, false otherwise.
+ */
+export const selectHasPairedAtLeastOnce = createSelector(
+  [getMetamask],
+  (metamask) => metamask.hasPairedAtLeastOnce ?? false,
+);

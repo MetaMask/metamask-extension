@@ -7344,6 +7344,37 @@ export function performSignIn(): ThunkAction<
 }
 
 /**
+ * Pairs all SRPs of the wallet via the AuthenticationController.
+ *
+ * Delegates to `performProfilePairing` on the background controller, which is
+ * a no-op when fewer than 2 SRPs exist and swallows non-fatal errors internally.
+ * Intended to be called by the `useAutoProfilePairing` hook.
+ *
+ * @returns A thunk action that performs the profile pairing operation.
+ */
+export function performProfilePairing(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return async () => {
+    try {
+      await submitRequestToBackground('performProfilePairing');
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Unknown error occurred during profile pairing.';
+      logErrorWithMessage(errorMessage);
+      throw error;
+    }
+  };
+}
+
+/**
  * Initiates the sign-out process.
  *
  * This function dispatches a request to the background script to perform the sign-out operation.

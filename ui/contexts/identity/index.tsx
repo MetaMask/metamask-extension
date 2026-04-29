@@ -4,6 +4,7 @@ import { useContactSyncing } from '../../hooks/identity/useContactSyncing';
 import {
   useAutoSignIn,
   useAutoSignOut,
+  useAutoProfilePairing,
 } from '../../hooks/identity/useAuthentication';
 
 export const MetamaskIdentityProvider: React.FC = ({ children }) => {
@@ -13,6 +14,8 @@ export const MetamaskIdentityProvider: React.FC = ({ children }) => {
     useContactSyncing();
   const { autoSignIn, shouldAutoSignIn } = useAutoSignIn();
   const { autoSignOut, shouldAutoSignOut } = useAutoSignOut();
+  const { autoProfilePairing, shouldAutoProfilePairing } =
+    useAutoProfilePairing();
 
   /**
    * Backup and sync effects
@@ -46,6 +49,12 @@ export const MetamaskIdentityProvider: React.FC = ({ children }) => {
       autoSignOut();
     }
   }, [shouldAutoSignOut, autoSignOut]);
+
+  useEffect(() => {
+    if (shouldAutoProfilePairing) {
+      autoProfilePairing();
+    }
+  }, [shouldAutoProfilePairing, autoProfilePairing]);
 
   return <>{children}</>;
 };
