@@ -797,6 +797,16 @@
     "yargs-parser": "^21.1.1",
     "yazl": "^3.3.1"
   },
+  "previewBuilds": {
+    "@metamask/tron-wallet-snap": {
+      "type": "non-breaking",
+      "previewVersion": "1.25.3-preview-779711e"
+    },
+    "@metamask/bitcoin-wallet-snap": {
+      "type": "non-breaking",
+      "previewVersion": "1.10.1-preview-fa702f3"
+    }
+  },
   "engines": {
     "node": ">=24.13.0",
     "yarn": "^4.12.0"
