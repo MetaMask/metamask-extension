@@ -543,10 +543,10 @@ const PerpsOrderEntryPage: React.FC = () => {
     );
     const slLiquidationInvalid = Boolean(
       sl?.trim() &&
-        !isStopLossSafeFromLiquidation(sl, {
-          liquidationPrice,
-          direction: dir,
-        }),
+      !isStopLossSafeFromLiquidation(sl, {
+        liquidationPrice,
+        direction: dir,
+      }),
     );
 
     return tpInvalid || slInvalid || slLiquidationInvalid;
