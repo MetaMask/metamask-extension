@@ -43,13 +43,13 @@ assemble_performance_data() {
         exit 1
     fi
 
-    # Startup benchmarks run on ALL browser/buildType combinations (chrome/firefox × browserify/webpack).
+    # Startup benchmarks run on chrome/firefox × webpack (test build).
     # They are merged under the historical preset key "pageLoad" (legacy name in performance_data.json),
     # with entries keyed as "{browser}-{buildType}-{presetName}"
-    # (e.g. "chrome-browserify-startupStandardHome").
+    # (e.g. "chrome-webpack-startupStandardHome").
     #
-    # Interaction, user journey, and dapp page load presets only run on chrome-browserify (the canonical
-    # production target) and are stored under their own preset key (e.g. "interactionUserActions",
+    # Interaction, user journey, and dapp page load presets only run on chrome-webpack (CI test build)
+    # and are stored under their own preset key (e.g. "interactionUserActions",
     # "userJourneyAssets", "pageLoadBenchmark").
     local STARTUP_PRESETS=("startupStandardHome" "startupPowerUserHome")
 
@@ -69,7 +69,7 @@ assemble_performance_data() {
 
         # Filename format: benchmark-{browser}-{buildType}-{preset}.json
         # browser:   chrome | firefox
-        # buildType: browserify | webpack
+        # buildType: webpack (CI benchmark artifacts)
         local base_name browser build_type preset_name
         base_name=$(basename "${file}" .json | sed 's/^benchmark-//')
         browser=$(echo "${base_name}" | cut -d'-' -f1)
@@ -97,12 +97,12 @@ assemble_performance_data() {
                 --arg key "${startup_key}" \
                 --argjson data "${preset_data}" \
                 '. + {($key): $data}')
-        elif [[ "${browser}" == "chrome" && "${build_type}" == "browserify" ]]; then
-            # For interaction, user journey, and dapp page load presets, only store chrome-browserify —
+        elif [[ "${browser}" == "chrome" && "${build_type}" == "webpack" ]]; then
+            # For interaction, user journey, and dapp page load presets, only store chrome-webpack —
             # that is what the PR comment displays.
             local preset_data
             preset_data=$(jq . "${file}")
-            echo "  Adding preset '${preset_name}' (chrome-browserify)" >&2
+            echo "  Adding preset '${preset_name}' (chrome-webpack)" >&2
             presets_json=$(echo "${presets_json}" | jq \
                 --arg key "${preset_name}" \
                 --argjson data "${preset_data}" \

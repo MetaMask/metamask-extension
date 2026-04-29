@@ -120,15 +120,10 @@ export const selectPendingApprovalsForNavigation = createDeepEqualSelector(
     }),
 );
 
-const internalSelectPendingApproval = createSelector(
+export const internalSelectPendingApproval = createSelector(
   getPendingApprovals,
   (_state: ApprovalsMetaMaskState, id: string) => id,
   (approvals, id) => approvals.find(({ id: approvalId }) => approvalId === id),
-);
-
-export const selectPendingApproval = createDeepEqualSelector(
-  internalSelectPendingApproval,
-  (approval) => approval,
 );
 
 export const getApprovalsByOrigin = (

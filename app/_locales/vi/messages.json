@@ -193,6 +193,9 @@
   "addAUrl": {
     "message": "Thêm URL"
   },
+  "addAWallet": {
+    "message": "Thêm ví"
+  },
   "addAccount": {
     "message": "Thêm tài khoản"
   },
@@ -1086,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "Chi phí thấp nhất"
   },
+  "bridgeMalicious": {
+    "message": "Độc hại"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Token độc hại"
+  },
   "bridgeMarketClosedAction": {
     "message": "Thị trường đã đóng cửa"
   },
@@ -1106,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "Không có phí MM"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "Không có thông tin giá"
   },
   "bridgePoints": {
     "message": "Điểm ước tính",
@@ -1202,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "Đang nhận trên chuỗi đích"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Tặng thưởng đáng ngờ"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Nguồn cung tập trung"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Hành vi đáng ngờ"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Số lượng nhà giao dịch bị thổi phồng"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Khối lượng giao dịch giả"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Hoạt động bot dày đặc"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Nguồn cung chưa được công bố"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "Phí mua cao"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "Phí bán cao"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "Phí chuyển khoản cao"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Rủi ro bẫy lừa đảo"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Mạo danh"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Mạo danh tài sản nhạy cảm"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Có khả năng mạo danh"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Có thể là mạo danh"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Nội dung không phù hợp"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Khối lượng giả mạo"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Thanh khoản bị khóa thấp"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "Người tạo có uy tín thấp"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Đã biết là độc hại"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Metadata đáng ngờ"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Có khả năng thao túng giá"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Rủi ro rút vốn bất ngờ"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Người tạo bị trừng phạt"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Giống hợp đồng độc hại"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Hoạt động của bot khi ra mắt"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Tin nhắn rác"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Mã đáng ngờ"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Lỗ hổng token"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Token không thể bán"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Giá không ổn định"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Giao dịch giả tạo"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Chọn tài khoản đích"
   },
@@ -1257,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "Đang hoán đổi $1 thành $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "Đáng ngờ"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Token đáng ngờ"
   },
   "bridgeTo": {
     "message": "Cầu nối đến"
@@ -1729,6 +1843,9 @@
   },
   "connect": {
     "message": "Kết nối"
+  },
+  "connectAHardwareWallet": {
+    "message": "Kết nối ví cứng"
   },
   "connectAccounts": {
     "message": "Kết nối tài khoản"
@@ -3008,6 +3125,9 @@
   "gasUsed": {
     "message": "Gas đã dùng"
   },
+  "gatorNoJustificationProvided": {
+    "message": "Không có lý do nào được đưa ra cho quyền này"
+  },
   "gatorPermissionAnnualFrequency": {
     "message": "Hằng năm",
     "description": "Time period for annual recurring permissions redemption"
@@ -3079,6 +3199,14 @@
   "gatorPermissionsStartDate": {
     "message": "Ngày bắt đầu",
     "description": "Label for the start date of a permission"
+  },
+  "gatorPermissionsStatusExpired": {
+    "message": "Đã hết hạn",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Đã bị thu hồi",
+    "description": "Tag label for a gator permission that has been revoked"
   },
   "gatorPermissionsStreamRate": {
     "message": "Tốc độ thanh toán liên tục",
@@ -3359,6 +3487,9 @@
   "importAWallet": {
     "message": "Nhập ví"
   },
+  "importAWalletDescription": {
+    "message": "Sử dụng cụm từ khôi phục có 12, 18 hoặc 24 từ"
+  },
   "importAccountError": {
     "message": "Lỗi khi nhập tài khoản."
   },
@@ -3389,6 +3520,9 @@
   },
   "importAnAccount": {
     "message": "Nhập tài khoản"
+  },
+  "importAnAccountDescription": {
+    "message": "Thông qua khóa riêng tư"
   },
   "importNFT": {
     "message": "Nhập NFT"
@@ -4090,6 +4224,102 @@
     "message": "$1 muốn sử dụng $2 Snap",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdAssetBonusAccruing": {
+    "message": "Đang tích lũy khoản thưởng tiếp theo",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "Nhận thưởng $1",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "Thưởng hằng năm ước tính",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "Thông tin thưởng của bạn",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "Dự đoán số tiền bạn sẽ nhận được trong một năm dựa trên số dư và lãi suất hiện tại. Lãi suất có thể thay đổi.",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "Tìm hiểu thêm.",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "Tổng khoản thưởng bạn đã nhận được kể từ khi bắt đầu.",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "$1% khoản thưởng theo năm mà bạn nhận được chỉ bằng cách nắm giữ mUSD. Bạn có thể nhận thưởng hằng ngày trên Linea. $2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "Thưởng trọn đời đã nhận được",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "Không có thưởng tích lũy",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "Thưởng $1%",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "Thưởng của bạn",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "Thưởng hằng ngày",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "Được đảm bảo bằng đồng đô la Mỹ",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "Không bị khóa vốn",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "Không có phí MetaMask",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "$1% thưởng theo năm",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "Nhận ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " bằng cách chuyển đổi USDC, USDT và DAI sang mUSD.",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "Tìm hiểu thêm",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "Chuyển đổi đồng ổn định của bạn",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "Số dư",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "Vị thế của bạn",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "Giá trị",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
+  },
   "musdBonusExplanation": {
     "message": "Chuyển đổi đồng ổn định của bạn sang mUSD và nhận thưởng quy đổi theo năm lên đến $1% mà bạn có thể nhận hằng ngày. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
@@ -4193,6 +4423,10 @@
   "musdMetaMaskUsd": {
     "message": "MetaMask USD",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "Áp dụng điều khoản."
@@ -4756,6 +4990,14 @@
   "notificationTransactionSuccessView": {
     "message": "Xem trên $1",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
+  },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "Giao dịch không thành công! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "Giao dịch đã được xác nhận!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
   },
   "notifications": {
     "message": "Thông báo"
@@ -5420,7 +5662,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Số dư Hợp đồng vĩnh cửu khả dụng: "
+    "message": "Số dư khả dụng: "
   },
   "perpsAvailableToAdd": {
     "message": "Có thể cộng"
@@ -5488,6 +5730,12 @@
   },
   "perpsContactSupport": {
     "message": "Liên hệ bộ phận hỗ trợ"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "MetaMask Hợp đồng vĩnh cửu chỉ hỗ trợ giao dịch với ký quỹ riêng biệt. Bạn cần đóng vị thế ký quỹ chéo trước khi có thể giao dịch trên MetaMask."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Không hỗ trợ ký quỹ chéo"
   },
   "perpsDateToday": {
     "message": "Hôm nay"
@@ -5770,10 +6018,6 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Đảo vị thế bán khống của bạn thành mua khống"
   },
-  "perpsSaveChanges": {
-    "message": "Lưu thay đổi",
-    "description": "Button text for saving TP/SL changes"
-  },
   "perpsSearchMarkets": {
     "message": "Tìm kiếm thị trường"
   },
@@ -5983,6 +6227,9 @@
   },
   "perpsTrades": {
     "message": "Giao dịch"
+  },
+  "perpsTriggerPrice": {
+    "message": "Giá kích hoạt"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "Đòn bẩy sẽ khuếch đại cả lợi nhuận và thua lỗ. Với đòn bẩy 40x, biến động giá 1% tương đương với lợi nhuận hoặc thua lỗ 40% trên số tiền ký quỹ của bạn."

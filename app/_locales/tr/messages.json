@@ -193,6 +193,9 @@
   "addAUrl": {
     "message": "URL ekle"
   },
+  "addAWallet": {
+    "message": "Bir cüzdan ekleyin"
+  },
   "addAccount": {
     "message": "Hesap ekleyin"
   },
@@ -1086,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "En düşük maliyet"
   },
+  "bridgeMalicious": {
+    "message": "Kötü amaçlı"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Kötü amaçlı tokenlar"
+  },
   "bridgeMarketClosedAction": {
     "message": "Piyasa kapalı"
   },
@@ -1106,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "MM ücreti yok"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "Fiyat bilgisi yok"
   },
   "bridgePoints": {
     "message": "Tah. puanlar",
@@ -1202,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "Hedef zincirde alınıyor"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Şüpheli airdrop"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Konsantre arz"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Şüpheli davranış"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Şişirilmiş yatırımcı sayısı"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Sahte hacim"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Yoğun bot aktivitesi"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Açıklanmamış arz"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "Yüksel alış ücreti"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "Yüksek satış ücreti"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "Yüksek transfer ücreti"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Honeypot (bal küpü/satış engeli) riski"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Taklitçi"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Hassas bir varlığı taklit ediyor"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Muhtemel taklitçi"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Olası taklitçi"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Uygunsuz içerik"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Yapay hacim"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Düşük kilitli likidite"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "İçerik oluşturucunun itibarı düşük"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Kötü amaçlı olarak biliniyor"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Şüpheli meta veri"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Olası fiyat manipülasyonu"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Rugpull (likidite boşaltma) riski"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Yaptırım uygulanan içerik oluşturucu"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Kötü amaçlı sözleşmeye benziyor"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Lansman sırasında bot aktivitesi"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Spam metin"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Şüpheli kod"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Token arka kapısı"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Satılamayan token"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "İstikrarsız fiyat"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Wash trading (kendi kendine işlem yaparak hacim şişirme)"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Hedef hesap seçin"
   },
@@ -1257,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "$1 ile $2 swap ediliyor",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "Şüpheli"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Şüpheli tokenlar"
   },
   "bridgeTo": {
     "message": "Köprü yapılan:"
@@ -1729,6 +1843,9 @@
   },
   "connect": {
     "message": "Bağla"
+  },
+  "connectAHardwareWallet": {
+    "message": "Bir donanım cüzdanı bağlayın"
   },
   "connectAccounts": {
     "message": "Hesapları bağla"
@@ -3008,6 +3125,9 @@
   "gasUsed": {
     "message": "Kullanılan gaz"
   },
+  "gatorNoJustificationProvided": {
+    "message": "İzin için gerekçe sağlanmadı"
+  },
   "gatorPermissionAnnualFrequency": {
     "message": "Yıllık",
     "description": "Time period for annual recurring permissions redemption"
@@ -3079,6 +3199,14 @@
   "gatorPermissionsStartDate": {
     "message": "Başlangıç tarihi",
     "description": "Label for the start date of a permission"
+  },
+  "gatorPermissionsStatusExpired": {
+    "message": "Süresi doldu",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Iptal edildi",
+    "description": "Tag label for a gator permission that has been revoked"
   },
   "gatorPermissionsStreamRate": {
     "message": "Akış hızı",
@@ -3359,6 +3487,9 @@
   "importAWallet": {
     "message": "Bir cüzdanı içe aktarın"
   },
+  "importAWalletDescription": {
+    "message": "12, 18 veya 24 sözcükten oluşan anahtar cümle kullanarak"
+  },
   "importAccountError": {
     "message": "Hesap içe aktarılırken hata oluştu."
   },
@@ -3389,6 +3520,9 @@
   },
   "importAnAccount": {
     "message": "Bir hesabı içe aktar"
+  },
+  "importAnAccountDescription": {
+    "message": "Özel anahtar ile"
   },
   "importNFT": {
     "message": "NFT'yi içe aktar"
@@ -4090,6 +4224,102 @@
     "message": "$1 $2 Snap kullanmak istiyor",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdAssetBonusAccruing": {
+    "message": "Sonraki biriken bonus",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "$1 bonus alın",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "Tahmini yıllık bonus",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "Bonus bilgileriniz",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "Mevcut bakiyenize ve oranınıza göre bir yıl içinde kazanabileceğiniz tahmini tutar. Oran değişkendir ve farklılık gösterebilir.",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "Daha fazla bilgi edinin.",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "Başladığınızdan bu yana alınan toplam bonus.",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "mUSD tutarak kazandığınız %$1 yıllıklandırılmış bonus. Linea üzerinde günlük olarak alabilirsiniz. $2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "Toplam bonus alındı",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "Biriken bonus yok",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "%$1 bonus",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "Bonusunuz",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "Günlük bonus",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "Dolar destekli",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "Kilitleme yok",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "MetaMask ücreti yok",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "%$1 yıllıklandırılmış bonus",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "USDC, USDT ve DAI'yi mUSD'ye dönüştürerek ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " alın.",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "Daha fazla bilgi edin",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "Stabil kripto paralarınızı dönüştürün",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "Bakiye",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "Pozisyonunuz",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "Değer",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
+  },
   "musdBonusExplanation": {
     "message": "Stabil kripto paralarınızı mUSD'ye dönüştürün\nve günlük olarak alabileceğiniz %$1 orana kadar\nyıllıklandırılmış bonus kazanın. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
@@ -4193,6 +4423,10 @@
   "musdMetaMaskUsd": {
     "message": "MetaMask USD",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "Şartlar uygulanır."
@@ -4756,6 +4990,14 @@
   "notificationTransactionSuccessView": {
     "message": "$1 üzerinde görüntüle",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
+  },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "İşlem başarısız oldu! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "İşlem onaylandı!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
   },
   "notifications": {
     "message": "Cüzdanınızın kullanımı"
@@ -5420,7 +5662,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Kullanılabilir Perps bakiyesi: "
+    "message": "Kullanılabilir bakiye: "
   },
   "perpsAvailableToAdd": {
     "message": "Eklenebilir"
@@ -5488,6 +5730,12 @@
   },
   "perpsContactSupport": {
     "message": "Destek ile iletişime geç"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "MetaMask Sürekli Vadeli İşlem Sözleşmeleri, yalnızca izole marj ile işlem yapılmasını destekler. MetaMask’te işlem yapabilmek için önce çapraz marj pozisyonunuzu kapatmanız gerekir."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Çapraz marj desteklenmiyor"
   },
   "perpsDateToday": {
     "message": "Bugün"
@@ -5585,7 +5833,7 @@
     "message": "Fonlama ödemeleri"
   },
   "perpsFundingRate": {
-    "message": "Fonlama Oranı"
+    "message": "Fonlama oranı"
   },
   "perpsFundingRateTooltip": {
     "message": "Fiyatları piyasa ile uyumlu tutmak için yatırımcılar arasında saatlik bir işlem ücreti ödenir. Oran pozitifse uzunlar kısalara ödeme yapar. Negatifse kısalar uzunlara ödeme yapar."
@@ -5618,7 +5866,7 @@
     "message": "Limit"
   },
   "perpsLimitPrice": {
-    "message": "Limit Fiyatı"
+    "message": "Limit fiyatı"
   },
   "perpsLimitPriceAboveCurrentPrice": {
     "message": "Limit fiyat, güncel fiyatın üzerinde"
@@ -5679,24 +5927,24 @@
     "message": "Henüz işlem yok"
   },
   "perpsOpenInterest": {
-    "message": "Açık Faiz"
+    "message": "Açık faiz"
   },
   "perpsOpenInterestTooltip": {
     "message": "Bu sürekli vadeli işlem sözleşmesi için açık pozisyonların birleşik değeri"
   },
   "perpsOpenLong": {
-    "message": "$1 değerinde Long pozisyon aç",
+    "message": "Long $1 açın",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOpenOrders": {
     "message": "Açık Emirler"
   },
   "perpsOpenShort": {
-    "message": "$1 değerinde Short pozisyon aç",
+    "message": "Short $1 açın",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOraclePrice": {
-    "message": "Oracle Fiyatı"
+    "message": "Oracle fiyatı"
   },
   "perpsOraclePriceTooltip": {
     "message": "Fonlama oranının hesaplanmasında kullanılan, harici fiyatların doğrulayıcılar tarafından bildirilen medyanı"
@@ -5735,7 +5983,7 @@
     "message": "Çok sayıda talepte bulunuldu. Lütfen bekleyip tekrar deneyin."
   },
   "perpsRecentActivity": {
-    "message": "Son Faaliyetler"
+    "message": "Son etkinlik"
   },
   "perpsReduceExposure": {
     "message": "Pozisyon büyüklüğünü azalt"
@@ -5770,15 +6018,11 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Short pozisyonunuzu long yönüne çevirin"
   },
-  "perpsSaveChanges": {
-    "message": "Değişiklikleri Kaydet",
-    "description": "Button text for saving TP/SL changes"
-  },
   "perpsSearchMarkets": {
     "message": "Piyasa ara"
   },
   "perpsSeeAll": {
-    "message": "Tümünü Gör",
+    "message": "Tümünü gör",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
@@ -5848,7 +6092,7 @@
     "message": "Tetiklendi"
   },
   "perpsStopLoss": {
-    "message": "Zararda Durdur",
+    "message": "Zararda durdur",
     "description": "Label for stop loss price input"
   },
   "perpsStopLossInvalidPrice": {
@@ -5860,7 +6104,7 @@
     "description": "Loading text shown while an order is being submitted"
   },
   "perpsTakeProfit": {
-    "message": "Kazancı Al",
+    "message": "Kazancı al",
     "description": "Label for take profit price input"
   },
   "perpsTakeProfitInvalidPrice": {
@@ -5983,6 +6227,9 @@
   },
   "perpsTrades": {
     "message": "İşlemler"
+  },
+  "perpsTriggerPrice": {
+    "message": "Tetikleme fiyatı"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "Kaldıraç hem kazançları hem de zararları artırır. 40 kat kaldıraçla %1 oranındaki fiyat hareketi marjınızda %40 kazanç veya zarara eşittir."
