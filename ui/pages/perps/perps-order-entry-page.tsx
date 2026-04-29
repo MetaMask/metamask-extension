@@ -707,12 +707,15 @@ const PerpsOrderEntryPage: React.FC = () => {
     [decodedSymbol, navigate, replacePerpsToastByKey, setPendingOrder],
   );
 
+  // Visible header back button: pop the history stack so the user returns to
+  // wherever they came from. Pushing marketDetailPath instead would create a
+  // market-detail -> order-entry -> market-detail loop, since the
+  // market-detail back button uses navigate(-1).
   const handleBackButtonClick = useCallback(() => {
-    if (window.history.length > 1) {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
       navigate(-1);
       return;
     }
-
     if (decodedSymbol) {
       navigate(
         `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(decodedSymbol)}`,
@@ -720,7 +723,6 @@ const PerpsOrderEntryPage: React.FC = () => {
       );
       return;
     }
-
     navigate(DEFAULT_ROUTE, { replace: true });
   }, [decodedSymbol, navigate]);
 
