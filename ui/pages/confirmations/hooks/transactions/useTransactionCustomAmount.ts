@@ -145,8 +145,12 @@ export function useTransactionCustomAmount({
 
       if (transactionId) {
         upsertTransactionUIMetricsFragment(transactionId, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          properties: { mm_pay_amount_input_type: 'manual' },
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            mm_pay_amount_input_type: 'manual',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            mm_pay_quote_requested: false,
+          },
         });
       }
 

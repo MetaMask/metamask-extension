@@ -415,7 +415,7 @@ describe('useTransactionCustomAmount', () => {
   });
 
   describe('mm_pay_amount_input_type tracking', () => {
-    it('dispatches mm_pay_amount_input_type as manual when updatePendingAmount is called', () => {
+    it('dispatches mm_pay_amount_input_type as manual and mm_pay_quote_requested as false when updatePendingAmount is called', () => {
       const { result } = runHook();
 
       act(() => {
@@ -425,9 +425,10 @@ describe('useTransactionCustomAmount', () => {
       expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
         MOCK_TRANSACTION_META.id,
         {
-          properties: {
+          properties: expect.objectContaining({
             mm_pay_amount_input_type: 'manual',
-          },
+            mm_pay_quote_requested: false,
+          }),
         },
       );
     });

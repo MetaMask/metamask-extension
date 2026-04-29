@@ -48,7 +48,6 @@ export const getMetaMaskPayProperties: TransactionMetricsBuilder = ({
     tx.requiredTransactionIds?.includes(transactionId),
   );
 
-
   if (isPayType || !parentTransaction) {
     addPayTypeProperties(
       properties,
