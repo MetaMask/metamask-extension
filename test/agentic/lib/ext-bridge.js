@@ -11,34 +11,7 @@ const { readFileSync, mkdirSync, writeFileSync, existsSync, readdirSync } = requ
 const { join, dirname, basename } = require('node:path');
 const { checkAssert } = require('./assert');
 const { renderTemplate } = require('./catalog');
-
-// ── Route map (mobile route names → extension hash paths) ────────────
-
-const ROUTE_MAP = {
-  Home: '#/',
-  Settings: '#/settings',
-  SettingsGeneral: '#/settings/general',
-  SettingsAdvanced: '#/settings/advanced',
-  SettingsNetworks: '#/settings/networks',
-  SettingsSecurity: '#/settings/security',
-  SettingsExperimental: '#/settings/experimental',
-  SettingsAbout: '#/settings/about',
-  SettingsContacts: '#/settings/contact-list',
-  SendFlow: '#/send',
-  ConfirmTransaction: '#/confirm-transaction',
-  SwapFlow: '#/swaps',
-  ImportToken: '#/import-token',
-  ConnectHardware: '#/new-account/connect',
-  RevealSRP: '#/settings/security/reveal-seed-words',
-  PerpsHome: '#/?tab=perps',
-  PerpsMarketDetails: '#/perps/market',
-  PerpsOrderEntry: '#/perps/trade',
-  PerpsMarketList: '#/perps/market-list',
-};
-
-function routeToHash(routeName) {
-  return ROUTE_MAP[routeName];
-}
+const { ROUTE_MAP, routeToHash } = require('./route-map');
 
 // ── Eval helpers (extension page) ────────────────────────────────────
 

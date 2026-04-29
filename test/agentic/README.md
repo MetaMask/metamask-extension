@@ -42,6 +42,10 @@ test/agentic/
 
 `domains/<name>/` is the canonical layout. The legacy `teams/` alias has been dropped — every recipe lives under `domains/`.
 
+## Runtime boundary
+
+Recipes and flows are JSON. The replay runner and shared runtime modules are plain JavaScript so `validate-recipe.sh` can execute them directly with `node`. TypeScript is reserved for standalone developer probes invoked with `tsx`, such as `status.ts` and `check-extension.ts`.
+
 ## Sandbox model
 
 Each Chromium instance the runner spawns is fully isolated by `--user-data-dir`. Defaults are repo-local (`<repo>/temp/runtime/chrome-profile-pw`), so multiple worktrees never share state. Override these env vars (in `test/agentic/.env` or your shell) to run several sandboxes concurrently:
