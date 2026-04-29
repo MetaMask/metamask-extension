@@ -1,9 +1,9 @@
-import { loadAuthenticationConfig } from '../../../shared/lib/authentication';
-import { MessengerClientInitFunction } from './types';
 import {
   ConfigRegistryApiService,
   ConfigRegistryApiServiceMessenger,
 } from '@metamask/config-registry-controller';
+import { loadAuthenticationConfig } from '../../../shared/lib/authentication';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize ConfigRegistryAPIService.
