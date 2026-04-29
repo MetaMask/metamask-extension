@@ -223,7 +223,7 @@ export default function CreatePassword({
       },
     });
 
-    if (isPasskeyFeatureAvailable && !isSocialLoginFlow) {
+    if (isPasskeyFeatureAvailable) {
       navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
     } else if (isFirefox || isSocialLoginFlow) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
