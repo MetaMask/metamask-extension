@@ -98,6 +98,7 @@ import {
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
+  isStopLossSafeFromLiquidation,
 } from '../../components/app/perps/utils/tpslValidation';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
@@ -538,9 +539,16 @@ const PerpsOrderEntryPage: React.FC = () => {
           direction: dir,
         }),
     );
+    const slLiquidationInvalid = Boolean(
+      sl?.trim() &&
+        !isStopLossSafeFromLiquidation(sl, {
+          liquidationPrice: orderCalculations?.liquidationPriceRaw,
+          direction: dir,
+        }),
+    );
 
-    return tpInvalid || slInvalid;
-  }, [orderFormState, orderType, currentPrice, orderMode]);
+    return tpInvalid || slInvalid || slLiquidationInvalid;
+  }, [orderFormState, orderType, currentPrice, orderMode, orderCalculations]);
 
   const isInsufficientFunds = useMemo(() => {
     if (!orderFormState || orderMode === 'close') {
