@@ -34,9 +34,7 @@ export function useHardwareWalletRecoveryLocation(): MetaMetricsHardwareWalletRe
       : undefined,
   );
   const message = useSelector((state) =>
-    confirmationId
-      ? selectUnapprovedMessage(state, confirmationId)
-      : undefined,
+    confirmationId ? selectUnapprovedMessage(state, confirmationId) : undefined,
   );
 
   if (
