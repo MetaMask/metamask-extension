@@ -1,6 +1,6 @@
 {
-  "title": "Perps network control proof",
   "description": "Canonical proof recipe for perps network control on the fullscreen extension UI. Trusts Chrome/CDP as the source of truth for applied throttling and proves the perps surface remains mounted through degraded, offline, and reset transitions.",
+  "title": "Perps network control proof",
   "validate": {
     "workflow": {
       "pre_conditions": ["wallet.unlocked", "perps.feature_enabled"],
@@ -35,9 +35,21 @@
           "expression": "(function(){try{var sm=stateHooks.getPerpsStreamManager();var markets=sm?.markets?.getCachedData?.()??[];var account=sm?.account?.getCachedData?.()??null;return JSON.stringify({marketsCount:markets.length,accountReady:!!(account&&account.totalBalance),error:null})}catch(e){return JSON.stringify({marketsCount:0,accountReady:false,error:String(e&&e.message||e)})}})()",
           "assert": {
             "all": [
-              { "operator": "gt", "field": "marketsCount", "value": 0 },
-              { "operator": "eq", "field": "accountReady", "value": true },
-              { "operator": "eq", "field": "error", "value": null }
+              {
+                "operator": "gt",
+                "field": "marketsCount",
+                "value": 0
+              },
+              {
+                "operator": "eq",
+                "field": "accountReady",
+                "value": true
+              },
+              {
+                "operator": "eq",
+                "field": "error",
+                "value": null
+              }
             ]
           },
           "save_as": "online_connection",
@@ -46,18 +58,22 @@
         "ac1-screenshot-online-home": {
           "action": "screenshot",
           "filename": "evidence-ac1-online-home.png",
-          "next": "gate-nav-market-detail"
+          "next": "gate-nav-market-detail",
+          "note": "Evidence capture: evidence ac1 online home.png"
         },
         "gate-nav-market-detail": {
           "action": "call",
           "ref": "perps/navigate-to-market-detail",
-          "params": { "symbol": "BTC" },
+          "params": {
+            "symbol": "BTC"
+          },
           "next": "ac1-screenshot-online-market"
         },
         "ac1-screenshot-online-market": {
           "action": "screenshot",
           "filename": "evidence-ac1-online-market.png",
-          "next": "gate-trace-start"
+          "next": "gate-trace-start",
+          "note": "Evidence capture: evidence ac1 online market.png"
         },
         "gate-trace-start": {
           "action": "trace_start",
@@ -74,9 +90,21 @@
           "upload_kbps": 32,
           "assert": {
             "all": [
-              { "operator": "eq", "field": "control", "value": "network" },
-              { "operator": "eq", "field": "profile", "value": "degraded" },
-              { "operator": "length_gt", "field": "applied", "value": 0 }
+              {
+                "operator": "eq",
+                "field": "control",
+                "value": "network"
+              },
+              {
+                "operator": "eq",
+                "field": "profile",
+                "value": "degraded"
+              },
+              {
+                "operator": "length_gt",
+                "field": "applied",
+                "value": 0
+              }
             ]
           },
           "next": "ac1-check-degraded-state"
@@ -96,7 +124,8 @@
         "ac1-screenshot-degraded-market": {
           "action": "screenshot",
           "filename": "evidence-ac1-degraded-market.png",
-          "next": "ac1-apply-offline-network"
+          "next": "ac1-apply-offline-network",
+          "note": "Evidence capture: evidence ac1 degraded market.png"
         },
         "ac1-apply-offline-network": {
           "action": "network",
@@ -104,9 +133,21 @@
           "target": "all-extension",
           "assert": {
             "all": [
-              { "operator": "eq", "field": "control", "value": "network" },
-              { "operator": "eq", "field": "profile", "value": "offline" },
-              { "operator": "length_gt", "field": "applied", "value": 0 }
+              {
+                "operator": "eq",
+                "field": "control",
+                "value": "network"
+              },
+              {
+                "operator": "eq",
+                "field": "profile",
+                "value": "offline"
+              },
+              {
+                "operator": "length_gt",
+                "field": "applied",
+                "value": 0
+              }
             ]
           },
           "next": "ac1-check-offline-state"
@@ -126,7 +167,8 @@
         "ac1-screenshot-offline-market": {
           "action": "screenshot",
           "filename": "evidence-ac1-offline-market.png",
-          "next": "ac1-reset-network"
+          "next": "ac1-reset-network",
+          "note": "Evidence capture: evidence ac1 offline market.png"
         },
         "ac1-reset-network": {
           "action": "network",
@@ -134,9 +176,21 @@
           "target": "all-extension",
           "assert": {
             "all": [
-              { "operator": "eq", "field": "control", "value": "network" },
-              { "operator": "eq", "field": "profile", "value": "reset" },
-              { "operator": "length_gt", "field": "applied", "value": 0 }
+              {
+                "operator": "eq",
+                "field": "control",
+                "value": "network"
+              },
+              {
+                "operator": "eq",
+                "field": "profile",
+                "value": "reset"
+              },
+              {
+                "operator": "length_gt",
+                "field": "applied",
+                "value": 0
+              }
             ]
           },
           "next": "ac1-check-recovered-state"
@@ -157,7 +211,8 @@
         "ac1-screenshot-recovered-market": {
           "action": "screenshot",
           "filename": "evidence-ac1-recovered-market.png",
-          "next": "gate-trace-stop"
+          "next": "gate-trace-stop",
+          "note": "Evidence capture: evidence ac1 recovered market.png"
         },
         "gate-trace-stop": {
           "action": "trace_stop",

@@ -1,6 +1,6 @@
 {
-  "title": "Emulation environment smoke",
   "description": "Canonical proof recipe for media and timezone emulation on the active page.",
+  "title": "Emulation environment smoke",
   "validate": {
     "workflow": {
       "entry": "gate-nav-dapp",

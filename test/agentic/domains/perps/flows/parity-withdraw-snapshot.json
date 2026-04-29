@@ -2,9 +2,7 @@
   "title": "Parity snapshot — extension withdraw",
   "validate": {
     "workflow": {
-      "pre_conditions": [
-        "wallet.unlocked"
-      ],
+      "pre_conditions": ["wallet.unlocked"],
       "entry": "nav-home",
       "nodes": {
         "nav-home": {
@@ -53,7 +51,12 @@
         "extract": {
           "action": "eval_sync",
           "expression": "(function(){\n        function textByTestId(id){ var el=document.querySelector('[data-testid=\"'+id+'\"]'); return el?((el.textContent||'').trim()||null):null; }\n        return JSON.stringify({screen:'withdraw',preset10:textByTestId('perps-withdraw-percentage-10'),preset25:textByTestId('perps-withdraw-percentage-25'),preset50:textByTestId('perps-withdraw-percentage-50'),presetMax:textByTestId('perps-withdraw-percentage-max'),asset:textByTestId('perps-withdraw-summary-asset-value'),fee:textByTestId('perps-withdraw-summary-fee-value'),time:textByTestId('perps-withdraw-summary-time-value'),receive:textByTestId('perps-withdraw-summary-receive-value')});\n      })()",
-          "next": "done"
+          "next": "done",
+          "assert": {
+            "operator": "eq",
+            "field": "screen",
+            "value": "withdraw"
+          }
         },
         "done": {
           "action": "end",

@@ -1,5 +1,4 @@
 {
-  "title": "Close {{percent}}% of {{symbol}} position",
   "inputs": {
     "symbol": {
       "type": "string",
@@ -12,12 +11,10 @@
       "description": "Close percentage (25, 50, 75, 100)"
     }
   },
+  "title": "Close {{percent}}% of {{symbol}} position",
   "validate": {
     "workflow": {
-      "pre_conditions": [
-        "wallet.unlocked",
-        "perps.feature_enabled"
-      ],
+      "pre_conditions": ["wallet.unlocked", "perps.feature_enabled"],
       "setup": [
         {
           "id": "setup-prime-perps",
@@ -30,7 +27,9 @@
         "call-nav-detail": {
           "action": "call",
           "ref": "perps/navigate-to-market-detail",
-          "params": { "symbol": "{{symbol}}" },
+          "params": {
+            "symbol": "{{symbol}}"
+          },
           "next": "check-close-btn"
         },
         "check-close-btn": {
@@ -45,7 +44,10 @@
           "cases": [
             {
               "label": "no position — no-op",
-              "when": { "field": "vars.close_check.visible", "operator": "falsy" },
+              "when": {
+                "field": "vars.close_check.visible",
+                "operator": "falsy"
+              },
               "next": "done"
             }
           ],
@@ -77,7 +79,8 @@
         "screenshot-result": {
           "action": "screenshot",
           "filename": "close-position-{{symbol}}-{{percent}}pct",
-          "next": "done"
+          "next": "done",
+          "note": "Evidence capture: close position {{symbol}} {{percent}}pct"
         },
         "done": {
           "action": "end",

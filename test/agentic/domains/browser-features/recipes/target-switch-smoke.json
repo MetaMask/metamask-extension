@@ -1,6 +1,6 @@
 {
-  "title": "Target switch smoke",
   "description": "Canonical proof recipe for switching the active target by role between a dapp page and the extension page.",
+  "title": "Target switch smoke",
   "validate": {
     "workflow": {
       "pre_conditions": ["wallet.unlocked"],
@@ -29,9 +29,17 @@
           "assert": {
             "all": [
               { "operator": "eq", "field": "control", "value": "target" },
-              { "operator": "eq", "field": "targetAction", "value": "switch_role" },
+              {
+                "operator": "eq",
+                "field": "targetAction",
+                "value": "switch_role"
+              },
               { "operator": "eq", "field": "role", "value": "extension" },
-              { "operator": "matches", "field": "active.url", "pattern": "^chrome-extension://" }
+              {
+                "operator": "matches",
+                "field": "active.url",
+                "pattern": "^chrome-extension://"
+              }
             ]
           },
           "next": "ac1-check-extension-active"
@@ -54,9 +62,17 @@
           "assert": {
             "all": [
               { "operator": "eq", "field": "control", "value": "target" },
-              { "operator": "eq", "field": "targetAction", "value": "switch_role" },
+              {
+                "operator": "eq",
+                "field": "targetAction",
+                "value": "switch_role"
+              },
               { "operator": "eq", "field": "role", "value": "dapp" },
-              { "operator": "matches", "field": "active.url", "pattern": "^https://example\\.com" }
+              {
+                "operator": "matches",
+                "field": "active.url",
+                "pattern": "^https://example\\.com"
+              }
             ]
           },
           "next": "ac1-check-dapp-restored"

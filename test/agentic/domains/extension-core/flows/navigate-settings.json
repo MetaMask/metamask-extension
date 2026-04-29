@@ -19,7 +19,8 @@
         "screenshot-settings": {
           "action": "screenshot",
           "filename": "settings-page",
-          "next": "done"
+          "next": "done",
+          "note": "Evidence capture: settings page"
         },
         "done": {
           "action": "end",

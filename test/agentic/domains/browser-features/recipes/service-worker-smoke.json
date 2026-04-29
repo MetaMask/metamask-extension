@@ -1,6 +1,6 @@
 {
-  "title": "Service worker smoke",
   "description": "Canonical proof recipe for service worker inspection and background-state evaluation on the extension background worker.",
+  "title": "Service worker smoke",
   "validate": {
     "workflow": {
       "pre_conditions": ["wallet.unlocked"],
@@ -11,7 +11,11 @@
           "worker": "inspect",
           "assert": {
             "all": [
-              { "operator": "eq", "field": "control", "value": "service_worker" },
+              {
+                "operator": "eq",
+                "field": "control",
+                "value": "service_worker"
+              },
               { "operator": "eq", "field": "worker", "value": "inspect" },
               { "operator": "gt", "field": "count", "value": 0 }
             ]
@@ -24,7 +28,11 @@
           "expression": "(function(){return {storageKind:globalThis.stateHooks.getStorageKind(), hasMetamaskGetState:typeof globalThis.stateHooks.metamaskGetState === 'function'}})()",
           "assert": {
             "all": [
-              { "operator": "eq", "field": "control", "value": "service_worker" },
+              {
+                "operator": "eq",
+                "field": "control",
+                "value": "service_worker"
+              },
               { "operator": "eq", "field": "worker", "value": "eval" },
               { "operator": "truthy", "field": "result.hasMetamaskGetState" },
               { "operator": "not_null", "field": "result.storageKind" }

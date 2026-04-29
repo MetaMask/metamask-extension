@@ -1,11 +1,11 @@
 {
   "_comment": "Copy to a private location (e.g. temp/runtime/wallet-fixture.json or .agent/wallet-fixture.json) and edit. Testnet seed only — never paste a mainnet SRP.",
-  "password": "REPLACE_ME",
-  "srp": "twelve word seed phrase goes here in lowercase separated by single spaces",
-  "name": "agentic-dev",
   "accounts": [],
+  "name": "agentic-dev",
+  "password": "REPLACE_ME",
   "settings": {
     "autoLockNever": true,
     "injectImportedAccounts": false
-  }
+  },
+  "srp": "twelve word seed phrase goes here in lowercase separated by single spaces"
 }

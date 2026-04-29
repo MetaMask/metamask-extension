@@ -25,6 +25,13 @@ const {
 
 const MUST_ASSERT = new Set(['eval_sync', 'eval_async', 'eval_ref']);
 
+function hasAssertionOrCapture(node) {
+  return (
+    'assert' in node ||
+    (typeof node.save_as === 'string' && node.save_as.trim() !== '')
+  );
+}
+
 function resolveTaskArtifactsDir(recipePath) {
   const normalized = path.resolve(recipePath);
   const marker = `${path.sep}artifacts${path.sep}`;
@@ -36,8 +43,13 @@ const HOOK_ONLY_ACTIONS = new Set([...EXECUTABLE_ACTIONS]);
 
 function requireFields(node, fields, issues) {
   fields.forEach((field) => {
-    if (!Object.prototype.hasOwnProperty.call(node, field) || node[field] === '') {
-      issues.push(`  [${node.id || '?'}] action="${node.action}" requires "${field}"`);
+    if (
+      !Object.prototype.hasOwnProperty.call(node, field) ||
+      node[field] === ''
+    ) {
+      issues.push(
+        `  [${node.id || '?'}] action="${node.action}" requires "${field}"`,
+      );
     }
   });
 }
@@ -73,21 +85,39 @@ function validateActionShape(node, issues) {
     case 'log_watch':
       if (!(node.watch_for?.length || node.must_not_appear?.length)) {
         issues.push(
-          `  [${node.id || '?'}] action="log_watch" requires watch_for or must_not_appear`
+          `  [${node.id || '?'}] action="log_watch" requires watch_for or must_not_appear`,
         );
       }
       break;
     case 'network': {
       requireFields(node, ['throttling'], issues);
-      const allowedProfiles = new Set(['offline', 'degraded', 'custom', 'reset', 'slow']);
+      const allowedProfiles = new Set([
+        'offline',
+        'degraded',
+        'custom',
+        'reset',
+        'slow',
+      ]);
       if (!allowedProfiles.has(String(node.throttling))) {
-        issues.push(`  [${node.id || '?'}] network throttling must be one of: offline, degraded, custom, reset, slow`);
+        issues.push(
+          `  [${node.id || '?'}] network throttling must be one of: offline, degraded, custom, reset, slow`,
+        );
       }
       if (
         node.target != null &&
-        !['active', 'extension', 'notification', 'dapp', 'all-pages', 'background', 'all-extension'].includes(String(node.target))
+        ![
+          'active',
+          'extension',
+          'notification',
+          'dapp',
+          'all-pages',
+          'background',
+          'all-extension',
+        ].includes(String(node.target))
       ) {
-        issues.push(`  [${node.id || '?'}] network target must be one of: active, extension, notification, dapp, all-pages, background, all-extension`);
+        issues.push(
+          `  [${node.id || '?'}] network target must be one of: active, extension, notification, dapp, all-pages, background, all-extension`,
+        );
       }
       break;
     }
@@ -97,51 +127,80 @@ function validateActionShape(node, issues) {
         requireFields(node, ['rate'], issues);
         const rate = Number(node.rate);
         if (!Number.isFinite(rate) || rate < 1) {
-          issues.push(`  [${node.id || '?'}] emulation cpu rate must be a number >= 1`);
+          issues.push(
+            `  [${node.id || '?'}] emulation cpu rate must be a number >= 1`,
+          );
         }
       } else if (node.emulation === 'media') {
         if (!node.color_scheme && !node.reduced_motion) {
-          issues.push(`  [${node.id || '?'}] emulation media requires color_scheme and/or reduced_motion`);
+          issues.push(
+            `  [${node.id || '?'}] emulation media requires color_scheme and/or reduced_motion`,
+          );
         }
       } else if (node.emulation === 'timezone') {
         requireFields(node, ['timezone_id'], issues);
       } else if (node.emulation !== 'reset') {
-        issues.push(`  [${node.id || '?'}] emulation must be one of: cpu, media, timezone, reset`);
+        issues.push(
+          `  [${node.id || '?'}] emulation must be one of: cpu, media, timezone, reset`,
+        );
       }
       if (
         node.target != null &&
-        !['active', 'extension', 'notification', 'dapp', 'all-pages', 'all-extension'].includes(String(node.target))
+        ![
+          'active',
+          'extension',
+          'notification',
+          'dapp',
+          'all-pages',
+          'all-extension',
+        ].includes(String(node.target))
       ) {
-        issues.push(`  [${node.id || '?'}] emulation target must be one of: active, extension, notification, dapp, all-pages, all-extension`);
+        issues.push(
+          `  [${node.id || '?'}] emulation target must be one of: active, extension, notification, dapp, all-pages, all-extension`,
+        );
       }
       break;
     case 'storage':
       requireFields(node, ['storage'], issues);
-      if (!['clear_origin', 'clear_web_storage'].includes(String(node.storage))) {
-        issues.push(`  [${node.id || '?'}] storage must be one of: clear_origin, clear_web_storage`);
+      if (
+        !['clear_origin', 'clear_web_storage'].includes(String(node.storage))
+      ) {
+        issues.push(
+          `  [${node.id || '?'}] storage must be one of: clear_origin, clear_web_storage`,
+        );
       }
       break;
     case 'service_worker':
       requireFields(node, ['worker'], issues);
       if (!['inspect', 'eval'].includes(String(node.worker))) {
-        issues.push(`  [${node.id || '?'}] worker must be one of: inspect, eval`);
+        issues.push(
+          `  [${node.id || '?'}] worker must be one of: inspect, eval`,
+        );
       }
       if (String(node.worker) === 'eval') {
         requireFields(node, ['expression'], issues);
         if (!('assert' in node)) {
-          issues.push(`  [${node.id || '?'}] service_worker eval requires an assert block`);
+          issues.push(
+            `  [${node.id || '?'}] service_worker eval requires an assert block`,
+          );
         }
       }
       break;
     case 'target':
       requireFields(node, ['target_action'], issues);
       if (!['inspect', 'switch_role'].includes(String(node.target_action))) {
-        issues.push(`  [${node.id || '?'}] target_action must be one of: inspect, switch_role`);
+        issues.push(
+          `  [${node.id || '?'}] target_action must be one of: inspect, switch_role`,
+        );
       }
       if (String(node.target_action) === 'switch_role') {
         requireFields(node, ['role'], issues);
-        if (!['extension', 'notification', 'dapp'].includes(String(node.role))) {
-          issues.push(`  [${node.id || '?'}] target switch role must be one of: extension, notification, dapp`);
+        if (
+          !['extension', 'notification', 'dapp'].includes(String(node.role))
+        ) {
+          issues.push(
+            `  [${node.id || '?'}] target switch role must be one of: extension, notification, dapp`,
+          );
         }
       }
       break;
@@ -152,15 +211,30 @@ function validateActionShape(node, issues) {
       }
       if (
         node.target != null &&
-        !['active', 'extension', 'notification', 'dapp', 'all-pages', 'all-extension'].includes(String(node.target))
+        ![
+          'active',
+          'extension',
+          'notification',
+          'dapp',
+          'all-pages',
+          'all-extension',
+        ].includes(String(node.target))
       ) {
-        issues.push(`  [${node.id || '?'}] page target must be one of: active, extension, notification, dapp, all-pages, all-extension`);
+        issues.push(
+          `  [${node.id || '?'}] page target must be one of: active, extension, notification, dapp, all-pages, all-extension`,
+        );
       }
       break;
     case 'browser':
       requireFields(node, ['browser_action'], issues);
-      if (!['grant_permission', 'reset_permissions'].includes(String(node.browser_action))) {
-        issues.push(`  [${node.id || '?'}] browser_action must be one of: grant_permission, reset_permissions`);
+      if (
+        !['grant_permission', 'reset_permissions'].includes(
+          String(node.browser_action),
+        )
+      ) {
+        issues.push(
+          `  [${node.id || '?'}] browser_action must be one of: grant_permission, reset_permissions`,
+        );
       }
       if (String(node.browser_action) === 'grant_permission') {
         requireFields(node, ['permission', 'origin'], issues);
@@ -169,7 +243,9 @@ function validateActionShape(node, issues) {
     case 'fetch':
       requireFields(node, ['fetch_action'], issues);
       if (!['fail_requests', 'reset'].includes(String(node.fetch_action))) {
-        issues.push(`  [${node.id || '?'}] fetch_action must be one of: fail_requests, reset`);
+        issues.push(
+          `  [${node.id || '?'}] fetch_action must be one of: fail_requests, reset`,
+        );
       }
       if (String(node.fetch_action) === 'fail_requests') {
         requireFields(node, ['url_pattern'], issues);
@@ -178,16 +254,27 @@ function validateActionShape(node, issues) {
     case 'performance':
       requireFields(node, ['performance_action'], issues);
       if (!['metrics'].includes(String(node.performance_action))) {
-        issues.push(`  [${node.id || '?'}] performance_action must be: metrics`);
+        issues.push(
+          `  [${node.id || '?'}] performance_action must be: metrics`,
+        );
       }
       break;
     case 'trace_start':
       requireFields(node, ['label'], issues);
       if (
         node.target != null &&
-        !['active', 'extension', 'notification', 'dapp', 'all-pages', 'all-extension'].includes(String(node.target))
+        ![
+          'active',
+          'extension',
+          'notification',
+          'dapp',
+          'all-pages',
+          'all-extension',
+        ].includes(String(node.target))
       ) {
-        issues.push(`  [${node.id || '?'}] trace_start target must be one of: active, extension, notification, dapp, all-pages, all-extension`);
+        issues.push(
+          `  [${node.id || '?'}] trace_start target must be one of: active, extension, notification, dapp, all-pages, all-extension`,
+        );
       }
       break;
     case 'trace_stop':
@@ -209,29 +296,39 @@ function validateActionShape(node, issues) {
         !('test_id' in node)
       ) {
         issues.push(
-          `  [${node.id || '?'}] wait_for requires an assert block or route/test_id sugar`
+          `  [${node.id || '?'}] wait_for requires an assert block or route/test_id sugar`,
         );
       }
       if (!node.route && !node.not_route && !node.test_id && !node.expression) {
-        issues.push(`  [${node.id || '?'}] action="wait_for" requires a condition`);
+        issues.push(
+          `  [${node.id || '?'}] action="wait_for" requires a condition`,
+        );
       }
       break;
     case 'switch':
       if (!Array.isArray(node.cases) || node.cases.length === 0) {
-        issues.push(`  [${node.id || '?'}] action="switch" requires at least one case`);
+        issues.push(
+          `  [${node.id || '?'}] action="switch" requires at least one case`,
+        );
       }
       (node.cases || []).forEach((entry, index) => {
         if (!entry.when) {
-          issues.push(`  [${node.id || '?'}] switch case ${index + 1} requires "when"`);
+          issues.push(
+            `  [${node.id || '?'}] switch case ${index + 1} requires "when"`,
+          );
         }
         if (!entry.next) {
-          issues.push(`  [${node.id || '?'}] switch case ${index + 1} requires "next"`);
+          issues.push(
+            `  [${node.id || '?'}] switch case ${index + 1} requires "next"`,
+          );
         }
       });
       break;
     case 'end':
       if (node.status && !['pass', 'fail'].includes(String(node.status))) {
-        issues.push(`  [${node.id || '?'}] end status must be "pass" or "fail"`);
+        issues.push(
+          `  [${node.id || '?'}] end status must be "pass" or "fail"`,
+        );
       }
       break;
     default:
@@ -277,7 +374,13 @@ function validatePreConditions(preConditions, registry, issues) {
   });
 }
 
-function validateReference(node, appRoot, defaultTeam, taskArtifactsDir, issues) {
+function validateReference(
+  node,
+  appRoot,
+  defaultTeam,
+  taskArtifactsDir,
+  issues,
+) {
   if (node.action === 'call' && node.ref) {
     try {
       resolveFlowRef(node.ref, { appRoot, defaultTeam, taskArtifactsDir });
@@ -304,8 +407,10 @@ function validateNodeCommon(node, issues) {
     return;
   }
 
-  if (MUST_ASSERT.has(action) && !('assert' in node)) {
-    issues.push(`  [${id}] action="${action}" requires an assert block`);
+  if (MUST_ASSERT.has(action) && !hasAssertionOrCapture(node)) {
+    issues.push(
+      `  [${id}] action="${action}" requires an assert block or save_as capture`,
+    );
   }
 
   if (node.save_as != null && String(node.save_as).trim() === '') {
@@ -315,7 +420,15 @@ function validateNodeCommon(node, issues) {
   validateActionShape(node, issues);
 }
 
-function validateHookSection(sectionName, steps, appRoot, defaultTeam, taskArtifactsDir, issues, seenIds) {
+function validateHookSection(
+  sectionName,
+  steps,
+  appRoot,
+  defaultTeam,
+  taskArtifactsDir,
+  issues,
+  seenIds,
+) {
   steps.forEach((step, index) => {
     const node = {
       ...step,
@@ -333,7 +446,7 @@ function validateHookSection(sectionName, steps, appRoot, defaultTeam, taskArtif
 
     if (!HOOK_ONLY_ACTIONS.has(node.action)) {
       issues.push(
-        `  [${node.id}] ${sectionName} hooks only support executable actions, got "${node.action}"`
+        `  [${node.id}] ${sectionName} hooks only support executable actions, got "${node.action}"`,
       );
       return;
     }
@@ -352,17 +465,30 @@ function validatePlayback(document, issues) {
   }
   if (raw.mode != null && !['off', 'auto', 'step'].includes(String(raw.mode))) {
     issues.push(
-      `  validate.workflow.playback.mode must be one of: off, auto, step (got "${raw.mode}")`
+      `  validate.workflow.playback.mode must be one of: off, auto, step (got "${raw.mode}")`,
     );
   }
   if (raw.slow_ms != null) {
-    if (!Number.isFinite(raw.slow_ms) || !Number.isInteger(raw.slow_ms) || raw.slow_ms <= 0) {
-      issues.push('  validate.workflow.playback.slow_ms must be a positive integer');
+    if (
+      !Number.isFinite(raw.slow_ms) ||
+      !Number.isInteger(raw.slow_ms) ||
+      raw.slow_ms <= 0
+    ) {
+      issues.push(
+        '  validate.workflow.playback.slow_ms must be a positive integer',
+      );
     }
   }
 }
 
-function validateWorkflowNodes(normalizedDocument, appRoot, defaultTeam, taskArtifactsDir, issues, seenIds) {
+function validateWorkflowNodes(
+  normalizedDocument,
+  appRoot,
+  defaultTeam,
+  taskArtifactsDir,
+  issues,
+  seenIds,
+) {
   const workflow = normalizedDocument.workflow;
 
   if (!workflow.entry) {
@@ -418,7 +544,9 @@ function validateWorkflowNodes(normalizedDocument, appRoot, defaultTeam, taskArt
   }
 
   findMissingTargets(workflow).forEach((edge) => {
-    issues.push(`  [${edge.from}] transition targets missing node "${edge.to}"`);
+    issues.push(
+      `  [${edge.from}] transition targets missing node "${edge.to}"`,
+    );
   });
 
   findUnreachableNodes(workflow).forEach((nodeId) => {
@@ -455,7 +583,11 @@ function validateScenario(filePath, registry) {
 
   const seenIds = new Set();
 
-  validatePreConditions(normalizedDocument.hooks.pre_conditions || [], registry, issues);
+  validatePreConditions(
+    normalizedDocument.hooks.pre_conditions || [],
+    registry,
+    issues,
+  );
   validateHookSection(
     'setup',
     normalizedDocument.hooks.setup || [],
@@ -463,7 +595,7 @@ function validateScenario(filePath, registry) {
     defaultTeam,
     taskArtifactsDir,
     issues,
-    seenIds
+    seenIds,
   );
   validateHookSection(
     'teardown',
@@ -472,9 +604,16 @@ function validateScenario(filePath, registry) {
     defaultTeam,
     taskArtifactsDir,
     issues,
-    seenIds
+    seenIds,
   );
-  validateWorkflowNodes(normalizedDocument, appRoot, defaultTeam, taskArtifactsDir, issues, seenIds);
+  validateWorkflowNodes(
+    normalizedDocument,
+    appRoot,
+    defaultTeam,
+    taskArtifactsDir,
+    issues,
+    seenIds,
+  );
   validatePlayback(document, issues);
 
   const inputs = document.inputs || {};
@@ -487,14 +626,16 @@ function validateScenario(filePath, registry) {
 
   for (const param of usedParams) {
     if (!inputKeys.has(param)) {
-      issues.push(`  [inputs] param "{{${param}}}" is used but not declared in inputs`);
+      issues.push(
+        `  [inputs] param "{{${param}}}" is used but not declared in inputs`,
+      );
     }
   }
 
   for (const key of inputKeys) {
     if (!usedParams.has(key)) {
       console.warn(
-        `  warning [${path.basename(filePath)}] input "${key}" is declared but unused`
+        `  warning [${path.basename(filePath)}] input "${key}" is declared but unused`,
       );
     }
   }
@@ -532,7 +673,9 @@ function main() {
     process.exit(0);
   }
 
-  console.log(`${totalViolations} violation(s) across ${files.length} scenario file(s).`);
+  console.log(
+    `${totalViolations} violation(s) across ${files.length} scenario file(s).`,
+  );
   process.exit(1);
 }
 

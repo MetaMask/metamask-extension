@@ -1,5 +1,4 @@
 {
-  "title": "Navigate to {{symbol}} market detail",
   "inputs": {
     "symbol": {
       "type": "string",
@@ -7,6 +6,7 @@
       "description": "Market symbol"
     }
   },
+  "title": "Navigate to {{symbol}} market detail",
   "validate": {
     "workflow": {
       "pre_conditions": ["wallet.unlocked"],

@@ -1,6 +1,6 @@
 {
-  "title": "Fetch fail smoke",
   "description": "Canonical proof recipe for deterministic request failure injection on the active dapp page.",
+  "title": "Fetch fail smoke",
   "validate": {
     "workflow": {
       "teardown": [
@@ -39,7 +39,11 @@
           "assert": {
             "all": [
               { "operator": "eq", "field": "control", "value": "fetch" },
-              { "operator": "eq", "field": "fetchAction", "value": "fail_requests" },
+              {
+                "operator": "eq",
+                "field": "fetchAction",
+                "value": "fail_requests"
+              },
               { "operator": "length_gt", "field": "applied", "value": 0 }
             ]
           },
@@ -52,7 +56,11 @@
           "assert": {
             "all": [
               { "operator": "eq", "field": "ok", "value": false },
-              { "operator": "contains", "field": "error", "value": "Failed to fetch" }
+              {
+                "operator": "contains",
+                "field": "error",
+                "value": "Failed to fetch"
+              }
             ]
           },
           "next": "ac1-reset-fetch"

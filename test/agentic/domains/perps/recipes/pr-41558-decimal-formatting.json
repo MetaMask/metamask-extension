@@ -1,12 +1,10 @@
 {
-  "title": "Validate PR #41558 perps decimal formatting with screenshots",
-  "pr": 41558,
   "description": "DOM-driven screenshot validation for the perps decimal-formatting fix. Captures perps home, market detail, modify menu, reverse modal, remove-margin modal, close modal, order entry, and withdraw screens for comparison against the existing before-reference assets.",
+  "pr": 41558,
+  "title": "Validate PR #41558 perps decimal formatting with screenshots",
   "validate": {
     "workflow": {
-      "pre_conditions": [
-        "wallet.unlocked"
-      ],
+      "pre_conditions": ["wallet.unlocked"],
       "entry": "ac1-nav-home",
       "nodes": {
         "ac1-nav-home": {
@@ -23,7 +21,8 @@
         "ac1-shot-home": {
           "action": "screenshot",
           "filename": "after-01-perps-home",
-          "next": "ac2-nav-detail"
+          "next": "ac2-nav-detail",
+          "note": "Evidence capture: after 01 perps home"
         },
         "ac2-nav-detail": {
           "action": "navigate",
@@ -93,7 +92,8 @@
         "ac3-shot-market-detail": {
           "action": "screenshot",
           "filename": "after-02-market-detail",
-          "next": "ac4-open-modify-menu"
+          "next": "ac4-open-modify-menu",
+          "note": "Evidence capture: after 02 market detail"
         },
         "ac4-open-modify-menu": {
           "action": "press",
@@ -109,7 +109,8 @@
         "ac4-shot-modify-menu": {
           "action": "screenshot",
           "filename": "after-03-modify-menu",
-          "next": "ac5-open-reverse"
+          "next": "ac5-open-reverse",
+          "note": "Evidence capture: after 03 modify menu"
         },
         "ac5-open-reverse": {
           "action": "press",
@@ -125,7 +126,8 @@
         "ac5-shot-reverse-modal": {
           "action": "screenshot",
           "filename": "after-04-reverse-modal",
-          "next": "ac5-close-reverse-modal"
+          "next": "ac5-close-reverse-modal",
+          "note": "Evidence capture: after 04 reverse modal"
         },
         "ac5-close-reverse-modal": {
           "action": "press",
@@ -173,7 +175,8 @@
         "ac6-shot-remove-margin-modal": {
           "action": "screenshot",
           "filename": "after-05-remove-margin-modal",
-          "next": "ac6-close-remove-margin-modal"
+          "next": "ac6-close-remove-margin-modal",
+          "note": "Evidence capture: after 05 remove margin modal"
         },
         "ac6-close-remove-margin-modal": {
           "action": "press",
@@ -210,7 +213,8 @@
         "ac7-shot-close-modal": {
           "action": "screenshot",
           "filename": "after-06-close-modal",
-          "next": "ac7-close-close-modal"
+          "next": "ac7-close-close-modal",
+          "note": "Evidence capture: after 06 close modal"
         },
         "ac7-close-close-modal": {
           "action": "eval_sync",
@@ -263,7 +267,8 @@
         "ac8-shot-order-entry": {
           "action": "screenshot",
           "filename": "after-07-order-entry",
-          "next": "ac9-nav-withdraw"
+          "next": "ac9-nav-withdraw",
+          "note": "Evidence capture: after 07 order entry"
         },
         "ac9-nav-withdraw": {
           "action": "navigate",
@@ -301,7 +306,8 @@
         "ac9-shot-withdraw": {
           "action": "screenshot",
           "filename": "after-08-withdraw-page",
-          "next": "done"
+          "next": "done",
+          "note": "Evidence capture: after 08 withdraw page"
         },
         "done": {
           "action": "end",

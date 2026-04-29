@@ -1,6 +1,6 @@
 {
-  "title": "Page reload smoke",
   "description": "Canonical proof recipe for active-page reload via CDP. Validates reload on a dapp page and confirms the page returns on the same route after reload.",
+  "title": "Page reload smoke",
   "validate": {
     "workflow": {
       "entry": "gate-nav-dapp",
@@ -16,7 +16,11 @@
           "expression": "(function(){return JSON.stringify({href:location.href,title:document.title||'',ready:document.readyState})})()",
           "assert": {
             "all": [
-              { "operator": "matches", "field": "href", "pattern": "^https://example\\.com" },
+              {
+                "operator": "matches",
+                "field": "href",
+                "pattern": "^https://example\\.com"
+              },
               { "operator": "not_null", "field": "title" }
             ]
           },
@@ -42,7 +46,11 @@
           "expression": "(function(){return JSON.stringify({href:location.href,title:document.title||'',ready:document.readyState})})()",
           "assert": {
             "all": [
-              { "operator": "matches", "field": "href", "pattern": "^https://example\\.com" },
+              {
+                "operator": "matches",
+                "field": "href",
+                "pattern": "^https://example\\.com"
+              },
               { "operator": "eq", "field": "ready", "value": "complete" }
             ]
           },

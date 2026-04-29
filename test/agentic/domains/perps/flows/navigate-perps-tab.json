@@ -18,7 +18,16 @@
         },
         "tutorial-switch": {
           "action": "switch",
-          "cases": [{ "when": { "operator": "eq", "field": "tutorial_state.visible", "value": true }, "next": "dismiss-tutorial" }],
+          "cases": [
+            {
+              "when": {
+                "operator": "eq",
+                "field": "vars.tutorial_state.visible",
+                "value": true
+              },
+              "next": "dismiss-tutorial"
+            }
+          ],
           "default": "wait-perps"
         },
         "dismiss-tutorial": {
@@ -30,7 +39,10 @@
           "action": "wait_for",
           "expression": "!document.querySelector('[data-testid=\"perps-tutorial-modal\"]')",
           "timeout_ms": 5000,
-          "next": "wait-perps"
+          "next": "wait-perps",
+          "assert": {
+            "operator": "truthy"
+          }
         },
         "wait-perps": {
           "action": "wait_for",
@@ -41,7 +53,8 @@
         "screenshot-perps": {
           "action": "screenshot",
           "filename": "perps-tab",
-          "next": "done"
+          "next": "done",
+          "note": "Evidence capture: perps tab"
         },
         "done": {
           "action": "end",

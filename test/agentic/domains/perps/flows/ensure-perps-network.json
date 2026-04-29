@@ -1,5 +1,4 @@
 {
-  "title": "Ensure perps network: {{network}} / {{provider}}",
   "description": "Ensures the perps network and provider match the requested state. Idempotent — skips toggle/switch if already correct.",
   "inputs": {
     "network": {
@@ -13,12 +12,10 @@
       "description": "Target provider"
     }
   },
+  "title": "Ensure perps network: {{network}} / {{provider}}",
   "validate": {
     "workflow": {
-      "pre_conditions": [
-        "wallet.unlocked",
-        "perps.feature_enabled"
-      ],
+      "pre_conditions": ["wallet.unlocked", "perps.feature_enabled"],
       "setup": [
         {
           "id": "setup-prime-perps",
@@ -39,11 +36,15 @@
           "cases": [
             {
               "label": "network mismatch — toggle",
-              "when": { "field": "vars.net_state.networkOk", "operator": "eq", "value": false },
+              "when": {
+                "field": "vars.net_state.networkOk",
+                "operator": "eq",
+                "value": false
+              },
               "next": "toggle-network"
             }
           ],
-          "default": "branch-provider"
+          "default": "refresh-provider-state"
         },
         "toggle-network": {
           "action": "toggle_testnet",
@@ -52,7 +53,11 @@
         "verify-network": {
           "action": "wait_for",
           "expression": "(function(){var m=stateHooks.store.getState().metamask;var want='{{network}}'==='testnet';return JSON.stringify({ok:!!m.isTestnet===want})})()",
-          "assert": { "operator": "eq", "field": "ok", "value": true },
+          "assert": {
+            "operator": "eq",
+            "field": "ok",
+            "value": true
+          },
           "timeout_ms": 5000,
           "poll_ms": 500,
           "next": "reload-ui"
@@ -60,12 +65,23 @@
         "reload-ui": {
           "action": "eval_async",
           "expression": "(async()=>{location.reload();return JSON.stringify({reloaded:true})})()",
-          "next": "wait-reload"
+          "next": "wait-reload",
+          "assert": {
+            "operator": "eq",
+            "field": "reloaded",
+            "value": true
+          }
         },
         "wait-reload": {
           "action": "wait_for",
           "test_id": "account-menu-icon",
           "timeout_ms": 15000,
+          "next": "refresh-provider-state"
+        },
+        "refresh-provider-state": {
+          "action": "eval_sync",
+          "expression": "(function(){var m=stateHooks.store.getState().metamask;var wantTestnet='{{network}}'==='testnet';var networkOk=!!m.isTestnet===wantTestnet;var providerOk=(m.activeProvider||'unknown')==='{{provider}}';return JSON.stringify({networkOk:networkOk,providerOk:providerOk,isTestnet:!!m.isTestnet,provider:m.activeProvider||'unknown'})})()",
+          "save_as": "net_state",
           "next": "branch-provider"
         },
         "branch-provider": {
@@ -73,7 +89,11 @@
           "cases": [
             {
               "label": "provider mismatch — switch",
-              "when": { "field": "vars.net_state.providerOk", "operator": "eq", "value": false },
+              "when": {
+                "field": "vars.net_state.providerOk",
+                "operator": "eq",
+                "value": false
+              },
               "next": "switch-provider"
             }
           ],
@@ -87,7 +107,11 @@
         "verify-markets": {
           "action": "wait_for",
           "expression": "(async()=>{var r=await stateHooks.submitRequestToBackground('perpsGetMarketDataWithPrices',[]);return JSON.stringify({count:(r??[]).length})})()",
-          "assert": { "operator": "gt", "field": "count", "value": 0 },
+          "assert": {
+            "operator": "gt",
+            "field": "count",
+            "value": 0
+          },
           "timeout_ms": 15000,
           "poll_ms": 1000,
           "next": "done"

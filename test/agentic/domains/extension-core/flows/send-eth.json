@@ -1,5 +1,4 @@
 {
-  "title": "Send {{amount}} ETH to {{recipient}}",
   "inputs": {
     "amount": {
       "type": "string",
@@ -12,6 +11,7 @@
       "description": "Recipient address"
     }
   },
+  "title": "Send {{amount}} ETH to {{recipient}}",
   "validate": {
     "workflow": {
       "pre_conditions": ["wallet.unlocked"],
@@ -86,7 +86,8 @@
         "screenshot-result": {
           "action": "screenshot",
           "filename": "send-eth-complete",
-          "next": "done"
+          "next": "done",
+          "note": "Evidence capture: send eth complete"
         },
         "done": {
           "action": "end",

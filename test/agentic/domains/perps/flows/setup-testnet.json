@@ -1,12 +1,9 @@
 {
-  "title": "Setup testnet mode",
   "description": "Toggles testnet mode via perpsToggleTestnet RPC, verifies the store reflects the change, and waits for markets to load on the new network.",
+  "title": "Setup testnet mode",
   "validate": {
     "workflow": {
-      "pre_conditions": [
-        "wallet.unlocked",
-        "perps.feature_enabled"
-      ],
+      "pre_conditions": ["wallet.unlocked", "perps.feature_enabled"],
       "entry": "toggle-testnet",
       "nodes": {
         "toggle-testnet": {

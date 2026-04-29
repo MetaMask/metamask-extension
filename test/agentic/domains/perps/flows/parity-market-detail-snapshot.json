@@ -1,5 +1,4 @@
 {
-  "title": "Parity snapshot — extension market detail {{symbol}}",
   "inputs": {
     "symbol": {
       "type": "string",
@@ -7,11 +6,10 @@
       "description": "Market symbol"
     }
   },
+  "title": "Parity snapshot — extension market detail {{symbol}}",
   "validate": {
     "workflow": {
-      "pre_conditions": [
-        "wallet.unlocked"
-      ],
+      "pre_conditions": ["wallet.unlocked"],
       "entry": "nav",
       "nodes": {
         "nav": {
@@ -33,7 +31,12 @@
         "extract": {
           "action": "eval_sync",
           "expression": "(function(){\n        function textByTestId(id){ var el=document.querySelector('[data-testid=\"'+id+'\"]'); return el?((el.textContent||'').trim()||null):null; }\n        return JSON.stringify({symbol:'{{symbol}}',screen:'market_detail',price:textByTestId('perps-market-detail-price'),change:textByTestId('perps-market-detail-change'),oracle:textByTestId('perps-market-detail-oracle-price')});\n      })()",
-          "next": "done"
+          "next": "done",
+          "assert": {
+            "operator": "eq",
+            "field": "screen",
+            "value": "market_detail"
+          }
         },
         "done": {
           "action": "end",

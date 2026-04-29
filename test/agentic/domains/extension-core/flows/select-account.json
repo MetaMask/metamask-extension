@@ -1,11 +1,11 @@
 {
-  "title": "Select — switch to account {{address}} and verify",
   "inputs": {
     "address": {
       "type": "string",
       "description": "Ethereum address to switch to"
     }
   },
+  "title": "Select — switch to account {{address}} and verify",
   "validate": {
     "workflow": {
       "pre_conditions": ["wallet.unlocked"],

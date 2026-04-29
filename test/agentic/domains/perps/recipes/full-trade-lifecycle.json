@@ -1,6 +1,6 @@
 {
-  "title": "Full trade lifecycle — testnet, open ETH long, close, verify BTC market",
   "description": "End-to-end smoke test: ensures testnet, navigates to perps, opens a long position on ETH, closes it, then navigates to BTC market detail to verify multi-market navigation. Restores original network on teardown.",
+  "title": "Full trade lifecycle — testnet, open ETH long, close, verify BTC market",
   "validate": {
     "workflow": {
       "pre_conditions": ["wallet.unlocked", "perps.feature_enabled"],
@@ -17,7 +17,10 @@
           "id": "restore-network",
           "action": "call",
           "ref": "perps/ensure-perps-network",
-          "params": { "network": "{{vars.original_network.network}}", "provider": "{{vars.original_network.provider}}" }
+          "params": {
+            "network": "{{vars.original_network.network}}",
+            "provider": "{{vars.original_network.provider}}"
+          }
         },
         {
           "id": "nav-perps-home",
@@ -30,7 +33,10 @@
         "ensure-testnet": {
           "action": "call",
           "ref": "perps/ensure-perps-network",
-          "params": { "network": "testnet", "provider": "hyperliquid" },
+          "params": {
+            "network": "testnet",
+            "provider": "hyperliquid"
+          },
           "next": "nav-perps"
         },
         "nav-perps": {
@@ -41,40 +47,53 @@
         "screenshot-home": {
           "action": "screenshot",
           "filename": "01-perps-home",
-          "next": "open-long-eth"
+          "next": "open-long-eth",
+          "note": "Evidence capture: 01 perps home"
         },
         "open-long-eth": {
           "action": "call",
           "ref": "perps/open-long-position",
-          "params": { "symbol": "ETH", "side": "long", "amount": "10" },
+          "params": {
+            "symbol": "ETH",
+            "side": "long",
+            "amount": "10"
+          },
           "next": "screenshot-position"
         },
         "screenshot-position": {
           "action": "screenshot",
           "filename": "02-eth-long-open",
-          "next": "close-eth"
+          "next": "close-eth",
+          "note": "Evidence capture: 02 eth long open"
         },
         "close-eth": {
           "action": "call",
           "ref": "perps/close-position",
-          "params": { "symbol": "ETH", "percent": "100" },
+          "params": {
+            "symbol": "ETH",
+            "percent": "100"
+          },
           "next": "screenshot-closed"
         },
         "screenshot-closed": {
           "action": "screenshot",
           "filename": "03-eth-position-closed",
-          "next": "nav-btc-market"
+          "next": "nav-btc-market",
+          "note": "Evidence capture: 03 eth position closed"
         },
         "nav-btc-market": {
           "action": "call",
           "ref": "perps/navigate-to-market-detail",
-          "params": { "symbol": "BTC" },
+          "params": {
+            "symbol": "BTC"
+          },
           "next": "screenshot-btc"
         },
         "screenshot-btc": {
           "action": "screenshot",
           "filename": "04-btc-market-detail",
-          "next": "nav-back-perps"
+          "next": "nav-back-perps",
+          "note": "Evidence capture: 04 btc market detail"
         },
         "nav-back-perps": {
           "action": "call",
@@ -84,7 +103,8 @@
         "screenshot-final": {
           "action": "screenshot",
           "filename": "05-perps-home-final",
-          "next": "done"
+          "next": "done",
+          "note": "Evidence capture: 05 perps home final"
         },
         "done": {
           "action": "end",

@@ -1,6 +1,6 @@
 {
-  "title": "Performance metrics smoke",
   "description": "Canonical proof recipe for browser performance metrics snapshots on the active page.",
+  "title": "Performance metrics smoke",
   "validate": {
     "workflow": {
       "entry": "gate-nav-dapp",
@@ -17,7 +17,11 @@
           "assert": {
             "all": [
               { "operator": "eq", "field": "control", "value": "performance" },
-              { "operator": "eq", "field": "performanceAction", "value": "metrics" },
+              {
+                "operator": "eq",
+                "field": "performanceAction",
+                "value": "metrics"
+              },
               { "operator": "length_gt", "field": "applied", "value": 0 },
               { "operator": "not_null", "field": "applied.0.metrics.Timestamp" }
             ]
@@ -43,7 +47,11 @@
           "assert": {
             "all": [
               { "operator": "eq", "field": "control", "value": "performance" },
-              { "operator": "eq", "field": "performanceAction", "value": "metrics" },
+              {
+                "operator": "eq",
+                "field": "performanceAction",
+                "value": "metrics"
+              },
               { "operator": "length_gt", "field": "applied", "value": 0 },
               { "operator": "not_null", "field": "applied.0.metrics.Timestamp" }
             ]

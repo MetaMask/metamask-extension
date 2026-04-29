@@ -47,11 +47,11 @@ Terminal prints PASS, artifacts land under `test/agentic/domains/artifacts/`.
 
 ## What to try next
 
-| Recipe | What it shows |
-|---|---|
+| Recipe                                                    | What it shows                                      |
+| --------------------------------------------------------- | -------------------------------------------------- |
 | `domains/browser-features/recipes/page-reload-smoke.json` | navigate + reload + state assert, no wallet needed |
-| `domains/extension-core/flows/unlock-wallet.json` | wallet unlock flow as a standalone scenario |
-| `domains/perps/recipes/full-trade-lifecycle.json` | open → close position; needs HL testnet wallet |
+| `domains/extension-core/flows/unlock-wallet.json`         | wallet unlock flow as a standalone scenario        |
+| `domains/perps/recipes/full-trade-lifecycle.json`         | open → close position; needs HL testnet wallet     |
 
 ## Troubleshooting
 

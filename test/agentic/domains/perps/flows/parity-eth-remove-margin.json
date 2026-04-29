@@ -2,9 +2,7 @@
   "title": "Parity snapshot — extension ETH remove margin",
   "validate": {
     "workflow": {
-      "pre_conditions": [
-        "wallet.unlocked"
-      ],
+      "pre_conditions": ["wallet.unlocked"],
       "entry": "nav",
       "nodes": {
         "nav": {
@@ -48,7 +46,12 @@
         "extract": {
           "action": "eval_sync",
           "expression": "(function(){ function t(id){var el=document.querySelector('[data-testid=\"'+id+'\"]'); return el?((el.textContent||'').trim()||null):null;} return JSON.stringify({symbol:'ETH',screen:'remove_margin',available:t('perps-edit-margin-available-value'),liquidationPrice:t('perps-edit-margin-liquidation-price-value'),liquidationDistance:t('perps-edit-margin-liquidation-distance-value')}); })()",
-          "next": "close"
+          "next": "close",
+          "assert": {
+            "operator": "eq",
+            "field": "screen",
+            "value": "remove_margin"
+          }
         },
         "close": {
           "action": "press",

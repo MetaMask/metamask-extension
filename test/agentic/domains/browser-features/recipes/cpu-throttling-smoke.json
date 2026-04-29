@@ -1,6 +1,6 @@
 {
-  "title": "CPU throttling smoke",
   "description": "Canonical proof recipe for CPU throttling emulation on the active page.",
+  "title": "CPU throttling smoke",
   "validate": {
     "workflow": {
       "pre_conditions": ["wallet.unlocked"],

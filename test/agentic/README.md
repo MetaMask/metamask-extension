@@ -46,20 +46,20 @@ test/agentic/
 
 Each Chromium instance the runner spawns is fully isolated by `--user-data-dir`. Defaults are repo-local (`<repo>/temp/runtime/chrome-profile-pw`), so multiple worktrees never share state. Override these env vars (in `test/agentic/.env` or your shell) to run several sandboxes concurrently:
 
-| Variable | Default | Purpose |
-|---|---|---|
-| `CDP_PORT` | `9222` (with warning) | Remote debugging port. Default collides across sandboxes — **always export a unique port per worktree**. |
-| `SANDBOX_LABEL` | `agentic` | Window-title prefix for visual disambiguation |
-| `RUNTIME_DIR` | `temp/runtime` | Resolved relative to repo root unless absolute |
-| `RUNTIME_DIR_OVERRIDE` | unset | Absolute path override (wins over `RUNTIME_DIR`) |
-| `AGENT_DIR` | `$REPO/$RUNTIME_DIR` | PIDs, fixture-state, logs (overrides RUNTIME_DIR) |
-| `PROFILE_NAME` | `chrome-profile-pw` | Profile dir name (under `$AGENT_DIR`) |
-| `PROFILE_DIR` | `$AGENT_DIR/$PROFILE_NAME` | Chrome user-data-dir (idempotent across runs) |
-| `WALLET_FIXTURE` | `$AGENT_DIR/wallet-fixture.json` | Wallet seed for state injection |
-| `EXTENSION_DIR` | `<repo>/dist/chrome` | Unpacked extension Chromium loads |
-| `LAUNCH_MODE` | `fullscreen` | `fullscreen` or `sidepanel` |
-| `CHROME_BIN` | Playwright bundled | Override Chromium binary |
-| `BUILD_TIMEOUT` | `180` | Seconds preflight waits for the build to finish |
+| Variable               | Default                          | Purpose                                                                                                  |
+| ---------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `CDP_PORT`             | `9222` (with warning)            | Remote debugging port. Default collides across sandboxes — **always export a unique port per worktree**. |
+| `SANDBOX_LABEL`        | `agentic`                        | Window-title prefix for visual disambiguation                                                            |
+| `RUNTIME_DIR`          | `temp/runtime`                   | Resolved relative to repo root unless absolute                                                           |
+| `RUNTIME_DIR_OVERRIDE` | unset                            | Absolute path override (wins over `RUNTIME_DIR`)                                                         |
+| `AGENT_DIR`            | `$REPO/$RUNTIME_DIR`             | PIDs, fixture-state, logs (overrides RUNTIME_DIR)                                                        |
+| `PROFILE_NAME`         | `chrome-profile-pw`              | Profile dir name (under `$AGENT_DIR`)                                                                    |
+| `PROFILE_DIR`          | `$AGENT_DIR/$PROFILE_NAME`       | Chrome user-data-dir (idempotent across runs)                                                            |
+| `WALLET_FIXTURE`       | `$AGENT_DIR/wallet-fixture.json` | Wallet seed for state injection                                                                          |
+| `EXTENSION_DIR`        | `<repo>/dist/chrome`             | Unpacked extension Chromium loads                                                                        |
+| `LAUNCH_MODE`          | `fullscreen`                     | `fullscreen` or `sidepanel`                                                                              |
+| `CHROME_BIN`           | Playwright bundled               | Override Chromium binary                                                                                 |
+| `BUILD_TIMEOUT`        | `180`                            | Seconds preflight waits for the build to finish                                                          |
 
 `sandbox.sh up` refuses an already-running sandbox unless `--force`; an mkdir-atomic lockfile under `$AGENT_DIR/.sandbox.lock` blocks concurrent invocations. `sandbox.sh clean` requires `--yes` (or an interactive TTY) before deleting the profile dir. `sandbox.sh down` SIGTERMs the launcher + browser PIDs, waits up to 5s, then SIGKILLs and sweeps any chromium still bound to the profile dir.
 
@@ -72,12 +72,12 @@ tail -f $AGENT_DIR/launcher.log $AGENT_DIR/watcher.log \
         $AGENT_DIR/extension-console.log $AGENT_DIR/sw-console.log
 ```
 
-| File | Source |
-|---|---|
-| `launcher.log` | `sandbox.sh up` stdout + stderr |
-| `watcher.log` | `yarn start` output (only when sandbox auto-started it) |
-| `extension-console.log` | `console.*` + `pageerror` from every extension page |
-| `sw-console.log` | `console.*` from the extension service worker |
+| File                    | Source                                                  |
+| ----------------------- | ------------------------------------------------------- |
+| `launcher.log`          | `sandbox.sh up` stdout + stderr                         |
+| `watcher.log`           | `yarn start` output (only when sandbox auto-started it) |
+| `extension-console.log` | `console.*` + `pageerror` from every extension page     |
+| `sw-console.log`        | `console.*` from the extension service worker           |
 
 ## Wallet seeding
 
@@ -92,24 +92,43 @@ Backwards compatible: if a pre-built `vault` is already present in the fixture, 
 
 ## Concepts
 
+## Why recipes
+
+Recipes are reviewable validation artifacts, not an interactive browser transcript. A recipe can be inspected before it runs, replayed by another agent or developer, and attached to a PR as durable evidence.
+
+- **Deterministic graph execution:** `entry`, `next`, `switch`, setup, and teardown make the control flow explicit.
+- **Reusable building blocks:** `flow_ref` composes shared wallet, network, and product flows without duplicating steps.
+- **Offline quality gates:** schema and pre-condition validators catch malformed recipes before launching Chromium.
+- **Evidence by construction:** every run emits a trace, normalized workflow, Mermaid graph, screenshots, and issue-review artifacts.
+- **Deep browser control:** CDP actions cover network profiles, storage, service workers, targets, fetch interception, performance metrics, and traces.
+
 ### Flows
 
 Parameterized, reusable UI sequences. Live in `domains/<name>/flows/<file>.json`. Declare `inputs` (with defaults) and a `validate.workflow` graph. `{{param}}` tokens resolve at runtime.
 
 ```json
 {
-  "title": "Unlock wallet",
   "inputs": {
     "password": { "type": "string", "default": "{{env.WALLET_PASSWORD}}" }
   },
+  "title": "Unlock wallet",
   "validate": {
     "workflow": {
       "pre_conditions": ["wallet.is_locked"],
       "entry": "fill",
       "nodes": {
-        "fill":   { "action": "set_input", "test_id": "unlock-password", "value": "{{password}}", "next": "submit" },
-        "submit": { "action": "press",     "test_id": "unlock-submit", "next": "done" },
-        "done":   { "action": "end",       "status": "pass" }
+        "fill": {
+          "action": "set_input",
+          "test_id": "unlock-password",
+          "value": "{{password}}",
+          "next": "submit"
+        },
+        "submit": {
+          "action": "press",
+          "test_id": "unlock-submit",
+          "next": "done"
+        },
+        "done": { "action": "end", "status": "pass" }
       }
     }
   }
@@ -124,11 +143,30 @@ Directed graph that composes flows and inline steps. Live in `domains/<name>/rec
 {
   "entry": "setup",
   "nodes": {
-    "setup":  { "action": "flow_ref", "ref": "ensure-perps-network", "next": "open" },
-    "open":   { "action": "flow_ref", "ref": "open-long-position", "params": { "symbol": "ETH" }, "next": "verify" },
-    "verify": { "action": "eval_ref", "ref": "perps/positions", "assert": { "operator": "length_gt", "value": 0 }, "next": "close" },
-    "close":  { "action": "flow_ref", "ref": "close-position", "params": { "symbol": "ETH" }, "next": "done" },
-    "done":   { "action": "end", "status": "pass" }
+    "setup": {
+      "action": "flow_ref",
+      "ref": "ensure-perps-network",
+      "next": "open"
+    },
+    "open": {
+      "action": "flow_ref",
+      "ref": "open-long-position",
+      "params": { "symbol": "ETH" },
+      "next": "verify"
+    },
+    "verify": {
+      "action": "eval_ref",
+      "ref": "perps/positions",
+      "assert": { "operator": "length_gt", "value": 0 },
+      "next": "close"
+    },
+    "close": {
+      "action": "flow_ref",
+      "ref": "close-position",
+      "params": { "symbol": "ETH" },
+      "next": "done"
+    },
+    "done": { "action": "end", "status": "pass" }
   }
 }
 ```
@@ -142,8 +180,22 @@ Cases evaluate against `env`, `inputs`, `vars`, `last`; `default` catches unmatc
   "decide": {
     "action": "switch",
     "cases": [
-      { "when": { "operator": "length_gt", "field": "vars.positions.length", "value": 0 }, "next": "close-first" },
-      { "when": { "operator": "length_eq", "field": "vars.positions.length", "value": 0 }, "next": "open-new" }
+      {
+        "when": {
+          "operator": "length_gt",
+          "field": "vars.positions.length",
+          "value": 0
+        },
+        "next": "close-first"
+      },
+      {
+        "when": {
+          "operator": "length_eq",
+          "field": "vars.positions.length",
+          "value": 0
+        },
+        "next": "open-new"
+      }
     ],
     "default": "open-new"
   }
@@ -173,14 +225,24 @@ Linear arrays before/after the workflow graph. Teardown runs on both pass and fa
 
 ```json
 {
-  "setup":    [{ "id": "ensure-mainnet", "action": "toggle_testnet", "enabled": false }],
-  "teardown": [{ "id": "close-all", "action": "eval_async", "expression": "Engine.context.PerpsController.closeAllPositions().then(function(r){return JSON.stringify(r)})", "assert": { "operator": "not_null" } }]
+  "setup": [
+    { "id": "ensure-mainnet", "action": "toggle_testnet", "enabled": false }
+  ],
+  "teardown": [
+    {
+      "id": "close-all",
+      "action": "eval_async",
+      "expression": "Engine.context.PerpsController.closeAllPositions().then(function(r){return JSON.stringify(r)})",
+      "assert": { "operator": "not_null" }
+    }
+  ]
 }
 ```
 
 ### Eval refs
 
 Named CDP eval expressions. Two homes:
+
 - `domains/<name>/evals.json` — quick refs (`perps/positions`)
 - `domains/<name>/evals/<file>.json` — grouped refs (`perps/core/tpsl-orders`)
 
@@ -190,14 +252,14 @@ Recipes invoke them via `{ "action": "eval_ref", "ref": "perps/positions", "asse
 
 Gate checks that must pass before a flow runs. Defined in `domains/<name>/pre-conditions.js`.
 
-| Field | Description |
-| --- | --- |
-| `description` | human-readable label |
-| `async` | whether expression returns a Promise |
-| `expression` | CDP eval (string, or function for parameterized) |
-| `assert` | `{ operator, field, value }` |
-| `hint` | actionable failure message |
-| `fixtures` | `{ pass, fail }` JSON strings for offline validation |
+| Field         | Description                                          |
+| ------------- | ---------------------------------------------------- |
+| `description` | human-readable label                                 |
+| `async`       | whether expression returns a Promise                 |
+| `expression`  | CDP eval (string, or function for parameterized)     |
+| `assert`      | `{ operator, field, value }`                         |
+| `hint`        | actionable failure message                           |
+| `fixtures`    | `{ pass, fail }` JSON strings for offline validation |
 
 ```js
 'wallet.is_unlocked': {
@@ -215,49 +277,49 @@ Gate checks that must pass before a flow runs. Defined in `domains/<name>/pre-co
 
 ## Actions
 
-| Action | Required | Purpose |
-| --- | --- | --- |
-| `navigate` | `target` | go to a screen via the route map |
-| `press` | `test_id` | click a component by `data-testid` |
-| `set_input` | `test_id`, `value` | type into an `<input>` |
-| `type_keypad` | `value` | type digits via on-screen keypad |
-| `clear_keypad` | — | press delete N times (default 8) |
-| `scroll` | — | scroll a region (optional `test_id`, `offset`) |
-| `eval_sync` | `expression`, `assert` | sync CDP eval against the active page |
-| `eval_async` | `expression`, `assert` | promise-based CDP eval |
-| `eval_ref` | `ref`, `assert` | run a named eval ref |
-| `flow_ref` | `ref` | invoke another flow (workflow only) |
-| `wait` | — | pause N ms |
-| `wait_for` | condition | poll until route / test_id / expression matches. Timing fields: `timeout_ms`, `poll_ms` |
-| `log_watch` | `watch_for` / `must_not_appear` | scan watcher log |
-| `screenshot` | `note` | capture page (test_id-scoped optional) |
-| `manual` | — | human intervention point |
-| `select_account` | `address` | switch Ethereum account |
-| `toggle_testnet` | `enabled` | enable/disable testnet networks |
-| `switch_provider` | `provider` | switch perps provider |
-| `ext_navigate_hash` | `path` | extension-specific: navigate via `home.html#/<path>` |
-| `ext_wait_for_screen` | `route` | wait until URL hash matches a registered route |
-| `ext_switch_tab` | `target` | switch active Chromium tab to extension page / dapp / new |
-| `ext_check_dom` | `selector`, `assert` | DOM assertion against the active extension page |
-| `switch` | `cases` | branch on assertions (workflow only) |
-| `end` | — | terminal node (workflow only) |
+| Action                | Required                        | Purpose                                                                                 |
+| --------------------- | ------------------------------- | --------------------------------------------------------------------------------------- |
+| `navigate`            | `target`                        | go to a screen via the route map                                                        |
+| `press`               | `test_id`                       | click a component by `data-testid`                                                      |
+| `set_input`           | `test_id`, `value`              | type into an `<input>`                                                                  |
+| `type_keypad`         | `value`                         | type digits via on-screen keypad                                                        |
+| `clear_keypad`        | —                               | press delete N times (default 8)                                                        |
+| `scroll`              | —                               | scroll a region (optional `test_id`, `offset`)                                          |
+| `eval_sync`           | `expression`, `assert`          | sync CDP eval against the active page                                                   |
+| `eval_async`          | `expression`, `assert`          | promise-based CDP eval                                                                  |
+| `eval_ref`            | `ref`, `assert`                 | run a named eval ref                                                                    |
+| `flow_ref`            | `ref`                           | invoke another flow (workflow only)                                                     |
+| `wait`                | —                               | pause N ms                                                                              |
+| `wait_for`            | condition                       | poll until route / test_id / expression matches. Timing fields: `timeout_ms`, `poll_ms` |
+| `log_watch`           | `watch_for` / `must_not_appear` | scan watcher log                                                                        |
+| `screenshot`          | `note`                          | capture page (test_id-scoped optional)                                                  |
+| `manual`              | —                               | human intervention point                                                                |
+| `select_account`      | `address`                       | switch Ethereum account                                                                 |
+| `toggle_testnet`      | `enabled`                       | enable/disable testnet networks                                                         |
+| `switch_provider`     | `provider`                      | switch perps provider                                                                   |
+| `ext_navigate_hash`   | `path`                          | extension-specific: navigate via `home.html#/<path>`                                    |
+| `ext_wait_for_screen` | `route`                         | wait until URL hash matches a registered route                                          |
+| `ext_switch_tab`      | `target`                        | switch active Chromium tab to extension page / dapp / new                               |
+| `ext_check_dom`       | `selector`, `assert`            | DOM assertion against the active extension page                                         |
+| `switch`              | `cases`                         | branch on assertions (workflow only)                                                    |
+| `end`                 | —                               | terminal node (workflow only)                                                           |
 
 ## Assertion operators
 
 Used in `assert` blocks on steps and pre-conditions:
 
-| Operator | Meaning |
-| --- | --- |
-| `exists` | field not undefined |
-| `not_null` | value not null/undefined |
-| `truthy` / `falsy` | boolean truthiness |
-| `eq` / `neq` | strict equality |
-| `gt` / `lt` / `gte` / `lte` | numeric comparison |
-| `deep_eq` | deep strict equality |
-| `length_eq` / `length_gt` / `length_gte` | array/string length |
-| `contains` / `not_contains` | array or string includes |
-| `matches` | regex match (`/pattern/flags` or string) |
-| `one_of` | value in `values` array |
+| Operator                                 | Meaning                                  |
+| ---------------------------------------- | ---------------------------------------- |
+| `exists`                                 | field not undefined                      |
+| `not_null`                               | value not null/undefined                 |
+| `truthy` / `falsy`                       | boolean truthiness                       |
+| `eq` / `neq`                             | strict equality                          |
+| `gt` / `lt` / `gte` / `lte`              | numeric comparison                       |
+| `deep_eq`                                | deep strict equality                     |
+| `length_eq` / `length_gt` / `length_gte` | array/string length                      |
+| `contains` / `not_contains`              | array or string includes                 |
+| `matches`                                | regex match (`/pattern/flags` or string) |
+| `one_of`                                 | value in `values` array                  |
 
 Compound: `{ all: [...] }`, `{ any: [...] }`, `{ none: [...] }`.
 
@@ -316,7 +378,7 @@ const x = Engine.context.PerpsController.state;
 Async via `.then()`:
 
 ```js
-Engine.context.PerpsController.getPositions().then(function(ps) {
+Engine.context.PerpsController.getPositions().then(function (ps) {
   return JSON.stringify({ count: ps.length });
 });
 ```

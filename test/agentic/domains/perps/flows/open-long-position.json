@@ -1,5 +1,4 @@
 {
-  "title": "Trade — market {{side}} {{symbol}} ${{amount}}",
   "inputs": {
     "side": {
       "type": "string",
@@ -17,6 +16,7 @@
       "description": "USD notional amount"
     }
   },
+  "title": "Trade — market {{side}} {{symbol}} ${{amount}}",
   "validate": {
     "workflow": {
       "pre_conditions": [
@@ -37,14 +37,20 @@
         "gate-check-balance": {
           "action": "eval_async",
           "expression": "(async()=>{var r=await stateHooks.submitRequestToBackground('perpsGetAccountState',[]);var bal=parseFloat(r?.totalBalance??'0');return JSON.stringify({ok:bal>0,bal:bal,reason:bal>0?'ok':'Insufficient perps balance ($'+bal+') — deposit funds (mainnet) or use a funded testnet account'})})()",
-          "assert": { "operator": "eq", "field": "ok", "value": true },
+          "assert": {
+            "operator": "eq",
+            "field": "ok",
+            "value": true
+          },
           "save_as": "balance_gate",
           "next": "call-nav-detail"
         },
         "call-nav-detail": {
           "action": "call",
           "ref": "perps/navigate-to-market-detail",
-          "params": { "symbol": "{{symbol}}" },
+          "params": {
+            "symbol": "{{symbol}}"
+          },
           "next": "check-position"
         },
         "check-position": {
@@ -59,7 +65,10 @@
           "cases": [
             {
               "label": "position exists — skip order",
-              "when": { "field": "vars.pos_check.visible", "operator": "truthy" },
+              "when": {
+                "field": "vars.pos_check.visible",
+                "operator": "truthy"
+              },
               "next": "verify-position"
             }
           ],
@@ -108,7 +117,8 @@
         "screenshot-result": {
           "action": "screenshot",
           "filename": "{{side}}-position-{{symbol}}",
-          "next": "done"
+          "next": "done",
+          "note": "Evidence capture: {{side}} position {{symbol}}"
         },
         "done": {
           "action": "end",

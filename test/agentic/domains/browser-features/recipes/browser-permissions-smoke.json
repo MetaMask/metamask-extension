@@ -1,6 +1,6 @@
 {
-  "title": "Browser permissions smoke",
   "description": "Canonical proof recipe for browser permission grant/reset on the active dapp page.",
+  "title": "Browser permissions smoke",
   "validate": {
     "workflow": {
       "entry": "gate-nav-dapp",
@@ -29,8 +29,16 @@
           "assert": {
             "all": [
               { "operator": "eq", "field": "control", "value": "browser" },
-              { "operator": "eq", "field": "browserAction", "value": "grant_permission" },
-              { "operator": "eq", "field": "permission", "value": "geolocation" }
+              {
+                "operator": "eq",
+                "field": "browserAction",
+                "value": "grant_permission"
+              },
+              {
+                "operator": "eq",
+                "field": "permission",
+                "value": "geolocation"
+              }
             ]
           },
           "next": "ac1-check-granted"
@@ -52,7 +60,11 @@
           "assert": {
             "all": [
               { "operator": "eq", "field": "control", "value": "browser" },
-              { "operator": "eq", "field": "browserAction", "value": "reset_permissions" }
+              {
+                "operator": "eq",
+                "field": "browserAction",
+                "value": "reset_permissions"
+              }
             ]
           },
           "next": "ac1-check-reset"

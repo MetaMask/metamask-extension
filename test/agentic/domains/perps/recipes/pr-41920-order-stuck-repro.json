@@ -1,6 +1,6 @@
 {
-  "title": "PR #41920 — reproduce order stuck in submitting state",
   "description": "Reviewer (@michalconsensys) reports perps order submission gets stuck in 'submitting' state on branch, not on main. Existing open-long-position flow hides this because handleBackClick navigates away before perpsPlaceOrder RPC resolves, so DOM 'market-detail-page' wait passes spuriously. This recipe submits a small ETH long on testnet and polls perpsGetPositions + perpsGetOpenOrders for up to 45s to verify the order actually settled (position size grew OR order filled). Fails explicitly if RPC never produces a position delta, which would match the reviewer's report.",
+  "title": "PR #41920 — reproduce order stuck in submitting state",
   "validate": {
     "workflow": {
       "pre_conditions": ["wallet.unlocked", "perps.feature_enabled"],
@@ -11,8 +11,16 @@
           "expression": "(function(){var m=stateHooks.store.getState().metamask;return JSON.stringify({network:m.isTestnet?'testnet':'mainnet',provider:m.activeProvider||'hyperliquid'})})()",
           "assert": {
             "all": [
-              { "operator": "length_gt", "field": "network", "value": 0 },
-              { "operator": "length_gt", "field": "provider", "value": 0 }
+              {
+                "operator": "length_gt",
+                "field": "network",
+                "value": 0
+              },
+              {
+                "operator": "length_gt",
+                "field": "provider",
+                "value": 0
+              }
             ]
           },
           "save_as": "original_network"
@@ -21,7 +29,10 @@
           "id": "setup-ensure-testnet",
           "action": "call",
           "ref": "perps/ensure-perps-network",
-          "params": { "network": "testnet", "provider": "hyperliquid" }
+          "params": {
+            "network": "testnet",
+            "provider": "hyperliquid"
+          }
         },
         {
           "id": "setup-prime-perps",
@@ -32,7 +43,11 @@
           "id": "setup-capture-baseline",
           "action": "eval_async",
           "expression": "(async()=>{var p=await stateHooks.submitRequestToBackground('perpsGetPositions',[]);var o=await stateHooks.submitRequestToBackground('perpsGetOpenOrders',[]);var eth=(p||[]).find(function(x){return (x.symbol||'').toUpperCase()==='ETH'});return JSON.stringify({baselineEthSize:parseFloat(eth?eth.size:'0')||0,baselineOpenOrders:(o||[]).length,baselinePositionCount:(p||[]).length})})()",
-          "assert": { "operator": "gte", "field": "baselineEthSize", "value": 0 },
+          "assert": {
+            "operator": "gte",
+            "field": "baselineEthSize",
+            "value": 0
+          },
           "save_as": "baseline"
         }
       ],
@@ -41,14 +56,21 @@
           "id": "teardown-close-if-opened",
           "action": "eval_async",
           "expression": "(async()=>{try{var p=await stateHooks.submitRequestToBackground('perpsGetPositions',[]);var eth=(p||[]).find(function(x){return (x.symbol||'').toUpperCase()==='ETH'});return JSON.stringify({ok:true,hasEth:!!eth,size:eth?eth.size:'0'})}catch(e){return JSON.stringify({ok:true,hasEth:false,error:String(e)})}})()",
-          "assert": { "operator": "eq", "field": "ok", "value": true },
+          "assert": {
+            "operator": "eq",
+            "field": "ok",
+            "value": true
+          },
           "save_as": "post_state"
         },
         {
           "id": "teardown-restore-network",
           "action": "call",
           "ref": "perps/ensure-perps-network",
-          "params": { "network": "{{vars.original_network.network}}", "provider": "{{vars.original_network.provider}}" }
+          "params": {
+            "network": "{{vars.original_network.network}}",
+            "provider": "{{vars.original_network.provider}}"
+          }
         }
       ],
       "entry": "ac1-nav-eth-detail",
@@ -56,13 +78,16 @@
         "ac1-nav-eth-detail": {
           "action": "call",
           "ref": "perps/navigate-to-market-detail",
-          "params": { "symbol": "ETH" },
+          "params": {
+            "symbol": "ETH"
+          },
           "next": "ac1-screenshot-detail"
         },
         "ac1-screenshot-detail": {
           "action": "screenshot",
           "filename": "01-eth-market-detail-before",
-          "next": "ac2-wait-long-cta"
+          "next": "ac2-wait-long-cta",
+          "note": "Evidence capture: 01 eth market detail before"
         },
         "ac2-wait-long-cta": {
           "action": "wait_for",
@@ -90,7 +115,8 @@
         "ac2-screenshot-form": {
           "action": "screenshot",
           "filename": "02-order-form-filled",
-          "next": "ac3-press-submit"
+          "next": "ac3-press-submit",
+          "note": "Evidence capture: 02 order form filled"
         },
         "ac3-press-submit": {
           "action": "press",
@@ -100,14 +126,19 @@
         "ac3-poll-settlement": {
           "action": "eval_async",
           "expression": "(async()=>{var start=Date.now();var timeoutMs=45000;var intervalMs=500;var baseline=parseFloat({{vars.baseline.baselineEthSize}})||0;var baselineOpen={{vars.baseline.baselineOpenOrders}};var lastPositions=[];var lastOpen=[];var lastErr=null;while(Date.now()-start<timeoutMs){try{var p=await stateHooks.submitRequestToBackground('perpsGetPositions',[]);var o=await stateHooks.submitRequestToBackground('perpsGetOpenOrders',[]);lastPositions=p||[];lastOpen=o||[];var eth=lastPositions.find(function(x){return (x.symbol||'').toUpperCase()==='ETH'});var size=eth?parseFloat(eth.size)||0:0;var sizeDelta=Math.abs(size)-Math.abs(baseline);if(sizeDelta>0.00001){return JSON.stringify({settled:true,stuck:false,elapsedMs:Date.now()-start,sizeDelta:sizeDelta,newSize:size,baseline:baseline,openOrderCount:lastOpen.length})}}catch(e){lastErr=String(e)}await new Promise(function(r){setTimeout(r,intervalMs)})}return JSON.stringify({settled:false,stuck:true,elapsedMs:Date.now()-start,baseline:baseline,finalEthSize:(lastPositions.find(function(x){return (x.symbol||'').toUpperCase()==='ETH'})||{size:'0'}).size,openOrderCount:lastOpen.length,openOrderSymbols:lastOpen.map(function(x){return x.symbol||''}),lastError:lastErr,reason:'perpsGetPositions did not show ETH size increase within '+timeoutMs+'ms — order likely stuck in submitting state (matches #41920 reviewer report)'})})()",
-          "assert": { "operator": "eq", "field": "stuck", "value": false },
+          "assert": {
+            "operator": "eq",
+            "field": "stuck",
+            "value": false
+          },
           "save_as": "settlement",
           "next": "ac3-screenshot-after"
         },
         "ac3-screenshot-after": {
           "action": "screenshot",
           "filename": "03-post-submit-settled",
-          "next": "ac4-verify-dom"
+          "next": "ac4-verify-dom",
+          "note": "Evidence capture: 03 post submit settled"
         },
         "ac4-verify-dom": {
           "action": "wait_for",
@@ -118,7 +149,10 @@
         "ac4-close-cleanup": {
           "action": "call",
           "ref": "perps/close-position",
-          "params": { "symbol": "ETH", "percent": "100" },
+          "params": {
+            "symbol": "ETH",
+            "percent": "100"
+          },
           "next": "done"
         },
         "done": {

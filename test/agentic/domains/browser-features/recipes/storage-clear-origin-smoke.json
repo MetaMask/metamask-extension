@@ -1,6 +1,6 @@
 {
-  "title": "Storage clear web storage smoke",
   "description": "Canonical proof recipe for clearing localStorage and sessionStorage on the active dapp page via CDP DOMStorage. Validates seeded storage, clears it, then proves it is reset.",
+  "title": "Storage clear web storage smoke",
   "validate": {
     "workflow": {
       "entry": "gate-nav-dapp",
@@ -30,8 +30,16 @@
           "assert": {
             "all": [
               { "operator": "eq", "field": "control", "value": "storage" },
-              { "operator": "eq", "field": "storage", "value": "clear_web_storage" },
-              { "operator": "eq", "field": "origin", "value": "https://example.com" },
+              {
+                "operator": "eq",
+                "field": "storage",
+                "value": "clear_web_storage"
+              },
+              {
+                "operator": "eq",
+                "field": "origin",
+                "value": "https://example.com"
+              },
               { "operator": "length_gt", "field": "applied", "value": 0 }
             ]
           },

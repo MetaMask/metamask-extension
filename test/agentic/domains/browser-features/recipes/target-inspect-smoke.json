@@ -1,6 +1,6 @@
 {
-  "title": "Target inspect smoke",
   "description": "Canonical proof recipe for target inspection and classification across extension pages and service workers.",
+  "title": "Target inspect smoke",
   "validate": {
     "workflow": {
       "pre_conditions": ["wallet.unlocked"],

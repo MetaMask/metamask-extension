@@ -16,7 +16,10 @@
           "cases": [
             {
               "label": "locked",
-              "when": { "field": "vars.lock_check.visible", "operator": "truthy" },
+              "when": {
+                "field": "vars.lock_check.visible",
+                "operator": "truthy"
+              },
               "next": "type-password"
             }
           ],

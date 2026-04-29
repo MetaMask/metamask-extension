@@ -1,70 +1,4 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "flow.schema.json",
-  "title": "Agentic Flow",
-  "type": "object",
-  "required": ["title", "validate"],
-  "additionalProperties": false,
-  "properties": {
-    "title": {
-      "type": "string",
-      "description": "Human-readable title. May contain {{param}} template tokens."
-    },
-    "pr": {
-      "type": ["string", "number"],
-      "description": "Associated PR number (informational)."
-    },
-    "inputs": {
-      "type": "object",
-      "description": "Declared parameters. Every {{param}} used in steps MUST have a matching key.",
-      "additionalProperties": {
-        "type": "object",
-        "required": ["type"],
-        "properties": {
-          "type": { "enum": ["string", "number", "boolean"] },
-          "default": { "description": "Default value. Single source of truth." },
-          "description": { "type": "string" }
-        }
-      }
-    },
-    "initial_conditions": {
-      "type": "object",
-      "properties": {
-        "account": { "type": "string" },
-        "testnet": { "type": "boolean" },
-        "provider": { "type": "string" }
-      }
-    },
-    "validate": {
-      "type": "object",
-      "required": ["workflow"],
-      "properties": {
-        "workflow": {
-          "type": "object",
-          "required": ["entry", "nodes"],
-          "properties": {
-            "pre_conditions": { "$ref": "#/$defs/pre_conditions" },
-            "setup": {
-              "type": "array",
-              "items": { "$ref": "#/$defs/step" }
-            },
-            "teardown": {
-              "type": "array",
-              "items": { "$ref": "#/$defs/step" }
-            },
-            "entry": {
-              "type": "string",
-              "description": "ID of the first node to execute."
-            },
-            "nodes": {
-              "type": "object",
-              "additionalProperties": { "$ref": "#/$defs/node" }
-            }
-          }
-        }
-      }
-    }
-  },
   "$defs": {
     "pre_conditions": {
       "type": "array",
@@ -94,7 +28,10 @@
         "test_id": { "type": "string" },
         "value": { "type": "string" },
         "target": { "type": "string" },
-        "params": { "type": "object", "additionalProperties": { "type": "string" } },
+        "params": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
         "ref": { "type": "string" },
         "ms": { "type": "number" },
         "timeout_ms": { "type": "number" },
@@ -215,7 +152,10 @@
         "test_id": { "type": "string" },
         "value": { "type": "string" },
         "target": { "type": "string" },
-        "params": { "type": "object", "additionalProperties": { "type": "string" } },
+        "params": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
         "ref": { "type": "string" },
         "ms": { "type": "number" },
         "timeout_ms": { "type": "number" },
@@ -392,5 +332,73 @@
         }
       ]
     }
-  }
+  },
+  "$id": "flow.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Human-readable title. May contain {{param}} template tokens."
+    },
+    "pr": {
+      "type": ["string", "number"],
+      "description": "Associated PR number (informational)."
+    },
+    "inputs": {
+      "type": "object",
+      "description": "Declared parameters. Every {{param}} used in steps MUST have a matching key.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": { "enum": ["string", "number", "boolean"] },
+          "default": {
+            "description": "Default value. Single source of truth."
+          },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "initial_conditions": {
+      "type": "object",
+      "properties": {
+        "account": { "type": "string" },
+        "testnet": { "type": "boolean" },
+        "provider": { "type": "string" }
+      }
+    },
+    "validate": {
+      "type": "object",
+      "required": ["workflow"],
+      "properties": {
+        "workflow": {
+          "type": "object",
+          "required": ["entry", "nodes"],
+          "properties": {
+            "pre_conditions": { "$ref": "#/$defs/pre_conditions" },
+            "setup": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/step" }
+            },
+            "teardown": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/step" }
+            },
+            "entry": {
+              "type": "string",
+              "description": "ID of the first node to execute."
+            },
+            "nodes": {
+              "type": "object",
+              "additionalProperties": { "$ref": "#/$defs/node" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["title", "validate"],
+  "title": "Agentic Flow",
+  "type": "object"
 }
