@@ -1,26 +1,15 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
-import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import {
   Button,
   ButtonSize,
 } from '../../../../../components/component-library';
-import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
-import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
-import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
-import {
-  isAddEthereumChainType,
-  useAddEthereumChain,
-} from '../../../hooks/useAddEthereumChain';
-import { getConfirmationSender } from '../utils';
 import {
   ConnectionStatus,
   HardwareWalletType,
@@ -29,35 +18,31 @@ import {
   useHardwareWalletState,
 } from '../../../../../contexts/hardware-wallets';
 import { ConfirmButton } from './confirm-button';
+import { useConfirmationSubmit } from './useConfirmationSubmit';
+import type { ResolvePendingApprovalOptions } from './useConfirmationSubmit';
 
 export const HardwareWalletActionButton = ({
+  buttonText,
   disabled,
+  isLoading = false,
 }: {
+  buttonText?: string;
   disabled: boolean;
+  isLoading?: boolean;
 }) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { onTransactionConfirm } = useTransactionConfirm();
   const { navigateNext } = useConfirmationNavigation();
-  const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const currentConfirmationId = currentConfirmation?.id;
   const t = useI18nContext();
 
-  const { from: fromAddress } = getConfirmationSender(currentConfirmation);
-  const { onCancel, resetTransactionState } = useConfirmActions();
+  const { onCancel } = useConfirmActions();
   const { hasUnconfirmedDangerAlerts } = useAlerts(
     currentConfirmation?.id ?? '',
   );
 
   const { dismissErrorModal, setErrorModalSuppressed, isErrorModalVisible } =
     useHardwareWalletError();
-
-  const isTransactionConfirmation = isCorrectDeveloperTransactionType(
-    currentConfirmation?.type,
-  );
-  const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
 
   const onUserRejectedHardwareWalletError = useCallback(async () => {
     // User intentionally rejected on device; follow the cancel flow.
@@ -114,77 +99,35 @@ export const HardwareWalletActionButton = ({
     await onSubmitPreflightCheck({ trackConnectCta: true });
   }, [onSubmitPreflightCheck]);
 
-  const onSubmit = useCallback(async () => {
-    if (!currentConfirmation) {
-      return;
-    }
-
+  const beforeSubmit = useCallback(async () => {
     if (shouldRunHardwareWalletPreflight) {
       const isReady = await onSubmitPreflightCheck();
       if (!isReady) {
-        return;
+        return false;
       }
     }
 
-    try {
-      if (isAddEthereumChain) {
-        await onAddEthereumChain();
-        navigate(DEFAULT_ROUTE);
-        return;
-      }
+    return true;
+  }, [onSubmitPreflightCheck, shouldRunHardwareWalletPreflight]);
 
-      if (isTransactionConfirmation) {
-        const didConfirm = await onTransactionConfirm();
-        if (didConfirm && currentConfirmationId) {
-          navigateNext(currentConfirmationId);
-        }
-        return;
-      }
-
-      const resolveApprovalWithHardwareWalletHandling =
-        withHardwareWalletModalHandling(async () => {
-          const resolveApprovalOptions = walletType
-            ? {
-                fromAddress,
-                waitForResult: true,
-                walletType,
-              }
-            : {
-                fromAddress,
-              };
-
-          await dispatch(
-            resolvePendingApproval(currentConfirmation.id, undefined, {
-              ...resolveApprovalOptions,
-            }),
-          );
-
-          if (currentConfirmationId) {
-            navigateNext(currentConfirmationId);
+  const resolveApprovalOptions = useMemo<
+    Omit<ResolvePendingApprovalOptions, 'fromAddress'>
+  >(
+    () =>
+      walletType
+        ? {
+            waitForResult: true,
+            walletType,
           }
-        });
+        : {},
+    [walletType],
+  );
 
-      await resolveApprovalWithHardwareWalletHandling();
-    } finally {
-      resetTransactionState();
-    }
-  }, [
-    currentConfirmation,
-    currentConfirmationId,
-    onSubmitPreflightCheck,
-    shouldRunHardwareWalletPreflight,
-    isAddEthereumChain,
-    isTransactionConfirmation,
-    onAddEthereumChain,
-    navigate,
-    onTransactionConfirm,
-    navigateNext,
-    dispatch,
-    fromAddress,
-    walletType,
-    withHardwareWalletModalHandling,
-    resetTransactionState,
-  ]);
+  const onSubmit = useConfirmationSubmit({
+    beforeSubmit,
+    resolveApprovalOptions,
+    withResolvePendingApproval: withHardwareWalletModalHandling,
+  });
 
   if (shouldShowReconnectButton) {
     return (
@@ -204,8 +147,10 @@ export const HardwareWalletActionButton = ({
   return (
     <ConfirmButton
       alertOwnerId={currentConfirmation?.id}
+      buttonText={buttonText}
       onSubmit={onSubmit}
       disabled={disabled}
+      isLoading={isLoading}
       onCancel={onCancel}
     />
   );

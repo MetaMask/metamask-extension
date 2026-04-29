@@ -104,7 +104,11 @@ export const SingleActionFooter = ({
       flexDirection={FlexDirection.Column}
     >
       {isHardwareWalletAccount ? (
-        <HardwareWalletActionButton disabled={isDisabled} />
+        <HardwareWalletActionButton
+          buttonText={buttonText}
+          disabled={isDisabled}
+          isLoading={isLoading}
+        />
       ) : (
         <Button
           className="w-full"

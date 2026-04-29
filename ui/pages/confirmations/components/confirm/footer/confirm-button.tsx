@@ -57,12 +57,16 @@ function getButtonDisabledState(
 
 export const ConfirmButton = ({
   alertOwnerId = '',
+  buttonText,
   disabled,
+  isLoading = false,
   onSubmit,
   onCancel,
 }: {
   alertOwnerId?: string;
+  buttonText?: string;
   disabled: boolean;
+  isLoading?: boolean;
   onSubmit: () => void;
   onCancel: OnCancelHandler;
 }) => {
@@ -151,17 +155,18 @@ export const ConfirmButton = ({
           block
           data-testid="confirm-footer-button"
           disabled={disabled}
-          onClick={onSubmit}
+          loading={isLoading && !disabled}
+          onClick={isLoading ? undefined : onSubmit}
           size={ButtonSize.Lg}
         >
-          {currentConfirmation?.type ===
-          TransactionType.shieldSubscriptionApprove
-            ? t(
-                isShieldTrialed
-                  ? 'shieldStartNowCTA'
-                  : 'shieldStartNowCTAWithTrial',
-              )
-            : t('confirm')}
+          {buttonText ??
+            (currentConfirmation?.type === TransactionType.shieldSubscriptionApprove
+              ? t(
+                  isShieldTrialed
+                    ? 'shieldStartNowCTA'
+                    : 'shieldStartNowCTAWithTrial',
+                )
+              : t('confirm'))}
         </Button>
       )}
     </>

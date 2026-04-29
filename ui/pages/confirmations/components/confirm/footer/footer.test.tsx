@@ -42,6 +42,10 @@ import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { useAddEthereumChain } from '../../../hooks/useAddEthereumChain';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
+import {
+  useIsTransactionPayLoading,
+  useTransactionPayRequiredTokens,
+} from '../../../hooks/pay/useTransactionPayData';
 import Footer from './footer';
 
 jest.mock('../../../hooks/gas/useIsGaslessLoading');
@@ -233,6 +237,12 @@ describe('ConfirmFooter', () => {
     useInsufficientBalanceAlerts,
   );
   const useIsGaslessLoadingMock = jest.mocked(useIsGaslessLoading);
+  const useIsTransactionPayLoadingMock = jest.mocked(
+    useIsTransactionPayLoading,
+  );
+  const useTransactionPayRequiredTokensMock = jest.mocked(
+    useTransactionPayRequiredTokens,
+  );
   const useAddEthereumChainMock = jest.mocked(useAddEthereumChain);
   const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
   const useUserSubscriptionsMock = jest.mocked(useUserSubscriptions);
@@ -290,6 +300,8 @@ describe('ConfirmFooter', () => {
     useIsGaslessLoadingMock.mockReturnValue({
       isGaslessLoading: false,
     });
+    useIsTransactionPayLoadingMock.mockReturnValue(false);
+    useTransactionPayRequiredTokensMock.mockReturnValue([]);
 
     mockUseLocation.mockImplementation(getDefaultFooterTestLocation);
     useUserSubscriptionsMock.mockReturnValue({
@@ -1141,6 +1153,64 @@ describe('ConfirmFooter', () => {
       messages.addFunds.message,
     );
     expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  it('renders the custom SingleActionFooter text for hardware wallet accounts', () => {
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: true,
+      walletType: HardwareWalletType.Ledger,
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Connected },
+    });
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.perpsDeposit,
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
+    );
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  it('prevents hardware wallet SingleActionFooter submission while pay data is loading', () => {
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: true,
+      walletType: HardwareWalletType.Ledger,
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Connected },
+    });
+    useIsTransactionPayLoadingMock.mockReturnValue(true);
+    useTransactionPayRequiredTokensMock.mockReturnValue([
+      { amountUsd: '1', skipIfBalance: false },
+    ] as ReturnType<typeof useTransactionPayRequiredTokens>);
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.perpsDeposit,
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId } = render(getMockContractInteractionConfirmState());
+    const confirmButton = getByTestId('confirm-footer-button');
+
+    expect(confirmButton).toHaveClass('mm-button-base--loading');
+    fireEvent.click(confirmButton);
+
+    expect(ensureDeviceReadyMock).not.toHaveBeenCalled();
+    expect(mockOnTransactionConfirm).not.toHaveBeenCalled();
   });
 
   it('renders SingleActionFooter for perpsWithdraw transaction type', () => {

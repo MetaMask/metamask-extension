@@ -3,10 +3,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
-import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import {
   Box,
   Button,
@@ -21,20 +19,14 @@ import {
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
-import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEnableShieldCoverageChecks';
-import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useDappSwapActions } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
-import {
-  isAddEthereumChainType,
-  useAddEthereumChain,
-} from '../../../hooks/useAddEthereumChain';
+import { isAddEthereumChainType } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
-import { getConfirmationSender } from '../utils';
 import {
   useHardwareWalletConfig,
   useHardwareWalletError,
@@ -45,6 +37,7 @@ import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/sh
 import { SingleActionFooter } from './single-action-footer';
 import { HardwareWalletActionButton } from './hardware-wallet-footer';
 import { ConfirmButton } from './confirm-button';
+import { useConfirmationSubmit } from './useConfirmationSubmit';
 
 export type { OnCancelHandler } from './confirm-button';
 
@@ -80,22 +73,18 @@ export const CancelButton = ({
 };
 
 const Footer = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { onDappSwapCompleted } = useDappSwapActions();
-  const { onTransactionConfirm } = useTransactionConfirm();
   const { navigateNext } = useConfirmationNavigation();
-  const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
   const { currentConfirmation, isScrollToBottomCompleted, goBackTo } =
     useConfirmContext<TransactionMeta>();
   const currentConfirmationId = currentConfirmation?.id;
   const { isGaslessLoading } = useIsGaslessLoading();
 
-  const { from: fromAddress } = getConfirmationSender(currentConfirmation);
   const { shouldThrottleOrigin } = useOriginThrottling();
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
-  const { onCancel, resetTransactionState } = useConfirmActions();
+  const { onCancel } = useConfirmActions();
 
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { dismissErrorModal, setErrorModalSuppressed } =
@@ -108,59 +97,12 @@ const Footer = () => {
   }, [setErrorModalSuppressed]);
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
-  const isTransactionConfirmation = isCorrectDeveloperTransactionType(
-    currentConfirmation?.type,
-  );
   const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) || isGaslessLoading;
 
-  const onSubmit = useCallback(async () => {
-    if (!currentConfirmation) {
-      return;
-    }
-
-    try {
-      if (isAddEthereumChain) {
-        await onAddEthereumChain();
-        navigate(DEFAULT_ROUTE);
-        return;
-      }
-
-      if (isTransactionConfirmation) {
-        const didConfirm = await onTransactionConfirm();
-        if (didConfirm && currentConfirmationId) {
-          navigateNext(currentConfirmationId);
-        }
-        return;
-      }
-
-      await dispatch(
-        resolvePendingApproval(currentConfirmation.id, undefined, {
-          fromAddress,
-        }),
-      );
-
-      if (currentConfirmationId) {
-        navigateNext(currentConfirmationId);
-      }
-    } finally {
-      resetTransactionState();
-    }
-  }, [
-    currentConfirmation,
-    currentConfirmationId,
-    isAddEthereumChain,
-    isTransactionConfirmation,
-    onAddEthereumChain,
-    navigate,
-    onTransactionConfirm,
-    navigateNext,
-    dispatch,
-    fromAddress,
-    resetTransactionState,
-  ]);
+  const onSubmit = useConfirmationSubmit();
 
   const handleFooterCancel = useCallback(async () => {
     if (shouldThrottleOrigin) {
