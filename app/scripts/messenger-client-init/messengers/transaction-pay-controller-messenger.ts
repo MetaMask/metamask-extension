@@ -31,6 +31,8 @@ export function getTransactionPayControllerMessenger(
       'BridgeStatusController:submitTx',
       'CurrencyRateController:getState',
       'GasFeeController:getState',
+      'KeyringController:getState',
+      'KeyringController:signTypedMessage',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
@@ -42,7 +44,6 @@ export function getTransactionPayControllerMessenger(
       'TransactionController:getGasFeeTokens',
       'TransactionController:getState',
       'TransactionController:updateTransaction',
-      'KeyringController:signTypedMessage',
     ],
     events: [
       'BridgeStatusController:stateChange',
