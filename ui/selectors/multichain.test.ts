@@ -6,6 +6,7 @@ import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import {
   type SupportedCaipChainId,
   AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+  MULTICHAIN_NETWORK_TICKER,
 } from '@metamask/multichain-network-controller';
 import * as metamaskDuck from '../ducks/metamask/metamask';
 import {
@@ -1217,66 +1218,45 @@ describe('Multichain Selectors', () => {
       MultichainNetworks.TRON_SHASTA,
     ] as const;
 
-    const EXPECTED_SYNTHETIC_NATIVE_CURRENCY = {
-      [MultichainNetworks.SOLANA]: 'sol',
-      [MultichainNetworks.BITCOIN]: 'BTC',
-      [MultichainNetworks.BITCOIN_TESTNET]: 'tBTC',
-      [MultichainNetworks.BITCOIN_SIGNET]: 'sBTC',
-      [MultichainNetworks.TRON]: 'TRX',
-      [MultichainNetworks.TRON_NILE]: 'TRX',
-      [MultichainNetworks.TRON_SHASTA]: 'TRX',
-    } as const;
-
-    /**
-     * Display names applied in `getMultichainNetworkConfigurationsByChainId` (mirrors the
-     * provider registry until that selector reads from multichain-network-controller only).
-     */
-    const EXPECTED_SYNTHETIC_NETWORK_NAMES = {
-      [MultichainNetworks.SOLANA]: 'Solana',
-      [MultichainNetworks.BITCOIN]: 'Bitcoin',
-      [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
-      [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
-      [MultichainNetworks.TRON]: 'Tron',
-      [MultichainNetworks.TRON_NILE]: 'Tron (nile)',
-      [MultichainNetworks.TRON_SHASTA]: 'Tron (shasta)',
-    } as const;
-
     it('merges EVM network configurations with non-EVM multichain entries', () => {
       const state = getEvmState();
       const configs = getMultichainNetworkConfigurationsByChainId(state);
 
       expect(configs[CHAIN_IDS.MAINNET]).toBeDefined();
       expect(configs[MultichainNetworks.SOLANA]).toMatchObject({
-        nativeCurrency: 'sol',
+        nativeCurrency: MULTICHAIN_NETWORK_TICKER[MultichainNetworks.SOLANA],
         chainId: MultichainNetworks.SOLANA,
       });
       expect(configs[MultichainNetworks.BITCOIN]).toMatchObject({
-        nativeCurrency: 'BTC',
+        nativeCurrency: MULTICHAIN_NETWORK_TICKER[MultichainNetworks.BITCOIN],
       });
       expect(configs[MultichainNetworks.TRON]).toMatchObject({
-        nativeCurrency: 'TRX',
+        nativeCurrency: MULTICHAIN_NETWORK_TICKER[MultichainNetworks.TRON],
       });
       expect(configs[MultichainNetworks.TRON_SHASTA]).toMatchObject({
-        nativeCurrency: 'TRX',
+        nativeCurrency:
+          MULTICHAIN_NETWORK_TICKER[MultichainNetworks.TRON_SHASTA],
       });
       expect(configs[MultichainNetworks.BITCOIN_TESTNET]).toMatchObject({
-        nativeCurrency: 'tBTC',
+        nativeCurrency:
+          MULTICHAIN_NETWORK_TICKER[MultichainNetworks.BITCOIN_TESTNET],
       });
       expect(configs[MultichainNetworks.BITCOIN_SIGNET]).toMatchObject({
-        nativeCurrency: 'sBTC',
+        nativeCurrency:
+          MULTICHAIN_NETWORK_TICKER[MultichainNetworks.BITCOIN_SIGNET],
       });
       expect(configs[MultichainNetworks.TRON_NILE]).toMatchObject({
-        nativeCurrency: 'TRX',
+        nativeCurrency: MULTICHAIN_NETWORK_TICKER[MultichainNetworks.TRON_NILE],
       });
     });
 
-    it('uses expected display names for every synthetic non-EVM network', () => {
+    it('uses display names from multichain-network-controller for every synthetic non-EVM network', () => {
       const configs =
         getMultichainNetworkConfigurationsByChainId(getEvmState());
 
       for (const chainId of SYNTHETIC_MULTICHAIN_CHAIN_IDS) {
         expect(configs[chainId].name).toBe(
-          EXPECTED_SYNTHETIC_NETWORK_NAMES[chainId],
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[chainId].name,
         );
       }
     });
@@ -1345,11 +1325,11 @@ describe('Multichain Selectors', () => {
 
       expect(configs[CHAIN_IDS.MAINNET]).toBeUndefined();
       expect(configs[MultichainNetworks.SOLANA]).toMatchObject({
-        nativeCurrency: 'sol',
+        nativeCurrency: MULTICHAIN_NETWORK_TICKER[MultichainNetworks.SOLANA],
         chainId: MultichainNetworks.SOLANA,
       });
       expect(configs[MultichainNetworks.TRON]).toMatchObject({
-        nativeCurrency: 'TRX',
+        nativeCurrency: MULTICHAIN_NETWORK_TICKER[MultichainNetworks.TRON],
       });
     });
 
@@ -1371,13 +1351,13 @@ describe('Multichain Selectors', () => {
       }
     });
 
-    it('preserves nativeCurrency on synthetic non-EVM merged rows', () => {
+    it('uses MULTICHAIN_NETWORK_TICKER for synthetic non-EVM merged rows', () => {
       const configs =
         getMultichainNetworkConfigurationsByChainId(getEvmState());
 
       for (const chainId of SYNTHETIC_MULTICHAIN_CHAIN_IDS) {
         expect(configs[chainId].nativeCurrency).toBe(
-          EXPECTED_SYNTHETIC_NATIVE_CURRENCY[chainId],
+          MULTICHAIN_NETWORK_TICKER[chainId],
         );
       }
     });
