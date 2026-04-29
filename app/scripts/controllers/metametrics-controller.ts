@@ -24,6 +24,7 @@ import type {
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type { MultichainNetworkControllerGetStateAction } from '@metamask/multichain-network-controller';
 import type { Browser } from 'webextension-polyfill';
 import type { Nft } from '@metamask/assets-controllers';
 import {
@@ -342,7 +343,8 @@ export type AllowedActions =
   | PreferencesControllerGetStateAction
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
-  | RemoteFeatureFlagControllerGetStateAction;
+  | RemoteFeatureFlagControllerGetStateAction
+  | MultichainNetworkControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
