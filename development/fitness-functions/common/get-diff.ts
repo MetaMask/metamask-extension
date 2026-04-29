@@ -48,9 +48,8 @@ async function getCIDiff(path?: string): Promise<string> {
   // No file argument — fetch diff directly (requires CI environment variables).
   // Lazy dynamic import to avoid pulling @actions/github into local dev hooks
   // (and because @actions/github is now ESM-only).
-  const { getPrDiff } = await import(
-    '../../../.github/scripts/shared/get-pr-diff.mts'
-  );
+  const { getPrDiff } =
+    await import('../../../.github/scripts/shared/get-pr-diff.mts');
   return getPrDiff({ baseBranch: process.env.BASE_REF || 'main' });
 }
 
