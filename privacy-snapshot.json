@@ -140,5 +140,9 @@
   "unresponsive-rpc.url",
   "user-storage.api.cx.metamask.io",
   "verify.walletconnect.com",
-  "www.4byte.directory"
+  "www.4byte.directory",
+  "rpc.presto.tempo.xyz",
+  "rpc.mainnet.tempo.xyz",
+  "rpc.moderato.tempo.xyz",
+  "rpc.tempo.xyz"
 ]
