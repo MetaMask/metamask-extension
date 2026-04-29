@@ -7,6 +7,7 @@ import {
   assessMarginRemovalRisk,
   MARGIN_ADJUSTMENT_CONFIG,
 } from './marginUtils';
+import { getTradeableBalance } from './getTradeableBalance';
 import type { MarginRiskAssessment } from './marginUtils';
 
 export type { MarginRiskAssessment } from './marginUtils';
@@ -71,9 +72,10 @@ export function usePerpsMarginCalculations({
     }
 
     const isLong = Number.parseFloat(position.size) >= 0;
-    const availableBalance = account
-      ? Number.parseFloat(account.availableBalance) || 0
-      : 0;
+    // Add-margin draws from tradeable funds, not withdrawable-only, so HL
+    // unified accounts funded by spot USDC can still add margin.
+    const availableBalance =
+      Number.parseFloat(getTradeableBalance(account)) || 0;
     const notionalValue = Number.parseFloat(position.positionValue) || 0;
 
     const maxAmount =

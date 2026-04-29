@@ -7,4 +7,5 @@ export const PAY_TRANSACTION_TYPES = [
   TransactionType.musdClaim,
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
+  TransactionType.perpsWithdraw,
 ];

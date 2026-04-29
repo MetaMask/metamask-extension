@@ -7,14 +7,26 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Mockttp } from '../../mock-e2e';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import { mockSpotPrices } from '../tokens/utils/mocks';
 import SendPage from '../../page-objects/pages/send/send-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { NETWORK_CLIENT_ID } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  NETWORK_CLIENT_ID,
+} from '../../constants';
 
 const NETWORK_NAME_MAINNET = 'Ethereum';
 
 async function mockSetup(mockServer: Mockttp) {
   return [
+    await mockSpotPrices(mockServer, {
+      'eip155:137/slip44:60': {
+        price: 1,
+        marketCap: 0,
+        pricePercentChange1d: 0,
+      },
+    }),
     await mockServer
       .forGet('https://bridge.api.cx.metamask.io/networks/137/tokens')
       .thenCallback(() => ({
@@ -44,6 +56,24 @@ function buildFixtures(title: string) {
       .withEnabledNetworks({
         eip155: {
           [CHAIN_IDS.POLYGON]: true,
+        },
+      })
+      .withAssetsController({
+        assetsBalance: {
+          [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+            // Pre-seed Polygon native balance so the home page shows 25 at login
+            'eip155:137/slip44:60': { amount: '25' },
+          },
+        },
+      })
+      .withTokenBalancesController({
+        tokenBalances: {
+          [DEFAULT_FIXTURE_ACCOUNT]: {
+            [CHAIN_IDS.POLYGON]: {
+              // HST (TST) contract pre-seeded so it shows after import in test 2
+              '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947': '0x3e8',
+            },
+          },
         },
       })
       .build(),

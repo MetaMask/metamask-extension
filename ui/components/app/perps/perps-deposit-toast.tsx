@@ -10,19 +10,21 @@ import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
-  selectPerpsDepositInProgress,
+  selectPerpsDepositPending,
   selectPerpsLastDepositResult,
   selectPerpsLastDepositTransactionId,
+  selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
 import { Toast } from '../../multichain/toast';
 
 export function PerpsDepositToast() {
   const t = useI18nContext();
-  const depositInProgress = useSelector(selectPerpsDepositInProgress);
+  const depositInProgress = useSelector(selectPerpsDepositPending);
   const lastDepositResult = useSelector(selectPerpsLastDepositResult);
   const lastDepositTransactionId = useSelector(
     selectPerpsLastDepositTransactionId,
   );
+  const shouldShowDepositToast = useSelector(selectPerpsShouldShowDepositToast);
   const [dismissedPendingTransactionId, setDismissedPendingTransactionId] =
     useState<string | null>(null);
   const [dismissedCompletion, setDismissedCompletion] = useState(false);
@@ -64,7 +66,7 @@ export function PerpsDepositToast() {
   const hasDismissedPendingToast =
     (lastDepositTransactionId ?? 'pending') === dismissedPendingTransactionId;
 
-  if (lastDepositResult && !dismissedCompletion) {
+  if (lastDepositResult && shouldShowDepositToast && !dismissedCompletion) {
     const isSuccess = lastDepositResult.success === true;
     return (
       <Toast

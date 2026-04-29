@@ -87,7 +87,7 @@ export function PayWithRow({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { payToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
-  const fiatFormatter = useFiatFormatter();
+  const fiatFormatter = useFiatFormatter({ overrideCurrency: 'usd' });
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const from = currentConfirmation?.txParams?.from;

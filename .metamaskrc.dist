@@ -94,3 +94,12 @@ TEST_SRP_2=
 ; (device discovery, error handling, account selection).
 ; Entry points to connecting remain unchanged regardless of this flag.
 NEW_HARDWARE_WALLET_ONBOARDING='false'
+
+; Set this to `true` to enforce simulation balance changes by converting
+; external transactions to delegations.
+;ENABLE_ENFORCED_SIMULATIONS='true'
+
+; Set this to `true` to force enforced simulations to apply whenever a
+; transaction has balance changes, bypassing the trust signal check.
+; Intended for local development and QA only.
+;FORCE_ENABLE_SIMULATIONS='true'
