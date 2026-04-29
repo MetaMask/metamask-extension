@@ -2475,7 +2475,7 @@ describe('RewardsController', () => {
 
           expect(result).toBeDefined();
           expect(result?.balance.total).toBe(250);
-          expect(result?.tier.currentTier.id).toBe('tier-2');
+          expect(result?.tier.currentTier?.id).toBe('tier-2');
         },
       );
     });
@@ -6465,7 +6465,7 @@ describe('Hardware Wallet Support for Rewards', () => {
           expect(result).toBeDefined();
           expect(result?.balance.total).toBe(250);
           expect(result?.balance.updatedAt).toBeDefined();
-          expect(result?.tier.currentTier.id).toBe('tier-2');
+          expect(result?.tier.currentTier?.id).toBe('tier-2');
           expect(result?.tier.nextTier?.id).toBe('tier-3');
           expect(result?.tier.nextTierPointsNeeded).toBe(250);
         },
@@ -6639,7 +6639,7 @@ describe('Hardware Wallet Support for Rewards', () => {
 
           expect(result).toBeDefined();
           expect(result?.balance.total).toBe(50);
-          expect(result?.tier.currentTier.id).toBe('tier-1');
+          expect(result?.tier.currentTier?.id).toBe('tier-1');
           expect(result?.tier.nextTier?.id).toBe('tier-2');
           expect(result?.tier.nextTierPointsNeeded).toBe(50); // 100 - 50
         },
