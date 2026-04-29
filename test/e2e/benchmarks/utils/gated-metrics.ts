@@ -1,21 +1,14 @@
-import { METRIC } from './thresholds';
+import { METRIC, type MetricKey } from './thresholds';
 
 /**
- * GATED_METRICS — enforcement-eligible benchmark metrics.
+ * `GATED_METRIC_VALUES` — single source of truth for the gate allowlist.
  *
- * Entries are dotted `<benchmarkName>.<metricId>` strings assembled via the
- * `METRIC` namespace from `thresholds.ts`. Dot-namespace access is type-checked
- * against `BENCHMARK_THRESHOLDS` at compile time — typos and renamed
- * threshold keys surface as missing-property errors at the call site.
- *
- * Metrics in this set: a `fail`-severity threshold breach blocks the PR
- * (compare-benchmarks exits 1).
- *
- * Metrics NOT in this set: any `fail`-severity breach is degraded to `warn`
- * in output and does not affect exit status. Threshold definitions in
- * THRESHOLD_REGISTRY are unchanged either way — THRESHOLD_REGISTRY is the
- * source of truth for what is a regression; GATED_METRICS defines which
- * regressions block PRs.
+ * Each entry resolves to a `<benchmarkName>.<metricId>` literal via the
+ * `METRIC` namespace, and the `satisfies readonly MetricKey[]` clause
+ * rejects raw strings, stale `METRIC.*` paths, and any other entry that
+ * doesn't correspond to a threshold-backed metric. Adding or removing an
+ * entry changes both the derived `GatedMetric` type and the runtime
+ * `GATED_METRICS` `Set` in lockstep — no dual edit required.
  *
  * GRADUATION PROCEDURE
  * --------------------
@@ -25,9 +18,10 @@ import { METRIC } from './thresholds';
  *
  * Promote (warn → gated) when CV < 30% AND FP rate < 5%, sustained for ≥ 30
  * days. Demote (gated → warn) when CV > 35% OR FP rate > 10% for 2+
- * consecutive weeks. Cadence: monthly review. Output: PR updating this file.
+ * consecutive weeks. Cadence: monthly review. Output: PR updating the
+ * array below.
  */
-export const GATED_METRICS: ReadonlySet<string> = new Set([
+const GATED_METRIC_VALUES = [
   // Startup (standard persona)
   METRIC.startupStandardHome.uiStartup,
   METRIC.startupStandardHome.load,
@@ -60,4 +54,25 @@ export const GATED_METRICS: ReadonlySet<string> = new Set([
   METRIC.importSrpHome.homeAfterImportWithNewWallet,
   METRIC.swap.fetchAndDisplaySwapQuotes,
   METRIC.sendTransactions.openSendPageFromHome,
-]);
+] as const satisfies readonly MetricKey[];
+
+/**
+ * Union of dotted `<benchmarkName>.<metricId>` keys eligible for hard
+ * enforcement, derived from `GATED_METRIC_VALUES`. Consumers that need to
+ * type-check a key against the allowlist should use this type — non-gated
+ * metrics and arbitrary strings are excluded.
+ */
+export type GatedMetric = (typeof GATED_METRIC_VALUES)[number];
+
+/**
+ * GATED_METRICS — runtime mirror of `GATED_METRIC_VALUES`.
+ *
+ * Metrics in this set: a `fail`-severity threshold breach blocks the PR
+ * (`compare-benchmarks` exits 1). Metrics NOT in this set: any `fail`
+ * breach is degraded to `warn` in output and does not affect exit status.
+ * `THRESHOLD_REGISTRY` is the source of truth for what is a regression;
+ * `GatedMetric` (and this set) defines which regressions block PRs.
+ */
+export const GATED_METRICS: ReadonlySet<GatedMetric> = new Set(
+  GATED_METRIC_VALUES,
+);
