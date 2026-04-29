@@ -216,14 +216,12 @@ export const useBridgeAlerts = () => {
       });
     }
 
-    if (!isLoading &&
-        activeQuote &&
+    if (
         !isInsufficientBalance &&
         !isInsufficientGasForQuote &&
         insufficientNativeReserveError &&
         insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
           '0') {
-            console.warn('EXT::useBridgeAlerts HERE', { insufficientNativeReserveError })
       categorizeAlert({
         id: 'insufficient-native-reserve',
         isDismissable: false,
