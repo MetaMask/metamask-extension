@@ -17,7 +17,7 @@ const { normalizeWorkflowDocument, normalizePlayback, renderWorkflowMermaid, det
 const { renderTemplate, renderRuntimeVars } = require('./lib/catalog');
 const { executeNodeAction, loadEvalRefs, waitForAdvance } = require('./lib/ext-bridge');
 const { runPreConditions } = require('./lib/pre-condition-runner');
-const { bootstrapSession, bootstrapCdpSession } = require('./lib/session-bootstrap');
+const { bootstrapCdpSession } = require('./lib/session-bootstrap');
 const {
   applyAllowlist: applyIssueAllowlist,
   computeReview: computeIssueReview,
@@ -718,26 +718,21 @@ async function main() {
   }
 
   // Bootstrap session
-  let weLaunched = false;
   let callHandler;
   let sessionManager;
+  const envCdpPort = parseInt(process.env.CDP_PORT || '', 10);
+  const cdpPort = cli.cdpPort ?? (Number.isNaN(envCdpPort) ? null : envCdpPort);
 
-  if (cli.cdpPort !== null) {
-    process.stdout.write(`\nConnecting to existing browser via CDP on port ${cli.cdpPort}...\n`);
-    const cdpResult = await bootstrapCdpSession(cli.cdpPort);
-    callHandler = cdpResult.callHandler;
-    sessionManager = cdpResult.sessionManager;
-  } else {
-    const result = bootstrapSession();
-    callHandler = result.callHandler;
-    sessionManager = result.sessionManager;
-
-    if (!sessionManager.hasActiveSession()) {
-      process.stdout.write('\nLaunching browser session...\n');
-      await callHandler('mm_launch', {});
-      weLaunched = true;
-    }
+  if (cdpPort === null) {
+    throw new Error(
+      'Live recipe runs require CDP. Run `bash test/agentic/sandbox.sh up`, set CDP_PORT in test/agentic/.env, or pass `--cdp-port <port>`.',
+    );
   }
+
+  process.stdout.write(`\nConnecting to existing browser via CDP on port ${cdpPort}...\n`);
+  const cdpResult = await bootstrapCdpSession(cdpPort);
+  callHandler = cdpResult.callHandler;
+  sessionManager = cdpResult.sessionManager;
 
   // Load eval refs — always load from all teams so recipes work regardless of location
   const teamsRoot = join(recipesDir, collectionsDirName);
@@ -829,7 +824,6 @@ async function main() {
 
     if (!preResult.allPassed) {
       process.stdout.write('\nPre-conditions failed. Aborting.\n');
-      if (weLaunched) await callHandler('mm_cleanup', {});
       process.exit(1);
     }
   }
@@ -886,9 +880,7 @@ async function main() {
   } catch {}
 
   // Cleanup
-  if (weLaunched) {
-    await callHandler('mm_cleanup', {});
-  } else if (cli.cdpPort !== null && cli.closeCdpBrowser) {
+  if (cli.closeCdpBrowser) {
     await sessionManager.cleanup();
   }
 

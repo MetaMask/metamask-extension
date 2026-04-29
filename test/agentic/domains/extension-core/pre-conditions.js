@@ -16,7 +16,7 @@ const REGISTRY = {
       if (!result.ok) {
         return {
           pass: false,
-          hint: 'Extension not loaded or no active session. Call mm_launch first.',
+          hint: 'Extension not loaded or no active session. Run `bash test/agentic/sandbox.sh up` first.',
         };
       }
       const state = result.result?.state;
