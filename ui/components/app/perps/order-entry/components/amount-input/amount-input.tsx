@@ -44,6 +44,7 @@ import {
  * @param options0.asset
  * @param options0.currentPrice
  * @param options0.onAddFunds
+ * @param options0.szDecimals
  */
 export const AmountInput: React.FC<AmountInputProps> = ({
   amount,
@@ -54,6 +55,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   leverage,
   asset,
   currentPrice,
+  szDecimals,
   onAddFunds,
 }) => {
   const t = useI18nContext();
@@ -76,12 +78,15 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
   // Uses a locale-neutral formatter (always ".") so the value is always
   // editable by isUnsignedDecimalInput regardless of the user's locale.
+  // Cap the max fractional digits to the asset's szDecimals so PUMP shows
+  // integer token counts ("6081") and ETH stops at 4 decimals instead of the
+  // previous hard-coded 6 (matches mobile's formatPositionSize behaviour).
   const unGroupedTokenDisplay = useMemo(() => {
     if (tokenAmount === null || tokenAmount === 0) {
       return '';
     }
-    return formatNumberForInput(tokenAmount);
-  }, [tokenAmount]);
+    return formatNumberForInput(tokenAmount, szDecimals);
+  }, [tokenAmount, szDecimals]);
 
   // Local draft for the token input so intermediate values (e.g. "0", "0.") are
   // preserved while the user is actively typing.
@@ -370,7 +375,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             onChange={handleSliderChange}
           />
         </Box>
-        <Box className="shrink-0 w-20">
+        <Box className="shrink-0" style={{ width: '4.5rem' }}>
           <TextField
             size={TextFieldSize.Sm}
             value={percentInputValue}
@@ -383,7 +388,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             data-testid="balance-percent-input"
             inputProps={{
               inputMode: 'numeric',
-              style: { textAlign: 'center' },
+              style: { textAlign: 'right', paddingLeft: '8px' },
             }}
             endAccessory={
               <Text

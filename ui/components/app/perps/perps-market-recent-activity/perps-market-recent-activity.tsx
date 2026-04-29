@@ -9,6 +9,10 @@ import {
   TextColor,
   FontWeight,
   ButtonBase,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -104,13 +108,13 @@ export const PerpsMarketRecentActivity: React.FC<
             onClick={() => navigate(PERPS_ACTIVITY_ROUTE)}
             className="bg-transparent hover:bg-transparent active:bg-transparent p-0 min-w-0 h-auto"
             data-testid="perps-market-detail-view-all-activity"
+            aria-label={t('perpsSeeAll')}
           >
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {t('perpsSeeAll')}
-            </Text>
+            <Icon
+              name={IconName.ArrowRight}
+              size={IconSize.Sm}
+              color={IconColor.IconAlternative}
+            />
           </ButtonBase>
         )}
       </Box>

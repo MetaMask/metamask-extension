@@ -261,7 +261,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
                     ? TextColor.textDefault
                     : TextColor.textAlternative,
               }}
-              padding={3}
+              padding={4}
               data-testid="order-type-market"
             />
             <Tag
@@ -286,7 +286,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
                     ? TextColor.textDefault
                     : TextColor.textAlternative,
               }}
-              padding={3}
+              padding={4}
               data-testid="order-type-limit"
             />
           </Box>
@@ -327,6 +327,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             leverage={formState.leverage}
             asset={asset}
             currentPrice={currentPrice}
+            szDecimals={marketInfo?.szDecimals}
             onAddFunds={onAddFunds}
           />
         )}
@@ -384,7 +385,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         >
           <Button
             variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
+            size={ButtonSize.Md}
             onClick={handleSubmit}
             className={twMerge(
               'w-full',

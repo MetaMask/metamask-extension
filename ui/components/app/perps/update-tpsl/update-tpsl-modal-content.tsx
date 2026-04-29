@@ -20,6 +20,7 @@ import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
+  PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
 import {
   PERPS_EVENT_PROPERTY,
@@ -139,10 +140,20 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     return Number.parseFloat(position.size) >= 0 ? 'long' : 'short';
   }, [position]);
 
-  const formatEditPrice = useCallback(
-    (value: number): string => value.toFixed(2),
-    [],
-  );
+  // Presets populate the input with a raw numeric string (the `$` renders as a
+  // sibling icon). Use PRICE_RANGES_UNIVERSAL so BTC collapses to no decimals
+  // ("78975") while PUMP keeps 6 ("0.001824") — matches mobile's preset output
+  // and avoids the `.toFixed(2)` behaviour that produced "$0.00" for sub-cent
+  // assets and 2-decimal BTC prices.
+  const formatEditPrice = useCallback((value: number): string => {
+    if (!Number.isFinite(value) || value <= 0) {
+      return '';
+    }
+    return formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL }).replace(
+      /[$,]/gu,
+      '',
+    );
+  }, []);
 
   /**
    * Convert a target price to a signed RoE% for display.

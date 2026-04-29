@@ -51,6 +51,7 @@ export type { OnCancelHandler } from './confirm-button';
 const SINGLE_ACTION_FOOTER_TYPES = [
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
+  TransactionType.perpsWithdraw,
 ];
 
 export const CancelButton = ({

@@ -300,6 +300,50 @@ describe('Multichain Accounts Selectors', () => {
       expect(accounts?.[0].id).toBe(ACCOUNT_1_ID);
     });
 
+    it('filters out null and undefined entries in group.accounts (persisted corrupt state)', () => {
+      // Simulate AccountTreeController state where undefined was serialized to null
+      // (JSON.stringify([undefined]) === '[null]') or where a transient undefined
+      // account ID was persisted before cleanup.
+      const stateWithNullAccountId = {
+        ...typedMockState,
+        metamask: {
+          ...typedMockState.metamask,
+          accountTree: {
+            ...typedMockState.metamask.accountTree,
+            wallets: {
+              ...typedMockState.metamask.accountTree.wallets,
+              [ENTROPY_WALLET_1_ID]: {
+                ...typedMockState.metamask.accountTree.wallets[
+                  ENTROPY_WALLET_1_ID as unknown as keyof typeof typedMockState.metamask.accountTree.wallets
+                ],
+                groups: {
+                  [ENTROPY_GROUP_1_ID]: {
+                    ...typedMockState.metamask.accountTree.wallets[
+                      ENTROPY_WALLET_1_ID as unknown as keyof typeof typedMockState.metamask.accountTree.wallets
+                    ].groups[ENTROPY_GROUP_1_ID],
+                    accounts: [ACCOUNT_1_ID, null] as unknown as [
+                      string,
+                      ...string[],
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+      } as unknown as typeof typedMockState;
+
+      expect(() =>
+        getWalletsWithAccounts(stateWithNullAccountId),
+      ).not.toThrow();
+      const result = getWalletsWithAccounts(stateWithNullAccountId);
+      const accounts =
+        result[ENTROPY_WALLET_1_ID]?.groups[ENTROPY_GROUP_1_ID]?.accounts;
+      expect(accounts).toHaveLength(1);
+      expect(accounts?.[0].id).toBe(ACCOUNT_1_ID);
+      expect(accounts?.every((a) => a.type !== undefined)).toBe(true);
+    });
+
     it('returns wallets with accounts and their metadata', () => {
       const result = getWalletsWithAccounts(typedMockState);
 
