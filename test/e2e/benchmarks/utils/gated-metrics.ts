@@ -1,8 +1,12 @@
+import { METRIC } from './thresholds';
+
 /**
  * GATED_METRICS — enforcement-eligible benchmark metrics.
  *
- * Keys use dotted form `<benchmarkName>.<metricId>` matching the
- * THRESHOLD_REGISTRY structure (e.g. `startupStandardHome.uiStartup`).
+ * Entries are dotted `<benchmarkName>.<metricId>` strings assembled via the
+ * `METRIC` namespace from `thresholds.ts`. Dot-namespace access is type-checked
+ * against `BENCHMARK_THRESHOLDS` at compile time — typos and renamed
+ * threshold keys surface as missing-property errors at the call site.
  *
  * Metrics in this set: a `fail`-severity threshold breach blocks the PR
  * (compare-benchmarks exits 1).
@@ -22,42 +26,38 @@
  * Promote (warn → gated) when CV < 30% AND FP rate < 5%, sustained for ≥ 30
  * days. Demote (gated → warn) when CV > 35% OR FP rate > 10% for 2+
  * consecutive weeks. Cadence: monthly review. Output: PR updating this file.
- *
- * The Set literal below is the source of truth for what is gated; absence
- * from the set implies a metric is informational-only — see graduation
- * procedure above for how to add or remove entries.
  */
 export const GATED_METRICS: ReadonlySet<string> = new Set([
   // Startup (standard persona)
-  'startupStandardHome.uiStartup',
-  'startupStandardHome.load',
-  'startupStandardHome.loadScripts',
+  METRIC.startupStandardHome.uiStartup,
+  METRIC.startupStandardHome.load,
+  METRIC.startupStandardHome.loadScripts,
 
   // CLS canary — extension pages should produce CLS ≈ 0
-  'startupStandardHome.cls',
-  'onboardingImportWallet.cls',
-  'onboardingNewWallet.cls',
-  'importSrpHome.cls',
-  'sendTransactions.cls',
-  'swap.cls',
-  'assetDetails.cls',
-  'solanaAssetDetails.cls',
+  METRIC.startupStandardHome.cls,
+  METRIC.onboardingImportWallet.cls,
+  METRIC.onboardingNewWallet.cls,
+  METRIC.importSrpHome.cls,
+  METRIC.sendTransactions.cls,
+  METRIC.swap.cls,
+  METRIC.assetDetails.cls,
+  METRIC.solanaAssetDetails.cls,
 
   // Onboarding form-to-form transitions
-  'onboardingImportWallet.doneButtonToHomeScreen',
-  'onboardingNewWallet.doneButtonToAssetList',
-  'importSrpHome.loginToHomeScreen',
+  METRIC.onboardingImportWallet.doneButtonToHomeScreen,
+  METRIC.onboardingNewWallet.doneButtonToAssetList,
+  METRIC.importSrpHome.loginToHomeScreen,
 
   // Flow totals
-  'onboardingImportWallet.total',
-  'onboardingNewWallet.total',
-  'importSrpHome.total',
-  'swap.total',
+  METRIC.onboardingImportWallet.total,
+  METRIC.onboardingNewWallet.total,
+  METRIC.importSrpHome.total,
+  METRIC.swap.total,
 
   // Moderate-variance entries (calibrated via `CI_MULTIPLIER.TIER_2`)
-  'onboardingImportWallet.metricsToWalletReadyScreen',
-  'onboardingNewWallet.agreeButtonToOnboardingSuccess',
-  'importSrpHome.homeAfterImportWithNewWallet',
-  'swap.fetchAndDisplaySwapQuotes',
-  'sendTransactions.openSendPageFromHome',
+  METRIC.onboardingImportWallet.metricsToWalletReadyScreen,
+  METRIC.onboardingNewWallet.agreeButtonToOnboardingSuccess,
+  METRIC.importSrpHome.homeAfterImportWithNewWallet,
+  METRIC.swap.fetchAndDisplaySwapQuotes,
+  METRIC.sendTransactions.openSendPageFromHome,
 ]);
