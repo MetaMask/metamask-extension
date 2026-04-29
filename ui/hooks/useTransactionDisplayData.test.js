@@ -249,7 +249,7 @@ describe('useTransactionDisplayData', () => {
     expect(result.current).toStrictEqual(expectedResults[0]);
   });
 
-  it('should return "Withdraw" title for a perpsWithdraw transaction', () => {
+  it('should return "Perps withdraw" title for a perpsWithdraw transaction', () => {
     const perpsWithdrawGroup = {
       nonce: '0x1',
       initialTransaction: {
@@ -292,7 +292,7 @@ describe('useTransactionDisplayData', () => {
       getMockState(),
       DEFAULT_ROUTE,
     );
-    expect(result.current.title).toBe('Withdraw');
+    expect(result.current.title).toBe('Perps withdraw');
   });
 
   it('should return "Claim Bonus" title for a contractInteraction sent to the Merkl distributor address', () => {
