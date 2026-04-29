@@ -67,7 +67,7 @@ const useBridging = () => {
     [fromChains],
   );
   const assetsToInclude = useSelector((state: BridgeAppState) =>
-    getBridgeSortedAssets(state, groupId, chainIds),
+    getBridgeSortedAssets(state, groupId),
   );
   usePopularTokensFetch({
     assetsToInclude,

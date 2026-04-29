@@ -7,6 +7,12 @@ import {
   AccountOverviewUnknownProps,
 } from './account-overview-unknown';
 
+jest.mock('../../../hooks/bridge/useBridging', () =>
+  jest.fn().mockReturnValue({
+    openBridgeExperience: jest.fn(),
+  }),
+);
+
 const render = (props: AccountOverviewUnknownProps) => {
   const store = configureStore({
     metamask: mockState.metamask,

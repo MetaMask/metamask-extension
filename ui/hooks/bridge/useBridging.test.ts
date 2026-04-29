@@ -17,8 +17,6 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import useBridging from './useBridging';
-import { setBackgroundConnection } from '../../store/background-connection';
-import { fetchPopularTokens } from '../../pages/bridge/utils/tokens';
 import * as usePopularTokensFetchUtils from './usePopularTokensFetch';
 
 const mockUseNavigate = jest.fn();

@@ -16,7 +16,6 @@ import {
   isStrictHexString,
   parseCaipAssetType,
 } from '@metamask/utils';
-import { uniqBy } from 'lodash';
 import { ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { isTronSpecialAsset, toAssetId } from '../../../shared/lib/asset-utils';
 import {
@@ -25,7 +24,6 @@ import {
   getTokenBalancesControllerTokenBalances,
   getTokenRatesControllerMarketData,
 } from '../../../shared/lib/selectors/assets-migration';
-import { createShallowResultSelector } from '../../../shared/lib/selectors/selector-creators';
 import { getMultichainBalances } from '../../selectors/multichain';
 import {
   getAccountAssets,
@@ -36,7 +34,7 @@ import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-acc
 import { EMPTY_ARRAY } from '../../selectors/shared';
 import { type BridgeAppState, getFromChains } from './selectors';
 import { type BridgeToken } from './types';
-import { getMaybeHexChainId, toBridgeToken } from './utils';
+import { getMaybeHexChainId } from './utils';
 
 const createSelector = untypedCreateSelector.withTypes<BridgeAppState>();
 
@@ -366,31 +364,14 @@ const getBridgeAssetsForAccountGroupId = createSelector(
  *
  * @param state - The state of the bridge app.
  * @param accountGroupId - The ID of the account group to get the assets for.
- * @param chainIds - The chain IDs to filter the assets by.
  * @returns The sorted assets for the given account group and selected asset.
  */
-export const getBridgeSortedAssets = createShallowResultSelector(
-  [
-    getBridgeAssetsForAccountGroupId,
-    (
-      state: BridgeAppState,
-      accountGroupId: AccountGroupId,
-      chainIds: Set<CaipChainId>,
-    ) => chainIds,
-  ],
-  (assetsWithBalances, chainIds) => {
-    const sortedAssets = assetsWithBalances.sort(
+export const getBridgeSortedAssets = createSelector(
+  [getBridgeAssetsForAccountGroupId],
+  (assetsWithBalances) =>
+    assetsWithBalances.sort(
       (a, b) => (b.tokenFiatAmount ?? 0) - (a.tokenFiatAmount ?? 0),
-    );
-    return uniqBy(
-      sortedAssets.filter(({ chainId }) => {
-        const matchesChainIdFilter = chainIds.has(chainId);
-
-        return matchesChainIdFilter;
-      }),
-      ({ assetId }) => assetId?.toLowerCase(),
-    ).map((token) => toBridgeToken(token));
-  },
+    ),
 );
 
 /**
