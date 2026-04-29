@@ -474,29 +474,54 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 />
               </Box>
             </Box>
-            {estimatedPnlAtTp !== null && (
+            {(Boolean(takeProfitPrice.trim()) || estimatedPnlAtTp !== null) && (
               <Box
                 flexDirection={BoxFlexDirection.Row}
                 justifyContent={BoxJustifyContent.Between}
                 alignItems={BoxAlignItems.Center}
                 data-testid="auto-close-estimated-tp-pnl-row"
               >
-                <Text
-                  variant={TextVariant.BodyXs}
-                  color={TextColor.TextAlternative}
-                >
-                  {t('perpsEstimatedPnlAtTakeProfit')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodyXs}
-                  fontWeight={FontWeight.Medium}
-                  color={getPnlDisplayColor(estimatedPnlAtTp)}
-                >
-                  {estimatedPnlAtTp >= 0 ? '+' : '-'}
-                  {formatPerpsFiat(Math.abs(estimatedPnlAtTp), {
-                    ranges: PRICE_RANGES_MINIMAL_VIEW,
-                  })}
-                </Text>
+                {takeProfitPrice.trim() ? (
+                  <button
+                    type="button"
+                    className="cursor-pointer bg-transparent border-none p-0"
+                    onClick={() => onTakeProfitPriceChange('')}
+                    data-testid="tp-clear-button"
+                  >
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      color={TextColor.PrimaryDefault}
+                    >
+                      {t('clear')}
+                    </Text>
+                  </button>
+                ) : (
+                  <Box />
+                )}
+                {estimatedPnlAtTp !== null && (
+                  <Box
+                    flexDirection={BoxFlexDirection.Row}
+                    alignItems={BoxAlignItems.Center}
+                    gap={1}
+                  >
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      color={TextColor.TextAlternative}
+                    >
+                      {t('perpsEstimatedPnlAtTakeProfit')}
+                    </Text>
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      fontWeight={FontWeight.Medium}
+                      color={getPnlDisplayColor(estimatedPnlAtTp)}
+                    >
+                      {estimatedPnlAtTp >= 0 ? '+' : '-'}
+                      {formatPerpsFiat(Math.abs(estimatedPnlAtTp), {
+                        ranges: PRICE_RANGES_MINIMAL_VIEW,
+                      })}
+                    </Text>
+                  </Box>
+                )}
               </Box>
             )}
             {tpErrorMessage && (
@@ -580,29 +605,54 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 />
               </Box>
             </Box>
-            {estimatedPnlAtSl !== null && (
+            {(Boolean(stopLossPrice.trim()) || estimatedPnlAtSl !== null) && (
               <Box
                 flexDirection={BoxFlexDirection.Row}
                 justifyContent={BoxJustifyContent.Between}
                 alignItems={BoxAlignItems.Center}
                 data-testid="auto-close-estimated-sl-pnl-row"
               >
-                <Text
-                  variant={TextVariant.BodyXs}
-                  color={TextColor.TextAlternative}
-                >
-                  {t('perpsEstimatedPnlAtStopLoss')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodyXs}
-                  fontWeight={FontWeight.Medium}
-                  color={getPnlDisplayColor(estimatedPnlAtSl)}
-                >
-                  {estimatedPnlAtSl >= 0 ? '+' : '-'}
-                  {formatPerpsFiat(Math.abs(estimatedPnlAtSl), {
-                    ranges: PRICE_RANGES_MINIMAL_VIEW,
-                  })}
-                </Text>
+                {stopLossPrice.trim() ? (
+                  <button
+                    type="button"
+                    className="cursor-pointer bg-transparent border-none p-0"
+                    onClick={() => onStopLossPriceChange('')}
+                    data-testid="sl-clear-button"
+                  >
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      color={TextColor.PrimaryDefault}
+                    >
+                      {t('clear')}
+                    </Text>
+                  </button>
+                ) : (
+                  <Box />
+                )}
+                {estimatedPnlAtSl !== null && (
+                  <Box
+                    flexDirection={BoxFlexDirection.Row}
+                    alignItems={BoxAlignItems.Center}
+                    gap={1}
+                  >
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      color={TextColor.TextAlternative}
+                    >
+                      {t('perpsEstimatedPnlAtStopLoss')}
+                    </Text>
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      fontWeight={FontWeight.Medium}
+                      color={getPnlDisplayColor(estimatedPnlAtSl)}
+                    >
+                      {estimatedPnlAtSl >= 0 ? '+' : '-'}
+                      {formatPerpsFiat(Math.abs(estimatedPnlAtSl), {
+                        ranges: PRICE_RANGES_MINIMAL_VIEW,
+                      })}
+                    </Text>
+                  </Box>
+                )}
               </Box>
             )}
             {slErrorMessage && (

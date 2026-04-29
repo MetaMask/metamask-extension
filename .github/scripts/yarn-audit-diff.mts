@@ -795,7 +795,7 @@ async function main() {
   //      refresh completes. On the retry, the advisory is already in
   //      the baseline, so it no longer appears "new" and the check passes.
   //
-  // Cross-repo (fork) PRs skip steps 3-4 because the token is read-only.
+  // Cross-repo PRs skip steps 3-4 because the token is read-only.
   // On push-to-main, the step always succeeds (baseline must be uploaded).
   //
   // Classification outcomes:

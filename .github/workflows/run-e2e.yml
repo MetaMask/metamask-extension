@@ -67,12 +67,13 @@ jobs:
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
-      # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
-      # For a `push` event, the fork is `github.event.repository.fork`.
-      IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
       # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
       # For a `push` event, the head commit hash is `github.sha`.
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+      # True when the repository itself is a fork (policy/feature gating).
+      IS_FORK: ${{ github.event.repository.fork }}
+      # True for PRs whose head branch lives in a different repository (security gating).
+      IS_CROSS_REPO_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
       MATRIX_INDEX: ${{ inputs.matrix-index }}
       MATRIX_TOTAL: ${{ inputs.matrix-total }}
       JOB_NAME: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
