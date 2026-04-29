@@ -15,7 +15,7 @@ import {
 } from '@metamask/design-system-react';
 import { getUseExternalServices } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SETTINGS_ROUTE } from '../../../helpers/constants/routes';
+import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
 import ErrorBoundary from '../error-boundary/error-boundary';
 import { PerpsView } from './perps-view';
 import { PerpsViewStreamBoundary } from './perps-view-stream-boundary';
@@ -54,7 +54,7 @@ export function PerpsTab() {
         </Text>
         <Button
           variant={ButtonVariant.Secondary}
-          onClick={() => navigate(SETTINGS_ROUTE)}
+          onClick={() => navigate(PRIVACY_ROUTE)}
         >
           {t('basicFunctionalityRequired_reviewInSettings')}
         </Button>
