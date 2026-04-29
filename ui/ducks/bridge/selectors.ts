@@ -903,8 +903,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
         ),
       // Shown prior to fetching quotes
       isInsufficientGasBalance: Boolean(
-        !isInsufficientNativeReserveError &&
-          nativeBalance &&
+        nativeBalance &&
           !activeQuote &&
           validatedSrcAmount &&
           fromToken &&

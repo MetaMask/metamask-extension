@@ -26,7 +26,7 @@ import {
   OS,
   PLATFORM_CHROME,
 } from '../../../shared/constants/app';
-import Analytics from '../lib/segment/analytics';
+import type { SegmentClient } from '../lib/segment';
 import { createSegmentMock } from '../lib/segment';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -2355,11 +2355,10 @@ describe('MetaMetricsController', function () {
     it('should remove event from store when callback is invoked', async function () {
       const segmentInstance = createSegmentMock(2);
       const stubFn = (
-        _message: Parameters<Analytics['track']>[0],
-        callback?: Parameters<Analytics['track']>[1],
-      ): Analytics => {
+        _message: Parameters<SegmentClient['track']>[0],
+        callback?: Parameters<SegmentClient['track']>[1],
+      ): void => {
         callback?.();
-        return segmentInstance as Analytics;
       };
       jest.spyOn(segmentInstance, 'track').mockImplementation(stubFn);
       jest.spyOn(segmentInstance, 'page').mockImplementation(stubFn);

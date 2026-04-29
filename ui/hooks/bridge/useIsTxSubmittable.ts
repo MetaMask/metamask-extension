@@ -33,8 +33,8 @@ export const useIsTxSubmittable = () => {
       activeQuote &&
       !isInsufficientBalance &&
       !isInsufficientGasBalance &&
-      !isInsufficientNativeReserveError &&
       !isInsufficientGasForQuote &&
+      !isInsufficientNativeReserveError &&
       !(isTxAlertLoading || isTxAlertPresent),
   );
 };

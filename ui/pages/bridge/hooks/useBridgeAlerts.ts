@@ -160,9 +160,7 @@ export const useBridgeAlerts = () => {
               : 'bridgeTokenIsSuspiciousModalDescription',
             [toToken.symbol],
           ),
-          alertModalErrorMessage: assetIsMalicious
-            ? t('bridgeTokenIsMaliciousModalDescription', [toToken.symbol])
-            : undefined,
+          alertModalDescriptionType: assetIsMalicious ? 'banner' : 'text',
           infoList: assetIsMalicious
             ? assetMaliciousLocalizedFeatures
             : assetSuspiciousLocalizedFeatures,
