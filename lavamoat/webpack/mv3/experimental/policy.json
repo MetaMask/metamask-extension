@@ -1214,6 +1214,11 @@
         "@metamask/logo>gl-vec3": true
       }
     },
+    "@metamask/messenger": {
+      "globals": {
+        "console.error": true
+      }
+    },
     "@metamask/multichain-network-controller": {
       "packages": {
         "@metamask/keyring-api": true,
