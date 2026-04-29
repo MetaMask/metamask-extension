@@ -141,7 +141,6 @@ function normalizeSmartContracts(smartContract) {
  */
 
 /**
- *
  * @param {object} options
  * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
  */

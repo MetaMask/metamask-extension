@@ -14,14 +14,21 @@ import {
   IconName,
   Button,
 } from '@metamask/design-system-react';
-import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
+import {
+  GatorPermissionStatus,
+  PermissionInfoWithMetadata,
+} from '@metamask/gator-permissions-controller';
 import { getURLHost } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { BackgroundColor } from '../../../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  TextColor as DesignSystemTextColor,
+} from '../../../../../helpers/constants/design-system';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import { useBoolean } from '../../../../../hooks/useBoolean';
+import { Tag } from '../../../../component-library';
 import { ReviewPermissionRenderer } from './review-permission-renderer';
 
 /**
@@ -42,6 +49,39 @@ function permissionDataForReview(permission: {
     return permission.data as Record<string, unknown>;
   }
   return {};
+}
+
+type InactivePermissionStatusTag = {
+  label: string;
+  backgroundColor: BackgroundColor;
+  labelColor: TextColor;
+};
+
+function getInactivePermissionStatusTag(
+  permissionStatus: GatorPermissionStatus,
+  translate: ReturnType<typeof useI18nContext>,
+): InactivePermissionStatusTag | null {
+  switch (permissionStatus) {
+    case 'Active':
+      return null;
+    case 'Expired':
+      return {
+        label: translate('gatorPermissionsStatusExpired'),
+        backgroundColor: BackgroundColor.warningMuted,
+        labelColor: TextColor.WarningDefault,
+      };
+    case 'Revoked':
+      return {
+        label: translate('gatorPermissionsStatusRevoked'),
+        backgroundColor: BackgroundColor.errorMuted,
+        labelColor: TextColor.ErrorDefault,
+      };
+    default: {
+      throw new Error(
+        `Unexpected gator permission status: ${String(permissionStatus)}`,
+      );
+    }
+  }
 }
 
 type ReviewGatorPermissionItemProps = {
@@ -74,7 +114,7 @@ export const ReviewGatorPermissionItem = ({
 }: ReviewGatorPermissionItemProps) => {
   const t = useI18nContext();
 
-  const { permissionResponse, siteOrigin } = gatorPermission;
+  const { permissionResponse, siteOrigin, status } = gatorPermission;
   const {
     chainId,
     permission: {
@@ -104,10 +144,22 @@ export const ReviewGatorPermissionItem = ({
     );
   }, [pendingRevocations, permissionContext, hasRevokeBeenClicked]);
 
+  const revokeButtonLabel = useMemo(() => {
+    if (isPendingRevocation) {
+      return t('gatorPermissionsRevocationPending');
+    }
+    if (status === 'Revoked') {
+      return t('remove');
+    }
+    return t('gatorPermissionsRevoke');
+  }, [isPendingRevocation, status, t]);
+
   const permissionData = useMemo(
     () => permissionDataForReview(permissionResponse.permission),
     [permissionResponse.permission],
   );
+
+  const statusTag = getInactivePermissionStatusTag(status, t);
 
   const commonRendererProps = useMemo(
     () => ({
@@ -143,12 +195,34 @@ export const ReviewGatorPermissionItem = ({
         <Box
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
-          style={{ flex: '1', alignSelf: 'center' }}
           gap={2}
+          style={{ alignItems: 'center' }}
         >
-          <Text variant={TextVariant.BodyMd} ellipsis>
-            {getURLHost(siteOrigin)}
-          </Text>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            gap={2}
+            style={{
+              flex: 1,
+              minWidth: 0,
+              alignItems: 'center',
+            }}
+          >
+            <Text variant={TextVariant.BodyMd} ellipsis style={{ minWidth: 0 }}>
+              {getURLHost(siteOrigin)}
+            </Text>
+            {statusTag ? (
+              <Tag
+                data-testid="review-gator-permission-status-tag"
+                label={statusTag.label}
+                backgroundColor={statusTag.backgroundColor}
+                labelProps={{
+                  color: statusTag.labelColor as DesignSystemTextColor,
+                }}
+                textVariant={TextVariant.BodySm}
+                style={{ flexShrink: 0 }}
+              />
+            ) : null}
+          </Box>
           <Button
             onClick={onRevokeClick}
             disabled={isPendingRevocation}
@@ -166,9 +240,7 @@ export const ReviewGatorPermissionItem = ({
               }
               variant={TextVariant.BodyMd}
             >
-              {isPendingRevocation
-                ? t('gatorPermissionsRevocationPending')
-                : t('gatorPermissionsRevoke')}
+              {revokeButtonLabel}
             </Text>
           </Button>
         </Box>

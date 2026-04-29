@@ -220,7 +220,6 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
-    "AssetsController": {},
     "AuthenticationController": {},
     "BridgeStatusController": {
       "txHistory": {}
