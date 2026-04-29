@@ -1,5 +1,9 @@
 import { rpcErrors, serializeError } from '@metamask/rpc-errors';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type {
+  Json,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
 import type { TaggedApiMethod } from '../messenger-client-init/utils';
 import {
   continueTraceContext,
@@ -84,7 +88,7 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     } else {
       outStream.write({
         jsonrpc: '2.0',
-        result,
+        result: result as Json,
         id: data.id,
       });
     }
