@@ -2,17 +2,13 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useReducer,
   useRef,
   useState,
 } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import isEqual from 'lodash/isEqual';
-import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import type { SerializedUR } from '@metamask/eth-qr-keyring';
-import { QRCodeSVG } from 'qrcode.react';
-import { UR, UREncoder } from '@ngraveio/bc-ur';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 
 import {
@@ -24,10 +20,6 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -38,7 +30,6 @@ import {
   getHardwareWalletType,
 } from '../../../selectors/selectors';
 import { getActiveQrCodeScanRequest } from '../../../selectors';
-import PulseLoader from '../../../components/ui/pulse-loader';
 import Reader from '../../../components/app/qr-hardware-popover/qr-hardware-sign-request/reader';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -72,143 +63,12 @@ import {
   getStepStatus,
   getTitle,
   getTransactionToAddress,
+  isQrHardwareSignRequest,
 } from './hardware-wallet-signatures.utils';
-
-type BridgeStatusState = {
-  metamask: {
-    txHistory?: Record<
-      string,
-      {
-        approvalTxId?: string;
-        quote?: {
-          requestId?: string;
-        };
-      }
-    >;
-  };
-  confirmTransaction?: {
-    txData?: {
-      id?: string;
-    } & Record<string, unknown>;
-  };
-};
-
-type QrHardwareSignRequest = {
-  type: QrScanRequestType.SIGN;
-  request: {
-    requestId: string;
-    payload: {
-      type: string;
-      cbor: string;
-    };
-  };
-};
-
-const QR_FRAGMENT_SIZE = 200;
-const QR_REFRESH_RATE = 200;
-const QR_CODE_SIZE = 240;
-
-const isQrHardwareSignRequest = (
-  request: unknown,
-): request is QrHardwareSignRequest =>
-  Boolean(
-    request &&
-      typeof request === 'object' &&
-      'type' in request &&
-      request.type === QrScanRequestType.SIGN &&
-      'request' in request &&
-      request.request &&
-      typeof request.request === 'object' &&
-      'requestId' in request.request &&
-      typeof request.request.requestId === 'string' &&
-      'payload' in request.request &&
-      request.request.payload &&
-      typeof request.request.payload === 'object' &&
-      'type' in request.request.payload &&
-      typeof request.request.payload.type === 'string' &&
-      'cbor' in request.request.payload &&
-      typeof request.request.payload.cbor === 'string',
-  );
-
-const QrSignatureCode = ({
-  payload,
-}: {
-  payload: QrHardwareSignRequest['request']['payload'];
-}) => {
-  const urEncoder = useMemo(
-    () =>
-      new UREncoder(
-        new UR(Buffer.from(payload.cbor, 'hex'), payload.type),
-        QR_FRAGMENT_SIZE,
-      ),
-    [payload.cbor, payload.type],
-  );
-  const [currentQrCode, setCurrentQrCode] = useState(() =>
-    urEncoder.nextPart(),
-  );
-
-  useEffect(() => {
-    setCurrentQrCode(urEncoder.nextPart());
-    const intervalId = setInterval(() => {
-      setCurrentQrCode(urEncoder.nextPart());
-    }, QR_REFRESH_RATE);
-
-    return () => clearInterval(intervalId);
-  }, [urEncoder]);
-
-  return (
-    <Box className="hardware-wallet-signatures__qr-code">
-      <QRCodeSVG value={currentQrCode.toUpperCase()} size={QR_CODE_SIZE} />
-    </Box>
-  );
-};
-
-const SignatureStatusIcon = ({
-  status,
-  stepNumber,
-}: {
-  status: SignatureStepStatus;
-  stepNumber: number;
-}) => {
-  if (status === SignatureStepStatus.Complete) {
-    return (
-      <Box className="hardware-wallet-signatures__step-icon hardware-wallet-signatures__step-icon--complete">
-        <Icon
-          name={IconName.Check}
-          size={IconSize.Sm}
-          color={IconColor.SuccessDefault}
-        />
-      </Box>
-    );
-  }
-
-  if (
-    status === SignatureStepStatus.Rejected ||
-    status === SignatureStepStatus.Failed
-  ) {
-    return (
-      <Box className="hardware-wallet-signatures__step-icon hardware-wallet-signatures__step-icon--rejected">
-        <Icon
-          name={IconName.CircleX}
-          size={IconSize.Sm}
-          color={IconColor.ErrorDefault}
-        />
-      </Box>
-    );
-  }
-
-  if (status === SignatureStepStatus.Active) {
-    return (
-      <Box className="hardware-wallet-signatures__step-icon hardware-wallet-signatures__step-icon--active">
-        <PulseLoader />
-      </Box>
-    );
-  }
-
-  return (
-    <Box className="hardware-wallet-signatures__step-icon">{stepNumber}</Box>
-  );
-};
+import GenericHardwareWalletAnimation from './generic-hardware-wallet-animation';
+import QrSignatureCode from './qr-signature-code';
+import SignatureStatusIcon from './signature-status-icon';
+import type { BridgeStatusState } from './types';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -493,11 +353,7 @@ export default function HardwareWalletSignatures() {
         alignItems={BoxAlignItems.Start}
       >
         <Box className="hardware-wallet-signatures__device" marginBottom={6}>
-          <Icon
-            name={IconName.Hardware}
-            size={IconSize.Xl}
-            color={IconColor.PrimaryDefault}
-          />
+          <GenericHardwareWalletAnimation status={signatureState.status} />
         </Box>
         <Text
           className="hardware-wallet-signatures__title"

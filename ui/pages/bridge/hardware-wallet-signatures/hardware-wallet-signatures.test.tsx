@@ -13,6 +13,11 @@ import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
 import HardwareWalletSignatures from '.';
 
 jest.mock('../hooks/useSubmitBridgeTransaction');
+jest.mock('./generic-hardware-wallet-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: () => <div data-testid="generic-hardware-wallet-animation" />,
+}));
 
 const mockUseSubmitBridgeTransaction =
   useSubmitBridgeTransaction as jest.MockedFunction<
@@ -22,6 +27,47 @@ const mockUseSubmitBridgeTransaction =
 describe('HardwareWalletSignatures', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('renders the generic hardware wallet animation', () => {
+    mockUseSubmitBridgeTransaction.mockReturnValue({
+      submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
+      isSubmitting: false,
+    });
+    const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+    const store = configureStore(
+      createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: quote.quote.srcAsset.address,
+            symbol: quote.quote.srcAsset.symbol,
+          },
+          toToken: {
+            address: quote.quote.destAsset.address,
+            symbol: quote.quote.destAsset.symbol,
+          },
+        },
+        bridgeStateOverrides: {
+          quotes: [quote],
+          quotesLastFetched: 100,
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      }),
+    );
+    const { getByTestId } = renderWithProvider(
+      <HardwareWalletSignatures />,
+      store,
+    );
+
+    expect(getByTestId('generic-hardware-wallet-animation')).toBeDefined();
   });
 
   it('waits for the second signature after the approval signature is submitted', async () => {

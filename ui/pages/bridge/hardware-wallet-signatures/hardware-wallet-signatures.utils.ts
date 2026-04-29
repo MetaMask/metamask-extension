@@ -1,9 +1,11 @@
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { shortenAddress } from '../../../helpers/utils/util';
 import type { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   HardwareWalletSignatureStatus,
   type HardwareWalletSignaturesState,
 } from './hardware-wallet-signatures-state-machine';
+import type { QrHardwareSignRequest } from './types';
 
 type BridgeTxHistory = Record<
   string,
@@ -22,6 +24,28 @@ export enum SignatureStepStatus {
   Rejected = 'rejected',
   Failed = 'failed',
 }
+
+export const isQrHardwareSignRequest = (
+  request: unknown,
+): request is QrHardwareSignRequest =>
+  Boolean(
+    request &&
+      typeof request === 'object' &&
+      'type' in request &&
+      request.type === QrScanRequestType.SIGN &&
+      'request' in request &&
+      request.request &&
+      typeof request.request === 'object' &&
+      'requestId' in request.request &&
+      typeof request.request.requestId === 'string' &&
+      'payload' in request.request &&
+      request.request.payload &&
+      typeof request.request.payload === 'object' &&
+      'type' in request.request.payload &&
+      typeof request.request.payload.type === 'string' &&
+      'cbor' in request.request.payload &&
+      typeof request.request.payload.cbor === 'string',
+  );
 
 export const getTransactionToAddress = (
   transaction: unknown,

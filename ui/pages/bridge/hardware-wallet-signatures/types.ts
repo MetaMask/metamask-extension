@@ -1,0 +1,31 @@
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+
+export type BridgeStatusState = {
+  metamask: {
+    txHistory?: Record<
+      string,
+      {
+        approvalTxId?: string;
+        quote?: {
+          requestId?: string;
+        };
+      }
+    >;
+  };
+  confirmTransaction?: {
+    txData?: {
+      id?: string;
+    } & Record<string, unknown>;
+  };
+};
+
+export type QrHardwareSignRequest = {
+  type: QrScanRequestType.SIGN;
+  request: {
+    requestId: string;
+    payload: {
+      type: string;
+      cbor: string;
+    };
+  };
+};
