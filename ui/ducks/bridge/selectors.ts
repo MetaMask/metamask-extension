@@ -1070,6 +1070,6 @@ export const getIsExternalServicesEnabled = createSelector(
   [getUseExternalServices, getFromAccount],
   (useExternalServices, fromAccount) =>
     (useExternalServices &&
-      fromAccount?.methods?.includes(EthMethod.SignTransaction)) ||
-    fromAccount?.methods?.includes(EthMethod.SignUserOperation),
+      (fromAccount?.methods?.includes(EthMethod.SignTransaction)) ||
+    fromAccount?.methods?.includes(EthMethod.SignUserOperation)),
 );

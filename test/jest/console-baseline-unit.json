@@ -713,7 +713,6 @@
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
-      "error: Error: Insufficient number of substitutions": 2,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },
