@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // launch-sandbox.js — Launch isolated Chromium with MetaMask extension + wallet.
 //
-// Standalone (no farmslot dependency). All knobs are env vars so each worktree
-// or developer can customize without editing this file.
+// All knobs are env vars so each worktree or developer can customize without
+// editing this file.
 //
 // Required:
 //   AGENT_DIR          Directory for runtime state (PIDs, fixture, profile).
@@ -15,7 +15,7 @@
 //   CDP_PORT           Remote debugging port (default 9222).
 //   SANDBOX_LABEL      Window-title prefix (default "agentic").
 //   LAUNCH_MODE        "fullscreen" (default) or "sidepanel".
-//   SHOW_LANDING       "true" to render slot-info dapp (default false).
+//   SHOW_LANDING       "true" to render the label-info landing page (default false).
 //   DAPP_PORT          Landing-page port (default CDP_PORT + 1000).
 //   CHROME_BIN         Override Chromium binary (default Playwright bundled).
 'use strict';
@@ -234,10 +234,9 @@ async function main() {
   } catch {}
 
   // Always prefill the canonical unpacked-extension ID (deterministic for the
-  // dist/chrome path used in farmslot/this repo) AND any ID we found in the
-  // existing prefs. Without the canonical write, a fresh profile gets no
-  // chrome.storage.local state at SW boot — the extension hits PerpsController
-  // disk hydration on undefined diskCache and fails with `getItemSync`.
+  // repo's dist/chrome path) AND any ID we found in the existing prefs.
+  // Without the canonical write, a fresh profile gets no chrome.storage.local
+  // state at SW boot.
   const CANONICAL_EXT_ID = 'hebhblbkkdabgoldnojllkipeoacjioc';
   const prefillIds = Array.from(new Set([knownExtId, CANONICAL_EXT_ID].filter(Boolean)));
   for (const eid of prefillIds) {

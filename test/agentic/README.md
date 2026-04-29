@@ -49,9 +49,9 @@ Each Chromium instance the runner spawns is fully isolated by `--user-data-dir`.
 | Variable | Default | Purpose |
 |---|---|---|
 | `CDP_PORT` | `9222` (with warning) | Remote debugging port. Default collides across sandboxes — **always export a unique port per worktree**. |
-| `SANDBOX_LABEL` | `$SESSION` / `$SLOT_ID` / `agentic` | Window-title prefix for visual disambiguation |
+| `SANDBOX_LABEL` | `agentic` | Window-title prefix for visual disambiguation |
 | `RUNTIME_DIR` | `temp/runtime` | Resolved relative to repo root unless absolute |
-| `RUNTIME_DIR_OVERRIDE` | unset | Absolute override (matches farmslot semantics) |
+| `RUNTIME_DIR_OVERRIDE` | unset | Absolute path override (wins over `RUNTIME_DIR`) |
 | `AGENT_DIR` | `$REPO/$RUNTIME_DIR` | PIDs, fixture-state, logs (overrides RUNTIME_DIR) |
 | `PROFILE_NAME` | `chrome-profile-pw` | Profile dir name (under `$AGENT_DIR`) |
 | `PROFILE_DIR` | `$AGENT_DIR/$PROFILE_NAME` | Chrome user-data-dir (idempotent across runs) |
@@ -60,8 +60,6 @@ Each Chromium instance the runner spawns is fully isolated by `--user-data-dir`.
 | `LAUNCH_MODE` | `fullscreen` | `fullscreen` or `sidepanel` |
 | `CHROME_BIN` | Playwright bundled | Override Chromium binary |
 | `BUILD_TIMEOUT` | `180` | Seconds preflight waits for the build to finish |
-
-**Farmslot compatibility.** When invoked from a farmslot worker the env already exports `RUNTIME_DIR=.agent`, `CDP_PORT=<slot port>`, `SLOT_ID=<slot id>`. The sandbox scripts honor those without further config so a slot's `sandbox.sh up` lands at `${REPO}/.agent/chrome-profile-pw` with the slot's CDP port and a window labeled by the slot id — same paths farmslot's own launcher uses.
 
 `sandbox.sh up` refuses an already-running sandbox unless `--force`; an mkdir-atomic lockfile under `$AGENT_DIR/.sandbox.lock` blocks concurrent invocations. `sandbox.sh clean` requires `--yes` (or an interactive TTY) before deleting the profile dir. `sandbox.sh down` SIGTERMs the launcher + browser PIDs, waits up to 5s, then SIGKILLs and sweeps any chromium still bound to the profile dir.
 
@@ -90,7 +88,7 @@ Pre-populate the extension's `chrome.storage.local` (LevelDB) **before** the ser
 3. `launch-sandbox.js` writes `fixture-state.json` into the profile's LevelDB for the canonical extension ID, then launches Chromium.
 4. After the SW comes up, the launcher unlocks the vault using the password from `wallet-fixture.json`.
 
-Backwards compatible: if a `vault` field is already present (farmslot historically generates one), `generate-fixture.cjs` decrypts it instead of rebuilding from `srp`.
+Backwards compatible: if a pre-built `vault` is already present in the fixture, `generate-fixture.cjs` decrypts it instead of rebuilding from `srp`.
 
 ## Concepts
 
@@ -347,4 +345,3 @@ Every recipe run writes to `domains/artifacts/` (gitignored):
 
 - ADR #0058 — recipe format, security boundary, schema (https://github.com/MetaMask/decisions/pull/173)
 - Mobile counterpart — `metamask-mobile/scripts/perps/agentic/` (different layout: `teams/`, `app-state.sh`, etc., but same recipe semantics)
-- Farmslot per-slot launcher — `farmslot/projects/metamask-extension-farm/setup/launch-browser.sh` (reference for the multi-slot orchestrator)

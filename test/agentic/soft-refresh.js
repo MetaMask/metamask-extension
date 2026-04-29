@@ -9,8 +9,8 @@ function arg(name, fallback = '') {
 }
 
 async function main() {
-  const cdpPort = Number(arg('--cdp-port', '6668'));
-  const slotId = arg('--slot-id', '');
+  const cdpPort = Number(arg('--cdp-port', '9222'));
+  const label = arg('--label', '');
 
   const browser = await chromium.connectOverCDP(`http://127.0.0.1:${cdpPort}`);
   const ctx = browser.contexts()[0];
@@ -24,7 +24,7 @@ async function main() {
   await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => undefined);
   await page.waitForTimeout(3000);
 
-  if (slotId) {
+  if (label) {
     await page.evaluate((id) => {
       const prefix = `${id} — `;
       const escapeRe = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -40,7 +40,7 @@ async function main() {
         document.querySelector('title') || document.head,
         { childList: true, subtree: true, characterData: true },
       );
-    }, slotId);
+    }, label);
   }
 
   const out = await page.evaluate(() => ({

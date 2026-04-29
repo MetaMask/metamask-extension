@@ -20,9 +20,9 @@
 # Customizable env (defaults are repo-local + single-worktree friendly):
 #   CDP_PORT         Remote debugging port (default 9222 with a warning;
 #                    pick a unique port per worktree to avoid collisions).
-#   SANDBOX_LABEL    Window-title prefix (default $SESSION/$SLOT_ID/agentic).
+#   SANDBOX_LABEL    Window-title prefix (default "agentic").
 #   RUNTIME_DIR      Resolved relative to repo root unless absolute (default
-#                    temp/runtime). Honors farmslot's RUNTIME_DIR / RUNTIME_DIR_OVERRIDE.
+#                    temp/runtime). RUNTIME_DIR_OVERRIDE wins if set.
 #   AGENT_DIR        Override the resolved runtime dir directly.
 #   PROFILE_NAME     Chrome profile dir name under $AGENT_DIR (default chrome-profile-pw).
 #   PROFILE_DIR      Override the full profile path.
@@ -59,7 +59,7 @@ if [ -f "$SANDBOX_ENV" ]; then
   unset _line _key
 fi
 
-# ---- env defaults (honors farmslot conventions) ------------------------------
+# ---- env defaults ------------------------------------------------------------
 if [ -z "${AGENT_DIR:-}" ]; then
   RUNTIME_DIR_RESOLVED="${RUNTIME_DIR_OVERRIDE:-${RUNTIME_DIR:-temp/runtime}}"
   case "$RUNTIME_DIR_RESOLVED" in
@@ -73,7 +73,7 @@ PROFILE_NAME="${PROFILE_NAME_OVERRIDE:-${PROFILE_NAME:-chrome-profile-pw}}"
 export PROFILE_DIR="${PROFILE_DIR:-$AGENT_DIR/$PROFILE_NAME}"
 export WALLET_FIXTURE="${WALLET_FIXTURE:-$AGENT_DIR/wallet-fixture.json}"
 export EXTENSION_DIR="${EXTENSION_DIR:-$REPO/dist/chrome}"
-export SANDBOX_LABEL="${SANDBOX_LABEL:-${SESSION:-${SLOT_ID:-agentic}}}"
+export SANDBOX_LABEL="${SANDBOX_LABEL:-agentic}"
 export LAUNCH_MODE="${LAUNCH_MODE:-fullscreen}"
 BUILD_TIMEOUT="${BUILD_TIMEOUT:-180}"
 

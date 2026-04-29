@@ -18,8 +18,8 @@
 //     "settings": { "autoLockNever": true, "injectImportedAccounts": false }
 //   }
 //
-// Backward-compat: if "vault" is set, it is decrypted instead of building a new
-// one from "srp" — same shape farmslot has historically used.
+// Backward-compat: if a pre-built "vault" is present in the fixture, it is
+// decrypted instead of building a new one from "srp".
 //
 // Usage: node generate-fixture.cjs <wallet-fixture.json> <output.json>
 'use strict';

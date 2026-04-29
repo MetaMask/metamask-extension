@@ -124,7 +124,7 @@
         "done": {
           "action": "end",
           "status": "pass",
-          "message": "Order submission settled within timeout — no stuck-submitting regression observed on this slot."
+          "message": "Order submission settled within timeout — no stuck-submitting regression observed on this run."
         }
       }
     }

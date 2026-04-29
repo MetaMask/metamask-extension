@@ -84,8 +84,8 @@ bash test/agentic/sandbox.sh up
 bash test/agentic/sandbox.sh up
 ```
 
-The `temp/runtime/` dir (or `.agent/` on a farmslot slot) is gitignored, so each worktree carries its own profile, fixture state, and PIDs. Real shell env vars still override the file (`CDP_PORT=9999 bash test/agentic/sandbox.sh up`), so you can experiment without editing `.env`.
+The `temp/runtime/` dir is gitignored, so each worktree carries its own profile, fixture state, and PIDs. Real shell env vars still override the file (`CDP_PORT=9999 bash test/agentic/sandbox.sh up`), so you can experiment without editing `.env`.
 
 ## How it works
 
-See ADR #0058 (`https://github.com/MetaMask/decisions/pull/173`) for the recipe format and security boundary. The toolkit lives at `test/agentic/`. `setup/launch-sandbox.js` mirrors the farmslot per-slot launcher but is self-contained — no farmslot install required.
+See ADR #0058 (`https://github.com/MetaMask/decisions/pull/173`) for the recipe format and security boundary. The toolkit lives at `test/agentic/`.
