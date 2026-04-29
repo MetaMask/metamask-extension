@@ -14,7 +14,6 @@ Lives under `test/agentic/` and is owned by `@MetaMask/perps` while the toolkit 
 test/agentic/
   GETTING_STARTED.md         onboarding (start here)
   README.md                  this file
-  qa-agentic.md              manual QA walkthrough
   wallet-fixture.example.json wallet template
   .env.example               sandbox config template (CDP_PORT, etc.)
   sandbox.sh                 lifecycle entrypoint — up | down | clean | status | reload | preflight
