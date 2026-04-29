@@ -3,13 +3,28 @@
  * Run this after extension reload to get the extension back into a working state.
  */
 import { chromium } from '@playwright/test';
+import { resolveExtensionId } from '@metamask/client-mcp-core';
 
-const EXT_ID = 'hebhblbkkdabgoldnojllkipeoacjioc';
+function arg(name: string, fallback = ''): string {
+  const idx = process.argv.indexOf(name);
+  return idx >= 0 ? (process.argv[idx + 1] ?? fallback) : fallback;
+}
 
 async function main() {
-  const browser = await chromium.connectOverCDP('http://localhost:6668');
+  const cdpPort = arg('--cdp-port', process.env.CDP_PORT || '9222');
+  const browser = await chromium.connectOverCDP(`http://localhost:${cdpPort}`);
   const ctx = browser.contexts()[0];
   if (!ctx) { console.error('No context'); process.exit(1); }
+
+  const extId = await resolveExtensionId({
+    context: ctx,
+    log: { info: (m: string) => console.log(m), warn: (m: string) => console.warn(m) },
+  });
+  if (!extId) {
+    console.error('Could not resolve extension ID — is the service worker running?');
+    await browser.close();
+    process.exit(1);
+  }
 
   const pages = ctx.pages();
   console.log('Pages:', pages.map((p) => p.url()));
@@ -22,7 +37,7 @@ async function main() {
 
   if (!errorPage) {
     console.log('No error page to fix, checking for existing extension page...');
-    const extPage = pages.find((p) => p.url().startsWith(`chrome-extension://${EXT_ID}`));
+    const extPage = pages.find((p) => p.url().startsWith(`chrome-extension://${extId}`));
     if (extPage) {
       console.log('Extension page already present:', extPage.url());
     } else {
@@ -35,7 +50,7 @@ async function main() {
   console.log('Navigating error page to extension home...');
   // Use waitUntil: 'commit' to just get the navigation started without waiting for full load
   try {
-    await errorPage.goto(`chrome-extension://${EXT_ID}/home.html`, {
+    await errorPage.goto(`chrome-extension://${extId}/home.html`, {
       waitUntil: 'domcontentloaded',
       timeout: 15000,
     });
@@ -44,7 +59,7 @@ async function main() {
     console.error('Navigation failed:', e instanceof Error ? e.message : e);
     // Try evaluate to navigate
     try {
-      await errorPage.evaluate((url) => { window.location.href = url; }, `chrome-extension://${EXT_ID}/home.html`);
+      await errorPage.evaluate((url) => { window.location.href = url; }, `chrome-extension://${extId}/home.html`);
       console.log('Navigation triggered via evaluate');
     } catch (e2) {
       console.error('Evaluate also failed:', e2 instanceof Error ? e2.message : e2);

@@ -1,8 +1,14 @@
 import { chromium } from '@playwright/test';
 import { resolveExtensionId } from '@metamask/client-mcp-core';
 
+function arg(name: string, fallback = ''): string {
+  const idx = process.argv.indexOf(name);
+  return idx >= 0 ? (process.argv[idx + 1] ?? fallback) : fallback;
+}
+
 async function main() {
-  const browser = await chromium.connectOverCDP('http://localhost:6668');
+  const cdpPort = arg('--cdp-port', process.env.CDP_PORT || '9222');
+  const browser = await chromium.connectOverCDP(`http://localhost:${cdpPort}`);
   const ctx = browser.contexts()[0];
   if (!ctx) { console.log('No context'); process.exit(1); }
 
