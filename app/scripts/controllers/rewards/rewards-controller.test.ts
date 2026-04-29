@@ -172,6 +172,7 @@ const MOCK_SEASON_METADATA: SeasonMetadataDto = {
   startDate: new Date('2024-01-01T00:00:00.000Z'),
   endDate: new Date('2024-12-31T23:59:59.999Z'),
   tiers: MOCK_SEASON_TIERS,
+  activityTypes: [],
 };
 
 const MOCK_SEASON_STATE: SeasonStateDto = {
