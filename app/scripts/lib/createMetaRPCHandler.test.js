@@ -3,10 +3,14 @@ import { continueTraceContext, trace } from '../../../shared/lib/trace';
 import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
 import createMetaRPCHandler from './createMetaRPCHandler';
 
-jest.mock('../../../shared/lib/trace', () => ({
-  trace: jest.fn((_request, fn) => fn()),
-  continueTraceContext: jest.fn((_ctx, fn) => fn()),
-}));
+jest.mock('../../../shared/lib/trace', () => {
+  const actual = jest.requireActual('../../../shared/lib/trace');
+  return {
+    trace: jest.fn((_request, fn) => fn()),
+    continueTraceContext: jest.fn((_ctx, fn) => fn()),
+    extractTraceContext: actual.extractTraceContext,
+  };
+});
 
 jest.mock('../../../shared/lib/wrapper-sampling', () => ({
   shouldSampleWrappers: jest.fn().mockReturnValue(true),
