@@ -273,11 +273,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     () =>
       Boolean(
         editingTpPrice.replaceAll(',', '').trim() &&
-          currentPrice > 0 &&
-          !isValidTakeProfitPrice(editingTpPrice, {
-            currentPrice,
-            direction: positionDirection,
-          }),
+        currentPrice > 0 &&
+        !isValidTakeProfitPrice(editingTpPrice, {
+          currentPrice,
+          direction: positionDirection,
+        }),
       ),
     [editingTpPrice, currentPrice, positionDirection],
   );
@@ -286,11 +286,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     () =>
       Boolean(
         editingSlPrice.replaceAll(',', '').trim() &&
-          currentPrice > 0 &&
-          !isValidStopLossPrice(editingSlPrice, {
-            currentPrice,
-            direction: positionDirection,
-          }),
+        currentPrice > 0 &&
+        !isValidStopLossPrice(editingSlPrice, {
+          currentPrice,
+          direction: positionDirection,
+        }),
       ),
     [editingSlPrice, currentPrice, positionDirection],
   );

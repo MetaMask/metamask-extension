@@ -528,17 +528,17 @@ const PerpsOrderEntryPage: React.FC = () => {
 
     const tpInvalid = Boolean(
       tp?.trim() &&
-        !isValidTakeProfitPrice(tp, {
-          currentPrice: referencePrice,
-          direction: dir,
-        }),
+      !isValidTakeProfitPrice(tp, {
+        currentPrice: referencePrice,
+        direction: dir,
+      }),
     );
     const slInvalid = Boolean(
       sl?.trim() &&
-        !isValidStopLossPrice(sl, {
-          currentPrice: referencePrice,
-          direction: dir,
-        }),
+      !isValidStopLossPrice(sl, {
+        currentPrice: referencePrice,
+        direction: dir,
+      }),
     );
     const slLiquidationInvalid = Boolean(
       sl?.trim() &&
