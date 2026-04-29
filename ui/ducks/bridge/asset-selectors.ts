@@ -366,12 +366,17 @@ const getBridgeAssetsForAccountGroupId = createSelector(
  *
  * @param state - The state of the bridge app.
  * @param accountGroupId - The ID of the account group to get the assets for.
+ * @param chainIds - The chain IDs to filter the assets by.
  * @returns The sorted assets for the given account group and selected asset.
  */
 export const getBridgeSortedAssets = createShallowResultSelector(
   [
     getBridgeAssetsForAccountGroupId,
-    (_, __, chainIds: Set<CaipChainId>) => chainIds,
+    (
+      state: BridgeAppState,
+      accountGroupId: AccountGroupId,
+      chainIds: Set<CaipChainId>,
+    ) => chainIds,
   ],
   (assetsWithBalances, chainIds) => {
     const sortedAssets = assetsWithBalances.sort(
