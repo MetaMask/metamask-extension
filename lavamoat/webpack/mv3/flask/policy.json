@@ -719,7 +719,7 @@
       "packages": {
         "@metamask/chain-agnostic-permission>@metamask/api-specs": true,
         "@metamask/controller-utils": true,
-        "@metamask/permission-controller": true,
+        "@metamask/chain-agnostic-permission>@metamask/permission-controller": true,
         "@metamask/utils": true,
         "lodash": true
       }
@@ -1050,6 +1050,7 @@
     },
     "@metamask/json-rpc-engine": {
       "packages": {
+        "@metamask/messenger": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
@@ -1214,6 +1215,11 @@
         "@metamask/logo>gl-vec3": true
       }
     },
+    "@metamask/messenger": {
+      "globals": {
+        "console.error": true
+      }
+    },
     "@metamask/multichain-network-controller": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -1302,6 +1308,11 @@
       }
     },
     "@metamask/permission-controller": {
+      "packages": {
+        "@metamask/base-controller": true
+      }
+    },
+    "@metamask/chain-agnostic-permission>@metamask/permission-controller": {
       "globals": {
         "console.error": true
       },
@@ -1313,6 +1324,12 @@
         "@metamask/utils": true,
         "deep-freeze-strict": true,
         "immer": true,
+        "nanoid": true
+      }
+    },
+    "@metamask/snaps-rpc-methods>@metamask/permission-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
         "nanoid": true
       }
     },
@@ -1406,7 +1423,7 @@
     },
     "@metamask/snaps-rpc-methods": {
       "packages": {
-        "@metamask/permission-controller": true,
+        "@metamask/snaps-rpc-methods>@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
@@ -1440,7 +1457,7 @@
       },
       "packages": {
         "@metamask/snaps-sdk>@metamask/key-tree": true,
-        "@metamask/permission-controller": true,
+        "@metamask/snaps-utils>@metamask/permission-controller": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/snaps-sdk": true,
         "@metamask/superstruct": true,
