@@ -2672,6 +2672,10 @@ type WithControllerOptions = {
       chainId: string;
     }
   >;
+  mockMultichainNetworkState?: {
+    isEvmSelected: boolean;
+    selectedMultichainNetworkChainId: string;
+  };
 };
 
 type WithControllerCallback<ReturnValue> = ({
@@ -2707,6 +2711,10 @@ async function withController<ReturnValue>(
         selectedNetworkClientId: {
           chainId: DEFAULT_CHAIN_ID,
         },
+      },
+      mockMultichainNetworkState = {
+        isEvmSelected: true,
+        selectedMultichainNetworkChainId: 'eip155:1',
       },
     } = rest;
     const messenger: RootMessenger = new Messenger({
@@ -2746,6 +2754,11 @@ async function withController<ReturnValue>(
       }),
     );
 
+    messenger.registerActionHandler(
+      'MultichainNetworkController:getState',
+      jest.fn().mockReturnValue(mockMultichainNetworkState),
+    );
+
     const metaMetricsControllerMessenger = new Messenger<
       'MetaMetricsController',
       AllowedActions,
@@ -2762,6 +2775,7 @@ async function withController<ReturnValue>(
         'NetworkController:getState',
         'NetworkController:getNetworkClientById',
         'RemoteFeatureFlagController:getState',
+        'MultichainNetworkController:getState',
       ],
       events: [
         'PreferencesController:stateChange',
