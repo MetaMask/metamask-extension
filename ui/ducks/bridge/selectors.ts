@@ -1069,7 +1069,7 @@ export const getBridgeUnavailableQuoteReason = createSelector(
 export const getIsExternalServicesEnabled = createSelector(
   [getUseExternalServices, getFromAccount],
   (useExternalServices, fromAccount) =>
-    (useExternalServices &&
-      (fromAccount?.methods?.includes(EthMethod.SignTransaction)) ||
-    fromAccount?.methods?.includes(EthMethod.SignUserOperation)),
+    useExternalServices &&
+    (fromAccount?.methods?.includes(EthMethod.SignTransaction) ||
+      fromAccount?.methods?.includes(EthMethod.SignUserOperation)),
 );
