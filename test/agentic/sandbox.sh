@@ -84,6 +84,11 @@ ensure_cdp_port() {
     echo "       Multiple sandboxes will collide on this port; export CDP_PORT=<unique>"
     echo "       per worktree to isolate (e.g. CDP_PORT=9223 for the next one)."
   fi
+  # Reject obvious typos early so the launcher doesn't waste time.
+  if ! [[ "$CDP_PORT" =~ ^[0-9]+$ ]] || [ "$CDP_PORT" -lt 1024 ] || [ "$CDP_PORT" -gt 65535 ]; then
+    echo "FAIL: CDP_PORT=\"$CDP_PORT\" must be an integer in 1024..65535." >&2
+    exit 2
+  fi
 }
 
 # ---- preflight ---------------------------------------------------------------

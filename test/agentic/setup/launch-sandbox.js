@@ -456,7 +456,7 @@ async function main() {
     await new Promise((r) => setTimeout(r, 1000));
   }
 
-  if (detected === 'locked') {
+  async function unlock() {
     console.log('[wallet] Unlocking...');
     await extPage.fill(unlockSelector, password);
     await extPage.click('[data-testid="unlock-submit"]');
@@ -469,8 +469,45 @@ async function main() {
       process.exit(1);
     }
     console.log('[wallet] Unlocked');
+  }
+
+  if (detected === 'locked') {
+    await unlock();
   } else if (detected === 'unlocked') {
     console.log('[wallet] Already unlocked');
+  } else if (detected === 'onboarding') {
+    // Recovery for fresh-profile boot where the LevelDB prefill missed: inject
+    // state via chrome.storage.local from a foreground page, reload, then unlock.
+    console.warn('[wallet] Onboarding detected — re-injecting state via chrome.storage.local');
+    const fixtureRaw = JSON.parse(fs.readFileSync(FIXTURE_STATE, 'utf8'));
+    const versioned = fixtureRaw?.data
+      ? { data: fixtureRaw.data, meta: { ...(fixtureRaw.meta || {}), storageKind: 'data' } }
+      : fixtureRaw;
+    try {
+      await extPage.evaluate(async (state) => {
+        await chrome.storage.local.set(state);
+      }, versioned);
+      await extPage.reload({ waitUntil: 'load', timeout: 30000 });
+      await new Promise((r) => setTimeout(r, 2000));
+      // Re-detect — should now be locked or unlocked.
+      let recovered = 'unknown';
+      for (let i = 0; i < 15; i++) {
+        if (await detectReady(extPage)) { recovered = 'unlocked'; break; }
+        if (await extPage.locator(unlockSelector).count()) { recovered = 'locked'; break; }
+        await new Promise((r) => setTimeout(r, 1000));
+      }
+      if (recovered === 'locked') {
+        await unlock();
+      } else if (recovered === 'unlocked') {
+        console.log('[wallet] Recovered from onboarding directly to unlocked state');
+      } else {
+        console.error(`FAIL: onboarding recovery did not reach a known state (still: ${extPage.url()})`);
+        process.exit(1);
+      }
+    } catch (e) {
+      console.error(`FAIL: onboarding recovery failed: ${e.message}`);
+      process.exit(1);
+    }
   } else {
     console.warn(`[wallet] State after boot: ${detected} (${extPage.url()})`);
   }
@@ -481,14 +518,93 @@ async function main() {
     }
   }
 
+  await openSidePanelIfRequested();
+
   console.log(`[ready] ${SANDBOX_LABEL} (CDP:${CDP_PORT})`);
   process.exit(0);
+
+  // Sidepanel mode: Chromium restricts `chrome.sidePanel.open()` to user-gesture
+  // contexts, so the only reliable programmatic path on macOS is to send the
+  // Alt+Shift+M extension command (registered by patchPrefs) via osascript.
+  // No-op on non-darwin or when LAUNCH_MODE != 'sidepanel'.
+  async function openSidePanelIfRequested() {
+    if (LAUNCH_MODE !== 'sidepanel') return;
+    if (process.platform !== 'darwin') {
+      console.warn('[sidepanel] auto-open is macOS-only — open it manually with Alt+Shift+M.');
+      return;
+    }
+    const probeOpen = async () => {
+      try {
+        const list = await new Promise((resolve, reject) => {
+          const req = http.get(`http://127.0.0.1:${CDP_PORT}/json/list`, (res) => {
+            let body = '';
+            res.on('data', (c) => { body += c; });
+            res.on('end', () => resolve(JSON.parse(body)));
+          });
+          req.on('error', reject);
+        });
+        return Array.isArray(list) && list.some((t) => t.type === 'page' && (t.url || '').includes('sidepanel.html'));
+      } catch { return false; }
+    };
+    if (await probeOpen()) {
+      console.log('[sidepanel] already open');
+      return;
+    }
+    // Disambiguate Chromium PID by --remote-debugging-port to avoid hitting a
+    // different sandbox's window when several are running.
+    let chromiumPid = '';
+    try {
+      chromiumPid = execSync(
+        `pgrep -f 'Chromium.*--remote-debugging-port=${CDP_PORT}' | head -1`,
+        { timeout: 2000 },
+      ).toString().trim();
+    } catch {}
+    if (!chromiumPid) {
+      console.warn(`[sidepanel] no Chromium found for --remote-debugging-port=${CDP_PORT} — skipping auto-open`);
+      return;
+    }
+    // `key code 46` is the raw M virtual keycode. Using `keystroke "m"` with
+    // option-down translates through the keyboard layout (Option+M = µ) and
+    // never fires the Alt+Shift+M shortcut Chromium has registered.
+    const osa = `tell application "System Events"\n` +
+      `  set p to first process whose unix id is ${chromiumPid}\n` +
+      `  set frontmost of p to true\n` +
+      `  delay 0.3\n` +
+      `  key code 46 using {option down, shift down}\n` +
+      `end tell`;
+    try {
+      execFileSync('osascript', ['-e', osa], { stdio: 'pipe', timeout: 5000 });
+    } catch (e) {
+      console.warn(`[sidepanel] osascript failed (${e.message}); your terminal likely needs Accessibility permission for System Events.`);
+      return;
+    }
+    const deadline = Date.now() + 4000;
+    while (Date.now() < deadline) {
+      if (await probeOpen()) {
+        console.log('[sidepanel] opened');
+        return;
+      }
+      await new Promise((r) => setTimeout(r, 200));
+    }
+    console.warn('[sidepanel] did not appear within 4s — try Alt+Shift+M manually.');
+  }
 }
 
-main().catch((e) => {
-  console.error('FAIL:', e.message);
+function cleanupPidFiles() {
   for (const f of [PID_FILE_LAUNCHER, PID_FILE_BROWSER, EXTENSION_ID_FILE]) {
     try { fs.unlinkSync(f); } catch {}
   }
+}
+
+// Half-launched state is the worst kind of stuck — pidfiles point at processes
+// that no longer exist, and the next `sandbox.sh up` thinks something is alive.
+// Trap SIGINT/SIGTERM so even when the user Ctrl-Cs mid-launch we leave a clean
+// $AGENT_DIR.
+process.on('SIGINT', () => { cleanupPidFiles(); process.exit(130); });
+process.on('SIGTERM', () => { cleanupPidFiles(); process.exit(143); });
+
+main().catch((e) => {
+  console.error('FAIL:', e.message);
+  cleanupPidFiles();
   process.exit(1);
 });
