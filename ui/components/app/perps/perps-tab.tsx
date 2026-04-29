@@ -1,11 +1,22 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Button,
+  ButtonVariant,
+  Text,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { getUseExternalServices } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import ErrorBoundary from '../error-boundary/error-boundary';
-import { TabEmptyState } from '../../ui/tab-empty-state';
 import { PerpsView } from './perps-view';
 import { PerpsViewStreamBoundary } from './perps-view-stream-boundary';
 import { PerpsToastProvider } from './perps-toast';
@@ -24,20 +35,30 @@ export function PerpsTab() {
 
   if (!useExternalServices) {
     return (
-      <TabEmptyState
-        icon={
-          <img
-            alt="MetaMask logo"
-            src="./images/logo/metamask-fox.svg"
-            style={{ width: 64, height: 64 }}
-          />
-        }
-        description={t('basicFunctionalityRequired_description')}
-        actionButtonText={t('basicFunctionalityRequired_reviewInSettings')}
-        onAction={() => navigate(SETTINGS_ROUTE)}
-        className="mx-auto mt-5 mb-6"
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        gap={4}
+        paddingTop={10}
+        paddingBottom={10}
         data-testid="perps-basic-functionality-off"
-      />
+      >
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          textAlign={TextAlign.Center}
+          className="max-w-64"
+        >
+          {t('basicFunctionalityRequired_description')}
+        </Text>
+        <Button
+          variant={ButtonVariant.Secondary}
+          onClick={() => navigate(SETTINGS_ROUTE)}
+        >
+          {t('basicFunctionalityRequired_reviewInSettings')}
+        </Button>
+      </Box>
     );
   }
 
