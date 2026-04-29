@@ -979,6 +979,10 @@ export class MetaMetricsController extends BaseController<
       const { metaMetricsId } = this.state;
       const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
       const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
+
+      const { isEvmSelected, selectedMultichainNetworkChainId } =
+        this.messenger.call('MultichainNetworkController:getState');
+
       this.#submitSegmentAPICall('page', {
         messageId: buildUniqueMessageId({ actionId }),
         [idTrait]: idValue,
@@ -988,7 +992,14 @@ export class MetaMetricsController extends BaseController<
           locale: this.locale,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: this.chainId,
+          chain_id: isEvmSelected ? this.chainId : null,
+          ...(isEvmSelected
+            ? {}
+            : {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                chain_id_caip: selectedMultichainNetworkChainId,
+              }),
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: environmentType,
