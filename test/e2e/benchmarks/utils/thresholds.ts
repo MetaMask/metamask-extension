@@ -1,3 +1,5 @@
+import { hasProperty, isObject } from '@metamask/utils';
+
 import { type ThresholdConfig } from '../../../../shared/constants/benchmarks';
 
 /**
@@ -307,7 +309,8 @@ const DAPP_PAGE_LOAD = {
  * Threshold configurations for all benchmarks.
  *
  * Each per-benchmark constant uses `satisfies ThresholdConfig` rather than a
- * type annotation to preserve its literal metric keys.
+ * type annotation so its literal metric keys survive into `BENCHMARK_THRESHOLDS`,
+ * letting `METRIC` derive a closed dotted-key namespace from this object below.
  */
 const BENCHMARK_THRESHOLDS = {
   // Interaction benchmarks (run on all 4 combos, shared baseline)
@@ -331,6 +334,55 @@ const BENCHMARK_THRESHOLDS = {
   startupStandardHome: STANDARD_HOME,
   startupPowerUserHome: POWER_USER_HOME,
 } satisfies Record<string, ThresholdConfig>;
+
+/**
+ * Dotted-key namespace derived from `BENCHMARK_THRESHOLDS`.
+ *
+ * Each leaf is a `<benchmarkName>.<metricId>` string literal — used by
+ * `GATED_METRICS` to assemble its allowlist via dot-namespace access
+ * (`METRIC.startupStandardHome.uiStartup`). Renaming a threshold key
+ * surfaces as a missing-property error at every call site; adding an
+ * entry for an unknown benchmark/metric is a compile-time error.
+ *
+ * Built at module load by walking `BENCHMARK_THRESHOLDS`; the structural
+ * cast at the boundary preserves literal types for downstream consumers.
+ */
+type MetricNamespace = {
+  readonly [B in keyof typeof BENCHMARK_THRESHOLDS]: {
+    readonly [M in keyof (typeof BENCHMARK_THRESHOLDS)[B] &
+      string]: `${B & string}.${M}`;
+  };
+};
+
+export const METRIC: MetricNamespace = ((): MetricNamespace => {
+  const namespace: Record<string, Record<string, string>> = {};
+  for (const benchmark of Object.keys(BENCHMARK_THRESHOLDS)) {
+    if (!hasProperty(BENCHMARK_THRESHOLDS, benchmark)) {
+      continue;
+    }
+    const config = BENCHMARK_THRESHOLDS[benchmark];
+    if (!isObject(config)) {
+      continue;
+    }
+    const inner: Record<string, string> = {};
+    for (const metric of Object.keys(config)) {
+      inner[metric] = `${benchmark}.${metric}`;
+    }
+    namespace[benchmark] = inner;
+  }
+  return namespace as MetricNamespace;
+})();
+
+/**
+ * Union of every valid dotted `<benchmarkName>.<metricId>` key derived from
+ * `METRIC`. Used as an element-type constraint where a value must correspond
+ * to a threshold-backed metric — e.g. `GATED_METRIC_VALUES` in
+ * `gated-metrics.ts` uses it to reject raw strings, stale `METRIC.*` paths,
+ * and typos at compile time.
+ */
+export type MetricKey = {
+  [B in keyof typeof METRIC]: (typeof METRIC)[B][keyof (typeof METRIC)[B]];
+}[keyof typeof METRIC];
 
 /**
  * Registry of threshold configurations keyed by benchmark name (camelCase).

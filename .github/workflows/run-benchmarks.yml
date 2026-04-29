@@ -286,8 +286,8 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
-      - name: Install tsx
-        run: npm install --no-save tsx
+      - name: Install tsx and runtime deps
+        run: npm install --no-save tsx @metamask/utils
         shell: bash
 
       - name: Download all benchmark artifacts
