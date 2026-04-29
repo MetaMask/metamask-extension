@@ -101,7 +101,12 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
             ),
           );
         } catch (error) {
+          // `setPayToken` resolves the token via `TokensController`. If the
+          // import failed, the controller will throw "Payment token not
+          // found", leaving the user with a silently broken selection.
+          // Keep the modal open so they can retry or pick a different token.
           console.error('Failed to import withdraw destination token', error);
+          return;
         }
       }
 

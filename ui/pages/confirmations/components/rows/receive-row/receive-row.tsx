@@ -42,7 +42,13 @@ export function ReceiveRow({
   variant = ConfirmInfoRowSize.Default,
 }: ReceiveRowProps) {
   const t = useI18nContext();
-  const formatFiat = useFiatFormatter();
+  // The fee values from `TransactionPayController` (`provider.usd`,
+  // `sourceNetwork.estimate.usd`, etc.) are explicitly USD-denominated, and
+  // the input is sourced from the `usd`-currency `useTransactionCustomAmount`
+  // path used by Perps Withdraw. Force USD formatting so the displayed
+  // currency symbol matches the numerical value even if the user has set a
+  // non-USD primary currency.
+  const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
   const isLoading = useIsTransactionPayLoading();
   const totals = useTransactionPayTotals();
   const quotes = useTransactionPayQuotes();
