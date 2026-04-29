@@ -46,7 +46,6 @@ import {
 } from '@metamask/account-tree-controller';
 import { getHardwareWalletType } from '../../selectors/selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
-import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getCurrencyRateControllerCurrencyRates,
@@ -137,7 +136,7 @@ export type BridgeAppState = {
 };
 
 // Only includes networks user has added
-const getAllBridgeableNetworks = createDeepEqualSelector(
+const getAllBridgeableNetworks = createSelector(
   [getMultichainNetworkConfigurationsByChainId],
   (
     multichainNetworkConfigurationsByChainId,
@@ -162,20 +161,22 @@ const getAllBridgeableNetworks = createDeepEqualSelector(
   },
 );
 
-const getBridgeFeatureFlags = createDeepEqualSelector(
-  [(state: BridgeAppState) => getRemoteFeatureFlags(state).bridgeConfig],
-  (bridgeConfig) => {
-    const validatedFlags = selectBridgeFeatureFlags({
+const getBridgeFeatureFlags = createSelector(
+  [getRemoteFeatureFlags],
+  (remoteFeatureFlags) => {
+    const { bridgeConfig } = remoteFeatureFlags;
+    return selectBridgeFeatureFlags({
       remoteFeatureFlags: { bridgeConfig },
     });
-    return validatedFlags;
   },
 );
 
-const getChainRanking = (state: BridgeAppState) =>
-  getBridgeFeatureFlags(state)?.chainRanking;
+const getChainRanking = createSelector(
+  [getBridgeFeatureFlags],
+  (bridgeFeatureFlags) => bridgeFeatureFlags?.chainRanking,
+);
 
-export const getPriceImpactThresholds = createDeepEqualSelector(
+export const getPriceImpactThresholds = createSelector(
   [
     (state: BridgeAppState) =>
       getBridgeFeatureFlags(state).priceImpactThreshold,
@@ -187,7 +188,7 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
   }),
 );
 
-export const getFromChains = createDeepEqualSelector(
+export const getFromChains = createSelector(
   [
     getAllBridgeableNetworks,
     getChainRanking,
@@ -302,7 +303,8 @@ export const getFromToken = createSelector(
   ],
   (fromToken, fromChains, providerConfig) => {
     if (fromToken) {
-      return fromToken;
+      // Shallow clone avoids Reselect "identity function" dev check (returning an input unchanged).
+      return { ...fromToken };
     }
     // When the page loads the global network always matches the network filter
     // Because useBridging checks whether the lastSelectedNetwork matches the provider config
@@ -318,13 +320,14 @@ export const getFromToken = createSelector(
 );
 
 const getFromChainId = (state: BridgeAppState) => getFromToken(state).chainId;
+
 // For compatibility with old code
 export const getFromChain = createSelector(
   [getFromChainId, getAllBridgeableNetworks],
   (fromChainId, allBridgeableNetworks) => allBridgeableNetworks[fromChainId],
 );
 
-export const getToChains = createDeepEqualSelector(
+export const getToChains = createSelector(
   [getAllBridgeableNetworks, getChainRanking],
   (allBridgeableNetworks, chainRanking) => {
     const allChains: Record<CaipChainId, BridgeNetwork> = {
@@ -381,7 +384,7 @@ export const getToToken = createSelector(
   (fromToken, toToken) => {
     // If the user has selected a token, return it
     if (toToken) {
-      return toToken;
+      return { ...toToken };
     }
     return getDefaultToToken(fromToken.chainId, fromToken.assetId);
   },
@@ -751,7 +754,7 @@ export const getFormattedPriceImpactFiat = createSelector(
 const getQuoteStreamComplete = (state: BridgeAppState) =>
   state.metamask.quoteStreamComplete;
 
-const _getBaseValidationErrors = createDeepEqualSelector(
+const _getBaseValidationErrors = createSelector(
   [
     getBridgeQuotes,
     _getValidatedSrcAmount,

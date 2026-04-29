@@ -11,6 +11,7 @@ import {
 } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { setGlobalDevModeChecks } from 'reselect';
 import { SolAccountType, SolScope } from '@metamask/keyring-api';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
@@ -71,6 +72,14 @@ import {
 import { toBridgeToken } from './utils';
 
 describe('Bridge selectors', () => {
+  beforeAll(() => {
+    setGlobalDevModeChecks({ inputStabilityCheck: 'never' });
+  });
+
+  afterAll(() => {
+    setGlobalDevModeChecks({ inputStabilityCheck: 'once' });
+  });
+
   describe('getFromChain', () => {
     it('returns the fromChain from the multichain network controller', () => {
       const state = createBridgeMockStore({
