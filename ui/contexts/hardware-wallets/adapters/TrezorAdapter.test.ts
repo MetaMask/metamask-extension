@@ -238,6 +238,15 @@ describe('TrezorAdapter', () => {
         }),
       );
     });
+
+    it('does not throw when all required capabilities are present', () => {
+      expect(() =>
+        adapter.validateCapabilities(
+          ['Capability_Bitcoin', 'Capability_Solana', 'Capability_Ethereum'],
+          'T',
+        ),
+      ).not.toThrow();
+    });
   });
 });
 
