@@ -1206,6 +1206,16 @@ describe('Multichain Selectors', () => {
   });
 
   describe('getMultichainNetworkConfigurationsByChainId', () => {
+    const SYNTHETIC_MULTICHAIN_CHAIN_IDS = [
+      MultichainNetworks.SOLANA,
+      MultichainNetworks.BITCOIN,
+      MultichainNetworks.BITCOIN_TESTNET,
+      MultichainNetworks.BITCOIN_SIGNET,
+      MultichainNetworks.TRON,
+      MultichainNetworks.TRON_NILE,
+      MultichainNetworks.TRON_SHASTA,
+    ] as const;
+
     it('merges EVM network configurations with non-EVM multichain entries', () => {
       const state = getEvmState();
       const configs = getMultichainNetworkConfigurationsByChainId(state);
@@ -1233,6 +1243,17 @@ describe('Multichain Selectors', () => {
       expect(configs[MultichainNetworks.TRON_NILE]).toMatchObject({
         nativeCurrency: 'TRX',
       });
+    });
+
+    it('uses legacy provider display names for every synthetic non-EVM network', () => {
+      const configs =
+        getMultichainNetworkConfigurationsByChainId(getEvmState());
+
+      for (const chainId of SYNTHETIC_MULTICHAIN_CHAIN_IDS) {
+        expect(configs[chainId].name).toBe(
+          MULTICHAIN_PROVIDER_CONFIGS[chainId].nickname,
+        );
+      }
     });
 
     it('returns the same reference when called repeatedly with the same state', () => {
@@ -1307,15 +1328,33 @@ describe('Multichain Selectors', () => {
       });
     });
 
-    it('uses empty block explorer urls and placeholder RPC endpoints for synthetic non-EVM networks', () => {
-      const configs = getMultichainNetworkConfigurationsByChainId(getEvmState());
-      const solana = configs[MultichainNetworks.SOLANA];
+    it('uses placeholder RPC metadata for every synthetic non-EVM network', () => {
+      const configs =
+        getMultichainNetworkConfigurationsByChainId(getEvmState());
 
-      expect(solana.blockExplorerUrls).toStrictEqual([]);
-      expect(solana.defaultRpcEndpointIndex).toBe(0);
-      expect(solana.rpcEndpoints).toStrictEqual([
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ]);
+      const placeholderEndpoint = {
+        url: '',
+        type: RpcEndpointType.Custom,
+        networkClientId: '',
+      };
+
+      for (const chainId of SYNTHETIC_MULTICHAIN_CHAIN_IDS) {
+        const row = configs[chainId];
+        expect(row.blockExplorerUrls).toStrictEqual([]);
+        expect(row.defaultRpcEndpointIndex).toBe(0);
+        expect(row.rpcEndpoints).toStrictEqual([placeholderEndpoint]);
+      }
+    });
+
+    it('preserves legacy provider tickers on synthetic non-EVM merged rows', () => {
+      const configs =
+        getMultichainNetworkConfigurationsByChainId(getEvmState());
+
+      for (const chainId of SYNTHETIC_MULTICHAIN_CHAIN_IDS) {
+        expect(configs[chainId].ticker).toBe(
+          MULTICHAIN_PROVIDER_CONFIGS[chainId].ticker,
+        );
+      }
     });
   });
 });
