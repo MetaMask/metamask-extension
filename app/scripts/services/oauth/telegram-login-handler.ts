@@ -90,7 +90,7 @@ export class TelegramLoginHandler extends BaseLoginHandler {
    * Execute the server-side token exchange chain:
    * verify -> hydra jwt-bearer -> mint
    */
-  async getAuthIdToken(): Promise<AuthTokenResponse> {
+  async getAuthIdToken(code: string): Promise<AuthTokenResponse> {
     const verifyRes = await fetch(
       `${this.#options.authenticationServerUrl}${this.OAUTH_SERVER_VERIFY_PATH}`,
       {
@@ -100,6 +100,7 @@ export class TelegramLoginHandler extends BaseLoginHandler {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           code_verifier: this.codeVerifier,
+          code,
         }),
       },
     );
