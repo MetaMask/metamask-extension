@@ -92,6 +92,7 @@
     "No space left on device", // runner disk full
     "npm ERR! network", // npm network failure
     "OOMKilled", // Linux OOM killer terminated the process
+    "re-run this check after the baseline refresh completes", // yarn-audit-diff: ambient CVEs triggered a baseline refresh
     "read ECONNRESET", // TCP read failure (more specific than ECONNRESET alone)
     "resource temporarily unavailable", // file descriptor / process limit exhaustion
     "socket hang up", // HTTP connection dropped mid-request

@@ -177,17 +177,16 @@ export const TransactionControllerInit: MessengerClientInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
-      // Note: `#afterAdd.updateTransaction` is actually called before adding the TransactionMeta to the state
-      // Reference: https://github.com/MetaMask/core/blob/main/packages/transaction-controller/src/TransactionController.ts#L1335
-      afterAdd: async (_params: { transactionMeta: TransactionMeta }) => {
-        return {
-          updateTransaction: async (transactionMeta: TransactionMeta) => {
-            await initMessenger.call(
-              'SubscriptionService:submitSubscriptionSponsorshipIntent',
-              transactionMeta,
-            );
-          },
-        };
+      afterAdd: async ({
+        transactionMeta,
+      }: {
+        transactionMeta: TransactionMeta;
+      }) => {
+        await initMessenger.call(
+          'SubscriptionService:submitSubscriptionSponsorshipIntent',
+          transactionMeta,
+        );
+        return {};
       },
       beforePublish: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(

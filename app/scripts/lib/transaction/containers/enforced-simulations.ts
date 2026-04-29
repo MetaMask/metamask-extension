@@ -208,8 +208,8 @@ function generateCaveats(
 }
 
 enum BalanceChangeType {
-  DECREASE = 0,
-  INCREASE = 1,
+  INCREASE = 0,
+  DECREASE = 1,
 }
 
 function getBalanceChangeType(enforceDecrease: boolean): BalanceChangeType {

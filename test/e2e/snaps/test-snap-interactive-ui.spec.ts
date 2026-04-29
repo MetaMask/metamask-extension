@@ -22,7 +22,7 @@ describe('Interactive UI Snap', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         const interactiveUI = new SnapInteractiveDialog(driver);
