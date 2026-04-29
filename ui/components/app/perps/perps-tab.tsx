@@ -50,7 +50,7 @@ export function PerpsTab() {
           textAlign={TextAlign.Center}
           className="max-w-64"
         >
-          {t('basicFunctionalityRequired_description')}
+          {t('perpsBasicFunctionalityOff')}
         </Text>
         <Button
           variant={ButtonVariant.Secondary}

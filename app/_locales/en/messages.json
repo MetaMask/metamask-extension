@@ -5642,6 +5642,9 @@
   "perps": {
     "message": "Perps"
   },
+  "perpsBasicFunctionalityOff": {
+    "message": "This feature isn't available while basic functionality is turned off."
+  },
   "perps24hVolume": {
     "message": "24h Volume"
   },
