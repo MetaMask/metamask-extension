@@ -44,13 +44,13 @@ export type RequestPermissionsHooks = {
 type RequestPermissionsConstraint = MethodHandler<
   RequestPermissionsHooks,
   never,
-  [RequestedPermissions]
+  [RequestedPermissions],
+  Json,
+  { origin: string }
 >;
 
-const requestPermissionsHandler = {
-  methodNames: [MethodNames.RequestPermissions],
-  implementation:
-    requestPermissionsImplementation as unknown as RequestPermissionsConstraint['implementation'],
+export const requestPermissionsHandler = {
+  implementation: requestPermissionsImplementation,
   hookNames: {
     getAccounts: true,
     requestPermissionsForOrigin: true,

@@ -6884,9 +6884,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:@metamask-previews/json-rpc-engine@10.2.4-preview-dc38a2562":
-  version: 10.2.4-preview-dc38a2562
-  resolution: "@metamask-previews/json-rpc-engine@npm:10.2.4-preview-dc38a2562"
+"@metamask/json-rpc-engine@npm:@metamask-previews/json-rpc-engine@10.2.4-preview-a1caffc9c":
+  version: 10.2.4-preview-a1caffc9c
+  resolution: "@metamask-previews/json-rpc-engine@npm:10.2.4-preview-a1caffc9c"
   dependencies:
     "@metamask/messenger": "npm:^1.1.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
@@ -6895,7 +6895,7 @@ __metadata:
     "@types/deep-freeze-strict": "npm:^1.1.0"
     deep-freeze-strict: "npm:^1.1.1"
     klona: "npm:^2.0.6"
-  checksum: 10/1b5cff512b606c90b31e4e91619f778f8869f23f1c9c925ecf96b2eb680d15a08859fcd34ee3fb03083a4ac79ca825665107e273873b20b894087891b64ae363
+  checksum: 10/ad78290b1893154b102ec9243ebf4058203d8fc099830927203980681e7cffa36f224c1ea9295a829f8e0814a31c7bd97c9aec40f4f1513b3c874faf6f0f2d09
   languageName: node
   linkType: hard
 
@@ -7304,22 +7304,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-middleware@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/multichain-api-middleware@npm:2.0.0"
+"@metamask/multichain-api-middleware@npm:@metamask-previews/multichain-api-middleware@2.0.0-preview-a1caffc9c":
+  version: 2.0.0-preview-a1caffc9c
+  resolution: "@metamask-previews/multichain-api-middleware@npm:2.0.0-preview-a1caffc9c"
   dependencies:
     "@metamask/api-specs": "npm:^0.14.0"
     "@metamask/chain-agnostic-permission": "npm:^1.5.0"
-    "@metamask/controller-utils": "npm:^11.19.0"
-    "@metamask/json-rpc-engine": "npm:^10.2.3"
-    "@metamask/network-controller": "npm:^30.0.0"
-    "@metamask/permission-controller": "npm:^12.2.1"
+    "@metamask/controller-utils": "npm:^11.20.0"
+    "@metamask/json-rpc-engine": "npm:^10.2.4"
+    "@metamask/network-controller": "npm:^30.0.1"
+    "@metamask/permission-controller": "npm:^12.3.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.9.0"
     "@open-rpc/meta-schema": "npm:^1.14.6"
     "@open-rpc/schema-utils-js": "npm:^2.0.5"
     jsonschema: "npm:^1.4.1"
-  checksum: 10/c887073833ece8daee46727a5991ff15e329557e7453b34e62f7d65add09edeaa64a14cdd4f44bb343cd2c637c1c431e7f544ee7f1db441eb4b2a9959d40a4cb
+  checksum: 10/f3893eeb8dd15f7cdc5f280a77d4e34002daaf74d9a03fc4202b8251d18623aca109ac607e91b9adc917ad5cb0aebb88018bcd64424667bd41e80a95fb71efb5
   languageName: node
   linkType: hard
 
@@ -7515,9 +7515,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:@metamask-previews/permission-controller@12.3.0-preview-dc38a2562":
-  version: 12.3.0-preview-dc38a2562
-  resolution: "@metamask-previews/permission-controller@npm:12.3.0-preview-dc38a2562"
+"@metamask/permission-controller@npm:@metamask-previews/permission-controller@12.3.0-preview-a1caffc9c":
+  version: 12.3.0-preview-a1caffc9c
+  resolution: "@metamask-previews/permission-controller@npm:12.3.0-preview-a1caffc9c"
   dependencies:
     "@metamask/approval-controller": "npm:^9.0.1"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -7530,7 +7530,7 @@ __metadata:
     deep-freeze-strict: "npm:^1.1.1"
     immer: "npm:^9.0.6"
     nanoid: "npm:^3.3.8"
-  checksum: 10/cea0937500f049c821c81ef4833f15cec7267baf681a20f044a636417da65f691e43068ca0e9250263371d733db27bbbabd9de0704097aaea7edeebbb6bfd855
+  checksum: 10/b5f1451bc1dc9167e809ab327168a4c8c641b5a8182279281698302bf3dc5493614048cac52232f9b1d5ab50a99a1bfd16caf186ed2f7e4d718f0bb5484285dc
   languageName: node
   linkType: hard
 

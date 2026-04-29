@@ -14,22 +14,25 @@ export type EthAccountsHooks = {
   getAccounts: () => string[];
 };
 
-type EthAccountsConstraint = MethodHandler<EthAccountsHooks>;
+type EthAccountsConstraint = MethodHandler<
+  EthAccountsHooks,
+  never,
+  JsonRpcParams,
+  string[]
+>;
 
 /**
  * A wrapper for `eth_accounts` that returns an empty array when permission is denied.
  */
-const ethAccounts = {
-  methodNames: [MESSAGE_TYPE.ETH_ACCOUNTS],
-  implementation:
-    ethAccountsHandler as unknown as EthAccountsConstraint['implementation'],
+export const ethAccountsHandler = {
+  implementation: ethAccountsImplementation,
   hookNames: {
     getAccounts: true,
   },
 } satisfies EthAccountsConstraint;
 
 const ethAccountsHandlers = {
-  [MESSAGE_TYPE.ETH_ACCOUNTS]: ethAccounts,
+  [MESSAGE_TYPE.ETH_ACCOUNTS]: ethAccountsHandler,
 };
 
 export default ethAccountsHandlers;
@@ -43,8 +46,8 @@ export default ethAccountsHandlers;
  * @param options - The RPC method hooks.
  * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
  */
-async function ethAccountsHandler<Params extends JsonRpcParams = JsonRpcParams>(
-  _req: JsonRpcRequest<Params>,
+async function ethAccountsImplementation(
+  _req: JsonRpcRequest,
   res: PendingJsonRpcResponse<string[]>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,

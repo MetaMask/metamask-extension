@@ -13,8 +13,7 @@ import {
 /** @typedef {import('@metamask/json-rpc-engine').MethodHandler<Record<string, unknown>>} AddEthereumChainHandler */
 
 /** @type {AddEthereumChainHandler} */
-const addEthereumChain = {
-  methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
+export const addEthereumChain = {
   implementation: addEthereumChainHandler,
   hookNames: {
     addNetwork: true,

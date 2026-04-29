@@ -93,11 +93,7 @@ import {
   multichainMethodCallValidatorMiddleware,
   MultichainSubscriptionManager,
   MultichainMiddlewareManager,
-  walletGetSession,
-  walletRevokeSession,
-  walletInvokeMethod,
   MultichainApiNotifications,
-  walletCreateSession,
 } from '@metamask/multichain-api-middleware';
 
 import {
@@ -263,7 +259,6 @@ import {
   createEip1193MethodMiddleware,
   createUnsupportedMethodMiddleware,
   createMultichainMethodMiddleware,
-  makeMethodMiddlewareMaker,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createRpcBlockingMiddleware, {
@@ -8069,15 +8064,10 @@ export default class MetamaskController extends EventEmitter {
     );
 
     engine.push(multichainMethodCallValidatorMiddleware);
-    const middlewareMaker = makeMethodMiddlewareMaker([
-      walletRevokeSession,
-      walletGetSession,
-      walletInvokeMethod,
-      walletCreateSession,
-    ]);
 
     engine.push(
-      middlewareMaker({
+      createMultichainMethodMiddleware({
+        ...this.setupCommonMiddlewareHooks(origin),
         findNetworkClientIdByChainId:
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
@@ -8159,10 +8149,6 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
     }
-
-    engine.push(
-      createMultichainMethodMiddleware(this.setupCommonMiddlewareHooks(origin)),
-    );
 
     engine.push(this.metamaskMiddleware);
 

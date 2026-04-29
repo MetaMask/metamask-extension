@@ -3,7 +3,7 @@ import {
   CHAIN_IDS,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
-import switchEthereumChain from './switch-ethereum-chain';
+import { switchEthereumChain } from './switch-ethereum-chain';
 import EthChainUtils from './ethereum-chain-utils';
 
 jest.mock('./ethereum-chain-utils', () => ({

@@ -3,9 +3,12 @@ import type {
   JsonRpcEngineEndCallback,
   MethodHandler,
 } from '@metamask/json-rpc-engine';
-import type { JsonRpcParams, PendingJsonRpcResponse } from '@metamask/utils';
+import type {
+  JsonRpcParams,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandlerRequestType as LogWeb3ShimUsageHandlerRequest } from './types';
 
 export type GetWeb3ShimUsageState = (origin: string) => undefined | 1 | 2;
 export type SetWeb3ShimUsageRecorded = (origin: string) => void;
@@ -15,7 +18,13 @@ export type LogWeb3ShimUsageHooks = {
   setWeb3ShimUsageRecorded: SetWeb3ShimUsageRecorded;
 };
 
-type LogWeb3ShimUsageConstraint = MethodHandler<LogWeb3ShimUsageHooks>;
+type LogWeb3ShimUsageConstraint = MethodHandler<
+  LogWeb3ShimUsageHooks,
+  never,
+  JsonRpcParams,
+  true,
+  { origin: string }
+>;
 
 /**
  * This RPC method is called by the inpage provider whenever it detects the
@@ -23,10 +32,8 @@ type LogWeb3ShimUsageConstraint = MethodHandler<LogWeb3ShimUsageHooks>;
  * to alert the user that they are using a legacy dapp, and will have to take
  * further steps to be able to use it.
  */
-const logWeb3ShimUsage = {
-  methodNames: [MESSAGE_TYPE.LOG_WEB3_SHIM_USAGE],
-  implementation:
-    logWeb3ShimUsageHandler as unknown as LogWeb3ShimUsageConstraint['implementation'],
+export const logWeb3ShimUsageHandler = {
+  implementation: logWeb3ShimUsageImplementation,
   hookNames: {
     getWeb3ShimUsageState: true,
     setWeb3ShimUsageRecorded: true,
@@ -34,7 +41,7 @@ const logWeb3ShimUsage = {
 } satisfies LogWeb3ShimUsageConstraint;
 
 const logWeb3ShimUsageHandlers = {
-  [MESSAGE_TYPE.LOG_WEB3_SHIM_USAGE]: logWeb3ShimUsage,
+  [MESSAGE_TYPE.LOG_WEB3_SHIM_USAGE]: logWeb3ShimUsageHandler,
 };
 
 export default logWeb3ShimUsageHandlers;
@@ -50,8 +57,8 @@ export default logWeb3ShimUsageHandlers;
  * @param options.setWeb3ShimUsageRecorded - A function that records web3 shim
  * usage for a particular origin.
  */
-function logWeb3ShimUsageHandler<Params extends JsonRpcParams = JsonRpcParams>(
-  req: LogWeb3ShimUsageHandlerRequest<Params>,
+function logWeb3ShimUsageImplementation(
+  req: JsonRpcRequest & { origin: string },
   res: PendingJsonRpcResponse<true>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,

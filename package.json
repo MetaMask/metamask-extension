@@ -284,11 +284,15 @@
   "previewBuilds": {
     "@metamask/json-rpc-engine": {
       "type": "non-breaking",
-      "previewVersion": "10.2.4-preview-dc38a2562"
+      "previewVersion": "10.2.4-preview-a1caffc9c"
     },
     "@metamask/permission-controller": {
       "type": "breaking",
-      "previewVersion": "12.3.0-preview-dc38a2562"
+      "previewVersion": "12.3.0-preview-a1caffc9c"
+    },
+    "@metamask/multichain-api-middleware": {
+      "type": "breaking",
+      "previewVersion": "2.0.0-preview-a1caffc9c"
     }
   },
   "dependencies": {

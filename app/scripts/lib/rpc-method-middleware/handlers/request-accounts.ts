@@ -37,13 +37,16 @@ export type RequestEthereumAccountsHooks = {
   requestPermissionsForOrigin: RequestPermissionsForOrigin;
 };
 
-type RequestEthereumAccountsConstraint =
-  MethodHandler<RequestEthereumAccountsHooks>;
+type RequestEthereumAccountsConstraint = MethodHandler<
+  RequestEthereumAccountsHooks,
+  never,
+  JsonRpcParams,
+  string[],
+  { origin: OriginString }
+>;
 
-const requestEthereumAccounts = {
-  methodNames: [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS],
-  implementation:
-    requestEthereumAccountsHandler as unknown as RequestEthereumAccountsConstraint['implementation'],
+export const requestEthereumAccountsHandler = {
+  implementation: requestEthereumAccountsImplementation,
   hookNames: {
     getAccounts: true,
     sendMetrics: true,
@@ -54,7 +57,7 @@ const requestEthereumAccounts = {
 } satisfies RequestEthereumAccountsConstraint;
 
 const requestEthereumAccountsHandlers = {
-  [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS]: requestEthereumAccounts,
+  [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS]: requestEthereumAccountsHandler,
 };
 
 export default requestEthereumAccountsHandlers;
@@ -80,10 +83,8 @@ const locks = new Set();
  * @param options.getCaip25PermissionFromLegacyPermissionsForOrigin - A hook that returns a CAIP-25 permission from a legacy `eth_accounts` and `endowment:permitted-chains` permission.
  * @param options.requestPermissionsForOrigin - A hook that requests CAIP-25 permissions for the origin.
  */
-async function requestEthereumAccountsHandler<
-  Params extends JsonRpcParams = JsonRpcParams,
->(
-  req: JsonRpcRequest<Params> & { origin: OriginString },
+async function requestEthereumAccountsImplementation(
+  req: JsonRpcRequest & { origin: OriginString },
   res: PendingJsonRpcResponse<string[]>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
@@ -139,7 +140,7 @@ async function requestEthereumAccountsHandler<
     const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
       origin,
     );
-    const { mainFrameOrigin, frameId } = req as JsonRpcRequest<Params> & {
+    const { mainFrameOrigin, frameId } = req as JsonRpcRequest & {
       origin: OriginString;
       mainFrameOrigin?: string;
       frameId?: number;

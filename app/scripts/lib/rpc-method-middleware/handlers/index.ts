@@ -1,4 +1,3 @@
-import type { MethodHandler } from '@metamask/json-rpc-engine';
 import addEthereumChain from './add-ethereum-chain';
 import ethAccounts, { type EthAccountsHooks } from './eth-accounts';
 import getProviderState, {
@@ -13,6 +12,15 @@ import requestAccounts, {
 import sendMetadata, { type SendMetadataHooks } from './send-metadata';
 import switchEthereumChain from './switch-ethereum-chain';
 import watchAsset, { type WatchAssetHooks } from './watch-asset';
+import getPermissions, {
+  type GetPermissionsHooks,
+} from './wallet-getPermissions';
+import requestPermissions, {
+  type RequestPermissionsHooks,
+} from './wallet-requestPermissions';
+import revokePermissions, {
+  type RevokePermissionsHooks,
+} from './wallet-revokePermissions';
 
 type AddEthereumChainHooks = Record<string, unknown>;
 type SwitchEthereumChainHooks = Record<string, unknown>;
@@ -34,12 +42,18 @@ export const handlers = {
 
 export type Eip1193OnlyHooks = SwitchEthereumChainHooks &
   EthAccountsHooks &
-  RequestEthereumAccountsHooks;
+  RequestEthereumAccountsHooks &
+  GetPermissionsHooks &
+  RequestPermissionsHooks &
+  RevokePermissionsHooks;
 
 export const eip1193OnlyHandlers = {
   ...switchEthereumChain,
   ...ethAccounts,
   ...requestAccounts,
+  ...getPermissions,
+  ...requestPermissions,
+  ...revokePermissions,
 };
 
 export type { EthAccountsHooks };

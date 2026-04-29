@@ -3,7 +3,7 @@ import {
   CHAIN_IDS,
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
-import addEthereumChain from './add-ethereum-chain';
+import { addEthereumChain } from './add-ethereum-chain';
 import EthChainUtils from './ethereum-chain-utils';
 
 jest.mock('./ethereum-chain-utils', () => ({

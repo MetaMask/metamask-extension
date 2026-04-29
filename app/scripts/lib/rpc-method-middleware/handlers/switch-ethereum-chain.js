@@ -10,8 +10,7 @@ import {
 /** @typedef {import('@metamask/json-rpc-engine').MethodHandler<Record<string, unknown>>} SwitchEthereumChainHandler */
 
 /** @type {SwitchEthereumChainHandler} */
-const switchEthereumChain = {
-  methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
+export const switchEthereumChain = {
   implementation: switchEthereumChainHandler,
   hookNames: {
     getNetworkConfigurationByChainId: true,

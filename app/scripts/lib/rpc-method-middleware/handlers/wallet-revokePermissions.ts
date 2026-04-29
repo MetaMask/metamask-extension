@@ -22,11 +22,11 @@ export type RevokePermissionsHooks = {
 type RevokePermissionsConstraint = MethodHandler<
   RevokePermissionsHooks,
   never,
-  Json[]
+  Json[],
+  null
 >;
 
-const revokePermissionsHandler = {
-  methodNames: [MethodNames.RevokePermissions],
+export const revokePermissionsHandler = {
   implementation: revokePermissionsImplementation,
   hookNames: {
     revokePermissionsForOrigin: true,
@@ -54,7 +54,7 @@ export default revokePermissionsHandlers;
  */
 function revokePermissionsImplementation(
   req: JsonRpcRequest<Json[]>,
-  res: PendingJsonRpcResponse<Json>,
+  res: PendingJsonRpcResponse<null>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   {

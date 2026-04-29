@@ -1,4 +1,7 @@
+export * from './createUnsupportedMethodMiddleware';
+
 import { createMethodMiddleware } from '@metamask/json-rpc-engine';
+import { methodHandlers as multichainMethodHandlers } from '@metamask/multichain-api-middleware';
 
 import {
   handlers as localHandlers,
@@ -8,9 +11,18 @@ import {
   type Eip1193OnlyHooks,
   type EthAccountsHooks,
 } from './handlers';
-import getPermissionsHandler from './handlers/wallet-getPermissions';
-import requestPermissionsHandler from './handlers/wallet-requestPermissions';
-import revokePermissionsHandler from './handlers/wallet-revokePermissions';
+
+type UnionToIntersection<Union> = (
+  Union extends unknown ? (k: Union) => void : never
+) extends (k: infer Intersection) => void
+  ? Intersection
+  : never;
+
+type MultichainHandlerHooks = UnionToIntersection<
+  Parameters<
+    (typeof multichainMethodHandlers)[keyof typeof multichainMethodHandlers]['implementation']
+  >[4]
+>;
 
 const onError = (error: unknown) => {
   if (process.env.METAMASK_DEBUG) {
@@ -32,10 +44,6 @@ export const createEip1193MethodMiddleware = (
     handlers: {
       ...localHandlers,
       ...eip1193OnlyHandlers,
-      // EIP-2255 Permission handlers
-      ...getPermissionsHandler,
-      ...requestPermissionsHandler,
-      ...revokePermissionsHandler,
     },
     hooks,
     messenger: dummyMessenger,
@@ -54,10 +62,18 @@ export const createEthAccountsMethodMiddleware = (hooks: EthAccountsHooks) =>
     onError,
   });
 
+export type MultichainMethodMiddlewareHooks = HandlerHooks &
+  MultichainHandlerHooks;
+
 // The primary home of RPC method implementations for the MultiChain API.
-export const createMultichainMethodMiddleware = (hooks: HandlerHooks) =>
+export const createMultichainMethodMiddleware = (
+  hooks: MultichainMethodMiddlewareHooks,
+) =>
   createMethodMiddleware({
-    handlers: { ...localHandlers },
+    handlers: {
+      ...localHandlers,
+      ...multichainMethodHandlers,
+    },
     hooks,
     messenger: dummyMessenger,
     onError,

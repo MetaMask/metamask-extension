@@ -42,8 +42,7 @@ type GetPermissionsConstraint = MethodHandler<
   Json[]
 >;
 
-const getPermissionsHandler = {
-  methodNames: [MethodNames.GetPermissions],
+export const getPermissionsHandler = {
   implementation: getPermissionsImplementation,
   hookNames: {
     getPermissionsForOrigin: true,
