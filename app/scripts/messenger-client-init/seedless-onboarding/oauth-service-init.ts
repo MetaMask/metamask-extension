@@ -1,5 +1,8 @@
 import browser from 'webextension-polyfill';
-import { Env as ProfileSyncEnv, getEnvUrls } from '@metamask/profile-sync-controller/sdk';
+import {
+  Env as ProfileSyncEnv,
+  getEnvUrls,
+} from '@metamask/profile-sync-controller/sdk';
 import { MessengerClientInitFunction } from '../types';
 import { OAuthService } from '../../services/oauth/oauth-service';
 import {
@@ -59,11 +62,10 @@ export const OAuthServiceInit: MessengerClientInitFunction<
       metaMetricsController.state.participateInMetaMetrics,
 
     storePendingSocialLoginProfileJwt: async (jwt: string) => {
-      const {
-        [PENDING_PROFILE_PAIRING_TOKENS_SESSION_KEY]: pendingJwts = [],
-      } = await browser.storage.session.get(
-        PENDING_PROFILE_PAIRING_TOKENS_SESSION_KEY,
-      );
+      const { [PENDING_PROFILE_PAIRING_TOKENS_SESSION_KEY]: pendingJwts = [] } =
+        await browser.storage.session.get(
+          PENDING_PROFILE_PAIRING_TOKENS_SESSION_KEY,
+        );
 
       await browser.storage.session.set({
         [PENDING_PROFILE_PAIRING_TOKENS_SESSION_KEY]: [...pendingJwts, jwt],
