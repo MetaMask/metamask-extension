@@ -9,7 +9,7 @@ import {
   firstPendingConfirmationSelector,
   internalSelectPendingApproval,
 } from '../../../selectors';
-import { selectUnapprovedMessage } from '../../../selectors/signatures';
+import { selectUnapprovedSignatureRequestById } from '../../../selectors/signatures';
 import {
   shouldUseRedesignForSignatures,
   shouldUseRedesignForTransactions,
@@ -44,8 +44,10 @@ const useCurrentConfirmation = (providedConfirmationId?: string) => {
     (getUnapprovedTransaction as any)(state, confirmationIdForSelectors),
   ) as TransactionMeta | undefined;
 
-  const signatureMessage = useSelector((state) =>
-    selectUnapprovedMessage(state, confirmationIdForSelectors),
+  const signatureRequest = useSelector((state) =>
+    confirmationIdForSelectors
+      ? selectUnapprovedSignatureRequestById(state, confirmationIdForSelectors)
+      : undefined,
   );
 
   const useRedesignedForSignatures = shouldUseRedesignForSignatures({
@@ -69,12 +71,12 @@ const useCurrentConfirmation = (providedConfirmationId?: string) => {
     }
 
     const currentConfirmation =
-      transactionMetadata ?? signatureMessage ?? undefined;
+      transactionMetadata ?? signatureRequest ?? undefined;
 
     return { currentConfirmation };
   }, [
     transactionMetadata,
-    signatureMessage,
+    signatureRequest,
     shouldUseRedesign,
     pendingApproval,
   ]);

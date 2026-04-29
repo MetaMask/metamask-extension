@@ -1,14 +1,9 @@
 import { createSelector } from 'reselect';
-import { DefaultRootState } from 'react-redux';
 import {
   SignatureRequestStatus,
   type SignatureControllerState,
   type SignatureRequest,
 } from '@metamask/signature-controller';
-import {
-  unapprovedPersonalMsgsSelector,
-  unapprovedTypedMessagesSelector,
-} from './transactions';
 import { EMPTY_OBJECT } from './shared';
 
 export type SignatureState = {
@@ -31,21 +26,4 @@ export const selectUnapprovedSignatureRequestById = createSelector(
   selectSignatureRequestById,
   (request) =>
     request?.status === SignatureRequestStatus.Unapproved ? request : undefined,
-);
-
-/** @deprecated Use {@link selectSignatureRequests} instead. */
-const selectUnapprovedMessages = createSelector(
-  unapprovedPersonalMsgsSelector,
-  unapprovedTypedMessagesSelector,
-  (personalMsgs, typedMessages) => ({
-    ...personalMsgs,
-    ...typedMessages,
-  }),
-);
-
-/** @deprecated Use {@link selectSignatureRequestById} or {@link selectUnapprovedSignatureRequestById} instead. */
-export const selectUnapprovedMessage = createSelector(
-  selectUnapprovedMessages,
-  (_state: DefaultRootState, messageId: string) => messageId,
-  (messages, messageId) => messages[messageId],
 );
