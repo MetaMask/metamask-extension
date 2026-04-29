@@ -114,12 +114,6 @@
   "accountIdenticon": {
     "message": "Account icon"
   },
-  "accountIdenticonDescription": {
-    "message": "Choose from three different styles of unique icons that can help you identify accounts at a glance."
-  },
-  "accountIsntConnectedToastText": {
-    "message": "$1 isn't connected to $2"
-  },
   "accountName": {
     "message": "Account name"
   },
@@ -190,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Add a custom network"
   },
-  "addAHardwareWallet": {
-    "message": "Add a hardware wallet"
-  },
   "addANetwork": {
     "message": "Add a network"
   },
@@ -201,6 +192,9 @@
   },
   "addAUrl": {
     "message": "Add a URL"
+  },
+  "addAWallet": {
+    "message": "Add a wallet"
   },
   "addAccount": {
     "message": "Add account"
@@ -1095,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "Lowest cost"
   },
+  "bridgeMalicious": {
+    "message": "Malicious"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Malicious token"
+  },
   "bridgeMarketClosedAction": {
     "message": "Market closed"
   },
@@ -1115,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "No MM fee"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "No price information"
   },
   "bridgePoints": {
     "message": "Est. points",
@@ -1143,6 +1146,9 @@
   "bridgePoints_tooltip_content_2": {
     "message": "Keep in mind this value is an estimate and will be finalized once the transaction is complete. Points can take up to 1 hour to be confirmed in your Rewards balance.",
     "description": "Second part of tooltip content explaining how points are calculated"
+  },
+  "bridgePriceDataUnavailableError": {
+    "message": "We couldn't get price information for this token. Make sure the amount received is what you expect before continuing."
   },
   "bridgePriceImpact": {
     "message": "Price impact"
@@ -1211,6 +1217,102 @@
   "bridgeReceiveLoading": {
     "message": "Receiving on destination chain"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Suspicious airdrop"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Concentrated supply"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Suspicious behavior"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Inflated trader count"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Fake volume"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Heavy bot activity"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Undisclosed supply"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "High buy fee"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "High sell fee"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "High transfer fee"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Honeypot risk"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Impersonator"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Impersonates a sensitive asset"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Likely impersonator"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Possible impersonator"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Inappropriate content"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Artificial volume"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Low locked liquidity"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "Creator has low reputation"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Known malicious"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Suspicious metadata"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Possible price manipulation"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Rugpull risk"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Sanctioned creator"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Resembles malicious contract"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Bot activity at launch"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Spam text"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Suspicious code"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Token backdoor"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Unsellable token"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Unstable price"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Wash trading"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Select a destination account"
   },
@@ -1267,8 +1369,26 @@
     "message": "Swapping $1 for $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
+  "bridgeSuspicious": {
+    "message": "Suspicious"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Suspicious token"
+  },
   "bridgeTo": {
     "message": "Bridge to"
+  },
+  "bridgeTokenIsMaliciousBanner": {
+    "message": "$1 is a malicious token."
+  },
+  "bridgeTokenIsMaliciousModalDescription": {
+    "message": "$1 is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
+  },
+  "bridgeTokenIsSuspiciousBanner": {
+    "message": "$1 is a suspicious token."
+  },
+  "bridgeTokenIsSuspiciousModalDescription": {
+    "message": "$1 is flagged as suspicious. Take a look at the risks before you continue."
   },
   "bridgeTokenNotFound": {
     "message": "No tokens match \"$1\""
@@ -1546,12 +1666,6 @@
   "confirmFieldFrequency": {
     "message": "Frequency"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Initial allowance"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Max allowance"
-  },
   "confirmFieldNeverExpires": {
     "message": "Never expires"
   },
@@ -1571,20 +1685,14 @@
     "message": "Monthly"
   },
   "confirmFieldPeriodDurationSeconds": {
-    "message": "seconds",
-    "description": "Unit descriptor following the numeric value, e.g. '100 seconds'"
+    "message": "$1 seconds",
+    "description": "$1 is the number of seconds in the permission period (shown when the period is not a standard hour/day/week/etc.)"
   },
   "confirmFieldPeriodDurationWeekly": {
     "message": "Weekly"
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Yearly"
-  },
-  "confirmFieldStartDate": {
-    "message": "Start date"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Stream rate"
   },
   "confirmFieldTooltipJustification": {
     "message": "Justification for the request provided by the website"
@@ -1751,8 +1859,11 @@
   "connect": {
     "message": "Connect"
   },
-  "connectAccount": {
-    "message": "Connect account"
+  "connectAHardwareWallet": {
+    "message": "Connect a hardware wallet"
+  },
+  "connectAHardwareWalletDescription": {
+    "message": "Using USB or a QR Code"
   },
   "connectAccounts": {
     "message": "Connect accounts"
@@ -2249,9 +2360,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "the perps market page"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "the perps market list page"
   },
   "deepLink_thePerpsPage": {
     "message": "the perps page"
@@ -3035,6 +3143,9 @@
   "gasUsed": {
     "message": "Gas used"
   },
+  "gatorNoJustificationProvided": {
+    "message": "No justification was provided for the permission"
+  },
   "gatorPermissionAnnualFrequency": {
     "message": "Yearly",
     "description": "Time period for annual recurring permissions redemption"
@@ -3106,6 +3217,14 @@
   "gatorPermissionsStartDate": {
     "message": "Start date",
     "description": "Label for the start date of a permission"
+  },
+  "gatorPermissionsStatusExpired": {
+    "message": "Expired",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Revoked",
+    "description": "Tag label for a gator permission that has been revoked"
   },
   "gatorPermissionsStreamRate": {
     "message": "Stream rate",
@@ -3386,6 +3505,9 @@
   "importAWallet": {
     "message": "Import a wallet"
   },
+  "importAWalletDescription": {
+    "message": "Using a 12, 18 or 24-word seed phrase"
+  },
   "importAccountError": {
     "message": "Error importing account."
   },
@@ -3416,6 +3538,9 @@
   },
   "importAnAccount": {
     "message": "Import an account"
+  },
+  "importAnAccountDescription": {
+    "message": "Via a private key"
   },
   "importNFT": {
     "message": "Import NFT"
@@ -4034,12 +4159,6 @@
   "mismatchedRpcUrl": {
     "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
   },
-  "missingSetting": {
-    "message": "Can't find a setting?"
-  },
-  "missingSettingRequest": {
-    "message": "Request here"
-  },
   "month": {
     "message": "month"
   },
@@ -4122,6 +4241,102 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
+  "musdAssetBonusAccruing": {
+    "message": "Accruing next bonus",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "Claim $1 bonus",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "Estimated annual bonus",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "Your bonus info",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "A projection of what you'd earn over a year based on your current balance and rate. Rate is variable and may change.",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "Learn more.",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "The total bonus you've claimed since you started.",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "$1% annualized bonus you earn just for holding mUSD. You can claim it daily on Linea. $2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "Lifetime bonus claimed",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "No accruing bonus",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "$1% bonus",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "Your bonus",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "Daily bonus",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "Dollar-backed",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "No lockups",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "No MetaMask fee",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "$1% annualized bonus",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "Get a ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " by converting USDC, USDT, and DAI to mUSD.",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "Learn more",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "Convert your stablecoins",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "Balance",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "Your position",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "Value",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
   },
   "musdBonusExplanation": {
     "message": "Convert your stablecoins to mUSD and earn\nup to a $1% annualized bonus that you can\nclaim daily. $2",
@@ -4226,6 +4441,10 @@
   "musdMetaMaskUsd": {
     "message": "MetaMask USD",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "Terms apply."
@@ -4789,6 +5008,14 @@
   "notificationTransactionSuccessView": {
     "message": "View on $1",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
+  },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "Transaction failed! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "Transaction confirmed!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
   },
   "notifications": {
     "message": "Notifications"
@@ -5453,7 +5680,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Available Perps balance: "
+    "message": "Available balance: "
   },
   "perpsAvailableToAdd": {
     "message": "Available to add"
@@ -5467,6 +5694,9 @@
   "perpsAvailableToTrade": {
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
+  },
+  "perpsBasicFunctionalityOff": {
+    "message": "This feature isn't available while basic functionality is turned off."
   },
   "perpsBatchCancelFailed": {
     "message": "Failed to cancel one or more orders. Try again."
@@ -5499,7 +5729,7 @@
     "message": "Close Amount"
   },
   "perpsCloseLong": {
-    "message": "Close Long"
+    "message": "Close long"
   },
   "perpsClosePartialMinNotional": {
     "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
@@ -5508,19 +5738,25 @@
     "message": "Close position"
   },
   "perpsCloseShort": {
-    "message": "Close Short"
+    "message": "Close short"
   },
   "perpsConfirmCloseLong": {
-    "message": "Close Long"
+    "message": "Close long"
   },
   "perpsConfirmCloseShort": {
-    "message": "Close Short"
+    "message": "Close short"
   },
   "perpsConnectionTimeout": {
     "message": "Connection timed out. Please try again."
   },
   "perpsContactSupport": {
     "message": "Contact support"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "MetaMask Perps only support trading with isolated margin. You need to first close your cross margin position before you can trade on MetaMask."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Cross margin not supported"
   },
   "perpsDateToday": {
     "message": "Today"
@@ -5618,7 +5854,7 @@
     "message": "Funding payments"
   },
   "perpsFundingRate": {
-    "message": "Funding Rate"
+    "message": "Funding rate"
   },
   "perpsFundingRateTooltip": {
     "message": "An hourly fee paid between traders to keep prices in line with the market. If the rate is positive, longs pay shorts. If negative, shorts pay longs."
@@ -5651,7 +5887,7 @@
     "message": "Limit"
   },
   "perpsLimitPrice": {
-    "message": "Limit Price"
+    "message": "Limit price"
   },
   "perpsLimitPriceAboveCurrentPrice": {
     "message": "Limit price is above current price"
@@ -5712,24 +5948,24 @@
     "message": "No transactions yet"
   },
   "perpsOpenInterest": {
-    "message": "Open Interest"
+    "message": "Open interest"
   },
   "perpsOpenInterestTooltip": {
     "message": "The combined value of all open positions for this perp"
   },
   "perpsOpenLong": {
-    "message": "Open Long $1",
+    "message": "Open long $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOpenOrders": {
     "message": "Open Orders"
   },
   "perpsOpenShort": {
-    "message": "Open Short $1",
+    "message": "Open short $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOraclePrice": {
-    "message": "Oracle Price"
+    "message": "Oracle price"
   },
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
@@ -5768,7 +6004,7 @@
     "message": "Too many requests. Please wait and try again."
   },
   "perpsRecentActivity": {
-    "message": "Recent Activity"
+    "message": "Recent activity"
   },
   "perpsReduceExposure": {
     "message": "Reduce exposure"
@@ -5804,14 +6040,15 @@
     "message": "Flip your short position to a long"
   },
   "perpsSaveChanges": {
-    "message": "Save Changes",
+    "message": "Save changes",
     "description": "Button text for saving TP/SL changes"
   },
   "perpsSearchMarkets": {
     "message": "Search markets"
   },
   "perpsSeeAll": {
-    "message": "See All"
+    "message": "See all",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Service temporarily unavailable. Please try again later."
@@ -5880,8 +6117,12 @@
     "message": "Triggered"
   },
   "perpsStopLoss": {
-    "message": "Stop Loss",
+    "message": "Stop loss",
     "description": "Label for stop loss price input"
+  },
+  "perpsStopLossInvalidLiquidationPrice": {
+    "message": "Stop loss must be $1 liquidation price",
+    "description": "Validation error when stop loss price is on the wrong side of the liquidation price. $1 is above/below."
   },
   "perpsStopLossInvalidPrice": {
     "message": "Stop loss must be $1 $2 price",
@@ -5892,7 +6133,7 @@
     "description": "Loading text shown while an order is being submitted"
   },
   "perpsTakeProfit": {
-    "message": "Take Profit",
+    "message": "Take profit",
     "description": "Label for take profit price input"
   },
   "perpsTakeProfitInvalidPrice": {
@@ -6015,6 +6256,9 @@
   },
   "perpsTrades": {
     "message": "Trades"
+  },
+  "perpsTriggerPrice": {
+    "message": "Trigger price"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "Leverage amplifies both gains and losses. With 40x leverage, a 1% price move equals a 40% gain or loss on your margin."

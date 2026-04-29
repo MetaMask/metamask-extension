@@ -9,7 +9,11 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { Driver } from '../../webdriver/driver';
-import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import {
+  DAPP_PATH,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
 import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
@@ -93,6 +97,13 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           })
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withShowNativeTokenAsMainBalanceDisabled()
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1/slip44:60': { amount: '0' },
+              },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {

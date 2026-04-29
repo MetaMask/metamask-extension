@@ -1,5 +1,4 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { TransactionParams } from '@metamask/eth-json-rpc-middleware';
 import { MiddlewareContext } from '@metamask/json-rpc-engine/v2';
 import {
   TransactionController,
@@ -7,7 +6,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { UserOperationController } from '@metamask/user-operation-controller';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, omit } from 'lodash';
 import { Hex } from '@metamask/utils';
 import {
   generateSecurityAlertId,
@@ -65,14 +64,18 @@ jest.mock('../account-supports-7702', () => ({
 const SECURITY_ALERT_ID_MOCK = '123';
 const BATCHID_MOCK = '0xmockBatchId' as Hex;
 const FROM_FIELD_MOCK = '0x1';
+const TO_FIELD_MOCK = '0x2';
+const DATA_FIELD_MOCK = '0x3';
 
 const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
 const INTERNAL_ACCOUNT = createMockInternalAccount({
   address: INTERNAL_ACCOUNT_ADDRESS,
 });
 
-const TRANSACTION_PARAMS_MOCK: TransactionParams = {
+const TRANSACTION_PARAMS_MOCK = {
   from: FROM_FIELD_MOCK,
+  to: TO_FIELD_MOCK,
+  data: DATA_FIELD_MOCK,
 };
 
 const TRANSACTION_OPTIONS_MOCK: AddTransactionOptions = {
@@ -854,6 +857,33 @@ describe('Transaction Utils', () => {
           type: undefined,
           gasFeeToken: '0x20c0000000000000000000000000000000000000',
           excludeNativeTokenForFee: true,
+        });
+      });
+
+      it('sends a classic tx if `to` is missing (contract deployment)', async () => {
+        const transactionParamsMockWithoutTo = omit(
+          TRANSACTION_PARAMS_MOCK,
+          'to',
+        );
+        await addDappTransaction({
+          ...dappRequest,
+          transactionParams: transactionParamsMockWithoutTo,
+          chainId: '0xa5bf',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(transactionParamsMockWithoutTo, {
+          ...TRANSACTION_OPTIONS_MOCK,
+          method: makeDappRequest().method,
+          requireApproval: true,
+          securityAlertResponse: makeRequestContext().assertGet(
+            'securityAlertResponse',
+          ),
+          type: undefined,
         });
       });
     });

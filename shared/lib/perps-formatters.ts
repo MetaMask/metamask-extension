@@ -122,6 +122,10 @@ export const PRICE_THRESHOLD = {
   MEDIUM: 100,
   /** Medium-low values boundary (> $10). */
   MEDIUM_LOW: 10,
+  /** Medium-low values boundary (> $1). */
+  VERY_LOW: 1,
+  /** Very small values boundary (< $1). */
+  EXTRA_LOW: 0.1,
   /** Low values boundary (>= $0.01). */
   LOW: 0.01,
   /**
@@ -697,3 +701,137 @@ export function calculateMarginRequired(params: MarginRequiredParams): string {
 
   return (amountNum / leverage).toFixed(2);
 }
+
+// ---------------------------------------------------------------------------
+// Large-number formatters — mirrored from
+// metamask-mobile/app/components/UI/Perps/utils/formatUtils.ts (formatLargeNumber
+// + formatVolume). The extension's `createMarketDataFormatters()` passes the
+// resulting strings directly to the perps controller, so this keeps the
+// controller's `openInterest` / `volume24h` outputs aligned with mobile.
+// ---------------------------------------------------------------------------
+
+export type LargeNumberRangeConfig = {
+  /** The minimum value threshold for this range (inclusive). Use 0 to catch numbers below the lowest suffix threshold. */
+  threshold: number;
+  /** The suffix to use for this range (e.g., 'T', 'B', 'M', 'K', or '' for no suffix). */
+  suffix: string;
+  /** Number of decimal places for this range. */
+  decimals: number;
+};
+
+/**
+ * Default large number range configurations — applied in order largest → smallest.
+ * Mirrors mobile `DEFAULT_LARGE_NUMBER_RANGES`.
+ */
+export const DEFAULT_LARGE_NUMBER_RANGES: LargeNumberRangeConfig[] = [
+  { threshold: 1_000_000_000_000, suffix: 'T', decimals: 0 },
+  { threshold: 1_000_000_000, suffix: 'B', decimals: 0 },
+  { threshold: 1_000_000, suffix: 'M', decimals: 0 },
+  { threshold: 1_000, suffix: 'K', decimals: 0 },
+  { threshold: 0, suffix: '', decimals: 2 },
+];
+
+/**
+ * Formats large numbers with magnitude suffixes (K, M, B, T).
+ * Mirrors mobile `formatLargeNumber`.
+ *
+ * @param value - The number to format.
+ * @param options - Optional formatting options.
+ * @param options.decimals - Decimal places for suffixed ranges (overrides range config).
+ * @param options.rawDecimals - Decimal places for values below all thresholds.
+ * @param options.ranges - Custom range configurations.
+ * @returns Formatted string with appropriate suffix.
+ */
+export const formatLargeNumber = (
+  value: string | number,
+  options?: {
+    decimals?: number;
+    rawDecimals?: number;
+    ranges?: LargeNumberRangeConfig[];
+  },
+): string => {
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  const ranges = options?.ranges ?? DEFAULT_LARGE_NUMBER_RANGES;
+
+  if (isNaN(num)) {
+    return '0';
+  }
+
+  const absNum = Math.abs(num);
+  const sign = num < 0 ? '-' : '';
+
+  for (const range of ranges) {
+    if (absNum >= range.threshold) {
+      const divisor = range.threshold > 0 ? range.threshold : 1;
+      const scaledValue = absNum / divisor;
+
+      let decimalPlaces = range.decimals;
+
+      if (options?.decimals !== undefined && range.suffix !== '') {
+        decimalPlaces = options.decimals;
+      }
+
+      if (options?.rawDecimals !== undefined && range.suffix === '') {
+        decimalPlaces = options.rawDecimals;
+      }
+
+      return `${sign}${scaledValue.toFixed(decimalPlaces)}${range.suffix}`;
+    }
+  }
+
+  return num.toFixed(options?.rawDecimals ?? 2);
+};
+
+/**
+ * Formats USD volume with magnitude suffixes. Auto-selects decimals by magnitude:
+ * - >= 1M (incl. billions / trillions): 2 decimals  ($2.30B / $12.35M)
+ * - >= 1K: 0 decimals                                ($123K)
+ * - < 1K: 2 decimals                                 ($123.45)
+ *
+ * Mirrors mobile `formatVolume` exactly — the extension needs this shape so the
+ * perps controller's `openInterest` / `volume24h` columns render with the same
+ * granularity as mobile instead of the previous `Intl.NumberFormat({notation:'compact'})`
+ * output that dropped trailing .0 for round billions (e.g. `$2B` vs `$2.00B`).
+ *
+ * @param volume - Raw volume value (USD).
+ * @param decimals - Optional explicit decimal override.
+ * @returns Format: `$XB` / `$X.XXM` / `$XK` / `$X.XX`.
+ */
+export const formatVolume = (
+  volume: string | number,
+  decimals?: number,
+): string => {
+  const num = typeof volume === 'string' ? parseFloat(volume) : volume;
+
+  if (isNaN(num) || !isFinite(num)) {
+    return '$---';
+  }
+
+  const absNum = Math.abs(num);
+
+  let autoDecimals: number;
+  if (decimals === undefined) {
+    if (absNum >= 1_000_000_000) {
+      autoDecimals = 2;
+    } else if (absNum >= 1_000_000) {
+      autoDecimals = 2;
+    } else if (absNum >= 1_000) {
+      autoDecimals = 0;
+    } else {
+      autoDecimals = 2;
+    }
+  } else {
+    autoDecimals = decimals;
+  }
+
+  const formatted = formatLargeNumber(volume, {
+    decimals: autoDecimals,
+    rawDecimals: autoDecimals,
+  });
+
+  if (formatted.startsWith('-')) {
+    return `-$${formatted.slice(1)}`;
+  }
+
+  return `$${formatted}`;
+};
