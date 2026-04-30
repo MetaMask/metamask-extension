@@ -1188,10 +1188,7 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.multichainAccountService, 'alignWallets')
           .mockResolvedValue();
         const forwardSpy = jest
-          .spyOn(
-            metamaskController,
-            'forwardSelectedAccountGroupToSnapKeyring',
-          )
+          .spyOn(metamaskController, 'forwardSelectedAccountGroupToSnapKeyring')
           .mockResolvedValue();
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
@@ -1520,10 +1517,7 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController, 'discoverAndCreateAccounts')
           .mockResolvedValue({});
         const forwardSpy = jest
-          .spyOn(
-            metamaskController,
-            'forwardSelectedAccountGroupToSnapKeyring',
-          )
+          .spyOn(metamaskController, 'forwardSelectedAccountGroupToSnapKeyring')
           .mockResolvedValue();
 
         await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
