@@ -8,12 +8,14 @@ type AddNetworkProps = {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   network: UpdateNetworkFields;
   isEdit?: boolean;
+  trackRpcUpdateFromBanner?: boolean;
 };
 
 export const AddNetwork: React.FC<AddNetworkProps> = ({
   networkFormState,
   network,
   isEdit = false,
+  trackRpcUpdateFromBanner,
 }) => {
   const [, setSearchParams] = useSearchParams();
   return (
@@ -28,6 +30,7 @@ export const AddNetwork: React.FC<AddNetworkProps> = ({
       }}
       networkFormState={networkFormState}
       existingNetwork={network}
+      trackRpcUpdateFromBanner={trackRpcUpdateFromBanner}
       onRpcAdd={() => {
         setSearchParams({ view: isEdit ? 'edit-rpc' : 'add-rpc' });
       }}

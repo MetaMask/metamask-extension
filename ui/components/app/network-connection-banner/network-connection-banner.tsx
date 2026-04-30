@@ -254,7 +254,7 @@ export const NetworkConnectionBanner = () => {
           trackRpcUpdateFromBanner: true,
         }),
       );
-      navigate(NETWORKS_ROUTE);
+      navigate(`${NETWORKS_ROUTE}?view=edit`);
     }
   }, [networkConnectionBanner, dispatch, navigate]);
 

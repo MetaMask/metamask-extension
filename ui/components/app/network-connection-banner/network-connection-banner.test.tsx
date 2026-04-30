@@ -115,7 +115,9 @@ describe('NetworkConnectionBanner', () => {
           chainId: '0x1',
           trackRpcUpdateFromBanner: true,
         });
-        expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          `${NETWORKS_ROUTE}?view=edit`,
+        );
       });
 
       it('creates a metrics event', () => {
@@ -231,7 +233,9 @@ describe('NetworkConnectionBanner', () => {
           chainId: '0x1',
           trackRpcUpdateFromBanner: true,
         });
-        expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          `${NETWORKS_ROUTE}?view=edit`,
+        );
       });
 
       it('creates a metrics event', () => {

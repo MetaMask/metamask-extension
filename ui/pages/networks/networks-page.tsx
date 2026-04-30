@@ -104,7 +104,11 @@ export const NetworksPage = () => {
     getSelectedMultichainNetworkChainId,
   );
   const rawEditedNetwork = useSelector(getEditedNetwork);
-  const { chainId: editingChainId, editCompleted } = rawEditedNetwork ?? {};
+  const {
+    chainId: editingChainId,
+    editCompleted,
+    trackRpcUpdateFromBanner,
+  } = rawEditedNetwork ?? {};
 
   const editedNetwork = useMemo((): UpdateNetworkFields | undefined => {
     if (view === 'add') {
@@ -387,6 +391,7 @@ export const NetworksPage = () => {
             networkFormState={networkFormState}
             network={editedNetwork as UpdateNetworkFields}
             isEdit={true}
+            trackRpcUpdateFromBanner={trackRpcUpdateFromBanner}
           />
         </>
       ) : null}
