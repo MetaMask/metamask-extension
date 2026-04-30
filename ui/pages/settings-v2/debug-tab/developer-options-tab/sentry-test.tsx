@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Button,
+  ButtonSize,
   ButtonVariant,
   Icon,
   IconName,
@@ -17,7 +18,6 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
-import { ButtonSize } from '../../../../components/component-library/button/button.types';
 
 import {
   forceUpdateMetamaskState,
