@@ -49,6 +49,13 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 /* eslint-disable @typescript-eslint/naming-convention */
 
 export type CustomAmountInfoProps = {
+  /**
+   * Optional caller-provided balance (USD) used as the source for the
+   * percentage buttons. Takes precedence over the default `payToken.balanceUsd`.
+   * Used by flows (e.g. Perps Withdraw) whose balance comes from a different
+   * source than the selected pay token.
+   */
+  balanceUsdOverride?: number;
   children?: ReactNode;
   currency?: string;
   /**
@@ -68,6 +75,7 @@ export type CustomAmountInfoProps = {
 
 export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
   ({
+    balanceUsdOverride,
     children,
     currency,
     disableAutomaticToken,
@@ -95,7 +103,11 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
       amountHuman,
       updatePendingAmount,
       updatePendingAmountPercentage,
-    } = useTransactionCustomAmount({ currency, disableUpdate });
+    } = useTransactionCustomAmount({
+      balanceUsdOverride,
+      currency,
+      disableUpdate,
+    });
 
     const handleAmountChange = useCallback(
       (value: string) => {
