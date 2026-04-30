@@ -3248,6 +3248,41 @@ describe('Actions', () => {
     });
   });
 
+  describe('#requestProfilePairing', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls requestProfilePairing in the background', async () => {
+      const store = mockStore();
+
+      const requestProfilePairingStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        requestProfilePairing: requestProfilePairingStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.requestProfilePairing());
+      expect(requestProfilePairingStub.calledOnceWith()).toBe(true);
+    });
+
+    it('rethrows when requestProfilePairing fails in the background', async () => {
+      const store = mockStore();
+
+      const requestProfilePairingStub = sinon.stub().rejects(new Error('boom'));
+
+      background.getApi.returns({
+        requestProfilePairing: requestProfilePairingStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await expect(
+        store.dispatch(actions.requestProfilePairing()),
+      ).rejects.toThrow('boom');
+    });
+  });
+
   describe('#setIsBackupAndSyncFeatureEnabled', () => {
     afterEach(() => {
       sinon.restore();
