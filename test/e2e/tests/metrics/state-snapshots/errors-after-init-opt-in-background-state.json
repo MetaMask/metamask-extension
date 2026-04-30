@@ -32,7 +32,7 @@
     "currentMigrationVersion": "number",
     "firstTimeInfo": "object",
     "previousAppVersion": "",
-    "previousMigrationVersion": 0
+    "previousMigrationVersion": 206
   },
   "AppStateController": {
     "activeQrCodeScanRequest": null,
