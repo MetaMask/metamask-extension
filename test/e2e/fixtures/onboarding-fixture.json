@@ -41,7 +41,7 @@
         "version": "13.17.0"
       },
       "previousAppVersion": "",
-      "previousMigrationVersion": 206
+      "previousMigrationVersion": 0
     },
     "AppStateController": {
       "browserEnvironment": {
