@@ -4,6 +4,8 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../../../app/_locales/en/messages.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetailsTotalRow } from './transaction-details-total-row';
@@ -43,11 +45,13 @@ function createMockTransactionMeta({
   };
 }
 
-function render(args: {
-  totalFiat?: string;
-  targetFiat?: string;
-  type?: TransactionType;
-} = {}) {
+function render(
+  args: {
+    totalFiat?: string;
+    targetFiat?: string;
+    type?: TransactionType;
+  } = {},
+) {
   return renderWithProvider(
     <TransactionDetailsProvider
       transactionMeta={createMockTransactionMeta(args) as never}
@@ -80,8 +84,8 @@ describe('TransactionDetailsTotalRow', () => {
       targetFiat: '100',
       type: TransactionType.perpsDeposit,
     });
-    expect(getByText('Total')).toBeInTheDocument();
-    expect(queryByText('Received total')).not.toBeInTheDocument();
+    expect(getByText(messages.total.message)).toBeInTheDocument();
+    expect(queryByText(messages.receivedTotal.message)).not.toBeInTheDocument();
     expect(getByText('$150.75')).toBeInTheDocument();
   });
 
@@ -91,8 +95,8 @@ describe('TransactionDetailsTotalRow', () => {
       targetFiat: '100',
       type: TransactionType.perpsWithdraw,
     });
-    expect(getByText('Received total')).toBeInTheDocument();
-    expect(queryByText('Total')).not.toBeInTheDocument();
+    expect(getByText(messages.receivedTotal.message)).toBeInTheDocument();
+    expect(queryByText(messages.total.message)).not.toBeInTheDocument();
     expect(getByText('$100.00')).toBeInTheDocument();
     expect(queryByText('$150.75')).not.toBeInTheDocument();
   });

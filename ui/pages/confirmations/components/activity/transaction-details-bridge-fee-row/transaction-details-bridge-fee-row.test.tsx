@@ -4,6 +4,8 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../../../app/_locales/en/messages.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetailsBridgeFeeRow } from './transaction-details-bridge-fee-row';
@@ -66,8 +68,8 @@ describe('TransactionDetailsBridgeFeeRow', () => {
       '2.50',
       TransactionType.perpsDeposit,
     );
-    expect(getByText('Bridge fee')).toBeInTheDocument();
-    expect(queryByText('Provider fee')).not.toBeInTheDocument();
+    expect(getByText(messages.bridgeFee.message)).toBeInTheDocument();
+    expect(queryByText(messages.providerFee.message)).not.toBeInTheDocument();
   });
 
   it('renders "Provider fee" label for perpsWithdraw transactions', () => {
@@ -75,7 +77,7 @@ describe('TransactionDetailsBridgeFeeRow', () => {
       '2.50',
       TransactionType.perpsWithdraw,
     );
-    expect(getByText('Provider fee')).toBeInTheDocument();
-    expect(queryByText('Bridge fee')).not.toBeInTheDocument();
+    expect(getByText(messages.providerFee.message)).toBeInTheDocument();
+    expect(queryByText(messages.bridgeFee.message)).not.toBeInTheDocument();
   });
 });

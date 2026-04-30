@@ -4,6 +4,8 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../../../app/_locales/en/messages.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { TransactionDetailsProvider } from '../transaction-details-context';
@@ -141,8 +143,8 @@ describe('TransactionDetailsPaidWithRow', () => {
       TOKEN_ADDRESS,
       TransactionType.perpsDeposit,
     );
-    expect(getByText('Paid with')).toBeInTheDocument();
-    expect(queryByText('Receive token')).not.toBeInTheDocument();
+    expect(getByText(messages.paidWith.message)).toBeInTheDocument();
+    expect(queryByText(messages.receiveToken.message)).not.toBeInTheDocument();
   });
 
   it('renders "Receive token" label for perpsWithdraw transactions', () => {
@@ -161,7 +163,7 @@ describe('TransactionDetailsPaidWithRow', () => {
       TOKEN_ADDRESS,
       TransactionType.perpsWithdraw,
     );
-    expect(getByText('Receive token')).toBeInTheDocument();
-    expect(queryByText('Paid with')).not.toBeInTheDocument();
+    expect(getByText(messages.receiveToken.message)).toBeInTheDocument();
+    expect(queryByText(messages.paidWith.message)).not.toBeInTheDocument();
   });
 });
