@@ -61,10 +61,12 @@ describe('useKeyringSnap', () => {
     jest.mocked(getSnapAccountsById).mockResolvedValue([]);
   });
 
-  it('returns an empty array initially', () => {
+  it('returns an empty array initially', async () => {
     const { result } = renderHook();
 
-    expect(result.current).toStrictEqual([]);
+    await waitFor(() => {
+      expect(result.current).toStrictEqual([]);
+    });
   });
 
   it('does not fetch accounts when `isKeyringSnap` is false', () => {
