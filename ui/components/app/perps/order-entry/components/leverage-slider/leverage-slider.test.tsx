@@ -138,5 +138,41 @@ describe('LeverageSlider', () => {
       expect(event.defaultPrevented).toBe(true);
       expect(onLeverageChange).not.toHaveBeenCalled();
     });
+
+    it('commits typed digits within range via onChange', () => {
+      const onLeverageChange = jest.fn();
+      renderWithProvider(
+        <LeverageSlider
+          {...defaultProps}
+          leverage={1}
+          minLeverage={1}
+          maxLeverage={20}
+          onLeverageChange={onLeverageChange}
+        />,
+        mockStore,
+      );
+      const input = getInput();
+      fireEvent.change(input, { target: { value: '5' } });
+      expect(onLeverageChange).toHaveBeenLastCalledWith(5);
+    });
+
+    it('clamps to minLeverage when blurred with empty/invalid value', () => {
+      const onLeverageChange = jest.fn();
+      renderWithProvider(
+        <LeverageSlider
+          {...defaultProps}
+          leverage={3}
+          minLeverage={1}
+          maxLeverage={20}
+          onLeverageChange={onLeverageChange}
+        />,
+        mockStore,
+      );
+      const input = getInput();
+      fireEvent.change(input, { target: { value: '' } });
+      fireEvent.blur(input);
+      expect(onLeverageChange).toHaveBeenLastCalledWith(1);
+      expect(input).toHaveValue('1');
+    });
   });
 });

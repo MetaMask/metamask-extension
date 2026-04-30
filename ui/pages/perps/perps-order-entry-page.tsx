@@ -692,7 +692,10 @@ const PerpsOrderEntryPage: React.FC = () => {
 
       // Pending-order data is delivered imperatively via setPendingOrder above.
       // Avoid route state so browser back/forward cannot replay filled toasts.
-      navigate(marketDetailPath);
+      // Replace (not push) so the just-submitted order-entry page does not
+      // remain in history — otherwise the market-detail back button (which
+      // uses navigate(-1)) would return to a stale post-submit form.
+      navigate(marketDetailPath, { replace: true });
     },
     [decodedSymbol, navigate, setPendingOrder],
   );
