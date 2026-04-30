@@ -64,6 +64,19 @@ describe('Slippage Service', () => {
     name: 'SOL',
   };
 
+  const mockRWAToken = (chainId: CaipChainId = 'eip155:1'): BridgeToken => ({
+    ...mockWETH(chainId),
+    symbol: 'AAPL',
+    name: 'Apple Inc.',
+    rwaData: {
+      instrumentType: 'stock',
+      market: {
+        nextOpen: new Date(Date.now() - 1000).toISOString(),
+        nextClose: new Date(Date.now() + 3_600_000).toISOString(),
+      },
+    },
+  });
+
   describe('calculateSlippage', () => {
     describe('Bridge transactions', () => {
       it('returns 0.5% for all bridge routes', () => {
@@ -96,6 +109,48 @@ describe('Slippage Service', () => {
 
         const result = calculateSlippage(context);
         expect(result).toBe(undefined);
+      });
+    });
+
+    describe('RWA token swaps', () => {
+      it('returns undefined (AUTO mode) when source token is an RWA token', () => {
+        const context: SlippageContext = {
+          fromToken: mockRWAToken(),
+          toToken: mockWETH(),
+        };
+
+        const result = calculateSlippage(context);
+        expect(result).toBe(undefined);
+      });
+
+      it('returns undefined (AUTO mode) when destination token is an RWA token', () => {
+        const context: SlippageContext = {
+          fromToken: mockWETH(),
+          toToken: mockRWAToken(),
+        };
+
+        const result = calculateSlippage(context);
+        expect(result).toBe(undefined);
+      });
+
+      it('returns undefined (AUTO mode) when both tokens are RWA tokens', () => {
+        const context: SlippageContext = {
+          fromToken: mockRWAToken(),
+          toToken: mockRWAToken(),
+        };
+
+        const result = calculateSlippage(context);
+        expect(result).toBe(undefined);
+      });
+
+      it('returns 2% (bridge default) for cross-chain swap even when source token is RWA', () => {
+        const context: SlippageContext = {
+          fromToken: mockRWAToken('eip155:1'),
+          toToken: mockRWAToken('eip155:10'),
+        };
+
+        const result = calculateSlippage(context);
+        expect(result).toBe(SlippageValue.BridgeDefault);
       });
     });
 
@@ -253,6 +308,16 @@ describe('Slippage Service', () => {
 
       const reason = getSlippageReason(context);
       expect(reason).toBe('Solana swap (AUTO mode)');
+    });
+
+    it('returns correct reason for RWA token swap', () => {
+      const context: SlippageContext = {
+        fromToken: mockRWAToken(),
+        toToken: mockWETH(),
+      };
+
+      const reason = getSlippageReason(context);
+      expect(reason).toBe('RWA token swap (AUTO mode)');
     });
 
     it('returns correct reason for stablecoin pair', () => {

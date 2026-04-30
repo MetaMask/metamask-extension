@@ -978,6 +978,20 @@ export const getIsSolanaSwap = createSelector(
   },
 );
 
+/**
+ * Returns true when the RWA feature flag is enabled and at least one of the
+ * selected tokens (source or destination) is an RWA token.
+ */
+export const getIsRWASwap = createSelector(
+  [getFromToken, getToToken, getIsRWATokensEnabled],
+  (fromToken, toToken, isRWAEnabled) => {
+    if (!isRWAEnabled) {
+      return false;
+    }
+    return Boolean(fromToken?.rwaData) || Boolean(toToken?.rwaData);
+  },
+);
+
 export const getHardwareWalletName = (state: BridgeAppState) => {
   const type = getHardwareWalletType(state);
   switch (type) {

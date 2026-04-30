@@ -4,6 +4,15 @@ import type { BridgeToken } from '../../../ducks/bridge/types';
 import { STABLECOIN_ASSET_IDS } from './stablecoins';
 
 /**
+ * Returns true when a token is an RWA token (has rwaData present).
+ *
+ * @param token
+ */
+function isRWAToken(token?: BridgeToken | null): boolean {
+  return Boolean(token?.rwaData);
+}
+
+/**
  * Slippage values for different scenarios
  */
 export enum SlippageValue {
@@ -52,6 +61,7 @@ function isStablecoinPair(
  * Rules:
  * - Bridge (cross-chain): Always 2%
  * - Swap on Solana: Always undefined (AUTO mode)
+ * - Swap where source or destination is an RWA token: Always undefined (AUTO mode)
  * - Swap on EVM stablecoin pairs (same chain only): 0.5%
  * - Swap on EVM other pairs: 2%
  *
@@ -77,7 +87,12 @@ export function calculateSlippage(
     return undefined;
   }
 
-  // 3. EVM swap → check for stablecoin pair
+  // 3. RWA token on either side → undefined (AUTO mode)
+  if (isRWAToken(fromToken) || isRWAToken(toToken)) {
+    return undefined;
+  }
+
+  // 4. EVM swap → check for stablecoin pair
   if (isStablecoinPair(fromToken, toToken)) {
     return SlippageValue.EvmStablecoin; // 0.5%
   }
@@ -105,6 +120,10 @@ export function getSlippageReason(context: SlippageContext): string {
 
   if (isSolanaChainId(fromToken.chainId)) {
     return 'Solana swap (AUTO mode)';
+  }
+
+  if (isRWAToken(fromToken) || isRWAToken(toToken)) {
+    return 'RWA token swap (AUTO mode)';
   }
 
   if (isStablecoinPair(fromToken, toToken)) {
