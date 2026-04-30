@@ -163,6 +163,7 @@ export function buildPermissiveTrc20Bytecode(decimals: number): string {
 export function createTronGridAccountResponse({
   address,
   nativeAccount,
+  stakedTrxBalance,
   trc10Balances,
   trc10Tokens,
   trc20Balances,
@@ -170,6 +171,7 @@ export function createTronGridAccountResponse({
 }: {
   address: string;
   nativeAccount?: TronNativeAccount;
+  stakedTrxBalance?: string;
   trc10Balances?: Partial<Record<TronTrc10Symbol, string>>;
   trc10Tokens?: Partial<Record<TronTrc10Symbol, TronTrc10Token>>;
   trc20Balances?: Partial<Record<TronTrc20Symbol, string>>;
@@ -193,12 +195,21 @@ export function createTronGridAccountResponse({
       return [{ [token.address]: balance }];
     },
   );
+  // Tron API and wallet snap both expect a JS number; SUN values in tests are
+  // well below Number.MAX_SAFE_INTEGER (~9B TRX) so truncation is not a concern.
+  // Guard handles both unset (undefined/empty) and explicit zero ('0').
+  const frozenV2 =
+    stakedTrxBalance && BigInt(stakedTrxBalance) > 0n
+      ? [{ amount: Number(stakedTrxBalance), type: 'ENERGY' }]
+      : [];
   const account = {
     ...(nativeAccount ?? {}),
     address,
     assetV2,
     balance: nativeAccount?.balance ?? 0,
     free_asset_net_usageV2: assetV2.map(({ key }) => ({ key, value: 0 })),
+    // Placed after the spread so it overrides any frozenV2 from the native node.
+    frozenV2,
     trc20,
   };
 

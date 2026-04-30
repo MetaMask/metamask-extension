@@ -290,6 +290,7 @@ export class TronNode {
     return createTronGridAccountResponse({
       address,
       nativeAccount,
+      stakedTrxBalance: this.getStakedTrxBalance(address),
       trc10Balances: this.getTrc10Balances(address),
       trc10Tokens: this.trc10Tokens,
       trc20Balances: this.getTrc20Balances(address),
