@@ -18,6 +18,21 @@ type ValidationParams = {
   direction?: Direction;
 };
 
+type LiquidationValidationParams = {
+  liquidationPrice?: number | null;
+  direction?: Direction;
+};
+
+const parsePrice = (price: string | number | null | undefined): number => {
+  if (typeof price === 'number') {
+    return price;
+  }
+  if (!price) {
+    return Number.NaN;
+  }
+  return Number.parseFloat(price.replaceAll(/[$,]/gu, ''));
+};
+
 /**
  * Validates if a take profit price is on the correct side of the reference price.
  * Returns `true` when the price is valid **or** when inputs are incomplete (empty/NaN).
@@ -35,7 +50,7 @@ export const isValidTakeProfitPrice = (
     return true;
   }
 
-  const tpPrice = Number.parseFloat(price.replaceAll(/[$,]/gu, ''));
+  const tpPrice = parsePrice(price);
   if (Number.isNaN(tpPrice)) {
     return true;
   }
@@ -60,12 +75,41 @@ export const isValidStopLossPrice = (
     return true;
   }
 
-  const slPrice = Number.parseFloat(price.replaceAll(/[$,]/gu, ''));
+  const slPrice = parsePrice(price);
   if (Number.isNaN(slPrice)) {
     return true;
   }
 
   return direction === 'long' ? slPrice < currentPrice : slPrice > currentPrice;
+};
+
+/**
+ * Validates if a stop loss price is safe relative to the liquidation price.
+ * For Long positions, stop loss must be above liquidation price.
+ * For Short positions, stop loss must be below liquidation price.
+ * Returns `true` when inputs are incomplete (empty/NaN).
+ *
+ * @param price - The stop loss price string (may include `$` / `,` formatting)
+ * @param params - Object with `liquidationPrice` and `direction`
+ * @param params.liquidationPrice
+ * @param params.direction
+ */
+export const isStopLossSafeFromLiquidation = (
+  price: string,
+  { liquidationPrice, direction }: LiquidationValidationParams,
+): boolean => {
+  if (!direction || !price || !liquidationPrice) {
+    return true;
+  }
+
+  const slPrice = parsePrice(price);
+  if (Number.isNaN(slPrice) || liquidationPrice <= 0) {
+    return true;
+  }
+
+  return direction === 'long'
+    ? slPrice > liquidationPrice
+    : slPrice < liquidationPrice;
 };
 
 /**
@@ -92,4 +136,19 @@ export const getStopLossErrorDirection = (direction?: Direction): string => {
     return '';
   }
   return direction === 'long' ? 'below' : 'above';
+};
+
+/**
+ * Returns the directional word for a stop-loss liquidation validation error.
+ * Long SL must be "above"; Short SL must be "below".
+ *
+ * @param direction - Position direction
+ */
+export const getStopLossLiquidationErrorDirection = (
+  direction?: Direction,
+): string => {
+  if (!direction) {
+    return '';
+  }
+  return getStopLossErrorDirection(direction === 'long' ? 'short' : 'long');
 };

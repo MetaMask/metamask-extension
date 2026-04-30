@@ -38,6 +38,11 @@ import {
   SubjectType,
 } from '@metamask/permission-controller';
 import {
+  PasskeyControllerError,
+  PasskeyControllerErrorCode,
+  PasskeyControllerErrorMessage,
+} from '@metamask/passkey-controller';
+import {
   METAMASK_DOMAIN,
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
@@ -155,6 +160,7 @@ import {
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
+import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../shared/constants/passkey';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -445,6 +451,7 @@ import { SignatureControllerInit } from './messenger-client-init/confirmations/s
 import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
+import { PasskeyControllerInit } from './messenger-client-init/passkey-controller-init';
 import { getRootMessenger } from './lib/messenger';
 import {
   ClaimsControllerInit,
@@ -564,6 +571,10 @@ export default class MetamaskController extends EventEmitter {
     // lock to ensure only one seedless onboarding operation is running at once
     this.seedlessOperationMutex = new Mutex();
 
+    // timer to reset passkey auto unlock suppressed state
+    /** @type {NodeJS.Timeout | null} */
+    this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
+
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
         if (version === '8.1.0') {
@@ -629,6 +640,7 @@ export default class MetamaskController extends EventEmitter {
       SubjectMetadataController: SubjectMetadataControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
+      PasskeyController: PasskeyControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       NetworkController: NetworkControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
@@ -847,6 +859,7 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.ProfileMetricsController;
     this.legacyBackgroundApiService =
       messengerClientsByName.LegacyBackgroundApiService;
+    this.passkeyController = messengerClientsByName.PasskeyController;
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -2138,15 +2151,12 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.state,
         );
 
-        // TODO: Remove this setTimeout once https://github.com/MetaMask/core/pull/8261 is released
-        setTimeout(() => {
-          for (const [
-            origin,
-            authorization,
-          ] of authorizationsByOrigin.entries()) {
-            this._notifyAuthorizationChange(origin, authorization);
-          }
-        }, 1000);
+        for (const [
+          origin,
+          authorization,
+        ] of authorizationsByOrigin.entries()) {
+          this._notifyAuthorizationChange(origin, authorization);
+        }
 
         // TODO: Move this logic to the SnapKeyring directly.
         // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
@@ -2659,18 +2669,68 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Adds a network and sets it as the active network.
+   * Adds a network and (optionally) sets it as the active network.
    *
    * @param {object} networkConfiguration - The network configuration to add.
+   * @param {object} [options0] - Options for post-add behavior.
+   * @param {boolean} [options0.setActive] - Whether to switch to the added network.
    * @returns {Promise<object>} The added network configuration.
    */
-  async _addNetworkAndSetActive(networkConfiguration) {
-    const addedNetwork =
-      await this.networkController.addNetwork(networkConfiguration);
-    const { networkClientId } =
-      addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ?? {};
-    await this.networkController.setActiveNetwork(networkClientId);
-    return addedNetwork;
+  async _addNetworkAndSetActive(
+    networkConfiguration,
+    { setActive = true } = {},
+  ) {
+    if (setActive) {
+      const addedNetwork =
+        await this.networkController.addNetwork(networkConfiguration);
+      const { networkClientId } =
+        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
+        {};
+      await this.networkController.setActiveNetwork(networkClientId);
+      return addedNetwork;
+    }
+    const previousEnabledNetworkMap = Object.fromEntries(
+      Object.entries(
+        this.networkEnablementController.state.enabledNetworkMap,
+      ).map(([namespace, networks]) => [namespace, { ...networks }]),
+    );
+    const restorePreviousEnabledNetworkMap = () => {
+      this.controllerMessenger.unsubscribe(
+        'NetworkEnablementController:stateChange',
+        restorePreviousEnabledNetworkMap,
+      );
+      this.networkEnablementController.update((state) => {
+        Object.entries(state.enabledNetworkMap).forEach(
+          ([namespace, currentNetworks]) => {
+            Object.keys(currentNetworks).forEach((chainId) => {
+              const previousValue =
+                previousEnabledNetworkMap[namespace]?.[chainId];
+              state.enabledNetworkMap[namespace][chainId] =
+                previousValue ?? false;
+            });
+          },
+        );
+      });
+    };
+
+    this.controllerMessenger.subscribe(
+      'NetworkEnablementController:stateChange',
+      restorePreviousEnabledNetworkMap,
+    );
+
+    try {
+      const addedNetwork =
+        await this.networkController.addNetwork(networkConfiguration);
+      await this.lookupSelectedNetworks();
+      return addedNetwork;
+    } catch (error) {
+      // `addNetwork` rejected, so `networkAdded` was not published
+      this.controllerMessenger.unsubscribe(
+        'NetworkEnablementController:stateChange',
+        restorePreviousEnabledNetworkMap,
+      );
+      throw error;
+    }
   }
 
   /**
@@ -2978,6 +3038,20 @@ export default class MetamaskController extends EventEmitter {
       // vault management
       submitPassword: this.submitPassword.bind(this),
       verifyPassword: this.verifyPassword.bind(this),
+
+      // passkey management
+      generatePasskeyRegistrationOptions:
+        this.generatePasskeyRegistrationOptions.bind(this),
+      generatePasskeyAuthenticationOptions:
+        this.generatePasskeyAuthenticationOptions.bind(this),
+      protectVaultKeyWithPasskey: this.protectVaultKeyWithPasskey.bind(this),
+      unlockWithPasskey: this.unlockWithPasskey.bind(this),
+      removePasskeyWithPasskeyVerification:
+        this.removePasskeyWithPasskeyVerification.bind(this),
+      removePasskeyWithPasswordVerification:
+        this.removePasskeyWithPasswordVerification.bind(this),
+      changePasswordWithPasskeyVerification:
+        this.changePasswordWithPasskeyVerification.bind(this),
 
       // network management
       setActiveNetwork: async (id) => {
@@ -3917,6 +3991,9 @@ export default class MetamaskController extends EventEmitter {
     // clear SeedlessOnboardingController state
     this.seedlessOnboardingController.clearState();
 
+    // clear passkey early (vault-bound unlock material; runs for restoreOnly too)
+    this.passkeyController.clearState();
+
     // stop subscription polling
     this.subscriptionController.stopAllPolling();
 
@@ -4412,6 +4489,172 @@ export default class MetamaskController extends EventEmitter {
           data: { success: changePasswordSuccess },
         });
       }
+    } finally {
+      releaseLock();
+    }
+  }
+
+  /**
+   * Starts passkey registration: stores a registration session and returns creation options.
+   *
+   * @param {object} [opts] - Optional configuration.
+   * @param {boolean} [opts.prfAvailable] - Whether the client supports the
+   *   WebAuthn PRF extension. When `false`, PRF is omitted from the options.
+   * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialCreationOptionsJSON>}
+   */
+  async generatePasskeyRegistrationOptions({ prfAvailable } = {}) {
+    return this.passkeyController.generateRegistrationOptions({ prfAvailable });
+  }
+
+  /**
+   * Starts passkey authentication: stores an authentication session and returns request options.
+   *
+   * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialRequestOptionsJSON>}
+   */
+  async generatePasskeyAuthenticationOptions() {
+    return this.passkeyController.generateAuthenticationOptions();
+  }
+
+  /**
+   * Wraps the vault encryption key with a passkey after WebAuthn registration in the UI.
+   * If `completedOnboarding`, `password` is required and verified first.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyRegistrationResponse} registrationResponse - Registration response from the UI.
+   * @param {string} [password] - Wallet password when onboarding is complete (step-up).
+   * @returns {Promise<void>}
+   */
+  async protectVaultKeyWithPasskey(registrationResponse, password) {
+    const { completedOnboarding } = this.onboardingController.state;
+    if (completedOnboarding) {
+      // password is required when onboarding is complete
+      if (!password) {
+        throw new Error('Password required to register passkey');
+      }
+      // verify password
+      await this.verifyPassword(password);
+    }
+
+    const vaultKey = await this.keyringController.exportEncryptionKey();
+    await this.passkeyController.protectVaultKeyWithPasskey({
+      registrationResponse,
+      vaultKey,
+    });
+  }
+
+  /**
+   * Unlocks the vault with a passkey.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - Wire response from the UI.
+   * @returns {Promise<void>}
+   */
+  async unlockWithPasskey(authenticationResponse) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
+    }
+    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
+      authenticationResponse,
+    );
+    await this.submitEncryptionKey(vaultKey);
+  }
+
+  /**
+   * Removes the passkey from the vault using the passkey authentication response.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse
+   * @returns {Promise<void>}
+   */
+  async removePasskeyWithPasskeyVerification(authenticationResponse) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
+    }
+    const verified = await this.passkeyController.verifyPasskeyAuthentication(
+      authenticationResponse,
+    );
+    if (!verified) {
+      throw new Error('Passkey authentication verification failed');
+    }
+
+    this.passkeyController.removePasskey();
+  }
+
+  /**
+   * Verifies the wallet password and removes the passkey record (settings disable fallback).
+   *
+   * @param {string} password
+   * @returns {Promise<void>}
+   */
+  async removePasskeyWithPasswordVerification(password) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
+    }
+    await this.verifyPassword(password);
+    this.passkeyController.removePasskey();
+  }
+
+  /**
+   * Changes the wallet password using a verified passkey assertion, then renews the
+   * vault key protection for the new vault encryption key. Non-social-login only.
+   *
+   * @param {string} newPassword
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse
+   * @returns {Promise<void>}
+   */
+  async changePasswordWithPasskeyVerification(
+    newPassword,
+    authenticationResponse,
+  ) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
+    }
+
+    // verify passkey authentication
+    const isVerified = await this.passkeyController.verifyPasskeyAuthentication(
+      authenticationResponse,
+    );
+    if (!isVerified) {
+      throw new Error('Passkey authentication verification failed');
+    }
+
+    const releaseLock = await this.seedlessOperationMutex.acquire();
+    try {
+      const vaultKeyBeforePasswordChange =
+        await this.keyringController.exportEncryptionKey();
+
+      // change password
+      await this.keyringController.changePassword(newPassword);
+
+      try {
+        // renew vault key protection
+        const vaultKeyAfterPasswordChange =
+          await this.keyringController.exportEncryptionKey();
+        await this.passkeyController.renewVaultKeyProtection({
+          authenticationResponse,
+          oldVaultKey: vaultKeyBeforePasswordChange,
+          newVaultKey: vaultKeyAfterPasswordChange,
+        });
+      } catch (err) {
+        log.error(
+          'Passkey vault key protection renewal failed after password change',
+          err,
+        );
+        this.passkeyController.removePasskey();
+        throw err;
+      }
+    } catch (error) {
+      log.error('error while changing password with passkey', error);
+      throw error;
     } finally {
       releaseLock();
     }
@@ -5783,65 +6026,18 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Checks that all accounts referenced have a matching InternalAccount. Sends
-   * an error to sentry for any accounts that were expected but are missing from the wallet.
-   *
-   * @param {InternalAccount[]} [internalAccounts] - The list of evm accounts the wallet knows about.
-   * @param {Hex[]} [accounts] - The list of evm accounts addresses that should exist.
-   */
-  captureKeyringTypesWithMissingIdentities(
-    internalAccounts = [],
-    accounts = [],
-  ) {
-    const accountsMissingIdentities = accounts.filter(
-      (address) =>
-        !internalAccounts.some(
-          (account) => account.address.toLowerCase() === address.toLowerCase(),
-        ),
-    );
-    const keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
-      (address) => this.keyringController.getAccountKeyringType(address),
-    );
-
-    const internalAccountCount = internalAccounts.length;
-
-    const accountsByChainId = getAccountTrackerControllerAccountsByChainId(
-      this._getMetaMaskState(),
-    );
-    const accountsForCurrentChain = accountsByChainId[this.#getGlobalChainId()];
-
-    const accountTrackerCount = Object.keys(
-      accountsForCurrentChain || {},
-    ).length;
-
-    captureException(
-      new Error(
-        `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${internalAccountCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
-      ),
-    );
-  }
-
-  /**
-   * Sorts a list of evm account addresses by most recently selected by using
-   * the lastSelected value for the matching InternalAccount object stored in state.
-   *
-   * @param {Hex[]} [addresses] - The list of evm accounts addresses to sort.
-   * @returns {Hex[]} The sorted evm accounts addresses.
-   */
-  sortEvmAccountsByLastSelected(addresses) {
-    const internalAccounts = this.accountsController.listAccounts();
-    return this.sortAddressesWithInternalAccounts(addresses, internalAccounts);
-  }
-
-  /**
-   * Sorts a list of multichain account addresses by most recently selected by using
-   * the lastSelected value for the matching InternalAccount object stored in state.
+   * Sorts a list of account addresses by most recently selected by using
+   * the lastSelected value for the matching AccountGroup object stored in state.
    *
    * @param {string[]} [addresses] - The list of addresses (not full CAIP-10 Account IDs) to sort.
    * @returns {string[]} The sorted accounts addresses.
    */
-  sortMultichainAccountsByLastSelected(addresses) {
+  sortAddressesByLastSelected(addresses) {
+    const cachedLastSelected = new Map();
     const getLastSelected = (address) => {
+      if (cachedLastSelected.has(address)) {
+        return cachedLastSelected.get(address);
+      }
       const account = this.accountsController.getAccountByAddress(address);
       if (!account) {
         return undefined;
@@ -5850,75 +6046,19 @@ export default class MetamaskController extends EventEmitter {
       if (!context) {
         return undefined;
       }
-      // Get the group object to find the EOA account having lastSelected set
       const group = this.accountTreeController.getAccountGroupObject(
         context.groupId,
       );
       if (!group) {
         return undefined;
       }
-      // Find the EVM EOA account in this group, as it's the only one with lastSelected
-      for (const accountId of group.accounts) {
-        const groupAccount = this.accountsController.getAccount(accountId);
-        if (groupAccount && isEvmAccountType(groupAccount.type)) {
-          return groupAccount.metadata.lastSelected;
-        }
-      }
-      return undefined;
+      cachedLastSelected.set(address, group.metadata.lastSelected);
+      return group.metadata.lastSelected;
     };
 
     return addresses.sort(
       (a, b) => (getLastSelected(b) ?? 0) - (getLastSelected(a) ?? 0),
     );
-  }
-
-  /**
-   * Sorts a list of addresses by most recently selected by using the lastSelected value for
-   * the matching InternalAccount object from the list of internalAccounts provided.
-   *
-   * @param {string[]} [addresses] - The list of caip accounts addresses to sort.
-   * @param {InternalAccount[]} [internalAccounts] - The list of InternalAccounts to determine lastSelected from.
-   * @returns {string[]} The sorted accounts addresses.
-   */
-  sortAddressesWithInternalAccounts(addresses, internalAccounts) {
-    return addresses.sort((firstAddress, secondAddress) => {
-      const firstAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === firstAddress.toLowerCase(),
-      );
-
-      const secondAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === secondAddress.toLowerCase(),
-      );
-
-      if (!firstAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${firstAddress}".`);
-      } else if (!secondAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${secondAddress}".`);
-      } else if (
-        firstAccount.metadata.lastSelected ===
-        secondAccount.metadata.lastSelected
-      ) {
-        return 0;
-      } else if (firstAccount.metadata.lastSelected === undefined) {
-        return 1;
-      } else if (secondAccount.metadata.lastSelected === undefined) {
-        return -1;
-      }
-
-      return (
-        secondAccount.metadata.lastSelected - firstAccount.metadata.lastSelected
-      );
-    });
   }
 
   /**
@@ -5947,7 +6087,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const ethAccounts = getEthAccounts(caveat.value);
-    return this.sortEvmAccountsByLastSelected(ethAccounts);
+    return this.sortAddressesByLastSelected(ethAccounts);
   }
 
   /**
@@ -6437,8 +6577,9 @@ export default class MetamaskController extends EventEmitter {
           },
         );
 
-        const [accountAddressToEmit] =
-          this.sortMultichainAccountsByLastSelected(parsedPermittedAddresses);
+        const [accountAddressToEmit] = this.sortAddressesByLastSelected(
+          parsedPermittedAddresses,
+        );
 
         if (accountAddressToEmit) {
           this._notifyMultichainAccountChange(
@@ -8935,6 +9076,17 @@ export default class MetamaskController extends EventEmitter {
       if (isSignedIn) {
         this.authenticationController.performSignOut();
       }
+
+      // After lock, suppress auto passkey unlock briefly (cross-surface), then clear.
+      if (this.passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
+        clearTimeout(this.passkeyAutoUnlockSuppressedResetTimeoutId);
+        this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
+      }
+      this.appStateController.setPasskeyAutoUnlockSuppressed(true);
+      this.passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
+        this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
+        this.appStateController.setPasskeyAutoUnlockSuppressed(false);
+      }, PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
     } catch (error) {
       log.error('Error setting locked state', error);
       throw error;
@@ -9251,8 +9403,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     const addresses = [...new Set(addressByCaipAccountId.values())];
-    const sortedAddresses =
-      this.sortMultichainAccountsByLastSelected(addresses);
+    const sortedAddresses = this.sortAddressesByLastSelected(addresses);
     const rankByAddress = new Map(
       sortedAddresses.map((address, index) => [address, index]),
     );
@@ -9282,7 +9433,7 @@ export default class MetamaskController extends EventEmitter {
         (caipAccountId) => parseCaipAccountId(caipAccountId).address,
       ),
     );
-    return this.sortMultichainAccountsByLastSelected(addresses)?.[0];
+    return this.sortAddressesByLastSelected(addresses)?.[0];
   }
 
   async _notifyMultichainAccountChange(origin, accountAddressArray, scope) {

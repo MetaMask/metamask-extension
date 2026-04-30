@@ -147,8 +147,8 @@ async function main() {
     })
     .option('buildType', {
       type: 'string',
-      default: 'browserify',
-      description: 'Build type (browserify or webpack)',
+      default: 'webpack',
+      description: 'Build type (e.g. webpack)',
     })
     .parse();
 
