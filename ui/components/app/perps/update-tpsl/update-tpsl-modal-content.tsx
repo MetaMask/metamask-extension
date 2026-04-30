@@ -327,7 +327,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       setEditingTpPrice(newPrice);
       // Preserve the exact preset value for display — avoids round-trip drift
       // caused by the price being rounded to 2 decimal places
-      const presetStr = String(percent);
+      const presetStr = formatSignedRoePercent(percent);
       setRawTpPercent(presetStr);
       setTpPresetPercent(presetStr);
     },

@@ -268,9 +268,13 @@ describe('UpdateTPSLModalContent', () => {
       const tpInput = screen.getAllByPlaceholderText(
         '0.00',
       )[0] as HTMLInputElement;
+      const tpPercentInput = screen.getByTestId(
+        'perps-update-tpsl-tp-percent-input',
+      ) as HTMLInputElement;
       const numValue = parseFloat(tpInput.value.replace(/,/gu, ''));
       expect(numValue).toBeGreaterThan(0);
       expect(numValue).toBeCloseTo(3087.5, 0);
+      expect(tpPercentInput.value).toBe('+25');
     });
 
     it('sets SL price correctly for a -25% RoE preset on a long position', () => {
