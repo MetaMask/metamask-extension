@@ -4,8 +4,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-// eslint-disable-next-line import-x/no-restricted-paths
-import messages from '../../../../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetailsTotalRow } from './transaction-details-total-row';
