@@ -1058,8 +1058,9 @@ export const getIsSolanaSwap = createSelector(
 );
 
 /**
- * Returns true when the RWA feature flag is enabled and at least one of the
- * selected tokens (source or destination) is an RWA token.
+ * Returns true when the RWA feature flag is enabled, at least one of the
+ * selected tokens is an RWA token, and both tokens are on the same chain
+ * (cross-chain pairs use bridge default slippage, not AUTO mode).
  */
 export const getIsRWASwap = createSelector(
   [getFromToken, getToToken, getIsRWATokensEnabled],
@@ -1067,7 +1068,14 @@ export const getIsRWASwap = createSelector(
     if (!isRWAEnabled) {
       return false;
     }
-    return Boolean(fromToken?.rwaData) || Boolean(toToken?.rwaData);
+    if (
+      !fromToken?.chainId ||
+      !toToken?.chainId ||
+      fromToken.chainId !== toToken.chainId
+    ) {
+      return false;
+    }
+    return Boolean(fromToken.rwaData) || Boolean(toToken.rwaData);
   },
 );
 

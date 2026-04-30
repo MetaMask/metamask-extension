@@ -115,4 +115,47 @@ describe('useSmartSlippage', () => {
     const { store } = renderUseSmartSlippage(state);
     expect(store?.getState().bridge.slippage).toBe(2);
   });
+
+  it('dispatches bridge default slippage (2%) for a cross-chain RWA swap even when the feature flag is enabled', () => {
+    const rwaTokenMainnet = toBridgeToken({
+      decimals: 18,
+      assetId: 'eip155:1/erc20:0xstock',
+      symbol: 'AAPL',
+      name: 'Apple',
+      rwaData: {
+        instrumentType: 'stock',
+        market: {
+          nextOpen: new Date(Date.now() + 100_000).toISOString(),
+          nextClose: new Date(Date.now() + 200_000).toISOString(),
+        },
+      },
+    });
+    const rwaTokenBsc = toBridgeToken({
+      decimals: 18,
+      assetId: 'eip155:56/erc20:0xstock',
+      symbol: 'AAPL',
+      name: 'Apple',
+      rwaData: {
+        instrumentType: 'stock',
+        market: {
+          nextOpen: new Date(Date.now() + 100_000).toISOString(),
+          nextClose: new Date(Date.now() + 200_000).toISOString(),
+        },
+      },
+    });
+
+    const state = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {},
+        rwaTokensEnabled: true,
+      } as never,
+      bridgeSliceOverrides: {
+        fromToken: rwaTokenMainnet,
+        toToken: rwaTokenBsc,
+      },
+    });
+
+    const { store } = renderUseSmartSlippage(state);
+    expect(store?.getState().bridge.slippage).toBe(2);
+  });
 });
