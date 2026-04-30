@@ -42,11 +42,22 @@ export type RouteMessenger<
  * @param path - The route path to derive the namespace from.
  * @returns A namespace string derived from the route path.
  */
-function getRouteMessengerNamespace(path: string): `${string}Route` {
+export function getRouteMessengerNamespace(path: string): `${string}Route` {
   const parts = path
     .split('/')
     .filter(Boolean)
-    .map(([first, ...rest]) => first.toUpperCase() + rest.join(''));
+    .map(([first, ...rest]) => {
+      if (first === '*') {
+        return 'Wildcard';
+      }
+
+      if (first === ':') {
+        const paramName = rest.join('');
+        return paramName.charAt(0).toUpperCase() + paramName.slice(1);
+      }
+
+      return [first.toUpperCase(), ...rest].join('');
+    });
 
   return `${parts.join('')}Route`;
 }

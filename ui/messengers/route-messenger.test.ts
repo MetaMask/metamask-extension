@@ -1,6 +1,25 @@
 import * as messengerModule from '@metamask/messenger';
+import { it } from '@jest/globals';
 import { createMockUIMessenger } from '../../test/lib/mock-ui-messenger';
-import { createRouteMessenger } from './route-messenger';
+import {
+  createRouteMessenger,
+  getRouteMessengerNamespace,
+} from './route-messenger';
+
+describe('getRouteMessengerNamespace', () => {
+  it.each([
+    ['/some/path', 'SomePathRoute'],
+    ['/another/example', 'AnotherExampleRoute'],
+    ['/path/with/*', 'PathWithWildcardRoute'],
+    ['/path/with/:someParameter', 'PathWithSomeParameterRoute'],
+    ['/', 'Route'],
+  ])(
+    'derives the correct namespace from the path "%s"',
+    (path, expectedNamespace) => {
+      expect(getRouteMessengerNamespace(path)).toBe(expectedNamespace);
+    },
+  );
+});
 
 describe('createRouteMessenger', () => {
   it('creates a route messenger with the correct namespace and capabilities', () => {
