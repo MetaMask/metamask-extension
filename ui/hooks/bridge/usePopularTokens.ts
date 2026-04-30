@@ -6,7 +6,7 @@ import { BridgeToken } from '../../ducks/bridge/types';
 import { toBridgeToken } from '../../ducks/bridge/utils';
 import { type BridgeAppState } from '../../ducks/bridge/selectors';
 import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
-import { usePopularTokensFetch } from './usePopularTokensFetch';
+import { useInitialBridgeTokens } from './useInitalBridgeTokens';
 
 /**
  * Returns a sorted token list from the bridge api
@@ -33,7 +33,7 @@ export const usePopularTokens = ({
     getBridgeAssetsByAssetId(state, accountGroupId),
   );
 
-  const { tokenList, isTokenListLoading } = usePopularTokensFetch({
+  const { tokenList, isTokenListLoading } = useInitialBridgeTokens({
     assetsToInclude,
     chainIds,
   });

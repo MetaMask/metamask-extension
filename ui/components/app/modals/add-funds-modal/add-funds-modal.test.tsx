@@ -6,7 +6,7 @@ import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import AddFundsModal from './add-funds-modal';
 
-jest.mock('../../../hooks/bridge/useBridging', () =>
+jest.mock('../../../../hooks/bridge/useBridging', () =>
   jest.fn().mockReturnValue({
     openBridgeExperience: jest.fn(),
   }),

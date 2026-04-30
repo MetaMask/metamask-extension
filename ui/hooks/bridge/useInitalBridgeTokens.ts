@@ -16,7 +16,7 @@ import { useAsyncResult } from '../useAsync';
  * @param params.chainIds - enabled src/dest chainIds to return tokens for
  * @param params.assetsToInclude - the assets to show at the top of the list
  */
-export const usePopularTokensFetch = ({
+export const useInitialBridgeTokens = ({
   assetsToInclude,
   chainIds,
 }: {
@@ -34,7 +34,7 @@ export const usePopularTokensFetch = ({
    * Combine asset IDs into a string to avoid re-fetching
    * results whenever the balance or fiat balance amount changes
    */
-  const stableMinimalAssetsString = useMemo(() => {
+  const assetsToIncludeId = useMemo(() => {
     return assetsToInclude.map(({ assetId }) => assetId).join('|');
   }, [assetsToInclude]);
 
@@ -55,7 +55,7 @@ export const usePopularTokensFetch = ({
         bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       });
       return response;
-    }, [stableMinimalAssetsString, jwt, isExternalServicesEnabled]);
+    }, [assetsToIncludeId, jwt, isExternalServicesEnabled]);
 
   useEffect(() => {
     return () => {

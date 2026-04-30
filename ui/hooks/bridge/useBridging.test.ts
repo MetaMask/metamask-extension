@@ -17,7 +17,7 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import useBridging from './useBridging';
-import * as usePopularTokensFetchUtils from './usePopularTokensFetch';
+import * as useInitialBridgeTokensUtils from './useInitalBridgeTokens';
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -37,7 +37,7 @@ jest.mock('react-redux', () => ({
       mockDispatch(...args),
 }));
 
-let usePopularTokensFetchSpy: jest.SpyInstance;
+let useInitialBridgeTokensSpy: jest.SpyInstance;
 
 const resetInputFieldsSpy = jest.spyOn(bridgeActions, 'resetInputFields');
 
@@ -58,8 +58,8 @@ describe('useBridging', () => {
   });
 
   beforeEach(() => {
-    usePopularTokensFetchSpy = jest
-      .spyOn(usePopularTokensFetchUtils, 'usePopularTokensFetch')
+    useInitialBridgeTokensSpy = jest
+      .spyOn(useInitialBridgeTokensUtils, 'useInitialBridgeTokens')
       .mockReturnValue({
         tokenList: [],
         isTokenListLoading: false,
@@ -234,7 +234,7 @@ describe('useBridging', () => {
           },
         );
         expect(openTabSpy).not.toHaveBeenCalled();
-        const popularTokensArgs = usePopularTokensFetchSpy.mock.lastCall[0];
+        const popularTokensArgs = useInitialBridgeTokensSpy.mock.lastCall[0];
         expect(popularTokensArgs.chainIds).toStrictEqual(
           new Set([
             'eip155:10',
@@ -468,7 +468,7 @@ describe('useBridging', () => {
           },
         });
         expect(openTabSpy).not.toHaveBeenCalled();
-        const popularTokensArgs = usePopularTokensFetchSpy.mock.lastCall[0];
+        const popularTokensArgs = useInitialBridgeTokensSpy.mock.lastCall[0];
         expect(popularTokensArgs.chainIds).toStrictEqual(
           new Set([
             'eip155:10',

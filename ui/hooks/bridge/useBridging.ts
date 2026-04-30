@@ -27,7 +27,7 @@ import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
 import { getBridgeSortedAssets } from '../../ducks/bridge/asset-selectors';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
-import { usePopularTokensFetch } from './usePopularTokensFetch';
+import { useInitialBridgeTokens } from './useInitalBridgeTokens';
 import {
   BridgeNavigationOptions,
   useBridgeNavigation,
@@ -69,7 +69,7 @@ const useBridging = () => {
   const assetsToInclude = useSelector((state: BridgeAppState) =>
     getBridgeSortedAssets(state, groupId),
   );
-  usePopularTokensFetch({
+  useInitialBridgeTokens({
     assetsToInclude,
     chainIds,
   });
