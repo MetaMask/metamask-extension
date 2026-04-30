@@ -55,6 +55,17 @@ function getApi(
         config.isMaxAmount = isMaxAmount;
       });
     },
+    setTransactionPayPostQuote: (
+      transactionId: string,
+      options: { isHyperliquidSource?: boolean } = {},
+    ) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
+        config.isPostQuote = true;
+        if (options.isHyperliquidSource) {
+          config.isHyperliquidSource = true;
+        }
+      });
+    },
     updateTransactionPaymentToken:
       messengerClient.updatePaymentToken.bind(messengerClient),
   };
