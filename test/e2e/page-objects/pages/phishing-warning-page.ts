@@ -28,7 +28,10 @@ class PhishingWarningPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
+  async checkPageIsLoaded(
+    options: { timeout?: number } = { timeout: 10000 },
+  ): Promise<void> {
+    const { timeout } = options;
     try {
       await this.driver.waitForSelector(this.phishingWarningPageTitle, {
         timeout,
@@ -62,7 +65,7 @@ class PhishingWarningPage {
           )) as WebElement;
           await this.driver.switchToFrame(iframe as unknown as string);
           // We set a smaller custom timeout so we can retry more times the whole flow if needed
-          await this.checkPageIsLoaded(2000);
+          await this.checkPageIsLoaded({ timeout: 2000 });
           await this.driver.clickElement(this.openWarningInNewTabLink);
           return true;
         } catch {
