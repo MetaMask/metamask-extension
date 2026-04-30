@@ -525,6 +525,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds."
   },
+  "alertMinimumReserve": {
+    "message": "Reserve balance is required"
+  },
   "alertModalAcknowledge": {
     "message": "I have acknowledged the risk and still want to proceed"
   },
@@ -557,9 +560,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "Slow speed"
-  },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Gas sponsorship unavailable"
   },
   "alertReasonGasTooLow": {
     "message": "Low gas limit"
@@ -3125,7 +3125,7 @@
     "message": "Gas price estimation failed due to network error."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "Gas sponsorship isn’t available for this transaction. You’ll need to keep at least $1 $2 in your account.",
+    "message": "This specific network requires to maintain a reserve of $1 $2 in your account.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {

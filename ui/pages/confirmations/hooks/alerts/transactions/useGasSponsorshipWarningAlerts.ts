@@ -7,7 +7,10 @@ import {
 import type { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import {
+  AlertActionKey,
+  RowAlertKey,
+} from '../../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -16,6 +19,7 @@ import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 
 type SponsorshipWarningRule = {
   messageKey: string;
+  titleKey: string;
   minBalance: string;
   nativeCurrency: string;
   matchers: string[];
@@ -30,6 +34,7 @@ const GAS_SPONSORSHIP_WARNING_RULES: Partial<
 > = {
   [CHAIN_IDS.MONAD]: {
     messageKey: 'gasSponsorshipReserveBalanceWarning',
+    titleKey: 'alertMinimumReserve',
     minBalance: '10',
     nativeCurrency: 'MON',
     matchers: ['reserve balance violation'],
@@ -108,16 +113,23 @@ export function useGasSponsorshipWarningAlerts(): Alert[] {
     }
 
     const message = t(rule.messageKey, [rule.minBalance, rule.nativeCurrency]);
+    const reason = t(rule.titleKey);
 
     return [
       {
+        actions: [
+          {
+            key: AlertActionKey.Buy,
+            label: t('alertActionBuyWithNativeCurrency', [rule.nativeCurrency]),
+          },
+        ],
         field: RowAlertKey.EstimatedFee,
-        inlineAlertText: message,
-        isOpenModalOnClick: false,
-        key: 'gasSponsorshipReserveBalanceWarning',
+        isOpenModalOnClick: true,
+        key: 'gasSponsorshipAlert',
         message,
-        reason: t('alertReasonGasSponsorshipUnavailable'),
-        severity: Severity.Warning,
+        reason,
+        severity: Severity.Danger,
+        isBlocking: true,
         showArrow: false,
       },
     ];

@@ -9,13 +9,23 @@ import {
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
 import { useEstimationFailed } from '../../gas/useEstimationFailed';
+import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 
 export function useGasEstimateFailedAlerts(): Alert[] {
   const t = useI18nContext();
   const estimationFailed = useEstimationFailed();
 
+  const {
+    isSupported: isGaslessSupported,
+    pending: isGaslessSupportCheckPending,
+  } = useIsGaslessSupported();
+
   return useMemo(() => {
-    if (!estimationFailed) {
+    if (
+      !estimationFailed ||
+      isGaslessSupportCheckPending ||
+      isGaslessSupported
+    ) {
       return [];
     }
 
@@ -34,5 +44,5 @@ export function useGasEstimateFailedAlerts(): Alert[] {
         severity: Severity.Warning,
       },
     ];
-  }, [estimationFailed]);
+  }, [t, estimationFailed, isGaslessSupportCheckPending, isGaslessSupported]);
 }
