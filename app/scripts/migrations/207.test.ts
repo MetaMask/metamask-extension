@@ -560,7 +560,9 @@ describe(`migration #${VERSION}`, () => {
     await migrate(vd, changed);
 
     const ac = getAC(vd);
-    // metadata is written to assetsInfo, but no balance/custom entry for unknown account
+    // assetsInfo is global — metadata is written even for unrecognized accounts
+    expect(ac.assetsInfo[USDC_CAIP19_MAINNET]).toBeDefined();
+    // but no per-account entries without a known accountId
     expect(Object.keys(ac.customAssets)).toHaveLength(0);
     expect(Object.keys(ac.assetsBalance)).toHaveLength(0);
   });
@@ -597,6 +599,83 @@ describe(`migration #${VERSION}`, () => {
     await migrate(vd, changed);
 
     expect(changed.size).toBe(0);
+  });
+
+  it('does not mark AssetsController changed when non-EVM entries already exist', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        MultichainAssetsController: {
+          accountsAssets: { [ACCOUNT_1_ID]: [SOL_USDC_ASSET_ID] },
+          assetsMetadata: {
+            [SOL_USDC_ASSET_ID]: {
+              fungible: true,
+              name: 'USD Coin',
+              symbol: 'USDC',
+              units: [{ decimals: 6 }],
+            },
+          },
+        },
+        MultichainBalancesController: { balances: {} },
+        AssetsController: {
+          assetsInfo: {
+            [SOL_USDC_ASSET_ID]: {
+              type: 'spl',
+              symbol: 'USDC',
+              name: 'USD Coin',
+              decimals: 6,
+            },
+          },
+          assetsBalance: {},
+          customAssets: { [ACCOUNT_1_ID]: [SOL_USDC_ASSET_ID] },
+        },
+      }),
+    );
+
+    const changed = new Set<string>();
+    await migrate(vd, changed);
+
+    expect(changed.size).toBe(0);
+  });
+
+  // ─── exclusivity between assetsBalance and customAssets ─────────────────────
+
+  it('does not duplicate an asset into customAssets when already in assetsBalance', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              [ACCOUNT_1_ADDRESS]: [
+                { address: DAI_ADDRESS, symbol: 'DAI', decimals: 18 },
+              ],
+            },
+          },
+        },
+        TokenBalancesController: {
+          tokenBalances: {
+            [ACCOUNT_1_ADDRESS]: { '0x1': { [DAI_ADDRESS]: '0x0' } },
+          },
+        },
+        AssetsController: {
+          assetsInfo: {},
+          assetsBalance: {
+            [ACCOUNT_1_ID]: { [DAI_CAIP19_MAINNET]: { amount: '42' } },
+          },
+          customAssets: {},
+        },
+      }),
+    );
+
+    const changed = new Set<string>();
+    await migrate(vd, changed);
+
+    const ac = getAC(vd);
+    expect(ac.customAssets[ACCOUNT_1_ID] ?? []).not.toContain(
+      DAI_CAIP19_MAINNET,
+    );
+    expect(ac.assetsBalance[ACCOUNT_1_ID][DAI_CAIP19_MAINNET]).toMatchObject({
+      amount: '42',
+    });
   });
 
   // ─── version bump ────────────────────────────────────────────────────────────
