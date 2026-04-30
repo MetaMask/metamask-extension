@@ -98,7 +98,7 @@ export function createProviderWrapper(
   pathname = '/',
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
   uiMessenger = createMockUIMessenger(),
-  messenger = null,
+  routeMessenger = null,
 ) {
   const mockMetaMetricsContext =
     createMockMetaMetricsContext(getMockTrackEvent);
@@ -113,8 +113,8 @@ export function createProviderWrapper(
   });
 
   function Wrapper({ children }) {
-    const content = messenger ? (
-      <RouteMessengerContext.Provider value={messenger}>
+    const content = routeMessenger ? (
+      <RouteMessengerContext.Provider value={routeMessenger}>
         <LegacyRouteMessengerProvider>{children}</LegacyRouteMessengerProvider>
       </RouteMessengerContext.Provider>
     ) : (
@@ -153,14 +153,14 @@ export function renderWithProvider(
   renderer = render,
   getMockTrackEvent,
   uiMessenger = createMockUIMessenger(),
-  messenger = null,
+  routeMessenger = null,
 ) {
   const wrapper = createProviderWrapper(
     store,
     pathname,
     getMockTrackEvent ?? (() => jest.fn().mockResolvedValue(undefined)),
     uiMessenger,
-    messenger,
+    routeMessenger,
   );
 
   return renderer(component, { wrapper });
@@ -173,7 +173,7 @@ export function renderHookWithProvider(
   Container,
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
   uiMessenger = createMockUIMessenger(),
-  messenger = null,
+  routeMessenger = null,
 ) {
   const store = state ? configureStore(state) : undefined;
 
@@ -182,7 +182,7 @@ export function renderHookWithProvider(
     pathname,
     getMockTrackEvent,
     uiMessenger,
-    messenger,
+    routeMessenger,
   );
 
   const wrapper = Container
@@ -214,7 +214,7 @@ export function renderHookWithProvider(
  * @param [Container] - An optional container component.
  * @param {() => () => Promise<void>} [getMockTrackEvent] - A placeholder function for tracking a MetaMetrics event.
  * @param {UIMessenger} [uiMessenger] - An optional mock UI messenger instance.
- * @param {RouteMessenger | null} [messenger] - An optional mock route messenger instance. If not provided, the RouteMessengerContext will not be included in the provider tree.
+ * @param {RouteMessenger | null} [routeMessenger] - An optional mock route messenger instance. If not provided, the RouteMessengerContext will not be included in the provider tree.
  * @returns {RenderHookResult & { history: History }} The result of the rendered hook and the history object.
  */
 export const renderHookWithProviderTyped = (
@@ -224,7 +224,7 @@ export const renderHookWithProviderTyped = (
   Container,
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
   uiMessenger = createMockUIMessenger(),
-  messenger = null,
+  routeMessenger = null,
 ) =>
   renderHookWithProvider(
     hook,
@@ -233,7 +233,7 @@ export const renderHookWithProviderTyped = (
     Container,
     getMockTrackEvent,
     uiMessenger,
-    messenger,
+    routeMessenger,
   );
 
 export function renderWithLocalization(component) {
