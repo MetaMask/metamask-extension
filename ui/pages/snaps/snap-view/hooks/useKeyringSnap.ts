@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { getInternalAccounts } from '../../../../selectors';
-import type { RouteMessengerInstance } from '../messenger';
-import { useMessenger } from '../../../../hooks/useMessenger';
 import { getSnapAccountsById } from '../../../../store/actions';
 
 /**

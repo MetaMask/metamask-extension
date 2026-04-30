@@ -1,7 +1,6 @@
 import { waitFor } from '@testing-library/react';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers-navigate';
-import { createMockRouteMessenger } from '../../../../../test/lib/mock-route-messenger';
 import { getSnapAccountsById } from '../../../../store/actions';
 import { useKeyringSnap } from './useKeyringSnap';
 
