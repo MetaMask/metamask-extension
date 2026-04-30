@@ -138,19 +138,24 @@ describe('Check balance', function (this: Suite) {
     );
   });
 
-  it('Stores staked TRX balance from initialization options', async function () {
+  it('Freezes TRX balance v2 and exposes it on /wallet/getaccount', async function () {
     const node = new TronNode();
     await node.start({
-      initialBalances: { [TRON_ACCOUNT_ADDRESS]: 0 },
+      initialBalances: { [TRON_ACCOUNT_ADDRESS]: 50_000_000 },
       stakedTrxBalances: { [TRON_ACCOUNT_ADDRESS]: '20000000' },
-      trc721Balances: { [TRON_ACCOUNT_ADDRESS]: { 'collection-x': ['1'] } },
-      trc1155Balances: { [TRON_ACCOUNT_ADDRESS]: { 'collection-y': { '5': '3' } } },
     });
     try {
-      assert.strictEqual(
-        node.getStakedTrxBalance(TRON_ACCOUNT_ADDRESS),
-        '20000000',
-      );
+      const response = await fetch(`${node.baseUrl}/wallet/getaccount`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address: TRON_ACCOUNT_ADDRESS, visible: true }),
+      });
+      const account = (await response.json()) as {
+        frozenV2?: { amount?: number; type?: string }[];
+      };
+      const energyEntry = account.frozenV2?.find((e) => e.type === 'ENERGY');
+      assert.strictEqual(energyEntry?.amount, 20_000_000);
+      assert.strictEqual(node.getStakedTrxBalance(TRON_ACCOUNT_ADDRESS), '20000000');
       assert.strictEqual(node.getStakedTrxBalance('TUnknownAddress'), '0');
     } finally {
       await node.quit();
