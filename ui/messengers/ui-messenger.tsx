@@ -1,8 +1,6 @@
 import {
   Messenger,
   type ActionConstraint,
-  type ExtractActionParameters,
-  type ExtractActionResponse,
   type ExtractEventPayload,
 } from '@metamask/messenger';
 
@@ -17,6 +15,7 @@ import {
   submitRequestToBackground,
   subscribeToMessengerEvent,
 } from '../store/background-connection';
+import { captureException } from '../../shared/lib/sentry';
 import { MESSENGERS_WITH_EXCLUSIONS } from './configs';
 
 /**
@@ -67,7 +66,7 @@ export class UIMessenger extends Messenger<
   UIMessengerEvents
 > {
   constructor() {
-    super({ namespace: UI_MESSENGER_NAMESPACE });
+    super({ namespace: UI_MESSENGER_NAMESPACE, captureException });
   }
 
   /**
