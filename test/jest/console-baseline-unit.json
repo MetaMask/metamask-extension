@@ -68,7 +68,7 @@
       "Third-party: Bindings failed, using pure JS": 1,
       "error: AssertionError: The Snaps platform requires": 1,
       "error: Error: NetworkController state is invalid:": 1,
-      "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
+      "error: Error: invalid address (argument=\"address\", value=\"0x\",": 3,
       "error: This browser doesn't support cancelAnimationFrame.": 1,
       "error: {": 1,
       "warn: Error during SnapController initialization. AssertionError:": 2,
