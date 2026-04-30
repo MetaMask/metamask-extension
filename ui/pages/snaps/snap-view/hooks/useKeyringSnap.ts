@@ -17,9 +17,7 @@ import { getSnapAccountsById } from '../../../../store/actions';
  * @returns The accounts associated with the keyring Snap.
  */
 export function useKeyringSnap(snapId: SnapId, isKeyringSnap: boolean) {
-  const messenger = useMessenger<RouteMessengerInstance>();
   const internalAccounts = useSelector(getInternalAccounts);
-
   const [keyringAccounts, setKeyringAccounts] = useState<InternalAccount[]>([]);
 
   useEffect(() => {
@@ -37,7 +35,7 @@ export function useKeyringSnap(snapId: SnapId, isKeyringSnap: boolean) {
         console.error('Failed to get accounts for keyring Snap:', error);
       });
     }
-  }, [messenger, snapId, isKeyringSnap, internalAccounts]);
+  }, [snapId, isKeyringSnap, internalAccounts]);
 
   return keyringAccounts;
 }
