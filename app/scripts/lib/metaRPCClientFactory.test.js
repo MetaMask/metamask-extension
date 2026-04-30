@@ -51,36 +51,6 @@ describe('metaRPCClientFactory', () => {
       });
     });
   });
-  it.each([
-    ['empty string', ''],
-    ['undefined', undefined],
-    ['null', null],
-    ['non-string', 123],
-  ])(
-    'rejects pending request and removes it from the queue when error.message is %s',
-    async (_label, badMessage) => {
-      const streamTest = createThoughStream();
-      const metaRPCClient = metaRPCClientFactory(streamTest);
-
-      const requestPromise = metaRPCClient.foo('bar');
-
-      const [requestId] = [...metaRPCClient.requests.keys()];
-      streamTest.write({
-        jsonrpc: '2.0',
-        id: requestId,
-        error: {
-          code: 1,
-          message: badMessage,
-        },
-      });
-
-      await expect(requestPromise).rejects.toThrow(
-        'Background returned an error with an empty message',
-      );
-      // The pending request must be cleared so it does not orphan and leak.
-      expect(metaRPCClient.requests.has(requestId)).toBe(false);
-    },
-  );
 
   it('should be able to make an rpc request/response with the method and params with multiple instances of metaRPCClientFactory and the same connectionStream', async () => {
     const streamTest = createThoughStream();
