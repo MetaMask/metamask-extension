@@ -49,8 +49,14 @@ function renderTemplateString(value, params = {}) {
   return value.replace(
     /\{\{([^|}]+)(?:\|([^}]+))?\}\}/g,
     (_match, key, fallback) => {
-      if (Object.prototype.hasOwnProperty.call(params, key) && params[key] != null) {
-        return String(params[key]);
+      const trimmed = key.trim();
+      if (trimmed.startsWith('env.')) {
+        const envKey = trimmed.slice(4);
+        if (process.env[envKey] != null && process.env[envKey] !== '') {
+          return process.env[envKey];
+        }
+      } else if (Object.prototype.hasOwnProperty.call(params, trimmed) && params[trimmed] != null) {
+        return String(params[trimmed]);
       }
       return fallback != null ? String(fallback) : `{{${key}}}`;
     }

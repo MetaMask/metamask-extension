@@ -10,7 +10,7 @@
 const { readFileSync, mkdirSync, writeFileSync, existsSync, readdirSync } = require('node:fs');
 const { join, dirname, basename } = require('node:path');
 const { checkAssert } = require('./assert');
-const { renderTemplate } = require('./catalog');
+const { renderTemplate, renderTemplateString } = require('./catalog');
 const { ROUTE_MAP, routeToHash } = require('./route-map');
 
 // ── Eval helpers (extension page) ────────────────────────────────────
@@ -448,7 +448,7 @@ async function handleCall(node, ctx) {
   const flowInputs = flowJson.inputs || {};
   const callerParams = node.params || {};
   const mergedParams = { ...Object.fromEntries(
-    Object.entries(flowInputs).filter(([, v]) => v.default != null).map(([k, v]) => [k, String(v.default)])
+    Object.entries(flowInputs).filter(([, v]) => v.default != null).map(([k, v]) => [k, renderTemplateString(String(v.default), {})])
   ), ...callerParams };
   const substituted = renderTemplate(flowJson, mergedParams);
 

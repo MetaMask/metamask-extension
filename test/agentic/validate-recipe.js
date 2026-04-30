@@ -14,7 +14,7 @@ const { resolve, dirname, join, relative, sep } = require('node:path');
 
 const { checkAssert, evaluateAssert, parseRaw } = require('./lib/assert');
 const { normalizeWorkflowDocument, normalizePlayback, renderWorkflowMermaid, detectWorkflowCycles, findUnreachableNodes, findMissingTargets } = require('./lib/workflow');
-const { renderTemplate, renderRuntimeVars } = require('./lib/catalog');
+const { renderTemplate, renderRuntimeVars, renderTemplateString } = require('./lib/catalog');
 const { executeNodeAction, loadEvalRefs, waitForAdvance } = require('./lib/ext-bridge');
 const { runPreConditions } = require('./lib/pre-condition-runner');
 const { bootstrapCdpSession } = require('./lib/session-bootstrap');
@@ -707,7 +707,7 @@ async function main() {
   // Template substitution
   const inputs = rawRecipe.inputs || {};
   const mergedParams = { ...Object.fromEntries(
-    Object.entries(inputs).filter(([, v]) => v.default != null).map(([k, v]) => [k, String(v.default)])
+    Object.entries(inputs).filter(([, v]) => v.default != null).map(([k, v]) => [k, renderTemplateString(String(v.default), {})])
   ), ...cli.params };
   const recipe = renderTemplate(rawRecipe, mergedParams);
 

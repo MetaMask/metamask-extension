@@ -19,4 +19,14 @@ if [ -f "$SANDBOX_ENV" ]; then
   unset _line _key
 fi
 
+# Make wallet-fixture.json fields available as env tokens (e.g.
+# {{env.WALLET_PASSWORD}}) for templated flow input defaults. Only sets
+# WALLET_PASSWORD when not already exported, so a manual override wins.
+WALLET_FIXTURE="${WALLET_FIXTURE:-$SCRIPT_DIR/../../temp/runtime/wallet-fixture.json}"
+if [ -z "${WALLET_PASSWORD:-}" ] && [ -f "$WALLET_FIXTURE" ] && command -v jq >/dev/null 2>&1; then
+  _pw="$(jq -r '.password // empty' "$WALLET_FIXTURE" 2>/dev/null || true)"
+  [ -n "$_pw" ] && export WALLET_PASSWORD="$_pw"
+  unset _pw
+fi
+
 exec node "$SCRIPT_DIR/validate-recipe.js" --recipe "$RECIPE" "$@"
