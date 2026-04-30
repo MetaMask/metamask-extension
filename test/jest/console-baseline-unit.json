@@ -858,6 +858,10 @@
     "ui/pages/confirmations/components/confirm/info/set-approval-for-all-info/set-approval-for-all-static-simulation/set-approval-for-all-static-simulation.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
+    "ui/pages/confirmations/components/confirm/info/shared/advanced-details/advanced-details.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2,
+      "Reselect: Identity function warnings": 4
+    },
     "ui/pages/confirmations/components/confirm/info/shared/batched-approval-function/batched-approval-function.test.tsx": {
       "React: Act usage warnings (incorrect await)": 4,
       "React: Act warnings (component updates not wrapped)": 4,
