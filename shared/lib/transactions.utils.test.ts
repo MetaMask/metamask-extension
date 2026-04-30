@@ -3,7 +3,11 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { isBatchTransaction, hasTransactionType } from './transactions.utils';
+import {
+  isBatchTransaction,
+  hasTransactionType,
+  isPerpsWithdrawTransaction,
+} from './transactions.utils';
 
 describe('Transactions utils', () => {
   describe('isBatchTransaction', () => {
@@ -110,6 +114,40 @@ describe('Transactions utils', () => {
       expect(hasTransactionType(transactionMeta, [TransactionType.swap])).toBe(
         false,
       );
+    });
+  });
+
+  describe('isPerpsWithdrawTransaction', () => {
+    it('returns true when type is perpsWithdraw', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsWithdraw,
+      } as TransactionMeta;
+
+      expect(isPerpsWithdrawTransaction(transactionMeta)).toBe(true);
+    });
+
+    it('returns true when a nested transaction is perpsWithdraw', () => {
+      const transactionMeta = {
+        type: TransactionType.simpleSend,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.perpsWithdraw },
+        ],
+      } as unknown as TransactionMeta;
+
+      expect(isPerpsWithdrawTransaction(transactionMeta)).toBe(true);
+    });
+
+    it('returns false for unrelated types (e.g. perpsDeposit)', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsDeposit,
+      } as TransactionMeta;
+
+      expect(isPerpsWithdrawTransaction(transactionMeta)).toBe(false);
+    });
+
+    it('returns false when transactionMeta is undefined', () => {
+      expect(isPerpsWithdrawTransaction(undefined)).toBe(false);
     });
   });
 });

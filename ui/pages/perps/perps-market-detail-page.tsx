@@ -66,6 +66,7 @@ import {
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
+import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsMarketRecentActivity } from '../../components/app/perps/perps-market-recent-activity';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
@@ -365,7 +366,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [symbol]);
 
   const hasPerpBalance = Boolean(
-    account && Number.parseFloat(account.availableBalance) > 0,
+    account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
@@ -1781,8 +1782,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                 flip
                 offset={[0, 8]}
                 padding={0}
-                matchWidth
-                className="rounded-lg z-[1050]"
+                className="rounded-lg z-[1050] w-[294px]"
                 data-testid="perps-modify-menu"
               >
                 <Box flexDirection={BoxFlexDirection.Column}>

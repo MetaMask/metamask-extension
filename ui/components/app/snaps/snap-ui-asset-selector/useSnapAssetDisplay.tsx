@@ -13,6 +13,7 @@ import { getMultiChainAssets } from '../../../../selectors/assets';
 import { TokenWithFiatAmount } from '../../assets/types';
 
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatWithThreshold } from '../../assets/util/formatWithThreshold';
 import {
@@ -23,7 +24,6 @@ import {
   AllowedBridgeChainIds,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../../shared/constants/bridge';
-import { getMemoizedCurrentCurrency } from '../../../../selectors/snaps';
 
 /**
  * An asset for the SnapUIAssetSelector.
@@ -65,7 +65,7 @@ export const useSnapAssetSelectorData = ({
   addresses,
   chainIds,
 }: UseSnapAssetSelectorDataParams) => {
-  const currentCurrency = useSelector(getMemoizedCurrentCurrency);
+  const currentCurrency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
   const { formatTokenQuantity } = useFormatters();
 

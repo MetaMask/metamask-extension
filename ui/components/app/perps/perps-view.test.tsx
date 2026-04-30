@@ -615,5 +615,75 @@ describe('PerpsView', () => {
         }),
       );
     });
+
+    it('tracks has_perp_balance when unified account funds are tradeable but not withdrawable', () => {
+      const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
+      jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+        account: {
+          ...mocks.mockAccountState,
+          availableBalance: '0',
+          availableToTradeBalance: '100',
+        },
+        isInitialLoading: false,
+      });
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <PerpsView />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.PerpsScreenViewed,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+          }),
+        }),
+      );
+    });
+
+    it('falls back to availableBalance when availableToTradeBalance is absent', () => {
+      const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
+      jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+        account: {
+          ...mocks.mockAccountState,
+          availableBalance: '100',
+          availableToTradeBalance: undefined,
+        },
+        isInitialLoading: false,
+      });
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <PerpsView />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.PerpsScreenViewed,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+          }),
+        }),
+      );
+    });
   });
 });

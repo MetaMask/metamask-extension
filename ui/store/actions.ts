@@ -2284,7 +2284,7 @@ export function deleteExpiredNotifications(): ThunkAction<
 
         return Boolean(
           notification.readDate &&
-            new Date(notification.readDate) < expirationTime,
+          new Date(notification.readDate) < expirationTime,
         );
       })
       .map(({ id }) => id);
@@ -3682,6 +3682,7 @@ export function createSpeedUpTransaction(
 }
 export function addNetwork(
   networkConfiguration: AddNetworkFields | UpdateNetworkFields,
+  options: { setActive?: boolean } = {},
 ): ThunkAction<
   Promise<NetworkConfiguration>,
   MetaMaskReduxState,
@@ -3693,6 +3694,7 @@ export function addNetwork(
     try {
       return await submitRequestToBackground('addNetwork', [
         networkConfiguration,
+        options,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -4318,6 +4320,24 @@ export async function setDefaultHomeActiveTabName(
   } catch {
     // noop
   }
+}
+
+export function setLastVisitedPerpsRoute(
+  path: string | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    // Fire-and-forget: this write is a pure navigation hint for the next
+    // home mount. Swallow errors without a warning toast — users should
+    // never see UI noise for an internal persistence operation. We also
+    // skip `forceUpdateMetamaskState` because the field is memory-only
+    // (persist:false) and every Perps route change would otherwise pull
+    // the entire background state.
+    try {
+      await submitRequestToBackground('setLastVisitedRoute', ['perps', path]);
+    } catch (error) {
+      log.error('[setLastVisitedPerpsRoute] error', error);
+    }
+  };
 }
 
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
@@ -5787,24 +5807,6 @@ export function setEditedNetwork(
     | undefined = undefined,
 ): PayloadAction<object> {
   return { type: actionConstants.SET_EDIT_NETWORK, payload };
-}
-
-export function setNewNftAddedMessage(
-  newNftAddedMessage: string,
-): PayloadAction<string> {
-  return {
-    type: actionConstants.SET_NEW_NFT_ADDED_MESSAGE,
-    payload: newNftAddedMessage,
-  };
-}
-
-export function setRemoveNftMessage(
-  removeNftMessage: string,
-): PayloadAction<string> {
-  return {
-    type: actionConstants.SET_REMOVE_NFT_MESSAGE,
-    payload: removeNftMessage,
-  };
 }
 
 export function setNewTokensImported(

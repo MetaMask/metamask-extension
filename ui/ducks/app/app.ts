@@ -627,18 +627,6 @@ export default function reduceApp(
         newTokensImportedError: action.payload,
       };
 
-    case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:
-      return {
-        ...appState,
-        newNftAddedMessage: action.payload,
-      };
-
-    case actionConstants.SET_REMOVE_NFT_MESSAGE:
-      return {
-        ...appState,
-        removeNftMessage: action.payload,
-      };
-
     case actionConstants.SET_REQUEST_ACCOUNT_TABS:
       return {
         ...appState,
