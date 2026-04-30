@@ -15,6 +15,21 @@ import type {
 export const ROUTE_MESSENGER_NAMESPACE = 'Route';
 
 /**
+ * Helper type to derive a route messenger type from a capabilities object.
+ */
+export type RouteMessengerFromCapabilities<
+  CapabilitiesType extends {
+    actions?: UIMessengerActions['type'][];
+    events?: UIMessengerEvents['type'][];
+  },
+> = RouteMessenger<
+  CapabilitiesType extends { actions: (infer ActionTypes)[] }
+    ? ActionTypes
+    : never,
+  CapabilitiesType extends { events: (infer EventTypes)[] } ? EventTypes : never
+>;
+
+/**
  * A messenger that represents a route.
  *
  * This type is intentionally generic (a bit unusual for messenger "instance"
