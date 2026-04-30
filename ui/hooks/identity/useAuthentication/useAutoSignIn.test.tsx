@@ -14,7 +14,11 @@ type ArrangeMocksMetamaskStateOverrides = {
 
 const arrangeMockState = (
   stateOverrides: ArrangeMocksMetamaskStateOverrides,
-  keyrings: { type: string; accounts: string[]; metadata: { id: string } }[] = [],
+  keyrings: {
+    type: string;
+    accounts: string[];
+    metadata: { id: string };
+  }[] = [],
 ) => {
   return {
     metamask: {
