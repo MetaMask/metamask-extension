@@ -1560,9 +1560,6 @@
   "clearActivity": {
     "message": "एक्टिविटी और nonce डेटा हटाएं"
   },
-  "clearActivityButton": {
-    "message": "एक्टिविटी टैब डेटा हटाएं"
-  },
   "clearActivityDescription": {
     "message": "अकाउंट के nonce को रीसेट करता है और आपके वॉलेट में एक्टिविटी टैब से डेटा मिटा देता है। केवल मौजूदा अकाउंट और नेटवर्क प्रभावित होंगे। आपका बैलेंस और आने वाले ट्रांसेक्शन नहीं बदलेंगे।"
   },
@@ -3907,9 +3904,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask लॉक हो रहा है..."
-  },
-  "lockTimeInvalid": {
-    "message": "लॉक का समय 0 और 10080 के बीच की कोई संख्या होनी चाहिए"
   },
   "logOut": {
     "message": "लॉग आउट करें"
@@ -8181,12 +8175,6 @@
   },
   "smartAccount": {
     "message": "स्मार्ट अकाउंट"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "dapps को स्टैंडर्ड अकाउंट के लिए स्मार्ट अकाउंट फ़ीचर रिक्वेस्ट करने दें। इससे उन अकाउंट पर कोई असर नहीं पड़ेगा जो पहले से ही स्मार्ट अकाउंट हैं।"
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "dapps से स्मार्ट अकाउंट रिक्वेस्ट"
   },
   "smartAccountLabel": {
     "message": "स्मार्ट अकाउंट"

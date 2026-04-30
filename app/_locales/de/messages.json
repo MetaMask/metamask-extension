@@ -1560,9 +1560,6 @@
   "clearActivity": {
     "message": "Aktivitäten und Nonce-Daten löschen"
   },
-  "clearActivityButton": {
-    "message": "Aktivitäten-Tab-Daten löschen"
-  },
   "clearActivityDescription": {
     "message": "Setzt die Nonce des Kontos zurück und löscht Daten aus dem Aktivitäten-Tab in Ihrer Wallet. Nur das aktuelle Konto und Netzwerk sind betroffen. Ihr Guthaben und Ihre eingehenden Transaktionen bleiben unverändert."
   },
@@ -3911,9 +3908,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask wird gesperrt ..."
-  },
-  "lockTimeInvalid": {
-    "message": "Sperrzeit muss eine Zahl zwischen 0 und 10080 sein"
   },
   "logOut": {
     "message": "Abmelden"
@@ -8185,12 +8179,6 @@
   },
   "smartAccount": {
     "message": "Smart-Konto"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Lassen Sie Dapps die Smart-Konto-Funktionen für Standardkonten anfordern. Dies wirkt sich nicht auf bereits bestehende Smart-Konten aus."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Anfragen für Smart-Konten von Dapps"
   },
   "smartAccountLabel": {
     "message": "Smart-Konto"

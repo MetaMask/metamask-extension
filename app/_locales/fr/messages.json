@@ -1560,9 +1560,6 @@
   "clearActivity": {
     "message": "Effacer les données d’activité et de nonce"
   },
-  "clearActivityButton": {
-    "message": "Effacer les données de l’onglet « Activité »"
-  },
   "clearActivityDescription": {
     "message": "Cela réinitialise le nonce du compte et efface les données de l’onglet « Activité » dans votre portefeuille. Seuls le compte et le réseau actuels seront affectés. Aucun changement ne sera apporté aux soldes ou transactions entrantes."
   },
@@ -3911,9 +3908,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Verrouillage de MetaMask…"
-  },
-  "lockTimeInvalid": {
-    "message": "Le temps de verrouillage doit être un nombre compris entre 0 et 10 080"
   },
   "logOut": {
     "message": "Déconnexion"
@@ -8185,12 +8179,6 @@
   },
   "smartAccount": {
     "message": "Compte intelligent"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Autoriser les dapps à demander des fonctionnalités de compte intelligent pour les comptes standards. Cela n’affectera pas les comptes qui sont déjà des comptes intelligents."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Demandes de comptes intelligents émanant de dapps"
   },
   "smartAccountLabel": {
     "message": "Compte intelligent"

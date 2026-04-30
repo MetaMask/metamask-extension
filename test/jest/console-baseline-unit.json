@@ -1525,13 +1525,6 @@
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1
     },
-    "ui/pages/settings/advanced-tab/advanced-tab.component.test.js": {
-      "React: Missing key props in lists": 1,
-      "React: PropTypes validation failures": 1,
-      "React: componentWill* lifecycle deprecations": 1,
-      "Reselect: Identity function warnings": 1,
-      "error: Warning: Received `true` for a": 1
-    },
     "ui/pages/settings/developer-options-tab/developer-options-tab.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 11,
       "React: componentWill* lifecycle deprecations": 1

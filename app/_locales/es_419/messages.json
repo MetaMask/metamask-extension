@@ -1560,9 +1560,6 @@
   "clearActivity": {
     "message": "Borrar datos de actividad y nonce"
   },
-  "clearActivityButton": {
-    "message": "Borrar datos de la pestaña de actividad"
-  },
   "clearActivityDescription": {
     "message": "Restablece el nonce de la cuenta y borra los datos de la pestaña de actividad en tu billetera. Solo la cuenta actual y la red se verán afectadas. Tus saldos y transacciones entrantes no cambiarán."
   },
@@ -3911,9 +3908,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Bloqueando MetaMask..."
-  },
-  "lockTimeInvalid": {
-    "message": "El tiempo de bloqueo debe ser un número entre 0 y 10080"
   },
   "logOut": {
     "message": "Cerrar sesión"
@@ -8189,12 +8183,6 @@
   },
   "smartAccount": {
     "message": "Cuenta inteligente"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Permite que las dapps soliciten funciones de cuentas inteligentes para cuentas estándar. Esto no afectará a las cuentas que ya son cuentas inteligentes."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Solicitudes de cuentas inteligentes desde dapps"
   },
   "smartAccountLabel": {
     "message": "Cuenta inteligente"

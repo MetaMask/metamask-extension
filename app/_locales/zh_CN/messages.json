@@ -1560,9 +1560,6 @@
   "clearActivity": {
     "message": "清除活动和 nonce 数据"
   },
-  "clearActivityButton": {
-    "message": "清除活动选项卡数据"
-  },
   "clearActivityDescription": {
     "message": "重设账户的 nonce，并删除钱包中的活动选项卡数据。只有当前账户和网络会受到影响。您的余额和待入账的交易不会改变。"
   },
@@ -3907,9 +3904,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "正在锁定 MetaMask……"
-  },
-  "lockTimeInvalid": {
-    "message": "锁定时间必须是 0 到 10080 之间的数字"
   },
   "logOut": {
     "message": "退出登录"
@@ -8181,12 +8175,6 @@
   },
   "smartAccount": {
     "message": "智能账户"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "让 dapp 为标准账户请求智能账户功能。这不会影响已经是智能账户的账户。"
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "来自 dapp 的智能账户请求"
   },
   "smartAccountLabel": {
     "message": "智能账户"
