@@ -643,3 +643,21 @@ export { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency };
 export function getOpenedWithSidepanel(state) {
   return state.metamask.openedWithSidepanel;
 }
+
+/**
+ * @param {object} state - Redux root state
+ * @returns {boolean} True when `PasskeyController` has a persisted passkey (`passkeyRecord`).
+ */
+export function getIsPasskeyRegistered(state) {
+  return Boolean(state.metamask.passkeyRecord);
+}
+
+/**
+ * When true, unlock UI must not auto-start WebAuthn passkey unlock (from background).
+ *
+ * @param {object} state - Redux root state
+ * @returns {boolean}
+ */
+export function getPasskeyAutoUnlockSuppressed(state) {
+  return Boolean(state.metamask.passkeyAutoUnlockSuppressed);
+}

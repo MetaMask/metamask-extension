@@ -50,6 +50,24 @@ const extensionMock = {
 } as unknown as jest.Mocked<Browser>;
 
 describe('AppStateController', () => {
+  describe('setPasskeyAutoUnlockSuppressed', () => {
+    it('updates passkeyAutoUnlockSuppressed', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.passkeyAutoUnlockSuppressed).toStrictEqual(
+          false,
+        );
+        controller.setPasskeyAutoUnlockSuppressed(true);
+        expect(controller.state.passkeyAutoUnlockSuppressed).toStrictEqual(
+          true,
+        );
+        controller.setPasskeyAutoUnlockSuppressed(false);
+        expect(controller.state.passkeyAutoUnlockSuppressed).toStrictEqual(
+          false,
+        );
+      });
+    });
+  });
+
   describe('setOutdatedBrowserWarningLastShown', () => {
     it('sets the last shown time', async () => {
       await withController(({ controller }) => {
@@ -814,6 +832,7 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "passkeyAutoUnlockSuppressed": false,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
@@ -908,6 +927,7 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "passkeyAutoUnlockSuppressed": false,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
@@ -1083,6 +1103,7 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "passkeyAutoUnlockSuppressed": false,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
