@@ -464,3 +464,6 @@ env:
 
   # Authentication (Backup & Sync, Profile metrics...)
   - FORCE_AUTH_MATCH_BUILD: false
+
+  # Passkey / Biometrics unlock
+  - PASSKEY_ENABLED: 'false'

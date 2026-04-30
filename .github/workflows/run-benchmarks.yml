@@ -228,7 +228,7 @@ jobs:
   # - Phase 4: continue-on-error: false + added to branch protection required checks.
   quality-gate:
     name: quality-gate
-    continue-on-error: true # Phase 2 — non-blocking, informational
+    continue-on-error: false
     needs:
       - benchmarks
       - benchmarks-page-load
@@ -248,6 +248,7 @@ jobs:
             tsconfig.json
             development/metamaskbot-build-announce
             shared/constants/benchmarks.ts
+            test/e2e/benchmarks/utils/gated-metrics.ts
             test/e2e/benchmarks/utils/thresholds.ts
             test/e2e/benchmarks/utils/statistics.ts
           sparse-checkout-cone-mode: false
@@ -257,8 +258,8 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
-      - name: Install tsx
-        run: npm install --no-save tsx
+      - name: Install tsx and runtime deps
+        run: npm install --no-save tsx @metamask/utils
         shell: bash
 
       - name: Download all benchmark artifacts

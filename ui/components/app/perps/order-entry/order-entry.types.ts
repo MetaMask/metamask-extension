@@ -232,6 +232,8 @@ export type AutoCloseSectionProps = {
   orderType?: OrderType;
   /** Limit price string – used as the reference price for limit-order TP/SL validation */
   limitPrice?: string;
+  /** Estimated liquidation price – used for stop-loss safety validation */
+  liquidationPrice?: number | null;
   /** Leverage multiplier - used to convert RoE % to price change % (RoE% = priceChange% * leverage) */
   leverage: number;
   /** Asset symbol (e.g. 'BTC', 'ETH') – used to fetch dynamic closing fee rates */
