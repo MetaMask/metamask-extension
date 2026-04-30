@@ -27,10 +27,10 @@ export type RootMessenger<
   AllowedEvents extends EventConstraint = EventConstraint,
 > = Messenger<typeof ROOT_MESSENGER_NAMESPACE, AllowedActions, AllowedEvents>;
 
-export function getRootMessenger(): RootMessenger<
-  RootMessengerActions,
-  RootMessengerEvents
-> {
+export function getRootMessenger<
+  AllowedActions extends ActionConstraint = RootMessengerActions,
+  AllowedEvents extends EventConstraint = RootMessengerEvents,
+>(): RootMessenger<AllowedActions, AllowedEvents> {
   return new Messenger({
     namespace: ROOT_MESSENGER_NAMESPACE,
     captureException,
