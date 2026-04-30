@@ -21,6 +21,7 @@ import {
   setDismissSmartAccountSuggestionEnabled,
   setFeatureFlag,
   setSecurityAlertsEnabled,
+  setShowERC8213Digests,
   setSmartTransactionsPreferenceEnabled,
   setUseExternalNameSources,
   setUseTransactionSimulations,
@@ -108,6 +109,16 @@ const ShowHexDataItem = createToggleItem({
   trackEventProperty: 'send_hex_data',
 });
 
+const ShowERC8213DigestsItem = createToggleItem({
+  name: 'ShowERC8213DigestsItem',
+  titleKey: TRANSACTION_ITEMS['show-erc8213-digests'],
+  descriptionKey: 'showERC8213DigestsDescription',
+  selector: (state: MetaMaskReduxState) =>
+    Boolean(getPreferences(state)?.showERC8213Digests),
+  action: setShowERC8213Digests,
+  dataTestId: 'transactions-show-erc8213-digests-toggle',
+});
+
 const TRANSACTION_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'estimate-balance-changes', component: TransactionSimulationsItem },
   { id: 'security-alerts', component: SecurityAlertsItem },
@@ -118,6 +129,7 @@ const TRANSACTION_SETTING_ITEMS: SettingItemConfig[] = [
   },
   { id: 'proposed-nicknames', component: ProposedNicknamesItem },
   { id: 'show-hex-data', component: ShowHexDataItem, hasDividerBefore: true },
+  { id: 'show-erc8213-digests', component: ShowERC8213DigestsItem },
 ];
 
 const TransactionsTab = () => <SettingsTab items={TRANSACTION_SETTING_ITEMS} />;

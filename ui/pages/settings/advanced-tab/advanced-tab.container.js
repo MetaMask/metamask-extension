@@ -13,6 +13,7 @@ import {
   setSmartTransactionsPreferenceEnabled,
   showModal,
   setManageInstitutionalWallets,
+  setShowERC8213Digests,
 } from '../../../store/actions';
 import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/lib/selectors';
 import {
@@ -37,6 +38,7 @@ export const mapStateToProps = (state) => {
     showExtensionInFullSizeView,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
     dismissSmartAccountSuggestionEnabled,
+    showERC8213Digests,
   } = getPreferences(state);
 
   return {
@@ -50,6 +52,7 @@ export const mapStateToProps = (state) => {
     dismissSeedBackUpReminder,
     manageInstitutionalWallets,
     dismissSmartAccountSuggestionEnabled,
+    showERC8213Digests,
   };
 };
 
@@ -86,6 +89,9 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setDismissSmartAccountSuggestionEnabled: (value) => {
       return dispatch(setDismissSmartAccountSuggestionEnabled(value));
+    },
+    setShowERC8213Digests: (value) => {
+      return dispatch(setShowERC8213Digests(value));
     },
   };
 };

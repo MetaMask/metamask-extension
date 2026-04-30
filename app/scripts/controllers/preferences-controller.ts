@@ -89,6 +89,7 @@ export type Preferences = {
   privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
   showDefaultAddress: boolean;
+  showERC8213Digests: boolean;
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
   showMultiRpcModal: boolean;
@@ -185,6 +186,7 @@ export const getDefaultPreferencesControllerState =
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
       showDefaultAddress: true,
+      showERC8213Digests: false,
       defaultAddressScope: 'eip155',
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
