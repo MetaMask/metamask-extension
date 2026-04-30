@@ -5123,9 +5123,6 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Mga Tuntunin ng Paggamit"
   },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Mangongolekta kami ng pangunahing data ng paggamit ng produkto tulad ng pangkalahatang lokasyon, mga pag-click, at mga pagtingin. Wala ng ibang impormasyon na kukuhanin."
-  },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Mangongolekta kami ng karaniwang data sa paggamit ng produkto. Maaari naming iugnay ang impormasyong ito sa data sa chain."
   },

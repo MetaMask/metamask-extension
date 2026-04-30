@@ -5123,9 +5123,6 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Nutzungsbedingungen"
   },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Wir erfassen grundlegende Produktnutzungsdaten wie den allgemeinen Standort, Klicks und Aufrufe. Weitere Informationen werden nicht gespeichert."
-  },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Wir erfassen grundlegende Daten zur Produktnutzung. Wir können diese Informationen mit On-Chain-Daten verknüpfen."
   },

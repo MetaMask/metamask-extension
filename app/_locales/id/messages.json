@@ -5123,9 +5123,6 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Ketentuan penggunaan"
   },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Kami akan mengumpulkan data penggunaan produk dasar seperti lokasi umum, klik, dan tampilan. Tidak ada informasi lain yang akan disimpan."
-  },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Kami akan mengumpulkan data penggunaan produk dasar. Kami mungkin akan menghubungkan informasi ini dengan data on-chain."
   },
