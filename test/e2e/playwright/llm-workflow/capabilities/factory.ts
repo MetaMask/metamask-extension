@@ -54,6 +54,7 @@ export function createMetaMaskE2EContext(
 
   const fixture = new MetaMaskFixtureCapability({
     port: config.ports?.fixtureServer,
+    anvilPort: config.ports?.anvil,
   });
 
   const chain = new MetaMaskChainCapability({
