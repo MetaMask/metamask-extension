@@ -167,8 +167,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
             fontWeight={FontWeight.Medium}
             data-testid="perps-edit-margin-liquidation-price-value"
           >
-            {estimatedLiquidationPrice !== null &&
-            estimatedLiquidationPrice > 0
+            {estimatedLiquidationPrice !== null && estimatedLiquidationPrice > 0
               ? formatPerpsFiat(estimatedLiquidationPrice, {
                   ranges: PRICE_RANGES_UNIVERSAL,
                 })
@@ -513,7 +512,10 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
                 variant={TextVariant.BodySm}
                 color={TextColor.TextAlternative}
               >
-                {formatLiquidationDistance(anchorLiquidationDistance, anchorLiquidationPrice)}
+                {formatLiquidationDistance(
+                  anchorLiquidationDistance,
+                  anchorLiquidationPrice,
+                )}
               </Text>
               <Text
                 variant={TextVariant.BodySm}
@@ -527,7 +529,10 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
                 fontWeight={FontWeight.Medium}
                 data-testid="perps-edit-margin-liquidation-distance-value"
               >
-                {formatLiquidationDistance(estimatedLiquidationDistance, estimatedLiquidationPrice)}
+                {formatLiquidationDistance(
+                  estimatedLiquidationDistance,
+                  estimatedLiquidationPrice,
+                )}
               </Text>
             </Box>
           ) : (
@@ -537,7 +542,10 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               fontWeight={FontWeight.Medium}
               data-testid="perps-edit-margin-liquidation-distance-value"
             >
-              {formatLiquidationDistance(anchorLiquidationDistance, anchorLiquidationPrice)}
+              {formatLiquidationDistance(
+                anchorLiquidationDistance,
+                anchorLiquidationPrice,
+              )}
             </Text>
           )}
         </Box>
