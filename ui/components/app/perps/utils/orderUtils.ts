@@ -170,18 +170,24 @@ export const isOrderAssociatedWithFullPosition = (
  * Determines whether an order should be shown in Market Details > Orders
  * (the perps asset / position detail screen).
  *
- * Full-position TP/SL and `isPositionTpsl` rows are included here so users can
- * see and act on them alongside other open orders, in addition to the position
- * summary. `isOrderAssociatedWithFullPosition` remains for other call sites.
+ * All non-reduce-only orders are shown. Reduce-only orders are shown only when
+ * they are NOT full-position TP/SL — those are surfaced in the auto-close
+ * section instead, so keeping them out of the orders list avoids duplicate
+ * entries.
  *
- * @param _order - The order to check (reserved for future filtering)
- * @param _position - The current position (reserved for future filtering)
+ * @param order - The order to check
+ * @param position - The current position (if any)
  * @returns Whether the order should be displayed
  */
 export const shouldDisplayOrderInMarketDetailsOrders = (
-  _order: Order,
-  _position?: Position,
-): boolean => true;
+  order: Order,
+  position?: Position,
+): boolean => {
+  if (!order.reduceOnly) {
+    return true;
+  }
+  return !isOrderAssociatedWithFullPosition(order, position);
+};
 
 const buildSyntheticTriggerOrder = (
   parentOrder: Order,
