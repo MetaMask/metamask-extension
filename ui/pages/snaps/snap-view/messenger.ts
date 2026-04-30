@@ -2,11 +2,7 @@ import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger
 import { RouteMessenger } from '../../../messengers/route-messenger';
 
 export const ALLOWED_CAPABILITIES = defineAllowedRouteCapabilities({
-  actions: [
-    'KeyringController:getKeyringsByType',
-    'SnapController:disconnectOrigin',
-    'SnapController:installSnaps',
-  ],
+  actions: ['SnapController:disconnectOrigin', 'SnapController:installSnaps'],
   events: [],
 });
 
