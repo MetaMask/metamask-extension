@@ -112,7 +112,9 @@ export class UIMessenger extends Messenger<
       ...payload: ExtractEventPayload<UIMessengerEvents, EventType>
     ) => void,
   ): Promise<() => Promise<void>> {
-    // @ts-expect-error: Look into conflict.
+    // @ts-expect-error: `subscribeToMessengerEvent` is typed to only accept
+    // events returning JSON-serializable payloads, but `UIMessengerEvents` may
+    // include events with non-serializable payloads.
     return await subscribeToMessengerEvent(eventType, handler);
   }
 }
