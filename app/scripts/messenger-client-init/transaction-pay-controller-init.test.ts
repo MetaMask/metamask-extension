@@ -54,6 +54,9 @@ describe('TransactionPayControllerInit', () => {
     function initApi() {
       const { api, messengerClient } =
         TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
       const setTransactionConfigMock = jest.mocked(
         messengerClient.setTransactionConfig,
       );
