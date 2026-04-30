@@ -71,6 +71,25 @@ const HTTP_PORT = 9090;
 
 export const TRON_LOCAL_NODE_URL = `http://localhost:${HTTP_PORT}`;
 
+/**
+ * Private keys for known E2E test accounts, keyed by Tron base58 address.
+ * These are derived from E2E_SRP (`spread raise short crane omit tent fringe
+ * mandate neglect detail suspect cradle`) via the Tron BIP44 path
+ * `m/44'/195'/0'/0/<index>`. Storing them here follows the same pattern as
+ * Ganache/Anvil seeders, which hard-code the pre-funded account keys.
+ *
+ * When `freezeBalanceV2` is called for one of these addresses, it signs the
+ * freeze transaction with the owner's own key (required by Stake 2.0 —
+ * `owner_address` must match the transaction signer). If the address is not
+ * present in this map, `freezeBalanceV2` throws; add the derived key here
+ * before calling `freezeBalanceV2` with a new test address.
+ */
+const E2E_TEST_ACCOUNT_PRIVATE_KEYS: Readonly<Record<string, string>> = {
+  // DEFAULT_TRON_ADDRESS — m/44'/195'/0'/0/0 from E2E_SRP
+  TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3:
+    '290f1eb76a3715ff19b888131d1b152ea755e7c5e1315d52a030107058bd631f',
+};
+
 type TreAccountsResponse = {
   privateKeys?: string[];
 };
@@ -159,11 +178,7 @@ export class TronNode {
     await this.initializeTrc10Balances(options.trc10Balances ?? {});
     await this.initializeTrc20Balances(options.trc20Balances ?? {});
 
-    for (const [address, amountInSun] of Object.entries(
-      options.stakedTrxBalances ?? {},
-    )) {
-      this.#stakedTrxBalances[address] = amountInSun;
-    }
+    await this.initializeStakedTrxBalances(options.stakedTrxBalances ?? {});
     // `trc721Balances` and `trc1155Balances` are accepted and ignored — see the
     // JSDoc on TronLocalNodeOptions.
   }
@@ -421,6 +436,43 @@ export class TronNode {
     });
   }
 
+  /**
+   * Freezes `amountInSun` of TRX from `targetAddress` for ENERGY using
+   * Stake 2.0 (`/wallet/freezebalancev2`). The transaction must be signed by
+   * the owner — i.e. the private key corresponding to `targetAddress`. The
+   * seeder resolves that key from {@link E2E_TEST_ACCOUNT_PRIVATE_KEYS}; if
+   * the address is not in that map the call throws — add the BIP44-derived key
+   * (`m/44'/195'/0'/0/<index>` from `E2E_SRP`) to `E2E_TEST_ACCOUNT_PRIVATE_KEYS`
+   * in node.ts before calling this method with a new test address.
+   */
+  async freezeBalanceV2(
+    targetAddress: string,
+    amountInSun: string,
+  ): Promise<void> {
+    const ownerPrivateKey = E2E_TEST_ACCOUNT_PRIVATE_KEYS[targetAddress];
+    if (!ownerPrivateKey) {
+      throw new Error(
+        `freezeBalanceV2: no private key for ${targetAddress}. ` +
+          `Add the BIP44-derived key (m/44'/195'/0'/0/<index> from E2E_SRP) ` +
+          `to E2E_TEST_ACCOUNT_PRIVATE_KEYS in node.ts.`,
+      );
+    }
+
+    const tx = await this.fetchJson('/wallet/freezebalancev2', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        owner_address: targetAddress,
+        // Tron HTTP API expects a number literal; SUN values in tests are well
+        // below Number.MAX_SAFE_INTEGER (~9B TRX) so truncation is not a concern.
+        frozen_balance: Number(amountInSun),
+        resource: 'ENERGY',
+        visible: true,
+      }),
+    });
+    await this.signAndBroadcastTransaction(tx, ownerPrivateKey);
+  }
+
   async triggerSmartContract({
     contractAddress,
     ownerAddress,
@@ -467,6 +519,17 @@ export class TronNode {
             [symbol]: amount,
           };
         }
+      }
+    }
+  }
+
+  private async initializeStakedTrxBalances(
+    balancesByAddress: Record<string, string>,
+  ): Promise<void> {
+    for (const [address, amountInSun] of Object.entries(balancesByAddress)) {
+      if (BigInt(amountInSun) > 0n) {
+        await this.freezeBalanceV2(address, amountInSun);
+        this.#stakedTrxBalances[address] = amountInSun;
       }
     }
   }
