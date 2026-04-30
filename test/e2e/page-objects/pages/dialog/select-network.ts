@@ -59,6 +59,10 @@ class SelectNetwork {
 
   private readonly showTestNetworksToggle = '.toggle-button';
 
+  private readonly networksPageSuccessToast = {
+    testId: 'networks-page-network-success-toast',
+  };
+
   private readonly addPopularNetworkByChainIdIcon = (chainId: string) =>
     `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"]`;
 
@@ -274,6 +278,26 @@ class SelectNetwork {
       parent: {
         css: `[data-testid="popular-network-${chainId}"]`,
       },
+    });
+  }
+
+  async checkAddNetworkMessageIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Check the toaster message for adding network ${networkName} is displayed on networks page`,
+    );
+    await this.driver.waitForSelector({
+      ...this.networksPageSuccessToast,
+      text: `“${networkName}” was successfully added!`,
+    });
+  }
+
+  async checkEditNetworkMessageIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Check the toaster message for editing network ${networkName} is displayed on networks page`,
+    );
+    await this.driver.waitForSelector({
+      ...this.networksPageSuccessToast,
+      text: `“${networkName}” was successfully edited!`,
     });
   }
 }

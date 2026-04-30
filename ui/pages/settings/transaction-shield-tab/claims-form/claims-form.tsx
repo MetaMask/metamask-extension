@@ -430,11 +430,11 @@ const ClaimsForm = ({
   const hasAnyDraftData = useMemo(() => {
     return Boolean(
       chainId ||
-        email ||
-        impactedWalletAddress ||
-        impactedTransactionHash ||
-        reimbursementWalletAddress ||
-        caseDescription,
+      email ||
+      impactedWalletAddress ||
+      impactedTransactionHash ||
+      reimbursementWalletAddress ||
+      caseDescription,
     );
   }, [
     chainId,

@@ -378,6 +378,42 @@ describe('UpdateTPSLModalContent', () => {
     });
   });
 
+  describe('validation', () => {
+    it('shows a liquidation error and disables save when long SL is below liquidation price', () => {
+      renderTpslModalContent({
+        position: {
+          ...positionWithTPSL,
+          stopLossPrice: '2300',
+        },
+        currentPrice: 2900,
+      });
+
+      expect(screen.getByTestId('sl-validation-error')).toHaveTextContent(
+        /above.*liquidation/iu,
+      );
+      expect(
+        screen.getByTestId('perps-update-tpsl-modal-submit'),
+      ).toBeDisabled();
+    });
+
+    it('shows a liquidation error and disables save when short SL is above liquidation price', () => {
+      renderTpslModalContent({
+        position: {
+          ...mockPositions[1],
+          stopLossPrice: '49000',
+        },
+        currentPrice: 47000,
+      });
+
+      expect(screen.getByTestId('sl-validation-error')).toHaveTextContent(
+        /below.*liquidation/iu,
+      );
+      expect(
+        screen.getByTestId('perps-update-tpsl-modal-submit'),
+      ).toBeDisabled();
+    });
+  });
+
   describe('percent input (RoE%)', () => {
     it('updates TP price when a RoE% value is typed', () => {
       // ETH: entry=2850, leverage=3, +50% RoE -> 2850 * (1 + 50/300) = 2850 * 1.1667 = 3325
@@ -411,20 +447,36 @@ describe('UpdateTPSLModalContent', () => {
       expect(numValue).toBeCloseTo(2375, 0);
     });
 
-    it('updates SL price when a positive RoE% is typed (SL above entry)', () => {
+    it('updates SL price when an explicit positive RoE% is typed (SL above entry)', () => {
       // SOL: entry=95, leverage=10, +15% signed RoE -> 95 * (1 + 15/1000) = 95 * 1.015 = 96.425
       renderTpslModalContent({ position: positionWithoutTPSL });
 
       const percentInputs = screen.getAllByPlaceholderText('0');
       const slPercentInput = percentInputs[1];
       fireEvent.focus(slPercentInput);
-      fireEvent.change(slPercentInput, { target: { value: '15' } });
+      fireEvent.change(slPercentInput, { target: { value: '+15' } });
 
       const slPriceInput = screen.getAllByPlaceholderText(
         '0.00',
       )[1] as HTMLInputElement;
       const numValue = parseFloat(slPriceInput.value.replace(/,/gu, ''));
       expect(numValue).toBeCloseTo(96.425, 0);
+    });
+
+    it('defaults unsigned SL RoE% input to negative', () => {
+      // SOL: entry=95, leverage=10, defaulted -10% signed RoE -> 95 * 0.99 = 94.05
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const percentInputs = screen.getAllByPlaceholderText('0');
+      const slPercentInput = percentInputs[1];
+      fireEvent.focus(slPercentInput);
+      fireEvent.change(slPercentInput, { target: { value: '10' } });
+
+      const slPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
+      const numValue = parseFloat(slPriceInput.value.replace(/,/gu, ''));
+      expect(numValue).toBeCloseTo(94.05, 0);
     });
 
     it('clears TP price when percent input is cleared', () => {
@@ -515,15 +567,33 @@ describe('UpdateTPSLModalContent', () => {
 
       const slPercentInput = screen.getAllByPlaceholderText('0')[1];
       fireEvent.focus(slPercentInput);
-      fireEvent.change(slPercentInput, { target: { value: '10' } });
+      fireEvent.change(slPercentInput, { target: { value: '+10' } });
 
-      expect((slPercentInput as HTMLInputElement).value).toBe('10');
+      expect((slPercentInput as HTMLInputElement).value).toBe('+10');
 
       fireEvent.blur(slPercentInput);
 
       const blurredValue = (slPercentInput as HTMLInputElement).value;
       // After blur, shows signed RoE: positive percent stays positive (no sign prefix)
       expect(blurredValue).toMatch(/^-?\d+(\.\d+)?$/u);
+    });
+
+    it('normalizes leading-zero SL percent input before defaulting to negative', () => {
+      // SOL: entry=95, leverage=10. 011 normalizes to -11% signed RoE
+      // -> 95*(1-11/1000) = 93.955
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const slPercentInput = screen.getAllByPlaceholderText('0')[1];
+      fireEvent.focus(slPercentInput);
+      fireEvent.change(slPercentInput, { target: { value: '011' } });
+
+      expect((slPercentInput as HTMLInputElement).value).toBe('-11');
+
+      const slPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
+      const numValue = parseFloat(slPriceInput.value.replace(/,/gu, ''));
+      expect(numValue).toBeCloseTo(93.955, 0);
     });
 
     it('rejects non-numeric characters in TP percent input', () => {
