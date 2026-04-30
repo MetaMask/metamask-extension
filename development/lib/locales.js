@@ -59,15 +59,15 @@ function compareLocalesForUnexpectedReplacementKeys({
       return [];
     }
 
-    const englishMessage = englishLocale[key]?.message;
-    const targetMessage = targetLocale[key]?.message;
+    const englishMessage = englishLocale[key].message;
+    const targetMessage = targetLocale[key].message;
     const englishInvalidReplacementKeys =
       getInvalidReplacementKeys(englishMessage);
     const targetInvalidReplacementKeys =
       getInvalidReplacementKeys(targetMessage);
 
-    // Invalid placeholder syntax is reported separately, so skip parity checks
-    // here to avoid duplicate or misleading errors for the same message.
+    // Invalid replacement-key syntax is reported separately, so skip parity
+    // checks here to avoid duplicate or misleading errors for the same message.
     if (
       englishInvalidReplacementKeys.length > 0 ||
       targetInvalidReplacementKeys.length > 0
@@ -75,10 +75,10 @@ function compareLocalesForUnexpectedReplacementKeys({
       return [];
     }
 
-    const englishReplacementKeys = getReplacementKeys(englishMessage);
+    const englishReplacementKeys = new Set(getReplacementKeys(englishMessage));
     const targetReplacementKeys = getReplacementKeys(targetMessage);
     const unexpectedReplacementKeys = targetReplacementKeys.filter(
-      (replacementKey) => !englishReplacementKeys.includes(replacementKey),
+      (replacementKey) => !englishReplacementKeys.has(replacementKey),
     );
 
     if (unexpectedReplacementKeys.length === 0) {
@@ -87,9 +87,7 @@ function compareLocalesForUnexpectedReplacementKeys({
 
     return [
       {
-        englishReplacementKeys,
         key,
-        targetReplacementKeys,
         unexpectedReplacementKeys,
       },
     ];
@@ -99,7 +97,7 @@ function compareLocalesForUnexpectedReplacementKeys({
 function getMessagesWithInvalidReplacementKeys(locale) {
   return Object.keys(locale).flatMap((key) => {
     const invalidReplacementKeys = getInvalidReplacementKeys(
-      locale[key]?.message,
+      locale[key].message,
     );
 
     if (invalidReplacementKeys.length === 0) {
@@ -115,15 +113,16 @@ function getMessagesWithInvalidReplacementKeys(locale) {
   });
 }
 
-function getReplacementKeys(message = '') {
-  return [...new Set(message.match(RUNTIME_REPLACEMENT_KEY_REGEX) ?? [])].sort(
-    (firstKey, secondKey) =>
-      Number(firstKey.slice(1)) - Number(secondKey.slice(1)),
-  );
+function getReplacementKeys(message) {
+  return getReplacementKeyMatches(message, RUNTIME_REPLACEMENT_KEY_REGEX);
 }
 
-function getInvalidReplacementKeys(message = '') {
-  return [...new Set(message.match(INVALID_REPLACEMENT_KEY_REGEX) ?? [])].sort(
+function getInvalidReplacementKeys(message) {
+  return getReplacementKeyMatches(message, INVALID_REPLACEMENT_KEY_REGEX);
+}
+
+function getReplacementKeyMatches(message, regex) {
+  return [...new Set(message.match(regex) ?? [])].sort(
     (firstKey, secondKey) =>
       Number(firstKey.slice(1)) - Number(secondKey.slice(1)),
   );

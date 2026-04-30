@@ -54,9 +54,7 @@ describe('compareLocalesForUnexpectedReplacementKeys', () => {
       }),
     ).toStrictEqual([
       {
-        englishReplacementKeys: ['$1'],
         key: 'revealSeedWordsDescription1',
-        targetReplacementKeys: ['$1', '$2'],
         unexpectedReplacementKeys: ['$2'],
       },
     ]);
@@ -79,7 +77,7 @@ describe('compareLocalesForUnexpectedReplacementKeys', () => {
     ).toStrictEqual([]);
   });
 
-  it('skips replacement-key parity checks when a translation uses invalid placeholders', () => {
+  it('skips replacement-key parity checks when a translation uses invalid replacement keys', () => {
     expect(
       compareLocalesForUnexpectedReplacementKeys({
         englishLocale: {
@@ -96,7 +94,7 @@ describe('compareLocalesForUnexpectedReplacementKeys', () => {
     ).toStrictEqual([]);
   });
 
-  it('matches the runtime parser for single-digit placeholders inside larger strings', () => {
+  it('matches the runtime parser for single-digit replacement keys inside larger strings', () => {
     expect(
       compareLocalesForUnexpectedReplacementKeys({
         englishLocale: {
@@ -112,9 +110,7 @@ describe('compareLocalesForUnexpectedReplacementKeys', () => {
       }),
     ).toStrictEqual([
       {
-        englishReplacementKeys: ['$1'],
         key: 'shieldTxDetails2Title',
-        targetReplacementKeys: ['$2'],
         unexpectedReplacementKeys: ['$2'],
       },
     ]);
