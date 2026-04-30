@@ -58,6 +58,7 @@ describe('AuthenticationControllerInit', () => {
       metametrics: {
         getMetaMetricsId: expect.any(Function),
         agent: 'extension',
+        getAppVersion: expect.any(Function),
       },
       config: {
         env: Env.PRD,
