@@ -4,22 +4,16 @@ const SEI_MAINNET_CHAIN_ID = '0x531';
 const OLD_URL = 'https://seitrace.com';
 const NEW_URL = 'https://seiscan.io/';
 
-type StateWithNetworkController = {
-  meta: { version: number };
-  data: {
-    NetworkController: {
-      selectedNetworkClientId: string;
-      networkConfigurationsByChainId: Record<
-        string,
-        { blockExplorerUrls: string[] }
-      >;
-    };
+const seiBlockExplorerUrls = (state: { data: Record<string, unknown> }) => {
+  const networkController = state.data.NetworkController as {
+    networkConfigurationsByChainId: Record<
+      string,
+      { blockExplorerUrls: string[] }
+    >;
   };
+  return networkController.networkConfigurationsByChainId[SEI_MAINNET_CHAIN_ID]
+    .blockExplorerUrls;
 };
-
-const seiBlockExplorerUrls = (state: { data: Record<string, unknown> }) =>
-  (state as StateWithNetworkController).data.NetworkController
-    .networkConfigurationsByChainId[SEI_MAINNET_CHAIN_ID].blockExplorerUrls;
 
 describe(`migration #${version}`, () => {
   it('bumps the state version', async () => {

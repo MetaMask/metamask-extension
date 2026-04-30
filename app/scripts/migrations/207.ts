@@ -44,7 +44,7 @@ const NEW_URL = 'https://seiscan.io/';
  *
  * - Users without Sei Mainnet configured: no-op.
  * - Users who customized the explorer URL away from Seitrace: no-op
- *   (we only rewrite entries that still point at `seitrace.com`).
+ * (we only rewrite entries that still point at `seitrace.com`).
  *
  * Follows the post-186 split-state migration pattern. See
  * `app/scripts/migrations/197.ts` for the canonical reference of this
