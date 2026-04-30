@@ -122,7 +122,7 @@ class SettingsPage {
   async clickBackButton(): Promise<void> {
     await this.driver.clickElement(this.backButton);
     await new HomePage(this.driver).checkPageIsLoaded();
-    await this.driver.waitForSelector(this.drawerCloseButton);
+    await this.driver.clickElementAndWaitToDisappear(this.drawerCloseButton);
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {
