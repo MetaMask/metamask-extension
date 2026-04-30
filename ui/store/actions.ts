@@ -1221,17 +1221,47 @@ export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthentic
 }
 
 /**
+ * Generates passkey authentication options immediately after registration.
+ *
+ * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
+ */
+export function generatePasskeyPostRegistrationAuthenticationOptions(
+  registrationResponse: PasskeyRegistrationResponse,
+): Promise<PasskeyAuthenticationOptions> {
+  return submitRequestToBackground(
+    'generatePasskeyPostRegistrationAuthenticationOptions',
+    [registrationResponse],
+  );
+}
+
+/**
+ * Verifies a passkey assertion after enrollment (e.g. onboarding) without unlocking the vault.
+ *
+ * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.
+ */
+export function verifyPasskeyEnrollment(
+  authenticationResponse: PasskeyAuthenticationResponse,
+): Promise<void> {
+  return submitRequestToBackground('verifyPasskeyEnrollment', [
+    authenticationResponse,
+  ]);
+}
+
+/**
  * Protects the vault key with a passkey.
  *
  * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
+ * @param authenticationResponse - Post-registration `get()` response from the UI ceremony.
  * @param password - When onboarding is complete, the wallet password (step-up). Omit during onboarding.
  */
 export function protectVaultKeyWithPasskey(
   registrationResponse: PasskeyRegistrationResponse,
+  authenticationResponse: PasskeyAuthenticationResponse,
   password?: string,
 ): Promise<void> {
   return submitRequestToBackground('protectVaultKeyWithPasskey', [
     registrationResponse,
+    authenticationResponse,
     password,
   ]);
 }

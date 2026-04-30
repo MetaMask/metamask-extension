@@ -496,7 +496,7 @@ describe('Actions', () => {
       );
     });
 
-    it('#protectVaultKeyWithPasskey forwards registration response and optional password', async () => {
+    it('#generatePasskeyPostRegistrationAuthenticationOptions forwards registration response', async () => {
       const registrationResponse = {
         id: 'cred',
         rawId: 'cred',
@@ -506,23 +506,97 @@ describe('Actions', () => {
         },
         type: 'public-key',
       };
+      const opts = { challenge: 'post', allowCredentials: [] };
+      background.generatePasskeyPostRegistrationAuthenticationOptions.resolves(
+        opts,
+      );
+      setBackgroundConnection(background);
+
+      const result =
+        await actions.generatePasskeyPostRegistrationAuthenticationOptions(
+          registrationResponse,
+        );
+
+      expect(result).toStrictEqual(opts);
+      expect(
+        background.generatePasskeyPostRegistrationAuthenticationOptions.calledOnceWith(
+          registrationResponse,
+        ),
+      ).toBe(true);
+    });
+
+    it('#verifyPasskeyEnrollment forwards the authentication response', async () => {
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'AA',
+        },
+        type: 'public-key',
+      };
+      background.verifyPasskeyEnrollment.resolves();
+      setBackgroundConnection(background);
+
+      await actions.verifyPasskeyEnrollment(authenticationResponse);
+
+      expect(
+        background.verifyPasskeyEnrollment.calledOnceWith(
+          authenticationResponse,
+        ),
+      ).toBe(true);
+    });
+
+    it('#protectVaultKeyWithPasskey forwards registration and authentication responses and optional password', async () => {
+      const registrationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          attestationObject: 'e30',
+        },
+        type: 'public-key',
+      };
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'AA',
+        },
+        type: 'public-key',
+      };
       background.protectVaultKeyWithPasskey.resolves();
       setBackgroundConnection(background);
 
-      await actions.protectVaultKeyWithPasskey(registrationResponse, 'secret');
+      await actions.protectVaultKeyWithPasskey(
+        registrationResponse,
+        authenticationResponse,
+        'secret',
+      );
 
       expect(
         background.protectVaultKeyWithPasskey.calledOnceWith(
           registrationResponse,
+          authenticationResponse,
           'secret',
         ),
       ).toBe(true);
 
-      await actions.protectVaultKeyWithPasskey(registrationResponse);
+      await actions.protectVaultKeyWithPasskey(
+        registrationResponse,
+        authenticationResponse,
+      );
 
       expect(
         background.protectVaultKeyWithPasskey.secondCall.args,
-      ).toStrictEqual([registrationResponse, undefined]);
+      ).toStrictEqual([
+        registrationResponse,
+        authenticationResponse,
+        undefined,
+      ]);
     });
 
     it('#removePasskeyWithPasskeyVerification forwards the authentication response', async () => {
