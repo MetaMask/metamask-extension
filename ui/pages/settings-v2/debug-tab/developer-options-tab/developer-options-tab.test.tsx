@@ -36,7 +36,7 @@ jest.mock('../../../../store/actions.ts', () => ({
 }));
 
 jest.mock('../../../../selectors', () => ({
-  ...jest.requireActual('../../../selectors'),
+  ...jest.requireActual('../../../../selectors'),
   getRemoteFeatureFlags: jest.fn(() => mockRemoteFeatureFlags),
 }));
 
