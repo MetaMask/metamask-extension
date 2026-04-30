@@ -798,6 +798,59 @@ describe('PerpsOrderEntryPage', () => {
         expect(screen.getByTestId('submit-order-button')).toBeDisabled();
       });
     });
+
+    it('disables submit when long auto-close stop loss is below liquidation price', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+
+      const slContainer = screen.getByTestId('sl-price-input');
+      const slInput = slContainer.querySelector('input');
+      fireEvent.change(slInput as HTMLInputElement, {
+        target: { value: '1' },
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      });
+      expect(screen.getByTestId('sl-validation-error')).toHaveTextContent(
+        /above.*liquidation/iu,
+      );
+    });
+
+    it('disables submit when short auto-close stop loss is above liquidation price', async () => {
+      mockSearchParams.set('direction', 'short');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+
+      const slContainer = screen.getByTestId('sl-price-input');
+      const slInput = slContainer.querySelector('input');
+      fireEvent.change(slInput as HTMLInputElement, {
+        target: { value: '99999' },
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      });
+      expect(screen.getByTestId('sl-validation-error')).toHaveTextContent(
+        /below.*liquidation/iu,
+      );
+    });
   });
 
   describe('analytics tracking', () => {

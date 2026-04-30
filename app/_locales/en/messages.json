@@ -1443,11 +1443,22 @@
   "bridgeTxDetailsYouSent": {
     "message": "You sent"
   },
+  "bridgeUseMaxAmountAllowedWithReserve": {
+    "message": "Use max allowed"
+  },
   "bridgeValidationInsufficientGasMessage": {
     "message": "You don't have enough $1 to pay the gas fee for this bridge. Enter a smaller amount or buy more $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "More $1 needed for gas"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "This specific network requires to maintain a reserve of $1 $3 in your account. With your current balance you can use a maximum of $2 $3",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitle": {
+    "message": "Minimum $1 reserve balance is required",
+    "description": "$1 is the ticker symbol of the token"
   },
   "bridged": {
     "message": "Bridged"
@@ -1574,9 +1585,6 @@
   },
   "clearActivity": {
     "message": "Clear activity and nonce data"
-  },
-  "clearActivityButton": {
-    "message": "Clear activity tab data"
   },
   "clearActivityDescription": {
     "message": "Resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
@@ -3930,9 +3938,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Locking MetaMask..."
   },
-  "lockTimeInvalid": {
-    "message": "Lock time must be a number between 0 and 10080"
-  },
   "logOut": {
     "message": "Log out"
   },
@@ -5141,9 +5146,6 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Terms of Use"
   },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored."
-  },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "We’ll collect basic product usage data. We may associate this information with on-chain data."
   },
@@ -6120,6 +6122,10 @@
     "message": "Stop loss",
     "description": "Label for stop loss price input"
   },
+  "perpsStopLossInvalidLiquidationPrice": {
+    "message": "Stop loss must be $1 liquidation price",
+    "description": "Validation error when stop loss price is on the wrong side of the liquidation price. $1 is above/below."
+  },
   "perpsStopLossInvalidPrice": {
     "message": "Stop loss must be $1 $2 price",
     "description": "Validation error when stop loss price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
@@ -6316,6 +6322,10 @@
   "perpsWithdraw": {
     "message": "Withdraw"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Perps withdraw",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Estimated time"
   },
@@ -6488,6 +6498,10 @@
   },
   "provide": {
     "message": "Provide"
+  },
+  "providerFee": {
+    "message": "Provider fee",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Public address"
@@ -6695,8 +6709,16 @@
   "receiveCrypto": {
     "message": "Receive crypto"
   },
+  "receiveToken": {
+    "message": "Receive token",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Received"
+  },
+  "receivedTotal": {
+    "message": "Received total",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Receiving address",
@@ -8217,12 +8239,6 @@
   },
   "smartAccount": {
     "message": "Smart account"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Smart account requests from dapps"
   },
   "smartAccountLabel": {
     "message": "Smart Account"

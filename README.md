@@ -237,7 +237,7 @@ For the full process of creating a remote feature flag (LaunchDarkly setup, code
 
 1. Look up the flag's current production value from the [client-config API](https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod). If the flag is not yet in production, set `inProd: false` and `productionDefault` to the intended default.
 2. Add an entry to `test/e2e/feature-flags/feature-flag-registry.ts` in alphabetical order.
-3. If you access the flag via a constant (e.g. `remoteFeatureFlags[MY_CONSTANT]`), also add the constant mapping to [`.github/scripts/known-feature-flag-constants.ts`](./.github/scripts/known-feature-flag-constants.ts) so the CI check can resolve it.
+3. If you access the flag via a constant (e.g. `remoteFeatureFlags[MY_CONSTANT]`), also add the constant mapping to [`.github/scripts/known-feature-flag-constants.mts`](./.github/scripts/known-feature-flag-constants.mts) so the CI check can resolve it.
 
 ##### Override flags in E2E tests
 
