@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useRef } from 'react';
 import {
   UIMessengerActions,
   UIMessengerEvents,
@@ -8,7 +8,10 @@ import {
   RouteMessengerContext,
 } from '../contexts/route-messenger';
 import { useUIMessenger } from '../contexts/ui-messenger';
-import { createRouteMessenger } from '../messengers/route-messenger';
+import {
+  createRouteMessenger,
+  type RouteMessenger,
+} from '../messengers/route-messenger';
 
 /**
  * Utility component which creates a messenger representing a route and
@@ -38,10 +41,19 @@ export const RouteWithMessenger = ({
   children: ReactNode;
 }) => {
   const uiMessenger = useUIMessenger();
+  const routeMessengerRef = useRef<RouteMessenger | null>(null);
 
-  const routeMessenger = useMemo(() => {
-    return createRouteMessenger({ path, uiMessenger, capabilities });
-  }, [path, uiMessenger, capabilities]);
+  // `useMemo` doesn't work here because `capabilities` is an object, so we use
+  // a ref instead to ensure that we only create the route messenger once.
+  if (!routeMessengerRef.current) {
+    routeMessengerRef.current = createRouteMessenger({
+      path,
+      uiMessenger,
+      capabilities,
+    });
+  }
+
+  const routeMessenger = routeMessengerRef.current;
 
   return (
     <RouteMessengerContext.Provider value={routeMessenger}>
