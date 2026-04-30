@@ -246,6 +246,7 @@
     "lastUpdated": "number",
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
+    "lastVisitedRoute": null,
     "lastWithdrawResult": null,
     "ledgerTransportType": "webhid",
     "localOverrides": "object",

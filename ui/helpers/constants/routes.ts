@@ -173,6 +173,11 @@ export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
 export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 
+// Window during which reopening the extension resumes the last Perps screen
+// instead of landing on the wallet home. Keeps the cap short so stale sessions
+// do not hijack the user's home view after a long break.
+export const PERPS_REOPEN_TTL_MS = 5 * 60 * 1000;
+
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
 
