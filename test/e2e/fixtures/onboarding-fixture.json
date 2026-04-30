@@ -595,6 +595,9 @@
       "firstTimeFlowType": null,
       "seedPhraseBackedUp": null
     },
+    "PasskeyController": {
+      "passkeyRecord": null
+    },
     "PPOMController": {
       "storageMetadata": [],
       "versionInfo": []

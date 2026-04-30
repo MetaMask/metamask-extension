@@ -383,6 +383,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             estimatedSize={estimatedSize}
             orderType={formState.type}
             limitPrice={formState.limitPrice}
+            liquidationPrice={calculations.liquidationPriceRaw}
             asset={asset}
           />
         )}

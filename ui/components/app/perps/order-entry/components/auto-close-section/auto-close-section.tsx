@@ -17,20 +17,25 @@ import {
 import {
   BorderRadius,
   BackgroundColor,
-  TextVariant as TextVariantLegacy,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { usePerpsOrderFees } from '../../../../../../hooks/perps/usePerpsOrderFees';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
-import { isSignedDecimalInput, isUnsignedDecimalInput } from '../../utils';
+import { isUnsignedDecimalInput } from '../../utils';
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
+  isStopLossSafeFromLiquidation,
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
+  getStopLossLiquidationErrorDirection,
 } from '../../../utils/tpslValidation';
+import {
+  applyDefaultStopLossSign,
+  isSignedDecimalInput,
+} from '../../../utils/tpslInput';
 import { formatRoePercent, getPnlDisplayColor } from '../../../utils';
 
 /**
@@ -56,6 +61,7 @@ import { formatRoePercent, getPnlDisplayColor } from '../../../utils';
  * @param props.estimatedSize - Signed position size in asset units for estimated PnL
  * @param props.orderType - Order type ('market' | 'limit') for choosing the validation reference price
  * @param props.limitPrice - Limit price string used as reference price for limit-order TP/SL validation
+ * @param props.liquidationPrice - Estimated liquidation price for stop-loss safety validation
  * @param props.leverage - Leverage multiplier for RoE% calculation
  * @param props.asset - Asset symbol for fetching dynamic closing fee rates
  */
@@ -72,6 +78,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   estimatedSize,
   orderType,
   limitPrice,
+  liquidationPrice,
   leverage,
   asset,
 }) => {
@@ -249,7 +256,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   // Handle SL percentage input change
   const handleSlPercentChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = event.target;
+      const value = applyDefaultStopLossSign(event.target.value, rawSlPercent);
       if (value === '' || isSignedDecimalInput(value)) {
         setRawSlPercent(value);
         const numValue = parseFloat(value);
@@ -261,7 +268,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
         }
       }
     },
-    [onStopLossPriceChange, percentToPrice],
+    [onStopLossPriceChange, percentToPrice, rawSlPercent],
   );
 
   const handleSlPercentFocus = useCallback(() => {
@@ -341,11 +348,11 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     () =>
       Boolean(
         takeProfitPrice.trim() &&
-          validationReferencePrice > 0 &&
-          !isValidTakeProfitPrice(takeProfitPrice, {
-            currentPrice: validationReferencePrice,
-            direction,
-          }),
+        validationReferencePrice > 0 &&
+        !isValidTakeProfitPrice(takeProfitPrice, {
+          currentPrice: validationReferencePrice,
+          direction,
+        }),
       ),
     [takeProfitPrice, validationReferencePrice, direction],
   );
@@ -354,13 +361,25 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     () =>
       Boolean(
         stopLossPrice.trim() &&
-          validationReferencePrice > 0 &&
-          !isValidStopLossPrice(stopLossPrice, {
-            currentPrice: validationReferencePrice,
-            direction,
-          }),
+        validationReferencePrice > 0 &&
+        !isValidStopLossPrice(stopLossPrice, {
+          currentPrice: validationReferencePrice,
+          direction,
+        }),
       ),
     [stopLossPrice, validationReferencePrice, direction],
+  );
+
+  const isSlLiquidationInvalid = useMemo(
+    () =>
+      Boolean(
+        stopLossPrice.trim() &&
+        !isStopLossSafeFromLiquidation(stopLossPrice, {
+          liquidationPrice,
+          direction,
+        }),
+      ),
+    [stopLossPrice, liquidationPrice, direction],
   );
 
   const tpErrorMessage = useMemo(() => {
@@ -374,14 +393,19 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   }, [isTpInvalid, direction, priceLabel, t]);
 
   const slErrorMessage = useMemo(() => {
-    if (!isSlInvalid) {
-      return null;
+    if (isSlInvalid) {
+      return t('perpsStopLossInvalidPrice', [
+        getStopLossErrorDirection(direction),
+        priceLabel,
+      ]);
     }
-    return t('perpsStopLossInvalidPrice', [
-      getStopLossErrorDirection(direction),
-      priceLabel,
-    ]);
-  }, [isSlInvalid, direction, priceLabel, t]);
+    if (isSlLiquidationInvalid) {
+      return t('perpsStopLossInvalidLiquidationPrice', [
+        getStopLossLiquidationErrorDirection(direction),
+      ]);
+    }
+    return null;
+  }, [isSlInvalid, isSlLiquidationInvalid, direction, priceLabel, t]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
@@ -434,7 +458,6 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   className="w-full"
                   data-testid="tp-price-input"
                   inputProps={{
-                    textVariant: TextVariantLegacy.bodySm,
                     inputMode: 'decimal',
                   }}
                   startAccessory={
@@ -462,7 +485,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   backgroundColor={BackgroundColor.backgroundMuted}
                   className="w-full"
                   data-testid="tp-percent-input"
-                  inputProps={{ textVariant: TextVariantLegacy.bodySm }}
+                  inputProps={{
+                    inputMode: 'decimal',
+                  }}
                   endAccessory={
                     <Text
                       variant={TextVariant.BodySm}
@@ -565,7 +590,6 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   className="w-full"
                   data-testid="sl-price-input"
                   inputProps={{
-                    textVariant: TextVariantLegacy.bodySm,
                     inputMode: 'decimal',
                   }}
                   startAccessory={
@@ -593,7 +617,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   backgroundColor={BackgroundColor.backgroundMuted}
                   className="w-full"
                   data-testid="sl-percent-input"
-                  inputProps={{ textVariant: TextVariantLegacy.bodySm }}
+                  inputProps={{
+                    inputMode: 'decimal',
+                  }}
                   endAccessory={
                     <Text
                       variant={TextVariant.BodySm}
