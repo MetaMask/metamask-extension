@@ -508,12 +508,18 @@ export function useTransactionDisplayData(transactionGroup) {
       if (metamaskPay?.targetFiat) {
         secondaryDisplayValue = usdFormatter(fiatUsd);
       }
-    } else if (metamaskPay?.targetFiat) {
+    } else {
+      // Non-post-quote pay flows (perpsDeposit, musdClaim, musdConversion):
+      // mirror pre-refactor behavior — set the destination-token suffix
+      // whenever a target token is resolvable, independently of whether
+      // metamaskPay.targetFiat is present.
       if (targetTokenSymbol) {
         primarySuffix = targetTokenSymbol;
       }
-      primaryDisplayValue = metamaskPay.targetFiat;
-      secondaryDisplayValue = fiatFormatter(Number(metamaskPay.targetFiat));
+      if (metamaskPay?.targetFiat) {
+        primaryDisplayValue = metamaskPay.targetFiat;
+        secondaryDisplayValue = fiatFormatter(Number(metamaskPay.targetFiat));
+      }
     }
   } else {
     dispatch(
