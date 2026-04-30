@@ -1163,11 +1163,3 @@ export const getBridgeUnavailableQuoteReason = createSelector(
       ? getQuoteStreamReasonString(quoteStreamComplete.reason)
       : 'noOptionsAvailableMessage',
 );
-
-export const getIsExternalServicesEnabled = createSelector(
-  [getUseExternalServices, getFromAccount],
-  (useExternalServices, fromAccount) =>
-    useExternalServices &&
-    (fromAccount?.methods?.includes(EthMethod.SignTransaction) ||
-      fromAccount?.methods?.includes(EthMethod.SignUserOperation)),
-);

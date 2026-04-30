@@ -6,7 +6,7 @@ import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getBearerToken } from '../../store/actions';
 import { BridgeToken } from '../../ducks/bridge/types';
 import { fetchPopularTokens } from '../../pages/bridge/utils/tokens';
-import { getIsExternalServicesEnabled } from '../../ducks/bridge/selectors';
+import { getUseExternalServices } from '../../selectors';
 import { useAsyncResult } from '../useAsync';
 
 /**
@@ -24,7 +24,7 @@ export const useInitialBridgeTokens = ({
   assetsToInclude: BridgeToken[];
 }) => {
   const abortControllerRef = useRef<AbortController | null>(null);
-  const isExternalServicesEnabled = useSelector(getIsExternalServicesEnabled);
+  const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
   const { value: jwt } = useAsyncResult(async () => {
     if (!isExternalServicesEnabled) {
