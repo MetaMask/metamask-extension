@@ -514,6 +514,12 @@
     "uuid": "^8.3.2",
     "xml2js": "^0.6.2"
   },
+  "previewBuilds": {
+    "@metamask/bridge-status-controller": {
+      "type": "non-breaking",
+      "previewVersion": "71.1.0-preview-60ee344a5"
+    }
+  },
   "devDependencies": {
     "@actions/core": "^3.0.1",
     "@actions/github": "^9.1.1",
