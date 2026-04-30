@@ -47,7 +47,7 @@ jobs:
         run: yarn --check-resolutions
 
       # --- Baseline download (PR, push-to-main, and cron) ---
-      # When the download fails (first rollout, expired artifact, or fork PR
+      # When the download fails (first rollout, expired artifact, or cross-repo PR
       # with read-only token), NO_BASELINE=true tells the triage script to
       # fall back to the same criteria as the package.json `audit` script:
       #   yarn audit --environment production --severity moderate
@@ -190,7 +190,7 @@ jobs:
           GITHUB_BASE_REF: ${{ github.base_ref }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn tsx .github/scripts/check-feature-flag-registry.ts
+        run: yarn tsx .github/scripts/check-feature-flag-registry.mts
 
       - name: Check working tree
         if: ${{ !cancelled() }}

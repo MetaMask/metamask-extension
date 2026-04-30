@@ -72,7 +72,7 @@ describe('Test Snap installed', function () {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         // Open a new tab and navigate to test snaps page and click dialog snap
         const testSnaps = new TestSnaps(driver);

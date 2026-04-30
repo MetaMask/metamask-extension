@@ -145,7 +145,7 @@ class SmartTransactionHook {
         transactionMeta.type !== TransactionType.shieldSubscriptionApprove &&
         transactionMeta.type !== TransactionType.perpsDeposit &&
         transactionMeta.type !== TransactionType.perpsDepositAndOrder) ||
-        (this.#transactions && this.#transactions.length > 0),
+      (this.#transactions && this.#transactions.length > 0),
     );
 
     this.#shouldShowStatusPage = legacyShowStatusPage;
@@ -161,14 +161,14 @@ class SmartTransactionHook {
   }
 
   async submit() {
-    const isUnsupportedTransactionTypeForSmartTransaction = this
-      .#transactionMeta.type
-      ? [
-          TransactionType.swapAndSend,
-          TransactionType.swapApproval,
-          TransactionType.bridgeApproval,
-        ].includes(this.#transactionMeta.type)
-      : false;
+    const isUnsupportedTransactionTypeForSmartTransaction =
+      this.#transactionMeta.type
+        ? [
+            TransactionType.swapAndSend,
+            TransactionType.swapApproval,
+            TransactionType.bridgeApproval,
+          ].includes(this.#transactionMeta.type)
+        : false;
 
     // Will cause TransactionController to publish to the RPC provider as normal.
     const useRegularTransactionSubmit = { transactionHash: undefined };
