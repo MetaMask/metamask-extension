@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   calculateSlippage,
@@ -26,28 +26,18 @@ export function useSmartSlippage(): void {
   const toToken = useSelector(getToToken);
   const isRWAEnabled = useSelector(getIsRWATokensEnabled);
 
-  // Calculate the appropriate slippage for current context
-  const calculateCurrentSlippage = useCallback((context: SlippageContext) => {
-    const slippage = calculateSlippage(context);
+  // Update slippage when context changes
+  useEffect(() => {
+    const context: SlippageContext = { fromToken, toToken, isRWAEnabled };
+    const newSlippage = calculateSlippage(context);
 
-    // Log the reason in development
     if (process.env.NODE_ENV === 'development') {
       const reason = getSlippageReason(context);
       console.log(
-        `[useSmartSlippage] Slippage calculated: ${slippage ?? 'AUTO'}% - ${reason}`,
+        `[useSmartSlippage] Slippage calculated: ${newSlippage ?? 'AUTO'}% - ${reason}`,
       );
     }
 
-    return slippage;
-  }, []);
-
-  // Update slippage when context changes
-  useEffect(() => {
-    const newSlippage = calculateCurrentSlippage({
-      fromToken,
-      toToken,
-      isRWAEnabled,
-    });
     dispatch(setSlippage(newSlippage));
-  }, [fromToken, toToken, isRWAEnabled]);
+  }, [fromToken, toToken, isRWAEnabled, dispatch]);
 }
