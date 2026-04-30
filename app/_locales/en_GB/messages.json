@@ -1443,11 +1443,22 @@
   "bridgeTxDetailsYouSent": {
     "message": "You sent"
   },
+  "bridgeUseMaxAmountAllowedWithReserve": {
+    "message": "Use max allowed"
+  },
   "bridgeValidationInsufficientGasMessage": {
     "message": "You don't have enough $1 to pay the gas fee for this bridge. Enter a smaller amount or buy more $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "More $1 needed for gas"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "This specific network requires to maintain a reserve of $1 $3 in your account. With your current balance you can use a maximum of $2 $3",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitle": {
+    "message": "Minimum $1 reserve balance is required",
+    "description": "$1 is the ticker symbol of the token"
   },
   "bridged": {
     "message": "Bridged"
