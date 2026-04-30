@@ -1560,9 +1560,6 @@
   "clearActivity": {
     "message": "Aktiviteyi ve nonce verilerini temizle"
   },
-  "clearActivityButton": {
-    "message": "Aktivite sekme verilerini temizle"
-  },
   "clearActivityDescription": {
     "message": "Bu işlem hesabın nonce verilerini sıfırlar ve cüzdanınızdaki aktivite sekmesinden verileri siler. Sadece geçerli hesap ve ağ etkilenecektir. Bakiyeleriniz ve gelen işlemleriniz değişmeyecektir."
   },
@@ -3912,9 +3909,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask kilitleniyor..."
   },
-  "lockTimeInvalid": {
-    "message": "Kilit süresi 0 ile 10080 arasında olmalıdır"
-  },
   "logOut": {
     "message": "Oturumu kapat"
   },
@@ -5122,9 +5116,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Kullanım Şartları"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Genel konum, tıklamalar ve görüntülemeler gibi temel ürün kullanımı verilerini toplayacağız. Başka hiçbir bilgi depolanmayacaktır."
   },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Temel ürün kullanım verilerini toplarız. Bu bilgileri zincir içi verilerle ilişkilendirebiliriz."
@@ -8192,12 +8183,6 @@
   },
   "smartAccount": {
     "message": "Akıllı hesap"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Dapp'lerin standart hesaplar için akıllı hesap özellikleri talep etmesine izin verin. Bu durum, halihazırda akıllı hesap olan hesapları etkilemez."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Dapp'lerden akıllı hesap talepleri"
   },
   "smartAccountLabel": {
     "message": "Akıllı Hesap"

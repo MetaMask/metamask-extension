@@ -58,6 +58,7 @@ export const BridgeCTAButton = ({
     isInsufficientBalance,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
+    isInsufficientNativeReserve,
     isStockMarketClosed: isMarketClosed,
     isQuoteExpired,
   } = useSelector(
@@ -123,7 +124,8 @@ export const BridgeCTAButton = ({
     if (
       isInsufficientBalance ||
       isInsufficientGasForQuote ||
-      isInsufficientGasBalance
+      isInsufficientGasBalance ||
+      isInsufficientNativeReserve
     ) {
       return {
         disabled: true,
@@ -175,6 +177,7 @@ export const BridgeCTAButton = ({
     isInsufficientBalance,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
+    isInsufficientNativeReserve,
     isSubmitting,
     isTxSubmittable,
     onFetchNewQuotes,
