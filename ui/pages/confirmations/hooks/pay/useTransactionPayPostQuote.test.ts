@@ -119,4 +119,49 @@ describe('useTransactionPayPostQuote', () => {
 
     consoleErrorSpy.mockRestore();
   });
+
+  it('retries setPostQuote when the transaction id returns to a previously-failed value', async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    // First call (tx-7) fails; subsequent calls succeed.
+    setPostQuoteMock.mockRejectedValueOnce(new Error('boom'));
+    setPostQuoteMock.mockResolvedValue(undefined);
+
+    mockConfirmation({
+      id: 'tx-7',
+      type: TransactionType.perpsWithdraw,
+    });
+
+    const { rerender } = renderHook(() => useTransactionPayPostQuote());
+    await new Promise((resolve) => setImmediate(resolve));
+
+    expect(setPostQuoteMock).toHaveBeenCalledTimes(1);
+
+    // Switch to a different transaction so the deps change away.
+    mockConfirmation({
+      id: 'tx-8',
+      type: TransactionType.perpsWithdraw,
+    });
+    rerender();
+    await new Promise((resolve) => setImmediate(resolve));
+
+    expect(setPostQuoteMock).toHaveBeenCalledTimes(2);
+
+    // Switching back to tx-7 should retry — the previous rejection must
+    // have cleared the in-flight ref, otherwise the dispatch is silently
+    // skipped and the tx stays un-configured.
+    mockConfirmation({
+      id: 'tx-7',
+      type: TransactionType.perpsWithdraw,
+    });
+    rerender();
+
+    expect(setPostQuoteMock).toHaveBeenCalledTimes(3);
+    expect(setPostQuoteMock).toHaveBeenLastCalledWith('tx-7', {
+      isHyperliquidSource: true,
+    });
+
+    consoleErrorSpy.mockRestore();
+  });
 });

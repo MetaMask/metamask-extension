@@ -20,12 +20,19 @@ export function useTransactionPayPostQuote(): void {
       return;
     }
 
+    // Mark in-flight synchronously so a strict-mode double-mount does not
+    // dispatch twice. On rejection, reset the marker so a future deps
+    // change (e.g. user navigates away and back) can retry instead of
+    // being permanently stuck with an un-configured post-quote tx.
+    isSet.current = transactionId;
+
     setPostQuote(transactionId, { isHyperliquidSource: true }).catch(
       (error) => {
         console.error('Failed to set post-quote config', error);
+        if (isSet.current === transactionId) {
+          isSet.current = null;
+        }
       },
     );
-
-    isSet.current = transactionId;
   }, [isPerpsWithdraw, transactionId]);
 }
