@@ -45,6 +45,17 @@ describe('translatePasskeyError', () => {
     ).toBe('t:passkeyErrorRegistrationVerificationFailed');
   });
 
+  it('maps already enrolled code', () => {
+    expect(
+      translatePasskeyError(
+        {
+          code: PasskeyControllerErrorCode.AlreadyEnrolled,
+        },
+        t,
+      ),
+    ).toBe('t:passkeyErrorAlreadyEnrolled');
+  });
+
   it('returns null when no passkey-specific translation exists', () => {
     expect(translatePasskeyError(new Error('x'), t)).toBeNull();
   });
