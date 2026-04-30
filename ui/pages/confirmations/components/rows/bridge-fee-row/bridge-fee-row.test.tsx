@@ -244,8 +244,6 @@ describe('BridgeFeeRow', () => {
       content.includes(`${messages.networkFee.message}:`),
     );
     expect(tooltip.textContent).toContain(`${messages.providerFee.message}:`);
-    expect(tooltip.textContent).not.toContain(
-      `${messages.bridgeFee.message}:`,
-    );
+    expect(tooltip.textContent).not.toContain(`${messages.bridgeFee.message}:`);
   });
 });
