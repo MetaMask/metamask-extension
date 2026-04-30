@@ -51,6 +51,7 @@
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": null,
       "outdatedBrowserWarningLastShown": "object",
+      "passkeyAutoUnlockSuppressed": "boolean",
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": "boolean",
@@ -182,6 +183,7 @@
       "seedPhraseBackedUp": null
     },
     "PPOMController": { "storageMetadata": "object" },
+    "PasskeyController": { "passkeyRecord": null },
     "PermissionController": { "subjects": "object" },
     "PermissionLogController": { "permissionHistory": "object" },
     "PerpsController": "object",

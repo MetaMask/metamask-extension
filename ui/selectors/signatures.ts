@@ -44,7 +44,7 @@ const selectUnapprovedMessages = createSelector(
   }),
 );
 
-const internalSelectUnapprovedMessage = createSelector(
+export const internalSelectUnapprovedMessage = createSelector(
   selectUnapprovedMessages,
   (_state: DefaultRootState, messageId: string) => messageId,
   (messages, messageId) => messages[messageId],

@@ -141,7 +141,6 @@ export default function useSubmitBridgeTransaction() {
             smartTransactionsEnabled,
             getQuotesReceivedProperties(
               quoteResponse,
-              // @ts-expect-error 'market_closed' will be added to QuoteWarning in the controller
               warnings,
               true,
               recommendedQuote,

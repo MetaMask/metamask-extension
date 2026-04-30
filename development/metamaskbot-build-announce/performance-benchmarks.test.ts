@@ -12,7 +12,6 @@ import {
   computeEntryHealth,
   EntryHealth,
   getUserJourneyBenchmarkApiModeFromBranch,
-  getUserJourneyBenchmarkBuildTypesForCurrentRun,
   type FetchBenchmarkResult,
   type BenchmarkEntry,
 } from './performance-benchmarks';
@@ -25,7 +24,7 @@ const makeEntry = (
   benchmarkName: 'loadNewAccount',
   presetName: 'interactionUserActions',
   platform: 'chrome',
-  buildType: 'browserify',
+  buildType: 'webpack',
   mean: { loadNewAccount: 523 },
   stdDev: { loadNewAccount: 45 },
   p75: { loadNewAccount: 550 },
@@ -51,71 +50,6 @@ const BASELINE_600 = {
   },
 };
 
-describe('getUserJourneyBenchmarkBuildTypesForCurrentRun', () => {
-  const originalEvent = process.env.GITHUB_EVENT_NAME;
-  const originalRef = process.env.GITHUB_REF;
-
-  afterEach(() => {
-    if (originalEvent === undefined) {
-      delete process.env.GITHUB_EVENT_NAME;
-    } else {
-      process.env.GITHUB_EVENT_NAME = originalEvent;
-    }
-    if (originalRef === undefined) {
-      delete process.env.GITHUB_REF;
-    } else {
-      process.env.GITHUB_REF = originalRef;
-    }
-  });
-
-  it('returns browserify only when env is unset (local / tests)', () => {
-    delete process.env.GITHUB_EVENT_NAME;
-    delete process.env.GITHUB_REF;
-
-    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
-      'browserify',
-    ]);
-  });
-
-  it('returns browserify only on pull_request (no webpack user-journey artifacts)', () => {
-    process.env.GITHUB_EVENT_NAME = 'pull_request';
-    process.env.GITHUB_REF = 'refs/pull/42/merge';
-
-    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
-      'browserify',
-    ]);
-  });
-
-  it('returns browserify only on push to a feature branch', () => {
-    process.env.GITHUB_EVENT_NAME = 'push';
-    process.env.GITHUB_REF = 'refs/heads/chore/foo';
-
-    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
-      'browserify',
-    ]);
-  });
-
-  it('returns browserify and webpack on push to main (webpack user-journey matrix rows)', () => {
-    process.env.GITHUB_EVENT_NAME = 'push';
-    process.env.GITHUB_REF = 'refs/heads/main';
-
-    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
-      'browserify',
-      'webpack',
-    ]);
-  });
-
-  it('returns browserify and webpack on push to release branch', () => {
-    process.env.GITHUB_EVENT_NAME = 'push';
-    process.env.GITHUB_REF = 'refs/heads/release/12.0.0';
-
-    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
-      'browserify',
-      'webpack',
-    ]);
-  });
-});
-
 const MOCK_PAYLOAD: Record<string, BenchmarkResults> = {
   loadNewAccount: {
     testTitle: 'benchmark-load-new-account',
@@ -135,13 +69,13 @@ describe('extractEntries', () => {
       MOCK_PAYLOAD,
       'interactionUserActions',
       'chrome',
-      'browserify',
+      'webpack',
     );
 
     expect(entry.benchmarkName).toBe('loadNewAccount');
     expect(entry.presetName).toBe('interactionUserActions');
     expect(entry.platform).toBe('chrome');
-    expect(entry.buildType).toBe('browserify');
+    expect(entry.buildType).toBe('webpack');
   });
 
   it('includes mean/stdDev/p75/p95 and excludes min/max', () => {
@@ -248,9 +182,9 @@ describe('computeEntryHealth', () => {
       const entry = makeEntry({
         benchmarkName: 'startupStandardHome',
         presetName: 'startupStandardHome',
-        mean: { uiStartup: 2600 },
+        mean: { uiStartup: 2700 },
         stdDev: { uiStartup: 100 },
-        p75: { uiStartup: 2600 },
+        p75: { uiStartup: 2700 },
         p95: { uiStartup: 3100 },
       });
       expect(computeEntryHealth(entry, undefined)).toBe(EntryHealth.Warn);
@@ -314,12 +248,12 @@ describe('fetchBenchmarkJson', () => {
       const result = await fetchBenchmarkJson(
         HOST,
         'chrome',
-        'browserify',
+        'webpack',
         'myPreset',
       );
 
       expect(readFile as jest.Mock).toHaveBeenCalledWith(
-        '/tmp/benchmarks/benchmark-chrome-browserify-myPreset.json',
+        '/tmp/benchmarks/benchmark-chrome-webpack-myPreset.json',
         'utf8',
       );
       expect(result).toStrictEqual(MOCK_PAYLOAD);
@@ -331,7 +265,7 @@ describe('fetchBenchmarkJson', () => {
       );
 
       expect(
-        await fetchBenchmarkJson(HOST, 'chrome', 'browserify', 'missing'),
+        await fetchBenchmarkJson(HOST, 'chrome', 'webpack', 'missing'),
       ).toBeNull();
     });
   });
@@ -348,7 +282,7 @@ describe('fetchBenchmarkJson', () => {
       } as unknown as Response);
 
       expect(
-        await fetchBenchmarkJson(HOST, 'chrome', 'browserify', 'myPreset'),
+        await fetchBenchmarkJson(HOST, 'chrome', 'webpack', 'myPreset'),
       ).toStrictEqual(MOCK_PAYLOAD);
     });
 
@@ -356,7 +290,7 @@ describe('fetchBenchmarkJson', () => {
       mockFetch.mockResolvedValue({ ok: false } as Response);
 
       expect(
-        await fetchBenchmarkJson(HOST, 'chrome', 'browserify', 'myPreset'),
+        await fetchBenchmarkJson(HOST, 'chrome', 'webpack', 'myPreset'),
       ).toBeNull();
     });
 
@@ -364,7 +298,7 @@ describe('fetchBenchmarkJson', () => {
       mockFetch.mockRejectedValue(new Error('network error'));
 
       expect(
-        await fetchBenchmarkJson(HOST, 'chrome', 'browserify', 'myPreset'),
+        await fetchBenchmarkJson(HOST, 'chrome', 'webpack', 'myPreset'),
       ).toBeNull();
     });
   });
@@ -410,18 +344,18 @@ describe('fetchBenchmarkEntries', () => {
     expect(missingPresets[0]).toContain('interactionUserActions');
   });
 
-  it('uses custom platforms and buildTypes (2 × 2 × 1 = 4 combinations)', async () => {
+  it('uses custom platforms and buildTypes', async () => {
     mockFetch.mockResolvedValue({ ok: false } as Response);
 
     const { missingPresets } = await fetchBenchmarkEntries(
       HOST,
       ['myPreset'],
       ['chrome', 'firefox'],
-      ['browserify', 'webpack'],
+      ['webpack'],
     );
 
-    expect(missingPresets).toHaveLength(4);
-    expect(missingPresets).toContain('chrome/browserify/myPreset');
+    expect(missingPresets).toHaveLength(2);
+    expect(missingPresets).toContain('chrome/webpack/myPreset');
     expect(missingPresets).toContain('firefox/webpack/myPreset');
   });
 });
@@ -493,11 +427,11 @@ describe('buildBenchmarkSection', () => {
 
   it('surfaces ⚠️ warning for missing presets', () => {
     const html = buildBenchmarkSection(
-      { entries: [], missingPresets: ['chrome/browserify/foo'] },
+      { entries: [], missingPresets: ['chrome/webpack/foo'] },
       'Test',
     );
     expect(html).toContain('⚠️');
-    expect(html).toContain('chrome/browserify/foo');
+    expect(html).toContain('chrome/webpack/foo');
   });
 
   it('renders a table with benchmark rows and combo columns', () => {
@@ -518,9 +452,10 @@ describe('buildBenchmarkSection', () => {
 
     expect(html).toContain('<summary><b>Test</b></summary>');
     expect(html).toContain('<table style=');
-    expect(html).toContain('<th>chrome-browserify</th>');
-    expect(html).toContain('<td>loadNewAccount</td>');
-    expect(html).toContain('<td>confirmTx</td>');
+    expect(html).toContain('<th>chrome-webpack</th>');
+    expect(html).toContain('<td align="left">loadNewAccount<br>');
+    expect(html).toContain('<td align="left">confirmTx<br>');
+    expect(html).toContain('[Sentry log · main/release]');
   });
 
   it('shows 🟢 in the cell when p95 is above baseline but within absolute threshold', () => {
@@ -675,11 +610,11 @@ describe('buildBenchmarkSection', () => {
         makeEntry({
           benchmarkName: 'loadNewAccount',
           platform: 'chrome',
-          buildType: 'browserify',
+          buildType: 'webpack',
         }),
         makeEntry({
           benchmarkName: 'confirmTx',
-          platform: 'chrome',
+          platform: 'firefox',
           buildType: 'webpack',
           mean: { confirmTx: 500 },
           stdDev: { confirmTx: 30 },
@@ -694,9 +629,9 @@ describe('buildBenchmarkSection', () => {
     expect(html).toContain('–');
   });
 
-  it('links each cell to the entry artifact URL as [Show logs]', () => {
+  it('links each cell to the entry artifact URL as CI log', () => {
     const ARTIFACT =
-      'https://cdn.example.com/benchmark-chrome-browserify-foo.json';
+      'https://cdn.example.com/benchmark-chrome-webpack-foo.json';
     const html = buildBenchmarkSection(
       withEntries([makeEntry({ artifactUrl: ARTIFACT })]),
       'Test',
@@ -704,10 +639,10 @@ describe('buildBenchmarkSection', () => {
     );
 
     expect(html).toContain(`href="${ARTIFACT}"`);
-    expect(html).toContain('[Show logs]');
+    expect(html).toContain('>[CI log]</a>');
   });
 
-  it('falls back to runUrl for [Show logs] when entry has no artifactUrl', () => {
+  it('falls back to runUrl for CI log when entry has no artifactUrl', () => {
     const RUN_URL = 'https://github.com/actions/runs/123';
     const html = buildBenchmarkSection(
       withEntries([makeEntry({ p95: { loadNewAccount: 672 } })]),
@@ -717,12 +652,12 @@ describe('buildBenchmarkSection', () => {
     );
 
     expect(html).toContain(`href="${RUN_URL}"`);
-    expect(html).toContain('[Show logs]');
+    expect(html).toContain('>[CI log]</a>');
   });
 
   it('resolves startup baseline via pageLoad/* key format and shows delta in bullet section', () => {
     const entry = makeEntry({
-      benchmarkName: 'chrome-browserify-startupStandardHome',
+      benchmarkName: 'chrome-webpack-startupStandardHome',
       presetName: 'startupStandardHome',
       mean: { uiStartup: 1800 },
       stdDev: { uiStartup: 100 },
@@ -730,7 +665,7 @@ describe('buildBenchmarkSection', () => {
       p95: { uiStartup: 1980 },
     });
     const html = buildBenchmarkSection(withEntries([entry]), '🔌 Startup', {
-      'pageLoad/chrome-browserify-startupStandardHome': {
+      'pageLoad/chrome-webpack-startupStandardHome': {
         uiStartup: { mean: 1600, stdDev: 80, p75: 1650, p95: 1750 },
       },
     });
@@ -748,7 +683,7 @@ describe('buildBenchmarkSection', () => {
       benchmarkName: 'standardHome',
       presetName: 'startupStandardHome',
       platform: 'firefox',
-      buildType: 'browserify',
+      buildType: 'webpack',
       mean: { uiStartup: 1490 },
       stdDev: { uiStartup: 90 },
       p75: { uiStartup: 1545 },
@@ -758,10 +693,10 @@ describe('buildBenchmarkSection', () => {
       withEntries([firefoxEntry]),
       '🔌 Startup',
       {
-        'pageLoad/chrome-browserify-startupStandardHome': {
+        'pageLoad/chrome-webpack-startupStandardHome': {
           uiStartup: { mean: 1380, stdDev: 80, p75: 1430, p95: 1500 },
         },
-        'pageLoad/firefox-browserify-startupStandardHome': {
+        'pageLoad/firefox-webpack-startupStandardHome': {
           uiStartup: { mean: 1480, stdDev: 90, p75: 1540, p95: 1595 },
         },
       },
@@ -812,7 +747,7 @@ describe('buildBenchmarkSection', () => {
 
   it('returns "No regressions detected" when no entries exist but baseline is provided', () => {
     const html = buildBenchmarkSection(
-      { entries: [], missingPresets: ['chrome/browserify/somePreset'] },
+      { entries: [], missingPresets: ['chrome/webpack/somePreset'] },
       'Test',
       {
         'some/key': {
@@ -850,11 +785,11 @@ describe('buildBenchmarkSection', () => {
         },
         p75: {
           openSwapPageFromHome: 340,
-          fetchAndDisplaySwapQuotes: 4500,
+          fetchAndDisplaySwapQuotes: 5100,
         },
         p95: {
           openSwapPageFromHome: 400,
-          fetchAndDisplaySwapQuotes: 5500,
+          fetchAndDisplaySwapQuotes: 6500,
         },
       });
 
@@ -864,24 +799,46 @@ describe('buildBenchmarkSection', () => {
       expect(html).toContain('<code>fetchAndDisplaySwapQuotes</code>');
     });
 
-    it('shows [Show logs] without icon when timers are present', () => {
+    it('shows row health icon and CI log before timer details when breakdown is present', () => {
       const entry = makeEntry({
         benchmarkName: 'swap',
-        mean: { timer1: 100, timer2: 200 },
-        p75: { timer1: 110, timer2: 220 },
-        p95: { timer1: 120, timer2: 240 },
+        mean: {
+          openSwapPageFromHome: 310,
+          fetchAndDisplaySwapQuotes: 5000,
+        },
+        p75: {
+          openSwapPageFromHome: 340,
+          fetchAndDisplaySwapQuotes: 5100,
+        },
+        p95: {
+          openSwapPageFromHome: 400,
+          fetchAndDisplaySwapQuotes: 6500,
+        },
       });
 
+      const runUrl = 'https://github.com/actions/runs/123';
       const html = buildBenchmarkSection(
         withEntries([entry]),
         'Test',
         undefined,
-        'https://github.com/actions/runs/123',
+        runUrl,
       );
-      expect(html).not.toMatch(/🟢 <a href=.*\[Show logs\]<br\/>/u);
+
+      const health = computeEntryHealth(entry, undefined);
+      let rowIcon: string = COMPARISON_SEVERITY.Pass.icon;
+      if (health === EntryHealth.Fail) {
+        rowIcon = COMPARISON_SEVERITY.Regression.icon;
+      } else if (health === EntryHealth.Warn) {
+        rowIcon = COMPARISON_SEVERITY.Warn.icon;
+      }
+
+      // Cell layout: `${icon} ${rowLinks}<br>${timerDetails}` (literal <br>, not <br/>)
+      expect(html).toContain(`${rowIcon} <a href="${runUrl}"`);
+      expect(html).toContain('[CI log]</a><br>');
+      expect(html).toContain('<code>fetchAndDisplaySwapQuotes</code>');
     });
 
-    it('shows icon with [Show logs] when no timers present', () => {
+    it('shows icon with CI log when no timers present', () => {
       const entry = makeEntry({
         benchmarkName: 'loadNewAccount',
         mean: {},
@@ -892,7 +849,7 @@ describe('buildBenchmarkSection', () => {
 
       const html = buildBenchmarkSection(withEntries([entry]), 'Test');
 
-      expect(html).toContain('[Show logs]');
+      expect(html).toContain('>[CI log]</a>');
       expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
       expect(html).not.toContain('<ul');
     });
@@ -937,9 +894,150 @@ describe('buildBenchmarkSection', () => {
       );
 
       expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
-      expect(html).toContain('[Show logs]');
+      expect(html).toContain('>[CI log]</a>');
       expect(html).not.toContain('<code>uiStartup</code>');
       expect(html).not.toContain('<ul');
+    });
+  });
+
+  describe('artifact and Sentry links', () => {
+    const mockDsn = 'https://fake@metamask.sentry.io/4510302346608640';
+    let savedBranch: string | undefined;
+    let savedHeadRef: string | undefined;
+    let savedRefName: string | undefined;
+    let savedSentryDsn: string | undefined;
+
+    beforeEach(() => {
+      savedBranch = process.env.BRANCH;
+      savedHeadRef = process.env.GITHUB_HEAD_REF;
+      savedRefName = process.env.GITHUB_REF_NAME;
+      savedSentryDsn = process.env.SENTRY_DSN_PERFORMANCE;
+    });
+
+    afterEach(() => {
+      if (savedBranch === undefined) {
+        delete process.env.BRANCH;
+      } else {
+        process.env.BRANCH = savedBranch;
+      }
+      if (savedHeadRef === undefined) {
+        delete process.env.GITHUB_HEAD_REF;
+      } else {
+        process.env.GITHUB_HEAD_REF = savedHeadRef;
+      }
+      if (savedRefName === undefined) {
+        delete process.env.GITHUB_REF_NAME;
+      } else {
+        process.env.GITHUB_REF_NAME = savedRefName;
+      }
+      if (savedSentryDsn === undefined) {
+        delete process.env.SENTRY_DSN_PERFORMANCE;
+      } else {
+        process.env.SENTRY_DSN_PERFORMANCE = savedSentryDsn;
+      }
+    });
+
+    it('includes Sentry Logs Explorer link when BRANCH and SENTRY_DSN_PERFORMANCE are set', () => {
+      process.env.BRANCH = 'feat/test';
+      process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+      const html = buildBenchmarkSection(
+        withEntries([
+          makeEntry({ artifactUrl: 'https://cdn.example.com/benchmark.json' }),
+        ]),
+        'Test',
+        BASELINE_PASS,
+      );
+      expect(html).toContain('>[CI log]</a>');
+      expect(html).toContain('>[Sentry log · main/release]</a>');
+      expect(html).toContain('metamask.sentry.io/explore/logs');
+    });
+
+    it('uses GITHUB_REF_NAME for Sentry when BRANCH is unset', () => {
+      delete process.env.BRANCH;
+      delete process.env.GITHUB_HEAD_REF;
+      process.env.GITHUB_REF_NAME = 'release/1.0.0';
+      process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+      const html = buildBenchmarkSection(
+        withEntries([
+          makeEntry({ artifactUrl: 'https://cdn.example.com/benchmark.json' }),
+        ]),
+        'Test',
+        BASELINE_PASS,
+      );
+      expect(html).toContain('>[Sentry log · main/release]</a>');
+    });
+
+    it('shows Sentry row label as non-link span when SENTRY_DSN_PERFORMANCE is unset', () => {
+      process.env.BRANCH = 'feat/test';
+      delete process.env.SENTRY_DSN_PERFORMANCE;
+      const html = buildBenchmarkSection(
+        withEntries([
+          makeEntry({ artifactUrl: 'https://cdn.example.com/benchmark.json' }),
+        ]),
+        'Test',
+        BASELINE_PASS,
+      );
+      expect(html).toContain('>[CI log]</a>');
+      expect(html).toContain('[Sentry log · main/release]</span>');
+      expect(html).toContain('requires SENTRY_DSN_PERFORMANCE');
+      expect(html).not.toContain('metamask.sentry.io/explore/logs');
+    });
+
+    it('still includes Sentry row link when branch env vars are unset (ORs main and release/* in URL)', () => {
+      // Force-empty so CI-injected GITHUB_HEAD_REF cannot satisfy `||` chain (delete is not always enough).
+      process.env.BRANCH = '';
+      process.env.GITHUB_HEAD_REF = '';
+      process.env.GITHUB_REF_NAME = '';
+      process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+      const html = buildBenchmarkSection(
+        withEntries([
+          makeEntry({ artifactUrl: 'https://cdn.example.com/benchmark.json' }),
+        ]),
+        'Test',
+        BASELINE_PASS,
+      );
+      expect(html).toContain('>[CI log]</a>');
+      expect(html).toContain('metamask.sentry.io/explore/logs');
+      expect(html).toContain('ci.branch%3Amain');
+      expect(html).toContain('OR+ci.branch%3Arelease%2F*');
+      expect(html).toContain('message%3Abenchmark.loadNewAccount');
+    });
+
+    it('puts row Sentry under the benchmark name; single CI log above timer detail lines', () => {
+      process.env.BRANCH = 'main';
+      process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+      const entry = makeEntry({
+        benchmarkName: 'swap',
+        mean: {
+          openSwapPageFromHome: 310,
+          fetchAndDisplaySwapQuotes: 5000,
+        },
+        p75: {
+          openSwapPageFromHome: 340,
+          fetchAndDisplaySwapQuotes: 5100,
+        },
+        p95: {
+          openSwapPageFromHome: 400,
+          fetchAndDisplaySwapQuotes: 6500,
+        },
+        artifactUrl: 'https://cdn.example.com/swap.json',
+      });
+      const html = buildBenchmarkSection(
+        withEntries([entry]),
+        'Test',
+        undefined,
+        'https://github.com/actions/runs/999',
+      );
+      expect(html).toContain('<code>fetchAndDisplaySwapQuotes</code>');
+      expect(html).toContain('>[CI log]</a>');
+      expect(html).toContain(
+        'swap<br><a href="https://metamask.sentry.io/explore/logs/',
+      );
+      expect(html).toContain('message%3Abenchmark.swap');
+      expect(html).toContain('>[Sentry log · main/release]</a>');
+      expect(html).not.toMatch(
+        /<code>fetchAndDisplaySwapQuotes<\/code><br>\[Sentry log/u,
+      );
     });
   });
 });
@@ -1111,7 +1209,7 @@ describe('buildPerformanceBenchmarksSection', () => {
         testTitle: 'standard-home',
         persona: 'standard',
         platform: 'chrome',
-        buildType: 'browserify',
+        buildType: 'webpack',
         mean: { uiStartup: 4500 },
         min: { uiStartup: 3000 },
         max: { uiStartup: 7000 },
@@ -1158,6 +1256,36 @@ describe('buildPerformanceBenchmarksSection', () => {
       expect(html).toContain('startupStandardHome');
     });
 
+    it('includes Sentry Logs Explorer links in matrix and regression list when BRANCH and SENTRY_DSN_PERFORMANCE are set', async () => {
+      const mockDsn = 'https://fake@metamask.sentry.io/4510302346608640';
+      const savedBranch = process.env.BRANCH;
+      const savedSentry = process.env.SENTRY_DSN_PERFORMANCE;
+      try {
+        process.env.BRANCH = 'main';
+        process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+        mockFetch.mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve(FAILING_PAYLOAD),
+        } as unknown as Response);
+
+        const html = await buildPerformanceBenchmarksSection(HOST);
+
+        expect(html).toContain('>[Sentry log · main/release]</a>');
+        expect(html).toContain('metamask.sentry.io/explore/logs');
+      } finally {
+        if (savedBranch === undefined) {
+          delete process.env.BRANCH;
+        } else {
+          process.env.BRANCH = savedBranch;
+        }
+        if (savedSentry === undefined) {
+          delete process.env.SENTRY_DSN_PERFORMANCE;
+        } else {
+          process.env.SENTRY_DSN_PERFORMANCE = savedSentry;
+        }
+      }
+    });
+
     it('exercises getEntryRegressions with baseline data when entry is non-pass', async () => {
       mockFetch.mockResolvedValue({
         ok: true,
@@ -1168,7 +1296,7 @@ describe('buildPerformanceBenchmarksSection', () => {
         .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
         .mockResolvedValue({
           baseline: {
-            'pageLoad/chrome-browserify-startupStandardHome': {
+            'pageLoad/chrome-webpack-startupStandardHome': {
               uiStartup: { mean: 1600, stdDev: 100, p75: 1700, p95: 1900 },
             },
           },
@@ -1277,7 +1405,7 @@ describe('buildPerformanceBenchmarksSection', () => {
         testTitle: 'standard-home',
         persona: 'standard',
         platform: 'chrome',
-        buildType: 'browserify',
+        buildType: 'webpack',
         mean: { uiStartup: 4500 },
         stdDev: { uiStartup: 500 },
         p75: { uiStartup: 4500 },
@@ -1302,7 +1430,7 @@ describe('buildPerformanceBenchmarksSection', () => {
       const html = await buildPerformanceBenchmarksSection(HOST);
 
       expect(html).toContain('<th>Benchmark</th>');
-      expect(html).toContain('<th>chrome-browserify</th>');
+      expect(html).toContain('<th>chrome-webpack</th>');
     });
 
     it('includes clickable log links in matrix cells', async () => {
@@ -1383,7 +1511,7 @@ describe('buildPerformanceBenchmarksSection', () => {
       const html = await buildPerformanceBenchmarksSection(HOST);
 
       expect(html).toContain('<th>Metrics</th>');
-      expect(html).toContain('<th>chrome-browserify</th>');
+      expect(html).toContain('<th>chrome-webpack</th>');
     });
   });
 });

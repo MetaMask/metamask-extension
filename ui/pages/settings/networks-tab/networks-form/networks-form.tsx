@@ -304,14 +304,19 @@ export const NetworksForm = ({
         };
 
         if (existingNetwork) {
-          const options = {
-            replacementSelectedRpcEndpointIndex:
-              chainIdHex === existingNetwork.chainId
-                ? rpcUrls?.defaultRpcEndpointIndex
-                : undefined,
-          };
+          const options = toggleNetworkMenuAfterSubmit
+            ? {
+                replacementSelectedRpcEndpointIndex:
+                  chainIdHex === existingNetwork.chainId
+                    ? rpcUrls?.defaultRpcEndpointIndex
+                    : undefined,
+              }
+            : {};
           await dispatch(updateNetwork(networkPayload, options));
-          if (Object.keys(tokenNetworkFilter).length === 1) {
+          if (
+            toggleNetworkMenuAfterSubmit &&
+            Object.keys(tokenNetworkFilter).length === 1
+          ) {
             await dispatch(
               setTokenNetworkFilter({
                 [existingNetwork.chainId]: true,
@@ -369,8 +374,19 @@ export const NetworksForm = ({
             }
           }
         } else {
-          await dispatch(addNetwork(networkPayload));
-          await dispatch(setEnabledNetworks(networkPayload.chainId));
+          // When the form is rendered as a page (Networks page), do NOT switch
+          // the active network or update the homepage network filter. Adding a
+          // network from the Networks page should only persist the
+          // configuration; switching is reserved for the homepage network
+          // modal (`toggleNetworkMenuAfterSubmit=true`).
+          await dispatch(
+            addNetwork(networkPayload, {
+              setActive: toggleNetworkMenuAfterSubmit,
+            }),
+          );
+          if (toggleNetworkMenuAfterSubmit) {
+            await dispatch(setEnabledNetworks(networkPayload.chainId));
+          }
         }
 
         trackEvent({

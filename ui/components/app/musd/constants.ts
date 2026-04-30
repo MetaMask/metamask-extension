@@ -164,13 +164,6 @@ export const RELAY_API_ENDPOINTS = {
   STATUS: 'https://api.relay.link/intents/status',
 } as const;
 
-/**
- * Geolocation API endpoint for geo-blocking checks
- * Uses the Ramps geolocation API
- */
-export const GEOLOCATION_API_ENDPOINT =
-  'https://on-ramp.api.cx.metamask.io/geolocation';
-
 // ============================================================================
 // Utility Functions
 // ============================================================================
