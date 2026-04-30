@@ -7,7 +7,7 @@ const log = require('loglevel');
 const readFile = promisify(fs.readFile);
 // Keep these patterns in sync with shared/lib/i18n.ts applySubstitutions().
 const RUNTIME_REPLACEMENT_KEY_REGEX = /\$\d/gu;
-const INVALID_REPLACEMENT_KEY_REGEX = /\$0|\$\d{2,}/gu;
+const INVALID_REPLACEMENT_KEY_REGEX = /\$\d{2,}|\$0/gu;
 
 function getLocalePath(code) {
   return path.resolve(

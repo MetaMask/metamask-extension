@@ -146,4 +146,19 @@ describe('getMessagesWithInvalidReplacementKeys', () => {
       },
     ]);
   });
+
+  it('returns the full invalid replacement key when it starts with zero', () => {
+    expect(
+      getMessagesWithInvalidReplacementKeys({
+        shieldTxDetails1Title: {
+          message: 'Shield details $01',
+        },
+      }),
+    ).toStrictEqual([
+      {
+        invalidReplacementKeys: ['$01'],
+        key: 'shieldTxDetails1Title',
+      },
+    ]);
+  });
 });
