@@ -113,30 +113,33 @@ describe('Slippage Service', () => {
     });
 
     describe('RWA token swaps', () => {
-      it('returns undefined (AUTO mode) when source token is an RWA token', () => {
+      it('returns undefined (AUTO mode) when source token is an RWA token and RWA is enabled', () => {
         const context: SlippageContext = {
           fromToken: mockRWAToken(),
           toToken: mockWETH(),
+          isRWAEnabled: true,
         };
 
         const result = calculateSlippage(context);
         expect(result).toBe(undefined);
       });
 
-      it('returns undefined (AUTO mode) when destination token is an RWA token', () => {
+      it('returns undefined (AUTO mode) when destination token is an RWA token and RWA is enabled', () => {
         const context: SlippageContext = {
           fromToken: mockWETH(),
           toToken: mockRWAToken(),
+          isRWAEnabled: true,
         };
 
         const result = calculateSlippage(context);
         expect(result).toBe(undefined);
       });
 
-      it('returns undefined (AUTO mode) when both tokens are RWA tokens', () => {
+      it('returns undefined (AUTO mode) when both tokens are RWA tokens and RWA is enabled', () => {
         const context: SlippageContext = {
           fromToken: mockRWAToken(),
           toToken: mockRWAToken(),
+          isRWAEnabled: true,
         };
 
         const result = calculateSlippage(context);
@@ -147,10 +150,32 @@ describe('Slippage Service', () => {
         const context: SlippageContext = {
           fromToken: mockRWAToken('eip155:1'),
           toToken: mockRWAToken('eip155:10'),
+          isRWAEnabled: true,
         };
 
         const result = calculateSlippage(context);
         expect(result).toBe(SlippageValue.BridgeDefault);
+      });
+
+      it('falls through to EVM default when RWA token is present but feature flag is disabled', () => {
+        const context: SlippageContext = {
+          fromToken: mockRWAToken(),
+          toToken: mockWETH(),
+          isRWAEnabled: false,
+        };
+
+        const result = calculateSlippage(context);
+        expect(result).toBe(SlippageValue.EvmDefault);
+      });
+
+      it('falls through to EVM default when RWA token is present and isRWAEnabled is omitted', () => {
+        const context: SlippageContext = {
+          fromToken: mockRWAToken(),
+          toToken: mockWETH(),
+        };
+
+        const result = calculateSlippage(context);
+        expect(result).toBe(SlippageValue.EvmDefault);
       });
     });
 
@@ -314,10 +339,22 @@ describe('Slippage Service', () => {
       const context: SlippageContext = {
         fromToken: mockRWAToken(),
         toToken: mockWETH(),
+        isRWAEnabled: true,
       };
 
       const reason = getSlippageReason(context);
       expect(reason).toBe('RWA token swap (AUTO mode)');
+    });
+
+    it('does not return RWA reason when feature flag is disabled', () => {
+      const context: SlippageContext = {
+        fromToken: mockRWAToken(),
+        toToken: mockWETH(),
+        isRWAEnabled: false,
+      };
+
+      const reason = getSlippageReason(context);
+      expect(reason).toBe('EVM token swap');
     });
 
     it('returns correct reason for stablecoin pair', () => {
