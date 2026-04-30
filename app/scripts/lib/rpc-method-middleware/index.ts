@@ -30,11 +30,6 @@ const onError = (error: unknown) => {
   }
 };
 
-const dummyMessenger = {
-  delegate: () => undefined,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-} as any;
-
 // The primary home of RPC method implementations for the injected 1193 provider API. MUST be subsequent
 // to our permissioning logic in the EIP-1193 JSON-RPC middleware pipeline.
 export const createEip1193MethodMiddleware = (
@@ -46,7 +41,6 @@ export const createEip1193MethodMiddleware = (
       ...eip1193OnlyHandlers,
     },
     hooks,
-    messenger: dummyMessenger,
     onError,
   });
 
@@ -58,7 +52,6 @@ export const createEthAccountsMethodMiddleware = (hooks: EthAccountsHooks) =>
       ...ethAccountsHandler,
     },
     hooks,
-    messenger: dummyMessenger,
     onError,
   });
 
@@ -75,6 +68,5 @@ export const createMultichainMethodMiddleware = (
       ...multichainMethodHandlers,
     },
     hooks,
-    messenger: dummyMessenger,
     onError,
   });
