@@ -1,4 +1,5 @@
 import React, { ReactNode, useMemo } from 'react';
+import { useMatches } from 'react-router-dom';
 import {
   UIMessengerActions,
   UIMessengerEvents,
@@ -32,11 +33,15 @@ export const RouteWithMessenger = ({
   };
   children: ReactNode;
 }) => {
+  const matches = useMatches();
   const uiMessenger = useUIMessenger();
 
   const routeMessenger = useMemo(() => {
-    return createRouteMessenger({ uiMessenger, capabilities });
-  }, [uiMessenger, capabilities]);
+    const lastMatch = matches[matches.length - 1];
+    const path = lastMatch?.pathname || '/';
+
+    return createRouteMessenger({ path, uiMessenger, capabilities });
+  }, [uiMessenger, capabilities, matches]);
 
   return (
     <RouteMessengerContext.Provider value={routeMessenger}>

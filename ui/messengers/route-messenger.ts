@@ -31,12 +31,35 @@ export type RouteMessenger<
 >;
 
 /**
+ * Derive a route messenger namespace from a route path.
+ *
+ * @example
+ * ```typescript
+ * getRouteMessengerNamespace('/some/path'); // 'SomePathRoute'
+ * getRouteMessengerNamespace('/another/example'); // 'AnotherExampleRoute'
+ * getRouteMessengerNamespace('/'); // 'Route'
+ * ```
+ * @param path - The route path to derive the namespace from.
+ * @returns A namespace string derived from the route path.
+ */
+function getRouteMessengerNamespace(path: string): `${string}Route` {
+  const parts = path
+    .split('/')
+    .filter(Boolean)
+    .map(([first, ...rest]) => first.toUpperCase() + rest.join(''));
+
+  return `${parts.join('')}Route`;
+}
+
+/**
  * Derive a messenger for a route from the UI messenger.
  *
  * This is used when defining routes (that is, each route gets its own
  * messenger).
  *
  * @param args - Arguments for this function.
+ * @param args.path - The path of the route. This is used for debugging purposes
+ * and to ensure that the route messenger's namespace is unique across routes.
  * @param args.uiMessenger - The parent UI messenger.
  * @param args.capabilities - Capabilities to delegate from the UI messenger.
  * @param args.capabilities.actions - Action types to delegate from the UI
@@ -49,9 +72,11 @@ export function createRouteMessenger<
   ActionTypes extends UIMessengerActions['type'],
   EventTypes extends UIMessengerEvents['type'],
 >({
+  path,
   uiMessenger,
   capabilities: { actions = [], events = [] },
 }: {
+  path: string;
   uiMessenger: UIMessenger;
   capabilities: {
     actions?: ActionTypes[];
@@ -59,11 +84,11 @@ export function createRouteMessenger<
   };
 }): RouteMessenger<ActionTypes, EventTypes> {
   const routeMessenger = new Messenger<
-    typeof ROUTE_MESSENGER_NAMESPACE,
+    `${string}Route`,
     UIMessengerActions,
     UIMessengerEvents
   >({
-    namespace: ROUTE_MESSENGER_NAMESPACE,
+    namespace: getRouteMessengerNamespace(path),
     parent: uiMessenger,
   });
 
