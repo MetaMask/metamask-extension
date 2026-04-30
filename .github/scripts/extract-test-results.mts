@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync } from 'fs';
 import path from 'path';
-import { normalizeTestPath, XML } from './shared/utils';
+import { fileURLToPath } from 'url';
+import { normalizeTestPath, XML } from './shared/utils.mts';
 
 /**
  * Result of extracting test paths from previous run results.
@@ -95,7 +96,7 @@ export async function extractTestResults(
 /**
  * CLI entry point for testing the script directly
  */
-if (require.main === module) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const resultsDir =
     process.argv[2] || 'previous-test-results/test/test-results/e2e';
 

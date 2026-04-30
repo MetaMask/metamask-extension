@@ -14,9 +14,9 @@ import {
  *
  * e.g., `browser.runtime.onConnect` implements this sort of interface
  */
-class MockEvent
-  implements Partial<import('webextension-polyfill').Events.Event<MockListener>>
-{
+class MockEvent implements Partial<
+  import('webextension-polyfill').Events.Event<MockListener>
+> {
   #listeners: MockListener[] = [];
 
   public addListener = (listener: MockListener) => {

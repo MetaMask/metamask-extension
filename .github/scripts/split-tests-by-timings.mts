@@ -1,11 +1,12 @@
 import { hasProperty } from '@metamask/utils';
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import {
   getNewBlankTestFile,
   getTestFilesSortedByTime,
   TestChunk,
   TestRun,
-} from './shared/test-reports';
+} from './shared/test-reports.mts';
 
 // Extra Quality Gate Runs for each new/changed test
 const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 2;
@@ -104,13 +105,13 @@ export function splitTestsByTimings(
 }
 
 /**
- * This is a test function that runs if you directly run `yarn tsx .github/scripts/split-tests-by-timings.ts`,
+ * This is a test function that runs if you directly run `yarn tsx .github/scripts/split-tests-by-timings.mts`,
  * which only happens while developing and testing this file. Normally the splitTestsByTimings() function
- * is called by `test/e2e/run-all.ts`.
+ * is called by `test/e2e/run-all.mts`.
  *
  * This code is left in to be able to test the output of splitTestsByTimings()
  */
-if (require.main === module) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const sampleTestList = [
     'test/e2e/tests/account/account-details.spec.ts',
     'test/e2e/tests/account/account-hide-unhide.spec.ts',
