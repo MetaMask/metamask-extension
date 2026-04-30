@@ -161,6 +161,10 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/bridge-controller": "70.2.0",
+    "@metamask/bridge-status-controller": "71.0.0",
+    "@metamask/messenger": "1.1.1",
+    "@metamask/network-controller": "30.0.1",
     "follow-redirects": "^1.16.0",
     "@unrs/resolver-binding-wasm32-wasi": "npm:npm-empty-package@1.0.0",
     "jest-clean-console-reporter/chalk": "^4.1.2",
@@ -420,7 +424,7 @@
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.1.2",
     "@metamask/transaction-controller": "^64.4.0",
-    "@metamask/transaction-pay-controller": "^19.2.2",
+    "@metamask/transaction-pay-controller": "^20.1.0",
     "@metamask/tron-wallet-snap": "^1.25.3",
     "@metamask/user-operation-controller": "^41.2.0",
     "@metamask/utils": "^11.11.0",
