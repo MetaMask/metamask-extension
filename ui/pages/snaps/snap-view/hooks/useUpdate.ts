@@ -6,7 +6,7 @@ import type { RouteMessengerInstance } from '../messenger';
 import { forceUpdateMetamaskState } from '../../../../store/actions';
 import { getFirstSnapInstallOrUpdateRequest } from '../../../../selectors';
 
-type UpdateFunction = (origin: string, snaps: RequestSnapsParams) => void;
+type UpdateFunction = (snaps: RequestSnapsParams) => void;
 
 /**
  * Hook to update a Snap by calling the `SnapController:installSnaps` method on
@@ -22,8 +22,8 @@ export function useUpdate(): [UpdateFunction, string | null] {
 
   const request = useSelector(getFirstSnapInstallOrUpdateRequest);
 
-  const update: UpdateFunction = (origin, snaps) => {
-    messenger.call('SnapController:installSnaps', origin, snaps);
+  const update: UpdateFunction = (snaps) => {
+    messenger.call('SnapController:installSnaps', 'MetaMask', snaps);
 
     forceUpdateMetamaskState(dispatch)
       .then(() => {

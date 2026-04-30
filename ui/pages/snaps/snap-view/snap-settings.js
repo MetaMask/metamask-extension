@@ -88,7 +88,7 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
     : false;
 
   const handleUpdate = async () => {
-    update('MetaMask', {
+    update({
       [snap.id]: {
         version: latestRegistryVersion,
       },

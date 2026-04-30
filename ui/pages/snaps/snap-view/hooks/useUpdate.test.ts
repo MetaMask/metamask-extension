@@ -75,8 +75,8 @@ describe('useUpdate', () => {
 
     const [update] = result.current;
 
-    act(() => update('https://example.com', {}));
-    expect(callMock).toHaveBeenCalledWith('https://example.com', {});
+    act(() => update({}));
+    expect(callMock).toHaveBeenCalledWith('MetaMask', {});
 
     await waitForNextUpdate();
 
