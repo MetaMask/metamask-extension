@@ -20,6 +20,15 @@ jest.mock('../../../../hooks/pay/useTransactionPayPostQuote', () => ({
   useTransactionPayPostQuote: jest.fn(),
 }));
 
+// `usePerpsLiveAccount` boots the perps stream manager which fires an
+// async background RPC ("perpsInit"). In a stripped-down test render that
+// produces a "Background connection not initialized" warning and an
+// out-of-act `setIsReady` update. Stub it — the only thing this test cares
+// about is that `PerpsWithdrawInfo` forwards the right props.
+jest.mock('../../../../../../hooks/perps/stream', () => ({
+  usePerpsLiveAccount: () => ({ account: null, isInitialLoading: false }),
+}));
+
 jest.mock('../../../info/custom-amount-info', () => ({
   CustomAmountInfo: jest.fn(({ children }) => (
     <div data-testid="custom-amount-info-mock">{children}</div>
