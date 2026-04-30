@@ -11,7 +11,13 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   BorderRadius,

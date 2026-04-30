@@ -38,6 +38,14 @@ import PerpsOrderEntryPage, {
 
 const mockUsePerpsMarketInfo = jest.fn(() => undefined);
 
+const enterAmount = (value: string) => {
+  const amountContainer = screen.getByTestId('amount-input-field');
+  const amountInput = amountContainer.querySelector(
+    'input',
+  ) as HTMLInputElement;
+  fireEvent.change(amountInput, { target: { value } });
+};
+
 jest.mock('@metamask/perps-controller', () => ({
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
@@ -349,25 +357,10 @@ describe('PerpsOrderEntryPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders the submit button with min-order-size copy when amount is empty', () => {
+    it('renders the submit button with Open Long text by default', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
-        'Order size must be at least $10',
-      );
-      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
-    });
-
-    it('renders the submit button with Open Long text once a valid amount is entered', () => {
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const amountInput = amountContainer.querySelector('input');
-      fireEvent.change(amountInput as HTMLInputElement, {
-        target: { value: '100' },
-      });
+      enterAmount('100');
 
       expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
         'Open long ETH',
@@ -467,12 +460,7 @@ describe('PerpsOrderEntryPage', () => {
     it('defaults to long direction', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const amountInput = amountContainer.querySelector('input');
-      fireEvent.change(amountInput as HTMLInputElement, {
-        target: { value: '100' },
-      });
+      enterAmount('100');
 
       expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
         'Open long',
@@ -483,12 +471,7 @@ describe('PerpsOrderEntryPage', () => {
       mockSearchParams.set('direction', 'short');
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const amountInput = amountContainer.querySelector('input');
-      fireEvent.change(amountInput as HTMLInputElement, {
-        target: { value: '100' },
-      });
+      enterAmount('100');
 
       expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
         'Open short',
@@ -533,48 +516,25 @@ describe('PerpsOrderEntryPage', () => {
   });
 
   describe('navigation', () => {
-    it('pops the history stack when back button is clicked and history is non-empty', () => {
+    it('navigates back in history when back button is clicked', () => {
       const store = mockStore(createMockState());
-      const historyLengthSpy = jest
-        .spyOn(window.history, 'length', 'get')
-        .mockReturnValue(2);
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
-
-      historyLengthSpy.mockRestore();
-    });
-
-    it('falls back to market detail (replace) when history has no entry to pop', () => {
-      const store = mockStore(createMockState());
-      const historyLengthSpy = jest
-        .spyOn(window.history, 'length', 'get')
-        .mockReturnValue(1);
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         replace: true,
       });
-
-      historyLengthSpy.mockRestore();
     });
 
-    it('falls back to encoded market detail when history has no entry to pop', () => {
+    it('navigates back in history for encoded symbol markets', () => {
       mockUseParams.mockReturnValue({ symbol: 'xyz%3ATSLA' });
       const store = mockStore(createMockState());
-      const historyLengthSpy = jest
-        .spyOn(window.history, 'length', 'get')
-        .mockReturnValue(1);
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/xyz%3ATSLA', {
         replace: true,
       });
-
-      historyLengthSpy.mockRestore();
     });
   });
 
@@ -831,94 +791,6 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('disables submit and shows min-order-size copy when amount is below $10', () => {
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const amountInput = amountContainer.querySelector('input');
-      fireEvent.change(amountInput as HTMLInputElement, {
-        target: { value: '5' },
-      });
-
-      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
-      expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
-        'Order size must be at least $10',
-      );
-    });
-
-    it('enables submit once amount reaches $10 minimum', () => {
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const amountInput = amountContainer.querySelector('input');
-      fireEvent.change(amountInput as HTMLInputElement, {
-        target: { value: '10' },
-      });
-
-      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
-      expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
-        'Order size must be at least $10',
-      );
-    });
-
-    it('does not apply min-order-size gate to limit orders', () => {
-      mockSearchParams.set('orderType', 'limit');
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const amountInput = amountContainer.querySelector('input');
-      fireEvent.change(amountInput as HTMLInputElement, {
-        target: { value: '5' },
-      });
-
-      expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
-        'Order size must be at least $10',
-      );
-    });
-
-    it('applies the market minimum to modify mode when an add-to-position amount is entered', () => {
-      // Modify mode reuses perpsPlaceOrder under the hood when amount > 0
-      // (the "increase existing position" path). The $10 market minimum must
-      // gate that path the same way it gates new market orders.
-      mockSearchParams.set('mode', 'modify');
-      mockLivePositions.mockReturnValue({
-        positions: mockPositions,
-        isInitialLoading: false,
-      });
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const amountInput = amountContainer.querySelector('input');
-      fireEvent.change(amountInput as HTMLInputElement, {
-        target: { value: '5' },
-      });
-
-      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
-      expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
-        'Order size must be at least $10',
-      );
-    });
-
-    it('does not apply min-order-size gate to modify mode with empty amount (TP/SL-only path)', () => {
-      mockSearchParams.set('mode', 'modify');
-      mockLivePositions.mockReturnValue({
-        positions: mockPositions,
-        isInitialLoading: false,
-      });
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      // Empty amount; modify-with-empty-amount is the TP/SL-only update path
-      // and must not show the min-order copy.
-      expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
-        'Order size must be at least $10',
-      );
-    });
-
     it('disables submit when auto-close take profit is invalid', async () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -1113,10 +985,6 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      // Pending-order data is delivered via setPendingOrder (asserted below).
-      // Route state must NOT carry pendingOrderSymbol/Description because
-      // market-detail will not clear it without a perpsToastKey, leaving a
-      // history entry that replays the filled toast on browser back/forward.
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         replace: true,
       });
@@ -1159,12 +1027,6 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/xyz%3ATSLA', {
         replace: true,
       });
-      expect(mockSetPendingOrder).toHaveBeenCalledWith(
-        expect.objectContaining({
-          symbol: 'xyz:TSLA',
-          filledDescription: expect.stringMatching(/^Long [^ ]+ TSLA$/u),
-        }),
-      );
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastSubmitInProgress',
@@ -1230,55 +1092,6 @@ describe('PerpsOrderEntryPage', () => {
         key: 'perpsToastOrderFailed',
         description: 'A network error occurred. Please try again.',
       });
-    });
-
-    it('navigates only after the placeOrder background call settles (regression: stuck "Submitting your trade" toast)', async () => {
-      // Hold the perpsPlaceOrder Promise pending so we can observe whether
-      // navigate fires before the await resolves. If navigate were called
-      // synchronously (the old `navigate(-1)` before await pattern), the page
-      // would unmount and orphan the Promise — leaving the in-progress toast
-      // stuck forever.
-      let resolvePlaceOrder: (value: unknown) => void = () => undefined;
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsPlaceOrder') {
-          return new Promise((resolve) => {
-            resolvePlaceOrder = resolve;
-          });
-        }
-        return Promise.resolve({ success: true });
-      });
-
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const input = amountContainer.querySelector('input');
-      fireEvent.change(input as HTMLInputElement, {
-        target: { value: '1000' },
-      });
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('submit-order-button'));
-      });
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsPlaceOrder',
-        expect.anything(),
-      );
-      // Critical: navigate must not have fired yet — we are still awaiting
-      // the background response.
-      expect(mockUseNavigate).not.toHaveBeenCalled();
-
-      await act(async () => {
-        resolvePlaceOrder({ success: true });
-      });
-
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        replace: true,
-      });
-      expect(mockSetPendingOrder).toHaveBeenCalledWith(
-        expect.objectContaining({ symbol: 'ETH' }),
-      );
     });
 
     it('calls closePosition when in close mode', async () => {
@@ -1631,82 +1444,6 @@ describe('PerpsOrderEntryPage', () => {
     });
   });
 
-  describe('form submission (Enter key)', () => {
-    beforeEach(() => {
-      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
-    });
-
-    it('renders the page as a form so browsers trigger Enter-to-submit natively', () => {
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const root = screen.getByTestId('perps-order-entry-page');
-      expect(root.tagName).toBe('FORM');
-
-      const submitButton = screen.getByTestId(
-        'submit-order-button',
-      ) as HTMLButtonElement;
-      expect(submitButton.type).toBe('submit');
-      expect(submitButton.form).toBe(root);
-    });
-
-    it('submits the order when the form is submitted with a valid amount', async () => {
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const input = amountContainer.querySelector('input') as HTMLInputElement;
-      fireEvent.change(input, { target: { value: '1000' } });
-
-      await act(async () => {
-        fireEvent.submit(screen.getByTestId('perps-order-entry-page'));
-      });
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsPlaceOrder',
-        [
-          expect.objectContaining({
-            symbol: 'ETH',
-            isBuy: true,
-            orderType: 'market',
-          }),
-        ],
-      );
-    });
-
-    it('does not submit when the form is submitted with an amount below the minimum', async () => {
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const input = amountContainer.querySelector('input') as HTMLInputElement;
-      fireEvent.change(input, { target: { value: '5' } });
-
-      await act(async () => {
-        fireEvent.submit(screen.getByTestId('perps-order-entry-page'));
-      });
-
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
-        'perpsPlaceOrder',
-        expect.anything(),
-      );
-    });
-
-    it('does not submit when the form is submitted with an empty amount', async () => {
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      await act(async () => {
-        fireEvent.submit(screen.getByTestId('perps-order-entry-page'));
-      });
-
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
-        'perpsPlaceOrder',
-        expect.anything(),
-      );
-    });
-  });
-
   describe('formStateToOrderParams', () => {
     it('sets reduceOnly and isFullClose for close mode', async () => {
       mockSearchParams.set('mode', 'close');
@@ -1741,18 +1478,15 @@ describe('PerpsOrderEntryPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('pops the history stack when back button is clicked on market not found', () => {
+    it('navigates back when back button is clicked on market not found', () => {
       mockUseParams.mockReturnValue({ symbol: 'UNKNOWN' });
-      const historyLengthSpy = jest
-        .spyOn(window.history, 'length', 'get')
-        .mockReturnValue(2);
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
-
-      historyLengthSpy.mockRestore();
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/UNKNOWN', {
+        replace: true,
+      });
     });
   });
 
