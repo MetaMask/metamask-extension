@@ -1575,9 +1575,6 @@
   "clearActivity": {
     "message": "Clear activity and nonce data"
   },
-  "clearActivityButton": {
-    "message": "Clear activity tab data"
-  },
   "clearActivityDescription": {
     "message": "Resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
   },
@@ -3929,9 +3926,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Locking MetaMask..."
-  },
-  "lockTimeInvalid": {
-    "message": "Lock time must be a number between 0 and 10080"
   },
   "logOut": {
     "message": "Log out"
@@ -8234,12 +8228,6 @@
   },
   "smartAccount": {
     "message": "Smart account"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Smart account requests from dapps"
   },
   "smartAccountLabel": {
     "message": "Smart Account"

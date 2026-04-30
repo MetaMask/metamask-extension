@@ -1560,9 +1560,6 @@
   "clearActivity": {
     "message": "アクティビティとナンスデータを消去"
   },
-  "clearActivityButton": {
-    "message": "アクティビティタブのデータを消去"
-  },
   "clearActivityDescription": {
     "message": "アカウントのナンスがリセットされ、ウォレットのアクティビティタブからデータが消去されます。現在のアカウントとネットワークだけが影響を受けます。残高と受信トランザクションへの変更はありません。"
   },
@@ -3907,9 +3904,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMaskをロックしています…"
-  },
-  "lockTimeInvalid": {
-    "message": "ロック時間は0～10080の間の数字で設定する必要があります"
   },
   "logOut": {
     "message": "ログアウト"
@@ -8181,12 +8175,6 @@
   },
   "smartAccount": {
     "message": "スマートアカウント"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "DAppによる、スタンダードアカウントに対するスマートアカウント機能のリクエストを許可します。これにより、すでにスマートアカウントのアカウントに影響はありません。"
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "DAppからのスマートアカウントリクエスト"
   },
   "smartAccountLabel": {
     "message": "スマートアカウント"

@@ -1560,9 +1560,6 @@
   "clearActivity": {
     "message": "I-clear ang aktibidad at datos ng nonce"
   },
-  "clearActivityButton": {
-    "message": "I-clear ang data ng tab ng aktibidad"
-  },
   "clearActivityDescription": {
     "message": "Nire-reset ang nonce ng account at binubura ang data mula sa tab ng aktibidad sa iyong wallet. Tanging ang kasalukuyang account at network lamang ang maaapektuhan. Ang iyong mga balanse at mga papasok na transaksyon ay hindi magbabago."
   },
@@ -3911,9 +3908,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Nila-lock ang MetaMask..."
-  },
-  "lockTimeInvalid": {
-    "message": "Ang lock time ay dapat na isang numero sa pagitan ng 0 at 10080"
   },
   "logOut": {
     "message": "Mag-log out"
@@ -8185,12 +8179,6 @@
   },
   "smartAccount": {
     "message": "Smart account"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Hayaan ang dapps na hilingin ang mga feature ng smart account para sa mga standard na account. Hindi nito maaapektuhan ang mga smart account na."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Mga kahilingan na smart account mula sa dapps"
   },
   "smartAccountLabel": {
     "message": "Smart Account"
