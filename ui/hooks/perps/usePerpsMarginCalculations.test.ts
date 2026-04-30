@@ -196,6 +196,62 @@ describe('usePerpsMarginCalculations', () => {
     });
   });
 
+  describe('with position that has negative liquidation price (TAT-3012)', () => {
+    const positionNegativeLiq = {
+      ...mockPositions[0],
+      liquidationPrice: '-100.50',
+    };
+
+    it('returns anchorLiquidationDistance 0 when liq price is negative', () => {
+      const { result } = renderHook(() =>
+        usePerpsMarginCalculations({
+          position: positionNegativeLiq,
+          currentPrice,
+          account,
+          mode: 'add',
+          amount: '0',
+        }),
+      );
+
+      expect(result.current.anchorLiquidationDistance).toBe(0);
+    });
+
+    it('returns anchorLiquidationPrice as the parsed negative value', () => {
+      const { result } = renderHook(() =>
+        usePerpsMarginCalculations({
+          position: positionNegativeLiq,
+          currentPrice,
+          account,
+          mode: 'add',
+          amount: '0',
+        }),
+      );
+
+      expect(result.current.anchorLiquidationPrice).toBe(-100.5);
+    });
+  });
+
+  describe('with position that has zero liquidation price (TAT-3012)', () => {
+    const positionZeroLiq = {
+      ...mockPositions[0],
+      liquidationPrice: '0',
+    };
+
+    it('returns anchorLiquidationDistance 0 when liq price is zero', () => {
+      const { result } = renderHook(() =>
+        usePerpsMarginCalculations({
+          position: positionZeroLiq,
+          currentPrice,
+          account,
+          mode: 'add',
+          amount: '0',
+        }),
+      );
+
+      expect(result.current.anchorLiquidationDistance).toBe(0);
+    });
+  });
+
   describe('with position that has no liquidation price', () => {
     const positionNoLiq = {
       ...mockPositions[0],

@@ -1442,9 +1442,10 @@ const PerpsMarketDetailPage: React.FC = () => {
                     fontWeight={FontWeight.Medium}
                     data-testid="perps-position-liquidation-value"
                   >
-                    {position.liquidationPrice
+                    {position.liquidationPrice &&
+                    Number.parseFloat(position.liquidationPrice) > 0
                       ? formatPerpsFiatUniversal(position.liquidationPrice)
-                      : '-'}
+                      : '--'}
                   </Text>
                 </Box>
 

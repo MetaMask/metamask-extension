@@ -132,11 +132,12 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   const liquidationPriceDisplay = useMemo(() => {
     if (
       anchorLiquidationPrice === null ||
-      !Number.isFinite(anchorLiquidationPrice)
+      !Number.isFinite(anchorLiquidationPrice) ||
+      anchorLiquidationPrice <= 0
     ) {
       return (
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          -
+          --
         </Text>
       );
     }
@@ -166,9 +167,12 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
             fontWeight={FontWeight.Medium}
             data-testid="perps-edit-margin-liquidation-price-value"
           >
-            {formatPerpsFiat(estimatedLiquidationPrice ?? 0, {
-              ranges: PRICE_RANGES_UNIVERSAL,
-            })}
+            {estimatedLiquidationPrice !== null &&
+            estimatedLiquidationPrice > 0
+              ? formatPerpsFiat(estimatedLiquidationPrice, {
+                  ranges: PRICE_RANGES_UNIVERSAL,
+                })
+              : '--'}
           </Text>
         </Box>
       );
@@ -180,12 +184,12 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         fontWeight={FontWeight.Medium}
         data-testid="perps-edit-margin-liquidation-price-value"
       >
-        {formatPerpsFiat(
-          estimatedLiquidationPrice ?? anchorLiquidationPrice ?? 0,
-          {
-            ranges: PRICE_RANGES_UNIVERSAL,
-          },
-        )}
+        {(estimatedLiquidationPrice ?? anchorLiquidationPrice ?? 0) > 0
+          ? formatPerpsFiat(
+              estimatedLiquidationPrice ?? anchorLiquidationPrice ?? 0,
+              { ranges: PRICE_RANGES_UNIVERSAL },
+            )
+          : '--'}
       </Text>
     );
   }, [
@@ -202,13 +206,21 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     return Math.min(100, Math.round((n / maxAmount) * 100));
   }, [marginAmount, maxAmount]);
 
-  const formatLiquidationDistance = useCallback((distance: number) => {
-    if (!Number.isFinite(distance)) {
-      return '-';
-    }
-    // Match mobile's adjust-margin view: liquidation distance is rounded to a whole percent.
-    return `${distance.toFixed(0)}%`;
-  }, []);
+  const formatLiquidationDistance = useCallback(
+    (distance: number, liquidationPrice?: number | null) => {
+      if (
+        !Number.isFinite(distance) ||
+        (liquidationPrice !== undefined &&
+          liquidationPrice !== null &&
+          liquidationPrice <= 0)
+      ) {
+        return '--';
+      }
+      // Match mobile's adjust-margin view: liquidation distance is rounded to a whole percent.
+      return `${distance.toFixed(0)}%`;
+    },
+    [],
+  );
 
   const handleAmountChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -501,7 +513,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
                 variant={TextVariant.BodySm}
                 color={TextColor.TextAlternative}
               >
-                {formatLiquidationDistance(anchorLiquidationDistance)}
+                {formatLiquidationDistance(anchorLiquidationDistance, anchorLiquidationPrice)}
               </Text>
               <Text
                 variant={TextVariant.BodySm}
@@ -515,7 +527,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
                 fontWeight={FontWeight.Medium}
                 data-testid="perps-edit-margin-liquidation-distance-value"
               >
-                {formatLiquidationDistance(estimatedLiquidationDistance)}
+                {formatLiquidationDistance(estimatedLiquidationDistance, estimatedLiquidationPrice)}
               </Text>
             </Box>
           ) : (
@@ -525,7 +537,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               fontWeight={FontWeight.Medium}
               data-testid="perps-edit-margin-liquidation-distance-value"
             >
-              {formatLiquidationDistance(anchorLiquidationDistance)}
+              {formatLiquidationDistance(anchorLiquidationDistance, anchorLiquidationPrice)}
             </Text>
           )}
         </Box>

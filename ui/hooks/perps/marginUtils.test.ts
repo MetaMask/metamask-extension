@@ -39,6 +39,11 @@ describe('marginUtils (mobile parity)', () => {
       expect(liquidationDistancePercent(100000, null)).toBe(0);
       expect(liquidationDistancePercent(100000, 0)).toBe(0);
     });
+
+    it('returns 0 when liq is negative (TAT-3012)', () => {
+      expect(liquidationDistancePercent(3000, -100)).toBe(0);
+      expect(liquidationDistancePercent(3000, -0.01)).toBe(0);
+    });
   });
 
   describe('estimateLiquidationPrice', () => {
@@ -92,6 +97,18 @@ describe('marginUtils (mobile parity)', () => {
         isLong: true,
       });
       expect(added).toBeLessThan(atAnchor);
+    });
+
+    it('clamps to 0 when estimated price would be negative (TAT-3012)', () => {
+      const result = estimateLiquidationPrice({
+        anchorLiquidationPrice: -100,
+        currentMargin: 10,
+        newMargin: 10,
+        positionSize: 1,
+        isLong: true,
+        maxLeverage: 50,
+      });
+      expect(result).toBe(0);
     });
 
     it('moves short estimated liq up when margin increases', () => {

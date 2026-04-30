@@ -106,7 +106,7 @@ export function liquidationDistancePercent(
     !Number.isFinite(liquidationPrice) ||
     !Number.isFinite(markPrice) ||
     markPrice === 0 ||
-    liquidationPrice === 0
+    liquidationPrice <= 0
   ) {
     return 0;
   }
