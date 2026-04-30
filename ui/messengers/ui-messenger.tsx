@@ -3,6 +3,7 @@ import {
   type ActionConstraint,
   type ExtractEventPayload,
 } from '@metamask/messenger';
+import type { Json } from '@metamask/utils';
 
 import type {
   RootMessengerActions,
@@ -49,13 +50,35 @@ type ExcludedActionTypes =
 type ExcludedEventTypes =
   MessengerWithExclusions['EXCLUDED_CAPABILITIES']['events'][number];
 
+/**
+ * Keeps only actions whose parameters and return value are JSON-serializable,
+ * since all actions go through the background connection.
+ */
+type WithJsonParams<Action extends ActionConstraint> =
+  Action extends ActionConstraint
+    ? Parameters<Action['handler']> extends Json[]
+      ? Action
+      : never
+    : never;
+
+/**
+ * Keeps only events whose payload is JSON-serializable, since all events come
+ * through the background connection.
+ */
+type WithJsonPayload<Event> = Event extends {
+  payload: infer P extends unknown[];
+}
+  ? P extends Json[]
+    ? Event
+    : never
+  : never;
+
 export type UIMessengerActions = MakeActionsAsynchronous<
-  Exclude<RootMessengerActions, { type: ExcludedActionTypes }>
+  WithJsonParams<Exclude<RootMessengerActions, { type: ExcludedActionTypes }>>
 >;
 
-export type UIMessengerEvents = Exclude<
-  RootMessengerEvents,
-  { type: ExcludedEventTypes }
+export type UIMessengerEvents = WithJsonPayload<
+  Exclude<RootMessengerEvents, { type: ExcludedEventTypes }>
 >;
 
 const UI_MESSENGER_NAMESPACE = 'UI';
@@ -112,10 +135,16 @@ export class UIMessenger extends Messenger<
       ...payload: ExtractEventPayload<UIMessengerEvents, EventType>
     ) => void,
   ): Promise<() => Promise<void>> {
-    // @ts-expect-error: `subscribeToMessengerEvent` is typed to only accept
-    // events returning JSON-serializable payloads, but `UIMessengerEvents` may
-    // include events with non-serializable payloads.
-    return await subscribeToMessengerEvent(eventType, handler);
+    return await subscribeToMessengerEvent(
+      eventType,
+      // @ts-expect-error: TypeScript cannot verify that the payload is
+      // JSON-serializable, because
+      // `ExtractEventPayload<UIMessengerEvents, EventType>` is a deferred
+      // conditional type which cannot be resolved when `EventType` is generic.
+      // However, UIMessengerEvents is defined as WithJsonPayload<...>, so we
+      // know that the payload must be JSON-serializable.
+      handler,
+    );
   }
 }
 
