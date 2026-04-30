@@ -19,6 +19,21 @@ export type ValidateElements<
     : AllowedElements;
 };
 
+/**
+ * Helper function to define the allowed capabilities for a route messenger.
+ * This is primarily a type-level helper to ensure that the allowed capabilities
+ * are valid UI messenger capabilities and to get better type inference for the
+ * allowed capabilities.
+ *
+ * @param capabilities - The capabilities to allow, which must be valid action
+ * and event types for the `UIMessenger`.
+ * @param capabilities.actions - The action types to allow, which must be
+ * valid action types for the `UIMessenger`.
+ * @param capabilities.events - The event types to allow, which must be valid
+ * event types for the `UIMessenger`.
+ * @returns The given capabilities, typed as the specific action and event types
+ * that were allowed.
+ */
 export function defineAllowedRouteCapabilities<
   const ActionTypes extends string[],
   const EventTypes extends string[],
@@ -42,6 +57,7 @@ type RouteWithMessengerOptions = {
  * Create a route object with a {@link RouteWithMessenger} element that provides
  * a route messenger with the specified capabilities.
  *
+ * @param path.path
  * @param path - The path of the route. This is used for debugging purposes and
  * to ensure that the route messenger's namespace is unique across routes.
  * @param element - The element to render for this route. This will be wrapped
@@ -52,6 +68,8 @@ type RouteWithMessengerOptions = {
  * to the route messenger.
  * @param capabilities.events - Event types to delegate from the UI messenger to
  * the route messenger.
+ * @param path.element
+ * @param path.capabilities
  */
 export function createRouteWithMessenger({
   path,
