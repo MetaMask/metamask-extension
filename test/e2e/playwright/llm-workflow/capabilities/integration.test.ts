@@ -1,6 +1,4 @@
-/* eslint-disable import-x/extensions */
 import { toolRegistry } from '@metamask/client-mcp-core';
-/* eslint-enable import-x/extensions */
 import type { ToolContext, WorkflowContext } from '@metamask/client-mcp-core';
 import { metaMaskSessionManager as sessionManager } from '../metamask-provider';
 import { createMetaMaskE2EContext, createMetaMaskProdContext } from './factory';

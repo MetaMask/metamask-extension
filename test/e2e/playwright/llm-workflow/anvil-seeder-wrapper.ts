@@ -1,10 +1,7 @@
 import type { SmartContractName, Hardfork } from '@metamask/client-mcp-core';
 import type { Anvil } from '../../seeder/anvil';
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-const AnvilSeeder = require('../../seeder/anvil-seeder');
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+import AnvilSeeder from '../../seeder/anvil-seeder';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 
 export type { SmartContractName, Hardfork };
 

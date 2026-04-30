@@ -1,3 +1,5 @@
+import type { WorkflowContext } from '@metamask/client-mcp-core';
+import { metaMaskSessionManager } from '../metamask-provider';
 import { createMetaMaskE2EContext, createMetaMaskProdContext } from './factory';
 import { MetaMaskFixtureCapability } from './fixture';
 import { MetaMaskChainCapability, NoOpChainCapability } from './chain';
@@ -277,46 +279,41 @@ describe('Capability Factory', () => {
   });
 
   describe('MetaMaskSessionManager context switching', () => {
-    let sessionManager: typeof import('../metamask-provider').metaMaskSessionManager;
-
     beforeEach(() => {
-      /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-      sessionManager = require('../metamask-provider').metaMaskSessionManager;
-      sessionManager.setWorkflowContext(
-        createMetaMaskE2EContext() as import('@metamask/client-mcp-core').WorkflowContext,
+      metaMaskSessionManager.setWorkflowContext(
+        createMetaMaskE2EContext() as WorkflowContext,
       );
-      /* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
     });
 
     afterEach(() => {
-      sessionManager.setWorkflowContext(
-        undefined as unknown as import('@metamask/client-mcp-core').WorkflowContext,
+      metaMaskSessionManager.setWorkflowContext(
+        undefined as unknown as WorkflowContext,
       );
     });
 
     describe('setContext', () => {
       it('switches from e2e to prod context successfully', () => {
-        expect(sessionManager.getEnvironmentMode()).toBe('e2e');
-        sessionManager.setContext('prod');
-        expect(sessionManager.getEnvironmentMode()).toBe('prod');
+        expect(metaMaskSessionManager.getEnvironmentMode()).toBe('e2e');
+        metaMaskSessionManager.setContext('prod');
+        expect(metaMaskSessionManager.getEnvironmentMode()).toBe('prod');
       });
 
       it('is no-op when switching to same context', () => {
-        sessionManager.setContext('e2e');
-        expect(sessionManager.getEnvironmentMode()).toBe('e2e');
+        metaMaskSessionManager.setContext('e2e');
+        expect(metaMaskSessionManager.getEnvironmentMode()).toBe('e2e');
       });
 
       it('rebuilds same context when options are provided', () => {
-        const originalContext = sessionManager.getWorkflowContext();
+        const originalContext = metaMaskSessionManager.getWorkflowContext();
 
-        sessionManager.setContext('e2e', {
+        metaMaskSessionManager.setContext('e2e', {
           mockServer: {
             enabled: true,
             port: 18000,
           },
         });
 
-        const updatedContext = sessionManager.getWorkflowContext();
+        const updatedContext = metaMaskSessionManager.getWorkflowContext();
         const mockServerCapability = updatedContext?.mockServer as unknown as {
           enabled: boolean;
           port: number | undefined;
@@ -328,14 +325,14 @@ describe('Capability Factory', () => {
       });
 
       it('passes prod context options when switching to prod', () => {
-        sessionManager.setContext('prod', {
+        metaMaskSessionManager.setContext('prod', {
           remoteChain: {
             rpcUrl: 'https://mainnet.infura.io/v3/test-key',
             chainId: 1,
           },
         });
 
-        const context = sessionManager.getWorkflowContext();
+        const context = metaMaskSessionManager.getWorkflowContext();
 
         expect(context?.config.environment).toBe('prod');
         expect(context?.chain).toBeInstanceOf(NoOpChainCapability);
@@ -343,13 +340,13 @@ describe('Capability Factory', () => {
 
       it('throws MM_CONTEXT_SWITCH_BLOCKED when session is active', () => {
         const hasActiveSessionSpy = jest
-          .spyOn(sessionManager, 'hasActiveSession')
+          .spyOn(metaMaskSessionManager, 'hasActiveSession')
           .mockReturnValue(true);
         const getSessionIdSpy = jest
-          .spyOn(sessionManager, 'getSessionId')
+          .spyOn(metaMaskSessionManager, 'getSessionId')
           .mockReturnValue('test-session-123');
 
-        expect(() => sessionManager.setContext('prod')).toThrow(
+        expect(() => metaMaskSessionManager.setContext('prod')).toThrow(
           'MM_CONTEXT_SWITCH_BLOCKED',
         );
 
@@ -358,35 +355,35 @@ describe('Capability Factory', () => {
       });
 
       it('creates new context instance on switch', () => {
-        const originalContext = sessionManager.getWorkflowContext();
-        sessionManager.setContext('prod');
-        sessionManager.setContext('e2e');
-        const newContext = sessionManager.getWorkflowContext();
+        const originalContext = metaMaskSessionManager.getWorkflowContext();
+        metaMaskSessionManager.setContext('prod');
+        metaMaskSessionManager.setContext('e2e');
+        const newContext = metaMaskSessionManager.getWorkflowContext();
         expect(newContext).not.toBe(originalContext);
       });
     });
 
     describe('getContextInfo', () => {
       it('returns correct info for e2e context', () => {
-        const info = sessionManager.getContextInfo();
+        const info = metaMaskSessionManager.getContextInfo();
         expect(info.currentContext).toBe('e2e');
         expect(info.capabilities.available).not.toContain('build');
       });
 
       it('returns canSwitchContext=false when session active', () => {
         const spy = jest
-          .spyOn(sessionManager, 'hasActiveSession')
+          .spyOn(metaMaskSessionManager, 'hasActiveSession')
           .mockReturnValue(true);
-        const info = sessionManager.getContextInfo();
+        const info = metaMaskSessionManager.getContextInfo();
         expect(info.canSwitchContext).toBe(false);
         spy.mockRestore();
       });
 
       it('returns canSwitchContext=true when no session', () => {
         const spy = jest
-          .spyOn(sessionManager, 'hasActiveSession')
+          .spyOn(metaMaskSessionManager, 'hasActiveSession')
           .mockReturnValue(false);
-        const info = sessionManager.getContextInfo();
+        const info = metaMaskSessionManager.getContextInfo();
         expect(info.canSwitchContext).toBe(true);
         spy.mockRestore();
       });

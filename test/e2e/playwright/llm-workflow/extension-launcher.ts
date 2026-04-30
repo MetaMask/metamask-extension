@@ -157,10 +157,7 @@ export class MetaMaskExtensionLauncher {
           `Configuration error: network.mode '${mode}' requires a valid 'rpcUrl' to be provided.`,
         );
       }
-      try {
-        // eslint-disable-next-line no-new
-        new URL(rpcUrl);
-      } catch {
+      if (!URL.canParse(rpcUrl)) {
         throw new Error(
           `Configuration error: network.rpcUrl '${rpcUrl}' is not a valid URL. ` +
             `Expected format: http://localhost:8545 or https://eth.llamarpc.com`,
