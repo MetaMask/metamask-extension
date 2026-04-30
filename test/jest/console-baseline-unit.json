@@ -585,7 +585,7 @@
       "MetaMask: Background connection not initialized": 8
     },
     "ui/hooks/identity/useAuthentication/useAutoSignIn.test.tsx": {
-      "MetaMask: Background connection not initialized": 4
+      "MetaMask: Background connection not initialized": 12
     },
     "ui/hooks/identity/useAuthentication/useAutoSignOut.test.tsx": {
       "MetaMask: Background connection not initialized": 2

@@ -3746,10 +3746,6 @@ export default class MetamaskController extends EventEmitter {
       performSignIn: authenticationController.performSignIn.bind(
         authenticationController,
       ),
-      performProfilePairing:
-        authenticationController.performProfilePairing.bind(
-          authenticationController,
-        ),
       performSignOut: authenticationController.performSignOut.bind(
         authenticationController,
       ),
@@ -3760,6 +3756,10 @@ export default class MetamaskController extends EventEmitter {
       getBearerToken: authenticationController.getBearerToken.bind(
         authenticationController,
       ),
+      requestProfilePairing:
+        authenticationController.requestProfilePairing.bind(
+          authenticationController,
+        ),
 
       // UserStorageController
       setIsBackupAndSyncFeatureEnabled:

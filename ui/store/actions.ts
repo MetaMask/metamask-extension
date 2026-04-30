@@ -7328,15 +7328,15 @@ export function performSignIn(): ThunkAction<
 }
 
 /**
- * Pairs all SRPs of the wallet via the AuthenticationController.
+ * Marks profile pairing as needed in the AuthenticationController state.
  *
- * Delegates to `performProfilePairing` on the background controller, which is
- * a no-op when fewer than 2 SRPs exist and swallows non-fatal errors internally.
- * Intended to be called by the `useAutoProfilePairing` hook.
+ * Dispatched by `useAutoSignIn` when a new keyring/SRP is added so that the
+ * next auto-sign-in cycle re-runs `performSignIn` and re-pairs profiles. The
+ * controller method is a synchronous, never-throws state setter.
  *
- * @returns A thunk action that performs the profile pairing operation.
+ * @returns A thunk action that toggles `needsProfilePairing` to `true`.
  */
-export function performProfilePairing(): ThunkAction<
+export function requestProfilePairing(): ThunkAction<
   void,
   MetaMaskReduxState,
   unknown,
@@ -7346,13 +7346,9 @@ export function performProfilePairing(): ThunkAction<
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async () => {
     try {
-      await submitRequestToBackground('performProfilePairing');
+      await submitRequestToBackground('requestProfilePairing');
     } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : 'Unknown error occurred during profile pairing.';
-      logErrorWithMessage(errorMessage);
+      logErrorWithMessage(error);
       throw error;
     }
   };
