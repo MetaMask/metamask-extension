@@ -47,11 +47,6 @@ function renderHook({
   return renderHookWithProviderTyped(
     () => useKeyringSnap(snapId, isKeyringSnap),
     state,
-    '/',
-    undefined,
-    jest.fn(),
-    undefined,
-    createMockRouteMessenger(),
   );
 }
 
