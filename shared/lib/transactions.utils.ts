@@ -39,3 +39,24 @@ export function hasTransactionType(
     ) ?? false
   );
 }
+
+const PERPS_WITHDRAW_TYPES: TransactionType[] = [TransactionType.perpsWithdraw];
+
+/**
+ * Checks whether the given transaction is a Perps withdraw, either directly
+ * via `type` or via any `nestedTransactions` entry.
+ *
+ * Mirrors `isTransactionPayWithdraw` from metamask-mobile and gives callers
+ * a single place to reason about "is this a perps withdraw flow" instead of
+ * sprinkling `hasTransactionType(tx, [TransactionType.perpsWithdraw])` and
+ * ad-hoc `WITHDRAW_TYPES` lists across the codebase.
+ *
+ * @param transactionMeta - The transaction metadata to check.
+ * @returns Whether the transaction (or any of its nested transactions) is a
+ * Perps withdraw.
+ */
+export function isPerpsWithdrawTransaction(
+  transactionMeta: TransactionMeta | undefined,
+): boolean {
+  return hasTransactionType(transactionMeta, PERPS_WITHDRAW_TYPES);
+}
