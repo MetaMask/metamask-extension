@@ -2,15 +2,12 @@
 
 import { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
-import {
-  type TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { usePerpsLiveAccount } from '../../../../../hooks/perps/stream';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionCustomAmount } from '../../transactions/useTransactionCustomAmount';
@@ -29,9 +26,7 @@ export function usePerpsWithdrawInsufficientBalanceAlert(): Alert[] {
   const { account } = usePerpsLiveAccount();
   const { amountFiat } = useTransactionCustomAmount();
 
-  const isPerpsWithdraw = hasTransactionType(currentConfirmation, [
-    TransactionType.perpsWithdraw,
-  ]);
+  const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   const availableBalance = new BigNumber(account?.availableBalance ?? '0');
   const enteredAmount = new BigNumber(amountFiat || '0');

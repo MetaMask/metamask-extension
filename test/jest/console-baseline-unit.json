@@ -1308,9 +1308,9 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useConfirmationAlerts.test.ts": {
-      "MetaMask: Background connection not initialized": 7,
-      "React: Act warnings (component updates not wrapped)": 3,
-      "Reselect: Identity function warnings": 6
+      "MetaMask: Background connection not initialized": 8,
+      "React: Act warnings (component updates not wrapped)": 4,
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useConfirmationId.test.ts": {
       "Reselect: Identity function warnings": 1
