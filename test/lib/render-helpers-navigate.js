@@ -224,7 +224,7 @@ export const renderHookWithProviderTyped = (
   Container,
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
   uiMessenger = createMockUIMessenger(),
-  messenger = false,
+  messenger = null,
 ) =>
   renderHookWithProvider(
     hook,
