@@ -50,7 +50,10 @@ const createMockRequest = (
   method: string,
   params: Json[] = [],
   origin: string = 'https://example.com',
-): JsonRpcRequest & { origin?: string; networkClientId: string } => ({
+): JsonRpcRequest & {
+  origin?: string;
+  networkClientId: string;
+} => ({
   method,
   params,
   id: 1,
@@ -78,9 +81,10 @@ const createTransactionParams = (
 const createMiddleware = (
   options: {
     chainId?: Hex | null;
+    requestUrl?: string;
   } = {},
 ) => {
-  const { chainId } = options;
+  const { chainId, requestUrl } = options;
 
   const networkController = {
     state: {
@@ -119,6 +123,7 @@ const createMiddleware = (
       phishingController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       preferencesController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       getPermittedAccounts,
+      requestUrl,
     ),
     appStateController,
     networkController,
@@ -1122,6 +1127,26 @@ describe('createTrustSignalsMiddleware', () => {
   });
 
   describe('eth_request_accounts', () => {
+    it('scans full URL when url with path is present', async () => {
+      const fullUrl = 'https://example.com/swap/review?token=eth';
+      const { middleware, phishingController } = createMiddleware({
+        requestUrl: fullUrl,
+      });
+      const origin = 'https://example.com';
+      const req = createMockRequest(
+        MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS,
+        [],
+        origin,
+      );
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      await middleware(req, res, next);
+
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(fullUrl);
+      expect(next).toHaveBeenCalled();
+    });
+
     it('scans URL when origin is present', async () => {
       const { middleware, phishingController } = createMiddleware();
       const origin = 'https://example.com';
