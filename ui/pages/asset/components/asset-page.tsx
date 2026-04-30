@@ -91,6 +91,7 @@ import {
 } from '../../../hooks/musd';
 import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
+import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
@@ -99,7 +100,6 @@ import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
 import { MusdPositionSection } from './musd-position-section';
-import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -140,11 +140,11 @@ const AssetPage = ({
 
   const isSigningEnabled = Boolean(
     selectedAccount &&
-      (selectedAccount.methods.includes(EthMethod.SignTransaction) ||
-        selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
-        selectedAccount.methods.includes(SolMethod.SignTransaction) ||
-        selectedAccount.methods.includes(BtcMethod.SignPsbt) ||
-        selectedAccount.type === TrxAccountType.Eoa),
+    (selectedAccount.methods.includes(EthMethod.SignTransaction) ||
+      selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
+      selectedAccount.methods.includes(SolMethod.SignTransaction) ||
+      selectedAccount.methods.includes(BtcMethod.SignPsbt) ||
+      selectedAccount.type === TrxAccountType.Eoa),
   );
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
@@ -504,7 +504,10 @@ const AssetPage = ({
                       name={networkName}
                       size={AvatarNetworkSize.Xs}
                     />
-                    <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      fontWeight={FontWeight.Medium}
+                    >
                       {networkName ??
                         selectedMultichainNetworkConfiguration?.name ??
                         caipChainId}

@@ -905,5 +905,4 @@ describe('AssetPage', () => {
       ).toBeInTheDocument();
     });
   });
-
 });
