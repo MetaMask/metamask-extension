@@ -4,7 +4,7 @@ import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import Dropdown from '../../../components/ui/dropdown';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getShowDefaultAddress,
+  getShowDefaultAddressPreference,
   getDefaultAddressScope,
   getIsDefaultAddressEnabled,
 } from '../../../selectors';
@@ -21,7 +21,7 @@ import {
   DEFAULT_ADDRESS_OPTIONS,
   type DefaultAddressScope,
 } from '../../../../shared/constants/default-address';
-import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PREFERENCES_ITEMS } from '../search-config';
 
 export const ShowDefaultAddressItem = () => {
@@ -30,7 +30,7 @@ export const ShowDefaultAddressItem = () => {
   const { trackEvent } = useContext(MetaMetricsContext);
 
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
-  const showDefaultAddress = useSelector(getShowDefaultAddress);
+  const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
   const defaultAddressScope = useSelector(
     getDefaultAddressScope,
   ) as DefaultAddressScope;
@@ -89,6 +89,7 @@ export const ShowDefaultAddressItem = () => {
         selectedOption={defaultAddressScope}
         onChange={handleDropdownChange}
         data-testid="default-address-scope-dropdown"
+        className="mx-4"
       />
     </Box>
   );

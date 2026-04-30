@@ -15,7 +15,13 @@ import {
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
-import { ConnectionStatus, type EnsureDeviceReadyOptions } from './types';
+import {
+  ConnectionStatus,
+  HardwareConnectionPermissionState,
+  HardwareWalletType,
+  type EnsureDeviceReadyOptions,
+} from './types';
+import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
 
 type UseHardwareFooterArgs = {
   currentConfirmation?: TransactionMeta;
@@ -23,11 +29,36 @@ type UseHardwareFooterArgs = {
   onUserRejectedHardwareWalletError: () => Promise<void>;
 };
 
+/**
+ * Returns true when the transport is established (`Connected`) or when a full
+ * readiness probe has succeeded (`Ready`). `Connected` alone is enough to show
+ * the primary "Confirm" CTA: `ensureDeviceReady` still runs on submit before signing.
+ *
+ * @param status - Current `ConnectionStatus` from hardware wallet context.
+ */
+export function isHardwareConnectionReadyForConfirmFooter(
+  status: ConnectionStatus,
+): boolean {
+  return (
+    status === ConnectionStatus.Ready || status === ConnectionStatus.Connected
+  );
+}
+
+export type SubmitPreflightCheckOptions = {
+  /**
+   * When true, runs hardware-wallet Connect-CTA metrics before device readiness (e.g. dedicated “Connect device” button).
+   * Omit or set to false for preflight from the main Confirm action.
+   */
+  trackConnectCta?: boolean;
+};
+
 type UseHardwareFooterResult = {
   walletType: ReturnType<typeof useHardwareWalletConfig>['walletType'];
   shouldRunHardwareWalletPreflight: boolean;
   isHardwareWalletReady: boolean;
-  onSubmitPreflightCheck: () => Promise<boolean>;
+  onSubmitPreflightCheck: (
+    options?: SubmitPreflightCheckOptions,
+  ) => Promise<boolean>;
   withHardwareWalletModalHandling: (
     request: () => Promise<void>,
   ) => () => Promise<void>;
@@ -38,10 +69,15 @@ export const useHardwareFooter = ({
   currentConfirmationId,
   onUserRejectedHardwareWalletError,
 }: UseHardwareFooterArgs): UseHardwareFooterResult => {
+  const { trackConnectCtaClicked } = useHardwareWalletMetrics();
   const inE2e =
     process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
   const { connectionState } = useHardwareWalletState();
-  const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
+  const {
+    isHardwareWalletAccount,
+    walletType,
+    hardwareConnectionPermissionState,
+  } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { showErrorModal } = useHardwareWalletError();
   const [hasPreflightSucceeded, setHasPreflightSucceeded] = useState(false);
@@ -97,29 +133,51 @@ export const useHardwareFooter = ({
       return true;
     }
 
-    return ConnectionStatus.Ready === connectionState.status;
-  }, [
-    connectionState.status,
-    hasPreflightSucceeded,
-    inE2e,
-    isHardwareWalletAccount,
-  ]);
-
-  const onSubmitPreflightCheck = useCallback(async (): Promise<boolean> => {
-    if (inE2e || !isHardwareWalletAccount) {
+    // QR wallets don't need a physical device connection.
+    // Camera permission is the only prerequisite.
+    // When already granted, skip the "Connect QR"
+    // step and let the Confirm button run the preflight inline.
+    if (
+      walletType === HardwareWalletType.Qr &&
+      hardwareConnectionPermissionState ===
+        HardwareConnectionPermissionState.Granted
+    ) {
       return true;
     }
 
-    const isDeviceReady = await ensureDeviceReady(ensureDeviceReadyOptions);
-    setHasPreflightSucceeded(isDeviceReady);
-
-    return isDeviceReady;
+    return isHardwareConnectionReadyForConfirmFooter(connectionState.status);
   }, [
+    connectionState.status,
+    hardwareConnectionPermissionState,
+    hasPreflightSucceeded,
     inE2e,
     isHardwareWalletAccount,
-    ensureDeviceReady,
-    ensureDeviceReadyOptions,
+    walletType,
   ]);
+
+  const onSubmitPreflightCheck = useCallback(
+    async (options?: SubmitPreflightCheckOptions): Promise<boolean> => {
+      if (inE2e || !isHardwareWalletAccount) {
+        return true;
+      }
+
+      if (options?.trackConnectCta) {
+        trackConnectCtaClicked();
+      }
+
+      const isDeviceReady = await ensureDeviceReady(ensureDeviceReadyOptions);
+      setHasPreflightSucceeded(isDeviceReady);
+
+      return isDeviceReady;
+    },
+    [
+      inE2e,
+      isHardwareWalletAccount,
+      trackConnectCtaClicked,
+      ensureDeviceReady,
+      ensureDeviceReadyOptions,
+    ],
+  );
 
   const withHardwareWalletModalHandling = useCallback(
     (request: () => Promise<void>) => {

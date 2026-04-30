@@ -1,4 +1,3 @@
-import { regularDelayMs } from '../../../helpers';
 import HomePage from './homepage';
 
 class NonEvmHomepage extends HomePage {
@@ -15,17 +14,17 @@ class NonEvmHomepage extends HomePage {
 
   protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
 
-  async checkPageIsLoaded({ amount }: { amount?: string } = {}): Promise<void> {
+  /**
+   * Extends {@link HomePage.checkPageIsLoaded}; optionally waits for aggregated balance text.
+   *
+   * @param options - Optional post-load checks.
+   * @param options.amount - When set, waits until this string appears in a balance `span`.
+   */
+  async checkPageIsLoaded(options: { amount?: string } = {}): Promise<void> {
+    const { amount } = options;
     await super.checkPageIsLoaded();
-    await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
     if (amount) {
-      await this.driver.wait(async () => {
-        await this.driver.waitForSelector({
-          text: `${amount}`,
-          tag: 'span',
-        });
-        return true;
-      }, 60000);
+      await this.driver.waitForSelector({ text: `${amount}`, tag: 'span' });
     }
   }
 
@@ -60,22 +59,16 @@ class NonEvmHomepage extends HomePage {
    * @param token
    */
   async checkGetBalance(balance: string, token: string = 'SOL'): Promise<void> {
-    await this.driver.waitForSelector(
-      {
-        text: balance,
-        tag: 'span',
-      },
-      { timeout: 30000 },
-    );
+    await this.driver.waitForSelector({
+      text: balance,
+      tag: 'span',
+    });
 
     if (token) {
-      await this.driver.waitForSelector(
-        {
-          text: token,
-          tag: 'span',
-        },
-        { timeout: 30000 },
-      );
+      await this.driver.waitForSelector({
+        text: token,
+        tag: 'span',
+      });
     }
   }
 

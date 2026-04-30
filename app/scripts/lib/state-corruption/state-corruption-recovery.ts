@@ -8,7 +8,7 @@ import {
   type Backup,
   PersistenceError,
   PersistenceManager,
-} from '../stores/persistence-manager';
+} from '../../../../shared/lib/stores/persistence-manager';
 import { ErrorLike } from '../../../../shared/constants/errors';
 import { tryPostMessage } from '../start-up-errors/start-up-errors';
 import { RELOAD_WINDOW } from '../../../../shared/constants/start-up-errors';

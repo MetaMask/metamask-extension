@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 import { promises as fs } from 'fs';
 import { strict as assert } from 'assert';
-import { get, has, set, unset, cloneDeep } from 'lodash';
+import { cloneDeep, get, has, set, unset } from 'lodash';
 import { Browser } from 'selenium-webdriver';
 import prettier from 'prettier';
 import { isObject, Json, JsonRpcResponse } from '@metamask/utils';
@@ -362,6 +362,9 @@ describe('Sentry errors', function () {
     });
 
     it('should NOT send error events in the UI', async function () {
+      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+        this.skip();
+      }
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
@@ -521,6 +524,9 @@ describe('Sentry errors', function () {
     });
 
     it('should capture background application state', async function () {
+      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+        this.skip();
+      }
       await withFixtures(
         {
           fixtures: {
@@ -795,6 +801,9 @@ describe('Sentry errors', function () {
     });
 
     it('should capture UI application state', async function () {
+      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+        this.skip();
+      }
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
@@ -1316,6 +1325,9 @@ describe('Sentry errors', function () {
     });
 
     it('should capture UI application state', async function () {
+      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+        this.skip();
+      }
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()

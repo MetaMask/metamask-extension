@@ -6,6 +6,10 @@ import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { buildSolanaTestSpecificMock } from './common-solana';
 
+const SOL_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
+const SOL_CAIP_ASSET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+const SOL_SPOT_PRICE = 112.87;
+
 describe('Check balance', function (this: Suite) {
   this.timeout(300000);
   it('Just created Solana account shows 0 SOL when native token is enabled', async function () {
@@ -18,7 +22,6 @@ describe('Check balance', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '0 SOL' });
       },
@@ -34,29 +37,43 @@ describe('Check balance', function (this: Suite) {
         testSpecificMock: buildSolanaTestSpecificMock({ balance: 0 }),
       },
       async ({ driver }) => {
-        // Balance is $0 as conversion on testnets is disabled
-        await login(driver, { expectedBalance: '$0.00' });
+        await login(driver, { validateBalance: false });
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '$0' });
       },
     );
   });
   it('For a non 0 balance account - USD balance', async function () {
+    const fixture = new FixtureBuilderV2()
+      .withShowNativeTokenAsMainBalanceDisabled()
+      .withAssetsController({
+        assetsBalance: {
+          [SOL_ACCOUNT_ID]: {
+            [SOL_CAIP_ASSET]: { amount: '50' },
+          },
+        },
+        assetsPrice: {
+          [SOL_CAIP_ASSET]: {
+            assetPriceType: 'fungible' as const,
+            id: 'solana',
+            lastUpdated: 0,
+            price: SOL_SPOT_PRICE,
+            usdPrice: SOL_SPOT_PRICE,
+          },
+        },
+      })
+      .build();
+
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2()
-          .withShowNativeTokenAsMainBalanceDisabled()
-          .build(),
+        fixtures: fixture,
         title: this.test?.fullTitle(),
         testSpecificMock: buildSolanaTestSpecificMock(),
       },
       async ({ driver }) => {
-        // Balance is $0 as conversion on testnets is disabled
-        await login(driver, { expectedBalance: '$0.00' });
+        await login(driver, { validateBalance: false });
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '$5,643.50' });
       },
@@ -72,7 +89,6 @@ describe('Check balance', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '50 SOL' });
       },

@@ -77,7 +77,7 @@ describe('MetametricsToggleItem', () => {
     renderWithProvider(<MetametricsToggleItem />, mockStore);
 
     expect(
-      screen.getByTestId('participate-in-meta-metrics-toggle'),
+      screen.getByTestId('participate-in-meta-metrics-input'),
     ).toHaveAttribute('value', 'true');
   });
 
@@ -86,7 +86,7 @@ describe('MetametricsToggleItem', () => {
     renderWithProvider(<MetametricsToggleItem />, mockStore);
 
     expect(
-      screen.getByTestId('participate-in-meta-metrics-toggle'),
+      screen.getByTestId('participate-in-meta-metrics-input'),
     ).toHaveAttribute('value', 'false');
   });
 
@@ -94,7 +94,7 @@ describe('MetametricsToggleItem', () => {
     const mockStore = createMockStore({ participateInMetaMetrics: false });
     renderWithProvider(<MetametricsToggleItem />, mockStore);
 
-    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-toggle'));
+    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-input'));
 
     await waitFor(() => {
       expect(mockEnableMetametrics).toHaveBeenCalled();
@@ -105,7 +105,7 @@ describe('MetametricsToggleItem', () => {
     const mockStore = createMockStore({ participateInMetaMetrics: true });
     renderWithProvider(<MetametricsToggleItem />, mockStore);
 
-    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-toggle'));
+    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-input'));
 
     await waitFor(() => {
       expect(mockDisableMetametrics).toHaveBeenCalled();
@@ -119,7 +119,7 @@ describe('MetametricsToggleItem', () => {
     });
     renderWithProvider(<MetametricsToggleItem />, mockStore);
 
-    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-toggle'));
+    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-input'));
 
     await waitFor(() => {
       expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
@@ -130,7 +130,30 @@ describe('MetametricsToggleItem', () => {
     const mockStore = createMockStore({ useExternalServices: false });
     renderWithProvider(<MetametricsToggleItem />, mockStore);
 
-    const toggle = screen.getByTestId('participate-in-meta-metrics-toggle');
+    const toggle = screen.getByTestId('participate-in-meta-metrics-input');
     expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
+  });
+
+  it('fires TurnOffMetaMetrics event when toggled off', async () => {
+    const mockTrackEvent = jest.fn();
+    const mockStore = createMockStore({ participateInMetaMetrics: true });
+
+    renderWithProvider(
+      <MetametricsToggleItem />,
+      mockStore,
+      '/',
+      undefined,
+      () => mockTrackEvent,
+    );
+
+    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-input'));
+
+    await waitFor(() => {
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: 'MetaMetrics Turned Off',
+        }),
+      );
+    });
   });
 });

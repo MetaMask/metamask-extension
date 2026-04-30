@@ -24,7 +24,6 @@ export {
   usePerpsStreamManager,
   type UsePerpsStreamManagerReturn,
 } from './usePerpsStreamManager';
-
 export { usePerpsViewActive } from './usePerpsViewActive';
 
 // Generic channel hook (shared implementation for channel-based hooks)
@@ -93,6 +92,11 @@ export {
   type UsePerpsLiveMarketDataOptions,
   type UsePerpsLiveMarketDataReturn,
 } from './usePerpsLiveMarketData';
+export {
+  usePerpsLiveMarketListData,
+  type UsePerpsLiveMarketListDataOptions,
+  type UsePerpsLiveMarketListDataReturn,
+} from './usePerpsLiveMarketListData';
 
 // Re-export types from @metamask/perps-controller for convenience
 export type {

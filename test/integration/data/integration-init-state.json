@@ -24,7 +24,6 @@
     "0xb552685e3d2790efd64a175b00d51f02cdafee5d": "c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3"
   },
   "accountTree": {
-    "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
     "wallets": {
       "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
         "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ",
@@ -44,7 +43,8 @@
                 "groupIndex": 0
               },
               "hidden": false,
-              "pinned": false
+              "pinned": false,
+              "lastSelected": 0
             }
           }
         },
@@ -311,7 +311,40 @@
   },
   "announcements": [],
   "approvalFlows": [],
+  "assetsBalance": {
+    "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3": {
+      "eip155:11155111/slip44:60": {
+        "amount": "1.582717"
+      }
+    }
+  },
+  "assetsInfo": {
+    "eip155:1/slip44:60": {
+      "type": "native",
+      "decimals": 18,
+      "symbol": "ETH"
+    },
+    "eip155:11155111/slip44:60": {
+      "type": "native",
+      "decimals": 18,
+      "symbol": "SepoliaETH"
+    }
+  },
   "assetsMetadata": {},
+  "assetsPrice": {
+    "eip155:1/slip44:60": {
+      "assetPriceType": "fungible",
+      "price": 556.12,
+      "usdPrice": 556.12,
+      "lastUpdated": 1721393858000
+    },
+    "eip155:11155111/slip44:60": {
+      "assetPriceType": "fungible",
+      "price": 556.12,
+      "usdPrice": 556.12,
+      "lastUpdated": 1721392020000
+    }
+  },
   "browserEnvironment": {
     "os": "mac",
     "browser": "chrome"
@@ -812,7 +845,7 @@
     "showTestNetworks": true,
     "smartTransactionsOptInStatus": true,
     "showConfirmationAdvancedDetails": false,
-    "showDefaultAddress": false,
+    "showDefaultAddress": true,
     "featureNotificationsEnabled": false,
     "showMultiRpcModal": false,
     "privacyMode": false,
@@ -840,6 +873,8 @@
   },
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
+  "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
+  "selectedCurrency": "usd",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
   "showAccountBanner": false,
@@ -2103,7 +2138,6 @@
   "unencryptedSnapStates": {},
   "use4ByteResolution": true,
   "useAddressBarEnsResolution": true,
-  "useBlockie": false,
   "useCurrencyRateCheck": true,
   "useExternalNameSources": true,
   "useExternalServices": true,

@@ -1,20 +1,6 @@
 import React from 'react';
-
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  AlignItems,
-  Display,
-  IconColor,
-  JustifyContent,
-  TextAlign,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
 import {
   Box,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
   Text,
   ButtonSize,
   Button,
@@ -22,6 +8,20 @@ import {
   IconSize,
   IconName,
   ButtonVariant,
+  BoxJustifyContent,
+  IconColor,
+  TextVariant,
+  TextAlign,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { AlignItems } from '../../../../helpers/constants/design-system';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
 } from '../../../../components/component-library';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
@@ -60,32 +60,36 @@ export default function ChangePasswordWarning({
       <ModalContent alignItems={AlignItems.center}>
         <ModalHeader>
           <Box>
-            <Box display={Display.Flex} justifyContent={JustifyContent.center}>
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Center}
+              alignItems={BoxAlignItems.Center}
+            >
               <Icon
                 name={IconName.Danger}
                 size={IconSize.Xl}
-                color={IconColor.warningDefault}
+                color={IconColor.WarningDefault}
               />
             </Box>
             <Text
-              variant={TextVariant.headingMd}
+              variant={TextVariant.HeadingMd}
               textAlign={TextAlign.Center}
-              marginTop={4}
+              className="mt-4"
             >
               {t('changePasswordWarning')}
             </Text>
-            <Text variant={TextVariant.bodySm} marginTop={4}>
+            <Text variant={TextVariant.BodySm} className="mt-4">
               {t('changePasswordWarningDescription')} {changePasswordLearnMore}
             </Text>
           </Box>
         </ModalHeader>
         <Box paddingLeft={4} paddingRight={4}>
-          <Box display={Display.Flex} marginTop={2} gap={4}>
+          <Box flexDirection={BoxFlexDirection.Row} marginTop={2} gap={4}>
             <Button
               variant={ButtonVariant.Secondary}
               data-testid="change-password-warning-cancel"
               size={ButtonSize.Lg}
-              block
+              className="w-full"
               onClick={() => onCancel()}
             >
               {t('cancel')}
@@ -93,7 +97,7 @@ export default function ChangePasswordWarning({
             <Button
               data-testid="change-password-warning-confirm"
               size={ButtonSize.Lg}
-              block
+              className="w-full"
               onClick={() => onConfirm()}
             >
               {t('confirm')}

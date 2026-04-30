@@ -14,7 +14,16 @@ import {
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
 import { useHardwareFooter } from './useHardwareFooter';
-import { ConnectionStatus, HardwareWalletType } from './types';
+import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
+import {
+  ConnectionStatus,
+  HardwareConnectionPermissionState,
+  HardwareWalletType,
+} from './types';
+
+jest.mock('./useHardwareWalletMetrics', () => ({
+  useHardwareWalletMetrics: jest.fn(),
+}));
 
 jest.mock('./HardwareWalletContext', () => ({
   useHardwareWalletState: jest.fn(),
@@ -31,10 +40,13 @@ jest.mock('./rpcErrorUtils', () => ({
   isUserRejectedHardwareWalletError: jest.fn(),
 }));
 
+const mockUseHardwareWalletMetrics = jest.mocked(useHardwareWalletMetrics);
+
 describe('useHardwareFooter', () => {
   let mockConnectionState: { status: ConnectionStatus };
   let mockEnsureDeviceReady: jest.Mock<Promise<boolean>, [unknown?]>;
   let mockShowErrorModal: jest.Mock;
+  let mockTrackConnectCtaClicked: jest.Mock;
   let mockOnUserRejectedHardwareWalletError: jest.Mock<
     Promise<void>,
     [],
@@ -66,6 +78,8 @@ describe('useHardwareFooter', () => {
     (useHardwareWalletConfig as jest.Mock).mockReturnValue({
       isHardwareWalletAccount: true,
       walletType: HardwareWalletType.Ledger,
+      hardwareConnectionPermissionState:
+        HardwareConnectionPermissionState.Unknown,
     });
     (useHardwareWalletActions as jest.Mock).mockReturnValue({
       ensureDeviceReady: mockEnsureDeviceReady,
@@ -75,6 +89,11 @@ describe('useHardwareFooter', () => {
     });
     (isHardwareWalletError as jest.Mock).mockReturnValue(false);
     (isUserRejectedHardwareWalletError as jest.Mock).mockReturnValue(false);
+
+    mockTrackConnectCtaClicked = jest.fn();
+    mockUseHardwareWalletMetrics.mockReturnValue({
+      trackConnectCtaClicked: mockTrackConnectCtaClicked,
+    });
   });
 
   afterEach(() => {
@@ -150,6 +169,14 @@ describe('useHardwareFooter', () => {
       expect(result.current.shouldRunHardwareWalletPreflight).toBe(true);
     });
 
+    it('treats Connected transport as ready for footer CTA before ensureDeviceReady', () => {
+      mockConnectionState.status = ConnectionStatus.Connected;
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(true);
+    });
+
     it('returns preflight disabled in e2e mode', () => {
       process.env.IN_TEST = 'true';
       process.env.JEST_WORKER_ID = 'undefined';
@@ -158,6 +185,62 @@ describe('useHardwareFooter', () => {
 
       expect(result.current.shouldRunHardwareWalletPreflight).toBe(false);
       expect(result.current.isHardwareWalletReady).toBe(true);
+    });
+
+    it('returns ready for QR wallet when camera permission is already granted', () => {
+      mockConnectionState.status = ConnectionStatus.Disconnected;
+      (useHardwareWalletConfig as jest.Mock).mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Qr,
+        hardwareConnectionPermissionState:
+          HardwareConnectionPermissionState.Granted,
+      });
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(true);
+    });
+
+    it('returns not ready for QR wallet when camera permission is not granted', () => {
+      mockConnectionState.status = ConnectionStatus.Disconnected;
+      (useHardwareWalletConfig as jest.Mock).mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Qr,
+        hardwareConnectionPermissionState:
+          HardwareConnectionPermissionState.Prompt,
+      });
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(false);
+    });
+
+    it('returns not ready for QR wallet when camera permission state is unknown', () => {
+      mockConnectionState.status = ConnectionStatus.Disconnected;
+      (useHardwareWalletConfig as jest.Mock).mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Qr,
+        hardwareConnectionPermissionState:
+          HardwareConnectionPermissionState.Unknown,
+      });
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(false);
+    });
+
+    it('returns not ready for Ledger even when camera permission is granted', () => {
+      mockConnectionState.status = ConnectionStatus.Disconnected;
+      (useHardwareWalletConfig as jest.Mock).mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+        hardwareConnectionPermissionState:
+          HardwareConnectionPermissionState.Granted,
+      });
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(false);
     });
   });
 
@@ -208,7 +291,8 @@ describe('useHardwareFooter', () => {
       });
 
       expect(isReady).toBe(false);
-      expect(result.current.isHardwareWalletReady).toBe(false);
+      // Transport remains connected; footer still shows Confirm so the user can retry.
+      expect(result.current.isHardwareWalletReady).toBe(true);
     });
 
     it('returns true without calling the device check in e2e mode', async () => {
@@ -224,6 +308,47 @@ describe('useHardwareFooter', () => {
 
       expect(isReady).toBe(true);
       expect(mockEnsureDeviceReady).not.toHaveBeenCalled();
+    });
+
+    it('invokes trackConnectCtaClicked when trackConnectCta is true', async () => {
+      mockConnectionState.status = ConnectionStatus.Connected;
+      mockEnsureDeviceReady.mockResolvedValue(true);
+
+      const { result } = renderHook(() =>
+        useHardwareFooter({
+          currentConfirmation: createConfirmation(TransactionType.simpleSend),
+          currentConfirmationId: 'confirmation-id',
+          onUserRejectedHardwareWalletError:
+            mockOnUserRejectedHardwareWalletError,
+        }),
+      );
+
+      await act(async () => {
+        await result.current.onSubmitPreflightCheck({ trackConnectCta: true });
+      });
+
+      expect(mockTrackConnectCtaClicked).toHaveBeenCalledTimes(1);
+      expect(mockEnsureDeviceReady).toHaveBeenCalled();
+    });
+
+    it('does not invoke trackConnectCtaClicked when trackConnectCta is omitted', async () => {
+      mockConnectionState.status = ConnectionStatus.Connected;
+      mockEnsureDeviceReady.mockResolvedValue(true);
+
+      const { result } = renderHook(() =>
+        useHardwareFooter({
+          currentConfirmation: createConfirmation(TransactionType.simpleSend),
+          currentConfirmationId: 'confirmation-id',
+          onUserRejectedHardwareWalletError:
+            mockOnUserRejectedHardwareWalletError,
+        }),
+      );
+
+      await act(async () => {
+        await result.current.onSubmitPreflightCheck();
+      });
+
+      expect(mockTrackConnectCtaClicked).not.toHaveBeenCalled();
     });
   });
 
@@ -249,7 +374,8 @@ describe('useHardwareFooter', () => {
         });
       });
 
-      expect(result.current.isHardwareWalletReady).toBe(false);
+      // Transport is still up; confirm CTA stays enabled and preflight runs again on submit.
+      expect(result.current.isHardwareWalletReady).toBe(true);
     });
 
     it('resets a successful preflight when the device disconnects', async () => {

@@ -7,7 +7,7 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVIEW_SRP_ROUTE,
-  REVEAL_SRP_LIST_ROUTE,
+  MANAGE_WALLET_RECOVERY_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getSeedPhrase } from '../../../store/actions';
 import * as BrowserRuntimeUtils from '../../../../shared/lib/browser-runtime.utils';
@@ -352,9 +352,12 @@ describe('RevealRecoveryPhrase', () => {
       const backButton = getByTestId('reveal-recovery-phrase-back-button');
       fireEvent.click(backButton);
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(REVEAL_SRP_LIST_ROUTE, {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        MANAGE_WALLET_RECOVERY_ROUTE,
+        {
+          replace: true,
+        },
+      );
     });
   });
 });

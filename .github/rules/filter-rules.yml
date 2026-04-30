@@ -29,7 +29,7 @@ test_files: &test_files
 config_files: &config_files
   - '.eslint*'
   - 'eslint.config.js'
-  - 'prettier.config.js'
+  - 'oxfmt.config.mts'
   - 'stylelint.config.js'
   - 'tailwind.config.js'
   - '.prettierrc*'
@@ -57,3 +57,11 @@ all_changes:
 # To inform needs-locales
 locales:
   - 'app/_locales/**'
+
+# To inform just-repository-health-checks
+repository_health_checks_related:
+  - 'CHANGELOG.md'
+
+# To inform just-package-json-version
+package_json:
+  - 'package.json'

@@ -1,48 +1,27 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import {
   Box,
   BoxAlignItems,
+  BoxBackgroundColor,
   BoxBorderColor,
   BoxFlexDirection,
   BoxJustifyContent,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
+  FontWeight,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  getDefaultScopeAndAddressByAccountGroupId,
-  getIconSeedAddressByAccountGroupId,
-} from '../../../selectors/multichain-accounts/account-tree';
-import {
-  Box as BoxDeprecated,
-  SensitiveText,
-  Text as TextDeprecated,
-} from '../../component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  Display,
-  JustifyContent,
-  TextColor as TextColorDeprecated,
-  TextVariant as TextVariantDeprecated,
-} from '../../../helpers/constants/design-system';
+import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
+import { SensitiveText } from '../../component-library';
+import { TextVariant as TextVariantDeprecated } from '../../../helpers/constants/design-system';
 import { ConnectedStatus } from '../../multichain/connected-status/connected-status';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
 } from '../../../helpers/constants/connected-sites';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { shortenAddress } from '../../../helpers/utils/util';
+import { MultichainAccountCellDefaultAddress } from '../multichain-account-cell-default-address';
 
 type AccountCellAvatarProps = {
   seedAddress: string;
@@ -77,68 +56,6 @@ const AccountCellAvatar = ({
   );
 };
 
-/**
- * Renders default address + copy only when needed
- * @param options0
- * @param options0.accountId
- */
-const AccountCellDefaultAddress = ({
-  accountId,
-}: {
-  accountId: AccountGroupId;
-}) => {
-  const t = useI18nContext();
-  const { defaultAddress } = useSelector((state) =>
-    getDefaultScopeAndAddressByAccountGroupId(state, accountId),
-  );
-  const [addressCopied, handleCopy] = useCopyToClipboard({
-    clearDelayMs: null,
-  });
-  const handleAddressCopy = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      if (defaultAddress) {
-        handleCopy(normalizeSafeAddress(defaultAddress));
-      }
-    },
-    [defaultAddress, handleCopy],
-  );
-
-  if (!defaultAddress) {
-    return null;
-  }
-
-  return (
-    <Box
-      alignItems={BoxAlignItems.Center}
-      flexDirection={BoxFlexDirection.Row}
-      gap={1}
-      marginLeft={3}
-      onClick={handleAddressCopy}
-      data-testid="multichain-account-cell-address"
-      aria-label={t('copyAddressShort')}
-    >
-      <Text
-        variant={TextVariant.BodySm}
-        color={
-          addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
-        }
-      >
-        {addressCopied
-          ? t('addressCopied')
-          : shortenAddress(normalizeSafeAddress(defaultAddress))}
-      </Text>
-      <Icon
-        name={addressCopied ? IconName.CopySuccess : IconName.Copy}
-        size={IconSize.Xs}
-        color={
-          addressCopied ? IconColor.SuccessDefault : IconColor.IconAlternative
-        }
-      />
-    </Box>
-  );
-};
-
 export type MultichainAccountCellProps = {
   accountId: AccountGroupId;
   accountName: string | React.ReactNode;
@@ -155,7 +72,6 @@ export type MultichainAccountCellProps = {
     | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
   privacyMode?: boolean;
   showDefaultAddress?: boolean;
-  avatarWrapper?: (avatar: React.ReactNode) => React.ReactNode;
 };
 
 export const MultichainAccountCell = ({
@@ -172,7 +88,6 @@ export const MultichainAccountCell = ({
   connectionStatus,
   privacyMode = false,
   showDefaultAddress = false,
-  avatarWrapper,
 }: MultichainAccountCellProps) => {
   const handleClick = () => onClick?.(accountId);
 
@@ -185,10 +100,10 @@ export const MultichainAccountCell = ({
   );
 
   return (
-    <BoxDeprecated
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
       style={{
         cursor: onClick ? 'pointer' : 'default',
         position: 'relative',
@@ -201,61 +116,57 @@ export const MultichainAccountCell = ({
       key={`multichain-account-cell-${accountId}`}
       backgroundColor={
         selected && !startAccessory
-          ? BackgroundColor.backgroundMuted
-          : BackgroundColor.transparent
+          ? BoxBackgroundColor.BackgroundMuted
+          : BoxBackgroundColor.Transparent
       }
     >
       {startAccessory}
-      <BoxDeprecated
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.flexStart}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Start}
         style={{ minWidth: 0, flex: 1 }}
       >
-        {avatarWrapper ? (
-          avatarWrapper(
-            <AccountCellAvatar
-              seedAddress={seedAddressIcon}
-              connectionStatus={connectionStatus}
-              hideTooltip
-            />,
-          )
-        ) : (
-          <AccountCellAvatar
-            seedAddress={seedAddressIcon}
-            connectionStatus={connectionStatus}
-          />
-        )}
-        <BoxDeprecated style={{ overflow: 'hidden' }}>
+        <AccountCellAvatar
+          seedAddress={seedAddressIcon}
+          connectionStatus={connectionStatus}
+        />
+        <Box marginLeft={3} style={{ overflow: 'hidden' }}>
           {/* Prevent overflow of account name by long account names */}
-          <TextDeprecated
+          <Text
             className="multichain-account-cell__account-name"
-            variant={TextVariantDeprecated.bodyMdMedium}
-            marginLeft={3}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
             ellipsis
           >
             {accountName}
-          </TextDeprecated>
+          </Text>
           {walletName && (
-            <TextDeprecated
+            <Text
               className="multichain-account-cell__account-name"
-              color={TextColorDeprecated.textAlternative}
-              variant={TextVariantDeprecated.bodySmMedium}
-              marginLeft={3}
+              color={TextColor.TextAlternative}
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
               ellipsis
             >
               {walletName}
-            </TextDeprecated>
+            </Text>
           )}
           {showDefaultAddress && (
-            <AccountCellDefaultAddress accountId={accountId} />
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+              data-testid="multichain-account-cell-hovered-addresses"
+            >
+              <MultichainAccountCellDefaultAddress groupId={accountId} />
+            </Box>
           )}
-        </BoxDeprecated>
-      </BoxDeprecated>
-      <BoxDeprecated
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
+        </Box>
+      </Box>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
         style={{ flexShrink: 0 }}
       >
         <SensitiveText
@@ -268,17 +179,17 @@ export const MultichainAccountCell = ({
         >
           {balance}
         </SensitiveText>
-        <BoxDeprecated
+        <Box
           className="multichain-account-cell__end_accessory"
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.flexEnd}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.End}
           data-testid="multichain-account-cell-end-accessory"
           aria-label={`${ariaLabelName} options`}
         >
           {endAccessory}
-        </BoxDeprecated>
-      </BoxDeprecated>
-    </BoxDeprecated>
+        </Box>
+      </Box>
+    </Box>
   );
 };

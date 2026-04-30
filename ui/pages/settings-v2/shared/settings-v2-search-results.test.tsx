@@ -8,11 +8,6 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import type { SettingsV2SearchResult } from '../useSettingsV2Search';
 import { SettingsV2SearchResults } from './settings-v2-search-results';
 
-jest.mock('../../../components/component-library', () => ({
-  ...jest.requireActual('../../../components/component-library'),
-  Icon: () => <span data-testid="mock-icon" />,
-}));
-
 const createMockStore = () => configureMockStore([thunk])(mockState);
 
 const mockItems: SettingsV2SearchResult[] = [
@@ -21,14 +16,14 @@ const mockItems: SettingsV2SearchResult[] = [
     tabLabelKey: 'assets',
     titleKey: 'localCurrency',
     tabRoute: '/settings-v2/assets',
-    iconName: 'dollar',
+    iconName: 'Coin',
   },
   {
     settingId: 'theme',
     tabLabelKey: 'preferencesAndDisplay',
     titleKey: 'theme',
     tabRoute: '/settings-v2/preferences-and-display',
-    iconName: 'setting',
+    iconName: 'Customize',
   },
 ];
 

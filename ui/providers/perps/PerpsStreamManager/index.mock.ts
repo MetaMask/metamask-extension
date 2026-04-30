@@ -253,6 +253,15 @@ class MockPerpsStreamManager {
   }
 
   /**
+   * Mock initForAddress — delegates to init().
+   *
+   * @param address - The selected account address
+   */
+  async initForAddress(address: string): Promise<void> {
+    return this.init(address);
+  }
+
+  /**
    * Check if initialized for a specific address
    *
    * @param address

@@ -58,7 +58,7 @@ import {
   getCompleteAddressBook,
   getInternalAccounts,
 } from '../../../selectors';
-import { isDuplicateContact } from '../../../components/app/contact-list/utils';
+import { isDuplicateContact } from '../utils';
 import {
   isBurnAddress,
   isValidHexAddress,

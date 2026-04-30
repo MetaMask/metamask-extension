@@ -20,7 +20,19 @@ const DEBOUNCE_DELAY = 500;
 export function useTransactionCustomAmount({
   currency,
   disableUpdate = false,
-}: { currency?: string; disableUpdate?: boolean } = {}) {
+  balanceUsdOverride,
+}: {
+  currency?: string;
+  disableUpdate?: boolean;
+  /**
+   * Optional caller-provided balance (USD) used as the source for
+   * `updatePendingAmountPercentage`. When provided, takes precedence over the
+   * default `payToken.balanceUsd`. Lets callers like Perps Withdraw supply a
+   * non-pay-token balance (e.g. Perps available balance) without coupling the
+   * shared hook to those flows.
+   */
+  balanceUsdOverride?: number;
+} = {}) {
   const [isInputChanged, setInputChanged] = useState(false);
   const [hasInput, setHasInput] = useState(false);
   const [amountHumanDebounced, setAmountHumanDebounced] = useState('0');
@@ -33,7 +45,7 @@ export function useTransactionCustomAmount({
   const tokenAddress = getTokenAddress(transactionMeta);
   const tokenFiatRate =
     useTokenFiatRate(tokenAddress, chainId as Hex, currency) ?? 1;
-  const balanceUsd = useTokenBalance();
+  const balanceUsd = useTokenBalance(balanceUsdOverride);
 
   const { updateTokenAmount: updateTokenAmountCallback } =
     useUpdateTokenAmount();
@@ -42,9 +54,12 @@ export function useTransactionCustomAmount({
     null,
   );
 
-  const debounceSetAmountDelayed = useMemo(() => {
+  // Create and update debounced function
+  useEffect(() => {
+    // Cancel any existing debounced calls
     debounceRef.current?.cancel();
 
+    // Create new debounced function
     const debouncedFn = debounce((value: string) => {
       setAmountHumanDebounced(value);
       if (!disableUpdate) {
@@ -52,8 +67,13 @@ export function useTransactionCustomAmount({
       }
     }, DEBOUNCE_DELAY);
 
+    // Store in ref
     debounceRef.current = debouncedFn;
-    return debouncedFn;
+
+    // Cleanup: cancel on unmount or when dependencies change
+    return () => {
+      debouncedFn.cancel();
+    };
   }, [disableUpdate, updateTokenAmountCallback]);
 
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
@@ -85,14 +105,19 @@ export function useTransactionCustomAmount({
   );
 
   useEffect(() => {
-    debounceSetAmountDelayed(amountHuman);
-  }, [amountHuman, debounceSetAmountDelayed]);
-
-  useEffect(() => {
-    return () => {
-      debounceRef.current?.cancel();
-    };
-  }, []);
+    // When isMaxAmount is true, amountHuman is driven by quote-controller updates
+    // (primaryRequiredToken.amountUsd). Re-feeding it into updateTokenAmount
+    // changes txParams.data, which restarts the quote cycle (infinite loop).
+    // updatePendingAmountPercentage(100) already calls updateTokenAmountCallback
+    // directly when MAX is first clicked.
+    if (isMaxAmount) {
+      return;
+    }
+    // Use ref directly to avoid re-running when callback is recreated
+    if (debounceRef.current) {
+      debounceRef.current(amountHuman);
+    }
+  }, [amountHuman, isMaxAmount]);
 
   useEffect(() => {
     if (amountHumanDebounced !== '0') {
@@ -184,8 +209,12 @@ export function useTransactionCustomAmount({
   };
 }
 
-function useTokenBalance() {
+function useTokenBalance(balanceUsdOverride?: number) {
   const { payToken } = useTransactionPayToken();
+
+  if (balanceUsdOverride !== undefined) {
+    return balanceUsdOverride;
+  }
 
   const payTokenBalanceUsd = new BigNumber(
     payToken?.balanceUsd ?? 0,

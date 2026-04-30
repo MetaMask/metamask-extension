@@ -12,11 +12,6 @@ class DevelopOptions {
   private readonly generatePageCrashButton: string =
     '[data-testid="developer-options-generate-page-crash-button"]';
 
-  private readonly developOptionsPageTitle: object = {
-    text: 'Developer options',
-    css: 'h4',
-  };
-
   private readonly developerOptionsRemoteFeatureFlagsState: string =
     '[data-testid="developer-options-remote-feature-flags"]';
 
@@ -26,15 +21,14 @@ class DevelopOptions {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.developOptionsPageTitle);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for Developer options page to be loaded',
-        e,
+      await this.driver.waitForSelector(
+        this.developerOptionsRemoteFeatureFlagsState,
       );
+    } catch (e) {
+      console.log('Timeout while waiting for Debug page to be loaded', e);
       throw e;
     }
-    console.log('Developer option page is loaded');
+    console.log('Debug page is loaded');
   }
 
   async clickGenerateCrashButton(): Promise<void> {

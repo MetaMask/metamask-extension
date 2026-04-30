@@ -25,6 +25,16 @@ export const getIsPerpsIncludedInBuild = (): boolean => {
   return process.env.PERPS_ENABLED?.toString() === 'true';
 };
 
+/**
+ * Compile-time gate (`ASSETS_UNIFIED_STATE_ENABLED`): controls whether
+ * AssetsController populates state. The controller is always instantiated,
+ * but when this is false the state remains empty. Distinct from the remote
+ * `assetsUnifyState` rollout flag which provides an additional runtime gate.
+ */
+export const getIsAssetsUnifiedStateIncludedInBuild = (): boolean => {
+  return process.env.ASSETS_UNIFIED_STATE_ENABLED?.toString() === 'true';
+};
+
 export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
   return process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS?.toString() === 'true';
 };
@@ -48,6 +58,15 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
   return (
     process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED?.toString() === 'true'
   );
+};
+
+/**
+ * Compile-time gate (`NEW_HARDWARE_WALLET_ONBOARDING`): when true the
+ * extension uses the redesigned hardware-wallet onboarding flows (device
+ * discovery and error handling).
+ */
+export const getIsNewHardwareWalletOnboardingEnabled = (): boolean => {
+  return process.env.NEW_HARDWARE_WALLET_ONBOARDING?.toString() === 'true';
 };
 
 export const getIsSidePanelFeatureEnabled = (): boolean => {
@@ -76,4 +95,8 @@ export const getIsSidePanelFeatureEnabled = (): boolean => {
   }
 
   return true;
+};
+
+export const getIsPasskeyFeatureEnabled = (): boolean => {
+  return process.env.PASSKEY_ENABLED?.toString() === 'true';
 };

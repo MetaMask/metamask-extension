@@ -7,38 +7,38 @@
  * 2. Historical baseline from extension_benchmark_stats — informational delta
  *
  * Usage:
- * yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts \
+ * node development/metamaskbot-build-announce/compare-benchmarks.ts \
  * --current <path-to-benchmark-json-directory>
  *
  * Exit codes:
- * 0 — all benchmarks within constant fail limits
- * 1 — at least one benchmark exceeded a constant fail limit
+ * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold
+ * 1 — at least one allowlisted metric exceeded its fail threshold;
+ * non-allowlisted breaches are degraded to warnings and do not block
  * 2 — usage error or fatal crash
  */
 
 import { promises as fs } from 'fs';
 import path from 'path';
 import { parseArgs } from 'util';
-import {
-  ThresholdSeverity,
-  PercentileKey,
-} from '../../shared/constants/benchmarks';
+
+import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
 import type {
+  ThresholdSeverity,
+  ComparisonKey,
   BenchmarkResults,
-  ThresholdConfig,
 } from '../../shared/constants/benchmarks';
-import { toKebabCase } from '../../shared/lib/string-utils';
-import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/constants';
+import { GATED_METRICS } from '../../test/e2e/benchmarks/utils/gated-metrics';
+import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
+import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
+import type { HistoricalBaselineReference } from './historical-comparison';
 import {
+  applyGatingPolicy,
   compareBenchmarkEntries,
   formatDeltaPercent,
-  getTrafficLightIndication,
-  ComparisonSeverity,
-  ComparisonDirection,
+  COMPARISON_SEVERITY,
   type BenchmarkEntryComparison,
 } from './comparison-utils';
-import type { HistoricalBaselineReference } from './historical-comparison';
-import { fetchHistoricalPerformanceData } from './historical-comparison';
+import { parseArtifactName, resolveBaselineFromArtifactName } from './utils';
 
 type LoadedBenchmark = {
   name: string;
@@ -67,80 +67,11 @@ export async function loadCurrentBenchmarks(
 }
 
 /**
- * Resolves the ThresholdConfig for a benchmark.
- * Tries direct match, then strips common prefixes (and converts to kebab-case),
- * then converts original name to kebab-case.
- *
- * @param benchmarkName - Benchmark name (from JSON filename).
- */
-export function resolveThresholdConfig(
-  benchmarkName: string,
-): ThresholdConfig | undefined {
-  if (THRESHOLD_REGISTRY[benchmarkName]) {
-    return THRESHOLD_REGISTRY[benchmarkName];
-  }
-
-  const prefixPattern = /^benchmark-[a-z]+-[a-z]+-/u;
-  const stripped = benchmarkName.replace(prefixPattern, '');
-  if (stripped !== benchmarkName) {
-    if (THRESHOLD_REGISTRY[stripped]) {
-      return THRESHOLD_REGISTRY[stripped];
-    }
-    const strippedKebab = toKebabCase(stripped);
-    if (strippedKebab && THRESHOLD_REGISTRY[strippedKebab]) {
-      return THRESHOLD_REGISTRY[strippedKebab];
-    }
-  }
-
-  // Convert original name to kebab-case
-  const kebab = toKebabCase(benchmarkName);
-  if (kebab && THRESHOLD_REGISTRY[kebab]) {
-    return THRESHOLD_REGISTRY[kebab];
-  }
-
-  return undefined;
-}
-
-/**
  * Loads the historical baseline.
  */
-export async function loadBaseline(): Promise<HistoricalBaselineReference> {
-  const result = await fetchHistoricalPerformanceData();
-  return result ?? {};
-}
-
-/**
- * Resolves baseline metrics for a benchmark entry.
- * Historical keys use "preset/entryName" format (e.g.
- * "userJourneyOnboardingImport/onboardingImportWallet"),
- * so we try direct match first, then suffix match.
- *
- * @param baseline - Historical baseline reference.
- * @param entryName - Benchmark entry name from JSON.
- * @param fileName - Benchmark file name (without extension).
- */
-function resolveBaseline(
-  baseline: HistoricalBaselineReference,
-  entryName: string,
-  fileName: string,
-): HistoricalBaselineReference[string] | undefined {
-  const strippedFileName = fileName.replace(/^benchmark-/u, '');
-
-  const candidates = [entryName, strippedFileName, fileName];
-
-  for (const candidate of candidates) {
-    if (baseline[candidate]) {
-      return baseline[candidate];
-    }
-    const suffixMatch = Object.keys(baseline).find((key) =>
-      key.endsWith(`/${candidate}`),
-    );
-    if (suffixMatch) {
-      return baseline[suffixMatch];
-    }
-  }
-
-  return undefined;
+async function loadBaseline(): Promise<HistoricalBaselineReference> {
+  const result = await fetchHistoricalPerformanceDataFromMain();
+  return result?.baseline ?? {};
 }
 
 /**
@@ -158,24 +89,40 @@ export function runComparison(
 
   for (const { name, data } of benchmarks) {
     for (const [entryName, results] of Object.entries(data)) {
-      const thresholdConfig =
-        resolveThresholdConfig(entryName) ?? resolveThresholdConfig(name);
-
-      if (!thresholdConfig) {
+      if (!results.p75 || !results.p95) {
         console.warn(
-          `No threshold config for "${entryName}" (file: ${name}). Skipping.`,
+          `Skipping "${entryName}" in "${name}": missing p75/p95 (benchmark likely failed).`,
         );
         continue;
       }
 
-      const baselineMetrics = resolveBaseline(baseline, entryName, name);
+      const thresholdConfig = THRESHOLD_REGISTRY[entryName];
 
-      const comparison = compareBenchmarkEntries(
+      if (!thresholdConfig) {
+        console.warn(
+          `No threshold config for benchmark "${entryName}" in file "${name}". Add an entry to THRESHOLD_REGISTRY in thresholds.ts.`,
+        );
+        continue;
+      }
+
+      const baselineMetrics = resolveBaselineFromArtifactName(
+        baseline,
+        entryName,
+        name,
+      );
+
+      const rawComparison = compareBenchmarkEntries(
         entryName,
         results,
         thresholdConfig,
         baselineMetrics,
       );
+      const comparison = applyGatingPolicy(rawComparison, GATED_METRICS);
+
+      const parsed = parseArtifactName(name);
+      if (parsed) {
+        comparison.source = `${parsed.browser}-${parsed.buildType}`;
+      }
 
       comparisons.push(comparison);
 
@@ -189,23 +136,26 @@ export function runComparison(
 }
 
 function violationIcon(severity: ThresholdSeverity): string {
-  const mapped =
-    severity === ThresholdSeverity.Fail
-      ? ComparisonSeverity.Regression
-      : ComparisonSeverity.Warn;
-  return getTrafficLightIndication(mapped, ComparisonDirection.Slower);
+  return severity === THRESHOLD_SEVERITY.Fail
+    ? COMPARISON_SEVERITY.Regression.icon
+    : COMPARISON_SEVERITY.Warn.icon;
 }
 
-type MetricLine = { metric: string; parts: string[] };
+export type MetricLine = {
+  metric: string;
+  icon: string;
+  hasIssue: boolean;
+  details?: string;
+};
 
 /**
  * Builds display lines for a single benchmark comparison.
- * Metrics with baseline show relative deltas; metrics without show "(no baseline)".
- * Absolute violations override the indication icon with the appropriate indicator.
  *
  * @param comparison - A single benchmark entry comparison result.
  */
-function buildMetricLines(comparison: BenchmarkEntryComparison): MetricLine[] {
+export function buildMetricLines(
+  comparison: BenchmarkEntryComparison,
+): MetricLine[] {
   const violationsByKey = new Map(
     comparison.absoluteViolations.map((v) => [
       `${v.metricId}:${v.percentile}`,
@@ -217,7 +167,7 @@ function buildMetricLines(comparison: BenchmarkEntryComparison): MetricLine[] {
     comparison.relativeMetrics.map((m) => [`${m.metric}:${m.percentile}`, m]),
   );
 
-  const allMetrics = new Map<string, PercentileKey[]>();
+  const allMetrics = new Map<string, ComparisonKey[]>();
   for (const m of comparison.relativeMetrics) {
     const list = allMetrics.get(m.metric) ?? [];
     list.push(m.percentile);
@@ -231,52 +181,105 @@ function buildMetricLines(comparison: BenchmarkEntryComparison): MetricLine[] {
     allMetrics.set(v.metricId, list);
   }
 
+  // Helper function to update displayIcon to track worst severity
+  const updateDisplayIcon = (
+    icon: string,
+    currentDisplayIcon: string,
+  ): string => {
+    switch (icon) {
+      case COMPARISON_SEVERITY.Regression.icon:
+        return COMPARISON_SEVERITY.Regression.icon;
+      case COMPARISON_SEVERITY.Warn.icon:
+        return currentDisplayIcon === COMPARISON_SEVERITY.Pass.icon
+          ? COMPARISON_SEVERITY.Warn.icon
+          : currentDisplayIcon;
+      default:
+        return currentDisplayIcon;
+    }
+  };
+
   return [...allMetrics.entries()].map(([metric, percentiles]) => {
-    const parts = percentiles.map((pKey) => {
+    let displayIcon: string = COMPARISON_SEVERITY.Pass.icon;
+    let hasIssue = false;
+    const details: string[] = [];
+    const formatValue = (value: number): string =>
+      metric === 'cls' ? value.toFixed(3) : `${value.toFixed(0)}ms`;
+
+    for (const pKey of percentiles) {
       const key = `${metric}:${pKey}`;
       const rel = relativeByKey.get(key);
+      const absoluteSeverity = violationsByKey.get(key);
+
+      let icon: string;
+      let isIssue = false;
+
       if (rel) {
-        const delta = formatDeltaPercent(rel.deltaPercent, rel.direction);
-        const absoluteSeverity = violationsByKey.get(key);
-        let icon: string;
-        if (absoluteSeverity === ThresholdSeverity.Fail) {
-          icon = getTrafficLightIndication(
-            ComparisonSeverity.Regression,
-            rel.direction,
-          );
-        } else if (absoluteSeverity === ThresholdSeverity.Warn) {
-          icon = getTrafficLightIndication(
-            ComparisonSeverity.Warn,
-            rel.direction,
-          );
-        } else if (rel.severity === ComparisonSeverity.Regression) {
-          icon = getTrafficLightIndication(
-            ComparisonSeverity.Warn,
-            rel.direction,
-          );
+        if (absoluteSeverity) {
+          switch (absoluteSeverity) {
+            case THRESHOLD_SEVERITY.Fail:
+              icon = COMPARISON_SEVERITY.Regression.icon;
+              isIssue = true;
+              break;
+            case THRESHOLD_SEVERITY.Warn:
+              icon = COMPARISON_SEVERITY.Warn.icon;
+              isIssue = true;
+              break;
+            default:
+              icon = rel.indication;
+          }
         } else {
-          icon = rel.indication;
+          switch (rel.severity) {
+            case COMPARISON_SEVERITY.Regression.value:
+            case COMPARISON_SEVERITY.Warn.value:
+              icon = COMPARISON_SEVERITY.Warn.icon;
+              isIssue = true;
+              break;
+            default:
+              icon = rel.indication;
+          }
         }
-        return `${icon} ${pKey}: ${rel.current.toFixed(0)}ms (${delta})`;
-      }
-      const violation = comparison.absoluteViolations.find(
-        (v) => v.metricId === metric && v.percentile === pKey,
-      );
-      const icon = violation
-        ? violationIcon(violation.severity)
-        : getTrafficLightIndication(
-            ComparisonSeverity.Neutral,
-            ComparisonDirection.Same,
+
+        if (isIssue) {
+          const delta = formatDeltaPercent(rel.deltaPercent);
+          details.push(`${pKey}: ${formatValue(rel.current)} (${delta})`);
+          hasIssue = true;
+          displayIcon = updateDisplayIcon(icon, displayIcon);
+        }
+      } else {
+        const violation = comparison.absoluteViolations.find(
+          (v) => v.metricId === metric && v.percentile === pKey,
+        );
+        if (violation) {
+          icon = violationIcon(violation.severity);
+          isIssue = true;
+          details.push(
+            `${pKey}: ${formatValue(violation.value)} (no baseline)`,
           );
-      const value = violation?.value ?? 0;
-      return `${icon} ${pKey}: ${value.toFixed(0)}ms (no baseline)`;
-    });
-    return { metric, parts };
+          hasIssue = true;
+          displayIcon = updateDisplayIcon(icon, displayIcon);
+        }
+      }
+    }
+
+    return {
+      metric,
+      icon: displayIcon,
+      hasIssue,
+      details: hasIssue ? details.join(' | ') : undefined,
+    };
   });
+}
+
+function formatName(comparison: BenchmarkEntryComparison): string {
+  const source = comparison.source ? ` [${comparison.source}]` : '';
+  return `${comparison.benchmarkName}${source}`;
 }
 
 /**
  * Prints a human-readable report of the comparison results.
+ *
+ * Output groups entries by severity (FAIL → WARN → PASS) and includes
+ * browser/buildType source labels for disambiguation.
  *
  * @param result - Comparison results.
  * @param result.comparisons
@@ -287,29 +290,70 @@ export function printReport(result: {
   anyFailed: boolean;
 }): void {
   console.log('\n═══════════════════════════════════════');
-  console.log('  Performance Benchmark Comparison');
-  console.log('═══════════════════════════════════════\n');
+  console.log('  Performance Benchmark Quality Gate');
+  console.log('═══════════════════════════════════════');
 
-  for (const comparison of result.comparisons) {
-    const status = comparison.absoluteFailed ? 'FAIL' : 'PASS';
-    console.log(`\n${status}  ${comparison.benchmarkName}\n`);
+  // Pre-compute metric lines to avoid duplicate work
+  const withLines = result.comparisons.map((c) => ({
+    comparison: c,
+    lines: buildMetricLines(c),
+  }));
 
-    const lines = buildMetricLines(comparison);
+  const failed = withLines.filter((w) => w.comparison.absoluteFailed);
+  const warned = withLines.filter(
+    (w) =>
+      !w.comparison.absoluteFailed &&
+      (w.comparison.absoluteViolations.some(
+        (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+      ) ||
+        w.lines.some((l) => l.hasIssue)),
+  );
+  const passed = withLines.filter(
+    (w) =>
+      !w.comparison.absoluteFailed &&
+      !w.comparison.absoluteViolations.some(
+        (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+      ) &&
+      !w.lines.some((l) => l.hasIssue),
+  );
 
-    if (lines.length === 0) {
-      console.log('    (no historical baseline data)');
-    }
-    for (const { metric, parts } of lines) {
-      console.log(`    ${metric}: ${parts.join(' | ')}`);
+  // Show failed entries with details
+  for (const { comparison, lines } of failed) {
+    console.log(`\nFAIL  ${formatName(comparison)}`);
+    for (const line of lines.filter((l) => l.hasIssue)) {
+      const details = line.details ? ` | ${line.details}` : '';
+      console.log(`      ${line.icon} ${line.metric}${details}`);
     }
   }
 
-  const failCount = result.comparisons.filter((c) => c.absoluteFailed).length;
-  const warnCount = result.comparisons.filter(
-    (c) =>
-      !c.absoluteFailed &&
-      c.absoluteViolations.some((v) => v.severity === ThresholdSeverity.Warn),
-  ).length;
+  // Show warned entries with details
+  for (const { comparison, lines } of warned) {
+    console.log(`\nWARN  ${formatName(comparison)}`);
+    for (const line of lines.filter((l) => l.hasIssue)) {
+      const details = line.details ? ` | ${line.details}` : '';
+      console.log(`      ${line.icon} ${line.metric}${details}`);
+    }
+  }
+
+  // Show passing entries grouped by benchmark name
+  if (passed.length > 0) {
+    const grouped = new Map<string, string[]>();
+    for (const { comparison } of passed) {
+      const list = grouped.get(comparison.benchmarkName) ?? [];
+      list.push(comparison.source ?? '');
+      grouped.set(comparison.benchmarkName, list);
+    }
+
+    console.log(`\nPASS  ${passed.length} benchmarks within thresholds`);
+    for (const [name, sources] of grouped) {
+      const filtered = sources.filter(Boolean);
+      const suffix = filtered.length > 0 ? `: ${filtered.join(', ')}` : '';
+      console.log(`      ${name}${suffix}`);
+    }
+  }
+
+  const failCount = failed.length;
+  const warnCount = warned.length;
 
   console.log('\n───────────────────────────────────────');
   console.log(
@@ -340,8 +384,8 @@ async function main(): Promise<void> {
 
   const benchmarks = await loadCurrentBenchmarks(values.current);
   if (benchmarks.length === 0) {
-    console.warn('No benchmark JSON files found in', values.current);
-    process.exit(0);
+    console.error('No benchmark JSON files found in', values.current);
+    process.exit(1);
   }
 
   const baseline = await loadBaseline();

@@ -1,5 +1,4 @@
 export { mockInitialFullScan } from './esplora';
-export { mockBitcoinFeatureFlag } from './feature-flag';
 export {
   mockExchangeRates,
   mockCurrencyExchangeRates,
@@ -9,6 +8,10 @@ export {
   mockSupportedVsCurrencies,
 } from './price-api';
 export { mockRampsDynamicFeatureFlag } from './ramps';
+export {
+  mockTokensV2SupportedNetworks,
+  mockTokensV3Assets,
+} from './tokens-api';
 export {
   mockAllBridgeEndpoints,
   mockBridgeFeatureFlags,

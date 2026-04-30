@@ -29,14 +29,6 @@ export async function assertAdvancedGasDetailsWithFewerFields(driver: Driver) {
   await driver.waitForSelector({ css: 'p', text: 'Speed' });
 }
 
-export async function assertAdvancedGasDetailsWithL2Breakdown(driver: Driver) {
-  await driver.waitForSelector({ css: 'p', text: 'Network fee' });
-  await driver.waitForSelector({ css: 'p', text: 'L1 fee' });
-  await driver.waitForSelector({ css: 'p', text: 'L2 fee' });
-  await driver.waitForSelector({ css: 'p', text: 'Speed' });
-  await driver.waitForSelector({ css: 'p', text: 'Max fee' });
-}
-
 export async function mocked4BytesApprove(mockServer: MockttpServer) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')

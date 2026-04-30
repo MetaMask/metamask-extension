@@ -8,8 +8,7 @@ import StartOnboardingPage from '../pages/onboarding/start-onboarding-page';
 import SecureWalletPage from '../pages/onboarding/secure-wallet-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
-import { WALLET_PASSWORD } from '../../constants';
-import { E2E_SRP } from '../../fixtures/default-fixture';
+import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
 import HeaderNavbar from '../pages/header-navbar';
 import HomePage from '../pages/home/homepage';
 import LoginPage from '../pages/login-page';
@@ -528,7 +527,10 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
 };
 
 /**
- * Add custom network in onboarding privacy settings
+ * Add custom network in onboarding privacy settings, then finish onboarding,
+ * navigate to home, and enable “Show test networks” from Settings → Networks
+ * before any later flow that switches the asset list to Localhost (e.g. wallet
+ * fixture export).
  *
  * @param options - The options object.
  * @param options.driver - The WebDriver instance.

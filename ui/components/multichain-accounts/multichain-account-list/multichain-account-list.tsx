@@ -16,21 +16,18 @@ import { useNavigate } from 'react-router-dom';
 import { parseCaipAccountId } from '@metamask/utils';
 import {
   Box,
-  Checkbox,
+  BoxBackgroundColor,
+  FontWeight,
   Icon,
+  IconColor,
   IconName,
   IconSize,
   Text,
-} from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-
-import {
-  BackgroundColor,
-  BlockSize,
-  IconColor,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { Checkbox } from '../../component-library';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountCell } from '../multichain-account-cell';
 import {
   AccountTreeWallets,
@@ -52,11 +49,9 @@ import {
   getDefaultHomeActiveTabName,
   getHDEntropyIndex,
   getPreferences,
-  getIsDefaultAddressEnabled,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
-import { MultichainHoveredAddressRowsList } from '../multichain-address-rows-hovered-list';
 import { AddMultichainAccount } from '../add-multichain-account';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
@@ -125,7 +120,6 @@ export const MultichainAccountList = ({
   const allBalances = useSelector(selectBalanceForAllWallets);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { privacyMode } = useSelector(getPreferences);
-  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
 
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
@@ -322,7 +316,7 @@ export const MultichainAccountList = ({
                 | undefined
             }
             privacyMode={privacyMode}
-            showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
+            showDefaultAddress={showDefaultAddress}
             walletName={
               showWalletName
                 ? wallets[walletId as AccountWalletId]?.metadata?.name
@@ -341,20 +335,6 @@ export const MultichainAccountList = ({
                   />
                 </Box>
               ) : undefined
-            }
-            avatarWrapper={
-              isDefaultAddressEnabled
-                ? (avatar) => (
-                    <MultichainHoveredAddressRowsList
-                      groupId={groupId as AccountGroupId}
-                      showAccountHeaderAndBalance={false}
-                      showViewAllButton={false}
-                      showDefaultAddressSection={false}
-                    >
-                      {avatar}
-                    </MultichainHoveredAddressRowsList>
-                  )
-                : undefined
             }
             endAccessory={
               showAccountMenu ? (
@@ -386,7 +366,6 @@ export const MultichainAccountList = ({
       openMenuAccountId,
       handleMenuToggle,
       showDefaultAddress,
-      isDefaultAddressEnabled,
     ],
   );
 
@@ -414,7 +393,7 @@ export const MultichainAccountList = ({
             groupId,
             groupData,
             walletId,
-            showWalletName: !(showDefaultAddress && isDefaultAddressEnabled),
+            showWalletName: !showDefaultAddress,
           });
         });
       }
@@ -488,7 +467,7 @@ export const MultichainAccountList = ({
             groupId,
             groupData,
             walletId,
-            showWalletName: true,
+            showWalletName: !showDefaultAddress,
           });
         });
       }
@@ -504,7 +483,6 @@ export const MultichainAccountList = ({
     isHiddenAccountsExpanded,
     collapsedSectionKeys,
     showDefaultAddress,
-    isDefaultAddressEnabled,
     t,
   ]);
 
@@ -524,27 +502,32 @@ export const MultichainAccountList = ({
               const isExpanded = item.isExpanded ?? true;
               return (
                 <Box
-                  as="button"
-                  onClick={() =>
-                    toggleSectionExpanded(item.sectionKey as string)
-                  }
-                  backgroundColor={BackgroundColor.backgroundDefault}
-                  width={BlockSize.Full}
-                  className="flex px-4 py-2 justify-between items-center"
-                  data-testid={item.testId}
-                  aria-expanded={isExpanded}
+                  asChild
+                  backgroundColor={BoxBackgroundColor.BackgroundDefault}
+                  className="w-full"
                 >
-                  <Text
-                    variant={TextVariant.bodyMdMedium}
-                    color={TextColor.textAlternative}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      toggleSectionExpanded(item.sectionKey as string)
+                    }
+                    className="flex w-full px-4 py-2 justify-between items-center"
+                    data-testid={item.testId}
+                    aria-expanded={isExpanded}
                   >
-                    {item.text}
-                  </Text>
-                  <Icon
-                    name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
-                    size={IconSize.Md}
-                    color={IconColor.iconAlternative}
-                  />
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      fontWeight={FontWeight.Medium}
+                      color={TextColor.TextAlternative}
+                    >
+                      {item.text}
+                    </Text>
+                    <Icon
+                      name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
+                      size={IconSize.Md}
+                      color={IconColor.IconAlternative}
+                    />
+                  </button>
                 </Box>
               );
             }
@@ -552,8 +535,9 @@ export const MultichainAccountList = ({
             return (
               <Box data-testid={item.testId} className="flex px-4 py-2">
                 <Text
-                  variant={TextVariant.bodyMdMedium}
-                  color={TextColor.textAlternative}
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextAlternative}
                 >
                   {item.text}
                 </Text>
@@ -564,30 +548,35 @@ export const MultichainAccountList = ({
           if (item.type === 'hidden-header') {
             return (
               <Box
-                as="button"
-                onClick={() =>
-                  setIsHiddenAccountsExpanded(!isHiddenAccountsExpanded)
-                }
-                backgroundColor={BackgroundColor.backgroundDefault}
-                width={BlockSize.Full}
-                className="hidden-accounts-list flex px-4 py-2 justify-between items-center"
-                data-testid="multichain-account-tree-hidden-header"
+                asChild
+                backgroundColor={BoxBackgroundColor.BackgroundDefault}
+                className="w-full"
               >
-                <Text
-                  variant={TextVariant.bodyMdMedium}
-                  color={TextColor.textAlternative}
-                >
-                  {t('hidden')} ({item.count})
-                </Text>
-                <Icon
-                  name={
-                    isHiddenAccountsExpanded
-                      ? IconName.ArrowUp
-                      : IconName.ArrowDown
+                <button
+                  type="button"
+                  onClick={() =>
+                    setIsHiddenAccountsExpanded(!isHiddenAccountsExpanded)
                   }
-                  size={IconSize.Md}
-                  color={IconColor.iconAlternative}
-                />
+                  className="hidden-accounts-list flex w-full px-4 py-2 justify-between items-center"
+                  data-testid="multichain-account-tree-hidden-header"
+                >
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    fontWeight={FontWeight.Medium}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('hidden')} ({item.count})
+                  </Text>
+                  <Icon
+                    name={
+                      isHiddenAccountsExpanded
+                        ? IconName.ArrowUp
+                        : IconName.ArrowDown
+                    }
+                    size={IconSize.Md}
+                    color={IconColor.IconAlternative}
+                  />
+                </button>
               </Box>
             );
           }

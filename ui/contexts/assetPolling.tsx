@@ -12,13 +12,21 @@ import { getIsAssetsUnifyStateEnabled } from '../selectors/assets-unify-state';
 // Calls all legacy polling hooks unconditionally. Rendered only when
 // assets-unify-state is disabled so that the hooks always execute in the
 // same order within this component (satisfying React's Rules of Hooks).
-const LegacyPollingHooks = ({ children }: { children: ReactNode }) => {
+const LegacyAssetsPolling = ({ children }: { children: ReactNode }) => {
   useCurrencyRatePolling();
   useTokenRatesPolling();
   useTokenDetectionPolling();
   useTokenListPolling();
   useDeFiPolling();
   useMultichainAssetsRatesPolling();
+  useStaticTokensPollingHook();
+
+  return <>{children}</>;
+};
+
+const AssetsControllerPolling = ({ children }: { children: ReactNode }) => {
+  useTokenListPolling();
+  useDeFiPolling();
   useStaticTokensPollingHook();
 
   return <>{children}</>;
@@ -31,8 +39,8 @@ export const AssetPollingProvider = ({ children }: { children: ReactNode }) => {
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
 
   if (isAssetsUnifyStateEnabled) {
-    return <>{children}</>;
+    return <AssetsControllerPolling>{children}</AssetsControllerPolling>;
   }
 
-  return <LegacyPollingHooks>{children}</LegacyPollingHooks>;
+  return <LegacyAssetsPolling>{children}</LegacyAssetsPolling>;
 };

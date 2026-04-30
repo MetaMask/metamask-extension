@@ -3,11 +3,11 @@
 exports[`TransactionsTab snapshot matches snapshot 1`] = `
 <div>
   <div
-    class="pb-4 px-4"
+    class="pb-4 overflow-y-auto"
   >
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -60,7 +60,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
             Estimates balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. 
             <a
               class="font-medium text-primary-default"
-              href="https://support.metamask.io/transactions-and-gas/transactions/simulations/"
+              href="https://support.metamask.io/transactions-and-gas/transactions/simulations/?utm_source=extension"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -74,7 +74,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -84,7 +84,9 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
           >
             Security alerts
           </p>
-          <div>
+          <div
+            data-testid="securityAlert"
+          >
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"
@@ -127,7 +129,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
             This feature alerts you to malicious activity by actively reviewing transaction and signature requests. 
             <a
               class="font-medium text-primary-default"
-              href="https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/"
+              href="https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/?utm_source=extension"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -141,7 +143,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -194,7 +196,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
             Turn on Smart Transactions for more reliable and secure transactions. 
             <a
               class="font-medium text-primary-default"
-              href="https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/"
+              href="https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/?utm_source=extension"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -208,7 +210,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -262,7 +264,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -315,11 +317,11 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="bg-muted my-2 h-px w-full"
+      class="bg-muted my-2 h-px w-auto mx-4"
     />
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -329,7 +331,9 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
           >
             Show hex data
           </p>
-          <div>
+          <div
+            data-testid="transactions-settings-hex-data-toggle"
+          >
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"

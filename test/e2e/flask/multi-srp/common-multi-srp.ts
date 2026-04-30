@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -28,13 +28,7 @@ export async function withMultiSrp(
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilder()
-        .withEnabledNetworks({
-          eip155: {
-            '0x539': true,
-          },
-        })
-        .build(),
+      fixtures: new FixtureBuilderV2().build(),
       title,
       testSpecificMock: async (mockServer: Mockttp) => [
         await mockActiveNetworks(mockServer),
@@ -51,6 +45,8 @@ export async function withMultiSrp(
       await accountListPage.checkPageIsLoaded();
       await accountListPage.startImportSecretPhrase(srpToUse);
       await homePage.checkNewSrpAddedToastIsDisplayed();
+      await homePage.dismissSrpAddedToast();
+      await homePage.checkPageIsLoaded();
       await test(driver);
     },
   );
@@ -64,9 +60,10 @@ export const verifySrp = async (
   await new HeaderNavbar(driver).openSettingsPage();
   const settingsPage = new SettingsPage(driver);
   await settingsPage.checkPageIsLoaded();
-  await settingsPage.goToPrivacySettings();
+  await settingsPage.goToSecurityAndPasswordSettings();
 
   const privacySettings = new PrivacySettings(driver);
+  await privacySettings.checkSecurityAndPasswordPageIsLoaded();
   await privacySettings.openRevealSrpQuiz(srpIndex);
   await privacySettings.completeRevealSrpQuiz();
   await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);

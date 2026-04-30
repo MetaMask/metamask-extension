@@ -18,7 +18,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 type SettingsV2HeaderProps = {
   title: string;
-  isPopup?: boolean;
+  isPopupOrSidepanel?: boolean;
   isOnSettingsRoot?: boolean;
   onClose?: () => void;
   isSearchOpen?: boolean;
@@ -28,11 +28,12 @@ type SettingsV2HeaderProps = {
   searchPlaceholder?: string;
   onSearchChange?: (text: string) => void;
   onSearchClear?: () => void;
+  showSearchBorder?: boolean;
 };
 
 export const SettingsV2Header = ({
   title,
-  isPopup = false,
+  isPopupOrSidepanel = false,
   isOnSettingsRoot = false,
   onClose,
   isSearchOpen = false,
@@ -42,16 +43,17 @@ export const SettingsV2Header = ({
   searchPlaceholder,
   onSearchChange,
   onSearchClear,
+  showSearchBorder = true,
 }: SettingsV2HeaderProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const showSearchButton = !isPopup || isOnSettingsRoot;
+  const showSearchButton = !isPopupOrSidepanel || isOnSettingsRoot;
 
   if (isSearchOpen) {
     return (
       <HeaderSearch
         variant={HeaderSearchVariant.Inline}
-        className="border-b border-border-muted"
+        className={showSearchBorder ? 'border-b border-border-muted' : ''}
         padding={3}
         paddingHorizontal={4}
         onClickCancelButton={() => {
@@ -106,7 +108,7 @@ export const SettingsV2Header = ({
       <ButtonIcon
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
-        size={ButtonIconSize.Md}
+        size={ButtonIconSize.Sm}
         onClick={onClose}
         data-testid="settings-v2-header-back-button"
       />

@@ -7,7 +7,7 @@ import envValidationLoader, {
 
 describe('envValidationLoader', () => {
   function createMockContext(
-    declarations: Set<string>,
+    declarations: string[],
     resourcePath = '/test/file.ts',
   ) {
     const emittedErrors: Error[] = [];
@@ -41,7 +41,7 @@ describe('envValidationLoader', () => {
     it('emits error for undeclared env var', async () => {
       const source = 'const x = process.env.UNDECLARED_VAR;';
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set());
+        createMockContext([]);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -54,7 +54,7 @@ describe('envValidationLoader', () => {
     it('handles multiple env vars', async () => {
       const source = 'const url = process.env.API_URL + process.env.NODE_ENV;';
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['API_URL', 'NODE_ENV']));
+        createMockContext(['API_URL', 'NODE_ENV']);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -68,7 +68,7 @@ describe('envValidationLoader', () => {
     it('emits error for undeclared env var', async () => {
       const source = 'const x = process.env["UNDECLARED_VAR"];';
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set());
+        createMockContext([]);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -81,7 +81,7 @@ describe('envValidationLoader', () => {
     it('handles single quoted strings', async () => {
       const source = "const x = process.env['NODE_ENV'];";
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['NODE_ENV']));
+        createMockContext(['NODE_ENV']);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -96,7 +96,7 @@ describe('envValidationLoader', () => {
         const x = process.env[key];
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set());
+        createMockContext([]);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -110,7 +110,7 @@ describe('envValidationLoader', () => {
     it('emits error for undeclared env var', async () => {
       const source = 'const { UNDECLARED_VAR } = process.env;';
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set());
+        createMockContext([]);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -123,7 +123,7 @@ describe('envValidationLoader', () => {
     it('handles multiple destructured vars', async () => {
       const source = 'const { NODE_ENV, API_URL, DEBUG } = process.env;';
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['NODE_ENV', 'API_URL', 'DEBUG']));
+        createMockContext(['NODE_ENV', 'API_URL', 'DEBUG']);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -135,7 +135,7 @@ describe('envValidationLoader', () => {
     it('handles renamed destructuring', async () => {
       const source = 'const { NODE_ENV: env } = process.env;';
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['NODE_ENV']));
+        createMockContext(['NODE_ENV']);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -147,7 +147,7 @@ describe('envValidationLoader', () => {
     it('handles destructuring with default values', async () => {
       const source = "const { NODE_ENV = 'development' } = process.env;";
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['NODE_ENV']));
+        createMockContext(['NODE_ENV']);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -162,7 +162,7 @@ describe('envValidationLoader', () => {
         var { VAR_B } = process.env;
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['VAR_A', 'VAR_B']));
+        createMockContext(['VAR_A', 'VAR_B']);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -174,7 +174,7 @@ describe('envValidationLoader', () => {
     it('ignores rest element (spread operator) in destructuring', async () => {
       const source = 'const { NODE_ENV, ...rest } = process.env;';
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['NODE_ENV']));
+        createMockContext(['NODE_ENV']);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -186,7 +186,7 @@ describe('envValidationLoader', () => {
     it('validates named vars while ignoring rest element', async () => {
       const source = 'const { DECLARED, UNDECLARED, ...rest } = process.env;';
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['DECLARED']));
+        createMockContext(['DECLARED']);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -206,7 +206,7 @@ describe('envValidationLoader', () => {
         const { VAR_C } = process.env;
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['VAR_A', 'VAR_B', 'VAR_C']));
+        createMockContext(['VAR_A', 'VAR_B', 'VAR_C']);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -222,7 +222,7 @@ describe('envValidationLoader', () => {
         const { UNDECLARED_C } = process.env;
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set());
+        createMockContext([]);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -241,7 +241,7 @@ describe('envValidationLoader', () => {
         const undeclared = process.env.UNDECLARED;
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['DECLARED', 'ALSO_DECLARED']));
+        createMockContext(['DECLARED', 'ALSO_DECLARED']);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -261,7 +261,7 @@ describe('envValidationLoader', () => {
         interface Config { env: string }
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['NODE_ENV']), '/test/file.ts');
+        createMockContext(['NODE_ENV'], '/test/file.ts');
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -275,7 +275,7 @@ describe('envValidationLoader', () => {
         const Component = () => <div>{process.env.NODE_ENV}</div>;
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['NODE_ENV']), '/test/file.tsx');
+        createMockContext(['NODE_ENV'], '/test/file.tsx');
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -287,7 +287,7 @@ describe('envValidationLoader', () => {
     it('parses JavaScript files correctly', async () => {
       const source = 'const env = process.env.NODE_ENV;';
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['NODE_ENV']), '/test/file.js');
+        createMockContext(['NODE_ENV'], '/test/file.js');
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -308,7 +308,7 @@ describe('envValidationLoader', () => {
         };
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['NODE_ENV', 'APP_NAME']), '/test/file.js');
+        createMockContext(['NODE_ENV', 'APP_NAME'], '/test/file.js');
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -324,7 +324,7 @@ describe('envValidationLoader', () => {
         };
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(), '/test/file.js');
+        createMockContext([], '/test/file.js');
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -338,7 +338,7 @@ describe('envValidationLoader', () => {
         const Component = () => <div>{process.env.NODE_ENV}</div>;
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['NODE_ENV']), '/test/file.jsx');
+        createMockContext(['NODE_ENV'], '/test/file.jsx');
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -350,7 +350,7 @@ describe('envValidationLoader', () => {
     it('parses MTS files correctly', async () => {
       const source = 'export const env = process.env.NODE_ENV;';
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['NODE_ENV']), '/test/file.mts');
+        createMockContext(['NODE_ENV'], '/test/file.mts');
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -368,7 +368,7 @@ describe('envValidationLoader', () => {
         const { SAME_VAR } = process.env;
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set());
+        createMockContext([]);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -384,7 +384,7 @@ describe('envValidationLoader', () => {
       const source = 'const x = process.env.MISSING_VAR;';
       const resourcePath = '/path/to/my/file.ts';
       const { context, emittedErrors, callbackPromise } = createMockContext(
-        new Set(),
+        [],
         resourcePath,
       );
 
@@ -397,9 +397,7 @@ describe('envValidationLoader', () => {
 
     it('includes fix instructions in error message', async () => {
       const source = 'const x = process.env.MISSING_VAR;';
-      const { context, emittedErrors, callbackPromise } = createMockContext(
-        new Set(),
-      );
+      const { context, emittedErrors, callbackPromise } = createMockContext([]);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -411,7 +409,7 @@ describe('envValidationLoader', () => {
     it('does not detect process.env without property access', async () => {
       const source = 'const allEnv = process.env;';
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set());
+        createMockContext([]);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -426,7 +424,7 @@ describe('envValidationLoader', () => {
         const x = myObj.env.VAR;
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set());
+        createMockContext([]);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -445,7 +443,7 @@ describe('envValidationLoader', () => {
         };
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['NODE_ENV', 'API_URL']));
+        createMockContext(['NODE_ENV', 'API_URL']);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -462,7 +460,7 @@ describe('envValidationLoader', () => {
         const fn = () => process.env["API_URL"];
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['NODE_ENV', 'API_URL']));
+        createMockContext(['NODE_ENV', 'API_URL']);
 
       envValidationLoader.call(context, source);
       await callbackPromise;
@@ -477,7 +475,7 @@ describe('envValidationLoader', () => {
         const url = process.env.NODE_ENV === 'production' ? process.env.PROD_URL : process.env.DEV_URL;
       `;
       const { context, emittedErrors, callbackPromise, callbackResult } =
-        createMockContext(new Set(['NODE_ENV', 'PROD_URL', 'DEV_URL']));
+        createMockContext(['NODE_ENV', 'PROD_URL', 'DEV_URL']);
 
       envValidationLoader.call(context, source);
       await callbackPromise;

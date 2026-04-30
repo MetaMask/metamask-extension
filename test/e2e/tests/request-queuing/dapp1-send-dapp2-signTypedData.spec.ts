@@ -1,4 +1,9 @@
-import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
+import {
+  DAPP_ONE_URL,
+  DAPP_URL,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
@@ -7,6 +12,15 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/tran
 import SignTypedDataConfirmation from '../../page-objects/pages/confirmations/sign-typed-data-confirmation';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import { Driver } from '../../webdriver/driver';
+
+const EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO = {
+  aggregators: [],
+  decimals: 18,
+  image: '',
+  name: 'Ethereum',
+  symbol: 'ETH',
+  type: 'native' as const,
+};
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
   it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed', async function () {
@@ -17,6 +31,18 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilderV2()
           .withNetworkControllerTripleNode()
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1338/slip44:60': { amount: '25' },
+                'eip155:1000/slip44:60': { amount: '25' },
+              },
+            },
+            assetsInfo: {
+              'eip155:1338/slip44:60': EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO,
+              'eip155:1000/slip44:60': EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO,
+            },
+          })
           .build(),
         localNodeOptions: [
           {
@@ -112,6 +138,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Check correct network on the signTypedData confirmation.
         const signTypedDataConfirmation = new SignTypedDataConfirmation(driver);
+        await signTypedDataConfirmation.verifyConfirmationHeadingTitle();
         await signTypedDataConfirmation.checkNetworkIsDisplayed(
           'Localhost 8546',
         );

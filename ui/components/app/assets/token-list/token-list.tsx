@@ -33,6 +33,7 @@ import {
 } from '../../../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
+import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -167,8 +168,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
               privacyMode={privacyMode}
               onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
               safeChains={safeChains}
-              showMerklBadge
-              showMusdConvertCta
+              musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
             />
           );
         })}
@@ -195,8 +195,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
             privacyMode={privacyMode}
             onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
             safeChains={safeChains}
-            showMerklBadge
-            showMusdConvertCta
+            musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
           />
         );
       }}

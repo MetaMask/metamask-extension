@@ -38,13 +38,14 @@ import type { PermissionLogControllerState } from '@metamask/permission-log-cont
 import type {
   SnapControllerState,
   CronjobControllerState,
-  SnapsRegistryState,
+  SnapRegistryControllerState,
   SnapInterfaceControllerState,
   SnapInsightsControllerState,
 } from '@metamask/snaps-controllers';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { SignatureControllerState } from '@metamask/signature-controller';
 import type { PPOMState } from '@metamask/ppom-validator';
+import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { NameControllerState } from '@metamask/name-controller';
 import type { UserOperationControllerState } from '@metamask/user-operation-controller';
 import type { TransactionControllerState } from '@metamask/transaction-controller';
@@ -147,12 +148,14 @@ export type ControllerStatePropertiesEnumerated = {
   lastUpdatedFromVersion: AppStateControllerState['lastUpdatedFromVersion'];
   showShieldEntryModalOnce: AppStateControllerState['showShieldEntryModalOnce'];
   pendingRedirectRoute: AppStateControllerState['pendingRedirectRoute'];
+  lastVisitedRoute: AppStateControllerState['lastVisitedRoute'];
   pendingShieldCohort: AppStateControllerState['pendingShieldCohort'];
   pendingShieldCohortTxType: AppStateControllerState['pendingShieldCohortTxType'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
   networkConnectionBanner: AppStateControllerState['networkConnectionBanner'];
   isWalletResetInProgress: AppStateControllerState['isWalletResetInProgress'];
   sidePanelGasPollTokens: AppStateControllerState['sidePanelGasPollTokens'];
+  passkeyAutoUnlockSuppressed: AppStateControllerState['passkeyAutoUnlockSuppressed'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
@@ -160,8 +163,10 @@ export type ControllerStatePropertiesEnumerated = {
   quotesLoadingStatus: BridgeControllerState['quotesLoadingStatus'];
   quoteFetchError: BridgeControllerState['quoteFetchError'];
   quotesRefreshCount: BridgeControllerState['quotesRefreshCount'];
+  quoteStreamComplete: BridgeControllerState['quoteStreamComplete'];
   minimumBalanceForRentExemptionInLamports: BridgeControllerState['minimumBalanceForRentExemptionInLamports'];
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
+  tokenWarnings: BridgeControllerState['tokenWarnings'];
   txHistory: BridgeStatusControllerState['txHistory'];
   events: CronjobControllerState['events'];
   currentCurrency: CurrencyRateState['currentCurrency'];
@@ -190,6 +195,7 @@ export type ControllerStatePropertiesEnumerated = {
   fragments: MetaMetricsControllerState['fragments'];
   metaMetricsId: MetaMetricsControllerState['metaMetricsId'];
   participateInMetaMetrics: MetaMetricsControllerState['participateInMetaMetrics'];
+  passkeyRecord: PasskeyControllerState['passkeyRecord'];
   segmentApiCalls: MetaMetricsControllerState['segmentApiCalls'];
   traits: MetaMetricsControllerState['traits'];
   dataCollectionForMarketing: MetaMetricsControllerState['dataCollectionForMarketing'];
@@ -248,11 +254,11 @@ export type ControllerStatePropertiesEnumerated = {
   isMultiAccountBalancesEnabled: PreferencesControllerState['isMultiAccountBalancesEnabled'];
   openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
   securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
+  showSidePanelMigrationToast: PreferencesControllerState['showSidePanelMigrationToast'];
   useNftDetection: PreferencesControllerState['useNftDetection'];
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   useTransactionSimulations: PreferencesControllerState['useTransactionSimulations'];
   useSafeChainsListValidation: PreferencesControllerState['useSafeChainsListValidation'];
-  useBlockie: PreferencesControllerState['useBlockie'];
   usePhishDetect: PreferencesControllerState['usePhishDetect'];
   dismissSeedBackUpReminder: PreferencesControllerState['dismissSeedBackUpReminder'];
   overrideContentSecurityPolicyHeader: PreferencesControllerState['overrideContentSecurityPolicyHeader'];
@@ -295,10 +301,10 @@ export type ControllerStatePropertiesEnumerated = {
   unencryptedSnapStates: SnapControllerState['unencryptedSnapStates'];
   interfaces: SnapInterfaceControllerState['interfaces'];
   insights: SnapInsightsControllerState['insights'];
-  database: SnapsRegistryState['database'];
-  lastUpdated: SnapsRegistryState['lastUpdated'];
-  databaseUnavailable: SnapsRegistryState['databaseUnavailable'];
-  signature: SnapsRegistryState['signature'];
+  database: SnapRegistryControllerState['database'];
+  lastUpdated: SnapRegistryControllerState['lastUpdated'];
+  databaseUnavailable: SnapRegistryControllerState['databaseUnavailable'];
+  signature: SnapRegistryControllerState['signature'];
   subjectMetadata: SubjectMetadataControllerState['subjectMetadata'];
   tokenBalances: TokenBalancesControllerState['tokenBalances'];
   allDetectedTokens: TokensControllerState['allDetectedTokens'];
@@ -368,6 +374,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   NotificationServicesController.NotificationServicesControllerState &
   NotificationServicesPushController.NotificationServicesPushControllerState &
   OnboardingControllerState &
+  PasskeyControllerState &
   PermissionControllerState<PermissionConstraint> &
   PermissionLogControllerState &
   PPOMState &
@@ -380,7 +387,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   SnapControllerState &
   SnapInterfaceControllerState &
   SnapInsightsControllerState &
-  SnapsRegistryState &
+  SnapRegistryControllerState &
   SubjectMetadataControllerState &
   TokenBalancesControllerState &
   TokensControllerState &

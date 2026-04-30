@@ -11,11 +11,14 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Tag } from '../../../component-library';
 import { usePerpsOrderForm } from '../../../../hooks/perps';
+import { usePerpsMarketInfo } from '../../../../hooks/perps/usePerpsMarketInfo';
+import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import {
   BackgroundColor,
   BorderRadius,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import { getDisplaySymbol } from '../utils';
 import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
@@ -55,6 +58,9 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.onOrderTypeChange
  * @param props.onCalculationsChange
  * @param props.onAddFunds
+ * @param props.initialLeverage
+ * @param props.sizeDecimals
+ * @param props.markPrice
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -73,8 +79,20 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   midPrice,
   onOrderTypeChange,
   onAddFunds,
+  initialLeverage,
+  sizeDecimals,
+  markPrice,
 }) => {
   const t = useI18nContext();
+
+  // Fetch full MarketInfo for szDecimals (used to round position size before margin calc)
+  const marketInfo = usePerpsMarketInfo(asset);
+
+  // Fetch dynamic fee rates from the controller (user-specific, with discounts)
+  const { feeRate } = usePerpsOrderFees({
+    symbol: asset,
+    orderType: orderType ?? 'market',
+  });
 
   // Use custom hook for form state management
   const {
@@ -101,6 +119,12 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     onFormStateChange,
     onSubmit,
     orderType,
+    initialLeverage,
+    sizeDecimals,
+    maxLeverage,
+    szDecimals: marketInfo?.szDecimals,
+    markPrice,
+    feeRate,
   });
 
   const isLong = formState.direction === 'long';
@@ -119,6 +143,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         a.positionSize !== b.positionSize ||
         a.marginRequired !== b.marginRequired ||
         a.liquidationPrice !== b.liquidationPrice ||
+        a.liquidationPriceRaw !== b.liquidationPriceRaw ||
         a.orderValue !== b.orderValue ||
         a.estimatedFees !== b.estimatedFees
       );
@@ -149,13 +174,50 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           : t('perpsConfirmCloseShort');
       default:
         return isLong
-          ? t('perpsOpenLong', [asset])
-          : t('perpsOpenShort', [asset]);
+          ? t('perpsOpenLong', [getDisplaySymbol(asset)])
+          : t('perpsOpenShort', [getDisplaySymbol(asset)]);
     }
   }, [mode, isLong, asset, t]);
 
   // Get position size for close mode
   const positionSize = existingPosition?.size ?? '0';
+
+  const estimatedSize = useMemo(() => {
+    if (mode === 'modify' && existingPosition) {
+      const parsed = Number.parseFloat(
+        existingPosition.size.replaceAll(',', ''),
+      );
+      return Number.isFinite(parsed) ? parsed : undefined;
+    }
+    const amount = Number.parseFloat(formState.amount.replaceAll(',', '')) || 0;
+    if (amount === 0) {
+      return undefined;
+    }
+
+    let fillPrice = currentPrice;
+    if (formState.type === 'limit' && formState.limitPrice) {
+      const parsed = Number.parseFloat(
+        formState.limitPrice.replaceAll(/[$,]/gu, ''),
+      );
+      if (Number.isFinite(parsed) && parsed > 0) {
+        fillPrice = parsed;
+      }
+    }
+    if (fillPrice === 0) {
+      return undefined;
+    }
+
+    const size = amount / fillPrice;
+    return formState.direction === 'long' ? size : -size;
+  }, [
+    mode,
+    existingPosition,
+    formState.amount,
+    formState.direction,
+    formState.type,
+    formState.limitPrice,
+    currentPrice,
+  ]);
 
   return (
     <Box
@@ -199,7 +261,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
                     ? TextColor.textDefault
                     : TextColor.textAlternative,
               }}
-              padding={3}
+              padding={4}
               data-testid="order-type-market"
             />
             <Tag
@@ -224,7 +286,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
                     ? TextColor.textDefault
                     : TextColor.textAlternative,
               }}
-              padding={3}
+              padding={4}
               data-testid="order-type-limit"
             />
           </Box>
@@ -238,6 +300,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onClosePercentChange={handleClosePercentChange}
             asset={asset}
             currentPrice={currentPrice}
+            sizeDecimals={sizeDecimals}
           />
         )}
 
@@ -248,6 +311,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onLimitPriceChange={handleLimitPriceChange}
             currentPrice={currentPrice}
             midPrice={midPrice}
+            direction={formState.direction}
+            liquidationPrice={calculations.liquidationPriceRaw}
           />
         )}
 
@@ -262,6 +327,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             leverage={formState.leverage}
             asset={asset}
             currentPrice={currentPrice}
+            szDecimals={marketInfo?.szDecimals}
             onAddFunds={onAddFunds}
           />
         )}
@@ -280,8 +346,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           />
         )}
 
-        {/* New/Modify Modes: Show Auto Close (TP/SL) Section */}
-        {mode !== 'close' && (
+        {/* New Mode Only: Show Auto Close (TP/SL) Section */}
+        {mode === 'new' && (
           <AutoCloseSection
             enabled={formState.autoCloseEnabled}
             onEnabledChange={handleAutoCloseEnabledChange}
@@ -291,16 +357,13 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onStopLossPriceChange={handleStopLossPriceChange}
             direction={formState.direction}
             currentPrice={currentPrice}
-            entryPrice={
-              mode === 'modify' && existingPosition?.entryPrice
-                ? (() => {
-                    const p = parseFloat(
-                      existingPosition.entryPrice.replace(/,/gu, ''),
-                    );
-                    return Number.isNaN(p) ? undefined : p;
-                  })()
-                : undefined
-            }
+            leverage={formState.leverage}
+            entryPrice={undefined}
+            estimatedSize={estimatedSize}
+            orderType={formState.type}
+            limitPrice={formState.limitPrice}
+            liquidationPrice={calculations.liquidationPriceRaw}
+            asset={asset}
           />
         )}
 
@@ -323,7 +386,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         >
           <Button
             variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
+            size={ButtonSize.Md}
             onClick={handleSubmit}
             className={twMerge(
               'w-full',

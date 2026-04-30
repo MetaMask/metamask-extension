@@ -1,6 +1,5 @@
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -20,21 +19,15 @@ describe('Auto-Lock Timer', function () {
         await homePage.headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.checkPageIsLoaded();
+        await settingsPage.goToSecurityAndPasswordSettings();
 
-        // Set Auto Lock Timer
-        const sixSecsInMins = '0.1';
-        await advancedSettingsPage.fillAutoLockoutTime(
-          '10081',
-          'Lock time must be a number between 0 and 10080',
-        );
-        await advancedSettingsPage.fillAutoLockoutTime(sixSecsInMins);
-        await advancedSettingsPage.confirmAutoLockout();
+        // Set auto lock timer to the shortest V2 option: 15 seconds.
+        await settingsPage.goToAutoLockSettings();
+        await settingsPage.waitForAutoLockOptionsList();
+        await settingsPage.selectQuarterMinuteAutoLockOption();
 
-        // Necessary wait for the auto lockout to trigger
-        await driver.delay(6000);
+        // Necessary wait for the 15-second auto lockout to trigger.
+        await driver.delay(16000);
 
         // Verify the wallet is locked
         const loginPage = new LoginPage(driver);

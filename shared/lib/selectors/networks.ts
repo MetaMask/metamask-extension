@@ -15,6 +15,7 @@ import { AccountsControllerState } from '@metamask/accounts-controller';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import {
   CAIP_FORMATTED_TEST_CHAINS,
+  CHAIN_IDS,
   NetworkStatus,
 } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
@@ -127,7 +128,7 @@ export const getNetworkConfigurationsByCaipChainId = ({
 
   // For now we need to filter out networkConfigurations/scopes without accounts because
   // the `endowment:caip25` caveat validator will throw if there are no supported accounts for the given scope
-  // due to how the `MultichainRouter.isSupportedScope()` method is implemented
+  // due to how the `MultichainRoutingService.isSupportedScope()` method is implemented
   Object.entries(multichainNetworkConfigurationsByChainId).forEach(
     ([caipChainId, networkConfig]) => {
       const matchesAccount = Object.values(internalAccounts.accounts).some(
@@ -327,7 +328,12 @@ export const getNonTestNetworks = createSelector(
     return Object.entries(networkConfigurationsByCaipChainId)
       .filter(([chainId]) => {
         const caipChainId = chainId as CaipChainId;
-        return !CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
+        const localhostCaipChainId =
+          `eip155:${hexToDecimal(CHAIN_IDS.LOCALHOST)}` as CaipChainId;
+        return (
+          !CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId) ||
+          caipChainId === localhostCaipChainId
+        );
       })
       .map(([chainId, network]) => ({
         ...network,

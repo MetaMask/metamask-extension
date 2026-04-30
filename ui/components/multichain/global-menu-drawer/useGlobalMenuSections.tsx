@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import browser from 'webextension-polyfill';
 import {
   Box,
   BoxAlignItems,
@@ -21,19 +20,18 @@ import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   SETTINGS_ROUTE,
   // SETTINGS_V2_ROUTE,
-  DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
   GATOR_PERMISSIONS,
   CONTACTS_ROUTE,
+  NETWORKS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
   setShowSupportDataConsentModal,
   showConfirmTurnOnMetamaskNotifications,
-  toggleNetworkMenu,
-  setUseSidePanelAsDefault,
+  toggleDefaultView,
 } from '../../../store/actions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -243,57 +241,6 @@ export function useGlobalMenuSections(
     onClose,
   ]);
 
-  const toggleDefaultView = useCallback(async () => {
-    if (!isSidePanelEnabled) {
-      return;
-    }
-
-    try {
-      if (isSidepanel) {
-        await dispatch(setUseSidePanelAsDefault(false));
-        window.close();
-        return;
-      }
-
-      if (isPopup) {
-        const browserWithSidePanel = browser as typeof browser & {
-          sidePanel?: {
-            open: (options: { windowId: number }) => Promise<void>;
-          };
-        };
-
-        if (!browserWithSidePanel?.sidePanel?.open) {
-          return;
-        }
-
-        const tabs = await browser.tabs.query({
-          active: true,
-          currentWindow: true,
-        });
-
-        if (tabs && tabs.length > 0 && tabs[0].windowId) {
-          await browserWithSidePanel.sidePanel.open({
-            windowId: tabs[0].windowId,
-          });
-          await new Promise((resolve) => setTimeout(resolve, 500));
-
-          const contexts = await chrome.runtime.getContexts({
-            contextTypes: ['SIDE_PANEL' as chrome.runtime.ContextType],
-          });
-
-          if (!contexts || contexts.length === 0) {
-            return;
-          }
-
-          await dispatch(setUseSidePanelAsDefault(true));
-          window.close();
-        }
-      }
-    } catch (error) {
-      console.error('Error toggling default view:', error);
-    }
-  }, [isSidePanelEnabled, isSidepanel, isPopup, dispatch]);
-
   return useMemo(() => {
     const section1: GlobalMenuSection = {
       id: 'global-menu-section-1',
@@ -377,7 +324,7 @@ export function useGlobalMenuSections(
         iconName: isSidepanel ? IconName.PopUp : IconName.SidePanel,
         label: isSidepanel ? t('switchToPopup') : t('switchToSidePanel'),
         onClick: async () => {
-          await toggleDefaultView();
+          await dispatch(toggleDefaultView());
           trackEvent({
             event: MetaMetricsEventName.ViewportSwitched,
             category: MetaMetricsEventCategory.Navigation,
@@ -423,10 +370,7 @@ export function useGlobalMenuSections(
           id: 'global-menu-networks',
           iconName: IconName.Hierarchy,
           label: t('networks'),
-          onClick: () => {
-            dispatch(toggleNetworkMenu());
-            onClose();
-          },
+          to: `${NETWORKS_ROUTE}?drawerOpen=true`,
         },
         {
           id: 'global-menu-snaps',
@@ -446,7 +390,7 @@ export function useGlobalMenuSections(
           id: 'global-menu-settings',
           iconName: IconName.Setting,
           label: t('settings'),
-          to: SETTINGS_ROUTE,
+          to: `${SETTINGS_ROUTE}?drawerOpen=true`,
           onClick: () => {
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
@@ -511,15 +455,15 @@ export function useGlobalMenuSections(
           iconColor: IconColor.ErrorDefault,
           textColor: TextColor.ErrorDefault,
           label: t('logOut'),
-          onClick: () => {
-            navigate(DEFAULT_ROUTE);
-            dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
+          onClick: async () => {
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
               event: MetaMetricsEventName.AppLocked,
               properties: { location: METRICS_LOCATION },
             });
             onClose();
+
+            await dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
           },
         },
       ],
@@ -547,10 +491,8 @@ export function useGlobalMenuSections(
     snapsUpdatesAvailable,
     showPriorityTag,
     notificationsUnreadCount,
-    notificationsReadCount,
     isMetamaskNotificationFeatureSeen,
     onClose,
-    navigate,
     dispatch,
     trackEvent,
     metaMetricsId,
@@ -561,6 +503,5 @@ export function useGlobalMenuSections(
     supportText,
     handleNotificationsClick,
     handleSupportMenuClick,
-    toggleDefaultView,
   ]);
 }

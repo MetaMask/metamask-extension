@@ -1,10 +1,14 @@
 import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
   selectPerpsIsEligible,
   selectPerpsInitializationState,
   selectPerpsInitializationError,
   selectPerpsIsTestnet,
   selectPerpsActiveProvider,
-  selectPerpsDepositInProgress,
+  selectPerpsDepositPending,
   selectPerpsLastDepositTransactionId,
   selectPerpsLastDepositResult,
   selectPerpsWithdrawInProgress,
@@ -15,6 +19,7 @@ import {
   selectPerpsIsFirstTimeUser,
   selectPerpsHasPlacedFirstOrder,
   selectPerpsWatchlistMarkets,
+  selectPerpsIsWatchlistMarket,
   selectPerpsLastError,
   selectPerpsSelectedPaymentToken,
   selectPerpsCachedMarketData,
@@ -23,6 +28,7 @@ import {
   selectPerpsCachedAccountState,
   selectPerpsPerpsBalances,
   selectPerpsMarketFilterPreferences,
+  selectPerpsShouldShowDepositToast,
 } from './perps-controller';
 
 function buildState(overrides: Record<string, unknown> = {}) {
@@ -94,15 +100,270 @@ describe('perps-controller selectors', () => {
     });
   });
 
-  describe('selectPerpsDepositInProgress', () => {
-    it('returns value from state', () => {
+  describe('selectPerpsDepositPending', () => {
+    const activeDepositId = 'tx-1';
+
+    function buildTx(
+      overrides: Partial<{
+        id: string;
+        type: TransactionType | string;
+        status: TransactionStatus | string;
+      }> = {},
+    ) {
+      return {
+        id: overrides.id ?? activeDepositId,
+        type: overrides.type ?? TransactionType.perpsDeposit,
+        status: overrides.status ?? TransactionStatus.approved,
+      };
+    }
+
+    function buildStateWithActiveDeposit(
+      overrides: Record<string, unknown> = {},
+    ) {
+      return buildState({
+        lastDepositTransactionId: activeDepositId,
+        ...overrides,
+      });
+    }
+
+    it('returns true when a perpsDeposit transaction is approved', () => {
       expect(
-        selectPerpsDepositInProgress(buildState({ depositInProgress: true })),
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({ transactions: [buildTx()] }),
+        ),
       ).toBe(true);
     });
 
-    it('defaults to false', () => {
-      expect(selectPerpsDepositInProgress(buildState())).toBe(false);
+    it('returns true when a perpsDepositAndOrder transaction is approved', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [
+              buildTx({ type: TransactionType.perpsDepositAndOrder }),
+            ],
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      TransactionStatus.approved,
+      TransactionStatus.signed,
+      TransactionStatus.submitted,
+    ])('returns true when status is %s', (status: TransactionStatus) => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [buildTx({ status })],
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      TransactionStatus.unapproved,
+      TransactionStatus.confirmed,
+      TransactionStatus.failed,
+      TransactionStatus.dropped,
+      TransactionStatus.rejected,
+    ])('returns false when status is %s', (status: TransactionStatus) => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [buildTx({ status })],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for unrelated transaction types in a pending status', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [buildTx({ type: TransactionType.bridge })],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when there are no transactions', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({ transactions: [] }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when the transactions slice is missing', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({ lastDepositTransactionId: activeDepositId }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when lastDepositTransactionId is null despite a pending perps tx', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({
+            transactions: [
+              buildTx({ id: 'orphan', status: TransactionStatus.submitted }),
+            ],
+            lastDepositTransactionId: null,
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when lastDepositTransactionId is absent despite a pending perps tx', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({
+            transactions: [
+              buildTx({ id: 'orphan', status: TransactionStatus.submitted }),
+            ],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when active id points to a confirmed tx while another perps tx is stuck submitted', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({
+            lastDepositTransactionId: 'current-deposit',
+            transactions: [
+              buildTx({
+                id: 'stale-deposit',
+                status: TransactionStatus.submitted,
+              }),
+              buildTx({
+                id: 'current-deposit',
+                status: TransactionStatus.confirmed,
+              }),
+            ],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true only for the transaction matching lastDepositTransactionId', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({
+            lastDepositTransactionId: 'tx-b',
+            transactions: [
+              buildTx({
+                id: 'tx-a',
+                type: TransactionType.simpleSend,
+                status: TransactionStatus.submitted,
+              }),
+              buildTx({
+                id: 'tx-b',
+                type: TransactionType.perpsDeposit,
+                status: TransactionStatus.submitted,
+              }),
+            ],
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false when lastDepositTransactionId does not match any transaction', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [
+              buildTx({
+                id: 'other-id',
+                status: TransactionStatus.approved,
+              }),
+            ],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for token-funded deposits with a non-native pay token', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [buildTx()],
+            transactionData: {
+              [activeDepositId]: {
+                paymentToken: {
+                  address: '0x00000000000000000000000000000000000000dA',
+                  chainId: '0xa4b1',
+                },
+              },
+            },
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true for native-token-funded deposits', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [buildTx()],
+            transactionData: {
+              [activeDepositId]: {
+                paymentToken: {
+                  address: '0x0000000000000000000000000000000000000000',
+                  chainId: '0xa4b1',
+                },
+              },
+            },
+          }),
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('selectPerpsShouldShowDepositToast', () => {
+    it('returns true for a direct deposit transaction', () => {
+      expect(
+        selectPerpsShouldShowDepositToast(
+          buildState({
+            lastDepositTransactionId: 'tx-1',
+            transactions: [
+              {
+                id: 'tx-1',
+                type: TransactionType.perpsDeposit,
+                status: TransactionStatus.approved,
+              },
+            ],
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false for a token-funded deposit transaction', () => {
+      expect(
+        selectPerpsShouldShowDepositToast(
+          buildState({
+            lastDepositTransactionId: 'tx-1',
+            transactions: [
+              {
+                id: 'tx-1',
+                type: TransactionType.perpsDeposit,
+                status: TransactionStatus.approved,
+              },
+            ],
+            transactionData: {
+              'tx-1': {
+                paymentToken: {
+                  address: '0x00000000000000000000000000000000000000dA',
+                  chainId: '0xa4b1',
+                },
+              },
+            },
+          }),
+        ),
+      ).toBe(false);
     });
   });
 
@@ -227,11 +488,8 @@ describe('perps-controller selectors', () => {
       ).toBe(value);
     });
 
-    it('defaults to both true', () => {
-      expect(selectPerpsIsFirstTimeUser(buildState())).toEqual({
-        testnet: true,
-        mainnet: true,
-      });
+    it('returns undefined when absent', () => {
+      expect(selectPerpsIsFirstTimeUser(buildState())).toBeUndefined();
     });
   });
 
@@ -269,6 +527,44 @@ describe('perps-controller selectors', () => {
     });
   });
 
+  describe('selectPerpsIsWatchlistMarket', () => {
+    const watchlistMarkets = {
+      testnet: ['SOL'],
+      mainnet: ['BTC', 'ETH'],
+    };
+
+    it('returns false when symbol is empty', () => {
+      expect(selectPerpsIsWatchlistMarket(buildState(), '')).toBe(false);
+    });
+
+    it('returns true when symbol is on mainnet list (case-insensitive)', () => {
+      expect(
+        selectPerpsIsWatchlistMarket(
+          buildState({ watchlistMarkets, isTestnet: false }),
+          'btc',
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true when symbol is on testnet list when isTestnet', () => {
+      expect(
+        selectPerpsIsWatchlistMarket(
+          buildState({ watchlistMarkets, isTestnet: true }),
+          'SOL',
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false when symbol is not on the active list', () => {
+      expect(
+        selectPerpsIsWatchlistMarket(
+          buildState({ watchlistMarkets, isTestnet: false }),
+          'SOL',
+        ),
+      ).toBe(false);
+    });
+  });
+
   describe('selectPerpsLastError', () => {
     it('returns value from state', () => {
       expect(selectPerpsLastError(buildState({ lastError: 'oops' }))).toBe(
@@ -300,7 +596,27 @@ describe('perps-controller selectors', () => {
     it('returns value from state', () => {
       const data = [{ market: 'ETH' }];
       expect(
-        selectPerpsCachedMarketData(buildState({ cachedMarketData: data })),
+        selectPerpsCachedMarketData(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedMarketDataByProvider: {
+              hyperliquid: { data, timestamp: 0 },
+            },
+          }),
+        ),
+      ).toBe(data);
+    });
+
+    it('falls back to hyperliquid data when activeProvider is absent', () => {
+      const data = [{ market: 'ETH' }];
+      expect(
+        selectPerpsCachedMarketData(
+          buildState({
+            cachedMarketDataByProvider: {
+              hyperliquid: { data, timestamp: 0 },
+            },
+          }),
+        ),
       ).toBe(data);
     });
 
@@ -313,7 +629,39 @@ describe('perps-controller selectors', () => {
     it('returns value from state', () => {
       const positions = [{ market: 'ETH', size: 1 }];
       expect(
-        selectPerpsCachedPositions(buildState({ cachedPositions: positions })),
+        selectPerpsCachedPositions(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions,
+                orders: [],
+                accountState: null,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
+      ).toBe(positions);
+    });
+
+    it('falls back to hyperliquid positions when activeProvider is absent', () => {
+      const positions = [{ market: 'ETH', size: 1 }];
+      expect(
+        selectPerpsCachedPositions(
+          buildState({
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions,
+                orders: [],
+                accountState: null,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
       ).toBe(positions);
     });
 
@@ -326,7 +674,39 @@ describe('perps-controller selectors', () => {
     it('returns value from state', () => {
       const orders = [{ id: 'o1' }];
       expect(
-        selectPerpsCachedOrders(buildState({ cachedOrders: orders })),
+        selectPerpsCachedOrders(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions: [],
+                orders,
+                accountState: null,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
+      ).toBe(orders);
+    });
+
+    it('falls back to hyperliquid orders when activeProvider is absent', () => {
+      const orders = [{ id: 'o1' }];
+      expect(
+        selectPerpsCachedOrders(
+          buildState({
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions: [],
+                orders,
+                accountState: null,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
       ).toBe(orders);
     });
 
@@ -340,7 +720,37 @@ describe('perps-controller selectors', () => {
       const account = { balance: '100' };
       expect(
         selectPerpsCachedAccountState(
-          buildState({ cachedAccountState: account }),
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions: [],
+                orders: [],
+                accountState: account,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
+      ).toBe(account);
+    });
+
+    it('falls back to hyperliquid account state when activeProvider is absent', () => {
+      const account = { balance: '100' };
+      expect(
+        selectPerpsCachedAccountState(
+          buildState({
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions: [],
+                orders: [],
+                accountState: account,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
         ),
       ).toBe(account);
     });

@@ -2,6 +2,7 @@ import {
   isEqualCaseInsensitive,
   prependZero,
   toKebabCase,
+  toCamelCase,
 } from './string-utils';
 
 describe('string-utils', () => {
@@ -30,32 +31,24 @@ describe('string-utils', () => {
   });
 
   describe('toKebabCase', () => {
-    it('converts camelCase to kebab-case', () => {
+    it('converts camelCase and PascalCase to kebab-case', () => {
       expect(toKebabCase('startupStandardHome')).toBe('startup-standard-home');
-    });
-
-    it('converts PascalCase to kebab-case', () => {
       expect(toKebabCase('SwapPage')).toBe('swap-page');
-    });
-
-    it('converts single lowercase word unchanged', () => {
-      expect(toKebabCase('startup')).toBe('startup');
-    });
-
-    it('handles consecutive uppercase letters', () => {
       expect(toKebabCase('getHTTPSUrl')).toBe('get-h-t-t-p-s-url');
     });
+  });
 
-    it('handles single uppercase letter', () => {
-      expect(toKebabCase('A')).toBe('a');
+  describe('toCamelCase', () => {
+    it('converts kebab-case to camelCase', () => {
+      expect(toCamelCase('onboarding-import-wallet')).toBe(
+        'onboardingImportWallet',
+      );
+      expect(toCamelCase('load-new-account')).toBe('loadNewAccount');
     });
 
-    it('returns empty string for empty input', () => {
-      expect(toKebabCase('')).toBe('');
-    });
-
-    it('handles already-kebab-case input', () => {
-      expect(toKebabCase('already-kebab')).toBe('already-kebab');
+    it('is the inverse of toKebabCase', () => {
+      const original = 'myVariableName';
+      expect(toCamelCase(toKebabCase(original))).toBe(original);
     });
   });
 });

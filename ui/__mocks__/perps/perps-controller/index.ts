@@ -14,6 +14,10 @@ import type {
   CaipAssetId,
   Hex,
 } from '@metamask/utils';
+import {
+  SUPPORT_CONFIG as SUPPORT_CONFIG_BASE,
+  FEEDBACK_CONFIG as FEEDBACK_CONFIG_BASE,
+} from '../../../../shared/constants/perps';
 
 /**
  * Perps feature constants
@@ -491,21 +495,17 @@ export const LEARN_MORE_CONFIG = {
 } as const;
 
 /**
- * Support configuration
- * Contact support button configuration (matches Settings behavior)
+ * Support and feedback configuration
+ * Extends the real constants with mock-specific properties for testing
  */
 export const SUPPORT_CONFIG = {
-  Url: 'https://support.metamask.io',
+  ...SUPPORT_CONFIG_BASE,
   TitleKey: 'perps.support.title',
   DescriptionKey: 'perps.support.description',
 } as const;
 
-/**
- * Feedback survey configuration
- * External survey for collecting user feedback on Perps trading experience
- */
 export const FEEDBACK_CONFIG = {
-  Url: 'https://survey.alchemer.com/s3/8649911/MetaMask-Perps-Trading-Feedback',
+  ...FEEDBACK_CONFIG_BASE,
   TitleKey: 'perps.feedback.title',
 } as const;
 
@@ -515,7 +515,7 @@ export const FEEDBACK_CONFIG = {
  */
 export const PERPS_SUPPORT_ARTICLES_URLS = {
   AdlUrl:
-    'https://support.metamask.io/manage-crypto/trade/perps/leverage-and-liquidation/#what-is-auto-deleveraging-adl',
+    'https://support.metamask.io/manage-crypto/trade/perps/leverage-and-liquidation/?utm_source=extension#what-is-auto-deleveraging-adl',
 } as const;
 
 /**
@@ -875,7 +875,7 @@ export type Position = {
   };
   liquidationPrice: string | null; // Liquidation price (null if no risk)
   maxLeverage: number; // Maximum allowed leverage for this asset
-  returnOnEquity: string; // ROE percentage
+  returnOnEquity: string; // ROE as decimal ratio (e.g. 0.1579 for 15.79%)
   cumulativeFunding: {
     // Funding payments history
     allTime: string; // Total funding since account opening
@@ -892,6 +892,7 @@ export type Position = {
 // Using 'type' instead of 'interface' for BaseController Json compatibility
 export type AccountState = {
   availableBalance: string; // Based on HyperLiquid: withdrawable
+  availableToTradeBalance?: string; // HL unified: withdrawable + unreserved spot USDC
   totalBalance: string; // Based on HyperLiquid: accountValue
   marginUsed: string; // Based on HyperLiquid: marginUsed
   unrealizedPnl: string; // Based on HyperLiquid: unrealizedPnl

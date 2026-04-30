@@ -339,9 +339,6 @@
   "links": {
     "message": "Link-uri"
   },
-  "loadMore": {
-    "message": "Încărcați mai multe"
-  },
   "loading": {
     "message": "Se încarcă…"
   },

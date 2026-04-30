@@ -20,14 +20,19 @@ export const gasEstimateGreaterThanGasUsedPlusTenPercent = (
   gasFeeEstimates,
   estimate,
 ) => {
-  let { maxFeePerGas: maxFeePerGasInTransaction } = gasUsed;
-  maxFeePerGasInTransaction = new BigNumber(
-    hexWEIToDecGWEI(addTenPercentAndRound(maxFeePerGasInTransaction)),
-  );
+  const gasInTransaction = gasUsed?.maxFeePerGas ?? gasUsed?.gasPrice;
+  const bumped = addTenPercentAndRound(gasInTransaction);
+  if (!bumped) {
+    return false;
+  }
+  const bumpedGwei = new BigNumber(hexWEIToDecGWEI(bumped));
 
-  const maxFeePerGasFromEstimate =
-    gasFeeEstimates?.[estimate]?.suggestedMaxFeePerGas;
-  return bnGreaterThan(maxFeePerGasFromEstimate, maxFeePerGasInTransaction);
+  const levelEstimate = gasFeeEstimates?.[estimate];
+  const estimateGwei =
+    typeof levelEstimate === 'object'
+      ? levelEstimate?.suggestedMaxFeePerGas
+      : levelEstimate;
+  return bnGreaterThan(estimateGwei, bumpedGwei);
 };
 
 /**
@@ -117,6 +122,41 @@ export function editGasModeIsSpeedUpOrCancel(editGasMode) {
  * @returns {object} Gas values safe for replacement (at least previousGas × rate).
  */
 export function getGasValuesForReplacement(txParams, previousGas, rate) {
+  // Normalize hex so BigNumber can parse (0x prefix). Values may be 0x-prefixed
+  // or raw hex from .toString(16); addHexPrefix handles both (idempotent with 0x).
+  const hexForBN = (v) =>
+    v === null || v === undefined
+      ? new BigNumber(0)
+      : new BigNumber(addHexPrefix(String(v)));
+
+  const effectiveGasLimit =
+    txParams?.gas ??
+    txParams?.gasLimit ??
+    previousGas?.gas ??
+    previousGas?.gasLimit;
+
+  // Legacy (gasPrice) flow
+  if (previousGas?.gasPrice && !previousGas?.maxFeePerGas) {
+    const minGasPrice = new Numeric(previousGas.gasPrice, 16)
+      .times(new Numeric(rate, 10))
+      .round(0)
+      .toPrefixedHexString();
+
+    const gasPrice = hexForBN(txParams?.gasPrice).gte(
+      new BigNumber(minGasPrice),
+    )
+      ? txParams.gasPrice
+      : minGasPrice;
+
+    return {
+      ...txParams,
+      gasPrice,
+      gas: effectiveGasLimit,
+      gasLimit: effectiveGasLimit,
+    };
+  }
+
+  // EIP-1559 flow
   if (!previousGas?.maxFeePerGas || !previousGas?.maxPriorityFeePerGas) {
     return txParams ?? {};
   }
@@ -132,13 +172,6 @@ export function getGasValuesForReplacement(txParams, previousGas, rate) {
     .round(0)
     .toPrefixedHexString();
 
-  // Normalize hex so BigNumber can parse (0x prefix). Values may be 0x-prefixed
-  // or raw hex from .toString(16); addHexPrefix handles both (idempotent with 0x).
-  const hexForBN = (v) =>
-    v === null || v === undefined
-      ? new BigNumber(0)
-      : new BigNumber(addHexPrefix(String(v)));
-
   const maxFeePerGas = hexForBN(txParams?.maxFeePerGas).gte(
     new BigNumber(previousMaxFeePerGas),
   )
@@ -149,12 +182,6 @@ export function getGasValuesForReplacement(txParams, previousGas, rate) {
   )
     ? txParams.maxPriorityFeePerGas
     : previousMaxPriorityFeePerGas;
-
-  const effectiveGasLimit =
-    txParams?.gas ??
-    txParams?.gasLimit ??
-    previousGas?.gas ??
-    previousGas?.gasLimit;
 
   return {
     ...txParams,

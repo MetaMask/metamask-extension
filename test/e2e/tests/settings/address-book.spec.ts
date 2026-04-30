@@ -3,6 +3,7 @@ import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import ContactsPage from '../../page-objects/pages/settings/contacts-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -58,6 +59,8 @@ describe('Address Book', function (this: Suite) {
 
         await new TransactionConfirmation(driver).clickFooterConfirmButton();
 
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkTxAction({ action: 'Sent' });
@@ -114,6 +117,8 @@ describe('Address Book', function (this: Suite) {
         await networkSelector.selectTab('Custom');
         await networkSelector.selectNetworkByName('Localhost 8545');
 
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkTxAction({ action: 'Sent' });

@@ -10,6 +10,13 @@ beforeEach(() => {
     .get('/v4/multiaccount/transactions')
     .query(true)
     .reply(200, { data: [], pageInfo: { hasNextPage: false, count: 0 } });
+
+  // Mock surveys API, this is being called when metametrics-id is minted in the integration tests
+  // so, need to mock it to avoid the test from failing
+  nock(ACCOUNTS_API_BASE_URL)
+    .persist()
+    .get(/\/v1\/users\/.*\/surveys/)
+    .reply(200, { surveys: {} });
 });
 
 // Should be path from root of your project

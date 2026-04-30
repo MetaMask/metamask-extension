@@ -1,7 +1,13 @@
 import { act } from '@testing-library/react-hooks';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+
 import mockState from '../../../test/data/mock-state.json';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsOrderForm } from './usePerpsOrderForm';
+
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn(),
+}));
 
 describe('usePerpsOrderForm', () => {
   const defaultOptions = {
@@ -17,6 +23,32 @@ describe('usePerpsOrderForm', () => {
     },
   };
 
+  beforeEach(() => {
+    jest.mocked(submitRequestToBackground).mockImplementation((method) => {
+      const immediate = <ResolvedValue>(
+        value: ResolvedValue,
+      ): Promise<ResolvedValue> =>
+        ({
+          then(onFulfilled: (resolved: ResolvedValue) => unknown) {
+            const result = onFulfilled(value);
+            return immediate(result as ResolvedValue);
+          },
+          catch() {
+            return immediate(value);
+          },
+          finally(onFinally: () => void) {
+            onFinally();
+            return immediate(value);
+          },
+        }) as Promise<ResolvedValue>;
+
+      if (method === 'perpsCalculateLiquidationPrice') {
+        return immediate('40000');
+      }
+      return immediate(undefined);
+    });
+  });
+
   describe('initialization', () => {
     it('initializes with default form state', () => {
       const { result } = renderHookWithProvider(
@@ -28,7 +60,7 @@ describe('usePerpsOrderForm', () => {
         asset: 'BTC',
         direction: 'long',
         amount: '',
-        leverage: 1,
+        leverage: 3,
         type: 'market',
         autoCloseEnabled: false,
         takeProfitPrice: '',
@@ -43,6 +75,59 @@ describe('usePerpsOrderForm', () => {
       );
 
       expect(result.current.closePercent).toBe(100);
+    });
+
+    it('uses initialLeverage when provided for new orders', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            initialLeverage: 7,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(7);
+    });
+
+    it('applies initialLeverage when it changes after initial render (async hydration)', () => {
+      const props = {
+        ...defaultOptions,
+        initialLeverage: undefined as number | undefined,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(3);
+
+      props.initialLeverage = 8;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.leverage).toBe(8);
+    });
+
+    it('ignores initialLeverage in modify mode (uses position leverage)', () => {
+      const existingPosition = {
+        size: '1.0',
+        leverage: 5,
+        entryPrice: '44000',
+      };
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            mode: 'modify',
+            existingPosition,
+            initialLeverage: 10,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(5);
     });
 
     it('initializes with short direction when specified', () => {
@@ -109,6 +194,21 @@ describe('usePerpsOrderForm', () => {
       );
 
       expect(result.current.formState.autoCloseEnabled).toBe(true);
+    });
+
+    it('initializes amount empty so user enters size increase, not total', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            mode: 'modify',
+            existingPosition,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.amount).toBe('');
+      expect(result.current.formState.balancePercent).toBe(0);
     });
   });
 
@@ -288,6 +388,135 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.calculations.liquidationPrice).toBeNull();
     });
 
+    it('uses markPrice (oracle) for margin calculation when provided', () => {
+      // amount=$15, leverage=3x, currentPrice=$24.95, markPrice=$25.65, szDecimals=1
+      // positionSize = round(15/24.95, 1) = 0.6, but 0.6 * 24.95 = 14.97 < 15,
+      // so calculatePositionSize bumps up to 0.7.
+      // notional = 0.7 × 25.65 = $17.955, margin = $17.955 / 3 ≈ $5.98 (float truncation)
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            currentPrice: 24.95, // mid/candle price — different from oracle
+            markPrice: 25.65, // oracle price — what mobile uses for margin
+            szDecimals: 1,
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('15');
+        result.current.handleLeverageChange(3);
+      });
+
+      // Assertion verified: '5.98' matches the bumped-position-size calculation above.
+      expect(result.current.calculations.marginRequired).toContain('5.98');
+    });
+
+    it('falls back to currentPrice for margin when markPrice is not provided', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            currentPrice: 45000,
+            // markPrice omitted — should fall back
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('9000');
+        result.current.handleLeverageChange(3);
+      });
+
+      // margin = 9000 / 3 = $3,000 using currentPrice as fallback
+      expect(result.current.calculations.marginRequired).toContain('3,000');
+    });
+
+    it('uses limit price (not markPrice) for margin on limit orders', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            currentPrice: 45000,
+            markPrice: 44000, // oracle — should be ignored for limit orders
+            orderType: 'limit',
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('9000');
+        result.current.handleLimitPriceChange('45000');
+        result.current.handleLeverageChange(3);
+      });
+
+      // margin = 9000 / 3 = $3,000 using the limit price, not markPrice
+      expect(result.current.calculations.marginRequired).toContain('3,000');
+    });
+
+    it('calculates margin as notional divided by leverage (no fee included)', () => {
+      const { result } = renderHookWithProvider(
+        () => usePerpsOrderForm(defaultOptions),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('10000');
+        result.current.handleLeverageChange(10);
+      });
+
+      // Size = $10,000, leverage = 10x → margin = $10,000 / 10 = $1,000
+      // Fees are a separate line item and are NOT included in margin
+      expect(result.current.calculations.marginRequired).not.toBeNull();
+      expect(result.current.calculations.marginRequired).toContain('1,000');
+      expect(result.current.calculations.marginRequired).not.toContain(
+        '10,000',
+      );
+    });
+
+    it('sets orderValue equal to size (not size × leverage)', () => {
+      const { result } = renderHookWithProvider(
+        () => usePerpsOrderForm(defaultOptions),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('5000');
+        result.current.handleLeverageChange(5);
+      });
+
+      // orderValue should be $5000 (the size), not $25000 (size × leverage)
+      expect(result.current.calculations.orderValue).toContain('5,000');
+      expect(result.current.calculations.orderValue).not.toContain('25,000');
+    });
+
+    it('recalculates balancePercent when leverage changes', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 1000,
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('5000');
+        result.current.handleLeverageChange(10);
+      });
+
+      // Size $5000, available $1000, leverage 10x → maxSize $10000 → 50%
+      expect(result.current.formState.balancePercent).toBe(50);
+
+      act(() => {
+        result.current.handleLeverageChange(5);
+      });
+
+      // Same size $5000, now leverage 5x → maxSize $5000 → 100%
+      expect(result.current.formState.balancePercent).toBe(100);
+    });
+
     it('recalculates when closePercent changes', () => {
       const existingPosition = {
         size: '2.0',
@@ -315,6 +544,54 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.calculations.positionSize).not.toBe(
         initialPositionSize,
       );
+    });
+
+    it('uses dot-decimal limit price correctly in calculations', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            orderType: 'limit',
+          }),
+        mockState,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('1000');
+      });
+
+      act(() => {
+        result.current.handleLimitPriceChange('45050.00');
+      });
+
+      expect(result.current.calculations.positionSize).toContain('BTC');
+      // Amount is treated as notional position size (TAT-2684 fix), so
+      // orderValue equals the entered amount ($1000) regardless of leverage.
+      expect(result.current.calculations.orderValue).toBe('$1,000');
+    });
+  });
+
+  describe('order type prop', () => {
+    it('preserves amount and leverage when orderType prop changes', () => {
+      let orderType: 'market' | 'limit' = 'market';
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm({ ...defaultOptions, orderType }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('1000');
+        result.current.handleLeverageChange(10);
+      });
+
+      orderType = 'limit';
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).toBe('1000');
+      expect(result.current.formState.leverage).toBe(10);
+      expect(result.current.formState.type).toBe('limit');
     });
   });
 

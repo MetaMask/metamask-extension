@@ -9,9 +9,10 @@
 
 import { Mockttp } from 'mockttp';
 import { mockedSourcifyTokenSend } from '../confirmations/helpers';
+import { mockEmptyPrices } from '../tokens/utils/mocks';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { login } from '../../page-objects/flows/login.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -35,13 +36,7 @@ describe('Send ERC20 - Gas Customization', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
-            },
-          })
-          .build(),
+        fixtures: new FixtureBuilderV2().build(),
         localNodeOptions: { hardfork: 'muirGlacier' },
         smartContract,
         title: this.test?.fullTitle(),
@@ -90,8 +85,16 @@ describe('Send ERC20 - Gas Customization', function () {
         await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
         // check that transaction has completed correctly and is displayed in the activity list
+        await homePage.goToActivityList();
         await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
         await activityListPage.checkTxAmountInActivity(valueWithSymbol('-1'));
+
+        // check token amount is correct after transaction
+        await homePage.goToTokensTab();
+        await assetListPage.checkTokenExistsInList(
+          symbol,
+          valueWithSymbol('9'),
+        );
       },
     );
   });
@@ -100,13 +103,8 @@ describe('Send ERC20 - Gas Customization', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
-          .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
-            },
-          })
           .build(),
         localNodeOptions: { hardfork: 'muirGlacier' },
         smartContract,
@@ -177,13 +175,8 @@ describe('Send ERC20 - Gas Customization', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
-          .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
-            },
-          })
           .build(),
         smartContract,
         title: this.test?.fullTitle(),
@@ -243,6 +236,16 @@ describe('Send ERC20 - Gas Customization', function () {
   });
 
   async function mocks(server: Mockttp) {
-    return [await mockedSourcifyTokenSend(server)];
+    return [
+      await mockedSourcifyTokenSend(server),
+      await mockEmptyPrices(server),
+      await server
+        .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+        .always()
+        .thenJson(200, {
+          fullSupport: [],
+          partialSupport: { balances: [] },
+        }),
+    ];
   }
 });
