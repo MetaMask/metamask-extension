@@ -1065,17 +1065,13 @@ export const getIsSolanaSwap = createSelector(
 export const getIsRWASwap = createSelector(
   [getFromToken, getToToken, getIsRWATokensEnabled],
   (fromToken, toToken, isRWAEnabled) => {
-    if (!isRWAEnabled) {
+    if (!isRWAEnabled || !fromToken?.chainId || !toToken?.chainId) {
       return false;
     }
-    if (
-      !fromToken?.chainId ||
-      !toToken?.chainId ||
-      fromToken.chainId !== toToken.chainId
-    ) {
-      return false;
-    }
-    return Boolean(fromToken.rwaData) || Boolean(toToken.rwaData);
+    return (
+      !isCrossChain(fromToken.chainId, toToken.chainId) &&
+      (Boolean(fromToken.rwaData) || Boolean(toToken.rwaData))
+    );
   },
 );
 
