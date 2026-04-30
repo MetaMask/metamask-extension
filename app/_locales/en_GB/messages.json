@@ -5286,6 +5286,12 @@
   "passkeyDescription": {
     "message": "Use Face ID or your fingerprint to unlock MetaMask on this device instead of entering your password. This creates a secure passkey stored on your device."
   },
+  "passkeySetupStepRegister": {
+    "message": "Register biometrics"
+  },
+  "passkeySetupStepVerify": {
+    "message": "Verify biometrics"
+  },
   "passkeyErrorAuthenticationVerificationFailed": {
     "message": "We couldn't verify your biometrics. Try again.",
     "description": "Shown when passkey authentication response verification fails."

@@ -1221,6 +1221,19 @@ export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthentic
 }
 
 /**
+ * Verifies a passkey assertion after enrollment (e.g. onboarding) without unlocking the vault.
+ *
+ * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.
+ */
+export function verifyPasskeyEnrollment(
+  authenticationResponse: PasskeyAuthenticationResponse,
+): Promise<void> {
+  return submitRequestToBackground('verifyPasskeyEnrollment', [
+    authenticationResponse,
+  ]);
+}
+
+/**
  * Protects the vault key with a passkey.
  *
  * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
@@ -2401,7 +2414,7 @@ export function deleteExpiredNotifications(): ThunkAction<
 
         return Boolean(
           notification.readDate &&
-          new Date(notification.readDate) < expirationTime,
+            new Date(notification.readDate) < expirationTime,
         );
       })
       .map(({ id }) => id);
