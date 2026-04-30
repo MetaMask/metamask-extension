@@ -104,4 +104,4 @@ jobs:
           skip-allow-scripts: true
 
       - name: Post nightly builds notification
-        run: yarn tsx .github/scripts/post-nightly-builds.ts
+        run: yarn tsx .github/scripts/post-nightly-builds.mts
