@@ -1090,9 +1090,6 @@
   "clearActivity": {
     "message": "Glan sonraí gníomhaíochta agus neamhghníomhaíochta"
   },
-  "clearActivityButton": {
-    "message": "Glan sonraí an chluaisín gníomhaíochta"
-  },
   "clearActivityDescription": {
     "message": "Athshocraíonn sé seo neamh-uair an chuntais agus scriosann sé sonraí ón táb gníomhaíochta i do sparán. Ní bheidh tionchar ach ar an gcuntas reatha agus ar an líonra. Ní athróidh d’iarmhéideanna ná d’idirbhearta isteach."
   },
@@ -2986,9 +2983,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Ag Glasáil MetaMask..."
-  },
-  "lockTimeInvalid": {
-    "message": "Ní mór don am glasála a bheith ina uimhir idir 0 agus 10080"
   },
   "loginErrorConnectButton": {
     "message": "Déan iarracht arís"
