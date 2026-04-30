@@ -1,5 +1,4 @@
 import React, { ReactNode, useMemo } from 'react';
-import { useMatches } from 'react-router-dom';
 import {
   UIMessengerActions,
   UIMessengerEvents,
@@ -16,6 +15,9 @@ import { createRouteMessenger } from '../messengers/route-messenger';
  * provides it to children via context.
  *
  * @param props - Component props.
+ * @param props.path - The path of the route. This is used for debugging
+ * purposes and to ensure that the route messenger's namespace is unique across
+ * routes.
  * @param props.capabilities - Capabilities to delegate to the route messenger.
  * @param props.capabilities.actions - Action types to delegate to the route
  * messenger.
@@ -24,24 +26,22 @@ import { createRouteMessenger } from '../messengers/route-messenger';
  * @param props.children - Child components.
  */
 export const RouteWithMessenger = ({
+  path,
   capabilities,
   children,
 }: {
+  path: string;
   capabilities: {
     actions?: UIMessengerActions['type'][];
     events?: UIMessengerEvents['type'][];
   };
   children: ReactNode;
 }) => {
-  const matches = useMatches();
   const uiMessenger = useUIMessenger();
 
   const routeMessenger = useMemo(() => {
-    const lastMatch = matches[matches.length - 1];
-    const path = lastMatch?.pathname || '/';
-
     return createRouteMessenger({ path, uiMessenger, capabilities });
-  }, [uiMessenger, capabilities, matches]);
+  }, [path, uiMessenger, capabilities]);
 
   return (
     <RouteMessengerContext.Provider value={routeMessenger}>

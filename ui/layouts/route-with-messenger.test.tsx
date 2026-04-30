@@ -7,6 +7,7 @@ describe('RouteWithMessenger', () => {
   it('renders children and provides a route messenger', () => {
     const { getByTestId } = renderWithProvider(
       <RouteWithMessenger
+        path="/test"
         capabilities={{
           actions: ['SnapController:installSnaps'],
         }}
@@ -26,6 +27,7 @@ describe('RouteWithMessenger', () => {
 
     renderWithProvider(
       <RouteWithMessenger
+        path="/some/path"
         capabilities={{
           actions: ['SnapController:installSnaps'],
           events: ['SnapController:snapInstalled'],
