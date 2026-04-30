@@ -30,8 +30,8 @@ export const UIMessengerProvider = ({
 /**
  * Hook to access the UI messenger from context.
  *
- * Used to derive team-level and route-level messengers. Do not use this hook
- * directly, only use it to define team- and route-level messenger hooks.
+ * Used to derive route-level messengers. Do not use this hook directly,
+ * only use it to define route-level messenger hooks.
  *
  * @returns The UI messenger in context.
  * @throws If the UI messenger is not available (e.g., hook is used outside of
