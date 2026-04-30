@@ -309,11 +309,13 @@ export const buildDisplayOrdersWithSyntheticTpsl = (
  * Normalizes orders for the Perps Market Details > Orders section.
  *
  * Composes display-order enrichment (synthetic TP/SL rows) with visibility
- * filtering (currently all enriched orders are shown, including full-position TP/SL).
+ * filtering: reduce-only orders associated with the full position are excluded
+ * because they are surfaced in the auto-close section instead.
  *
  * @param options0 - Options object
  * @param options0.orders - The orders to normalize
- * @param options0.existingPosition - The current position (if any)
+ * @param options0.existingPosition - The current position (if any), used to
+ * detect full-position reduce-only orders that should be excluded.
  * @returns Normalized orders for display
  */
 export const normalizeMarketDetailsOrders = ({
