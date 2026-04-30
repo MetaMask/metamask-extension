@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disabled incoming-transaction detection on the extension (#42073)
 - Updated MetaMask Pay confirmation screens so blocking errors use short labels on the primary action (#41816)
 - Updated NFT refresh to use Multicall v3 (#41689)
+- Started using geolocation controller for mUSD eligibility (#41998)
 
 ### Fixed
 
@@ -53,6 +54,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed the gas station still being offered when downgrading an EIP-7702 account (#41773)
 - Fixed the side panel default experience after rollout (#41819)
 - Fixed `excludeNativeTokenForFee` (Tempo) handling in the gasless-loading guard for the confirmation button (#41683)
+- Removed the nonce line from tx activity popin and from tx success/failure messages when nonce is missing (#41967)
+- Fixed perps chart x-axis and crosshair timestamps to display in the user's local timezone (#42106)
+- Fixed bug where hip3 assets weren't discoverable in search (#42170)
+- Fixed Trezor model one capability validation (#42168)
+- Restored multichain assets controller fail open logic to allow tokens through when security api fails (#42125)
+- Fixed Perps tab opening a WebSocket connection when basic functionality was turned off (#42248)
+- Removes the interactive check from the trezor preflight (#42241)
 
 ## [13.28.0]
 
