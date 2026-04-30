@@ -61,7 +61,7 @@ class PhishingWarningPage {
             this.iframeSelector,
           )) as WebElement;
           await this.driver.switchToFrame(iframe as unknown as string);
-          // We set smaller custom timeouts so we can retry more times the whole flow if needed
+          // We set a smaller custom timeout so we can retry more times the whole flow if needed
           await this.checkPageIsLoaded(2000);
           await this.driver.clickElement(this.openWarningInNewTabLink);
           return true;
