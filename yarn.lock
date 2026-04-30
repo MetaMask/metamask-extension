@@ -6404,21 +6404,21 @@ __metadata:
   linkType: hard
 
 "@metamask/eth-hd-keyring@npm:^14.1.0":
-  version: 14.1.0
-  resolution: "@metamask/eth-hd-keyring@npm:14.1.0"
+  version: 14.1.1
+  resolution: "@metamask/eth-hd-keyring@npm:14.1.1"
   dependencies:
     "@ethereumjs/tx": "npm:^5.4.0"
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/key-tree": "npm:^10.0.2"
-    "@metamask/keyring-api": "npm:^23.0.1"
-    "@metamask/keyring-sdk": "npm:^2.0.1"
+    "@metamask/keyring-api": "npm:^23.1.0"
+    "@metamask/keyring-sdk": "npm:^2.0.2"
     "@metamask/keyring-utils": "npm:^3.2.0"
     "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.11.0"
     ethereum-cryptography: "npm:^2.2.1"
-  checksum: 10/da036b04c49242a66afc7d95f848acbf1e6e6a210808e8b4266ba0c5a1d22e6fa0ba296ffff70fca7bd95bd9bf13a96322b2630ff033da83d22a866187b6cf51
+  checksum: 10/f711742682a77990310272013523595822e29bfb61980828d1460ab8af888d7c344bb50f04d2611d801d63438e31532d3d66698c595b4fd3ad512b02056b7234
   languageName: node
   linkType: hard
 
@@ -6566,17 +6566,17 @@ __metadata:
   linkType: hard
 
 "@metamask/eth-simple-keyring@npm:^12.0.1":
-  version: 12.0.1
-  resolution: "@metamask/eth-simple-keyring@npm:12.0.1"
+  version: 12.0.2
+  resolution: "@metamask/eth-simple-keyring@npm:12.0.2"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/keyring-api": "npm:^23.0.1"
-    "@metamask/keyring-sdk": "npm:^2.0.1"
+    "@metamask/keyring-api": "npm:^23.1.0"
+    "@metamask/keyring-sdk": "npm:^2.0.2"
     "@metamask/utils": "npm:^11.11.0"
     ethereum-cryptography: "npm:^2.2.1"
     randombytes: "npm:^2.1.0"
-  checksum: 10/7bedb102e89a3dd3ade935a9c8b02dc6237778bab276e7a2144d4a0f5c2a1fe0c6dd85756c1014fe0b4cd0936fdcc60d53fd00c3d35fa880e49b2aaf840f2521
+  checksum: 10/ac8a3a5871fb1b7503ae8714beaad07102ad473522f1c65cf09786a3f3498564763d96a51569ed712702f3a62dfaada4c9342def4d48e2c5a1f0985b5cd49725
   languageName: node
   linkType: hard
 
@@ -6992,15 +6992,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^23.0.1":
-  version: 23.0.1
-  resolution: "@metamask/keyring-api@npm:23.0.1"
+"@metamask/keyring-api@npm:^23.0.1, @metamask/keyring-api@npm:^23.1.0":
+  version: 23.1.0
+  resolution: "@metamask/keyring-api@npm:23.1.0"
   dependencies:
     "@metamask/keyring-utils": "npm:^3.2.0"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.11.0"
     bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/a74f302edda5035f999b714f16ee4934f757695bfd47414932efc34ba14d5e10d37c6632c49ee0cf19cb83729bf453bddb1367ccf1affeb7b92400b2bd6ca105
+  checksum: 10/ca7e1b49f8c30078ebd76f1f7e74c57846ac3e73ffdc2f7b446af6cb3c006cef75a13eec6a0aeae0bfefbb5549d576af410bb9df16196fcefe17ded64f8714f2
   languageName: node
   linkType: hard
 
@@ -7085,13 +7085,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-sdk@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@metamask/keyring-sdk@npm:2.0.1"
+"@metamask/keyring-sdk@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@metamask/keyring-sdk@npm:2.0.2"
   dependencies:
     "@ethereumjs/tx": "npm:^5.4.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/keyring-api": "npm:^23.0.1"
+    "@metamask/keyring-api": "npm:^23.1.0"
     "@metamask/keyring-utils": "npm:^3.2.0"
     "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/superstruct": "npm:^3.1.0"
@@ -7099,7 +7099,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     ethereum-cryptography: "npm:^2.2.1"
     uuid: "npm:^9.0.1"
-  checksum: 10/c6dfe7b0e45799703fea873c41724f2f45a33b748177a22e300419d2da802073e2fc9c4fa608d6b27a206e94d1fed7b3dd2a738b8e47cbc406e8ae3116d61912
+  checksum: 10/2f456613df81580b032215ddf1c90fa9440442d631945329094a488743a71fdbbfe787c2c0809a315a1368ddbf9d3755faa936c54094cb32958fe8222f7e7a86
   languageName: node
   linkType: hard
 
@@ -7279,7 +7279,7 @@ __metadata:
     typescript: ">=5.0.0"
   bin:
     messenger-generate-action-types: ./dist/generate-action-types/cli.mjs
-  checksum: 10/6818e4609d6162a436cc07955905f9e57ff6dbef841e9066a5fb9cc0538e981526fbcb5eef1fa1968d79212d57ddda2fce4dda5f87eb64d8d98f7db1216a6a98
+  checksum: 10/a959af95e9e117aa0f7ad1c280f7817fef2c0b575c76837b1a6c884c9c9ef1dd0faeaef0c2c0c2035f68c7638d1f87cd172956ee962dec97d8ab6176fa6964e3
   languageName: node
   linkType: hard
 
