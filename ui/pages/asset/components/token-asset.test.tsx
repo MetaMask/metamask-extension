@@ -55,15 +55,23 @@ jest.mock('./asset-page', () => (props: unknown) => {
 });
 
 describe('TokenAsset', () => {
-  const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-  const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
-  const mockUseNavigate = useNavigate as jest.MockedFunction<typeof useNavigate>;
+  const mockUseSelector = useSelector as jest.MockedFunction<
+    typeof useSelector
+  >;
+  const mockUseDispatch = useDispatch as jest.MockedFunction<
+    typeof useDispatch
+  >;
+  const mockUseNavigate = useNavigate as jest.MockedFunction<
+    typeof useNavigate
+  >;
   const mockUseMultichainSelector =
     useMultichainSelector as jest.MockedFunction<typeof useMultichainSelector>;
-  const mockUseTokenFiatAmount =
-    useTokenFiatAmount as jest.MockedFunction<typeof useTokenFiatAmount>;
-  const mockUseTokenTracker =
-    useTokenTracker as jest.MockedFunction<typeof useTokenTracker>;
+  const mockUseTokenFiatAmount = useTokenFiatAmount as jest.MockedFunction<
+    typeof useTokenFiatAmount
+  >;
+  const mockUseTokenTracker = useTokenTracker as jest.MockedFunction<
+    typeof useTokenTracker
+  >;
   const mockIsEvmChainId = isEvmChainId as jest.MockedFunction<
     typeof isEvmChainId
   >;
@@ -137,7 +145,7 @@ describe('TokenAsset', () => {
     renderComponent();
 
     expect(mockAssetPage).toHaveBeenCalled();
-    const props = (mockAssetPage.mock.calls[0]?.[0] as unknown) as {
+    const props = mockAssetPage.mock.calls[0]?.[0] as unknown as {
       optionsButton: React.ReactNode;
     };
     expect(props.optionsButton).toBeNull();
@@ -150,7 +158,7 @@ describe('TokenAsset', () => {
 
     renderComponent();
 
-    const assetPageProps = (mockAssetPage.mock.calls[0]?.[0] as unknown) as {
+    const assetPageProps = mockAssetPage.mock.calls[0]?.[0] as unknown as {
       optionsButton: React.ReactElement<{ onClickBlockExplorer: () => void }>;
     };
     assetPageProps.optionsButton.props.onClickBlockExplorer();

@@ -55,10 +55,11 @@ jest.mock('./asset-options', () => ({
 }));
 
 describe('NativeAsset', () => {
-  const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-  const mockUseMultichainSelector = useMultichainSelector as jest.MockedFunction<
-    typeof useMultichainSelector
+  const mockUseSelector = useSelector as jest.MockedFunction<
+    typeof useSelector
   >;
+  const mockUseMultichainSelector =
+    useMultichainSelector as jest.MockedFunction<typeof useMultichainSelector>;
 
   const token = {
     symbol: 'BTC',
@@ -69,7 +70,9 @@ describe('NativeAsset', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseMultichainSelector.mockReturnValue({} as never);
-    mockGetMultichainAccountUrl.mockReturnValue('https://mempool.space/address/x');
+    mockGetMultichainAccountUrl.mockReturnValue(
+      'https://mempool.space/address/x',
+    );
     global.platform.openTab = jest.fn();
   });
 
@@ -91,7 +94,10 @@ describe('NativeAsset', () => {
           } as never
         }
       >
-        <NativeAsset token={token as never} chainId={BtcScope.Mainnet as never} />
+        <NativeAsset
+          token={token as never}
+          chainId={BtcScope.Mainnet as never}
+        />
       </MetaMetricsContext.Provider>,
     );
 
@@ -122,7 +128,10 @@ describe('NativeAsset', () => {
           } as never
         }
       >
-        <NativeAsset token={token as never} chainId={BtcScope.Mainnet as never} />
+        <NativeAsset
+          token={token as never}
+          chainId={BtcScope.Mainnet as never}
+        />
       </MetaMetricsContext.Provider>,
     );
 

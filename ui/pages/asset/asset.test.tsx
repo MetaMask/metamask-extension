@@ -23,8 +23,9 @@ jest.mock('../../components/app/assets/nfts/nft-details/nft-details', () => (
 jest.mock(
   './components/native-asset',
   () =>
-    ({ token }: { token: { symbol: string; address: string } }) =>
-      <div data-testid="native-asset">{`${token.symbol}:${token.address}`}</div>,
+    ({ token }: { token: { symbol: string; address: string } }) => (
+      <div data-testid="native-asset">{`${token.symbol}:${token.address}`}</div>
+    ),
 );
 
 jest.mock('./components/token-asset', () => () => (
@@ -71,7 +72,9 @@ describe('Asset route', () => {
   it('renders non-EVM native fallback token when owned token is unavailable', () => {
     const { getByTestId, queryByTestId } = render(<Asset />);
 
-    expect(getByTestId('native-asset')).toHaveTextContent(`BTC:${BTC_ASSET_ID}`);
+    expect(getByTestId('native-asset')).toHaveTextContent(
+      `BTC:${BTC_ASSET_ID}`,
+    );
     expect(queryByTestId('token-asset')).not.toBeInTheDocument();
     expect(queryByTestId('navigate')).not.toBeInTheDocument();
   });
