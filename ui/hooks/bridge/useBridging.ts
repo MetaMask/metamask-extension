@@ -27,7 +27,7 @@ import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
 import { getBridgeSortedAssets } from '../../ducks/bridge/asset-selectors';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
-import { useInitialBridgeTokens } from './useInitalBridgeTokens';
+import { useInitialBridgeTokens } from './useInitialBridgeTokens';
 import {
   BridgeNavigationOptions,
   useBridgeNavigation,

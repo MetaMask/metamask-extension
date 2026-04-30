@@ -6,7 +6,7 @@ import { BridgeToken } from '../../ducks/bridge/types';
 import { toBridgeToken } from '../../ducks/bridge/utils';
 import { type BridgeAppState } from '../../ducks/bridge/selectors';
 import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
-import { useInitialBridgeTokens } from './useInitalBridgeTokens';
+import { useInitialBridgeTokens } from './useInitialBridgeTokens';
 
 /**
  * Returns a sorted token list from the bridge api

@@ -27,8 +27,11 @@ export const useInitialBridgeTokens = ({
   const isExternalServicesEnabled = useSelector(getIsExternalServicesEnabled);
 
   const { value: jwt } = useAsyncResult(async () => {
+    if (!isExternalServicesEnabled) {
+      return undefined;
+    }
     return await getBearerToken();
-  }, []);
+  }, [isExternalServicesEnabled]);
 
   /*
    * Combine asset IDs into a string to avoid re-fetching

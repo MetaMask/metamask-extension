@@ -17,7 +17,7 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import useBridging from './useBridging';
-import * as useInitialBridgeTokensUtils from './useInitalBridgeTokens';
+import * as useInitialBridgeTokensUtils from './useInitialBridgeTokens';
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
