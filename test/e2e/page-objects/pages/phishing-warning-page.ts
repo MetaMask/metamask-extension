@@ -28,9 +28,11 @@ class PhishingWarningPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.phishingWarningPageTitle);
+      await this.driver.waitForSelector(this.phishingWarningPageTitle, {
+        timeout,
+      });
     } catch (e) {
       console.log(
         'Timeout while waiting for Phishing Warning page to be loaded',
@@ -59,7 +61,8 @@ class PhishingWarningPage {
             this.iframeSelector,
           )) as WebElement;
           await this.driver.switchToFrame(iframe as unknown as string);
-          await this.checkPageIsLoaded();
+          // We set smaller custom timeouts so we can retry more times the whole flow if needed
+          await this.checkPageIsLoaded(2000);
           await this.driver.clickElement(this.openWarningInNewTabLink);
           return true;
         } catch {
@@ -72,7 +75,7 @@ class PhishingWarningPage {
           return false;
         }
       },
-      { interval: 1000, timeout: 20000 },
+      { interval: 1000, timeout: 10000 },
     );
   }
 
