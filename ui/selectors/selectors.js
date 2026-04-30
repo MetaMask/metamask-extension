@@ -3943,7 +3943,13 @@ export function getPendingRedirectRoute(state) {
  * @returns {{ path: string, timestamp: number } | null} The last visited Perps route, or null if none.
  */
 export function getLastVisitedPerpsRoute(state) {
-  return state.metamask?.lastVisitedPerpsRoute ?? null;
+  const lastVisitedRoute = state.metamask?.lastVisitedRoute;
+  return lastVisitedRoute?.name === 'perps'
+    ? {
+        path: lastVisitedRoute.path,
+        timestamp: lastVisitedRoute.timestamp,
+      }
+    : null;
 }
 
 /**

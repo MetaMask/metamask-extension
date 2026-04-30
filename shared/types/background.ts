@@ -148,7 +148,7 @@ export type ControllerStatePropertiesEnumerated = {
   lastUpdatedFromVersion: AppStateControllerState['lastUpdatedFromVersion'];
   showShieldEntryModalOnce: AppStateControllerState['showShieldEntryModalOnce'];
   pendingRedirectRoute: AppStateControllerState['pendingRedirectRoute'];
-  lastVisitedPerpsRoute: AppStateControllerState['lastVisitedPerpsRoute'];
+  lastVisitedRoute: AppStateControllerState['lastVisitedRoute'];
   pendingShieldCohort: AppStateControllerState['pendingShieldCohort'];
   pendingShieldCohortTxType: AppStateControllerState['pendingShieldCohortTxType'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];

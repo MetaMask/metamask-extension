@@ -217,18 +217,19 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setLastVisitedPerpsRoute', () => {
-    it('stores the path and the current timestamp', async () => {
+  describe('setLastVisitedRoute', () => {
+    it('stores the route namespace, path, and current timestamp', async () => {
       await withController(({ controller }) => {
         const before = Date.now();
-        controller.setLastVisitedPerpsRoute('/perps/market/BTC');
+        controller.setLastVisitedRoute('perps', '/perps/market/BTC');
         const after = Date.now();
 
-        expect(controller.state.lastVisitedPerpsRoute).not.toBeNull();
-        expect(controller.state.lastVisitedPerpsRoute?.path).toBe(
+        expect(controller.state.lastVisitedRoute).not.toBeNull();
+        expect(controller.state.lastVisitedRoute?.name).toBe('perps');
+        expect(controller.state.lastVisitedRoute?.path).toBe(
           '/perps/market/BTC',
         );
-        const { timestamp } = controller.state.lastVisitedPerpsRoute ?? {
+        const { timestamp } = controller.state.lastVisitedRoute ?? {
           timestamp: 0,
         };
         expect(timestamp).toBeGreaterThanOrEqual(before);
@@ -238,11 +239,23 @@ describe('AppStateController', () => {
 
     it('clears the stored route when passed null', async () => {
       await withController(({ controller }) => {
-        controller.setLastVisitedPerpsRoute('/perps/trade/ETH');
-        expect(controller.state.lastVisitedPerpsRoute).not.toBeNull();
+        controller.setLastVisitedRoute('perps', '/perps/trade/ETH');
+        expect(controller.state.lastVisitedRoute).not.toBeNull();
 
-        controller.setLastVisitedPerpsRoute(null);
-        expect(controller.state.lastVisitedPerpsRoute).toBeNull();
+        controller.setLastVisitedRoute('perps', null);
+        expect(controller.state.lastVisitedRoute).toBeNull();
+      });
+    });
+
+    it('does not clear a route stored for another namespace', async () => {
+      await withController(({ controller }) => {
+        controller.setLastVisitedRoute('bridge', '/bridge');
+
+        controller.setLastVisitedRoute('perps', null);
+
+        expect(controller.state.lastVisitedRoute).toStrictEqual(
+          expect.objectContaining({ name: 'bridge', path: '/bridge' }),
+        );
       });
     });
   });
@@ -853,7 +866,7 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
-              "lastVisitedPerpsRoute": null,
+              "lastVisitedRoute": null,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1123,7 +1136,7 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
-              "lastVisitedPerpsRoute": null,
+              "lastVisitedRoute": null,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "networkConnectionBanner": {

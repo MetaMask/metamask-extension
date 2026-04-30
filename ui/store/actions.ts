@@ -4333,7 +4333,7 @@ export function setLastVisitedPerpsRoute(
     // (persist:false) and every Perps route change would otherwise pull
     // the entire background state.
     try {
-      await submitRequestToBackground('setLastVisitedPerpsRoute', [path]);
+      await submitRequestToBackground('setLastVisitedRoute', ['perps', path]);
     } catch (error) {
       log.error('[setLastVisitedPerpsRoute] error', error);
     }

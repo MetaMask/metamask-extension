@@ -158,12 +158,11 @@ export type AppStateControllerState = {
    */
   pendingRedirectRoute: PendingRedirectRoute | null;
   /**
-   * The last visited Perps route together with the timestamp it was recorded.
-   * Used to resume the Perps session when the user briefly closes and reopens
-   * the extension within {@link PERPS_REOPEN_TTL_MS}. Cleared when the user
-   * navigates out of Perps in-app.
+   * The last visited feature route together with the timestamp it was recorded.
+   * Used by feature flows that resume a recent in-extension route after a brief
+   * close/reopen, then clear the entry once inspected.
    */
-  lastVisitedPerpsRoute: { path: string; timestamp: number } | null;
+  lastVisitedRoute: { name: string; path: string; timestamp: number } | null;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
@@ -329,7 +328,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   musdConversionDismissedCtaKeys: [],
   showShieldEntryModalOnce: null,
   pendingRedirectRoute: null,
-  lastVisitedPerpsRoute: null,
+  lastVisitedRoute: null,
   pendingShieldCohort: null,
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
@@ -685,9 +684,9 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  lastVisitedPerpsRoute: {
-    // Scrubbed from shared state logs — a path like "/perps/market/<symbol>"
-    // can reveal portfolio details when a user shares a support log.
+  lastVisitedRoute: {
+    // Scrubbed from shared state logs — feature paths can reveal portfolio or
+    // activity details when a user shares a support log.
     includeInStateLogs: false,
     // Memory-only, like `pendingRedirectRoute` — the "brief close/reopen"
     // the feature targets happens within the MV3 service worker's
@@ -792,7 +791,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setLastUpdatedAt',
   'setLastUpdatedFromVersion',
   'setLastViewedUserSurvey',
-  'setLastVisitedPerpsRoute',
+  'setLastVisitedRoute',
   'setMusdConversionEducationSeen',
   'setNewPrivacyPolicyToastClickedOrClosed',
   'setNewPrivacyPolicyToastShownDate',
@@ -1792,18 +1791,20 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Records the last visited Perps route with the current timestamp, or
-   * clears it. The UI reads this on home page mount to resume a recent
-   * Perps session if the user reopens the extension within
-   * {@link PERPS_REOPEN_TTL_MS}.
+   * Records the last visited feature route with the current timestamp, or
+   * clears it. Feature UIs read this on home page mount to resume a recent
+   * route after a brief close/reopen.
    *
-   * @param path - The perps route path to persist, or `null` to clear.
+   * @param name - The feature route namespace.
+   * @param path - The route path to persist, or `null` to clear.
    */
-  setLastVisitedPerpsRoute(path: string | null): void {
+  setLastVisitedRoute(name: string, path: string | null): void {
     this.update((state) => {
-      state.lastVisitedPerpsRoute = path
-        ? { path, timestamp: Date.now() }
-        : null;
+      if (path) {
+        state.lastVisitedRoute = { name, path, timestamp: Date.now() };
+      } else if (state.lastVisitedRoute?.name === name) {
+        state.lastVisitedRoute = null;
+      }
     });
   }
 

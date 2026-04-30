@@ -107,15 +107,15 @@ describe('PerpsLayout', () => {
     );
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'setLastVisitedPerpsRoute',
-      ['/perps/market/BTC'],
+      'setLastVisitedRoute',
+      ['perps', '/perps/market/BTC'],
     );
 
     unmount();
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'setLastVisitedPerpsRoute',
-      [null],
+      'setLastVisitedRoute',
+      ['perps', null],
     );
   });
 
@@ -127,14 +127,14 @@ describe('PerpsLayout', () => {
     );
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'setLastVisitedPerpsRoute',
-      ['/perps/market/BTC?source=toast'],
+      'setLastVisitedRoute',
+      ['perps', '/perps/market/BTC?source=toast'],
     );
   });
 
-  it('does not fail when the background rejects setLastVisitedPerpsRoute', () => {
+  it('does not fail when the background rejects setLastVisitedRoute', () => {
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
-      if (method === 'setLastVisitedPerpsRoute') {
+      if (method === 'setLastVisitedRoute') {
         return Promise.reject(new Error('boom'));
       }
       return Promise.resolve(undefined);

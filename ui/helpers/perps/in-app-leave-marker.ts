@@ -1,7 +1,7 @@
 /**
  * Synchronous, in-process marker for "the user just left `/perps/*` in-app".
  *
- * `PerpsLayout` clears `lastVisitedPerpsRoute` in a passive-effect cleanup,
+ * `PerpsLayout` clears the perps `lastVisitedRoute` in a passive-effect cleanup,
  * which runs after the next screen's `componentDidMount`. This marker bridges
  * that gap for in-app navigation but naturally disappears when the popup JS
  * context is destroyed and reopened.
