@@ -59,7 +59,6 @@ import {
   setCompletedOnboardingWithSidepanel,
   setUseSidePanelAsDefault,
   removeDeferredDeepLink,
-  performSeedlessOnboardingProfilePair,
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';

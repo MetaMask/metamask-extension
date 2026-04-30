@@ -15,6 +15,7 @@ import {
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { OAuthErrorMessages } from '../../../../shared/lib/error';
 import Welcome from './welcome';
 
 const mockUseNavigate = jest.fn();
@@ -44,6 +45,14 @@ jest.mock('./metamask-wordmark-animation', () => ({
     setTimeout(() => setIsAnimationComplete(true), 0);
     return <div data-testid="metamask-wordmark-animation" />;
   },
+}));
+
+jest.mock('./login-error-modal', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: ({ loginError }: { loginError: string }) => (
+    <div data-testid="login-error-modal" data-login-error={loginError} />
+  ),
 }));
 
 const mockIntersectionObserver = jest.fn();
@@ -415,6 +424,132 @@ describe('Welcome Page', () => {
       // should navigate to create password page
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_CREATE_PASSWORD_ROUTE,
+      );
+    });
+  });
+
+  describe('Telegram-outdated error routing', () => {
+    const triggerTelegramCreateFailure = async (errorMessage: string) => {
+      jest
+        .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+        .mockReturnValue(true);
+      const noopThunk = () => Promise.resolve();
+      jest
+        .spyOn(Actions, 'setParticipateInMetaMetrics')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockReturnValue(noopThunk as any);
+      jest
+        .spyOn(Actions, 'setFirstTimeFlowType')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockReturnValue(noopThunk as any);
+      // Override the success mock from beforeEach with a rejection. We have
+      // to clear the existing queued return value first; otherwise the success
+      // thunk from beforeEach would be consumed instead of our rejection.
+      startOAuthLoginSpy.mockReset();
+      startOAuthLoginSpy.mockReturnValueOnce(
+        jest.fn().mockRejectedValueOnce(new Error(errorMessage)),
+      );
+
+      const utils = renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <Welcome />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(
+          utils.getByText(messages.onboardingCreateWallet.message),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(
+          utils.getByText(messages.onboardingCreateWallet.message),
+        );
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      });
+
+      await waitFor(() => {
+        expect(
+          utils.getByTestId('onboarding-create-with-telegram-button'),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(
+          utils.getByTestId('onboarding-create-with-telegram-button'),
+        );
+      });
+
+      return utils;
+    };
+
+    const expectOutdatedAppEventTracked = () => {
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.SocialLoginFailed,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: `${MetaMetricsEventAccountType.Default}_telegram`,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_rehydration: 'unknown',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          failure_type: 'outdated_app',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_category: 'telegram_app',
+        },
+      });
+    };
+
+    it('routes to TELEGRAM_OUTDATED when verify rejects with 403', async () => {
+      const { findByTestId } = await triggerTelegramCreateFailure(
+        'Telegram verify failed: 403 Forbidden',
+      );
+
+      const modal = await findByTestId('login-error-modal');
+      expect(modal).toHaveAttribute('data-login-error', 'telegram_outdated');
+      expectOutdatedAppEventTracked();
+    });
+
+    it('routes to TELEGRAM_OUTDATED when verify rejects with 404', async () => {
+      const { findByTestId } = await triggerTelegramCreateFailure(
+        'Telegram verify failed: 404 Not Found',
+      );
+
+      const modal = await findByTestId('login-error-modal');
+      expect(modal).toHaveAttribute('data-login-error', 'telegram_outdated');
+      expectOutdatedAppEventTracked();
+    });
+
+    it('routes to TELEGRAM_OUTDATED when the OAuth flow returns no redirect URL', async () => {
+      const { findByTestId } = await triggerTelegramCreateFailure(
+        OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR,
+      );
+
+      const modal = await findByTestId('login-error-modal');
+      expect(modal).toHaveAttribute('data-login-error', 'telegram_outdated');
+    });
+
+    it('does NOT route to TELEGRAM_OUTDATED for non-403/404 verify failures', async () => {
+      const { findByTestId } = await triggerTelegramCreateFailure(
+        'Telegram verify failed: 500 Internal Server Error',
+      );
+
+      const modal = await findByTestId('login-error-modal');
+      expect(modal).not.toHaveAttribute(
+        'data-login-error',
+        'telegram_outdated',
+      );
+
+      // The outdated_app heuristic must NOT be reported for unrelated 5xx failures.
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            failure_type: 'outdated_app',
+          }),
+        }),
       );
     });
   });

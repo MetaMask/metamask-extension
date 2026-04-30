@@ -4792,10 +4792,6 @@
   "onboardingMetametricsTitle": {
     "message": "Βοηθήστε στη βελτίωση του MetaMask"
   },
-  "onboardingOptionIcon": {
-    "message": "εικονίδιο $1",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Συνδεθείτε με το $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -6513,11 +6509,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Χρησιμοποιήστε τα στοιχεία σύνδεσης στο $1 και τον κωδικό πρόσβασης στο MetaMask για να ανακτήσετε τον λογαριασμό σας και τη Μυστική Φράση Ανάκτησης.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "ΑΝΑΚΤΗΣΗ ΜΕΣΩ $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpDescription": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας της Μυστικής Φράσης Ανάκτησης, για να διασφαλίσετε ότι δεν θα χάσετε ποτέ πρόσβαση στο πορτοφόλι σας. Φυλάξτε την σε ασφαλές μέρος στο οποίο μόνο εσείς θα έχετε πρόσβαση και δεν θα το ξεχάσετε."

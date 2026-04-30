@@ -4792,10 +4792,6 @@
   "onboardingMetametricsTitle": {
     "message": "Giúp cải thiện MetaMask"
   },
-  "onboardingOptionIcon": {
-    "message": "Biểu tượng $1",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Đăng nhập bằng $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -6513,11 +6509,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Sử dụng đăng nhập $1 và mật khẩu MetaMask của bạn để khôi phục tài khoản và Cụm từ khôi phục bí mật.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "KHÔI PHỤC $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpDescription": {
     "message": "Sao lưu Cụm từ khôi phục bí mật để bạn không bao giờ mất quyền truy cập vào ví. Hãy chắc chắn lưu trữ cụm từ này ở nơi an toàn mà chỉ bạn mới có thể truy cập và không bị quên."

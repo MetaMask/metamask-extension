@@ -19,6 +19,7 @@ export const LOGIN_ERROR = {
   GENERIC: 'generic',
   SESSION_EXPIRED: 'session_expired',
   RESET_WALLET: 'reset_wallet',
+  TELEGRAM_OUTDATED: 'telegram_outdated',
 } as const;
 
 export type LoginErrorType = (typeof LOGIN_ERROR)[keyof typeof LOGIN_ERROR];

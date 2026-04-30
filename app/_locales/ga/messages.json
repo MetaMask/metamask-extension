@@ -3915,10 +3915,6 @@
   "onboardingMetametricsTitle": {
     "message": "Cabhraigh linn MetaMask a fheabhsú"
   },
-  "onboardingOptionIcon": {
-    "message": "Deilbhín $1",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Sínigh isteach le $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -4909,11 +4905,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Bain úsáid as do logáil isteach $1 agus do phasfhocal MetaMask chun do chuntas agus Frásaí Aisghabhála Rúnda a aisghabháil.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "AISGHNÍOMH $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpDescription": {
     "message": "Déan cúltaca de do Rún Aisghabhála Frása ionas nach gcaillfidh tú rochtain ar do sparán choíche. Bí cinnte é a stóráil in áit shábháilte nach féidir ach leatsa rochtain a fháil air agus nach ndéanfaidh tú dearmad air."

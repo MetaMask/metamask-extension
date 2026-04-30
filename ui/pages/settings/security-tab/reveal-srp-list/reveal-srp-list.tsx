@@ -9,20 +9,16 @@ import {
   IconName,
   IconSize,
   Text,
-} from '../../../../components/component-library';
-import { SrpList } from '../../../../components/multichain/multi-srp/srp-list/srp-list';
-import {
   TextVariant,
   TextColor,
-  TextTransform,
-  BackgroundColor,
-  Display,
-  FlexDirection,
-  AlignItems,
+  BoxFlexDirection,
+  BoxAlignItems,
   IconColor,
   FontWeight,
-  BlockSize,
-} from '../../../../helpers/constants/design-system';
+  TextTransform,
+} from '@metamask/design-system-react';
+import { SrpList } from '../../../../components/multichain/multi-srp/srp-list/srp-list';
+import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   ONBOARDING_REVIEW_SRP_ROUTE,
@@ -64,15 +60,46 @@ export const RevealSrpList = () => {
     return `${maskedHostname}@${domain}`;
   };
 
+  const getSocialLoginIcon = (type: AuthConnection) => {
+    switch (type) {
+      case AuthConnection.Apple:
+        return (
+          <Icon
+            name={IconName.AppleLogo}
+            color={IconColor.IconDefault}
+            size={IconSize.Lg}
+          />
+        );
+      case AuthConnection.Google:
+        return (
+          <img
+            src="images/icons/google.svg"
+            alt="Google icon"
+            width={24}
+            height={24}
+          />
+        );
+      default:
+        return (
+          <img
+            src="images/icons/telegram.svg"
+            alt="Telegram icon"
+            width={24}
+            height={24}
+          />
+        );
+    }
+  };
+
   return (
     <Box className="srp-reveal-list">
       {isSocialLoginFlow && (
         <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
           <Text
-            marginBottom={2}
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
             textTransform={TextTransform.Uppercase}
+            className="mb-2"
           >
             {t('securitySocialLoginLabel', [socialLoginType])}
           </Text>
@@ -82,38 +109,25 @@ export const RevealSrpList = () => {
             border={false}
           >
             <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              alignItems={AlignItems.center}
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
               gap={3}
             >
               <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
                 gap={2}
               >
-                {socialLoginType === AuthConnection.Apple ? (
-                  <Icon
-                    name={IconName.Apple}
-                    color={IconColor.iconDefault}
-                    size={IconSize.Lg}
-                  />
-                ) : (
-                  <img
-                    src={`images/icons/google.svg`}
-                    className="srp-reveal-list__social-icon"
-                    alt="Google icon"
-                  />
-                )}
+                {getSocialLoginIcon(socialLoginType as AuthConnection)}
               </Box>
-              <Box flexDirection={FlexDirection.Column}>
+              <Box flexDirection={BoxFlexDirection.Column}>
                 <Text fontWeight={FontWeight.Medium}>
                   {t('securitySocialLoginEnabled')}
                 </Text>
                 {socialLoginEmail && (
                   <Text
-                    variant={TextVariant.bodySm}
-                    color={TextColor.textAlternative}
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
                   >
                     {maskHostNameFromEmail(socialLoginEmail)}
                   </Text>
@@ -122,19 +136,15 @@ export const RevealSrpList = () => {
             </Box>
           </Card>
           <Text
-            marginTop={1}
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
+            className="mt-1"
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
           >
             {t('securitySocialLoginEnabledDescription', [
               capitalize(socialLoginType),
             ])}
           </Text>
-          <Box
-            width={BlockSize.Full}
-            className="srp-reveal-list__divider"
-            marginTop={4}
-          />
+          <Box className="srp-reveal-list__divider w-full" marginTop={4} />
         </Box>
       )}
       <Box
@@ -146,9 +156,9 @@ export const RevealSrpList = () => {
         data-testid="select-srp-container"
       >
         <Text
-          marginBottom={2}
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
+          className="mb-2"
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
           textTransform={TextTransform.Uppercase}
         >
           {t('securitySrpLabel')}

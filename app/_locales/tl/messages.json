@@ -4792,10 +4792,6 @@
   "onboardingMetametricsTitle": {
     "message": "Tulungan kaming mapahusay ang MetaMask"
   },
-  "onboardingOptionIcon": {
-    "message": "$1 icon",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Mag-sign in gamit ang $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -6513,11 +6509,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Gamitin ng iyong $1 na login at password sa MetaMask para mabawi ang iyong account at mga Lihim na Parirala sa Pagbawi.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "PAGBAWI SA $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpDescription": {
     "message": "I-back up ang iyong Lihim na Parirala sa Pagbawi nang sa gayon ay hindi ka mawalan ng access sa iyong wallet. Tiyaking itago ito sa isang ligtas na lugar na ikaw lamang ang may access at hindi makakalimutan."

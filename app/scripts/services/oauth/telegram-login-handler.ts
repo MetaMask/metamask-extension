@@ -89,6 +89,7 @@ export class TelegramLoginHandler extends BaseLoginHandler {
   /**
    * Execute the server-side token exchange chain:
    * verify -> hydra jwt-bearer -> mint
+   * @param code
    */
   async getAuthIdToken(code: string): Promise<AuthTokenResponse> {
     const verifyRes = await fetch(
@@ -136,7 +137,11 @@ export class TelegramLoginHandler extends BaseLoginHandler {
     // check if telegram profile is already synced by looking for the alias in ext field
     const authPayload = JSON.parse(decodeIdToken(verifyData?.token));
     let profileSynced = false;
-    const aliases: { alias_profile_id?: string }[] =
+    const aliases: {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      alias_profile_id?: string;
+    }[] =
       authPayload?.ext?.[
         `${this.#options.authenticationServerUrl}/profile/aliases`
       ] || [];
@@ -147,7 +152,7 @@ export class TelegramLoginHandler extends BaseLoginHandler {
       }
     }
     // TODO: debug only, remove after review
-    const debug = true
+    const debug = true;
     if (!profileSynced || debug) {
       mintData.profile_pairing_token = hydraIdToken;
     }
