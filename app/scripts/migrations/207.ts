@@ -46,15 +46,6 @@ const NEW_URL = 'https://seiscan.io/';
  * - Users who customized the explorer URL away from Seitrace: no-op
  * (we only rewrite entries that still point at `seitrace.com`).
  *
- * Follows the post-186 split-state migration pattern. See
- * `app/scripts/migrations/197.ts` for the canonical reference of this
- * shape; validator helpers (`isValidNetworkControllerState`,
- * `isValidNetworkConfiguration`) were introduced in migration 188 and are
- * reused verbatim with attribution comments.
- *
- * Registered in `app/scripts/migrations/index.js` alongside every other
- * migration so it executes on existing installs during upgrade.
- *
  * @param versionedData - Versioned MetaMask extension state, exactly
  * what we persist to disk.
  * @param localChangedControllers - A set of controller keys that have been
