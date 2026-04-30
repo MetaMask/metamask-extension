@@ -1,20 +1,23 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import { extractTestResults } from '../../.github/scripts/extract-test-results';
+import { extractTestResults } from '../../.github/scripts/extract-test-results.mts';
 import {
   formatTime,
   normalizeTestPath,
-} from '../../.github/scripts/shared/utils';
-import { splitTestsByTimings } from '../../.github/scripts/split-tests-by-timings';
-import { loadBuildTypesConfig } from '../../development/lib/build-type';
-import { exitWithError } from '../../development/lib/exit-with-error';
-import { runInShell } from '../../development/lib/run-command';
+} from '../../.github/scripts/shared/utils.mts';
+import { splitTestsByTimings } from '../../.github/scripts/split-tests-by-timings.mts';
+import { loadBuildTypesConfig } from '../../development/lib/build-type.js';
+import { exitWithError } from '../../development/lib/exit-with-error.js';
+import { runInShell } from '../../development/lib/run-command.js';
 import {
   readChangedAndFilterE2eChangedFiles,
   shouldE2eQualityGateBeSkipped,
-} from './changedFilesUtil';
+} from './changedFilesUtil.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS: string[] = [];

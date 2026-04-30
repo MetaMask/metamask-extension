@@ -18,6 +18,9 @@ PERPS_ENABLED='true'
 ; When false, AssetsController is still instantiated but state remains empty.
 ASSETS_UNIFIED_STATE_ENABLED='false'
 
+; Set this to `true` to enable Passkey/Biometrics unlock for SRP wallets
+PASSKEY_ENABLED='false'
+
 ; Backend WebSocket URL
 ; Uses production API endpoint by default (same as builds.yml)
 ;MM_BACKEND_WEBSOCKET_URL='wss://gateway.api.cx.metamask.io/v1'

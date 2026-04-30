@@ -4,9 +4,11 @@
 import { execFileSync } from 'child_process';
 import * as path from 'path';
 import { context, getOctokit } from '@actions/github';
-import { getRegisteredFlagNames } from '../../test/e2e/feature-flags';
-import { buildKnownFlagConstants } from './known-feature-flag-constants';
-import { getPrDiff } from './shared/get-pr-diff';
+import featureFlagsModule from '../../test/e2e/feature-flags';
+
+const { getRegisteredFlagNames } = featureFlagsModule;
+import { buildKnownFlagConstants } from './known-feature-flag-constants.mts';
+import { getPrDiff } from './shared/get-pr-diff.mts';
 
 const REGISTRY_DIR = 'test/e2e/feature-flags/';
 const SCANNABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx']);
@@ -41,7 +43,7 @@ const CONSTANT_BRACKET_PATTERNS: RegExp[] = [
   new RegExp(`getRemoteFeatureFlags\\(${ARGS}\\)(?:\\?\\.)?\\[([A-Za-z_]\\w*(?:\\.\\w+)?)\\]`, 'g'),
 ];
 
-/** @see ./known-feature-flag-constants.ts */
+/** @see ./known-feature-flag-constants.mts */
 const KNOWN_FLAG_CONSTANTS = buildKnownFlagConstants();
 
 const NON_FLAG_NAMES = new Set([
@@ -728,7 +730,7 @@ function buildCommentBody(
       '',
       'If you access the flag via a **constant** (e.g. `remoteFeatureFlags[MY_CONSTANT]`),',
       'also add the constant to',
-      '[`.github/scripts/known-feature-flag-constants.ts`](https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/known-feature-flag-constants.ts)',
+      '[`.github/scripts/known-feature-flag-constants.mts`](https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/known-feature-flag-constants.mts)',
       'so the CI check can resolve it.',
       '',
       '</details>',

@@ -5,7 +5,7 @@
 
 import { access, readFile } from 'fs/promises';
 import { constants as fsConstants } from 'fs';
-import { PATTERN_E2E_SPEC_FILE, walkFiles } from './collect-qa-stats-walk-files';
+import { PATTERN_E2E_SPEC_FILE, walkFiles } from './collect-qa-stats-walk-files.mts';
 
 /** Constants files whose string enums are resolved in E2E (imported by specs). */
 const METRICS_ENUM_SOURCE_FILES = [

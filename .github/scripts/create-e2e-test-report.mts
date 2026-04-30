@@ -5,13 +5,13 @@ import type {
   TestFile,
   TestRun,
   TestSuite,
-} from './shared/test-reports';
+} from './shared/test-reports.mts';
 import {
   consoleBold,
   formatTime,
   normalizeTestPath,
   XML,
-} from './shared/utils';
+} from './shared/utils.mts';
 import type { Endpoints } from '@octokit/types';
 
 type Job =

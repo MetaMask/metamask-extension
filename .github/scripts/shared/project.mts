@@ -1,5 +1,5 @@
 import { GitHub } from '@actions/github/lib/utils';
-import { isValidDateFormat } from './utils';
+import { isValidDateFormat } from './utils.mts';
 
 const MAX_NB_FETCHES = 10; // For protection against infinite loops.
 

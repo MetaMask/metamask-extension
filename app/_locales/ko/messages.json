@@ -5123,9 +5123,6 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "이용약관"
   },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "일반적인 위치, 클릭수, 조회수와 같은 기본적인 제품 사용 데이터를 수집합니다. 다른 정보는 저장하지 않습니다."
-  },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "기본적인 제품 사용 데이터를 수집합니다. 이 정보를 온체인 데이터와 연관시킬 수 있습니다."
   },

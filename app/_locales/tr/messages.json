@@ -5123,9 +5123,6 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Kullanım Şartları"
   },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Genel konum, tıklamalar ve görüntülemeler gibi temel ürün kullanımı verilerini toplayacağız. Başka hiçbir bilgi depolanmayacaktır."
-  },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Temel ürün kullanım verilerini toplarız. Bu bilgileri zincir içi verilerle ilişkilendirebiliriz."
   },

@@ -5123,9 +5123,6 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Điều khoản sử dụng"
   },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Chúng tôi sẽ thu thập dữ liệu sử dụng sản phẩm cơ bản như vị trí chung, lượt nhấp và lượt xem. Chúng tôi không lưu trữ thông tin nào khác."
-  },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Chúng tôi sẽ thu thập dữ liệu sử dụng sản phẩm cơ bản. Chúng tôi có thể liên kết thông tin này với dữ liệu trên chuỗi."
   },
