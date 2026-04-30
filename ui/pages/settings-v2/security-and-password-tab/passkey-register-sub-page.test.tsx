@@ -156,6 +156,50 @@ describe('PasskeyRegisterSubPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders intro before password when opened from side panel', () => {
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <PasskeyRegisterSubPage />,
+      mockStore,
+      `${SECURITY_REGISTER_PASSKEY_ROUTE}?from=sidepanel`,
+    );
+
+    expect(getByTestId('register-passkey-intro-description')).toBeInTheDocument();
+    expect(
+      getByTestId('register-passkey-intro-continue-button'),
+    ).toBeInTheDocument();
+    expect(
+      queryByTestId('register-passkey-password-input'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('advances from intro to verify-password when intro continue is clicked', () => {
+    const { getByTestId } = renderWithProvider(
+      <PasskeyRegisterSubPage />,
+      mockStore,
+      `${SECURITY_REGISTER_PASSKEY_ROUTE}?from=sidepanel`,
+    );
+
+    fireEvent.click(getByTestId('register-passkey-intro-continue-button'));
+
+    expect(getByTestId('register-passkey-password-input')).toBeInTheDocument();
+    expect(
+      getByTestId('register-passkey-verify-continue-button'),
+    ).toBeInTheDocument();
+  });
+
+  it('renders verify-password first when from=change-password', () => {
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <PasskeyRegisterSubPage />,
+      mockStore,
+      `${SECURITY_REGISTER_PASSKEY_ROUTE}?from=change-password`,
+    );
+
+    expect(
+      queryByTestId('register-passkey-intro-continue-button'),
+    ).not.toBeInTheDocument();
+    expect(getByTestId('register-passkey-password-input')).toBeInTheDocument();
+  });
+
   it('does not show password changed banner without from param', () => {
     const { queryByTestId } = renderWithProvider(
       <PasskeyRegisterSubPage />,

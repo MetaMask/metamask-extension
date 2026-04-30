@@ -73,6 +73,8 @@ type PasskeyStepIndicatorStatus = 'complete' | 'loading' | 'pending';
 const STEP_INDICATOR_WRAP = 'flex size-6 shrink-0 items-center justify-center';
 
 const PasskeyRegisterSteps = {
+  /** Shown when opening from side panel in a full tab so users see context before the password step. */
+  Intro: 0,
   VerifyPassword: 1,
   RegisterPasskey: 2,
 } as const;
@@ -137,9 +139,19 @@ export default function PasskeyRegisterSubPage() {
   const { trackEvent } = useContext(MetaMetricsContext);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const isMountedRef = useRef(true);
+
+  const fromChangePassword =
+    new URLSearchParams(location.search).get('from') === 'change-password';
+  const fromSidepanel =
+    new URLSearchParams(location.search).get('from') === 'sidepanel';
+
   const [step, setStep] = useState<
     (typeof PasskeyRegisterSteps)[keyof typeof PasskeyRegisterSteps]
-  >(PasskeyRegisterSteps.VerifyPassword);
+  >(() =>
+    !fromChangePassword && fromSidepanel
+      ? PasskeyRegisterSteps.Intro
+      : PasskeyRegisterSteps.VerifyPassword,
+  );
   const [walletPassword, setWalletPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
     useState(false);
@@ -158,9 +170,6 @@ export default function PasskeyRegisterSubPage() {
     null,
   );
 
-  const fromChangePassword =
-    new URLSearchParams(location.search).get('from') === 'change-password';
-
   useEffect(() => {
     isMountedRef.current = true;
     return () => {
@@ -178,7 +187,11 @@ export default function PasskeyRegisterSubPage() {
   useEffect(() => {
     // Only redirect when a passkey already exists before enrollment UI. After
     // registration, `passkeyRecord` is set before verify; do not redirect until verify completes.
-    if (isPasskeyRegistered && step === PasskeyRegisterSteps.VerifyPassword) {
+    if (
+      isPasskeyRegistered &&
+      (step === PasskeyRegisterSteps.Intro ||
+        step === PasskeyRegisterSteps.VerifyPassword)
+    ) {
       navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
     }
   }, [isPasskeyRegistered, navigate, step]);
@@ -338,6 +351,38 @@ export default function PasskeyRegisterSubPage() {
       padding={4}
       className="h-full min-h-0"
     >
+      {step === PasskeyRegisterSteps.Intro && (
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          gap={6}
+          justifyContent={BoxJustifyContent.Start}
+          asChild
+          className="min-h-0 shrink-0"
+        >
+          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+              data-testid="register-passkey-intro-description"
+            >
+              {t('passkeyDescription')}
+            </Text>
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              className="w-full shrink-0"
+              data-testid="register-passkey-intro-continue-button"
+              aria-label={t('setUpPasskey')}
+              onClick={() => {
+                setStep(PasskeyRegisterSteps.VerifyPassword);
+              }}
+            >
+              {t('setUpPasskey')}
+            </Button>
+          </Box>
+        </Box>
+      )}
+
       {fromChangePassword && (
         <Box
           flexDirection={BoxFlexDirection.Row}

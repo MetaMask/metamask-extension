@@ -71,7 +71,7 @@ const PasskeyItem = () => {
     cancelPasskeyCeremony();
     if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
       global.platform?.openExtensionInBrowser?.(
-        SECURITY_REGISTER_PASSKEY_ROUTE,
+        `${SECURITY_REGISTER_PASSKEY_ROUTE}?from=sidepanel`,
       );
       return;
     }
