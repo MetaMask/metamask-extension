@@ -11,13 +11,13 @@ import { useUpdate } from './useUpdate';
 type RenderHookOptions = {
   state?: Record<string, unknown>;
   uiMessenger?: UIMessenger;
-  messenger?: RouteMessenger | false;
+  routeMessenger?: RouteMessenger | false;
 };
 
 function renderHook({
   state = {},
   uiMessenger = createMockUIMessenger(),
-  messenger = createMockRouteMessenger(),
+  routeMessenger = createMockRouteMessenger(),
 }: RenderHookOptions = {}) {
   return renderHookWithProviderTyped(
     () => useUpdate(),
@@ -26,7 +26,7 @@ function renderHook({
     undefined,
     jest.fn(),
     uiMessenger,
-    messenger,
+    routeMessenger,
   );
 }
 
@@ -70,7 +70,7 @@ describe('useUpdate', () => {
           },
         },
       },
-      messenger,
+      routeMessenger: messenger,
     });
 
     const [update] = result.current;
