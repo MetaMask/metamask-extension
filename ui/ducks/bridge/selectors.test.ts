@@ -7,6 +7,7 @@ import {
   SortOrder,
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  selectIsQuoteExpired,
 } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
@@ -53,6 +54,7 @@ import {
   getLastSelectedChainId,
   getIsToOrFromNonEvm,
   getIsSolanaSwap,
+  getIsRWASwap,
   getIsStxEnabled,
   getAccountGroupNameByInternalAccount,
   getToAccounts,
@@ -65,7 +67,6 @@ import {
   getFormattedPriceImpactFiat,
   getIsStockMarketClosed,
   getWarningLabels,
-  getIsQuoteExpired,
   getBridgeUnavailableQuoteReason,
 } from './selectors';
 import { toBridgeToken } from './utils';
@@ -612,6 +613,7 @@ describe('Bridge selectors', () => {
         tokenFiatAmount: undefined,
         rwaData: undefined,
         isVerified: undefined,
+        securityData: undefined,
       });
     });
   });
@@ -647,6 +649,7 @@ describe('Bridge selectors', () => {
           "isVerified": undefined,
           "name": "DEST",
           "rwaData": undefined,
+          "securityData": undefined,
           "symbol": "DEST",
           "tokenFiatAmount": undefined,
         }
@@ -680,6 +683,7 @@ describe('Bridge selectors', () => {
         tokenFiatAmount: undefined,
         rwaData: undefined,
         isVerified: undefined,
+        securityData: undefined,
       });
     });
 
@@ -748,6 +752,7 @@ describe('Bridge selectors', () => {
         tokenFiatAmount: undefined,
         rwaData: undefined,
         isVerified: undefined,
+        securityData: undefined,
       });
     });
   });
@@ -1857,7 +1862,43 @@ describe('Bridge selectors', () => {
       expect(result.isInsufficientGasBalance).toStrictEqual(true);
     });
 
-    it('should return isInsufficientGasBalance=true for gasIncluded7702 on Monad when native balance after trade < 10 MON', () => {
+    it('should return isInsufficientGasBalance=true for gasIncluded7702 on Monad when native balance after trade < 10 MON but user is using a Hardware Wallet', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromTokenInputValue: '95',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          // 100 MON in wei
+          fromNativeBalance: '100000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.MONAD,
+            srcTokenAmount: '95000000000000000000',
+            gasIncluded7702: true,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: 'eip155:143' }],
+          },
+          gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
+      expect(result.isInsufficientGasBalance).toStrictEqual(false);
+    });
+
+    it('should return isInsufficientGasBalance=false for gasIncluded7702 on Monad when native balance after trade < 10 MON', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
@@ -1877,36 +1918,17 @@ describe('Bridge selectors', () => {
         metamaskStateOverrides: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
         },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: 'eip155:143' }],
+          },
+          gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
+        },
       });
       const result = getValidationErrors(state as never);
 
       // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
-      expect(result.isInsufficientGasBalance).toStrictEqual(true);
-    });
-
-    it('should return isInsufficientGasBalance=false for non-sponsored Monad swap even when remaining balance < 10 MON', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: {
-          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
-          fromTokenInputValue: '95',
-          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
-          fromNativeBalance: '100000000000000000000',
-        },
-        bridgeStateOverrides: {
-          quotesLastFetched: Date.now(),
-          quoteRequest: {
-            srcChainId: CHAIN_IDS.MONAD,
-            srcTokenAmount: '95000000000000000000',
-            gasIncluded7702: false,
-          },
-        },
-        metamaskStateOverrides: {
-          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
-        },
-      });
-      const result = getValidationErrors(state as never);
-
-      // 100 - 95 = 5 MON remaining, but no 7702 sponsorship so no reserve applies
+      // isInsufficientGasBalance is overshadowed by isInsufficientNativeReserve
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
     });
 
@@ -1930,11 +1952,155 @@ describe('Bridge selectors', () => {
         metamaskStateOverrides: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
         },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: 'eip155:143' }],
+          },
+          gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
+        },
       });
       const result = getValidationErrors(state as never);
 
       // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
+    });
+
+    it('should return isInsufficientNativeReserve=true on Monad when native balance after trade < 10 MON', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromTokenInputValue: '95',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          // 100 MON in wei
+          fromNativeBalance: '100000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.MONAD,
+            srcTokenAmount: '95000000000000000000',
+            gasIncluded7702: true,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: 'eip155:143' }],
+          },
+          gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
+      expect(result.isInsufficientNativeReserve).toBe(true);
+    });
+
+    it('should return isInsufficientNativeReserve=false on Monad when native balance after trade < 10 MON but user is using a Hardware Wallet', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromTokenInputValue: '95',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          // 100 MON in wei
+          fromNativeBalance: '100000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.MONAD,
+            srcTokenAmount: '95000000000000000000',
+            gasIncluded7702: true,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: 'eip155:143' }],
+          },
+          gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
+      expect(result.isInsufficientNativeReserve).toBe(false);
+    });
+
+    it('should return isInsufficientNativeReserve=false on Monad when native balance after trade >= 10 MON', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromTokenInputValue: '80',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          // 100 MON in wei
+          fromNativeBalance: '100000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.MONAD,
+            srcTokenAmount: '80000000000000000000',
+            gasIncluded7702: true,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: 'eip155:143' }],
+          },
+          gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
+      expect(result.isInsufficientNativeReserve).toBe(false);
+    });
+
+    it('should return isInsufficientNativeReserve=false on Solana even when trying to use full balance', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
+          fromToken: {
+            decimals: 9,
+            address: zeroAddress(),
+            chainId: formatChainIdToCaip(ChainId.SOLANA),
+            assetId: getNativeAssetForChainId(ChainId.SOLANA).assetId,
+          },
+          fromTokenInputValue: '1000000000',
+          fromNativeBalance: '1000000000',
+        },
+        bridgeStateOverrides: {
+          minimumBalanceForRentExemptionInLamports: '1000000000',
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: ChainId.SOLANA,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: 'eip155:143' }],
+          },
+          gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // We don't apply such logic in Solana because this is handled by another validator
+      expect(result.isInsufficientNativeReserve).toBe(false);
     });
   });
 
@@ -2765,6 +2931,144 @@ describe('Bridge selectors', () => {
     });
   });
 
+  describe('getIsRWASwap', () => {
+    const mockRWAToken = () =>
+      toBridgeToken({
+        decimals: 18,
+        assetId: 'eip155:1/erc20:0xstock',
+        symbol: 'AAPL',
+        name: 'Apple',
+        rwaData: {
+          instrumentType: 'stock',
+          market: {
+            nextOpen: new Date(Date.now() + 100_000).toISOString(),
+            nextClose: new Date(Date.now() + 200_000).toISOString(),
+          },
+        },
+      });
+
+    it('returns false when feature flag is disabled regardless of token rwaData', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: false,
+        } as never,
+        bridgeSliceOverrides: { fromToken: mockRWAToken() },
+      });
+      const result = getIsRWASwap(state as never);
+      expect(result).toBe(false);
+    });
+
+    it('returns false when feature flag is enabled but neither token has rwaData', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
+          toToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
+        },
+      });
+      const result = getIsRWASwap(state as never);
+      expect(result).toBe(false);
+    });
+
+    it('returns true when feature flag is enabled and fromToken is an RWA token', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: mockRWAToken(),
+          toToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
+        },
+      });
+      const result = getIsRWASwap(state as never);
+      expect(result).toBe(true);
+    });
+
+    it('returns true when feature flag is enabled and toToken is an RWA token', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
+          toToken: mockRWAToken(),
+        },
+      });
+      const result = getIsRWASwap(state as never);
+      expect(result).toBe(true);
+    });
+
+    it('returns false when tokens are on different chains even if one is an RWA token', () => {
+      const crossChainRWAToken = toBridgeToken({
+        decimals: 18,
+        assetId: 'eip155:56/erc20:0xstock',
+        symbol: 'AAPL',
+        name: 'Apple',
+        rwaData: {
+          instrumentType: 'stock',
+          market: {
+            nextOpen: new Date(Date.now() + 100_000).toISOString(),
+            nextClose: new Date(Date.now() + 200_000).toISOString(),
+          },
+        },
+      });
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: mockRWAToken(),
+          toToken: crossChainRWAToken,
+        },
+      });
+      const result = getIsRWASwap(state as never);
+      expect(result).toBe(false);
+    });
+
+    it('returns true when both tokens are on the same chain but chainIds use different formats (hex vs CAIP)', () => {
+      // fromToken uses hex chainId ('0x1'), toToken uses CAIP ('eip155:1').
+      // Raw string comparison would treat these as different chains and return false,
+      // but isCrossChain() normalises both to 'eip155:1' so they are the same chain.
+      const hexChainRWAToken = toBridgeToken({
+        decimals: 18,
+        assetId: 'eip155:1/erc20:0xstock',
+        symbol: 'AAPL',
+        name: 'Apple',
+        rwaData: {
+          instrumentType: 'stock',
+          market: {
+            nextOpen: new Date(Date.now() + 100_000).toISOString(),
+            nextClose: new Date(Date.now() + 200_000).toISOString(),
+          },
+        },
+      });
+      // Override chainId to hex after construction to simulate mixed-format input
+      const hexChainRWATokenWithHexChainId = {
+        ...hexChainRWAToken,
+        chainId: '0x1' as never,
+      };
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: hexChainRWATokenWithHexChainId,
+          toToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
+        },
+      });
+      const result = getIsRWASwap(state as never);
+      expect(result).toBe(true);
+    });
+  });
+
   describe('getIsStxEnabled', () => {
     it('returns true when smart transactions are enabled for the from chain', () => {
       const state = createBridgeMockStore({
@@ -3342,8 +3646,10 @@ describe('Bridge selectors', () => {
           quotes: [],
         },
       });
-      const result = getIsQuoteExpired(state as never, Date.now());
-      expect(typeof result).toBe('boolean');
+      const result = getValidationErrors(state as never, Date.now());
+      expect(result.isQuoteExpired).toBe(
+        selectIsQuoteExpired(state.metamask as never, {}, Date.now()),
+      );
     });
   });
 

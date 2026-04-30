@@ -7,6 +7,7 @@ import {
   DAPP_ONE_URL,
   DAPP_TWO_URL,
   DAPP_URL,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   NETWORK_CLIENT_ID,
   WINDOW_TITLES,
@@ -38,6 +39,33 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 // we try to open a third dapp, so this test run in Firefox will
 // validate two dapps instead of 3
 const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+
+/**
+ * Second/third Anvil chains (1338, 1000) are absent from the default fixture's
+ * AssetsController. With assets-unify, native gas balance is read from there,
+ * so confirmations otherwise show "Insufficient funds" when opening network fees.
+ */
+const REQUEST_QUEUE_EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO = {
+  aggregators: [],
+  decimals: 18,
+  image: '',
+  name: 'Ethereum',
+  symbol: 'ETH',
+  type: 'native' as const,
+};
+
+const REQUEST_QUEUE_EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER = {
+  assetsBalance: {
+    [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+      'eip155:1338/slip44:60': { amount: '25' },
+      'eip155:1000/slip44:60': { amount: '25' },
+    },
+  },
+  assetsInfo: {
+    'eip155:1338/slip44:60': REQUEST_QUEUE_EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO,
+    'eip155:1000/slip44:60': REQUEST_QUEUE_EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO,
+  },
+};
 
 type ExpectedDetails = {
   chainId: string;
@@ -262,6 +290,9 @@ describe('Request-queue UI changes', function () {
         dappOptions: { numberOfTestDapps: 3 },
         fixtures: new FixtureBuilderV2()
           .withNetworkControllerTripleNode()
+          .withAssetsController(
+            REQUEST_QUEUE_EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER,
+          )
           .build(),
         localNodeOptions: [
           {

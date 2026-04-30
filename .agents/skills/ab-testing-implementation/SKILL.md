@@ -51,7 +51,8 @@ rg -n "Experiment Viewed|ExperimentViewed" app shared ui
    - Prefer allowlisted auto-enrichment on the shared MetaMetrics path.
    - Add `active_ab_tests` manually only for business events that bypass the
      shared MetaMetrics wrappers/controller path, and only when the
-     assignment is active.
+     assignment is active. Use `createActiveABTestAssignment` for manual
+     payloads so `key_value_pair` stays in sync.
    - Never add new `ab_tests:` payloads. If a legacy touchpoint cannot be
      migrated in the same change, keep the line annotated with
      `LEGACY_AB_TEST_ALLOWED` and explain why.
@@ -65,10 +66,10 @@ const experiment = useABTest('swapsSWAPS4135AbtestNumpadQuickAmounts', {
 
 const activeABTests = experiment.isActive
   ? [
-      {
-        key: 'swapsSWAPS4135AbtestNumpadQuickAmounts',
-        value: experiment.variantName,
-      },
+      createActiveABTestAssignment(
+        'swapsSWAPS4135AbtestNumpadQuickAmounts',
+        experiment.variantName,
+      ),
     ]
   : undefined;
 ```
@@ -111,6 +112,7 @@ node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-test
 
 - `ui/hooks/useABTest.ts`
 - `ui/hooks/useABTest.test.ts`
+- `shared/lib/ab-testing/active-ab-test-assignment.ts`
 - `shared/lib/ab-testing/resolve-ab-test-assignment.ts`
 - `shared/lib/ab-testing/ab-test-analytics.ts`
 - `ui/selectors/remote-feature-flags.ts`

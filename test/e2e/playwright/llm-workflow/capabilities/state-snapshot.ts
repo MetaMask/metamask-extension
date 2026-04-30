@@ -13,9 +13,7 @@ export type MetaMaskStateSnapshotCapabilityOptions = {
   defaultChainId?: number;
 };
 
-export class MetaMaskStateSnapshotCapability
-  implements StateSnapshotCapability
-{
+export class MetaMaskStateSnapshotCapability implements StateSnapshotCapability {
   private readonly defaultChainId: number;
 
   constructor(options: MetaMaskStateSnapshotCapabilityOptions = {}) {

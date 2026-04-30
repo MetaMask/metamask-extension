@@ -13,8 +13,11 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import { PerpsTokenLogo } from '../perps-token-logo';
+import {
+  formatPerpsFiatMinimal,
+  formatPerpsFiatUniversal,
+} from '../utils/formatPerpsDisplayPrice';
 import { getDisplayName } from '../utils';
 import { formatOrderLabel } from '../utils/orderUtils';
 import type { Order } from '../types';
@@ -43,7 +46,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
   const displayName = getDisplayName(order.symbol);
   const isTriggerBasedOrder =
     order.isTrigger === true || order.isPositionTpsl === true;
@@ -65,23 +67,19 @@ export const OrderCard: React.FC<OrderCardProps> = ({
       const triggerLevel =
         parseFloat(order.triggerPrice || order.price || '0') || 0;
       if (triggerLevel > 0) {
-        return formatCurrencyWithMinThreshold(triggerLevel, 'USD');
+        // Universal range so sub-cent assets (e.g. PUMP at $0.001824) render
+        // the real trigger price instead of collapsing to "<$0.01".
+        return formatPerpsFiatUniversal(triggerLevel);
       }
     }
 
     const size = parseFloat(order.size) || 0;
     const price = parseFloat(order.price) || 0;
     if (size > 0 && price > 0) {
-      return formatCurrencyWithMinThreshold(size * price, 'USD');
+      return formatPerpsFiatMinimal(size * price);
     }
     return null;
-  }, [
-    isTriggerBasedOrder,
-    order.triggerPrice,
-    order.size,
-    order.price,
-    formatCurrencyWithMinThreshold,
-  ]);
+  }, [isTriggerBasedOrder, order.triggerPrice, order.size, order.price]);
 
   const baseStyles = 'cursor-pointer pt-2 pb-2 px-4';
   // Non-trigger rows keep the fixed 62 px height to match the position/token tabs.

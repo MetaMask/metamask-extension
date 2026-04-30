@@ -362,6 +362,9 @@ describe('Sentry errors', function () {
     });
 
     it('should NOT send error events in the UI', async function () {
+      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+        this.skip();
+      }
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
@@ -521,6 +524,9 @@ describe('Sentry errors', function () {
     });
 
     it('should capture background application state', async function () {
+      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+        this.skip();
+      }
       await withFixtures(
         {
           fixtures: {
@@ -795,6 +801,9 @@ describe('Sentry errors', function () {
     });
 
     it('should capture UI application state', async function () {
+      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+        this.skip();
+      }
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
@@ -1316,6 +1325,9 @@ describe('Sentry errors', function () {
     });
 
     it('should capture UI application state', async function () {
+      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+        this.skip();
+      }
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()

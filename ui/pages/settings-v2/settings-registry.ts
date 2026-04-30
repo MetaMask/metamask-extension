@@ -155,9 +155,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(
       () =>
-        import(
-          './security-and-password-tab/manage-wallet-recovery-sub-page.tsx'
-        ),
+        import('./security-and-password-tab/manage-wallet-recovery-sub-page.tsx'),
     ),
   },
   [SECURITY_PASSWORD_CHANGE_V2_ROUTE]: {
