@@ -147,9 +147,9 @@ export function encodeTrc20TransferParameter(
 export function buildPermissiveTrc20Bytecode(decimals: number): string {
   const runtime = [
     '60003560e01c80',
-    '63a9059cbb14602b57',
+    '63a9059cbb14602957',
     '806370a0823114603457',
-    '8063313ce56714603d57',
+    '8063313ce56714603f57',
     '60006000f3',
     '5b600160005260206000f3',
     '5b600060005260206000f3',

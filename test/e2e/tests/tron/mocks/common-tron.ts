@@ -629,6 +629,29 @@ export async function mockTronSpotPrices(
   const usdtAssetId = `tron:728126428/trc20:${trc20Assets.USDT.address}`;
   const gasFreeAssetId = `tron:728126428/trc10:${trc10Assets.GAS_FREE.tokenId}`;
   const pricesByAssetId = {
+    'tron:728126428/slip44:195': {
+      id: 'tron',
+      price: TRX_TO_USD_RATE,
+      marketCap: 27908032838,
+      allTimeHigh: 0.431288,
+      allTimeLow: 0.00180434,
+      totalVolume: 681456174,
+      high1d: 0.298231,
+      low1d: 0.294641,
+      circulatingSupply: 94699702752.04857,
+      dilutedMarketCap: 27908037090,
+      marketCapPercentChange1d: -0.97531,
+      priceChange1d: -0.003047860467726426,
+      pricePercentChange1h: -0.15075140224689543,
+      pricePercentChange1d: -1.0236731036599194,
+      pricePercentChange7d: 3.655119648562475,
+      pricePercentChange14d: 6.071878922562999,
+      pricePercentChange30d: 4.476394163995479,
+      pricePercentChange200d: 10.682232053374577,
+      pricePercentChange1y: 16.823798348731327,
+    },
+    'tron:3448148188/slip44:195': null,
+    'tron:2494104990/slip44:195': null,
     [gasFreeAssetId]: null,
     [seedAssetId]: null,
     [htxAssetId]: {
@@ -728,6 +751,7 @@ export async function mockTrxNativeSpotPrices(
         'tron:728126428/slip44:195,tron:3448148188/slip44:195,tron:2494104990/slip44:195',
       includeMarketData: 'true',
     })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {

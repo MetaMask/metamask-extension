@@ -309,10 +309,10 @@ export class TronNode {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         owner_address: fundingAccount.address,
-        name: Buffer.from(metadata.name).toString('hex'),
-        abbr: Buffer.from(metadata.symbol).toString('hex'),
-        description: Buffer.from(metadata.name).toString('hex'),
-        url: Buffer.from('https://metamask.io').toString('hex'),
+        name: metadata.name,
+        abbr: metadata.symbol,
+        description: metadata.name,
+        url: 'https://metamask.io',
         total_supply: Number(totalSupply),
         trx_num: 1,
         num: 1,
@@ -483,7 +483,7 @@ export class TronNode {
     parameter: string;
   }): Promise<void> {
     const fundingAccount = await this.getFundingAccount();
-    const tx = await this.fetchJson('/wallet/triggersmartcontract', {
+    const resp = (await this.fetchJson('/wallet/triggersmartcontract', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -495,9 +495,13 @@ export class TronNode {
         call_value: 0,
         visible: true,
       }),
-    });
+    })) as { transaction?: unknown };
 
-    await this.signAndBroadcastTransaction(tx, fundingAccount.privateKey);
+    // /wallet/triggersmartcontract wraps the tx under a "transaction" key
+    await this.signAndBroadcastTransaction(
+      resp.transaction ?? resp,
+      fundingAccount.privateKey,
+    );
   }
 
   private async initializeTrc10Balances(
