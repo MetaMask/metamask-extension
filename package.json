@@ -842,7 +842,7 @@
       "core-js-pure#3.41.0": true,
       "react-devtools>electron#23.3.0": true,
       "sharp#0.34.2": true,
-      "tsx>esbuild#0.25.12": true
+      "tsx>esbuild#0.27.7": true
     }
   },
   "packageManager": "yarn@4.12.0",
