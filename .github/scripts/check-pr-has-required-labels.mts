@@ -1,9 +1,9 @@
 import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
-import { externalContributorLabel } from './shared/label';
-import { Labelable } from './shared/labelable';
-import { retrievePullRequest } from './shared/pull-request';
+import { externalContributorLabel } from './shared/label.mts';
+import { Labelable } from './shared/labelable.mts';
+import { retrievePullRequest } from './shared/pull-request.mts';
 
 main().catch((error: Error): void => {
   console.error(error);

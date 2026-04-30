@@ -1,6 +1,6 @@
 import { GitHub } from '@actions/github/lib/utils';
 
-import { Label, createOrRetrieveLabel } from './label';
+import { Label, createOrRetrieveLabel } from './label.mts';
 
 export enum LabelableType {
   Issue,

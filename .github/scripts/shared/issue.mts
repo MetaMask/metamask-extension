@@ -1,7 +1,7 @@
 import { GitHub } from '@actions/github/lib/utils';
 
-import { LabelableType, Labelable } from './labelable';
-import { retrieveRepo } from './repo';
+import { LabelableType, Labelable } from './labelable.mts';
+import { retrieveRepo } from './repo.mts';
 
 interface RawIssue {
   id: string;

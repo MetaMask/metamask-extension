@@ -1,6 +1,6 @@
 import { GitHub } from '@actions/github/lib/utils';
 
-import { retrieveRepo } from './repo';
+import { retrieveRepo } from './repo.mts';
 
 export enum RegressionStage {
   Testing,

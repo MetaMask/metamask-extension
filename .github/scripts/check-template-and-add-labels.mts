@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
 
-import { retrieveIssue } from './shared/issue';
+import { retrieveIssue } from './shared/issue.mts';
 import {
   Labelable,
   LabelableType,
@@ -10,7 +10,7 @@ import {
   addLabelToLabelable,
   removeLabelFromLabelable,
   removeLabelFromLabelableIfPresent,
-} from './shared/labelable';
+} from './shared/labelable.mts';
 import {
   Label,
   RegressionStage,
@@ -21,9 +21,9 @@ import {
   flakyTestsLabel,
   invalidIssueTemplateLabel,
   invalidPullRequestTemplateLabel,
-} from './shared/label';
-import { TemplateType, templates } from './shared/template';
-import { retrievePullRequest } from './shared/pull-request';
+} from './shared/label.mts';
+import { TemplateType, templates } from './shared/template.mts';
+import { retrievePullRequest } from './shared/pull-request.mts';
 
 const knownBots = [
   'metamaskbot',
@@ -180,7 +180,7 @@ async function main(): Promise<void> {
       await checkAndRemoveNeedsTriageIfFullyLabeled(octokit, labelable);
     } else {
       const errorMessage =
-        "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L14-L37";
+        "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.mts#L14-L37";
       console.log(errorMessage);
 
       // Add label to indicate issue does not match any template
@@ -218,7 +218,7 @@ async function main(): Promise<void> {
         invalidPullRequestTemplateLabel,
       );
     } else {
-      const errorMessage = `PR body does not match template ('pull-request-template.md').\n\nMake sure PR's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L40-L47`;
+      const errorMessage = `PR body does not match template ('pull-request-template.md').\n\nMake sure PR's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.mts#L40-L47`;
       console.log(errorMessage);
 
       // Add label to indicate PR body doesn't match template
@@ -233,7 +233,7 @@ async function main(): Promise<void> {
       // Indeed, many PRs were created before the new PR template was introduced and don't match the template for now.
       core.error(errorMessage, {
         title: invalidPullRequestTemplateLabel.name,
-        file: '.github/scripts/shared/template.ts',
+        file: '.github/scripts/shared/template.mts',
         startLine: 40,
         endLine: 47,
       }); // This creates an annotation on the PR

@@ -673,6 +673,12 @@
         "console.error": true
       }
     },
+    "@metamask/passkey-controller>@levischuck/tiny-cbor": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
     "@material-ui/core": {
       "globals": {
         "addEventListener": true,
@@ -1912,6 +1918,22 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/obs-store>readable-stream": true
+      }
+    },
+    "@metamask/passkey-controller": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "crypto.subtle.importKey": true,
+        "crypto.subtle.verify": true
+      },
+      "packages": {
+        "@metamask/passkey-controller>@levischuck/tiny-cbor": true,
+        "@metamask/base-controller": true,
+        "@metamask/utils": true,
+        "@noble/ciphers": true,
+        "@noble/curves": true,
+        "@noble/hashes": true
       }
     },
     "@metamask/permission-controller": {

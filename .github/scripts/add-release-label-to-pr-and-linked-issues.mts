@@ -2,11 +2,11 @@ import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
 
-import { retrieveLinkedIssues } from './shared/issue';
-import { Label } from './shared/label';
-import { Labelable, addLabelToLabelable } from './shared/labelable';
-import { retrievePullRequest } from './shared/pull-request';
-import { isValidVersionFormat } from './shared/utils';
+import { retrieveLinkedIssues } from './shared/issue.mts';
+import { Label } from './shared/label.mts';
+import { Labelable, addLabelToLabelable } from './shared/labelable.mts';
+import { retrievePullRequest } from './shared/pull-request.mts';
+import { isValidVersionFormat } from './shared/utils.mts';
 
 main().catch((error: Error): void => {
   console.error(error);

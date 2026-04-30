@@ -46,6 +46,7 @@
         "@babel/core>@babel/helper-module-transforms": true,
         "@babel/core>@babel/helpers": true,
         "@babel/core>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "@babel/preset-typescript": true,
         "@babel/core>@babel/template": true,
         "depcheck>@babel/traverse": true,
@@ -206,7 +207,7 @@
     "@babel/core>@babel/template": {
       "packages": {
         "@babel/code-frame": true,
-        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "@babel/core>@babel/types": true
       }
     },
@@ -219,6 +220,7 @@
         "@babel/core>@babel/generator": true,
         "depcheck>@babel/traverse>@babel/helper-globals": true,
         "@babel/core>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "@babel/core>@babel/template": true,
         "@babel/core>@babel/types": true,
         "depcheck>@babel": true,
@@ -315,7 +317,7 @@
         "process._rawDebug": true
       },
       "packages": {
-        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "@lavamoat/webpack>@lavamoat/aa": true,
         "browserify>browser-resolve": true,
         "@lavamoat/webpack>lavamoat-core": true,
@@ -2043,7 +2045,7 @@
         "console.log": true
       },
       "packages": {
-        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "depcheck>@babel/traverse": true
       }
     },

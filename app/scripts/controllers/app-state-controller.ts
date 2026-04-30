@@ -182,6 +182,12 @@ export type AppStateControllerState = {
    * Used to show specific error messages (e.g., disk space vs general error).
    */
   storageWriteErrorType: StorageWriteErrorType | null;
+
+  /**
+   * When true, unlock UI must not auto-start biometrics unlock (cross-surface).
+   * Used to avoid immediately re-prompting biometrics after the user manually locks the wallet.
+   */
+  passkeyAutoUnlockSuppressed: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -321,6 +327,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
+  passkeyAutoUnlockSuppressed: false,
   ...getInitialStateOverrides(),
 });
 
@@ -712,6 +719,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  passkeyAutoUnlockSuppressed: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   deferredDeepLink: {
     includeInStateLogs: false,
     persist: true,
@@ -983,6 +996,17 @@ export class AppStateController extends BaseController<
   setRampCardClosed(): void {
     this.update((state) => {
       state.isRampCardClosed = true;
+    });
+  }
+
+  /**
+   * Sets whether the unlock screen should suppress automatic passkey WebAuthn.
+   *
+   * @param suppressed - When true, auto passkey unlock is suppressed.
+   */
+  setPasskeyAutoUnlockSuppressed(suppressed: boolean): void {
+    this.update((state) => {
+      state.passkeyAutoUnlockSuppressed = suppressed;
     });
   }
 
