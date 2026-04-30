@@ -11,7 +11,7 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   BorderRadius,
@@ -75,6 +75,8 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   const [percentInputValue, setPercentInputValue] = useState<string>(
     String(balancePercent),
   );
+  const tokenInputRef = useRef<HTMLInputElement | null>(null);
+  const shouldSelectTokenOnEditRef = useRef(false);
 
   useEffect(() => {
     setPercentInputValue(String(balancePercent));
@@ -104,6 +106,14 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   // preserved while the user is actively typing.
   const [isEditingToken, setIsEditingToken] = useState(false);
   const [tokenInputValue, setTokenInputValue] = useState(unGroupedTokenDisplay);
+
+  useEffect(() => {
+    if (!isEditingToken || !shouldSelectTokenOnEditRef.current) {
+      return;
+    }
+    shouldSelectTokenOnEditRef.current = false;
+    tokenInputRef.current?.select();
+  }, [isEditingToken, tokenInputValue]);
 
   // When not editing, derive the displayed token value from the current amount
   // rather than syncing via an effect — avoids a stale intermediate render.
@@ -206,8 +216,8 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   );
 
   const handleTokenFocus = useCallback(
-    (event: React.FocusEvent<HTMLInputElement>) => {
-      handleNumericFocusSelectAll(event);
+    (_event: React.FocusEvent<HTMLInputElement>) => {
+      shouldSelectTokenOnEditRef.current = true;
       setTokenInputValue(unGroupedTokenDisplay);
       setIsEditingToken(true);
     },
@@ -362,6 +372,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             onFocus={handleTokenFocus}
             onBlur={handleTokenBlur}
             placeholder="0"
+            inputRef={tokenInputRef}
             borderRadius={BorderRadius.MD}
             borderWidth={0}
             backgroundColor={BackgroundColor.backgroundMuted}

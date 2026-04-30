@@ -63,6 +63,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.markPrice
  * @param props.autoFocusUsd
  * @param props.autoFocusLimitPrice
+ * @param props.usdPlaceholder
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -86,6 +87,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   markPrice,
   autoFocusUsd = false,
   autoFocusLimitPrice = false,
+  usdPlaceholder,
 }) => {
   const t = useI18nContext();
 
@@ -349,6 +351,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             szDecimals={marketInfo?.szDecimals}
             onAddFunds={onAddFunds}
             autoFocus={autoFocusUsd && formState.type === 'market'}
+            usdPlaceholder={usdPlaceholder}
             usdInputRef={usdInputRef}
           />
         )}

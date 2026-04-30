@@ -139,6 +139,8 @@ export type OrderEntryProps = {
   autoFocusUsd?: boolean;
   /** Auto-focus the limit price input on mount / when switching to limit order type */
   autoFocusLimitPrice?: boolean;
+  /** Placeholder override for the USD input. Defaults to AmountInput's '0.00'. */
+  usdPlaceholder?: string;
 };
 
 /**

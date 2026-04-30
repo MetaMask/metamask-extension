@@ -559,7 +559,7 @@ describe('AmountInput', () => {
       expect(selectSpy).toHaveBeenCalled();
     });
 
-    it('selects existing token value on focus', () => {
+    it('selects existing token value after focus switches to editing mode', () => {
       renderWithProvider(
         <AmountInput {...defaultProps} amount="9000" currentPrice={45000} />,
         mockStore,
@@ -569,6 +569,8 @@ describe('AmountInput', () => {
       const input = container.querySelector('input') as HTMLInputElement;
       const selectSpy = jest.spyOn(input, 'select');
       fireEvent.focus(input);
+
+      expect(input).toHaveValue('0.2');
       expect(selectSpy).toHaveBeenCalled();
     });
 
