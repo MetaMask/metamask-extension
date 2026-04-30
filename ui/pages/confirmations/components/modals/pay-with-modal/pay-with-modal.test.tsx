@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
@@ -13,6 +13,10 @@ import {
   useMusdPaymentToken,
 } from '../../../../../hooks/musd';
 import { useConfirmContext } from '../../../context/confirm';
+import {
+  addToken,
+  findNetworkClientIdByChainId,
+} from '../../../../../store/actions';
 import { PayWithModal } from './pay-with-modal';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
@@ -22,6 +26,22 @@ jest.mock('../../../../../hooks/musd');
 jest.mock('../../../context/confirm', () => ({
   useConfirmContext: jest.fn(),
 }));
+jest.mock('../../../../../store/actions', () => ({
+  addToken: jest.fn(),
+  findNetworkClientIdByChainId: jest.fn(),
+}));
+
+// Zero-balance non-native token used to exercise the perpsWithdraw addToken
+// import branch.
+const PERPS_WITHDRAW_TOKEN = {
+  address: '0xaaa0000000000000000000000000000000000aaa',
+  chainId: '0xa4b1',
+  isNative: false,
+  rawBalance: '0x0',
+  symbol: 'BNB',
+  decimals: 18,
+  image: './bnb.png',
+};
 
 jest.mock('../../send/asset', () => ({
   Asset: ({
@@ -30,11 +50,7 @@ jest.mock('../../send/asset', () => ({
     hideNfts,
     includeNoBalance,
   }: {
-    onAssetSelect?: (token: {
-      address: string;
-      chainId: string;
-      disabled?: boolean;
-    }) => void;
+    onAssetSelect?: (token: Record<string, unknown>) => void;
     tokenFilter?: (tokens: unknown[]) => unknown[];
     hideNfts?: boolean;
     includeNoBalance?: boolean;
@@ -64,6 +80,12 @@ jest.mock('../../send/asset', () => ({
           }
         >
           Select Disabled Token
+        </button>
+        <button
+          data-testid="select-perps-withdraw-token"
+          onClick={() => onAssetSelect?.(PERPS_WITHDRAW_TOKEN)}
+        >
+          Select Perps Withdraw Token
         </button>
       </div>
     );
@@ -252,6 +274,81 @@ describe('PayWithModal', () => {
         chainId: '0x1',
       });
       expect(onMusdPaymentTokenChangeMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('perpsWithdraw destination token import', () => {
+    const addTokenMock = jest.mocked(addToken);
+    const findNetworkClientIdByChainIdMock = jest.mocked(
+      findNetworkClientIdByChainId,
+    );
+
+    beforeEach(() => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          type: TransactionType.perpsWithdraw,
+        },
+      } as ReturnType<typeof useConfirmContext>);
+
+      findNetworkClientIdByChainIdMock.mockResolvedValue('arbitrum-client');
+      // `addToken` is a thunk; `dispatch(thunk)` returns whatever the thunk
+      // returns. The component awaits the dispatch, so a resolved jest.fn
+      // wrapped as a thunk-returning jest.fn is enough.
+      addTokenMock.mockReturnValue(jest.fn().mockResolvedValue(undefined));
+    });
+
+    it('imports a zero-balance non-native token before calling setPayToken', async () => {
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      fireEvent.click(screen.getByTestId('select-perps-withdraw-token'));
+
+      await waitFor(() => {
+        expect(setPayTokenMock).toHaveBeenCalledWith({
+          address: PERPS_WITHDRAW_TOKEN.address,
+          chainId: PERPS_WITHDRAW_TOKEN.chainId,
+        });
+      });
+
+      expect(findNetworkClientIdByChainIdMock).toHaveBeenCalledWith(
+        PERPS_WITHDRAW_TOKEN.chainId,
+      );
+      expect(addTokenMock).toHaveBeenCalledWith(
+        {
+          address: PERPS_WITHDRAW_TOKEN.address,
+          symbol: PERPS_WITHDRAW_TOKEN.symbol,
+          decimals: PERPS_WITHDRAW_TOKEN.decimals,
+          networkClientId: 'arbitrum-client',
+          image: PERPS_WITHDRAW_TOKEN.image,
+        },
+        true,
+      );
+      expect(onCloseMock).toHaveBeenCalled();
+    });
+
+    it('keeps the modal open and skips setPayToken when token import fails', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      addTokenMock.mockReturnValue(
+        jest.fn().mockRejectedValue(new Error('network down')),
+      );
+
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      fireEvent.click(screen.getByTestId('select-perps-withdraw-token'));
+
+      await waitFor(() => {
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          'Failed to import withdraw destination token',
+          expect.any(Error),
+        );
+      });
+
+      expect(setPayTokenMock).not.toHaveBeenCalled();
+      expect(onCloseMock).not.toHaveBeenCalled();
+
+      consoleErrorSpy.mockRestore();
     });
   });
 });
