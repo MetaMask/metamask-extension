@@ -6,6 +6,7 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import * as selectors from '../../../../selectors';
+import { startPasskeyAuthentication } from '../../../../../shared/lib/passkey';
 import ChangePassword from './change-password';
 
 const mockUseNavigate = jest.fn();
@@ -17,6 +18,13 @@ const mockChangePassword = jest
 const mockVerifyPassword = jest.fn().mockImplementation((_pwd: string) => {
   return Promise.resolve();
 });
+const mockGeneratePasskeyAuthenticationOptions = jest.fn(() =>
+  Promise.resolve({}),
+);
+const mockChangePasswordWithPasskeyVerification = jest.fn(
+  (_newPassword: string, _authenticationResponse: unknown) => Promise.resolve(),
+);
+const mockForceUpdateMetamaskState = jest.fn(() => Promise.resolve());
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -39,11 +47,30 @@ jest.mock('../../../../store/actions', () => ({
   verifyPassword: (_pwd: string) => {
     return mockVerifyPassword(_pwd);
   },
+  generatePasskeyAuthenticationOptions: () =>
+    mockGeneratePasskeyAuthenticationOptions(),
+  changePasswordWithPasskeyVerification: (
+    newPassword: string,
+    authenticationResponse: unknown,
+  ) =>
+    mockChangePasswordWithPasskeyVerification(
+      newPassword,
+      authenticationResponse,
+    ),
+  forceUpdateMetamaskState: async () => mockForceUpdateMetamaskState(),
+}));
+
+jest.mock('../../../../../shared/lib/passkey', () => ({
+  ...jest.requireActual('../../../../../shared/lib/passkey'),
+  startPasskeyAuthentication: jest.fn(),
+  cancelPasskeyCeremony: jest.fn(),
 }));
 
 jest.mock('../../../../selectors', () => ({
   ...jest.requireActual('../../../../selectors'),
   getIsSocialLoginFlow: jest.fn().mockReturnValue(false),
+  getIsPasskeyRegistered: jest.fn().mockReturnValue(false),
+  getIsPasskeyFeatureAvailable: jest.fn().mockReturnValue(false),
 }));
 
 describe('ChangePassword', () => {
@@ -54,6 +81,14 @@ describe('ChangePassword', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (selectors.getIsSocialLoginFlow as jest.Mock).mockReturnValue(false);
+    (selectors.getIsPasskeyRegistered as jest.Mock).mockReturnValue(false);
+    (selectors.getIsPasskeyFeatureAvailable as jest.Mock).mockReturnValue(
+      false,
+    );
+    (startPasskeyAuthentication as jest.Mock).mockResolvedValue({
+      id: 'mock-credential',
+    });
+    mockGeneratePasskeyAuthenticationOptions.mockResolvedValue({});
   });
 
   async function advanceToChangePasswordStep(
@@ -252,6 +287,102 @@ describe('ChangePassword', () => {
           mockNewPassword,
           mockPassword,
         );
+        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+      });
+    });
+  });
+
+  describe('Passkey flow', () => {
+    const mockAssertion = { id: 'mock-credential' };
+
+    beforeEach(() => {
+      (selectors.getIsPasskeyRegistered as jest.Mock).mockReturnValue(true);
+      (selectors.getIsPasskeyFeatureAvailable as jest.Mock).mockReturnValue(
+        true,
+      );
+      (startPasskeyAuthentication as jest.Mock).mockResolvedValue(
+        mockAssertion,
+      );
+    });
+
+    it('skips the verify current password step when passkey is active', () => {
+      const { queryByTestId } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
+      );
+
+      expect(
+        queryByTestId('verify-current-password-input'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows a loader and biometrics confirmation copy while passkey verification runs', () => {
+      const { getByTestId, getByText } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
+      );
+
+      expect(
+        getByTestId('change-password-passkey-verifying'),
+      ).toBeInTheDocument();
+      expect(
+        getByText(messages.changePasswordPasskeyVerifyingTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(messages.changePasswordPasskeyVerifyingDescription.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows new password fields after passkey authentication succeeds', async () => {
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(mockGeneratePasskeyAuthenticationOptions).toHaveBeenCalled();
+      });
+      await waitFor(() => {
+        expect(startPasskeyAuthentication).toHaveBeenCalled();
+      });
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+    });
+
+    it('falls back to verify current password when passkey authentication fails', async () => {
+      (startPasskeyAuthentication as jest.Mock).mockRejectedValueOnce(
+        new Error('cancelled'),
+      );
+
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(
+          getByTestId('verify-current-password-input'),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('saves with passkey verification when biometrics stay enabled', async () => {
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+
+      fireEvent.change(getByTestId('change-password-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.change(getByTestId('change-password-confirm-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.click(getByTestId('change-password-terms'));
+      fireEvent.click(getByTestId('change-password-button'));
+
+      await waitFor(() => {
+        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith(
+          mockNewPassword,
+          mockAssertion,
+        );
+        expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
         expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
       });
     });

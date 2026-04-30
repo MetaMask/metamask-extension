@@ -1414,6 +1414,14 @@
   "changePasswordLoadingNote": {
     "message": "This shouldn't take long"
   },
+  "changePasswordPasskeyVerifyingDescription": {
+    "message": "Use Face ID, Touch ID, or your device screen lock when prompted.",
+    "description": "Shown under the loading state while the wallet waits for passkey or device biometrics during change password."
+  },
+  "changePasswordPasskeyVerifyingTitle": {
+    "message": "Confirm with biometrics",
+    "description": "Title shown while the wallet waits for passkey or device biometrics during change password."
+  },
   "changePasswordWarning": {
     "message": "Are you sure?"
   },
