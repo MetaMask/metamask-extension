@@ -218,7 +218,6 @@ export function selectShowSidePanelMigrationToast(
 /**
  * Determines if the PNA25 banner should be shown based on:
  * - User has completed onboarding (completedOnboarding === true)
- * - LaunchDarkly feature flag (extensionUxPna25) is enabled
  * - User has opted into metrics (participateInMetaMetrics === true)
  * - User hasn't acknowledged the banner yet (pna25Acknowledged === false)
  *
@@ -230,24 +229,12 @@ export function selectShowSidePanelMigrationToast(
  * @returns Boolean indicating whether to show the banner
  */
 export function selectShowPna25Modal(state: Pick<State, 'metamask'>): boolean {
-  const {
-    completedOnboarding,
-    participateInMetaMetrics,
-    pna25Acknowledged,
-    remoteFeatureFlags,
-  } = state.metamask || {};
+  const { completedOnboarding, participateInMetaMetrics, pna25Acknowledged } =
+    state.metamask || {};
 
   // Only show to users who have completed onboarding
   if (!completedOnboarding) {
     return false; // User hasn't completed onboarding yet
-  }
-
-  // For onboarding screen, we use local flag and for existing users, we use LaunchDarkly flag
-  const isPna25Enabled = remoteFeatureFlags?.extensionUxPna25;
-
-  // Check all conditions
-  if (!isPna25Enabled) {
-    return false; // LD flag not enabled
   }
 
   if (participateInMetaMetrics !== true) {
