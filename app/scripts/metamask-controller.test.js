@@ -61,6 +61,7 @@ import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { SECOND } from '../../shared/constants/time';
+import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../shared/constants/passkey';
 import * as NetworkConstantsModule from '../../shared/constants/network';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
@@ -1194,6 +1195,50 @@ describe('MetaMaskController', () => {
         expect(
           metamaskController.keyringController.state.isUnlocked,
         ).toStrictEqual(false);
+      });
+
+      it('sets passkeyAutoUnlockSuppressed on lock and clears after suppression duration', async () => {
+        jest.useFakeTimers({ legacyFakeTimers: true });
+        try {
+          await metamaskController.createNewVaultAndKeychain('password');
+          await metamaskController.setLocked();
+          expect(
+            metamaskController.appStateController.state
+              .passkeyAutoUnlockSuppressed,
+          ).toStrictEqual(true);
+          jest.advanceTimersByTime(PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
+          expect(
+            metamaskController.appStateController.state
+              .passkeyAutoUnlockSuppressed,
+          ).toStrictEqual(false);
+        } finally {
+          jest.useRealTimers();
+        }
+      });
+
+      it('keeps passkeyAutoUnlockSuppressed true until suppression elapses after lock even if user unlocks sooner', async () => {
+        jest.useFakeTimers({ legacyFakeTimers: true });
+        try {
+          const password = 'password';
+          await metamaskController.createNewVaultAndKeychain(password);
+          await metamaskController.setLocked();
+          expect(
+            metamaskController.appStateController.state
+              .passkeyAutoUnlockSuppressed,
+          ).toStrictEqual(true);
+          await metamaskController.submitPasswordOrEncryptionKey({ password });
+          expect(
+            metamaskController.appStateController.state
+              .passkeyAutoUnlockSuppressed,
+          ).toStrictEqual(true);
+          jest.advanceTimersByTime(PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
+          expect(
+            metamaskController.appStateController.state
+              .passkeyAutoUnlockSuppressed,
+          ).toStrictEqual(false);
+        } finally {
+          jest.useRealTimers();
+        }
       });
     });
 

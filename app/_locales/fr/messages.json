@@ -1560,9 +1560,6 @@
   "clearActivity": {
     "message": "Effacer les données d’activité et de nonce"
   },
-  "clearActivityButton": {
-    "message": "Effacer les données de l’onglet « Activité »"
-  },
   "clearActivityDescription": {
     "message": "Cela réinitialise le nonce du compte et efface les données de l’onglet « Activité » dans votre portefeuille. Seuls le compte et le réseau actuels seront affectés. Aucun changement ne sera apporté aux soldes ou transactions entrantes."
   },
@@ -3912,9 +3909,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Verrouillage de MetaMask…"
   },
-  "lockTimeInvalid": {
-    "message": "Le temps de verrouillage doit être un nombre compris entre 0 et 10 080"
-  },
   "logOut": {
     "message": "Déconnexion"
   },
@@ -5122,9 +5116,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Conditions d’utilisation"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Nous collecterons des données de base sur l’utilisation du produit, telles que l’emplacement général, les clics et les vues. Aucune autre information ne sera stockée."
   },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Nous collecterons des données de base sur l’utilisation des produits. Nous pouvons associer ces informations aux données disponibles sur la chaîne."
@@ -8188,12 +8179,6 @@
   },
   "smartAccount": {
     "message": "Compte intelligent"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Autoriser les dapps à demander des fonctionnalités de compte intelligent pour les comptes standards. Cela n’affectera pas les comptes qui sont déjà des comptes intelligents."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Demandes de comptes intelligents émanant de dapps"
   },
   "smartAccountLabel": {
     "message": "Compte intelligent"

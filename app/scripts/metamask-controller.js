@@ -38,6 +38,11 @@ import {
   SubjectType,
 } from '@metamask/permission-controller';
 import {
+  PasskeyControllerError,
+  PasskeyControllerErrorCode,
+  PasskeyControllerErrorMessage,
+} from '@metamask/passkey-controller';
+import {
   METAMASK_DOMAIN,
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
@@ -155,6 +160,7 @@ import {
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
+import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../shared/constants/passkey';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -445,6 +451,7 @@ import { SignatureControllerInit } from './messenger-client-init/confirmations/s
 import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
+import { PasskeyControllerInit } from './messenger-client-init/passkey-controller-init';
 import { getRootMessenger } from './lib/messenger';
 import {
   ClaimsControllerInit,
@@ -550,6 +557,10 @@ export default class MetamaskController extends EventEmitter {
     // lock to ensure only one seedless onboarding operation is running at once
     this.seedlessOperationMutex = new Mutex();
 
+    // timer to reset passkey auto unlock suppressed state
+    /** @type {NodeJS.Timeout | null} */
+    this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
+
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
         if (version === '8.1.0') {
@@ -615,6 +626,7 @@ export default class MetamaskController extends EventEmitter {
       SubjectMetadataController: SubjectMetadataControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
+      PasskeyController: PasskeyControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       NetworkController: NetworkControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
@@ -833,6 +845,7 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.ProfileMetricsController;
     this.legacyBackgroundApiService =
       messengerClientsByName.LegacyBackgroundApiService;
+    this.passkeyController = messengerClientsByName.PasskeyController;
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -2982,6 +2995,20 @@ export default class MetamaskController extends EventEmitter {
       submitPassword: this.submitPassword.bind(this),
       verifyPassword: this.verifyPassword.bind(this),
 
+      // passkey management
+      generatePasskeyRegistrationOptions:
+        this.generatePasskeyRegistrationOptions.bind(this),
+      generatePasskeyAuthenticationOptions:
+        this.generatePasskeyAuthenticationOptions.bind(this),
+      protectVaultKeyWithPasskey: this.protectVaultKeyWithPasskey.bind(this),
+      unlockWithPasskey: this.unlockWithPasskey.bind(this),
+      removePasskeyWithPasskeyVerification:
+        this.removePasskeyWithPasskeyVerification.bind(this),
+      removePasskeyWithPasswordVerification:
+        this.removePasskeyWithPasswordVerification.bind(this),
+      changePasswordWithPasskeyVerification:
+        this.changePasswordWithPasskeyVerification.bind(this),
+
       // network management
       setActiveNetwork: async (id) => {
         // The multichain network controller will proxy the call to the network controller
@@ -3918,6 +3945,9 @@ export default class MetamaskController extends EventEmitter {
     // clear SeedlessOnboardingController state
     this.seedlessOnboardingController.clearState();
 
+    // clear passkey early (vault-bound unlock material; runs for restoreOnly too)
+    this.passkeyController.clearState();
+
     // stop subscription polling
     this.subscriptionController.stopAllPolling();
 
@@ -4413,6 +4443,172 @@ export default class MetamaskController extends EventEmitter {
           data: { success: changePasswordSuccess },
         });
       }
+    } finally {
+      releaseLock();
+    }
+  }
+
+  /**
+   * Starts passkey registration: stores a registration session and returns creation options.
+   *
+   * @param {object} [opts] - Optional configuration.
+   * @param {boolean} [opts.prfAvailable] - Whether the client supports the
+   *   WebAuthn PRF extension. When `false`, PRF is omitted from the options.
+   * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialCreationOptionsJSON>}
+   */
+  async generatePasskeyRegistrationOptions({ prfAvailable } = {}) {
+    return this.passkeyController.generateRegistrationOptions({ prfAvailable });
+  }
+
+  /**
+   * Starts passkey authentication: stores an authentication session and returns request options.
+   *
+   * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialRequestOptionsJSON>}
+   */
+  async generatePasskeyAuthenticationOptions() {
+    return this.passkeyController.generateAuthenticationOptions();
+  }
+
+  /**
+   * Wraps the vault encryption key with a passkey after WebAuthn registration in the UI.
+   * If `completedOnboarding`, `password` is required and verified first.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyRegistrationResponse} registrationResponse - Registration response from the UI.
+   * @param {string} [password] - Wallet password when onboarding is complete (step-up).
+   * @returns {Promise<void>}
+   */
+  async protectVaultKeyWithPasskey(registrationResponse, password) {
+    const { completedOnboarding } = this.onboardingController.state;
+    if (completedOnboarding) {
+      // password is required when onboarding is complete
+      if (!password) {
+        throw new Error('Password required to register passkey');
+      }
+      // verify password
+      await this.verifyPassword(password);
+    }
+
+    const vaultKey = await this.keyringController.exportEncryptionKey();
+    await this.passkeyController.protectVaultKeyWithPasskey({
+      registrationResponse,
+      vaultKey,
+    });
+  }
+
+  /**
+   * Unlocks the vault with a passkey.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - Wire response from the UI.
+   * @returns {Promise<void>}
+   */
+  async unlockWithPasskey(authenticationResponse) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
+    }
+    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
+      authenticationResponse,
+    );
+    await this.submitEncryptionKey(vaultKey);
+  }
+
+  /**
+   * Removes the passkey from the vault using the passkey authentication response.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse
+   * @returns {Promise<void>}
+   */
+  async removePasskeyWithPasskeyVerification(authenticationResponse) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
+    }
+    const verified = await this.passkeyController.verifyPasskeyAuthentication(
+      authenticationResponse,
+    );
+    if (!verified) {
+      throw new Error('Passkey authentication verification failed');
+    }
+
+    this.passkeyController.removePasskey();
+  }
+
+  /**
+   * Verifies the wallet password and removes the passkey record (settings disable fallback).
+   *
+   * @param {string} password
+   * @returns {Promise<void>}
+   */
+  async removePasskeyWithPasswordVerification(password) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
+    }
+    await this.verifyPassword(password);
+    this.passkeyController.removePasskey();
+  }
+
+  /**
+   * Changes the wallet password using a verified passkey assertion, then renews the
+   * vault key protection for the new vault encryption key. Non-social-login only.
+   *
+   * @param {string} newPassword
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse
+   * @returns {Promise<void>}
+   */
+  async changePasswordWithPasskeyVerification(
+    newPassword,
+    authenticationResponse,
+  ) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
+    }
+
+    // verify passkey authentication
+    const isVerified = await this.passkeyController.verifyPasskeyAuthentication(
+      authenticationResponse,
+    );
+    if (!isVerified) {
+      throw new Error('Passkey authentication verification failed');
+    }
+
+    const releaseLock = await this.seedlessOperationMutex.acquire();
+    try {
+      const vaultKeyBeforePasswordChange =
+        await this.keyringController.exportEncryptionKey();
+
+      // change password
+      await this.keyringController.changePassword(newPassword);
+
+      try {
+        // renew vault key protection
+        const vaultKeyAfterPasswordChange =
+          await this.keyringController.exportEncryptionKey();
+        await this.passkeyController.renewVaultKeyProtection({
+          authenticationResponse,
+          oldVaultKey: vaultKeyBeforePasswordChange,
+          newVaultKey: vaultKeyAfterPasswordChange,
+        });
+      } catch (err) {
+        log.error(
+          'Passkey vault key protection renewal failed after password change',
+          err,
+        );
+        this.passkeyController.removePasskey();
+        throw err;
+      }
+    } catch (error) {
+      log.error('error while changing password with passkey', error);
+      throw error;
     } finally {
       releaseLock();
     }
@@ -8838,6 +9034,17 @@ export default class MetamaskController extends EventEmitter {
       if (isSignedIn) {
         this.authenticationController.performSignOut();
       }
+
+      // After lock, suppress auto passkey unlock briefly (cross-surface), then clear.
+      if (this.passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
+        clearTimeout(this.passkeyAutoUnlockSuppressedResetTimeoutId);
+        this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
+      }
+      this.appStateController.setPasskeyAutoUnlockSuppressed(true);
+      this.passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
+        this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
+        this.appStateController.setPasskeyAutoUnlockSuppressed(false);
+      }, PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
     } catch (error) {
       log.error('Error setting locked state', error);
       throw error;
