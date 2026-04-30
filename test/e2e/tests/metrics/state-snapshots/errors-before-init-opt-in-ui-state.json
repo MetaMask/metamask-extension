@@ -74,7 +74,7 @@
       "updateModalLastDismissedAt": null
     },
     "AssetsController": "object",
-    "AuthenticationController": { "isSignedIn": "boolean" },
+    "AuthenticationController": { "isSignedIn": "boolean", "needsProfilePairing": "boolean" },
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
     "CurrencyController": {

@@ -97,6 +97,7 @@
   },
   "AuthenticationController": {
     "isSignedIn": "boolean",
+    "needsProfilePairing": "boolean",
     "srpSessionData": "object"
   },
   "BridgeController": {
