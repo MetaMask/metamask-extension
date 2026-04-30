@@ -11,13 +11,6 @@ import type {
 } from '../../ui/messengers/ui-messenger';
 
 /**
- * Maps each UIMessenger action type string to its handler function type.
- */
-export type UIMessengerActionHandlersByType = {
-  [Action in UIMessengerActions as Action['type']]: Action['handler'];
-};
-
-/**
  * Create a route messenger for testing with the specified action handlers.
  *
  * This creates a real Messenger instance with a fake namespace and registers
