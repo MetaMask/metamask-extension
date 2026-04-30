@@ -58,9 +58,7 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
   const [isRemovingKeyringSnap, setIsRemovingKeyringSnap] = useState(false);
 
-  const snap = Object.entries(snaps)
-    .map(([_, snapState]) => snapState)
-    .find((snapState) => snapState.id === snapId);
+  const snap = snaps[snapId];
 
   const connectedSubjects = useSelector((state) =>
     getSubjectsWithSnapPermission(state, snap?.id),
