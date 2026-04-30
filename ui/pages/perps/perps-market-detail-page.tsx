@@ -1782,8 +1782,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                 flip
                 offset={[0, 8]}
                 padding={0}
-                matchWidth
-                className="rounded-lg z-[1050]"
+                className="rounded-lg z-[1050] w-[294px]"
                 data-testid="perps-modify-menu"
               >
                 <Box flexDirection={BoxFlexDirection.Column}>
