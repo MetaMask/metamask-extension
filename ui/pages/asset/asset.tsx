@@ -11,6 +11,10 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useParams, useLocation } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import {
+  isValidHexAddress,
+  toChecksumHexAddress,
+} from '../../../shared/lib/hexstring-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import { ScrollContainer } from '../../contexts/scroll-container';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
@@ -58,37 +62,51 @@ const Asset = () => {
     ),
   );
 
-  const fallbackNonEvmToken =
+  const fallbackToken =
     chainId &&
     decodedAsset &&
-    isCaipChainId(chainId) &&
-    isCaipAssetType(decodedAsset)
+    ((isCaipChainId(chainId) && isCaipAssetType(decodedAsset)) ||
+      (!isCaipChainId(chainId) && isValidHexAddress(decodedAsset)))
       ? (() => {
-          const parsedAssetType = parseCaipAssetType(
-            decodedAsset as CaipAssetType,
-          );
-          if (parsedAssetType.chainId !== chainId) {
-            return null;
+          if (isCaipChainId(chainId) && isCaipAssetType(decodedAsset)) {
+            const parsedAssetType = parseCaipAssetType(
+              decodedAsset as CaipAssetType,
+            );
+            if (parsedAssetType.chainId !== chainId) {
+              return null;
+            }
+
+            const metadata = assetsMetadataByAssetId[decodedAsset];
+            const symbol = metadata?.symbol ?? parsedAssetType.assetReference;
+
+            return {
+              address: decodedAsset,
+              symbol,
+              name: metadata?.name ?? symbol,
+              chainId,
+              image: metadata?.iconUrl ?? '',
+              isNative: parsedAssetType.assetNamespace === 'slip44',
+              decimals: metadata?.units?.[0]?.decimals ?? 0,
+            };
           }
 
-          const metadata = assetsMetadataByAssetId[decodedAsset];
-          const symbol = metadata?.symbol ?? parsedAssetType.assetReference;
+          const normalizedAddress = toChecksumHexAddress(decodedAsset);
 
           return {
-            address: decodedAsset,
-            symbol,
-            name: metadata?.name ?? symbol,
+            address: normalizedAddress,
+            symbol: normalizedAddress,
+            name: normalizedAddress,
             chainId,
-            image: metadata?.iconUrl ?? '',
-            isNative: parsedAssetType.assetNamespace === 'slip44',
-            decimals: metadata?.units?.[0]?.decimals ?? 0,
+            image: '',
+            isNative: false,
+            decimals: 0,
           };
         })()
       : null;
 
   // Use token from location state or URL-derived metadata as fallback when user
   // doesn't own the token
-  const token = ownedToken ?? locationState?.token ?? fallbackNonEvmToken;
+  const token = ownedToken ?? locationState?.token ?? fallbackToken;
 
   const nft: Nft = nfts.find(
     ({ address, tokenId }: { address: Hex; tokenId: string }) =>

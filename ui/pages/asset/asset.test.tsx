@@ -37,6 +37,8 @@ const mockUseParams = useParams as jest.MockedFunction<typeof useParams>;
 const mockUseLocation = useLocation as jest.MockedFunction<typeof useLocation>;
 
 const BTC_ASSET_ID = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
+const SOL_TOKEN_ASSET_ID =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:4UWRG4THDmdydQnr4hqECN32eNdTHKKs7KVEW1ATpump';
 
 describe('Asset route', () => {
   beforeEach(() => {
@@ -99,5 +101,32 @@ describe('Asset route', () => {
 
     expect(getByTestId('navigate')).toHaveTextContent('/');
     expect(queryByTestId('native-asset')).not.toBeInTheDocument();
+  });
+
+  it('renders non-EVM token fallback when token is not owned', () => {
+    mockUseParams.mockReturnValue({
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as never,
+      asset: encodeURIComponent(SOL_TOKEN_ASSET_ID),
+      id: undefined,
+    });
+
+    mockUseSelector.mockReset();
+    mockUseSelector
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce({
+        [SOL_TOKEN_ASSET_ID]: {
+          name: 'ElonAI',
+          symbol: 'ELONAI',
+          iconUrl: 'elonia.png',
+          units: [{ decimals: 6 }],
+        },
+      })
+      .mockReturnValueOnce(null);
+
+    const { getByTestId, queryByTestId } = render(<Asset />);
+
+    expect(getByTestId('token-asset')).toBeInTheDocument();
+    expect(queryByTestId('native-asset')).not.toBeInTheDocument();
+    expect(queryByTestId('navigate')).not.toBeInTheDocument();
   });
 });

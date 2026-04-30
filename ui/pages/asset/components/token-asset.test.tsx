@@ -168,4 +168,26 @@ describe('TokenAsset', () => {
       url: 'https://solscan.io/token',
     });
   });
+
+  it('falls back to token image and symbol when metadata is unavailable', () => {
+    mockIsEvmChainId.mockReturnValue(false);
+    mockGetTokenTrackerLink.mockReturnValue('https://etherscan.io/token');
+
+    mockUseSelector
+      .mockReset()
+      .mockReturnValueOnce({})
+      .mockReturnValueOnce({})
+      .mockReturnValueOnce(selectedAccount)
+      .mockReturnValueOnce({});
+
+    renderComponent();
+
+    const assetPageProps = mockAssetPage.mock.calls[0]?.[0] as unknown as {
+      asset: { name: string; image: string; symbol: string };
+    };
+
+    expect(assetPageProps.asset.name).toBe('ELONAI');
+    expect(assetPageProps.asset.symbol).toBe('ELONAI');
+    expect(assetPageProps.asset.image).toBe('');
+  });
 });
