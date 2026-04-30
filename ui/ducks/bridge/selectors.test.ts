@@ -54,6 +54,7 @@ import {
   getLastSelectedChainId,
   getIsToOrFromNonEvm,
   getIsSolanaSwap,
+  getIsRWASwap,
   getIsStxEnabled,
   getAccountGroupNameByInternalAccount,
   getToAccounts,
@@ -2927,6 +2928,80 @@ describe('Bridge selectors', () => {
       });
       const result = getIsSolanaSwap(state as never);
       expect(result).toBe(false);
+    });
+  });
+
+  describe('getIsRWASwap', () => {
+    const mockRWAToken = () =>
+      toBridgeToken({
+        decimals: 18,
+        assetId: 'eip155:1/erc20:0xstock',
+        symbol: 'AAPL',
+        name: 'Apple',
+        rwaData: {
+          instrumentType: 'stock',
+          market: {
+            nextOpen: new Date(Date.now() + 100_000).toISOString(),
+            nextClose: new Date(Date.now() + 200_000).toISOString(),
+          },
+        },
+      });
+
+    it('returns false when feature flag is disabled regardless of token rwaData', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: false,
+        } as never,
+        bridgeSliceOverrides: { fromToken: mockRWAToken() },
+      });
+      const result = getIsRWASwap(state as never);
+      expect(result).toBe(false);
+    });
+
+    it('returns false when feature flag is enabled but neither token has rwaData', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
+          toToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
+        },
+      });
+      const result = getIsRWASwap(state as never);
+      expect(result).toBe(false);
+    });
+
+    it('returns true when feature flag is enabled and fromToken is an RWA token', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: mockRWAToken(),
+          toToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
+        },
+      });
+      const result = getIsRWASwap(state as never);
+      expect(result).toBe(true);
+    });
+
+    it('returns true when feature flag is enabled and toToken is an RWA token', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
+          toToken: mockRWAToken(),
+        },
+      });
+      const result = getIsRWASwap(state as never);
+      expect(result).toBe(true);
     });
   });
 
