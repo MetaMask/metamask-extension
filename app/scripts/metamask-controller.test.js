@@ -1179,6 +1179,46 @@ describe('MetaMaskController', () => {
         expect(resyncAccountsSpy).toHaveBeenCalled();
         expect(alignWalletsSpy).toHaveBeenCalled();
       });
+
+      it('forwards selected accounts to the Snap keyring after resyncAccounts and alignWallets', async () => {
+        const resyncAccountsSpy = jest
+          .spyOn(metamaskController.multichainAccountService, 'resyncAccounts')
+          .mockResolvedValue();
+        const alignWalletsSpy = jest
+          .spyOn(metamaskController.multichainAccountService, 'alignWallets')
+          .mockResolvedValue();
+        const forwardSpy = jest
+          .spyOn(
+            metamaskController,
+            'forwardSelectedAccountGroupToSnapKeyring',
+          )
+          .mockResolvedValue();
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.submitPasswordOrEncryptionKey({ password });
+
+        await waitForAllPromises();
+
+        expect(forwardSpy).toHaveBeenCalled();
+        expect(resyncAccountsSpy).toHaveBeenCalled();
+        expect(alignWalletsSpy).toHaveBeenCalled();
+
+        const forwardOrder =
+          forwardSpy.mock.invocationCallOrder[
+            forwardSpy.mock.invocationCallOrder.length - 1
+          ];
+        const resyncOrder =
+          resyncAccountsSpy.mock.invocationCallOrder[
+            resyncAccountsSpy.mock.invocationCallOrder.length - 1
+          ];
+        const alignOrder =
+          alignWalletsSpy.mock.invocationCallOrder[
+            alignWalletsSpy.mock.invocationCallOrder.length - 1
+          ];
+
+        expect(forwardOrder).toBeGreaterThan(resyncOrder);
+        expect(forwardOrder).toBeGreaterThan(alignOrder);
+      });
     });
 
     describe('setLocked', () => {
@@ -1463,6 +1503,44 @@ describe('MetaMaskController', () => {
         await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
 
         expect(metamaskController.discoverAndCreateAccounts).toHaveBeenCalled();
+      });
+
+      it('forwards selected accounts to the Snap keyring after discoverAndCreateAccounts when onboarding is complete', async () => {
+        jest
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: true });
+
+        jest
+          .spyOn(metamaskController.preferencesController, 'state', 'get')
+          .mockReturnValue({
+            useExternalServices: true,
+          });
+
+        const discoverSpy = jest
+          .spyOn(metamaskController, 'discoverAndCreateAccounts')
+          .mockResolvedValue({});
+        const forwardSpy = jest
+          .spyOn(
+            metamaskController,
+            'forwardSelectedAccountGroupToSnapKeyring',
+          )
+          .mockResolvedValue();
+
+        await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
+
+        expect(discoverSpy).toHaveBeenCalled();
+        expect(forwardSpy).toHaveBeenCalled();
+
+        const forwardOrder =
+          forwardSpy.mock.invocationCallOrder[
+            forwardSpy.mock.invocationCallOrder.length - 1
+          ];
+        const discoverOrder =
+          discoverSpy.mock.invocationCallOrder[
+            discoverSpy.mock.invocationCallOrder.length - 1
+          ];
+
+        expect(forwardOrder).toBeGreaterThan(discoverOrder);
       });
     });
 
