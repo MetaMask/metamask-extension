@@ -204,6 +204,7 @@ export const PerpsView: React.FC = () => {
   }, [isEligible, applyOrdersSnapshot, orders.length, t]);
 
   const hasPositions = positions.length > 0;
+  const singlePosition = positions.length === 1 ? positions[0] : undefined;
   const isLoading =
     positionsLoading || ordersLoading || marketsLoading || accountLoading;
   const hasPerpBalance = Boolean(
@@ -270,6 +271,7 @@ export const PerpsView: React.FC = () => {
       {/* Balance header with Add funds / Withdraw dropdown */}
       <PerpsBalanceDropdown
         hasPositions={hasPositions}
+        singlePosition={singlePosition}
         onAddFunds={triggerDeposit}
         onWithdraw={triggerWithdraw}
       />
