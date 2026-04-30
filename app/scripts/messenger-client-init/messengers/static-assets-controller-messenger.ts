@@ -24,10 +24,6 @@ type AllowedActions =
 
 type AllowedEvents = MessengerEvents<StaticAssetsControllerMessengerType>;
 
-export type StaticAssetsControllerMessenger = ReturnType<
-  typeof getStaticAssetsControllerMessenger
->;
-
 /**
  * Create a messenger restricted to the allowed actions and events of the
  * static assets controller.
