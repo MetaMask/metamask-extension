@@ -1,11 +1,11 @@
 import type { SnapId } from '@metamask/snaps-sdk';
-import { KeyringType } from '@metamask/keyring-api';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { getInternalAccounts } from '../../../../selectors';
 import type { RouteMessengerInstance } from '../messenger';
 import { useMessenger } from '../../../../hooks/useMessenger';
+import { getSnapAccountsById } from '../../../../store/actions';
 
 /**
  * Hook to get the accounts associated with a keyring Snap.
@@ -24,19 +24,12 @@ export function useKeyringSnap(snapId: SnapId, isKeyringSnap: boolean) {
 
   useEffect(() => {
     async function getAccounts() {
-      const [snapKeyring] = await messenger.call(
-        'KeyringController:getKeyringsByType',
-        KeyringType.Snap,
+      const addresses = await getSnapAccountsById(snapId);
+      const snapIdentities = internalAccounts.filter((internalAccount) =>
+        addresses.includes(internalAccount.address.toLowerCase()),
       );
 
-      if (snapKeyring) {
-        const addresses = await snapKeyring.getAccountsBySnapId(snapId);
-        const snapIdentities = internalAccounts.filter((internalAccount) =>
-          addresses.includes(internalAccount.address.toLowerCase()),
-        );
-
-        setKeyringAccounts(snapIdentities);
-      }
+      setKeyringAccounts(snapIdentities);
     }
 
     if (isKeyringSnap) {

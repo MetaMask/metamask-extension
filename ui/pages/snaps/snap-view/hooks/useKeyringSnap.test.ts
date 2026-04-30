@@ -1,10 +1,13 @@
 import { waitFor } from '@testing-library/react';
-import { KeyringType } from '@metamask/keyring-api';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers-navigate';
 import { createMockRouteMessenger } from '../../../../../test/lib/mock-route-messenger';
-import type { UIMessengerActions } from '../../../../messengers/ui-messenger';
+import { getSnapAccountsById } from '../../../../store/actions';
 import { useKeyringSnap } from './useKeyringSnap';
+
+jest.mock('../../../../store/actions', () => ({
+  getSnapAccountsById: jest.fn(),
+}));
 
 const MOCK_SNAP_ID = 'npm:@metamask/test-snap' as SnapId;
 const MOCK_ADDRESS_1 = '0xabc123';
@@ -20,11 +23,6 @@ const MOCK_ACCOUNT_2 = {
   address: MOCK_ADDRESS_2,
 };
 
-type GetKeyringsByTypeAction = Extract<
-  UIMessengerActions,
-  { type: 'KeyringController:getKeyringsByType' }
->;
-
 function buildState(
   accounts: Record<string, unknown> = {},
 ): Record<string, unknown> {
@@ -39,19 +37,13 @@ type RenderHookOptions = {
   state?: Record<string, unknown>;
   snapId?: SnapId;
   isKeyringSnap?: boolean;
-  getKeyringsByType?: GetKeyringsByTypeAction['handler'];
 };
 
 function renderHook({
   state = buildState(),
   snapId = MOCK_SNAP_ID,
   isKeyringSnap = true,
-  getKeyringsByType = jest.fn().mockResolvedValue([]),
 }: RenderHookOptions = {}) {
-  const messenger = createMockRouteMessenger<GetKeyringsByTypeAction>({
-    'KeyringController:getKeyringsByType': getKeyringsByType,
-  });
-
   return renderHookWithProviderTyped(
     () => useKeyringSnap(snapId, isKeyringSnap),
     state,
@@ -59,28 +51,30 @@ function renderHook({
     undefined,
     jest.fn(),
     undefined,
-    messenger,
+    createMockRouteMessenger(),
   );
 }
 
 describe('useKeyringSnap', () => {
+  beforeEach(() => {
+    jest.mocked(getSnapAccountsById).mockClear();
+    jest.mocked(getSnapAccountsById).mockResolvedValue([]);
+  });
+
   it('returns an empty array initially', () => {
     const { result } = renderHook();
 
     expect(result.current).toStrictEqual([]);
   });
 
-  it('does not call the messenger when `isKeyringSnap` is false', () => {
-    const getKeyringsByType = jest.fn().mockResolvedValue([]);
+  it('does not fetch accounts when `isKeyringSnap` is false', () => {
+    renderHook({ isKeyringSnap: false });
 
-    renderHook({ isKeyringSnap: false, getKeyringsByType });
-
-    expect(getKeyringsByType).not.toHaveBeenCalled();
+    expect(getSnapAccountsById).not.toHaveBeenCalled();
   });
 
-  it('returns an empty array when no Snap keyring is found', async () => {
+  it('returns an empty array when the Snap has no accounts', async () => {
     const { result } = renderHook({
-      getKeyringsByType: jest.fn().mockResolvedValue([]),
       state: buildState({ 'account-1': MOCK_ACCOUNT_1 }),
     });
 
@@ -90,12 +84,9 @@ describe('useKeyringSnap', () => {
   });
 
   it('returns the accounts associated with the Snap', async () => {
-    const mockKeyring = {
-      getAccountsBySnapId: jest.fn().mockResolvedValue([MOCK_ADDRESS_1]),
-    };
+    jest.mocked(getSnapAccountsById).mockResolvedValue([MOCK_ADDRESS_1]);
 
     const { result } = renderHook({
-      getKeyringsByType: jest.fn().mockResolvedValue([mockKeyring]),
       state: buildState({
         'account-1': MOCK_ACCOUNT_1,
         'account-2': MOCK_ACCOUNT_2,
@@ -108,14 +99,11 @@ describe('useKeyringSnap', () => {
   });
 
   it('returns multiple accounts when the Snap has multiple accounts', async () => {
-    const mockKeyring = {
-      getAccountsBySnapId: jest
-        .fn()
-        .mockResolvedValue([MOCK_ADDRESS_1, MOCK_ADDRESS_2]),
-    };
+    jest
+      .mocked(getSnapAccountsById)
+      .mockResolvedValue([MOCK_ADDRESS_1, MOCK_ADDRESS_2]);
 
     const { result } = renderHook({
-      getKeyringsByType: jest.fn().mockResolvedValue([mockKeyring]),
       state: buildState({
         'account-1': MOCK_ACCOUNT_1,
         'account-2': MOCK_ACCOUNT_2,
