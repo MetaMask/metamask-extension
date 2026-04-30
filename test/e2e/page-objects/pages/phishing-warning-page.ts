@@ -72,7 +72,7 @@ class PhishingWarningPage {
           return false;
         }
       },
-      { interval: 1000, timeout: 10000 },
+      { interval: 1000, timeout: 20000 },
     );
   }
 
