@@ -212,7 +212,7 @@ const renderPopover = ({
   return { ...utils, onClose, trackEvent, anchor };
 };
 
-describe('DappBarNetworkSelectorPopover - handleSelectNetwork', () => {
+describe('DappBarNetworkSelectorPopover', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setupSelectors();
@@ -264,39 +264,77 @@ describe('DappBarNetworkSelectorPopover - handleSelectNetwork', () => {
     expect(mockAddPermittedChain).not.toHaveBeenCalled();
   });
 
-  it('switches to a different, already-permitted network without calling addPermittedChain', async () => {
-    setupSelectors({ permittedChainIds: ['0x1', '0x38'] });
-    const { getByTestId, onClose, trackEvent } = renderPopover();
+  describe('when switching to a different, already-permitted network', () => {
+    let onClose: jest.Mock;
+    let trackEvent: jest.Mock;
 
-    fireEvent.click(getByTestId('BNB Chain'));
+    beforeEach(async () => {
+      setupSelectors({ permittedChainIds: ['0x1', '0x38'] });
+      const rendered = renderPopover();
+      onClose = rendered.onClose;
+      trackEvent = rendered.trackEvent;
 
-    await waitFor(() => {
+      fireEvent.click(rendered.getByTestId('BNB Chain'));
+
+      await waitFor(() => {
+        expect(mockSetActiveNetwork).toHaveBeenCalled();
+      });
+    });
+
+    it('persists the per-origin network client', () => {
       expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
         DAPP_ORIGIN,
         BNB_CLIENT_ID,
       );
     });
-    expect(mockAddPermittedChain).not.toHaveBeenCalled();
-    expect(mockShowPermittedNetworkToast).not.toHaveBeenCalled();
-    expect(mockSetActiveNetwork).toHaveBeenCalledWith(BNB_CLIENT_ID);
-    expect(mockUpdateCustomNonce).toHaveBeenCalled();
-    expect(mockSetNextNonce).toHaveBeenCalled();
-    expect(mockDetectNfts).toHaveBeenCalledWith(['0x1', '0x38', '0xaa36a7']);
-    expect(mockSetTokenNetworkFilter).toHaveBeenCalledWith({ '0x38': true });
-    expect(trackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.NavNetworkSwitched,
-      category: MetaMetricsEventCategory.Network,
-      properties: {
-        location: 'Dapp Connection Control Bar',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: '0x38',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        from_network: 'eip155:1',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        to_network: '0x38',
-      },
+
+    it('does not request a new chain permission', () => {
+      expect(mockAddPermittedChain).not.toHaveBeenCalled();
     });
-    expect(onClose).toHaveBeenCalledTimes(1);
+
+    it('does not surface the permitted-network toast', () => {
+      expect(mockShowPermittedNetworkToast).not.toHaveBeenCalled();
+    });
+
+    it('activates the selected network client', () => {
+      expect(mockSetActiveNetwork).toHaveBeenCalledWith(BNB_CLIENT_ID);
+    });
+
+    it('resets the custom nonce', () => {
+      expect(mockUpdateCustomNonce).toHaveBeenCalled();
+    });
+
+    it('refreshes the next nonce', () => {
+      expect(mockSetNextNonce).toHaveBeenCalled();
+    });
+
+    it('detects NFTs across all polled chains', () => {
+      expect(mockDetectNfts).toHaveBeenCalledWith(['0x1', '0x38', '0xaa36a7']);
+    });
+
+    it('updates the token-network filter to the new chain', () => {
+      expect(mockSetTokenNetworkFilter).toHaveBeenCalledWith({ '0x38': true });
+    });
+
+    it('tracks a network-switched MetaMetrics event', () => {
+      expect(trackEvent).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.NavNetworkSwitched,
+        category: MetaMetricsEventCategory.Network,
+        properties: {
+          location: 'Dapp Connection Control Bar',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: '0x38',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          from_network: 'eip155:1',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          to_network: '0x38',
+        },
+      });
+    });
+
+    it('closes the popover', () => {
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('grants the chain and surfaces the permitted-network toast when switching to an unpermitted network', async () => {
