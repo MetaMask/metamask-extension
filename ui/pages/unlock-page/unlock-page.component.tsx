@@ -278,7 +278,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         const search = fromLocation.search || '';
         redirectTo = fromLocation.pathname + search;
       }
-      navigate(redirectTo);
+      navigate(redirectTo, { replace: true });
     }
   }
 

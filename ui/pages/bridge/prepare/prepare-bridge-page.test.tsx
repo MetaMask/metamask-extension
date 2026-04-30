@@ -425,8 +425,8 @@ describe('PrepareBridgePage', () => {
       await Promise.resolve();
     });
 
-    expect(getByTestId('bridge-no-options-available')).toBeInTheDocument();
-    expect(getByTestId('bridge-no-options-available')).toHaveTextContent(
+    expect(getByTestId('bridge-no-quotes')).toBeInTheDocument();
+    expect(getByTestId('bridge-no-quotes')).toHaveTextContent(
       'No quotes available. Try a smaller amount.',
     );
   });

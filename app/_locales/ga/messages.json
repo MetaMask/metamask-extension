@@ -175,9 +175,6 @@
   "addACustomNetwork": {
     "message": "Cuir líonra saincheaptha leis"
   },
-  "addAHardwareWallet": {
-    "message": "Cuir sparán crua-earraí leis"
-  },
   "addANetwork": {
     "message": "Cuir líonra leis"
   },
@@ -3881,9 +3878,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Téarmaí Úsáide"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
