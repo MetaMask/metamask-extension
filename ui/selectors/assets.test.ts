@@ -682,7 +682,8 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
   describe('when account is undefined and selectedAccountGroup is null', () => {
     it('should return null without crashing (deeplink guard)', () => {
       const mockStateNoGroup = cloneDeep(mockState);
-      mockStateNoGroup.metamask.selectedAccountGroup = null as unknown as string;
+      mockStateNoGroup.metamask.selectedAccountGroup =
+        null as unknown as string;
       mockStateNoGroup.metamask.internalAccounts.selectedAccount =
         '5132883f-598e-482c-a02b-84eeaa352f5b';
 
