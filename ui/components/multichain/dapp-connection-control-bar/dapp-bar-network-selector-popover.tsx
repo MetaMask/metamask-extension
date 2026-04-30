@@ -1,16 +1,11 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  type CaipChainId,
-  type Hex,
-  KnownCaipNamespace,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import {
   type MultichainNetworkConfiguration,
   NON_EVM_TESTNET_IDS,
+  toEvmCaipChainId,
 } from '@metamask/multichain-network-controller';
-import { toHex } from '@metamask/controller-utils';
 import {
   Box,
   BoxAlignItems,
@@ -115,9 +110,17 @@ export const DappBarNetworkSelectorPopover: React.FC<
   const { tokenNetworkFilter } = useSelector(getPreferences);
   const allChainIds = useSelector(getAllChainsToPoll);
 
-  const activeDappChainId = dappActiveNetwork?.chainId as
-    | CaipChainId
-    | undefined;
+  // The `getDappActiveNetwork` selector returns a hex chainId for EVM and a
+  // CAIP chainId for non-EVM. Normalize both to CAIP here so downstream
+  // comparisons and testnet checks (which are CAIP-keyed) are consistent.
+  const activeDappChainId = useMemo<CaipChainId | undefined>(() => {
+    if (!dappActiveNetwork) {
+      return undefined;
+    }
+    return dappActiveNetwork.isEvm
+      ? toEvmCaipChainId(dappActiveNetwork.chainId as Hex)
+      : (dappActiveNetwork.chainId as CaipChainId);
+  }, [dappActiveNetwork]);
 
   // Partition into EVM non-test vs EVM test networks. Non-EVM is intentionally
   // excluded: the dapp control bar is EVM-scoped today.
@@ -165,37 +168,10 @@ export const DappBarNetworkSelectorPopover: React.FC<
     return orderedNetworks;
   }, [orderedNetworks, testEvmNetworks, showTestnets, currentlyOnTestnet]);
 
-  const isSameChain = useCallback((a?: string, b?: string) => {
-    if (!a || !b) {
-      return false;
-    }
-    if (a === b) {
-      return true;
-    }
-    // Handle cases where one side is CAIP (eip155:1) and the other is hex (0x1).
-    try {
-      const normalize = (chainId: string) => {
-        if (chainId.startsWith('0x')) {
-          return chainId.toLowerCase();
-        }
-        const { namespace, reference } = parseCaipChainId(
-          chainId as CaipChainId,
-        );
-        if (namespace !== KnownCaipNamespace.Eip155) {
-          return chainId;
-        }
-        return toHex(reference);
-      };
-      return normalize(a) === normalize(b);
-    } catch {
-      return false;
-    }
-  }, []);
-
   const handleSelectNetwork = useCallback(
     async (network: MultichainNetworkConfiguration) => {
       // Always close the popover after a selection (or no-op selection).
-      if (isSameChain(network.chainId, activeDappChainId)) {
+      if (network.chainId === activeDappChainId) {
         onClose();
         return;
       }
@@ -259,7 +235,6 @@ export const DappBarNetworkSelectorPopover: React.FC<
       }
     },
     [
-      isSameChain,
       activeDappChainId,
       evmNetworks,
       selectedTabOrigin,
@@ -355,7 +330,7 @@ export const DappBarNetworkSelectorPopover: React.FC<
           data-testid="dapp-bar-network-selector-popover__list"
         >
           {visibleNetworks.map((network) => {
-            const isSelected = isSameChain(network.chainId, activeDappChainId);
+            const isSelected = network.chainId === activeDappChainId;
             return (
               <NetworkListItem
                 key={network.chainId}

@@ -147,6 +147,7 @@ type SetupOptions = {
   showTestnets?: boolean;
   tokenNetworkFilter?: Record<string, boolean>;
   dappActiveChainId?: string | null;
+  dappActiveIsEvm?: boolean;
   domains?: Record<string, string>;
   origin?: string | null;
 };
@@ -155,7 +156,8 @@ const setupSelectors = ({
   permittedChainIds = ['0x1'],
   showTestnets = false,
   tokenNetworkFilter = { '0x1': true },
-  dappActiveChainId = 'eip155:1',
+  dappActiveChainId = '0x1',
+  dappActiveIsEvm = true,
   domains = { [DAPP_ORIGIN]: MAINNET_CLIENT_ID },
   origin = DAPP_ORIGIN,
 }: SetupOptions = {}) => {
@@ -172,7 +174,12 @@ const setupSelectors = ({
   mockGetAllChainsToPoll.mockReturnValue(['0x1', '0x38', '0xaa36a7']);
   mockGetDappActiveNetwork.mockReturnValue(
     dappActiveChainId
-      ? { chainId: dappActiveChainId, name: 'Active', nativeCurrency: 'ETH' }
+      ? {
+          chainId: dappActiveChainId,
+          name: 'Active',
+          nativeCurrency: 'ETH',
+          isEvm: dappActiveIsEvm,
+        }
       : null,
   );
 };
@@ -243,7 +250,7 @@ describe('DappBarNetworkSelectorPopover', () => {
   });
 
   it('shows test networks when the dapp is already on a testnet', () => {
-    setupSelectors({ dappActiveChainId: 'eip155:11155111' });
+    setupSelectors({ dappActiveChainId: '0xaa36a7' });
     const { getByTestId } = renderPopover();
     expect(getByTestId('Sepolia')).toBeInTheDocument();
   });
