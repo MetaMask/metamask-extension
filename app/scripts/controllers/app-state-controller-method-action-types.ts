@@ -520,6 +520,19 @@ export type AppStateControllerSetPendingRedirectRouteAction = {
   handler: AppStateController['setPendingRedirectRoute'];
 };
 
+/**
+ * Records the last visited feature route with the current timestamp, or
+ * clears it. Feature UIs read this on home page mount to resume a recent
+ * route after a brief close/reopen.
+ *
+ * @param name - The feature route namespace.
+ * @param path - The route path to persist, or `null` to clear.
+ */
+export type AppStateControllerSetLastVisitedRouteAction = {
+  type: `AppStateController:setLastVisitedRoute`;
+  handler: AppStateController['setLastVisitedRoute'];
+};
+
 export type AppStateControllerSetPendingShieldCohortAction = {
   type: `AppStateController:setPendingShieldCohort`;
   handler: AppStateController['setPendingShieldCohort'];
@@ -660,6 +673,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerClearAppActiveTabAction
   | AppStateControllerSetShowShieldEntryModalOnceAction
   | AppStateControllerSetPendingRedirectRouteAction
+  | AppStateControllerSetLastVisitedRouteAction
   | AppStateControllerSetPendingShieldCohortAction
   | AppStateControllerSetCanTrackWalletFundsObtainedAction
   | AppStateControllerSetIsWalletResetInProgressAction
