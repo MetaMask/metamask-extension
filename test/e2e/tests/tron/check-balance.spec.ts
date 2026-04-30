@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
@@ -135,5 +136,24 @@ describe('Check balance', function (this: Suite) {
         await nonEvmHomePage.checkPageIsLoaded({ amount: '6.072 TRX' });
       },
     );
+  });
+
+  it('Stores staked TRX balance from initialization options', async function () {
+    const node = new TronNode();
+    await node.start({
+      initialBalances: { [TRON_ACCOUNT_ADDRESS]: 0 },
+      stakedTrxBalances: { [TRON_ACCOUNT_ADDRESS]: '20000000' },
+      trc721Balances: { [TRON_ACCOUNT_ADDRESS]: { 'collection-x': ['1'] } },
+      trc1155Balances: { [TRON_ACCOUNT_ADDRESS]: { 'collection-y': { '5': '3' } } },
+    });
+    try {
+      assert.strictEqual(
+        node.getStakedTrxBalance(TRON_ACCOUNT_ADDRESS),
+        '20000000',
+      );
+      assert.strictEqual(node.getStakedTrxBalance('TUnknownAddress'), '0');
+    } finally {
+      await node.quit();
+    }
   });
 });

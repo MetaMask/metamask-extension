@@ -102,6 +102,8 @@ export class TronNode {
     Partial<Record<TronTrc20Symbol, string>>
   > = {};
 
+  readonly #stakedTrxBalances: Record<string, string> = {};
+
   readonly baseUrl = TRON_LOCAL_NODE_URL;
 
   readonly trc10Tokens: Partial<Record<TronTrc10Symbol, TronTrc10Token>> = {};
@@ -118,6 +120,9 @@ export class TronNode {
    * @param options.initialBalances - Map of Tron address to amount in SUN.
    * @param options.trc10Balances - Map of Tron address to named TRC10 balances.
    * @param options.trc20Balances - Map of Tron address to named TRC20 balances.
+   * @param options.stakedTrxBalances - Map of Tron address to staked TRX in SUN.
+   * @param options.trc721Balances - Accepted and ignored placeholder for TRC721.
+   * @param options.trc1155Balances - Accepted and ignored placeholder for TRC1155.
    */
   async start(options: TronLocalNodeOptions = {}): Promise<void> {
     this.#fundingAccount = undefined;
@@ -153,6 +158,14 @@ export class TronNode {
 
     await this.initializeTrc10Balances(options.trc10Balances ?? {});
     await this.initializeTrc20Balances(options.trc20Balances ?? {});
+
+    for (const [address, amountInSun] of Object.entries(
+      options.stakedTrxBalances ?? {},
+    )) {
+      this.#stakedTrxBalances[address] = amountInSun;
+    }
+    // `trc721Balances` and `trc1155Balances` are accepted and ignored — see the
+    // JSDoc on TronLocalNodeOptions.
   }
 
   async quit(): Promise<void> {
@@ -246,6 +259,10 @@ export class TronNode {
 
   getTrc20Balances(address: string): Partial<Record<TronTrc20Symbol, string>> {
     return this.#trc20Balances[address] ?? {};
+  }
+
+  getStakedTrxBalance(address: string): string {
+    return this.#stakedTrxBalances[address] ?? '0';
   }
 
   async getTronGridAccountResponse(address: string): Promise<unknown> {
