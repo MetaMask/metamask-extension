@@ -82,12 +82,12 @@ const hasMatchingRealReduceOnlyTrigger = (
 
     const isSameParentByChildLink = Boolean(
       order.parentOrderId &&
-        order.parentOrderId === syntheticOrder.parentOrderId,
+      order.parentOrderId === syntheticOrder.parentOrderId,
     );
     const isSameParentByParentReference = Boolean(
       parentOrder &&
-        (parentOrder.takeProfitOrderId === order.orderId ||
-          parentOrder.stopLossOrderId === order.orderId),
+      (parentOrder.takeProfitOrderId === order.orderId ||
+        parentOrder.stopLossOrderId === order.orderId),
     );
 
     if (!isSameParentByChildLink && !isSameParentByParentReference) {

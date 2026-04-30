@@ -208,3 +208,45 @@ export function compareBenchmarkEntries(
     absoluteFailed: !passed,
   };
 }
+
+/**
+ * Applies the GATED_METRICS allowlist policy to a comparison entry.
+ *
+ * THRESHOLD_REGISTRY decides what is a regression; GATED_METRICS decides
+ * which regressions block PRs. For each `Fail`-severity violation whose
+ * `<benchmarkName>.<metricId>` key is not in `gatedMetrics`, downgrade to
+ * `Warn`. `absoluteFailed` and `hasWarning` are recomputed accordingly.
+ * `Warn`-severity violations and `relativeMetrics` are never modified.
+ *
+ * Returns a new comparison object — does not mutate the input.
+ *
+ * @param comparison - Comparison entry to gate.
+ * @param gatedMetrics - Allowlist of dotted gate keys.
+ */
+export function applyGatingPolicy(
+  comparison: BenchmarkEntryComparison,
+  gatedMetrics: ReadonlySet<string>,
+): BenchmarkEntryComparison {
+  const downgraded = comparison.absoluteViolations.map((v) => {
+    if (v.severity !== THRESHOLD_SEVERITY.Fail) {
+      return v;
+    }
+    const key = `${comparison.benchmarkName}.${v.metricId}`;
+    if (gatedMetrics.has(key)) {
+      return v;
+    }
+    return { ...v, severity: THRESHOLD_SEVERITY.Warn };
+  });
+
+  return {
+    ...comparison,
+    absoluteViolations: downgraded,
+    absoluteFailed: downgraded.some(
+      (v) => v.severity === THRESHOLD_SEVERITY.Fail,
+    ),
+    hasWarning:
+      comparison.relativeMetrics.some(
+        (m) => m.severity === COMPARISON_SEVERITY.Warn.value,
+      ) || downgraded.some((v) => v.severity === THRESHOLD_SEVERITY.Warn),
+  };
+}

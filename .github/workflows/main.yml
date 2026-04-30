@@ -58,8 +58,11 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: lint:prettier (for json,md,mdx,yml files)
-        run: yarn lint:prettier
+      - name: lint:json (Prettier sort-json)
+        run: yarn lint:json
+
+      - name: lint:format (oxfmt)
+        run: yarn lint:format
 
       - name: Verify locales
         run: yarn verify-locales --quiet

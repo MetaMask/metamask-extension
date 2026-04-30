@@ -236,6 +236,9 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     storageMetadata: [],
     versionInfo: [],
   },
+  PasskeyController: {
+    passkeyRecord: false,
+  },
   PermissionController: {
     subjects: false,
   },
