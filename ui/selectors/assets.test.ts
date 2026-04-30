@@ -682,7 +682,7 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
   describe('when account is undefined and selectedAccountGroup is null', () => {
     it('should return null without crashing (deeplink guard)', () => {
       const mockStateNoGroup = cloneDeep(mockState);
-      mockStateNoGroup.metamask.selectedAccountGroup = null;
+      mockStateNoGroup.metamask.selectedAccountGroup = null as unknown as string;
       mockStateNoGroup.metamask.internalAccounts.selectedAccount =
         '5132883f-598e-482c-a02b-84eeaa352f5b';
 
@@ -705,7 +705,7 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
       // Override the Solana account's scopes so it no longer matches the queried chain
       mockStateNoMatchingAccount.metamask.internalAccounts.accounts[
         '5132883f-598e-482c-a02b-84eeaa352f5b'
-      ].scopes = [EthScope.Eoa];
+      ].scopes = [EthScope.Eoa] as unknown as SolScope[];
 
       const result = getTokenByAccountAndAddressAndChainId(
         mockStateNoMatchingAccount,
