@@ -33,14 +33,15 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { useBoolean } from '../../../hooks/useBoolean';
 
 export default function TermsOfUsePopup({ onClose, onAccept }) {
   const t = useContext(I18nContext);
   const [shouldShowScrollButton, setShouldShowScrollButton] = useState(true);
-  const [isTermsOfUseChecked, setIsTermsOfUseChecked] = useState(false);
+  const { value: isTermsOfUseChecked, toggle } = useBoolean();
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const bottomRef = useRef(null);
   const scrollContainerRef = useRef(null);
 
@@ -1238,9 +1239,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
             data-testid="terms-of-use-checkbox"
             isChecked={isTermsOfUseChecked}
             alignItems={AlignItems.flexStart}
-            onChange={() => {
-              setIsTermsOfUseChecked(!isTermsOfUseChecked);
-            }}
+            onChange={toggle}
             label={t('termsOfUseAgreeText')}
           />
           <Button

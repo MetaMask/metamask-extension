@@ -17,7 +17,7 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { jsonRpcRequest } from '../../../../../shared/lib/rpc.utils';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 
 const UNRECOGNIZED_CHAIN = {
@@ -228,7 +228,7 @@ function getState(pendingApproval) {
   return {};
 }
 
-function getValues(pendingApproval, t, actions, history, data) {
+function getValues(pendingApproval, t, actions, navigate, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
 
@@ -409,7 +409,7 @@ function getValues(pendingApproval, t, actions, history, data) {
           locationPath === ONBOARDING_PRIVACY_SETTINGS_ROUTE;
 
         if (!isOnboardingRoute) {
-          history.push(DEFAULT_ROUTE);
+          navigate(DEFAULT_ROUTE);
         }
       }
       return [];

@@ -12,6 +12,7 @@ import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 
 export type DappSwapContextType = {
   isQuotedSwapDisplayedInInfo: boolean;
+  isQuotedSwapPresent: boolean;
   selectedQuote: QuoteResponse | undefined;
   setSelectedQuote: (selectedQuote: QuoteResponse | undefined) => void;
   setQuotedSwapDisplayedInInfo: (isQuotedSwapDisplayedInInfo: boolean) => void;
@@ -36,9 +37,16 @@ export const DappSwapContextProvider: React.FC<{
     setQuotedSwapDisplayedInInfo(false);
   }, [currentConfirmation?.id, setSelectedQuote, setQuotedSwapDisplayedInInfo]);
 
+  useEffect(() => {
+    if (!selectedQuote) {
+      setQuotedSwapDisplayedInInfo(false);
+    }
+  }, [selectedQuote, setQuotedSwapDisplayedInInfo]);
+
   const value = useMemo(
     () => ({
       isQuotedSwapDisplayedInInfo,
+      isQuotedSwapPresent: selectedQuote !== undefined,
       selectedQuote,
       setSelectedQuote,
       setQuotedSwapDisplayedInInfo,
@@ -67,3 +75,11 @@ export const useDappSwapContext = () => {
   }
   return context as DappSwapContextType;
 };
+
+/**
+ * Optional version of useDappSwapContext. Returns undefined when used outside
+ * DappSwapContextProvider. Use when a component can be rendered in both confirm
+ * flow and outside it (e.g. cancel-speedup gas fee display).
+ */
+export const useDappSwapContextOptional = (): DappSwapContextType | undefined =>
+  useContext(DappSwapContext) as DappSwapContextType | undefined;

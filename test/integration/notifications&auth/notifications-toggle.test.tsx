@@ -11,7 +11,6 @@ import { getMockedNotificationsState } from './data/notification-state';
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const backgroundConnectionMocked = {
@@ -85,7 +84,7 @@ describe('Notifications Toggle', () => {
   });
 
   afterEach(() => {
-    window.history.pushState({}, '', '/'); // return to homescreen
+    window.location.hash = '#/'; // return to homescreen
   });
 
   it('disabling notifications from settings', async () => {
@@ -96,6 +95,7 @@ describe('Notifications Toggle', () => {
           ...mockedState,
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
+          metaMetricsId: 'test-metametrics-id',
         },
         backgroundConnection: backgroundConnectionMocked,
       });

@@ -4,16 +4,11 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import copyToClipboard from 'copy-to-clipboard';
 import { toHex } from '@metamask/controller-utils';
-import { startNewDraftTransaction } from '../../../../../ducks/send';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../../../shared/constants/copy';
-import { AssetType } from '../../../../../../shared/constants/transaction';
-import {
-  removeAndIgnoreNft,
-  setRemoveNftMessage,
-} from '../../../../../store/actions';
+import { removeAndIgnoreNft } from '../../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import {
@@ -30,25 +25,28 @@ jest.mock('../../../../../helpers/utils/util', () => ({
 jest.mock('copy-to-clipboard');
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
 
-jest.mock('../../../../../ducks/send/index.js', () => ({
-  ...jest.requireActual('../../../../../ducks/send/index.js'),
-  startNewDraftTransaction: jest
-    .fn()
-    .mockReturnValue(jest.fn().mockResolvedValue()),
+const mockToastSuccess = jest.fn();
+const mockToastError = jest.fn();
+
+jest.mock('../../../../ui/toast/toast', () => ({
+  toast: {
+    success: (...args) => mockToastSuccess(...args),
+    error: (...args) => mockToastError(...args),
+  },
+  ToastContent: ({ title }) => title,
 }));
 
 jest.mock('../../../../../store/actions.ts', () => ({
   ...jest.requireActual('../../../../../store/actions.ts'),
   checkAndUpdateSingleNftOwnershipStatus: jest.fn().mockReturnValue(jest.fn()),
   removeAndIgnoreNft: jest.fn().mockReturnValue(jest.fn()),
-  setRemoveNftMessage: jest.fn().mockReturnValue(jest.fn()),
 }));
 
 describe('NFT Details', () => {
@@ -66,6 +64,8 @@ describe('NFT Details', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockToastSuccess.mockClear();
+    mockToastError.mockClear();
   });
 
   it('should match minimal props and state snapshot', async () => {
@@ -74,13 +74,14 @@ describe('NFT Details', () => {
     );
     shortenAddress.mockReturnValue('0xDc738...06414');
 
-    const { container } = renderWithProvider(
+    const { container, queryByTestId } = renderWithProvider(
       <NftDetails {...props} nftChainId={CHAIN_IDS.GOERLI} />,
       mockStore,
     );
 
     await waitFor(() => {
       expect(container).toMatchSnapshot();
+      expect(queryByTestId('nft-details__description')).not.toBeInTheDocument();
     });
   });
 
@@ -115,11 +116,11 @@ describe('NFT Details', () => {
       nfts[5].tokenId,
       'testNetworkConfigurationId',
     );
-    expect(setRemoveNftMessage).toHaveBeenCalledWith('success');
+    expect(mockToastSuccess).toHaveBeenCalled();
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
-  it(`should call setRemoveNftMessage with error when removeAndIgnoreNft fails and route to '/'`, async () => {
+  it(`should show error toast when removeAndIgnoreNft fails and route to '/'`, async () => {
     const { queryByTestId } = renderWithProvider(
       <NftDetails {...props} />,
       mockStore,
@@ -139,7 +140,7 @@ describe('NFT Details', () => {
       nfts[5].tokenId,
       'testNetworkConfigurationId',
     );
-    expect(setRemoveNftMessage).toHaveBeenCalledWith('error');
+    expect(mockToastError).toHaveBeenCalled();
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
@@ -155,7 +156,7 @@ describe('NFT Details', () => {
     expect(copyToClipboard).toHaveBeenCalledWith(nfts[5].address, COPY_OPTIONS);
   });
 
-  it('should navigate to draft transaction send route with ERC721 data', async () => {
+  it('should navigate to send route with ERC721 data', async () => {
     const nftProps = {
       nft: nfts[5],
       nftChainId: CHAIN_IDS.MAINNET,
@@ -170,11 +171,6 @@ describe('NFT Details', () => {
     fireEvent.click(nftSendButton);
 
     await waitFor(() => {
-      expect(startNewDraftTransaction).toHaveBeenCalledWith({
-        type: AssetType.NFT,
-        details: { ...nfts[5], tokenId: '1' },
-      });
-
       expect(mockUseNavigate).toHaveBeenCalledWith(
         '/send/amount-recipient?asset=0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414&chainId=0x1&tokenId=1',
       );

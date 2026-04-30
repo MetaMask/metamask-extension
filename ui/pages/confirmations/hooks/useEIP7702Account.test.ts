@@ -9,7 +9,7 @@ import {
   getCode,
 } from '../../../store/actions';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../shared/lib/eip7702-utils';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 import { useEIP7702Account } from './useEIP7702Account';
 

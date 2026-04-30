@@ -55,6 +55,11 @@ export type NameProps = {
    * The class name to apply to the box.
    */
   className?: string;
+
+  /**
+   * Whether to disable the onClick handler.
+   */
+  disableNameClick?: boolean;
 };
 
 const Name = memo(
@@ -64,10 +69,11 @@ const Name = memo(
     preferContractSymbol = false,
     variation,
     className,
+    disableNameClick = false,
     ...props
   }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
-    const trackEvent = useContext(MetaMetricsContext);
+    const { trackEvent } = useContext(MetaMetricsContext);
 
     const { name, subtitle, isAccount } = useDisplayName({
       value,
@@ -89,15 +95,15 @@ const Name = memo(
           has_petname: Boolean(name?.length),
         },
       });
-      // using `[]` as we only want to call `trackEvent` on the initial render
+      // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps -- only want to call `trackEvent` on the initial render
     }, []);
 
     const handleClick = useCallback(() => {
-      if (isAccount) {
+      if (isAccount || disableNameClick) {
         return;
       }
       setModalOpen(true);
-    }, [isAccount, setModalOpen]);
+    }, [disableNameClick, isAccount, setModalOpen]);
 
     const handleModalClose = useCallback(() => {
       setModalOpen(false);
@@ -123,6 +129,7 @@ const Name = memo(
           preferContractSymbol={preferContractSymbol}
           variation={variation}
           handleClick={handleClick}
+          disableNameClick={disableNameClick}
           {...props}
         />
         {subtitle && (

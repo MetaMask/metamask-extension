@@ -7,7 +7,9 @@ import {
   fetchAllErc20Decimals,
   fetchAllTokenDetails,
   fetchErc20Decimals,
+  fetchErc20DecimalsOrThrow,
   getTokenValueFromRecord,
+  memoizedGetTokenStandardAndDetailsByChain,
 } from './token';
 
 const MOCK_ADDRESS = '0x514910771af9ca656af840dff83e8264ecf986ca';
@@ -53,6 +55,229 @@ describe('fetchErc20Decimals', () => {
 
     await fetchErc20Decimals('0xDifferentAddress');
     expect(getTokenStandardAndDetailsByChain).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe('fetchErc20DecimalsOrThrow', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should throw an error if no decimals were found from details', async () => {
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockResolvedValue({});
+
+    await expect(
+      fetchErc20DecimalsOrThrow(MOCK_ADDRESS, MOCK_CHAIN_ID),
+    ).rejects.toThrow(
+      `Unable to resolve token decimals for address ${MOCK_ADDRESS} on chain ${MOCK_CHAIN_ID}`,
+    );
+  });
+
+  it('should throw an error when token details result is undefined', async () => {
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockResolvedValue(
+      undefined,
+    );
+
+    await expect(
+      fetchErc20DecimalsOrThrow(MOCK_ADDRESS, MOCK_CHAIN_ID),
+    ).rejects.toThrow(
+      `Unable to resolve token decimals for address ${MOCK_ADDRESS} on chain ${MOCK_CHAIN_ID}`,
+    );
+  });
+
+  it('should return the decimals for a given token address', async () => {
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockResolvedValue({
+      decimals: MOCK_DECIMALS,
+    });
+    const decimals = await fetchErc20DecimalsOrThrow(
+      MOCK_ADDRESS,
+      MOCK_CHAIN_ID,
+    );
+
+    expect(decimals).toBe(MOCK_DECIMALS);
+  });
+
+  it('should throw an error if the network request fails', async () => {
+    const networkError = new Error('Network error');
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockRejectedValue(
+      networkError,
+    );
+
+    await expect(
+      fetchErc20DecimalsOrThrow(MOCK_ADDRESS, MOCK_CHAIN_ID),
+    ).rejects.toThrow('Network error');
+  });
+
+  it('uses default tries of 2 when config is omitted', async () => {
+    const networkError = new Error('Network error');
+    (getTokenStandardAndDetailsByChain as jest.Mock)
+      .mockRejectedValueOnce(networkError)
+      .mockRejectedValueOnce(networkError);
+
+    await expect(
+      fetchErc20DecimalsOrThrow(MOCK_ADDRESS, MOCK_CHAIN_ID),
+    ).rejects.toThrow('Network error');
+
+    expect(getTokenStandardAndDetailsByChain).toHaveBeenCalledTimes(2);
+  });
+
+  it('uses default tries of 2 when config.tries is omitted', async () => {
+    const networkError = new Error('Network error');
+    (getTokenStandardAndDetailsByChain as jest.Mock)
+      .mockRejectedValueOnce(networkError)
+      .mockRejectedValueOnce(networkError);
+
+    await expect(
+      fetchErc20DecimalsOrThrow(MOCK_ADDRESS, MOCK_CHAIN_ID, {}),
+    ).rejects.toThrow('Network error');
+
+    expect(getTokenStandardAndDetailsByChain).toHaveBeenCalledTimes(2);
+  });
+
+  it('retries up to config.tries times and returns on success', async () => {
+    (getTokenStandardAndDetailsByChain as jest.Mock)
+      .mockRejectedValueOnce(new Error('Network error'))
+      .mockRejectedValueOnce(new Error('Timeout'))
+      .mockResolvedValueOnce({ decimals: MOCK_DECIMALS });
+
+    const decimals = await fetchErc20DecimalsOrThrow(
+      MOCK_ADDRESS,
+      MOCK_CHAIN_ID,
+      {
+        tries: 3,
+      },
+    );
+
+    expect(decimals).toBe(MOCK_DECIMALS);
+    expect(getTokenStandardAndDetailsByChain).toHaveBeenCalledTimes(3);
+  });
+
+  it('stops after first successful attempt when tries > 1', async () => {
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockResolvedValue({
+      decimals: MOCK_DECIMALS,
+    });
+
+    const decimals = await fetchErc20DecimalsOrThrow(
+      MOCK_ADDRESS,
+      MOCK_CHAIN_ID,
+      {
+        tries: 3,
+      },
+    );
+
+    expect(decimals).toBe(MOCK_DECIMALS);
+    expect(getTokenStandardAndDetailsByChain).toHaveBeenCalledTimes(1);
+  });
+
+  it('throws the last error after all tries are exhausted', async () => {
+    const lastError = new Error('Final failure');
+    (getTokenStandardAndDetailsByChain as jest.Mock)
+      .mockRejectedValueOnce(new Error('First failure'))
+      .mockRejectedValueOnce(lastError);
+
+    await expect(
+      fetchErc20DecimalsOrThrow(MOCK_ADDRESS, MOCK_CHAIN_ID, { tries: 2 }),
+    ).rejects.toThrow('Final failure');
+
+    expect(getTokenStandardAndDetailsByChain).toHaveBeenCalledTimes(2);
+  });
+
+  it('wraps non-Error rejections and throws after tries exhausted', async () => {
+    (getTokenStandardAndDetailsByChain as jest.Mock)
+      .mockRejectedValueOnce('string rejection')
+      .mockRejectedValueOnce(123);
+
+    const promise = fetchErc20DecimalsOrThrow(MOCK_ADDRESS, MOCK_CHAIN_ID, {
+      tries: 2,
+    });
+
+    await expect(promise).rejects.toThrow('123');
+    expect(getTokenStandardAndDetailsByChain).toHaveBeenCalledTimes(2);
+  });
+
+  it('with tries 0, does not call getTokenStandardAndDetailsByChain and throws', async () => {
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockResolvedValue({
+      decimals: MOCK_DECIMALS,
+    });
+
+    await expect(
+      fetchErc20DecimalsOrThrow(MOCK_ADDRESS, MOCK_CHAIN_ID, { tries: 0 }),
+    ).rejects.toThrow('Unknown error fetching token decimals');
+
+    expect(getTokenStandardAndDetailsByChain).not.toHaveBeenCalled();
+  });
+});
+
+describe('memoizedGetTokenStandardAndDetailsByChain', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // Clear the memoization cache by resetting the module
+    memoizedGetTokenStandardAndDetailsByChain.cache.clear?.();
+  });
+
+  it('should return empty object if no token address is provided', async () => {
+    const result = await memoizedGetTokenStandardAndDetailsByChain(undefined);
+    expect(result).toEqual({});
+    expect(getTokenStandardAndDetailsByChain).not.toHaveBeenCalled();
+  });
+
+  it('should return token details for a given token address and chainId', async () => {
+    const mockDetails = {
+      decimals: '6',
+      standard: 'ERC20',
+      symbol: 'USDC',
+    };
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockResolvedValue(
+      mockDetails,
+    );
+
+    const result = await memoizedGetTokenStandardAndDetailsByChain(
+      MOCK_ADDRESS,
+      MOCK_CHAIN_ID,
+    );
+
+    expect(result).toEqual(mockDetails);
+    expect(getTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
+      MOCK_ADDRESS,
+      undefined,
+      undefined,
+      MOCK_CHAIN_ID,
+    );
+  });
+
+  it('should use different cache entries for same address on different chains', async () => {
+    const mockDetailsChain1 = { decimals: '6', standard: 'ERC20' };
+    const mockDetailsChain2 = { decimals: '18', standard: 'ERC20' };
+
+    (getTokenStandardAndDetailsByChain as jest.Mock)
+      .mockResolvedValueOnce(mockDetailsChain1)
+      .mockResolvedValueOnce(mockDetailsChain2);
+
+    const result1 = await memoizedGetTokenStandardAndDetailsByChain(
+      MOCK_ADDRESS,
+      '0x1',
+    );
+    const result2 = await memoizedGetTokenStandardAndDetailsByChain(
+      MOCK_ADDRESS,
+      '0x38',
+    );
+
+    expect(result1).toEqual(mockDetailsChain1);
+    expect(result2).toEqual(mockDetailsChain2);
+    expect(getTokenStandardAndDetailsByChain).toHaveBeenCalledTimes(2);
+  });
+
+  it('should return empty object when getTokenStandardAndDetailsByChain throws', async () => {
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockRejectedValue(
+      new Error('Network error'),
+    );
+
+    const result = await memoizedGetTokenStandardAndDetailsByChain(
+      MOCK_ADDRESS,
+      MOCK_CHAIN_ID,
+    );
+
+    expect(result).toEqual({});
   });
 });
 

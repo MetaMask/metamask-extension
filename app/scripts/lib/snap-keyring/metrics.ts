@@ -4,12 +4,12 @@ import {
   KeyringControllerGetStateAction,
 } from '@metamask/keyring-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
-import { GetSnap } from '@metamask/snaps-controllers';
+import { SnapControllerGetSnapAction } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
 import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 
 type AllowedActions =
-  | GetSnap
+  | SnapControllerGetSnapAction
   | KeyringControllerGetKeyringForAccountAction
   | AccountsControllerGetSelectedAccountAction
   | KeyringControllerGetStateAction;
@@ -38,7 +38,7 @@ export async function getSnapAndHardwareInfoForMetrics(
   let snap;
   if (account.metadata.snap?.id) {
     snap = messenger.call(
-      'SnapController:get',
+      'SnapController:getSnap',
       account.metadata.snap?.id,
     ) as Snap;
   }
@@ -53,10 +53,18 @@ export async function getSnapAndHardwareInfoForMetrics(
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       device_model: await getDeviceModel(selectedAddress),
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      account_hardware_type: await getHardwareTypeForMetric(selectedAddress),
     };
+
+    const hardwareType = await getHardwareTypeForMetric(selectedAddress);
+
+    if (hardwareType) {
+      keyringAccountInfo = {
+        ...keyringAccountInfo,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_hardware_type: hardwareType,
+      };
+    }
   }
 
   return {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   Display,
   AlignItems,
@@ -15,7 +15,9 @@ import type { AvatarNetworkComponent } from './avatar-network.types';
 import { AvatarNetworkProps, AvatarNetworkSize } from './avatar-network.types';
 
 /**
- * @deprecated Please update your code to use `AvatarNetwork` from `@metamask/design-system-react`
+ * @deprecated Please update your code to use `AvatarNetwork` from `@metamask/design-system-react`.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#from-extension-component-library | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-avatarnetwork--docs | Storybook Documentation}
  */
 export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

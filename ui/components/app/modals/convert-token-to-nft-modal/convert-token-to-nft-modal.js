@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from '../../modal';
 import { Text } from '../../../component-library/text';
@@ -9,8 +9,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../../helpers/constants/routes';
 import { getNfts } from '../../../../ducks/metamask/metamask';
 import { ignoreTokens, showImportNftsModal } from '../../../../store/actions';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { getSelectedNetworkClientId } from '../../../../../shared/modules/selectors/networks';
+import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
+import { getSelectedNetworkClientId } from '../../../../../shared/lib/selectors/networks';
 
 const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const navigate = useNavigate();

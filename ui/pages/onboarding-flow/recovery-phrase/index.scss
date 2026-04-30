@@ -7,6 +7,17 @@
 
   &__chips {
     grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 8px;
+    row-gap: 4px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    @include design-system.screen-sm-min {
+      column-gap: 8px;
+      row-gap: 8px;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
 
     &--hidden {
       filter: blur(8px);
@@ -47,10 +58,21 @@
 
   &__text {
     height: 40px;
+    font-size: var(--typography-s-body-sm-font-size);
+
+    @include design-system.screen-sm-min {
+      font-size: var(--typography-s-body-md-font-size);
+    }
   }
 
   &__word-index {
-    width: 20px;
+    width: 16px;
+    font-size: var(--typography-s-body-sm-font-size);
+
+    @include design-system.screen-sm-min {
+      width: 20px;
+      font-size: var(--typography-s-body-md-font-size);
+    }
   }
 
   &__secret {

@@ -17,7 +17,6 @@ import {
 
 type AppState = {
   customNonceValue: string;
-  isAccountMenuOpen: boolean;
   isNetworkMenuOpen: boolean;
   nextNonce: string | null;
   pendingTokens: {
@@ -91,7 +90,6 @@ type AppState = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
-  showWhatsNewPopup: boolean;
   showTermsOfUsePopup: boolean;
   singleExceptions: {
     testKey: string | null;
@@ -131,10 +129,11 @@ type AppState = {
   isMultiRpcOnboarding: boolean;
   isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
-  showNewSrpAddedToast: boolean;
+  showNewSrpAddedToast: number | false;
   showPasswordChangeToast: PasswordChangeToastType | null;
   showCopyAddressToast: boolean;
   showClaimSubmitToast: ClaimSubmitToastType | null;
+  showInfuraSwitchToast: boolean;
   shieldEntryModal?: {
     show: boolean;
     shouldSubmitEvents: boolean;
@@ -154,7 +153,6 @@ export type AppSliceState = {
 // default state
 const initialState: AppState = {
   customNonceValue: '',
-  isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
   nextNonce: null,
   pendingTokens: {},
@@ -211,7 +209,6 @@ const initialState: AppState = {
   requestAccountTabs: {},
   openMetaMaskTabs: {},
   currentWindowTab: {},
-  showWhatsNewPopup: true,
   showTermsOfUsePopup: true,
   singleExceptions: {
     testKey: null,
@@ -246,6 +243,7 @@ const initialState: AppState = {
   showPasswordChangeToast: null,
   showCopyAddressToast: false,
   showClaimSubmitToast: null,
+  showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
 };
 
@@ -263,12 +261,6 @@ export default function reduceApp(
       return {
         ...appState,
         customNonceValue: action.value,
-      };
-
-    case actionConstants.TOGGLE_ACCOUNT_MENU:
-      return {
-        ...appState,
-        isAccountMenuOpen: !appState.isAccountMenuOpen,
       };
 
     case actionConstants.SET_NEXT_NONCE: {
@@ -425,13 +417,6 @@ export default function reduceApp(
         alertOpen: false,
         alertMessage: null,
       };
-
-    case actionConstants.SET_ACCOUNT_DETAILS_ADDRESS: {
-      return {
-        ...appState,
-        accountDetailsAddress: action.payload,
-      };
-    }
 
     // qr scanner methods
     case actionConstants.QR_CODE_DETECTED:
@@ -642,18 +627,6 @@ export default function reduceApp(
         newTokensImportedError: action.payload,
       };
 
-    case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:
-      return {
-        ...appState,
-        newNftAddedMessage: action.payload,
-      };
-
-    case actionConstants.SET_REMOVE_NFT_MESSAGE:
-      return {
-        ...appState,
-        removeNftMessage: action.payload,
-      };
-
     case actionConstants.SET_REQUEST_ACCOUNT_TABS:
       return {
         ...appState,
@@ -664,12 +637,6 @@ export default function reduceApp(
       return {
         ...appState,
         openMetaMaskTabs: action.payload,
-      };
-
-    case actionConstants.HIDE_WHATS_NEW_POPUP:
-      return {
-        ...appState,
-        showWhatsNewPopup: false,
       };
 
     case actionConstants.CAPTURE_SINGLE_EXCEPTION:
@@ -723,6 +690,11 @@ export default function reduceApp(
         ),
         isNetworkMenuOpen: !appState.isNetworkMenuOpen,
       };
+    case actionConstants.CLOSE_NETWORK_MENU:
+      return {
+        ...appState,
+        isNetworkMenuOpen: false,
+      };
     case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
       return {
         ...appState,
@@ -753,7 +725,6 @@ export default function reduceApp(
         ...appState,
         errorInSettings: null,
       };
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
         ...appState,
@@ -771,17 +742,10 @@ export default function reduceApp(
           result: 'none',
         },
       };
-    ///: END:ONLY_INCLUDE_IF
     case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
       return {
         ...appState,
         showNewSrpAddedToast: action.payload,
-      };
-
-    case actionConstants.SET_SHOW_PASSWORD_CHANGE_TOAST:
-      return {
-        ...appState,
-        showPasswordChangeToast: action.payload,
       };
 
     case actionConstants.SET_SHOW_COPY_ADDRESS_TOAST:
@@ -794,6 +758,12 @@ export default function reduceApp(
       return {
         ...appState,
         showClaimSubmitToast: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_INFURA_SWITCH_TOAST:
+      return {
+        ...appState,
+        showInfuraSwitchToast: action.payload,
       };
 
     case actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL:
@@ -816,12 +786,6 @@ export default function reduceApp(
 }
 
 // Action Creators
-export function hideWhatsNewPopup(): Action {
-  return {
-    type: actionConstants.HIDE_WHATS_NEW_POPUP,
-  };
-}
-
 export function openBasicFunctionalityModal(): Action {
   return {
     type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN,

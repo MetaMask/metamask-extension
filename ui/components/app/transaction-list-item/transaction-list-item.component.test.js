@@ -1,15 +1,18 @@
 import { NameType } from '@metamask/name-controller';
-import { TransactionStatus } from '@metamask/transaction-controller';
-import { fireEvent } from '@testing-library/react';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { act, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import { createMemoryHistory } from 'history';
 import {
   TrustSignalDisplayState,
   useTrustSignals,
 } from '../../../hooks/useTrustSignals';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -17,7 +20,7 @@ import {
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import mockLegacySwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProviderAndHistory } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import { getTokens } from '../../../ducks/metamask/metamask';
@@ -37,7 +40,12 @@ import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
+import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionListItem from '.';
+
+jest.mock('../../../hooks/useShouldShowSpeedUp', () => ({
+  useShouldShowSpeedUp: jest.fn(),
+}));
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   gasEstimateType: GasEstimateTypes.feeMarket,
@@ -106,6 +114,12 @@ jest.mock('react', () => {
 jest.mock('../../../store/actions.ts', () => ({
   tryReverseResolveAddress: jest.fn().mockReturnValue({ type: 'TYPE' }),
   abortTransactionSigning: jest.fn(),
+  getGasFeeTimeEstimate: jest.fn().mockResolvedValue({}),
+  updatePreviousGasParams: jest.fn().mockReturnValue({ type: 'TYPE' }),
+  updateTransactionGasFees: jest.fn().mockReturnValue({ type: 'TYPE' }),
+  createCancelTransaction: jest.fn().mockReturnValue({ type: 'TYPE' }),
+  createSpeedUpTransaction: jest.fn().mockReturnValue({ type: 'TYPE' }),
+  captureSingleException: jest.fn().mockReturnValue({ type: 'TYPE' }),
 }));
 
 const mockStore = configureStore();
@@ -159,9 +173,9 @@ const generateUseSelectorRouter = (opts) => (selector) => {
   return undefined;
 };
 
-describe('TransactionListItem', () => {
-  const history = createMemoryHistory();
+const useShouldShowSpeedUpMock = jest.mocked(useShouldShowSpeedUp);
 
+describe('TransactionListItem', () => {
   beforeAll(() => {
     useGasFeeEstimates.mockImplementation(
       () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
@@ -173,14 +187,13 @@ describe('TransactionListItem', () => {
         label: null,
       })),
     );
+
+    useShouldShowSpeedUpMock.mockReturnValue(true);
   });
 
   afterAll(() => {
     useGasFeeEstimates.mockRestore();
   });
-
-  const renderWithProvider = (component, store) =>
-    renderWithProviderAndHistory(component, store, history);
 
   describe('ActivityListItem interactions', () => {
     it('should show the activity details popover and log metrics when the activity list item is clicked', () => {
@@ -192,8 +205,14 @@ describe('TransactionListItem', () => {
 
       const store = mockStore(mockState);
       const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
       const { queryByTestId } = renderWithProvider(
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
           <TransactionListItem transactionGroup={transactionGroup} />
         </MetaMetricsContext.Provider>,
         store,
@@ -244,20 +263,25 @@ describe('TransactionListItem', () => {
       expect(queryByTestId('not-enough-gas__tooltip')).not.toBeInTheDocument();
     });
 
-    it(`should open the edit gas popover when cancel is clicked`, () => {
+    it(`should open the cancel/speedup modal when cancel is clicked`, async () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '2AA1EFB94E0000',
         }),
       );
-      const { getByText, queryByText } = renderWithProvider(
+      useDispatch.mockReturnValue(jest.fn());
+      const { getByText, queryByTestId } = renderWithProvider(
         <TransactionListItem transactionGroup={transactionGroup} />,
       );
-      expect(queryByText('Cancel transaction')).not.toBeInTheDocument();
+      expect(
+        queryByTestId('speed-up-and-cancel-modal'),
+      ).not.toBeInTheDocument();
 
-      const cancelButton = getByText('Cancel');
-      fireEvent.click(cancelButton);
-      expect(getByText('Cancel transaction')).toBeInTheDocument();
+      const cancelButton = getByText(messages.cancel.message);
+      await act(async () => {
+        fireEvent.click(cancelButton);
+      });
+      expect(queryByTestId('speed-up-and-cancel-modal')).toBeInTheDocument();
     });
   });
 
@@ -331,7 +355,7 @@ describe('TransactionListItem', () => {
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
       '?Swap USDC to UNISigningCancel',
     );
-    expect(getByText('Signing')).toBeInTheDocument();
+    expect(getByText(messages.signing.message)).toBeInTheDocument();
   });
 
   it('should render confirmed legacy swap tx summary', () => {
@@ -362,6 +386,82 @@ describe('TransactionListItem', () => {
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
       '?Swap USDC to UNIFailed-2 USDC',
     );
-    expect(getByText('Failed')).toBeInTheDocument();
+    expect(getByText(messages.failed.message)).toBeInTheDocument();
+  });
+
+  describe('gas fee token selected', () => {
+    it('hides Cancel and Speed up when selectedGasFeeToken is set', () => {
+      const transactionGroupWithGasFeeToken = {
+        ...transactionGroup,
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          selectedGasFeeToken: '0xabc123',
+        },
+      };
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem
+          transactionGroup={transactionGroupWithGasFeeToken}
+        />,
+      );
+
+      expect(queryByTestId('cancel-button')).not.toBeInTheDocument();
+      expect(queryByTestId('speed-up-button')).not.toBeInTheDocument();
+    });
+
+    it('shows Cancel and Speed up when selectedGasFeeToken is not set and other conditions allow', () => {
+      useShouldShowSpeedUpMock.mockReturnValue(true);
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={transactionGroup} />,
+      );
+
+      expect(queryByTestId('cancel-button')).toBeInTheDocument();
+      expect(queryByTestId('speed-up-button')).toBeInTheDocument();
+    });
+  });
+
+  describe('perpsWithdraw chain badge', () => {
+    beforeEach(() => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({ balance: '2AA1EFB94E0000' }),
+      );
+      useDispatch.mockReturnValue(jest.fn());
+    });
+
+    it('renders the ChainBadge using metamaskPay.chainId (source) for perpsWithdraw', () => {
+      const perpsWithdrawGroup = {
+        ...transactionGroup,
+        initialTransaction: {
+          ...transactionGroup.initialTransaction,
+          type: TransactionType.perpsWithdraw,
+          chainId: '0x38',
+          metamaskPay: { chainId: '0x2105' },
+        },
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          type: TransactionType.perpsWithdraw,
+          chainId: '0x38',
+          metamaskPay: { chainId: '0x2105' },
+          status: TransactionStatus.confirmed,
+        },
+      };
+
+      const { getByAltText } = renderWithProvider(
+        <TransactionListItem transactionGroup={perpsWithdrawGroup} />,
+      );
+
+      expect(getByAltText('Base')).toBeInTheDocument();
+    });
   });
 });

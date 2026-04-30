@@ -1,28 +1,35 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
-import classnames from 'classnames';
-import { AvatarAccountSize } from '@metamask/design-system-react';
-
-import { KeyringTypes } from '@metamask/keyring-controller';
+import {
+  AccountGroupId,
+  AccountWalletId,
+  AccountWalletType,
+} from '@metamask/account-api';
+import classnames from 'clsx';
 import {
   Box,
   ButtonIcon,
-  ButtonIconSize,
   IconName,
-} from '../../../components/component-library';
+  AvatarAccountSize,
+  TextColor,
+  IconColor,
+  ButtonIconSize,
+} from '@metamask/design-system-react';
+
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
 import { PreferredAvatar } from '../../../components/app/preferred-avatar';
 import {
   Content,
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import {
-  IconColor,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AccountDetailsRow } from '../../../components/multichain-accounts/account-details-row';
 import {
@@ -46,40 +53,34 @@ import { MultichainSrpBackup } from '../../../components/multichain-accounts/mul
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
 import { MultichainAccountEditModal } from '../../../components/multichain-accounts/multichain-account-edit-modal';
 import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
-import {
-  removeAccount,
-  setAccountDetailsAddress,
-} from '../../../store/actions';
+import { removeAccount } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
-export const MultichainAccountDetailsPage = ({
-  id: idProp,
-}: { id?: string } = {}) => {
+export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
-  const { id: idFromParams } = useParams();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const [searchParams] = useSearchParams();
 
-  // Use prop if provided (from createV5CompatRoute), otherwise fall back to hook
-  const id = idProp || idFromParams;
-
-  const accountGroupId = decodeURIComponent(id ?? '') as AccountGroupId;
+  const accountGroupId = (searchParams.get('accountGroupId') ??
+    '') as AccountGroupId;
   const multichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, accountGroupId),
   );
 
-  const walletId = extractWalletIdFromGroupId(accountGroupId);
+  const walletId = accountGroupId
+    ? extractWalletIdFromGroupId(accountGroupId)
+    : ('' as AccountWalletId);
   const wallet = useSelector((state) => getWallet(state, walletId));
   const { keyringId, isSRPBackedUp } = useWalletInfo(walletId);
-  const walletRoute = `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/${encodeURIComponent(walletId)}`;
-  const isRemovable =
-    wallet?.type !== AccountWalletType.Entropy &&
-    wallet?.type !== AccountWalletType.Snap;
+
+  const isRemovable = wallet?.type !== AccountWalletType.Entropy;
   const addressCount = useSelector((state) =>
     getNetworkAddressCount(state, accountGroupId),
   );
@@ -103,15 +104,24 @@ export const MultichainAccountDetailsPage = ({
   );
   const shouldShowBackupReminder = isSRPBackedUp === false;
 
+  const evmKeyringType = evmInternalAccount?.metadata?.keyring?.type;
+  const isEip7702SupportedKeyring =
+    evmKeyringType &&
+    KEYRING_TYPES_SUPPORTING_7702.includes(evmKeyringType as KeyringTypes);
+
   const handleAddressesClick = () => {
+    trace({
+      name: TraceName.ShowAccountAddressList,
+      op: TraceOperation.AccountUi,
+    });
     navigate(
-      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
+      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(accountGroupId)}`,
     );
   };
 
   const handlePrivateKeysClick = () => {
     navigate(
-      `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
+      `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(accountGroupId)}`,
     );
   };
 
@@ -143,23 +153,27 @@ export const MultichainAccountDetailsPage = ({
         },
       });
 
-      dispatch(setAccountDetailsAddress(''));
       navigate(DEFAULT_ROUTE);
     }
   }, [dispatch, trackEvent, navigate, wallet?.type, accountsWithAddresses]);
 
   const handleWalletAction = () => {
-    navigate(walletRoute);
+    navigate({
+      pathname: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+      search: createSearchParams({
+        id: walletId,
+      }).toString(),
+    });
   };
 
   useEffect(() => {
     // Redirect if account doesn't exist
-    if (!id || !multichainAccount) {
+    if (!accountGroupId || !multichainAccount) {
       navigate(DEFAULT_ROUTE);
     }
-  }, [id, multichainAccount, navigate]);
+  }, [accountGroupId, multichainAccount, navigate]);
 
-  return id && multichainAccount ? (
+  return accountGroupId && multichainAccount ? (
     <Page className="multichain-account-details-page">
       <Header
         textProps={{
@@ -195,14 +209,15 @@ export const MultichainAccountDetailsPage = ({
             value={multichainAccount.metadata.name}
             onClick={handleAccountNameAction}
             endAccessory={
-              <ButtonIcon
-                iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('accountName')}
-                marginLeft={2}
-                data-testid="account-name-action"
-              />
+              <Box className="ml-2">
+                <ButtonIcon
+                  iconName={IconName.ArrowRight}
+                  iconProps={{ color: IconColor.IconAlternative }}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('accountName')}
+                  data-testid="account-name-action"
+                />
+              </Box>
             }
           />
           <AccountDetailsRow
@@ -210,14 +225,15 @@ export const MultichainAccountDetailsPage = ({
             value={`${addressCount} ${addressCount > 1 ? t('addressesLabel') : t('addressLabel')}`}
             onClick={handleAddressesClick}
             endAccessory={
-              <ButtonIcon
-                iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('addresses')}
-                marginLeft={2}
-                data-testid="network-addresses-link"
-              />
+              <Box className="ml-2">
+                <ButtonIcon
+                  iconName={IconName.ArrowRight}
+                  iconProps={{ color: IconColor.IconAlternative }}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('addresses')}
+                  data-testid="network-addresses-link"
+                />
+              </Box>
             }
           />
           {(isEntropyWallet || isPrivateKeyWallet) && (
@@ -226,32 +242,36 @@ export const MultichainAccountDetailsPage = ({
               value={t('unlockToReveal')}
               onClick={handlePrivateKeysClick}
               endAccessory={
-                <ButtonIcon
-                  iconName={IconName.ArrowRight}
-                  color={IconColor.iconAlternative}
-                  size={ButtonIconSize.Sm}
-                  ariaLabel={t('privateKeys')}
-                  marginLeft={2}
-                  data-testid="private-keys-action"
-                />
+                <Box className="ml-2">
+                  <ButtonIcon
+                    iconName={IconName.ArrowRight}
+                    iconProps={{ color: IconColor.IconAlternative }}
+                    size={ButtonIconSize.Sm}
+                    ariaLabel={t('privateKeys')}
+                    data-testid="private-keys-action"
+                  />
+                </Box>
               }
             />
           )}
-          <AccountDetailsRow
-            label={t('smartAccountLabel')}
-            value={t('setUp')}
-            onClick={handleSmartAccountClick}
-            endAccessory={
-              <ButtonIcon
-                iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('smartAccountLabel')}
-                marginLeft={2}
-                data-testid="smart-account-action"
-              />
-            }
-          />
+          {isEip7702SupportedKeyring && (
+            <AccountDetailsRow
+              label={t('smartAccountLabel')}
+              value={t('setUp')}
+              onClick={handleSmartAccountClick}
+              endAccessory={
+                <Box className="ml-2">
+                  <ButtonIcon
+                    iconName={IconName.ArrowRight}
+                    iconProps={{ color: IconColor.IconAlternative }}
+                    size={ButtonIconSize.Sm}
+                    ariaLabel={t('smartAccountLabel')}
+                    data-testid="smart-account-action"
+                  />
+                </Box>
+              }
+            />
+          )}
         </Box>
         <Box className="multichain-account-details-page__section">
           <AccountDetailsRow
@@ -259,14 +279,15 @@ export const MultichainAccountDetailsPage = ({
             value={wallet.metadata.name}
             onClick={handleWalletAction}
             endAccessory={
-              <ButtonIcon
-                iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('wallet')}
-                marginLeft={2}
-                data-testid="wallet-details-link"
-              />
+              <Box className="ml-2">
+                <ButtonIcon
+                  iconName={IconName.ArrowRight}
+                  iconProps={{ color: IconColor.IconAlternative }}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('wallet')}
+                  data-testid="wallet-details-link"
+                />
+              </Box>
             }
           />
           {isEntropyWallet ? (
@@ -284,18 +305,19 @@ export const MultichainAccountDetailsPage = ({
           <Box className="multichain-account-details-page__section">
             <AccountDetailsRow
               label={t('removeAccount')}
-              labelColor={TextColor.errorDefault}
+              labelColor={TextColor.ErrorDefault}
               value={''}
               onClick={() => setIsAccountRemoveModalOpen(true)}
               endAccessory={
-                <ButtonIcon
-                  iconName={IconName.ArrowRight}
-                  color={IconColor.iconAlternative}
-                  size={ButtonIconSize.Md}
-                  ariaLabel={t('removeAccount')}
-                  marginLeft={2}
-                  data-testid="account-remove-action"
-                />
+                <Box className="ml-2">
+                  <ButtonIcon
+                    iconName={IconName.ArrowRight}
+                    iconProps={{ color: IconColor.IconAlternative }}
+                    size={ButtonIconSize.Md}
+                    ariaLabel={t('removeAccount')}
+                    data-testid="account-remove-action"
+                  />
+                </Box>
               }
             />
           </Box>

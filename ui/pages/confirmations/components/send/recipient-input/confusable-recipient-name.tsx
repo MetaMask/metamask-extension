@@ -59,13 +59,14 @@ export const ConfusableRecipientName = ({
   }, [to, confusableCharacters]);
 
   return nameSplits ? (
-    <Box display={Display.Flex}>
+    <Box display={Display.Inline} className="break-all">
       {nameSplits.map((split, index) => {
         if (split.confusable) {
           return (
             <Tooltip
               key={index}
               position="top"
+              tag="span"
               html={
                 <Text>
                   {t('confusableCharacterTooltip', [
@@ -73,13 +74,13 @@ export const ConfusableRecipientName = ({
                       key={`${split.str}-${split.confusable.point}`}
                       className="confusable-character"
                     >
-                      {` ‘${split.confusable.point}’ `}
+                      {` '${split.confusable.point}' `}
                     </Box>,
                     <Box
                       key={`${split.str}-${split.confusable.similarTo}`}
                       className="confusable-character"
                     >
-                      {` ‘${split.confusable.similarTo}’`}.
+                      {` '${split.confusable.similarTo}'`}.
                     </Box>,
                   ])}
                 </Text>
@@ -87,6 +88,7 @@ export const ConfusableRecipientName = ({
               trigger="mouseenter"
             >
               <Text
+                as="span"
                 color={TextColor.warningDefault}
                 variant={TextVariant.bodyMd}
               >
@@ -96,7 +98,7 @@ export const ConfusableRecipientName = ({
           );
         }
         return (
-          <Text key={index} variant={TextVariant.bodyMd}>
+          <Text key={index} as="span" variant={TextVariant.bodyMd}>
             {split.str}
           </Text>
         );

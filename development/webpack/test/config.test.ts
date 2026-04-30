@@ -1,17 +1,20 @@
 import fs from 'node:fs';
-import { describe, it, afterEach, mock } from 'node:test';
+import process from 'node:process';
+import { describe, it, afterEach, beforeEach, mock } from 'node:test';
 import assert from 'node:assert';
 import { resolve } from 'node:path';
 import { version } from '../../../package.json';
 import { loadBuildTypesConfig } from '../../lib/build-type';
 import * as config from '../utils/config';
 import { parseArgv } from '../utils/cli';
+import { VARIABLES_REQUIRED_IN_PRODUCTION } from '../utils/constants.ts';
 
 describe('./utils/config.ts', () => {
   // variables logic is complex, and is "owned" mostly by the other build
   // system, so we don't check for everything, just that the interface is
   // behaving
   describe('variables', () => {
+    const originalEnv = { ...process.env };
     const originalReadFileSync = fs.readFileSync;
     function mockRc(
       env: Record<string, string> = {},
@@ -35,7 +38,14 @@ describe('./utils/config.ts', () => {
         return originalReadFileSync(path, options);
       });
     }
-    afterEach(() => mock.restoreAll());
+    beforeEach(() => {
+      process.env = {};
+    });
+
+    afterEach(() => {
+      process.env = { ...originalEnv };
+      mock.restoreAll();
+    });
 
     it('should return valid build variables for the default build', () => {
       const buildTypes = loadBuildTypesConfig();
@@ -48,7 +58,7 @@ describe('./utils/config.ts', () => {
       assert.strictEqual(variables.get('METAMASK_VERSION'), version);
       assert.strictEqual(variables.get('IN_TEST'), args.test);
       assert.strictEqual(variables.get('METAMASK_BUILD_TYPE'), args.type);
-      assert.strictEqual(variables.get('NODE_ENV'), args.env);
+      assert.strictEqual(variables.get('NODE_ENV'), args.mode);
 
       // PPOM_URI is unique in that it is code, and has not been JSON.stringified, so we check it separately:
       assert.strictEqual(
@@ -94,7 +104,7 @@ describe('./utils/config.ts', () => {
       mockRc({ SEGMENT_BETA_WRITE_KEY: '.' });
       const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv(
-        ['--type', 'beta', '--test', '--env', 'production'],
+        ['--type', 'beta', '--test', '--mode', 'production'],
         buildTypes,
       );
       const { variables } = config.getVariables(args, buildTypes);
@@ -104,7 +114,7 @@ describe('./utils/config.ts', () => {
       );
       assert.strictEqual(variables.get('IN_TEST'), args.test);
       assert.strictEqual(variables.get('METAMASK_BUILD_TYPE'), args.type);
-      assert.strictEqual(variables.get('NODE_ENV'), args.env);
+      assert.strictEqual(variables.get('NODE_ENV'), args.mode);
     });
 
     it("should handle true/false/null/'' in rc", () => {
@@ -126,6 +136,132 @@ describe('./utils/config.ts', () => {
       assert.strictEqual(variables.get('TESTING_NULL'), null);
       assert.strictEqual(variables.get('TESTING_MISC'), 'MISC');
       assert.strictEqual(variables.get('TESTING_EMPTY_STRING'), null);
+    });
+
+    it('includes null values and omits undefined values in safeVariables', () => {
+      const buildTypes = loadBuildTypesConfig();
+      const { args } = parseArgv(['--mode', 'production'], buildTypes);
+
+      mockRc({
+        TESTING_NULL: 'null',
+        TESTING_EMPTY_STRING: '',
+      });
+
+      const { variables, safeVariables } = config.getVariables(
+        args,
+        buildTypes,
+      );
+
+      assert.strictEqual(variables.get('TESTING_NULL'), null);
+      assert.strictEqual(variables.get('TESTING_EMPTY_STRING'), null);
+      assert.strictEqual(variables.get('DEBUG'), undefined);
+      assert.strictEqual(safeVariables.TESTING_NULL, 'null');
+      assert.strictEqual(safeVariables.TESTING_EMPTY_STRING, 'null');
+      assert.strictEqual(
+        Object.prototype.hasOwnProperty.call(safeVariables, 'DEBUG'),
+        false,
+      );
+    });
+
+    it('should return buildEnvVarDeclarations with keys from activeBuild.env and buildConfig.env', () => {
+      mockRc();
+      const buildTypes = loadBuildTypesConfig();
+      const { args } = parseArgv([], buildTypes);
+      const { buildEnvVarDeclarations } = config.getVariables(args, buildTypes);
+
+      // Verify it includes keys from the main build type's env (e.g., INFURA_PROD_PROJECT_ID)
+      assert.ok(
+        buildEnvVarDeclarations.has('INFURA_PROD_PROJECT_ID'),
+        'should include build type specific env vars',
+      );
+
+      // Verify it includes keys from the global buildConfig.env (e.g., SENTRY_DSN)
+      assert.ok(
+        buildEnvVarDeclarations.has('SENTRY_DSN'),
+        'should include global config env vars',
+      );
+    });
+
+    it('should throw when production environment is missing required variables', () => {
+      const rcVars: Record<string, string> = {};
+      mockRc(rcVars);
+      // Some variables require more specific values because
+      // setEnvironmentVariables resolves them before webpack's generic
+      // production validation runs.
+      rcVars.INFURA_PROD_PROJECT_ID = 'dd98248f370d4063b81c0299f919dc11';
+      rcVars.INFURA_ENV_KEY_REF = 'INFURA_PROD_PROJECT_ID';
+      rcVars.SEGMENT_WRITE_KEY_REF = 'SEGMENT_PROD_WRITE_KEY';
+      rcVars.SEGMENT_PROD_WRITE_KEY = 'SEGMENT_PROD_WRITE_KEY';
+      rcVars.APPLE_PROD_CLIENT_ID = 'APPLE_PROD_CLIENT_ID';
+      rcVars.GOOGLE_PROD_CLIENT_ID = 'GOOGLE_PROD_CLIENT_ID';
+
+      const buildTypes = loadBuildTypesConfig();
+      const { args } = parseArgv(
+        ['--env', 'production', '--validateEnv'],
+        buildTypes,
+      );
+
+      assert.throws(
+        () => config.getVariables(args, buildTypes),
+        (error: Error) => {
+          assert.ok(
+            error.message.includes(
+              'Some variables required to build production target are not defined',
+            ),
+          );
+          return true;
+        },
+      );
+    });
+
+    it('should not throw when production environment is missing required variables if --validateEnv is false', () => {
+      const rcVars: Record<string, string> = {};
+      mockRc(rcVars);
+      // Some variables require definitions because of additional validation
+      // happening in setEnvironmentVariables
+      rcVars.SEEDLESS_ONBOARDING_ENABLED = 'false';
+      rcVars.INFURA_PROD_PROJECT_ID = 'dd98248f370d4063b81c0299f919dc11';
+      rcVars.INFURA_ENV_KEY_REF = 'INFURA_PROD_PROJECT_ID';
+      rcVars.SEGMENT_WRITE_KEY_REF = 'SEGMENT_PROD_WRITE_KEY';
+      rcVars.SEGMENT_PROD_WRITE_KEY = 'SEGMENT_PROD_WRITE_KEY';
+
+      const buildTypes = loadBuildTypesConfig();
+      const { args } = parseArgv(
+        ['--env', 'production', '--validateEnv', 'false'],
+        buildTypes,
+      );
+
+      assert.doesNotThrow(() => config.getVariables(args, buildTypes));
+    });
+
+    it('should not throw when all required production variables are defined', () => {
+      const requiredVars = VARIABLES_REQUIRED_IN_PRODUCTION.main;
+      const buildTypes = loadBuildTypesConfig();
+
+      const rcVars: Record<string, string> = {};
+      for (const varName of requiredVars) {
+        rcVars[varName] = 'test-value';
+      }
+
+      mockRc(rcVars);
+
+      const { args } = parseArgv(
+        ['--env', 'production', '--validateEnv'],
+        buildTypes,
+      );
+
+      assert.doesNotThrow(() => config.getVariables(args, buildTypes));
+    });
+
+    it('should not validate production variables when environment is not production', () => {
+      mockRc();
+      const buildTypes = loadBuildTypesConfig();
+
+      const { args: devArgs } = parseArgv([], buildTypes);
+      assert.doesNotThrow(() => config.getVariables(devArgs, buildTypes));
+
+      const { args: stagingArgs } = parseArgv(['--env', 'staging'], buildTypes);
+      assert.doesNotThrow(() => config.getVariables(stagingArgs, buildTypes));
     });
   });
 });

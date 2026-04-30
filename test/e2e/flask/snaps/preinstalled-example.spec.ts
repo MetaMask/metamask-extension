@@ -1,16 +1,20 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { withFixtures, WINDOW_TITLES, sentryRegEx } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
+import {
+  DAPP_PATH,
+  MOCK_META_METRICS_ID,
+  WINDOW_TITLES,
+} from '../../constants';
+import { withFixtures, sentryRegEx } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
-import { DAPP_PATH, MOCK_META_METRICS_ID } from '../../constants';
 import { mockTestSnapsSite } from '../../mock-response-data/snaps/snap-local-sites/test-snaps-site-mocks';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 async function mockSentryTestError(mockServer: Mockttp) {
   return await mockServer
@@ -57,12 +61,13 @@ describe('Preinstalled example Snap', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockTestSnapsSite,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
+        const settingsPage = new SettingsPage(driver);
         const preInstalledExample = new PreinstalledExampleSettings(driver);
         await navigateToPreInstalledExample(driver);
 
@@ -72,9 +77,7 @@ describe('Preinstalled example Snap', function () {
         await preInstalledExample.checkIsToggleOn();
         await preInstalledExample.checkSelectedRadioOption('option2');
         await preInstalledExample.checkSelectedDropdownOption('option2');
-        await driver.clickElement(
-          '.settings-page__header__title-container__close-button',
-        );
+        await settingsPage.clickBackButton();
 
         // Navigate to `test-snaps` page, we don't need to connect because the Snap uses
         // initialConnections to pre-approve the dapp.
@@ -102,12 +105,12 @@ describe('Preinstalled example Snap', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockTestSnapsSite,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
@@ -133,7 +136,7 @@ describe('Preinstalled example Snap', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -150,7 +153,7 @@ describe('Preinstalled example Snap', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
@@ -185,7 +188,7 @@ describe('Preinstalled example Snap', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -199,7 +202,7 @@ describe('Preinstalled example Snap', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
@@ -233,7 +236,7 @@ describe('Preinstalled example Snap', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -250,7 +253,7 @@ describe('Preinstalled example Snap', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
@@ -287,9 +290,7 @@ async function navigateToPreInstalledExample(driver: Driver) {
   const headerNavbar = new HeaderNavbar(driver);
   const settingsPage = new SettingsPage(driver);
   const preInstalledExample = new PreinstalledExampleSettings(driver);
-
   await headerNavbar.openSettingsPage();
-
   await settingsPage.goToPreInstalledExample();
   await preInstalledExample.checkPageIsLoaded();
 }

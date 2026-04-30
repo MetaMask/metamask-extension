@@ -20,8 +20,6 @@ DefaultStory.decorators = [
       store={configureStore(
         createBridgeMockStore({
           bridgeSliceOverrides: {
-            toNativeExchangeRate: 1,
-            toTokenExchangeRate: 0.99,
             slippage: 0.5,
           },
           bridgeStateOverrides: { quotes: [] },

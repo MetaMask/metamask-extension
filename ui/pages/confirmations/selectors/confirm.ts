@@ -1,9 +1,10 @@
+import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
+import { Hex, Json } from '@metamask/utils';
 import { QuoteResponse } from '@metamask/bridge-controller';
 
 import { createSelector } from 'reselect';
 import { getPendingApprovals } from '../../../selectors/approvals';
-import { createDeepEqualSelector } from '../../../../shared/modules/selectors/util';
 import { ConfirmMetamaskState } from '../types/confirm';
 
 const ConfirmationApprovalTypes = [
@@ -11,62 +12,38 @@ const ConfirmationApprovalTypes = [
   ApprovalType.EthSignTypedData,
   ApprovalType.Transaction,
 ];
+export const pendingConfirmationsSortedSelector = createSelector(
+  getPendingApprovals,
+  (approvals) =>
+    approvals
+      .filter(({ type }) =>
+        ConfirmationApprovalTypes.includes(type as ApprovalType),
+      )
+      .sort((a1, a2) => a1.time - a2.time),
+);
 
-export function pendingConfirmationsSelector(state: ConfirmMetamaskState) {
-  return getPendingApprovals(state).filter(({ type }) =>
-    ConfirmationApprovalTypes.includes(type as ApprovalType),
-  );
-}
-
-export function pendingConfirmationsSortedSelector(
-  state: ConfirmMetamaskState,
-) {
-  return getPendingApprovals(state)
-    .filter(({ type }) =>
-      ConfirmationApprovalTypes.includes(type as ApprovalType),
-    )
-    .sort((a1, a2) => a1.time - a2.time);
-}
-
-const firstPendingConfirmationSelector = createSelector(
+export const firstPendingConfirmationSelector = createSelector(
   pendingConfirmationsSortedSelector,
-  (pendingConfirmations) => pendingConfirmations[0],
+  (pendingConfirmations): ApprovalRequest<Record<string, Json>> | undefined =>
+    pendingConfirmations[0],
 );
-
-export const oldestPendingConfirmationSelector = createDeepEqualSelector(
-  firstPendingConfirmationSelector,
-  (firstPendingConfirmation) => firstPendingConfirmation,
-);
-
-export function selectEnableEnforcedSimulations(
-  state: ConfirmMetamaskState,
-  transactionId: string,
-): boolean {
-  return (
-    state.metamask.enableEnforcedSimulationsForTransactions[transactionId] ??
-    state.metamask.enableEnforcedSimulations
-  );
-}
-
-export function selectEnforcedSimulationsDefaultSlippage(
-  state: ConfirmMetamaskState,
-): number {
-  return state.metamask.enforcedSimulationsSlippage;
-}
-
-export function selectEnforcedSimulationsSlippage(
-  state: ConfirmMetamaskState,
-  transactionId: string,
-): number {
-  return (
-    state.metamask.enforcedSimulationsSlippageForTransactions[transactionId] ??
-    state.metamask.enforcedSimulationsSlippage
-  );
-}
 
 export function selectDappSwapComparisonData(
   state: ConfirmMetamaskState,
   transactionId: string,
-): { quotes?: QuoteResponse[]; latency?: number } | undefined {
+):
+  | {
+      quotes?: QuoteResponse[];
+      latency?: number;
+      commands?: string;
+      error?: string;
+      swapInfo?: {
+        srcTokenAddress: Hex;
+        destTokenAddress: Hex;
+        srcTokenAmount: Hex;
+        destTokenAmountMin: Hex;
+      };
+    }
+  | undefined {
   return state.metamask.dappSwapComparisonData?.[transactionId] ?? undefined;
 }

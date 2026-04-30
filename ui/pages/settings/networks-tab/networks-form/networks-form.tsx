@@ -2,6 +2,11 @@ import log from 'loglevel';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  Button as DSButton,
+  ButtonSize as DSButtonSize,
+  ButtonVariant as DSButtonVariant,
+} from '@metamask/design-system-react';
+import {
   type UpdateNetworkFields,
   RpcEndpointType,
 } from '@metamask/network-controller';
@@ -21,16 +26,16 @@ import {
 import {
   decimalToHex,
   hexToDecimal,
-} from '../../../../../shared/modules/conversion.utils';
+} from '../../../../../shared/lib/conversion.utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
-} from '../../../../../shared/modules/network.utils';
-import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
-import { isPublicEndpointUrl } from '../../../../../shared/lib/network-utils';
+} from '../../../../../shared/lib/network.utils';
+import { jsonRpcRequest } from '../../../../../shared/lib/rpc.utils';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import {
   addNetwork,
   setEditedNetwork,
@@ -86,6 +91,7 @@ export const NetworksForm = ({
   onRpcAdd,
   onBlockExplorerAdd,
   toggleNetworkMenuAfterSubmit = true,
+  usePageFooterStyle = false,
   onComplete,
   onEdit,
 }: {
@@ -95,12 +101,13 @@ export const NetworksForm = ({
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
   toggleNetworkMenuAfterSubmit?: boolean;
+  usePageFooterStyle?: boolean;
   onComplete?: () => void;
   onEdit?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
@@ -297,14 +304,19 @@ export const NetworksForm = ({
         };
 
         if (existingNetwork) {
-          const options = {
-            replacementSelectedRpcEndpointIndex:
-              chainIdHex === existingNetwork.chainId
-                ? rpcUrls?.defaultRpcEndpointIndex
-                : undefined,
-          };
+          const options = toggleNetworkMenuAfterSubmit
+            ? {
+                replacementSelectedRpcEndpointIndex:
+                  chainIdHex === existingNetwork.chainId
+                    ? rpcUrls?.defaultRpcEndpointIndex
+                    : undefined,
+              }
+            : {};
           await dispatch(updateNetwork(networkPayload, options));
-          if (Object.keys(tokenNetworkFilter).length === 1) {
+          if (
+            toggleNetworkMenuAfterSubmit &&
+            Object.keys(tokenNetworkFilter).length === 1
+          ) {
             await dispatch(
               setTokenNetworkFilter({
                 [existingNetwork.chainId]: true,
@@ -314,41 +326,67 @@ export const NetworksForm = ({
           }
 
           // Track RPC update from network connection banner
+          // Wrapped in try-catch to prevent analytics failures from affecting the UI
+          // since the network update has already succeeded at this point
           if (trackRpcUpdateFromBanner) {
-            const newRpcEndpoint =
-              networkPayload.rpcEndpoints[
-                networkPayload.defaultRpcEndpointIndex
-              ];
-            const oldRpcEndpoint =
-              existingNetwork.rpcEndpoints?.[
-                existingNetwork.defaultRpcEndpointIndex ?? 0
-              ];
+            try {
+              const newRpcEndpoint =
+                networkPayload.rpcEndpoints[
+                  networkPayload.defaultRpcEndpointIndex
+                ];
+              const oldRpcEndpoint =
+                existingNetwork.rpcEndpoints?.[
+                  existingNetwork.defaultRpcEndpointIndex ?? 0
+                ];
 
-            const chainIdAsDecimal = hexToNumber(chainIdHex);
+              const chainIdAsDecimal = hexToNumber(chainIdHex);
 
-            const sanitizeRpcUrl = (url: string) =>
-              isPublicEndpointUrl(url, infuraProjectId ?? '')
-                ? onlyKeepHost(url)
-                : 'custom';
+              const sanitizeRpcUrl = async (url: string) => {
+                const isPublic = await submitRequestToBackground<boolean>(
+                  'isPublicEndpointUrl',
+                  [url],
+                );
+                return isPublic ? onlyKeepHost(url) : 'custom';
+              };
 
-            trackEvent({
-              category: MetaMetricsEventCategory.Network,
-              event: MetaMetricsEventName.NetworkConnectionBannerRpcUpdated,
-              // The names of Segment properties have a particular case.
-              /* eslint-disable @typescript-eslint/naming-convention */
-              properties: {
-                chain_id_caip: `eip155:${chainIdAsDecimal}`,
-                from_rpc_domain: oldRpcEndpoint?.url
+              const [fromRpcDomain, toRpcDomain] = await Promise.all([
+                oldRpcEndpoint?.url
                   ? sanitizeRpcUrl(oldRpcEndpoint.url)
-                  : 'unknown',
-                to_rpc_domain: sanitizeRpcUrl(newRpcEndpoint.url),
-              },
-              /* eslint-enable @typescript-eslint/naming-convention */
-            });
+                  : Promise.resolve('unknown'),
+                sanitizeRpcUrl(newRpcEndpoint.url),
+              ]);
+
+              trackEvent({
+                category: MetaMetricsEventCategory.Network,
+                event: MetaMetricsEventName.NetworkConnectionBannerRpcUpdated,
+                // The names of Segment properties have a particular case.
+                /* eslint-disable @typescript-eslint/naming-convention */
+                properties: {
+                  chain_id_caip: `eip155:${chainIdAsDecimal}`,
+                  from_rpc_domain: fromRpcDomain,
+                  to_rpc_domain: toRpcDomain,
+                },
+                /* eslint-enable @typescript-eslint/naming-convention */
+              });
+            } catch (error) {
+              // Analytics tracking failed, but network update succeeded - don't surface this error
+              console.error('Failed to track RPC update analytics:', error);
+            }
           }
         } else {
-          await dispatch(addNetwork(networkPayload));
-          await dispatch(setEnabledNetworks(networkPayload.chainId));
+          // When the form is rendered as a page (Networks page), do NOT switch
+          // the active network or update the homepage network filter. Adding a
+          // network from the Networks page should only persist the
+          // configuration; switching is reserved for the homepage network
+          // modal (`toggleNetworkMenuAfterSubmit=true`).
+          await dispatch(
+            addNetwork(networkPayload, {
+              setActive: toggleNetworkMenuAfterSubmit,
+            }),
+          );
+          if (toggleNetworkMenuAfterSubmit) {
+            await dispatch(setEnabledNetworks(networkPayload.chainId));
+          }
         }
 
         trackEvent({
@@ -399,6 +437,13 @@ export const NetworksForm = ({
       onComplete?.();
     }
   };
+
+  const isSaveDisabled =
+    !name ||
+    !chainId ||
+    !ticker ||
+    !rpcUrls?.rpcEndpoints?.length ||
+    Object.values(errors).some((error) => error);
 
   return (
     <Box
@@ -744,27 +789,43 @@ export const NetworksForm = ({
         />
       </Box>
       <Box
-        className="networks-tab__network-form__footer"
-        backgroundColor={BackgroundColor.backgroundDefault}
+        className={`networks-tab__network-form__footer${
+          usePageFooterStyle ? ' networks-tab__network-form__footer--page' : ''
+        }`}
+        backgroundColor={
+          usePageFooterStyle
+            ? BackgroundColor.transparent
+            : BackgroundColor.backgroundDefault
+        }
         padding={4}
         width={BlockSize.Full}
       >
-        <ButtonPrimary
-          disabled={
-            !name ||
-            !chainId ||
-            !ticker ||
-            !rpcUrls?.rpcEndpoints?.length ||
-            Object.values(errors).some((e) => e)
-          }
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClick={onSubmit}
-          size={ButtonPrimarySize.Lg}
-          width={BlockSize.Full}
-        >
-          {t('save')}
-        </ButtonPrimary>
+        {usePageFooterStyle ? (
+          <DSButton
+            variant={DSButtonVariant.Primary}
+            size={DSButtonSize.Lg}
+            isDisabled={isSaveDisabled}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={onSubmit}
+            className="w-full rounded-xl"
+            data-testid="page-container-footer-next"
+          >
+            {t('save')}
+          </DSButton>
+        ) : (
+          <ButtonPrimary
+            disabled={isSaveDisabled}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={onSubmit}
+            size={ButtonPrimarySize.Lg}
+            width={BlockSize.Full}
+            data-testid="page-container-footer-next"
+          >
+            {t('save')}
+          </ButtonPrimary>
+        )}
       </Box>
     </Box>
   );

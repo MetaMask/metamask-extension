@@ -6,7 +6,7 @@ import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-s
 import * as useBackupAndSyncHook from '../../../../hooks/identity/useBackupAndSync/useBackupAndSync';
 import { MetamaskIdentityProvider } from '../../../../contexts/identity';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import {
   BackupAndSyncFeaturesToggles,
   backupAndSyncFeaturesTogglesTestIds,
@@ -42,13 +42,19 @@ describe('BackupAndSyncFeaturesToggles', () => {
 
   it('tracks the toggle event', () => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const store = initialStore();
 
     store.metamask.isAccountSyncingEnabled = true;
     arrangeMocks();
 
     const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <BackupAndSyncFeaturesToggles />
       </MetaMetricsContext.Provider>,
       mockStore(store),

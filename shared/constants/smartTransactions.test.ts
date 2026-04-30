@@ -1,8 +1,8 @@
-import { isProduction } from '../modules/environment';
+import { isProduction } from '../lib/environment';
 import { getAllowedSmartTransactionsChainIds } from './smartTransactions';
 import { CHAIN_IDS } from './network';
 
-jest.mock('../modules/environment', () => ({
+jest.mock('../lib/environment', () => ({
   isProduction: jest.fn(() => false), // Initially mock isProduction to return false
 }));
 
@@ -26,6 +26,7 @@ describe('smartTransactions', () => {
         CHAIN_IDS.ARBITRUM,
         CHAIN_IDS.LINEA_MAINNET,
         CHAIN_IDS.LINEA_SEPOLIA,
+        CHAIN_IDS.POLYGON,
       ]);
     });
 
@@ -38,6 +39,7 @@ describe('smartTransactions', () => {
         CHAIN_IDS.BASE,
         CHAIN_IDS.ARBITRUM,
         CHAIN_IDS.LINEA_MAINNET,
+        CHAIN_IDS.POLYGON,
       ]);
     });
   });

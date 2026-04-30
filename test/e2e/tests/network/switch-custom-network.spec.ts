@@ -1,10 +1,11 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { regularDelayMs, WINDOW_TITLES, withFixtures } from '../../helpers';
-import AddNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/add-network-confirmations';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { WINDOW_TITLES } from '../../constants';
+import { regularDelayMs, withFixtures } from '../../helpers';
+import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { getPermittedChains } from './common';
 
@@ -13,7 +14,7 @@ describe('Switch ethereum chain', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: [
@@ -31,7 +32,7 @@ describe('Switch ethereum chain', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -55,17 +56,15 @@ describe('Switch ethereum chain', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withPopularNetworks()
-          .withPermissionControllerConnectedToTestDappWithChains([
-            '0x1', // Hex Chain ID for Ethereum
-            '0x89', // Hex Chain ID for Polygon
-          ])
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp({
+            chainIds: [1, 137], // Ethereum and Polygon
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -104,13 +103,13 @@ describe('Switch ethereum chain', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp() // Connected to Localhost
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();

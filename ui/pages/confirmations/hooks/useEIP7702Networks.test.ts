@@ -1,5 +1,5 @@
 import { waitFor } from '@testing-library/react';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   useEIP7702Networks,
   EIP7702NetworkConfiguration,
@@ -38,17 +38,17 @@ const mockNetworkConfig = {
       },
     ],
   },
-  '0x18c6': {
-    blockExplorerUrls: ['https://megaexplorer.xyz'],
-    chainId: '0x18c6',
+  '0x18c7': {
+    blockExplorerUrls: ['https://megaeth-testnet-v2.blockscout.com'],
+    chainId: '0x18c7',
     defaultBlockExplorerUrlIndex: 0,
     defaultRpcEndpointIndex: 0,
-    name: 'Mega Testnet',
+    name: 'MegaETH Testnet',
     nativeCurrency: 'MegaETH',
     rpcEndpoints: [
       {
         failoverUrls: [],
-        networkClientId: 'megaeth-testnet',
+        networkClientId: 'megaeth-testnet-v2',
         type: 'custom',
         url: 'https://carrot.megaeth.com/rpc',
       },
@@ -81,7 +81,7 @@ const mockNetworkBatchSupport = [
     upgradeContractAddress: '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B',
   },
   {
-    chainId: '0x18c6',
+    chainId: '0x18c7',
     isSupported: true,
     upgradeContractAddress: '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B',
   },
@@ -110,8 +110,9 @@ function runHook(keyringType = 'HD Key Tree') {
 
         internalAccounts: {
           accounts: {
-            [MOCK_ADDRESS]: {
+            'mock-account-id': {
               address: MOCK_ADDRESS,
+              id: 'mock-account-id',
               metadata: {
                 keyring: {
                   type: keyringType,
@@ -119,6 +120,9 @@ function runHook(keyringType = 'HD Key Tree') {
               },
             },
           },
+        },
+        accountIdByAddress: {
+          [MOCK_ADDRESS]: 'mock-account-id',
         },
       },
     },
@@ -149,11 +153,11 @@ describe('useEIP7702Networks', () => {
       result.current.network7702List?.map(
         (network: EIP7702NetworkConfiguration) => network.chainIdHex,
       ) || [];
-    expect(chainIds).toEqual(['0x1', '0x5', '0x18c6', '0xaa36a7']);
+    expect(chainIds).toEqual(['0x1', '0x5', '0x18c7', '0xaa36a7']);
 
     // Verify the corresponding decimal values are in ascending order
     const decimalChainIds = chainIds.map((id: string) => parseInt(id, 16));
-    expect(decimalChainIds).toEqual([1, 5, 6342, 11155111]);
+    expect(decimalChainIds).toEqual([1, 5, 6343, 11155111]);
   });
 
   it('returns the correct values for non-EVM accounts', () => {

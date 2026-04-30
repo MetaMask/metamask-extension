@@ -1,5 +1,7 @@
 import { memoize } from 'lodash';
 
+import { MUSD_ROUTE_DEFINITIONS } from '../../pages/musd/constants/routes';
+
 type AppRoute = {
   path: string;
   label: string;
@@ -12,11 +14,36 @@ export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
 export const SETTINGS_ROUTE = '/settings';
+export const LEGACY_SETTINGS_V2_ROUTE = '/settings-v2';
+export const SETTINGS_V2_ROUTE = SETTINGS_ROUTE;
+export const ASSETS_ROUTE = '/settings/assets';
+export const CURRENCY_ROUTE = '/settings/assets/currency';
+export const TRANSACTIONS_ROUTE = '/settings/transactions';
+export const PREFERENCES_AND_DISPLAY_ROUTE =
+  '/settings/preferences-and-display';
+export const THEME_ROUTE = '/settings/preferences-and-display/theme';
+export const LANGUAGE_ROUTE = '/settings/preferences-and-display/language';
+export const ACCOUNT_IDENTICON_ROUTE =
+  '/settings/preferences-and-display/account-identicon';
+export const PRIVACY_ROUTE = '/settings/privacy';
+export const THIRD_PARTY_APIS_ROUTE = '/settings/privacy/third-party-apis';
+export const SECURITY_AND_PASSWORD_ROUTE = '/settings/security-and-password';
+export const AUTO_LOCK_ROUTE = '/settings/security-and-password/auto-lock';
+export const MANAGE_WALLET_RECOVERY_ROUTE =
+  '/settings/security-and-password/manage-wallet-recovery';
+export const SECURITY_PASSWORD_CHANGE_V2_ROUTE =
+  '/settings/security-and-password/password';
+export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
+export const DEBUG_ROUTE = '/settings/debug';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
-export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
+export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
+export const TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE =
+  '/settings/transaction-shield/manage-plan';
+export const TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE =
+  '/settings/transaction-shield/manage-past-plan';
 export const TRANSACTION_SHIELD_CLAIMS = '/settings/transaction-shield/claims';
 // Transaction Shield Claims routes
 export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
@@ -25,31 +52,37 @@ export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
     FULL: `${TRANSACTION_SHIELD_CLAIMS}/new-claim`,
     RELATIVE: '/new-claim',
   },
-  VIEW: {
-    FULL: `${TRANSACTION_SHIELD_CLAIMS}/view-claim`,
-    RELATIVE: '/view-claim',
+  EDIT_DRAFT: {
+    FULL: `${TRANSACTION_SHIELD_CLAIMS}/edit-draft`,
+    RELATIVE: '/edit-draft',
+  },
+  VIEW_PENDING: {
+    FULL: `${TRANSACTION_SHIELD_CLAIMS}/view-pending-claim`,
+    RELATIVE: '/view-pending-claim',
+  },
+  VIEW_HISTORY: {
+    FULL: `${TRANSACTION_SHIELD_CLAIMS}/view-history-claim`,
+    RELATIVE: '/view-history-claim',
   },
 } as const;
 export const SECURITY_ROUTE = '/settings/security';
 export const ABOUT_US_ROUTE = '/settings/about-us';
-export const NETWORKS_ROUTE = '/settings/networks';
-export const NETWORKS_FORM_ROUTE = '/settings/networks/form';
-export const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
+export const NETWORKS_ROUTE = '/networks';
+export const NETWORKS_FORM_ROUTE = '/networks/form';
+export const ADD_NETWORK_ROUTE = '/networks/add-network';
 export const ADD_POPULAR_CUSTOM_NETWORK =
-  '/settings/networks/add-popular-custom-network';
-export const CONTACT_LIST_ROUTE = '/settings/contact-list';
-export const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
-export const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
-export const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
+  '/networks/add-popular-custom-network';
+// Contacts (global menu)
+export const CONTACTS_ROUTE = '/contacts';
+export const CONTACTS_ADD_ROUTE = '/contacts/add';
+export const CONTACTS_VIEW_ROUTE = '/contacts/view';
+export const CONTACTS_EDIT_ROUTE = '/contacts/edit';
 export const SNAP_SETTINGS_ROUTE = '/settings/snap';
-export const REVEAL_SRP_LIST_ROUTE =
-  '/settings/security-and-privacy/reveal-srp-list';
 export const SECURITY_PASSWORD_CHANGE_ROUTE =
   '/settings/security-and-privacy/password-change';
 export const BACKUPANDSYNC_ROUTE =
   '/settings/security-and-privacy/backup-and-sync';
 export const REVEAL_SEED_ROUTE = '/seed';
-export const SMART_ACCOUNT_UPDATE = '/smart-account-update';
 export const IMPORT_SRP_ROUTE = '/import-srp';
 export const RESTORE_VAULT_ROUTE = '/restore-vault';
 export const IMPORT_TOKEN_ROUTE = '/import-token';
@@ -62,14 +95,13 @@ export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
 export const MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE =
   '/multichain-account-private-key-list';
 export const ADD_WALLET_PAGE_ROUTE = '/add-wallet-page';
+export const CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE = '/choose-new-wallet-type';
 export const MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE =
   '/multichain-account-details';
 export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =
   '/multichain-wallet-details-page';
 export const MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE = '/multichain-smart-account';
 export const NEW_ACCOUNT_ROUTE = '/new-account';
-export const ACCOUNT_DETAILS_ROUTE = '/account-details';
-export const ACCOUNT_DETAILS_QR_CODE_ROUTE = '/account-details/qr-code';
 export const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
 export const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 export const SEND_ROUTE = '/send';
@@ -77,7 +109,6 @@ export const REMOTE_ROUTE = '/remote';
 export const REMOTE_ROUTE_SETUP_SWAPS = '/remote/setup-swaps';
 export const REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE =
   '/remote/setup-daily-allowance';
-export const CONNECTIONS = '/connections';
 export const PERMISSIONS = '/permissions';
 export const GATOR_PERMISSIONS = '/gator-permissions';
 export const TOKEN_TRANSFER_ROUTE = '/gator-permissions/token-transfer';
@@ -92,35 +123,20 @@ export const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 export const SNAPS_ROUTE = '/snaps';
 export const SNAPS_VIEW_ROUTE = '/snaps/view';
 export const NOTIFICATIONS_ROUTE = '/notifications';
-export const NOTIFICATIONS_SETTINGS_ROUTE = '/notifications/settings';
+export const NOTIFICATIONS_SETTINGS_ROUTE = '/settings/notifications';
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 export const CONFIRMATION_V_NEXT_ROUTE = '/confirmation';
-export const CONFIRM_SEND_ETHER_PATH = '/send-ether';
-export const CONFIRM_SEND_TOKEN_PATH = '/send-token';
-export const CONFIRM_DEPLOY_CONTRACT_PATH = '/deploy-contract';
-export const CONFIRM_APPROVE_PATH = '/approve';
-export const CONFIRM_SET_APPROVAL_FOR_ALL_PATH = '/set-approval-for-all';
-export const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from';
-export const CONFIRM_SAFE_TRANSFER_FROM_PATH = '/safe-transfer-from';
-export const CONFIRM_TOKEN_METHOD_PATH = '/token-method';
-export const CONFIRM_INCREASE_ALLOWANCE_PATH = '/increase-allowance';
 export const SIGNATURE_REQUEST_PATH = '/signature-request';
 export const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request';
 export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH =
   '/encryption-public-key-request';
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
 export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
-export const SWAPS_ROUTE = '/swaps';
-export const PREPARE_SWAP_ROUTE = '/swaps/prepare-swap-page';
-export const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
-export const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes';
+export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
+export const SWAP_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
-export const SMART_TRANSACTION_STATUS_ROUTE = '/swaps/smart-transaction-status';
-export const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap';
-export const SWAPS_ERROR_ROUTE = '/swaps/swaps-error';
-export const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
 export const ONBOARDING_ROUTE = '/onboarding';
 export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
 export const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
@@ -133,22 +149,29 @@ export const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 export const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
   '/onboarding/import-with-recovery-phrase';
 export const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
-export const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
 export const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
 export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
-
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
-///: END:ONLY_INCLUDE_IF
 
 export const DEEP_LINK_ROUTE = '/link';
-export const WALLET_DETAILS_ROUTE = '/wallet-details/:id';
+
+/** Shown when Basic Functionality is off and user opens a route that requires it (e.g. swap, rewards). */
+export const BASIC_FUNCTIONALITY_OFF_ROUTE = '/basic-functionality-off';
+
 export const DEFI_ROUTE = '/defi';
+
+// Perps routes
+export const PERPS_ROUTE = '/perps';
+export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
+export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
+export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
+export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
+export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
@@ -159,19 +182,50 @@ export const ROUTES = [
   { path: UNLOCK_ROUTE, label: 'Unlock Page', trackInAnalytics: true },
   { path: LOCK_ROUTE, label: 'Lock Page', trackInAnalytics: true },
   { path: REWARDS_ROUTE, label: 'Rewards Page', trackInAnalytics: true },
+  { path: PERPS_ROUTE, label: 'Perps Tab', trackInAnalytics: true },
+  {
+    path: PERPS_MARKET_LIST_ROUTE,
+    label: 'Perps Market List',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+    label: 'Perps Market Detail',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
+    label: 'Perps Order Entry',
+    trackInAnalytics: true,
+  },
+  {
+    path: PERPS_ACTIVITY_ROUTE,
+    label: 'Perps Activity',
+    trackInAnalytics: true,
+  },
+  {
+    path: PERPS_WITHDRAW_ROUTE,
+    label: 'Perps Withdraw',
+    trackInAnalytics: true,
+  },
   {
     path: ACCOUNT_LIST_PAGE_ROUTE,
     label: 'Account List Page',
     trackInAnalytics: true,
   },
   {
-    path: `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`,
+    path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
     label: 'Account Details Page',
     trackInAnalytics: true,
   },
   {
-    path: `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`,
+    path: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
     label: 'Wallet Details Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
+    label: 'Choose New Wallet Type Page',
     trackInAnalytics: true,
   },
   {
@@ -190,6 +244,47 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   { path: SETTINGS_ROUTE, label: 'Settings Page', trackInAnalytics: true },
+  {
+    path: LEGACY_SETTINGS_V2_ROUTE,
+    label: 'Settings V2 Page',
+    trackInAnalytics: true,
+  },
+  { path: ASSETS_ROUTE, label: 'Assets Settings Page', trackInAnalytics: true },
+  {
+    path: CURRENCY_ROUTE,
+    label: 'Currency Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: MANAGE_WALLET_RECOVERY_ROUTE,
+    label: 'Manage Wallet Recovery Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+    label: 'Password Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: PREFERENCES_AND_DISPLAY_ROUTE,
+    label: 'Preferences And Display Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: THEME_ROUTE,
+    label: 'Theme Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: LANGUAGE_ROUTE,
+    label: 'Language Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: ACCOUNT_IDENTICON_ROUTE,
+    label: 'Account Identicon Settings Page',
+    trackInAnalytics: true,
+  },
   {
     path: GENERAL_ROUTE,
     label: 'General Settings Page',
@@ -242,33 +337,28 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: CONTACT_LIST_ROUTE,
-    label: 'Contact List Settings Page',
+    path: CONTACTS_ROUTE,
+    label: 'Contacts Page',
     trackInAnalytics: true,
   },
   {
-    path: `${CONTACT_EDIT_ROUTE}/:address`,
-    label: 'Edit Contact Settings Page',
+    path: CONTACTS_ADD_ROUTE,
+    label: 'Add Contact Page',
     trackInAnalytics: true,
   },
   {
-    path: CONTACT_ADD_ROUTE,
-    label: 'Add Contact Settings Page',
+    path: `${CONTACTS_VIEW_ROUTE}/:chainId/:address`,
+    label: 'Contact Details Page',
     trackInAnalytics: true,
   },
   {
-    path: `${CONTACT_VIEW_ROUTE}/:address`,
-    label: 'View Contact Settings Page',
+    path: `${CONTACTS_EDIT_ROUTE}/:chainId/:address`,
+    label: 'Edit Contact Page',
     trackInAnalytics: true,
   },
   {
-    path: `${SNAP_SETTINGS_ROUTE}/:snapId`,
+    path: SNAP_SETTINGS_ROUTE,
     label: 'Snap Settings Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: REVEAL_SRP_LIST_ROUTE,
-    label: 'Reveal Secret Recovery Phrase List Page',
     trackInAnalytics: true,
   },
   {
@@ -289,11 +379,6 @@ export const ROUTES = [
   {
     path: `${REVEAL_SEED_ROUTE}/:keyringId`,
     label: 'Reveal Secret Recovery Phrase Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: SMART_ACCOUNT_UPDATE,
-    label: 'Smart Account Update Page',
     trackInAnalytics: true,
   },
   {
@@ -332,16 +417,6 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: ACCOUNT_DETAILS_ROUTE,
-    label: 'Account Details Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: ACCOUNT_DETAILS_QR_CODE_ROUTE,
-    label: 'Account Details QR Code Page',
-    trackInAnalytics: true,
-  },
-  {
     path: CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
     label: 'Confirm Add Suggested NFT Page',
     trackInAnalytics: true,
@@ -363,7 +438,6 @@ export const ROUTES = [
     label: 'Remote Mode Setup Daily Allowance Page',
     trackInAnalytics: true,
   },
-  { path: CONNECTIONS, label: 'Connections', trackInAnalytics: true },
   { path: PERMISSIONS, label: 'Permissions', trackInAnalytics: true },
   {
     path: `${CONNECT_ROUTE}/:id`,
@@ -397,7 +471,7 @@ export const ROUTES = [
   },
   { path: SNAPS_ROUTE, label: 'Snaps List Page', trackInAnalytics: true },
   {
-    path: `${SNAPS_VIEW_ROUTE}/:snapId`,
+    path: SNAPS_VIEW_ROUTE,
     label: 'Snap View Page',
     trackInAnalytics: true,
   },
@@ -447,51 +521,6 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_ETHER_PATH}`,
-    label: 'Confirm Send Ether Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_TOKEN_PATH}`,
-    label: 'Confirm Send Token Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_DEPLOY_CONTRACT_PATH}`,
-    label: 'Confirm Deploy Contract Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_APPROVE_PATH}`,
-    label: 'Confirm Approve Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SET_APPROVAL_FOR_ALL_PATH}`,
-    label: 'Confirm Set Approval For All Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TRANSFER_FROM_PATH}`,
-    label: 'Confirm Transfer From Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SAFE_TRANSFER_FROM_PATH}`,
-    label: 'Confirm Safe Transfer From Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TOKEN_METHOD_PATH}`,
-    label: 'Confirm Token Method Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_INCREASE_ALLOWANCE_PATH}`,
-    label: 'Confirm Increase Allowance Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
     path: `${CONFIRM_TRANSACTION_ROUTE}/:id${SIGNATURE_REQUEST_PATH}`,
     label: 'Signature Request Page',
     trackInAnalytics: true,
@@ -507,44 +536,13 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: CROSS_CHAIN_SWAP_ROUTE,
-    label: 'Prepare Cross Chain Swap Page',
-    trackInAnalytics: true,
-  },
-  { path: SWAPS_ROUTE, label: 'Swaps', trackInAnalytics: false },
-  {
-    path: PREPARE_SWAP_ROUTE,
-    label: 'Prepare Swap Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: SWAPS_NOTIFICATION_ROUTE,
-    label: 'Swaps Notification Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: LOADING_QUOTES_ROUTE,
-    label: 'Swaps Loading Quotes Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: AWAITING_SWAP_ROUTE,
-    label: 'Swaps Awaiting Swaps Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: SWAPS_ERROR_ROUTE,
-    label: 'Swaps Error Page',
+    path: SWAP_PATH,
+    label: 'Prepare Bridge Page',
     trackInAnalytics: true,
   },
   {
     path: DEEP_LINK_ROUTE,
     label: 'Deep link Redirect Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: WALLET_DETAILS_ROUTE,
-    label: 'Wallet Details Page',
     trackInAnalytics: true,
   },
   // Onboarding routes
@@ -595,11 +593,6 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
-    path: ONBOARDING_PIN_EXTENSION_ROUTE,
-    label: 'Onboarding Pin Extension',
-    trackInAnalytics: false,
-  },
-  {
     path: ONBOARDING_HELP_US_IMPROVE_ROUTE,
     label: 'Onboarding Help Us Improve',
     trackInAnalytics: false,
@@ -637,17 +630,6 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
-    path: SMART_TRANSACTION_STATUS_ROUTE,
-    label: 'Swaps Smart Transaction Status',
-    trackInAnalytics: false,
-  },
-  {
-    path: SWAPS_MAINTENANCE_ROUTE,
-    label: 'Swaps Maintenance',
-    trackInAnalytics: false,
-  },
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  {
     path: INITIALIZE_EXPERIMENTAL_AREA,
     label: 'Initialize Experimental Area',
     trackInAnalytics: false,
@@ -657,7 +639,6 @@ export const ROUTES = [
     label: 'Onboarding Experimental Area',
     trackInAnalytics: false,
   },
-  ///: END:ONLY_INCLUDE_IF
   {
     path: SHIELD_PLAN_ROUTE,
     label: 'Shield Plan',
@@ -678,6 +659,7 @@ export const ROUTES = [
     label: 'Review Gator Permissions',
     trackInAnalytics: false,
   },
+  ...MUSD_ROUTE_DEFINITIONS,
 ] as const satisfies AppRoute[];
 
 export type AppRoutes = (typeof ROUTES)[number];

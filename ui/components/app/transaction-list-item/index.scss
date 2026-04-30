@@ -24,25 +24,6 @@
     color: var(--color-text-alternative);
   }
 
-  &__pending-actions {
-    display: flex;
-
-    .button {
-      @include design-system.H6;
-
-      width: 90px;
-      white-space: nowrap;
-    }
-
-    & > .button:first-child {
-      margin-right: 6px;
-    }
-
-    &:empty {
-      padding-top: 0;
-    }
-  }
-
   .list-item__subheading {
     overflow: hidden;
     max-width: 100%;

@@ -14,7 +14,7 @@ import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferenced
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../../shared/lib/selectors/networks';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
   getMultichainCurrentChainId,
@@ -48,7 +48,7 @@ jest.mock('../../../../hooks/useCurrencyDisplay', () => ({
   useCurrencyDisplay: jest.fn(),
 }));
 
-jest.mock('../..', () => ({
+jest.mock('../../token-list-item', () => ({
   TokenListItem: jest.fn(() => <div>TokenListItem</div>),
 }));
 

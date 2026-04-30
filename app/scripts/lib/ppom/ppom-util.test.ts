@@ -546,10 +546,7 @@ describe('PPOM Utils', () => {
               justification: 'Test permission',
             },
             chainId: '0x1',
-            signer: {
-              type: 'account',
-              data: { address: '0x123' },
-            },
+            to: '0x123',
             expiry: 123456789,
           },
         } as SignatureRequest;
@@ -622,10 +619,7 @@ describe('PPOM Utils', () => {
               justification: 'Test permission',
             },
             chainId: '0x1',
-            signer: {
-              type: 'account',
-              data: { address: '0x123' },
-            },
+            to: '0x123',
             expiry: 123456789,
           },
         } as SignatureRequest;
@@ -695,10 +689,7 @@ describe('PPOM Utils', () => {
               justification: 'Test permission',
             },
             chainId: '0x1',
-            signer: {
-              type: 'account',
-              data: { address: '0x123' },
-            },
+            to: '0x123',
             expiry: 123456789,
           },
         } as SignatureRequest;
@@ -812,10 +803,7 @@ describe('PPOM Utils', () => {
               justification: 'Suspicious permission request',
             },
             chainId: '0x1',
-            signer: {
-              type: 'account',
-              data: { address: '0x123' },
-            },
+            to: '0x123',
             expiry: 123456789,
           },
         } as SignatureRequest;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '../../../../../test/jest';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import { ClaimsProvider } from '../../../../contexts/claims/claims';
@@ -7,9 +7,9 @@ import mockState from '../../../../../test/data/mock-state.json';
 import ClaimsForm from './claims-form';
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -76,6 +76,7 @@ describe('Submit Claim Form', () => {
           validSubmissionWindowDays: 10,
           supportedNetworks: ['0x1', '0x5'],
         },
+        drafts: [],
       },
     });
   });

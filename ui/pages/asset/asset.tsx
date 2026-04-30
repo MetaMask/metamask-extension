@@ -2,36 +2,43 @@ import { Nft } from '@metamask/assets-controllers';
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom-v5-compat';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { Navigate, useParams, useLocation } from 'react-router-dom';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
+import { ScrollContainer } from '../../contexts/scroll-container';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getTokenByAccountAndAddressAndChainId } from '../../selectors/assets';
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
 
-type AssetProps = {
-  params: {
-    chainId?: Hex;
-    asset?: string;
-    id?: string;
+type LocationState = {
+  token?: {
+    address: string;
+    symbol: string;
+    name: string;
+    chainId: string;
+    image?: string;
+    isNative?: boolean;
+    decimals: number;
   };
 };
 
-/**
- * A page representing a native, token, or NFT asset
- *
- * @param options0 - Component props
- * @param options0.params - Route parameters including chainId, asset, and id
- */
-const Asset = ({ params }: AssetProps) => {
+const Asset = () => {
+  const params = useParams<{
+    chainId: Hex;
+    asset: string;
+    id: string;
+  }>();
+  const location = useLocation();
+  const locationState = location.state as LocationState | undefined;
+
   const { chainId, asset, id } = params;
   const decodedAsset = asset ? decodeURIComponent(asset) : undefined;
 
   const nfts = useSelector((state) => getNFTsByChainId(state, chainId));
 
-  const token = useSelector((state) =>
+  const ownedToken = useSelector((state) =>
     getTokenByAccountAndAddressAndChainId(
       state,
       undefined, // Defaults to the selected account
@@ -39,6 +46,9 @@ const Asset = ({ params }: AssetProps) => {
       chainId as Hex | CaipChainId,
     ),
   );
+
+  // Use token from location state as fallback when user doesn't own the token
+  const token = ownedToken ?? locationState?.token;
 
   const nft: Nft = nfts.find(
     ({ address, tokenId }: { address: Hex; tokenId: string }) =>
@@ -70,7 +80,11 @@ const Asset = ({ params }: AssetProps) => {
     return <NativeAsset chainId={chainId} token={token} />;
   })();
 
-  return <div className="main-container asset__container">{content}</div>;
+  return (
+    <ScrollContainer className="main-container asset__container">
+      {content}
+    </ScrollContainer>
+  );
 };
 
 export default Asset;

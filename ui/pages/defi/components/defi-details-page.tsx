@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Navigate } from 'react-router-dom-v5-compat';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Display,
@@ -45,14 +45,10 @@ const useExtractUnderlyingTokens = (
     );
   }, [positions]);
 
-type DeFiPageProps = {
-  navigate: (to: string | number) => void;
-  params: { chainId: string; protocolId: string };
-};
-
-const DeFiPage = ({ navigate, params }: DeFiPageProps) => {
+const DeFiPage = () => {
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const { chainId, protocolId } = params;
+  const { chainId, protocolId } = useParams();
+  const navigate = useNavigate();
   const defiPositions = useSelector(getDefiPositions);
   const selectedAccount = useSelector(getSelectedAccount);
 
@@ -61,9 +57,11 @@ const DeFiPage = ({ navigate, params }: DeFiPageProps) => {
 
   // TODO: Get value in user's preferred currency
   const protocolPosition =
-    defiPositions[selectedAccount.address]?.[
-      chainId as keyof (typeof defiPositions)[string]
-    ]?.protocols[protocolId];
+    chainId && protocolId
+      ? defiPositions[selectedAccount.address]?.[
+          chainId as keyof (typeof defiPositions)[string]
+        ]?.protocols[protocolId]
+      : undefined;
 
   const extractedTokens = useMemo(() => {
     return Object.keys(protocolPosition?.positionTypes || {}).reduce(
@@ -94,11 +92,11 @@ const DeFiPage = ({ navigate, params }: DeFiPageProps) => {
         paddingLeft={2}
         display={Display.Flex}
         paddingBottom={4}
-        paddingTop={4}
+        className="pt-4 sticky top-0 z-10 bg-background-default"
       >
         <ButtonIcon
           data-testid="defi-details-page-back-button"
-          color={IconColor.iconAlternative}
+          color={IconColor.iconDefault}
           marginRight={1}
           size={ButtonIconSize.Sm}
           ariaLabel={t('back')}

@@ -1,14 +1,12 @@
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import { SURVEY_DATE, SURVEY_GMT } from '../../../helpers/constants/survey';
 import mockState from '../../../../test/data/mock-state.json';
-import configureStore from '../../../store/store';
-import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import {
   selectNewSrpAdded,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
   selectShowCopyAddressToast,
-  selectShowConnectAccountGroupToast,
+  selectShowInfuraSwitchToast,
 } from './selectors';
 
 const createMockSurveyState = (surveyLinkLastClickedOrClosed?: number) => ({
@@ -32,7 +30,7 @@ const createMockPrivacyPolicyState = (
 });
 
 const createMockAppState = (
-  showNewSrpAddedToast?: boolean,
+  showNewSrpAddedToast?: number | false,
   showCopyAddressToast?: boolean,
 ) => ({
   appState: {
@@ -41,32 +39,6 @@ const createMockAppState = (
     showCopyAddressToast,
   },
 });
-
-const createMockConnectAccountGroupState = (
-  origin: string | null,
-  unconnectedAccount: boolean,
-  permissionHistory: object = {},
-  subjects: object = {},
-) => {
-  const store = configureStore({
-    ...mockState,
-    activeTab: {
-      ...mockState.activeTab,
-      origin,
-    },
-    metamask: {
-      ...mockState.metamask,
-      alertEnabledness: {
-        ...mockState.metamask.alertEnabledness,
-        unconnectedAccount,
-      },
-      permissionHistory,
-      subjects,
-    },
-  });
-
-  return store.getState();
-};
 
 describe('#getShowSurveyToast', () => {
   const realDateNow = Date.now;
@@ -235,10 +207,16 @@ describe('#getShowPrivacyPolicyToast', () => {
 });
 
 describe('#getShowNewSrpAddedToast', () => {
-  it('returns true if the user has not seen the toast', () => {
-    const mockStateData = createMockAppState(true);
+  it('returns the wallet number when set', () => {
+    const mockStateData = createMockAppState(2);
     const result = selectNewSrpAdded(mockStateData);
-    expect(result).toBe(true);
+    expect(result).toBe(2);
+  });
+
+  it('returns false when not set', () => {
+    const mockStateData = createMockAppState(false);
+    const result = selectNewSrpAdded(mockStateData);
+    expect(result).toBe(false);
   });
 });
 
@@ -262,175 +240,32 @@ describe('#selectShowCopyAddressToast', () => {
   });
 });
 
-describe('#selectShowConnectAccountGroupToast', () => {
-  const mockAccountGroup = {
-    id: 'account-group-1',
-    type: 'hd',
-    metadata: {
-      name: 'Test Account Group',
-    },
-    walletName: 'Test Wallet',
-    walletId: 'test-wallet-1',
-    accounts: [
-      {
-        id: 'account-1',
-        address: '0x123',
-        type: 'eip155:eoa',
-        scopes: ['eip155:1', 'eip155:137'],
-        options: {},
-        methods: [],
-        metadata: {
-          name: 'Account 1',
-          keyring: { type: 'HD Key Tree' },
-          importTime: Date.now(),
-        },
+describe('#selectShowInfuraSwitchToast', () => {
+  it('returns true when showInfuraSwitchToast is true', () => {
+    const mockStateData = {
+      appState: {
+        showInfuraSwitchToast: true,
       },
-      {
-        id: 'account-2',
-        address: '0x456',
-        type: 'eip155:eoa',
-        scopes: ['eip155:1', 'eip155:137'],
-        options: {},
-        methods: [],
-        metadata: {
-          name: 'Account 2',
-          keyring: { type: 'HD Key Tree' },
-          importTime: Date.now(),
-        },
-      },
-    ],
-  } as unknown as AccountGroupWithInternalAccounts;
+    };
+    const result = selectShowInfuraSwitchToast(mockStateData);
+    expect(result).toBe(true);
+  });
 
-  it('returns false when account group is not supported by existing chain IDs', () => {
-    const mockStateData = createMockConnectAccountGroupState(
-      'https://example.com',
-      true,
-      {
-        'https://example.com': {
-          ethAccounts: {
-            accounts: {
-              '0x789': 1234567890,
-            },
-          },
-        },
+  it('returns false when showInfuraSwitchToast is false', () => {
+    const mockStateData = {
+      appState: {
+        showInfuraSwitchToast: false,
       },
-      {
-        'https://example.com': {
-          permissions: {
-            ethAccounts: {
-              caveats: [
-                {
-                  type: 'restrictReturnedAccounts',
-                  value: ['0x789'],
-                },
-              ],
-            },
-            'endowment:caip25': {
-              caveats: [
-                {
-                  type: 'caip25',
-                  value: {
-                    requiredScopes: {},
-                    optionalScopes: {
-                      'eip155:1': {
-                        methods: ['eth_sendTransaction'],
-                        notifications: [],
-                        accounts: ['eip155:1:0x789'],
-                      },
-                    },
-                  },
-                },
-              ],
-            },
-          },
-        },
-      },
-    );
-
-    const result = selectShowConnectAccountGroupToast(
-      mockStateData,
-      mockAccountGroup,
-    );
+    };
+    const result = selectShowInfuraSwitchToast(mockStateData);
     expect(result).toBe(false);
   });
 
-  it('returns false when unconnectedAccount alert is disabled', () => {
-    const mockStateData = createMockConnectAccountGroupState(
-      'https://example.com',
-      false,
-      {
-        'https://example.com': {
-          ethAccounts: {
-            accounts: {
-              '0x789': 1234567890,
-            },
-          },
-        },
-      },
-    );
-
-    const result = selectShowConnectAccountGroupToast(
-      mockStateData,
-      mockAccountGroup,
-    );
-    expect(result).toBe(false);
-  });
-
-  it('throws error when no active tab origin', () => {
-    const mockStateData = createMockConnectAccountGroupState(null, true);
-
-    // When origin is null, the selector throws an error trying to get permissions
-    expect(() => {
-      selectShowConnectAccountGroupToast(mockStateData, mockAccountGroup);
-    }).toThrow();
-  });
-
-  it('returns false when no connected accounts exist', () => {
-    const mockStateData = createMockConnectAccountGroupState(
-      'https://example.com',
-      true,
-    );
-
-    const result = selectShowConnectAccountGroupToast(
-      mockStateData,
-      mockAccountGroup,
-    );
-    expect(result).toBe(false);
-  });
-
-  it('returns false when account group is already connected', () => {
-    const mockStateData = createMockConnectAccountGroupState(
-      'https://example.com',
-      true,
-      {
-        'https://example.com': {
-          ethAccounts: {
-            accounts: {
-              '0x123': 1234567890,
-            },
-          },
-        },
-      },
-      {
-        'https://example.com': {
-          permissions: {
-            ethAccounts: {
-              caveats: [
-                {
-                  type: 'restrictReturnedAccounts',
-                  value: ['0x123'],
-                },
-              ],
-            },
-          },
-        },
-      },
-    );
-
-    const result = selectShowConnectAccountGroupToast(
-      mockStateData,
-      mockAccountGroup,
-    );
+  it('returns false when showInfuraSwitchToast is undefined', () => {
+    const mockStateData = {
+      appState: {},
+    };
+    const result = selectShowInfuraSwitchToast(mockStateData);
     expect(result).toBe(false);
   });
 });

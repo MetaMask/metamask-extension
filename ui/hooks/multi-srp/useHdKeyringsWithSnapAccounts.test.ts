@@ -1,5 +1,5 @@
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { getMetaMaskHdKeyrings } from '../../selectors';
 import { getInternalAccounts } from '../../selectors/accounts';
 import { createMockInternalAccount } from '../../../test/jest/mocks';

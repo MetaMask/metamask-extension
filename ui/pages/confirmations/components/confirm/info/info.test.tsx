@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { useParams } from 'react-router-dom-v5-compat';
+import { useParams } from 'react-router-dom';
 import {
   getMockAddEthereumChainConfirmState,
   getMockApproveConfirmState,
@@ -11,10 +11,15 @@ import {
   getMockTypedSignConfirmState,
   getMockTypedSignPermissionConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import {
+  renderWithConfirmContextProvider,
+  renderWithConfirmContext,
+} from '../../../../../../test/lib/confirmations/render-helpers';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
-import { isGatorPermissionsFeatureEnabled } from '../../../../../../shared/modules/environment';
+import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
+import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import Info from './info';
 
 jest.mock('../../simulation-details/useBalanceChanges', () => ({
@@ -53,15 +58,41 @@ jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
   useTransactionFocusEffect: jest.fn(),
 }));
 
-jest.mock('../../../../../../shared/modules/environment', () => ({
-  ...jest.requireActual('../../../../../../shared/modules/environment'),
-  isGatorPermissionsFeatureEnabled: jest.fn().mockReturnValue(true),
+jest.mock('../../../../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../../../../shared/lib/environment'),
+  getEnabledAdvancedPermissions: jest
+    .fn()
+    .mockReturnValue(['native-token-stream']),
 }));
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useParams: jest.fn(),
 }));
+
+const mockUseConfirmationNavigationOptions = jest.fn();
+jest.mock('../../../hooks/useConfirmationNavigation', () => ({
+  ...jest.requireActual('../../../hooks/useConfirmationNavigation'),
+  useConfirmationNavigationOptions: () =>
+    mockUseConfirmationNavigationOptions(),
+}));
+
+let mockConfirmContextValue: ReturnType<
+  typeof import('../../../context/confirm').useConfirmContext
+> | null = null;
+
+jest.mock('../../../context/confirm', () => {
+  const actual = jest.requireActual('../../../context/confirm');
+  return {
+    ...actual,
+    useConfirmContext: () => {
+      if (mockConfirmContextValue !== null) {
+        return mockConfirmContextValue;
+      }
+      return actual.useConfirmContext();
+    },
+  };
+});
 
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
@@ -75,6 +106,7 @@ describe('Info', () => {
       decimals: '4' as any,
     }));
     mockedUseParams.mockReturnValue({});
+    mockUseConfirmationNavigationOptions.mockReturnValue({ loader: null });
   });
 
   it('renders info section for personal sign request', () => {
@@ -99,12 +131,26 @@ describe('Info', () => {
   });
 
   it('throws an error if gator permissions feature is not enabled', () => {
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
+    // the requested permission type is `native-token-stream`
+    jest.mocked(getEnabledAdvancedPermissions).mockReturnValue([]);
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
-    expect(() => renderWithConfirmContextProvider(<Info />, mockStore)).toThrow(
-      'Gator permissions feature is not enabled',
+    expect(() => renderWithConfirmContext(<Info />, mockStore)).toThrow(
+      'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
+    );
+  });
+
+  it('throws an error if the specific permission type is not enabled', () => {
+    // the requested permission type is `native-token-stream`
+    jest
+      .mocked(getEnabledAdvancedPermissions)
+      .mockReturnValue(['erc20-token-stream']);
+
+    const state = getMockTypedSignPermissionConfirmState();
+    const mockStore = configureMockStore([])(state);
+    expect(() => renderWithConfirmContext(<Info />, mockStore)).toThrow(
+      'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
     );
   });
 
@@ -121,7 +167,7 @@ describe('Info', () => {
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
 
     await waitFor(() => {
-      expect(screen.getByText('Speed')).toBeInTheDocument();
+      expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
     });
 
     expect(container).toMatchSnapshot();
@@ -133,7 +179,7 @@ describe('Info', () => {
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
 
     await waitFor(() => {
-      expect(screen.getByText('Speed')).toBeInTheDocument();
+      expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
     });
 
     expect(container).toMatchSnapshot();
@@ -155,5 +201,60 @@ describe('Info', () => {
     expect(screen.getByText('example.com')).toBeInTheDocument();
     expect(screen.getByText('rpc.example.com')).toBeInTheDocument();
     expect(screen.getByText('RPC')).toBeInTheDocument();
+  });
+
+  describe('when no confirmation type exists', () => {
+    beforeEach(() => {
+      mockConfirmContextValue = {
+        currentConfirmation: undefined as never,
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: jest.fn(),
+        goBackTo: undefined,
+      };
+    });
+
+    afterEach(() => {
+      mockConfirmContextValue = null;
+    });
+
+    it('renders InfoSkeleton when loader is not set', () => {
+      mockUseConfirmationNavigationOptions.mockReturnValue({ loader: null });
+
+      const state = getMockPersonalSignConfirmState();
+      const mockStore = configureMockStore([])(state);
+      renderWithConfirmContextProvider(<Info />, mockStore);
+
+      expect(
+        screen.getByTestId('confirmation__info_skeleton'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders CustomAmountInfoSkeleton when loader is CustomAmount', () => {
+      mockUseConfirmationNavigationOptions.mockReturnValue({
+        loader: ConfirmationLoader.CustomAmount,
+      });
+
+      const state = getMockPersonalSignConfirmState();
+      const mockStore = configureMockStore([])(state);
+      renderWithConfirmContextProvider(<Info />, mockStore);
+
+      expect(
+        screen.getByTestId('custom-amount-info-skeleton'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders send skeleton when loader is Send', () => {
+      mockUseConfirmationNavigationOptions.mockReturnValue({
+        loader: ConfirmationLoader.Send,
+      });
+
+      const state = getMockPersonalSignConfirmState();
+      const mockStore = configureMockStore([])(state);
+      renderWithConfirmContextProvider(<Info />, mockStore);
+
+      expect(
+        screen.getByTestId('confirmation__send_info_skeleton'),
+      ).toBeInTheDocument();
+    });
   });
 });

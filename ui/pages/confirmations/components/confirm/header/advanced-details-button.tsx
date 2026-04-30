@@ -42,11 +42,13 @@ export const AdvancedDetailsButton = () => {
           : BackgroundColor.transparent
       }
       borderRadius={BorderRadius.MD}
-      marginRight={1}
       // hiding through visibility instead of rendering conditionally so the
       // header layout is not affected
       style={
-        currentConfirmation?.type === TransactionType.shieldSubscriptionApprove
+        currentConfirmation?.type ===
+          TransactionType.shieldSubscriptionApprove ||
+        currentConfirmation?.type === TransactionType.perpsDeposit ||
+        currentConfirmation?.type === TransactionType.perpsWithdraw
           ? { visibility: 'hidden' }
           : {}
       }

@@ -9,13 +9,13 @@ import {
 } from '@metamask/utils';
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
+import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getURLHostName,
@@ -25,7 +25,7 @@ import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { getTokenList, selectERC20TokensByChain } from '../../../selectors';
 import { showModal } from '../../../store/actions';
-import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
+import { getAssetDetailsAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
@@ -66,7 +66,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   // Fetch token data from tokenList
   const tokenData = Object.values(tokenList).find(
@@ -112,7 +112,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
 
   const blockExplorerLink = isEvm
     ? tokenTrackerLink
-    : getMultichainAccountUrl(
+    : getAssetDetailsAccountUrl(
         parseCaipAssetType(address as CaipAssetType).assetReference,
         multichainNetwork,
       );
@@ -162,7 +162,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
             });
             global.platform.openTab({ url: blockExplorerLink });
           }}
-          tokenSymbol={token.symbol}
+          token={token}
         />
       }
     />

@@ -42,7 +42,7 @@ const EnhancedReader = ({ handleScan }) => {
         })
         .catch(log.info);
     };
-  }, []);
+  }, [codeReader, handleScan]);
 
   return (
     <div className="qr-scanner__content__video-wrapper">

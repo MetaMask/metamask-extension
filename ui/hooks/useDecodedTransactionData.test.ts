@@ -7,7 +7,7 @@ import {
 
 import { Hex } from '@metamask/utils';
 import { renderHook } from '@testing-library/react-hooks';
-import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { decodeTransactionData } from '../store/actions';
 import {
   TRANSACTION_DATA_UNISWAP,

@@ -1,6 +1,6 @@
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { BtcScope } from '@metamask/keyring-api';
-import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import {
   tokenListStartPolling,
   tokenListStopPollingByPollingToken,
@@ -131,9 +131,6 @@ describe('useTokenListPolling', () => {
         useExternalServices: true,
         useTokenDetection: false,
         useTransactionSimulations: false,
-        preferences: {
-          petnamesEnabled: false,
-        },
         networkConfigurationsByChainId: {
           '0x1': {},
           '0x89': {},

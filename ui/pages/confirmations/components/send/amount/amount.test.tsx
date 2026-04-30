@@ -8,8 +8,9 @@ import {
   MOCK_NFT721,
   SOLANA_ASSET,
 } from '../../../../../../test/data/send/assets';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { Numeric } from '../../../../../../shared/lib/Numeric';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import * as BalanceFunctions from '../../../hooks/send/useBalance';
@@ -32,7 +33,7 @@ describe('Amount', () => {
   it('should render correctly', () => {
     const { getByText } = render();
 
-    expect(getByText('Amount')).toBeInTheDocument();
+    expect(getByText(messages.amount.message)).toBeInTheDocument();
   });
 
   it('call update value method when value is changed', () => {
@@ -221,7 +222,7 @@ describe('Amount', () => {
 
     const { getByRole, getByText } = render();
 
-    fireEvent.click(getByText('Max'));
+    fireEvent.click(getByText(messages.max.message));
     expect(getByRole('textbox')).toHaveValue('5');
     expect(mockUpdateValue).toHaveBeenCalledWith('5', true);
   });
@@ -243,7 +244,7 @@ describe('Amount', () => {
       >);
 
     const { getByText } = render();
-    fireEvent.click(getByText('Max'));
+    fireEvent.click(getByText(messages.max.message));
     expect(mockSetAmountInputMethodPressedMax).toHaveBeenCalled();
   });
 
@@ -331,6 +332,91 @@ describe('Amount', () => {
     });
 
     const { queryByText } = render();
-    expect(queryByText('Max')).not.toBeInTheDocument();
+    expect(queryByText(messages.max.message)).not.toBeInTheDocument();
+  });
+
+  describe('numeric input validation', () => {
+    it('accept valid numeric inputs', () => {
+      const mockUpdateValue = jest.fn();
+      jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+        updateValue: mockUpdateValue,
+        asset: {
+          ...EVM_ASSET,
+          decimals: 18,
+        },
+      } as unknown as SendContext.SendContextType);
+      jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
+        balance: '10.023',
+        rawBalanceNumeric: new Numeric('10.023', 10),
+      } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
+      jest
+        .spyOn(CurrencyConversions, 'useCurrencyConversions')
+        .mockReturnValue({
+          conversionSupportedForAsset: true,
+          fiatCurrencySymbol: '$',
+          fiatCurrencyName: 'usd',
+          getFiatValue: jest.fn(() => '20'),
+          getFiatDisplayValue: jest.fn(() => '$ 20.00'),
+          getNativeValue: jest.fn((val) => val),
+        });
+
+      const { getByRole } = render();
+      const input = getByRole('textbox');
+
+      const validInputs = ['123', '1.5', '0', '0.1'];
+
+      validInputs.forEach((value) => {
+        mockUpdateValue.mockClear();
+        fireEvent.change(input, { target: { value } });
+        expect(mockUpdateValue).toHaveBeenCalledWith(value);
+      });
+    });
+
+    it('reject non-numeric inputs', () => {
+      const mockUpdateValue = jest.fn();
+      jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+        updateValue: mockUpdateValue,
+        asset: EVM_ASSET,
+      } as unknown as SendContext.SendContextType);
+      jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
+        balance: '10.023',
+        rawBalanceNumeric: new Numeric('10.023', 10),
+      } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
+      jest
+        .spyOn(CurrencyConversions, 'useCurrencyConversions')
+        .mockReturnValue({
+          conversionSupportedForAsset: true,
+          fiatCurrencySymbol: '$',
+          fiatCurrencyName: 'usd',
+          getFiatValue: jest.fn(() => '20'),
+          getFiatDisplayValue: jest.fn(() => '$ 20.00'),
+          getNativeValue: jest.fn((val) => val),
+        });
+
+      const { getByRole } = render();
+      const input = getByRole('textbox');
+
+      const invalidInputs = [
+        'abc',
+        '1a2',
+        '1.2.3',
+        'a1',
+        '1-2',
+        '1+2',
+        '1e5',
+        '1@2',
+        '1#2',
+        '1$2',
+        '1%2',
+        '1&2',
+        '1*2',
+      ];
+
+      invalidInputs.forEach((value) => {
+        mockUpdateValue.mockClear();
+        fireEvent.change(input, { target: { value } });
+        expect(mockUpdateValue).not.toHaveBeenCalled();
+      });
+    });
   });
 });

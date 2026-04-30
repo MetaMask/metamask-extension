@@ -4,15 +4,14 @@
       "hiddenAccountList": [],
       "pinnedAccountList": []
     },
-    "AccountTracker": {
-      "accountsByChainId": {
-        "0x1": {}
-      }
-    },
     "AccountTreeController": {
       "accountGroupsMetadata": {},
+      "accountTree": {
+        "wallets": {}
+      },
       "accountWalletsMetadata": {},
-      "hasAccountTreeSyncingSyncedAtLeastOnce": false
+      "hasAccountTreeSyncingSyncedAtLeastOnce": false,
+      "selectedAccountGroup": ""
     },
     "AccountsController": {
       "internalAccounts": {
@@ -36,8 +35,11 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentAppVersion": "13.12.0",
-      "currentMigrationVersion": 183,
+      "currentMigrationVersion": 206,
+      "firstTimeInfo": {
+        "date": 0,
+        "version": "13.17.0"
+      },
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -49,8 +51,6 @@
       "canTrackWalletFundsObtained": true,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
-      "enableEnforcedSimulations": true,
-      "enforcedSimulationsSlippage": 10,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
       "isRampCardClosed": false,
@@ -58,15 +58,19 @@
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "musdConversionDismissedCtaKeys": [],
+      "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
+      "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
+      "pna25Acknowledged": false,
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
-      "recoveryPhraseReminderLastShown": 1764061389868,
+      "recoveryPhraseReminderLastShown": 7952515200000,
       "shieldEndingToastLastClickedOrClosed": null,
       "shieldPausedToastLastClickedOrClosed": null,
       "showAccountBanner": true,
@@ -82,11 +86,17 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
-    "ApprovalController": {},
+    "AssetsController": {
+      "assetPreferences": {},
+      "assetsBalance": {},
+      "assetsInfo": {},
+      "assetsPrice": {},
+      "customAssets": {},
+      "selectedCurrency": "usd"
+    },
     "AuthenticationController": {
       "isSignedIn": false
     },
-    "BridgeController": {},
     "BridgeStatusController": {
       "txHistory": {}
     },
@@ -95,7 +105,8 @@
       "claimsConfigurations": {
         "supportedNetworks": ["0x1", "0xe708"],
         "validSubmissionWindowDays": 21
-      }
+      },
+      "drafts": []
     },
     "CurrencyController": {
       "currencyRates": {
@@ -107,12 +118,9 @@
       },
       "currentCurrency": "usd"
     },
-    "DeFiPositionsController": {},
-    "DecryptMessageController": {},
     "DelegationController": {
       "delegations": {}
     },
-    "EncryptionPublicKeyController": {},
     "EnsController": {
       "ensEntries": {
         "0x1": {
@@ -168,8 +176,8 @@
       "nonRPCGasFeeApisDisabled": false
     },
     "GatorPermissionsController": {
-      "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
-      "isGatorPermissionsEnabled": false
+      "grantedPermissions": [],
+      "lastSyncedTimestamp": -1
     },
     "KeyringController": {},
     "LoggingController": {
@@ -201,7 +209,8 @@
         }
       ],
       "traits": {
-        "install_date_ext": "2025-11-25"
+        "install_date_ext": "2026-01-22",
+        "storage_kind": "split"
       }
     },
     "MetaMetricsDataDeletionController": {
@@ -335,17 +344,17 @@
             }
           ]
         },
-        "0x18c6": {
-          "blockExplorerUrls": ["https://megaexplorer.xyz"],
-          "chainId": "0x18c6",
+        "0x18c7": {
+          "blockExplorerUrls": ["https://megaeth-testnet-v2.blockscout.com"],
+          "chainId": "0x18c7",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
-          "name": "Mega Testnet",
+          "name": "MegaETH Testnet",
           "nativeCurrency": "MegaETH",
           "rpcEndpoints": [
             {
               "failoverUrls": [],
-              "networkClientId": "megaeth-testnet",
+              "networkClientId": "megaeth-testnet-v2",
               "type": "custom",
               "url": "https://carrot.megaeth.com/rpc"
             }
@@ -525,7 +534,7 @@
         },
         "eip155": {
           "0x1": true,
-          "0x18c6": false,
+          "0x18c7": false,
           "0x2105": true,
           "0x279f": false,
           "0x38": true,
@@ -546,6 +555,19 @@
           "tron:3448148188": false,
           "tron:728126428": true
         }
+      },
+      "nativeAssetIdentifiers": {
+        "eip155:1": "eip155:1/slip44:60",
+        "eip155:10": "eip155:10/slip44:60",
+        "eip155:10143": "eip155:10143/slip44:60",
+        "eip155:11155111": "eip155:11155111/slip44:60",
+        "eip155:137": "eip155:137/slip44:60",
+        "eip155:42161": "eip155:42161/slip44:60",
+        "eip155:56": "eip155:56/slip44:60",
+        "eip155:59141": "eip155:59141/slip44:1",
+        "eip155:59144": "eip155:59144/slip44:60",
+        "eip155:6343": "eip155:6343/slip44:1",
+        "eip155:8453": "eip155:8453/slip44:60"
       }
     },
     "NetworkOrderController": {
@@ -572,6 +594,9 @@
       "completedOnboarding": false,
       "firstTimeFlowType": null,
       "seedPhraseBackedUp": null
+    },
+    "PasskeyController": {
+      "passkeyRecord": null
     },
     "PPOMController": {
       "storageMetadata": [],
@@ -636,6 +661,44 @@
             }
           }
         },
+        "https://app-beta.signer.cubist.dev": {
+          "origin": "https://app-beta.signer.cubist.dev",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389884,
+              "id": "Xm8kPqR3vDnYj2cAzBw4T",
+              "invoker": "https://app-beta.signer.cubist.dev",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://app-gamma.signer.cubist.dev": {
+          "origin": "https://app-gamma.signer.cubist.dev",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389884,
+              "id": "Lh6nWsQ9uEoYk5bCxDm7G",
+              "invoker": "https://app-gamma.signer.cubist.dev",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
         "https://app.bitgo-test.com": {
           "origin": "https://app.bitgo-test.com",
           "permissions": {
@@ -689,6 +752,25 @@
               "date": 1764061389877,
               "id": "fYsfFXNA_41cOKy-O4dN0",
               "invoker": "https://app.metamask.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://app.signer.cubist.dev": {
+          "origin": "https://app.signer.cubist.dev",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389884,
+              "id": "Tp4mNrJ7yFwZh8eBvCk2H",
+              "invoker": "https://app.signer.cubist.dev",
               "parentCapability": "wallet_snap"
             }
           }
@@ -1514,6 +1596,9 @@
                       "https://console.dev.mpcvault.com",
                       "https://saturn-custody-ui.metamask-institutional.io",
                       "https://console.mpcvault.com",
+                      "https://app-beta.signer.cubist.dev",
+                      "https://app-gamma.signer.cubist.dev",
+                      "https://app.signer.cubist.dev",
                       "https://app.bitgo.com",
                       "https://app.bitgo-test.com",
                       "https://apps-portal.safe.global",
@@ -1869,7 +1954,42 @@
     "PermissionLogController": {
       "permissionHistory": {}
     },
+    "PerpsController": {
+      "accountState": null,
+      "activeProvider": "hyperliquid",
+      "depositRequests": [],
+      "hasPlacedFirstOrder": {
+        "mainnet": false,
+        "testnet": false
+      },
+      "hip3ConfigVersion": 0,
+      "isFirstTimeUser": {
+        "mainnet": true,
+        "testnet": true
+      },
+      "isTestnet": false,
+      "marketFilterPreferences": {
+        "direction": "desc",
+        "optionId": "volume"
+      },
+      "perpsBalances": {},
+      "tradeConfigurations": {
+        "mainnet": {},
+        "testnet": {}
+      },
+      "watchlistMarkets": {
+        "mainnet": [],
+        "testnet": []
+      },
+      "withdrawalProgress": {
+        "activeWithdrawalId": null,
+        "lastUpdated": 0,
+        "progress": 0
+      },
+      "withdrawalRequests": []
+    },
     "PhishingController": {
+      "addressScanCache": {},
       "c2DomainBlocklistLastFetched": 0,
       "hotlistLastFetched": 0,
       "phishingLists": [],
@@ -1887,31 +2007,29 @@
       "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
-      "identities": {},
       "ipfsGateway": "dweb.link",
       "isIpfsGatewayEnabled": true,
       "isMultiAccountBalancesEnabled": true,
       "knownMethodData": {},
       "ledgerTransportType": "webhid",
-      "lostIdentities": {},
       "manageInstitutionalWallets": false,
       "openSeaEnabled": true,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
+        "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "hideZeroBalanceTokens": false,
-        "petnamesEnabled": true,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
+        "showDefaultAddress": true,
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": false,
         "showNativeTokenAsMainBalance": false,
         "showTestNetworks": false,
         "skipDeepLinkInterstitial": false,
-        "smartAccountOptIn": true,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {},
@@ -1924,16 +2042,17 @@
         "useSidePanelAsDefault": false
       },
       "referrals": {
+        "asterdex": {},
+        "gmx": {},
         "hyperliquid": {}
       },
       "securityAlertsEnabled": true,
-      "selectedAddress": "",
+      "showSidePanelMigrationToast": false,
       "snapRegistryList": {},
       "snapsAddSnapAccountModalDismissed": false,
       "theme": "os",
       "use4ByteResolution": true,
       "useAddressBarEnsResolution": true,
-      "useBlockie": false,
       "useCurrencyRateCheck": true,
       "useExternalNameSources": true,
       "useExternalServices": true,
@@ -1945,13 +2064,20 @@
       "useTransactionSimulations": true,
       "watchEthereumAccountEnabled": false
     },
+    "ProfileMetricsController": {
+      "initialEnqueueCompleted": false,
+      "syncQueue": {}
+    },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
+      "localOverrides": {},
+      "rawRemoteFeatureFlags": {},
       "remoteFeatureFlags": {}
     },
     "RewardsController": {
       "rewardsAccounts": {},
       "rewardsActiveAccount": null,
+      "rewardsPointsEstimateHistory": [],
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
       "rewardsSubscriptionTokens": {},
@@ -1966,9 +2092,12 @@
         "http://localhost:3000": "mainnet",
         "http://localhost:8000": "mainnet",
         "https://alpha.mycactus.io": "mainnet",
+        "https://app-beta.signer.cubist.dev": "mainnet",
+        "https://app-gamma.signer.cubist.dev": "mainnet",
         "https://app.bitgo-test.com": "mainnet",
         "https://app.bitgo.com": "mainnet",
         "https://app.metamask.io": "mainnet",
+        "https://app.signer.cubist.dev": "mainnet",
         "https://apps-portal.safe.global": "mainnet",
         "https://console.dev.mpcvault.com": "mainnet",
         "https://console.fireblocks.io": "mainnet",
@@ -2001,6 +2130,7 @@
         "npm:@metamask/gator-permissions-snap": "mainnet",
         "npm:@metamask/institutional-wallet-snap": "mainnet",
         "npm:@metamask/message-signing-snap": "mainnet",
+        "npm:@metamask/permissions-kernel-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
         "npm:@metamask/tron-wallet-snap": "mainnet"
       }
@@ -2009,21 +2139,19 @@
       "coverageResults": {},
       "orderedTransactionHistory": []
     },
-    "SignatureController": {},
-    "SmartTransactionsController": {},
     "SnapController": {
       "snapStates": {},
       "snaps": {},
       "unencryptedSnapStates": {}
     },
-    "SnapInsightsController": {},
     "SnapInterfaceController": {
       "interfaces": {}
     },
-    "SnapsRegistry": {
+    "SnapRegistryController": {
       "database": null,
       "databaseUnavailable": false,
-      "lastUpdated": null
+      "lastUpdated": null,
+      "signature": null
     },
     "SubjectMetadataController": {
       "subjectMetadata": {
@@ -2101,13 +2229,8 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "SwapsController": {},
     "TokenBalancesController": {
       "tokenBalances": {}
-    },
-    "TokenListController": {
-      "preventPollingOnNetworkRestart": false,
-      "tokensChainsCache": {}
     },
     "TokenRatesController": {
       "marketData": {}
@@ -2132,13 +2255,10 @@
       "isBackupAndSyncEnabled": true,
       "isContactSyncingEnabled": true
     },
-    "config": {},
-    "firstTimeInfo": {
-      "date": 1764061389865,
-      "version": "13.12.0"
-    }
+    "config": {}
   },
   "meta": {
-    "version": 183
+    "storageKind": "split",
+    "version": 206
   }
 }

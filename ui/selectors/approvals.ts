@@ -5,12 +5,17 @@ import {
 import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import { Json } from '@metamask/utils';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
+import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
+import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { getRemoteFeatureFlags } from './remote-feature-flags';
+import { EMPTY_OBJECT } from './shared';
 
 export type ApprovalsMetaMaskState = {
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
+    remoteFeatureFlags?: Record<string, unknown>;
   };
 };
 
@@ -54,13 +59,31 @@ export function getApprovalFlows(state: ApprovalsMetaMaskState) {
   return state.metamask.approvalFlows;
 }
 
-export function getPendingApprovals(state: ApprovalsMetaMaskState) {
-  return Object.values(state.metamask.pendingApprovals ?? {});
+export function selectHasApprovalFlows(state: ApprovalsMetaMaskState) {
+  return (state.metamask.approvalFlows?.length ?? 0) > 0;
 }
 
-export function pendingApprovalsSortedSelector(state: ApprovalsMetaMaskState) {
-  return getPendingApprovals(state).sort((a1, a2) => a1.time - a2.time);
-}
+const getPendingApprovalsObject = (state: ApprovalsMetaMaskState) =>
+  state.metamask.pendingApprovals ?? EMPTY_OBJECT;
+
+export const getPendingApprovals = createSelector(
+  getPendingApprovalsObject,
+  (approvals) => Object.values(approvals),
+);
+
+export const pendingApprovalsSortedSelector = createSelector(
+  getPendingApprovals,
+  (approvals) => [...approvals].sort((a1, a2) => a1.time - a2.time),
+);
+
+const getSkipSmartTransactionStatusPage = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    getBooleanFeatureFlag(
+      remoteFeatureFlags?.extensionSkipTransactionStatusPage,
+      false,
+    ),
+);
 
 /**
  * Returns pending approvals sorted by time for use in confirmation navigation.
@@ -68,8 +91,17 @@ export function pendingApprovalsSortedSelector(state: ApprovalsMetaMaskState) {
  */
 export const selectPendingApprovalsForNavigation = createDeepEqualSelector(
   pendingApprovalsSortedSelector,
-  (sortedPendingApprovals) =>
+  getSkipSmartTransactionStatusPage,
+  (sortedPendingApprovals, skipSmartTransactionStatusPage) =>
     sortedPendingApprovals.filter((approval, index) => {
+      if (
+        skipSmartTransactionStatusPage &&
+        approval.type ===
+          SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
+      ) {
+        return false;
+      }
+
       if (
         isWatchNftApproval(approval) &&
         sortedPendingApprovals.findIndex(isWatchNftApproval) !== index
@@ -88,15 +120,10 @@ export const selectPendingApprovalsForNavigation = createDeepEqualSelector(
     }),
 );
 
-const internalSelectPendingApproval = createSelector(
+export const internalSelectPendingApproval = createSelector(
   getPendingApprovals,
   (_state: ApprovalsMetaMaskState, id: string) => id,
   (approvals, id) => approvals.find(({ id: approvalId }) => approvalId === id),
-);
-
-export const selectPendingApproval = createDeepEqualSelector(
-  internalSelectPendingApproval,
-  (approval) => approval,
 );
 
 export const getApprovalsByOrigin = (

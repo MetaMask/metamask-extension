@@ -23,6 +23,8 @@ export type Asset = {
     [key: string]: unknown;
   };
   decimals?: number | undefined;
+  disabled?: boolean;
+  disabledMessage?: string;
   fiat?: {
     balance?: number;
     currency?: string;
@@ -30,6 +32,7 @@ export type Asset = {
   };
   image?: string;
   isNative?: boolean;
+  isSelected?: boolean;
   name?: string | undefined;
   networkName?: string;
   networkImage?: string;
@@ -48,6 +51,7 @@ export type RecipientValidationResult = {
     similarTo: string;
   }[];
   error?: string;
+  allowAcknowledge?: boolean;
   resolvedLookup?: string;
   warning?: string;
   toAddressValidated?: string;

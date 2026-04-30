@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../fixtures/fixture-builder');
-const { withFixtures, unlockWallet } = require('../helpers');
+const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
+const { login } = require('../page-objects/flows/login.flow');
+const { withFixtures } = require('../helpers');
 const { DAPP_URL } = require('../constants');
 
 // https://github.com/thenativeweb/uuidv4/blob/bdcf3a3138bef4fb7c51f389a170666f9012c478/lib/uuidv4.ts#L5
@@ -14,13 +15,13 @@ describe('EIP-6963 Provider', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await login(driver);
 
         await driver.openNewPage(DAPP_URL);
         await driver.executeScript(`

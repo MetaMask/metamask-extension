@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useTheme } from '../../../hooks/useTheme';
 

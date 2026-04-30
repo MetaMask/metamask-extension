@@ -2,6 +2,7 @@ import browser from 'webextension-polyfill';
 import {
   PLATFORM_CHROME,
   PLATFORM_EDGE,
+  PLATFORM_FIREFOX,
   METAMASK_BETA_CHROME_ID,
   METAMASK_PROD_CHROME_ID,
   METAMASK_FLASK_CHROME_ID,
@@ -20,6 +21,7 @@ describe('multiple instances running detector', function () {
   const sendMessageStub = jest.fn();
 
   beforeEach(function () {
+    sendMessageStub.mockClear();
     jest.replaceProperty(browser, 'runtime', {
       sendMessage: sendMessageStub,
       id: METAMASK_BETA_CHROME_ID,
@@ -50,14 +52,27 @@ describe('multiple instances running detector', function () {
       ).toHaveBeenCalledWith(METAMASK_MMI_PROD_CHROME_ID, PING_MESSAGE);
     });
 
-    it('should not send ping message if platform is not Chrome or Firefox', async function () {
-      sendMessageStub.mockRestore();
-
+    it('should send ping message using Chrome IDs for non-Firefox browsers', async function () {
       jest.spyOn(util, 'getPlatform').mockReturnValue(PLATFORM_EDGE);
 
       await checkForMultipleVersionsRunning();
 
-      expect(sendMessageStub).not.toHaveBeenCalled();
+      // Edge and other Chromium browsers use Chrome Web Store IDs
+      expect(sendMessageStub.mock.calls).toHaveLength(4);
+      expect(
+        sendMessageStub.mock.instances[0].sendMessage,
+      ).toHaveBeenCalledWith(METAMASK_PROD_CHROME_ID, PING_MESSAGE);
+    });
+
+    it('should send ping message using Firefox IDs for Firefox', async function () {
+      jest.spyOn(util, 'getPlatform').mockReturnValue(PLATFORM_FIREFOX);
+
+      await checkForMultipleVersionsRunning();
+
+      // Firefox uses its own extension IDs (3 builds: beta, prod, flask)
+      // Current runtime.id is METAMASK_BETA_CHROME_ID which won't match Firefox IDs,
+      // so all 3 Firefox IDs will be pinged
+      expect(sendMessageStub.mock.calls).toHaveLength(3);
     });
 
     it('should not expose an error outside if sendMessage throws', async function () {

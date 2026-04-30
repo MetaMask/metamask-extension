@@ -8,7 +8,7 @@ import {
   getSelectedAccountCachedBalance,
   getTokensMarketData,
 } from '../../../../../selectors';
-import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
   getConversionRate,
   getCurrentCurrency,
@@ -29,7 +29,7 @@ jest.mock('../../../../../selectors', () => ({
   getTokensMarketData: jest.fn(),
 }));
 
-jest.mock('../../../../../../shared/modules/selectors/networks', () => ({
+jest.mock('../../../../../../shared/lib/selectors/networks', () => ({
   getCurrentChainId: jest.fn(),
 }));
 

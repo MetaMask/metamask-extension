@@ -9,7 +9,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
     />
     <div>
       <div
-        class="mm-box confirm-add-suggested-nft page-container confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        class="mm-box confirm-add-suggested-nft page-container h-full confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
       >
         <div
           class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
@@ -24,11 +24,10 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 class="box box--display-flex box--flex-direction-row box--align-items-center"
               >
                 <div
-                  class=""
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 >
                   <div
-                    class="identicon"
-                    style="height: 32px; width: 32px; border-radius: 16px;"
+                    class="flex [&>div]:!rounded-none"
                   >
                     <div
                       style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
@@ -224,7 +223,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
   </body>,
   "container": <div>
     <div
-      class="mm-box confirm-add-suggested-nft page-container confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+      class="mm-box confirm-add-suggested-nft page-container h-full confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
     >
       <div
         class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
@@ -239,11 +238,10 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               class="box box--display-flex box--flex-direction-row box--align-items-center"
             >
               <div
-                class=""
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
               >
                 <div
-                  class="identicon"
-                  style="height: 32px; width: 32px; border-radius: 16px;"
+                  class="flex [&>div]:!rounded-none"
                 >
                   <div
                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"

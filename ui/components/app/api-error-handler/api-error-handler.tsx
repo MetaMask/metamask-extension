@@ -1,5 +1,4 @@
-import React from 'react';
-import browser from 'webextension-polyfill';
+import React, { useEffect } from 'react';
 import {
   Box,
   Button,
@@ -11,11 +10,35 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { ShieldUnexpectedErrorEventLocationEnum } from '../../../../shared/constants/subscriptions';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import { reloadExtensionFromUi } from '../../../helpers/utils/reload-extension-from-ui';
 
-const ApiErrorHandler = ({ className = '' }: { className?: string }) => {
+type ApiErrorHandlerProps = {
+  className?: string;
+  error: Error;
+  location: ShieldUnexpectedErrorEventLocationEnum;
+  message?: string;
+};
+
+const ApiErrorHandler = ({
+  className = '',
+  error,
+  location,
+  message,
+}: ApiErrorHandlerProps) => {
   const t = useI18nContext();
+  const { captureShieldUnexpectedErrorEvent } = useSubscriptionMetrics();
+
+  useEffect(() => {
+    captureShieldUnexpectedErrorEvent({
+      errorMessage: error?.message || 'Unknown error',
+      location,
+    });
+    // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps -- we only want to capture the event once when the component is mounted
+  }, []);
 
   return (
     <Box
@@ -29,13 +52,17 @@ const ApiErrorHandler = ({ className = '' }: { className?: string }) => {
         name={IconName.Error}
         color={IconColor.IconAlternative}
       />
-      <Text variant={TextVariant.BodyMd}>{t('shieldPlanErrorText')}</Text>
+      <Text variant={TextVariant.BodyMd}>
+        {message ?? t('shieldPlanErrorText')}
+      </Text>
       <Button
         className="w-full"
         size={ButtonSize.Lg}
         variant={ButtonVariant.Primary}
         // this reloads the entire extension
-        onClick={() => browser.runtime.reload()}
+        onClick={async () => {
+          await reloadExtensionFromUi();
+        }}
       >
         {t('tryAgain')}
       </Button>

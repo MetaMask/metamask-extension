@@ -35,11 +35,16 @@ class AdvancedSettings {
   };
 
   private readonly hexDataToggle = {
-    testId: 'advanced-setting-hex-data',
+    testId: 'transactions-show-hex-data-toggle',
   };
 
-  private readonly showConversionOnTestnetsToggle =
-    '.show-fiat-on-testnets-toggle';
+  private readonly showConversionOnTestnetsToggle = {
+    xpath:
+      "//label[contains(@class,'toggle-button')][.//*[@data-testid='developer-options-show-testnet-conversion-toggle']]",
+  };
+
+  private readonly showTestnetsToggle =
+    '[data-testid="advanced-setting-show-testnets"] .toggle-button';
 
   private readonly smartTransactionsToggle =
     '[data-testid="settings-page-stx-opt-in-toggle"]';
@@ -123,6 +128,11 @@ class AdvancedSettings {
   async toggleShowConversionOnTestnets(): Promise<void> {
     console.log('Toggling show conversion on testnets in advanced settings');
     await this.driver.clickElement(this.showConversionOnTestnetsToggle);
+  }
+
+  async toggleShowTestnets(): Promise<void> {
+    console.log('Toggling show testnets in advanced settings');
+    await this.driver.clickElement(this.showTestnetsToggle);
   }
 
   async toggleSmartTransactions(): Promise<void> {

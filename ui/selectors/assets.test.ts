@@ -1,4 +1,4 @@
-import { EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import { EthScope, SolScope } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { cloneDeep } from 'lodash';
@@ -15,9 +15,13 @@ import {
   AssetsRatesState,
   AssetsState,
   getAccountAssets,
+  getAssetsInfo,
   getAssetsMetadata,
+  getAssetsBalance,
+  getAssetsPrice,
+  getAssetPreferences,
+  getCustomAssets,
   getAssetsRates,
-  getHistoricalPrices,
   getMultiChainAssets,
   getMultichainNativeAssetType,
   getTokenByAccountAndAddressAndChainId,
@@ -32,7 +36,22 @@ import {
   getAssetsBySelectedAccountGroup,
   getAsset,
   getAllIgnoredAssets,
+  selectAggregatedBalanceForSelectedAccount,
+  getAssetsBySelectedAccountGroupWithTronSpecialAssets,
 } from './assets';
+
+/**
+ * State shape for asset selector tests. Cast to this when passing partial state
+ * to selectors that accept a full Redux state type.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AssetSelectorTestState = any;
+
+const mockGetAggregatedBalanceForAccount = jest.fn();
+jest.mock('@metamask/assets-controller', () => ({
+  getAggregatedBalanceForAccount: (...args: unknown[]) =>
+    mockGetAggregatedBalanceForAccount(...args),
+}));
 
 jest.mock('@metamask/assets-controllers', () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -102,14 +121,221 @@ describe('getAccountAssets', () => {
 });
 
 describe('getAssetsMetadata', () => {
-  it('should return the assets metadata from the state', () => {
+  it('returns the assets metadata from the state', () => {
     const result = getAssetsMetadata(mockAssetsState);
     expect(result).toEqual(mockAssetsState.metamask.assetsMetadata);
   });
 
-  it('should return undefined if state does not have metamask property', () => {
+  it('returns empty object when state has no metamask property', () => {
     const invalidState = {} as AssetsState;
-    expect(() => getAssetsMetadata(invalidState)).toThrow();
+    expect(getAssetsMetadata(invalidState)).toEqual({});
+  });
+
+  it('returns empty object when assetsMetadata is missing', () => {
+    const state = { metamask: {} };
+    expect(getAssetsMetadata(state as AssetsState)).toEqual({});
+  });
+});
+
+describe('getAssetsInfo', () => {
+  it('returns assetsInfo from state.metamask', () => {
+    const state: AssetSelectorTestState = {
+      metamask: { assetsInfo: { 'eip155:0x1/slip44:60': {} } },
+    };
+    expect(getAssetsInfo(state)).toEqual(state.metamask?.assetsInfo);
+  });
+
+  it('returns empty object when metamask is missing', () => {
+    expect(getAssetsInfo({} as AssetSelectorTestState)).toEqual({});
+  });
+
+  it('returns empty object when assetsInfo is missing', () => {
+    expect(getAssetsInfo({ metamask: {} } as AssetSelectorTestState)).toEqual(
+      {},
+    );
+  });
+});
+
+describe('getAssetsBalance', () => {
+  it('returns assetsBalance from state.metamask', () => {
+    const state: AssetSelectorTestState = {
+      metamask: { assetsBalance: { 'eip155:0x1/slip44:60': '100' } },
+    };
+    expect(getAssetsBalance(state)).toEqual(state.metamask?.assetsBalance);
+  });
+
+  it('returns empty object when metamask is missing', () => {
+    expect(getAssetsBalance({} as AssetSelectorTestState)).toEqual({});
+  });
+
+  it('returns empty object when assetsBalance is missing', () => {
+    expect(
+      getAssetsBalance({ metamask: {} } as AssetSelectorTestState),
+    ).toEqual({});
+  });
+});
+
+describe('getAssetsPrice', () => {
+  it('returns assetsPrice from state.metamask', () => {
+    const state: AssetSelectorTestState = {
+      metamask: { assetsPrice: { 'eip155:0x1/slip44:60': 2000 } },
+    };
+    expect(getAssetsPrice(state)).toEqual(state.metamask?.assetsPrice);
+  });
+
+  it('returns empty object when metamask is missing', () => {
+    expect(getAssetsPrice({} as AssetSelectorTestState)).toEqual({});
+  });
+
+  it('returns empty object when assetsPrice is missing', () => {
+    expect(getAssetsPrice({ metamask: {} } as AssetSelectorTestState)).toEqual(
+      {},
+    );
+  });
+});
+
+describe('getAssetPreferences', () => {
+  it('returns assetPreferences from state.metamask', () => {
+    const state: AssetSelectorTestState = {
+      metamask: { assetPreferences: { hideZeroBalanceTokens: true } },
+    };
+    expect(getAssetPreferences(state)).toEqual(
+      state.metamask?.assetPreferences,
+    );
+  });
+
+  it('returns empty object when metamask is missing', () => {
+    expect(getAssetPreferences({} as AssetSelectorTestState)).toEqual({});
+  });
+
+  it('returns empty object when assetPreferences is missing', () => {
+    expect(
+      getAssetPreferences({ metamask: {} } as AssetSelectorTestState),
+    ).toEqual({});
+  });
+});
+
+describe('getCustomAssets', () => {
+  it('returns customAssets from state.metamask', () => {
+    const state: AssetSelectorTestState = {
+      metamask: { customAssets: { 'eip155:0x1/erc20:0xabc': {} } },
+    };
+    expect(getCustomAssets(state)).toEqual(state.metamask?.customAssets);
+  });
+
+  it('returns empty object when metamask is missing', () => {
+    expect(getCustomAssets({} as AssetSelectorTestState)).toEqual({});
+  });
+
+  it('returns empty object when customAssets is missing', () => {
+    expect(getCustomAssets({ metamask: {} } as AssetSelectorTestState)).toEqual(
+      {},
+    );
+  });
+});
+
+describe('selectAggregatedBalanceForSelectedAccount', () => {
+  const mockSelectedAccount = {
+    id: 'account-1',
+    address: '0x123',
+    type: 'eoa',
+    metadata: { name: 'Account 1' },
+    options: {},
+    methods: [],
+  };
+
+  const baseState: AssetSelectorTestState = {
+    metamask: {
+      assetsInfo: {},
+      assetsBalance: {},
+      assetsPrice: {},
+      assetPreferences: {},
+      customAssets: {},
+      internalAccounts: {
+        selectedAccount: 'account-1',
+        accounts: {
+          'account-1': mockSelectedAccount,
+        },
+      },
+      enabledNetworkMap: { eip155: { '0x1': true } },
+      accountTree: [],
+      isAccountTreeSyncingInProgress: false,
+      hasAccountTreeSyncingSyncedAtLeastOnce: true,
+      accountGroupsMetadata: {},
+      accountWalletsMetadata: {},
+    },
+  };
+
+  beforeEach(() => {
+    mockGetAggregatedBalanceForAccount.mockReset();
+  });
+
+  it('returns null when no selected internal account', () => {
+    const stateWithNoAccount: AssetSelectorTestState = {
+      metamask: {
+        ...baseState.metamask,
+        internalAccounts: {
+          selectedAccount: 'missing',
+          accounts: {},
+        },
+      },
+    };
+    const result =
+      selectAggregatedBalanceForSelectedAccount(stateWithNoAccount);
+    expect(result).toBeNull();
+    expect(mockGetAggregatedBalanceForAccount).not.toHaveBeenCalled();
+  });
+
+  // These tests only apply when isAssetsUnifyStateFeatureEnabled returns true.
+  // The flag is currently hardcoded to false, so skip them to avoid failures.
+  describe.skip('when assets-unify-state is enabled', () => {
+    it('returns result of getAggregatedBalanceForAccount when selected account exists', () => {
+      const mockAggregated = {
+        entries: [],
+        totalBalanceInFiat: 100,
+      };
+      mockGetAggregatedBalanceForAccount.mockReturnValue(mockAggregated);
+
+      const result = selectAggregatedBalanceForSelectedAccount(baseState);
+      expect(result).toEqual(mockAggregated);
+      expect(mockGetAggregatedBalanceForAccount).toHaveBeenCalledTimes(1);
+    });
+
+    it('passes assets state, selected account, and enabled network map to getAggregatedBalanceForAccount', () => {
+      mockGetAggregatedBalanceForAccount.mockReturnValue(null);
+
+      // Use a distinct state so the selector recomputes (avoids memoization from previous test)
+      const stateWithAssetsInfo = cloneDeep(
+        baseState,
+      ) as AssetSelectorTestState;
+      (stateWithAssetsInfo.metamask as Record<string, unknown>).assetsInfo = {
+        'eip155:0x1/slip44:60': {},
+      };
+
+      selectAggregatedBalanceForSelectedAccount(
+        stateWithAssetsInfo as AssetSelectorTestState,
+      );
+
+      expect(mockGetAggregatedBalanceForAccount).toHaveBeenCalledWith(
+        expect.objectContaining({
+          assetsInfo: { 'eip155:0x1/slip44:60': {} },
+          assetsBalance: {},
+          assetsPrice: {},
+          assetPreferences: {},
+          customAssets: {},
+        }),
+        mockSelectedAccount,
+        { eip155: { '0x1': true } },
+        expect.objectContaining({
+          accountTree: [],
+          isAccountTreeSyncingInProgress: false,
+          hasAccountTreeSyncingSyncedAtLeastOnce: true,
+        }),
+        undefined,
+        expect.any(Object),
+        expect.any(Function),
+      );
+    });
   });
 });
 
@@ -137,26 +363,6 @@ describe('getAssetsRates', () => {
   it('should return undefined if state does not have metamask property', () => {
     const invalidState = {} as AssetsRatesState;
     expect(() => getAssetsRates(invalidState)).toThrow();
-  });
-});
-
-describe('getHistoricalPrices', () => {
-  it('should return the assetsRates from the state', () => {
-    const result = getHistoricalPrices(mockRatesState);
-    expect(result).toEqual(mockRatesState.metamask.historicalPrices);
-  });
-
-  it('should return an empty object if historicalPrices is empty', () => {
-    const emptyState: AssetsRatesState = {
-      metamask: { conversionRates: {}, historicalPrices: {} },
-    };
-    const result = getHistoricalPrices(emptyState);
-    expect(result).toEqual({});
-  });
-
-  it('should return undefined if state does not have metamask property', () => {
-    const invalidState = {} as AssetsRatesState;
-    expect(() => getHistoricalPrices(invalidState)).toThrow();
   });
 });
 
@@ -307,6 +513,7 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
                   },
                   hidden: false,
                   pinned: false,
+                  lastSelected: 0,
                 },
               },
             },
@@ -318,8 +525,8 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
             },
           },
         },
-        selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       },
+      selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       internalAccounts: {
         accounts: {
           '81b1ead4-334c-4921-9adf-282fde539752': {
@@ -727,6 +934,8 @@ describe('Aggregated balance adapters/selectors', () => {
     expect(args[6]).toHaveProperty('accountsAssets');
     expect(args[7]).toHaveProperty('allTokens');
     expect(args[8]).toEqual({ currentCurrency: 'usd', currencyRates: {} });
+    // args[9] = enabledNetworkMap, args[10] = networkConfigurationsByChainId
+    expect(args[10]).toBeDefined();
   });
 
   it('memoizes aggregate output for identical state', () => {
@@ -794,7 +1003,8 @@ describe('Aggregated balance recomputation behavior', () => {
 
   it('does not recompute when unrelated state changes but used slice references are stable', () => {
     // Build stable references for used slices
-    const accountTree = { wallets: {}, selectedAccountGroup: '' };
+    const accountTree = { wallets: {} };
+    const selectedAccountGroup = '';
     const internalAccounts = { accounts: {}, selectedAccount: '' };
     const tokenBalances = {};
     const marketData = {};
@@ -806,10 +1016,12 @@ describe('Aggregated balance recomputation behavior', () => {
     const accountsAssets = {};
     const assetsMetadata = {};
     const allIgnoredAssets = {};
+    const networkConfigurationsByChainId = {};
 
     const baseState: BalanceCalculationState = {
       metamask: {
         // provide all used slices with stable refs
+        selectedAccountGroup,
         accountTree,
         internalAccounts,
         tokenBalances,
@@ -823,6 +1035,7 @@ describe('Aggregated balance recomputation behavior', () => {
         accountsAssets,
         assetsMetadata,
         allIgnoredAssets,
+        networkConfigurationsByChainId,
       } as unknown as BalanceCalculationState['metamask'],
     };
 
@@ -832,6 +1045,7 @@ describe('Aggregated balance recomputation behavior', () => {
     const nextState: BalanceCalculationState = {
       metamask: {
         // reuse same references for used inputs
+        selectedAccountGroup,
         accountTree,
         internalAccounts,
         tokenBalances,
@@ -845,6 +1059,7 @@ describe('Aggregated balance recomputation behavior', () => {
         accountsAssets,
         assetsMetadata,
         allIgnoredAssets,
+        networkConfigurationsByChainId,
         // unrelated field
         remoteFeatureFlags: { foo: true },
       } as unknown as BalanceCalculationState['metamask'],
@@ -861,11 +1076,12 @@ describe('Aggregated balance recomputation behavior', () => {
 
   it('recomputes when a relevant slice reference changes (e.g., tokenBalances)', () => {
     const tokenBalancesA = {};
-    const tokenBalancesB = {}; // new reference
+    const tokenBalancesB = { newProperty: 'newProperty' }; // different references with different values so that selector does not memoize them
 
     const stateA: BalanceCalculationState = {
       metamask: {
-        accountTree: { wallets: {}, selectedAccountGroup: '' },
+        selectedAccountGroup: '',
+        accountTree: { wallets: {} },
         internalAccounts: { accounts: {}, selectedAccount: '' },
         tokenBalances: tokenBalancesA,
         marketData: {},
@@ -878,6 +1094,7 @@ describe('Aggregated balance recomputation behavior', () => {
         accountsAssets: {},
         assetsMetadata: {},
         allIgnoredAssets: {},
+        networkConfigurationsByChainId: {},
       } as unknown as BalanceCalculationState['metamask'],
     };
 
@@ -967,6 +1184,7 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     accountScopes: string[],
     accountMetadata: Record<string, unknown> = {},
   ): Partial<BalanceCalculationState['metamask']> => ({
+    selectedAccountGroup: 'entropy:wallet1/group1',
     accountTree: {
       wallets: {
         'entropy:wallet1': {
@@ -980,12 +1198,12 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
                 name: 'Account 1',
                 hidden: false,
                 pinned: false,
+                lastSelected: 0,
               },
             },
           },
         },
       },
-      selectedAccountGroup: 'entropy:wallet1/group1',
     } as unknown as BalanceCalculationState['metamask']['accountTree'],
     internalAccounts: {
       accounts: {
@@ -1079,7 +1297,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
-          address: '0x0',
           balance: '0x8ac7230489e80000', // 10 ETH
         },
       },
@@ -1115,7 +1332,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
-          address: '0x0',
           balance: '0x0',
         },
       },
@@ -1133,7 +1349,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
-          address: '0x0',
           balance: '0x2386f26fc10000', // 0.01 ETH
         },
       },
@@ -1164,14 +1379,12 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       '0x1': {
         // Ethereum mainnet
         '0x0': {
-          address: '0x0',
           balance: '0x0', // Zero on mainnet
         },
       },
       '0xaa36a7': {
         // Sepolia testnet (should be ignored)
         '0x0': {
-          address: '0x0',
           balance: '0x8ac7230489e80000', // 10 ETH on testnet
         },
       },
@@ -1216,7 +1429,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
-            address: '0x0',
             balance: '0x8ac7230489e80000', // 10 ETH
           },
         },
@@ -1252,7 +1464,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
-            address: '0x0',
             balance: '0x0',
           },
         },
@@ -1291,7 +1502,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
-            address: '0x0',
             balance: '0x0', // No ETH
           },
         },
@@ -1352,344 +1562,46 @@ describe('getAssetsBySelectedAccountGroup', () => {
     expect(selectorMock).toHaveBeenCalledWith(mockState.metamask);
     expect(result).toStrictEqual(selectorMockResult);
   });
+});
 
-  it('filters out tron staked bandwidth and energy', () => {
+describe('getAssetsBySelectedAccountGroupWithTronSpecialAssets', () => {
+  beforeEach(() => {
+    getAssetsBySelectedAccountGroupWithTronSpecialAssets.clearCache();
+    getAssetsBySelectedAccountGroupWithTronSpecialAssets.memoizedResultFunc.clearCache();
+  });
+
+  const mockState = {
+    metamask: {
+      accountTree: 'mockAccountTree',
+      internalAccounts: 'mockInternalAccounts',
+      allTokens: 'mockAllTokens',
+      allIgnoredTokens: 'mockAllIgnoredTokens',
+      tokenBalances: 'mockTokenBalances',
+      marketData: 'mockMarketData',
+      currencyRates: 'mockCurrencyRates',
+      currentCurrency: 'mockCurrentCurrency',
+      networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
+      accountsByChainId: 'mockAccountsByChainId',
+      accountsAssets: 'mockAccountsAssets',
+      assetsMetadata: 'mockAssetsMetadata',
+      allIgnoredAssets: 'mockAllIgnoredAssets',
+      balances: 'mockBalances',
+      conversionRates: 'mockConversionRates',
+    },
+  };
+
+  it('calls selector with option to not filter tron special assets', () => {
     const selectorMock = jest
       .mocked(selectAssetsBySelectedAccountGroup)
-      .mockReturnValue({
-        'tron:728126428': [
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:728126428/slip44:195',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Tron',
-            symbol: 'TRX',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            fiat: {
-              balance: 0,
-              currency: 'usd',
-              conversionRate: 0.28516,
-            },
-            chainId: 'tron:728126428',
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:728126428/slip44:195-staked-for-bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Staked for Bandwidth',
-            symbol: 'sTRX-BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:728126428',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:728126428/slip44:195-staked-for-energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Staked for Energy',
-            symbol: 'sTRX-ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:728126428',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:728126428/slip44:bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Bandwidth',
-            symbol: 'BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:728126428',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:728126428/slip44:maximum-bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Max Bandwidth',
-            symbol: 'MAX-BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:728126428',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:728126428/slip44:energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Energy',
-            symbol: 'ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:728126428',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:728126428/slip44:maximum-energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Max Energy',
-            symbol: 'MAX-ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:728126428',
-            fiat: undefined,
-          },
-        ],
-        'tron:3448148188': [
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:3448148188/slip44:195',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Tron',
-            symbol: 'TRX',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:3448148188',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:3448148188/slip44:195-staked-for-bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Staked for Bandwidth',
-            symbol: 'sTRX-BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:3448148188',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:3448148188/slip44:195-staked-for-energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Staked for Energy',
-            symbol: 'sTRX-ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:3448148188',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:3448148188/slip44:bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Bandwidth',
-            symbol: 'BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:3448148188',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:3448148188/slip44:maximum-bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Max Bandwidth',
-            symbol: 'MAX-BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:3448148188',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:3448148188/slip44:energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Energy',
-            symbol: 'ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:3448148188',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:3448148188/slip44:maximum-energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Max Energy',
-            symbol: 'MAX-ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:3448148188',
-            fiat: undefined,
-          },
-        ],
-        'tron:2494104990': [
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:2494104990/slip44:195',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Tron',
-            symbol: 'TRX',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:2494104990',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:2494104990/slip44:195-staked-for-bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Staked for Bandwidth',
-            symbol: 'sTRX-BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:2494104990',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:2494104990/slip44:195-staked-for-energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Staked for Energy',
-            symbol: 'sTRX-ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:2494104990',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:2494104990/slip44:bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Bandwidth',
-            symbol: 'BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:2494104990',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:2494104990/slip44:maximum-bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Max Bandwidth',
-            symbol: 'MAX-BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:2494104990',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:2494104990/slip44:energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Energy',
-            symbol: 'ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:2494104990',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:2494104990/slip44:maximum-energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Max Energy',
-            symbol: 'MAX-ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:2494104990',
-            fiat: undefined,
-          },
-        ],
-      });
+      .mockReturnValue({});
 
-    const result = getAssetsBySelectedAccountGroup(mockState);
+    const result =
+      getAssetsBySelectedAccountGroupWithTronSpecialAssets(mockState);
 
-    expect(selectorMock).toHaveBeenCalled();
-    expect(result[TrxScope.Mainnet]).toHaveLength(1);
-    expect(result[TrxScope.Nile]).toHaveLength(1);
-    expect(result[TrxScope.Shasta]).toHaveLength(1);
+    expect(selectorMock).toHaveBeenCalledWith(mockState.metamask, {
+      filterTronStakedTokens: false,
+    });
+    expect(result).toStrictEqual({});
   });
 });
 

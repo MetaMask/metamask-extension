@@ -1,14 +1,11 @@
 import { strict as assert } from 'assert';
-import { By } from 'selenium-webdriver';
 import nacl from 'tweetnacl';
-import { largeDelayMs, regularDelayMs, WINDOW_TITLES } from '../../helpers';
-import { DAPP_PATH } from '../../constants';
+import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 
@@ -17,36 +14,6 @@ export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 export const account1 = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 export const account1Short = '4tE7...Uxer';
 export const account2Short = 'ExTE...GNtt';
-
-/**
- * Default options for setting up Solana E2E test environment
- */
-export const DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS = {
-  dappOptions: {
-    customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
-  },
-};
-
-const onboardSolanaAccount = async (driver: Driver): Promise<void> => {
-  console.log('onboarding a new solana account');
-
-  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-  await connectAccountConfirmation.isCreateSolanaAccountModalButtonVisible();
-  await connectAccountConfirmation.createCreateSolanaAccountFromModal();
-};
-
-const selectAccountsAndAuthorize = async (driver: Driver): Promise<void> => {
-  console.log(
-    'select all accounts without deselecting the already selected accounts',
-  );
-  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-  await connectAccountConfirmation.checkPageIsLoaded();
-  await connectAccountConfirmation.openEditAccountsModal();
-
-  const editConnectedAccountsModal = new EditConnectedAccountsModal(driver);
-  await editConnectedAccountsModal.checkPageIsLoaded();
-  await editConnectedAccountsModal.selectAllAccounts();
-};
 
 /**
  * Selects the Devnet checkbox in the permissions tab.
@@ -75,16 +42,12 @@ const selectDevnet = async (driver: Driver): Promise<void> => {
  * @param driver
  * @param testDapp
  * @param options
- * @param options.selectAllAccounts
  * @param options.includeDevnet
- * @param options.onboard
  */
 export const connectSolanaTestDapp = async (
   driver: Driver,
   testDapp: TestDappSolana,
   options: {
-    onboard?: boolean;
-    selectAllAccounts?: boolean;
     includeDevnet?: boolean;
   } = {},
 ): Promise<void> => {
@@ -97,23 +60,11 @@ export const connectSolanaTestDapp = async (
 
   await header.connect();
 
-  // wait to display wallet connect modal
-  await driver.delay(regularDelayMs);
-
   const modal = await testDapp.getWalletModal();
   await modal.connectToMetaMaskWallet();
 
-  // Get to extension modal, and click on the "Connect" button
-  await driver.delay(largeDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  if (options?.onboard) {
-    await onboardSolanaAccount(driver);
-  }
-
-  if (options?.selectAllAccounts) {
-    await selectAccountsAndAuthorize(driver);
-  }
   if (options?.includeDevnet) {
     await selectDevnet(driver);
   }
@@ -125,34 +76,6 @@ export const connectSolanaTestDapp = async (
   // Go back to the test dapp window
   await testDapp.switchTo();
   console.log('solana test dapp connected');
-};
-
-/**
- * Waits for the Confirm button in the footer of a Solana-specific modal to be clickable then clicks it.
- * Note: This function does not work for general purpose modals like connect/disconnect.
- *
- * @param driver
- */
-export const clickConfirmButton = async (driver: Driver): Promise<void> => {
-  const footerButtons = await driver.findClickableElements(
-    By.css('button.snap-ui-renderer__footer-button'),
-  );
-  const confirmButton = footerButtons[1];
-  await confirmButton.click();
-};
-
-/**
- * Clicks the Cancel button in the footer in a Solana-specific modal.
- * Note: This function does not work for general purpose modals like connect/disconnect.
- *
- * @param driver
- */
-export const clickCancelButton = async (driver: Driver): Promise<void> => {
-  const footerButtons = await driver.findClickableElements(
-    By.css('button.snap-ui-renderer__footer-button'),
-  );
-  const cancelButton = footerButtons[0];
-  await cancelButton.click();
 };
 
 /**
@@ -174,7 +97,6 @@ export const switchToAccount = async (
   await accountListPage.checkAccountDisplayedInAccountList(accountName);
   await accountListPage.switchToAccount(accountName);
   await nonEvmHomepage.headerNavbar.checkAccountLabel(accountName);
-  await nonEvmHomepage.checkPageIsLoaded();
 };
 
 /**

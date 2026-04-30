@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransaction executes bridge transaction 1`] = `
+exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransaction executes EVM bridge transaction 1`] = `
 [
   [
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
@@ -143,11 +143,24 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
       },
     },
     true,
+    {
+      "best_quote_provider": "lifi_across",
+      "can_submit": true,
+      "gas_included": false,
+      "gas_included_7702": false,
+      "price_impact": 0,
+      "provider": "lifi_across",
+      "quoted_time_minutes": 0.25,
+      "usd_balance_source": 0,
+      "usd_quoted_gas": 0,
+      "usd_quoted_return": 12,
+      "warnings": [],
+    },
   ],
 ]
 `;
 
-exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransaction executes bridge transaction with no approval 1`] = `
+exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransaction executes EVM bridge transaction with no approval 1`] = `
 [
   [
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
@@ -282,6 +295,19 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
       },
     },
     true,
+    {
+      "best_quote_provider": "lifi_across",
+      "can_submit": true,
+      "gas_included": false,
+      "gas_included_7702": false,
+      "price_impact": 0,
+      "provider": "lifi_across",
+      "quoted_time_minutes": 0.25,
+      "usd_balance_source": 0,
+      "usd_quoted_gas": 0,
+      "usd_quoted_return": 12,
+      "warnings": [],
+    },
   ],
 ]
 `;

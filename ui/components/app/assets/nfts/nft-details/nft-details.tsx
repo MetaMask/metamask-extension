@@ -1,10 +1,11 @@
 import React, { useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
+import { ERC721, ERC1155 } from '@metamask/controller-utils';
 import {
   BlockSize,
   BorderColor,
@@ -25,7 +26,7 @@ import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../../../shared/modules/selectors/networks';
+} from '../../../../../../shared/lib/selectors/networks';
 import {
   getCurrentNetwork,
   getIpfsGateway,
@@ -38,20 +39,14 @@ import {
 import {
   checkAndUpdateSingleNftOwnershipStatus,
   removeAndIgnoreNft,
-  setRemoveNftMessage,
-  setNewNftAddedMessage,
   setActiveNetworkWithError,
 } from '../../../../../store/actions';
+import { toast, ToastContent } from '../../../../ui/toast/toast';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import NftOptions from '../nft-options/nft-options';
-import { startNewDraftTransaction } from '../../../../../ducks/send';
 import InfoTooltip from '../../../../ui/info-tooltip';
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../../../shared/constants/transaction';
 import {
   ButtonIcon,
   IconName,
@@ -76,16 +71,15 @@ import {
   getConversionRate,
   getCurrentCurrency,
 } from '../../../../../ducks/metamask/metamask';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../../shared/lib/Numeric';
 // TODO: Remove restricted import
 import {
   addUrlProtocolPrefix,
   isWebUrl,
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
-import { useRedesignedSendFlow } from '../../../../../pages/confirmations/hooks/useRedesignedSendFlow';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 import { navigateToSendRoute } from '../../../../../pages/confirmations/utils/send';
 import NftDetailInformationRow from './nft-detail-information-row';
@@ -127,10 +121,9 @@ export function NftDetailsComponent({
   const ipfsGateway = useSelector(getIpfsGateway);
   const currentNetwork = useSelector(getCurrentChainId);
   const currentChain = useSelector(getCurrentNetwork);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const currency = useSelector(getCurrentCurrency);
   const selectedNativeConversionRate = useSelector(getConversionRate);
-  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
 
@@ -144,15 +137,18 @@ export function NftDetailsComponent({
     string
   >;
 
-  const [addressCopied, handleAddressCopy] = useCopyToClipboard();
+  // useCopyToClipboard analysis: Copies the public address of the NFT
+  const [addressCopied, handleAddressCopy] = useCopyToClipboard({
+    clearDelayMs: null,
+  });
 
-  const { image: imageFromTokenURI, name: nameFromTokenURI } =
-    useFetchNftDetailsFromTokenURI(tokenURI);
+  const { image: imageFromTokenURI } = useFetchNftDetailsFromTokenURI(tokenURI);
 
   const nftImageAlt = getNftImageAlt(nft);
   const image = getNftImage(_image);
   const nftSrcUrl = imageOriginal ?? image ?? imageFromTokenURI;
-  const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
+  const isIpfsURL =
+    typeof nftSrcUrl === 'string' && nftSrcUrl.startsWith('ipfs:');
 
   const isImageHosted =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -167,7 +163,7 @@ export function NftDetailsComponent({
 
   const hasFloorAskPrice = Boolean(
     collection?.floorAsk?.price?.amount?.usd &&
-      collection?.floorAsk?.price?.amount?.native,
+    collection?.floorAsk?.price?.amount?.native,
   );
   const hasLastSalePrice = Boolean(
     lastSale?.price?.amount?.usd && lastSale?.price?.amount?.native,
@@ -236,11 +232,19 @@ export function NftDetailsComponent({
   const onRemove = async () => {
     try {
       await dispatch(removeAndIgnoreNft(address, tokenId, nftNetworkClientId));
-      dispatch(setNewNftAddedMessage(''));
-      dispatch(setRemoveNftMessage('success'));
-    } catch (err) {
-      dispatch(setNewNftAddedMessage(''));
-      dispatch(setRemoveNftMessage('error'));
+      toast.success(
+        <ToastContent
+          dataTestId="nft-remove-success-toast"
+          title={t('removeNftMessage')}
+        />,
+      );
+    } catch {
+      toast.error(
+        <ToastContent
+          dataTestId="nft-remove-error-toast"
+          title={t('removeNftErrorMessage')}
+        />,
+      );
     } finally {
       navigate(DEFAULT_ROUTE);
     }
@@ -277,8 +281,7 @@ export function NftDetailsComponent({
   };
 
   const openSeaLink = getOpenSeaLink();
-  const sendDisabled =
-    standard !== TokenStandard.ERC721 && standard !== TokenStandard.ERC1155;
+  const sendDisabled = standard !== ERC721 && standard !== ERC1155;
 
   const setCorrectChain = async () => {
     // If we aren't presently on the chain of the nft, change to it
@@ -303,19 +306,8 @@ export function NftDetailsComponent({
 
   const onSend = async () => {
     await setCorrectChain();
-    await dispatch(
-      startNewDraftTransaction({
-        type: AssetType.NFT,
-        details: {
-          ...nft,
-          tokenId: nft.tokenId as unknown as number,
-          image: nft.image ?? imageFromTokenURI ?? undefined,
-          name: nft.name ?? nameFromTokenURI ?? undefined,
-        },
-      }),
-    );
     // We only allow sending one NFT at a time
-    navigateToSendRoute(navigate, isSendRedesignEnabled, {
+    navigateToSendRoute(navigate, {
       address: nft.address,
       chainId: nftChainId,
       tokenId: nft.tokenId,
@@ -387,7 +379,7 @@ export function NftDetailsComponent({
           justifyContent={JustifyContent.spaceBetween}
         >
           <ButtonIcon
-            color={IconColor.iconAlternative}
+            color={IconColor.iconDefault}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
@@ -929,14 +921,6 @@ export function NftDetailsComponent({
                 />
               );
             })}
-          </Box>
-          <Box>
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyXs}
-            >
-              {t('nftDisclaimer')}
-            </Text>
           </Box>
         </Box>
       </Content>

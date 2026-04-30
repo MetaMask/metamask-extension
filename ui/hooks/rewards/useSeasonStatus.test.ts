@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   SeasonDtoState,
   SeasonStatusState,
@@ -180,7 +180,12 @@ describe('useSeasonStatus', () => {
       });
     });
 
-    const INVALID_SUB_IDS = ['pending', 'retry', 'error'] as const;
+    const INVALID_SUB_IDS = [
+      'pending',
+      'retry',
+      'error',
+      'error-existing-subscription-hardware-wallet-explicit-sign',
+    ] as const;
     type InvalidSubId = (typeof INVALID_SUB_IDS)[number];
 
     INVALID_SUB_IDS.forEach((subId: InvalidSubId) => {
@@ -353,7 +358,12 @@ describe('useSeasonStatus', () => {
       expect(mockOnAuthorizationError).not.toHaveBeenCalled();
     });
 
-    const SUB_IDS = ['pending', 'retry', 'error'] as const;
+    const SUB_IDS = [
+      'pending',
+      'retry',
+      'error',
+      'error-existing-subscription-hardware-wallet-explicit-sign',
+    ] as const;
     type PendingState = (typeof SUB_IDS)[number];
 
     SUB_IDS.forEach((subId: PendingState) => {

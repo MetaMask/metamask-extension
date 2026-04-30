@@ -4,7 +4,7 @@ import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
 import { isHexPrefixed } from 'ethereumjs-util';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -18,7 +18,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MINUTE } from '../../../../shared/constants/time';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -49,8 +48,10 @@ function QrCodeView({
   accountName?: string;
   location?: string;
 }) {
-  const trackEvent = useContext(MetaMetricsContext);
-  const [copied, handleCopy] = useCopyToClipboard(MINUTE);
+  const { trackEvent } = useContext(MetaMetricsContext);
+
+  // useCopyToClipboard analysis: As of writing this, this is only used for public addresses
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const t = useI18nContext();
   const { message, data } = Qr;
   const checksummedAddress = normalizeSafeAddress(data);

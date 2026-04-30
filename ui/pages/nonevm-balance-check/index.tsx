@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import type { Location as HistoryLocation } from 'history';
+import { useLocation } from 'react-router-dom';
 import {
   Box,
   Modal,
@@ -19,7 +19,6 @@ import { setSelectedAccount } from '../../store/actions';
 import { useMultichainBalances } from '../../hooks/useMultichainBalances';
 import { NonEvmQueryParams } from '../../../shared/lib/deep-links/routes/nonevm';
 import { SWAP_ROUTE } from '../../../shared/lib/deep-links/routes/route';
-import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { RampsMetaMaskEntry } from '../../hooks/ramps/useRamps/useRamps';
 import { getLastSelectedNonEvmAccount } from '../../selectors/multichain';
 import {
@@ -36,7 +35,6 @@ const { getExtensionURL } = globalThis.platform;
 const getSwapUrl = (chainId: CaipChainId): string => {
   const query = new URLSearchParams();
   query.set('sourceToken', chainId);
-  query.set(BridgeQueryParams.SWAPS, 'true');
   return getExtensionURL(SWAP_ROUTE, query.toString());
 };
 
@@ -65,12 +63,9 @@ const getBuyUrl = (
   return buyUrl.toString();
 };
 
-type NonEvmBalanceCheckProps = {
-  location: HistoryLocation;
-};
-
-export const NonEvmBalanceCheck = ({ location }: NonEvmBalanceCheckProps) => {
+export const NonEvmBalanceCheck = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);

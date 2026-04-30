@@ -18,14 +18,12 @@ import { RowAlertKey } from '../../../../components/app/confirm/info/row/constan
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
 import {
   Box,
-  ButtonIcon,
-  ButtonIconSize,
   Icon,
   IconName,
   IconSize,
   Text,
 } from '../../../../components/component-library';
-import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
+import { Skeleton } from '../../../../components/component-library/skeleton';
 import Tooltip from '../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -43,9 +41,6 @@ import {
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { selectTransactionMetadata } from '../../../../selectors';
-import { SimulationSettingsModal } from '../modals/simulation-settings-modal/simulation-settings-modal';
-import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferences';
-import { useIsEnforcedSimulationsSupported } from '../../hooks/transactions/useIsEnforcedSimulationsSupported';
 import { BalanceChangeList } from './balance-change-list';
 import { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';
@@ -63,19 +58,6 @@ export type SimulationDetailsProps = {
   staticRows?: StaticRow[];
   transaction: TransactionMeta;
   smartTransactionStatus?: string;
-};
-
-/**
- * Displayed while loading the simulation preview.
- *
- * @returns
- */
-const LoadingIndicator: React.FC = () => {
-  return (
-    <div role="progressbar">
-      <Preloader size={20} />
-    </div>
-  );
 };
 
 /**
@@ -139,11 +121,6 @@ const HeaderWithAlert = ({
   transactionId: string;
 }) => {
   const t = useI18nContext();
-  const isEnforcedSimulationsSupported = useIsEnforcedSimulationsSupported();
-
-  const showAdvancedDetails = useSelector(
-    selectConfirmationAdvancedDetailsOpen,
-  );
 
   const transactionMetadata = useSelector((state) =>
     selectTransactionMetadata(state, transactionId),
@@ -165,12 +142,6 @@ const HeaderWithAlert = ({
       ? t('simulationDetailsTitleTooltipEnforced')
       : t('simulationDetailsTitleTooltip'));
 
-  const [settingsModalVisible, setSettingsModalVisible] =
-    useState<boolean>(false);
-
-  const showSettingsIcon =
-    showAdvancedDetails && isEnforcedSimulationsSupported;
-
   return (
     <Box
       display={Display.Flex}
@@ -184,27 +155,11 @@ const HeaderWithAlert = ({
         label={label}
         ownerId={transactionId}
         tooltip={tooltip}
-        tooltipIcon={isEnforced && IconName.SecurityTick}
-        tooltipIconColor={isEnforced && IconColor.infoDefault}
         style={{
           paddingLeft: 0,
           paddingRight: 0,
         }}
       />
-      {showSettingsIcon && (
-        <ButtonIcon
-          iconName={IconName.Setting}
-          size={ButtonIconSize.Sm}
-          color={IconColor.iconMuted}
-          ariaLabel="simulation-settings"
-          onClick={() => setSettingsModalVisible(true)}
-        />
-      )}
-      {settingsModalVisible && (
-        <SimulationSettingsModal
-          onClose={() => setSettingsModalVisible(false)}
-        />
-      )}
     </Box>
   );
 };
@@ -414,6 +369,38 @@ const BalanceChangesAlert = ({ transactionId }: { transactionId: string }) => {
   );
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function SimulationDetailsSkeleton({
+  isTransactionsRedesign,
+  transactionId,
+}: {
+  isTransactionsRedesign: boolean;
+  transactionId: string;
+}) {
+  return (
+    <SimulationDetailsLayout
+      isTransactionsRedesign={isTransactionsRedesign}
+      transactionId={transactionId}
+    >
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+          alignItems={AlignItems.center}
+        >
+          <Skeleton height={20} width={72} />
+          <Skeleton height={20} width={100} />
+        </Box>
+        <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
+          <Skeleton height={18} width={40} />
+        </Box>
+      </Box>
+    </SimulationDetailsLayout>
+  );
+}
+
 /**
  * Preview of a transaction's effects using simulation data.
  *
@@ -461,11 +448,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
 
   if (loading) {
     return (
-      <SimulationDetailsLayout
-        inHeader={<LoadingIndicator />}
+      <SimulationDetailsSkeleton
         isTransactionsRedesign={isTransactionsRedesign}
         transactionId={transactionId}
-      ></SimulationDetailsLayout>
+      />
     );
   }
 
@@ -481,7 +467,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     return null;
   }
 
-  if (error && !hasStaticData) {
+  if (
+    error &&
+    (error.code === SimulationErrorCode.Reverted || !hasStaticData)
+  ) {
     const inHeaderProp = error.code !== SimulationErrorCode.Reverted && {
       inHeader: <ErrorContent error={error} />,
     };

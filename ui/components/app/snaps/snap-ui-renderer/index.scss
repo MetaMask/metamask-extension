@@ -7,13 +7,15 @@
   $width-screen-lg-min: 62vw;
 
   &__container {
-    & > *:first-child {
-      gap: 16px;
-      // Note: Do not replace margin with padding
-      // @see {@link https://github.com/MetaMask/metamask-extension/pull/29385}
-      margin: 16px;
-    }
+    height: 100%;
   }
+
+  &__container > &__panel {
+    gap: 16px;
+    overflow-y: auto;
+    padding: 16px;
+  }
+
 
   &__content {
     flex: 1 1 auto;
@@ -79,41 +81,9 @@
   &__footer {
     box-shadow: var(--shadow-size-md) var(--color-shadow-default);
     height: 80px;
-    position: fixed;
-    bottom: 0;
     margin-top: auto;
     transition: bottom 0.3s ease-in-out;
-
-    @include design-system.screen-sm-min {
-      max-width: $width-screen-sm-min;
-    }
-
-    @include design-system.screen-md-min {
-      max-width: $width-screen-md-min;
-    }
-
-    @include design-system.screen-lg-min {
-      max-width: $width-screen-lg-min;
-    }
   }
-  // footer may exist as a sibling of the content, or a child of the content. When it is a child,
-  // we need to adjust the max-width to account for the content border.
-  &__content {
-    .snap-ui-renderer__footer {
-      @include design-system.screen-sm-min {
-        max-width: calc($width-screen-sm-min - 2px);
-      }
-
-      @include design-system.screen-md-min {
-        max-width: calc($width-screen-md-min - 2px);
-      }
-
-      @include design-system.screen-lg-min {
-        max-width: calc($width-screen-lg-min - 2px);
-      }
-    }
-  }
-
 
   &__panel.box--flex-direction-row {
     .snap-ui-renderer__field {

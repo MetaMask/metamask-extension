@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import 'jest-canvas-mock';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { AccountPicker } from '.';
@@ -28,7 +28,7 @@ const render = (props = {}, state = {}) => {
 
 describe('AccountPicker', () => {
   it('renders properly', () => {
-    const { container } = render({}, { useBlockie: true });
+    const { container } = render({});
     expect(container).toMatchSnapshot();
   });
 

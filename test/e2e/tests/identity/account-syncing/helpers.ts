@@ -6,31 +6,41 @@ import {
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 
+// Syncing can take some time (specially in Firefox) so adding a longer timeout to reduce flakes
+export const BASE_ACCOUNT_SYNC_TIMEOUT = 45000;
+export const BASE_ACCOUNT_SYNC_INTERVAL = 1000;
+
+// Extra delay to wait after unlock before checking sync state (helps with Firefox timing issues)
+export const POST_UNLOCK_DELAY = 20000;
+
 export const arrangeTestUtils = (
   driver: Driver,
   userStorageMockttpController: UserStorageMockttpController,
 ) => {
-  const BASE_TIMEOUT = 30000;
-  const BASE_INTERVAL = 1000;
-
   const prepareEventsEmittedCounter = (
     event: AsEnum<typeof UserStorageMockttpControllerEvents>,
   ) => {
     let counter = 0;
     userStorageMockttpController.eventEmitter.on(event, () => {
       counter += 1;
+      console.log(
+        `[UserStorage Event] ${event} emitted. Total count: ${counter}`,
+      );
     });
 
     const waitUntilEventsEmittedNumberEquals = async (
       expectedNumber: number,
     ) => {
       console.log(
-        `Waiting for user storage event ${event} to be emitted ${expectedNumber} times`,
+        `Waiting for user storage event ${event} to be emitted ${expectedNumber} times (current: ${counter})`,
       );
       await driver.waitUntil(async () => counter >= expectedNumber, {
-        timeout: BASE_TIMEOUT,
-        interval: BASE_INTERVAL,
+        timeout: BASE_ACCOUNT_SYNC_TIMEOUT,
+        interval: BASE_ACCOUNT_SYNC_INTERVAL,
       });
+      console.log(
+        `User storage event ${event} reached expected count: ${expectedNumber}`,
+      );
     };
     return { waitUntilEventsEmittedNumberEquals };
   };
@@ -56,9 +66,12 @@ export const arrangeTestUtils = (
         return currentCount === expectedNumber;
       },
       {
-        timeout: BASE_TIMEOUT,
-        interval: BASE_INTERVAL,
+        timeout: BASE_ACCOUNT_SYNC_TIMEOUT,
+        interval: BASE_ACCOUNT_SYNC_INTERVAL,
       },
+    );
+    console.log(
+      `User storage synced accounts reached expected count: ${expectedNumber}`,
     );
   };
 

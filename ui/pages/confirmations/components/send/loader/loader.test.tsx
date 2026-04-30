@@ -10,9 +10,9 @@ import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../../helpers/constants/rout
 import { Loader } from './loader';
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -54,6 +54,7 @@ describe('Loader', () => {
 
     expect(mockUseNavigate).toHaveBeenCalledWith(
       `${CONFIRMATION_V_NEXT_ROUTE}/test-id`,
+      { replace: true },
     );
   });
 
@@ -68,6 +69,7 @@ describe('Loader', () => {
 
     expect(mockUseNavigate).toHaveBeenCalledWith(
       `${CONFIRMATION_V_NEXT_ROUTE}/test-id-2`,
+      { replace: true },
     );
   });
 

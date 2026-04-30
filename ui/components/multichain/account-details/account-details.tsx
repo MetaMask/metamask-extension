@@ -2,8 +2,18 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
-import { AvatarAccountSize } from '@metamask/design-system-react';
-import type { To } from 'react-router-dom-v5-compat';
+import type { SnapId } from '@metamask/snaps-sdk';
+import {
+  AvatarAccountSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  FontWeight,
+  OverflowWrap,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
+import { useNavigate } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -11,11 +21,8 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  AlignItems,
   Display,
-  FlexDirection,
   JustifyContent,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -24,17 +31,11 @@ import {
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
 } from '../../../selectors';
-import {
-  clearAccountDetails,
-  hideWarning,
-  setAccountDetailsAddress,
-} from '../../../store/actions';
+import { clearAccountDetails, hideWarning } from '../../../store/actions';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
-  Box,
   Modal,
   ModalOverlay,
-  Text,
   ModalContent,
   ModalHeader,
   ModalBody,
@@ -52,34 +53,23 @@ import { AccountDetailsKey } from './account-details-key';
 
 type AccountDetailsProps = {
   address: string;
-  navigate?: {
-    (
-      to: To,
-      options?: { replace?: boolean; state?: Record<string, unknown> },
-    ): void;
-    (delta: number): void;
-  };
 };
 
-export const AccountDetails = ({ address, navigate }: AccountDetailsProps) => {
+export const AccountDetails = ({ address }: AccountDetailsProps) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
   );
-  const {
-    metadata: {
-      name,
-      keyring: { type: keyringType },
-    },
-    options: { entropySource },
-    type,
-  } = account;
+  const entropySource = account?.options?.entropySource;
 
-  const snapId = account.metadata.snap?.id;
+  const { keyring, snap } = account?.metadata ?? {};
+  const keyringType = keyring?.type;
+  const snapId = snap?.id;
 
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
   let showModal = !showHoldToReveal;
@@ -92,7 +82,7 @@ export const AccountDetails = ({ address, navigate }: AccountDetailsProps) => {
   // Snap accounts have an entropy source that is the id of the hd keyring
   const keyringId =
     keyringType === KeyringTypes.snap &&
-    isMultichainWalletSnap(snapId) &&
+    isMultichainWalletSnap(snapId as SnapId) &&
     entropySource
       ? entropySource
       : findKeyringId(keyrings, {
@@ -110,7 +100,6 @@ export const AccountDetails = ({ address, navigate }: AccountDetailsProps) => {
   const [privateKey, setPrivateKey] = useState('');
 
   const onClose = useCallback(() => {
-    dispatch(setAccountDetailsAddress(''));
     dispatch(clearAccountDetails());
     dispatch(hideWarning());
   }, [dispatch]);
@@ -153,56 +142,57 @@ export const AccountDetails = ({ address, navigate }: AccountDetailsProps) => {
               ? t('showPrivateKey')
               : avatar}
           </ModalHeader>
-          <ModalBody>
-            {attemptingExport === AttemptExportState.None && (
-              <AccountDetailsDisplay
-                accounts={accounts}
-                accountName={name}
-                accountType={type}
-                address={address}
-                onExportClick={(attemptExportMode: AttemptExportState) => {
-                  if (attemptExportMode === AttemptExportState.SRP) {
-                    setSrpQuizModalVisible(true);
-                  }
-                  setAttemptingExport(attemptExportMode);
-                }}
-              />
-            )}
-            {attemptingExport === AttemptExportState.PrivateKey && (
-              <>
-                <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  flexDirection={FlexDirection.Column}
-                >
-                  {avatar}
-                  <Text
-                    marginTop={2}
-                    marginBottom={2}
-                    variant={TextVariant.bodyLgMedium}
-                    style={{ wordBreak: 'break-word' }}
+          {account && (
+            <ModalBody>
+              {attemptingExport === AttemptExportState.None && (
+                <AccountDetailsDisplay
+                  accounts={accounts}
+                  accountName={account.metadata.name}
+                  accountType={account.type}
+                  address={address}
+                  onExportClick={(attemptExportMode: AttemptExportState) => {
+                    if (attemptExportMode === AttemptExportState.SRP) {
+                      setSrpQuizModalVisible(true);
+                    }
+                    setAttemptingExport(attemptExportMode);
+                  }}
+                />
+              )}
+              {attemptingExport === AttemptExportState.PrivateKey && (
+                <>
+                  <Box
+                    flexDirection={BoxFlexDirection.Column}
+                    alignItems={BoxAlignItems.Center}
                   >
-                    {name}
-                  </Text>
-                  <AddressCopyButton address={address} shorten />
-                </Box>
-                {privateKey ? (
-                  <AccountDetailsKey
-                    accountName={name}
-                    onClose={onClose}
-                    privateKey={privateKey}
-                  />
-                ) : (
-                  <AccountDetailsAuthenticate
-                    address={address}
-                    onCancel={onClose}
-                    setPrivateKey={setPrivateKey}
-                    setShowHoldToReveal={setShowHoldToReveal}
-                  />
-                )}
-              </>
-            )}
-          </ModalBody>
+                    {avatar}
+                    <Text
+                      variant={TextVariant.BodyLg}
+                      fontWeight={FontWeight.Medium}
+                      overflowWrap={OverflowWrap.BreakWord}
+                      className="mt-2 mb-2"
+                    >
+                      {account.metadata.name}
+                    </Text>
+                    <AddressCopyButton address={address} shorten />
+                  </Box>
+                  {privateKey ? (
+                    <AccountDetailsKey
+                      accountName={account.metadata.name}
+                      onClose={onClose}
+                      privateKey={privateKey}
+                    />
+                  ) : (
+                    <AccountDetailsAuthenticate
+                      address={address}
+                      onCancel={onClose}
+                      setPrivateKey={setPrivateKey}
+                      setShowHoldToReveal={setShowHoldToReveal}
+                    />
+                  )}
+                </>
+              )}
+            </ModalBody>
+          )}
         </ModalContent>
       </Modal>
       {/* This is the Modal that says "Hold to reveal private key" */}
@@ -231,7 +221,13 @@ export const AccountDetails = ({ address, navigate }: AccountDetailsProps) => {
       />
       {displayExportSrpQuiz && navigate && (
         <SRPQuiz
-          keyringId={keyringId}
+          keyringId={
+            keyringId === undefined ||
+            keyringId === null ||
+            typeof keyringId === 'string'
+              ? keyringId
+              : JSON.stringify(keyringId)
+          }
           isOpen={srpQuizModalVisible}
           onClose={() => {
             setSrpQuizModalVisible(false);

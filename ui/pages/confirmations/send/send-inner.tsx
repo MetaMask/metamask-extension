@@ -10,6 +10,7 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../../components/component-library';
+import { ScrollContainer } from '../../../contexts/scroll-container';
 import { AmountRecipient } from '../components/send/amount-recipient';
 import { Header } from '../components/send/header';
 import { Asset } from '../components/send/asset';
@@ -17,6 +18,7 @@ import { Loader } from '../components/send/loader';
 import { SendPages } from '../constants/send';
 import { useSendContext } from '../context/send';
 import { useSendQueryParams } from '../hooks/send/useSendQueryParams';
+import { useHideToasts } from '../../../hooks/useHideToasts';
 
 const SendContainer = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -45,13 +47,14 @@ const SendContainer = ({ children }: { children: React.ReactNode }) => {
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           height={BlockSize.Full}
-          style={{ maxWidth: '650px' }}
           width={BlockSize.Full}
         >
           <Box className="redesigned__send__sticky-header">
             <Header />
           </Box>
-          <Box className="redesigned__send__content-wrapper">{children}</Box>
+          <ScrollContainer className="redesigned__send__content-wrapper">
+            {children}
+          </ScrollContainer>
         </Box>
       </Box>
     </Box>
@@ -59,6 +62,7 @@ const SendContainer = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const SendInner = () => {
+  useHideToasts();
   useSendQueryParams();
   const { currentPage } = useSendContext();
 

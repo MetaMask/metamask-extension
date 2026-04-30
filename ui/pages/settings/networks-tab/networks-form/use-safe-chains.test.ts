@@ -1,5 +1,5 @@
 import * as FetchWithCacheModule from '../../../../../shared/lib/fetch-with-cache';
-import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers-navigate';
 import {
   rpcIdentifierUtility,
   SafeChain,

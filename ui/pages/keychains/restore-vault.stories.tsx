@@ -12,13 +12,19 @@ const store = mockStore({
   metamask: {
     isSignedIn: true,
     sessionData: undefined,
-  }
+  },
 });
 
 const meta: Meta<typeof RestoreVaultPage> = {
   title: 'Pages/Keychains/RestoreVaultPage',
   component: RestoreVaultPage,
-  decorators: [(Story) => <Provider store={store}><Story /></Provider>],
+  decorators: [
+    (Story) => (
+      <Provider store={store}>
+        <Story />
+      </Provider>
+    ),
+  ],
   argTypes: {
     createNewVaultAndRestore: { action: 'createNewVaultAndRestore' },
     leaveImportSeedScreenState: { action: 'leaveImportSeedScreenState' },

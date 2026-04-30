@@ -12,9 +12,11 @@ import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+import * as DappSwapContextModule from '../../../../../context/dapp-swap';
 import { useFourByte } from '../../hooks/useFourByte';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { AsyncResult, RESULT_IDLE } from '../../../../../../../hooks/useAsync';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { NestedTransactionData } from './nested-transaction-data';
 
 jest.mock('../../../../../../../store/actions', () => ({
@@ -97,7 +99,7 @@ describe('NestedTransaction', () => {
     });
 
     expect(getByText('0x12345...67890')).toBeInTheDocument();
-    expect(getByText('Amount')).toBeInTheDocument();
+    expect(getByText(messages.amount.message)).toBeInTheDocument();
     expect(getByText('<0.000001')).toBeInTheDocument();
     expect(getByText('ETH')).toBeInTheDocument();
   });
@@ -152,8 +154,8 @@ describe('NestedTransaction', () => {
 
     await waitFor(() => {
       expect(getByText('approve')).toBeInTheDocument();
-      expect(getByText('Spender')).toBeInTheDocument();
-      expect(getByText('Amount')).toBeInTheDocument();
+      expect(getByText(messages.spender.message)).toBeInTheDocument();
+      expect(getByText(messages.amount.message)).toBeInTheDocument();
       expect(getByText('10000000 ETH')).toBeInTheDocument();
     });
   });
@@ -161,5 +163,22 @@ describe('NestedTransaction', () => {
   it('does not render if no nested transactions', () => {
     const { container } = render({});
     expect(container).toBeEmptyDOMElement();
+  });
+
+  it('does not render if quoted swap is selected', () => {
+    jest.spyOn(DappSwapContextModule, 'useDappSwapContext').mockReturnValue({
+      isQuotedSwapDisplayedInInfo: true,
+    } as unknown as ReturnType<
+      typeof DappSwapContextModule.useDappSwapContext
+    >);
+
+    const { queryByText } = render({
+      nestedTransactions: [
+        BATCH_TRANSACTION_PARAMS_MOCK,
+        BATCH_TRANSACTION_PARAMS_MOCK,
+      ],
+    });
+
+    expect(queryByText('Transaction 1')).not.toBeInTheDocument();
   });
 });

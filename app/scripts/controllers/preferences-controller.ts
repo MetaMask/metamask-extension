@@ -1,10 +1,6 @@
 import {
-  AccountsControllerChangeEvent,
   AccountsControllerGetAccountByAddressAction,
-  AccountsControllerGetSelectedAccountAction,
   AccountsControllerSetAccountNameAction,
-  AccountsControllerSetSelectedAccountAction,
-  AccountsControllerState,
 } from '@metamask/accounts-controller';
 import { Json, Hex } from '@metamask/utils';
 import {
@@ -14,26 +10,26 @@ import {
   StateMetadata,
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
-import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import { type PreferencesState } from '@metamask/preferences-controller';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
-import { ThemeType } from '../../../shared/constants/preferences';
+import {
+  DEFAULT_AUTO_LOCK_TIME_LIMIT,
+  ThemeType,
+} from '../../../shared/constants/preferences';
+import { type DefaultAddressScope } from '../../../shared/constants/default-address';
+import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
+import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
+import { PreferencesControllerMethodActions } from './preferences-controller-method-action-types';
 
 /**
- * Referral status for an account (currently used for Hyperliquid referrals)
+ * Referral status for an account
  */
 export enum ReferralStatus {
   Approved = 'approved',
   Passed = 'passed',
   Declined = 'declined',
 }
-
-type AccountIdentityEntry = {
-  address: string;
-  name: string;
-  lastSelected?: number;
-};
 
 const controllerName = 'PreferencesController';
 
@@ -48,7 +44,9 @@ export type PreferencesControllerGetStateAction = ControllerGetStateAction<
 /**
  * Actions exposed by the {@link PreferencesController}.
  */
-export type PreferencesControllerActions = PreferencesControllerGetStateAction;
+export type PreferencesControllerActions =
+  | PreferencesControllerGetStateAction
+  | PreferencesControllerMethodActions;
 
 /**
  * Event emitted when the state of the {@link PreferencesController} changes.
@@ -68,20 +66,12 @@ export type PreferencesControllerEvents = PreferencesControllerStateChangeEvent;
  */
 export type AllowedActions =
   | AccountsControllerGetAccountByAddressAction
-  | AccountsControllerSetAccountNameAction
-  | AccountsControllerGetSelectedAccountAction
-  | AccountsControllerSetSelectedAccountAction
-  | NetworkControllerGetStateAction;
-
-/**
- * Events that this controller is allowed to subscribe.
- */
-export type AllowedEvents = AccountsControllerChangeEvent;
+  | AccountsControllerSetAccountNameAction;
 
 export type PreferencesControllerMessenger = Messenger<
   typeof controllerName,
   PreferencesControllerActions | AllowedActions,
-  PreferencesControllerEvents | AllowedEvents
+  PreferencesControllerEvents
 >;
 
 type PreferencesControllerOptions = {
@@ -92,19 +82,19 @@ type PreferencesControllerOptions = {
 export type Preferences = {
   autoLockTimeLimit?: number;
   avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
+  defaultAddressScope: DefaultAddressScope;
   dismissSmartAccountSuggestionEnabled: boolean;
   featureNotificationsEnabled: boolean;
   hideZeroBalanceTokens: boolean;
-  petnamesEnabled: boolean;
   privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
+  showDefaultAddress: boolean;
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
   showMultiRpcModal: boolean;
   showNativeTokenAsMainBalance: boolean;
   showTestNetworks: boolean;
   skipDeepLinkInterstitial: boolean;
-  smartAccountOptIn: boolean;
   smartTransactionsOptInStatus: boolean;
   smartTransactionsMigrationApplied: boolean;
   tokenNetworkFilter: Record<string, boolean>;
@@ -129,7 +119,6 @@ export type PreferencesControllerState = Omit<
   | 'showMultiRpcModal'
   | 'dismissSmartAccountSuggestionEnabled'
   | 'smartAccountOptIn'
-  | 'smartAccountOptInForAccounts'
   | 'showIncomingTransactions'
   | 'tokenNetworkFilter'
 > & {
@@ -152,21 +141,15 @@ export type PreferencesControllerState = Omit<
   theme: ThemeType;
   use4ByteResolution: boolean;
   useAddressBarEnsResolution: boolean;
-  /** @deprecated Use avatarType instead */
-  useBlockie: boolean;
   useCurrencyRateCheck: boolean;
   useExternalNameSources: boolean;
   useExternalServices: boolean;
   isMultiAccountBalancesEnabled: boolean;
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
-  referrals: {
-    hyperliquid: Record<Hex, ReferralStatus>;
-  };
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
+  referrals: Record<DefiReferralPartner, Record<Hex, ReferralStatus>>;
+  showSidePanelMigrationToast: boolean;
   watchEthereumAccountEnabled: boolean;
-  ///: END:ONLY_INCLUDE_IF
 };
 
 /**
@@ -174,16 +157,13 @@ export type PreferencesControllerState = Omit<
  */
 export const getDefaultPreferencesControllerState =
   (): PreferencesControllerState => ({
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
-    ///: END:ONLY_INCLUDE_IF
     advancedGasFee: {},
     currentLocale: '',
     dismissSeedBackUpReminder: false,
     enableMV3TimestampSave: true,
     featureFlags: {},
     forgottenPassword: false,
-    identities: {},
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
     isIpfsGatewayEnabled: true,
@@ -193,7 +173,6 @@ export const getDefaultPreferencesControllerState =
     ledgerTransportType: window.navigator.hid
       ? LedgerTransportTypes.webhid
       : LedgerTransportTypes.u2f,
-    lostIdentities: {},
     manageInstitutionalWallets: false,
     openSeaEnabled: true,
     overrideContentSecurityPolicyHeader: true,
@@ -203,16 +182,16 @@ export const getDefaultPreferencesControllerState =
       dismissSmartAccountSuggestionEnabled: false,
       featureNotificationsEnabled: false,
       hideZeroBalanceTokens: false,
-      petnamesEnabled: true,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
+      showDefaultAddress: true,
+      defaultAddressScope: 'eip155',
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showMultiRpcModal: false,
       showNativeTokenAsMainBalance: false,
       showTestNetworks: false,
       skipDeepLinkInterstitial: false,
-      smartAccountOptIn: true,
       smartTransactionsOptInStatus: true,
       smartTransactionsMigrationApplied: false,
       tokenNetworkFilter: {},
@@ -222,18 +201,15 @@ export const getDefaultPreferencesControllerState =
         sortCallback: 'stringNumeric',
       },
       useNativeCurrencyAsPrimaryCurrency: true,
-      useSidePanelAsDefault: false,
+      useSidePanelAsDefault: true,
     },
     securityAlertsEnabled: true,
-    selectedAddress: '',
+    showSidePanelMigrationToast: false,
     snapRegistryList: {},
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IF
     theme: ThemeType.os,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
-    useBlockie: false,
     useCurrencyRateCheck: true,
     useExternalNameSources: true,
     // Turning OFF basic functionality toggle means turning OFF this useExternalServices flag.
@@ -252,7 +228,9 @@ export const getDefaultPreferencesControllerState =
     useTransactionSimulations: true,
     watchEthereumAccountEnabled: false,
     referrals: {
-      hyperliquid: {},
+      [DefiReferralPartner.AsterDEX]: {},
+      [DefiReferralPartner.GMX]: {},
+      [DefiReferralPartner.Hyperliquid]: {},
     },
   });
 
@@ -306,12 +284,6 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  identities: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
-    usedInUi: true,
-  },
   ipfsGateway: {
     includeInStateLogs: true,
     persist: true,
@@ -334,12 +306,6 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  lostIdentities: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   manageInstitutionalWallets: {
@@ -372,8 +338,8 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
-  selectedAddress: {
-    includeInStateLogs: true,
+  showSidePanelMigrationToast: {
+    includeInStateLogs: false,
     persist: true,
     includeInDebugSnapshot: false,
     usedInUi: true,
@@ -409,13 +375,6 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     usedInUi: true,
   },
   useAddressBarEnsResolution: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  /** @deprecated Use avatarType instead */
-  useBlockie: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -495,6 +454,51 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
   },
 };
 
+const MESSENGER_EXPOSED_METHODS = [
+  'setPasswordForgotten',
+  'setUsePhishDetect',
+  'setUseMultiAccountBalanceChecker',
+  'setUseSafeChainsListValidation',
+  'toggleExternalServices',
+  'setUseTokenDetection',
+  'setUseNftDetection',
+  'setUse4ByteResolution',
+  'setUseCurrencyRateCheck',
+  'setOpenSeaEnabled',
+  'setSecurityAlertsEnabled',
+  'setAddSnapAccountEnabled',
+  'setWatchEthereumAccountEnabled',
+  'setUseExternalNameSources',
+  'setUseTransactionSimulations',
+  'setAdvancedGasFee',
+  'setTheme',
+  'addKnownMethodData',
+  'setCurrentLocale',
+  'setAccountLabel',
+  'setFeatureFlag',
+  'setPreference',
+  'getPreferences',
+  'getIpfsGateway',
+  'setIpfsGateway',
+  'setIsIpfsGatewayEnabled',
+  'setUseAddressBarEnsResolution',
+  'setLedgerTransportPreference',
+  'setDismissSeedBackUpReminder',
+  'setOverrideContentSecurityPolicyHeader',
+  'setManageInstitutionalWallets',
+  'setServiceWorkerKeepAlivePreference',
+  'setUseSidePanelAsDefault',
+  'setShowDefaultAddress',
+  'setDefaultAddressScope',
+  'setSnapsAddSnapAccountModalDismissed',
+  'resetState',
+  'addReferralApprovedAccount',
+  'addReferralPassedAccount',
+  'addReferralDeclinedAccount',
+  'removeReferralDeclinedAccount',
+  'setAccountsReferralApproved',
+] as const;
+
 export class PreferencesController extends BaseController<
   typeof controllerName,
   PreferencesControllerState,
@@ -517,6 +521,10 @@ export class PreferencesController extends BaseController<
         ...defaultState.preferences,
         ...state?.preferences,
       },
+      referrals: {
+        ...defaultState.referrals,
+        ...state?.referrals,
+      },
       // TODO - These two properties are the same, we only need isMultiAccountBalancesEnabled to keep it compatible with core PreferencesController
       // At some point we should completely remove all references and methods for useMultiAccountBalanceChecker and use isMultiAccountBalancesEnabled instead.
       isMultiAccountBalancesEnabled:
@@ -531,14 +539,14 @@ export class PreferencesController extends BaseController<
       state: mergedState,
     });
 
-    this.messenger.subscribe(
-      'AccountsController:stateChange',
-      this.#handleAccountsControllerSync.bind(this),
-    );
-
     globalThis.setPreference = (key: keyof Preferences, value: boolean) => {
       return this.setFeatureFlag(key, value);
     };
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
   /**
@@ -549,18 +557,6 @@ export class PreferencesController extends BaseController<
   setPasswordForgotten(forgottenPassword: boolean): void {
     this.update((state) => {
       state.forgottenPassword = forgottenPassword;
-    });
-  }
-
-  /**
-   * Setter for the `useBlockie` property
-   *
-   * @deprecated Use setAvatarType instead
-   * @param val - Whether or not the user prefers blockie indicators
-   */
-  setUseBlockie(val: boolean): void {
-    this.update((state) => {
-      state.useBlockie = val;
     });
   }
 
@@ -677,7 +673,6 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   /**
    * Setter for the `addSnapAccountEnabled` property.
    *
@@ -689,9 +684,7 @@ export class PreferencesController extends BaseController<
       state.addSnapAccountEnabled = addSnapAccountEnabled;
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   /**
    * Setter for the `watchEthereumAccountEnabled` property.
    *
@@ -703,7 +696,6 @@ export class PreferencesController extends BaseController<
       state.watchEthereumAccountEnabled = watchEthereumAccountEnabled;
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `useExternalNameSources` property
@@ -795,38 +787,6 @@ export class PreferencesController extends BaseController<
   }
 
   /**
-   * Setter for the `selectedAddress` property
-   *
-   * @deprecated - Use setSelectedAccount from the AccountsController
-   * @param address - A new hex address for an account
-   */
-  setSelectedAddress(address: string): void {
-    const account = this.messenger.call(
-      'AccountsController:getAccountByAddress',
-      address,
-    );
-    if (!account) {
-      throw new Error(`Identity for '${address} not found`);
-    }
-
-    this.messenger.call('AccountsController:setSelectedAccount', account.id);
-  }
-
-  /**
-   * Getter for the `selectedAddress` property
-   *
-   * @deprecated - Use the getSelectedAccount from the AccountsController
-   * @returns The hex address for the currently selected account
-   */
-  getSelectedAddress(): string {
-    const selectedAccount = this.messenger.call(
-      'AccountsController:getSelectedAccount',
-    );
-
-    return selectedAccount.address;
-  }
-
-  /**
    * Sets a custom label for an account
    *
    * @deprecated - Use setAccountName from the AccountsController
@@ -891,10 +851,31 @@ export class PreferencesController extends BaseController<
     value: Preferences[typeof preference],
   ): Preferences {
     const currentPreferences = this.getPreferences();
-    const updatedPreferences = {
+    let updatedPreferences: Preferences = {
       ...currentPreferences,
       [preference]: value,
     };
+
+    // Full-screen and default side panel are mutually exclusive. Disabling
+    // full-screen restores side panel as the default extension entry point.
+    switch (preference) {
+      case 'showExtensionInFullSizeView':
+        updatedPreferences = {
+          ...updatedPreferences,
+          useSidePanelAsDefault: !value,
+        };
+        break;
+      case 'useSidePanelAsDefault':
+        if (value) {
+          updatedPreferences = {
+            ...updatedPreferences,
+            showExtensionInFullSizeView: false,
+          };
+        }
+        break;
+      default:
+        break;
+    }
 
     this.update((state) => {
       state.preferences = updatedPreferences;
@@ -1015,90 +996,92 @@ export class PreferencesController extends BaseController<
   }
 
   setUseSidePanelAsDefault(value: boolean): void {
+    this.setPreference('useSidePanelAsDefault', value);
+  }
+
+  setShowDefaultAddress(value: boolean): void {
     this.update((state) => {
-      state.preferences.useSidePanelAsDefault = value;
+      state.preferences.showDefaultAddress = value;
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  setDefaultAddressScope(value: DefaultAddressScope): void {
+    this.update((state) => {
+      state.preferences.defaultAddressScope = value;
+    });
+  }
+
   setSnapsAddSnapAccountModalDismissed(value: boolean): void {
     this.update((state) => {
       state.snapsAddSnapAccountModalDismissed = value;
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
-  #handleAccountsControllerSync(
-    newAccountsControllerState: AccountsControllerState,
-  ): void {
-    const { accounts, selectedAccount: selectedAccountId } =
-      newAccountsControllerState.internalAccounts;
-    const selectedAccount = accounts[selectedAccountId];
+  dismissSidePanelMigrationToast(): void {
+    this.update((state) => {
+      state.showSidePanelMigrationToast = false;
+    });
+  }
 
-    const { identities, lostIdentities } = this.state;
-
-    const addresses = Object.values(accounts).map((account) =>
-      account.address.toLowerCase(),
-    );
-
-    const updatedLostIdentities = Object.keys(identities).reduce(
-      (acc, identity) => {
-        if (addresses.includes(identity.toLowerCase())) {
-          acc[identity] = identities[identity];
-        }
-        return acc;
+  /**
+   * Resets the preferences state to the default values.
+   * This is used when the wallet is reset during the "Forgot Password" flow.
+   */
+  resetState(): void {
+    const defaultState = getDefaultPreferencesControllerState();
+    const resetState = {
+      ...defaultState,
+      currentLocale: FALLBACK_LOCALE,
+      preferences: {
+        ...defaultState.preferences,
+        autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
+        showNativeTokenAsMainBalance: true,
       },
-      { ...lostIdentities },
-    );
+    };
+    this.update(() => resetState);
+  }
 
-    const updatedIdentities = Object.values(accounts).reduce(
-      (identitiesMap: Record<string, AccountIdentityEntry>, account) => {
-        identitiesMap[account.address] = {
-          address: account.address,
-          name: account.metadata.name,
-          lastSelected: account.metadata.lastSelected,
-        };
-
-        return identitiesMap;
-      },
-      {},
-    );
-
+  // Defi Referral methods
+  addReferralApprovedAccount(
+    partner: DefiReferralPartner,
+    accountAddress: Hex,
+  ) {
     this.update((state) => {
-      state.identities = updatedIdentities;
-      state.lostIdentities = updatedLostIdentities;
-      state.selectedAddress = selectedAccount?.address || ''; // it will be an empty string during onboarding
+      state.referrals[partner][accountAddress] = ReferralStatus.Approved;
     });
   }
 
-  addReferralApprovedAccount(accountAddress: Hex) {
+  addReferralPassedAccount(partner: DefiReferralPartner, accountAddress: Hex) {
     this.update((state) => {
-      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Approved;
+      state.referrals[partner][accountAddress] = ReferralStatus.Passed;
     });
   }
 
-  addReferralPassedAccount(accountAddress: Hex) {
+  addReferralDeclinedAccount(
+    partner: DefiReferralPartner,
+    accountAddress: Hex,
+  ) {
     this.update((state) => {
-      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Passed;
+      state.referrals[partner][accountAddress] = ReferralStatus.Declined;
     });
   }
 
-  addReferralDeclinedAccount(accountAddress: Hex) {
+  removeReferralDeclinedAccount(
+    partner: DefiReferralPartner,
+    accountAddress: Hex,
+  ) {
     this.update((state) => {
-      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Declined;
+      delete state.referrals[partner][accountAddress];
     });
   }
 
-  removeReferralDeclinedAccount(accountAddress: Hex) {
-    this.update((state) => {
-      delete state.referrals.hyperliquid[accountAddress];
-    });
-  }
-
-  setAccountsReferralApproved(accountAddresses: Hex[]) {
+  setAccountsReferralApproved(
+    partner: DefiReferralPartner,
+    accountAddresses: Hex[],
+  ) {
     this.update((state) => {
       accountAddresses.forEach((address) => {
-        state.referrals.hyperliquid[address] = ReferralStatus.Approved;
+        state.referrals[partner][address] = ReferralStatus.Approved;
       });
     });
   }

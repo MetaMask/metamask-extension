@@ -2,7 +2,7 @@ import React from 'react';
 import configureStore from '../../../../store/store';
 // Use mock-send-state to have some identites being populated
 import mockState from '../../../../../test/data/mock-send-state.json';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import SnapAccountSuccessMessage from './SnapAccountSuccessMessage';
 
 const store = configureStore(mockState);

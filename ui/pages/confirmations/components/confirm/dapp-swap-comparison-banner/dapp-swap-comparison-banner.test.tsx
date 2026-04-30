@@ -7,11 +7,13 @@ import { fireEvent } from '@testing-library/react';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { Confirmation } from '../../../types/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
 import * as DappSwapContext from '../../../context/dapp-swap';
 import { useDappSwapComparisonRewardText } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText';
+import { useDappSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapCheck';
 import { DappSwapComparisonBanner } from './dapp-swap-comparison-banner';
 
 jest.mock(
@@ -50,6 +52,15 @@ jest.mock(
   '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText',
   () => ({
     useDappSwapComparisonRewardText: jest.fn(),
+  }),
+);
+
+jest.mock(
+  '../../../hooks/transactions/dapp-swap-comparison/useDappSwapCheck',
+  () => ({
+    useDappSwapCheck: jest.fn(() => ({
+      isSwapToBeCompared: true,
+    })),
   }),
 );
 
@@ -107,6 +118,7 @@ function render(args: Record<string, string> = {}) {
 }
 
 describe('<DappSwapComparisonBanner />', () => {
+  const mockUseDappSwapCheck = jest.mocked(useDappSwapCheck);
   const mockGetRemoteFeatureFlags = jest.mocked(getRemoteFeatureFlags);
   const mockUseDappSwapComparisonInfo = jest.mocked(useDappSwapComparisonInfo);
   const mockUseDappSwapComparisonRewardText = jest.mocked(
@@ -120,6 +132,9 @@ describe('<DappSwapComparisonBanner />', () => {
       dappSwapUi: { enabled: true, threshold: 0.01 },
     });
     mockUseDappSwapComparisonRewardText.mockReturnValue(null);
+    mockUseDappSwapCheck.mockReturnValue({
+      isSwapToBeCompared: true,
+    });
   });
 
   it('renders component without errors', () => {
@@ -129,25 +144,20 @@ describe('<DappSwapComparisonBanner />', () => {
       tokenAmountDifference: 0.01,
     } as unknown as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
-    expect(getByText('Market rate')).toBeInTheDocument();
-    expect(getByText('MetaMask Swap')).toBeInTheDocument();
-    expect(getByText('Save and earn with MetaMask Swaps')).toBeInTheDocument();
-    expect(getByText('Save $0.02')).toBeInTheDocument();
+    expect(getByText(messages.marketRate.message)).toBeInTheDocument();
+    expect(getByText(messages.metamaskSwap.message)).toBeInTheDocument();
     expect(
-      getByText('Network fees refunded on failed swaps'),
+      getByText(messages.dappSwapAdvantageSaveOnly.message),
     ).toBeInTheDocument();
+    expect(getByText('Save $0.10')).toBeInTheDocument();
+    expect(getByText(messages.dappSwapBenefits.message)).toBeInTheDocument();
   });
 
   it('renders undefined for incorrect origin', () => {
+    mockUseDappSwapCheck.mockReturnValue({
+      isSwapToBeCompared: false,
+    });
     const { container } = render({ origin: 'www.test.com' });
-    expect(container).toBeEmptyDOMElement();
-  });
-
-  it('renders undefined if suitable quote is not found', () => {
-    mockUseDappSwapComparisonInfo.mockReturnValue({
-      selectedQuoteValueDifference: 0.001,
-    } as ReturnType<typeof useDappSwapComparisonInfo>);
-    const { container } = render();
     expect(container).toBeEmptyDOMElement();
   });
 
@@ -166,7 +176,7 @@ describe('<DappSwapComparisonBanner />', () => {
       tokenAmountDifference: 0.01,
     } as unknown as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
-    const quoteSwapButton = getByText('MetaMask Swap');
+    const quoteSwapButton = getByText(messages.metamaskSwap.message);
     fireEvent.click(quoteSwapButton);
     expect(mockSetQuotedSwapDisplayedInInfo).toHaveBeenCalledTimes(1);
     expect(
@@ -182,6 +192,15 @@ describe('<DappSwapComparisonBanner />', () => {
     ).toHaveBeenNthCalledWith(2, {
       swap_mm_opened: 'true',
     });
+  });
+
+  it('does not render component if dappSwapUi is not enabled', () => {
+    mockGetRemoteFeatureFlags.mockReturnValue({
+      dappSwapMetrics: { enabled: true },
+      dappSwapUi: { enabled: false, threshold: 0.01 },
+    });
+    const { container } = render();
+    expect(container.firstChild).toBeNull();
   });
 
   it('call function to update quote swap clicks on Market rate button', () => {
@@ -229,5 +248,6 @@ describe('<DappSwapComparisonBanner />', () => {
     });
     const { getByText } = render();
     expect(getByText(/Earn 100 points/u)).toBeInTheDocument();
+    expect(getByText(messages.dappSwapAdvantage.message)).toBeInTheDocument();
   });
 });

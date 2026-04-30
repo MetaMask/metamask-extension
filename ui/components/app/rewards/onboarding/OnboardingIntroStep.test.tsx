@@ -65,7 +65,7 @@ jest.mock('../../../../ducks/rewards/selectors', () => ({
 }));
 
 // Mock hardware wallet selector
-jest.mock('../../../../../shared/modules/selectors', () => ({
+jest.mock('../../../../../shared/lib/selectors', () => ({
   isHardwareWallet: jest.fn(),
 }));
 
@@ -100,7 +100,7 @@ describe('OnboardingIntroStep', () => {
     selectCandidateSubscriptionId,
   } = jest.requireMock('../../../../ducks/rewards/selectors');
   const { isHardwareWallet } = jest.requireMock(
-    '../../../../../shared/modules/selectors',
+    '../../../../../shared/lib/selectors',
   );
   const { useAppSelector } = jest.requireMock('../../../../store/store');
   const { useGeoRewardsMetadata } = jest.requireMock(
@@ -259,32 +259,6 @@ describe('OnboardingIntroStep', () => {
         isOpen: true,
         title: 'rewardsOnboardingIntroUnsupportedRegionTitle',
         description: 'rewardsOnboardingIntroUnsupportedRegionDescription',
-      }),
-    );
-    expect(dispatchMock).toHaveBeenCalledWith(
-      expect.objectContaining({ type: 'SET_ERROR_TOAST' }),
-    );
-  });
-
-  it('on confirm: shows error toast for hardware wallet usage', () => {
-    // Trigger the hardware wallet branch
-    (selectOptinAllowedForGeo as jest.Mock).mockReturnValue(true);
-    (selectOptinAllowedForGeoLoading as jest.Mock).mockReturnValue(false);
-    (selectOptinAllowedForGeoError as jest.Mock).mockReturnValue(false);
-    (selectCandidateSubscriptionId as jest.Mock).mockReturnValue(undefined);
-    (isHardwareWallet as jest.Mock).mockReturnValue(true);
-
-    render(<OnboardingIntroStep />);
-
-    fireEvent.click(
-      screen.getByRole('button', { name: 'rewardsOnboardingIntroStepConfirm' }),
-    );
-
-    expect(setErrorToast).toHaveBeenCalledWith(
-      expect.objectContaining({
-        isOpen: true,
-        title: 'rewardsOnboardingIntroHardwareWalletTitle',
-        description: 'rewardsOnboardingIntroHardwareWalletDescription',
       }),
     );
     expect(dispatchMock).toHaveBeenCalledWith(

@@ -30,8 +30,7 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../helpers/constants/design-system';
-import { NotificationsPage } from '../../components/multichain';
-import { Content } from '../../components/multichain/pages/page';
+import { Content, Page } from '../../components/multichain/pages/page';
 import { NotificationComponents } from '../notifications/notification-components';
 import { NotificationDetailsHeader } from './notification-details-header/notification-details-header';
 import { NotificationDetailsBody } from './notification-details-body/notification-details-body';
@@ -82,7 +81,7 @@ const Template = ({ notification }: { notification: Notification }) => {
 
   return (
     <Box marginLeft={'auto'} marginRight={'auto'}>
-      <NotificationsPage>
+      <Page>
         <NotificationDetailsHeader
           onClickBack={() => console.log('click back')}
         >
@@ -107,7 +106,7 @@ const Template = ({ notification }: { notification: Notification }) => {
             />
           </Box>
         </Content>
-      </NotificationsPage>
+      </Page>
     </Box>
   );
 };

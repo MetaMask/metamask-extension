@@ -1,15 +1,40 @@
 import React from 'react';
-import { fireEvent, act } from '@testing-library/react';
+import { AccountGroupId } from '@metamask/account-api';
+import { fireEvent, act, within, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
+import mockDefaultState from '../../../../test/data/mock-state.json';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainAccountMenu } from './multichain-account-menu';
 import type { MultichainAccountMenuProps } from './multichain-account-menu.types';
+
+jest.mock('../../../../shared/lib/trace', () => {
+  const actual = jest.requireActual('../../../../shared/lib/trace');
+  return {
+    ...actual,
+    trace: jest.fn(),
+    endTrace: jest.fn(),
+  };
+});
+
+const mockTrackEvent = jest.fn();
+const mockMetaMetricsContext = {
+  trackEvent: mockTrackEvent,
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
 
 const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
 const menuIconSelector = '.multichain-account-cell-popover-menu-button-icon';
 const menuItemSelector = '.multichain-account-cell-menu-item';
-const errorColorSelector = '.mm-box--color-error-default';
 
 const mockState = {
   metamask: {
@@ -22,6 +47,7 @@ const mockState = {
                 name: 'Test Account',
                 pinned: false,
                 hidden: false,
+                lastSelected: 0,
               },
             },
           },
@@ -49,9 +75,9 @@ jest.mock('../../../store/actions', () => {
 });
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -72,9 +98,15 @@ describe('MultichainAccountMenu', () => {
       isOpen: false,
       onToggle: jest.fn(),
     },
+    state = mockState,
   ) => {
-    const store = configureStore(mockState);
-    return renderWithProvider(<MultichainAccountMenu {...props} />, store);
+    const store = configureStore(state);
+    return renderWithProvider(
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <MultichainAccountMenu {...props} />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
   };
 
   beforeEach(() => {
@@ -165,8 +197,9 @@ describe('MultichainAccountMenu', () => {
     const menuItems = document.querySelectorAll(menuItemSelector);
     expect(menuItems.length).toBe(6);
 
-    const removeOption = document.querySelector(errorColorSelector);
-    expect(removeOption).toBeInTheDocument();
+    expect(
+      screen.getByTestId('multichain-account-menu-item-remove'),
+    ).toBeInTheDocument();
   });
 
   it('navigates to account details page when clicking the account details option', async () => {
@@ -186,9 +219,10 @@ describe('MultichainAccountMenu', () => {
       });
     }
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      '/multichain-account-details/entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ%2Fdefault',
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith({
+      pathname: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+      search: 'accountGroupId=entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ%2Fdefault',
+    });
   });
 
   it('calls handleAccountRenameAction when clicking the rename option', async () => {
@@ -319,15 +353,14 @@ describe('MultichainAccountMenu', () => {
       },
     };
 
-    const store = configureStore(stateWithPinnedAccount);
-    renderWithProvider(
-      <MultichainAccountMenu
-        accountGroupId={accountGroupId}
-        isRemovable={false}
-        isOpen={true}
-        onToggle={mockOnToggle}
-      />,
-      store,
+    renderComponent(
+      {
+        accountGroupId,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: mockOnToggle,
+      },
+      stateWithPinnedAccount,
     );
 
     // Hide option should be the fifth menu item
@@ -388,15 +421,14 @@ describe('MultichainAccountMenu', () => {
       },
     };
 
-    const store = configureStore(stateWithHiddenAccount);
-    renderWithProvider(
-      <MultichainAccountMenu
-        accountGroupId={accountGroupId}
-        isRemovable={false}
-        isOpen={true}
-        onToggle={mockOnToggle}
-      />,
-      store,
+    renderComponent(
+      {
+        accountGroupId,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: mockOnToggle,
+      },
+      stateWithHiddenAccount,
     );
 
     // Pin option should be the fourth menu item
@@ -418,5 +450,114 @@ describe('MultichainAccountMenu', () => {
       accountGroupId,
       true,
     );
+  });
+
+  it('tracks Account Pinned event when clicking the pin option', async () => {
+    const mockOnToggle = jest.fn();
+    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+
+    renderComponent({
+      accountGroupId,
+      isRemovable: false,
+      isOpen: true,
+      onToggle: mockOnToggle,
+    });
+
+    const menuItems = document.querySelectorAll(menuItemSelector);
+    const pinOption = menuItems[3];
+
+    if (pinOption) {
+      await act(async () => {
+        fireEvent.click(pinOption);
+      });
+    }
+
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      event: MetaMetricsEventName.AccountPinned,
+      category: MetaMetricsEventCategory.Accounts,
+      properties: {
+        pinned: true,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        pinned_count_after: 1,
+      },
+    });
+  });
+
+  it('tracks Account Hidden event when clicking the hide option', async () => {
+    const mockOnToggle = jest.fn();
+    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+
+    renderComponent({
+      accountGroupId,
+      isRemovable: false,
+      isOpen: true,
+      onToggle: mockOnToggle,
+    });
+
+    const menuItems = document.querySelectorAll(menuItemSelector);
+    const hideOption = menuItems[4];
+
+    if (hideOption) {
+      await act(async () => {
+        fireEvent.click(hideOption);
+      });
+    }
+
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      event: MetaMetricsEventName.AccountHidden,
+      category: MetaMetricsEventCategory.Accounts,
+      properties: {
+        hidden: true,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hidden_count_after: 1,
+      },
+    });
+  });
+
+  describe('tracing', () => {
+    const groupId = mockDefaultState.metamask
+      .selectedAccountGroup as AccountGroupId;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('calls trace ShowAccountAddressList when clicking Addresses', async () => {
+      const store = configureStore(mockDefaultState);
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <MultichainAccountMenu
+            accountGroupId={groupId}
+            isRemovable={false}
+            isOpen
+            onToggle={() => undefined}
+          />
+        </MetaMetricsContext.Provider>,
+        store,
+      );
+
+      const popover = document.querySelector(
+        '.multichain-account-cell-popover-menu',
+      );
+      expect(popover).toBeInTheDocument();
+
+      const addressesItem = popover
+        ? within(popover as HTMLElement).getByText(messages.addresses.message)
+        : null;
+      expect(addressesItem).toBeInTheDocument();
+
+      await act(async () => {
+        if (addressesItem) {
+          fireEvent.click(addressesItem);
+        }
+      });
+
+      const traceLib = jest.requireMock('../../../../shared/lib/trace');
+      expect(traceLib.trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: traceLib.TraceName.ShowAccountAddressList,
+        }),
+      );
+    });
   });
 });

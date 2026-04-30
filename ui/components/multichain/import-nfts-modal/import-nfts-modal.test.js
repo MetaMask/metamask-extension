@@ -2,17 +2,17 @@ import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   addNftVerifyOwnership,
   ignoreTokens,
-  setNewNftAddedMessage,
   updateNftDropDownState,
 } from '../../../store/actions';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { ImportNftsModal } from '.';
 
 const VALID_ADDRESS = '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9';
@@ -20,25 +20,33 @@ const INVALID_ADDRESS = 'aoinsafasdfa';
 const VALID_TOKENID = '1201';
 const INVALID_TOKENID = 'abcde';
 
+const mockToastSuccess = jest.fn();
+const mockToastError = jest.fn();
+
 jest.mock('../../../store/actions.ts', () => ({
   addNftVerifyOwnership: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue()),
   getTokenStandardAndDetails: jest.fn().mockResolvedValue(),
   ignoreTokens: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
-  setNewNftAddedMessage: jest
-    .fn()
-    .mockReturnValue(jest.fn().mockResolvedValue()),
   updateNftDropDownState: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue()),
   hideImportNftsModal: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
 }));
 
+jest.mock('../../ui/toast/toast', () => ({
+  toast: {
+    success: (...args) => mockToastSuccess(...args),
+    error: (...args) => mockToastError(...args),
+  },
+  ToastContent: ({ title }) => title,
+}));
+
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -48,51 +56,103 @@ describe('ImportNftsModal', () => {
 
   beforeEach(() => {
     jest.restoreAllMocks();
+    mockToastSuccess.mockClear();
+    mockToastError.mockClear();
   });
 
-  it('should enable the "Import" button when valid entries are input into both Address and TokenId fields', () => {
-    const { getByText, getByPlaceholderText } = renderWithProvider(
+  it('should enable the "Import" button when valid entries are input into both Address and TokenId fields and a network is selected', () => {
+    const { getByText, getByPlaceholderText, getByTestId } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
-    expect(getByText('Import')).not.toBeEnabled();
+    expect(getByText(messages.import.message)).not.toBeEnabled();
+
+    // Select a network first
+    const networkSelectorButton = getByTestId(
+      'test-import-tokens-drop-down-custom-import',
+    );
+    fireEvent.click(networkSelectorButton);
+    const networkItem = getByTestId('Goerli');
+    fireEvent.click(networkItem);
+
     const addressInput = getByPlaceholderText('0x...');
-    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    const tokenIdInput = getByPlaceholderText(
+      messages.nftTokenIdPlaceholder.message,
+    );
     fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
     fireEvent.change(tokenIdInput, {
       target: { value: VALID_TOKENID },
     });
-    expect(getByText('Import')).toBeEnabled();
+    expect(getByText(messages.import.message)).toBeEnabled();
   });
 
-  it('should not enable the "Import" button when an invalid entry is input into one or both Address and TokenId fields', () => {
+  it('should not enable the "Import" button when no network is selected', () => {
     const { getByText, getByPlaceholderText } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
-    expect(getByText('Import')).not.toBeEnabled();
+    expect(getByText(messages.import.message)).not.toBeEnabled();
+
+    // Fill in valid address and tokenId but don't select a network
     const addressInput = getByPlaceholderText('0x...');
-    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    const tokenIdInput = getByPlaceholderText(
+      messages.nftTokenIdPlaceholder.message,
+    );
+    fireEvent.change(addressInput, {
+      target: { value: VALID_ADDRESS },
+    });
+    fireEvent.change(tokenIdInput, {
+      target: { value: VALID_TOKENID },
+    });
+
+    // Button should still be disabled without network selection
+    expect(getByText(messages.import.message)).not.toBeEnabled();
+  });
+
+  it('should not enable the "Import" button when an invalid entry is input into one or both Address and TokenId fields', () => {
+    const { getByText, getByPlaceholderText, getByTestId } = renderWithProvider(
+      <ImportNftsModal onClose={jest.fn()} />,
+      store,
+    );
+    expect(getByText(messages.import.message)).not.toBeEnabled();
+
+    // Select a network first
+    const networkSelectorButton = getByTestId(
+      'test-import-tokens-drop-down-custom-import',
+    );
+    fireEvent.click(networkSelectorButton);
+    const networkItem = getByTestId('Goerli');
+    fireEvent.click(networkItem);
+
+    const addressInput = getByPlaceholderText('0x...');
+    const tokenIdInput = getByPlaceholderText(
+      messages.nftTokenIdPlaceholder.message,
+    );
     fireEvent.change(addressInput, {
       target: { value: INVALID_ADDRESS },
     });
     fireEvent.change(tokenIdInput, {
       target: { value: VALID_TOKENID },
     });
-    expect(getByText('Import')).not.toBeEnabled();
+
+    expect(getByText(messages.import.message)).not.toBeEnabled(); // Invalid token address, valid token id
+
     fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
-    expect(getByText('Import')).toBeEnabled();
+
+    expect(getByText(messages.import.message)).toBeEnabled(); // Valid token address, valid token id
+
     fireEvent.change(tokenIdInput, {
       target: { value: INVALID_TOKENID },
     });
-    expect(getByText('Import')).not.toBeEnabled();
+
+    expect(getByText(messages.import.message)).not.toBeEnabled(); // Valid token address, invalid token id
   });
 
-  it('should call addNftVerifyOwnership, updateNftDropDownState, setNewNftAddedMessage, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
+  it('should call addNftVerifyOwnership, updateNftDropDownState, show success toast, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
     store = configureMockStore([thunk])({
       ...mockState,
       appState: { importNftsModal: { ignoreErc20Token: true } },
@@ -115,7 +175,9 @@ describe('ImportNftsModal', () => {
     fireEvent.click(customNetworkItem);
 
     const addressInput = getByPlaceholderText('0x...');
-    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    const tokenIdInput = getByPlaceholderText(
+      messages.nftTokenIdPlaceholder.message,
+    );
     fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
@@ -124,7 +186,7 @@ describe('ImportNftsModal', () => {
       target: { value: LARGE_TOKEN_ID },
     });
 
-    fireEvent.click(getByText('Import'));
+    fireEvent.click(getByText(messages.import.message));
 
     await waitFor(() => {
       expect(addNftVerifyOwnership).toHaveBeenCalledWith(
@@ -142,7 +204,7 @@ describe('ImportNftsModal', () => {
         },
       });
 
-      expect(setNewNftAddedMessage).toHaveBeenCalledWith('success');
+      expect(mockToastSuccess).toHaveBeenCalled();
 
       expect(ignoreTokens).toHaveBeenCalledWith({
         dontShowLoadingIndicator: true,
@@ -152,7 +214,7 @@ describe('ImportNftsModal', () => {
     });
   });
 
-  it('should throw error message and click close on failure message', async () => {
+  it('should show error toast on import failure', async () => {
     addNftVerifyOwnership.mockImplementation(() =>
       jest.fn().mockRejectedValue(new Error('error')),
     );
@@ -161,8 +223,19 @@ describe('ImportNftsModal', () => {
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
+
+    // Select a network first
+    const networkSelectorButton = getByTestId(
+      'test-import-tokens-drop-down-custom-import',
+    );
+    fireEvent.click(networkSelectorButton);
+    const networkItem = getByTestId('Goerli');
+    fireEvent.click(networkItem);
+
     const addressInput = getByPlaceholderText('0x...');
-    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    const tokenIdInput = getByPlaceholderText(
+      messages.nftTokenIdPlaceholder.message,
+    );
     fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
@@ -171,15 +244,11 @@ describe('ImportNftsModal', () => {
       target: { value: LARGE_TOKEN_ID },
     });
 
-    fireEvent.click(getByText('Import'));
+    fireEvent.click(getByText(messages.import.message));
 
     await waitFor(() => {
-      expect(setNewNftAddedMessage).toHaveBeenCalledWith('error');
+      expect(mockToastError).toHaveBeenCalled();
     });
-
-    const addNftClose = getByTestId('add-nft-error-close');
-
-    fireEvent.click(addNftClose);
   });
 
   it('should set error message when address invalid', () => {
@@ -194,7 +263,7 @@ describe('ImportNftsModal', () => {
       target: { value: INVALID_ADDRESS },
     });
 
-    const errorMessage = getByText('Invalid address');
+    const errorMessage = getByText(messages.invalidAddress.message);
     expect(errorMessage).toBeInTheDocument();
   });
 
@@ -238,7 +307,9 @@ describe('ImportNftsModal', () => {
 
     // Enter NFT details
     const addressInput = getByPlaceholderText('0x...');
-    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    const tokenIdInput = getByPlaceholderText(
+      messages.nftTokenIdPlaceholder.message,
+    );
     fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
@@ -247,11 +318,12 @@ describe('ImportNftsModal', () => {
     });
 
     // Click import
-    fireEvent.click(getByText('Import'));
+    fireEvent.click(getByText(messages.import.message));
 
-    // Get the actual networkClientId that was used in the addNftVerifyOwnership call
-    const addNftCall = addNftVerifyOwnership.mock.calls[1];
-    const usedNetworkClientId = addNftCall[2]; // Third argument is the networkClientId
+    // Get the actual networkClientId that was used in the addNftVerifyOwnership call (use last call to be robust against previous test calls)
+    const addNftCalls = addNftVerifyOwnership.mock.calls;
+    const lastCall = addNftCalls[addNftCalls.length - 1];
+    const usedNetworkClientId = lastCall[2]; // Third argument is the networkClientId
 
     expect(addNftVerifyOwnership).toHaveBeenCalledWith(
       VALID_ADDRESS,
@@ -272,7 +344,7 @@ describe('ImportNftsModal', () => {
       store,
     );
 
-    const cancelButton = getByText('Cancel');
+    const cancelButton = getByText(messages.cancel.message);
     fireEvent.click(cancelButton);
 
     // Verify both onClose and history.push are called

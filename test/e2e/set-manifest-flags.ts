@@ -1,3 +1,4 @@
+import nodeCrypto from 'crypto';
 import fs from 'fs';
 import { merge } from 'lodash';
 import { ManifestFlags } from '../../shared/lib/manifestFlags';
@@ -32,7 +33,7 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
       enabled: true,
       branch: process.env.BRANCH,
       commitHash: process.env.HEAD_COMMIT_HASH,
-      job: process.env.JOB_NAME,
+      job: process.env.JOB_NAME?.split(' ')[0], // Remove matrix info
       matrixIndex: parseIntOrUndefined(process.env.MATRIX_INDEX),
       prNumber: parseIntOrUndefined(process.env.PR_NUMBER),
     };
@@ -54,10 +55,15 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
   manifest._flags = flags;
 
   if (process.env.MULTIPROVIDER && 'key' in manifest) {
-    // for multi-provider tests, we need to install the second extension
-    // if any key is present, we need to remove it to generate a new random key (id) for each extension
-    // since two extensions with the same key can't be installed at the same time
-    delete manifest.key;
+    // Replace the key with a freshly generated one so dist/chrome gets a
+    // different deterministic extension ID than dist/chrome2 (which keeps
+    // the original key from the copy). This avoids the same-key conflict
+    // while keeping both IDs computable without scraping chrome://extensions.
+    manifest.key = nodeCrypto
+      .generateKeyPairSync('rsa', { modulusLength: 2048 })
+      .publicKey.export({ type: 'spki', format: 'pem' })
+      .toString()
+      .replace(/-----(BEGIN|END) PUBLIC KEY-----|\n/gu, '');
   }
 
   fs.writeFileSync(

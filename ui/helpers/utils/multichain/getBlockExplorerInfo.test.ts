@@ -15,8 +15,8 @@ describe('getBlockExplorerInfo utility functions', () => {
 
       expect(result).toEqual({
         addressUrl: 'https://mempool.space/address/0x1234567890abcdef',
-        name: 'Blockstream',
-        buttonText: 'translated_viewAddressOnExplorer_Blockstream',
+        name: 'Mempool',
+        buttonText: 'translated_viewAddressOnExplorer_Mempool',
       });
     });
 

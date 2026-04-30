@@ -2,6 +2,7 @@ export const TEST_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 
 export enum RowAlertKey {
   AccountTypeUpgrade = 'accountTypeUpgrade',
+  Amount = 'amount',
   ChainName = 'chainName',
   EstimatedChangesStatic = 'estimatedChangesStatic',
   Spender = 'spender',
@@ -9,6 +10,7 @@ export enum RowAlertKey {
   IncomingTokens = 'incomingTokens',
   InteractingWith = 'interactingWith',
   Network = 'network',
+  PayWith = 'payWith',
   RequestFrom = 'requestFrom',
   Resimulation = 'resimulation',
   RpcUrl = 'rpcUrl',

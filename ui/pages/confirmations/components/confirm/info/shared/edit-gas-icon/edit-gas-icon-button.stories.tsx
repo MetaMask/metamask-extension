@@ -2,28 +2,32 @@ import { Meta } from '@storybook/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import mockState from '../../../../../../../../test/data/mock-state.json';
+import { getMockTokenTransferConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
+import { GasFeeModalContextProvider } from '../../../../../context/gas-fee-modal';
+import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { EditGasIconButton } from './edit-gas-icon-button';
 
-function getStore() {
-  return configureStore(mockState);
-}
+const store = configureStore(getMockTokenTransferConfirmState({}));
 
 const Story = {
   title: 'Components/App/Confirm/info/EditGasIconButton',
   component: EditGasIconButton,
   decorators: [
     (story: () => Meta<typeof EditGasIconButton>) => (
-      <Provider store={getStore()}>
-        <div
-          style={{
-            backgroundColor: 'var(--color-background-alternative)',
-            padding: 30,
-          }}
-        >
-          {story()}
-        </div>
+      <Provider store={store}>
+        <ConfirmContextProvider>
+          <GasFeeModalContextProvider>
+            <div
+              style={{
+                backgroundColor: 'var(--color-background-alternative)',
+                padding: 30,
+              }}
+            >
+              {story()}
+            </div>
+          </GasFeeModalContextProvider>
+        </ConfirmContextProvider>
       </Provider>
     ),
   ],
@@ -31,11 +35,6 @@ const Story = {
 
 export default Story;
 
-export const DefaultStory = () => (
-  <EditGasIconButton
-    supportsEIP1559={true}
-    setShowCustomizeGasPopover={() => {}}
-  />
-);
+export const DefaultStory = () => <EditGasIconButton />;
 
 DefaultStory.storyName = 'Default';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { MULTICHAIN_NETWORK_DECIMAL_PLACES } from '@metamask/multichain-network-controller';
 import {
   AlignItems,
@@ -23,7 +23,6 @@ import {
   getEnabledNetworksByNamespace,
   getPreferences,
   getSelectedInternalAccount,
-  isGlobalNetworkSelectorRemoved,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
 import {
@@ -61,9 +60,8 @@ export const AggregatedBalance = ({
     selectAnyEnabledNetworksAreAvailable,
   );
 
-  const showNativeTokenAsMain = isGlobalNetworkSelectorRemoved
-    ? showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1
-    : showNativeTokenAsMainBalance;
+  const showNativeTokenAsMain =
+    showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1;
 
   const multichainNativeTokenBalance = useSelector((state) =>
     getMultichainNativeTokenBalance(state, selectedAccount),

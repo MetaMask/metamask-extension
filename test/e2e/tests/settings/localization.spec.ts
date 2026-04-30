@@ -1,8 +1,8 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 async function mockPhpConversion(mockServer: Mockttp) {
   return [
@@ -37,6 +37,12 @@ async function mockPhpConversion(mockServer: Mockttp) {
         return {
           statusCode: 200,
           json: {
+            eth: {
+              name: 'Ether',
+              ticker: 'eth',
+              value: 1,
+              currencyType: 'crypto',
+            },
             usd: {
               name: 'US Dollar',
               ticker: 'usd',
@@ -46,9 +52,9 @@ async function mockPhpConversion(mockServer: Mockttp) {
           },
         };
       }),
-    // Mock v2 spot-prices for chain 1 (mainnet)
+    // Mock v3 spot-prices
     await mockServer
-      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
       .thenCallback((request) => {
         const url = new URL(request.url);
         const vsCurrency = url.searchParams.get('vsCurrency');
@@ -58,7 +64,7 @@ async function mockPhpConversion(mockServer: Mockttp) {
           return {
             statusCode: 200,
             json: {
-              '0x0000000000000000000000000000000000000000': {
+              'eip155:1/slip44:60': {
                 id: 'ethereum',
                 price: 100000, // 1 ETH = 100,000 PHP
                 marketCap: 382623505141,
@@ -72,9 +78,9 @@ async function mockPhpConversion(mockServer: Mockttp) {
         return {
           statusCode: 200,
           json: {
-            '0x0000000000000000000000000000000000000000': {
+            'eip155:1/slip44:60': {
               id: 'ethereum',
-              price: 2500, // 1 ETH = 2,500 USD
+              price: 1,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
@@ -88,9 +94,12 @@ describe('Localization', function () {
   it('can correctly display Philippine peso symbol and code', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withCurrencyController({
             currentCurrency: 'php',
+          })
+          .withAssetsController({
+            selectedCurrency: 'php',
           })
           .withPreferencesController({
             preferences: {
@@ -98,12 +107,13 @@ describe('Localization', function () {
               showNativeTokenAsMainBalance: false,
             },
           })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         testSpecificMock: mockPhpConversion,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // After the removal of displaying secondary currency in coin-overview.tsx, we will test localization on main balance with showNativeTokenAsMainBalance = false
         await new HomePage(driver).checkExpectedBalanceIsDisplayed(

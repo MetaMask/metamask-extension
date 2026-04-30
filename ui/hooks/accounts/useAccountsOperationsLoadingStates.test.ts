@@ -1,4 +1,4 @@
-import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers';
+import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers-navigate';
 import { useAccountsOperationsLoadingStates } from './useAccountsOperationsLoadingStates';
 
 describe('useAccountsOperationsLoadingStates', () => {

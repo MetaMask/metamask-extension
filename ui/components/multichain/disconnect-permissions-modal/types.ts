@@ -1,12 +1,8 @@
-import {
-  PermissionTypesWithCustom,
-  Signer,
-  StoredGatorPermissionSanitized,
-} from '@metamask/gator-permissions-controller';
+import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import { Hex } from '@metamask/utils';
 
 export type GatorPermission = {
-  permission: StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>;
+  permission: PermissionInfoWithMetadata;
   chainId: Hex;
   permissionType: string;
 };

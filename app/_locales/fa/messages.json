@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "نیاز به انتخاب یک حساب دارید!"
   },
-  "activityLog": {
-    "message": "دفترچه فعالیت"
-  },
   "addAcquiredTokens": {
     "message": "رمزیاب های را که با استفاده از MetaMask بدست آورده اید، اضافه کنید"
   },
@@ -229,9 +226,6 @@
   "enterPasswordContinue": {
     "message": "برای ادامه رمز عبور را وارد کنید"
   },
-  "ethereumPublicAddress": {
-    "message": "آدرس عمومی ایتریم"
-  },
   "etherscanView": {
     "message": "حساب را در Etherscan ببینید"
   },
@@ -305,9 +299,6 @@
     "message": "وارد شده",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "معامله آغازین تان توسط شبکه تأیید شد. برای رفتن به عقب بالای OK کلیک کنید."
-  },
   "insufficientBalance": {
     "message": "بیلانس ناکافی."
   },
@@ -354,9 +345,6 @@
   "links": {
     "message": "لینک ها"
   },
-  "loadMore": {
-    "message": "بارگیری بیشتر"
-  },
   "loading": {
     "message": "در حال بارکردن…"
   },
@@ -388,9 +376,6 @@
     "message": "شما باید یک فایل برای وارد کردن را انتخاب کنید.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "نمیتوان مبالغ منفی ETH را ارسال کرد."
-  },
   "networkName": {
     "message": "نام شبکه"
   },
@@ -407,9 +392,6 @@
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "تماس جدید"
-  },
   "newContract": {
     "message": "قرارداد جدید"
   },
@@ -418,9 +400,6 @@
   },
   "next": {
     "message": "بعدی"
-  },
-  "noConversionRateAvailable": {
-    "message": "هیچ نرخ تغییر موجود نمیباشد"
   },
   "noWebcamFound": {
     "message": "وب کم کمپیوتر تان پیدا نشد. لطفًا دوباره کوشش کنید."
@@ -496,12 +475,6 @@
   "rejectAll": {
     "message": "رد همه"
   },
-  "rejectTxsDescription": {
-    "message": "شما در حال رد دسته از معاملات 1$1 هستید."
-  },
-  "rejectTxsN": {
-    "message": "رد معاملات 1$1"
-  },
   "rejected": {
     "message": "رد شد"
   },
@@ -510,9 +483,6 @@
   },
   "removeAccount": {
     "message": "حذف حساب"
-  },
-  "removeAccountDescription": {
-    "message": "این حساب از کیف تان حذف خواهد شد. لطفًا مطمئن شوید که عبارت اصلی بازیاب و کلید شخصی را برای این حساب وارد شده قبل از ادامه با خود دارید. شما میتوانید حساب ها را دوباره از پایین حساب وارد یا ایجاد نمایید."
   },
   "required": {
     "message": "لازم است"
@@ -599,9 +569,6 @@
   "speedUpCancellation": {
     "message": "این لغو را تسریع بخشید"
   },
-  "speedUpTransaction": {
-    "message": "تسریع این معامله"
-  },
   "stateLogError": {
     "message": "خطا در بازیابی دفترچه وضعیت"
   },
@@ -647,38 +614,11 @@
   "transaction": {
     "message": "معامله"
   },
-  "transactionCancelAttempted": {
-    "message": "برای لغو معامله با فیس گاز 1$1 در 2$2 تلاش شده"
-  },
-  "transactionCancelSuccess": {
-    "message": "معامله به 1$2 موفقانه لغو شد"
-  },
-  "transactionConfirmed": {
-    "message": "معامله به 1$2 تأیید شد."
-  },
-  "transactionCreated": {
-    "message": "معامله با ارزش 1$1 در 2$2 ایجاد شد."
-  },
-  "transactionDropped": {
-    "message": "معامله به 1$2 نزول کرد."
-  },
   "transactionError": {
     "message": "خطا معامله. استثناء در کود قرارداد گذاشته شده است."
   },
   "transactionErrorNoContract": {
     "message": "در حال تلاش برای درخواست یک عملکرد مرتبط به آدرس غیر-قرارداد"
-  },
-  "transactionErrored": {
-    "message": "معامله با خطا مواجه شد."
-  },
-  "transactionResubmitted": {
-    "message": "معامله دوباره با فیس افزایش یافته گاز به 1$1 در 2$2 تسلیم داده شد"
-  },
-  "transactionSubmitted": {
-    "message": "معامله با فیس گاز 1$1 در 2$2 ارائه شد."
-  },
-  "transactionUpdated": {
-    "message": "معامله به 1$2 بروزرسانی شد."
   },
   "transfer": {
     "message": "انتقال"
@@ -710,12 +650,6 @@
   "usedByClients": {
     "message": "استفاده شده توسط گروهی از مشتریان مختلف"
   },
-  "userName": {
-    "message": "نام کاربری"
-  },
-  "viewContact": {
-    "message": "مشاهده تماس"
-  },
   "visitWebSite": {
     "message": "از وب سایت ما دیدن نمایید"
   },
@@ -724,8 +658,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "لازم است تا شما جهت استفاده از این مشخصه، به کمره اجازه دسترسی بدهید."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "عبارت بازیاب شخصی شما"
   }
 }

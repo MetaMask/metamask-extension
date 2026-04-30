@@ -1,20 +1,18 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Box, ButtonIcon, IconName } from '@metamask/design-system-react';
 import {
-  Box,
-  ButtonIcon,
   FormTextField,
   FormTextFieldSize,
-  IconName,
   InputType,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
-import { TextColor } from '../../../helpers/constants/design-system';
 
 type PasswordFormProps = {
   onChange: (password: string) => void;
   pwdInputTestId?: string;
   confirmPwdInputTestId?: string;
+  disabled?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -23,6 +21,7 @@ export default function PasswordForm({
   onChange,
   pwdInputTestId,
   confirmPwdInputTestId,
+  disabled = false,
 }: PasswordFormProps) {
   const t = useI18nContext();
 
@@ -33,6 +32,18 @@ export default function PasswordForm({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [passwordLengthError, setPasswordLengthError] = useState(false);
+
+  const confirmPasswordRef = useRef<HTMLInputElement>(null);
+
+  const handlePasswordKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        confirmPasswordRef.current?.focus();
+      }
+    },
+    [],
+  );
 
   const handlePasswordChange = useCallback(
     (passwordInput: string) => {
@@ -92,15 +103,17 @@ export default function PasswordForm({
         autoComplete
         size={FormTextFieldSize.Lg}
         value={password}
+        disabled={disabled}
         inputProps={{
           'data-testid': pwdInputTestId || 'create-password-new-input',
           type: showPassword ? InputType.Text : InputType.Password,
+          onKeyDown: handlePasswordKeyDown,
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           handlePasswordChange(e.target.value);
         }}
         helpTextProps={{
-          color: TextColor.textAlternative,
+          className: 'text-alternative',
           'data-testid': 'short-password-error',
         }}
         helpText={t('passwordNotLongEnough')}
@@ -129,11 +142,13 @@ export default function PasswordForm({
         marginTop={4}
         size={FormTextFieldSize.Lg}
         error={Boolean(confirmPasswordError)}
+        disabled={disabled}
         helpTextProps={{
           'data-testid': 'confirm-password-error',
         }}
         helpText={confirmPasswordError}
         value={confirmPassword}
+        inputRef={confirmPasswordRef}
         inputProps={{
           'data-testid':
             confirmPwdInputTestId || 'create-password-confirm-input',

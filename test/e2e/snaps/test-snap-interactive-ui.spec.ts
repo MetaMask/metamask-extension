@@ -1,12 +1,12 @@
-import { withFixtures, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import SnapInteractiveDialog from '../page-objects/pages/dialog/snap-interactive-dialog';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { mockInteractiveUiSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import { DAPP_PATH } from '../constants';
 
 describe('Interactive UI Snap', function () {
   it('validate the interactive ui elements', async function () {
@@ -15,12 +15,14 @@ describe('Interactive UI Snap', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockInteractiveUiSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         const interactiveUI = new SnapInteractiveDialog(driver);
@@ -47,10 +49,22 @@ describe('Interactive UI Snap', function () {
         await interactiveUI.selectRadioOption('Option 1');
         await interactiveUI.selectDropDownOption('dropDown', 'Option 2');
         await interactiveUI.selectCheckbox();
+
+        const dateTimePickerDate = await interactiveUI.selectInDateTimePicker(
+          15,
+          6,
+          30,
+        );
+        const datePickerDate = await interactiveUI.selectInDatePicker(20);
+        const timePickerDate = await interactiveUI.selectInTimePicker(9, 40);
         await interactiveUI.clickSubmitButton();
 
         // check for returned values and close the dialog
-        await interactiveUI.checkResult();
+        await interactiveUI.checkResult({
+          dateTimePickerDate,
+          datePickerDate,
+          timePickerDate,
+        });
         await interactiveUI.clickOKButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.checkMessageResultSpan(

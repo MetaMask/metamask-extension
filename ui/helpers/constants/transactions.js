@@ -2,14 +2,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-
-/**
- * Constants for transaction kinds used in unified transaction lists
- */
-export const TransactionKind = {
-  EVM: 'evm',
-  NON_EVM: 'non-evm',
-};
+import { SmartTransactionStatus } from '../../../shared/constants/transaction';
 
 export const PENDING_STATUS_HASH = {
   [TransactionStatus.unapproved]: true,
@@ -29,3 +22,49 @@ export const TOKEN_CATEGORY_HASH = {
   [TransactionType.tokenMethodTransferFrom]: true,
   [TransactionType.tokenMethodIncreaseAllowance]: true,
 };
+
+// Transaction types excluded in unified transaction lists
+export const EXCLUDED_TRANSACTION_TYPES = new Set([
+  TransactionType.incoming,
+  TransactionType.gasPayment,
+  TransactionType.relayDeposit,
+]);
+
+// EVM transaction types excluded from toast notifications
+export const TOAST_EXCLUDED_TRANSACTION_TYPES = new Set([
+  TransactionType.swapApproval,
+  TransactionType.bridgeApproval,
+  TransactionType.shieldSubscriptionApprove,
+  TransactionType.musdConversion,
+  TransactionType.musdClaim,
+  TransactionType.perpsDeposit,
+  TransactionType.perpsDepositAndOrder,
+  TransactionType.perpsWithdraw,
+  TransactionType.perpsRelayDeposit,
+]);
+
+export const TOAST_EXCLUDED_NESTED_TRANSACTION_TYPES = new Set([
+  TransactionType.musdRelayDeposit,
+]);
+
+// Non-EVM transaction types excluded from toast notifications.
+export const TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES = new Set([
+  'approve',
+  'receive',
+]);
+
+export const TRANSACTION_PENDING_STATUSES = new Set([
+  TransactionStatus.submitted,
+  SmartTransactionStatus.pending,
+]);
+
+export const TRANSACTION_SUCCESS_STATUSES = new Set([
+  TransactionStatus.confirmed,
+  SmartTransactionStatus.success,
+]);
+
+export const TRANSACTION_FAILED_STATUSES = new Set([
+  TransactionStatus.failed,
+  TransactionStatus.dropped,
+  SmartTransactionStatus.cancelled,
+]);

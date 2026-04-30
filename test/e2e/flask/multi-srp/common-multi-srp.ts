@@ -1,11 +1,14 @@
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
 
 export const SECOND_TEST_E2E_SRP =
@@ -25,12 +28,15 @@ export async function withMultiSrp(
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilder().build(),
-      testSpecificMock,
+      fixtures: new FixtureBuilderV2().build(),
       title,
+      testSpecificMock: async (mockServer: Mockttp) => [
+        await mockActiveNetworks(mockServer),
+        await testSpecificMock(mockServer),
+      ],
     },
-    async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
-      await loginWithBalanceValidation(driver);
+    async ({ driver }) => {
+      await login(driver);
       const homePage = new HomePage(driver);
       await homePage.checkPageIsLoaded();
       const headerNavbar = new HeaderNavbar(driver);
@@ -39,10 +45,30 @@ export async function withMultiSrp(
       await accountListPage.checkPageIsLoaded();
       await accountListPage.startImportSecretPhrase(srpToUse);
       await homePage.checkNewSrpAddedToastIsDisplayed();
+      await homePage.dismissSrpAddedToast();
+      await homePage.checkPageIsLoaded();
       await test(driver);
     },
   );
 }
+
+export const verifySrp = async (
+  driver: Driver,
+  srp: string,
+  srpIndex: number,
+) => {
+  await new HeaderNavbar(driver).openSettingsPage();
+  const settingsPage = new SettingsPage(driver);
+  await settingsPage.checkPageIsLoaded();
+  await settingsPage.goToSecurityAndPasswordSettings();
+
+  const privacySettings = new PrivacySettings(driver);
+  await privacySettings.checkSecurityAndPasswordPageIsLoaded();
+  await privacySettings.openRevealSrpQuiz(srpIndex);
+  await privacySettings.completeRevealSrpQuiz();
+  await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
+  await privacySettings.checkSrpTextIsDisplayed(srp);
+};
 
 export async function mockActiveNetworks(mockServer: Mockttp) {
   return await mockServer

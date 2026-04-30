@@ -1,10 +1,6 @@
 @use "design-system";
 
 .transaction-list-item-details {
-  div.disclosure + div.disclosure {
-    margin-top: 0;
-  }
-
   .sender-to-recipient--flat .sender-to-recipient__party.sender-to-recipient__party--sender {
     padding: 0;
     justify-content: flex-start;
@@ -75,30 +71,6 @@
     padding: 8px 16px;
   }
 
-  &__header-buttons {
-    display: flex;
-    flex-direction: row;
-  }
-
-  & &__header-button {
-    &-rounded-button {
-      @include design-system.H8;
-
-      padding: 8px;
-      min-width: 75px;
-      margin-right: 8px;
-    }
-
-    &-tooltip-container {
-      display: flex !important;
-      height: 100%;
-    }
-
-    &:not(:last-child) {
-      margin-right: 8px;
-    }
-  }
-
   &__sender-to-recipient-container {
     margin-bottom: 8px;
 
@@ -127,18 +99,5 @@
     margin-right: 8px;
     min-width: 0;
     margin: 0 0 8px 0;
-  }
-
-  &__transaction-activity-log {
-    flex: 2;
-    min-width: 0;
-
-    .transaction-activity-log__activities-container {
-      padding-top: 0;
-    }
-
-    .transaction-activity-log__title {
-      display: none;
-    }
   }
 }

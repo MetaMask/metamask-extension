@@ -1,4 +1,3 @@
-import { Meta } from '@storybook/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
@@ -53,8 +52,6 @@ export const DefaultStory = () => (
     fiatFee="$1"
     nativeFee="0.001"
     fiatFeeWith18SignificantDigits="0.001234"
-    supportsEIP1559={true}
-    setShowCustomizeGasPopover={() => {}}
   />
 );
 
@@ -65,8 +62,6 @@ export const TokenStory = () => (
     fiatFee="$1"
     nativeFee="0.001"
     fiatFeeWith18SignificantDigits="0.001234"
-    supportsEIP1559={true}
-    setShowCustomizeGasPopover={() => {}}
   />
 );
 
@@ -78,8 +73,6 @@ export const AdvancedStory = () => (
     fiatFee="$1"
     nativeFee="0.001"
     fiatFeeWith18SignificantDigits="0.001234"
-    supportsEIP1559={true}
-    setShowCustomizeGasPopover={() => {}}
   />
 );
 
@@ -91,8 +84,6 @@ export const TokenAdvanced = () => (
     fiatFee="$1"
     nativeFee="0.001"
     fiatFeeWith18SignificantDigits="0.001234"
-    supportsEIP1559={true}
-    setShowCustomizeGasPopover={() => {}}
   />
 );
 

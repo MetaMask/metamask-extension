@@ -1,26 +1,33 @@
-import { ChainId, formatChainIdToCaip } from '@metamask/bridge-controller';
+import { ChainId, getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { act } from '@testing-library/react';
+import { Store } from 'redux';
 import {
   createBridgeMockStore,
   MOCK_EVM_ACCOUNT,
   MOCK_LEDGER_ACCOUNT,
   MOCK_SOLANA_ACCOUNT,
 } from '../../../../test/data/bridge/mock-bridge-store';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   getFromAccount,
   getFromChain,
   getToAccounts,
   getToChain,
+  type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { useDestinationAccount } from './useDestinationAccount';
 
 const renderUseDestinationAccount = (mockStoreOverrides = {}) => {
-  return renderHookWithProvider(
+  const result = renderHookWithProvider(
     () => useDestinationAccount(),
     createBridgeMockStore(mockStoreOverrides),
   );
+  return {
+    ...result,
+    store: result.store as unknown as Store<BridgeAppState>,
+  };
 };
 
 describe('useDestinationAccount', () => {
@@ -30,7 +37,7 @@ describe('useDestinationAccount', () => {
 
   it('returns source account when there is no selected toChain', () => {
     const { result, store } = renderUseDestinationAccount({
-      bridgeSliceOverrides: { toChainId: null },
+      bridgeSliceOverrides: { toToken: null },
     });
     expect(result.current.selectedDestinationAccount).toStrictEqual({
       ...getFromAccount(store?.getState()),
@@ -45,26 +52,22 @@ describe('useDestinationAccount', () => {
     const { result } = renderUseDestinationAccount({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [ChainId.ETH]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-            [MultichainNetworks.SOLANA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: 'eip155:1' },
+            { chainId: MultichainNetworks.SOLANA },
+          ],
         },
       },
-      bridgeSliceOverrides: { toChainId: MultichainNetworks.SOLANA },
+      bridgeSliceOverrides: {
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(MultichainNetworks.SOLANA),
+        ),
+      },
       metamaskStateOverrides: {
         internalAccounts: {
           selectedAccount: MOCK_EVM_ACCOUNT.id,
         },
-        accountTree: {
-          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
-        },
+        selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       },
     });
 
@@ -81,28 +84,20 @@ describe('useDestinationAccount', () => {
     const { result } = renderUseDestinationAccount({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [MultichainNetworks.SOLANA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-            [ChainId.ETH]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: MultichainNetworks.SOLANA },
+            { chainId: 'eip155:1' },
+          ],
         },
       },
       bridgeSliceOverrides: {
-        toChainId: formatChainIdToCaip(ChainId.ETH),
+        toToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
       },
       metamaskStateOverrides: {
         internalAccounts: {
           selectedAccount: MOCK_SOLANA_ACCOUNT.id,
         },
-        accountTree: {
-          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
-        },
+        selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       },
     });
     expect(result.current.selectedDestinationAccount).toStrictEqual({
@@ -118,30 +113,21 @@ describe('useDestinationAccount', () => {
     const { result, store } = renderUseDestinationAccount({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [ChainId.ETH]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-            [ChainId.LINEA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [{ chainId: 'eip155:1' }, { chainId: 'eip155:59144' }],
         },
       },
-      bridgeSliceOverrides: { toChainId: formatChainIdToCaip(ChainId.LINEA) },
+      bridgeSliceOverrides: {
+        toToken: toBridgeToken(getNativeAssetForChainId(ChainId.LINEA)),
+      },
       metamaskStateOverrides: {
         internalAccounts: {
           selectedAccount: MOCK_EVM_ACCOUNT.id,
         },
-        accountTree: {
-          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
-        },
+        selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       },
     });
-    expect(getFromChain(store?.getState())?.chainId).toBe('0x1');
-    expect(getToChain(store?.getState())?.chainId).toBe('0xe708');
+    expect(getFromChain(store?.getState())?.chainId).toBe('eip155:1');
+    expect(getToChain(store?.getState())?.chainId).toBe('eip155:59144');
     expect(result.current.selectedDestinationAccount).toStrictEqual({
       ...getFromAccount(store?.getState()),
       isExternal: false,
@@ -153,7 +139,7 @@ describe('useDestinationAccount', () => {
 
   it('updates the destination account when an internal account is selected by the user', () => {
     const { result, store } = renderUseDestinationAccount({
-      bridgeSliceOverrides: { toChainId: null },
+      bridgeSliceOverrides: { toToken: null },
     });
     expect(result.current.selectedDestinationAccount).toStrictEqual({
       ...getFromAccount(store?.getState()),
@@ -179,7 +165,7 @@ describe('useDestinationAccount', () => {
 
   it('updates the destination account when an external account is selected by the user', () => {
     const { result, store } = renderUseDestinationAccount({
-      bridgeSliceOverrides: { toChainId: null },
+      bridgeSliceOverrides: { toToken: null },
     });
     expect(result.current.selectedDestinationAccount).toStrictEqual({
       ...getFromAccount(store?.getState()),
@@ -206,15 +192,13 @@ describe('useDestinationAccount', () => {
 
   it('returns the source account when a HW wallet is selected by the user', () => {
     const { result, store } = renderUseDestinationAccount({
-      bridgeSliceOverrides: { toChainId: null },
+      bridgeSliceOverrides: { toToken: null },
       metamaskStateOverrides: {
         internalAccounts: {
           selectedAccount: MOCK_LEDGER_ACCOUNT.id,
         },
-        accountTree: {
-          selectedAccountGroup:
-            'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
-        },
+        selectedAccountGroup:
+          'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
       },
     });
     expect(result.current.selectedDestinationAccount).toStrictEqual({
@@ -228,15 +212,25 @@ describe('useDestinationAccount', () => {
 
   it('opens the modal when a HW wallet is selected by the user and the dest chain is solana', () => {
     const { result } = renderUseDestinationAccount({
-      bridgeSliceOverrides: { toChainId: MultichainNetworks.SOLANA },
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: 'eip155:1' },
+            { chainId: MultichainNetworks.SOLANA },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(MultichainNetworks.SOLANA),
+        ),
+      },
       metamaskStateOverrides: {
         internalAccounts: {
           selectedAccount: MOCK_LEDGER_ACCOUNT.id,
         },
-        accountTree: {
-          selectedAccountGroup:
-            'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
-        },
+        selectedAccountGroup:
+          'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
       },
     });
     expect(result.current.selectedDestinationAccount).toBeNull();
@@ -259,28 +253,20 @@ describe('useDestinationAccount', () => {
     const { result } = renderUseDestinationAccount({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [MultichainNetworks.SOLANA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-            [ChainId.ETH]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: MultichainNetworks.SOLANA },
+            { chainId: 'eip155:1' },
+          ],
         },
       },
       bridgeSliceOverrides: {
-        toChainId: formatChainIdToCaip(ChainId.ETH),
+        toToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
       },
       metamaskStateOverrides: {
         internalAccounts: {
           selectedAccount: MOCK_SOLANA_ACCOUNT.id,
         },
-        accountTree: {
-          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
-        },
+        selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       },
     });
     expect(result.current.selectedDestinationAccount).toStrictEqual({

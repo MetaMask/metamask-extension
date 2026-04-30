@@ -17,6 +17,7 @@ import {
   selectOnboardingActiveStep,
   selectCandidateSubscriptionId,
 } from '../../../../ducks/rewards/selectors';
+import { getHardwareWalletType } from '../../../../selectors';
 import {
   setOnboardingActiveStep,
   setOnboardingModalOpen,
@@ -28,20 +29,40 @@ import { useTheme } from '../../../../hooks/useTheme';
 import RewardsErrorToast from '../RewardsErrorToast';
 import RewardsQRCode from '../RewardsQRCode';
 import { useAppSelector } from '../../../../store/store';
+import { HardwareKeyringType } from '../../../../../shared/constants/hardware-wallets';
 import OnboardingIntroStep from './OnboardingIntroStep';
 import OnboardingStep1 from './OnboardingStep1';
 import OnboardingStep2 from './OnboardingStep2';
 import OnboardingStep3 from './OnboardingStep3';
 import OnboardingStep4 from './OnboardingStep4';
 
+type OnboardingModalProps = {
+  onClose?: () => void;
+
+  /**
+   * The number of reward points which user will receive after linking the reward to the shield subscription.
+   */
+  rewardPoints?: number;
+
+  /**
+   * The shield subscription ID to link the reward to.
+   */
+  shieldSubscriptionId?: string;
+};
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function OnboardingModal({ onClose }: { onClose?: () => void }) {
+export default function OnboardingModal({
+  onClose,
+  rewardPoints,
+  shieldSubscriptionId,
+}: OnboardingModalProps) {
   const isOpen = useSelector(selectOnboardingModalOpen);
   const onboardingStep = useSelector(selectOnboardingActiveStep);
   const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
   const rewardActiveAccountSubscriptionId = useAppSelector(
     (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
   );
+  const hardwareWalletType = useSelector(getHardwareWalletType);
   const dispatch = useDispatch();
 
   const theme = useTheme();
@@ -50,6 +71,8 @@ export default function OnboardingModal({ onClose }: { onClose?: () => void }) {
     () =>
       candidateSubscriptionId &&
       candidateSubscriptionId !== 'error' &&
+      candidateSubscriptionId !==
+        'error-existing-subscription-hardware-wallet-explicit-sign' &&
       candidateSubscriptionId !== 'pending' &&
       candidateSubscriptionId !== 'retry',
     [candidateSubscriptionId],
@@ -77,7 +100,12 @@ export default function OnboardingModal({ onClose }: { onClose?: () => void }) {
       case OnboardingStep.STEP3:
         return <OnboardingStep3 />;
       case OnboardingStep.STEP4:
-        return <OnboardingStep4 />;
+        return (
+          <OnboardingStep4
+            rewardPoints={rewardPoints}
+            shieldSubscriptionId={shieldSubscriptionId}
+          />
+        );
       default:
         return <OnboardingIntroStep />;
     }
@@ -85,6 +113,8 @@ export default function OnboardingModal({ onClose }: { onClose?: () => void }) {
     isValidCandidateSubscriptionId,
     onboardingStep,
     rewardActiveAccountSubscriptionId,
+    rewardPoints,
+    shieldSubscriptionId,
   ]);
 
   useEffect(() => {
@@ -96,9 +126,12 @@ export default function OnboardingModal({ onClose }: { onClose?: () => void }) {
       data-testid="rewards-onboarding-modal"
       isOpen={isOpen}
       onClose={handleClose}
+      // qr code hadware wallet uses a popover signing modal, so we don't want to close the onboarding modal when clicking to sign a message
+      isClosedOnOutsideClick={hardwareWalletType !== HardwareKeyringType.qr}
     >
-      <ModalOverlay />
+      <ModalOverlay className="rewards-onboarding-modal__overlay" />
       <ModalContent
+        className="rewards-onboarding-modal__content"
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
         size={ModalContentSize.Md}

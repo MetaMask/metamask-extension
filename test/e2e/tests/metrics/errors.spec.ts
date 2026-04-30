@@ -1,19 +1,57 @@
 import { resolve } from 'path';
 import { promises as fs } from 'fs';
 import { strict as assert } from 'assert';
-import { get, has, set, unset, cloneDeep } from 'lodash';
+import { cloneDeep, get, has, set, unset } from 'lodash';
 import { Browser } from 'selenium-webdriver';
 import prettier from 'prettier';
 import { isObject, Json, JsonRpcResponse } from '@metamask/utils';
 import { Mockttp, MockttpServer } from 'mockttp';
 import { SENTRY_UI_STATE } from '../../../../app/scripts/constants/sentry-state';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import LoginPage from '../../page-objects/pages/login-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
+
+const FEATURE_FLAGS_RESPONSE = [
+  { feature1: true },
+  { feature2: false },
+  {
+    feature3: [
+      {
+        value: 'valueA',
+        name: 'groupA',
+        scope: { type: 'threshold', value: 0.3 },
+      },
+      {
+        value: 'valueB',
+        name: 'groupB',
+        scope: { type: 'threshold', value: 0.5 },
+      },
+      {
+        scope: { type: 'threshold', value: 1 },
+        value: 'valueC',
+        name: 'groupC',
+      },
+    ],
+  },
+];
+
+async function mockRemoteFeatureFlags(server: MockttpServer): Promise<void> {
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: FEATURE_FLAGS_RESPONSE,
+    }));
+}
 
 /**
  * Derive a UI state field from a background state field.
@@ -40,6 +78,7 @@ const maskedBackgroundFields = [
   'AppStateController.surveyLinkLastClickedOrClosed',
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',
+  'AppStateController.shieldSubscriptionError',
   'AppStateController.shieldEndingToastLastClickedOrClosed',
   'AppStateController.shieldPausedToastLastClickedOrClosed',
   // The value in these properties may change each run
@@ -51,11 +90,14 @@ const maskedBackgroundFields = [
   'CurrencyController.currencyRates.SepoliaETH.conversionDate',
   'CurrencyController.currencyRates.MegaETH.conversionDate',
   'CurrencyController.currencyRates.MON.conversionDate',
+  // Network metadata entries vary as networks are added/removed in the codebase
+  'NetworkController.networksMetadata',
 ];
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
 const removedBackgroundFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
+  'AppStateController.appActiveTab',
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
   'AppStateController.lastInteractedConfirmationInfo',
@@ -250,7 +292,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: {
-            ...new FixtureBuilder()
+            ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 metaMetricsId: null,
                 participateInMetaMetrics: false,
@@ -261,8 +303,9 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockRemoteFeatureFlags(mockServer);
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -319,9 +362,12 @@ describe('Sentry errors', function () {
     });
 
     it('should NOT send error events in the UI', async function () {
+      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+        this.skip();
+      }
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: null,
               participateInMetaMetrics: false,
@@ -329,8 +375,9 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockRemoteFeatureFlags(mockServer);
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -396,7 +443,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: {
-            ...new FixtureBuilder()
+            ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
@@ -407,8 +454,9 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockRemoteFeatureFlags(mockServer);
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -476,10 +524,13 @@ describe('Sentry errors', function () {
     });
 
     it('should capture background application state', async function () {
+      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+        this.skip();
+      }
       await withFixtures(
         {
           fixtures: {
-            ...new FixtureBuilder()
+            ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
@@ -490,8 +541,9 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockRemoteFeatureFlags(mockServer);
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -579,7 +631,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: {
-            ...new FixtureBuilder()
+            ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
@@ -589,8 +641,9 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockRemoteFeatureFlags(mockServer);
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -667,7 +720,7 @@ describe('Sentry errors', function () {
     it('should send error events in UI', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -675,8 +728,9 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockRemoteFeatureFlags(mockServer);
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -747,9 +801,12 @@ describe('Sentry errors', function () {
     });
 
     it('should capture UI application state', async function () {
+      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+        this.skip();
+      }
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -757,8 +814,9 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockRemoteFeatureFlags(mockServer);
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -854,7 +912,7 @@ describe('Sentry errors', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: null,
               participateInMetaMetrics: false,
@@ -862,8 +920,9 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockRemoteFeatureFlags(mockServer);
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -926,7 +985,7 @@ describe('Sentry errors', function () {
     it('should NOT send error events in the UI', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: null,
               participateInMetaMetrics: false,
@@ -934,8 +993,9 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockRemoteFeatureFlags(mockServer);
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -998,7 +1058,7 @@ describe('Sentry errors', function () {
     it('should send error events in background', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -1006,8 +1066,9 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockRemoteFeatureFlags(mockServer);
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -1084,7 +1145,7 @@ describe('Sentry errors', function () {
     it('should capture background application state', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -1092,8 +1153,9 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockRemoteFeatureFlags(mockServer);
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -1134,9 +1196,10 @@ describe('Sentry errors', function () {
           },
         },
         async ({ driver, mockedEndpoint }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
-          await driver.delay(3000);
+          // Wait for state to settle
+          await driver.delay(5_000);
           // Trigger error
           await driver.executeScript(
             'window.stateHooks.throwTestBackgroundError()',
@@ -1183,7 +1246,7 @@ describe('Sentry errors', function () {
     it('should send error events in UI', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -1191,8 +1254,9 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockRemoteFeatureFlags(mockServer);
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -1261,9 +1325,12 @@ describe('Sentry errors', function () {
     });
 
     it('should capture UI application state', async function () {
+      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+        this.skip();
+      }
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -1271,8 +1338,9 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockRemoteFeatureFlags(mockServer);
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -1314,9 +1382,10 @@ describe('Sentry errors', function () {
           },
         },
         async ({ driver, mockedEndpoint }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
-          await driver.delay(3000);
+          // Wait for state to settle
+          await driver.delay(5_000);
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -1399,11 +1468,6 @@ describe('Sentry errors', function () {
         userOptIn: true, // Initialized as undefined
         userOptInV2: true, // Initialized as undefined
       },
-      swapsState: {
-        // This can get wiped out during initialization due to a bug in
-        // the "resetState" method
-        swapsFeatureFlags: true,
-      },
       // Part of the AuthenticationController store, but initialized as undefined
       // Only populated once the client is authenticated
       srpSessionData: {},
@@ -1411,13 +1475,24 @@ describe('Sentry errors', function () {
       // preferences state change handler
       timeoutMinutes: true,
       lastInteractedConfirmationInfo: undefined,
+      connectivityStatus: true,
+      rewardsPointsEstimateHistory: false,
+      // Filtered from UI state patches (sensitive auth tokens - see state-utils.ts)
+      rewardsSubscriptionTokens: false,
+      storageWriteErrorType: true,
+      // Optional property on AppStateController; only set after a user
+      // interacts with a Snap install dialog, so absent from initial state.
+      snapsInstallPrivacyWarningShown: true,
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         manifestFlags: {
           sentry: { forceEnable: false },
+        },
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockRemoteFeatureFlags(mockServer);
         },
       },
       async ({ driver }) => {

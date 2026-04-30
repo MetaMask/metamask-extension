@@ -1,20 +1,28 @@
 #!/usr/bin/env bash
 
 set -e
+set -o pipefail
 
 if [[ -z "${FIREFOX_BUNDLE_SCRIPT_TOKEN}" ]]; then
     echo "::error::FIREFOX_BUNDLE_SCRIPT_TOKEN not provided. Set the 'FIREFOX_BUNDLE_SCRIPT_TOKEN' environment variable."
     exit 1
 fi
 
+if [[ -z "${RELEASE_TAG:-}" ]]; then
+    echo "::error::RELEASE_TAG not provided."
+    exit 1
+fi
+
 git config --global user.name "MetaMask Bot"
 git config --global user.email metamaskbot@users.noreply.github.com
-rawVersion=$(git show -s --format='%s' HEAD | grep -Eo 'release/[0-9]+\.[0-9]+\.[0-9]+' | sed 's|release/||')
+
+rawVersion="${RELEASE_TAG#v}"
+
 version="v${rawVersion}"
 
 # Validate that the version was successfully extracted
 if [[ -z "${rawVersion}" ]]; then
-    echo "::error:: Failed to extract version from commit message. Ensure it follows the 'release/x.y.z' format."
+    echo "::error::Failed to extract version from RELEASE_TAG='${RELEASE_TAG}'. Expected format: 'vX.Y.Z'."
     exit 1
 fi
 

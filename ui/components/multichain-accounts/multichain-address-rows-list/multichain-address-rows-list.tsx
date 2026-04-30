@@ -3,26 +3,26 @@ import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import {
+  Box,
+  BoxFlexDirection,
+  Text,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
   BlockSize,
   BorderRadius,
-  Display,
-  FlexDirection,
-  TextAlign,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  Box,
-  Text,
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../component-library';
+import { TextFieldSearch, TextFieldSearchSize } from '../../component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 // Priority networks that should appear first (using CAIP chain IDs)
 const PRIORITY_CHAIN_IDS: CaipChainId[] = [
@@ -55,16 +55,18 @@ export const MultichainAddressRowsList = ({
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [searchPattern, setSearchPattern] = React.useState<string>('');
-  const [, handleCopy] = useCopyToClipboard();
+
+  // useCopyToClipboard analysis: Copies one of your public addresses
+  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
 
   const getAccountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
   );
 
   const sortByPriorityNetworks = useCallback(
-    (items: typeof getAccountsSpreadByNetworkByGroupId) => {
-      const priorityItems: typeof items = [];
-      const otherItems: typeof items = [];
+    <ItemType extends { scope: CaipChainId }>(items: ItemType[]) => {
+      const priorityItems: ItemType[] = [];
+      const otherItems: ItemType[] = [];
 
       items.forEach((item) => {
         const priorityIndex = PRIORITY_CHAIN_IDS.findIndex(
@@ -85,27 +87,31 @@ export const MultichainAddressRowsList = ({
     [],
   );
 
+  // Normalize addresses once for all items for performance
+  const itemsWithNormalizedAddresses = useMemo(() => {
+    return getAccountsSpreadByNetworkByGroupId.map((item) => ({
+      ...item,
+      normalizedAddress: normalizeSafeAddress(item.account.address),
+    }));
+  }, [getAccountsSpreadByNetworkByGroupId]);
+
   const filteredItems = useMemo(() => {
-    let items = getAccountsSpreadByNetworkByGroupId;
+    let items = itemsWithNormalizedAddresses;
 
     // Apply search filter if there's a search pattern
     if (searchPattern.trim()) {
       const pattern = searchPattern.toLowerCase();
-      items = items.filter(({ networkName, account }) => {
+      items = items.filter(({ networkName, normalizedAddress }) => {
         return (
           networkName.toLowerCase().includes(pattern) ||
-          account.address.toLowerCase().includes(pattern)
+          normalizedAddress.toLowerCase().includes(pattern)
         );
       });
     }
 
     // Sort by priority networks
     return sortByPriorityNetworks(items);
-  }, [
-    getAccountsSpreadByNetworkByGroupId,
-    searchPattern,
-    sortByPriorityNetworks,
-  ]);
+  }, [itemsWithNormalizedAddresses, searchPattern, sortByPriorityNetworks]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPattern(event.target.value);
@@ -121,11 +127,12 @@ export const MultichainAddressRowsList = ({
         scope: CaipChainId;
         account: InternalAccount;
         networkName: string;
+        normalizedAddress: string;
       },
       index: number,
     ): React.JSX.Element => {
       const handleCopyClick = () => {
-        handleCopy(item.account.address);
+        handleCopy(item.normalizedAddress);
       };
 
       return (
@@ -133,7 +140,7 @@ export const MultichainAddressRowsList = ({
           key={`${item.account.address}-${item.scope}-${index}`}
           chainId={item.scope}
           networkName={item.networkName}
-          address={item.account.address}
+          address={item.normalizedAddress}
           copyActionParams={{
             message: t('multichainAccountAddressCopied'),
             callback: handleCopyClick,
@@ -153,8 +160,7 @@ export const MultichainAddressRowsList = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-address-rows-list"
     >
       <Box paddingLeft={4} paddingRight={4}>
@@ -178,10 +184,10 @@ export const MultichainAddressRowsList = ({
           renderedRows
         ) : (
           <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
             textAlign={TextAlign.Center}
-            paddingTop={8}
+            className="pt-8"
             data-testid="multichain-address-rows-list-empty-message"
           >
             {searchPattern ? t('noNetworksFound') : t('noNetworksAvailable')}

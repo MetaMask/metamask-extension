@@ -8,7 +8,7 @@ import * as useBackupAndSyncHook from '../../../../hooks/identity/useBackupAndSy
 import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../modals/identity';
 import { showModal } from '../../../../store/actions';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import {
   BackupAndSyncToggle,
   backupAndSyncToggleTestIds,
@@ -51,13 +51,19 @@ describe('BackupAndSyncToggle', () => {
 
   it('tracks the toggle event', () => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const store = initialStore();
 
     store.metamask.isBackupAndSyncEnabled = true;
     arrangeMocks();
 
     const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <BackupAndSyncToggle />
       </MetaMetricsContext.Provider>,
       mockStore(store),

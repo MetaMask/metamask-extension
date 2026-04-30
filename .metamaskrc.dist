@@ -10,6 +10,17 @@ SEEDLESS_ONBOARDING_ENABLED='false'
 ; Set this to `true` to enable Metamask Shield
 METAMASK_SHIELD_ENABLED='false'
 
+; Set to `true` to include PerpsController and perps features.
+; main and experimental builds have this enabled by default; beta and flask do not.
+PERPS_ENABLED='true'
+
+; Set to `true` to enable AssetsController unified state population.
+; When false, AssetsController is still instantiated but state remains empty.
+ASSETS_UNIFIED_STATE_ENABLED='false'
+
+; Set this to `true` to enable Passkey/Biometrics unlock for SRP wallets
+PASSKEY_ENABLED='false'
+
 ; Backend WebSocket URL
 ; Uses production API endpoint by default (same as builds.yml)
 ;MM_BACKEND_WEBSOCKET_URL='wss://gateway.api.cx.metamask.io/v1'
@@ -53,9 +64,11 @@ BLOCKAID_PUBLIC_KEY=
 ; Enables the Settings Page - Developer Options
 ; ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true
 
-; The endpoint used to submit errors and tracing data to Sentry.
-; The below is the `test-metamask` project.
+; SENTRY CONFIGURATION
+; SENTRY_DSN             - For production builds only (do NOT use in development)
+; SENTRY_DSN_DEV         - For local dev and one-off QA testing (sends to 'test-metamask' project)
 ; SENTRY_DSN_DEV=https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496
+; SENTRY_DSN_PERFORMANCE - For CI/CD and automated performance testing (keeps CI traffic separate)
 
 ; Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
 ; This should NEVER be enabled in production since it slows down react
@@ -73,3 +86,23 @@ BLOCKAID_PUBLIC_KEY=
 
 ; Set this to `true` to enable Metamask Shield
 ; METAMASK_SHIELD_ENABLED='false'
+
+; Set this to `true` to enable `AuthenticationController` environment config to match the extension's build type. If set to `true`, `beta` and `uat` builds will result in using `Env.UAT`. Leaving it to `false` or unset will use `Env.PRD`.
+; FORCE_AUTH_MATCH_BUILD='false'
+
+; This variable is required to run performance tests
+TEST_SRP_2=
+
+; Set to `true` to enable the new hardware wallet onboarding flow
+; (device discovery, error handling, account selection).
+; Entry points to connecting remain unchanged regardless of this flag.
+NEW_HARDWARE_WALLET_ONBOARDING='false'
+
+; Set this to `true` to enforce simulation balance changes by converting
+; external transactions to delegations.
+;ENABLE_ENFORCED_SIMULATIONS='true'
+
+; Set this to `true` to force enforced simulations to apply whenever a
+; transaction has balance changes, bypassing the trust signal check.
+; Intended for local development and QA only.
+;FORCE_ENABLE_SIMULATIONS='true'

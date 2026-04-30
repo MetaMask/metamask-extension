@@ -1,14 +1,20 @@
 import React, { ReactChildren } from 'react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { useAmountSelectionMetrics } from './useAmountSelectionMetrics';
 
 const mockTrackEvent = jest.fn();
+const mockMetaMetricsContext = {
+  trackEvent: mockTrackEvent,
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
 
 const Container = ({ children }: { children: ReactChildren }) => (
-  <MetaMetricsContext.Provider value={mockTrackEvent}>
+  <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
     {children}
   </MetaMetricsContext.Provider>
 );

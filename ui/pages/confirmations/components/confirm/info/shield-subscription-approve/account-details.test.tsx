@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { getMockConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { tEn } from '../../../../../../../test/lib/i18n-helpers';
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { AccountDetails } from './account-details';
 
 jest.mock('../../../../../../components/app/confirm/info/row/address', () => ({
@@ -20,7 +20,7 @@ describe('AccountDetails', () => {
       mockStore,
     );
 
-    expect(getByText(tEn('account') as string)).toBeInTheDocument();
+    expect(getByText(tEn('account'))).toBeInTheDocument();
     expect(getByText('0xFrom')).toBeInTheDocument();
   });
 });

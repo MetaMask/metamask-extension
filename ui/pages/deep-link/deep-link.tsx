@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { Location as RouterLocation } from 'react-router-dom-v5-compat';
+import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -32,6 +32,7 @@ import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../selectors/selectors';
 import { MetaMaskReduxState } from '../../store/store';
 import { VALID, verify } from '../../../shared/lib/deep-links/verify';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 
 type TranslateFunction = (
   key: string,
@@ -139,7 +140,7 @@ async function updateStateFromUrl(
             <ButtonLink
               key="update-metamask-link"
               as="a"
-              href="https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+              href={ZENDESK_URLS.UPDATE_VERSION}
             >
               {t('deepLink_Error404_CTA_LinkText')}
             </ButtonLink>,
@@ -160,11 +161,8 @@ async function updateStateFromUrl(
   }
 }
 
-type DeepLinkProps = {
-  location: RouterLocation;
-};
-
-export const DeepLink = ({ location }: DeepLinkProps) => {
+export const DeepLink = () => {
+  const location = useLocation();
   const t = useI18nContext() as TranslateFunction;
   const dispatch = useDispatch();
   // it's technically not possible for a natural flow to reach this page
@@ -225,7 +223,7 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
                     <ButtonLink
                       key="update-metamask-link"
                       as="a"
-                      href="https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+                      href={ZENDESK_URLS.UPDATE_VERSION}
                     >
                       {t('deepLink_Error404_CTA_LinkText')}
                     </ButtonLink>,

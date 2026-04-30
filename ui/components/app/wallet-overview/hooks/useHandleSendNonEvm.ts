@@ -1,14 +1,11 @@
 import { SnapId } from '@metamask/snaps-sdk';
 import { parseCaipAssetType, CaipAssetType } from '@metamask/utils';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { sendMultichainTransaction } from '../../../../store/actions';
 import {
-  sendMultichainTransaction,
-  setDefaultHomeActiveTabName,
-} from '../../../../store/actions';
-import {
-  getMemoizedUnapprovedTemplatedConfirmations,
+  getUnapprovedTemplatedConfirmations,
   getSelectedInternalAccount,
 } from '../../../../selectors';
 import { getSelectedMultichainNetworkConfiguration } from '../../../../selectors/multichain/networks';
@@ -31,15 +28,9 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
 
   const account = useSelector(getSelectedInternalAccount);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const currentActivityTabName = useSelector(
-    // @ts-expect-error TODO: fix state type
-    (state) => state.metamask.defaultHomeActiveTabName,
-  );
 
   const unapprovedTemplatedConfirmations = useSelector(
-    getMemoizedUnapprovedTemplatedConfirmations,
+    getUnapprovedTemplatedConfirmations,
   );
 
   useEffect(() => {
@@ -90,17 +81,13 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
     const { chainId } = parseCaipAssetType(assetTypeToUse);
 
     try {
-      // FIXME: We switch the tab before starting the send flow (we
-      // faced some inconsistencies when changing it after).
-      await dispatch(setDefaultHomeActiveTabName('activity'));
       await sendMultichainTransaction(account.metadata.snap.id, {
         account: account.id,
         scope: chainId,
         assetType: assetTypeToUse,
       });
-    } catch (error) {
-      // Restore the previous tab in case of any error (see FIXME comment above).
-      await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
+    } catch {
+      // Navigation is handled by confirmation.js
     }
   };
 };

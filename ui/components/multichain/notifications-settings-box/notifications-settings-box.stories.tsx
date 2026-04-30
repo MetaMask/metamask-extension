@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
-import { IconName } from '../../component-library';
+import { IconName } from '@metamask/design-system-react';
 import {
   NotificationsSettingsBox,
   NotificationsSettingsBoxProps,

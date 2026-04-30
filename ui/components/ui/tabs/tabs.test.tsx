@@ -6,7 +6,6 @@ import { Tab } from './tab/tab';
 describe('Tabs', () => {
   const renderTabs = (props = {}) => {
     const defaultProps = {
-      defaultActiveTabKey: '',
       onTabClick: () => null,
       subHeader: null,
     };
@@ -40,9 +39,9 @@ describe('Tabs', () => {
     expect(getByText('Tab 2 Content')).toBeInTheDocument();
   });
 
-  it('renders with defaultActiveTabKey', () => {
+  it('renders with activeTab', () => {
     const { getByText, queryByText } = renderTabs({
-      defaultActiveTabKey: 'tab2',
+      activeTab: 'tab2',
     });
 
     expect(queryByText('Tab 1 Content')).not.toBeInTheDocument();
@@ -100,7 +99,7 @@ describe('Tabs', () => {
 
   it('handles null children gracefully', () => {
     const { getByText } = render(
-      <Tabs defaultActiveTabKey="" onTabClick={() => null}>
+      <Tabs onTabClick={() => null}>
         {null}
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
@@ -115,7 +114,7 @@ describe('Tabs', () => {
 
   it('renders disabled tab with proper styling', () => {
     const { getByText } = render(
-      <Tabs defaultActiveTabKey="" onTabClick={() => null}>
+      <Tabs activeTab="tab1" onTabClick={() => null}>
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
         </Tab>
@@ -131,7 +130,7 @@ describe('Tabs', () => {
 
   it('does not switch to disabled tab when clicked', () => {
     const { getByText, queryByText } = render(
-      <Tabs defaultActiveTabKey="tab1" onTabClick={() => null}>
+      <Tabs activeTab="tab1" onTabClick={() => null}>
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
         </Tab>
@@ -150,7 +149,7 @@ describe('Tabs', () => {
   it('does not call onTabClick when disabled tab is clicked', () => {
     const onTabClick = jest.fn();
     const { getByText } = render(
-      <Tabs defaultActiveTabKey="tab1" onTabClick={onTabClick}>
+      <Tabs activeTab="tab1" onTabClick={onTabClick}>
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
         </Tab>
@@ -163,5 +162,48 @@ describe('Tabs', () => {
     fireEvent.click(getByText('Tab 2'));
 
     expect(onTabClick).not.toHaveBeenCalled();
+  });
+
+  it('clamps to last tab when activeTab key does not exist', () => {
+    const { getByText } = render(
+      <Tabs activeTab={'nonexistent' as string} onTabClick={() => null}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+        <Tab tabKey="tab2" name="Tab 2">
+          Tab 2 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    expect(getByText('Tab 1 Content')).toBeInTheDocument();
+  });
+
+  it('does not crash when children are removed and activeTabIndex is out of bounds', () => {
+    const { rerender, getByText } = render(
+      <Tabs activeTab="tab3" onTabClick={() => null}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+        <Tab tabKey="tab2" name="Tab 2">
+          Tab 2 Content
+        </Tab>
+        <Tab tabKey="tab3" name="Tab 3">
+          Tab 3 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    expect(getByText('Tab 3 Content')).toBeInTheDocument();
+
+    rerender(
+      <Tabs activeTab="tab3" onTabClick={() => null}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    expect(getByText('Tab 1 Content')).toBeInTheDocument();
   });
 });

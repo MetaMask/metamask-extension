@@ -1,11 +1,9 @@
 import React from 'react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import mockStore from '../../../../../test/data/mock-state.json';
-import {
-  fireEvent,
-  renderWithProvider,
-  waitFor,
-} from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import KeyringSnapRemovalResult from './keyring-snap-removal-result-modal';
 
 const mockOnClose = jest.fn();
@@ -44,7 +42,7 @@ describe('Keyring Snap Remove Result', () => {
 
     expect(getByText('mock-snap removed')).toBeInTheDocument();
 
-    const closeButton = getByLabelText('Close');
+    const closeButton = getByLabelText(messages.close.message);
 
     fireEvent.click(closeButton);
 

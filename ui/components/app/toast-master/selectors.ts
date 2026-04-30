@@ -1,30 +1,14 @@
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { isEvmAccountType } from '@metamask/keyring-api';
-import {
-  getAllScopesFromCaip25CaveatValue,
-  isInternalAccountInPermittedAccountIds,
-} from '@metamask/chain-agnostic-permission';
-import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import {
   SURVEY_DATE,
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../../../helpers/constants/survey';
-import {
-  getAllPermittedAccountsForCurrentTab,
-  getOriginOfCurrentTab,
-  getPermissions,
-  isSolanaAccount,
-} from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
 import {
-  PasswordChangeToastType,
   ClaimSubmitToastType,
+  StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
-import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
-import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
-import { supportsChainIds } from '../../../hooks/useAccountGroupsForPermissions';
 import { getIsPrivacyToastRecent } from './utils';
 
 type State = {
@@ -36,6 +20,7 @@ type State = {
       | 'showPasswordChangeToast'
       | 'showCopyAddressToast'
       | 'showClaimSubmitToast'
+      | 'showInfuraSwitchToast'
     >
   >;
   metamask: Partial<
@@ -47,6 +32,12 @@ type State = {
       | 'surveyLinkLastClickedOrClosed'
       | 'shieldEndingToastLastClickedOrClosed'
       | 'shieldPausedToastLastClickedOrClosed'
+      | 'participateInMetaMetrics'
+      | 'remoteFeatureFlags'
+      | 'pna25Acknowledged'
+      | 'completedOnboarding'
+      | 'storageWriteErrorType'
+      | 'isUnlocked'
     >
   >;
 };
@@ -105,86 +96,16 @@ export function selectNftDetectionEnablementToast(
   return Boolean(state.appState.showNftDetectionEnablementToast);
 }
 
-// If there is more than one connected account to activeTabOrigin,
-// *BUT* the current account is not one of them, show the banner
-export function selectShowConnectAccountToast(
-  state: State & Pick<MetaMaskReduxState, 'activeTab'>,
-  account: InternalAccount,
-): boolean {
-  const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
-  const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
-
-  // We only support connection with EVM or Solana accounts
-  // This check prevents Bitcoin snap accounts from showing the toast
-  const isEvmAccount = isEvmAccountType(account?.type);
-  const isSolanaAccountSelected = isSolanaAccount(account);
-  const isConnectableAccount = isEvmAccount || isSolanaAccountSelected;
-
-  const showConnectAccountToast =
-    allowShowAccountSetting &&
-    account &&
-    state.activeTab.origin &&
-    isConnectableAccount &&
-    connectedAccounts.length > 0 &&
-    !isInternalAccountInPermittedAccountIds(account, connectedAccounts);
-
-  return showConnectAccountToast;
-}
-
-// If there is more than one connected account to activeTabOrigin,
-// *BUT* the current account is not one of them, show the banner
-export function selectShowConnectAccountGroupToast(
-  state: State & Pick<MetaMaskReduxState, 'activeTab'>,
-  accountGroup: AccountGroupWithInternalAccounts,
-): boolean {
-  const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
-  const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
-  const activeTabOrigin = getOriginOfCurrentTab(state);
-  const existingPermissions = getPermissions(state, activeTabOrigin);
-  const existingCaip25CaveatValue = existingPermissions
-    ? getCaip25CaveatValueFromPermissions(existingPermissions)
-    : null;
-  const existingChainIds = existingCaip25CaveatValue
-    ? getAllScopesFromCaip25CaveatValue(existingCaip25CaveatValue)
-    : [];
-
-  const isAccountSupported = supportsChainIds(accountGroup, existingChainIds);
-
-  const isConnected = accountGroup.accounts.some((account) => {
-    return isInternalAccountInPermittedAccountIds(account, connectedAccounts);
-  });
-
-  const showConnectAccountToast =
-    allowShowAccountSetting &&
-    accountGroup &&
-    isAccountSupported &&
-    state.activeTab.origin &&
-    connectedAccounts.length > 0 &&
-    !isConnected;
-
-  return showConnectAccountToast;
-}
-
 /**
- * Retrieves user preference to see the "New SRP Added" toast
+ * Retrieves the wallet number for the "New SRP Added" toast, or false if hidden.
  *
  * @param state - Redux state object.
- * @returns Boolean preference value
+ * @returns The new wallet number to display, or false if the toast should be hidden.
  */
-export function selectNewSrpAdded(state: Pick<State, 'appState'>): boolean {
-  return Boolean(state.appState.showNewSrpAddedToast);
-}
-
-/**
- * Retrieves user preference to see the "Password Change Error" toast
- *
- * @param state - Redux state object.
- * @returns Boolean preference value
- */
-export function selectPasswordChangeToast(
+export function selectNewSrpAdded(
   state: Pick<State, 'appState'>,
-): PasswordChangeToastType | null {
-  return state.appState.showPasswordChangeToast || null;
+): number | false {
+  return state.appState.showNewSrpAddedToast || false;
 }
 
 /**
@@ -212,6 +133,18 @@ export function selectClaimSubmitToast(
 }
 
 /**
+ * Retrieves user preference to see the "Updated to MetaMask default" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowInfuraSwitchToast(
+  state: Pick<State, 'appState'>,
+): boolean {
+  return Boolean(state.appState.showInfuraSwitchToast);
+}
+
+/**
  * Retrieves user preference to see the "Shield Payment Declined" toast
  *
  * @param state - Redux state object.
@@ -233,4 +166,85 @@ export function selectShowShieldEndingToast(
   state: Pick<State, 'metamask'>,
 ): boolean {
   return !state.metamask.shieldEndingToastLastClickedOrClosed;
+}
+
+/**
+ * Determines if the storage error toast should be shown based on:
+ * - storageWriteErrorType is set (not null/undefined, indicates an error occurred)
+ * - User has completed onboarding
+ * - Wallet is unlocked
+ *
+ * @param state - Redux state object.
+ * @returns Boolean indicating whether to show the toast
+ */
+export function selectShowStorageErrorToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  const { storageWriteErrorType, completedOnboarding, isUnlocked } =
+    state.metamask || {};
+
+  // Check for truthy value to handle both null and undefined as "no error"
+  return Boolean(storageWriteErrorType && completedOnboarding && isUnlocked);
+}
+
+/**
+ * Returns the type of storage write error that occurred.
+ * Used to show specific error messages (e.g., disk space vs default error).
+ *
+ * @param state - Redux state object.
+ * @returns The storage write error type or null if no error
+ */
+export function selectStorageWriteErrorType(
+  state: Pick<State, 'metamask'>,
+): StorageWriteErrorType | null {
+  return state.metamask?.storageWriteErrorType ?? null;
+}
+
+/**
+ * Whether to show the one-time side panel migration toast.
+ * The flag is set by migration 204 for users migrated from popup to side panel.
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowSidePanelMigrationToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  return Boolean(
+    (state.metamask as Record<string, unknown>)?.showSidePanelMigrationToast,
+  );
+}
+
+/**
+ * Determines if the PNA25 banner should be shown based on:
+ * - User has completed onboarding (completedOnboarding === true)
+ * - User has opted into metrics (participateInMetaMetrics === true)
+ * - User hasn't acknowledged the banner yet (pna25Acknowledged === false)
+ *
+ * Regular new users: Go through metametrics page → pna25Acknowledged = true → don't see banner
+ * Social login users: Skip metametrics page → pna25Acknowledged = false → see banner
+ * Existing users: pna25Acknowledged = false (default) → see banner
+ *
+ * @param state - The application state containing the banner data.
+ * @returns Boolean indicating whether to show the banner
+ */
+export function selectShowPna25Modal(state: Pick<State, 'metamask'>): boolean {
+  const { completedOnboarding, participateInMetaMetrics, pna25Acknowledged } =
+    state.metamask || {};
+
+  // Only show to users who have completed onboarding
+  if (!completedOnboarding) {
+    return false; // User hasn't completed onboarding yet
+  }
+
+  if (participateInMetaMetrics !== true) {
+    return false; // User hasn't opted into metrics
+  }
+
+  if (pna25Acknowledged === true) {
+    return false; // User already acknowledged
+  }
+
+  // Only show banner if explicitly false (existing users who haven't acknowledged)
+  return pna25Acknowledged === false;
 }

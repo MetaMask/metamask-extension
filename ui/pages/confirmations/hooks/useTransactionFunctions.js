@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import BigNumber from 'bignumber.js';
+import { CANCEL_RATE, SPEED_UP_RATE } from '@metamask/transaction-controller';
 import {
   EditGasModes,
   PriorityLevels,
@@ -10,6 +11,7 @@ import {
 import {
   addTenPercentAndRound,
   editGasModeIsSpeedUpOrCancel,
+  getGasValuesForReplacement,
 } from '../../../helpers/utils/gas';
 import {
   createCancelTransaction,
@@ -22,12 +24,12 @@ import {
 import {
   decGWEIToHexWEI,
   decimalToHex,
-} from '../../../../shared/modules/conversion.utils';
+} from '../../../../shared/lib/conversion.utils';
 
 /**
  * @typedef {object} TransactionFunctionsReturnType
- * @property {() => void} cancelTransaction - cancel the transaction.
- * @property {() => void} speedUpTransaction - speed up the transaction.
+ * @property {() => Promise<unknown>} cancelTransaction - cancel the transaction.
+ * @property {() => Promise<unknown>} speedUpTransaction - speed up the transaction.
  * @property {(string, number, number, number, string) => void} updateTransaction - update the transaction.
  * @property {(boolean) => void} updateTransactionToTenPercentIncreasedGasFee - update the cancel / speed transaction to
  * gas fee which is equal to current gas fee +10 percent.
@@ -44,7 +46,7 @@ import {
  * @param options.gasLimit
  * @param options.maxPriorityFeePerGas
  * @param options.transaction
- * @param options.setRetryTxMeta
+ * @param {Function} [options.setRetryTxMeta] - Optional callback; when absent, cancel/speedup dispatches to store
  * @returns {TransactionFunctionsReturnType}
  */
 export const useTransactionFunctions = ({
@@ -55,7 +57,7 @@ export const useTransactionFunctions = ({
   gasLimit: gasLimitValue,
   maxPriorityFeePerGas: maxPriorityFeePerGasValue,
   transaction,
-  setRetryTxMeta,
+  setRetryTxMeta = undefined,
 }) => {
   const dispatch = useDispatch();
 
@@ -116,7 +118,7 @@ export const useTransactionFunctions = ({
           updateSwapsUserFeeLevel(estimateUsed || PriorityLevels.custom),
         );
         dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
-      } else if (editGasModeIsSpeedUpOrCancel(editGasMode)) {
+      } else if (editGasModeIsSpeedUpOrCancel(editGasMode) && setRetryTxMeta) {
         setRetryTxMeta(updatedTxMeta);
       } else {
         newGasSettings.userEditedGasLimit = updatedTxMeta.userEditedGasLimit;
@@ -146,16 +148,26 @@ export const useTransactionFunctions = ({
   );
 
   const cancelTransaction = useCallback(() => {
-    dispatch(
-      createCancelTransaction(transaction.id, transaction.txParams, {
+    const gasValuesForCancel = getGasValuesForReplacement(
+      transaction.txParams,
+      transaction.previousGas,
+      CANCEL_RATE,
+    );
+    return dispatch(
+      createCancelTransaction(transaction.id, gasValuesForCancel, {
         estimatedBaseFee,
       }),
     );
   }, [dispatch, estimatedBaseFee, transaction]);
 
   const speedUpTransaction = useCallback(() => {
-    dispatch(
-      createSpeedUpTransaction(transaction.id, transaction.txParams, {
+    const gasValuesForSpeedUp = getGasValuesForReplacement(
+      transaction.txParams,
+      transaction.previousGas,
+      SPEED_UP_RATE,
+    );
+    return dispatch(
+      createSpeedUpTransaction(transaction.id, gasValuesForSpeedUp, {
         estimatedBaseFee,
       }),
     );

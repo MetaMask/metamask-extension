@@ -2,7 +2,8 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import {
   ConfirmAlertModalProps,
   ConfirmAlertModal,
@@ -68,7 +69,9 @@ describe('ConfirmAlertModal', () => {
       mockStore,
     );
 
-    expect(getByText('Your assets may be at risk')).toBeInTheDocument();
+    expect(
+      getByText(messages.confirmationAlertModalTitleDescription.message),
+    ).toBeInTheDocument();
   });
 
   it('disables submit button when confirm modal is not acknowledged', () => {

@@ -32,8 +32,8 @@ jest.mock('react-redux', () => {
 });
 
 const mockUseLocation = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useLocation: () => mockUseLocation(),
 }));
 
@@ -77,13 +77,13 @@ const arrangeMocks = <T extends boolean>({
   const store = configureStore({
     ...stateOverrides,
   });
-  const { getByTestId, getByTitle } = renderWithProvider(
+  const { getByTestId, getByRole } = renderWithProvider(
     <BasicConfigurationModal />,
     store,
   );
 
   const agreementCheckbox = stateOverrides?.metamask.useExternalServices
-    ? getByTitle('basic-configuration-checkbox')
+    ? getByRole('checkbox')
     : null;
   const toggleBasicFunctionalityButton = getByTestId(
     'basic-configuration-modal-toggle-button',
@@ -139,9 +139,7 @@ describe('BasicConfigurationModal', () => {
           },
         });
 
-      fireEvent.click(agreementCheckbox, {
-        target: { checked: true },
-      });
+      fireEvent.click(agreementCheckbox);
 
       expect(toggleBasicFunctionalityButton).toBeEnabled();
 
@@ -186,9 +184,7 @@ describe('BasicConfigurationModal', () => {
           },
         });
 
-      fireEvent.click(agreementCheckbox, {
-        target: { checked: true },
-      });
+      fireEvent.click(agreementCheckbox);
 
       waitFor(() => {
         expect(toggleBasicFunctionalityButton).toBeEnabled();

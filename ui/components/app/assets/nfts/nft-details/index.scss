@@ -16,16 +16,6 @@ $spacer-break-small: 16px;
   }
 }
 
-.buttonDescriptionContainer {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(90deg, transparent 0%, var(--color-background-default) 33%);
-
-  @include design-system.screen-md-min {
-    bottom: 3px;
-  }
-}
 
 .fade-in {
   opacity: 0;
@@ -53,49 +43,11 @@ $spacer-break-small: 16px;
     height: calc(100% - 8px);
   }
 
-  &__full-image-container {
-    @include design-system.screen-lg-min {
-      margin: 10px;
-      align-items: center;
-    }
-
-    margin: 10px;
-    align-items: center;
-  }
-
-  &__content {
-    @include design-system.screen-lg-min {
-      padding-left: 192px;
-      padding-right: 192px;
-      width: auto !important;
-    }
-  }
-
   &__addressButton {
     background-color: transparent;
     padding-right: 0;
   }
 
-
-  &__show-more {
-    max-height: 2.5rem;
-
-    &__buttonContainer {
-      position: 'absolute';
-      bottom: 0;
-      right: 0;
-      background: linear-gradient(90deg, transparent 0%, var(--color-background-default) 33%);
-    }
-
-    @include design-system.screen-md-min {
-      max-height: 3rem;
-    }
-
-    &__button {
-      background: linear-gradient(90deg, transparent 0%, var(--color-background-default) 33%);
-      vertical-align: baseline;
-    }
-  }
 
   &__nft-frame {
     flex: 1 0 33%;

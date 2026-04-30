@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import SnapListItem from '../../../components/app/snaps/snap-list-item';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -18,7 +17,10 @@ import {
   TextVariant,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { getAllSnapAvailableUpdates, getSnapsList } from '../../../selectors';
 import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 import {
@@ -39,14 +41,22 @@ import {
 } from '../../../components/multichain/pages/page';
 import { getSnapRoute } from '../../../helpers/utils/util';
 
-const SnapList = ({ navigate: navigateProp }) => {
+const SnapList = () => {
   const t = useI18nContext();
   const settingsRef = useRef();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-  const hookNavigate = useNavigate();
+  const fromPath = searchParams.get('from') ?? undefined;
 
-  // Use passed props if they exist, otherwise fall back to hooks
-  const navigate = navigateProp ?? hookNavigate;
+  const handleBack = () => {
+    if (fromPath === DEFAULT_ROUTE) {
+      navigate(PREVIOUS_ROUTE);
+    } else {
+      navigate(DEFAULT_ROUTE);
+    }
+  };
+
   const onClick = (snap) => {
     navigate(getSnapRoute(snap.id));
   };
@@ -68,7 +78,7 @@ const SnapList = ({ navigate: navigateProp }) => {
               ariaLabel="Back"
               iconName="arrow-left"
               size="sm"
-              onClick={() => navigate(DEFAULT_ROUTE)}
+              onClick={handleBack}
             />
           }
         >
@@ -173,10 +183,6 @@ const SnapList = ({ navigate: navigateProp }) => {
       </Page>
     </div>
   );
-};
-
-SnapList.propTypes = {
-  navigate: PropTypes.func,
 };
 
 export default SnapList;

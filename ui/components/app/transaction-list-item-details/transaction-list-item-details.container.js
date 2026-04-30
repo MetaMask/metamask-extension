@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import {
   getAccountName,
   getAddressBook,
@@ -9,15 +9,16 @@ import {
   getInternalAccounts,
   getIsCustomNetwork,
   getRpcPrefsForCurrentProvider,
+  isHardwareWallet,
 } from '../../../selectors';
 import { tryReverseResolveAddress } from '../../../store/actions';
 import TransactionListItemDetails from './transaction-list-item-details.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const { recipientAddress, senderAddress } = ownProps;
+  const { senderAddress } = ownProps;
   const addressBook = getAddressBook(state);
   const accounts = getInternalAccounts(state);
-  const recipientName = getAccountName(accounts, recipientAddress);
+  const senderAccountName = getAccountName(accounts, senderAddress);
 
   const getNickName = (address) => {
     const entry = addressBook.find((contact) => {
@@ -33,10 +34,10 @@ const mapStateToProps = (state, ownProps) => {
   return {
     rpcPrefs,
     networkConfiguration,
-    senderNickname: getNickName(senderAddress),
+    senderNickname: senderAccountName || getNickName(senderAddress),
     isCustomNetwork,
     blockExplorerLinkText: getBlockExplorerLinkText(state),
-    recipientName,
+    isHardwareWalletAccount: isHardwareWallet(state),
   };
 };
 

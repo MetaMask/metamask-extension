@@ -1,10 +1,30 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountGroupId } from '@metamask/account-api';
+import { TraceName, trace, endTrace } from '../../../../shared/lib/trace';
 import { MultichainPrivateKeyList } from './multichain-private-key-list';
+
+jest.mock('../../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../../shared/lib/trace'),
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+}));
+
+const mockTrace = trace as jest.MockedFunction<typeof trace>;
+const mockEndTrace = endTrace as jest.MockedFunction<typeof endTrace>;
+
+const mockUseI18nContext = jest.fn(() => (key: string) => key);
+jest.mock('../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => mockUseI18nContext(),
+}));
+
+const mockHandleCopy = jest.fn();
+jest.mock('../../../hooks/useCopyToClipboard', () => ({
+  useCopyToClipboard: () => [false, mockHandleCopy],
+}));
 
 const mockStore = configureStore([]);
 
@@ -192,7 +212,7 @@ jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
   return {
     ...actual,
-    useDispatch: jest.fn().mockReturnValue(jest.fn()),
+    useDispatch: jest.fn().mockReturnValue((action: unknown) => action),
   };
 });
 
@@ -216,7 +236,8 @@ const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
 
 describe('MultichainPrivateKeyList', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
+    mockUseI18nContext.mockReturnValue((key: string) => key);
   });
 
   it('renders with password input', () => {
@@ -227,5 +248,27 @@ describe('MultichainPrivateKeyList', () => {
     ).toBeInTheDocument();
     expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
     expect(screen.getByTestId('confirm-button')).toBeInTheDocument();
+  });
+
+  it('fires trace and endTrace around successful reveal', async () => {
+    renderComponent();
+
+    const passwordInput = await screen.findByPlaceholderText('password');
+    fireEvent.change(passwordInput, { target: { value: 'correctpassword' } });
+
+    const confirmButton = screen.getByTestId('confirm-button');
+    fireEvent.click(confirmButton);
+
+    await screen.findByTestId('multichain-private-keyring-list');
+    expect(mockTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: TraceName.ShowAccountPrivateKeyList,
+      }),
+    );
+    expect(mockEndTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: TraceName.ShowAccountPrivateKeyList,
+      }),
+    );
   });
 });

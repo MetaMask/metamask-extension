@@ -81,6 +81,7 @@ const mockSubscriptionPricing: PricingResponse = {
           currency: 'usd',
           trialPeriodDays: 14,
           minBillingCycles: 12,
+          minBillingCyclesForBalance: 1,
         },
         {
           interval: RECURRING_INTERVALS.year,
@@ -89,6 +90,7 @@ const mockSubscriptionPricing: PricingResponse = {
           currency: 'usd',
           trialPeriodDays: 14,
           minBillingCycles: 1,
+          minBillingCyclesForBalance: 1,
         },
       ],
     },
@@ -136,14 +138,14 @@ describe('ShieldSubscriptionApproveInfo', () => {
       mockStore,
     );
 
-    expect(getByText(tEn('transactionShield') as string)).toBeInTheDocument();
-    expect(getByText('$8/month (Monthly)' as string)).toBeInTheDocument();
-    expect(getByText(tEn('freeTrialDays', [14]) as string)).toBeInTheDocument();
-    expect(getByText(tEn('estimatedChanges') as string)).toBeInTheDocument();
-    expect(getByText(tEn('youApprove') as string)).toBeInTheDocument();
+    expect(getByText(tEn('transactionShield'))).toBeInTheDocument();
+    expect(getByText('$8/month (Monthly)')).toBeInTheDocument();
+    expect(getByText(tEn('freeTrialDays', ['14']))).toBeInTheDocument();
+    expect(getByText(tEn('estimatedChanges'))).toBeInTheDocument();
+    expect(getByText(tEn('youApprove'))).toBeInTheDocument();
     expect(getByText('96')).toBeInTheDocument();
-    expect(getByText(tEn('account') as string)).toBeInTheDocument();
-    expect(getByText(tEn('networkFee') as string)).toBeInTheDocument();
-    expect(getByText(tEn('speed') as string)).toBeInTheDocument();
+    expect(getByText(tEn('account'))).toBeInTheDocument();
+    expect(getByText(tEn('networkFee'))).toBeInTheDocument();
+    expect(getByText(tEn('speed'))).toBeInTheDocument();
   });
 });

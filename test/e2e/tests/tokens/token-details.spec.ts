@@ -2,16 +2,18 @@ import { Mockttp } from 'mockttp';
 import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatCurrency } from '../../../../ui/helpers/utils/confirm-tx.util';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
   mockHistoricalPrices,
+  mockHistoricalPricesV3,
   mockSpotPrices,
 } from './utils/mocks';
 
@@ -21,7 +23,10 @@ describe('Token Details', function () {
   const symbol = 'foo';
 
   const fixtures = {
-    fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
+    fixtures: new FixtureBuilderV2()
+      .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+      .withEnabledNetworks({ eip155: { [chainId]: true } })
+      .build(),
     localNodeOptions: {
       chainId: parseInt(chainId, 16),
     },
@@ -33,12 +38,12 @@ describe('Token Details', function () {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
-          await mockEmptyPrices(mockServer, chainId),
+          await mockEmptyPrices(mockServer),
           await mockEmptyHistoricalPrices(mockServer, tokenAddress, chainId),
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -80,13 +85,16 @@ describe('Token Details', function () {
         title: (this as Context).test?.fullTitle(),
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
-          await mockSpotPrices(mockServer, chainId, {
-            '0x0000000000000000000000000000000000000000': {
-              price: 10000,
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price:
+                process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
+                  ? ethConversionInUsd
+                  : 1,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
-            [tokenAddress.toLowerCase()]: marketData,
+            [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: marketData,
           }),
           await mockHistoricalPrices(mockServer, {
             address: tokenAddress,
@@ -100,7 +108,7 @@ describe('Token Details', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -133,23 +141,25 @@ describe('Token Details', function () {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
-              price: 1700,
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price:
+                process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true' ? 1700 : 1,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
           }),
+          await mockHistoricalPricesV3(mockServer, 'eip155:1', 'slip44:60'),
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
         const assetListPage = new AssetListPage(driver);
-        await assetListPage.openTokenDetails('ETH');
+        await assetListPage.openTokenDetails('Ethereum');
 
         // check display of price in details
         await assetListPage.checkTokenPrice('$1,700.00');

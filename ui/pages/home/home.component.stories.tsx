@@ -1,7 +1,7 @@
 import React from 'react';
 import { StoryObj, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom-v5-compat';
+import { MemoryRouter } from 'react-router-dom';
 import Home from './home.component';
 import mockState from '../../../test/data/mock-state.json';
 import configureStore from '../../store/store';
@@ -19,9 +19,7 @@ interface WrapperProps {
 
 // Wrapper component to provide necessary providers
 const Wrapper: React.FC<WrapperProps> = ({ children }) => (
-  <Provider store={store}>
-    {children}
-  </Provider>
+  <Provider store={store}>{children}</Provider>
 );
 
 const meta: Meta<typeof Home> = {
@@ -45,7 +43,6 @@ const meta: Meta<typeof Home> = {
     showTermsOfUsePopup: false,
     firstTimeFlowType: FirstTimeFlowType.import,
     completedOnboarding: true,
-    showWhatsNewPopup: false,
     announcementsToShow: false,
     onboardedInThisUISession: false,
     showMultiRpcModal: false,
@@ -69,8 +66,6 @@ const meta: Meta<typeof Home> = {
     newNetworkAddedName: null,
     editedNetwork: null,
     isSigningQRHardwareTransaction: false,
-    newNftAddedMessage: '',
-    removeNftMessage: '',
     newTokensImported: '',
     newTokensImportedError: '',
     hasAllowedPopupRedirectApprovals: false,
@@ -93,8 +88,6 @@ const meta: Meta<typeof Home> = {
     setRecoveryPhraseReminderLastShown: () => {},
     setTermsOfUseLastAgreed: () => {},
     setOutdatedBrowserWarningLastShown: () => {},
-    setNewNftAddedMessage: () => {},
-    setRemoveNftMessage: () => {},
     attemptCloseNotificationPopup: () => {},
     setNewTokensImported: () => {},
     setNewTokensImportedError: () => {},
@@ -104,7 +97,6 @@ const meta: Meta<typeof Home> = {
     setBasicFunctionalityModalOpen: () => {},
     fetchBuyableChains: () => {},
     clearRedirectAfterDefaultPage: () => {},
-    setAccountDetailsAddress: () => {},
     lookupSelectedNetworks: () => {},
   },
 };
@@ -117,8 +109,6 @@ export const Default: Story = {};
 export const NFTNotifications: Story = {
   args: {
     ...Default.args,
-    newNftAddedMessage: 'success',
-    removeNftMessage: 'error',
     newTokensImported: '5',
     newTokensImportedError: 'Failed to import some tokens',
     newNetworkAddedName: 'Arbitrum One',

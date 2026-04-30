@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { hasProperty } from '@metamask/utils';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   AlignItems,
   BackgroundColor,
@@ -10,7 +9,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE, SNAPS_ROUTE } from '../../../helpers/constants/routes';
-import { getSnaps, getPermissions } from '../../../selectors';
+import { getPermissions, getSnap } from '../../../selectors';
 import {
   ButtonIcon,
   Box,
@@ -22,21 +21,13 @@ import SnapHomeMenu from '../../../components/app/snaps/snap-home-menu';
 import { SnapHomeRenderer } from '../../../components/app/snaps/snap-home-page/snap-home-renderer';
 import SnapSettings from './snap-settings';
 
-function SnapView({ navigate: navigateProp, location: locationProp }) {
-  const hookNavigate = useNavigate();
-  const hookLocation = useLocation();
+function SnapView() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  // Use passed props if they exist, otherwise fall back to hooks
-  const navigate = navigateProp ?? hookNavigate;
-  const location = locationProp ?? hookLocation;
-
-  const { pathname } = location;
-  // The snap ID is in URI-encoded form in the last path segment of the URL.
-  const snapId = decodeURIComponent(pathname.match(/[^/]+$/u)[0]);
-  const snaps = useSelector(getSnaps);
-  const snap = Object.entries(snaps)
-    .map(([_, snapState]) => snapState)
-    .find((snapState) => snapState.id === snapId);
+  // The snap ID is in URI-encoded form in the query parameter.
+  const snapId = searchParams.get('snapId');
+  const snap = useSelector((state) => getSnap(state, snapId));
 
   useEffect(() => {
     if (!snap) {
@@ -137,10 +128,5 @@ function SnapView({ navigate: navigateProp, location: locationProp }) {
     </div>
   );
 }
-
-SnapView.propTypes = {
-  navigate: PropTypes.func,
-  location: PropTypes.object,
-};
 
 export default SnapView;

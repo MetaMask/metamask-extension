@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getIsSmartTransaction,
   type SmartTransactionsState,
-} from '../../../../../../../../shared/modules/selectors';
+} from '../../../../../../../../shared/lib/selectors';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
@@ -23,8 +23,9 @@ import {
 import { useConfirmContext } from '../../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { isSignatureTransactionType } from '../../../../../utils';
-import { TransactionData } from '../transaction-data/transaction-data';
 import { NestedTransactionData } from '../../batch/nested-transaction-data/nested-transaction-data';
+import { QuotedSwapTransactionData } from '../quote-transaction-data/quoted-transaction-data';
+import { TransactionData } from '../transaction-data/transaction-data';
 
 const NonceDetails = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -105,6 +106,7 @@ export const AdvancedDetails = ({
       <NonceDetails />
       <TransactionData />
       <NestedTransactionData />
+      <QuotedSwapTransactionData />
     </>
   );
 };

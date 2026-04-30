@@ -65,6 +65,35 @@ Run `yarn webpack --help` for the list of options.
 
 Note: multiple array options cannot be set this way, due to this bug in yargs: https://github.com/yargs/yargs/issues/821
 
+## CLI Arguments
+
+### `--env` (alias: `-e`)
+
+Explicitly sets the build environment for Sentry reporting and feature flags. If not specified, it is auto-detected from git.
+
+| Value               | When Used                                    |
+| ------------------- | -------------------------------------------- |
+| `production`        | Must be explicitly set (never auto-detected) |
+| `development`       | `--mode development`                         |
+| `testing`           | `--test` flag                                |
+| `staging`           | `main` branch on CI                          |
+| `release-candidate` | `release/*` branch on CI                     |
+| `pull-request`      | `pull_request` GitHub event                  |
+| `other`             | Local builds or any other context (default)  |
+
+**Examples:**
+
+```bash
+# Local development (auto-detects as 'other')
+yarn webpack --mode production
+
+# Explicit production (for actual releases only)
+yarn webpack --mode production --env production
+
+# Check what environment will be used
+yarn webpack --mode production --dry-run
+```
+
 You can also combine environment variables with `--config` and CLI options:
 
 ```bash

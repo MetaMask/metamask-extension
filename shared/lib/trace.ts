@@ -1,6 +1,11 @@
 import type * as Sentry from '@sentry/browser';
 import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger } from '@metamask/utils';
+import type {
+  TraceCallback as ControllerTraceCallback,
+  TraceRequest as ControllerTraceRequest,
+  TraceContext as ControllerTraceContext,
+} from '@metamask/controller-utils';
 import { sentryLogger } from './sentry';
 
 /**
@@ -12,6 +17,7 @@ export enum TraceName {
   AccountOverviewNftsTab = 'Account Overview Nfts Tab',
   AccountOverviewActivityTab = 'Account Overview Activity Tab',
   AccountOverviewDeFiTab = 'Account Overview DeFi Tab',
+  AccountOverviewPerpsTab = 'Account Overview Perps Tab',
   AssetDetails = 'Asset Details',
   BackgroundConnect = 'Background Connect',
   BridgeBalancesUpdated = 'Bridge Balances Updated',
@@ -21,7 +27,6 @@ export enum TraceName {
   DeveloperTest = 'Developer Test',
   DisconnectAllModal = 'Disconnect All Modal',
   FirstRender = 'First Render',
-  GetState = 'Get State',
   ImportNfts = 'Import Nfts',
   ImportTokens = 'Import Tokens',
   InitialActions = 'Initial Actions',
@@ -70,9 +75,6 @@ export enum TraceName {
   OnboardingOAuthProviderLogin = 'Onboarding - OAuth Provider Login',
   OnboardingOAuthBYOAServerGetAuthTokens = 'Onboarding - OAuth BYOA Server Get Auth Tokens',
   OnboardingOAuthSeedlessAuthenticate = 'Onboarding - OAuth Seedless Authenticate',
-  OnboardingSocialLoginError = 'Onboarding - Social Login Error',
-  OnboardingPasswordSetupError = 'Onboarding - Password Setup Error',
-  OnboardingPasswordLoginError = 'Onboarding - Password Login Error',
   OnboardingResetPasswordError = 'Onboarding - Reset Password Error',
   OnboardingCreateKeyAndBackupSrpError = 'Onboarding - Create Key and Backup SRP Error',
   OnboardingAddSrpError = 'Onboarding - Add SRP Error',
@@ -80,15 +82,36 @@ export enum TraceName {
   OnboardingOAuthProviderLoginError = 'Onboarding - OAuth Provider Login Error',
   OnboardingOAuthBYOAServerGetAuthTokensError = 'Onboarding - OAuth BYOA Server Get Auth Tokens Error',
   OnboardingOAuthSeedlessAuthenticateError = 'Onboarding - OAuth Seedless Authenticate Error',
+  // Accounts
+  ShowAccountList = 'Show Account List',
+  ShowAccountAddressList = 'Show Account Address List',
+  ShowAccountPrivateKeyList = 'Show Account Private Key List',
+  CreateMultichainAccount = 'Create Multichain Account',
+  DiscoverAccounts = 'Discover Accounts',
+  EvmDiscoverAccounts = 'EVM Discover Accounts',
+  // mUSD / 1-Click Convert
+  MusdConversionNavigation = 'mUSD Conversion Navigation',
+  MusdConversionQuote = 'mUSD Conversion Quote',
+  MusdConversionConfirm = 'mUSD Conversion Confirm',
+  BackgroundRpc = 'Background RPC',
+  MessengerCall = 'Messenger Call',
 }
 
 /**
  * The operation names to use for the trace.
  */
 export enum TraceOperation {
+  AccountList = 'account.list',
   OnboardingUserJourney = 'onboarding.user_journey',
   OnboardingSecurityOp = 'onboarding.security_operation',
   OnboardingError = 'onboarding.error',
+  // Accounts
+  AccountCreate = 'account.create',
+  AccountUi = 'account.ui',
+  AccountDiscover = 'account.discover',
+  // mUSD Conversion
+  MusdConversionOperation = 'musd.conversion.operation',
+  MusdConversionDataFetch = 'musd.conversion.data_fetch',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
@@ -114,6 +137,18 @@ type PendingTrace = {
  * A context object to associate traces with each other and generate nested traces.
  */
 export type TraceContext = unknown;
+
+/**
+ * Serialized trace context for cross-boundary propagation.
+ * Contains trace/span IDs for distributed tracing and optional name/id for
+ * same-process parent lookup via the tracesByKey map.
+ */
+export type SerializedTraceContext = {
+  _name?: string;
+  _id?: string;
+  _traceId?: string;
+  _spanId?: string;
+};
 
 /**
  * A callback function that can be traced.
@@ -225,6 +260,23 @@ export function trace<T>(
 }
 
 /**
+ * Adapter that wraps the extension's synchronous {@link trace} function into the
+ * async {@link ControllerTraceCallback} signature expected by `@metamask/assets-controller`.
+ * @param req - The trace request.
+ * @param fn - The trace callback.
+ * @returns The result of the trace.
+ */
+export const traceAsControllerCallback: ControllerTraceCallback = <Result>(
+  req: ControllerTraceRequest,
+  fn?: (ctx?: ControllerTraceContext) => Result,
+): Promise<Result> =>
+  Promise.resolve(
+    fn
+      ? trace({ ...req, name: req.name as TraceName }, fn)
+      : trace({ ...req, name: req.name as TraceName }),
+  ) as Promise<Result>;
+
+/**
  * End a pending trace that was started without a callback.
  * Does nothing if the pending trace cannot be found.
  *
@@ -256,6 +308,57 @@ export function endTrace(request: EndTraceRequest): void {
   const endTime = timestamp ?? getPerformanceTimestamp();
 
   logTrace(pendingRequest, startTime, endTime);
+}
+
+/**
+ * Get the serialized trace context from the currently active Sentry span.
+ * Used by cross-boundary wrappers to propagate trace context over RPC.
+ *
+ * @returns Serialized context with traceId/spanId, or undefined if no active span.
+ */
+export function getSerializedTraceContext():
+  | SerializedTraceContext
+  | undefined {
+  const activeSpan = sentryGetActiveSpan();
+  if (!activeSpan) {
+    return undefined;
+  }
+  try {
+    const ctx = activeSpan.spanContext();
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    return { _traceId: ctx.traceId, _spanId: ctx.spanId };
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Serialize a trace context from a specific span and request metadata.
+ * Includes both name/id (for same-process map lookup) and traceId/spanId
+ * (for cross-process distributed tracing).
+ *
+ * @param span - The Sentry span to extract IDs from.
+ * @param request - Request metadata for same-process lookup fallback.
+ * @param request.name - The trace name for same-process map lookup.
+ * @param request.id - Optional trace ID for same-process map lookup.
+ * @returns Serialized trace context.
+ */
+export function serializeTraceContext(
+  span: Sentry.Span | null | undefined,
+  request: { name: string; id?: string },
+): SerializedTraceContext {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const ctx: SerializedTraceContext = { _name: request.name, _id: request.id };
+  if (span) {
+    try {
+      const spanCtx = span.spanContext();
+      ctx._traceId = spanCtx.traceId;
+      ctx._spanId = spanCtx.spanId;
+    } catch {
+      // Span may have ended or be invalid
+    }
+  }
+  return ctx;
 }
 
 function traceCallback<ResultType>(
@@ -368,6 +471,17 @@ function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
   return null;
 }
 
+function hasDistributedTraceIds(
+  value: unknown,
+): value is { _traceId: string; _spanId: string } {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as Record<string, unknown>)._traceId === 'string' &&
+    typeof (value as Record<string, unknown>)._spanId === 'string'
+  );
+}
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function startSpan<T>(
@@ -375,7 +489,21 @@ function startSpan<T>(
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
   const { data: attributes, name, parentContext, startTime, op } = request;
-  const parentSpan = resolveParentSpan(parentContext);
+  let parentSpan = resolveParentSpan(parentContext);
+
+  // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
+  // when no explicit parent is provided. Must capture before withIsolationScope
+  // severs the active span context chain.
+  // forceTransaction preserves transaction-level visibility for monitoring while
+  // linking to the auto-instrumentation hierarchy.
+  let forceTransaction: boolean | undefined;
+  if (!parentSpan && !parentContext) {
+    const activeSpan = sentryGetActiveSpan();
+    if (activeSpan) {
+      parentSpan = activeSpan;
+      forceTransaction = true;
+    }
+  }
 
   const spanOptions: StartSpanOptions = {
     attributes,
@@ -383,7 +511,20 @@ function startSpan<T>(
     op: op ?? OP_DEFAULT,
     parentSpan,
     startTime,
+    forceTransaction,
   };
+
+  // Cross-process propagation via continueTrace when we have serialized
+  // trace/span IDs but couldn't resolve a local parent span from the map.
+  if (!parentSpan && hasDistributedTraceIds(parentContext)) {
+    const sentryTrace = `${parentContext._traceId}-${parentContext._spanId}-1`;
+    return sentryContinueTrace(sentryTrace, () =>
+      sentryWithIsolationScope((scope: Sentry.Scope) => {
+        initScope(scope, request);
+        return callback({ ...spanOptions, parentSpan: undefined });
+      }),
+    );
+  }
 
   return sentryWithIsolationScope((scope: Sentry.Scope) => {
     initScope(scope, request);
@@ -418,7 +559,7 @@ function getTraceKey(request: TraceRequest | EndTraceRequest) {
   return [name, id].join(':');
 }
 
-function getPerformanceTimestamp(): number {
+export function getPerformanceTimestamp(): number {
   return performance.timeOrigin + performance.now();
 }
 
@@ -546,4 +687,26 @@ function sentrySetMeasurement(
   }
 
   actual(key, value, unit);
+}
+
+function sentryGetActiveSpan(): Sentry.Span | null {
+  const actual = globalThis.sentry?.getActiveSpan;
+
+  if (!actual) {
+    return null;
+  }
+
+  return actual() ?? null;
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function sentryContinueTrace<T>(sentryTrace: string, callback: () => T): T {
+  const actual = globalThis.sentry?.continueTrace;
+
+  if (!actual) {
+    return callback();
+  }
+
+  return actual({ sentryTrace, baggage: undefined }, callback);
 }

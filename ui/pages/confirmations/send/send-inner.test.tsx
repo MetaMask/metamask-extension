@@ -7,8 +7,8 @@ import * as SendContext from '../context/send';
 import { SendPages } from '../constants/send';
 import { SendInner } from './send-inner';
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useLocation: () => ({ pathname: '' }),
   useSearchParams: () => [{ get: () => null }],
 }));

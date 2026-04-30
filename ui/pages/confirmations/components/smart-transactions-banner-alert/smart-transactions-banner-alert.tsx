@@ -18,11 +18,11 @@ import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/con
 import {
   getSmartTransactionsOptInStatusInternal,
   getSmartTransactionsMigrationAppliedInternal,
-} from '../../../../../shared/modules/selectors/smart-transactions';
+} from '../../../../../shared/lib/selectors/smart-transactions';
 import {
   getChainSupportsSmartTransactions,
   getSmartTransactionsPreferenceEnabled,
-} from '../../../../../shared/modules/selectors';
+} from '../../../../../shared/lib/selectors';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 

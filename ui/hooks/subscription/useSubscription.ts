@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  CANCEL_TYPES,
   PAYMENT_TYPES,
   PaymentType,
   PRODUCT_TYPES,
@@ -12,22 +13,31 @@ import {
   ModalType,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { getUserSubscriptions } from '../../selectors/subscription';
+import { addHexPrefix } from 'ethereumjs-util';
+import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
+import {
+  getShieldSubscriptionError,
+  getUserSubscriptions,
+} from '../../selectors/subscription';
 import {
   addTransaction,
   cancelSubscription,
   estimateGas,
+  estimateRewardsPoints,
+  getRewardsHasAccountOptedIn,
+  getRewardsSeasonMetadata,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
   getSubscriptionsEligibilities,
   setDefaultSubscriptionPaymentOptions,
   setLastUsedSubscriptionPaymentDetails,
+  setShieldSubscriptionError,
   startSubscriptionWithCard,
   unCancelSubscription,
   updateSubscriptionCardPaymentMethod,
@@ -43,30 +53,44 @@ import {
   getIsShieldSubscriptionActive,
   getSubscriptionDurationInDays,
   getSubscriptionPaymentData,
+  determineSubscriptionMetricsSourceFromMarketingUtmParams,
+  getIsSubscriptionCancelNotAllowed,
+  getShieldMarketingUtmParamsForMetrics,
+  getUserBalanceCategory,
+  isNonUISubscriptionError,
+  SHIELD_ERROR,
 } from '../../../shared/lib/shield';
-import { generateERC20ApprovalData } from '../../pages/confirmations/send-legacy/send.utils';
-import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import { generateERC20ApprovalData } from '../../pages/confirmations/send-utils/send.utils';
+import {
+  decimalToHex,
+  decGWEIToHexWEI,
+} from '../../../shared/lib/conversion.utils';
+import { GasEstimateTypes } from '../../../shared/constants/gas';
+import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
+  getMetaMaskHdKeyrings,
   getMetaMetricsId,
   getModalTypeForShieldEntryModal,
   getUnapprovedConfirmations,
-  selectNetworkConfigurationByChainId,
+  getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../selectors';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types';
-import { EntryModalSourceEnum } from '../../../shared/constants/subscriptions';
-import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import {
-  getLatestSubscriptionStatus,
-  getShieldMarketingUtmParamsForMetrics,
-  getUserBalanceCategory,
-} from '../../../shared/modules/shield';
+  ShieldMetricsSourceEnum,
+  ShieldSubscriptionRequestSubscriptionStateEnum,
+} from '../../../shared/constants/subscriptions';
+import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
+import { useI18nContext } from '../useI18nContext';
 import { openWindow } from '../../helpers/utils/window';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
+import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
+import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -180,8 +204,19 @@ export const useCancelSubscription = (subscription?: Subscription) => {
       if (!subscription) {
         return;
       }
+
+      const { cancelType } = subscription;
+
+      // Do nothing if cancellation is not allowed
+      if (getIsSubscriptionCancelNotAllowed(cancelType)) {
+        return;
+      }
+
       const subscriptionId = subscription.id;
-      await dispatch(cancelSubscription({ subscriptionId }));
+      const cancelAtPeriodEnd =
+        cancelType === CANCEL_TYPES.ALLOWED_AT_PERIOD_END;
+
+      await dispatch(cancelSubscription({ subscriptionId, cancelAtPeriodEnd }));
       trackMembershipCancelledEvent('succeeded');
     } catch (error) {
       const errorMessage =
@@ -189,7 +224,7 @@ export const useCancelSubscription = (subscription?: Subscription) => {
       trackMembershipCancelledEvent('failed', errorMessage);
       throw error;
     }
-  }, [dispatch, subscription, captureShieldMembershipCancelledEvent]);
+  }, [dispatch, subscription, trackMembershipCancelledEvent]);
 };
 
 export const useUnCancelSubscription = (subscription?: Subscription) => {
@@ -282,29 +317,41 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
     useSubscriptionMetrics();
 
   return useAsyncCallback(async () => {
-    if (!subscription || !newRecurringInterval) {
-      throw new Error('Subscription ID and recurring interval are required');
+    try {
+      if (!subscription || !newRecurringInterval) {
+        throw new Error('Subscription ID and recurring interval are required');
+      }
+
+      const subscriptionId = subscription.id;
+
+      await dispatch(
+        updateSubscriptionCardPaymentMethod({
+          subscriptionId,
+          paymentType: PAYMENT_TYPES.byCard,
+          recurringInterval: newRecurringInterval,
+        }),
+      );
+
+      // capture the event when the payment method is updated
+      captureCommonExistingShieldSubscriptionEvents(
+        {
+          subscriptionStatus: subscription.status,
+          paymentType: subscription.paymentMethod.type,
+          billingInterval: newRecurringInterval,
+        },
+        MetaMetricsEventName.ShieldPaymentMethodUpdated,
+      );
+    } catch (error) {
+      // Filter out non-UI errors (tab action failed, stripe payment cancelled) and log them
+      if (error instanceof Error && isNonUISubscriptionError(error)) {
+        log.warn(
+          '[Shield - useUpdateSubscriptionCardPaymentMethod] Non-UI error filtered:',
+          error.message,
+        );
+        return;
+      }
+      throw error as Error;
     }
-
-    const subscriptionId = subscription.id;
-
-    await dispatch(
-      updateSubscriptionCardPaymentMethod({
-        subscriptionId,
-        paymentType: PAYMENT_TYPES.byCard,
-        recurringInterval: newRecurringInterval,
-      }),
-    );
-
-    // capture the event when the payment method is updated
-    captureCommonExistingShieldSubscriptionEvents(
-      {
-        subscriptionStatus: subscription.status,
-        paymentType: subscription.paymentMethod.type,
-        billingInterval: newRecurringInterval,
-      },
-      MetaMetricsEventName.ShieldPaymentMethodUpdated,
-    );
   }, [
     dispatch,
     subscription,
@@ -325,13 +372,40 @@ export const useSubscriptionCryptoApprovalTransaction = (
     // Account address will be the same for all EVM accounts
     getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
   );
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, selectedToken?.chainId as Hex),
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
   );
-  const networkClientId =
-    networkConfiguration?.rpcEndpoints[
+
+  // Get networkClientId for the selected token's chain
+  const networkClientId = useMemo(() => {
+    if (!selectedToken?.chainId) {
+      return undefined;
+    }
+    const networkConfiguration =
+      networkConfigurationsByChainId[selectedToken.chainId as Hex];
+    return networkConfiguration?.rpcEndpoints[
       networkConfiguration.defaultRpcEndpointIndex ?? 0
     ]?.networkClientId;
+  }, [networkConfigurationsByChainId, selectedToken?.chainId]);
+
+  // Get gas fee estimates for optimized gas sponsorship
+  // Use ref to avoid recreating handler callback on every gas estimate poll (~12s)
+  const { gasFeeEstimates, gasEstimateType } = useGasFeeEstimates(
+    networkClientId,
+    Boolean(networkClientId),
+  ) as unknown as { gasFeeEstimates: GasFeeEstimates; gasEstimateType: string };
+
+  const gasFeeEstimatesRef = useRef<{
+    estimates: GasFeeEstimates | undefined;
+    type: string | undefined;
+  }>({ estimates: gasFeeEstimates, type: gasEstimateType });
+
+  useEffect(() => {
+    gasFeeEstimatesRef.current = {
+      estimates: gasFeeEstimates,
+      type: gasEstimateType,
+    };
+  }, [gasFeeEstimates, gasEstimateType]);
 
   const hasPendingApprovals =
     useSelector(getUnapprovedConfirmations).length > 0;
@@ -355,6 +429,10 @@ export const useSubscriptionCryptoApprovalTransaction = (
       throw new Error('No token selected');
     }
 
+    if (!networkClientId) {
+      throw new Error('Network client ID not found');
+    }
+
     const spenderAddress = subscriptionPricing?.paymentMethods
       ?.find((method) => method.type === PAYMENT_TYPES.byCrypto)
       ?.chains?.find(
@@ -371,9 +449,36 @@ export const useSubscriptionCryptoApprovalTransaction = (
       data: approvalData,
     };
     transactionParams.gas = await estimateGas(transactionParams);
+
+    // By default the transaction controller uses suggestedGasFees.medium.
+    // Subscription approvals may be gas-sponsored, so we optimize with
+    // min(2 × low, medium) to reduce the cost of sponsorship.
+    const currentGasFeeEstimates = gasFeeEstimatesRef.current.estimates;
+    const currentGasEstimateType = gasFeeEstimatesRef.current.type;
+
+    if (
+      currentGasEstimateType === GasEstimateTypes.feeMarket &&
+      currentGasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas &&
+      currentGasFeeEstimates?.medium?.suggestedMaxPriorityFeePerGas
+    ) {
+      const lowPriority = Number(
+        currentGasFeeEstimates.low.suggestedMaxPriorityFeePerGas,
+      );
+      const mediumPriority = Number(
+        currentGasFeeEstimates.medium.suggestedMaxPriorityFeePerGas,
+      );
+
+      if (!Number.isNaN(lowPriority) && !Number.isNaN(mediumPriority)) {
+        const priorityFee = Math.min(lowPriority * 2, mediumPriority);
+        transactionParams.maxPriorityFeePerGas = addHexPrefix(
+          decGWEIToHexWEI(priorityFee),
+        ) as Hex;
+      }
+    }
+
     const transactionOptions = {
       type: TransactionType.shieldSubscriptionApprove,
-      networkClientId: networkClientId as string,
+      networkClientId,
     };
     await addTransaction(transactionParams, transactionOptions);
     setShieldTransactionDispatched(true);
@@ -381,8 +486,8 @@ export const useSubscriptionCryptoApprovalTransaction = (
     setShieldTransactionDispatched,
     subscriptionPricing,
     evmInternalAccount,
-    selectedToken,
     networkClientId,
+    selectedToken,
   ]);
 
   return {
@@ -460,6 +565,7 @@ export const useSubscriptionEligibility = (product: ProductType) => {
  * @param options.defaultOptions - The default options for the subscription request.
  * @param options.isTrialed - Whether the user is trialing the subscription.
  * @param options.useTestClock - Whether to use a test clock for the subscription.
+ * @param options.rewardPoints
  * @returns An object with the handleSubscription function and the subscription result.
  */
 export const useHandleSubscription = ({
@@ -469,6 +575,7 @@ export const useHandleSubscription = ({
   defaultOptions,
   isTrialed,
   useTestClock = false,
+  rewardPoints,
 }: {
   defaultOptions: DefaultSubscriptionPaymentOptions;
   subscriptionState?: SubscriptionStatus;
@@ -477,121 +584,147 @@ export const useHandleSubscription = ({
   isTrialed: boolean;
   selectedToken?: TokenWithApprovalAmount;
   useTestClock?: boolean;
+  rewardPoints?: number;
 }) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const { search } = useLocation();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
-  const { subscriptions, lastSubscription } = useUserSubscriptions();
+  const { lastSubscription } = useUserSubscriptions();
   const {
     captureShieldSubscriptionRequestEvent,
     setShieldSubscriptionMetricsPropsToBackground,
   } = useSubscriptionMetrics();
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
 
-  const latestSubscriptionStatus =
-    getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
+  const latestSubscriptionStatus = useMemo(() => {
+    return lastSubscription
+      ? ShieldSubscriptionRequestSubscriptionStateEnum.Renew
+      : ShieldSubscriptionRequestSubscriptionStateEnum.New;
+  }, [lastSubscription]);
 
   const determineSubscriptionRequestSource =
-    useCallback((): EntryModalSourceEnum => {
+    useCallback((): ShieldMetricsSourceEnum => {
       const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
-      if (Object.keys(marketingUtmParams).length > 0) {
-        return EntryModalSourceEnum.Marketing;
+      const source =
+        determineSubscriptionMetricsSourceFromMarketingUtmParams(
+          marketingUtmParams,
+        );
+      if (source) {
+        return source;
       }
+
       const sourceParam = new URLSearchParams(search).get('source');
       switch (sourceParam) {
         case 'homepage':
-          return EntryModalSourceEnum.Homepage;
+          return ShieldMetricsSourceEnum.Homepage;
         case 'post_transaction':
-          return EntryModalSourceEnum.PostTransaction;
+          return ShieldMetricsSourceEnum.PostTransaction;
         case 'notification':
-          return EntryModalSourceEnum.Notification;
+          return ShieldMetricsSourceEnum.Notification;
         case 'carousel':
-          return EntryModalSourceEnum.Carousel;
+          return ShieldMetricsSourceEnum.Carousel;
         case 'marketing':
-          return EntryModalSourceEnum.Marketing;
+          return ShieldMetricsSourceEnum.Marketing;
         case 'settings':
         default:
-          return EntryModalSourceEnum.Settings;
+          return ShieldMetricsSourceEnum.Settings;
       }
     }, [search]);
 
   const [handleSubscription, subscriptionResult] =
     useAsyncCallback(async () => {
-      // save the last used subscription payment method and plan to Redux store
-      await dispatch(
-        setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
-          type: selectedPaymentMethod,
-          paymentTokenAddress: selectedToken?.address as Hex,
-          paymentTokenSymbol: selectedToken?.symbol,
-          plan: selectedPlan,
-          useTestClock,
-        }),
-      );
-
-      const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
-
-      // We need to pass the default payment options & some metrics properties to the background app state controller
-      // as these properties are not accessible in the background directly.
-      // Shield subscription metrics requests can use them for the metrics capture
-      // and also the background app state controller can use them for the metrics capture
-      await dispatch(setDefaultSubscriptionPaymentOptions(defaultOptions));
-      await setShieldSubscriptionMetricsPropsToBackground({
-        source: determineSubscriptionRequestSource(),
-        marketingUtmParams,
-      });
-
-      const source = determineSubscriptionRequestSource();
-      const subscriptionRequestTrackingParams: Omit<
-        CaptureShieldSubscriptionRequestParams,
-        'requestStatus'
-      > = {
-        subscriptionState: latestSubscriptionStatus,
-        defaultPaymentType: defaultOptions.defaultPaymentType,
-        defaultPaymentCurrency: defaultOptions.defaultPaymentCurrency,
-        defaultBillingInterval: defaultOptions.defaultBillingInterval,
-        defaultPaymentChain: defaultOptions.defaultPaymentChain,
-        paymentType: selectedPaymentMethod,
-        paymentCurrency: 'USD',
-        isTrialSubscription: !isTrialed,
-        billingInterval: selectedPlan,
-        source,
-        type: modalType,
-        marketingUtmParams,
-      };
-
-      if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
-        // capture the event when the Shield subscription request is started
-        captureShieldSubscriptionRequestEvent({
-          ...subscriptionRequestTrackingParams,
-          paymentCurrency: 'USD',
-          requestStatus: 'started',
-        });
+      try {
+        // save the last used subscription payment method and plan to Redux store
         await dispatch(
-          startSubscriptionWithCard({
-            products: [PRODUCT_TYPES.SHIELD],
-            isTrialRequested: !isTrialed,
-            recurringInterval: selectedPlan,
+          setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
+            type: selectedPaymentMethod,
+            paymentTokenAddress: selectedToken?.address as Hex,
+            paymentTokenSymbol: selectedToken?.symbol,
+            plan: selectedPlan,
             useTestClock,
           }),
         );
-      } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
-        await executeSubscriptionCryptoApprovalTransaction();
+
+        const marketingUtmParams =
+          getShieldMarketingUtmParamsForMetrics(search);
+
+        // We need to pass the default payment options & some metrics properties to the background app state controller
+        // as these properties are not accessible in the background directly.
+        // Shield subscription metrics requests can use them for the metrics capture
+        // and also the background app state controller can use them for the metrics capture
+        await dispatch(setDefaultSubscriptionPaymentOptions(defaultOptions));
+        await setShieldSubscriptionMetricsPropsToBackground({
+          source: determineSubscriptionRequestSource(),
+          marketingUtmParams,
+          rewardPoints,
+        });
+
+        const source = determineSubscriptionRequestSource();
+        const subscriptionRequestTrackingParams: Omit<
+          CaptureShieldSubscriptionRequestParams,
+          'requestStatus'
+        > = {
+          subscriptionState: latestSubscriptionStatus,
+          defaultPaymentType: defaultOptions.defaultPaymentType,
+          defaultPaymentCurrency: defaultOptions.defaultPaymentCurrency,
+          defaultBillingInterval: defaultOptions.defaultBillingInterval,
+          defaultPaymentChain: defaultOptions.defaultPaymentChain,
+          paymentType: selectedPaymentMethod,
+          paymentCurrency: 'USD',
+          isTrialSubscription: !isTrialed,
+          billingInterval: selectedPlan,
+          source,
+          type: modalType,
+          marketingUtmParams,
+        };
+
+        if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
+          // capture the event when the Shield subscription request is started
+          captureShieldSubscriptionRequestEvent({
+            ...subscriptionRequestTrackingParams,
+            paymentCurrency: 'USD',
+            requestStatus: 'started',
+          });
+          await dispatch(
+            startSubscriptionWithCard({
+              products: [PRODUCT_TYPES.SHIELD],
+              isTrialRequested: !isTrialed,
+              recurringInterval: selectedPlan,
+              useTestClock,
+            }),
+          );
+        } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
+          await executeSubscriptionCryptoApprovalTransaction();
+        }
+      } catch (error) {
+        // Filter out non-UI errors (tab action failed, stripe payment cancelled) and log them
+        if (error instanceof Error && isNonUISubscriptionError(error)) {
+          log.warn(
+            '[Shield - useHandleSubscription] Non-UI error filtered:',
+            error.message,
+          );
+          return;
+        }
+        throw error;
       }
     }, [
       dispatch,
-      defaultOptions,
-      isTrialed,
       selectedPaymentMethod,
+      selectedToken?.address,
+      selectedToken?.symbol,
       selectedPlan,
-      selectedToken,
-      executeSubscriptionCryptoApprovalTransaction,
       useTestClock,
-      captureShieldSubscriptionRequestEvent,
-      latestSubscriptionStatus,
-      modalType,
-      determineSubscriptionRequestSource,
       search,
+      defaultOptions,
+      setShieldSubscriptionMetricsPropsToBackground,
+      determineSubscriptionRequestSource,
+      rewardPoints,
+      latestSubscriptionStatus,
+      isTrialed,
+      modalType,
+      captureShieldSubscriptionRequestEvent,
+      executeSubscriptionCryptoApprovalTransaction,
     ]);
 
   return {
@@ -608,28 +741,324 @@ export const useHandleSubscriptionSupportAction = () => {
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
   const handleClickContactSupport = useCallback(() => {
-    let supportLinkWithUserId = SUPPORT_LINK as string;
-    const queryParams = new URLSearchParams();
-    queryParams.append('metamask_version', version);
+    const url = new URL(SUPPORT_LINK as string);
+    url.searchParams.append('metamask_version', version);
     if (profileId) {
-      queryParams.append('metamask_profile_id', profileId);
+      url.searchParams.append('metamask_profile_id', profileId);
     }
     if (metaMetricsId) {
-      queryParams.append('metamask_metametrics_id', metaMetricsId);
+      url.searchParams.append('metamask_metametrics_id', metaMetricsId);
     }
     if (shieldCustomerId) {
-      queryParams.append('shield_id', shieldCustomerId);
+      url.searchParams.append('shield_id', shieldCustomerId);
     }
 
-    const queryString = queryParams.toString();
-    if (queryString) {
-      supportLinkWithUserId += `?${queryString}`;
-    }
+    const supportLinkWithUserId = url.toString();
 
     openWindow(supportLinkWithUserId);
   }, [version, profileId, metaMetricsId, shieldCustomerId]);
 
   return {
     handleClickContactSupport,
+  };
+};
+
+export const useUpdateSubscriptionCryptoPaymentMethod = ({
+  subscription,
+}: {
+  subscription?: Subscription;
+}) => {
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const [selectedChangePaymentToken, setSelectedChangePaymentToken] = useState<
+    | Pick<
+        TokenWithApprovalAmount,
+        'chainId' | 'address' | 'approvalAmount' | 'symbol'
+      >
+    | undefined
+  >();
+
+  const { execute: executeSubscriptionCryptoApprovalTransaction } =
+    useSubscriptionCryptoApprovalTransaction(selectedChangePaymentToken);
+
+  // This update the subscription payment method to crypto
+  // and trigger the approval transaction flow
+  const [handler, result] = useAsyncCallback(async () => {
+    if (!subscription) {
+      throw new Error('No subscription exist');
+    }
+    // only allow update payment method to crypto -> crypto atm
+    if (!isCryptoPaymentMethod(subscription.paymentMethod)) {
+      throw new Error('Subscription is not a crypto payment method');
+    }
+    if (!selectedChangePaymentToken) {
+      throw new Error('No token selected');
+    }
+
+    // save the changing payment method as last used subscription payment method and plan to Redux store
+    await dispatch(
+      setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
+        type: PAYMENT_TYPES.byCrypto,
+        paymentTokenAddress: selectedChangePaymentToken.address as Hex,
+        paymentTokenSymbol: selectedChangePaymentToken.symbol,
+        plan: subscription.interval,
+      }),
+    );
+    await executeSubscriptionCryptoApprovalTransaction();
+  }, [
+    subscription,
+    executeSubscriptionCryptoApprovalTransaction,
+    dispatch,
+    selectedChangePaymentToken,
+  ]);
+
+  const selectedPaymentTokenAddress = selectedChangePaymentToken?.address;
+  // trigger update subscription crypto payment method when selected change payment token changes
+  useEffect(() => {
+    if (selectedPaymentTokenAddress) {
+      handler().then(() => {
+        // reset selected change payment token after update subscription crypto payment method succeeded
+        setSelectedChangePaymentToken(undefined);
+      });
+    }
+  }, [selectedPaymentTokenAddress, handler]);
+
+  // execute update subscription crypto payment method with new token by settings state with useEffect above to workaround useAsyncCallback hook not accepting callback parameter
+  const execute = useCallback(
+    (
+      newToken: Pick<
+        TokenWithApprovalAmount,
+        'chainId' | 'address' | 'approvalAmount' | 'symbol'
+      >,
+    ) => {
+      if (!newToken) {
+        throw new Error('No token selected');
+      }
+      setSelectedChangePaymentToken(newToken);
+    },
+    [setSelectedChangePaymentToken],
+  );
+
+  return {
+    execute,
+    result,
+  };
+};
+
+export const useShieldRewards = (): {
+  pending: boolean;
+  pointsMonthly: number | null;
+  pointsYearly: number | null;
+  isRewardsSeason: boolean;
+  hasAccountOptedIn: boolean;
+} => {
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
+  const accountsWithCaipChainId = useSelector(
+    getUpdatedAndSortedAccountsWithCaipAccountId,
+  );
+
+  const caipAccountId = useMemo(() => {
+    if (!primaryKeyring) {
+      return null;
+    }
+
+    const primaryAccountWithCaipChainId = accountsWithCaipChainId.find(
+      (account) => {
+        const entropySource = account.options?.entropySource;
+        if (typeof entropySource === 'string') {
+          return isEqualCaseInsensitive(
+            entropySource,
+            primaryKeyring.metadata.id,
+          );
+        }
+        return false;
+      },
+    );
+    if (!primaryAccountWithCaipChainId) {
+      return null;
+    }
+    return primaryAccountWithCaipChainId.caipAccountId;
+  }, [primaryKeyring, accountsWithCaipChainId]);
+
+  const {
+    value: hasAccountOptedInResultValue,
+    pending: hasAccountOptedInResultPending,
+    error: hasAccountOptedInResultError,
+  } = useAsyncResult<boolean>(async () => {
+    if (!caipAccountId) {
+      return false;
+    }
+    const optinStatus = await dispatch(
+      getRewardsHasAccountOptedIn(caipAccountId),
+    );
+    return optinStatus;
+  }, [caipAccountId, dispatch]);
+
+  const {
+    value: pointsValue,
+    pending: pointsPending,
+    error: pointsError,
+  } = useAsyncResult<{
+    monthly: number | null;
+    yearly: number | null;
+  }>(async () => {
+    if (!caipAccountId) {
+      return { monthly: null, yearly: null };
+    }
+
+    try {
+      const [monthlyPointsData, yearlyPointsData] = await Promise.all([
+        dispatch(
+          estimateRewardsPoints({
+            activityType: 'SHIELD',
+            account: caipAccountId,
+            activityContext: {
+              shieldContext: {
+                recurringInterval: 'month',
+              },
+            },
+          }),
+        ),
+        dispatch(
+          estimateRewardsPoints({
+            activityType: 'SHIELD',
+            account: caipAccountId,
+            activityContext: {
+              shieldContext: {
+                recurringInterval: 'year',
+              },
+            },
+          }),
+        ),
+      ]);
+
+      return {
+        monthly: monthlyPointsData?.pointsEstimate ?? null,
+        yearly: yearlyPointsData?.pointsEstimate ?? null,
+      };
+    } catch {
+      // Points estimation may fail if no active rewards season - return null values gracefully
+      return { monthly: null, yearly: null };
+    }
+  }, [dispatch, caipAccountId]);
+
+  const {
+    value: isRewardsSeason,
+    pending: seasonPending,
+    error: seasonError,
+  } = useAsyncResult<boolean>(async () => {
+    try {
+      const seasonMetadata = await dispatch(
+        getRewardsSeasonMetadata('current'),
+      );
+
+      if (!seasonMetadata) {
+        return false;
+      }
+
+      const currentTimestamp = Date.now();
+      return (
+        currentTimestamp >= seasonMetadata.startDate &&
+        currentTimestamp <= seasonMetadata.endDate
+      );
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        // if the error is because the current season metadata is not found, return false
+        error.message.includes(
+          'No valid season metadata could be found for type',
+        )
+      ) {
+        return false;
+      }
+      throw error;
+    }
+  }, [dispatch]);
+
+  // if there is an error, return null values for points and season so it will not block the UI
+  if (pointsError || seasonError || hasAccountOptedInResultError) {
+    if (pointsError) {
+      console.error('[useShieldRewards error]:', pointsError);
+    }
+    if (seasonError) {
+      console.error('[useShieldRewards error]:', seasonError);
+    }
+    if (hasAccountOptedInResultError) {
+      console.error('[useShieldRewards error]:', hasAccountOptedInResultError);
+    }
+
+    return {
+      pending: false,
+      pointsMonthly: null,
+      pointsYearly: null,
+      isRewardsSeason: false,
+      hasAccountOptedIn: false,
+    };
+  }
+
+  return {
+    pending: pointsPending || seasonPending || hasAccountOptedInResultPending,
+    pointsMonthly: pointsValue?.monthly ?? null,
+    pointsYearly: pointsValue?.yearly ?? null,
+    isRewardsSeason: isRewardsSeason ?? false,
+    hasAccountOptedIn: hasAccountOptedInResultValue ?? false,
+  };
+};
+
+/**
+ * Hook to manage shield subscription errors from background processing.
+ * Reads the error from Redux state, converts it to an Error object for use in
+ * API error handling, provides a translated error message for known errors,
+ * and clears the error on unmount.
+ *
+ * @returns An object with `shieldSubscriptionApiError` (Error or null) and
+ * `getSubscriptionErrorMessage` (returns translated message for known errors).
+ */
+export const useSubscriptionError = (): {
+  shieldSubscriptionApiError: Error | null;
+  getSubscriptionErrorMessage: (
+    error: Error | null | undefined,
+  ) => string | undefined;
+} => {
+  const t = useI18nContext();
+  const shieldSubscriptionError = useSelector(getShieldSubscriptionError);
+
+  // Keep a ref so the unmount-only cleanup can read the latest value
+  const shieldSubscriptionErrorRef = useRef(shieldSubscriptionError);
+  shieldSubscriptionErrorRef.current = shieldSubscriptionError;
+
+  // Clear shield subscription error when unmounting
+  useEffect(() => {
+    return () => {
+      if (shieldSubscriptionErrorRef.current) {
+        setShieldSubscriptionError(null);
+      }
+    };
+  }, []);
+
+  const shieldSubscriptionApiError = useMemo(() => {
+    if (shieldSubscriptionError) {
+      return new Error(shieldSubscriptionError.message);
+    }
+    return null;
+  }, [shieldSubscriptionError]);
+
+  const getSubscriptionErrorMessage = useCallback(
+    (error: Error | null | undefined): string | undefined => {
+      if (
+        error?.message
+          .toLowerCase()
+          .includes(SHIELD_ERROR.payerAddressAlreadyUsed)
+      ) {
+        return t('shieldErrorPayerAddressAlreadyUsed');
+      }
+      return undefined;
+    },
+    [t],
+  );
+
+  return {
+    shieldSubscriptionApiError,
+    getSubscriptionErrorMessage,
   };
 };

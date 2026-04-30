@@ -2,7 +2,6 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import { ACCOUNT_TYPE } from '../../constants';
 import { mockActiveNetworks, withMultiSrp } from './common-multi-srp';
 
 const addAccountToSrp = async (driver: Driver, srpIndex: number) => {
@@ -12,12 +11,13 @@ const addAccountToSrp = async (driver: Driver, srpIndex: number) => {
   const accountListPage = new AccountListPage(driver);
   await accountListPage.checkPageIsLoaded();
 
-  // This will create 'Account 3'.
-  await accountListPage.addAccount({
-    accountType: ACCOUNT_TYPE.Ethereum,
+  // This will create 'Account 2'.
+  await accountListPage.addMultichainAccount({
     srpIndex,
   });
-  await accountListPage.checkAccountBelongsToSrp('Account 3', srpIndex);
+
+  await accountListPage.closeMultichainAccountsPage();
+  await accountListPage.checkAccountBelongsToSrp('Account 2', srpIndex + 1);
 };
 
 describe('Multi SRP - Add accounts', function (this: Suite) {
@@ -28,7 +28,7 @@ describe('Multi SRP - Add accounts', function (this: Suite) {
         testSpecificMock: mockActiveNetworks,
       },
       async (driver: Driver) => {
-        await addAccountToSrp(driver, 1);
+        await addAccountToSrp(driver, 0);
       },
     );
   });
@@ -40,7 +40,7 @@ describe('Multi SRP - Add accounts', function (this: Suite) {
         testSpecificMock: mockActiveNetworks,
       },
       async (driver: Driver) => {
-        await addAccountToSrp(driver, 2);
+        await addAccountToSrp(driver, 1);
       },
     );
   });

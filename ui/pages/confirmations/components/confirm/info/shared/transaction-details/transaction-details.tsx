@@ -20,7 +20,6 @@ import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
-import { SmartContractWithLogo } from '../../../../smart-contract-with-logo';
 import {
   useIsDowngradeTransaction,
   useIsUpgradeTransaction,
@@ -30,7 +29,6 @@ import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch 
 import { NetworkRow } from '../network-row/network-row';
 import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
 import { isBatchTransaction } from '../../../../../../../../shared/lib/transactions.utils';
-import { useIsBIP44 } from '../../../../../hooks/useIsBIP44';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -59,35 +57,33 @@ export const OriginRow = () => {
 export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { isUpgradeOnly } = useIsUpgradeTransaction();
+  const { isUpgrade } = useIsUpgradeTransaction();
   const isDowngrade = useIsDowngradeTransaction();
-  const { nestedTransactions, txParams, chainId, id } =
+  const { nestedTransactions, txParams, txParamsOriginal, chainId, id } =
     currentConfirmation ?? {};
-  const { from, to: txTo } = txParams ?? {};
+  const { from } = txParams ?? {};
+  // Prefer the original `to` so that container wrapping (e.g. enforced
+  // simulations) does not display the delegation manager as the recipient.
+  const txTo = txParamsOriginal?.to ?? txParams?.to;
   const to = recipient ?? txTo;
 
   const isBatch =
     isBatchTransaction(nestedTransactions) &&
     to?.toLowerCase() === from.toLowerCase();
-  const showContractLogo = isBatch || isDowngrade || isUpgradeOnly;
 
-  if (!to || !isValidAddress(to)) {
+  if (isBatch || isDowngrade || isUpgrade || !to || !isValidAddress(to)) {
     return null;
   }
 
   return (
     <ConfirmInfoAlertRow
-      ownerId={showContractLogo ? '' : id}
+      ownerId={id}
       alertKey={RowAlertKey.InteractingWith}
       data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
-      {showContractLogo ? (
-        <SmartContractWithLogo />
-      ) : (
-        <ConfirmInfoRowAddress address={to} chainId={chainId} />
-      )}
+      <ConfirmInfoRowAddress address={to} chainId={chainId} />
     </ConfirmInfoAlertRow>
   );
 };
@@ -124,7 +120,11 @@ const AmountRow = () => {
     currentConfirmation?.chainId,
   );
 
-  const value = currentConfirmation?.txParams?.value;
+  // Prefer the original `value` so that container wrapping (e.g. enforced
+  // simulations) does not zero out the displayed amount.
+  const value =
+    currentConfirmation?.txParamsOriginal?.value ??
+    currentConfirmation?.txParams?.value;
 
   if (!value || value === HEX_ZERO) {
     return null;
@@ -177,7 +177,6 @@ const PaymasterRow = () => {
 };
 
 export const TransactionDetails = () => {
-  const isBIP44 = useIsBIP44();
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
@@ -192,19 +191,13 @@ export const TransactionDetails = () => {
   if (isUpgradeOnly || isDowngrade) {
     return null;
   }
-  const { nestedTransactions, txParams } = currentConfirmation ?? {};
-  const { from, to } = txParams ?? {};
-
-  const isBatch =
-    isBatchTransaction(nestedTransactions) &&
-    to?.toLowerCase() === from.toLowerCase();
 
   return (
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
-        <NetworkRow isShownWithAlertsOnly={!isBIP44} />
+        <NetworkRow />
         <OriginRow />
-        {!isBatch && <RecipientRow />}
+        <RecipientRow />
         {showAdvancedDetails && <MethodDataRow />}
         <SigningInWithRow />
       </ConfirmInfoSection>

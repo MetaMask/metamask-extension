@@ -1,26 +1,12 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { withFixtures, sentryRegEx } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import DevelopOptions from '../../page-objects/pages/developer-options-page';
+import { login } from '../../page-objects/flows/login.flow';
+import { triggerCrash } from '../../page-objects/flows/crash.flow';
 import ErrorPage from '../../page-objects/pages/error-page';
 import { MOCK_META_METRICS_ID } from '../../constants';
-
-const triggerCrash = async (driver: Driver): Promise<void> => {
-  const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.openSettingsPage();
-  const settingsPage = new SettingsPage(driver);
-  await settingsPage.checkPageIsLoaded();
-  await settingsPage.goToDeveloperOptions();
-
-  const developOptionsPage = new DevelopOptions(driver);
-  await developOptionsPage.checkPageIsLoaded();
-  await developOptionsPage.clickGenerateCrashButton();
-};
 
 async function mockSentryError(mockServer: MockttpServer) {
   return [
@@ -40,7 +26,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
   it('gives option to cause a page crash and provides sentry form to report', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -53,7 +39,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await triggerCrash(driver);
         const errorPage = new ErrorPage(driver);
         await errorPage.checkPageIsLoaded();
@@ -67,7 +53,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
   it('gives option to cause a page crash and offer contact support option with consenting to share data', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -79,7 +65,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await triggerCrash(driver);
 
         const errorPage = new ErrorPage(driver);
@@ -94,14 +80,14 @@ describe('Developer Options - Sentry', function (this: Suite) {
   it('gives option to cause a page crash and offer contact support option with rejecting to share data', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
           'Unable to find value of key "developerOptions" for locale "en"',
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await triggerCrash(driver);
 
         const errorPage = new ErrorPage(driver);

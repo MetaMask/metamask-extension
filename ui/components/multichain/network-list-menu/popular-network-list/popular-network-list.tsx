@@ -1,17 +1,20 @@
 import React, { useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { AddNetworkFields } from '@metamask/network-controller';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
   Text,
   AvatarNetwork,
-  Button,
   AvatarNetworkSize,
-  ButtonVariant,
-  IconName,
-  Icon,
-  IconSize,
   ButtonLinkSize,
   ButtonLink,
   Popover,
@@ -24,7 +27,7 @@ import {
   addNetwork,
 } from '../../../../store/actions';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import {
   AlignItems,
@@ -32,12 +35,12 @@ import {
   Display,
   JustifyContent,
   TextColor,
-  IconColor,
   TextVariant,
   BorderColor,
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { useBoolean } from '../../../../hooks/useBoolean';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
@@ -47,15 +50,7 @@ const PopularNetworkList = ({
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleMouseEnter = () => {
-    setIsOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsOpen(false);
-  };
+  const { value: isOpen, setTrue: open, setFalse: close } = useBoolean();
 
   const [referenceElement, setReferenceElement] = useState();
 
@@ -67,7 +62,7 @@ const PopularNetworkList = ({
 
   // Memoize the popover content so it only updates when searchAddNetworkResults changes
   const popoverContent = useMemo(() => {
-    if (Object.keys(searchAddNetworkResults).length === 0) {
+    if (searchAddNetworkResults.length === 0) {
       return null;
     }
 
@@ -83,14 +78,19 @@ const PopularNetworkList = ({
             {t('additionalNetworks')}
           </Text>
 
-          <Box onMouseEnter={handleMouseEnter} marginTop={1}>
-            <Icon
-              className="add-network__warning-icon"
-              name={IconName.Info}
-              color={IconColor.iconMuted}
-              size={IconSize.Sm}
-              marginLeft={2}
-            />
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            onMouseEnter={open}
+          >
+            <Box marginLeft={2} display={Display.Flex}>
+              <Icon
+                className="add-network__warning-icon"
+                name={IconName.Info}
+                color={IconColor.IconMuted}
+                size={IconSize.Sm}
+              />
+            </Box>
             <Popover
               referenceElement={referenceElement}
               position={PopoverPosition.TopStart}
@@ -100,7 +100,7 @@ const PopularNetworkList = ({
               isOpen={isOpen}
               flip
               backgroundColor={BackgroundColor.backgroundSection}
-              onMouseLeave={handleMouseLeave}
+              onMouseLeave={close}
               style={{
                 width: '326px',
               }}
@@ -149,7 +149,7 @@ const PopularNetworkList = ({
             paddingTop={4}
             className="new-network-list__list-of-networks"
             data-testid={`popular-network-${network.chainId}`}
-            onMouseEnter={handleMouseLeave}
+            onMouseEnter={close}
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <AvatarNetwork
@@ -172,16 +172,11 @@ const PopularNetworkList = ({
                 </Text>
               </Box>
             </Box>
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              marginLeft={1}
-            >
-              <Button
-                type={ButtonVariant.Link}
-                className="add-network__add-button"
-                variant={ButtonVariant.Link}
-                data-testid="test-add-button"
+            <Box data-testid="test-add-button">
+              <ButtonIcon
+                iconName={IconName.Add}
+                size={ButtonIconSize.Md}
+                ariaLabel={t('add')}
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={async () => {
@@ -193,9 +188,7 @@ const PopularNetworkList = ({
                   // Then enable it in the network list
                   await dispatch(setEnabledNetworks(network.chainId));
                 }}
-              >
-                {t('add')}
-              </Button>
+              />
             </Box>
           </Box>
         ))}

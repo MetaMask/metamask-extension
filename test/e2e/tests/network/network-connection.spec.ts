@@ -1,8 +1,9 @@
 import { Suite } from 'mocha';
 import { Hex } from '@metamask/utils';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TokenList from '../../page-objects/pages/token-list';
 import ConfirmAlertModal from '../../page-objects/pages/dialog/confirm-alert';
@@ -14,7 +15,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 type NetworkConfig = {
   name: string;
   tokenSymbol: string;
-  fixtureMethod: (builder: FixtureBuilder) => FixtureBuilder;
+  fixtureMethod: (builder: FixtureBuilderV2) => FixtureBuilderV2;
   testTitle: string;
   chainId: Hex;
 };
@@ -24,16 +25,18 @@ const networkConfigs: NetworkConfig[] = [
   {
     name: 'Monad Testnet',
     tokenSymbol: 'MON',
-    fixtureMethod: (builder) => builder.withNetworkControllerOnMonad(),
+    fixtureMethod: (builder) =>
+      builder.withSelectedNetwork(NETWORK_CLIENT_ID.MONAD_TESTNET),
     testTitle: 'Monad Network Connection Tests',
     chainId: CHAIN_IDS.MONAD_TESTNET,
   },
   {
-    name: 'Mega Testnet',
+    name: 'MegaETH Testnet',
     tokenSymbol: 'ETH',
-    fixtureMethod: (builder) => builder.withNetworkControllerOnMegaETH(),
+    fixtureMethod: (builder) =>
+      builder.withSelectedNetwork(NETWORK_CLIENT_ID.MEGAETH_TESTNET_V2),
     testTitle: 'MegaETH Network Connection Tests',
-    chainId: CHAIN_IDS.MEGAETH_TESTNET,
+    chainId: CHAIN_IDS.MEGAETH_TESTNET_V2,
   },
   {
     name: 'Sei',
@@ -52,6 +55,7 @@ const performDappActionAndVerify = async (
 ) => {
   await action();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.delay(500);
   const confirmAlertModal = new ConfirmAlertModal(driver);
   await confirmAlertModal.verifyNetworkDisplay(networkName);
 };
@@ -64,8 +68,10 @@ networkConfigs.forEach((config) => {
         {
           dappOptions: { numberOfTestDapps: 1 },
           fixtures: config
-            .fixtureMethod(new FixtureBuilder())
-            .withPermissionControllerConnectedToTestDapp()
+            .fixtureMethod(new FixtureBuilderV2())
+            .withPermissionControllerConnectedToTestDapp({
+              chainIds: [parseInt(config.chainId, 16)],
+            })
             .withEnabledNetworks({
               eip155: {
                 [config.chainId]: true,
@@ -75,7 +81,7 @@ networkConfigs.forEach((config) => {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const tokenList = new TokenList(driver);
           await driver.switchToWindowWithTitle(

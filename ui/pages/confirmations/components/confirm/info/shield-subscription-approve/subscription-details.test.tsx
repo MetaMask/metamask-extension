@@ -6,7 +6,7 @@ import {
 } from '@metamask/subscription-controller';
 import { getMockConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { tEn } from '../../../../../../../test/lib/i18n-helpers';
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { SubscriptionDetails } from './subscription-details';
 
 const mockProductPrice: ProductPrice = {
@@ -16,6 +16,7 @@ const mockProductPrice: ProductPrice = {
   unitDecimals: 6,
   currency: 'usd',
   trialPeriodDays: 14,
+  minBillingCyclesForBalance: 1,
 };
 
 describe('SubscriptionDetails', () => {
@@ -27,9 +28,9 @@ describe('SubscriptionDetails', () => {
       mockStore,
     );
 
-    expect(getByText(tEn('transactionShield') as string)).toBeInTheDocument();
-    expect(getByText('$80/year (Annual)' as string)).toBeInTheDocument();
-    expect(getByText(tEn('freeTrialDays', [14]) as string)).toBeInTheDocument();
+    expect(getByText(tEn('transactionShield'))).toBeInTheDocument();
+    expect(getByText('$80/year (Annual)')).toBeInTheDocument();
+    expect(getByText(tEn('freeTrialDays', ['14']))).toBeInTheDocument();
   });
 
   it('renders monthly plan without trial correctly', () => {
@@ -48,7 +49,7 @@ describe('SubscriptionDetails', () => {
       mockStore,
     );
 
-    expect(getByText(tEn('transactionShield') as string)).toBeInTheDocument();
-    expect(getByText('$8/month (Monthly)' as string)).toBeInTheDocument();
+    expect(getByText(tEn('transactionShield'))).toBeInTheDocument();
+    expect(getByText('$8/month (Monthly)')).toBeInTheDocument();
   });
 });

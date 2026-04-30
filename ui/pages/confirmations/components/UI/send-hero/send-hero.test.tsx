@@ -1,7 +1,7 @@
 import React from 'react';
 
 import mockDefaultState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import { Asset, AssetStandard } from '../../../types/send';
 import { SendHero } from './send-hero';

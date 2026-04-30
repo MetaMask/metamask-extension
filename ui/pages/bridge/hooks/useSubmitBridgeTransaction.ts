@@ -1,22 +1,37 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { isNonEvmChainId } from '@metamask/bridge-controller';
+import { useState } from 'react';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import {
+  formatChainIdToCaip,
+  getQuotesReceivedProperties,
+  isCrossChain,
+} from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
-import {
-  AWAITING_SIGNATURES_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
-import { setDefaultHomeActiveTabName } from '../../../store/actions';
-import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
-import { setWasTxDeclined } from '../../../ducks/bridge/actions';
-import { isHardwareWallet } from '../../../../shared/modules/selectors';
-import {
-  getFromAccount,
-  getIsStxEnabled,
-} from '../../../ducks/bridge/selectors';
+import { useNavigate } from 'react-router-dom';
+import { isHardwareWallet } from '../../../../shared/lib/selectors';
+import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
 import { captureException } from '../../../../shared/lib/sentry';
-import { useSafeNavigation } from '../../../hooks/useSafeNavigation';
+import {
+  submitBridgeIntent,
+  submitBridgeTx,
+} from '../../../ducks/bridge-status/actions';
+import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import {
+  getBridgeQuotes,
+  getFromAccount,
+  getFromTokenBalanceInUsd,
+  getIsStxEnabled,
+  getWarningLabels,
+  type BridgeAppState,
+} from '../../../ducks/bridge/selectors';
+import {
+  useHardwareWalletActions,
+  useHardwareWalletConfig,
+} from '../../../contexts/hardware-wallets/HardwareWalletContext';
+import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { type MetaMaskReduxDispatch } from '../../../store/store';
+import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
@@ -32,85 +47,128 @@ export const isApprovalTxError = (error: unknown): boolean => {
 };
 
 const isHardwareWalletUserRejection = (error: unknown): boolean => {
+  if (isUserRejectedHardwareWalletError(error)) {
+    return true;
+  }
+
   const errorMessage = (error as Error).message?.toLowerCase() ?? '';
+
   return (
-    // Ledger rejection
-    (errorMessage.includes('ledger') &&
-      (errorMessage.includes('rejected') ||
-        errorMessage.includes('denied') ||
-        errorMessage.includes('error while signing'))) ||
-    // Trezor rejection
     (errorMessage.includes('trezor') &&
       (errorMessage.includes('cancelled') ||
         errorMessage.includes('rejected'))) ||
-    // Lattice rejection
     (errorMessage.includes('lattice') && errorMessage.includes('rejected')) ||
-    // Generic hardware wallet rejections
     errorMessage.includes('user rejected') ||
     errorMessage.includes('user cancelled')
   );
 };
 
 export default function useSubmitBridgeTransaction() {
-  const { navigate } = useSafeNavigation();
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { navigateToBridgePage, navigateToHwSigningPage } =
+    useBridgeNavigation();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const toastEnabled = useSelector(getExtensionSkipTransactionStatusPage);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
-
   const fromAccount = useSelector(getFromAccount);
+  const { recommendedQuote } = useSelector(getBridgeQuotes);
+  const warnings = useSelector(
+    (state) => getWarningLabels(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
+  const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
+  const enableMissingNetwork = useEnableMissingNetwork();
+  const { isHardwareWalletAccount } = useHardwareWalletConfig();
+  const { ensureDeviceReady } = useHardwareWalletActions();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
-    if (!fromAccount) {
-      throw new Error(
-        'Failed to submit bridge transaction: No selected account',
-      );
-    }
-    if (hardwareWalletUsed) {
-      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
-    }
+    setIsSubmitting(true);
 
-    // Execute transaction(s)
     try {
-      // Handle non-EVM source chains (Solana, Bitcoin, Tron)
-      const isNonEvmSource = isNonEvmChainId(quoteResponse.quote.srcChainId);
-
-      if (isNonEvmSource) {
-        // Submit the transaction first, THEN navigate
-        await dispatch(
-          submitBridgeTx(fromAccount.address, quoteResponse, false),
-        );
-        await dispatch(setDefaultHomeActiveTabName('activity'));
-        navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
-        return;
+      if (isHardwareWalletAccount) {
+        const isDeviceReady = await ensureDeviceReady();
+        if (!isDeviceReady) {
+          throw new Error('Hardware wallet device is not ready');
+        }
       }
 
-      await dispatch(
-        submitBridgeTx(
-          fromAccount.address,
-          quoteResponse,
-          smartTransactionsEnabled,
-        ),
-      );
+      if (!fromAccount) {
+        throw new Error(
+          'Failed to submit bridge transaction: No selected account',
+        );
+      }
+
+      if (
+        isCrossChain(
+          quoteResponse.quote.srcChainId,
+          quoteResponse.quote.destChainId,
+        )
+      ) {
+        enableMissingNetwork(
+          formatChainIdToCaip(quoteResponse.quote.destChainId),
+        );
+      }
+    } catch {
+      setIsSubmitting(false);
+      return;
+    }
+
+    const intentData = quoteResponse.quote.intent;
+
+    if (hardwareWalletUsed) {
+      navigateToHwSigningPage();
+      setIsSubmitting(false);
+    }
+
+    try {
+      if (intentData) {
+        await dispatch(
+          submitBridgeIntent({
+            quoteResponse,
+            accountAddress: fromAccount.address,
+          }),
+        );
+      } else {
+        await dispatch(
+          submitBridgeTx(
+            fromAccount.address,
+            quoteResponse,
+            smartTransactionsEnabled,
+            getQuotesReceivedProperties(
+              quoteResponse,
+              warnings,
+              true,
+              recommendedQuote,
+              fromTokenBalanceInUsd,
+            ),
+          ),
+        );
+      }
     } catch (e) {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
-      } else {
-        await dispatch(setDefaultHomeActiveTabName('activity'));
-        navigate(DEFAULT_ROUTE);
+        navigateToBridgePage();
+        return;
       }
-      return;
+    } finally {
+      setIsSubmitting(false);
     }
-    // Route user to activity tab on Home page
-    await dispatch(setDefaultHomeActiveTabName('activity'));
-    navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
+
+    const to = toastEnabled ? DEFAULT_ROUTE : `${DEFAULT_ROUTE}?tab=activity`;
+    navigate(to, {
+      state: { stayOnHomePage: true },
+      replace: true,
+    });
   };
 
   return {
     submitBridgeTransaction,
+    isSubmitting,
   };
 }

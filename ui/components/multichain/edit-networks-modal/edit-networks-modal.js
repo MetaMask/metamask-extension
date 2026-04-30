@@ -27,7 +27,7 @@ import {
   IconName,
   IconSize,
 } from '../../component-library';
-import { NetworkListItem } from '..';
+import { NetworkListItem } from '../network-list-item';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
@@ -43,7 +43,7 @@ export const EditNetworksModal = ({
   onSubmit,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const [selectedChainIds, setSelectedChainIds] = useState(

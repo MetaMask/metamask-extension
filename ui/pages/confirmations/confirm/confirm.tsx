@@ -1,75 +1,57 @@
-import { ReactNodeLike } from 'prop-types';
-import React, { ReactNode } from 'react';
+import React from 'react';
 
 import { Page } from '../../../components/multichain/pages/page';
-import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
-import AdvancedGasFeePopover from '../components/advanced-gas-fee-popover';
 import { BlockaidLoadingIndicator } from '../components/confirm/blockaid-loading-indicator';
 import { ConfirmAlerts } from '../components/confirm/confirm-alerts';
 import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
-import { LedgerInfo } from '../components/confirm/ledger-info';
 import { SmartTransactionsBannerAlert } from '../components/smart-transactions-banner-alert';
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
-import EditGasFeePopover from '../components/edit-gas-fee-popover';
-import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';
+import { ConfirmContextProvider } from '../context/confirm';
 import { ConfirmNav } from '../components/confirm/nav/nav';
 import { GasFeeTokenToast } from '../components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast';
-import { Splash } from '../components/confirm/splash';
 import { DappSwapContextProvider } from '../context/dapp-swap';
+import {
+  GasFeeModalContextProvider,
+  GasFeeModalWrapper,
+} from '../context/gas-fee-modal';
+import { useHideToasts } from '../../../hooks/useHideToasts';
 
-const EIP1559TransactionGasModal = () => {
+const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => {
+  useHideToasts();
+
   return (
-    <>
-      <EditGasFeePopover />
-      <AdvancedGasFeePopover />
-    </>
+    <ConfirmContextProvider confirmationId={confirmationId}>
+      <DappSwapContextProvider>
+        <GasFeeModalContextProvider>
+          <TransactionModalContextProvider>
+            <ConfirmAlerts>
+              <>
+                <Page className="confirm_wrapper">
+                  <ConfirmNav />
+                  <Header />
+                  <SmartTransactionsBannerAlert marginType="noTop" />
+                  <ScrollToBottom>
+                    <BlockaidLoadingIndicator />
+                    <Title />
+                    <Info />
+                    <PluggableSection />
+                  </ScrollToBottom>
+                  <GasFeeTokenToast />
+                  <Footer />
+                </Page>
+                <GasFeeModalWrapper />
+              </>
+            </ConfirmAlerts>
+          </TransactionModalContextProvider>
+        </GasFeeModalContextProvider>
+      </DappSwapContextProvider>
+    </ConfirmContextProvider>
   );
 };
-
-const GasFeeContextProviderWrapper: React.FC<{
-  children: ReactNode;
-}> = ({ children }) => {
-  const { currentConfirmation } = useConfirmContext();
-  return (
-    <GasFeeContextProvider transaction={currentConfirmation}>
-      {children as NonNullable<ReactNodeLike>}
-    </GasFeeContextProvider>
-  );
-};
-
-const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => (
-  <ConfirmContextProvider confirmationId={confirmationId}>
-    <DappSwapContextProvider>
-      <TransactionModalContextProvider>
-        {/* This context should be removed once we implement the new edit gas fees popovers */}
-        <GasFeeContextProviderWrapper>
-          <EIP1559TransactionGasModal />
-          <ConfirmAlerts>
-            <Page className="confirm_wrapper">
-              <ConfirmNav />
-              <Header />
-              <SmartTransactionsBannerAlert marginType="noTop" />
-              <ScrollToBottom>
-                <BlockaidLoadingIndicator />
-                <LedgerInfo />
-                <Title />
-                <Info />
-                <PluggableSection />
-              </ScrollToBottom>
-              <GasFeeTokenToast />
-              <Footer />
-              <Splash />
-            </Page>
-          </ConfirmAlerts>
-        </GasFeeContextProviderWrapper>
-      </TransactionModalContextProvider>
-    </DappSwapContextProvider>
-  </ConfirmContextProvider>
-);
 
 export default Confirm;

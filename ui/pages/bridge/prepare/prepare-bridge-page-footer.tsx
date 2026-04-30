@@ -12,8 +12,8 @@ export const PrepareBridgePageFooter = (
         display: 'contents',
       }}
     >
-      <BridgeCTAInfoText />
       <BridgeCTAButton {...props} />
+      <BridgeCTAInfoText />
       <BridgeNoFeeMessage />
     </div>
   );

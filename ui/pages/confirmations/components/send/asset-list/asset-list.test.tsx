@@ -6,20 +6,13 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { useSendContext } from '../../../context/send';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { AssetList } from './asset-list';
 
 jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../../../components/component-library', () => ({
-  Box: ({
-    children,
-    ...props
-  }: {
-    children: React.ReactNode;
-    [key: string]: unknown;
-  }) => (
-    <div data-testid="box" {...props}>
-      {children}
-    </div>
+  Box: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="box">{children}</div>
   ),
   Text: ({ children }: { children: React.ReactNode }) => (
     <span data-testid="text">{children}</span>
@@ -63,6 +56,12 @@ jest.mock('../../../hooks/send/useNavigateSendPage');
 jest.mock('../../../context/send');
 jest.mock('../../../hooks/send/metrics/useAssetSelectionMetrics');
 
+function mockVirtualizerDOM() {
+  Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+    value: 800,
+  });
+}
+
 describe('AssetList', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
   const mockUseNavigateSendPage = jest.mocked(useNavigateSendPage);
@@ -83,6 +82,7 @@ describe('AssetList', () => {
   ];
 
   beforeEach(() => {
+    mockVirtualizerDOM();
     mockUseI18nContext.mockReturnValue((key: string) => key);
     mockUseNavigateSendPage.mockReturnValue({
       goToAmountRecipientPage: mockGoToAmountRecipientPage,
@@ -118,7 +118,7 @@ describe('AssetList', () => {
 
     const assetComponents = getAllByTestId('asset-component');
     expect(assetComponents).toHaveLength(3);
-    expect(getByText('NFTs')).toBeInTheDocument();
+    expect(getByText(messages.nfts.message)).toBeInTheDocument();
   });
 
   it('renders only tokens when no nfts', () => {
@@ -134,7 +134,7 @@ describe('AssetList', () => {
 
     const assetComponents = getAllByTestId('asset-component');
     expect(assetComponents).toHaveLength(2);
-    expect(queryByText('NFTs')).not.toBeInTheDocument();
+    expect(queryByText(messages.nfts.message)).not.toBeInTheDocument();
   });
 
   it('renders no results message when no filtered assets but has all assets', () => {
@@ -213,5 +213,110 @@ describe('AssetList', () => {
     );
 
     expect(container.firstChild).toBeNull();
+  });
+
+  describe('hideNfts', () => {
+    it('hides NFTs section when hideNfts is true', () => {
+      const { getAllByTestId, queryByText } = render(
+        <AssetList
+          tokens={mockTokens}
+          nfts={mockNfts}
+          allTokens={mockTokens}
+          allNfts={mockNfts}
+          hideNfts={true}
+        />,
+      );
+
+      const assetComponents = getAllByTestId('asset-component');
+      expect(assetComponents).toHaveLength(2);
+      expect(queryByText(messages.nfts.message)).not.toBeInTheDocument();
+    });
+
+    it('shows NFTs section when hideNfts is false', () => {
+      const { getAllByTestId, getByText } = render(
+        <AssetList
+          tokens={mockTokens}
+          nfts={mockNfts}
+          allTokens={mockTokens}
+          allNfts={mockNfts}
+          hideNfts={false}
+        />,
+      );
+
+      const assetComponents = getAllByTestId('asset-component');
+      expect(assetComponents).toHaveLength(3);
+      expect(getByText(messages.nfts.message)).toBeInTheDocument();
+    });
+
+    it('renders empty when hideNfts is true and only NFTs exist', () => {
+      const { container } = render(
+        <AssetList
+          tokens={[]}
+          nfts={mockNfts}
+          allTokens={[]}
+          allNfts={mockNfts}
+          hideNfts={true}
+        />,
+      );
+
+      expect(container.firstChild).toBeNull();
+    });
+
+    it('does not show no results message when hideNfts excludes all assets', () => {
+      const { queryByText } = render(
+        <AssetList
+          tokens={[]}
+          nfts={mockNfts}
+          allTokens={[]}
+          allNfts={mockNfts}
+          hideNfts={true}
+        />,
+      );
+
+      expect(
+        queryByText('noTokensMatchingYourFilters'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('onAssetSelect', () => {
+    it('calls only onAssetSelect when provided', () => {
+      const mockOnAssetSelect = jest.fn();
+      const { getAllByTestId } = render(
+        <AssetList
+          tokens={mockTokens}
+          nfts={[]}
+          allTokens={mockTokens}
+          allNfts={[]}
+          onAssetSelect={mockOnAssetSelect}
+        />,
+      );
+
+      const assetComponents = getAllByTestId('asset-component');
+      fireEvent.click(assetComponents[0]);
+
+      expect(mockOnAssetSelect).toHaveBeenCalledWith(mockTokens[0]);
+      expect(mockUpdateAsset).not.toHaveBeenCalled();
+      expect(mockGoToAmountRecipientPage).not.toHaveBeenCalled();
+      expect(mockCaptureAssetSelected).not.toHaveBeenCalled();
+    });
+
+    it('calls default handlers when onAssetSelect is not provided', () => {
+      const { getAllByTestId } = render(
+        <AssetList
+          tokens={mockTokens}
+          nfts={[]}
+          allTokens={mockTokens}
+          allNfts={[]}
+        />,
+      );
+
+      const assetComponents = getAllByTestId('asset-component');
+      fireEvent.click(assetComponents[0]);
+
+      expect(mockUpdateAsset).toHaveBeenCalledWith(mockTokens[0]);
+      expect(mockGoToAmountRecipientPage).toHaveBeenCalled();
+      expect(mockCaptureAssetSelected).toHaveBeenCalledWith(mockTokens[0]);
+    });
   });
 });

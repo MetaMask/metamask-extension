@@ -12,19 +12,20 @@ import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import { Call, IOptions } from '@open-rpc/test-coverage/build/coverage';
 import { InternalScopeString } from '@metamask/chain-agnostic-permission';
 import { Mockttp } from 'mockttp';
-import { Driver, PAGES } from './webdriver/driver';
+import { Driver } from './webdriver/driver';
 
 import {
   createCaip27DriverTransport,
   createMultichainDriverTransport,
 } from './api-specs/helpers';
 
-import FixtureBuilder from './fixtures/fixture-builder';
-import { withFixtures, unlockWallet } from './helpers';
+import FixtureBuilderV2 from './fixtures/fixture-builder-v2';
+import { withFixtures } from './helpers';
 import { ACCOUNT_1, DAPP_URL } from './constants';
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
+import { login } from './page-objects/flows/login.flow';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -99,7 +100,7 @@ async function main() {
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilder().build(),
+      fixtures: new FixtureBuilderV2().build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage',
     },
@@ -110,10 +111,7 @@ async function main() {
       driver: Driver;
       extensionId: string;
     }) => {
-      await unlockWallet(driver);
-
-      // Navigate to extension home screen
-      await driver.navigate(PAGES.HOME);
+      await login(driver, { validateBalance: false });
 
       // Open Dapp
       await driver.openNewPage(DAPP_URL);
@@ -164,7 +162,7 @@ async function main() {
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilder()
+      fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToMultichainTestDapp()
         .build(),
       localNodeOptions: 'none',
@@ -188,10 +186,7 @@ async function main() {
       driver: Driver;
       extensionId: string;
     }) => {
-      await unlockWallet(driver);
-
-      // Navigate to extension home screen
-      await driver.navigate(PAGES.HOME);
+      await login(driver, { validateBalance: false });
 
       // Open Dapp
       await driver.openNewPage(DAPP_URL);

@@ -22,10 +22,8 @@ class SitePermissionPage {
 
   private readonly disconnectButton = '[data-test-id="disconnect-all"]';
 
-  private readonly disconnectConfirmMessage = {
-    text: 'MetaMask isn’t connected to this site',
-    tag: 'p',
-  };
+  private readonly disconnectConfirmMessage =
+    '[data-testid="no-connection-description"]';
 
   private readonly disconnectModalTitle = {
     text: 'Disconnect',
@@ -116,7 +114,7 @@ class SitePermissionPage {
     await this.openAccountPermissionsModal();
 
     for (const accountLabel of accountLabels) {
-      await this.driver.clickElement({ text: accountLabel, tag: 'button' });
+      await this.driver.clickElement({ text: accountLabel });
     }
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmEditAccountsButton,
@@ -137,6 +135,9 @@ class SitePermissionPage {
     for (const networkName of networkNames) {
       await this.driver.clickElement({ text: networkName, tag: 'p' });
     }
+    await this.driver.waitForElementToStopMoving(
+      this.confirmEditNetworksButton,
+    );
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmEditNetworksButton,
     );
@@ -149,8 +150,13 @@ class SitePermissionPage {
    */
   async checkConnectedAccountsNumber(number: number): Promise<void> {
     console.log(`Check that the number of connected accounts is: ${number}`);
+    const text =
+      number === 1
+        ? `Connected with Account 1`
+        : `${number} accounts connected`;
+
     await this.driver.waitForSelector({
-      text: `${number} accounts connected`,
+      text,
       tag: 'span',
     });
   }

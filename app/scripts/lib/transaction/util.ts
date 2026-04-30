@@ -1,3 +1,4 @@
+import { MiddlewareContext } from '@metamask/json-rpc-engine/v2';
 import { EthAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -10,10 +11,12 @@ import {
   AddUserOperationOptions,
   UserOperationController,
 } from '@metamask/user-operation-controller';
-import type { Hex } from '@metamask/utils';
+import type { Hex, JsonRpcRequest } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
 import { PPOMController } from '@metamask/ppom-validator';
 
+import { KeyringController } from '@metamask/keyring-controller';
+import log from 'loglevel';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -37,6 +40,14 @@ import {
   GetAddressSecurityAlertResponse,
   ScanAddressResponse,
 } from '../../../../shared/lib/trust-signals';
+import { getTransactionDataRecipient } from '../../../../shared/lib/transaction.utils';
+import { accountSupports7702 } from '../account-supports-7702';
+import {
+  getTempoEvmTransactionArgs,
+  getTempoTransactionBatchArgs,
+  isTempoChain,
+  isTempoTransactionType,
+} from './tempo-tx-utils';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -50,6 +61,7 @@ type BaseAddTransactionRequest = {
   selectedAccount: InternalAccount;
   transactionParams: TransactionParams;
   transactionController: TransactionController;
+  keyringController: KeyringController;
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
   userOperationController: UserOperationController;
   internalAccounts: InternalAccount[];
@@ -57,7 +69,7 @@ type BaseAddTransactionRequest = {
   addSecurityAlertResponse: AddAddressSecurityAlertResponse;
 };
 
-type FinalAddTransactionRequest = BaseAddTransactionRequest & {
+export type FinalAddTransactionRequest = BaseAddTransactionRequest & {
   transactionOptions: Partial<AddTransactionOptions>;
 };
 
@@ -67,20 +79,38 @@ export type AddTransactionRequest = FinalAddTransactionRequest & {
 };
 
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dappRequest: Record<string, any>;
+  dappRequest: JsonRpcRequest;
+  requestContext: MiddlewareContext;
 };
+
+const TRANSFER_TYPES = [
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+  TransactionType.tokenMethodSafeTransferFrom,
+];
+
+type AddTransactionResult = Promise<{
+  transactionMeta: TransactionMeta | undefined;
+  waitForHash: () => Promise<string | undefined>;
+}>;
 
 export async function addDappTransaction(
   request: AddDappTransactionRequest,
 ): Promise<string> {
-  const { dappRequest } = request;
-  const { id: actionId, method, origin } = dappRequest;
-  const { securityAlertResponse, traceContext } = dappRequest;
+  const { dappRequest, requestContext } = request;
+  const { id, method } = dappRequest;
+  const actionId = String(id);
+
+  // TODO: Find a home for and define the appropriate MiddlewareContext type
+  const origin = requestContext.assertGet('origin') as string;
+  const securityAlertResponse = requestContext.get('securityAlertResponse') as
+    | SecurityAlertResponse
+    | undefined;
+  const traceContext = requestContext.get('traceContext');
 
   const transactionOptions: Partial<AddTransactionOptions> = {
     actionId,
+    requestId: String(id),
     method,
     origin,
     // This is the default behaviour but specified here for clarity
@@ -90,19 +120,89 @@ export async function addDappTransaction(
 
   endTrace({ name: TraceName.Middleware, id: actionId });
 
-  const { waitForHash } = await addTransactionOrUserOperation({
+  const addTransactionRequest: FinalAddTransactionRequest = {
     ...request,
     transactionOptions: {
       ...transactionOptions,
       traceContext,
     },
-  });
+  };
+
+  const { waitForHash } = await addTransactionOrUserOperation(
+    addTransactionRequest,
+  );
 
   const hash = (await waitForHash()) as string;
 
   endTrace({ name: TraceName.Transaction, id: actionId });
 
   return hash;
+}
+
+async function addTransactionOnTempo(
+  request: FinalAddTransactionRequest,
+): AddTransactionResult {
+  const { chainId, keyringController } = request;
+  const isEip7702SupportedByAccount = await accountSupports7702(
+    request.transactionParams.from,
+    keyringController as Parameters<typeof accountSupports7702>[1],
+  );
+
+  // Non-Tempo transaction (not type 0x76)
+  if (!isTempoTransactionType(request.transactionParams)) {
+    if (!request.transactionParams.to) {
+      log.debug(
+        'addTransactionOnTempo: Smart-Contract deployment tx detected. Fallback to classic tx.',
+      );
+      // Classic transaction
+      return addTransactionWithController(request);
+    }
+    if (!isEip7702SupportedByAccount) {
+      log.debug(
+        'addTransactionOnTempo: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
+      );
+      // Classic transaction
+      return addTransactionWithController(request);
+    }
+
+    // We make it a EIP-7702 tx, seting pathUSD as default gasToken
+    // and add excludeNativeTokenForFee to signal to ignore native.
+    return addTransactionWithController(
+      getTempoEvmTransactionArgs({ request, chainId }),
+    );
+    // Tempo transaction 0x76 + hardware wallet wont work for now.
+  } else if (!isEip7702SupportedByAccount) {
+    throw new Error('Wallet not supported for Tempo Transactions.');
+  }
+  // Checks and infer Tempo Transaction format for supported fields.
+  const { transactionController } = request;
+
+  const result = await transactionController.addTransactionBatch(
+    getTempoTransactionBatchArgs({ request, chainId }),
+  );
+  const { batchId } = result;
+  // We've got a batchId but we want to return a tx hash to the dApp
+  const transactionMeta = getTransactionByBatchId(
+    batchId,
+    transactionController,
+  );
+
+  if (!transactionMeta) {
+    log.debug(`Batch ${batchId}: No matching transaction found.`);
+    throw new Error(
+      `Tempo Transaction: Unable to determine if transaction was successful.`,
+    );
+  } else if (!transactionMeta.hash) {
+    log.debug(`Batch ${batchId}: Hash missing from transaction object.`);
+    throw new Error(
+      `Tempo Transaction: Unable to determine if transaction was successful.`,
+    );
+  }
+
+  return {
+    transactionMeta,
+    waitForHash: async () => transactionMeta.hash,
+  };
 }
 
 export async function addTransaction(
@@ -135,6 +235,10 @@ async function addTransactionOrUserOperation(
   request: FinalAddTransactionRequest,
 ) {
   const { selectedAccount } = request;
+  const isTempoChainId = isTempoChain(request.chainId);
+  if (isTempoChainId) {
+    return addTransactionOnTempo(request);
+  }
 
   const isSmartContractAccount =
     selectedAccount.type === EthAccountType.Erc4337;
@@ -238,6 +342,15 @@ function getTransactionByHash(
   );
 }
 
+function getTransactionByBatchId(
+  batchId: string,
+  transactionController: TransactionController,
+) {
+  return transactionController.state.transactions.find(
+    (tx) => tx.batchId === batchId,
+  );
+}
+
 function scanAddressForTrustSignals(request: AddTransactionRequest) {
   const {
     getSecurityAlertResponse,
@@ -299,6 +412,7 @@ async function validateSecurity(request: AddTransactionRequest) {
 
   scanAddressForTrustSignals(request);
   const { type } = transactionOptions;
+  const { data, value, to } = transactionParams;
 
   const typeIsExcludedFromPPOM =
     SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES.includes(
@@ -309,17 +423,21 @@ async function validateSecurity(request: AddTransactionRequest) {
     return;
   }
 
+  const isTransfer =
+    value === '0x0' && TRANSFER_TYPES.includes(type as TransactionType);
+
+  const recipient =
+    isTransfer && data ? getTransactionDataRecipient(data) : undefined;
+
   if (
-    internalAccounts.some(
-      ({ address }) =>
-        address.toLowerCase() === transactionParams.to?.toLowerCase(),
-    )
+    isInternalAccount(internalAccounts, to) ||
+    isInternalAccount(internalAccounts, recipient)
   ) {
     return;
   }
 
   try {
-    const { from, to, value, data } = transactionParams;
+    const { from } = transactionParams;
     const { actionId, origin } = transactionOptions;
 
     const ppomRequest = {
@@ -366,4 +484,24 @@ export function stripSingleLeadingZero(hex: string): string {
     return hex;
   }
   return `0x${hex.slice(3)}`;
+}
+
+function normalizeAddress(address?: string): string | undefined {
+  return address?.toLowerCase();
+}
+
+function isInternalAccount(
+  internalAccounts: { address: string }[],
+  address?: string,
+): boolean {
+  const normalized = normalizeAddress(address);
+  if (!normalized) {
+    return false;
+  }
+
+  const internalSet = new Set(
+    internalAccounts.map((acc) => normalizeAddress(acc.address)),
+  );
+
+  return internalSet.has(normalized);
 }

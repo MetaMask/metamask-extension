@@ -3,33 +3,30 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
 
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  ButtonIcon,
+  ButtonIconSize,
+  IconColor,
+  IconName,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 import EditableLabel from '../../ui/editable-label/editable-label';
 
 import { setAccountLabel } from '../../../store/actions';
 import { getHardwareWalletType } from '../../../selectors';
 import { shortenString } from '../../../helpers/utils/util';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Text,
-} from '../../component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { SmartAccountTab } from '../../../pages/confirmations/components/confirm/smart-account-tab/smart-account-tab';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP7702Networks';
@@ -45,11 +42,13 @@ export const AccountDetailsDisplay = ({
   onExportClick,
 }) => {
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const formatedAddress = isEvmAccountType(accountType)
     ? toChecksumHexAddress(address)?.toLowerCase()
     : address;
-  const [copied, handleCopy] = useCopyToClipboard();
+
+  // useCopyToClipboard analysis: Copies one of your public addresses
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const handleClick = useCallback(() => {
     handleCopy(formatedAddress);
   }, [formatedAddress, handleCopy]);
@@ -59,9 +58,8 @@ export const AccountDetailsDisplay = ({
 
   return (
     <Box
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
     >
       <EditableLabel
         defaultValue={accountName}
@@ -79,11 +77,14 @@ export const AccountDetailsDisplay = ({
         }}
         accounts={accounts}
       />
-      <Box display={Display.Flex} style={{ position: 'relative' }}>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        style={{ position: 'relative' }}
+      >
         <Text
-          variant={TextVariant.bodyMd}
+          variant={TextVariant.BodyMd}
           data-testid="account-address-shortened"
-          marginBottom={4}
+          className="mb-4"
         >
           {shortenString(formatedAddress, {
             truncatedStartChars: 12,
@@ -91,7 +92,7 @@ export const AccountDetailsDisplay = ({
           })}
         </Text>
         <ButtonIcon
-          color={IconColor.iconAlternative}
+          color={IconColor.IconAlternative}
           iconName={copied ? IconName.CopySuccess : IconName.Copy}
           size={ButtonIconSize.Md}
           style={{
@@ -109,9 +110,9 @@ export const AccountDetailsDisplay = ({
         <Box
           paddingTop={12}
           paddingBottom={12}
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
           data-testid="network-loader"
         >
           <Preloader size={18} />

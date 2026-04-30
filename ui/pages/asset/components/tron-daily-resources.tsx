@@ -23,6 +23,7 @@ import { useTronResources, TronResource } from '../hooks/useTronResources';
 type TronDailyResourcesProps = {
   account: InternalAccount;
   chainId: string;
+  t: ReturnType<typeof useI18nContext>;
 };
 
 type ResourceCircleProps = {
@@ -110,6 +111,7 @@ type ResourceRowProps = {
   label: string;
   description: string;
   currentValue: string;
+  maxValue: string;
 };
 
 const ResourceRow = ({
@@ -118,6 +120,7 @@ const ResourceRow = ({
   label,
   description,
   currentValue,
+  maxValue,
 }: ResourceRowProps) => {
   return (
     <Box
@@ -150,9 +153,14 @@ const ResourceRow = ({
           </Text>
         </Box>
       </Box>
-      <Text variant={TextVariant.bodyLgMedium} color={TextColor.textDefault}>
-        {currentValue}
-      </Text>
+      <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
+        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+          {currentValue}
+        </Text>
+        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          /{maxValue}
+        </Text>
+      </Box>
     </Box>
   );
 };
@@ -164,12 +172,13 @@ const ResourceRow = ({
  * @param options0
  * @param options0.account
  * @param options0.chainId
+ * @param options0.t
  */
 export const TronDailyResources = ({
   account,
   chainId,
+  t,
 }: TronDailyResourcesProps) => {
-  const t = useI18nContext();
   const { energy, bandwidth } = useTronResources(account, chainId);
 
   // Constants for resource calculations
@@ -208,7 +217,7 @@ export const TronDailyResources = ({
           {t('tronDailyResources')}
         </Text>
         <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-          {t('tronDailyResourcesDescription')}
+          {t('tronDailyResourcesDescription', [formatValue(bandwidth.max)])}
         </Text>
       </Box>
 
@@ -216,20 +225,30 @@ export const TronDailyResources = ({
         resource={energy}
         iconName={IconName.Flash}
         label={t('tronEnergy')}
-        description={t('tronEnergyCoverageDescription', [
-          usdtTransfersCovered.toString(),
-        ])}
+        description={
+          usdtTransfersCovered === 1
+            ? t('tronEnergyCoverageDescriptionSingular')
+            : t('tronEnergyCoverageDescriptionPlural', [
+                usdtTransfersCovered.toString(),
+              ])
+        }
         currentValue={formatValue(energy.current)}
+        maxValue={formatValue(energy.max)}
       />
 
       <ResourceRow
         resource={bandwidth}
         iconName={IconName.Connect}
         label={t('tronBandwidth')}
-        description={t('tronBandwidthCoverageDescription', [
-          trxTransfersCovered.toString(),
-        ])}
+        description={
+          trxTransfersCovered === 1
+            ? t('tronBandwidthCoverageDescriptionSingular')
+            : t('tronBandwidthCoverageDescriptionPlural', [
+                trxTransfersCovered.toString(),
+              ])
+        }
         currentValue={formatValue(bandwidth.current)}
+        maxValue={formatValue(bandwidth.max)}
       />
     </Box>
   );

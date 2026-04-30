@@ -1,0 +1,165 @@
+import { useCallback, useEffect, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { type TransactionMeta } from '@metamask/transaction-controller';
+
+import {
+  PREPARE_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
+  UNLOCK_ROUTE,
+  CONNECT_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+  SHIELD_PLAN_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
+} from '../../helpers/constants/routes';
+import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+} from '../../../shared/constants/app';
+import {
+  getTransactions,
+  selectHasApprovalFlows,
+  selectHasBridgeQuotes,
+  selectPendingApprovalsForNavigation,
+} from '../../selectors';
+import { useModalState } from '../../hooks/useModalState';
+import {
+  isMerklClaimTransaction,
+  isMusdConversionTransaction,
+} from '../../components/app/musd/utils';
+import { useSuppressNavigation } from '../../hooks/useSuppressConfirmNavigate';
+
+const EXEMPTED_ROUTES = [
+  CROSS_CHAIN_SWAP_ROUTE,
+  UNLOCK_ROUTE,
+  CONNECT_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+  // shield approval transaction back to shield plan and transaction shield settings page on cancel/confirm, need to be exempted otherwise it will redirect to home page
+  SHIELD_PLAN_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
+];
+
+const SNAP_APPROVAL_TYPES = [
+  'wallet_installSnapResult',
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+];
+
+export const ConfirmationHandler = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { pathname } = location;
+  const { closeModals } = useModalState();
+
+  const envType = getEnvironmentType();
+  const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
+  const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
+  const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
+
+  const hasBridgeQuotes = useSelector(selectHasBridgeQuotes);
+  const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
+  const hasApprovalFlows = useSelector(selectHasApprovalFlows);
+  const suppressNavigation = useSuppressNavigation();
+  const stayOnHomePage = Boolean(location.state?.stayOnHomePage);
+
+  const canRedirect = !isNotification && !stayOnHomePage;
+  const transactions = useSelector(getTransactions) as TransactionMeta[];
+
+  const merklClaims = useMemo(
+    () => transactions.filter(isMerklClaimTransaction),
+    [transactions],
+  );
+
+  // Ported from home.component - checkStatusAndNavigate()
+  const checkStatusAndNavigate = useCallback(() => {
+    if (suppressNavigation(pendingApprovals?.[0]?.id, pendingApprovals)) {
+      return;
+    }
+
+    if (canRedirect && hasBridgeQuotes && isPopup) {
+      closeModals();
+      navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
+    } else if (pendingApprovals.length || hasApprovalFlows) {
+      const url = getConfirmationRoute(
+        pendingApprovals?.[0]?.id,
+        pendingApprovals,
+        hasApprovalFlows,
+        '',
+      );
+
+      if (url) {
+        closeModals();
+        navigate(url, { replace: true });
+      }
+    }
+  }, [
+    canRedirect,
+    closeModals,
+    hasApprovalFlows,
+    hasBridgeQuotes,
+    navigate,
+    pendingApprovals,
+    suppressNavigation,
+    isPopup,
+  ]);
+
+  // Runs on all routes (not just home), so skip navigation on exempted routes
+  const isExemptedRoute = EXEMPTED_ROUTES.some((route) =>
+    pathname.startsWith(route),
+  );
+
+  // Ported from home.component - hasAllowedPopupRedirectApprovals()
+  const hasAllowedPopupRedirectApprovals = pendingApprovals.some((approval) =>
+    SNAP_APPROVAL_TYPES.includes(approval.type),
+  );
+
+  const hasSwapRelatedNavigation = hasBridgeQuotes;
+
+  const isMerklTransaction = pendingApprovals.some((approval) =>
+    merklClaims.some((mc) => mc.id === approval?.requestData?.txId),
+  );
+
+  const isMUSDConversionTransaction = pendingApprovals.some(
+    (approval) =>
+      transactions.find(
+        (tx) =>
+          isMusdConversionTransaction(tx) &&
+          tx.id === approval?.requestData?.txId,
+      ),
+    [transactions, pendingApprovals],
+  );
+
+  const isFullscreenExemption =
+    isFullscreen &&
+    !hasAllowedPopupRedirectApprovals &&
+    !hasSwapRelatedNavigation &&
+    !isMerklTransaction &&
+    !isMUSDConversionTransaction;
+
+  // Ported from home.component - componentDidUpdate()
+  useEffect(() => {
+    if (isExemptedRoute) {
+      return;
+    }
+
+    if (isFullscreenExemption) {
+      return;
+    }
+
+    checkStatusAndNavigate();
+  }, [checkStatusAndNavigate, isExemptedRoute, isFullscreenExemption]);
+
+  return null;
+};

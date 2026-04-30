@@ -9,8 +9,10 @@ import { PreferencesController } from '../../controllers/preferences-controller'
 import {
   parseTypedDataMessage,
   parseApprovalTransactionData,
-} from '../../../../shared/modules/transaction.utils';
+} from '../../../../shared/lib/transaction.utils';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
+import { PRIMARY_TYPE_DELEGATION } from '../transaction/delegation';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { mapChainIdToSupportedEVMChain } from '../../../../shared/lib/trust-signals';
 import { scanAddressAndAddToCache } from './security-alerts-api';
@@ -22,6 +24,7 @@ import {
   isSecurityAlertsEnabledByUser,
   isConnected,
   connectScreenHasBeenPrompted,
+  isEip7715AdvancedPermissionsRequest,
 } from './trust-signals-util';
 
 export type TrustSignalsMiddlewareRequest = JsonRpcRequest & {
@@ -58,6 +61,8 @@ export function createTrustSignalsMiddleware(
       } else if (isConnected(req, getPermittedAccounts)) {
         scanUrl(req, phishingController);
       } else if (connectScreenHasBeenPrompted(req)) {
+        scanUrl(req, phishingController);
+      } else if (isEip7715AdvancedPermissionsRequest(req)) {
         scanUrl(req, phishingController);
       }
     } catch (error) {
@@ -144,6 +149,13 @@ function handleEthSignTypedData(
   appStateController: AppStateController,
   networkController: NetworkController,
 ) {
+  if (
+    req.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 &&
+    req.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4
+  ) {
+    return;
+  }
+
   if (!hasValidTypedDataParams(req)) {
     return;
   }
@@ -205,6 +217,24 @@ function handleEthSignTypedData(
       ).catch((error) => {
         console.error(
           '[createTrustSignalsMiddleware] error scanning spender address for permit:',
+          error,
+        );
+      });
+    }
+  }
+
+  // If this is a delegation signature, scan the delegate address
+  if (primaryType === PRIMARY_TYPE_DELEGATION) {
+    const delegateAddress = typedDataMessage.message?.delegate;
+    if (delegateAddress) {
+      scanAddressAndAddToCache(
+        delegateAddress,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        supportedEVMChain,
+      ).catch((error) => {
+        console.error(
+          '[createTrustSignalsMiddleware] error scanning delegate address for delegation:',
           error,
         );
       });

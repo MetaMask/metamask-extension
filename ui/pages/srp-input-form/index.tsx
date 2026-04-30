@@ -1,20 +1,16 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useState, useEffect } from 'react';
 import {
   Box,
   Text,
   ButtonIcon,
   IconName,
   ButtonIconSize,
-} from '../../components/component-library';
-import {
-  Display,
-  AlignItems,
+  BoxFlexDirection,
+  BoxAlignItems,
   TextVariant,
   TextColor,
   IconColor,
-  BlockSize,
-  FlexDirection,
-} from '../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import SrpInputImport from '../../components/app/srp-input-import';
 import SRPDetailsModal from '../../components/app/srp-details-modal';
@@ -28,16 +24,35 @@ type SrpInputFormProps = {
   error?: string;
   setSecretRecoveryPhrase: (secretRecoveryPhrase: string) => void;
   onClearCallback: () => void;
+  /**
+   * Whether to show the default description
+   */
+  showDescription?: boolean;
+  /**
+   * Whether to toggle the SRP details modal when you have a custom description
+   */
+  toggleSrpDetailsModal?: boolean;
+  /**
+   * Callback to close the SRP details modal when you have a custom description
+   */
+  onSrpDetailsModalClose?: () => void;
 };
 
 const SrpInputForm = ({
   error,
   setSecretRecoveryPhrase,
   onClearCallback,
+  showDescription = true,
+  toggleSrpDetailsModal = false,
+  onSrpDetailsModalClose,
 }: SrpInputFormProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
+
+  useEffect(() => {
+    setShowSrpDetailsModal(toggleSrpDetailsModal);
+  }, [toggleSrpDetailsModal]);
 
   const onShowSrpDetailsModal = useCallback(() => {
     trackEvent({
@@ -53,27 +68,36 @@ const SrpInputForm = ({
   return (
     <>
       {showSrpDetailsModal && (
-        <SRPDetailsModal onClose={() => setShowSrpDetailsModal(false)} />
+        <SRPDetailsModal
+          onClose={() => {
+            setShowSrpDetailsModal(false);
+            onSrpDetailsModalClose?.();
+          }}
+        />
       )}
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        gap={4}
-        height={BlockSize.Full}
-      >
-        <Box display={Display.Flex} alignItems={AlignItems.center}>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {t('typeYourSRP')}
-          </Text>
-          <ButtonIcon
-            iconName={IconName.Info}
-            size={ButtonIconSize.Sm}
-            color={IconColor.iconAlternative}
-            onClick={onShowSrpDetailsModal}
-            ariaLabel="info"
-          />
-        </Box>
-        <Box width={BlockSize.Full}>
+      <Box flexDirection={BoxFlexDirection.Column} gap={4} className="h-full">
+        {showDescription && (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            gap={1}
+            alignItems={BoxAlignItems.Center}
+          >
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
+              {t('typeYourSRP')}
+            </Text>
+            <ButtonIcon
+              iconName={IconName.Info}
+              size={ButtonIconSize.Sm}
+              color={IconColor.IconAlternative}
+              onClick={onShowSrpDetailsModal}
+              ariaLabel="info"
+            />
+          </Box>
+        )}
+        <Box className="w-full">
           <form onSubmit={(e) => e.preventDefault()}>
             <SrpInputImport
               onChange={setSecretRecoveryPhrase}
@@ -83,8 +107,8 @@ const SrpInputForm = ({
               <Box marginTop={2}>
                 <Text
                   data-testid="import-srp-error"
-                  variant={TextVariant.bodySm}
-                  color={TextColor.errorDefault}
+                  variant={TextVariant.BodySm}
+                  color={TextColor.ErrorDefault}
                 >
                   {error}
                 </Text>

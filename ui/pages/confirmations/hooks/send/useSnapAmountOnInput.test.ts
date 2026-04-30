@@ -1,7 +1,7 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipAssetType } from '@metamask/utils';
 
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import * as SendContext from '../../context/send';
 import * as MultichainSnaps from '../../utils/multichain-snaps';
 import { useSnapAmountOnInput } from './useSnapAmountOnInput';

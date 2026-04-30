@@ -1,0 +1,84 @@
+/* Specs */
+:root {
+  --page-transition-duration: 180ms;
+  --page-transition-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --page-transition-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --page-scale-distance: 0.97;
+}
+
+/* Clip overflow and make size changes instant (don't animate height) */
+::view-transition-group(root) {
+  overflow: hidden;
+  animation-duration: 0s;
+}
+
+/* Disable default crossfade blending */
+::view-transition-image-pair(root) {
+  isolation: auto;
+}
+
+/* No additive blending between old and new */
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+
+/* Forward: old fades out, new fades in + scale up */
+:root[data-page-transition='forward']::view-transition-old(root) {
+  animation: fade-out var(--page-transition-duration) var(--page-transition-ease-in) both;
+}
+
+:root[data-page-transition='forward']::view-transition-new(root) {
+  animation: page-enter var(--page-transition-duration) var(--page-transition-ease-out) both;
+}
+
+/* Back: old fades out + scale down, new fades in */
+:root[data-page-transition='back']::view-transition-old(root) {
+  animation: page-exit var(--page-transition-duration) var(--page-transition-ease-in) both;
+}
+
+:root[data-page-transition='back']::view-transition-new(root) {
+  animation: fade-in var(--page-transition-duration) var(--page-transition-ease-out) both;
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: scale(var(--page-scale-distance));
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes page-exit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(var(--page-scale-distance));
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
+  }
+}

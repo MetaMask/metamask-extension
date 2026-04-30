@@ -1,14 +1,19 @@
 import { ExtendedJSONSchema } from 'json-schema-to-ts';
 import { Browsers } from '../../helpers';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
 export const schema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
   type: 'object',
-  required: ['browsers', 'description', 'manifest_version', 'version', 'zip'],
+  required: [
+    'browsers',
+    'description',
+    'manifest_version',
+    'version',
+    'zip',
+    'buildType',
+  ],
   properties: {
     browsers: {
       description: 'The browsers to build for.',
@@ -36,16 +41,12 @@ export const schema = {
       type: ['string', 'null'],
       maxLength: 132,
     },
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: {
       description:
         'An integer specifying the version of the manifest file format your package requires.',
       type: 'number',
       enum: [2, 3],
     },
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     web_accessible_resources: {
       description:
         'An array of strings specifying the paths of additional web-accessible resources.',
@@ -105,6 +106,48 @@ export const schema = {
         },
       },
       additionalProperties: false,
+    },
+    buildType: {
+      description: 'The build type to create.',
+      type: 'string',
+    },
+    setBuildId: {
+      description:
+        'Whether to set a build ID in the emitted manifest. The build ID is a hash of the build contents that can be used to identify the build and detect when it has changed.',
+      type: 'boolean',
+    },
+    stats: {
+      description: 'Optional bundle-size reporting configuration.',
+      anyOf: [
+        {
+          type: 'object',
+          required: ['outFile', 'classifyEntrypoint'],
+          properties: {
+            outFile: {
+              description:
+                'Output file path template for the emitted bundle-size summary relative to webpack output. Must include `[browser]` and end with `.json`, for example `bundle-size/[browser].json`.',
+              type: 'string',
+              pattern: '^.*\\[browser\\].*\\.json$',
+            },
+            debug: {
+              description:
+                'Whether to emit a sibling debug artifact with the classified entrypoint graph.',
+              type: 'boolean',
+            },
+            classifyEntrypoint: {
+              description:
+                'Classifies a webpack entrypoint by runtime surface for bundle-size reporting.',
+              instanceof: 'Function',
+              tsType:
+                "((name: string) => 'background' | 'ui' | 'other' | 'contentScripts' | null)",
+            },
+          },
+          additionalProperties: false,
+        },
+        {
+          const: false,
+        },
+      ],
     },
   },
   additionalProperties: false,

@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { within } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -52,6 +52,34 @@ describe('TransactionBreakdown', () => {
         getActualDataFrom(getAllByTestId('transaction-breakdown-row')),
       ).toStrictEqual([
         ['Nonce', '29'],
+        ['Amount', '-0.01 ETH'],
+        ['Gas limit (units)', '46890'],
+        ['Gas price', '2.467043803'],
+        ['Total', '0.01011568ETH'],
+      ]);
+    });
+  });
+
+  describe('with a typical transaction without nonce', () => {
+    it('renders properly', () => {
+      const { getAllByTestId } = renderWithProvider(
+        <TransactionBreakdown
+          transaction={{
+            txParams: {
+              gas: '0xb72a', // 46,890
+              gasPrice: '0x930c19db', // 2,467,043,803
+              value: '0x2386f26fc10000', // 10,000,000,000,000,000
+            },
+          }}
+          primaryCurrency="-0.01 ETH"
+        />,
+        store,
+      );
+
+      expect(
+        getActualDataFrom(getAllByTestId('transaction-breakdown-row')),
+      ).toStrictEqual([
+        // No nonce visible
         ['Amount', '-0.01 ETH'],
         ['Gas limit (units)', '46890'],
         ['Gas price', '2.467043803'],
@@ -139,8 +167,8 @@ describe('TransactionBreakdown', () => {
         getActualDataFrom(getAllByTestId('transaction-breakdown-row')),
       ).toStrictEqual([
         ['Nonce', '114'],
-        ['Amount Sent', '33.425656732428330864 BAT'],
-        ['Amount Received', '0.00222334422997802 ETH'],
+        ['Amount sent', '33.425656732428330864 BAT'],
+        ['Amount received', '0.00222334422997802 ETH'],
         ['Gas limit (units)', '246742'],
         ['Gas used (units)', '195177'],
         ['Base fee (GWEI)', '6.476394595'],
@@ -171,8 +199,8 @@ describe('TransactionBreakdown', () => {
       ).toStrictEqual([
         ['Nonce', '114'],
         // Verify small amounts not in scientific notation
-        ['Amount Sent', '0.0000000000000001 BAT'],
-        ['Amount Received', '0.0000000000000001 ETH'],
+        ['Amount sent', '0.0000000000000001 BAT'],
+        ['Amount received', '0.0000000000000001 ETH'],
         ['Gas limit (units)', '246742'],
         ['Gas used (units)', '195177'],
         ['Base fee (GWEI)', '6.476394595'],
@@ -181,6 +209,75 @@ describe('TransactionBreakdown', () => {
         ['Max fee per gas', '0.000000008ETH'],
         ['Total', '0.00128108ETH'],
       ]);
+    });
+
+    it('renders "Network Fee" as "Paid by MetaMask" when gas is sponsored', () => {
+      const { getAllByTestId } = renderWithProvider(
+        <TransactionBreakdown
+          {...{
+            ...props,
+            transaction: {
+              ...props.transaction,
+              isGasFeeSponsored: true,
+            },
+          }}
+        />,
+        store,
+      );
+
+      expect(
+        getActualDataFrom(getAllByTestId('transaction-breakdown-row')),
+      ).toStrictEqual([
+        ['Nonce', '114'],
+        ['Amount sent', '33.425656732428330864 BAT'],
+        ['Amount received', '0.00222334422997802 ETH'],
+        ['Network fee', 'Paid by MetaMask'],
+      ]);
+    });
+
+    it('does not show "Paid by MetaMask" for a failed transaction without receipt', () => {
+      const { getAllByTestId } = renderWithProvider(
+        <TransactionBreakdown
+          {...{
+            ...props,
+            transaction: {
+              ...props.transaction,
+              status: 'failed',
+              isGasFeeSponsored: true,
+              txReceipt: undefined,
+            },
+          }}
+        />,
+        store,
+      );
+
+      const rows = getActualDataFrom(
+        getAllByTestId('transaction-breakdown-row'),
+      );
+      const networkFeeRow = rows.find(([title]) => title === 'Network fee');
+      expect(networkFeeRow).toBeUndefined();
+    });
+
+    it('does not show "Paid by MetaMask" for a rejected transaction', () => {
+      const { getAllByTestId } = renderWithProvider(
+        <TransactionBreakdown
+          {...{
+            ...props,
+            transaction: {
+              ...props.transaction,
+              status: 'rejected',
+              isGasFeeSponsored: true,
+            },
+          }}
+        />,
+        store,
+      );
+
+      const rows = getActualDataFrom(
+        getAllByTestId('transaction-breakdown-row'),
+      );
+      const networkFeeRow = rows.find(([title]) => title === 'Network fee');
+      expect(networkFeeRow).toBeUndefined();
     });
   });
 });

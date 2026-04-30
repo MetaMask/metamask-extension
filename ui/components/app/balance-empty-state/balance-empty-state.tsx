@@ -17,7 +17,7 @@ import {
   twMerge,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { getMultichainCurrentNetwork } from '../../../selectors/multichain';
 import {
   MetaMetricsEventCategory,
@@ -50,7 +50,7 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = ({
   ...props
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const currentLocale = useSelector(getCurrentLocale);
   const chainId = useSelector(getCurrentChainId);
   const { nickname } = useSelector(getMultichainCurrentNetwork);

@@ -3,11 +3,11 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { act, waitFor } from '@testing-library/react';
-import { createMemoryHistory } from 'history';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
-import { renderWithProviderAndHistory } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import mockSwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import TransactionListItemDetails from '.';
 
 jest.mock('../../../store/actions.ts', () => ({
@@ -37,23 +37,21 @@ const render = async (overrideProps) => {
     recipientAddress: '0x0000000000000000000000000000000000000000',
     senderAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     tryReverseResolveAddress: jest.fn(),
-    transactionStatus: () => <div></div>,
+    transactionStatus: () => <div />,
     blockExplorerLinkText,
     rpcPrefs,
     ...overrideProps,
   };
 
   const mockStore = configureMockStore([thunk])(mockState);
-  const history = createMemoryHistory();
 
   let result;
 
   await act(
     async () =>
-      (result = renderWithProviderAndHistory(
+      (result = renderWithProvider(
         <TransactionListItemDetails {...props} />,
         mockStore,
-        history,
       )),
   );
 
@@ -143,9 +141,12 @@ describe('TransactionListItemDetails for swaps', () => {
       transactionGroup: mockSwapTxGroup,
     });
 
-    expect(queryByText('View on block explorer')).toBeInTheDocument();
+    expect(
+      queryByText(messages.viewOnBlockExplorer.message),
+    ).toBeInTheDocument();
+    // Sender shows account name ("Test Account") since it matches an internal account
     expect(queryByTestId('sender-to-recipient')).toHaveTextContent(
-      '0x0DCD5...3E7bc0x00000...00000',
+      'Test Account0x00000...00000',
     );
     const expectedRows = [
       'Nonce1',
@@ -154,9 +155,9 @@ describe('TransactionListItemDetails for swaps', () => {
       'Gas used (units)357212',
       'Base fee (GWEI)0.00000002',
       'Priority fee (GWEI)30',
-      'Total gas fee0.010716ETH',
-      'Max fee per gas0.00000003ETH',
-      'Total0.01071636ETH',
+      'Total gas fee0.010716POL',
+      'Max fee per gas0.00000003POL',
+      'Total0.01071636POL',
     ];
 
     queryAllByTestId('transaction-breakdown-row').forEach((row, i) => {

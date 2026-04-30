@@ -10,6 +10,11 @@ export default {
         type: 'function',
       },
     },
+    importErrorMessage: {
+      control: {
+        type: 'text',
+      },
+    },
   },
 };
 

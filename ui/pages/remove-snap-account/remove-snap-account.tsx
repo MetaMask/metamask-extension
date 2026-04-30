@@ -25,7 +25,6 @@ import { SnapAccountCard } from './snap-account-card';
 
 export type RemoveSnapAccountProps = {
   snapId: string;
-  snapName: string;
   publicAddress: string;
   onCancel: () => void;
 };

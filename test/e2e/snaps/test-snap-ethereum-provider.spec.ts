@@ -1,6 +1,7 @@
+import { Mockttp } from 'mockttp';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import { login } from '../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockEthereumProviderSnap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -9,6 +10,7 @@ import {
   approvePersonalSignMessage,
 } from '../page-objects/flows/snap-permission.flow';
 import { DAPP_PATH } from '../constants';
+import { mockGenesisBlocks } from './mocks';
 
 describe('Test Snap ethereum_provider', function () {
   it('can use the ethereum_provider endowment', async function () {
@@ -17,12 +19,17 @@ describe('Test Snap ethereum_provider', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockEthereumProviderSnap,
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockEthereumProviderSnap(mockServer);
+          await mockGenesisBlocks(mockServer);
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Navigate to test snaps page, connect Ethereum provider example Snap, complete installation and validate
         const testSnaps = new TestSnaps(driver);
@@ -69,24 +76,24 @@ describe('Test Snap ethereum_provider', function () {
 
         // Check other networks.
         await testSnaps.scrollAndSelectNetwork('networkDropDown', 'Ethereum');
-        await testSnaps.clickButton('getVersionButton');
-        await testSnaps.checkMessageResultSpan(
+        await testSnaps.clickButton('sendGenesisBlockEthProvider');
+        await testSnaps.checkMessageResultSpanIncludes(
           'providerVersionResultSpan',
-          '0x1',
+          '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3',
         );
 
         await testSnaps.scrollAndSelectNetwork('networkDropDown', 'Linea');
-        await testSnaps.clickButton('getVersionButton');
-        await testSnaps.checkMessageResultSpan(
+        await testSnaps.clickButton('sendGenesisBlockEthProvider');
+        await testSnaps.checkMessageResultSpanIncludes(
           'providerVersionResultSpan',
-          '0xe708',
+          '0xb6762a65689107b2326364aefc18f94cda413209fab35c00d4af51eaa20ffbc6',
         );
 
         await testSnaps.scrollAndSelectNetwork('networkDropDown', 'Sepolia');
-        await testSnaps.clickButton('getVersionButton');
-        await testSnaps.checkMessageResultSpan(
+        await testSnaps.clickButton('sendGenesisBlockEthProvider');
+        await testSnaps.checkMessageResultSpanIncludes(
           'providerVersionResultSpan',
-          '0xaa36a7',
+          '0x25a5cc106eea7138acab33231d7160d69cb777ee0c2c553fcddf5138993e6dd9',
         );
       },
     );

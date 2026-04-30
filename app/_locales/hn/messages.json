@@ -165,9 +165,6 @@
     "message": "आयात करने के लिए आपको एक फ़ाइल का चयन करना होगा।",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "ईटीएच की नकारात्मक मात्रा नहीं भेज सकते हैं।."
-  },
   "networks": {
     "message": "नेटवर्क"
   },

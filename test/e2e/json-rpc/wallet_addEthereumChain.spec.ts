@@ -3,18 +3,19 @@ import {
   CaveatConstraint,
   PermissionConstraint,
 } from '@metamask/permission-controller';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../shared/constants/permissions';
-import { switchToEditRPCViaGlobalMenuNetworks } from '../page-objects/flows/network.flow';
-import AddNetworkConfirmation from '../page-objects/pages/confirmations/redesign/add-network-confirmations';
-import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
-import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import HeaderNavbar from '../page-objects/pages/header-navbar';
+import AddNetworkConfirmation from '../page-objects/pages/confirmations/add-network-confirmations';
+import Confirmation from '../page-objects/pages/confirmations/confirmation';
+import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
-import UpdateNetworkConfirmation from '../page-objects/pages/confirmations/redesign/update-network-confirmation';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import UpdateNetworkConfirmation from '../page-objects/pages/confirmations/update-network-confirmation';
+import { login } from '../page-objects/flows/login.flow';
 
 const getPermittedChains = async (driver: Driver) => {
   const getPermissionsRequest = JSON.stringify({
@@ -44,7 +45,7 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           localNodeOptions: [
             {
               type: 'anvil',
@@ -60,7 +61,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -109,7 +110,7 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
             .build(),
           localNodeOptions: [
@@ -127,7 +128,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -179,7 +180,7 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
             .build(),
           localNodeOptions: [
@@ -197,7 +198,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -253,11 +254,11 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -309,13 +310,13 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
             .build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -372,12 +373,11 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
-            .withPermissionControllerConnectedToTestDappWithChains([
-              '0x539',
-              '0x53a',
-            ])
+            .withPermissionControllerConnectedToTestDapp({
+              chainIds: [1337, 1338],
+            })
             .build(),
           localNodeOptions: [
             {
@@ -394,7 +394,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -451,12 +451,11 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
-            .withPermissionControllerConnectedToTestDappWithChains([
-              '0x539',
-              '0x53a',
-            ])
+            .withPermissionControllerConnectedToTestDapp({
+              chainIds: [1337, 1338],
+            })
             .build(),
           localNodeOptions: [
             {
@@ -473,7 +472,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -522,13 +521,13 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+          fixtures: new FixtureBuilderV2()
+            .withPermissionControllerConnectedToTestDapp()
             .build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -572,7 +571,8 @@ describe('Add Ethereum Chain', function () {
           );
 
           // go to network selector
-          await switchToEditRPCViaGlobalMenuNetworks(driver);
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openGlobalNetworksMenu();
           await driver.findElement({ text: 'Localhost 8545' });
         },
       );
@@ -584,9 +584,9 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
-            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+            .withPermissionControllerConnectedToTestDapp()
             .build(),
           localNodeOptions: [
             {
@@ -603,11 +603,12 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
           await testDapp.clickPersonalSign();
+          await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 
           const beforePermittedChains = await getPermittedChains(driver);
           assert.deepEqual(beforePermittedChains, ['0x539']);

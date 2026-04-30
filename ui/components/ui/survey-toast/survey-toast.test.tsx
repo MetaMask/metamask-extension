@@ -4,7 +4,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { act } from 'react-dom/test-utils';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -21,6 +21,12 @@ jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
 
 const mockFetchWithCache = fetchWithCache as jest.Mock;
 const mockTrackEvent = jest.fn();
+const mockMetaMetricsContext = {
+  trackEvent: mockTrackEvent,
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
 const mockStore = configureStore([thunk]);
 
 const surveyData = {
@@ -55,7 +61,7 @@ const createStore = (options = { metametricsEnabled: true }) =>
 
 const renderComponent = (options = { metametricsEnabled: true }) =>
   renderWithProvider(
-    <MetaMetricsContext.Provider value={mockTrackEvent}>
+    <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
       <SurveyToast />
     </MetaMetricsContext.Provider>,
     createStore(options),

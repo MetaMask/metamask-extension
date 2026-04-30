@@ -1,31 +1,25 @@
-import { DefaultRootState, useSelector } from 'react-redux';
-import { useSearchParams } from 'react-router-dom-v5-compat';
-import { SetURLSearchParams } from 'react-router-dom-v5-compat/dist/react-router-dom';
+import { DefaultRootState } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
+import type { SetURLSearchParams } from 'react-router-dom';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, MOCK_NFT1155 } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
 import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';
 import * as SendContext from '../../context/send';
 import { useSendQueryParams } from './useSendQueryParams';
-import { useSendNfts } from './useSendNfts';
+import { useSendAssets } from './useSendAssets';
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useLocation: () => ({ pathname: '/send/asset' }),
   useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
 }));
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
-}));
-
-jest.mock('./useSendNfts', () => {
+jest.mock('./useSendAssets', () => {
   return {
-    useSendNfts: jest.fn().mockReturnValue([]),
+    useSendAssets: jest.fn().mockReturnValue({ tokens: [], nfts: [] }),
   };
 });
 
@@ -38,16 +32,10 @@ function renderHook(args: DefaultRootState = {}) {
 }
 
 describe('useSendQueryParams', () => {
-  const useSendNftsMocked = jest.mocked(useSendNfts);
-  const mockUseSelector = jest.mocked(useSelector);
+  const useSendAssetsMocked = jest.mocked(useSendAssets);
 
   beforeEach(() => {
-    mockUseSelector.mockImplementation((selector) => {
-      if (selector === getAssetsBySelectedAccountGroup) {
-        return [];
-      }
-      return undefined;
-    });
+    useSendAssetsMocked.mockReturnValue({ tokens: [], nfts: [] });
   });
 
   afterEach(() => {
@@ -63,18 +51,13 @@ describe('useSendQueryParams', () => {
     expect(mockUpdateCurrentPage).toHaveBeenCalledWith(SendPages.ASSET);
   });
 
-  it('use tokens returned by useSendAssetsMocked hook', () => {
+  it('use tokens returned by useSendAssets hook', () => {
     const token = {
       ...EVM_ASSET,
       chainId: '0x5',
       assetId: EVM_ASSET.address,
     };
-    mockUseSelector.mockImplementation((selector) => {
-      if (selector === getAssetsBySelectedAccountGroup) {
-        return [token];
-      }
-      return undefined;
-    });
+    useSendAssetsMocked.mockReturnValue({ tokens: [token], nfts: [] });
 
     const mockUpdateAsset = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
@@ -99,13 +82,13 @@ describe('useSendQueryParams', () => {
     expect(mockUpdateAsset).toHaveBeenCalledWith(token);
   });
 
-  it('use nft returned by useSendNfts hook', () => {
+  it('use nft returned by useSendAssets hook', () => {
     const nft = {
       ...MOCK_NFT1155,
       chainId: '0x5',
       assetId: MOCK_NFT1155.address,
     };
-    useSendNftsMocked.mockReturnValue([nft as Asset]);
+    useSendAssetsMocked.mockReturnValue({ tokens: [], nfts: [nft as Asset] });
     const mockUpdateAsset = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       updateAsset: mockUpdateAsset,
@@ -149,12 +132,7 @@ describe('useSendQueryParams', () => {
       chainId: '0x5',
       assetId: EVM_ASSET.address,
     };
-    mockUseSelector.mockImplementation((selector) => {
-      if (selector === getAssetsBySelectedAccountGroup) {
-        return [token];
-      }
-      return undefined;
-    });
+    useSendAssetsMocked.mockReturnValue({ tokens: [token], nfts: [] });
 
     const mockUpdateValue = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({

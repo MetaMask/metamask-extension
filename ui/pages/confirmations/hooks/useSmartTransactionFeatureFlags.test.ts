@@ -4,14 +4,12 @@ import { CHAIN_IDS, TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import {
   fetchSmartTransactionsLiveness,
-  setSwapsFeatureFlags,
   setSmartTransactionsRefreshInterval,
 } from '../../../store/actions';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
 import { useSmartTransactionFeatureFlags } from './useSmartTransactionFeatureFlags';
 
 jest.mock('react-redux', () => ({
@@ -21,24 +19,20 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  setSwapsFeatureFlags: jest.fn(),
   fetchSmartTransactionsLiveness: jest.fn(),
   setSmartTransactionsRefreshInterval: jest.fn(),
-}));
-
-jest.mock('../../swaps/swaps.util', () => ({
-  ...jest.requireActual('../../swaps/swaps.util'),
-  fetchSwapsFeatureFlags: jest.fn(),
 }));
 
 async function runHook({
   smartTransactionsOptInStatus,
   chainId,
   confirmation,
+  batchStatusPollingInterval,
 }: {
   smartTransactionsOptInStatus: boolean;
   chainId: Hex;
   confirmation?: Partial<TransactionMeta>;
+  batchStatusPollingInterval?: number;
 }) {
   const transaction =
     (confirmation as TransactionMeta) ??
@@ -52,6 +46,17 @@ async function runHook({
       selectedNetworkClientId: 'Test',
       preferences: {
         smartTransactionsOptInStatus,
+      },
+      remoteFeatureFlags: {
+        smartTransactionsNetworks: {
+          default: {
+            extensionActive: true,
+          },
+          [chainId]: {
+            extensionActive: true,
+            batchStatusPollingInterval,
+          },
+        },
       },
     },
   });
@@ -67,11 +72,9 @@ async function runHook({
 }
 
 describe('useSmartTransactionFeatureFlags', () => {
-  const setSwapsFeatureFlagsMock = jest.mocked(setSwapsFeatureFlags);
   const setSmartTransactionsRefreshIntervalMock = jest.mocked(
     setSmartTransactionsRefreshInterval,
   );
-  const fetchSwapsFeatureFlagsMock = jest.mocked(fetchSwapsFeatureFlags);
   const fetchSmartTransactionsLivenessMock = jest.mocked(
     fetchSmartTransactionsLiveness,
   );
@@ -80,77 +83,65 @@ describe('useSmartTransactionFeatureFlags', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     useDispatchMock.mockReturnValue(jest.fn());
-    fetchSwapsFeatureFlagsMock.mockResolvedValue({});
     fetchSmartTransactionsLivenessMock.mockReturnValue(() => Promise.resolve());
   });
 
-  it('updates feature flags', async () => {
+  it('fetches smart transactions liveness', async () => {
     await runHook({
       smartTransactionsOptInStatus: true,
       chainId: CHAIN_IDS.MAINNET,
     });
 
-    expect(setSwapsFeatureFlagsMock).toHaveBeenCalledTimes(1);
-    expect(setSwapsFeatureFlagsMock).toHaveBeenCalledWith({});
+    expect(fetchSmartTransactionsLivenessMock).toHaveBeenCalledTimes(1);
   });
 
-  it('does not update feature flags if smart transactions disabled', async () => {
+  it('does not fetch liveness if smart transactions disabled', async () => {
     await runHook({
       smartTransactionsOptInStatus: false,
       chainId: CHAIN_IDS.MAINNET,
     });
 
-    expect(setSwapsFeatureFlagsMock).not.toHaveBeenCalled();
+    expect(fetchSmartTransactionsLivenessMock).not.toHaveBeenCalled();
   });
 
-  it('does not update feature flags if chain not supported', async () => {
+  it('does not fetch liveness if chain not supported', async () => {
     await runHook({
       smartTransactionsOptInStatus: true,
-      chainId: CHAIN_IDS.POLYGON,
+      chainId: CHAIN_IDS.OPTIMISM, // OPTIMISM is not in the allowed STX chain IDs
     });
 
-    expect(setSwapsFeatureFlagsMock).not.toHaveBeenCalled();
+    expect(fetchSmartTransactionsLivenessMock).not.toHaveBeenCalled();
   });
 
-  it('does not update feature flags if confirmation is not transaction', async () => {
+  it('does not fetch liveness if confirmation is not transaction', async () => {
     await runHook({
       smartTransactionsOptInStatus: true,
       chainId: CHAIN_IDS.MAINNET,
       confirmation: {},
     });
 
-    expect(setSwapsFeatureFlagsMock).not.toHaveBeenCalled();
+    expect(fetchSmartTransactionsLivenessMock).not.toHaveBeenCalled();
   });
 
   it('updates refresh interval when feature flags include interval', async () => {
-    fetchSwapsFeatureFlagsMock.mockResolvedValue({
-      smartTransactions: {
-        batchStatusPollingInterval: 1000,
-      },
-    });
-
     await runHook({
       smartTransactionsOptInStatus: true,
       chainId: CHAIN_IDS.MAINNET,
+      batchStatusPollingInterval: 5000,
+    });
+
+    expect(setSmartTransactionsRefreshIntervalMock).toHaveBeenCalledTimes(1);
+    expect(setSmartTransactionsRefreshIntervalMock).toHaveBeenCalledWith(5000);
+  });
+
+  it('uses default refresh interval when feature flags do not include interval', async () => {
+    await runHook({
+      smartTransactionsOptInStatus: true,
+      chainId: CHAIN_IDS.MAINNET,
+      // batchStatusPollingInterval not set, so defaults to 1000
     });
 
     expect(setSmartTransactionsRefreshIntervalMock).toHaveBeenCalledTimes(1);
     expect(setSmartTransactionsRefreshIntervalMock).toHaveBeenCalledWith(1000);
-  });
-
-  it('does not update refresh interval when feature flags do not include interval', async () => {
-    fetchSwapsFeatureFlagsMock.mockResolvedValue({
-      smartTransactions: {},
-    });
-
-    await runHook({
-      smartTransactionsOptInStatus: true,
-      chainId: CHAIN_IDS.MAINNET,
-    });
-
-    expect(setSmartTransactionsRefreshIntervalMock).toHaveBeenCalledTimes(1);
-    expect(setSmartTransactionsRefreshIntervalMock).toHaveBeenCalledWith(
-      undefined,
-    );
   });
 });

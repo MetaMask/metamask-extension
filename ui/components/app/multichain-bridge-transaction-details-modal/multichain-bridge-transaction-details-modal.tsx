@@ -78,7 +78,7 @@ const MultichainBridgeTransactionDetailsModal = ({
   onClose,
 }: MultichainBridgeTransactionDetailsModalProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const { quote, status } = bridgeHistoryItem;
 
@@ -174,7 +174,6 @@ const MultichainBridgeTransactionDetailsModal = ({
   };
 
   const { srcNetwork, destNetwork } = useBridgeChainInfo({
-    bridgeHistoryItem,
     nonEvmTransaction: transaction,
   });
 
@@ -401,11 +400,13 @@ const MultichainBridgeTransactionDetailsModal = ({
                         : ''
                     }
                     src={
-                      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                        destNetwork?.isEvm
-                          ? formatChainIdToHex(destNetwork?.chainId)
-                          : (destNetwork?.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP)
-                      ] || ''
+                      destNetwork?.isEvm
+                        ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                            formatChainIdToHex(destNetwork?.chainId)
+                          ] || ''
+                        : (destNetwork?.chainId &&
+                            MULTICHAIN_TOKEN_IMAGE_MAP[destNetwork.chainId]) ||
+                          ''
                     }
                     borderColor={BorderColor.backgroundDefault}
                   />

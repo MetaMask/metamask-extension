@@ -14,6 +14,9 @@ export default class ShieldDetailPage {
     text,
   });
 
+  private readonly managePlanButton =
+    '[data-testid="shield-detail-manage-plan-button"]';
+
   private readonly cancelButton =
     '[data-testid="shield-tx-membership-cancel-button"]';
 
@@ -69,6 +72,16 @@ export default class ShieldDetailPage {
     text,
   });
 
+  private readonly paymentMethodButton =
+    '[data-testid="shield-detail-payment-method-button"]';
+
+  private readonly paymentMethodTokenButtonByText = (text: string) => ({
+    css: '[data-testid="shield-payment-method-token-button"]',
+    text,
+  });
+
+  private readonly shieldPaymentModal = '[data-testid="shield-payment-modal"]';
+
   private readonly pausedTag = '[data-testid="shield-detail-paused-tag"]';
 
   private readonly renewButton =
@@ -76,6 +89,9 @@ export default class ShieldDetailPage {
 
   private readonly resubscribeButton =
     '[data-testid="shield-detail-resubscribe-button"]';
+
+  private readonly renewButtonWhenCancelled =
+    '[data-testid="shield-detail-renew-button"]';
 
   private readonly submitCaseButton =
     '[data-testid="shield-detail-submit-case-button"]';
@@ -154,6 +170,14 @@ export default class ShieldDetailPage {
   }
 
   /**
+   * Click the Manage Plan button
+   */
+  async clickManagePlanButton(): Promise<void> {
+    console.log('Clicking Manage Plan button');
+    await this.driver.clickElement(this.managePlanButton);
+  }
+
+  /**
    * Click the Submit Case button
    */
   async clickSubmitCaseButton(): Promise<void> {
@@ -162,11 +186,20 @@ export default class ShieldDetailPage {
   }
 
   /**
-   * Click the Resubscribe button
+   * Click the Resubscribe button (when cancelAtPeriodEnd is true)
    */
   async clickResubscribeButton(): Promise<void> {
     console.log('Clicking Resubscribe button');
     await this.driver.clickElement(this.resubscribeButton);
+  }
+
+  /**
+   * Click the Renew button (when subscription is fully cancelled)
+   * This navigates to the shield plan page
+   */
+  async clickRenewButtonWhenCancelled(): Promise<void> {
+    console.log('Clicking Renew button when subscription is cancelled');
+    await this.driver.clickElement(this.renewButtonWhenCancelled);
   }
 
   /**
@@ -281,7 +314,7 @@ export default class ShieldDetailPage {
       membershipStatus = 'Active plan',
       nextBillingDate = 'Nov 3',
       charges = '$80',
-      paymentMethod = 'Visa',
+      paymentMethod = 'Card',
       expectTrialTag = true,
     } = options || {};
 
@@ -300,5 +333,27 @@ export default class ShieldDetailPage {
     await this.checkCharges(charges);
 
     await this.checkPaymentMethod(paymentMethod);
+  }
+
+  /**
+   * Click on the payment method button to open the payment modal
+   */
+  async clickPaymentMethod(): Promise<void> {
+    console.log('Clicking on payment method button');
+    await this.driver.waitForSelector(this.paymentMethodButton);
+    await this.driver.clickElement(this.paymentMethodButton);
+    await this.driver.waitForSelector(this.shieldPaymentModal);
+  }
+
+  /**
+   * Select payment method token in the payment modal
+   *
+   * @param paymentMethodText - The full payment method text to select (e.g., 'Pay with USDT', 'Pay with USDC')
+   */
+  async selectPaymentMethodInModal(paymentMethodText: string): Promise<void> {
+    console.log(`Selecting payment method: ${paymentMethodText}`);
+    await this.driver.clickElement(
+      this.paymentMethodTokenButtonByText(paymentMethodText),
+    );
   }
 }

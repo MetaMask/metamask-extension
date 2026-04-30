@@ -6,7 +6,7 @@ import { getMultichainCurrentNetwork } from '../selectors/multichain';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
 
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getValidUrl } from '../../app/scripts/lib/util';
 import { isOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 
@@ -25,6 +25,8 @@ export function useIsOriginalNativeTokenSymbol(
   const providerConfig = useSelector(getMultichainCurrentNetwork);
 
   useEffect(() => {
+    let isMounted = true;
+
     const isLocalhost = (urlString: string) => {
       const url = getValidUrl(urlString);
 
@@ -53,13 +55,21 @@ export function useIsOriginalNativeTokenSymbol(
           useAPICall: useSafeChainsListValidation,
         });
 
-        setIsOriginalNativeSymbol(isOriginalNativeToken);
+        if (isMounted) {
+          setIsOriginalNativeSymbol(isOriginalNativeToken);
+        }
       } catch (err) {
-        setIsOriginalNativeSymbol(false);
+        if (isMounted) {
+          setIsOriginalNativeSymbol(false);
+        }
       }
     }
 
     getNativeTokenSymbol(chainId);
+
+    return () => {
+      isMounted = false;
+    };
   }, [
     isOriginalNativeSymbol,
     chainId,

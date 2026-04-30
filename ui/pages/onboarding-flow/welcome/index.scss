@@ -1,10 +1,4 @@
 @use "design-system";
-// by using @use, and dropping the file extension, sass will inline the
-// stylesheet instead of creating generating an `import(carousel.css)`. This is
-// desirable because it reduces the number of render-blocking requests on app
-// startup.
-@use "react-responsive-carousel/lib/styles/carousel";
-
 
 @keyframes fadeInUp {
   from {
@@ -75,12 +69,12 @@
     justify-content: center;
     align-items: flex-end;
     pointer-events: none;
+    overflow: hidden;
 
     @include design-system.screen-md-max {
-      height: 300px;
-      width: 400px;
-      max-width: 400px;
-      margin-bottom: -70px;
+      height: clamp(200px, 35vh, 350px);
+      width: 100%;
+      max-width: 100%;
     }
 
     &--loader {
@@ -104,7 +98,6 @@
     width: 2rem;
     height: 2rem;
     align-self: center;
-    margin-top: -130px;
   }
 }
 
@@ -211,14 +204,6 @@
       width: 100%;
       height: 1px;
       background-color: var(--color-text-alternative);
-    }
-
-    &-text {
-      background-color: var(--welcome-bg-light);
-
-      @media (prefers-color-scheme: dark) {
-        background-color: var(--color-accent02-dark);
-      }
     }
   }
 

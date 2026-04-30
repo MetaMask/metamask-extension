@@ -1,0 +1,235 @@
+import { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { useQuery } from '@tanstack/react-query';
+import type { Hex } from '@metamask/utils';
+import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+import { useMusdGeoBlocking } from '../../../../hooks/musd/useMusdGeoBlocking';
+import { useTokenFiatRate } from '../../../../pages/confirmations/hooks/tokens/useTokenFiatRates';
+import { ELIGIBLE_TOKENS } from '../constants';
+import {
+  fetchMerklRewardsForAsset,
+  getClaimedAmountFromContract,
+} from '../merkl-client';
+import { getMerklRewardsEnabled } from '../selectors';
+
+const MERKL_REWARDS_STALE_TIME = 2 * 60 * 1000;
+const MERKL_REWARDS_CACHE_TIME = 5 * 60 * 1000;
+
+/**
+ * Check if a token is eligible for Merkl rewards.
+ * Compares addresses case-insensitively since Ethereum addresses are case-insensitive.
+ * Returns false for native tokens (undefined/null address).
+ *
+ * @param chainId - The chain ID of the token
+ * @param address - The token's contract address
+ * @returns Whether the token is eligible for Merkl rewards
+ */
+export const isEligibleForMerklRewards = (
+  chainId: string,
+  address: string | undefined | null,
+): boolean => {
+  if (!address) {
+    return false;
+  }
+  const eligibleAddresses = ELIGIBLE_TOKENS[chainId];
+  if (!eligibleAddresses) {
+    return false;
+  }
+  const addressLower = address.toLowerCase();
+  return eligibleAddresses.some(
+    (eligibleAddress) => eligibleAddress.toLowerCase() === addressLower,
+  );
+};
+
+type UseMerklRewardsOptions = {
+  tokenAddress: string | undefined;
+  chainId: Hex;
+  showMerklBadge: boolean;
+};
+
+type MerklRewardQueryResult = {
+  hasClaimable: boolean;
+  /** Raw unclaimed amount in token-decimal units (e.g. 10.5 mUSD) */
+  unclaimedDecimal: number | null;
+  hasClaimedBefore: boolean;
+  /** Formatted unclaimed amount for analytics bucketing; null when not claimable */
+  claimableRewardDisplay: string | null;
+  /** Raw lifetime claimed amount in token-decimal units */
+  claimedDecimal: number | null;
+};
+
+const EMPTY_RESULT: MerklRewardQueryResult = {
+  hasClaimable: false,
+  unclaimedDecimal: null,
+  hasClaimedBefore: false,
+  claimableRewardDisplay: null,
+  claimedDecimal: null,
+};
+
+type UseMerklRewardsReturn = {
+  isEligible: boolean;
+  hasClaimableReward: boolean;
+  rewardAmountFiat: number | null;
+  hasClaimedBefore: boolean;
+  claimableRewardDisplay: string | null;
+  /** Lifetime bonus claimed in fiat (Merkl), null when none or price unavailable */
+  lifetimeClaimedFiat: number | null;
+  /** True while the Merkl rewards query is loading (initial fetch) */
+  isLoading: boolean;
+  refetch: () => void;
+};
+
+/**
+ * Custom hook to fetch and manage claimable Merkl rewards for an asset.
+ * Handles eligibility checking and reward data fetching via TanStack Query,
+ * which caches results across component unmount/remount cycles (e.g. tab switches).
+ * Uses on-chain contract read for the claimed amount (instant update after claim),
+ * falling back to API-provided claimed value if the on-chain read fails.
+ *
+ * @param options - Hook options
+ * @param options.tokenAddress - The token's contract address
+ * @param options.chainId - The chain ID of the token
+ * @param options.showMerklBadge - whether the token should be shown. If false we don't make a request.
+ * @returns Whether there is a claimable reward
+ */
+export const useMerklRewards = ({
+  tokenAddress,
+  chainId,
+  showMerklBadge,
+}: UseMerklRewardsOptions): UseMerklRewardsReturn => {
+  const merklRewardsEnabled = useSelector(getMerklRewardsEnabled);
+  const { isBlocked: isGeoBlocked } = useMusdGeoBlocking();
+
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAddress = selectedAccount?.address;
+
+  const isEligible = useMemo(
+    () =>
+      showMerklBadge &&
+      merklRewardsEnabled &&
+      !isGeoBlocked &&
+      isEligibleForMerklRewards(chainId, tokenAddress),
+    [showMerklBadge, merklRewardsEnabled, isGeoBlocked, chainId, tokenAddress],
+  );
+
+  const {
+    data: queryData = EMPTY_RESULT,
+    refetch: refetchQuery,
+    isLoading: isQueryLoading,
+  } = useQuery({
+    queryKey: ['merklRewards', selectedAddress, chainId, tokenAddress],
+    queryFn: async ({ signal }): Promise<MerklRewardQueryResult> => {
+      if (!tokenAddress || !selectedAddress) {
+        return EMPTY_RESULT;
+      }
+
+      const matchingReward = await fetchMerklRewardsForAsset(
+        tokenAddress,
+        chainId,
+        selectedAddress,
+        signal,
+      );
+
+      if (!matchingReward || signal?.aborted) {
+        return EMPTY_RESULT;
+      }
+
+      // Get claimed amount from on-chain read for instant update after claims.
+      // The API can lag behind the actual on-chain state.
+      let claimedAmount = matchingReward.claimed;
+
+      const rewardTokenAddress = matchingReward.token.address as Hex;
+      const onChainClaimed = await getClaimedAmountFromContract(
+        selectedAddress,
+        rewardTokenAddress,
+      );
+
+      if (signal?.aborted) {
+        return EMPTY_RESULT;
+      }
+
+      if (onChainClaimed !== null) {
+        claimedAmount = onChainClaimed;
+      }
+
+      const unclaimedBaseUnits =
+        BigInt(matchingReward.amount) - BigInt(claimedAmount);
+      const oneCentInBaseUnits =
+        10n ** BigInt(matchingReward.token.decimals - 2);
+      const hasClaimable = unclaimedBaseUnits >= oneCentInBaseUnits;
+      const hasClaimedBefore = BigInt(claimedAmount) > 0n;
+
+      const tokenDecimals = matchingReward.token.decimals;
+      let claimableRewardDisplay: string | null = null;
+      if (hasClaimable) {
+        const unclaimedDecimal =
+          Number(unclaimedBaseUnits) / 10 ** tokenDecimals;
+        const displayAmount =
+          unclaimedDecimal < 0.01 ? '< 0.01' : unclaimedDecimal.toFixed(2);
+        if (displayAmount !== '0' && displayAmount !== '0.00') {
+          claimableRewardDisplay = displayAmount;
+        }
+      }
+
+      const divisor = 10 ** matchingReward.token.decimals;
+      const unclaimedDecimal = hasClaimable
+        ? Number(unclaimedBaseUnits) / divisor
+        : null;
+      const claimedDecimal = hasClaimedBefore
+        ? Number(claimedAmount) / divisor
+        : null;
+
+      return {
+        hasClaimable,
+        unclaimedDecimal,
+        hasClaimedBefore,
+        claimableRewardDisplay,
+        claimedDecimal,
+      };
+    },
+    enabled: isEligible && Boolean(selectedAddress) && Boolean(tokenAddress),
+    staleTime: MERKL_REWARDS_STALE_TIME,
+    cacheTime: MERKL_REWARDS_CACHE_TIME,
+  });
+
+  const fiatRate = useTokenFiatRate((tokenAddress ?? '0x0') as Hex, chainId);
+
+  // When `enabled` is false TanStack Query v4 still returns the last cached
+  // `data` for this queryKey. Gate on `isEligible` so a stale `true` never
+  // leaks to callers that shouldn't show a badge.
+  const hasClaimableRewardData = isEligible ? queryData : undefined;
+
+  const rewardAmountFiat = useMemo(() => {
+    const decimal = hasClaimableRewardData?.unclaimedDecimal;
+    if (decimal === null || decimal === undefined || fiatRate === undefined) {
+      return null;
+    }
+    return decimal * fiatRate;
+  }, [hasClaimableRewardData?.unclaimedDecimal, fiatRate]);
+
+  const lifetimeClaimedFiat = useMemo(() => {
+    const decimal = hasClaimableRewardData?.claimedDecimal;
+    if (decimal === null || decimal === undefined || fiatRate === undefined) {
+      return null;
+    }
+    return decimal * fiatRate;
+  }, [hasClaimableRewardData?.claimedDecimal, fiatRate]);
+
+  const refetch = useCallback(() => {
+    if (isEligible) {
+      refetchQuery();
+    }
+  }, [refetchQuery, isEligible]);
+
+  return {
+    isEligible,
+    hasClaimableReward: hasClaimableRewardData?.hasClaimable ?? false,
+    rewardAmountFiat,
+    hasClaimedBefore: hasClaimableRewardData?.hasClaimedBefore ?? false,
+    claimableRewardDisplay:
+      hasClaimableRewardData?.claimableRewardDisplay ?? null,
+    lifetimeClaimedFiat,
+    isLoading: isEligible && isQueryLoading,
+    refetch,
+  };
+};

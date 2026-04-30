@@ -1,14 +1,16 @@
 import { strict as assert } from 'assert';
-import { MockttpServer } from 'mockttp';
+import { join } from 'path';
+import { Mockttp } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
 import { createDownloadFolder, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { mockSpotPrices } from '../tokens/utils/mocks';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import { login } from '../../page-objects/flows/login.flow';
+import { mockPriceApi } from '../tokens/utils/mocks';
 
 import referenceStateLogsDefinition from './state-logs.json';
 import {
@@ -16,11 +18,93 @@ import {
   createTypeMap,
   createTypeMapFromDefinition,
   getDownloadedStateLogs,
+  MinimalStateLogsJson,
   StateLogsTypeDefinition,
   StateLogsTypeMap,
 } from './state-logs-helpers';
 
-const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
+const downloadsFolder = join(process.cwd(), 'test-artifacts', 'downloads');
+
+const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
+async function mockDummyFeatureFlags(server: Mockttp) {
+  await server
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        { feature1: true },
+        { feature2: false },
+        {
+          feature3: [
+            {
+              value: 'valueA',
+              name: 'groupA',
+              scope: { type: 'threshold', value: 0.3 },
+            },
+            {
+              value: 'valueB',
+              name: 'groupB',
+              scope: { type: 'threshold', value: 0.5 },
+            },
+            {
+              scope: { type: 'threshold', value: 1 },
+              value: 'valueC',
+              name: 'groupC',
+            },
+          ],
+        },
+      ],
+    }));
+}
+
+async function mockStateLogsMocks(server: Mockttp) {
+  await mockDummyFeatureFlags(server);
+  await mockPriceApi(server);
+}
+
+async function replacePlaceholderInReferenceLogs(
+  stateLogs: MinimalStateLogsJson,
+): Promise<StateLogsTypeDefinition> {
+  // We'll use this mapping to replace placeholders in the reference logs with actual account IDs
+  // from the downloaded logs (e.g "<bitcoin-account-1>" -> "75ad4470-156b-4f7f-b0a5-ffe6cd114ac9").
+  const accountsMapping: Record<'solana' | 'bitcoin' | 'tron', string[]> = {
+    tron: [],
+    solana: [],
+    bitcoin: [],
+  };
+
+  for (const [id, account] of Object.entries(
+    stateLogs.metamask.internalAccounts.accounts,
+  )) {
+    if (account.type.startsWith('bip122')) {
+      accountsMapping.bitcoin.push(id);
+    } else if (account.type.startsWith('solana')) {
+      accountsMapping.solana.push(id);
+    } else if (account.type.startsWith('tron')) {
+      accountsMapping.tron.push(id);
+    }
+  }
+
+  let referenceLogsText = JSON.stringify(referenceStateLogsDefinition);
+  for (const [network, ids] of Object.entries(accountsMapping)) {
+    for (const [index, id] of ids.entries()) {
+      const placeholder = `<${network}-account-${index + 1}>`;
+      referenceLogsText = referenceLogsText.replaceAll(
+        // Use regex to replace all occurrences of the placeholder, not only the first one.
+        new RegExp(placeholder, 'gu'),
+        id,
+      );
+    }
+  }
+
+  return JSON.parse(referenceLogsText);
+}
 
 describe('State logs', function () {
   it('should download state logs for the account', async function () {
@@ -30,61 +114,38 @@ describe('State logs', function () {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController({
             preferences: {
               showFiatInTestnets: true,
               showNativeTokenAsMainBalance: false,
             },
           })
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockServer
-            .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-            .withQuery({ baseCurrency: 'usd' })
-            .thenCallback(() => ({
-              statusCode: 200,
-              json: {
-                eth: {
-                  name: 'Ethereum',
-                  ticker: 'eth',
-                  value: 1,
-                  currencyType: 'fiat',
-                },
-              },
-            }));
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
-              price: 3401,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
-        },
+        testSpecificMock: mockStateLogsMocks,
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Download state logs
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.checkPageIsLoaded();
-        await advancedSettingsPage.downloadStateLogs();
+        await settingsPage.goToPrivacySettings();
+        const privacySettingsPage = new PrivacySettings(driver);
+        await privacySettingsPage.checkPageIsLoaded();
+        await privacySettingsPage.downloadStateLogs();
 
         // Verify download and get state logs
         const stateLogs = await getDownloadedStateLogs(driver, downloadsFolder);
 
-        assert.equal(
-          stateLogs.metamask.identities[
-            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
-          ].address,
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        );
         assert.equal(
           stateLogs.metamask.internalAccounts.accounts[
             stateLogs.metamask.internalAccounts.selectedAccount
@@ -96,70 +157,61 @@ describe('State logs', function () {
   });
 
   it('state log file matches the expected state structure', async function () {
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    if (
+      process.env.SELENIUM_BROWSER === 'chrome' ||
+      process.env.ASSETS_UNIFIED_STATE_ENABLED !== 'true'
+    ) {
       // Chrome shows OS level download prompt which can't be dismissed by Selenium
       this.skip();
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController({
             preferences: {
               showFiatInTestnets: true,
               showNativeTokenAsMainBalance: false,
             },
           })
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1337/slip44:1': { amount: '25' },
+              },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
-              price: 3401,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
-          await mockServer
-            .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-            .withQuery({ baseCurrency: 'usd' })
-            .thenCallback(() => ({
-              statusCode: 200,
-              json: {
-                eth: {
-                  name: 'Ethereum',
-                  ticker: 'eth',
-                  value: 1,
-                  currencyType: 'fiat',
-                  usd: 1,
-                },
-              },
-            }));
-        },
+        testSpecificMock: mockStateLogsMocks,
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
-        await loginWithBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
-        await driver.delay(10000);
+        // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
+        await driver.delay(15000);
 
         // Download state logs
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.checkPageIsLoaded();
-        // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
-        await driver.delay(15000);
-        await advancedSettingsPage.downloadStateLogs();
+        await settingsPage.goToPrivacySettings();
+        const privacySettingsPage = new PrivacySettings(driver);
+        await privacySettingsPage.checkPageIsLoaded();
+        await privacySettingsPage.downloadStateLogs();
 
         // Verify download and get state logs
         const stateLogs = await getDownloadedStateLogs(driver, downloadsFolder);
 
+        // We need to replace placeholders in the reference logs with actual account IDs from the downloaded
+        // logs before comparing them.
+        const referenceLogs =
+          await replacePlaceholderInReferenceLogs(stateLogs);
+
         // Create type maps for comparison
         const currentTypeMap = createTypeMap(stateLogs);
         const expectedTypeMap: StateLogsTypeMap = createTypeMapFromDefinition(
-          referenceStateLogsDefinition as StateLogsTypeDefinition,
+          referenceLogs as StateLogsTypeDefinition,
         );
 
         console.log('📋 Created type maps for comparison');

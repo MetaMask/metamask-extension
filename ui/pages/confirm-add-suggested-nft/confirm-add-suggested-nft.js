@@ -1,10 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { PageContainerFooter } from '../../components/ui/page-container';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -28,7 +27,7 @@ import {
   Box,
   Text,
 } from '../../components/component-library';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
 import {
   getRpcPrefsForCurrentProvider,
   getSuggestedNfts,
@@ -60,27 +59,24 @@ import { PRIMARY } from '../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
 
-const ConfirmAddSuggestedNFT = ({
-  navigate: routeNavigate,
-  location: routeLocation,
-} = {}) => {
+const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const hookNavigate = useNavigate();
-  const hookLocation = useLocation();
-  // Use navigate/location from props (v5 route) if available, otherwise fall back to hooks (v6)
-  const navigate = routeNavigate || hookNavigate;
-  const location = routeLocation || hookLocation;
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
 
-  const classNames = classnames('confirm-add-suggested-nft page-container', {
-    'confirm-add-suggested-nft--has-app-header-multichain': hasAppHeader,
-  });
+  const classNames = classnames(
+    'confirm-add-suggested-nft page-container h-full',
+    {
+      'confirm-add-suggested-nft--has-app-header-multichain': hasAppHeader,
+    },
+  );
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedNftsNotSorted = useSelector(getSuggestedNfts);
@@ -90,7 +86,7 @@ const ConfirmAddSuggestedNFT = ({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const chainId = useSelector(getCurrentChainId);
   const ipfsGateway = useSelector(getIpfsGateway);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
@@ -195,7 +191,7 @@ const ConfirmAddSuggestedNFT = ({
     };
 
     addImageUrlToSuggestedNFTs();
-  }, [suggestedNfts]); // rerender when suggestedNfts changes
+  }, [suggestedNfts, ipfsGateway]); // rerender when suggestedNfts or ipfsGateway changes
 
   return (
     <Box
@@ -460,17 +456,6 @@ const ConfirmAddSuggestedNFT = ({
       />
     </Box>
   );
-};
-
-ConfirmAddSuggestedNFT.propTypes = {
-  navigate: PropTypes.func,
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-    search: PropTypes.string,
-    hash: PropTypes.string,
-    state: PropTypes.object,
-    key: PropTypes.string,
-  }),
 };
 
 export default ConfirmAddSuggestedNFT;

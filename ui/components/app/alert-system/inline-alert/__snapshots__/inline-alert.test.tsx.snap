@@ -6,7 +6,7 @@ exports[`Inline Alert renders alert with danger severity 1`] = `
     class="mm-box mm-box--display-flex"
   >
     <div
-      class="mm-box inline-alert inline-alert__danger mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--rounded-sm"
+      class="mm-box inline-alert inline-alert__danger inline-alert__transparent-background mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--rounded-sm"
       data-testid="inline-alert"
       style="cursor: pointer;"
     >
@@ -14,11 +14,6 @@ exports[`Inline Alert renders alert with danger severity 1`] = `
         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/danger.svg');"
       />
-      <p
-        class="mm-box mm-text mm-text--body-sm mm-box--color-inherit"
-      >
-        [alert]
-      </p>
       <span
         class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/arrow-right.svg');"
@@ -34,7 +29,7 @@ exports[`Inline Alert renders alert with informative severity 1`] = `
     class="mm-box mm-box--display-flex"
   >
     <div
-      class="mm-box inline-alert inline-alert__info mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--rounded-sm"
+      class="mm-box inline-alert inline-alert__info inline-alert__transparent-background mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--rounded-sm"
       data-testid="inline-alert"
       style="cursor: pointer;"
     >
@@ -42,11 +37,6 @@ exports[`Inline Alert renders alert with informative severity 1`] = `
         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/info.svg');"
       />
-      <p
-        class="mm-box mm-text mm-text--body-sm mm-box--color-inherit"
-      >
-        [alert]
-      </p>
       <span
         class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/arrow-right.svg');"
@@ -62,7 +52,7 @@ exports[`Inline Alert renders alert with warning severity 1`] = `
     class="mm-box mm-box--display-flex"
   >
     <div
-      class="mm-box inline-alert inline-alert__warning mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--rounded-sm"
+      class="mm-box inline-alert inline-alert__warning inline-alert__transparent-background mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--rounded-sm"
       data-testid="inline-alert"
       style="cursor: pointer;"
     >
@@ -70,11 +60,6 @@ exports[`Inline Alert renders alert with warning severity 1`] = `
         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/info.svg');"
       />
-      <p
-        class="mm-box mm-text mm-text--body-sm mm-box--color-inherit"
-      >
-        [alert]
-      </p>
       <span
         class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/arrow-right.svg');"

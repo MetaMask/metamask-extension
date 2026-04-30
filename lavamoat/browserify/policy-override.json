@@ -1,5 +1,15 @@
 {
   "resources": {
+    "react-router-dom": {
+      "globals": {
+        "history": true
+      }
+    },
+    "react-router-dom>@remix-run/router": {
+      "globals": {
+        "history": true
+      }
+    },
     "@metamask/snaps-execution-environments": {
       "packages": {
         "@metamask/post-message-stream": true,
@@ -11,12 +21,6 @@
       "globals": {
         "setTimeout": true,
         "clearTimeout": true
-      }
-    },
-    "react-responsive-carousel": {
-      "globals": {
-        "addEventListener": true,
-        "removeEventListener": true
       }
     },
     "react-beautiful-dnd": {
@@ -32,7 +36,16 @@
     },
     "eth-lattice-keyring>gridplus-sdk": {
       "packages": {
+        "eth-lattice-keyring>gridplus-sdk>ox": true,
         "eth-lattice-keyring>gridplus-sdk>uuid": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>ox": {
+      "packages": {
+        "@noble/hashes": true,
+        "eth-lattice-keyring>gridplus-sdk>ox>@noble/curves": true,
+        "eth-lattice-keyring>gridplus-sdk>ox>abitype": true,
+        "viem>ox>abitype": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>uuid": {
@@ -58,6 +71,13 @@
         "crypto.getRandomValues": true
       }
     },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
+      }
+    },
     "@metamask/notification-services-controller>firebase>@firebase/messaging": {
       "globals": {
         "PushManager.getSubscription": true,
@@ -79,7 +99,6 @@
         "ResizeObserver": false,
         "crypto": false,
         "define": false,
-        "devicePixelRatio": false,
         "h": false,
         "importScripts": false,
         "location.href": false,
@@ -94,14 +113,30 @@
         "navigator.userAgent": true
       }
     },
-    "@rive-app/react-canvas": {
+    "lightweight-charts": {
       "globals": {
-        "IntersectionObserver": false,
-        "ResizeObserver": false,
-        "devicePixelRatio": false,
-        "innerHeight": false,
-        "innerWidth": false,
-        "matchMedia": false
+        "fetch": false
+      }
+    },
+    "@tanstack/react-query>@tanstack/query-core": {
+      "globals": {
+        "addEventListener": false,
+        "document": false
+      }
+    },
+    "@tanstack/react-query>use-sync-external-store": {
+      "globals": {
+        "__REACT_DEVTOOLS_GLOBAL_HOOK__": false,
+        "document": false,
+        "document.createElement": true
+      }
+    },
+    "@segment/analytics-node": {
+      "globals": {
+        "EdgeRuntime": false,
+        "WebSocketPair": false,
+        "WorkerGlobalScope": false,
+        "importScripts": false
       }
     }
   }

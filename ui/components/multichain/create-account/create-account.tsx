@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipChainId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -105,7 +105,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       const t = useI18nContext();
 
       const navigate = useNavigate();
-      const trackEvent = useContext(MetaMetricsContext);
+      const { trackEvent } = useContext(MetaMetricsContext);
       const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
       const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);

@@ -37,10 +37,6 @@
   z-index: design-system.$main-container-z-index;
 }
 
-.main-container::-webkit-scrollbar {
-  display: none;
-}
-
 .main-container-wrapper {
   display: flex;
   justify-content: center;
@@ -76,6 +72,7 @@
 .main-container {
   width: 100%;
   overflow-y: auto;
+  scrollbar-gutter: stable;
   background-color: var(--color-background-default);
 }
 

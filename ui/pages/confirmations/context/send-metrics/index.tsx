@@ -8,7 +8,7 @@ import React, {
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { useSelector } from 'react-redux';
 
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
 import {
   getAccountTypeForKeyring,
   getInternalAccounts,
@@ -88,7 +88,7 @@ export const SendMetricsContextProvider: React.FC<{
       return undefined;
     }
     // todo: account can be used from send context if we add it
-    const fromAccount = Object.values(internalAccounts).find((account) =>
+    const fromAccount = internalAccounts.find((account) =>
       isEqualCaseInsensitive(account.address, from),
     );
     return getAccountTypeForKeyring(fromAccount?.metadata?.keyring);

@@ -1,3 +1,4 @@
+import { AccountsControllerState } from '@metamask/accounts-controller';
 import {
   EthAccountType,
   BtcAccountType,
@@ -5,13 +6,13 @@ import {
   CaipChainId,
   EthScope,
   TrxAccountType,
+  isEvmAccountType,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { AccountsControllerState } from '@metamask/accounts-controller';
-import { createSelector } from 'reselect';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { createSelector } from 'reselect';
+
+import { EMPTY_OBJECT } from './shared';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
@@ -20,7 +21,7 @@ export type AccountsState = {
 export function isBitcoinAccount(account: InternalAccount) {
   return Boolean(
     account &&
-      Object.values(BtcAccountType).includes(account.type as BtcAccountType),
+    Object.values(BtcAccountType).includes(account.type as BtcAccountType),
   );
 }
 
@@ -43,23 +44,29 @@ export function isNonEvmAccount(account: InternalAccount) {
   );
 }
 
+export const getInternalAccountsObject = (state: AccountsState) =>
+  state.metamask.internalAccounts.accounts;
+
 export const getInternalAccounts = createSelector(
-  (state: AccountsState) =>
-    Object.values(state.metamask.internalAccounts.accounts),
-  (accounts) => accounts,
+  getInternalAccountsObject,
+  (accounts) => Object.values(accounts),
 );
 
-export const getInternalAccountsObject = createSelector(
-  (state: AccountsState) => state.metamask.internalAccounts.accounts,
-  (internalAccounts) => internalAccounts,
-);
+// Uses EMPTY_OBJECT to preserve referential equality when accountIdByAddress
+// is undefined, so downstream createSelector consumers don't recompute.
+export const getAccountIdByAddress = (state: AccountsState) =>
+  state.metamask.accountIdByAddress ?? EMPTY_OBJECT;
 
-export const getMemoizedInternalAccountByAddress = createDeepEqualSelector(
-  [getInternalAccounts, (_state, address) => address],
-  (internalAccounts, address) => {
-    return internalAccounts.find((account) =>
-      isEqualCaseInsensitive(account.address, address),
-    );
+export const getInternalAccountByAddress = createSelector(
+  [
+    getInternalAccountsObject,
+    getAccountIdByAddress,
+    (_, address: string) => address,
+  ],
+  (accounts, accountIdByAddress, address) => {
+    const accountId =
+      accountIdByAddress[address] ?? accountIdByAddress[address?.toLowerCase()];
+    return accountId ? accounts[accountId] : undefined;
   },
 );
 
@@ -68,21 +75,45 @@ export function getSelectedInternalAccount(state: AccountsState) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
 
-export function isSelectedInternalAccountEth(state: AccountsState) {
-  const account = getSelectedInternalAccount(state);
-  const { Eoa, Erc4337 } = EthAccountType;
-
-  return Boolean(account && (account.type === Eoa || account.type === Erc4337));
+/**
+ * Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
+ * - This might happen during the onboarding
+ *
+ * @param state - The accounts state
+ * @returns The selected internal account or undefined
+ */
+export function getMaybeSelectedInternalAccount(state: AccountsState) {
+  const accountId = state.metamask.internalAccounts?.selectedAccount;
+  return accountId
+    ? state.metamask.internalAccounts?.accounts[accountId]
+    : undefined;
 }
 
-export function isSelectedInternalAccountSolana(state: AccountsState) {
-  return isSolanaAccount(getSelectedInternalAccount(state));
-}
+export const isSelectedInternalAccountEth = createSelector(
+  getSelectedInternalAccount,
+  (account) => {
+    const { Eoa, Erc4337 } = EthAccountType;
+    return Boolean(
+      account && (account.type === Eoa || account.type === Erc4337),
+    );
+  },
+);
 
-export function hasCreatedSolanaAccount(state: AccountsState) {
-  const accounts = getInternalAccounts(state);
-  return accounts.some((account) => isSolanaAccount(account));
-}
+export const selectEvmAddress = createSelector(
+  getSelectedInternalAccount,
+  (account) =>
+    account && isEvmAccountType(account.type) ? account.address : undefined,
+);
+
+export const isSelectedInternalAccountSolana = createSelector(
+  getSelectedInternalAccount,
+  (account) => isSolanaAccount(account),
+);
+
+export const hasCreatedSolanaAccount = createSelector(
+  getInternalAccounts,
+  (accounts) => accounts.some((account) => isSolanaAccount(account)),
+);
 
 /**
  * Returns all internal accounts that declare support for the provided CAIP scope.
@@ -91,7 +122,7 @@ export function hasCreatedSolanaAccount(state: AccountsState) {
  * @param _state - Redux state (unused; required for selector signature)
  * @param scope - The CAIP scope string to filter accounts by
  */
-export const getInternalAccountsByScope = createDeepEqualSelector(
+export const getInternalAccountsByScope = createSelector(
   [getInternalAccounts, (_state: AccountsState, scope: CaipChainId) => scope],
   (accounts, scope): InternalAccount[] => {
     if (!Array.isArray(accounts) || accounts.length === 0) {

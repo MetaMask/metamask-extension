@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
@@ -46,10 +46,11 @@ describe('useTokenValues', () => {
       displayTransferValue: '7',
       fiatDisplayValue: '$6.37',
       fiatValue: 6.37,
+      pending: false,
     });
   });
 
-  it('returns undefined fiat balance if no token rate is returned', async () => {
+  it('returns undefined fiat balance and pending=false if no token rate is returned', async () => {
     (useAssetDetailsMock as jest.Mock).mockImplementation(() => ({
       decimals: '4',
     }));
@@ -66,11 +67,14 @@ describe('useTokenValues', () => {
       getMockConfirmStateForTransaction(transactionMeta),
     );
 
+    // pending is false because decimals and value are available.
+    // Exchange rate being unavailable should not keep showing a skeleton.
     expect(result.current).toEqual({
       decodedTransferValue: '7',
       displayTransferValue: '7',
       fiatDisplayValue: undefined,
       fiatValue: undefined,
+      pending: false,
     });
   });
 });

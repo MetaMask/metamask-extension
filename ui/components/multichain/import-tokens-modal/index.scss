@@ -3,10 +3,6 @@
 .import-tokens-modal {
   $self: &;
 
-  &__body::-webkit-scrollbar {
-    display: none;
-  }
-
   &__body {
     overflow-y: auto;
   }
@@ -33,8 +29,6 @@
   }
 
   &__search-list {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
     overflow-y: scroll;
     max-width: 100%;
     overflow: auto;

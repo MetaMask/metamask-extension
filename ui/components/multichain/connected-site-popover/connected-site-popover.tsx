@@ -21,11 +21,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 import { getAllDomains, getOriginOfCurrentTab } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { toggleNetworkMenu } from '../../../store/actions';
 import Tooltip from '../../ui/tooltip';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 type ConnectedSitePopoverProps = {
   referenceElement: RefObject<HTMLElement>;
@@ -44,7 +45,13 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
 }) => {
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const siteName = getURLHost(activeTabOrigin);
+
+  // Only show the host for valid web URLs (http/https), otherwise show "URL unknown"
+  const isWebOrigin =
+    activeTabOrigin?.startsWith('http://') ||
+    activeTabOrigin?.startsWith('https://');
+  const siteHost = isWebOrigin ? getURLHost(activeTabOrigin) : '';
+  const siteName = siteHost || t('urlUnknown');
 
   const allDomains = useSelector(getAllDomains);
   const networkConfigurationsByChainId = useSelector(
@@ -99,11 +106,15 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         <Box
-          style={{
-            borderBottomWidth: '1px',
-            borderBottomStyle: 'solid',
-            borderBottomColor: '#858B9A33',
-          }}
+          style={
+            isConnected
+              ? undefined
+              : {
+                  borderBottomWidth: '1px',
+                  borderBottomStyle: 'solid',
+                  borderBottomColor: '#858B9A33',
+                }
+          }
           paddingLeft={4}
           paddingRight={4}
           paddingBottom={2}
@@ -180,7 +191,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
               {t('connectionPopoverDescription')}
             </Text>
             <ButtonLink
-              href="https://support.metamask.io/more-web3/dapps/connecting-to-a-dapp/"
+              href={ZENDESK_URLS.CONNECTING_TO_DAPP}
               externalLink
               size={ButtonLinkSize.Sm}
             >
@@ -189,7 +200,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
           </Box>
         )}
         {isConnected && (
-          <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
+          <Box padding={4} paddingBottom={0}>
             <ButtonSecondary block onClick={onClick}>
               {t('managePermissions')}
             </ButtonSecondary>
