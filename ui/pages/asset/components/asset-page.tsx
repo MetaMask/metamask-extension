@@ -24,9 +24,9 @@ import {
   SolMethod,
   TrxAccountType,
 } from '@metamask/keyring-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type CaipAssetType,
+  type CaipChainId,
   Hex,
   isCaipChainId,
   parseCaipAssetType,
@@ -99,6 +99,7 @@ import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
 import { MusdPositionSection } from './musd-position-section';
+import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -120,8 +121,11 @@ const AssetPage = ({
     ? asset.chainId
     : formatChainIdToCaip(asset.chainId);
   const selectedAccount = useSelector((state) =>
-    getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
-  ) as InternalAccount;
+    getInternalAccountBySelectedAccountGroupAndCaip(
+      state,
+      caipChainId as CaipChainId,
+    ),
+  );
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
@@ -134,12 +138,14 @@ const AssetPage = ({
     getIsBridgeChain(state, chainId),
   );
 
-  const isSigningEnabled =
-    selectedAccount.methods.includes(EthMethod.SignTransaction) ||
-    selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
-    selectedAccount.methods.includes(SolMethod.SignTransaction) ||
-    selectedAccount.methods.includes(BtcMethod.SignPsbt) ||
-    selectedAccount.type === TrxAccountType.Eoa;
+  const isSigningEnabled = Boolean(
+    selectedAccount &&
+      (selectedAccount.methods.includes(EthMethod.SignTransaction) ||
+        selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
+        selectedAccount.methods.includes(SolMethod.SignTransaction) ||
+        selectedAccount.methods.includes(BtcMethod.SignPsbt) ||
+        selectedAccount.type === TrxAccountType.Eoa),
+  );
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);
@@ -161,12 +167,21 @@ const AssetPage = ({
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
+  const selectedMultichainNetworkConfiguration = useSelector(
+    getSelectedMultichainNetworkConfiguration,
+  );
+
   let address =
     (() => {
       if (type === AssetType.token) {
         return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
       }
-      return isEvm ? getNativeTokenAddress(chainId) : nativeAssetType;
+
+      if (isEvm) {
+        return getNativeTokenAddress(chainId);
+      }
+
+      return asset.nativeAssetId ?? nativeAssetType;
     })() ?? '';
 
   const shouldShowContractAddress = type === AssetType.token;
@@ -193,7 +208,8 @@ const AssetPage = ({
   const assetId = assetWithBalance?.assetId || '';
   const balance = assetWithBalance?.balance ?? '0';
   const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
-  const tokenHexBalance = assetWithBalance?.rawBalance as string;
+  const tokenHexBalance = (assetWithBalance?.rawBalance as string) ?? '0x0';
+  const hasCompatibleAccount = Boolean(selectedAccount);
 
   const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(
@@ -204,11 +220,11 @@ const AssetPage = ({
         metaMetricsId,
         isMetaMetricsEnabled,
         isMarketingEnabled,
-        selectedAccount.address,
+        selectedAccount?.address ?? '',
         'spending-caps',
       ),
     [
-      selectedAccount.address,
+      selectedAccount?.address,
       isMarketingEnabled,
       isMetaMetricsEnabled,
       metaMetricsId,
@@ -234,8 +250,9 @@ const AssetPage = ({
     },
   };
 
+  const resolvedAssetId = bip44Asset?.assetId || assetId || address;
   const tokenWithFiatAmount = {
-    address: isEvm ? address : assetId,
+    address: isEvm ? address : assetId || address,
     chainId,
     symbol,
     image,
@@ -249,7 +266,7 @@ const AssetPage = ({
     balance,
     secondary: balance ? Number(balance) : 0,
     accountType: bip44Asset?.accountType,
-    assetId: bip44Asset?.assetId ?? assetId,
+    assetId: resolvedAssetId,
     rwaData,
   };
   const { safeChains } = useSafeChains();
@@ -293,6 +310,9 @@ const AssetPage = ({
     setIsMarketClosedModalOpen(true);
   };
 
+  const optionsButtonWithAccountGuard =
+    hasCompatibleAccount || isEvm ? optionsButton : null;
+
   return (
     <Box className="asset__content">
       <Box
@@ -313,7 +333,7 @@ const AssetPage = ({
             className="asset-page__back-button"
           />
         </Box>
-        {optionsButton}
+        {optionsButtonWithAccountGuard}
       </Box>
       <Box paddingLeft={4}>
         {isStockToken ? (
@@ -333,7 +353,7 @@ const AssetPage = ({
         asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
       />
       <Box marginTop={4} paddingLeft={4} paddingRight={4}>
-        {isUpdatedAssetNative ? (
+        {isUpdatedAssetNative && selectedAccount ? (
           <CoinButtons
             {...{
               account: selectedAccount,
@@ -347,21 +367,21 @@ const AssetPage = ({
             }}
           />
         ) : null}
-        {tokenAsset ? (
+        {tokenAsset && hasCompatibleAccount ? (
           <TokenButtons
             token={tokenAsset}
             disableSendForNonEvm
             isMarketClosed={isMarketClosed}
           />
         ) : null}
-        {isMarketClosed && tokenAsset ? (
+        {isMarketClosed && tokenAsset && hasCompatibleAccount ? (
           <Box marginTop={4}>
             <MarketClosedActionButton onClick={handleOpenMarketClosedModal} />
           </Box>
         ) : null}
       </Box>
       <Box flexDirection={BoxFlexDirection.Column} paddingTop={3}>
-        {showTronResources && (
+        {showTronResources && selectedAccount && (
           <Box>
             <TronDailyResources
               account={selectedAccount}
@@ -484,11 +504,10 @@ const AssetPage = ({
                       name={networkName}
                       size={AvatarNetworkSize.Xs}
                     />
-                    <Text
-                      variant={TextVariant.BodyMd}
-                      fontWeight={FontWeight.Medium}
-                    >
-                      {networkName}
+                    <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+                      {networkName ??
+                        selectedMultichainNetworkConfiguration?.name ??
+                        caipChainId}
                     </Text>
                   </Box>,
                 )}
@@ -545,6 +564,7 @@ const AssetPage = ({
                   </Box>
                 )}
                 {shouldShowSpendingCaps &&
+                  selectedAccount &&
                   renderRow(
                     t('spendingCaps'),
                     <TextButton size={TextButtonSize.BodyMd} asChild>
@@ -577,7 +597,7 @@ const AssetPage = ({
                   type === AssetType.native
                     ? {
                         kind: 'native',
-                        ...(!isEvm && { caipAssetType: address }),
+                        ...(!isEvm && address && { caipAssetType: address }),
                       }
                     : { kind: 'token', tokenAddress: address },
               }}

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { Hex, isCaipChainId } from '@metamask/utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getRpcPrefsForCurrentProvider,
   getSelectedInternalAccount,
@@ -37,16 +36,19 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   // TODO BIP44: The new selector returns the accountId, when BIP44 is fully enabled we can fetch the asset higher up and ensure it's passed here
   const selectedAccount = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
-  ) as InternalAccount;
+  );
   const multichainNetworkForSelectedAccount = useMultichainSelector(
     getMultichainNetwork,
     selectedAccount,
   );
   const isEvm = isEvmChainId(chainId);
-  const addressLink = getMultichainAccountUrl(
-    selectedAccount.address,
-    multichainNetworkForSelectedAccount,
-  );
+  const addressLink =
+    selectedAccount && !isEvm
+      ? getMultichainAccountUrl(
+          selectedAccount.address,
+          multichainNetworkForSelectedAccount,
+        )
+      : '';
 
   const accountLink = isEvm
     ? getAccountLink(address, chainId, rpcPrefs)
@@ -57,6 +59,7 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     symbol,
     type,
   );
+  const shouldShowOptions = isEvm || Boolean(selectedAccount);
 
   return (
     <AssetPage
@@ -67,29 +70,35 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
         image,
         decimals: token.decimals,
         isOriginalNativeSymbol: isOriginalNativeSymbol === true,
+        nativeAssetId: !isEvm ? token.address : undefined,
       }}
       optionsButton={
-        <AssetOptions
-          isNativeAsset={true}
-          onClickBlockExplorer={() => {
-            trackEvent({
-              event: 'Clicked Block Explorer Link',
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                link_type: 'Account Tracker',
-                action: 'Asset Options',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                block_explorer_domain: getURLHostName(accountLink),
-              },
-            });
-            global.platform.openTab({
-              url: accountLink,
-            });
-          }}
-        />
+        shouldShowOptions ? (
+          <AssetOptions
+            isNativeAsset={true}
+            onClickBlockExplorer={() => {
+              if (!accountLink) {
+                return;
+              }
+              trackEvent({
+                event: 'Clicked Block Explorer Link',
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  link_type: 'Account Tracker',
+                  action: 'Asset Options',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  block_explorer_domain: getURLHostName(accountLink),
+                },
+              });
+              global.platform.openTab({
+                url: accountLink,
+              });
+            }}
+          />
+        ) : null
       }
     />
   );

@@ -677,6 +677,27 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
         tokenFiatAmount: null,
       });
     });
+
+    it('returns null when selected account group has no compatible account for a non-EVM chain', () => {
+      const account = undefined;
+      const incompatibleState = cloneDeep(mockState);
+      incompatibleState.metamask.accountTree.wallets[
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+      ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0'].accounts = [
+        '81b1ead4-334c-4921-9adf-282fde539752',
+      ];
+      incompatibleState.metamask.internalAccounts.selectedAccount =
+        '81b1ead4-334c-4921-9adf-282fde539752';
+
+      const result = getTokenByAccountAndAddressAndChainId(
+        incompatibleState,
+        account,
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      );
+
+      expect(result).toBeNull();
+    });
   });
 });
 

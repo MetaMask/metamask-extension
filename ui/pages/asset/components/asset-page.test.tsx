@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { EthAccountType, EthScope } from '@metamask/keyring-api';
+import { EthAccountType, EthScope, BtcScope } from '@metamask/keyring-api';
 import nock from 'nock';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
@@ -119,6 +119,7 @@ jest.mock('../../../components/app/musd/hooks/useMerklClaim', () => ({
 }));
 
 const selectedAccountAddress = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+const btcAssetId = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
 
 function mockGetDefaultAssetsBySelectedAccountGroup() {
   return {
@@ -358,6 +359,21 @@ describe('AssetPage', () => {
     decimals: 18,
   } as const;
 
+  const nonEvmNative = {
+    type: AssetType.native,
+    chainId: BtcScope.Mainnet,
+    symbol: 'BTC',
+    image: '',
+    isOriginalNativeSymbol: true,
+    nativeAssetId: btcAssetId,
+    balance: {
+      value: '0',
+      display: '0',
+      fiat: '',
+    },
+    decimals: 8,
+  } as const;
+
   const token = {
     type: AssetType.token,
     chainId: '0x1',
@@ -497,6 +513,68 @@ describe('AssetPage', () => {
       img.setAttribute('alt', 'static-logo');
     });
     expect(container).toMatchSnapshot();
+  });
+
+  it('renders non-EVM asset details without actions when account is incompatible', () => {
+    const { queryByTestId, getByTestId } = renderWithProvider(
+      <AssetPage asset={nonEvmNative} optionsButton={<div data-testid="asset-options" />} />,
+      configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          selectedMultichainNetworkChainId: BtcScope.Mainnet,
+          assetsMetadata: {
+            [btcAssetId]: {
+              name: 'Bitcoin',
+              symbol: 'BTC',
+              fungible: true,
+              units: [{ name: 'Bitcoin', symbol: 'BTC', decimals: 8 }],
+            },
+          },
+          accountTree: {
+            wallets: {
+              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+                id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+                type: 'entropy',
+                groups: {
+                  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+                    id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+                    type: 'multichain-account',
+                    accounts: [selectedAccountAddress],
+                    metadata: {
+                      name: 'Account 1',
+                      entropy: { groupIndex: 0 },
+                      hidden: false,
+                      pinned: false,
+                      lastSelected: 0,
+                    },
+                  },
+                },
+                metadata: {
+                  name: 'Wallet 1',
+                  entropy: { id: '01JKAF3DSGM3AB87EM9N0K41AJ' },
+                },
+              },
+            },
+          },
+          internalAccounts: {
+            ...mockStore.metamask.internalAccounts,
+            accounts: {
+              [selectedAccountAddress]: {
+                ...mockStore.metamask.internalAccounts.accounts[
+                  selectedAccountAddress
+                ],
+                scopes: [EthScope.Eoa],
+              },
+            },
+          },
+        },
+      }),
+    );
+
+    expect(getByTestId('asset-network')).toBeInTheDocument();
+    expect(queryByTestId('coin-overview-send')).not.toBeInTheDocument();
+    expect(queryByTestId('asset-options')).not.toBeInTheDocument();
   });
 
   it('should render an ERC20 asset without prices', async () => {
@@ -824,4 +902,5 @@ describe('AssetPage', () => {
       ).toBeInTheDocument();
     });
   });
+
 });

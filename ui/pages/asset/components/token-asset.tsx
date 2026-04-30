@@ -10,7 +10,6 @@ import {
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -52,9 +51,8 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     : formatChainIdToCaip(chainId);
   const selectedAccount = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
-  ) as InternalAccount;
-
-  const { address: walletAddress } = selectedAccount;
+  );
+  const walletAddress = selectedAccount?.address ?? '';
 
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 
@@ -110,12 +108,15 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     { blockExplorerUrl: currentTokenBlockExplorer ?? '' },
   );
 
-  const blockExplorerLink = isEvm
-    ? tokenTrackerLink
-    : getAssetDetailsAccountUrl(
-        parseCaipAssetType(address as CaipAssetType).assetReference,
-        multichainNetwork,
-      );
+  const blockExplorerLink =
+    isEvm || !selectedAccount
+      ? tokenTrackerLink
+      : getAssetDetailsAccountUrl(
+          parseCaipAssetType(address as CaipAssetType).assetReference,
+          multichainNetwork,
+        );
+
+  const shouldShowOptions = isEvm || Boolean(selectedAccount);
 
   return (
     <AssetPage
@@ -139,31 +140,36 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
         isERC721,
       }}
       optionsButton={
-        <AssetOptions
-          isNativeAsset={false}
-          onRemove={() =>
-            dispatch(
-              showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, navigate }),
-            )
-          }
-          onClickBlockExplorer={() => {
-            trackEvent({
-              event: 'Clicked Block Explorer Link',
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                link_type: 'Token Tracker',
-                action: 'Token Options',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                block_explorer_domain: getURLHostName(tokenTrackerLink),
-              },
-            });
-            global.platform.openTab({ url: blockExplorerLink });
-          }}
-          token={token}
-        />
+        shouldShowOptions ? (
+          <AssetOptions
+            isNativeAsset={false}
+            onRemove={() =>
+              dispatch(
+                showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, navigate }),
+              )
+            }
+            onClickBlockExplorer={() => {
+              if (!blockExplorerLink) {
+                return;
+              }
+              trackEvent({
+                event: 'Clicked Block Explorer Link',
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  link_type: 'Token Tracker',
+                  action: 'Token Options',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  block_explorer_domain: getURLHostName(tokenTrackerLink),
+                },
+              });
+              global.platform.openTab({ url: blockExplorerLink });
+            }}
+            token={token}
+          />
+        ) : null
       }
     />
   );
