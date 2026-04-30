@@ -1,10 +1,10 @@
-import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import {
   ChainId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { toBridgeToken } from '../../ducks/bridge/utils';
 import { useSmartSlippage } from './useSmartSlippage';
