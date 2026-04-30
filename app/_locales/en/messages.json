@@ -6374,6 +6374,10 @@
   "perpsWithdrawToastSuccessTitle": {
     "message": "Withdrawal submitted"
   },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask will swap to your desired token for you. No MetaMask fee applies when you swap to mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
   "perpsYouReceive": {
     "message": "You receive"
   },
@@ -9883,6 +9887,10 @@
   "willApproveAmountForSwapping": {
     "message": "Approves token for swap."
   },
+  "withdrawTo": {
+    "message": "Receive",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Withdrawing"
   },
@@ -9915,6 +9923,10 @@
   "youSent": {
     "message": "You sent",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "You'll receive",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Your activity"
