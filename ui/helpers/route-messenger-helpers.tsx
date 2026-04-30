@@ -57,19 +57,15 @@ type RouteWithMessengerOptions = {
  * Create a route object with a {@link RouteWithMessenger} element that provides
  * a route messenger with the specified capabilities.
  *
- * @param path.path
- * @param path - The path of the route. This is used for debugging purposes and
- * to ensure that the route messenger's namespace is unique across routes.
- * @param element - The element to render for this route. This will be wrapped
- * in a {@link RouteWithMessenger} component that provides the route messenger.
- * @param capabilities - Capabilities to delegate from the UI messenger to the
- * route messenger.
- * @param capabilities.actions - Action types to delegate from the UI messenger
+ * @param options - Options bag.
+ * @param options.path - The path of the route. This is used for debugging
+ * purposes and to ensure that the route messenger's namespace is unique across
+ * routes.
+ * @param options.element - The element to render for this route. This will be
+ * wrapped in a {@link RouteWithMessenger} component that provides the route
+ * messenger.
+ * @param options.capabilities - Capabilities to delegate from the UI messenger
  * to the route messenger.
- * @param capabilities.events - Event types to delegate from the UI messenger to
- * the route messenger.
- * @param path.element
- * @param path.capabilities
  */
 export function createRouteWithMessenger({
   path,
