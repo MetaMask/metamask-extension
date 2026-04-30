@@ -58,7 +58,7 @@ export const useInitialBridgeTokens = ({
         bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       });
       return response;
-    }, [assetsToIncludeId, jwt, isExternalServicesEnabled]);
+    }, [assetsToIncludeId, chainIds, jwt, isExternalServicesEnabled]);
 
   useEffect(() => {
     return () => {
