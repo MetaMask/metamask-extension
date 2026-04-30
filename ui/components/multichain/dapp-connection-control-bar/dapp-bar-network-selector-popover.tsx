@@ -75,7 +75,6 @@ type DappBarNetworkSelectorPopoverProps = {
 };
 
 const POPOVER_MAX_HEIGHT = 320;
-const POPOVER_WIDTH = 280;
 
 /**
  * Inline popover anchored to the Dapp Connection Control Bar's network
@@ -280,10 +279,6 @@ export const DappBarNetworkSelectorPopover: React.FC<
       padding={0}
       referenceHidden={false}
       data-testid="dapp-bar-network-selector-popover"
-      style={{
-        width: `${POPOVER_WIDTH}px`,
-        zIndex: 200,
-      }}
       className="dapp-bar-network-selector-popover"
     >
       <Box
