@@ -30,7 +30,8 @@ type TestAssetsController = {
 };
 
 function getAC(vd: { data: unknown }): TestAssetsController {
-  return (vd.data as Record<string, unknown>).AssetsController as TestAssetsController;
+  return (vd.data as Record<string, unknown>)
+    .AssetsController as TestAssetsController;
 }
 
 function buildBaseStorage(overrides: Record<string, unknown> = {}) {
@@ -60,7 +61,12 @@ describe(`migration #${VERSION}`, () => {
           allTokens: {
             '0x1': {
               [ACCOUNT_1_ADDRESS]: [
-                { address: USDC_ADDRESS, symbol: 'USDC', decimals: 6, name: 'USD Coin' },
+                {
+                  address: USDC_ADDRESS,
+                  symbol: 'USDC',
+                  decimals: 6,
+                  name: 'USD Coin',
+                },
               ],
             },
           },
@@ -85,7 +91,9 @@ describe(`migration #${VERSION}`, () => {
     expect(ac.assetsBalance[ACCOUNT_1_ID]).toMatchObject({
       [USDC_CAIP19_MAINNET]: { amount: '100000000' },
     });
-    expect(ac.customAssets[ACCOUNT_1_ID] ?? []).not.toContain(USDC_CAIP19_MAINNET);
+    expect(ac.customAssets[ACCOUNT_1_ID] ?? []).not.toContain(
+      USDC_CAIP19_MAINNET,
+    );
   });
 
   // ─── EVM: tokens without balance ────────────────────────────────────────────
@@ -97,7 +105,12 @@ describe(`migration #${VERSION}`, () => {
           allTokens: {
             '0x1': {
               [ACCOUNT_1_ADDRESS]: [
-                { address: DAI_ADDRESS, symbol: 'DAI', decimals: 18, name: 'Dai' },
+                {
+                  address: DAI_ADDRESS,
+                  symbol: 'DAI',
+                  decimals: 18,
+                  name: 'Dai',
+                },
               ],
             },
           },
@@ -115,7 +128,9 @@ describe(`migration #${VERSION}`, () => {
 
     const ac = getAC(vd);
     expect(ac.customAssets[ACCOUNT_1_ID]).toContain(DAI_CAIP19_MAINNET);
-    expect(ac.assetsBalance[ACCOUNT_1_ID]?.[DAI_CAIP19_MAINNET]).toBeUndefined();
+    expect(
+      ac.assetsBalance[ACCOUNT_1_ID]?.[DAI_CAIP19_MAINNET],
+    ).toBeUndefined();
   });
 
   it('moves EVM tokens with MISSING balance entry into customAssets', async () => {
@@ -125,7 +140,12 @@ describe(`migration #${VERSION}`, () => {
           allTokens: {
             '0x1': {
               [ACCOUNT_1_ADDRESS]: [
-                { address: DAI_ADDRESS, symbol: 'DAI', decimals: 18, name: 'Dai' },
+                {
+                  address: DAI_ADDRESS,
+                  symbol: 'DAI',
+                  decimals: 18,
+                  name: 'Dai',
+                },
               ],
             },
           },
@@ -194,7 +214,12 @@ describe(`migration #${VERSION}`, () => {
           allTokens: {
             '0x1': {
               [ACCOUNT_1_ADDRESS]: [
-                { address: USDC_ADDRESS, symbol: 'USDC-OLD', decimals: 6, name: 'Old' },
+                {
+                  address: USDC_ADDRESS,
+                  symbol: 'USDC-OLD',
+                  decimals: 6,
+                  name: 'Old',
+                },
               ],
             },
           },
@@ -222,7 +247,12 @@ describe(`migration #${VERSION}`, () => {
           allTokens: {
             '0x1': {
               [ACCOUNT_1_ADDRESS]: [
-                { address: USDC_ADDRESS, symbol: 'USDC', decimals: 6, name: 'USD Coin' },
+                {
+                  address: USDC_ADDRESS,
+                  symbol: 'USDC',
+                  decimals: 6,
+                  name: 'USD Coin',
+                },
               ],
             },
           },
@@ -295,7 +325,12 @@ describe(`migration #${VERSION}`, () => {
           allTokens: {
             '0x1': {
               [ACCOUNT_1_ADDRESS]: [
-                { address: NFT_ADDRESS, symbol: 'BAYC', decimals: 0, isERC721: true },
+                {
+                  address: NFT_ADDRESS,
+                  symbol: 'BAYC',
+                  decimals: 0,
+                  isERC721: true,
+                },
               ],
             },
           },
@@ -323,11 +358,17 @@ describe(`migration #${VERSION}`, () => {
         TokensController: {
           allTokens: {
             '0x1': {
-              [ACCOUNT_1_ADDRESS]: [{ address: USDC_ADDRESS, symbol: 'USDC', decimals: 6 }],
-              [ACCOUNT_2_ADDRESS]: [{ address: DAI_ADDRESS, symbol: 'DAI', decimals: 18 }],
+              [ACCOUNT_1_ADDRESS]: [
+                { address: USDC_ADDRESS, symbol: 'USDC', decimals: 6 },
+              ],
+              [ACCOUNT_2_ADDRESS]: [
+                { address: DAI_ADDRESS, symbol: 'DAI', decimals: 18 },
+              ],
             },
             [POLYGON_CHAIN_ID]: {
-              [ACCOUNT_1_ADDRESS]: [{ address: USDC_ADDRESS, symbol: 'USDC', decimals: 6 }],
+              [ACCOUNT_1_ADDRESS]: [
+                { address: USDC_ADDRESS, symbol: 'USDC', decimals: 6 },
+              ],
             },
           },
         },
@@ -349,9 +390,11 @@ describe(`migration #${VERSION}`, () => {
     const ac = getAC(vd);
 
     // Account 1 mainnet USDC: has balance
-    expect(ac.assetsBalance[ACCOUNT_1_ID]?.[USDC_CAIP19_MAINNET]).toMatchObject({
-      amount: '1000000000000000000',
-    });
+    expect(ac.assetsBalance[ACCOUNT_1_ID]?.[USDC_CAIP19_MAINNET]).toMatchObject(
+      {
+        amount: '1000000000000000000',
+      },
+    );
     // Account 1 polygon USDC: zero balance → customAssets
     expect(ac.customAssets[ACCOUNT_1_ID]).toContain(USDC_CAIP19_POLYGON);
     // Account 2 DAI: no balance → customAssets
@@ -392,7 +435,9 @@ describe(`migration #${VERSION}`, () => {
     expect(ac.assetsBalance[ACCOUNT_1_ID]?.[SOL_USDC_ASSET_ID]).toMatchObject({
       amount: '500.5',
     });
-    expect(ac.customAssets[ACCOUNT_1_ID] ?? []).not.toContain(SOL_USDC_ASSET_ID);
+    expect(ac.customAssets[ACCOUNT_1_ID] ?? []).not.toContain(
+      SOL_USDC_ASSET_ID,
+    );
   });
 
   // ─── Non-EVM: assets without balance ────────────────────────────────────────
@@ -535,7 +580,12 @@ describe(`migration #${VERSION}`, () => {
         TokenBalancesController: { tokenBalances: {} },
         AssetsController: {
           assetsInfo: {
-            [DAI_CAIP19_MAINNET]: { type: 'erc20', symbol: 'DAI', name: 'Dai', decimals: 18 },
+            [DAI_CAIP19_MAINNET]: {
+              type: 'erc20',
+              symbol: 'DAI',
+              name: 'Dai',
+              decimals: 18,
+            },
           },
           assetsBalance: {},
           customAssets: { [ACCOUNT_1_ID]: [DAI_CAIP19_MAINNET] },

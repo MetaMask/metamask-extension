@@ -64,12 +64,10 @@ export const migrate = (async (versionedData, changedControllers) => {
   let changed = false;
 
   // ── 3. EVM tokens: TokensController.allTokens ──────────────────────────────
-  changed =
-    migrateEvmTokens(data, ac, addressToId) || changed;
+  changed = migrateEvmTokens(data, ac, addressToId) || changed;
 
   // ── 4. Non-EVM assets: MultichainAssetsController.accountsAssets ───────────
-  changed =
-    migrateNonEvmAssets(data, ac) || changed;
+  changed = migrateNonEvmAssets(data, ac) || changed;
 
   if (changed) {
     changedControllers.add('AssetsController');
@@ -81,8 +79,11 @@ export const migrate = (async (versionedData, changedControllers) => {
 /**
  * Build a map from lowercase account address to account UUID using
  * AccountsController.internalAccounts.accounts.
+ * @param data
  */
-function buildAddressToIdMap(data: Record<string, unknown>): Record<string, string> {
+function buildAddressToIdMap(
+  data: Record<string, unknown>,
+): Record<string, string> {
   const map: Record<string, string> = {};
 
   if (
@@ -115,6 +116,7 @@ function buildAddressToIdMap(data: Record<string, unknown>): Record<string, stri
 /**
  * Convert a hex chain ID (e.g. '0x1') to a CAIP-2 chain ID (e.g. 'eip155:1').
  * Returns null when the input cannot be parsed.
+ * @param hexChainId
  */
 function hexChainIdToCaip2(hexChainId: string): string | null {
   try {
@@ -131,6 +133,8 @@ function hexChainIdToCaip2(hexChainId: string): string | null {
 /**
  * Build the CAIP-19 asset ID for an ERC-20 token.
  * Returns null when the chain ID cannot be parsed.
+ * @param hexChainId
+ * @param tokenAddress
  */
 function buildErc20AssetId(
   hexChainId: string,
@@ -150,6 +154,7 @@ function buildErc20AssetId(
 /**
  * Convert a hex balance string (e.g. '0x5f5e100') to a decimal string
  * (e.g. '100000000'). Returns '0' when the input cannot be parsed.
+ * @param hex
  */
 function hexBalanceToDecimal(hex: string): string {
   try {
@@ -161,6 +166,7 @@ function hexBalanceToDecimal(hex: string): string {
 
 /**
  * Returns true when hexBalance represents a non-zero value.
+ * @param hexBalance
  */
 function isNonZeroHexBalance(hexBalance: unknown): hexBalance is string {
   if (typeof hexBalance !== 'string') {
@@ -176,6 +182,7 @@ function isNonZeroHexBalance(hexBalance: unknown): hexBalance is string {
 /**
  * Returns true when amount (a decimal string, possibly with fractional part)
  * represents a non-zero value.
+ * @param amount
  */
 function isNonZeroAmount(amount: unknown): amount is string {
   if (typeof amount !== 'string') {
@@ -196,6 +203,7 @@ function isNonZeroAmount(amount: unknown): amount is string {
  * - spl    → 'spl'
  * - slip44 → 'native'
  * - anything else → 'spl' (safe default for non-EVM snap assets)
+ * @param assetId
  */
 function assetTypeFromCaip19(assetId: string): 'erc20' | 'spl' | 'native' {
   const slashIdx = assetId.indexOf('/');
@@ -294,15 +302,17 @@ function migrateEvmTokens(
 
         // Write metadata once (first write wins; do not overwrite API data)
         if (!ac.assetsInfo[assetId]) {
+          const symbol = typeof token.symbol === 'string' ? token.symbol : '';
+          let name = '';
+          if (typeof token.name === 'string') {
+            name = token.name;
+          } else if (typeof token.symbol === 'string') {
+            name = token.symbol;
+          }
           ac.assetsInfo[assetId] = {
             type: 'erc20' as const,
-            symbol: typeof token.symbol === 'string' ? token.symbol : '',
-            name:
-              typeof token.name === 'string'
-                ? token.name
-                : typeof token.symbol === 'string'
-                ? token.symbol
-                : '',
+            symbol,
+            name,
             decimals: typeof token.decimals === 'number' ? token.decimals : 0,
             ...(typeof token.image === 'string' && token.image
               ? { image: token.image }
@@ -406,18 +416,18 @@ function migrateNonEvmAssets(
           const units = Array.isArray(snapMeta.units) ? snapMeta.units : [];
           const primaryUnit = isObject(units[0]) ? units[0] : null;
 
+          let symbol = '';
+          if (typeof snapMeta.symbol === 'string') {
+            symbol = snapMeta.symbol;
+          } else if (typeof primaryUnit?.symbol === 'string') {
+            symbol = primaryUnit.symbol;
+          }
           ac.assetsInfo[assetId] = {
             type: assetTypeFromCaip19(assetId),
-            symbol:
-              typeof snapMeta.symbol === 'string'
-                ? snapMeta.symbol
-                : typeof primaryUnit?.symbol === 'string'
-                ? primaryUnit.symbol
-                : '',
+            symbol,
             name: typeof snapMeta.name === 'string' ? snapMeta.name : '',
             decimals:
-              primaryUnit !== null &&
-              typeof primaryUnit.decimals === 'number'
+              primaryUnit !== null && typeof primaryUnit.decimals === 'number'
                 ? primaryUnit.decimals
                 : 0,
             ...(typeof snapMeta.iconUrl === 'string' && snapMeta.iconUrl
