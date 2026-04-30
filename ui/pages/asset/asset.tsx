@@ -64,7 +64,9 @@ const Asset = () => {
     isCaipChainId(chainId) &&
     isCaipAssetType(decodedAsset)
       ? (() => {
-          const parsedAssetType = parseCaipAssetType(decodedAsset as CaipAssetType);
+          const parsedAssetType = parseCaipAssetType(
+            decodedAsset as CaipAssetType,
+          );
           if (parsedAssetType.chainId !== chainId) {
             return null;
           }
@@ -84,7 +86,8 @@ const Asset = () => {
         })()
       : null;
 
-  // Use token from location state or URL-derived metadata as fallback when user doesn't own the token
+  // Use token from location state or URL-derived metadata as fallback when user
+  // doesn't own the token
   const token = ownedToken ?? locationState?.token ?? fallbackNonEvmToken;
 
   const nft: Nft = nfts.find(

@@ -517,7 +517,10 @@ describe('AssetPage', () => {
 
   it('renders non-EVM asset details without actions when account is incompatible', () => {
     const { queryByTestId, getByTestId } = renderWithProvider(
-      <AssetPage asset={nonEvmNative} optionsButton={<div data-testid="asset-options" />} />,
+      <AssetPage
+        asset={nonEvmNative}
+        optionsButton={<div data-testid="asset-options" />}
+      />,
       configureMockStore([thunk])({
         ...mockStore,
         metamask: {
