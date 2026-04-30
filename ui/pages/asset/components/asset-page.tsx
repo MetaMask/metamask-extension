@@ -178,7 +178,7 @@ const AssetPage = ({
       }
 
       if (isEvm) {
-        return getNativeTokenAddress(chainId);
+        return getNativeTokenAddress(chainId as Hex);
       }
 
       return asset.nativeAssetId ?? nativeAssetType;
@@ -461,7 +461,7 @@ const AssetPage = ({
           !isMusdAssetPage &&
           checkMusdCtaVisibility({
             address: (asset as { address: Hex }).address,
-            chainId,
+            chainId: chainId as Hex,
             symbol,
           }) && (
             <Box marginTop={2} paddingLeft={4} paddingRight={4}>
