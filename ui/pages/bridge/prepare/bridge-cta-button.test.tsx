@@ -1,5 +1,4 @@
 import React from 'react';
-import '@testing-library/jest-dom';
 import {
   QuoteResponse,
   RequestStatus,
@@ -383,6 +382,7 @@ describe('BridgeCTAButton', () => {
     expect(button.disabled).toBe(false);
   });
 
+  // @ts-expect-error: each is a valid test function in jest
   it.each([
     {
       description: 'no alert modal is provided',
@@ -533,17 +533,8 @@ describe('BridgeCTAButton', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it.each<
-    [
-      status: 'disable' | 'enable',
-      description: string,
-      validationErrors: Record<string, boolean>,
-      buttonLabel?: string,
-      bridgeStateOverrides?: Record<string, unknown>,
-      bridgeSliceOverrides?: Record<string, unknown>,
-      propOverrides?: Record<string, unknown>,
-    ]
-  >([
+  // @ts-expect-error: each is a valid test function in jest
+  it.each([
     ['disable', 'there is a tx alert', { isTxAlertPresent: true }],
     [
       'disable',
@@ -639,6 +630,7 @@ describe('BridgeCTAButton', () => {
     },
   );
 
+  // @ts-expect-error: each is a valid test function in jest
   it.each([
     ['market is closed (no quotes)', 'Market closed'],
     [
@@ -650,14 +642,9 @@ describe('BridgeCTAButton', () => {
     'should render the component when quotes are loading and %s',
     async (
       _: string,
-      bridgeSliceOverridesOrLabel: string | Record<string, unknown> = {},
+      bridgeSliceOverrides: Record<string, unknown> = {},
       propOverrides: Record<string, unknown> = {},
     ) => {
-      const bridgeSliceOverrides =
-        typeof bridgeSliceOverridesOrLabel === 'string'
-          ? {}
-          : bridgeSliceOverridesOrLabel;
-
       const mockStore = createBridgeMockStore({
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
@@ -703,14 +690,8 @@ describe('BridgeCTAButton', () => {
     },
   );
 
-  it.each<
-    [
-      description: string,
-      buttonLabel: string,
-      bridgeStateOverrides: Record<string, unknown>,
-      wasTxDeclined?: boolean,
-    ]
-  >([
+  // @ts-expect-error: each is a valid test function in jest
+  it.each([
     [
       'quote is expired (no quotes)',
       'Get new quote',
@@ -745,7 +726,7 @@ describe('BridgeCTAButton', () => {
     async (
       _: string,
       buttonLabel: string,
-      bridgeStateOverrides: Record<string, unknown>,
+      bridgeStateOverrides: Record<string, boolean>,
       wasTxDeclined: boolean = false,
     ) => {
       const mockStore = createBridgeMockStore({
@@ -885,6 +866,7 @@ describe('BridgeCTAButton', () => {
     `);
   });
 
+  // @ts-expect-error: each is a valid test function in jest
   it.each([
     { priceImpact: '0.253', expectedOpenModalCalls: 1 }, // error
     { priceImpact: '0', expectedOpenModalCalls: 0 }, // neither
