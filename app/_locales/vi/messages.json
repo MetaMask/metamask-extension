@@ -196,9 +196,6 @@
   "addAUrl": {
     "message": "Thêm URL"
   },
-  "addAWallet": {
-    "message": "Thêm ví"
-  },
   "addAccount": {
     "message": "Thêm tài khoản"
   },
@@ -1092,12 +1089,6 @@
   "bridgeLowestCost": {
     "message": "Chi phí thấp nhất"
   },
-  "bridgeMalicious": {
-    "message": "Độc hại"
-  },
-  "bridgeMaliciousTokenTitle": {
-    "message": "Token độc hại"
-  },
   "bridgeMarketClosedAction": {
     "message": "Thị trường đã đóng cửa"
   },
@@ -1118,9 +1109,6 @@
   },
   "bridgeNoMMFee": {
     "message": "Không có phí MM"
-  },
-  "bridgeNoPriceInfoTitle": {
-    "message": "Không có thông tin giá"
   },
   "bridgePoints": {
     "message": "Điểm ước tính",
@@ -1217,102 +1205,6 @@
   "bridgeReceiveLoading": {
     "message": "Đang nhận trên chuỗi đích"
   },
-  "bridgeSecurityDataKnownAirdrop": {
-    "message": "Tặng thưởng đáng ngờ"
-  },
-  "bridgeSecurityDataKnownConcentratedSupply": {
-    "message": "Nguồn cung tập trung"
-  },
-  "bridgeSecurityDataKnownDynamicAnalysis": {
-    "message": "Hành vi đáng ngờ"
-  },
-  "bridgeSecurityDataKnownFakeTradeMakerCount": {
-    "message": "Số lượng nhà giao dịch bị thổi phồng"
-  },
-  "bridgeSecurityDataKnownFakeVolume": {
-    "message": "Khối lượng giao dịch giả"
-  },
-  "bridgeSecurityDataKnownHeavilySniped": {
-    "message": "Hoạt động bot dày đặc"
-  },
-  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
-    "message": "Nguồn cung chưa được công bố"
-  },
-  "bridgeSecurityDataKnownHighBuyFee": {
-    "message": "Phí mua cao"
-  },
-  "bridgeSecurityDataKnownHighSellFee": {
-    "message": "Phí bán cao"
-  },
-  "bridgeSecurityDataKnownHighTransferFee": {
-    "message": "Phí chuyển khoản cao"
-  },
-  "bridgeSecurityDataKnownHoneypot": {
-    "message": "Rủi ro bẫy lừa đảo"
-  },
-  "bridgeSecurityDataKnownImpersonator": {
-    "message": "Mạo danh"
-  },
-  "bridgeSecurityDataKnownImpersonatorAsset": {
-    "message": "Mạo danh tài sản nhạy cảm"
-  },
-  "bridgeSecurityDataKnownImpersonatorHigh": {
-    "message": "Có khả năng mạo danh"
-  },
-  "bridgeSecurityDataKnownImpersonatorMedium": {
-    "message": "Có thể là mạo danh"
-  },
-  "bridgeSecurityDataKnownInappropriateContent": {
-    "message": "Nội dung không phù hợp"
-  },
-  "bridgeSecurityDataKnownInorganicVoume": {
-    "message": "Khối lượng giả mạo"
-  },
-  "bridgeSecurityDataKnownInsufficientLiquidity": {
-    "message": "Thanh khoản bị khóa thấp"
-  },
-  "bridgeSecurityDataKnownLowReputation": {
-    "message": "Người tạo có uy tín thấp"
-  },
-  "bridgeSecurityDataKnownMalicious": {
-    "message": "Đã biết là độc hại"
-  },
-  "bridgeSecurityDataKnownMetadata": {
-    "message": "Metadata đáng ngờ"
-  },
-  "bridgeSecurityDataKnownPostDump": {
-    "message": "Có khả năng thao túng giá"
-  },
-  "bridgeSecurityDataKnownRugpull": {
-    "message": "Rủi ro rút vốn bất ngờ"
-  },
-  "bridgeSecurityDataKnownSanctionedCreator": {
-    "message": "Người tạo bị trừng phạt"
-  },
-  "bridgeSecurityDataKnownSimilarMaliciousContract": {
-    "message": "Giống hợp đồng độc hại"
-  },
-  "bridgeSecurityDataKnownSnipeMint": {
-    "message": "Hoạt động của bot khi ra mắt"
-  },
-  "bridgeSecurityDataKnownSpamText": {
-    "message": "Tin nhắn rác"
-  },
-  "bridgeSecurityDataKnownStaticCodeSign": {
-    "message": "Mã đáng ngờ"
-  },
-  "bridgeSecurityDataKnownTokenBackdoor": {
-    "message": "Lỗ hổng token"
-  },
-  "bridgeSecurityDataKnownUnsellable": {
-    "message": "Token không thể bán"
-  },
-  "bridgeSecurityDataKnownUnstablePrice": {
-    "message": "Giá không ổn định"
-  },
-  "bridgeSecurityDataKnownWashTrading": {
-    "message": "Giao dịch giả tạo"
-  },
   "bridgeSelectDestinationAccount": {
     "message": "Chọn tài khoản đích"
   },
@@ -1368,12 +1260,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Đang hoán đổi $1 thành $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeSuspicious": {
-    "message": "Đáng ngờ"
-  },
-  "bridgeSuspiciousTokenTitle": {
-    "message": "Token đáng ngờ"
   },
   "bridgeTo": {
     "message": "Cầu nối đến"
@@ -1846,9 +1732,6 @@
   },
   "connect": {
     "message": "Kết nối"
-  },
-  "connectAHardwareWallet": {
-    "message": "Kết nối ví cứng"
   },
   "connectAccounts": {
     "message": "Kết nối tài khoản"
@@ -3203,14 +3086,6 @@
     "message": "Ngày bắt đầu",
     "description": "Label for the start date of a permission"
   },
-  "gatorPermissionsStatusExpired": {
-    "message": "Đã hết hạn",
-    "description": "Tag label for a gator permission that has expired"
-  },
-  "gatorPermissionsStatusRevoked": {
-    "message": "Đã bị thu hồi",
-    "description": "Tag label for a gator permission that has been revoked"
-  },
   "gatorPermissionsStreamRate": {
     "message": "Tốc độ thanh toán liên tục",
     "description": "Label for the stream rate of a permission"
@@ -3490,9 +3365,6 @@
   "importAWallet": {
     "message": "Nhập ví"
   },
-  "importAWalletDescription": {
-    "message": "Sử dụng cụm từ khôi phục có 12, 18 hoặc 24 từ"
-  },
   "importAccountError": {
     "message": "Lỗi khi nhập tài khoản."
   },
@@ -3523,9 +3395,6 @@
   },
   "importAnAccount": {
     "message": "Nhập tài khoản"
-  },
-  "importAnAccountDescription": {
-    "message": "Thông qua khóa riêng tư"
   },
   "importNFT": {
     "message": "Nhập NFT"

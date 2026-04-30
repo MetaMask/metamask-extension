@@ -196,9 +196,6 @@
   "addAUrl": {
     "message": "URL ekle"
   },
-  "addAWallet": {
-    "message": "Bir cüzdan ekleyin"
-  },
   "addAccount": {
     "message": "Hesap ekleyin"
   },
@@ -1092,12 +1089,6 @@
   "bridgeLowestCost": {
     "message": "En düşük maliyet"
   },
-  "bridgeMalicious": {
-    "message": "Kötü amaçlı"
-  },
-  "bridgeMaliciousTokenTitle": {
-    "message": "Kötü amaçlı tokenlar"
-  },
   "bridgeMarketClosedAction": {
     "message": "Piyasa kapalı"
   },
@@ -1118,9 +1109,6 @@
   },
   "bridgeNoMMFee": {
     "message": "MM ücreti yok"
-  },
-  "bridgeNoPriceInfoTitle": {
-    "message": "Fiyat bilgisi yok"
   },
   "bridgePoints": {
     "message": "Tah. puanlar",
@@ -1217,102 +1205,6 @@
   "bridgeReceiveLoading": {
     "message": "Hedef zincirde alınıyor"
   },
-  "bridgeSecurityDataKnownAirdrop": {
-    "message": "Şüpheli airdrop"
-  },
-  "bridgeSecurityDataKnownConcentratedSupply": {
-    "message": "Konsantre arz"
-  },
-  "bridgeSecurityDataKnownDynamicAnalysis": {
-    "message": "Şüpheli davranış"
-  },
-  "bridgeSecurityDataKnownFakeTradeMakerCount": {
-    "message": "Şişirilmiş yatırımcı sayısı"
-  },
-  "bridgeSecurityDataKnownFakeVolume": {
-    "message": "Sahte hacim"
-  },
-  "bridgeSecurityDataKnownHeavilySniped": {
-    "message": "Yoğun bot aktivitesi"
-  },
-  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
-    "message": "Açıklanmamış arz"
-  },
-  "bridgeSecurityDataKnownHighBuyFee": {
-    "message": "Yüksel alış ücreti"
-  },
-  "bridgeSecurityDataKnownHighSellFee": {
-    "message": "Yüksek satış ücreti"
-  },
-  "bridgeSecurityDataKnownHighTransferFee": {
-    "message": "Yüksek transfer ücreti"
-  },
-  "bridgeSecurityDataKnownHoneypot": {
-    "message": "Honeypot (bal küpü/satış engeli) riski"
-  },
-  "bridgeSecurityDataKnownImpersonator": {
-    "message": "Taklitçi"
-  },
-  "bridgeSecurityDataKnownImpersonatorAsset": {
-    "message": "Hassas bir varlığı taklit ediyor"
-  },
-  "bridgeSecurityDataKnownImpersonatorHigh": {
-    "message": "Muhtemel taklitçi"
-  },
-  "bridgeSecurityDataKnownImpersonatorMedium": {
-    "message": "Olası taklitçi"
-  },
-  "bridgeSecurityDataKnownInappropriateContent": {
-    "message": "Uygunsuz içerik"
-  },
-  "bridgeSecurityDataKnownInorganicVoume": {
-    "message": "Yapay hacim"
-  },
-  "bridgeSecurityDataKnownInsufficientLiquidity": {
-    "message": "Düşük kilitli likidite"
-  },
-  "bridgeSecurityDataKnownLowReputation": {
-    "message": "İçerik oluşturucunun itibarı düşük"
-  },
-  "bridgeSecurityDataKnownMalicious": {
-    "message": "Kötü amaçlı olarak biliniyor"
-  },
-  "bridgeSecurityDataKnownMetadata": {
-    "message": "Şüpheli meta veri"
-  },
-  "bridgeSecurityDataKnownPostDump": {
-    "message": "Olası fiyat manipülasyonu"
-  },
-  "bridgeSecurityDataKnownRugpull": {
-    "message": "Rugpull (likidite boşaltma) riski"
-  },
-  "bridgeSecurityDataKnownSanctionedCreator": {
-    "message": "Yaptırım uygulanan içerik oluşturucu"
-  },
-  "bridgeSecurityDataKnownSimilarMaliciousContract": {
-    "message": "Kötü amaçlı sözleşmeye benziyor"
-  },
-  "bridgeSecurityDataKnownSnipeMint": {
-    "message": "Lansman sırasında bot aktivitesi"
-  },
-  "bridgeSecurityDataKnownSpamText": {
-    "message": "Spam metin"
-  },
-  "bridgeSecurityDataKnownStaticCodeSign": {
-    "message": "Şüpheli kod"
-  },
-  "bridgeSecurityDataKnownTokenBackdoor": {
-    "message": "Token arka kapısı"
-  },
-  "bridgeSecurityDataKnownUnsellable": {
-    "message": "Satılamayan token"
-  },
-  "bridgeSecurityDataKnownUnstablePrice": {
-    "message": "İstikrarsız fiyat"
-  },
-  "bridgeSecurityDataKnownWashTrading": {
-    "message": "Wash trading (kendi kendine işlem yaparak hacim şişirme)"
-  },
   "bridgeSelectDestinationAccount": {
     "message": "Hedef hesap seçin"
   },
@@ -1368,12 +1260,6 @@
   "bridgeStepActionSwapPending": {
     "message": "$1 ile $2 swap ediliyor",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeSuspicious": {
-    "message": "Şüpheli"
-  },
-  "bridgeSuspiciousTokenTitle": {
-    "message": "Şüpheli tokenlar"
   },
   "bridgeTo": {
     "message": "Köprü yapılan:"
@@ -1846,9 +1732,6 @@
   },
   "connect": {
     "message": "Bağla"
-  },
-  "connectAHardwareWallet": {
-    "message": "Bir donanım cüzdanı bağlayın"
   },
   "connectAccounts": {
     "message": "Hesapları bağla"
@@ -3203,14 +3086,6 @@
     "message": "Başlangıç tarihi",
     "description": "Label for the start date of a permission"
   },
-  "gatorPermissionsStatusExpired": {
-    "message": "Süresi doldu",
-    "description": "Tag label for a gator permission that has expired"
-  },
-  "gatorPermissionsStatusRevoked": {
-    "message": "Iptal edildi",
-    "description": "Tag label for a gator permission that has been revoked"
-  },
   "gatorPermissionsStreamRate": {
     "message": "Akış hızı",
     "description": "Label for the stream rate of a permission"
@@ -3490,9 +3365,6 @@
   "importAWallet": {
     "message": "Bir cüzdanı içe aktarın"
   },
-  "importAWalletDescription": {
-    "message": "12, 18 veya 24 sözcükten oluşan anahtar cümle kullanarak"
-  },
   "importAccountError": {
     "message": "Hesap içe aktarılırken hata oluştu."
   },
@@ -3523,9 +3395,6 @@
   },
   "importAnAccount": {
     "message": "Bir hesabı içe aktar"
-  },
-  "importAnAccountDescription": {
-    "message": "Özel anahtar ile"
   },
   "importNFT": {
     "message": "NFT'yi içe aktar"

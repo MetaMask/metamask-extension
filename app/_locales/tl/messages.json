@@ -196,9 +196,6 @@
   "addAUrl": {
     "message": "Magdagdag ng URL"
   },
-  "addAWallet": {
-    "message": "Magdagdag ng wallet"
-  },
   "addAccount": {
     "message": "Magdagdag ng account"
   },
@@ -1092,12 +1089,6 @@
   "bridgeLowestCost": {
     "message": "Pinakamababang halaga"
   },
-  "bridgeMalicious": {
-    "message": "Mapaminsala"
-  },
-  "bridgeMaliciousTokenTitle": {
-    "message": "Mapanganib na token"
-  },
   "bridgeMarketClosedAction": {
     "message": "Sarado ang market"
   },
@@ -1118,9 +1109,6 @@
   },
   "bridgeNoMMFee": {
     "message": "Walang bayad sa MM"
-  },
-  "bridgeNoPriceInfoTitle": {
-    "message": "Walang impormasyon sa presyo"
   },
   "bridgePoints": {
     "message": "Tinatayang mga point",
@@ -1217,102 +1205,6 @@
   "bridgeReceiveLoading": {
     "message": "Tumatanggap sa chain ng destinasyon"
   },
-  "bridgeSecurityDataKnownAirdrop": {
-    "message": "Kahina-hinalang airdrop"
-  },
-  "bridgeSecurityDataKnownConcentratedSupply": {
-    "message": "Concentrated supply"
-  },
-  "bridgeSecurityDataKnownDynamicAnalysis": {
-    "message": "Kahina-hinalang gawi"
-  },
-  "bridgeSecurityDataKnownFakeTradeMakerCount": {
-    "message": "Na-inflate na bilang ng trader"
-  },
-  "bridgeSecurityDataKnownFakeVolume": {
-    "message": "Pekeng dami"
-  },
-  "bridgeSecurityDataKnownHeavilySniped": {
-    "message": "Matinding aktibidad ng bot"
-  },
-  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
-    "message": "Hindi inihayag na supply"
-  },
-  "bridgeSecurityDataKnownHighBuyFee": {
-    "message": "Mataas na bayad sa pagbili"
-  },
-  "bridgeSecurityDataKnownHighSellFee": {
-    "message": "Mataas na bayad sa pagbebenta"
-  },
-  "bridgeSecurityDataKnownHighTransferFee": {
-    "message": "Mataas na bayad sa transfer"
-  },
-  "bridgeSecurityDataKnownHoneypot": {
-    "message": "Panganib ng honeypot"
-  },
-  "bridgeSecurityDataKnownImpersonator": {
-    "message": "Nagpapanggap na ibang tao"
-  },
-  "bridgeSecurityDataKnownImpersonatorAsset": {
-    "message": "Nagpapanggap na isang sensitibong asset"
-  },
-  "bridgeSecurityDataKnownImpersonatorHigh": {
-    "message": "Malamang na nagpapanggap na ibang tao"
-  },
-  "bridgeSecurityDataKnownImpersonatorMedium": {
-    "message": "Posibleng nangpapanggap na ibang tao"
-  },
-  "bridgeSecurityDataKnownInappropriateContent": {
-    "message": "Hindi naangkop na content"
-  },
-  "bridgeSecurityDataKnownInorganicVoume": {
-    "message": "Artipisyal na dami"
-  },
-  "bridgeSecurityDataKnownInsufficientLiquidity": {
-    "message": "Mababang naka-lock na liquidity"
-  },
-  "bridgeSecurityDataKnownLowReputation": {
-    "message": "Hindi maganda ang reputasyon ng creator"
-  },
-  "bridgeSecurityDataKnownMalicious": {
-    "message": "Kilalang mapaminsala"
-  },
-  "bridgeSecurityDataKnownMetadata": {
-    "message": "Kahina-hinalang metadata"
-  },
-  "bridgeSecurityDataKnownPostDump": {
-    "message": "Posibleng pagmamanipula ng presyo"
-  },
-  "bridgeSecurityDataKnownRugpull": {
-    "message": "Panganib ng rugpull"
-  },
-  "bridgeSecurityDataKnownSanctionedCreator": {
-    "message": "Pinarusahang creator"
-  },
-  "bridgeSecurityDataKnownSimilarMaliciousContract": {
-    "message": "Mukhang mapaminsalang kontrata"
-  },
-  "bridgeSecurityDataKnownSnipeMint": {
-    "message": "Paglulunsad ng aktibidad ng bot"
-  },
-  "bridgeSecurityDataKnownSpamText": {
-    "message": "Spam text"
-  },
-  "bridgeSecurityDataKnownStaticCodeSign": {
-    "message": "Kahina-hinalang code"
-  },
-  "bridgeSecurityDataKnownTokenBackdoor": {
-    "message": "Backdoor ng token"
-  },
-  "bridgeSecurityDataKnownUnsellable": {
-    "message": "Hindi maibentang token"
-  },
-  "bridgeSecurityDataKnownUnstablePrice": {
-    "message": "Pabago-bagong presyo"
-  },
-  "bridgeSecurityDataKnownWashTrading": {
-    "message": "Wash na pag-trade"
-  },
   "bridgeSelectDestinationAccount": {
     "message": "Pumili ng destinasyong account"
   },
@@ -1368,12 +1260,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Nagsa-swap ng $1 para sa $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeSuspicious": {
-    "message": "Kahina-hinala"
-  },
-  "bridgeSuspiciousTokenTitle": {
-    "message": "Kahina-hinalang token"
   },
   "bridgeTo": {
     "message": "I-bridge sa"
@@ -1846,9 +1732,6 @@
   },
   "connect": {
     "message": "Kumonekta"
-  },
-  "connectAHardwareWallet": {
-    "message": "Magkonekta ng wallet na hardware"
   },
   "connectAccounts": {
     "message": "Ikonekta ang mga account"
@@ -3203,14 +3086,6 @@
     "message": "Petsa ng pagsisimula",
     "description": "Label for the start date of a permission"
   },
-  "gatorPermissionsStatusExpired": {
-    "message": "Nag-expire",
-    "description": "Tag label for a gator permission that has expired"
-  },
-  "gatorPermissionsStatusRevoked": {
-    "message": "Binawi",
-    "description": "Tag label for a gator permission that has been revoked"
-  },
   "gatorPermissionsStreamRate": {
     "message": "Rate ng pag-stream",
     "description": "Label for the stream rate of a permission"
@@ -3490,9 +3365,6 @@
   "importAWallet": {
     "message": "I-import ang wallet"
   },
-  "importAWalletDescription": {
-    "message": "Paggamit ng 12, 18, 0 24 na salitang seed phrase"
-  },
   "importAccountError": {
     "message": "Error sa pag-import ng account."
   },
@@ -3523,9 +3395,6 @@
   },
   "importAnAccount": {
     "message": "Mag-import ng account"
-  },
-  "importAnAccountDescription": {
-    "message": "Sa pamamagitan ng pribadong key"
   },
   "importNFT": {
     "message": "Mag-import ng NFT"
