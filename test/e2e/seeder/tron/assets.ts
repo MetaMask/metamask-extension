@@ -31,6 +31,24 @@ export type TronLocalNodeOptions = {
   initialBalances?: Record<string, number>;
   trc10Balances?: Record<string, Partial<Record<TronTrc10Symbol, string>>>;
   trc20Balances?: Record<string, Partial<Record<TronTrc20Symbol, string>>>;
+  /**
+   * Staked TRX (frozen for energy) per address, in SUN. Surfaces as the
+   * single-entry `frozenV2` array on the TronGrid account response that the
+   * wallet snap reads. Read-only state — no stake/unstake UX is available
+   * in MetaMask, so we don't need a mutable stake API.
+   */
+  stakedTrxBalances?: Record<string, string>;
+  /**
+   * Placeholder for a future TRC721 implementation. The seeder accepts and
+   * ignores this field today so test code can be authored against the final
+   * shape before the runtime work lands.
+   */
+  trc721Balances?: Record<string, Record<string, string[]>>;
+  /**
+   * Placeholder for a future TRC1155 implementation. Same accept-and-ignore
+   * contract as `trc721Balances`.
+   */
+  trc1155Balances?: Record<string, Record<string, Record<string, string>>>;
 };
 
 export type TronNativeAccount = {
