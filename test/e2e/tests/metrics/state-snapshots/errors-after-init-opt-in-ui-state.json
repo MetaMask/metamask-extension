@@ -288,6 +288,8 @@
     "outdatedBrowserWarningLastShown": "object",
     "overrideContentSecurityPolicyHeader": true,
     "participateInMetaMetrics": true,
+    "passkeyAutoUnlockSuppressed": "boolean",
+    "passkeyRecord": null,
     "pendingApprovalCount": "number",
     "pendingApprovals": "object",
     "pendingExtensionVersion": null,
