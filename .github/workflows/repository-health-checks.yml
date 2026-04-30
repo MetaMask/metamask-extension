@@ -13,6 +13,8 @@ jobs:
       BRANCH: ${{ github.head_ref || github.ref_name }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SLACK_WEBHOOK_METAMASK_EXTENSION: ${{ secrets.SLACK_WEBHOOK_METAMASK_EXTENSION }}
+      # True only when the PR head lives in a different repository (no secrets).
+      IS_CROSS_REPO_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -45,7 +47,7 @@ jobs:
         run: yarn --check-resolutions
 
       # --- Baseline download (PR, push-to-main, and cron) ---
-      # When the download fails (first rollout, expired artifact, or fork PR
+      # When the download fails (first rollout, expired artifact, or cross-repo PR
       # with read-only token), NO_BASELINE=true tells the triage script to
       # fall back to the same criteria as the package.json `audit` script:
       #   yarn audit --environment production --severity moderate
@@ -73,29 +75,31 @@ jobs:
         uses: actions/github-script@v8
         with:
           script: |
-            // Security: we must use an explicit push-to-main run ID when
-            // downloading the baseline artifact. If we omit run-id,
-            // actions/download-artifact defaults to the current run only.
-            // If we searched all runs without the branch+event filter, a PR
-            // branch run could upload a poisoned audit-baseline artifact that
-            // whitelists arbitrary GHSA IDs, causing the diff to report zero
-            // new advisories.
-            const { data } = await github.rest.actions.listWorkflowRuns({
+            // Artifact-first search: find the audit-baseline artifact from
+            // the most recent main-branch run. Using the artifact API avoids
+            // race conditions with re-runs — a re-run of an older run may
+            // upload a newer artifact, but we always prefer the highest
+            // run ID (latest workflow run) to stay on the newest commit.
+            //
+            // Security: filter to head_branch === 'main' so a PR branch
+            // can never supply a poisoned baseline.
+            const { data } = await github.rest.actions.listArtifactsForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'main.yml',
-              branch: 'main',
-              event: 'push',
-              status: 'completed',
-              per_page: 1,
+              name: 'audit-baseline',
+              per_page: 20,
             });
-            const run = data.workflow_runs[0];
-            if (!run) {
-              core.setFailed('No completed push-to-main run found for main.yml');
+            const baseline = data.artifacts
+              .filter(a => a.workflow_run?.head_branch === 'main')
+              .sort((a, b) => b.workflow_run.id - a.workflow_run.id)[0];
+            if (!baseline) {
+              core.setFailed('No audit-baseline artifact found from a main-branch run');
               return;
             }
-            core.info(`Using baseline from run ${run.id} (${run.html_url})`);
-            core.setOutput('run-id', String(run.id));
+            const runId = baseline.workflow_run.id;
+            const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${runId}`;
+            core.info(`Using baseline from run ${runId} (${runUrl})`);
+            core.setOutput('run-id', String(runId));
 
       - name: Audit -- download baseline
         id: download-baseline
@@ -122,6 +126,8 @@ jobs:
       # check when new production moderate+ advisories are found.
       - name: Audit -- diff against baseline
         if: ${{ !cancelled() && steps.download-baseline.outcome == 'success' }}
+        env:
+          BASELINE_RUN_ID: ${{ steps.find-baseline-run.outputs.run-id }}
         run: |
           yarn tsx .github/scripts/yarn-audit-diff.mts
 
@@ -131,7 +137,7 @@ jobs:
         if: >-
           ${{
             !cancelled()
-            && github.event_name == 'push'
+            && (github.event_name == 'push' || github.event_name == 'schedule')
             && github.ref == 'refs/heads/main'
           }}
         run: mv .tmp/audit-current.json .tmp/audit-baseline.json
@@ -140,7 +146,7 @@ jobs:
         if: >-
           ${{
             !cancelled()
-            && github.event_name == 'push'
+            && (github.event_name == 'push' || github.event_name == 'schedule')
             && github.ref == 'refs/heads/main'
           }}
         uses: actions/upload-artifact@v7
@@ -152,7 +158,7 @@ jobs:
         if: >-
           ${{
             !cancelled()
-            && github.event_name == 'push'
+            && (github.event_name == 'push' || github.event_name == 'schedule')
             && github.ref == 'refs/heads/main'
             && github.repository == 'MetaMask/metamask-extension'
             && vars.AWS_REGION
@@ -184,7 +190,7 @@ jobs:
           GITHUB_BASE_REF: ${{ github.base_ref }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn tsx .github/scripts/check-feature-flag-registry.ts
+        run: yarn tsx .github/scripts/check-feature-flag-registry.mts
 
       - name: Check working tree
         if: ${{ !cancelled() }}

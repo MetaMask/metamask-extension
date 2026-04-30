@@ -1221,6 +1221,19 @@ export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthentic
 }
 
 /**
+ * Verifies a passkey assertion after enrollment (e.g. onboarding) without unlocking the vault.
+ *
+ * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.
+ */
+export function verifyPasskeyEnrollment(
+  authenticationResponse: PasskeyAuthenticationResponse,
+): Promise<void> {
+  return submitRequestToBackground('verifyPasskeyEnrollment', [
+    authenticationResponse,
+  ]);
+}
+
+/**
  * Protects the vault key with a passkey.
  *
  * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
@@ -3799,6 +3812,7 @@ export function createSpeedUpTransaction(
 }
 export function addNetwork(
   networkConfiguration: AddNetworkFields | UpdateNetworkFields,
+  options: { setActive?: boolean } = {},
 ): ThunkAction<
   Promise<NetworkConfiguration>,
   MetaMaskReduxState,
@@ -3810,6 +3824,7 @@ export function addNetwork(
     try {
       return await submitRequestToBackground('addNetwork', [
         networkConfiguration,
+        options,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -5904,24 +5919,6 @@ export function setEditedNetwork(
     | undefined = undefined,
 ): PayloadAction<object> {
   return { type: actionConstants.SET_EDIT_NETWORK, payload };
-}
-
-export function setNewNftAddedMessage(
-  newNftAddedMessage: string,
-): PayloadAction<string> {
-  return {
-    type: actionConstants.SET_NEW_NFT_ADDED_MESSAGE,
-    payload: newNftAddedMessage,
-  };
-}
-
-export function setRemoveNftMessage(
-  removeNftMessage: string,
-): PayloadAction<string> {
-  return {
-    type: actionConstants.SET_REMOVE_NFT_MESSAGE,
-    payload: removeNftMessage,
-  };
 }
 
 export function setNewTokensImported(

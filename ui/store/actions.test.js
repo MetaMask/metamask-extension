@@ -496,6 +496,29 @@ describe('Actions', () => {
       );
     });
 
+    it('#verifyPasskeyEnrollment forwards the authentication response', async () => {
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'AA',
+        },
+        type: 'public-key',
+      };
+      background.verifyPasskeyEnrollment.resolves();
+      setBackgroundConnection(background);
+
+      await actions.verifyPasskeyEnrollment(authenticationResponse);
+
+      expect(
+        background.verifyPasskeyEnrollment.calledOnceWith(
+          authenticationResponse,
+        ),
+      ).toBe(true);
+    });
+
     it('#protectVaultKeyWithPasskey forwards registration response and optional password', async () => {
       const registrationResponse = {
         id: 'cred',

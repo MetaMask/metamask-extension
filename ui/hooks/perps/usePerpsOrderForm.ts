@@ -60,7 +60,12 @@ export type UsePerpsOrderFormOptions = {
   mode: OrderMode;
   /** Existing position data for pre-population */
   existingPosition?: ExistingPositionData;
-  /** Available balance for trading (used to compute balancePercent) */
+  /**
+   * Tradeable balance for the active account (used to compute balancePercent).
+   * For HyperLiquid unified accounts this should be `availableToTradeBalance`
+   * (withdrawable + unreserved spot USDC), falling back to `availableBalance`.
+   * See `getTradeableBalance` helper.
+   */
   availableBalance?: number;
   /** Callback when form state changes */
   onFormStateChange?: (formState: OrderFormState) => void;

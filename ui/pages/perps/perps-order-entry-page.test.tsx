@@ -17,13 +17,24 @@ import thunk from 'redux-thunk';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../shared/constants/perps-events';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import {
   mockPositions,
   mockAccountState,
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
-import PerpsOrderEntryPage from './perps-order-entry-page';
+import PerpsOrderEntryPage, {
+  shouldShowPerpsOrderSubmissionToasts,
+} from './perps-order-entry-page';
 
 const mockUsePerpsMarketInfo = jest.fn(() => undefined);
 
@@ -310,6 +321,16 @@ describe('PerpsOrderEntryPage', () => {
     });
   });
 
+  describe('shouldShowPerpsOrderSubmissionToasts', () => {
+    it('returns true when there is no active pending perps deposit', () => {
+      expect(shouldShowPerpsOrderSubmissionToasts(false)).toBe(true);
+    });
+
+    it('returns false when a pending perps deposit already owns the flow', () => {
+      expect(shouldShowPerpsOrderSubmissionToasts(true)).toBe(false);
+    });
+  });
+
   describe('rendering', () => {
     it('renders the page with order entry form', () => {
       const store = mockStore(createMockState());
@@ -516,6 +537,7 @@ describe('PerpsOrderEntryPage', () => {
         account: {
           ...mockAccountState,
           availableBalance: '0',
+          availableToTradeBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: false,
@@ -535,6 +557,7 @@ describe('PerpsOrderEntryPage', () => {
         account: {
           ...mockAccountState,
           availableBalance: '0',
+          availableToTradeBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: false,
@@ -576,6 +599,7 @@ describe('PerpsOrderEntryPage', () => {
         account: {
           ...mockAccountState,
           availableBalance: '0',
+          availableToTradeBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: true,
@@ -773,6 +797,147 @@ describe('PerpsOrderEntryPage', () => {
       await waitFor(() => {
         expect(screen.getByTestId('submit-order-button')).toBeDisabled();
       });
+    });
+
+    it('disables submit when long auto-close stop loss is below liquidation price', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+
+      const slContainer = screen.getByTestId('sl-price-input');
+      const slInput = slContainer.querySelector('input');
+      fireEvent.change(slInput as HTMLInputElement, {
+        target: { value: '1' },
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      });
+      expect(screen.getByTestId('sl-validation-error')).toHaveTextContent(
+        /above.*liquidation/iu,
+      );
+    });
+
+    it('disables submit when short auto-close stop loss is above liquidation price', async () => {
+      mockSearchParams.set('direction', 'short');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+
+      const slContainer = screen.getByTestId('sl-price-input');
+      const slInput = slContainer.querySelector('input');
+      fireEvent.change(slInput as HTMLInputElement, {
+        target: { value: '99999' },
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      });
+      expect(screen.getByTestId('sl-validation-error')).toHaveTextContent(
+        /below.*liquidation/iu,
+      );
+    });
+  });
+
+  describe('analytics tracking', () => {
+    const renderWithTracking = () => {
+      const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
+      const store = mockStore(createMockState());
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <PerpsOrderEntryPage />
+        </MetaMetricsContext.Provider>,
+        store,
+      );
+
+      const screenViewedCalls = mockTrackEvent.mock.calls.filter(
+        ([arg]) => arg?.event === MetaMetricsEventName.PerpsScreenViewed,
+      );
+
+      expect(screenViewedCalls).toHaveLength(1);
+      expect(screenViewedCalls[0][0]).toEqual(
+        expect.objectContaining({
+          event: MetaMetricsEventName.PerpsScreenViewed,
+          category: MetaMetricsEventCategory.Perps,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+              PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
+            [PERPS_EVENT_PROPERTY.SOURCE]:
+              PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+          }),
+        }),
+      );
+
+      return screenViewedCalls[0][0].properties[
+        PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE
+      ];
+    };
+
+    it('tracks has_perp_balance as true when unified funds are tradeable but not withdrawable', () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          availableToTradeBalance: '100',
+        },
+        isInitialLoading: false,
+      });
+
+      const hasPerpBalance = renderWithTracking();
+
+      expect(hasPerpBalance).toBe(true);
+    });
+
+    it('falls back to availableBalance when availableToTradeBalance is absent', () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '100',
+          availableToTradeBalance: undefined,
+        },
+        isInitialLoading: false,
+      });
+
+      const hasPerpBalance = renderWithTracking();
+
+      expect(hasPerpBalance).toBe(true);
+    });
+
+    it('tracks has_perp_balance as false when both withdrawable and tradeable balances are zero', () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          availableToTradeBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+
+      const hasPerpBalance = renderWithTracking();
+
+      expect(hasPerpBalance).toBe(false);
     });
   });
 

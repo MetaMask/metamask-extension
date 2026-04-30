@@ -9,9 +9,11 @@ import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
 import { TabEmptyState } from '../../ui/tab-empty-state';
 import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
-import { selectLocalTransactions } from '../../../selectors/activity';
+import {
+  selectNonEvmTransactionsForActivity,
+  selectLocalTransactions,
+} from '../../../selectors/activity';
 import { selectEvmAddress } from '../../../selectors/accounts';
-import { selectCurrentAccountNonEvmTransactions } from '../../../selectors/multichain-transactions';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
@@ -77,12 +79,10 @@ export const ActivityList = ({ filter }: Props) => {
   const localTransactions = useSelector(selectLocalTransactions);
 
   // Non-EVM transactions - not in API
-  const nonEvmTransactions = useSelector(
-    selectCurrentAccountNonEvmTransactions,
-  );
+  const nonEvmTransactions = useSelector(selectNonEvmTransactionsForActivity);
 
-  // Merge and flatten for virtualization
-  const flattenedItems = useMemo(() => {
+  // Prepare the filtered transaction sources before merging them for rendering.
+  const transactionSources = useMemo(() => {
     let evmTransactions = data?.pages?.flatMap((page) => page.data ?? []) ?? [];
 
     // Filter local transactions by converting hex chainId to CAIP-2
@@ -120,15 +120,24 @@ export const ActivityList = ({ filter }: Props) => {
       );
     }
 
+    return {
+      evmTransactions,
+      filteredLocalTransactions,
+      filteredNonEvmTransactions,
+    };
+  }, [data, nonEvmTransactions, localTransactions, enabledNetworks, filter]);
+
+  // Merge and flatten for virtualization
+  const flattenedItems = useMemo(() => {
     // Merge all three types by time
     const mergedByTime = mergeAllTransactionsByTime(
-      filteredLocalTransactions,
-      evmTransactions,
-      filteredNonEvmTransactions,
+      transactionSources.filteredLocalTransactions,
+      transactionSources.evmTransactions,
+      transactionSources.filteredNonEvmTransactions,
     );
 
     return groupAndFlattenMergedTransactions(mergedByTime);
-  }, [data, nonEvmTransactions, localTransactions, enabledNetworks, filter]);
+  }, [transactionSources]);
 
   const [scrollMargin, setScrollMargin] = useState(0);
 
