@@ -11,7 +11,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-} from '../../../components/component-library';
+} from '../../component-library';
 import {
   Display,
   FontWeight,

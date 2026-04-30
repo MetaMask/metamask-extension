@@ -27,6 +27,7 @@ import {
   getShowShieldEntryModal,
   getPendingShieldCohort,
   getPendingRedirectRoute,
+  getLastVisitedPerpsRoute,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
 import {
@@ -47,6 +48,7 @@ import {
   lookupSelectedNetworks,
   setPendingShieldCohort,
   setPendingRedirectRoute,
+  setLastVisitedPerpsRoute,
 } from '../../store/actions';
 import { openBasicFunctionalityModal } from '../../ducks/app/app';
 import {
@@ -170,6 +172,7 @@ const mapStateToProps = (state) => {
     rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
     showPna25Modal: selectShowPna25Modal(state),
     pendingRedirectRoute: getPendingRedirectRoute(state),
+    lastVisitedPerpsRoute: getLastVisitedPerpsRoute(state),
   };
 };
 
@@ -220,6 +223,7 @@ const mapDispatchToProps = (dispatch) => {
     setPendingShieldCohort: (cohort) =>
       dispatch(setPendingShieldCohort(cohort)),
     clearPendingRedirectRoute: () => dispatch(setPendingRedirectRoute(null)),
+    clearLastVisitedPerpsRoute: () => dispatch(setLastVisitedPerpsRoute(null)),
   };
 };
 
