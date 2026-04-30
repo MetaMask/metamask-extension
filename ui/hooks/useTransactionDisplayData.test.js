@@ -249,7 +249,7 @@ describe('useTransactionDisplayData', () => {
     expect(result.current).toStrictEqual(expectedResults[0]);
   });
 
-  it('should return "Withdraw" title for a perpsWithdraw transaction', () => {
+  it('should return "Perps withdraw" title for a perpsWithdraw transaction', () => {
     const perpsWithdrawGroup = {
       nonce: '0x1',
       initialTransaction: {
@@ -292,7 +292,137 @@ describe('useTransactionDisplayData', () => {
       getMockState(),
       DEFAULT_ROUTE,
     );
-    expect(result.current.title).toBe('Withdraw');
+    expect(result.current.title).toBe('Perps withdraw');
+  });
+
+  describe('post-quote pay flows (e.g. Perps Withdraw)', () => {
+    const NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
+    const ERC20_ADDRESS = '0xdac17f958d2ee523a2206206994597c13d831ec7';
+
+    function buildPostQuoteGroup({ tokenAddress, targetFiat }) {
+      const tx = {
+        id: 'perps-withdraw-post-quote',
+        time: 1700000000000,
+        status: 'confirmed',
+        chainId: CHAIN_IDS.MAINNET,
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          value: '0x0',
+          data: '0xa9059cbb',
+        },
+        type: 'perpsWithdraw',
+        metamaskPay: {
+          isPostQuote: true,
+          chainId: CHAIN_IDS.MAINNET,
+          tokenAddress,
+          targetFiat,
+        },
+      };
+      return {
+        nonce: '0x1',
+        initialTransaction: tx,
+        primaryTransaction: tx,
+        transactions: [],
+        hasRetried: false,
+        hasCancelled: false,
+      };
+    }
+
+    function buildPostQuoteState({ withErc20Token, withMarketData } = {}) {
+      const base = getMockState();
+      return {
+        ...base,
+        metamask: {
+          ...base.metamask,
+          currencyRates: {
+            ETH: { conversionRate: 3000, usdConversionRate: 3000 },
+          },
+          marketData: withMarketData
+            ? {
+                [CHAIN_IDS.MAINNET]: {
+                  // marketData is keyed by checksummed address
+                  '0xdAC17F958D2ee523a2206206994597C13D831ec7': {
+                    price: 0.000333,
+                  },
+                },
+              }
+            : {},
+          tokensChainsCache: withErc20Token
+            ? {
+                ...base.metamask.tokensChainsCache,
+                [CHAIN_IDS.MAINNET]: {
+                  data: {
+                    [ERC20_ADDRESS]: {
+                      address: ERC20_ADDRESS,
+                      symbol: 'USDT',
+                      decimals: 6,
+                    },
+                  },
+                },
+              }
+            : base.metamask.tokensChainsCache,
+        },
+      };
+    }
+
+    it('renders destination native symbol and derived amount when target is native', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useTransactionDisplayData(
+            buildPostQuoteGroup({
+              tokenAddress: NATIVE_ADDRESS,
+              targetFiat: '0.27',
+            }),
+          ),
+        buildPostQuoteState(),
+        DEFAULT_ROUTE,
+      );
+
+      // 0.27 / 3000 = 0.00009 -> toPrecision(4) = "0.00009000"
+      expect(result.current.primaryCurrency).toBe('0.00009000 ETH');
+    });
+
+    it('renders destination ERC-20 symbol and derived amount when target is an ERC-20 with market data', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useTransactionDisplayData(
+            buildPostQuoteGroup({
+              tokenAddress: ERC20_ADDRESS,
+              targetFiat: '100',
+            }),
+          ),
+        buildPostQuoteState({ withErc20Token: true, withMarketData: true }),
+        DEFAULT_ROUTE,
+      );
+
+      // tokenUsdRate = 0.000333 * 3000 = 0.999
+      // 100 / 0.999 ≈ 100.10 -> toFixed(2) = "100.10"
+      expect(result.current.primaryCurrency).toBe('100.10 USDT');
+    });
+
+    it('renders the USD value (and no destination-token symbol) when the destination token rate is unavailable', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useTransactionDisplayData(
+            buildPostQuoteGroup({
+              tokenAddress: ERC20_ADDRESS,
+              targetFiat: '50',
+            }),
+          ),
+        buildPostQuoteState({ withErc20Token: true }),
+        DEFAULT_ROUTE,
+      );
+
+      // No marketData -> tokenUsdRate = 0 -> receivedAmount undefined.
+      // The fallback uses the USD-pinned formatter for both primary and
+      // secondary, bypassing `useCurrencyDisplay`'s default behavior of
+      // appending the chain native ticker (which would misleadingly
+      // render "$50" as "50 ETH" / "50 BNB").
+      expect(result.current.primaryCurrency).toBe('$50.00');
+      expect(result.current.primaryCurrency).not.toContain('USDT');
+      expect(result.current.primaryCurrency).not.toContain('ETH');
+    });
   });
 
   it('should return "Claim Bonus" title for a contractInteraction sent to the Merkl distributor address', () => {

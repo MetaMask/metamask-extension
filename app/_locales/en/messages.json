@@ -6317,6 +6317,10 @@
   "perpsWithdraw": {
     "message": "Withdraw"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Perps withdraw",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Estimated time"
   },
@@ -6489,6 +6493,10 @@
   },
   "provide": {
     "message": "Provide"
+  },
+  "providerFee": {
+    "message": "Provider fee",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Public address"
@@ -6696,8 +6704,16 @@
   "receiveCrypto": {
     "message": "Receive crypto"
   },
+  "receiveToken": {
+    "message": "Receive token",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Received"
+  },
+  "receivedTotal": {
+    "message": "Received total",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Receiving address",
