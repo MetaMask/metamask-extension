@@ -337,24 +337,39 @@ describe('DappBarNetworkSelectorPopover', () => {
     });
   });
 
-  it('grants the chain and surfaces the permitted-network toast when switching to an unpermitted network', async () => {
-    setupSelectors({ permittedChainIds: ['0x1'] });
-    const { getByTestId } = renderPopover();
+  describe('when switching to a different, unpermitted network', () => {
+    beforeEach(async () => {
+      setupSelectors({ permittedChainIds: ['0x1'] });
+      const { getByTestId } = renderPopover();
 
-    fireEvent.click(getByTestId('BNB Chain'));
+      fireEvent.click(getByTestId('BNB Chain'));
 
-    await waitFor(() => {
+      await waitFor(() => {
+        expect(mockSetActiveNetwork).toHaveBeenCalled();
+      });
+    });
+
+    it('grants the chain permission to the dapp origin', () => {
       expect(mockAddPermittedChain).toHaveBeenCalledWith(
         DAPP_ORIGIN,
         'eip155:56',
       );
     });
-    expect(mockShowPermittedNetworkToast).toHaveBeenCalledTimes(1);
-    expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
-      DAPP_ORIGIN,
-      BNB_CLIENT_ID,
-    );
-    expect(mockSetActiveNetwork).toHaveBeenCalledWith(BNB_CLIENT_ID);
+
+    it('surfaces the permitted-network toast', () => {
+      expect(mockShowPermittedNetworkToast).toHaveBeenCalledTimes(1);
+    });
+
+    it('persists the per-origin network client', () => {
+      expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
+        DAPP_ORIGIN,
+        BNB_CLIENT_ID,
+      );
+    });
+
+    it('activates the selected network client', () => {
+      expect(mockSetActiveNetwork).toHaveBeenCalledWith(BNB_CLIENT_ID);
+    });
   });
 
   it('sets a full token-network filter when multiple networks were previously filtered', async () => {
