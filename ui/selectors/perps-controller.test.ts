@@ -365,7 +365,6 @@ describe('perps-controller selectors', () => {
         ),
       ).toBe(false);
     });
-
   });
 
   describe('selectPerpsLastDepositTransactionId', () => {

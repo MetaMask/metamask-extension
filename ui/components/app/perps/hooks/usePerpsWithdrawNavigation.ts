@@ -6,10 +6,12 @@ import { getSelectedInternalAccount } from '../../../../selectors';
 import { PERPS_WITHDRAW_ROUTE } from '../../../../helpers/constants/routes';
 
 export type PerpsWithdrawNavigationResponse = {
+  /** Route opened (or that would be opened) for the withdraw flow */
   route: string;
 };
 
 export type PerpsWithdrawNavigationOptions = {
+  /** When false, `trigger` still succeeds but does not call `navigate` */
   navigateOnTrigger?: boolean;
   onNavigated?: (route: string) => void;
 };
@@ -19,6 +21,18 @@ export type PerpsWithdrawNavigationResult = {
   isLoading: boolean;
 };
 
+/**
+ * Perps-owned entrypoint for opening the withdraw flow (dedicated route).
+ *
+ * Sibling to {@link usePerpsDepositConfirmation}: same `trigger` / `isLoading` shape.
+ * Deposit confirmation is backed by `depositWithConfirmation`, which builds an EVM
+ * transaction and submits it through `TransactionController` (`perpsDeposit`).
+ * Withdraw is API-only (`perpsWithdraw`) with no staged `TransactionMeta`, so it
+ * cannot reuse that confirmations path without new controller support. Completion
+ * feedback on the wallet home uses `PerpsWithdrawToast` and `lastWithdrawResult`.
+ *
+ * @param options
+ */
 export function usePerpsWithdrawNavigation(
   options: PerpsWithdrawNavigationOptions = {},
 ): PerpsWithdrawNavigationResult {
