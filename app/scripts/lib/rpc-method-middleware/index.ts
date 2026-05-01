@@ -64,7 +64,7 @@ export const createEthAccountsMethodMiddleware = (hooks: EthAccountsHooks) =>
  *
  * The `wallet_invokeMethod` handler unwraps the inner request, mutates `req`
  * in place, and forwards it via `next()`. The unwrapped request is intended
- * to be handled by {@link createMultichainMethodMiddleware}, which must be
+ * to be handled by {@link createMultichainInvokedMethodMiddleware}, which must be
  * pushed onto the engine immediately after the middleware returned here.
  *
  * @param hooks - The hooks required by the MultiChain API method handlers.
@@ -80,15 +80,17 @@ export const createMultichainApiMethodMiddleware = (
   });
 
 /**
- * Handles unrestricted RPC methods in the MultiChain pipeline (e.g.,
- * `wallet_addEthereumChain`, `wallet_watchAsset`). The returned middleware
- * MUST be placed after {@link createMultichainApiMethodMiddleware} so that
- * requests unwrapped by `wallet_invokeMethod` reach these handlers.
+ * Handles RPC methods invoked through the MultiChain API via
+ * `wallet_invokeMethod` (e.g., `wallet_addEthereumChain`, `wallet_watchAsset`).
+ * The returned middleware MUST be placed after
+ * {@link createMultichainApiMethodMiddleware} so that requests unwrapped by
+ * `wallet_invokeMethod` reach these handlers.
  *
- * @param hooks - The hooks required by the unrestricted RPC method handlers.
- * @returns A JSON-RPC middleware that handles unrestricted RPC methods.
+ * @param hooks - The hooks required by the invoked method handlers.
+ * @returns A JSON-RPC middleware that handles methods invoked through the
+ * MultiChain API.
  */
-export const createMultichainMethodMiddleware = (hooks: HandlerHooks) =>
+export const createMultichainInvokedMethodMiddleware = (hooks: HandlerHooks) =>
   createMethodMiddleware({
     handlers: { ...localHandlers },
     hooks,

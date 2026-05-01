@@ -234,7 +234,7 @@ jest.mock('./lib/rpc-method-middleware', () => ({
     }
     return next();
   },
-  createMultichainMethodMiddleware: () => (_req, _res, next, _end) => {
+  createMultichainInvokedMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
   createUnsupportedMethodMiddleware: () => (_req, _res, next, _end) => {
