@@ -227,8 +227,12 @@ jest.mock('./lib/rpc-method-middleware', () => ({
   createEthAccountsMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
-  createMultichainMethodMiddleware: () => (_req, _res, next, _end) => {
-    next();
+  createMultichainMethodMiddleware: () => (req, res, next, end) => {
+    if (req.method?.startsWith('wallet_')) {
+      res.result = null;
+      return end();
+    }
+    return next();
   },
   createUnsupportedMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
