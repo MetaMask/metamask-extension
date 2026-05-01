@@ -1560,9 +1560,6 @@
   "clearActivity": {
     "message": "Xóa dữ liệu hoạt động và số nonce"
   },
-  "clearActivityButton": {
-    "message": "Xóa dữ liệu thẻ hoạt động"
-  },
   "clearActivityDescription": {
     "message": "Đặt lại số nonce của tài khoản và xóa dữ liệu trong tab hoạt động trong ví của bạn. Chỉ có tài khoản và mạng hiện tại sẽ bị ảnh hưởng. Số dư và các giao dịch đến của bạn sẽ không thay đổi."
   },
@@ -3911,9 +3908,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Đang khóa MetaMask..."
-  },
-  "lockTimeInvalid": {
-    "message": "Thời gian khóa phải là một số từ 0 đến 10080"
   },
   "logOut": {
     "message": "Đăng xuất"
@@ -8189,12 +8183,6 @@
   },
   "smartAccount": {
     "message": "Tài khoản thông minh"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Cho phép dapp yêu cầu các tính năng tài khoản thông minh cho tài khoản tiêu chuẩn. Điều này sẽ không ảnh hưởng đến các tài khoản đã là tài khoản thông minh."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Yêu cầu tài khoản thông minh từ dapp"
   },
   "smartAccountLabel": {
     "message": "Tài khoản thông minh"
