@@ -37,12 +37,18 @@ export type RequestEthereumAccountsHooks = {
   requestPermissionsForOrigin: RequestPermissionsForOrigin;
 };
 
+type RequestExtras = {
+  origin: OriginString;
+  mainFrameOrigin?: string;
+  frameId?: number;
+};
+
 type RequestEthereumAccountsConstraint = MethodHandler<
   RequestEthereumAccountsHooks,
   never,
   JsonRpcParams,
   string[],
-  { origin: OriginString }
+  RequestExtras
 >;
 
 export const requestEthereumAccountsHandler = {
@@ -84,7 +90,7 @@ const locks = new Set();
  * @param options.requestPermissionsForOrigin - A hook that requests CAIP-25 permissions for the origin.
  */
 async function requestEthereumAccountsImplementation(
-  req: JsonRpcRequest & { origin: OriginString },
+  req: JsonRpcRequest & RequestExtras,
   res: PendingJsonRpcResponse<string[]>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
@@ -140,11 +146,7 @@ async function requestEthereumAccountsImplementation(
     const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
       origin,
     );
-    const { mainFrameOrigin, frameId } = req as JsonRpcRequest & {
-      origin: OriginString;
-      mainFrameOrigin?: string;
-      frameId?: number;
-    };
+    const { mainFrameOrigin, frameId } = req;
     const iframeProps = getIframeProperties({
       frameId,
       origin,
