@@ -39,6 +39,7 @@ import {
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
   useHardwareWalletState,
+  useHardwareWalletActions,
 } from '../../../contexts/hardware-wallets';
 import {
   getBridgeQuotes,
@@ -90,6 +91,7 @@ export default function HardwareWalletSignatures() {
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
   const { connectionState } = useHardwareWalletState();
+  const { ensureDeviceReady } = useHardwareWalletActions();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   // The background's debounced `sendUpdate` can clear the quotes list when an
   // in-flight quote response races with `stopPollingForQuotes`, making
@@ -164,7 +166,12 @@ export default function HardwareWalletSignatures() {
     }
 
     previousTxIdRef.current = currentId;
-  }, [hardwareWalletUsed, confirmationTxData?.id, signatureState.status]);
+  }, [
+    hardwareWalletUsed,
+    needsTwoConfirmations,
+    confirmationTxData?.id,
+    signatureState.status,
+  ]);
   // `onHardwareWalletSubmitted` from `useSubmitBridgeTransaction` fires once,
   // after BOTH the approval (when needed) and the trade have been signed and
   // submitted, so we can transition straight to Submitted here. The mid-flow
@@ -243,8 +250,51 @@ export default function HardwareWalletSignatures() {
       },
     });
   }, [
+    fromToken?.symbol,
+    hardwareWalletType,
     hardwareWalletUsed,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    lockedQuote,
+    needsTwoConfirmations,
+    toToken?.symbol,
+    trackEvent,
+  ]);
+
+  useEffect(() => {
+    const currentId = confirmationTxData?.id;
+    const previousId = previousTxIdRef.current;
+
+    console.log(
+      '[HW-Batch] confirmationTxData effect',
+      JSON.stringify({
+        currentId: currentId ?? null,
+        previousId: previousId ?? null,
+        hardwareWalletUsed,
+        needsTwoConfirmations,
+        signatureState: signatureState.status,
+      }),
+    );
+
+    if (
+      hardwareWalletUsed &&
+      (signatureState.status ===
+        HardwareWalletSignatureStatus.AwaitingFirstSignature ||
+        signatureState.status ===
+          HardwareWalletSignatureStatus.AwaitingFinalSignature) &&
+      previousId &&
+      !currentId
+    ) {
+      console.log(
+        '[HW-Batch] confirmationTxData cleared while signing → TransactionRejected',
+        { previousId },
+      );
+      dispatchSignatureEvent({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
+    }
+
+    previousTxIdRef.current = currentId;
+  }, [
+    hardwareWalletUsed,
     needsTwoConfirmations,
     confirmationTxData?.id,
     signatureState.status,
@@ -480,12 +530,25 @@ export default function HardwareWalletSignatures() {
   const handleRetry = useCallback(async () => {
     handledConnectionErrorRef.current = null;
     isDeviceDisconnectedRef.current = false;
-    dispatchSignatureEvent({ type: HardwareWalletSignatureEvent.Retry });
-    if (signatureState.status !== HardwareWalletSignatureStatus.Disconnected) {
-      hasStartedSubmission.current = true;
-      await submitActiveQuote();
+
+    if (signatureState.status === HardwareWalletSignatureStatus.Disconnected) {
+      const ready = await ensureDeviceReady();
+      if (!ready) {
+        return;
+      }
+      dispatchSignatureEvent({ type: HardwareWalletSignatureEvent.Retry });
+      return;
     }
-  }, [dispatchSignatureEvent, signatureState.status, submitActiveQuote]);
+
+    dispatchSignatureEvent({ type: HardwareWalletSignatureEvent.Retry });
+    hasStartedSubmission.current = true;
+    await submitActiveQuote();
+  }, [
+    dispatchSignatureEvent,
+    ensureDeviceReady,
+    signatureState.status,
+    submitActiveQuote,
+  ]);
   const handleCancel = useCallback(() => {
     handleQrSignatureCancel();
     navigateToBridgePage();
