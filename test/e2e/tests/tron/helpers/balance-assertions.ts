@@ -3,10 +3,7 @@ import { Driver } from '../../../webdriver/driver';
 
 /**
  * Strips trailing symbol, leading +/-, and commas from a displayed amount string.
- * Examples:
- *   "5.0 TRX"        → 5.0
- *   "+0.295 USDT"    → 0.295
- *   "1,234.56 USDT"  → 1234.56
+ * Examples: "5.0 TRX" -> 5.0, "+0.295 USDT" -> 0.295, "1,234.56 USDT" -> 1234.56
  *
  * @param displayed - The raw text from the UI
  * @returns The numeric value
@@ -27,6 +24,7 @@ export function parseDisplayedAmount(displayed: string): number {
  * Finds a token row by symbol text and asserts its displayed balance is within
  * [expected - tolerance, expected + tolerance].
  *
+ * @param opts - Options
  * @param opts.driver - WebDriver instance
  * @param opts.symbol - Token symbol or name to search for in the row text
  * @param opts.expected - Expected numeric balance
