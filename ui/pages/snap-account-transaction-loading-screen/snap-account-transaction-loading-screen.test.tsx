@@ -78,7 +78,7 @@ describe('<SnapAccountTransactionLoadingScreen />', () => {
       buildStore({ [SNAP_ID]: { name: SNAP_NAME } }),
     );
 
-    expect(container).toHaveTextContent(/loading|wait|please/i);
+    expect(container).toHaveTextContent(/loading|wait|please/iu);
   });
 
   it('tracks the loading-viewed event with the resolved snap name when snap metadata is available', () => {
@@ -95,11 +95,14 @@ describe('<SnapAccountTransactionLoadingScreen />', () => {
     expect(mockTrackEvent).toHaveBeenCalledWith({
       event: MetaMetricsEventName.SnapAccountTransactionLoadingViewed,
       category: MetaMetricsEventCategory.Transactions,
+      // The metrics schema uses snake_case keys, mirrored from the source.
+      /* eslint-disable @typescript-eslint/naming-convention */
       properties: {
         snap_id: SNAP_ID,
         snap_name: SNAP_NAME,
         account_type: MetaMetricsEventAccountType.Snap,
       },
+      /* eslint-enable @typescript-eslint/naming-convention */
     });
   });
 
@@ -116,11 +119,14 @@ describe('<SnapAccountTransactionLoadingScreen />', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
+        // The metrics schema uses snake_case keys, mirrored from the source.
+        /* eslint-disable @typescript-eslint/naming-convention */
         properties: expect.objectContaining({
           snap_id: SNAP_ID,
           // `getSnapName` strips the `npm:` prefix when no metadata is found.
           snap_name: '@metamask/test-snap',
         }),
+        /* eslint-enable @typescript-eslint/naming-convention */
       }),
     );
   });
@@ -137,11 +143,14 @@ describe('<SnapAccountTransactionLoadingScreen />', () => {
     expect(mockTrackEvent).toHaveBeenCalledWith({
       event: MetaMetricsEventName.SnapAccountTransactionLoadingViewed,
       category: MetaMetricsEventCategory.Transactions,
+      // The metrics schema uses snake_case keys, mirrored from the source.
+      /* eslint-disable @typescript-eslint/naming-convention */
       properties: {
         snap_id: undefined,
         snap_name: undefined,
         account_type: MetaMetricsEventAccountType.Snap,
       },
+      /* eslint-enable @typescript-eslint/naming-convention */
     });
   });
 });
