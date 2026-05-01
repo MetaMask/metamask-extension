@@ -10,6 +10,7 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
   useIsTransactionPayLoading,
+  useTransactionPayIsPostQuote,
   useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
@@ -60,6 +61,9 @@ describe('useNoPayTokenQuotesAlert', () => {
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
+  const useTransactionPayIsPostQuoteMock = jest.mocked(
+    useTransactionPayIsPostQuote,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -71,6 +75,7 @@ describe('useNoPayTokenQuotesAlert', () => {
     });
 
     useIsTransactionPayLoadingMock.mockReturnValue(false);
+    useTransactionPayIsPostQuoteMock.mockReturnValue(false);
     useTransactionPayQuotesMock.mockReturnValue(undefined);
     useTransactionPaySourceAmountsMock.mockReturnValue([SOURCE_AMOUNT_MOCK]);
     useTransactionPayRequiredTokensMock.mockReturnValue([REQUIRED_TOKEN_MOCK]);
@@ -141,5 +146,24 @@ describe('useNoPayTokenQuotesAlert', () => {
     const { result } = runHook();
 
     expect(result.current).toStrictEqual([]);
+  });
+
+  it('returns alert for post-quote transactions even if source amounts match skipped tokens', () => {
+    useTransactionPayIsPostQuoteMock.mockReturnValue(true);
+    useTransactionPayRequiredTokensMock.mockReturnValue([
+      {
+        ...REQUIRED_TOKEN_MOCK,
+        skipIfBalance: true,
+      },
+    ]);
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual([
+      expect.objectContaining({
+        key: AlertsName.NoPayTokenQuotes,
+        isBlocking: true,
+      }),
+    ]);
   });
 });

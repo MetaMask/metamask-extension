@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -19,6 +20,8 @@ import {
 } from '../../pay/useTransactionPayData';
 import { getNativeTokenInfo } from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import { useConfirmContext } from '../../../context/confirm';
 import { AlertsName } from '../constants';
 
 export function useInsufficientPayTokenBalanceAlert({
@@ -27,6 +30,7 @@ export function useInsufficientPayTokenBalanceAlert({
   pendingAmountUsd?: string;
 } = {}): Alert[] {
   const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken, isNative: isPayTokenNative } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
   const totals = useTransactionPayTotals();
@@ -34,6 +38,7 @@ export function useInsufficientPayTokenBalanceAlert({
   const isSourceGasFeeToken = totals?.fees.isSourceGasFeeToken ?? false;
   const isPendingAlert = Boolean(pendingAmountUsd !== undefined);
   const isMax = useTransactionPayIsMaxAmount();
+  const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   const sourceChainId = (payToken?.chainId ?? '0x0') as Hex;
 
@@ -125,7 +130,7 @@ export function useInsufficientPayTokenBalanceAlert({
       isBlocking: true,
     };
 
-    if (isInsufficientForInput) {
+    if (isInsufficientForInput && !isPerpsWithdraw) {
       return [
         {
           ...baseAlert,
@@ -160,6 +165,7 @@ export function useInsufficientPayTokenBalanceAlert({
 
     return [];
   }, [
+    isPerpsWithdraw,
     isInsufficientForInput,
     isInsufficientForFees,
     isInsufficientForSourceNetwork,

@@ -1,5 +1,9 @@
 import { Hex } from '@metamask/utils';
-import { TransactionMeta, CHAIN_IDS } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  CHAIN_IDS,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   TransactionPayRequiredToken,
   TransactionPayTotals,
@@ -58,10 +62,12 @@ const NATIVE_TOKEN_MOCK = {
 
 function runHook(
   props: Parameters<typeof useInsufficientPayTokenBalanceAlert>[0] = {},
+  transactionType?: TransactionType,
 ) {
   const contractInteraction = genUnapprovedContractInteractionConfirmation({
     chainId: CHAIN_IDS.MAINNET,
   }) as TransactionMeta;
+  contractInteraction.type = transactionType ?? contractInteraction.type;
 
   const state = getMockConfirmStateForTransaction(contractInteraction);
 
@@ -178,6 +184,21 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
 
       expect(result.current).toStrictEqual([]);
     });
+
+    it('returns no alert for perps withdraw because the token is the receive asset', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceUsd: '3.81',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHook({}, TransactionType.perpsWithdraw);
+
+      expect(result.current).toStrictEqual([]);
+    });
   });
 
   describe('for fees', () => {
@@ -218,6 +239,30 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       const { result } = runHook({ pendingAmountUsd: '1.00' });
 
       expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns alert for perps withdraw if source amount exceeds pay token balance', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceRaw: '4000000000000000000',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHook({}, TransactionType.perpsWithdraw);
+
+      expect(result.current).toStrictEqual([
+        {
+          key: AlertsName.InsufficientPayTokenFees,
+          field: RowAlertKey.EstimatedFee,
+          isBlocking: true,
+          reason: 'Insufficient funds',
+          message: 'Add less or use a different token.',
+          severity: Severity.Danger,
+        },
+      ]);
     });
   });
 
@@ -273,6 +318,32 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       const { result } = runHook();
 
       expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns alert for perps withdraw if native balance is less than total source network fee', () => {
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: NATIVE_TOKEN_MOCK.chainId,
+        symbol: 'ETH',
+        decimals: 18,
+        balance: '0.0001',
+        balanceRaw: '100000000000000',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
+
+      const { result } = runHook({}, TransactionType.perpsWithdraw);
+
+      expect(result.current).toStrictEqual([
+        {
+          key: AlertsName.InsufficientPayTokenNative,
+          field: RowAlertKey.EstimatedFee,
+          isBlocking: true,
+          reason: 'Insufficient funds',
+          message: expect.stringContaining('Not enough'),
+          severity: Severity.Danger,
+        },
+      ]);
     });
 
     it('returns no alert if source network is using gas fee token', () => {

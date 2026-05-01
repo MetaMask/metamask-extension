@@ -44,7 +44,6 @@ describe('TransactionPayControllerInit', () => {
     const controllerMock = jest.mocked(TransactionPayController);
     expect(controllerMock).toHaveBeenCalledWith({
       getDelegationTransaction: expect.any(Function),
-      getStrategy: expect.any(Function),
       messenger: expect.any(Object),
       state: undefined,
     });

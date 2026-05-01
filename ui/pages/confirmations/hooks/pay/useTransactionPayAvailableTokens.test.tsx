@@ -1,11 +1,19 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import type {
+  TransactionPaymentToken,
+  TransactionPayRequiredToken,
+} from '@metamask/transaction-pay-controller';
 import * as transactionPayUtils from '../../utils/transaction-pay';
 import { useSendTokens } from '../send/useSendTokens';
 import { Asset, AssetStandard } from '../../types/send';
+import { useTransactionPayRequiredTokens } from './useTransactionPayData';
+import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 
 jest.mock('../send/useSendTokens');
+jest.mock('./useTransactionPayData');
+jest.mock('./useTransactionPayToken');
 jest.mock('../../utils/transaction-pay', () => ({
   ...jest.requireActual('../../utils/transaction-pay'),
   getAvailableTokens: jest.fn(),
@@ -33,6 +41,10 @@ const TOKEN_MOCK: Asset = {
 
 describe('useTransactionPayAvailableTokens', () => {
   const useSendTokensMock = jest.mocked(useSendTokens);
+  const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
+  const useTransactionPayRequiredTokensMock = jest.mocked(
+    useTransactionPayRequiredTokens,
+  );
   const getAvailableTokensMock = jest.mocked(
     transactionPayUtils.getAvailableTokens,
   );
@@ -40,6 +52,12 @@ describe('useTransactionPayAvailableTokens', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     useSendTokensMock.mockReturnValue([SEND_TOKEN_MOCK]);
+    useTransactionPayTokenMock.mockReturnValue({
+      isNative: false,
+      payToken: undefined,
+      setPayToken: jest.fn(),
+    });
+    useTransactionPayRequiredTokensMock.mockReturnValue([]);
     getAvailableTokensMock.mockReturnValue([TOKEN_MOCK]);
   });
 
@@ -49,10 +67,29 @@ describe('useTransactionPayAvailableTokens', () => {
     expect(result.current).toMatchObject([TOKEN_MOCK]);
   });
 
-  it('calls getAvailableTokens with tokens from useSendTokens', () => {
+  it('calls getAvailableTokens with tokens and transaction pay context', () => {
+    const payToken = {
+      address: NATIVE_TOKEN_ADDRESS,
+      chainId: '0x123',
+    } as TransactionPaymentToken;
+    const requiredToken = {
+      address: NATIVE_TOKEN_ADDRESS,
+      chainId: '0x123',
+      skipIfBalance: false,
+    } as TransactionPayRequiredToken;
+
+    useTransactionPayTokenMock.mockReturnValue({
+      isNative: true,
+      payToken,
+      setPayToken: jest.fn(),
+    });
+    useTransactionPayRequiredTokensMock.mockReturnValue([requiredToken]);
+
     renderHook(() => useTransactionPayAvailableTokens());
 
     expect(getAvailableTokensMock).toHaveBeenCalledWith({
+      payToken,
+      requiredTokens: [requiredToken],
       tokens: expect.arrayContaining([
         expect.objectContaining({
           address: NATIVE_TOKEN_ADDRESS,
