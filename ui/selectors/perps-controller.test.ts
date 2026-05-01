@@ -2,7 +2,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { ARBITRUM_USDC } from '../pages/confirmations/constants/perps';
 import {
   selectPerpsIsEligible,
   selectPerpsInitializationState,
@@ -305,57 +304,6 @@ describe('perps-controller selectors', () => {
       ).toBe(false);
     });
 
-    it('returns true for direct same-token deposits with a non-native pay token', () => {
-      expect(
-        selectPerpsDepositPending(
-          buildStateWithActiveDeposit({
-            transactions: [buildTx()],
-            transactionData: {
-              [activeDepositId]: {
-                paymentToken: {
-                  address: ARBITRUM_USDC.address,
-                  chainId: ARBITRUM_USDC.chainId,
-                },
-                tokens: [
-                  {
-                    address: ARBITRUM_USDC.address,
-                    chainId: ARBITRUM_USDC.chainId,
-                    skipIfBalance: false,
-                  },
-                ],
-              },
-            },
-          }),
-        ),
-      ).toBe(true);
-    });
-
-    it('returns false for post-quote deposits with a matching non-native pay token', () => {
-      expect(
-        selectPerpsDepositPending(
-          buildStateWithActiveDeposit({
-            transactions: [buildTx()],
-            transactionData: {
-              [activeDepositId]: {
-                isPostQuote: true,
-                paymentToken: {
-                  address: ARBITRUM_USDC.address,
-                  chainId: ARBITRUM_USDC.chainId,
-                },
-                tokens: [
-                  {
-                    address: ARBITRUM_USDC.address,
-                    chainId: ARBITRUM_USDC.chainId,
-                    skipIfBalance: false,
-                  },
-                ],
-              },
-            },
-          }),
-        ),
-      ).toBe(false);
-    });
-
     it('returns true for native-token-funded deposits', () => {
       expect(
         selectPerpsDepositPending(
@@ -418,37 +366,6 @@ describe('perps-controller selectors', () => {
       ).toBe(false);
     });
 
-    it('returns true for a direct same-token deposit transaction', () => {
-      expect(
-        selectPerpsShouldShowDepositToast(
-          buildState({
-            lastDepositTransactionId: 'tx-1',
-            transactions: [
-              {
-                id: 'tx-1',
-                type: TransactionType.perpsDeposit,
-                status: TransactionStatus.approved,
-              },
-            ],
-            transactionData: {
-              'tx-1': {
-                paymentToken: {
-                  address: ARBITRUM_USDC.address,
-                  chainId: ARBITRUM_USDC.chainId,
-                },
-                tokens: [
-                  {
-                    address: ARBITRUM_USDC.address,
-                    chainId: ARBITRUM_USDC.chainId,
-                    skipIfBalance: false,
-                  },
-                ],
-              },
-            },
-          }),
-        ),
-      ).toBe(true);
-    });
   });
 
   describe('selectPerpsLastDepositTransactionId', () => {

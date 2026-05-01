@@ -40,11 +40,7 @@ const PERPS_DEPOSIT_TRANSACTION_TYPES: ReadonlySet<TransactionType> = new Set([
 const EMPTY_ARRAY: never[] = [];
 const EMPTY_TRANSACTION_DATA: Record<
   string,
-  {
-    isPostQuote?: boolean;
-    paymentToken?: { address: Hex; chainId: Hex };
-    tokens?: { address: Hex; chainId: Hex; skipIfBalance: boolean }[];
-  }
+  { paymentToken?: { address: Hex; chainId: Hex } }
 > = {};
 const EMPTY_TRADE_CONFIGURATIONS: PerpsControllerState['tradeConfigurations'] =
   { testnet: {}, mainnet: {} };
@@ -83,30 +79,14 @@ type PerpsDepositPendingState = {
     transactionData?: Record<
       string,
       {
-        isPostQuote?: boolean;
         paymentToken?: {
           address: Hex;
           chainId: Hex;
         };
-        tokens?: {
-          address: Hex;
-          chainId: Hex;
-          skipIfBalance: boolean;
-        }[];
       }
     >;
   };
 };
-
-type PerpsTransactionPayData =
-  NonNullable<PerpsDepositPendingState['metamask']['transactionData']>[string];
-
-const isSameToken = (
-  tokenA: { address: Hex; chainId: Hex },
-  tokenB: { address: Hex; chainId: Hex },
-) =>
-  tokenA.address.toLowerCase() === tokenB.address.toLowerCase() &&
-  tokenA.chainId.toLowerCase() === tokenB.chainId.toLowerCase();
 
 const isNativePayToken = (
   paymentToken?:
@@ -126,31 +106,14 @@ const isNativePayToken = (
   );
 };
 
-const isDirectTokenPayment = (
-  transactionData?: PerpsTransactionPayData,
-): boolean => {
-  if (
-    transactionData?.isPostQuote ||
-    !transactionData?.paymentToken ||
-    isNativePayToken(transactionData.paymentToken)
-  ) {
-    return false;
-  }
-
-  const { paymentToken } = transactionData;
-  const requiredTokens =
-    transactionData.tokens?.filter((token) => !token.skipIfBalance) ??
-    EMPTY_ARRAY;
-
-  return (
-    requiredTokens.length > 0 &&
-    requiredTokens.every((token) => isSameToken(paymentToken, token))
-  );
-};
-
 const isPerpsToastOwnedDepositTransaction = (
   transaction?: TransactionMeta,
-  transactionData?: PerpsTransactionPayData,
+  paymentToken?:
+    | {
+        address: Hex;
+        chainId: Hex;
+      }
+    | undefined,
 ) => {
   if (!transaction?.type) {
     return false;
@@ -158,8 +121,7 @@ const isPerpsToastOwnedDepositTransaction = (
 
   return (
     PERPS_DEPOSIT_TRANSACTION_TYPES.has(transaction.type) &&
-    (isNativePayToken(transactionData?.paymentToken) ||
-      isDirectTokenPayment(transactionData))
+    isNativePayToken(paymentToken)
   );
 };
 
@@ -186,7 +148,7 @@ export const selectPerpsShouldShowDepositToast = createSelector(
   (transaction, transactionData) =>
     isPerpsToastOwnedDepositTransaction(
       transaction ?? undefined,
-      transaction ? transactionData[transaction.id] : undefined,
+      transaction ? transactionData[transaction.id]?.paymentToken : undefined,
     ),
 );
 
@@ -211,7 +173,7 @@ export const selectPerpsDepositPending = createSelector(
     if (
       !isPerpsToastOwnedDepositTransaction(
         tx ?? undefined,
-        tx ? transactionData[tx.id] : undefined,
+        tx ? transactionData[tx.id]?.paymentToken : undefined,
       )
     ) {
       return false;

@@ -1,20 +1,11 @@
 import { Hex, Json } from '@metamask/utils';
 import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import {
   TransactionPayQuote,
   TransactionPayRequiredToken,
   TransactionPaySourceAmount,
   TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
-import {
-  getMockConfirmState,
-  getMockConfirmStateForTransaction,
-} from '../../../../../../test/data/confirmations/helper';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
@@ -37,7 +28,6 @@ const CHAIN_ID_MOCK = '0x1' as Hex;
 
 const PAY_TOKEN_MOCK = {
   address: ADDRESS_MOCK,
-  balanceRaw: '50',
   chainId: CHAIN_ID_MOCK,
 } as TransactionPaymentToken;
 
@@ -47,27 +37,13 @@ const SOURCE_AMOUNT_MOCK = {
 
 const REQUIRED_TOKEN_MOCK = {
   address: ADDRESS_MOCK,
-  amountRaw: '100',
-  chainId: CHAIN_ID_MOCK,
   skipIfBalance: false,
 } as TransactionPayRequiredToken;
 
-function runHook(transactionType?: TransactionType) {
-  const transaction = transactionType
-    ? (genUnapprovedContractInteractionConfirmation({
-        chainId: CHAIN_IDS.MAINNET,
-      }) as TransactionMeta)
-    : undefined;
-  if (transaction && transactionType) {
-    transaction.type = transactionType;
-  }
-  const state = transaction
-    ? getMockConfirmStateForTransaction(transaction)
-    : getMockConfirmState();
-
+function runHook() {
   return renderHookWithConfirmContextProvider(
     () => useNoPayTokenQuotesAlert(),
-    state,
+    getMockConfirmState(),
   );
 }
 
@@ -168,82 +144,6 @@ describe('useNoPayTokenQuotesAlert', () => {
     const { result } = runHook();
 
     expect(result.current).toStrictEqual([]);
-  });
-
-  it('returns no alerts for Perps deposit if selected pay token directly covers required tokens', () => {
-    useTransactionPayTokenMock.mockReturnValue({
-      payToken: {
-        ...PAY_TOKEN_MOCK,
-        balanceRaw: REQUIRED_TOKEN_MOCK.amountRaw,
-      },
-      isNative: false,
-      setPayToken: jest.fn(),
-    });
-
-    const { result } = runHook(TransactionType.perpsDeposit);
-
-    expect(result.current).toStrictEqual([]);
-  });
-
-  it('returns alert for non-Perps deposit if selected pay token directly covers required tokens', () => {
-    useTransactionPayTokenMock.mockReturnValue({
-      payToken: {
-        ...PAY_TOKEN_MOCK,
-        balanceRaw: REQUIRED_TOKEN_MOCK.amountRaw,
-      },
-      isNative: false,
-      setPayToken: jest.fn(),
-    });
-
-    const { result } = runHook(TransactionType.contractInteraction);
-
-    expect(result.current).toStrictEqual([
-      expect.objectContaining({
-        key: AlertsName.NoPayTokenQuotes,
-        isBlocking: true,
-      }),
-    ]);
-  });
-
-  it('returns alert if selected pay token directly matches but has insufficient balance', () => {
-    useTransactionPayTokenMock.mockReturnValue({
-      payToken: {
-        ...PAY_TOKEN_MOCK,
-        balanceRaw: '99',
-      },
-      isNative: false,
-      setPayToken: jest.fn(),
-    });
-
-    const { result } = runHook();
-
-    expect(result.current).toStrictEqual([
-      expect.objectContaining({
-        key: AlertsName.NoPayTokenQuotes,
-        isBlocking: true,
-      }),
-    ]);
-  });
-
-  it('returns alert if selected pay token is on a different chain than required token', () => {
-    useTransactionPayTokenMock.mockReturnValue({
-      payToken: {
-        ...PAY_TOKEN_MOCK,
-        balanceRaw: REQUIRED_TOKEN_MOCK.amountRaw,
-        chainId: '0xa4b1' as Hex,
-      },
-      isNative: false,
-      setPayToken: jest.fn(),
-    });
-
-    const { result } = runHook();
-
-    expect(result.current).toStrictEqual([
-      expect.objectContaining({
-        key: AlertsName.NoPayTokenQuotes,
-        isBlocking: true,
-      }),
-    ]);
   });
 
   it('returns alert for post-quote transactions even if source amounts match skipped tokens', () => {
