@@ -6,6 +6,7 @@ import type {
 import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
+  MethodHandler,
 } from '@metamask/json-rpc-engine';
 import type { OriginString } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
@@ -20,13 +21,12 @@ import { shouldEmitDappViewedEvent } from '../../util';
 import { getIframeProperties } from '../../getIframeProperties';
 import type {
   GetAccounts,
-  HandlerWrapper,
   SendMetrics,
   GetCaip25PermissionFromLegacyPermissionsForOrigin,
   RequestPermissionsForOrigin,
 } from './types';
 
-export type RequestEthereumAccountsOptions = {
+export type RequestEthereumAccountsHooks = {
   getAccounts: GetAccounts;
   sendMetrics: SendMetrics;
   metamaskState: Pick<
@@ -37,27 +37,16 @@ export type RequestEthereumAccountsOptions = {
   requestPermissionsForOrigin: RequestPermissionsForOrigin;
 };
 
-type RequestEthereumAccountsConstraint<
-  Params extends JsonRpcParams = JsonRpcParams,
-> = {
-  implementation: (
-    req: JsonRpcRequest<Params> & { origin: OriginString },
-    res: PendingJsonRpcResponse<string[]>,
-    _next: JsonRpcEngineNextCallback,
-    end: JsonRpcEngineEndCallback,
-    {
-      getAccounts,
-      sendMetrics,
-      metamaskState,
-      getCaip25PermissionFromLegacyPermissionsForOrigin,
-      requestPermissionsForOrigin,
-    }: RequestEthereumAccountsOptions,
-  ) => Promise<void>;
-} & HandlerWrapper;
+type RequestEthereumAccountsConstraint = MethodHandler<
+  RequestEthereumAccountsHooks,
+  never,
+  JsonRpcParams,
+  string[],
+  { origin: OriginString }
+>;
 
-const requestEthereumAccounts = {
-  methodNames: [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS],
-  implementation: requestEthereumAccountsHandler,
+export const requestEthereumAccountsHandler = {
+  implementation: requestEthereumAccountsImplementation,
   hookNames: {
     getAccounts: true,
     sendMetrics: true,
@@ -66,7 +55,12 @@ const requestEthereumAccounts = {
     requestPermissionsForOrigin: true,
   },
 } satisfies RequestEthereumAccountsConstraint;
-export default requestEthereumAccounts;
+
+const requestEthereumAccountsHandlers = {
+  [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS]: requestEthereumAccountsHandler,
+};
+
+export default requestEthereumAccountsHandlers;
 
 // Used to rate-limit pending requests to one per origin
 const locks = new Set();
@@ -89,10 +83,8 @@ const locks = new Set();
  * @param options.getCaip25PermissionFromLegacyPermissionsForOrigin - A hook that returns a CAIP-25 permission from a legacy `eth_accounts` and `endowment:permitted-chains` permission.
  * @param options.requestPermissionsForOrigin - A hook that requests CAIP-25 permissions for the origin.
  */
-async function requestEthereumAccountsHandler<
-  Params extends JsonRpcParams = JsonRpcParams,
->(
-  req: JsonRpcRequest<Params> & { origin: OriginString },
+async function requestEthereumAccountsImplementation(
+  req: JsonRpcRequest & { origin: OriginString },
   res: PendingJsonRpcResponse<string[]>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
@@ -102,7 +94,7 @@ async function requestEthereumAccountsHandler<
     metamaskState,
     getCaip25PermissionFromLegacyPermissionsForOrigin,
     requestPermissionsForOrigin,
-  }: RequestEthereumAccountsOptions,
+  }: RequestEthereumAccountsHooks,
 ): Promise<void> {
   const { origin } = req ?? {};
   if (locks.has(origin)) {
@@ -148,7 +140,7 @@ async function requestEthereumAccountsHandler<
     const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
       origin,
     );
-    const { mainFrameOrigin, frameId } = req as JsonRpcRequest<Params> & {
+    const { mainFrameOrigin, frameId } = req as JsonRpcRequest & {
       origin: OriginString;
       mainFrameOrigin?: string;
       frameId?: number;
