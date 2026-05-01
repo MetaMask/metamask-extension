@@ -172,9 +172,8 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
   (state: {
     metamask: { internalAccounts: AccountsControllerState['internalAccounts'] };
   }) => state.metamask.internalAccounts,
-  (state: {
-    metamask: { snaps: Record<string, { enabled: boolean }> };
-  }) => state.metamask.snaps,
+  (state: { metamask: { snaps: Record<string, { enabled: boolean }> } }) =>
+    state.metamask.snaps,
   (
     networkConfigurationsByChainId,
     multichainNetworkConfigurationsByChainId,
