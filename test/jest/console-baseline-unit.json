@@ -1532,13 +1532,6 @@
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1
     },
-    "ui/pages/settings/developer-options-tab/developer-options-tab.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 11,
-      "React: componentWill* lifecycle deprecations": 1
-    },
-    "ui/pages/settings/developer-options-tab/developer-options-toggle-row-component.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1
-    },
     "ui/pages/settings/networks-tab/networks-form/networks-form.test.js": {
       "React: Act warnings (component updates not wrapped)": 1,
       "React: State updates on unmounted components": 1
