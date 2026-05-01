@@ -5713,7 +5713,7 @@
     "message": "Cancel order"
   },
   "perpsCandleIntervals": {
-    "message": "Candle intervals"
+    "message": "Set candle interval"
   },
   "perpsCandlePeriodDays": {
     "message": "Days"
@@ -5728,7 +5728,7 @@
     "message": "Close all"
   },
   "perpsCloseAmount": {
-    "message": "Close Amount"
+    "message": "Close amount"
   },
   "perpsCloseLong": {
     "message": "Close long"

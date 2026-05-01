@@ -4322,6 +4322,24 @@ export async function setDefaultHomeActiveTabName(
   }
 }
 
+export function setLastVisitedPerpsRoute(
+  path: string | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    // Fire-and-forget: this write is a pure navigation hint for the next
+    // home mount. Swallow errors without a warning toast — users should
+    // never see UI noise for an internal persistence operation. We also
+    // skip `forceUpdateMetamaskState` because the field is memory-only
+    // (persist:false) and every Perps route change would otherwise pull
+    // the entire background state.
+    try {
+      await submitRequestToBackground('setLastVisitedRoute', ['perps', path]);
+    } catch (error) {
+      log.error('[setLastVisitedPerpsRoute] error', error);
+    }
+  };
+}
+
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
   return setPreference('showNativeTokenAsMainBalance', value);
 }
