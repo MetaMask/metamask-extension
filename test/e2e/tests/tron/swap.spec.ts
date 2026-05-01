@@ -21,6 +21,11 @@ import {
 } from './mocks/common-tron';
 import { checkBalanceWithinTolerance } from './helpers/balance-assertions';
 
+// All Tron swap tests run against mocked Tron Infura mainnet endpoints —
+// there is no local Tron node. createStatefulTronAccountMock() returns a
+// before-state on the first request and an after-state on subsequent
+// requests so we can assert balance deltas without ever broadcasting.
+// Quotes are mocked via mockBridgeGetTronQuoteFor.
 describe('Swap on Tron', function () {
   it('Quote displayed between TRX and TRC20', async function () {
     await withFixtures(
@@ -129,8 +134,7 @@ describe('Swap on Tron', function () {
   // Task 4 — TRX → USDT (partial + total)
   // ---------------------------------------------------------------------------
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Tron snap UI renders in snaps-iframe; SwapPage selectors cannot pierce it. Unblock requires snap-iframe handling in WebDriver helpers.
-  it.skip('Swaps partial TRX → USDT, balance deltas confirmed', async function () {
+  it('Swaps partial TRX → USDT, balance deltas confirmed', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -200,8 +204,7 @@ describe('Swap on Tron', function () {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Tron snap UI renders in snaps-iframe; SwapPage selectors cannot pierce it. Unblock requires snap-iframe handling in WebDriver helpers.
-  it.skip('Swaps total TRX → USDT, leaves only fee buffer', async function () {
+  it('Swaps total TRX → USDT, leaves only fee buffer', async function () {
     const TOTAL_TRX_SUN = 6_072_392;
     const FEE_BUFFER_SUN = 1_000_000;
     const SWAPPABLE_SUN = TOTAL_TRX_SUN - FEE_BUFFER_SUN;
@@ -276,8 +279,7 @@ describe('Swap on Tron', function () {
   // Task 5 — USDT → TRX (partial + total)
   // ---------------------------------------------------------------------------
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Tron snap UI renders in snaps-iframe; SwapPage selectors cannot pierce it. Unblock requires snap-iframe handling in WebDriver helpers.
-  it.skip('Swaps partial USDT → TRX, balance deltas confirmed', async function () {
+  it('Swaps partial USDT → TRX, balance deltas confirmed', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -347,8 +349,7 @@ describe('Swap on Tron', function () {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Tron snap UI renders in snaps-iframe; SwapPage selectors cannot pierce it. Unblock requires snap-iframe handling in WebDriver helpers.
-  it.skip('Swaps total USDT → TRX, source reduced to 0', async function () {
+  it('Swaps total USDT → TRX, source reduced to 0', async function () {
     const TOTAL_USDT_RAW = '2804595';
     const QUOTED_TRX_SUN = 9_510_000;
 
@@ -419,8 +420,7 @@ describe('Swap on Tron', function () {
   // Task 6 — USDT → USDD (partial + total)
   // ---------------------------------------------------------------------------
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Tron snap UI renders in snaps-iframe; SwapPage selectors cannot pierce it. Unblock requires snap-iframe handling in WebDriver helpers.
-  it.skip('Swaps partial USDT → USDD, source -amount, dest +amount, TRX -fee', async function () {
+  it('Swaps partial USDT → USDD, source -amount, dest +amount, TRX -fee', async function () {
     const QUOTED_USDD = '998000000000000000'; // 0.998 USDD (18 decimals)
     await withFixtures(
       {
@@ -505,8 +505,7 @@ describe('Swap on Tron', function () {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Tron snap UI renders in snaps-iframe; SwapPage selectors cannot pierce it. Unblock requires snap-iframe handling in WebDriver helpers.
-  it.skip('Swaps total USDT → USDD, source = 0', async function () {
+  it('Swaps total USDT → USDD, source = 0', async function () {
     const TOTAL_USDT_RAW = '2804595';
     const QUOTED_USDD = String(
       (BigInt('2804595') * BigInt('998000000000000000')) / BigInt('1000000'),
