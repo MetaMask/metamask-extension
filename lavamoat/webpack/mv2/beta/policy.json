@@ -2372,6 +2372,7 @@
     },
     "@metamask/transaction-pay-controller": {
       "globals": {
+        "AbortController": true,
         "URLSearchParams": true,
         "clearTimeout": true,
         "setTimeout": true
