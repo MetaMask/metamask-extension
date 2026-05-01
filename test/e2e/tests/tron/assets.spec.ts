@@ -222,4 +222,42 @@ describe('Tron assets', function (this: Suite) {
       },
     );
   });
+
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock pending UI sync
+  it.skip('USDT asset details: header, chart, action buttons, sections — no daily resource', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .build(),
+        title: this.test?.fullTitle(),
+        localNodeOptions: [
+          'anvil',
+          {
+            type: 'tron',
+            options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
+          },
+        ],
+        testSpecificMock: mockLocalTronApis,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await landOnTronHome(driver);
+        const assetList = new AssetListPage(driver);
+        await assetList.clickOnAsset('Tether');
+        const details = new TronAssetDetailsPage(driver);
+        await details.checkPageIsLoaded();
+        await details.checkPriceChart();
+        await details.checkActionButtons({
+          swap: true,
+          send: true,
+          receive: true,
+        });
+        await details.checkAllStandardSections();
+        await driver.assertElementNotPresent({
+          text: 'Daily resource',
+          tag: 'p',
+        });
+      },
+    );
+  });
 });
