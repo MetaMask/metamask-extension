@@ -41,6 +41,46 @@ const mockUseSubmitBridgeTransaction =
     typeof useSubmitBridgeTransaction
   >;
 
+const LEDGER_ACCOUNT_GROUP =
+  'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82';
+
+function renderWithQuote(
+  quote: (typeof DummyQuotesWithApproval.ETH_11_USDC_TO_ARB)[0],
+) {
+  const store = configureStore(
+    createBridgeMockStore({
+      bridgeSliceOverrides: {
+        fromToken: {
+          address: quote.quote.srcAsset.address,
+          symbol: quote.quote.srcAsset.symbol,
+        },
+        toToken: {
+          address: quote.quote.destAsset.address,
+          symbol: quote.quote.destAsset.symbol,
+        },
+      },
+      bridgeStateOverrides: {
+        quotes: [quote],
+        quotesLastFetched: 100,
+      },
+      metamaskStateOverrides: {
+        internalAccounts: {
+          selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+        },
+        accountTree: {
+          selectedAccountGroup: LEDGER_ACCOUNT_GROUP,
+        },
+      },
+    }),
+  );
+  return renderWithProvider(<HardwareWalletSignatures />, store);
+}
+
+const defaultMockSubmitReturn = () => ({
+  submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
+  isSubmitting: false,
+});
+
 describe('HardwareWalletSignatures', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -50,42 +90,9 @@ describe('HardwareWalletSignatures', () => {
   });
 
   it('renders the generic hardware wallet animation', () => {
-    mockUseSubmitBridgeTransaction.mockReturnValue({
-      submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
-      isSubmitting: false,
-    });
+    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
     const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
-    const store = configureStore(
-      createBridgeMockStore({
-        bridgeSliceOverrides: {
-          fromToken: {
-            address: quote.quote.srcAsset.address,
-            symbol: quote.quote.srcAsset.symbol,
-          },
-          toToken: {
-            address: quote.quote.destAsset.address,
-            symbol: quote.quote.destAsset.symbol,
-          },
-        },
-        bridgeStateOverrides: {
-          quotes: [quote],
-          quotesLastFetched: 100,
-        },
-        metamaskStateOverrides: {
-          internalAccounts: {
-            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
-          },
-          accountTree: {
-            selectedAccountGroup:
-              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
-          },
-        },
-      }),
-    );
-    const { getByTestId } = renderWithProvider(
-      <HardwareWalletSignatures />,
-      store,
-    );
+    const { getByTestId } = renderWithQuote(quote);
 
     expect(getByTestId('generic-hardware-wallet-animation')).toBeDefined();
   });
@@ -115,43 +122,9 @@ describe('HardwareWalletSignatures', () => {
         }
         return mockUnsubscribe;
       });
-    mockUseSubmitBridgeTransaction.mockReturnValue({
-      submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
-      isSubmitting: false,
-    });
+    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
     const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
-    const store = configureStore(
-      createBridgeMockStore({
-        bridgeSliceOverrides: {
-          fromToken: {
-            address: quote.quote.srcAsset.address,
-            symbol: quote.quote.srcAsset.symbol,
-          },
-          toToken: {
-            address: quote.quote.destAsset.address,
-            symbol: quote.quote.destAsset.symbol,
-          },
-        },
-        bridgeStateOverrides: {
-          quotes: [quote],
-          quotesLastFetched: 100,
-        },
-        metamaskStateOverrides: {
-          internalAccounts: {
-            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
-          },
-          accountTree: {
-            selectedAccountGroup:
-              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
-          },
-        },
-      }),
-    );
-
-    const { getByText } = renderWithProvider(
-      <HardwareWalletSignatures />,
-      store,
-    );
+    const { getByText } = renderWithQuote(quote);
 
     await act(async () => {
       await jest.runAllTimersAsync();
@@ -186,40 +159,9 @@ describe('HardwareWalletSignatures', () => {
     const subscribeSpy = jest
       .spyOn(backgroundConnection, 'subscribeToMessengerEvent')
       .mockResolvedValue(jest.fn().mockResolvedValue(undefined));
-    mockUseSubmitBridgeTransaction.mockReturnValue({
-      submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
-      isSubmitting: false,
-    });
+    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
     const quote = DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0];
-    const store = configureStore(
-      createBridgeMockStore({
-        bridgeSliceOverrides: {
-          fromToken: {
-            address: quote.quote.srcAsset.address,
-            symbol: quote.quote.srcAsset.symbol,
-          },
-          toToken: {
-            address: quote.quote.destAsset.address,
-            symbol: quote.quote.destAsset.symbol,
-          },
-        },
-        bridgeStateOverrides: {
-          quotes: [quote],
-          quotesLastFetched: 100,
-        },
-        metamaskStateOverrides: {
-          internalAccounts: {
-            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
-          },
-          accountTree: {
-            selectedAccountGroup:
-              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
-          },
-        },
-      }),
-    );
-
-    renderWithProvider(<HardwareWalletSignatures />, store);
+    renderWithQuote(quote);
 
     await act(async () => {
       await jest.runAllTimersAsync();
@@ -234,10 +176,7 @@ describe('HardwareWalletSignatures', () => {
     const subscribeSpy = jest
       .spyOn(backgroundConnection, 'subscribeToMessengerEvent')
       .mockResolvedValue(jest.fn().mockResolvedValue(undefined));
-    mockUseSubmitBridgeTransaction.mockReturnValue({
-      submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
-      isSubmitting: false,
-    });
+    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
     const quote = {
       ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
       quote: {
@@ -245,35 +184,7 @@ describe('HardwareWalletSignatures', () => {
         gasIncluded7702: true,
       },
     };
-    const store = configureStore(
-      createBridgeMockStore({
-        bridgeSliceOverrides: {
-          fromToken: {
-            address: quote.quote.srcAsset.address,
-            symbol: quote.quote.srcAsset.symbol,
-          },
-          toToken: {
-            address: quote.quote.destAsset.address,
-            symbol: quote.quote.destAsset.symbol,
-          },
-        },
-        bridgeStateOverrides: {
-          quotes: [quote],
-          quotesLastFetched: 100,
-        },
-        metamaskStateOverrides: {
-          internalAccounts: {
-            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
-          },
-          accountTree: {
-            selectedAccountGroup:
-              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
-          },
-        },
-      }),
-    );
-
-    renderWithProvider(<HardwareWalletSignatures />, store);
+    renderWithQuote(quote);
 
     await act(async () => {
       await jest.runAllTimersAsync();
@@ -316,10 +227,7 @@ describe('HardwareWalletSignatures', () => {
         }
         return mockUnsubscribe;
       });
-    mockUseSubmitBridgeTransaction.mockReturnValue({
-      submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
-      isSubmitting: false,
-    });
+    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
     const quote = {
       ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
       quote: {
@@ -327,38 +235,7 @@ describe('HardwareWalletSignatures', () => {
         gasIncluded7702: true,
       },
     };
-    const store = configureStore(
-      createBridgeMockStore({
-        bridgeSliceOverrides: {
-          fromToken: {
-            address: quote.quote.srcAsset.address,
-            symbol: quote.quote.srcAsset.symbol,
-          },
-          toToken: {
-            address: quote.quote.destAsset.address,
-            symbol: quote.quote.destAsset.symbol,
-          },
-        },
-        bridgeStateOverrides: {
-          quotes: [quote],
-          quotesLastFetched: 100,
-        },
-        metamaskStateOverrides: {
-          internalAccounts: {
-            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
-          },
-          accountTree: {
-            selectedAccountGroup:
-              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
-          },
-        },
-      }),
-    );
-
-    const { getByText } = renderWithProvider(
-      <HardwareWalletSignatures />,
-      store,
-    );
+    const { getByText } = renderWithQuote(quote);
 
     expect(getByText('Confirm with your hardware wallet (1/2)')).toBeDefined();
 
@@ -393,37 +270,7 @@ describe('HardwareWalletSignatures', () => {
       };
     });
     const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
-    const store = configureStore(
-      createBridgeMockStore({
-        bridgeSliceOverrides: {
-          fromToken: {
-            address: quote.quote.srcAsset.address,
-            symbol: quote.quote.srcAsset.symbol,
-          },
-          toToken: {
-            address: quote.quote.destAsset.address,
-            symbol: quote.quote.destAsset.symbol,
-          },
-        },
-        bridgeStateOverrides: {
-          quotes: [quote],
-          quotesLastFetched: 100,
-        },
-        metamaskStateOverrides: {
-          internalAccounts: {
-            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
-          },
-          accountTree: {
-            selectedAccountGroup:
-              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
-          },
-        },
-      }),
-    );
-    const { getByText } = renderWithProvider(
-      <HardwareWalletSignatures />,
-      store,
-    );
+    const { getByText } = renderWithQuote(quote);
 
     expect(getByText('Confirm with your hardware wallet (1/2)')).toBeDefined();
 
@@ -473,37 +320,7 @@ describe('HardwareWalletSignatures', () => {
       };
     });
     const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
-    const store = configureStore(
-      createBridgeMockStore({
-        bridgeSliceOverrides: {
-          fromToken: {
-            address: quote.quote.srcAsset.address,
-            symbol: quote.quote.srcAsset.symbol,
-          },
-          toToken: {
-            address: quote.quote.destAsset.address,
-            symbol: quote.quote.destAsset.symbol,
-          },
-        },
-        bridgeStateOverrides: {
-          quotes: [quote],
-          quotesLastFetched: 100,
-        },
-        metamaskStateOverrides: {
-          internalAccounts: {
-            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
-          },
-          accountTree: {
-            selectedAccountGroup:
-              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
-          },
-        },
-      }),
-    );
-    const { getByText } = renderWithProvider(
-      <HardwareWalletSignatures />,
-      store,
-    );
+    const { getByText } = renderWithQuote(quote);
 
     await act(async () => {
       await jest.runAllTimersAsync();
@@ -535,10 +352,7 @@ describe('HardwareWalletSignatures', () => {
   });
 
   it('shows the active QR code inline for QR hardware wallets that need two signatures', () => {
-    mockUseSubmitBridgeTransaction.mockReturnValue({
-      submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
-      isSubmitting: false,
-    });
+    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
     const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
     const qrAccount = {
       ...MOCK_LEDGER_ACCOUNT,
@@ -606,41 +420,11 @@ describe('HardwareWalletSignatures', () => {
   describe('hardware wallet error monitoring', () => {
     const renderWithLedgerAccount = () => {
       const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
-      const store = configureStore(
-        createBridgeMockStore({
-          bridgeSliceOverrides: {
-            fromToken: {
-              address: quote.quote.srcAsset.address,
-              symbol: quote.quote.srcAsset.symbol,
-            },
-            toToken: {
-              address: quote.quote.destAsset.address,
-              symbol: quote.quote.destAsset.symbol,
-            },
-          },
-          bridgeStateOverrides: {
-            quotes: [quote],
-            quotesLastFetched: 100,
-          },
-          metamaskStateOverrides: {
-            internalAccounts: {
-              selectedAccount: MOCK_LEDGER_ACCOUNT.id,
-            },
-            accountTree: {
-              selectedAccountGroup:
-                'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
-            },
-          },
-        }),
-      );
-      return renderWithProvider(<HardwareWalletSignatures />, store);
+      return renderWithQuote(quote);
     };
 
     it('shows "Transaction failed" when the device disconnects during signing', () => {
-      mockUseSubmitBridgeTransaction.mockReturnValue({
-        submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
-        isSubmitting: false,
-      });
+      mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: {
           status: ConnectionStatus.ErrorState,
@@ -659,10 +443,7 @@ describe('HardwareWalletSignatures', () => {
     });
 
     it('shows "Transaction rejected" when the device reports a user rejection', () => {
-      mockUseSubmitBridgeTransaction.mockReturnValue({
-        submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
-        isSubmitting: false,
-      });
+      mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: {
           status: ConnectionStatus.ErrorState,

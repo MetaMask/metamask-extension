@@ -5,17 +5,9 @@ import {
   HardwareWalletSignatureStatus,
   type HardwareWalletSignaturesState,
 } from './hardware-wallet-signatures-state-machine';
-import type { QrHardwareSignRequest } from './types';
+import type { BridgeStatusState, QrHardwareSignRequest } from './types';
 
-type BridgeTxHistory = Record<
-  string,
-  {
-    approvalTxId?: unknown;
-    quote?: {
-      requestId?: string;
-    };
-  }
->;
+type BridgeTxHistory = NonNullable<BridgeStatusState['metamask']['txHistory']>;
 
 export enum SignatureStepStatus {
   Pending = 'pending',
@@ -23,6 +15,7 @@ export enum SignatureStepStatus {
   Complete = 'complete',
   Rejected = 'rejected',
   Failed = 'failed',
+  Disconnected = 'disconnected',
 }
 
 export const isQrHardwareSignRequest = (
@@ -47,16 +40,17 @@ export const isQrHardwareSignRequest = (
       typeof request.request.payload.cbor === 'string',
   );
 
-export const getTransactionToAddress = (
+export const getTransactionField = (
   transaction: unknown,
+  field: 'from' | 'to',
 ): string | undefined => {
   if (
     transaction &&
     typeof transaction === 'object' &&
-    'to' in transaction &&
-    typeof transaction.to === 'string'
+    field in transaction &&
+    typeof (transaction as Record<string, unknown>)[field] === 'string'
   ) {
-    return transaction.to;
+    return (transaction as Record<string, unknown>)[field] as string;
   }
 
   return undefined;
@@ -97,6 +91,10 @@ export const getTitle = ({
 
   if (status === HardwareWalletSignatureStatus.Failed) {
     return t('transactionFailed');
+  }
+
+  if (status === HardwareWalletSignatureStatus.Disconnected) {
+    return t('bridgeHwDeviceDisconnected');
   }
 
   const signatureStep =
@@ -141,6 +139,10 @@ export const getFirstStepDescription = ({
 }) => {
   if (firstStepStatus === SignatureStepStatus.Rejected) {
     return t('bridgeHwRejected');
+  }
+
+  if (firstStepStatus === SignatureStepStatus.Disconnected) {
+    return t('bridgeHwReconnectDevice');
   }
 
   if (firstStepStatus === SignatureStepStatus.Failed) {
@@ -207,6 +209,19 @@ export const getStepStatus = (
     return isCompletedBeforeFinalSignature({
       step,
       activeSignature: signatureState.failedSignature,
+    })
+      ? SignatureStepStatus.Complete
+      : SignatureStepStatus.Pending;
+  }
+
+  if (signatureState.status === HardwareWalletSignatureStatus.Disconnected) {
+    if (signatureState.disconnectedSignature === step) {
+      return SignatureStepStatus.Disconnected;
+    }
+
+    return isCompletedBeforeFinalSignature({
+      step,
+      activeSignature: signatureState.disconnectedSignature,
     })
       ? SignatureStepStatus.Complete
       : SignatureStepStatus.Pending;

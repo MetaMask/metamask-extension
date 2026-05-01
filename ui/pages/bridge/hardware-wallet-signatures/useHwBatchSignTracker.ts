@@ -10,6 +10,21 @@ const APPROVAL_TYPES = new Set([
 ]);
 
 const TRADE_TYPES = new Set([TransactionType.bridge, TransactionType.swap]);
+const ALL_BATCH_TYPES = new Set([...APPROVAL_TYPES, ...TRADE_TYPES]);
+
+function matchesTx(
+  transactionMeta: TransactionMeta,
+  targetFrom: string | undefined,
+): boolean {
+  if (!targetFrom) {
+    return false;
+  }
+  const normalizedFrom = transactionMeta.txParams.from?.toLowerCase();
+  if (normalizedFrom !== targetFrom) {
+    return false;
+  }
+  return ALL_BATCH_TYPES.has(transactionMeta.type as TransactionType);
+}
 
 export function useHwBatchSignTracker(
   fromAddress: string | undefined,
@@ -18,6 +33,7 @@ export function useHwBatchSignTracker(
   dispatchSignatureEvent: (event: {
     type: HardwareWalletSignatureEvent;
   }) => void,
+  isDeviceDisconnectedRef: React.RefObject<boolean>,
 ) {
   const dispatchRef = useRef(dispatchSignatureEvent);
   dispatchRef.current = dispatchSignatureEvent;
@@ -28,9 +44,11 @@ export function useHwBatchSignTracker(
     }
 
     let cancelled = false;
+    const targetFrom = fromAddress.toLowerCase();
+    const unsubscribes: (() => Promise<void>)[] = [];
 
-    const subscribe = async () => {
-      const unsubscribe = await subscribeToMessengerEvent<
+    const subscribeAll = async () => {
+      const unsub1 = await subscribeToMessengerEvent<
         [{ transactionMeta: TransactionMeta }]
       >(
         'TransactionController:transactionStatusUpdated',
@@ -39,9 +57,7 @@ export function useHwBatchSignTracker(
             return;
           }
 
-          const { status, type, txParams } = transactionMeta;
-          const normalizedFrom = txParams.from?.toLowerCase();
-          const targetFrom = fromAddress?.toLowerCase();
+          const { status, type } = transactionMeta;
 
           console.log(
             '[HW-Batch] transactionStatusUpdated',
@@ -49,47 +65,87 @@ export function useHwBatchSignTracker(
               id: transactionMeta.id,
               status,
               type,
-              from: normalizedFrom,
+              from: transactionMeta.txParams.from,
               batchId: transactionMeta.batchId,
             }),
           );
 
-          if (normalizedFrom !== targetFrom) {
-            console.log('[HW-Batch] skipping: from address mismatch');
+          if (!matchesTx(transactionMeta, targetFrom)) {
             return;
           }
 
-          if (status !== 'signed') {
-            console.log('[HW-Batch] skipping: status not signed');
-            return;
-          }
-
-          if (APPROVAL_TYPES.has(type as TransactionType)) {
-            console.log('[HW-Batch] approval signed → FirstSignatureSubmitted');
-            dispatchRef.current({
-              type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
-            });
-          } else if (TRADE_TYPES.has(type as TransactionType)) {
-            console.log('[HW-Batch] trade signed', type);
-          } else {
-            console.log('[HW-Batch] skipping: unmatched type', type);
+          if (status === 'signed') {
+            if (APPROVAL_TYPES.has(type as TransactionType)) {
+              console.log(
+                '[HW-Batch] approval signed → FirstSignatureSubmitted',
+              );
+              dispatchRef.current({
+                type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+              });
+            } else if (TRADE_TYPES.has(type as TransactionType)) {
+              console.log('[HW-Batch] trade signed', type);
+            }
           }
         },
       );
+      unsubscribes.push(unsub1);
 
-      return unsubscribe;
+      const unsub2 = await subscribeToMessengerEvent<
+        [{ transactionMeta: TransactionMeta }]
+      >(
+        'TransactionController:transactionRejected',
+        ([{ transactionMeta }]) => {
+          if (cancelled) {
+            return;
+          }
+
+          console.log(
+            '[HW-Batch] transactionRejected',
+            JSON.stringify({
+              id: transactionMeta.id,
+              type: transactionMeta.type,
+              from: transactionMeta.txParams.from,
+              batchId: transactionMeta.batchId,
+            }),
+          );
+
+          if (!matchesTx(transactionMeta, targetFrom)) {
+            return;
+          }
+
+          if (isDeviceDisconnectedRef.current) {
+            console.log(
+              '[HW-Batch] skipping transactionRejected (device disconnected)',
+            );
+            return;
+          }
+
+          console.log('[HW-Batch] tx rejected → TransactionRejected');
+          dispatchRef.current({
+            type: HardwareWalletSignatureEvent.TransactionRejected,
+          });
+        },
+      );
+      unsubscribes.push(unsub2);
     };
 
-    const pendingUnsubscribe = subscribe();
+    subscribeAll().catch((err: unknown) => {
+      console.error('[HW-Batch] subscription error', err);
+    });
 
     return () => {
       cancelled = true;
-      pendingUnsubscribe
-        .then((unsubscribe) => unsubscribe?.())
-        .catch(
+      for (const unsub of unsubscribes) {
+        unsub.catch(
           // eslint-disable-next-line no-empty-function
           () => {},
         );
+      }
     };
-  }, [fromAddress, hardwareWalletUsed, needsTwoConfirmations]);
+  }, [
+    fromAddress,
+    hardwareWalletUsed,
+    needsTwoConfirmations,
+    isDeviceDisconnectedRef,
+  ]);
 }

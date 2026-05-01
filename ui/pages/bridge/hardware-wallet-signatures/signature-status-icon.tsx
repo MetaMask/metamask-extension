@@ -31,7 +31,8 @@ const SignatureStatusIcon = ({
 
   if (
     status === SignatureStepStatus.Rejected ||
-    status === SignatureStepStatus.Failed
+    status === SignatureStepStatus.Failed ||
+    status === SignatureStepStatus.Disconnected
   ) {
     return (
       <Box className="hardware-wallet-signatures__step-icon hardware-wallet-signatures__step-icon--rejected">

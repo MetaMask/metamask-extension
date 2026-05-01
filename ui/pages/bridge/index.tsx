@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import {
@@ -76,6 +76,10 @@ const CrossChainSwap = () => {
   useTxAlerts();
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const location = useLocation();
+  const isHardwareWalletSignaturesPage = location.pathname.includes(
+    HARDWARE_WALLET_SIGNATURES_ROUTE,
+  );
 
   // Pre-fetch the popular tokens list
   const { fetchTokens } = useInitialBridgeTokens();
@@ -95,28 +99,32 @@ const CrossChainSwap = () => {
       <Header
         textProps={{ variant: TextVariant.headingSm }}
         startAccessory={
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('back')}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={handleBack}
-          />
+          isHardwareWalletSignaturesPage ? null : (
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              size={ButtonIconSize.Sm}
+              ariaLabel={t('back')}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={handleBack}
+            />
+          )
         }
         endAccessory={
-          <ButtonIcon
-            iconName={IconName.Setting}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('settings')}
-            data-testid="bridge__header-settings-button"
-            onClick={() => {
-              setIsSettingsModalOpen(true);
-            }}
-          />
+          isHardwareWalletSignaturesPage ? null : (
+            <ButtonIcon
+              iconName={IconName.Setting}
+              size={ButtonIconSize.Sm}
+              ariaLabel={t('settings')}
+              data-testid="bridge__header-settings-button"
+              onClick={() => {
+                setIsSettingsModalOpen(true);
+              }}
+            />
+          )
         }
       >
-        {t('swap')}
+        {isHardwareWalletSignaturesPage ? null : t('swap')}
       </Header>
       <Content padding={0}>
         <Routes>

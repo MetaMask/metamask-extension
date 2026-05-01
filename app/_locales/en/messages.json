@@ -1119,6 +1119,14 @@
     "message": "You rejected this transaction on your device",
     "description": "Title shown after a hardware-wallet bridge transaction is rejected on the device."
   },
+  "bridgeHwDeviceDisconnected": {
+    "message": "Device disconnected",
+    "description": "Title shown when a hardware wallet device disconnects during signing."
+  },
+  "bridgeHwReconnectDevice": {
+    "message": "Reconnect your device to continue",
+    "description": "Description shown when a hardware wallet device disconnects during signing."
+  },
   "bridgeLowestCost": {
     "message": "Lowest cost"
   },

@@ -35,6 +35,8 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
   ConnectionStatus,
+  ErrorCode,
+  getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
@@ -68,7 +70,7 @@ import {
   getFirstStepDescription,
   getStepStatus,
   getTitle,
-  getTransactionToAddress,
+  getTransactionField,
   isQrHardwareSignRequest,
 } from './hardware-wallet-signatures.utils';
 import GenericHardwareWalletAnimation from './generic-hardware-wallet-animation';
@@ -110,6 +112,7 @@ export default function HardwareWalletSignatures() {
   const hasTrackedPageView = useRef(false);
   const quoteRequestIdRef = useRef<string | undefined>();
   const handledConnectionErrorRef = useRef<unknown>(null);
+  const isDeviceDisconnectedRef = useRef(false);
   const [isReadingQrSignature, setIsReadingQrSignature] = useState(false);
   const isQrHardwareWallet =
     hardwareWalletType === HardwareKeyringType.qr ||
@@ -118,6 +121,7 @@ export default function HardwareWalletSignatures() {
     isQrHardwareWallet && isQrHardwareSignRequest(activeQrCodeScanRequest)
       ? activeQrCodeScanRequest
       : undefined;
+  const currentQrRequestId = qrSignRequest?.request.requestId;
   const qrTxData = useSelector(
     (state: BridgeStatusState) => state.confirmTransaction?.txData,
   );
@@ -157,7 +161,7 @@ export default function HardwareWalletSignatures() {
 
   useEffect(() => {
     setIsReadingQrSignature(false);
-  }, [qrSignRequest?.request.requestId]);
+  }, [currentQrRequestId]);
 
   useEffect(() => {
     if (hasTrackedPageView.current || !lockedQuote) {
@@ -227,30 +231,22 @@ export default function HardwareWalletSignatures() {
     }
 
     hasStartedSubmission.current = true;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    submitActiveQuote();
+    submitActiveQuote().catch(() => {
+      hasStartedSubmission.current = false;
+    });
   }, [lockedQuote, submitActiveQuote]);
 
-  const fromAddress = (lockedQuote?.trade as { from?: string })?.from;
+  const fromAddress = getTransactionField(lockedQuote?.trade, 'from');
 
   useHwBatchSignTracker(
     fromAddress,
     hardwareWalletUsed,
     needsTwoConfirmations,
     dispatchSignatureEvent,
+    isDeviceDisconnectedRef,
   );
 
   useEffect(() => {
-    if (connectionState.status !== ConnectionStatus.ErrorState) {
-      handledConnectionErrorRef.current = null;
-      return;
-    }
-
-    if (handledConnectionErrorRef.current === connectionState.error) {
-      return;
-    }
-
     if (
       signatureState.status !==
         HardwareWalletSignatureStatus.AwaitingFirstSignature &&
@@ -260,7 +256,59 @@ export default function HardwareWalletSignatures() {
       return;
     }
 
+    if (connectionState.status === ConnectionStatus.Disconnected) {
+      if (handledConnectionErrorRef.current === 'disconnected') {
+        return;
+      }
+      handledConnectionErrorRef.current = 'disconnected';
+      isDeviceDisconnectedRef.current = true;
+      console.log(
+        '[HW-Batch] device disconnected (status) → DeviceDisconnected',
+      );
+      dispatchSignatureEvent({
+        type: HardwareWalletSignatureEvent.DeviceDisconnected,
+      });
+      return;
+    }
+
+    if (connectionState.status !== ConnectionStatus.ErrorState) {
+      handledConnectionErrorRef.current = null;
+      return;
+    }
+
+    if (handledConnectionErrorRef.current === connectionState.error) {
+      return;
+    }
+
     handledConnectionErrorRef.current = connectionState.error;
+
+    const errorCode = getHardwareWalletErrorCode(connectionState.error);
+    console.log(
+      '[HW-Batch] connection error',
+      JSON.stringify({
+        errorCode,
+        errorMessage:
+          connectionState.error instanceof Error
+            ? connectionState.error.message
+            : String(connectionState.error),
+        connectionStatus: connectionState.status,
+      }),
+    );
+
+    if (
+      errorCode === ErrorCode.ConnectionClosed ||
+      errorCode === ErrorCode.DeviceDisconnected
+    ) {
+      isDeviceDisconnectedRef.current = true;
+      console.log(
+        '[HW-Batch] device disconnected (error) → DeviceDisconnected',
+      );
+      dispatchSignatureEvent({
+        type: HardwareWalletSignatureEvent.DeviceDisconnected,
+      });
+      return;
+    }
+
     dispatchSignatureEvent({
       type: isUserRejectedHardwareWalletError(connectionState.error)
         ? HardwareWalletSignatureEvent.TransactionRejected
@@ -268,8 +316,8 @@ export default function HardwareWalletSignatures() {
     });
   }, [connectionState, signatureState.status]);
 
-  const toAddress = getTransactionToAddress(lockedQuote?.trade);
-  const spenderAddress = getTransactionToAddress(lockedQuote?.approval);
+  const toAddress = getTransactionField(lockedQuote?.trade, 'to');
+  const spenderAddress = getTransactionField(lockedQuote?.approval, 'to');
   const firstStepStatus = getStepStatus(
     HardwareWalletSignatureStatus.AwaitingFirstSignature,
     signatureState,
@@ -299,9 +347,10 @@ export default function HardwareWalletSignatures() {
     toAddress,
     t,
   });
-  const isRejectedOrFailed =
+  const isRetryable =
     signatureState.status === HardwareWalletSignatureStatus.Rejected ||
-    signatureState.status === HardwareWalletSignatureStatus.Failed;
+    signatureState.status === HardwareWalletSignatureStatus.Failed ||
+    signatureState.status === HardwareWalletSignatureStatus.Disconnected;
   const showFooter =
     signatureState.status !== HardwareWalletSignatureStatus.Submitted;
   const title = getTitle({
@@ -349,16 +398,19 @@ export default function HardwareWalletSignatures() {
       dispatch(cancelQrCodeScan());
     }
   }, [dispatch, qrSignRequest, qrTxData]);
-  const handleRetry = async () => {
+  const handleRetry = useCallback(async () => {
     handledConnectionErrorRef.current = null;
+    isDeviceDisconnectedRef.current = false;
     dispatchSignatureEvent({ type: HardwareWalletSignatureEvent.Retry });
-    hasStartedSubmission.current = true;
-    await submitActiveQuote();
-  };
-  const handleCancel = () => {
+    if (signatureState.status !== HardwareWalletSignatureStatus.Disconnected) {
+      hasStartedSubmission.current = true;
+      await submitActiveQuote();
+    }
+  }, [dispatchSignatureEvent, signatureState.status, submitActiveQuote]);
+  const handleCancel = useCallback(() => {
     handleQrSignatureCancel();
     navigateToBridgePage();
-  };
+  }, [handleQrSignatureCancel, navigateToBridgePage]);
 
   return (
     <div className="hardware-wallet-signatures">
@@ -403,7 +455,8 @@ export default function HardwareWalletSignatures() {
                     <Text
                       color={
                         firstStepStatus === SignatureStepStatus.Rejected ||
-                        firstStepStatus === SignatureStepStatus.Failed
+                        firstStepStatus === SignatureStepStatus.Failed ||
+                        firstStepStatus === SignatureStepStatus.Disconnected
                           ? TextColor.ErrorDefault
                           : TextColor.TextDefault
                       }
@@ -439,7 +492,8 @@ export default function HardwareWalletSignatures() {
                   <Text
                     color={
                       finalStepStatus === SignatureStepStatus.Rejected ||
-                      finalStepStatus === SignatureStepStatus.Failed
+                      finalStepStatus === SignatureStepStatus.Failed ||
+                      finalStepStatus === SignatureStepStatus.Disconnected
                         ? TextColor.ErrorDefault
                         : TextColor.TextDefault
                     }
@@ -475,17 +529,20 @@ export default function HardwareWalletSignatures() {
           flexDirection={BoxFlexDirection.Column}
           gap={4}
         >
-          {isRejectedOrFailed && (
+          {isRetryable && (
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               isFullWidth
               onClick={handleRetry}
             >
-              {t('errorPageTryAgain')}
+              {signatureState.status ===
+              HardwareWalletSignatureStatus.Disconnected
+                ? t('hardwareWalletErrorReconnectButton')
+                : t('errorPageTryAgain')}
             </Button>
           )}
-          {showInlineQrSigning && !isRejectedOrFailed && (
+          {showInlineQrSigning && !isRetryable && (
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
