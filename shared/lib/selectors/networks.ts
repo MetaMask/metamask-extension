@@ -100,6 +100,7 @@ export function getSelectedNetworkClientId(
  * @param params.multichainNetworkConfigurationsByChainId - network configurations by caip chain id from the MultichainNetworkController state.
  * @param params.networkConfigurationsByChainId - network configurations by hex chain id from the NetworkController state.
  * @param params.internalAccounts - InternalAccounts object from the AccountController state.
+ * @param params.snaps - Snaps object from the SnapController state.
  * @returns A consolidated object containing all available network configurations by caip chain id.
  */
 export const getNetworkConfigurationsByCaipChainId = ({
