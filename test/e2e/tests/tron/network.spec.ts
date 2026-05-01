@@ -5,9 +5,8 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
-import { mockTronFeatureFlags } from './mocks/common-tron';
+import { TRON_CHAIN_ID, mockTronFeatureFlags } from './mocks/common-tron';
 
-const TRON_CAIP_CHAIN_ID = 'tron:728126428';
 const TRON_NILE_NAME = 'Tron Nile Testnet';
 const TRON_SHASTA_NAME = 'Tron Shasta Testnet';
 
@@ -44,7 +43,7 @@ describe('Tron network presence', function (this: Suite) {
         manifestFlags: {
           remoteFeatureFlags: {
             neNetworkDiscoverButton: {
-              [TRON_CAIP_CHAIN_ID]: true,
+              [TRON_CHAIN_ID]: true,
             },
           },
         },
@@ -55,13 +54,14 @@ describe('Tron network presence', function (this: Suite) {
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.checkContextMenuHasOption(
-          TRON_CAIP_CHAIN_ID,
+          TRON_CHAIN_ID,
           'Discover',
         );
       },
     );
   });
 
+  // eslint-disable-next-line mocha/no-skipped-tests -- pending show-test-networks toggle behaviour confirmed in Task 2
   it.skip('shows Tron Nile when test networks are enabled', async function () {
     await withFixtures(
       {
@@ -79,6 +79,7 @@ describe('Tron network presence', function (this: Suite) {
     );
   });
 
+  // eslint-disable-next-line mocha/no-skipped-tests -- pending show-test-networks toggle behaviour confirmed in Task 2
   it.skip('shows Tron Shasta when test networks are enabled', async function () {
     await withFixtures(
       {

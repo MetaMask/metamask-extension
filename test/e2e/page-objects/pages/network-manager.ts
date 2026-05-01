@@ -79,6 +79,7 @@ class NetworkManager {
   async toggleShowTestNetworks(): Promise<void> {
     console.log('Toggling "Show test networks"');
     await this.driver.clickElement(this.showTestNetworksToggle);
+    await this.driver.waitForElementToStopMoving(this.showTestNetworksToggle);
   }
 
   async checkNetworkIsListed(networkName: string): Promise<void> {
