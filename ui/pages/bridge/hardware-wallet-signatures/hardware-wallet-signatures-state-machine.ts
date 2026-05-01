@@ -67,13 +67,24 @@ export const hardwareWalletSignaturesReducer = (
 ): HardwareWalletSignaturesState => {
   switch (action.type) {
     case HardwareWalletSignatureEvent.FirstSignatureSubmitted:
-      return {
-        status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
-      };
+      if (
+        state.status === HardwareWalletSignatureStatus.AwaitingFirstSignature
+      ) {
+        return {
+          status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+        };
+      }
+      return state;
     case HardwareWalletSignatureEvent.TransactionSubmitted:
-      return {
-        status: HardwareWalletSignatureStatus.Submitted,
-      };
+      if (
+        state.status === HardwareWalletSignatureStatus.AwaitingFirstSignature ||
+        state.status === HardwareWalletSignatureStatus.AwaitingFinalSignature
+      ) {
+        return {
+          status: HardwareWalletSignatureStatus.Submitted,
+        };
+      }
+      return state;
     case HardwareWalletSignatureEvent.TransactionRejected:
       if (
         state.status === HardwareWalletSignatureStatus.AwaitingFirstSignature ||

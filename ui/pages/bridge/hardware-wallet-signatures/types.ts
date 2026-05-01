@@ -1,3 +1,4 @@
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
 export type BridgeStatusState = {
@@ -11,6 +12,7 @@ export type BridgeStatusState = {
         };
       }
     >;
+    transactions?: TransactionMeta[];
   };
   confirmTransaction?: {
     txData?: {

@@ -8,13 +8,17 @@ import {
   createBridgeMockStore,
   MOCK_LEDGER_ACCOUNT,
 } from '../../../../test/data/bridge/mock-bridge-store';
-import { DummyQuotesWithApproval } from '../../../../test/data/bridge/dummy-quotes';
+import {
+  DummyQuotesNoApproval,
+  DummyQuotesWithApproval,
+} from '../../../../test/data/bridge/dummy-quotes';
 import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 import {
   ConnectionStatus,
   HardwareWalletType,
 } from '../../../contexts/hardware-wallets';
 import { createHardwareWalletError } from '../../../contexts/hardware-wallets/errors';
+import * as backgroundConnection from '../../../store/background-connection';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
 import HardwareWalletSignatures from '.';
 
@@ -86,7 +90,31 @@ describe('HardwareWalletSignatures', () => {
     expect(getByTestId('generic-hardware-wallet-animation')).toBeDefined();
   });
 
-  it('advances to the second signature step when the approval transaction is in bridge history', () => {
+  it('subscribes to BridgeStatusController:stateChange and transitions to step 2 when approvalTxId appears in txHistory', async () => {
+    let capturedCallback:
+      | ((
+          data: [
+            {
+              txHistory: Record<
+                string,
+                {
+                  approvalTxId?: string;
+                  quote?: { requestId?: string };
+                }
+              >;
+            },
+          ],
+        ) => void)
+      | undefined;
+    const mockUnsubscribe = jest.fn().mockResolvedValue(undefined);
+    jest
+      .spyOn(backgroundConnection, 'subscribeToMessengerEvent')
+      .mockImplementation(async (_event, callback) => {
+        if (_event === 'BridgeStatusController:stateChange') {
+          capturedCallback = callback;
+        }
+        return mockUnsubscribe;
+      });
     mockUseSubmitBridgeTransaction.mockReturnValue({
       submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
       isSubmitting: false,
@@ -116,22 +144,238 @@ describe('HardwareWalletSignatures', () => {
             selectedAccountGroup:
               'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
           },
-          txHistory: {
-            'action-id': {
-              approvalTxId: 'approval-tx-id',
-              quote: { requestId: quote.quote.requestId },
-            },
-          },
         },
       }),
     );
-    const { getByText, queryByText } = renderWithProvider(
+
+    const { getByText } = renderWithProvider(
       <HardwareWalletSignatures />,
       store,
     );
 
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    expect(backgroundConnection.subscribeToMessengerEvent).toHaveBeenCalledWith(
+      'BridgeStatusController:stateChange',
+      expect.any(Function),
+    );
+
+    expect(getByText('Confirm with your hardware wallet (1/2)')).toBeDefined();
+
+    await act(async () => {
+      capturedCallback?.([
+        {
+          txHistory: {
+            'some-tx-id': {
+              approvalTxId: 'approval-tx-123',
+              quote: { requestId: '0cd5caf6-9844-465b-89ad-9c89b639f432' },
+            },
+          },
+        },
+      ]);
+    });
+
     expect(getByText('Confirm with your hardware wallet (2/2)')).toBeDefined();
-    expect(queryByText('Transaction submitted')).toBeNull();
+
+    jest.restoreAllMocks();
+  });
+
+  it('does not subscribe to BridgeStatusController:stateChange for single-confirmation flows (no approval needed)', async () => {
+    const subscribeSpy = jest
+      .spyOn(backgroundConnection, 'subscribeToMessengerEvent')
+      .mockResolvedValue(jest.fn().mockResolvedValue(undefined));
+    mockUseSubmitBridgeTransaction.mockReturnValue({
+      submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
+      isSubmitting: false,
+    });
+    const quote = DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0];
+    const store = configureStore(
+      createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: quote.quote.srcAsset.address,
+            symbol: quote.quote.srcAsset.symbol,
+          },
+          toToken: {
+            address: quote.quote.destAsset.address,
+            symbol: quote.quote.destAsset.symbol,
+          },
+        },
+        bridgeStateOverrides: {
+          quotes: [quote],
+          quotesLastFetched: 100,
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      }),
+    );
+
+    renderWithProvider(<HardwareWalletSignatures />, store);
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    expect(subscribeSpy).not.toHaveBeenCalled();
+
+    subscribeSpy.mockRestore();
+  });
+
+  it('does not subscribe to BridgeStatusController:stateChange for gasless flows (gasIncluded7702) even with approval', async () => {
+    const subscribeSpy = jest
+      .spyOn(backgroundConnection, 'subscribeToMessengerEvent')
+      .mockResolvedValue(jest.fn().mockResolvedValue(undefined));
+    mockUseSubmitBridgeTransaction.mockReturnValue({
+      submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
+      isSubmitting: false,
+    });
+    const quote = {
+      ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+      quote: {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+        gasIncluded7702: true,
+      },
+    };
+    const store = configureStore(
+      createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: quote.quote.srcAsset.address,
+            symbol: quote.quote.srcAsset.symbol,
+          },
+          toToken: {
+            address: quote.quote.destAsset.address,
+            symbol: quote.quote.destAsset.symbol,
+          },
+        },
+        bridgeStateOverrides: {
+          quotes: [quote],
+          quotesLastFetched: 100,
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      }),
+    );
+
+    renderWithProvider(<HardwareWalletSignatures />, store);
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    // Should NOT subscribe to BridgeStatusController:stateChange for gasless
+    expect(subscribeSpy).not.toHaveBeenCalledWith(
+      'BridgeStatusController:stateChange',
+      expect.any(Function),
+    );
+
+    // But SHOULD subscribe to TransactionController:transactionApproved
+    expect(subscribeSpy).toHaveBeenCalledWith(
+      'TransactionController:transactionApproved',
+      expect.any(Function),
+    );
+
+    subscribeSpy.mockRestore();
+  });
+
+  it('transitions to step 2 when gasless batch tx is approved via TransactionController event', async () => {
+    let capturedCallback:
+      | ((
+          data: [
+            {
+              transactionMeta: {
+                batchId?: string;
+                txParams: { from?: string };
+              };
+            },
+          ],
+        ) => void)
+      | undefined;
+    const mockUnsubscribe = jest.fn().mockResolvedValue(undefined);
+    jest
+      .spyOn(backgroundConnection, 'subscribeToMessengerEvent')
+      .mockImplementation(async (_event, callback) => {
+        if (_event === 'TransactionController:transactionApproved') {
+          capturedCallback = callback;
+        }
+        return mockUnsubscribe;
+      });
+    mockUseSubmitBridgeTransaction.mockReturnValue({
+      submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
+      isSubmitting: false,
+    });
+    const quote = {
+      ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+      quote: {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+        gasIncluded7702: true,
+      },
+    };
+    const store = configureStore(
+      createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: quote.quote.srcAsset.address,
+            symbol: quote.quote.srcAsset.symbol,
+          },
+          toToken: {
+            address: quote.quote.destAsset.address,
+            symbol: quote.quote.destAsset.symbol,
+          },
+        },
+        bridgeStateOverrides: {
+          quotes: [quote],
+          quotesLastFetched: 100,
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      }),
+    );
+
+    const { getByText } = renderWithProvider(
+      <HardwareWalletSignatures />,
+      store,
+    );
+
+    expect(getByText('Confirm with your hardware wallet (1/2)')).toBeDefined();
+
+    await act(async () => {
+      capturedCallback?.([
+        {
+          transactionMeta: {
+            batchId: '0x1',
+            txParams: { from: '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452' },
+          },
+        },
+      ]);
+    });
+
+    expect(getByText('Confirm with your hardware wallet (2/2)')).toBeDefined();
+
+    jest.restoreAllMocks();
   });
 
   it('shows "Transaction submitted" once the bridge submission callback fires', async () => {
@@ -188,6 +432,106 @@ describe('HardwareWalletSignatures', () => {
     });
 
     expect(getByText('Transaction submitted')).toBeDefined();
+  });
+
+  it('stays at "Transaction submitted" when a late BridgeStatusController:stateChange event arrives after onHardwareWalletSubmitted', async () => {
+    let capturedCallback:
+      | ((
+          data: [
+            {
+              txHistory: Record<
+                string,
+                {
+                  approvalTxId?: string;
+                  quote?: { requestId?: string };
+                }
+              >;
+            },
+          ],
+        ) => void)
+      | undefined;
+    const mockUnsubscribe = jest.fn().mockResolvedValue(undefined);
+    jest
+      .spyOn(backgroundConnection, 'subscribeToMessengerEvent')
+      .mockImplementation(async (_event, callback) => {
+        if (_event === 'BridgeStatusController:stateChange') {
+          capturedCallback = callback;
+        }
+        return mockUnsubscribe;
+      });
+    const onHardwareWalletSubmittedCallbacks: (() => void)[] = [];
+    mockUseSubmitBridgeTransaction.mockImplementation((options) => {
+      if (options?.onHardwareWalletSubmitted) {
+        onHardwareWalletSubmittedCallbacks.push(
+          options.onHardwareWalletSubmitted,
+        );
+      }
+
+      return {
+        submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
+        isSubmitting: false,
+      };
+    });
+    const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+    const store = configureStore(
+      createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: quote.quote.srcAsset.address,
+            symbol: quote.quote.srcAsset.symbol,
+          },
+          toToken: {
+            address: quote.quote.destAsset.address,
+            symbol: quote.quote.destAsset.symbol,
+          },
+        },
+        bridgeStateOverrides: {
+          quotes: [quote],
+          quotesLastFetched: 100,
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      }),
+    );
+    const { getByText } = renderWithProvider(
+      <HardwareWalletSignatures />,
+      store,
+    );
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    await act(async () => {
+      onHardwareWalletSubmittedCallbacks[0]?.();
+    });
+
+    expect(getByText('Transaction submitted')).toBeDefined();
+
+    // Late BSC stateChange event arrives after submission — should NOT revert state
+    await act(async () => {
+      capturedCallback?.([
+        {
+          txHistory: {
+            'some-tx-id': {
+              approvalTxId: 'approval-tx-123',
+              quote: { requestId: '0cd5caf6-9844-465b-89ad-9c89b639f432' },
+            },
+          },
+        },
+      ]);
+    });
+
+    expect(getByText('Transaction submitted')).toBeDefined();
+
+    jest.restoreAllMocks();
   });
 
   it('shows the active QR code inline for QR hardware wallets that need two signatures', () => {

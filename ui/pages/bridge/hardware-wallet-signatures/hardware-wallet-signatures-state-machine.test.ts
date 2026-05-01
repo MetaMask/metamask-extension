@@ -106,4 +106,48 @@ describe('hardwareWalletSignaturesReducer', () => {
       status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
     });
   });
+
+  it('ignores FirstSignatureSubmitted when already Submitted (prevents state reversion from late events)', () => {
+    expect(
+      hardwareWalletSignaturesReducer(
+        { status: HardwareWalletSignatureStatus.Submitted },
+        { type: HardwareWalletSignatureEvent.FirstSignatureSubmitted },
+      ),
+    ).toStrictEqual({
+      status: HardwareWalletSignatureStatus.Submitted,
+    });
+  });
+
+  it('ignores TransactionSubmitted when already Submitted', () => {
+    expect(
+      hardwareWalletSignaturesReducer(
+        { status: HardwareWalletSignatureStatus.Submitted },
+        { type: HardwareWalletSignatureEvent.TransactionSubmitted },
+      ),
+    ).toStrictEqual({
+      status: HardwareWalletSignatureStatus.Submitted,
+    });
+  });
+
+  it('ignores FirstSignatureSubmitted when in AwaitingFinalSignature', () => {
+    expect(
+      hardwareWalletSignaturesReducer(
+        { status: HardwareWalletSignatureStatus.AwaitingFinalSignature },
+        { type: HardwareWalletSignatureEvent.FirstSignatureSubmitted },
+      ),
+    ).toStrictEqual({
+      status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+    });
+  });
+
+  it('advances directly from AwaitingFirstSignature to Submitted (gasless batch flow)', () => {
+    expect(
+      hardwareWalletSignaturesReducer(
+        { status: HardwareWalletSignatureStatus.AwaitingFirstSignature },
+        { type: HardwareWalletSignatureEvent.TransactionSubmitted },
+      ),
+    ).toStrictEqual({
+      status: HardwareWalletSignatureStatus.Submitted,
+    });
+  });
 });

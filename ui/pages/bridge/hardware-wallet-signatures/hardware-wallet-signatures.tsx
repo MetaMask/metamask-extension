@@ -51,8 +51,10 @@ import {
   completeQrCodeScan,
   rejectPendingApproval,
 } from '../../../store/actions';
+
 import { type MetaMaskReduxDispatch } from '../../../store/store';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
+import { useHwBatchSignTracker } from './useHwBatchSignTracker';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
@@ -64,7 +66,6 @@ import {
   getFinalStepLabel,
   getFinalStepDescription,
   getFirstStepDescription,
-  hasApprovalTxForRequestId,
   getStepStatus,
   getTitle,
   getTransactionToAddress,
@@ -80,7 +81,6 @@ import type { BridgeStatusState } from './types';
 export default function HardwareWalletSignatures() {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes, shallowEqual);
-  const fromAmount = activeQuote?.sentAmount?.amount;
   const fromToken = useSelector(getFromToken, isEqual);
   const toToken = useSelector(getToToken, isEqual);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
@@ -88,7 +88,17 @@ export default function HardwareWalletSignatures() {
   const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
   const { connectionState } = useHardwareWalletState();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const needsTwoConfirmations = Boolean(activeQuote?.approval);
+  // The background's debounced `sendUpdate` can clear the quotes list when an
+  // in-flight quote response races with `stopPollingForQuotes`, making
+  // `activeQuote` null. Once the signing flow starts we latch the quote data
+  // so the step UI survives these transient Redux state changes.
+  const lockedQuoteRef = useRef(activeQuote);
+  if (activeQuote && !lockedQuoteRef.current) {
+    lockedQuoteRef.current = activeQuote;
+  }
+  const lockedQuote = lockedQuoteRef.current;
+  const needsTwoConfirmations = Boolean(lockedQuote?.approval);
+  const fromAmount = lockedQuote?.sentAmount?.amount;
   const { trackEvent } = useContext(MetaMetricsContext);
   const { navigateToBridgePage } = useBridgeNavigation();
   const [signatureState, dispatchSignatureEvent] = useReducer(
@@ -108,11 +118,6 @@ export default function HardwareWalletSignatures() {
     isQrHardwareWallet && isQrHardwareSignRequest(activeQrCodeScanRequest)
       ? activeQrCodeScanRequest
       : undefined;
-  const hasApprovalTxSubmitted = useSelector((state: BridgeStatusState) => {
-    const requestId = activeQuote?.quote.requestId;
-
-    return hasApprovalTxForRequestId(state.metamask.txHistory, requestId);
-  });
   const qrTxData = useSelector(
     (state: BridgeStatusState) => state.confirmTransaction?.txData,
   );
@@ -120,7 +125,7 @@ export default function HardwareWalletSignatures() {
   // after BOTH the approval (when needed) and the trade have been signed and
   // submitted, so we can transition straight to Submitted here. The mid-flow
   // AwaitingFirstSignature -> AwaitingFinalSignature transition is driven by
-  // the `hasApprovalTxSubmitted` effect below.
+  // the `BridgeStatusController:stateChange` subscription effect below.
   const handleHardwareWalletSubmitted = useCallback(() => {
     dispatchSignatureEvent({
       type: HardwareWalletSignatureEvent.TransactionSubmitted,
@@ -143,19 +148,19 @@ export default function HardwareWalletSignatures() {
     onHardwareWalletFailed: handleHardwareWalletFailed,
   });
   const submitActiveQuote = useCallback(async () => {
-    if (!activeQuote) {
+    if (!lockedQuote) {
       return;
     }
 
-    await submitBridgeTransaction(activeQuote);
-  }, [activeQuote, submitBridgeTransaction]);
+    await submitBridgeTransaction(lockedQuote);
+  }, [lockedQuote, submitBridgeTransaction]);
 
   useEffect(() => {
     setIsReadingQrSignature(false);
   }, [qrSignRequest?.request.requestId]);
 
   useEffect(() => {
-    if (hasTrackedPageView.current || !activeQuote) {
+    if (hasTrackedPageView.current || !lockedQuote) {
       return;
     }
 
@@ -183,26 +188,26 @@ export default function HardwareWalletSignatures() {
       sensitiveProperties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_from_amount: activeQuote?.quote?.srcTokenAmount ?? '',
+        token_from_amount: lockedQuote?.quote?.srcTokenAmount ?? '',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_to_amount: activeQuote?.quote?.destTokenAmount ?? '',
+        token_to_amount: lockedQuote?.quote?.destTokenAmount ?? '',
       },
     });
   }, [
-    activeQuote,
-    activeQuote?.quote?.destTokenAmount,
-    activeQuote?.quote?.srcTokenAmount,
     fromToken?.symbol,
     hardwareWalletType,
     hardwareWalletUsed,
+    lockedQuote,
+    lockedQuote?.quote?.destTokenAmount,
+    lockedQuote?.quote?.srcTokenAmount,
     needsTwoConfirmations,
     toToken?.symbol,
     trackEvent,
   ]);
 
   useEffect(() => {
-    const requestId = activeQuote?.quote.requestId;
+    const requestId = lockedQuote?.quote.requestId;
 
     if (!requestId || quoteRequestIdRef.current === requestId) {
       return;
@@ -214,10 +219,10 @@ export default function HardwareWalletSignatures() {
       type: HardwareWalletSignatureEvent.Reset,
       needsTwoConfirmations,
     });
-  }, [activeQuote?.quote.requestId, needsTwoConfirmations]);
+  }, [lockedQuote?.quote.requestId, needsTwoConfirmations]);
 
   useEffect(() => {
-    if (hasStartedSubmission.current || !activeQuote) {
+    if (hasStartedSubmission.current || !lockedQuote) {
       return;
     }
 
@@ -225,21 +230,16 @@ export default function HardwareWalletSignatures() {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     submitActiveQuote();
-  }, [activeQuote, submitActiveQuote]);
+  }, [lockedQuote, submitActiveQuote]);
 
-  useEffect(() => {
-    if (
-      signatureState.status !==
-        HardwareWalletSignatureStatus.AwaitingFirstSignature ||
-      !hasApprovalTxSubmitted
-    ) {
-      return;
-    }
+  const fromAddress = (lockedQuote?.trade as { from?: string })?.from;
 
-    dispatchSignatureEvent({
-      type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
-    });
-  }, [hasApprovalTxSubmitted, signatureState.status]);
+  useHwBatchSignTracker(
+    fromAddress,
+    hardwareWalletUsed,
+    needsTwoConfirmations,
+    dispatchSignatureEvent,
+  );
 
   useEffect(() => {
     if (connectionState.status !== ConnectionStatus.ErrorState) {
@@ -268,8 +268,8 @@ export default function HardwareWalletSignatures() {
     });
   }, [connectionState, signatureState.status]);
 
-  const toAddress = getTransactionToAddress(activeQuote?.trade);
-  const spenderAddress = getTransactionToAddress(activeQuote?.approval);
+  const toAddress = getTransactionToAddress(lockedQuote?.trade);
+  const spenderAddress = getTransactionToAddress(lockedQuote?.approval);
   const firstStepStatus = getStepStatus(
     HardwareWalletSignatureStatus.AwaitingFirstSignature,
     signatureState,
@@ -380,7 +380,7 @@ export default function HardwareWalletSignatures() {
         >
           {displayedTitle}
         </Text>
-        {activeQuote && (
+        {lockedQuote && (
           <>
             {isReadingQrSignature && qrSignRequest && (
               <Box className="hardware-wallet-signatures__qr-reader">
