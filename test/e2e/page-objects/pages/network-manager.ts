@@ -16,7 +16,7 @@ class NetworkManager {
   protected readonly driver: Driver;
 
   private readonly addCustomNetworkButton = {
-    text: 'Add custom network',
+    text: 'Add a custom network',
     tag: 'button',
   };
 
