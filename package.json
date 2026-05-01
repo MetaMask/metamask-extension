@@ -808,6 +808,12 @@
     "yargs-parser": "^21.1.1",
     "yazl": "^3.3.1"
   },
+  "previewBuilds": {
+    "@metamask/perps-controller": {
+      "type": "non-breaking",
+      "previewVersion": "4.0.0-preview-56dd1249f"
+    }
+  },
   "engines": {
     "node": ">=24.13.0",
     "yarn": "^4.12.0"

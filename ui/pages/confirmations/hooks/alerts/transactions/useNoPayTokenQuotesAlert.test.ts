@@ -28,6 +28,7 @@ const CHAIN_ID_MOCK = '0x1' as Hex;
 
 const PAY_TOKEN_MOCK = {
   address: ADDRESS_MOCK,
+  balanceRaw: '50',
   chainId: CHAIN_ID_MOCK,
 } as TransactionPaymentToken;
 
@@ -37,6 +38,8 @@ const SOURCE_AMOUNT_MOCK = {
 
 const REQUIRED_TOKEN_MOCK = {
   address: ADDRESS_MOCK,
+  amountRaw: '100',
+  chainId: CHAIN_ID_MOCK,
   skipIfBalance: false,
 } as TransactionPayRequiredToken;
 
@@ -146,6 +149,62 @@ describe('useNoPayTokenQuotesAlert', () => {
     const { result } = runHook();
 
     expect(result.current).toStrictEqual([]);
+  });
+
+  it('returns no alerts if selected pay token directly covers required tokens', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        ...PAY_TOKEN_MOCK,
+        balanceRaw: REQUIRED_TOKEN_MOCK.amountRaw,
+      },
+      isNative: false,
+      setPayToken: jest.fn(),
+    });
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual([]);
+  });
+
+  it('returns alert if selected pay token directly matches but has insufficient balance', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        ...PAY_TOKEN_MOCK,
+        balanceRaw: '99',
+      },
+      isNative: false,
+      setPayToken: jest.fn(),
+    });
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual([
+      expect.objectContaining({
+        key: AlertsName.NoPayTokenQuotes,
+        isBlocking: true,
+      }),
+    ]);
+  });
+
+  it('returns alert if selected pay token is on a different chain than required token', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        ...PAY_TOKEN_MOCK,
+        balanceRaw: REQUIRED_TOKEN_MOCK.amountRaw,
+        chainId: '0xa4b1' as Hex,
+      },
+      isNative: false,
+      setPayToken: jest.fn(),
+    });
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual([
+      expect.objectContaining({
+        key: AlertsName.NoPayTokenQuotes,
+        isBlocking: true,
+      }),
+    ]);
   });
 
   it('returns alert for post-quote transactions even if source amounts match skipped tokens', () => {

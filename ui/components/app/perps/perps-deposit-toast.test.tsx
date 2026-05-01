@@ -10,6 +10,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import { ARBITRUM_USDC } from '../../../pages/confirmations/constants/perps';
 import { PerpsDepositToast } from './perps-deposit-toast';
 
 jest.mock('../../../store/background-connection', () => ({
@@ -98,6 +99,38 @@ describe('PerpsDepositToast', () => {
     renderWithProvider(<PerpsDepositToast />, store);
 
     expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
+  });
+
+  it('renders pending toast for direct same-token deposits', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [buildPendingDepositTransaction()],
+        lastDepositTransactionId: 'pending-tx-1',
+        lastDepositResult: null,
+        transactionData: {
+          'pending-tx-1': {
+            paymentToken: {
+              address: ARBITRUM_USDC.address,
+              chainId: ARBITRUM_USDC.chainId,
+            },
+            tokens: [
+              {
+                address: ARBITRUM_USDC.address,
+                chainId: ARBITRUM_USDC.chainId,
+                skipIfBalance: false,
+              },
+            ],
+          },
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(
+      screen.getByText(messages.perpsDepositToastPendingTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('renders pending toast for native-token-funded deposits', () => {
@@ -544,6 +577,46 @@ describe('PerpsDepositToast', () => {
     renderWithProvider(<PerpsDepositToast />, store);
 
     expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
+  });
+
+  it('shows completion toast for direct same-token deposits', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'submitted-tx-1',
+          }),
+        ],
+        lastDepositTransactionId: 'submitted-tx-1',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+        transactionData: {
+          'submitted-tx-1': {
+            paymentToken: {
+              address: ARBITRUM_USDC.address,
+              chainId: ARBITRUM_USDC.chainId,
+            },
+            tokens: [
+              {
+                address: ARBITRUM_USDC.address,
+                chainId: ARBITRUM_USDC.chainId,
+                skipIfBalance: false,
+              },
+            ],
+          },
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(
+      screen.getByText(messages.perpsDepositToastSuccessTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('shows pending for the active deposit only when a stale perps tx remains submitted', () => {
