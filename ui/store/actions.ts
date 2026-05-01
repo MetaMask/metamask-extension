@@ -214,6 +214,7 @@ import {
   generateActionId,
   submitRequestToBackground,
 } from './background-connection';
+import { uiMessenger } from './ui-messenger';
 import { getStatePatches } from './patch-store-substream-connection';
 import type {
   MetaMaskReduxDispatch,
@@ -7428,7 +7429,9 @@ export async function getUserProfileLineage(): Promise<
  */
 export async function getBearerToken(): Promise<string | undefined> {
   try {
-    const bearerToken = await submitRequestToBackground('getBearerToken');
+    const bearerToken = await uiMessenger.call(
+      'AuthenticationController:getBearerToken',
+    );
     return bearerToken;
   } catch (error) {
     logErrorWithMessage(error);
