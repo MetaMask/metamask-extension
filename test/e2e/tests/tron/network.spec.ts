@@ -96,4 +96,41 @@ describe('Tron network presence', function (this: Suite) {
       },
     );
   });
+
+  async function checkTronInTabFilter(
+    driver: Driver,
+    tabTestId: string | null,
+  ): Promise<void> {
+    if (tabTestId) {
+      await driver.clickElement(`[data-testid="${tabTestId}"]`);
+    }
+    const networkManager = new NetworkManager(driver);
+    await networkManager.openNetworkManager();
+    await networkManager.selectTab('Popular');
+    await networkManager.checkNetworkIsListed('Tron');
+    await networkManager.closeNetworkManager();
+  }
+
+  const TAB_CASES: { name: string; testId: string | null }[] = [
+    { name: 'Tokens', testId: null }, // default tab on home view
+    { name: 'DeFi', testId: 'account-overview__defi-tab' },
+    { name: 'NFTs', testId: 'account-overview__nfts-tab' },
+    { name: 'Activity', testId: 'account-overview__activity-tab' },
+  ];
+
+  for (const { name, testId } of TAB_CASES) {
+    it(`shows Tron in the ${name} tab network selector`, async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: mockTronFlagsOnly,
+        },
+        async ({ driver }: { driver: Driver }) => {
+          await login(driver);
+          await checkTronInTabFilter(driver, testId);
+        },
+      );
+    });
+  }
 });
