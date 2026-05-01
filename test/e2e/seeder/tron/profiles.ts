@@ -1,6 +1,7 @@
 import { TronLocalNodeOptions } from './assets';
 
 export const TRON_PORTFOLIO_TRX_BALANCE_IN_SUN = 6_072_392;
+export const STAKED_TRX_BALANCE_IN_SUN = 20_000_000;
 
 export function createEmptyTronNodeOptions(
   address: string,
@@ -31,6 +32,22 @@ export function createTronPortfolioNodeOptions(
         USDD: '289757448699320931',
         USDT: '2804595',
       },
+    },
+  };
+}
+
+export function createTronStakedAccountOptions(
+  address: string,
+): TronLocalNodeOptions {
+  const portfolio = createTronPortfolioNodeOptions(address);
+  return {
+    ...portfolio,
+    initialBalances: {
+      [address]:
+        TRON_PORTFOLIO_TRX_BALANCE_IN_SUN + STAKED_TRX_BALANCE_IN_SUN,
+    },
+    stakedTrxBalances: {
+      [address]: String(STAKED_TRX_BALANCE_IN_SUN),
     },
   };
 }
