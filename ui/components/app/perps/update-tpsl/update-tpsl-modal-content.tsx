@@ -67,6 +67,11 @@ import {
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [5, 10, 25, 50];
 
+const formatSignedRoePercent = (value: number): string => {
+  const formatted = formatRoePercent(value);
+  return value > 0 && formatted !== '0' ? `+${formatted}` : formatted;
+};
+
 export type UpdateTPSLSubmitState = {
   onSubmit: () => void;
   isSaving: boolean;
@@ -190,7 +195,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       const diff = priceNum - entryPriceForEdit;
       const percentChange = (diff / entryPriceForEdit) * leverageForEdit * 100;
       // For long: positive when price > entry (profit). For short: negate (profit when price < entry).
-      return formatRoePercent(
+      return formatSignedRoePercent(
         positionDirection === 'long' ? percentChange : -percentChange,
       );
     },
@@ -322,7 +327,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       setEditingTpPrice(newPrice);
       // Preserve the exact preset value for display — avoids round-trip drift
       // caused by the price being rounded to 2 decimal places
-      const presetStr = String(percent);
+      const presetStr = formatSignedRoePercent(percent);
       setRawTpPercent(presetStr);
       setTpPresetPercent(presetStr);
     },
@@ -602,6 +607,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              testId="perps-update-tpsl-tp-price-input"
               startAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -629,6 +635,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              testId="perps-update-tpsl-tp-percent-input"
               endAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -731,6 +738,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              testId="perps-update-tpsl-sl-price-input"
               startAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -758,6 +766,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              testId="perps-update-tpsl-sl-percent-input"
               endAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
