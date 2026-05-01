@@ -115,7 +115,7 @@ import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-im
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 
-import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
+import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-modal/DeprecatedNetworkModal';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
@@ -191,27 +191,19 @@ const Asset = mmLazy(() => import('../asset/index.js'));
 const DeFiPage = mmLazy(() => import('../defi/index.ts'));
 const PermissionsPage = mmLazy(
   () =>
-    import(
-      '../../components/multichain/pages/permissions-page/permissions-page.js'
-    ),
+    import('../../components/multichain/pages/permissions-page/permissions-page.js'),
 );
 const GatorPermissionsPage = mmLazy(
   () =>
-    import(
-      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
-    ),
+    import('../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'),
 );
 const GatorPermissionsTokenTransferPermissionsPage = mmLazy(
   () =>
-    import(
-      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
-    ),
+    import('../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'),
 );
 const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
-    import(
-      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
-    ),
+    import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
 const Home = mmLazy(() => import('../home/index.js'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));

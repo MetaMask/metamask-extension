@@ -9,9 +9,10 @@ jobs:
   add-team-label:
     name: Add team label
     runs-on: ubuntu-latest
+    # Only same-repo PRs — TEAM_LABEL_TOKEN is not available to cross-repo PRs.
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     steps:
       - name: Add team label
-        if: ${{ !github.event.pull_request.head.repo.fork }}
         uses: MetaMask/github-tools/.github/actions/add-team-label@v1
         with:
           team-label-token: ${{ secrets.TEAM_LABEL_TOKEN }}
