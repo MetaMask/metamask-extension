@@ -1,0 +1,34 @@
+diff --git a/dist/bridge-status-controller.cjs b/dist/bridge-status-controller.cjs
+index 02f25516108eb02f6fb105a978a86390b074d41b..9a4f038ec1b4a2859fdb80552373d0f246c4b56a 100644
+--- a/dist/bridge-status-controller.cjs
++++ b/dist/bridge-status-controller.cjs
+@@ -859,16 +859,27 @@ class BridgeStatusController extends (0, polling_controller_1.StaticIntervalPoll
+                 };
+                 // Record in bridge history with actual transaction metadata
+                 try {
+-                    // Create a bridge transaction metadata that includes the original txId
++                     /**
++                     * Patch to fix ondo swap activity tab status issue logged at
++                     * https://consensyssoftware.atlassian.net/browse/BETR-413
++                    *
++                    */
++                    // Create a bridge transaction metadata keyed by orderUid for intent polling
+                     const bridgeTxMetaForHistory = {
+                         ...syntheticMeta,
+                         id: orderUid,
+-                        originalTransactionId: syntheticMeta.id, // Keep original txId for TransactionController updates
+                     };
+                     // Use orderId as the history key for intent transactions
++                    // IMPORTANT: pass originalTransactionId as a top-level argument so
++                    // `getInitialHistoryItem` reads it. Setting it on `bridgeTxMeta` is a no-op
++                    // because `getInitialHistoryItem` destructures `originalTransactionId` from
++                    // the top-level args, not from `bridgeTxMeta`. Without this, the field
++                    // falls back to `bridgeTxMeta.id` (the orderUid), severing the link between
++                    // the bridge history record and the synthetic TransactionController entry.
+                     const historyKey = __classPrivateFieldGet(this, _BridgeStatusController_addTxToHistory, "f").call(this, {
+                         accountAddress,
+                         bridgeTxMeta: bridgeTxMetaForHistory,
++                        originalTransactionId: syntheticMeta.id,
+                         quoteResponse,
+                         slippagePercentage: 0,
+                         isStxEnabled: false,
