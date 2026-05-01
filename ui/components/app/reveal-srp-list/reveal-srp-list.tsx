@@ -65,7 +65,7 @@ export const RevealSrpList = () => {
   };
 
   return (
-    <Box className="srp-reveal-list">
+    <Box className="srp-reveal-list h-full min-h-0 overflow-y-auto">
       {isSocialLoginFlow && (
         <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
           <Text

@@ -40,7 +40,6 @@ import type {
 import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
-  PRICE_RANGES_MINIMAL_VIEW,
 } from '../../../shared/lib/perps-formatters';
 import {
   PERPS_EVENT_PROPERTY,
@@ -98,6 +97,7 @@ import {
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
+  isStopLossSafeFromLiquidation,
 } from '../../components/app/perps/utils/tpslValidation';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
@@ -505,7 +505,8 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const hasInvalidTPSL = useMemo(() => {
     // In modify mode the TP/SL section is hidden and values carry over untouched,
-    // so stale prices that crossed the current market should not block submission.
+    // so stale prices that crossed the current market or liquidation price should
+    // not block submission. TP/SL edits are validated in the dedicated modal.
     if (!orderFormState?.autoCloseEnabled || orderMode === 'modify') {
       return false;
     }
@@ -523,24 +524,38 @@ const PerpsOrderEntryPage: React.FC = () => {
     const tp = orderFormState.takeProfitPrice;
     const sl = orderFormState.stopLossPrice;
     const dir = orderFormState.direction;
+    const liquidationPrice = orderCalculations?.liquidationPriceRaw;
 
     const tpInvalid = Boolean(
       tp?.trim() &&
-        !isValidTakeProfitPrice(tp, {
-          currentPrice: referencePrice,
-          direction: dir,
-        }),
+      !isValidTakeProfitPrice(tp, {
+        currentPrice: referencePrice,
+        direction: dir,
+      }),
     );
     const slInvalid = Boolean(
       sl?.trim() &&
-        !isValidStopLossPrice(sl, {
-          currentPrice: referencePrice,
-          direction: dir,
-        }),
+      !isValidStopLossPrice(sl, {
+        currentPrice: referencePrice,
+        direction: dir,
+      }),
+    );
+    const slLiquidationInvalid = Boolean(
+      sl?.trim() &&
+      !isStopLossSafeFromLiquidation(sl, {
+        liquidationPrice,
+        direction: dir,
+      }),
     );
 
-    return tpInvalid || slInvalid;
-  }, [orderFormState, orderType, currentPrice, orderMode]);
+    return tpInvalid || slInvalid || slLiquidationInvalid;
+  }, [
+    orderFormState,
+    orderType,
+    currentPrice,
+    orderMode,
+    orderCalculations?.liquidationPriceRaw,
+  ]);
 
   const isInsufficientFunds = useMemo(() => {
     if (!orderFormState || orderMode === 'close') {
