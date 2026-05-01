@@ -85,9 +85,9 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   const accountReturnOnEquity = account?.returnOnEquity ?? '0';
 
   // totalBalance is HL accountValue (perps equity, already includes unrealizedPnl) + spot
-  const accountValue = parseFloat(totalBalance);
+  const accountValue = Number.parseFloat(totalBalance);
 
-  const pnlNum = parseFloat(unrealizedPnl);
+  const pnlNum = Number.parseFloat(unrealizedPnl);
   const isProfit = pnlNum >= 0;
   const pnlPrefix = isProfit ? '+' : '-';
   const formattedPnl = `${pnlPrefix}${formatPerpsFiat(Math.abs(pnlNum), {
@@ -95,8 +95,12 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   })}`;
   const formattedRoe =
     singlePositionReturnOnEquity === undefined
-      ? formatPercentWithMinThreshold(parseFloat(accountReturnOnEquity) / 100)
-      : formatPercentWithMinThreshold(parseFloat(singlePositionReturnOnEquity));
+      ? formatPercentWithMinThreshold(
+          Number.parseFloat(accountReturnOnEquity) / 100,
+        )
+      : formatPercentWithMinThreshold(
+          Number.parseFloat(singlePositionReturnOnEquity),
+        );
 
   const handleToggleDropdown = useCallback(() => {
     setIsDropdownOpen((prev) => !prev);

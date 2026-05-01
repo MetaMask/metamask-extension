@@ -204,6 +204,8 @@ export const PerpsView: React.FC = () => {
   }, [isEligible, applyOrdersSnapshot, orders.length, t]);
 
   const hasPositions = positions.length > 0;
+  // Only the single-position view can mirror a card-level RoE; for zero or
+  // multiple positions, summary RoE remains the account aggregate.
   const singlePosition = positions.length === 1 ? positions[0] : undefined;
   const isLoading =
     positionsLoading || ordersLoading || marketsLoading || accountLoading;
