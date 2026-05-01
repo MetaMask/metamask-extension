@@ -8267,12 +8267,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    // Handles unrestricted RPC methods (e.g., `wallet_addEthereumChain`,
-    // `wallet_watchAsset`) that are unwrapped from `wallet_invokeMethod`.
-    engine.push(
-      createMultichainMethodMiddleware(this.setupCommonMiddlewareHooks(origin)),
-    );
-
     engine.push(
       createUnsupportedMethodMiddleware(
         new Set([
@@ -8293,6 +8287,13 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
     }
+
+    // Handles unrestricted RPC methods (e.g., `wallet_addEthereumChain`,
+    // `wallet_watchAsset`) that are unwrapped from `wallet_invokeMethod` by
+    // `createMultichainApiMethodMiddleware` above.
+    engine.push(
+      createMultichainMethodMiddleware(this.setupCommonMiddlewareHooks(origin)),
+    );
 
     engine.push(this.metamaskMiddleware);
 

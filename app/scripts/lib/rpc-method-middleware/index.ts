@@ -82,8 +82,8 @@ export const createMultichainApiMethodMiddleware = (
 /**
  * Handles unrestricted RPC methods in the MultiChain pipeline (e.g.,
  * `wallet_addEthereumChain`, `wallet_watchAsset`). The returned middleware
- * MUST be placed immediately after {@link createMultichainApiMethodMiddleware}
- * so that requests unwrapped by `wallet_invokeMethod` reach these handlers.
+ * MUST be placed after {@link createMultichainApiMethodMiddleware} so that
+ * requests unwrapped by `wallet_invokeMethod` reach these handlers.
  *
  * @param hooks - The hooks required by the unrestricted RPC method handlers.
  * @returns A JSON-RPC middleware that handles unrestricted RPC methods.
