@@ -9,7 +9,7 @@ import logWeb3ShimUsage, {
 import requestAccounts, {
   type RequestEthereumAccountsHooks,
 } from './request-accounts';
-import sendMetadata, { type SendMetadataHooks } from './send-metadata';
+import sendMetadata from './send-metadata';
 import switchEthereumChain from './switch-ethereum-chain';
 import watchAsset, { type WatchAssetHooks } from './watch-asset';
 import getPermissions, {
@@ -28,7 +28,6 @@ type SwitchEthereumChainHooks = Record<string, unknown>;
 export type HandlerHooks = AddEthereumChainHooks &
   GetProviderStateHooks &
   LogWeb3ShimUsageHooks &
-  SendMetadataHooks &
   WatchAssetHooks;
 
 export const handlers = {
