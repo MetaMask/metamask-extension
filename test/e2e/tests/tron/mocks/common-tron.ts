@@ -83,6 +83,68 @@ export const BIP44_STAGE_TWO = {
   },
 };
 
+export const TRON_SWAP_TOKEN_REGISTRY = {
+  TRX: {
+    address: '0x0000000000000000000000000000000000000000',
+    assetId: 'tron:728126428/slip44:195',
+    decimals: 6,
+    name: 'Tron',
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
+  },
+  USDT: {
+    address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    assetId: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    decimals: 6,
+    name: 'Tether',
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t.png',
+  },
+  USDD: {
+    address: 'TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+    assetId: 'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+    decimals: 18,
+    name: 'USDD',
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz.png',
+  },
+} as const satisfies Record<
+  string,
+  {
+    address: string;
+    assetId: string;
+    decimals: number;
+    name: string;
+    iconUrl: string;
+  }
+>;
+
+export type TronSwapSymbol = keyof typeof TRON_SWAP_TOKEN_REGISTRY;
+
+export type TronQuoteFixture = {
+  src: TronSwapSymbol;
+  dest: TronSwapSymbol;
+  srcAmount: string; // base units (sun for TRX, raw for TRC20)
+  destAmount: string; // base units of dest
+  feeSun?: number; // metabridge TRX fee, default 8_750 (0.00875 TRX)
+};
+
+function buildTronAsset(symbol: TronSwapSymbol) {
+  const meta = TRON_SWAP_TOKEN_REGISTRY[symbol];
+  return {
+    address: meta.address,
+    chainId: 728126428,
+    assetId: meta.assetId,
+    symbol,
+    decimals: meta.decimals,
+    name: meta.name,
+    aggregators: symbol === 'TRX' ? [] : ['coinGecko'],
+    occurrences: symbol === 'TRX' ? 100 : 1,
+    iconUrl: meta.iconUrl,
+    metadata: {},
+  };
+}
+
 /**
  * Mocks the feature flags endpoint with BIP44 Stage 2 configuration
  * This enables automatic Tron account creation
@@ -235,10 +297,15 @@ export type TronAccountSnapshot = {
  *
  * @param mockServer - The Mockttp server
  * @param opts - before/after snapshots
+ * @param opts.before - Account state before the swap completes
+ * @param opts.after - Account state after the swap completes (optional)
  */
 export async function createStatefulTronAccountMock(
   mockServer: Mockttp,
-  { before, after }: { before: TronAccountSnapshot; after?: TronAccountSnapshot },
+  {
+    before,
+    after,
+  }: { before: TronAccountSnapshot; after?: TronAccountSnapshot },
 ): Promise<MockedEndpoint[]> {
   let broadcasted = false;
   const current = (): TronAccountSnapshot =>
@@ -286,7 +353,11 @@ export async function createStatefulTronAccountMock(
         latest_opration_time: 1764149628000,
         free_asset_net_usageV2: [{ value: 0, key: '1005074' }],
         assetV2: [{ value: 33333333, key: '1005074' }],
-        frozenV2: [{}, { amount: 20000000, type: 'ENERGY' }, { type: 'TRON_POWER' }],
+        frozenV2: [
+          {},
+          { amount: 20000000, type: 'ENERGY' },
+          { type: 'TRON_POWER' },
+        ],
         balance: snapshot.trxSun,
         trc20: buildTrc20Array(snapshot),
         latest_consume_free_time: 1764149628000,
@@ -955,68 +1026,6 @@ export async function mockTronGetBlock(
         },
       },
     }));
-}
-
-export const TRON_SWAP_TOKEN_REGISTRY = {
-  TRX: {
-    address: '0x0000000000000000000000000000000000000000',
-    assetId: 'tron:728126428/slip44:195',
-    decimals: 6,
-    name: 'Tron',
-    iconUrl:
-      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
-  },
-  USDT: {
-    address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-    assetId: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-    decimals: 6,
-    name: 'Tether',
-    iconUrl:
-      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t.png',
-  },
-  USDD: {
-    address: 'TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
-    assetId: 'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
-    decimals: 18,
-    name: 'USDD',
-    iconUrl:
-      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz.png',
-  },
-} as const satisfies Record<
-  string,
-  {
-    address: string;
-    assetId: string;
-    decimals: number;
-    name: string;
-    iconUrl: string;
-  }
->;
-
-export type TronSwapSymbol = keyof typeof TRON_SWAP_TOKEN_REGISTRY;
-
-export type TronQuoteFixture = {
-  src: TronSwapSymbol;
-  dest: TronSwapSymbol;
-  srcAmount: string; // base units (sun for TRX, raw for TRC20)
-  destAmount: string; // base units of dest
-  feeSun?: number; // metabridge TRX fee, default 8_750 (0.00875 TRX)
-};
-
-function buildTronAsset(symbol: TronSwapSymbol) {
-  const meta = TRON_SWAP_TOKEN_REGISTRY[symbol];
-  return {
-    address: meta.address,
-    chainId: 728126428,
-    assetId: meta.assetId,
-    symbol,
-    decimals: meta.decimals,
-    name: meta.name,
-    aggregators: symbol === 'TRX' ? [] : ['coinGecko'],
-    occurrences: symbol === 'TRX' ? 100 : 1,
-    iconUrl: meta.iconUrl,
-    metadata: {},
-  };
 }
 
 export async function mockBridgeGetTronQuoteFor(
