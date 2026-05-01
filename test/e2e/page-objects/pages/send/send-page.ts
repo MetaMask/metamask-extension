@@ -30,6 +30,12 @@ class SendPage {
     text: 'Invalid address',
   };
 
+  private readonly invalidAmountError = { text: 'Invalid value' };
+
+  private readonly insufficientFeeError = {
+    text: 'Insufficient balance to cover fees',
+  };
+
   private readonly maxButton = {
     text: 'Max',
     tag: 'button',
@@ -76,6 +82,16 @@ class SendPage {
   async checkInvalidAddressError(): Promise<void> {
     console.log('Checking for invalid address error');
     await this.driver.findElement(this.invalidAddressError);
+  }
+
+  async checkInvalidAmountError(): Promise<void> {
+    console.log('Checking for invalid amount error');
+    await this.driver.waitForSelector(this.invalidAmountError);
+  }
+
+  async checkInsufficientFeeError(): Promise<void> {
+    console.log('Checking for insufficient balance to cover fees error');
+    await this.driver.waitForSelector(this.insufficientFeeError);
   }
 
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
