@@ -6,6 +6,7 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import NetworkManager from '../../page-objects/pages/network-manager';
+import TronAssetDetailsPage from '../../page-objects/pages/asset/tron-asset-details';
 import { TronNode } from '../../seeder/tron/node';
 import {
   createEmptyTronNodeOptions,
@@ -183,6 +184,41 @@ describe('Tron assets', function (this: Suite) {
         await assetList.checkTokenExistsInList('Tron');
         await assetList.checkTokenExistsInList('Tether');
         await assetList.checkTokenExistsInList('Ethereum');
+      },
+    );
+  });
+
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock pending UI sync
+  it.skip('TRX asset details: header, chart, action buttons, daily resource, sections', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .build(),
+        title: this.test?.fullTitle(),
+        localNodeOptions: [
+          'anvil',
+          {
+            type: 'tron',
+            options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
+          },
+        ],
+        testSpecificMock: mockLocalTronApis,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await landOnTronHome(driver);
+        const assetList = new AssetListPage(driver);
+        await assetList.clickOnAsset('Tron');
+        const details = new TronAssetDetailsPage(driver);
+        await details.checkPageIsLoaded();
+        await details.checkPriceChart();
+        await details.checkActionButtons({
+          swap: true,
+          send: true,
+          receive: true,
+        });
+        await details.checkDailyResourcesSection();
+        await details.checkAllStandardSections();
       },
     );
   });
