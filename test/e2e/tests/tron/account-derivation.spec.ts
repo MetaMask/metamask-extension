@@ -4,7 +4,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import { addNTronAccounts } from '../../page-objects/flows/tron-account-derivation.flow';
+import { addNHdAccountsForTronDerivation } from '../../page-objects/flows/tron-account-derivation.flow';
 import { EXPECTED_TRON_ADDRESSES_BY_INDEX } from '../../constants';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import NetworkManager from '../../page-objects/pages/network-manager';
@@ -94,17 +94,7 @@ async function mockLocalTronApis(
 describe('Tron account derivation', function (this: Suite) {
   this.timeout(240_000);
 
-  // TODO(tron-e2e): unblock by fixing the post-add-accounts UI sync. After
-  // addNTronAccounts(driver, 8) returns and the AccountTreeController reports
-  // sync idle, the iterator's first `openMultichainAccountMenu({ accountLabel:
-  // 'Account 1' })` times out at 10s waiting for the menu trigger. Likely
-  // causes: (a) `closeMultichainAccountsPage()` doesn't reliably return to a
-  // state where `openAccountMenu()` can re-open the multichain accounts page,
-  // (b) the menu button per row uses a selector that differs from the existing
-  // helper's expectation when 8 accounts are rendered, (c) the address-list
-  // mock catch-all needs a /resources or other endpoint not currently covered.
-  // eslint-disable-next-line mocha/no-skipped-tests -- pending UI-sync fix; see TODO above
-  it.skip('Derives the correct Tron address for Accounts 1–8', async function () {
+  it('Derives the correct Tron address for Accounts 1–8', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -125,14 +115,16 @@ describe('Tron account derivation', function (this: Suite) {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Tron');
 
-        await addNTronAccounts(driver, 8);
+        await addNHdAccountsForTronDerivation(driver, 8);
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
         const addressList = new AddressListModal(driver);
 
-        // Open the multichain accounts page once; goBack() after each address
-        // check keeps us on this page for the next iteration.
+        // Open the multichain accounts page once. After each address check,
+        // `addressList.goBack()` returns us to this same multichain accounts
+        // list, so we can iterate without re-opening the account menu (which
+        // is anchored to the home page header and not present here).
         await homepage.headerNavbar.openAccountMenu();
         await accountList.checkPageIsLoaded();
 
@@ -153,11 +145,15 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  // TODO(tron-e2e): unblock once the bulk derivation test passes — same UI
-  // sync issue. The wallet's `network-group-with-copy-icon` block renders a
-  // `default-address-container` with the shortened default address; clicking
-  // it toggles the inner text to "<network> address copied".
-  // eslint-disable-next-line mocha/no-skipped-tests -- pending Plan 1 Task 2 unblock
+  // TODO(tron-e2e): test calls accountList.openMultichainAccountMenu directly
+  // without first navigating to the multichain accounts page, so the lookup for
+  // [data-testid="multichain-account-cell-end-accessory"][aria-label="Account 1 options"]
+  // times out at 10s. Needs an `await homepage.headerNavbar.openAccountMenu();
+  // await accountList.checkPageIsLoaded();` before openMultichainAccountMenu,
+  // plus a re-think of what the "quick-copy popup" surface actually is in the
+  // current UI (the original test description references a popup that may no
+  // longer be reachable from the multichain accounts row menu).
+  // eslint-disable-next-line mocha/no-skipped-tests -- multichain page not opened before menu lookup
   it.skip('Shows Account 1 Tron address on the quick-copy popup and copies it', async function () {
     await withFixtures(
       {
@@ -200,10 +196,12 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  // TODO(tron-e2e): unblock once the bulk derivation test passes — same UI
-  // sync issue. Asserts the QR popup exposes the full base58 address, a copy
-  // link, and a "View on Tronscan" button (text from TRON_BLOCK_EXPLORER_NAME).
-  // eslint-disable-next-line mocha/no-skipped-tests -- pending Plan 1 Task 2 unblock
+  // TODO(tron-e2e): test calls accountList.openMultichainAccountMenu directly
+  // without first opening the multichain accounts page, so the lookup for
+  // [data-testid="multichain-account-cell-end-accessory"][aria-label="Account 1 options"]
+  // times out at 10s. Needs an `await homepage.headerNavbar.openAccountMenu();
+  // await accountList.checkPageIsLoaded();` before openMultichainAccountMenu.
+  // eslint-disable-next-line mocha/no-skipped-tests -- multichain page not opened before menu lookup
   it.skip('Shows Account 1 QR popup with address, copy link, and View on Tronscan', async function () {
     await withFixtures(
       {
@@ -244,10 +242,14 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  // TODO(tron-e2e): unblock once the bulk derivation test passes — same UI
-  // sync issue. Lands on the Tron Receive page and asserts the full address
-  // text + copy feedback ("Address copied").
-  // eslint-disable-next-line mocha/no-skipped-tests -- pending Plan 1 Task 2 unblock
+  // TODO(tron-e2e): Receive page does not render
+  // [data-testid="address-copy-button-text"] containing the full base58
+  // address — `waitForSelector({ css: '[data-testid="address-copy-button-text"]',
+  // text: <address> })` times out at 10s. Likely the Receive page now uses a
+  // different testid (e.g. address-receive-text) or splits the address text
+  // across multiple nodes. Need to inspect the rendered DOM and update the
+  // selector / structure of the assertions.
+  // eslint-disable-next-line mocha/no-skipped-tests -- selector mismatch on Receive page
   it.skip('Shows Account 1 Tron address on the Receive page and copies it', async function () {
     await withFixtures(
       {
