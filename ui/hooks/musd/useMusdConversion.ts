@@ -32,7 +32,6 @@ import {
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import {
   buildMusdConversionTx,
-  ensureMusdTokenImportedForChain,
   isMatchingMusdConversion,
 } from '../../components/app/musd/utils';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
@@ -203,11 +202,6 @@ export function useMusdConversion(): UseMusdConversionResult {
       try {
         setError(null);
 
-        const ensureMusdTokenPromise = ensureMusdTokenImportedForChain(
-          chainId,
-          dispatch,
-        );
-
         const existing = findExistingPendingMusdConversion({
           unapprovedTransactions: unapprovedTransactions as Record<
             string,
@@ -274,8 +268,6 @@ export function useMusdConversion(): UseMusdConversionResult {
           op: TraceOperation.MusdConversionOperation,
           tags: navTraceTags,
         });
-
-        await ensureMusdTokenPromise;
 
         navigate({
           pathname: `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
