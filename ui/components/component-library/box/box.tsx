@@ -144,7 +144,7 @@ const generateClassNames = memoize(
 /**
  * @deprecated This component is deprecated and will be removed in a future release.
  * Please use the Box component from @metamask/design-system-react instead.
- * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#box-component | Migration Guide}
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/7fb6452a61c939c216503c4914f1f46f4d528175/packages/design-system-react/MIGRATION.md#box-component | Migration Guide}
  * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-box--docs | Storybook Documentation}
  * @see {@link https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components/Box | Component Source}
  */
