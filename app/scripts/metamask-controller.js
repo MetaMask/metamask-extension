@@ -944,16 +944,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: petnamesBridgeMessenger,
     }).init();
 
-    const uiMessenger = new Messenger({
-      namespace: 'UI',
-      parent: this.controllerMessenger,
-    });
-    this.controllerMessenger.delegate({
-      messenger: uiMessenger,
-      actions: ['AuthenticationController:getBearerToken'],
-      events: [],
-    });
-
     const walletFundsObtainedMonitorMessenger = new Messenger({
       namespace: 'WalletFundsObtainedMonitor',
       parent: this.controllerMessenger,
