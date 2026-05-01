@@ -511,6 +511,7 @@ describe('PrepareBridgePage', () => {
     });
 
     it('evaluates token_security_type_destination as the security type when toToken has securityData', async () => {
+      jest.useFakeTimers();
       setBackgroundConnection(backgroundWithAllMethods);
 
       const mockStore = makeStoreWithSecurityData('Malicious');
@@ -522,15 +523,23 @@ describe('PrepareBridgePage', () => {
         configureStore(mockStore),
       );
 
-      // Switch button is enabled; click it to trigger lines 469-470
+      // Advance past the 1-second isSwitchingTemporarilyDisabled debounce
+      await act(async () => {
+        jest.advanceTimersByTime(1100);
+      });
+
+      // Switch button is now enabled; click it to trigger lines 469-470
       const switchButton = getByTestId('switch-tokens').closest('button');
       expect(switchButton).not.toBeDisabled();
       await act(async () => {
         fireEvent.click(switchButton as HTMLElement);
       });
+
+      jest.useRealTimers();
     });
 
     it('evaluates token_security_type_destination as null when toToken has no securityData', async () => {
+      jest.useFakeTimers();
       setBackgroundConnection(backgroundWithAllMethods);
 
       const mockStore = makeStoreWithSecurityData(undefined, {
@@ -544,12 +553,19 @@ describe('PrepareBridgePage', () => {
         configureStore(mockStore),
       );
 
+      // Advance past the 1-second isSwitchingTemporarilyDisabled debounce
+      await act(async () => {
+        jest.advanceTimersByTime(1100);
+      });
+
       // Switch button click covers lines 469-470 null branch
       const switchButton = getByTestId('switch-tokens').closest('button');
       expect(switchButton).not.toBeDisabled();
       await act(async () => {
         fireEvent.click(switchButton as HTMLElement);
       });
+
+      jest.useRealTimers();
 
       // CTA button with wasTxDeclined=true shows "Get new quote", clicking it covers lines 609-610 null branch
       const ctaButton = getByTestId('bridge-cta-button');
