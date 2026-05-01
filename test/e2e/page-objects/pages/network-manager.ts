@@ -73,6 +73,38 @@ class NetworkManager {
     await this.driver.waitForSelector(this.networkManagerCloseButton);
   }
 
+  private readonly showTestNetworksToggle =
+    '[data-testid="network-menu-show-test-networks"]';
+
+  async toggleShowTestNetworks(): Promise<void> {
+    console.log('Toggling "Show test networks"');
+    await this.driver.clickElement(this.showTestNetworksToggle);
+  }
+
+  async checkNetworkIsListed(networkName: string): Promise<void> {
+    console.log(`Verify network "${networkName}" appears in the list`);
+    await this.driver.waitForSelector(
+      this.multichainNetworkListItemByName(networkName),
+    );
+  }
+
+  async checkContextMenuHasOption(
+    caipChainId: string,
+    optionText: string,
+  ): Promise<void> {
+    console.log(
+      `Open context menu for ${caipChainId} and verify "${optionText}" entry`,
+    );
+    await this.driver.clickElement(
+      this.networkItemMenuButtonByChainId(caipChainId),
+    );
+    await this.driver.waitForSelector({
+      text: optionText,
+    });
+    // Close the menu by clicking outside so subsequent assertions aren't blocked.
+    await this.driver.clickElement(this.tabList);
+  }
+
   async closeNetworkManager(): Promise<void> {
     console.log(`Closing the network manager`);
     await this.driver.clickElementAndWaitToDisappear(
