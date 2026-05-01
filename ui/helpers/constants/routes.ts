@@ -67,11 +67,11 @@ export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
 } as const;
 export const SECURITY_ROUTE = '/settings/security';
 export const ABOUT_US_ROUTE = '/settings/about-us';
-export const NETWORKS_ROUTE = '/settings/networks';
-export const NETWORKS_FORM_ROUTE = '/settings/networks/form';
-export const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
+export const NETWORKS_ROUTE = '/networks';
+export const NETWORKS_FORM_ROUTE = '/networks/form';
+export const ADD_NETWORK_ROUTE = '/networks/add-network';
 export const ADD_POPULAR_CUSTOM_NETWORK =
-  '/settings/networks/add-popular-custom-network';
+  '/networks/add-popular-custom-network';
 // Contacts (global menu)
 export const CONTACTS_ROUTE = '/contacts';
 export const CONTACTS_ADD_ROUTE = '/contacts/add';
@@ -95,6 +95,7 @@ export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
 export const MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE =
   '/multichain-account-private-key-list';
 export const ADD_WALLET_PAGE_ROUTE = '/add-wallet-page';
+export const CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE = '/choose-new-wallet-type';
 export const MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE =
   '/multichain-account-details';
 export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =
@@ -172,6 +173,11 @@ export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
 export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 
+// Window during which reopening the extension resumes the last Perps screen
+// instead of landing on the wallet home. Keeps the cap short so stale sessions
+// do not hijack the user's home view after a long break.
+export const PERPS_REOPEN_TTL_MS = 5 * 60 * 1000;
+
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
 
@@ -220,6 +226,11 @@ export const ROUTES = [
   {
     path: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
     label: 'Wallet Details Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
+    label: 'Choose New Wallet Type Page',
     trackInAnalytics: true,
   },
   {

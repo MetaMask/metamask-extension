@@ -69,10 +69,20 @@ mockUseVirtualizer.mockReturnValue(defaultVirtualizer);
 
 function createStore({
   nonEvmTransactions = {},
+  tokenScanCache = {},
 }: {
   nonEvmTransactions?: Record<
     string,
     Record<string, { transactions: unknown[] }>
+  >;
+  tokenScanCache?: Record<
+    string,
+    {
+      data?: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        result_type?: string;
+      };
+    }
   >;
 } = {}) {
   return configureMockStore()({
@@ -114,6 +124,7 @@ function createStore({
         transactionsByAccount: {},
       },
       nonEvmTransactions,
+      tokenScanCache,
       smartTransactionsState: { smartTransactions: {} },
       transactions: [],
     },
@@ -204,6 +215,125 @@ describe('ActivityList', () => {
     );
 
     expect(screen.getByTestId('evm-item')).toBeInTheDocument();
+    expect(screen.getByTestId('non-evm-item')).toBeInTheDocument();
+  });
+
+  it('filters malicious non-evm token transactions from the activity list', () => {
+    const maliciousNonEvmTx = {
+      chain: 'solana:mainnet',
+      id: 'non-evm-malicious',
+      timestamp: 1735689601000,
+      from: [
+        {
+          address: 'BadMintHolder',
+          asset: {
+            fungible: true,
+            type: 'solana:mainnet/token:BadMint111',
+            unit: 'SPAM',
+            amount: '1000',
+          },
+        },
+      ],
+      to: [],
+    };
+    const benignNonEvmTx = {
+      chain: 'solana:mainnet',
+      id: 'non-evm-benign',
+      timestamp: 1735689602000,
+      from: [
+        {
+          address: 'GoodMintHolder',
+          asset: {
+            fungible: true,
+            type: 'solana:mainnet/token:GoodMint222',
+            unit: 'USDC',
+            amount: '10',
+          },
+        },
+      ],
+      to: [],
+    };
+
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [] },
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
+
+    enableVisibleVirtualItems();
+
+    const store = createStore({
+      nonEvmTransactions: {
+        '1': {
+          'solana:mainnet': {
+            transactions: [maliciousNonEvmTx, benignNonEvmTx],
+          },
+        },
+      },
+      tokenScanCache: {
+        'solana:mainnet:badmint111': {
+          data: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            result_type: 'Malicious',
+          },
+        },
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <ActivityList />
+      </Provider>,
+    );
+
+    expect(screen.getAllByTestId('non-evm-item')).toHaveLength(1);
+  });
+
+  it('keeps non-evm token transactions visible when no malicious scan result exists', () => {
+    const benignNonEvmTx = {
+      chain: 'solana:mainnet',
+      id: 'non-evm-benign',
+      timestamp: 1735689602000,
+      from: [
+        {
+          address: 'GoodMintHolder',
+          asset: {
+            fungible: true,
+            type: 'solana:mainnet/token:GoodMint222',
+            unit: 'USDC',
+            amount: '10',
+          },
+        },
+      ],
+      to: [],
+    };
+
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [] },
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
+
+    enableVisibleVirtualItems();
+
+    const store = createStore({
+      nonEvmTransactions: {
+        '1': {
+          'solana:mainnet': {
+            transactions: [benignNonEvmTx],
+          },
+        },
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <ActivityList />
+      </Provider>,
+    );
+
     expect(screen.getByTestId('non-evm-item')).toBeInTheDocument();
   });
 

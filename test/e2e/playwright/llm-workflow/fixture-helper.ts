@@ -6,6 +6,7 @@ import type { FixtureData } from './launcher-types';
 
 export type FixtureBuilderOptions = {
   onboarding?: boolean;
+  inputChainId?: string;
 };
 
 export function createFixtureBuilder(

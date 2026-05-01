@@ -132,6 +132,28 @@ describe('hasValueAndNativeBalanceMismatch', () => {
 
     expect(hasValueAndNativeBalanceMismatch(transaction)).toBe(true);
   });
+
+  it('prefers txParamsOriginal.value over txParams.value when container wrapping zeroed the top-level value', () => {
+    const transactionValueInDecimal = 10000000000000000;
+    const transactionValueInHex = toHex(transactionValueInDecimal);
+
+    const transaction = {
+      txParams: {
+        value: '0x0',
+      },
+      txParamsOriginal: {
+        value: transactionValueInHex,
+      },
+      simulationData: {
+        nativeBalanceChange: {
+          difference: transactionValueInHex,
+          isDecrease: true,
+        },
+      },
+    } as unknown as TransactionMeta;
+
+    expect(hasValueAndNativeBalanceMismatch(transaction)).toBe(false);
+  });
 });
 
 describe('isValidUTF8', () => {

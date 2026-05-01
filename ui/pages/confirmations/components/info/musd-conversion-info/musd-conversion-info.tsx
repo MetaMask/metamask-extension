@@ -122,6 +122,7 @@ export const MusdConversionInfo = () => {
 
   return (
     <CustomAmountInfo
+      currency="usd"
       disableAutomaticToken={true}
       preferredToken={preferredToken}
       hasMax={true}

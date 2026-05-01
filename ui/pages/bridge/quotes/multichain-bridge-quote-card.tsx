@@ -22,12 +22,12 @@ import {
   getFromToken,
   getSlippage,
   getIsSolanaSwap,
+  getIsRWASwap,
   getQuoteRequest,
   getIsToOrFromNonEvm,
   getIsStxEnabled,
   getValidationErrors,
   getPriceImpact,
-  getFormattedPriceImpactPercentage,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatNetworkFee, formatTokenAmount } from '../utils/quote';
@@ -51,6 +51,7 @@ import {
   getGasFeesSponsoredNetworkEnabled,
   isHardwareWallet,
 } from '../../../selectors/selectors';
+import { PriceImpactQuoteDetailsRow } from '../components/price-impact-quote-details-row';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
@@ -94,9 +95,12 @@ export const MultichainBridgeQuoteCard = ({
   const toToken = useSelector(getToToken);
   const slippage = useSelector(getSlippage);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
+  const isRWASwap = useSelector(getIsRWASwap);
   const dispatch = useDispatch();
-  const { isEstimatedReturnLow, isPriceImpactWarning, isPriceImpactError } =
-    useSelector(getValidationErrors, shallowEqual);
+  const { isEstimatedReturnLow } = useSelector(
+    getValidationErrors,
+    shallowEqual,
+  );
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
   const isHardwareWalletAccount = useSelector(isHardwareWallet);
@@ -105,14 +109,13 @@ export const MultichainBridgeQuoteCard = ({
   );
 
   const priceImpact = useSelector(getPriceImpact);
-  const formattedPriceImpact = useSelector(getFormattedPriceImpactPercentage);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
   const isCrossChainBridge = Boolean(
     fromToken?.chainId &&
-      toToken?.chainId &&
-      fromToken.chainId !== toToken.chainId,
+    toToken?.chainId &&
+    fromToken.chainId !== toToken.chainId,
   );
 
   const isCurrentNetworkGasSponsored = useMemo(() => {
@@ -377,7 +380,7 @@ export const MultichainBridgeQuoteCard = ({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {slippage === undefined && isSolanaSwap
+              {slippage === undefined && (isSolanaSwap || isRWASwap)
                 ? t('slippageAuto')
                 : `${slippage}%`}
             </Text>
@@ -392,59 +395,9 @@ export const MultichainBridgeQuoteCard = ({
           </Row>
         </Row>
 
-        {/* Price Impact */}
-        <Row justifyContent={JustifyContent.spaceBetween}>
-          <Row gap={2}>
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-            >
-              {t('bridgePriceImpact')}
-            </Text>
-            <Tooltip
-              title={
-                isPriceImpactWarning || isPriceImpactError
-                  ? t('bridgePriceImpactWarningTitle')
-                  : t('bridgePriceImpactTooltipTitle')
-              }
-              position={PopoverPosition.TopStart}
-              offset={[-16, 16]}
-            >
-              {t('bridgePriceImpactNormalDescription')}
-            </Tooltip>
-          </Row>
-          <Row gap={1}>
-            {(isPriceImpactWarning || isPriceImpactError) && (
-              <ButtonIcon
-                iconName={
-                  isPriceImpactWarning ? IconName.Warning : IconName.Danger
-                }
-                size={ButtonIconSize.Sm}
-                color={
-                  isPriceImpactWarning
-                    ? IconColor.warningDefault
-                    : IconColor.errorDefault
-                }
-                onClick={onOpenPriceImpactWarningModal}
-                ariaLabel={t('bridgePriceImpactWarningAriaLabel')}
-                data-testid="price-impact-warning-button"
-              />
-            )}
-            <Text
-              variant={TextVariant.bodySm}
-              color={
-                // eslint-disable-next-line no-nested-ternary
-                isPriceImpactWarning
-                  ? TextColor.warningDefault
-                  : isPriceImpactError
-                    ? TextColor.errorDefault
-                    : TextColor.textAlternative
-              }
-            >
-              {formattedPriceImpact}
-            </Text>
-          </Row>
-        </Row>
+        <PriceImpactQuoteDetailsRow
+          onOpenPriceImpactWarningModal={onOpenPriceImpactWarningModal}
+        />
 
         {/* Minimum Received */}
         {activeQuote.minToTokenAmount.amount && (

@@ -15,6 +15,9 @@ describe('getArtifactLinks', () => {
     expect(links.bundleSizeStats.url).toBe(
       `${HOST}/bundle-size/bundle_size.json`,
     );
+    expect(links.interactionStats.url).toBe(
+      `${HOST}/benchmarks/benchmark-chrome-webpack-interactionUserActions.json`,
+    );
     expect(links.storybook.url).toBe(`${HOST}/storybook-build/index.html`);
     expect(links.allArtifacts.url).toBe(
       'https://github.com/MetaMask/metamask-extension/actions/runs/42#artifacts',
@@ -43,10 +46,16 @@ describe('buildArtifactsBody', () => {
       buildsFromSha: 'abc1234',
     });
 
-    expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
-    expect(result).toContain('build-dist-webpack');
+    expect(result).toContain(
+      `${HOST}/build-dist-webpack/builds/metamask-chrome-${VERSION}.zip`,
+    );
     expect(result).toContain('Builds ready [abc1234]');
     expect(result).not.toContain('reused from');
+    expect(result).toContain(
+      'Please do not use these builds with accounts that contain significant real money.',
+    );
+    expect(result).toContain('cache poisoning</a>');
+    expect(result).not.toContain('reused, so they are even more suspect');
   });
 
   it('includes build links and reused tag when builds are reused', () => {
@@ -60,6 +69,9 @@ describe('buildArtifactsBody', () => {
 
     expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
     expect(result).toContain('Builds ready [def5678] [reused from abc1234]');
+    expect(result).toContain(
+      'Please do not use these builds with accounts that contain significant real money.',
+    );
   });
 
   it('wraps everything in a collapsible details element with the sha', () => {
