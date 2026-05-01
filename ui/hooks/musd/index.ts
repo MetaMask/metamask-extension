@@ -67,3 +67,5 @@ export {
 } from './useMusdPaymentToken';
 
 export { isMerklClaimTransaction } from '../../components/app/musd/utils';
+
+export { useEnsureMusdTokenRegistered } from './useEnsureMusdTokenRegistered';

@@ -16,6 +16,7 @@ import {
   ImportTokensModal,
 } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
+import { EarnTransactionMonitor } from '../../components/app/musd';
 
 import {
   ASSET_ROUTE,
@@ -738,6 +739,7 @@ export default function Routes() {
       <ToastMaster />
 
       {isUnlocked ? <Toaster /> : null}
+      {isUnlocked ? <EarnTransactionMonitor /> : null}
       <Modals />
     </div>
   );
