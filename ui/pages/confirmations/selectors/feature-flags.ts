@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { TransactionType } from '@metamask/transaction-controller';
 import { getRemoteFeatureFlags } from '../../../selectors/remote-feature-flags';
 
 type ConfirmationsPayDappsFlag = {
@@ -44,7 +45,7 @@ export const selectIsMetaMaskPayDappsEnabled = createSelector(
   (flag): boolean => flag?.enabled ?? false,
 );
 
-export const selectPayPostQuoteConfig = createSelector(
+const selectPayPostQuoteConfig = createSelector(
   [
     selectConfirmationsPayPostQuoteFlag,
     (_state, transactionType?: string) => transactionType,
@@ -67,4 +68,9 @@ export const selectPayPostQuoteConfig = createSelector(
       tokens: overrideConfig.tokens ?? defaultConfig.tokens,
     };
   },
+);
+
+export const selectIsPerpsWithdrawPostQuoteEnabled = createSelector(
+  (state) => selectPayPostQuoteConfig(state, TransactionType.perpsWithdraw),
+  (config): boolean => config.enabled === true,
 );

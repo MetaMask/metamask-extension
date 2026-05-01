@@ -2,7 +2,7 @@
 import {
   PayPostQuoteFlags,
   selectIsMetaMaskPayDappsEnabled,
-  selectPayPostQuoteConfig,
+  selectIsPerpsWithdrawPostQuoteEnabled,
 } from './feature-flags';
 
 type ConfirmationsPayDappsFlag = {
@@ -73,17 +73,14 @@ describe('Confirmations Pay Feature Flags', () => {
     });
   });
 
-  describe('selectPayPostQuoteConfig', () => {
+  describe('selectIsPerpsWithdrawPostQuoteEnabled', () => {
     it('defaults to disabled when confirmations_pay_post_quote is not set', () => {
       const state = getMockState();
 
-      expect(selectPayPostQuoteConfig(state, 'perpsWithdraw')).toStrictEqual({
-        enabled: false,
-        tokens: undefined,
-      });
+      expect(selectIsPerpsWithdrawPostQuoteEnabled(state)).toBe(false);
     });
 
-    it('returns the default post-quote config when no transaction override exists', () => {
+    it('uses the default post-quote config when no perps withdraw override exists', () => {
       const state = getMockState({
         confirmations_pay_post_quote: {
           default: {
@@ -95,12 +92,7 @@ describe('Confirmations Pay Feature Flags', () => {
         },
       });
 
-      expect(selectPayPostQuoteConfig(state, 'perpsWithdraw')).toStrictEqual({
-        enabled: true,
-        tokens: {
-          eip155: ['eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831'],
-        },
-      });
+      expect(selectIsPerpsWithdrawPostQuoteEnabled(state)).toBe(true);
     });
 
     it('uses the transaction override enabled value over the default', () => {
@@ -113,10 +105,7 @@ describe('Confirmations Pay Feature Flags', () => {
         },
       });
 
-      expect(selectPayPostQuoteConfig(state, 'perpsWithdraw')).toStrictEqual({
-        enabled: false,
-        tokens: undefined,
-      });
+      expect(selectIsPerpsWithdrawPostQuoteEnabled(state)).toBe(false);
     });
 
     it('inherits default enabled when the transaction override only defines tokens', () => {
@@ -133,12 +122,7 @@ describe('Confirmations Pay Feature Flags', () => {
         },
       });
 
-      expect(selectPayPostQuoteConfig(state, 'perpsWithdraw')).toStrictEqual({
-        enabled: true,
-        tokens: {
-          eip155: ['eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831'],
-        },
-      });
+      expect(selectIsPerpsWithdrawPostQuoteEnabled(state)).toBe(true);
     });
   });
 });

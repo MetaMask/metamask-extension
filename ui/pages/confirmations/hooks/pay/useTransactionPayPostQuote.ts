@@ -1,11 +1,8 @@
 import { useEffect, useRef } from 'react';
-import {
-  type TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../context/confirm';
-import { selectPayPostQuoteConfig } from '../../selectors/feature-flags';
+import { selectIsPerpsWithdrawPostQuoteEnabled } from '../../selectors/feature-flags';
 import { setPostQuote } from '../../../../store/controller-actions/transaction-pay-controller';
 import { isPerpsWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
 
@@ -20,9 +17,7 @@ export function useTransactionPayPostQuote(): void {
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
   const isPerpsWithdrawPostQuoteEnabled = useSelector(
-    (state) =>
-      selectPayPostQuoteConfig(state, TransactionType.perpsWithdraw).enabled ===
-      true,
+    selectIsPerpsWithdrawPostQuoteEnabled,
   );
 
   useEffect(() => {

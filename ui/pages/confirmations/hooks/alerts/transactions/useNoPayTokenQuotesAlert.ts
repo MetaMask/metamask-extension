@@ -2,6 +2,10 @@
 
 import { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
+import {
+  type TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import type {
   TransactionPaymentToken,
   TransactionPayRequiredToken,
@@ -18,6 +22,7 @@ import {
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
 } from '../../pay/useTransactionPayData';
+import { useConfirmContext } from '../../../context/confirm';
 import { AlertsName } from '../constants';
 
 function isSameToken(
@@ -39,8 +44,18 @@ function hasSufficientRawBalance(
   );
 }
 
+function isPerpsDepositTransaction(
+  transaction?: TransactionMeta,
+): boolean {
+  return (
+    transaction?.type === TransactionType.perpsDeposit ||
+    transaction?.type === TransactionType.perpsDepositAndOrder
+  );
+}
+
 export function useNoPayTokenQuotesAlert(): Alert[] {
   const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken } = useTransactionPayToken();
   const quotes = useTransactionPayQuotes();
   const isQuotesLoading = useIsTransactionPayLoading();
@@ -62,6 +77,7 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
   );
 
   const isDirectPayment =
+    isPerpsDepositTransaction(currentConfirmation) &&
     !isPostQuote &&
     payToken !== undefined &&
     nonOptionalRequiredTokens.length > 0 &&

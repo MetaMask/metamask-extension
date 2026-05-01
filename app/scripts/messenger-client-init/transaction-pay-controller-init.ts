@@ -1,6 +1,7 @@
 import {
   TransactionPayController,
   TransactionPayControllerMessenger,
+  TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
@@ -32,6 +33,7 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
 
   const messengerClient = new TransactionPayController({
     getDelegationTransaction: getDelegationTransactionCallback,
+    getStrategy,
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,
   });
@@ -67,4 +69,8 @@ function getApi(
     updateTransactionPaymentToken:
       messengerClient.updatePaymentToken.bind(messengerClient),
   };
+}
+
+function getStrategy(_transaction: TransactionMeta): TransactionPayStrategy {
+  return TransactionPayStrategy.Relay;
 }

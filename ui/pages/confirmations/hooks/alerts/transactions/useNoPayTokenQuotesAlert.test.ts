@@ -1,11 +1,20 @@
 import { Hex, Json } from '@metamask/utils';
 import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
   TransactionPayQuote,
   TransactionPayRequiredToken,
   TransactionPaySourceAmount,
   TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
-import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
+import {
+  getMockConfirmState,
+  getMockConfirmStateForTransaction,
+} from '../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
@@ -43,8 +52,18 @@ const REQUIRED_TOKEN_MOCK = {
   skipIfBalance: false,
 } as TransactionPayRequiredToken;
 
-function runHook() {
-  const state = getMockConfirmState();
+function runHook(transactionType?: TransactionType) {
+  const transaction = transactionType
+    ? (genUnapprovedContractInteractionConfirmation({
+        chainId: CHAIN_IDS.MAINNET,
+      }) as TransactionMeta)
+    : undefined;
+  if (transaction && transactionType) {
+    transaction.type = transactionType;
+  }
+  const state = transaction
+    ? getMockConfirmStateForTransaction(transaction)
+    : getMockConfirmState();
 
   return renderHookWithConfirmContextProvider(
     () => useNoPayTokenQuotesAlert(),
@@ -151,7 +170,7 @@ describe('useNoPayTokenQuotesAlert', () => {
     expect(result.current).toStrictEqual([]);
   });
 
-  it('returns no alerts if selected pay token directly covers required tokens', () => {
+  it('returns no alerts for Perps deposit if selected pay token directly covers required tokens', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
         ...PAY_TOKEN_MOCK,
@@ -161,9 +180,29 @@ describe('useNoPayTokenQuotesAlert', () => {
       setPayToken: jest.fn(),
     });
 
-    const { result } = runHook();
+    const { result } = runHook(TransactionType.perpsDeposit);
 
     expect(result.current).toStrictEqual([]);
+  });
+
+  it('returns alert for non-Perps deposit if selected pay token directly covers required tokens', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        ...PAY_TOKEN_MOCK,
+        balanceRaw: REQUIRED_TOKEN_MOCK.amountRaw,
+      },
+      isNative: false,
+      setPayToken: jest.fn(),
+    });
+
+    const { result } = runHook(TransactionType.contractInteraction);
+
+    expect(result.current).toStrictEqual([
+      expect.objectContaining({
+        key: AlertsName.NoPayTokenQuotes,
+        isBlocking: true,
+      }),
+    ]);
   });
 
   it('returns alert if selected pay token directly matches but has insufficient balance', () => {

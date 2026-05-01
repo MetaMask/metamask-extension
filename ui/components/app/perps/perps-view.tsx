@@ -6,10 +6,8 @@ import {
   TextColor,
 } from '@metamask/design-system-react';
 import type { Order, Position } from '@metamask/perps-controller';
-import { TransactionType } from '@metamask/transaction-controller';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -38,12 +36,12 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
-import { PERPS_WITHDRAW_ROUTE } from '../../../helpers/constants/routes';
-import { selectPayPostQuoteConfig } from '../../../pages/confirmations/selectors/feature-flags';
+import { selectIsPerpsWithdrawPostQuoteEnabled } from '../../../pages/confirmations/selectors/feature-flags';
 
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawConfirmation } from './hooks/usePerpsWithdrawConfirmation';
+import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
 import { PerpsExploreMarkets } from './perps-explore-markets';
 import { PerpsPositionsOrders } from './perps-positions-orders';
@@ -73,19 +71,17 @@ type BatchCloseResult = {
 export const PerpsView: React.FC = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const tutorialCompleted = useSelector(selectTutorialCompleted);
   const isPerpsWithdrawPostQuoteEnabled = useSelector(
-    (state) =>
-      selectPayPostQuoteConfig(state, TransactionType.perpsWithdraw).enabled ===
-      true,
+    selectIsPerpsWithdrawPostQuoteEnabled,
   );
   const { isEligible } = usePerpsEligibility();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
   const { trigger: triggerWithdrawConfirmation } =
     usePerpsWithdrawConfirmation();
+  const { trigger: triggerWithdrawNavigation } = usePerpsWithdrawNavigation();
   const [isCloseAllPending, setIsCloseAllPending] = useState(false);
   const [isCancelAllPending, setIsCancelAllPending] = useState(false);
   const [batchActionError, setBatchActionError] = useState<string | null>(null);
@@ -95,12 +91,11 @@ export const PerpsView: React.FC = () => {
       return triggerWithdrawConfirmation();
     }
 
-    navigate(PERPS_WITHDRAW_ROUTE);
-    return undefined;
+    return triggerWithdrawNavigation();
   }, [
     isPerpsWithdrawPostQuoteEnabled,
-    navigate,
     triggerWithdrawConfirmation,
+    triggerWithdrawNavigation,
   ]);
 
   // Stream hooks must run before any effects that touch PerpsStreamManager.
