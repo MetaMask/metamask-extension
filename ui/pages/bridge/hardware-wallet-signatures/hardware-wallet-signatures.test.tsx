@@ -1,7 +1,8 @@
 import React from 'react';
-import { act } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
+import { TransactionType } from '@metamask/transaction-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
@@ -20,6 +21,7 @@ import {
 import { createHardwareWalletError } from '../../../contexts/hardware-wallets/errors';
 import * as backgroundConnection from '../../../store/background-connection';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
+import { HardwareWalletSignatureEvent } from './hardware-wallet-signatures-state-machine';
 import HardwareWalletSignatures from '.';
 
 jest.mock('../hooks/useSubmitBridgeTransaction');
@@ -27,16 +29,20 @@ jest.mock('../../../app/toast-listener/shared', () => ({
   showSuccessToast: jest.fn(),
 }));
 jest.mock('./generic-hardware-wallet-animation', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => <div data-testid="generic-hardware-wallet-animation" />,
 }));
 
 const mockUseHardwareWalletState = jest.fn();
+const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
 
 jest.mock('../../../contexts/hardware-wallets', () => ({
   ...jest.requireActual('../../../contexts/hardware-wallets'),
+  ErrorCode: jest.requireActual('@metamask/hw-wallet-sdk').ErrorCode,
   useHardwareWalletState: () => mockUseHardwareWalletState(),
+  useHardwareWalletActions: () => ({
+    ensureDeviceReady: mockEnsureDeviceReady,
+  }),
 }));
 
 const mockUseSubmitBridgeTransaction =
@@ -49,6 +55,10 @@ const LEDGER_ACCOUNT_GROUP =
 
 function renderWithQuote(
   quote: (typeof DummyQuotesWithApproval.ETH_11_USDC_TO_ARB)[0],
+  overrides?: {
+    bridgeStateOverrides?: Record<string, unknown>;
+    metamaskStateOverrides?: Record<string, unknown>;
+  },
 ) {
   const store = configureStore(
     createBridgeMockStore({
@@ -65,6 +75,7 @@ function renderWithQuote(
       bridgeStateOverrides: {
         quotes: [quote],
         quotesLastFetched: 100,
+        ...overrides?.bridgeStateOverrides,
       },
       metamaskStateOverrides: {
         internalAccounts: {
@@ -73,6 +84,7 @@ function renderWithQuote(
         accountTree: {
           selectedAccountGroup: LEDGER_ACCOUNT_GROUP,
         },
+        ...overrides?.metamaskStateOverrides,
       },
     }),
   );
@@ -82,6 +94,35 @@ function renderWithQuote(
 const defaultMockSubmitReturn = () => ({
   submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
   isSubmitting: false,
+});
+
+function mockSubscriptions() {
+  const callbacks = new Map<string, (...args: unknown[]) => void>();
+  const createMockUnsubscribe = () => {
+    const fn = jest.fn().mockResolvedValue(undefined);
+    fn.catch = jest.fn();
+    return fn;
+  };
+  jest
+    .spyOn(backgroundConnection, 'subscribeToMessengerEvent')
+    .mockImplementation(async (event: string, callback: (...args: unknown[]) => void) => {
+      callbacks.set(event, callback);
+      return createMockUnsubscribe();
+    });
+  return { callbacks };
+}
+
+jest.mock('../../../store/background-connection', () => {
+  const actual = jest.requireActual('../../../store/background-connection');
+  const createMockUnsubscribe = () => {
+    const fn = jest.fn().mockResolvedValue(undefined);
+    fn.catch = jest.fn();
+    return fn;
+  };
+  return {
+    ...actual,
+    subscribeToMessengerEvent: jest.fn().mockResolvedValue(createMockUnsubscribe()),
+  };
 });
 
 describe('HardwareWalletSignatures', () => {
@@ -100,54 +141,69 @@ describe('HardwareWalletSignatures', () => {
     expect(getByTestId('generic-hardware-wallet-animation')).toBeDefined();
   });
 
-  it('subscribes to BridgeStatusController:stateChange and transitions to step 2 when approvalTxId appears in txHistory', async () => {
-    let capturedCallback:
-      | ((
-          data: [
-            {
-              txHistory: Record<
-                string,
-                {
-                  approvalTxId?: string;
-                  quote?: { requestId?: string };
-                }
-              >;
-            },
-          ],
-        ) => void)
-      | undefined;
-    const mockUnsubscribe = jest.fn().mockResolvedValue(undefined);
-    jest
-      .spyOn(backgroundConnection, 'subscribeToMessengerEvent')
-      .mockImplementation(async (_event, callback) => {
-        if (_event === 'BridgeStatusController:stateChange') {
-          capturedCallback = callback;
-        }
-        return mockUnsubscribe;
-      });
+  it('renders the title and steps for a two-confirmation flow', () => {
     mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
     const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
     const { getByText } = renderWithQuote(quote);
+
+    expect(getByText('Confirm with your hardware wallet')).toBeDefined();
+    expect(getByText('Approve 11 USDC')).toBeDefined();
+    expect(getByText('Send 11 USDC')).toBeDefined();
+  });
+
+  it('renders the title and single step for a one-confirmation flow', () => {
+    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+    const quote = DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0];
+    const { getByText, queryByText } = renderWithQuote(quote);
+
+    expect(getByText('Confirm with your hardware wallet')).toBeDefined();
+    expect(queryByText('Approve')).toBeNull();
+    expect(getByText('Sending 0.005 ETH')).toBeDefined();
+  });
+
+  it('renders cancel button', () => {
+    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+    const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+    const { getByRole } = renderWithQuote(quote);
+
+    expect(getByRole('button', { name: 'Cancel' })).toBeDefined();
+  });
+
+  it('subscribes to TransactionController events via useHwBatchSignTracker', async () => {
+    const { callbacks } = mockSubscriptions();
+    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+    const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+    renderWithQuote(quote);
 
     await act(async () => {
       await jest.runAllTimersAsync();
     });
 
-    expect(backgroundConnection.subscribeToMessengerEvent).toHaveBeenCalledWith(
-      'BridgeStatusController:stateChange',
-      expect.any(Function),
-    );
+    expect(callbacks.has('TransactionController:transactionStatusUpdated')).toBe(true);
+    expect(callbacks.has('TransactionController:transactionRejected')).toBe(true);
+    expect(callbacks.has('TransactionController:transactionFinished')).toBe(true);
+
+    jest.restoreAllMocks();
+  });
+
+  it('transitions to step 2 when approval tx is signed via TransactionController event', async () => {
+    const { callbacks } = mockSubscriptions();
+    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+    const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+    const { getByText } = renderWithQuote(quote);
 
     expect(getByText('Confirm with your hardware wallet')).toBeDefined();
 
+    const statusUpdatedCallback = callbacks.get('TransactionController:transactionStatusUpdated');
+    expect(statusUpdatedCallback).toBeDefined();
+
     await act(async () => {
-      capturedCallback?.([
+      statusUpdatedCallback?.([
         {
-          txHistory: {
-            'some-tx-id': {
-              approvalTxId: 'approval-tx-123',
-              quote: { requestId: '0cd5caf6-9844-465b-89ad-9c89b639f432' },
-            },
+          transactionMeta: {
+            status: 'signed',
+            type: TransactionType.bridgeApproval,
+            txParams: { from: '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452' },
           },
         },
       ]);
@@ -160,95 +216,47 @@ describe('HardwareWalletSignatures', () => {
     jest.restoreAllMocks();
   });
 
-  it('does not subscribe to BridgeStatusController:stateChange for single-confirmation flows (no approval needed)', async () => {
-    const subscribeSpy = jest
-      .spyOn(backgroundConnection, 'subscribeToMessengerEvent')
-      .mockResolvedValue(jest.fn().mockResolvedValue(undefined));
+  it('transitions to Submitted when trade tx is signed via TransactionController event', async () => {
+    const { callbacks } = mockSubscriptions();
     mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
     const quote = DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0];
-    renderWithQuote(quote);
-
-    await act(async () => {
-      await jest.runAllTimersAsync();
-    });
-
-    expect(subscribeSpy).not.toHaveBeenCalled();
-
-    subscribeSpy.mockRestore();
-  });
-
-  it('does not subscribe to BridgeStatusController:stateChange for gasless flows (gasIncluded7702) even with approval', async () => {
-    const subscribeSpy = jest
-      .spyOn(backgroundConnection, 'subscribeToMessengerEvent')
-      .mockResolvedValue(jest.fn().mockResolvedValue(undefined));
-    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
-    const quote = {
-      ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
-      quote: {
-        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
-        gasIncluded7702: true,
-      },
-    };
-    renderWithQuote(quote);
-
-    await act(async () => {
-      await jest.runAllTimersAsync();
-    });
-
-    // Should NOT subscribe to BridgeStatusController:stateChange for gasless
-    expect(subscribeSpy).not.toHaveBeenCalledWith(
-      'BridgeStatusController:stateChange',
-      expect.any(Function),
-    );
-
-    // But SHOULD subscribe to TransactionController:transactionApproved
-    expect(subscribeSpy).toHaveBeenCalledWith(
-      'TransactionController:transactionApproved',
-      expect.any(Function),
-    );
-
-    subscribeSpy.mockRestore();
-  });
-
-  it('transitions to step 2 when gasless batch tx is approved via TransactionController event', async () => {
-    let capturedCallback:
-      | ((
-          data: [
-            {
-              transactionMeta: {
-                batchId?: string;
-                txParams: { from?: string };
-              };
-            },
-          ],
-        ) => void)
-      | undefined;
-    const mockUnsubscribe = jest.fn().mockResolvedValue(undefined);
-    jest
-      .spyOn(backgroundConnection, 'subscribeToMessengerEvent')
-      .mockImplementation(async (_event, callback) => {
-        if (_event === 'TransactionController:transactionApproved') {
-          capturedCallback = callback;
-        }
-        return mockUnsubscribe;
-      });
-    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
-    const quote = {
-      ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
-      quote: {
-        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
-        gasIncluded7702: true,
-      },
-    };
     const { getByText } = renderWithQuote(quote);
 
     expect(getByText('Confirm with your hardware wallet')).toBeDefined();
 
+    const statusUpdatedCallback = callbacks.get('TransactionController:transactionStatusUpdated');
+
     await act(async () => {
-      capturedCallback?.([
+      statusUpdatedCallback?.([
         {
           transactionMeta: {
-            batchId: '0x1',
+            status: 'signed',
+            type: TransactionType.bridge,
+            txParams: { from: '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452' },
+          },
+        },
+      ]);
+    });
+
+    expect(getByText("You're all set")).toBeDefined();
+
+    jest.restoreAllMocks();
+  });
+
+  it('transitions to Rejected when transaction fails via TransactionController event', async () => {
+    const { callbacks } = mockSubscriptions();
+    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+    const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+    const { getByText } = renderWithQuote(quote);
+
+    const statusUpdatedCallback = callbacks.get('TransactionController:transactionStatusUpdated');
+
+    await act(async () => {
+      statusUpdatedCallback?.([
+        {
+          transactionMeta: {
+            status: 'failed',
+            type: TransactionType.bridgeApproval,
             txParams: { from: '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452' },
           },
         },
@@ -256,7 +264,97 @@ describe('HardwareWalletSignatures', () => {
     });
 
     expect(
-      getByText('Almost there! Confirm on your device again'),
+      getByText('You rejected this transaction on your device'),
+    ).toBeDefined();
+
+    jest.restoreAllMocks();
+  });
+
+  it('transitions to Rejected when transaction is rejected via TransactionController event', async () => {
+    const { callbacks } = mockSubscriptions();
+    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+    const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+    const { getByText } = renderWithQuote(quote);
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    const rejectedCallback = callbacks.get('TransactionController:transactionRejected');
+
+    await act(async () => {
+      rejectedCallback?.([
+        {
+          transactionMeta: {
+            type: TransactionType.bridgeApproval,
+            txParams: { from: '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452' },
+          },
+        },
+      ]);
+    });
+
+    expect(
+      getByText('You rejected this transaction on your device'),
+    ).toBeDefined();
+
+    jest.restoreAllMocks();
+  });
+
+  it('transitions to Failed when transaction finished with failed status', async () => {
+    const { callbacks } = mockSubscriptions();
+    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+    const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+    const { getAllByText } = renderWithQuote(quote);
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    const finishedCallback = callbacks.get('TransactionController:transactionFinished');
+
+    await act(async () => {
+      finishedCallback?.([
+        {
+          transactionMeta: {
+            status: 'failed',
+            type: TransactionType.bridgeApproval,
+            txParams: { from: '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452' },
+          },
+        },
+      ]);
+    });
+
+    expect(getAllByText('Transaction failed').length).toBeGreaterThan(0);
+
+    jest.restoreAllMocks();
+  });
+
+  it('transitions to Rejected when transaction finished with rejected status', async () => {
+    const { callbacks } = mockSubscriptions();
+    mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+    const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+    const { getByText } = renderWithQuote(quote);
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    const finishedCallback = callbacks.get('TransactionController:transactionFinished');
+
+    await act(async () => {
+      finishedCallback?.([
+        {
+          transactionMeta: {
+            status: 'rejected',
+            type: TransactionType.bridgeApproval,
+            txParams: { from: '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452' },
+          },
+        },
+      ]);
+    });
+
+    expect(
+      getByText('You rejected this transaction on your device'),
     ).toBeDefined();
 
     jest.restoreAllMocks();
@@ -288,31 +386,33 @@ describe('HardwareWalletSignatures', () => {
     expect(getByText("You're all set")).toBeDefined();
   });
 
-  it('stays at "You\'re all set" when a late BridgeStatusController:stateChange event arrives after onHardwareWalletSubmitted', async () => {
-    let capturedCallback:
-      | ((
-          data: [
-            {
-              txHistory: Record<
-                string,
-                {
-                  approvalTxId?: string;
-                  quote?: { requestId?: string };
-                }
-              >;
-            },
-          ],
-        ) => void)
-      | undefined;
-    const mockUnsubscribe = jest.fn().mockResolvedValue(undefined);
-    jest
-      .spyOn(backgroundConnection, 'subscribeToMessengerEvent')
-      .mockImplementation(async (_event, callback) => {
-        if (_event === 'BridgeStatusController:stateChange') {
-          capturedCallback = callback;
-        }
-        return mockUnsubscribe;
-      });
+  it('hides footer when submitted', async () => {
+    const onHardwareWalletSubmittedCallbacks: (() => void)[] = [];
+    mockUseSubmitBridgeTransaction.mockImplementation((options) => {
+      if (options?.onHardwareWalletSubmitted) {
+        onHardwareWalletSubmittedCallbacks.push(
+          options.onHardwareWalletSubmitted,
+        );
+      }
+
+      return {
+        submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
+        isSubmitting: false,
+      };
+    });
+    const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+    const { getByText, queryByRole } = renderWithQuote(quote);
+
+    await act(async () => {
+      onHardwareWalletSubmittedCallbacks[0]?.();
+    });
+
+    expect(getByText("You're all set")).toBeDefined();
+    expect(queryByRole('button', { name: 'Cancel' })).toBeNull();
+  });
+
+  it('stays at "You\'re all set" when a late TransactionController event arrives after submission', async () => {
+    const { callbacks } = mockSubscriptions();
     const onHardwareWalletSubmittedCallbacks: (() => void)[] = [];
     mockUseSubmitBridgeTransaction.mockImplementation((options) => {
       if (options?.onHardwareWalletSubmitted) {
@@ -339,15 +439,15 @@ describe('HardwareWalletSignatures', () => {
 
     expect(getByText("You're all set")).toBeDefined();
 
-    // Late BSC stateChange event arrives after submission — should NOT revert state
+    const statusUpdatedCallback = callbacks.get('TransactionController:transactionStatusUpdated');
+
     await act(async () => {
-      capturedCallback?.([
+      statusUpdatedCallback?.([
         {
-          txHistory: {
-            'some-tx-id': {
-              approvalTxId: 'approval-tx-123',
-              quote: { requestId: '0cd5caf6-9844-465b-89ad-9c89b639f432' },
-            },
+          transactionMeta: {
+            status: 'signed',
+            type: TransactionType.bridgeApproval,
+            txParams: { from: '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452' },
           },
         },
       ]);
@@ -428,7 +528,7 @@ describe('HardwareWalletSignatures', () => {
       return renderWithQuote(quote);
     };
 
-    it('shows "Transaction failed" when the device disconnects during signing', () => {
+    it('shows "Device disconnected" when the device disconnects during signing', () => {
       mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: {
@@ -441,10 +541,10 @@ describe('HardwareWalletSignatures', () => {
         },
       });
 
-      const { getAllByText, getByRole } = renderWithLedgerAccount();
+      const { getByText, getByRole } = renderWithLedgerAccount();
 
-      expect(getAllByText('Transaction failed').length).toBeGreaterThan(0);
-      expect(getByRole('button', { name: 'Try again' })).toBeDefined();
+      expect(getByText('Device disconnected')).toBeDefined();
+      expect(getByRole('button', { name: 'Reconnect' })).toBeDefined();
     });
 
     it('shows "Transaction rejected" when the device reports a user rejection', () => {
@@ -468,6 +568,25 @@ describe('HardwareWalletSignatures', () => {
       expect(getByRole('button', { name: 'Try again' })).toBeDefined();
     });
 
+    it('shows "Transaction failed" for other connection errors', () => {
+      mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: {
+          status: ConnectionStatus.ErrorState,
+          error: createHardwareWalletError(
+            ErrorCode.ConnectionTimeout,
+            HardwareWalletType.Ledger,
+            'Connection timeout',
+          ),
+        },
+      });
+
+      const { getAllByText, getByRole } = renderWithLedgerAccount();
+
+      expect(getAllByText('Transaction failed').length).toBeGreaterThan(0);
+      expect(getByRole('button', { name: 'Try again' })).toBeDefined();
+    });
+
     it('does not transition out of "You\'re all set" when an error appears afterwards', async () => {
       const onHardwareWalletSubmittedCallbacks: (() => void)[] = [];
       mockUseSubmitBridgeTransaction.mockImplementation((options) => {
@@ -485,7 +604,6 @@ describe('HardwareWalletSignatures', () => {
       const { getByText, rerender } = renderWithLedgerAccount();
 
       await act(async () => {
-        onHardwareWalletSubmittedCallbacks[0]?.();
         onHardwareWalletSubmittedCallbacks[0]?.();
       });
 
@@ -505,6 +623,107 @@ describe('HardwareWalletSignatures', () => {
       rerender(<HardwareWalletSignatures />);
 
       expect(getByText("You're all set")).toBeDefined();
+    });
+
+    it('shows "Device disconnected" when connection status is Disconnected', () => {
+      mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: {
+          status: ConnectionStatus.Disconnected,
+        },
+      });
+
+      const { getByText, getByRole } = renderWithLedgerAccount();
+
+      expect(getByText('Device disconnected')).toBeDefined();
+      expect(getByRole('button', { name: 'Reconnect' })).toBeDefined();
+    });
+  });
+
+  describe('retry behavior', () => {
+    it('resubmits the quote on retry after rejection', async () => {
+      const { callbacks } = mockSubscriptions();
+      const mockSubmit = jest.fn().mockResolvedValue(undefined);
+      mockUseSubmitBridgeTransaction.mockReturnValue({
+        submitBridgeTransaction: mockSubmit,
+        isSubmitting: false,
+      });
+      const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+      const { getByText, getByRole } = renderWithQuote(quote);
+
+      const statusUpdatedCallback = callbacks.get('TransactionController:transactionStatusUpdated');
+
+      await act(async () => {
+        statusUpdatedCallback?.([
+          {
+            transactionMeta: {
+              status: 'failed',
+              type: TransactionType.bridgeApproval,
+              txParams: { from: '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452' },
+            },
+          },
+        ]);
+      });
+
+      expect(
+        getByText('You rejected this transaction on your device'),
+      ).toBeDefined();
+
+      await act(async () => {
+        fireEvent.click(getByRole('button', { name: 'Try again' }));
+      });
+
+      expect(mockSubmit).toHaveBeenCalledTimes(2);
+
+      jest.restoreAllMocks();
+    });
+
+    it('calls ensureDeviceReady on retry after disconnect', async () => {
+      mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: {
+          status: ConnectionStatus.ErrorState,
+          error: createHardwareWalletError(
+            ErrorCode.DeviceDisconnected,
+            HardwareWalletType.Ledger,
+            'Device disconnected',
+          ),
+        },
+      });
+
+      const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+      const { getByRole } = renderWithQuote(quote);
+
+      await act(async () => {
+        fireEvent.click(getByRole('button', { name: 'Reconnect' }));
+      });
+
+      expect(mockEnsureDeviceReady).toHaveBeenCalled();
+    });
+
+    it('does not retry if ensureDeviceReady returns false', async () => {
+      mockEnsureDeviceReady.mockResolvedValueOnce(false);
+      mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: {
+          status: ConnectionStatus.ErrorState,
+          error: createHardwareWalletError(
+            ErrorCode.DeviceDisconnected,
+            HardwareWalletType.Ledger,
+            'Device disconnected',
+          ),
+        },
+      });
+
+      const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+      const { getByRole, getByText } = renderWithQuote(quote);
+
+      await act(async () => {
+        fireEvent.click(getByRole('button', { name: 'Reconnect' }));
+      });
+
+      expect(mockEnsureDeviceReady).toHaveBeenCalled();
+      expect(getByText('Device disconnected')).toBeDefined();
     });
   });
 });
