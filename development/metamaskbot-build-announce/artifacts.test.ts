@@ -15,6 +15,9 @@ describe('getArtifactLinks', () => {
     expect(links.bundleSizeStats.url).toBe(
       `${HOST}/bundle-size/bundle_size.json`,
     );
+    expect(links.interactionStats.url).toBe(
+      `${HOST}/benchmarks/benchmark-chrome-webpack-interactionUserActions.json`,
+    );
     expect(links.storybook.url).toBe(`${HOST}/storybook-build/index.html`);
     expect(links.allArtifacts.url).toBe(
       'https://github.com/MetaMask/metamask-extension/actions/runs/42#artifacts',
@@ -43,8 +46,9 @@ describe('buildArtifactsBody', () => {
       buildsFromSha: 'abc1234',
     });
 
-    expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
-    expect(result).toContain('build-dist-webpack');
+    expect(result).toContain(
+      `${HOST}/build-dist-webpack/builds/metamask-chrome-${VERSION}.zip`,
+    );
     expect(result).toContain('Builds ready [abc1234]');
     expect(result).not.toContain('reused from');
     expect(result).toContain(

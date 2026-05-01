@@ -213,30 +213,37 @@ describe('BridgeFeeRow', () => {
     expect(feeValue).toHaveTextContent('$1.23');
   });
 
-  it('renders Provider Fee label for perpsWithdraw transactions', () => {
-    const { getByText, queryByText } = render({}, getPerpsWithdrawState());
+  it('renders Transaction fee row label for perpsWithdraw transactions', () => {
+    // The row label is intentionally "Transaction fee" for all flows; the
+    // perps-specific "Provider fee" terminology only appears inside the
+    // tooltip body (covered by the tooltip test below).
+    const { getByText } = render(
+      { variant: ConfirmInfoRowSize.Small },
+      getPerpsWithdrawState(),
+    );
 
-    expect(getByText(messages.perpsWithdrawFee.message)).toBeInTheDocument();
-    expect(
-      queryByText(messages.transactionFee.message),
-    ).not.toBeInTheDocument();
+    expect(getByText(messages.transactionFee.message)).toBeInTheDocument();
   });
 
   it('renders Transaction fee label for non-perpsWithdraw transactions', () => {
-    const { getByText, queryByText } = render();
+    const { getByText } = render();
 
     expect(getByText(messages.transactionFee.message)).toBeInTheDocument();
-    expect(
-      queryByText(messages.perpsWithdrawFee.message),
-    ).not.toBeInTheDocument();
   });
 
-  it('renders Provider Fee label on the skeleton while loading a perpsWithdraw transaction', () => {
-    useIsTransactionPayLoadingMock.mockReturnValue(true);
+  it('uses the "Provider fee" tooltip line for perpsWithdraw transactions', async () => {
+    const user = userEvent.setup();
+    const { getByTestId, findByText } = render(
+      { variant: ConfirmInfoRowSize.Small },
+      getPerpsWithdrawState(),
+    );
 
-    const { getByTestId, getByText } = render({}, getPerpsWithdrawState());
+    await user.hover(getByTestId('bridge-fee-row-tooltip'));
 
-    expect(getByTestId('bridge-fee-row-skeleton')).toBeInTheDocument();
-    expect(getByText(messages.perpsWithdrawFee.message)).toBeInTheDocument();
+    const tooltip = await findByText((content) =>
+      content.includes(`${messages.networkFee.message}:`),
+    );
+    expect(tooltip.textContent).toContain(`${messages.providerFee.message}:`);
+    expect(tooltip.textContent).not.toContain(`${messages.bridgeFee.message}:`);
   });
 });

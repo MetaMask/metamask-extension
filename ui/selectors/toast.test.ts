@@ -91,6 +91,7 @@ describe('toast selectors', () => {
             },
             { id: '7', time: 8, type: TransactionType.perpsDeposit },
             { id: '8', time: 9, type: TransactionType.perpsDepositAndOrder },
+            { id: '9', time: 10, type: TransactionType.perpsRelayDeposit },
           ],
         },
       } as unknown as SelectorState;
@@ -110,7 +111,8 @@ describe('toast selectors', () => {
           transactions: [
             { id: '0', time: 1, type: TransactionType.perpsDeposit },
             { id: '1', time: 2, type: TransactionType.perpsDepositAndOrder },
-            { id: '2', time: 3, type: TransactionType.simpleSend },
+            { id: '2', time: 3, type: TransactionType.perpsRelayDeposit },
+            { id: '3', time: 4, type: TransactionType.simpleSend },
           ],
         },
       } as unknown as SelectorState;
@@ -118,7 +120,7 @@ describe('toast selectors', () => {
       const results = selectEvmTransactionsForToast(state);
 
       expect(results).toStrictEqual([
-        { id: '2', time: 3, type: TransactionType.simpleSend },
+        { id: '3', time: 4, type: TransactionType.simpleSend },
       ]);
     });
 
@@ -425,6 +427,36 @@ describe('toast selectors', () => {
           evmStatus: 'dropped',
         },
       ]);
+    });
+
+    it('excludes smart transaction toasts for batches with excluded nested types', () => {
+      const state = {
+        metamask: {
+          pendingApprovals: {
+            'approval-1': {
+              id: 'approval-1',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {
+                txId: 'tx-1',
+                smartTransaction: { status: 'pending' },
+              },
+            },
+          },
+          transactions: [
+            {
+              id: 'tx-1',
+              status: 'submitted',
+              type: TransactionType.batch,
+              nestedTransactions: [
+                { type: TransactionType.tokenMethodApprove },
+                { type: TransactionType.musdRelayDeposit },
+              ],
+            },
+          ],
+        },
+      } as unknown as SelectorState;
+
+      expect(selectSmartTransactions(state)).toStrictEqual([]);
     });
 
     it('follows the replacement for a Speed Up (retry) chain', () => {

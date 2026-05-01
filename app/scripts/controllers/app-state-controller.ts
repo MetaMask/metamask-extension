@@ -1245,9 +1245,9 @@ export class AppStateController extends BaseController<
     }
 
     // This is a temporary fix until we add a state migration.
-    // Due to a bug in ui/pages/settings/advanced-tab/advanced-tab.component.js,
-    // it was possible for timeoutMinutes to be saved as a string, as explained
-    // in PR 25109. `alarms.create` will fail in that case. We are
+    // Due to a historical bug in the (now-removed) legacy advanced settings
+    // tab, it was possible for timeoutMinutes to be saved as a string, as
+    // explained in PR 25109. `alarms.create` will fail in that case. We are
     // converting this to a number here to prevent that failure. Once
     // we add a migration to update the malformed state to the right type,
     // we will remove this conversion.

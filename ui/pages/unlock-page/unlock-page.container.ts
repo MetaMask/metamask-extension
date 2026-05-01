@@ -118,7 +118,7 @@ const mergeProps = (
       const search = fromLocation.search || '';
       redirectTo = fromLocation.pathname + search;
     }
-    navigate(redirectTo);
+    navigate(redirectTo, { replace: true });
   };
 
   const onSubmit = async (password: string) => {
