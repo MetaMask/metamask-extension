@@ -255,8 +255,10 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   },
   [CURRENCY_ROUTE]: {
     labelKey: 'localCurrency',
-    parentPath: ASSETS_ROUTE,
-    component: mmLazy(() => import('./assets-tab/currency-sub-page.tsx')),
+    parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
+    component: mmLazy(
+      () => import('./preferences-and-display-tab/currency-sub-page.tsx'),
+    ),
   },
 
   // --- Transactions tab ---

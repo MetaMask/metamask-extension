@@ -19,6 +19,7 @@ import type { MetaMaskReduxState } from '../../../store/store';
 import locales from '../../../../app/_locales/index.json';
 import { PREFERENCES_ITEMS } from '../search-config';
 import { AccountIdenticonItem } from './account-identicon-item';
+import { LocalCurrencyItem } from './local-currency-item';
 import { ShowDefaultAddressItem } from './show-default-address-item';
 import { THEME_LABEL_MAP } from './theme-utils';
 
@@ -77,6 +78,7 @@ const ManageInstitutionalWalletItem = createToggleItem({
 const PREFERENCES_AND_DISPLAY_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'theme', component: ThemeItem },
   { id: 'language', component: LanguageItem },
+  { id: 'local-currency', component: LocalCurrencyItem },
   { id: 'account-identicon', component: AccountIdenticonItem },
   { id: 'show-default-address', component: ShowDefaultAddressItem },
   {
