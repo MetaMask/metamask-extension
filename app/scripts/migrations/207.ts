@@ -316,6 +316,12 @@ function classifyAccountAsset(
     }
     ac.assetsBalance[accountId] ??= {};
     ac.assetsBalance[accountId][assetId] = { amount };
+    // Maintain mutual exclusion: contains assetBalance, so must remove from customAssets.
+    if (alreadyCustom) {
+      ac.customAssets[accountId] = ac.customAssets[accountId].filter(
+        (id) => id !== assetId,
+      );
+    }
     return true;
   }
 

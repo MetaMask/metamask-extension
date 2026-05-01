@@ -678,6 +678,93 @@ describe(`migration #${VERSION}`, () => {
     });
   });
 
+  it('removes an asset from customAssets when a non-zero balance is migrated for it', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              [ACCOUNT_1_ADDRESS]: [
+                {
+                  address: USDC_ADDRESS,
+                  symbol: 'USDC',
+                  decimals: 6,
+                  name: 'USD Coin',
+                },
+              ],
+            },
+          },
+        },
+        TokenBalancesController: {
+          tokenBalances: {
+            [ACCOUNT_1_ADDRESS]: {
+              '0x1': { [USDC_ADDRESS]: '0x5f5e100' }, // 100 USDC
+            },
+          },
+        },
+        AssetsController: {
+          assetsInfo: {},
+          assetsBalance: {},
+          customAssets: {
+            [ACCOUNT_1_ID]: [USDC_CAIP19_MAINNET, DAI_CAIP19_MAINNET],
+          },
+        },
+      }),
+    );
+
+    const changed = new Set<string>();
+    await migrate(vd, changed);
+
+    const ac = getAC(vd);
+    expect(ac.assetsBalance[ACCOUNT_1_ID]?.[USDC_CAIP19_MAINNET]).toMatchObject(
+      { amount: '100000000' },
+    );
+    expect(ac.customAssets[ACCOUNT_1_ID]).not.toContain(USDC_CAIP19_MAINNET);
+    // unrelated custom assets must be preserved
+    expect(ac.customAssets[ACCOUNT_1_ID]).toContain(DAI_CAIP19_MAINNET);
+  });
+
+  it('removes a non-EVM asset from customAssets when a non-zero balance is migrated for it', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        MultichainAssetsController: {
+          accountsAssets: { [ACCOUNT_1_ID]: [SOL_USDC_ASSET_ID] },
+          assetsMetadata: {
+            [SOL_USDC_ASSET_ID]: {
+              fungible: true,
+              name: 'USD Coin',
+              symbol: 'USDC',
+              units: [{ decimals: 6 }],
+            },
+          },
+        },
+        MultichainBalancesController: {
+          balances: {
+            [ACCOUNT_1_ID]: {
+              [SOL_USDC_ASSET_ID]: { amount: '12.5', unit: 'USDC' },
+            },
+          },
+        },
+        AssetsController: {
+          assetsInfo: {},
+          assetsBalance: {},
+          customAssets: { [ACCOUNT_1_ID]: [SOL_USDC_ASSET_ID] },
+        },
+      }),
+    );
+
+    const changed = new Set<string>();
+    await migrate(vd, changed);
+
+    const ac = getAC(vd);
+    expect(ac.assetsBalance[ACCOUNT_1_ID]?.[SOL_USDC_ASSET_ID]).toMatchObject({
+      amount: '12.5',
+    });
+    expect(ac.customAssets[ACCOUNT_1_ID] ?? []).not.toContain(
+      SOL_USDC_ASSET_ID,
+    );
+  });
+
   // ─── version bump ────────────────────────────────────────────────────────────
 
   it('bumps the version regardless of whether data changed', async () => {
