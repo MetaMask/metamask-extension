@@ -299,7 +299,6 @@ export function useMusdConversion(): UseMusdConversionResult {
       }
     },
     [
-      dispatch,
       isFeatureEnabled,
       isUserGeoBlocked,
       educationSeen,
