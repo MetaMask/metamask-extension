@@ -1,5 +1,6 @@
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { getErrorMessage, hasProperty, isObject } from '@metamask/utils';
+import BigNumber from 'bignumber.js';
 import { captureException } from '../../../shared/lib/sentry';
 import type { Migrate } from './types';
 
@@ -180,14 +181,23 @@ function buildErc20AssetId(
 }
 
 /**
- * Convert a hex balance string (e.g. '0x5f5e100') to a decimal string
- * (e.g. '100000000'). Returns '0' when the input cannot be parsed.
+ * Convert a hex balance string into the decimal-applied display string the unified `AssetsController`
+ * stores in `assetsBalance[accountId][assetId].amount` (e.g.
+ * '2.029194191379609600' for 18-decimal DAI).
+ * Returns '0' when the input cannot be parsed.
  *
- * @param hex - The hex-encoded balance.
+ * @param hex - The hex-encoded raw balance (smallest unit).
+ * @param decimals - The token's decimal precision.
  */
-function hexBalanceToDecimal(hex: string): string {
+function hexBalanceToDisplayAmount(hex: string, decimals: number): string {
   try {
-    return BigInt(hex).toString();
+    const bn = new BigNumber(hex, 16);
+    if (bn.isNaN()) {
+      return '0';
+    }
+    const safeDecimals = Math.max(decimals, 0);
+    const divisor = new BigNumber(10).pow(safeDecimals);
+    return bn.dividedBy(divisor).toFixed(safeDecimals);
   } catch {
     return '0';
   }
@@ -219,7 +229,7 @@ function isNonZeroAmount(amount: unknown): amount is string {
   if (typeof amount !== 'string') {
     return false;
   }
-  const n = parseFloat(amount);
+  const n = Number.parseFloat(amount);
   return Number.isFinite(n) && n > 0;
 }
 
@@ -441,8 +451,10 @@ function migrateEvmTokens(
 
         const checksummed = toChecksumHexAddress(token.address);
         const hexBalance = chainBalances[checksummed];
+        const decimals =
+          typeof token.decimals === 'number' ? token.decimals : 0;
         const amount = isNonZeroHexBalance(hexBalance)
-          ? hexBalanceToDecimal(hexBalance)
+          ? hexBalanceToDisplayAmount(hexBalance, decimals)
           : null;
 
         if (classifyAccountAsset(ac, accountId, assetId, amount)) {

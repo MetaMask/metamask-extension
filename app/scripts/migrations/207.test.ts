@@ -89,11 +89,102 @@ describe(`migration #${VERSION}`, () => {
 
     const ac = getAC(vd);
     expect(ac.assetsBalance[ACCOUNT_1_ID]).toMatchObject({
-      [USDC_CAIP19_MAINNET]: { amount: '100000000' },
+      [USDC_CAIP19_MAINNET]: { amount: '100.000000' },
     });
     expect(ac.customAssets[ACCOUNT_1_ID] ?? []).not.toContain(
       USDC_CAIP19_MAINNET,
     );
+  });
+
+  it('writes EVM amounts as decimal-display strings (DAI, 18 decimals)', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              [ACCOUNT_1_ADDRESS]: [
+                { address: DAI_ADDRESS, symbol: 'DAI', decimals: 18 },
+              ],
+            },
+          },
+        },
+        TokenBalancesController: {
+          tokenBalances: {
+            [ACCOUNT_1_ADDRESS]: {
+              '0x1': { [DAI_ADDRESS]: '0x1c29255dad77b800' },
+            },
+          },
+        },
+      }),
+    );
+
+    await migrate(vd, new Set());
+
+    const ac = getAC(vd);
+    expect(ac.assetsBalance[ACCOUNT_1_ID][DAI_CAIP19_MAINNET]).toEqual({
+      amount: '2.029194191379609600',
+    });
+  });
+
+  it('pads sub-unit EVM amounts with leading zeros (USDC.E 0.000009, 6 decimals)', async () => {
+    // raw int = 9, decimals = 6 → "0.000009"
+    const USDC_E_POLYGON = `eip155:137/erc20:${USDC_ADDRESS}`;
+    const vd = cloneDeep(
+      buildBaseStorage({
+        TokensController: {
+          allTokens: {
+            '0x89': {
+              [ACCOUNT_1_ADDRESS]: [
+                { address: USDC_ADDRESS, symbol: 'USDC.E', decimals: 6 },
+              ],
+            },
+          },
+        },
+        TokenBalancesController: {
+          tokenBalances: {
+            [ACCOUNT_1_ADDRESS]: { '0x89': { [USDC_ADDRESS]: '0x9' } },
+          },
+        },
+      }),
+    );
+
+    await migrate(vd, new Set());
+
+    const ac = getAC(vd);
+    expect(ac.assetsBalance[ACCOUNT_1_ID][USDC_E_POLYGON]).toEqual({
+      amount: '0.000009',
+    });
+  });
+
+  it('returns the raw integer for zero-decimal EVM tokens', async () => {
+    // decimals = 0 → no decimal point, raw integer preserved
+    const TOKEN_ADDR = '0x1111111111111111111111111111111111111111';
+    const TOKEN_CAIP19 = `eip155:1/erc20:${TOKEN_ADDR}`;
+    const vd = cloneDeep(
+      buildBaseStorage({
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              [ACCOUNT_1_ADDRESS]: [
+                { address: TOKEN_ADDR, symbol: 'WHOLE', decimals: 0 },
+              ],
+            },
+          },
+        },
+        TokenBalancesController: {
+          tokenBalances: {
+            [ACCOUNT_1_ADDRESS]: { '0x1': { [TOKEN_ADDR]: '0x2a' } }, // 42
+          },
+        },
+      }),
+    );
+
+    await migrate(vd, new Set());
+
+    const ac = getAC(vd);
+    expect(ac.assetsBalance[ACCOUNT_1_ID][TOKEN_CAIP19]).toEqual({
+      amount: '42',
+    });
   });
 
   // ─── EVM: tokens without balance ────────────────────────────────────────────
@@ -389,10 +480,11 @@ describe(`migration #${VERSION}`, () => {
 
     const ac = getAC(vd);
 
-    // Account 1 mainnet USDC: has balance
+    // Account 1 mainnet USDC: has balance.
+    // Raw 1e18 / 10^6 = 1e12, formatted with full 6-decimal precision.
     expect(ac.assetsBalance[ACCOUNT_1_ID]?.[USDC_CAIP19_MAINNET]).toMatchObject(
       {
-        amount: '1000000000000000000',
+        amount: '1000000000000.000000',
       },
     );
     // Account 1 polygon USDC: zero balance → customAssets
@@ -717,7 +809,7 @@ describe(`migration #${VERSION}`, () => {
 
     const ac = getAC(vd);
     expect(ac.assetsBalance[ACCOUNT_1_ID]?.[USDC_CAIP19_MAINNET]).toMatchObject(
-      { amount: '100000000' },
+      { amount: '100.000000' },
     );
     expect(ac.customAssets[ACCOUNT_1_ID]).not.toContain(USDC_CAIP19_MAINNET);
     // unrelated custom assets must be preserved
