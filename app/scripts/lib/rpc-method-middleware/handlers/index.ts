@@ -28,7 +28,6 @@ type SwitchEthereumChainHooks = Record<string, unknown>;
 export type HandlerHooks = AddEthereumChainHooks &
   GetProviderStateHooks &
   LogWeb3ShimUsageHooks &
-  RequestEthereumAccountsHooks &
   SendMetadataHooks &
   WatchAssetHooks;
 
