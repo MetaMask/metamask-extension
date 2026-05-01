@@ -202,9 +202,9 @@ describe('PerpsView', () => {
 
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(screen.getByTestId('perps-balance-dropdown-pnl')).toHaveTextContent(
-        '42.00%',
-      );
+      expect(
+        screen.getByTestId('perps-balance-dropdown-pnl'),
+      ).toHaveTextContent('42.00%');
       expect(screen.getByTestId('position-card-roe-ETH')).toHaveTextContent(
         '42.00%',
       );
@@ -234,9 +234,9 @@ describe('PerpsView', () => {
 
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(screen.getByTestId('perps-balance-dropdown-pnl')).toHaveTextContent(
-        '1.00%',
-      );
+      expect(
+        screen.getByTestId('perps-balance-dropdown-pnl'),
+      ).toHaveTextContent('1.00%');
     });
 
     it('renders order cards for each order', () => {
