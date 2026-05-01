@@ -43,6 +43,7 @@ const CLS_THRESHOLDS = {
   cls: {
     p75: { warn: 0.1, fail: 0.25 },
     p95: { warn: 0.1, fail: 0.25 },
+    ciMultiplier: CI_MULTIPLIER.NONE,
   },
 } satisfies ThresholdConfig;
 

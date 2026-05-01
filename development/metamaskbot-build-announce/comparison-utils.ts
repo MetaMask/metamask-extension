@@ -244,24 +244,31 @@ export function scaleThresholdsForBrowser(
     return config;
   }
   return Object.fromEntries(
-    Object.entries(config).map(([metricId, metric]) => [
-      metricId,
-      {
-        ...metric,
-        ...(metric.p75 && {
-          p75: {
-            warn: metric.p75.warn * multiplier,
-            fail: metric.p75.fail * multiplier,
-          },
-        }),
-        ...(metric.p95 && {
-          p95: {
-            warn: metric.p95.warn * multiplier,
-            fail: metric.p95.fail * multiplier,
-          },
-        }),
-      },
-    ]),
+    Object.entries(config).map(([metricId, metric]) => {
+      // ciMultiplier === 1 (CI_MULTIPLIER.NONE) marks unitless metrics (e.g. CLS).
+      // Browser timing multipliers don't apply to dimensionless scores.
+      if (metric.ciMultiplier === 1) {
+        return [metricId, metric];
+      }
+      return [
+        metricId,
+        {
+          ...metric,
+          ...(metric.p75 && {
+            p75: {
+              warn: metric.p75.warn * multiplier,
+              fail: metric.p75.fail * multiplier,
+            },
+          }),
+          ...(metric.p95 && {
+            p95: {
+              warn: metric.p95.warn * multiplier,
+              fail: metric.p95.fail * multiplier,
+            },
+          }),
+        },
+      ];
+    }),
   );
 }
 
