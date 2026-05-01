@@ -1,7 +1,7 @@
-import { getErrorMessage, hasProperty, isObject } from '@metamask/utils';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import type { Migrate } from './types';
+import { getErrorMessage, hasProperty, isObject } from '@metamask/utils';
 import { captureException } from '../../../shared/lib/sentry';
+import type { Migrate } from './types';
 
 export const version = 207;
 
