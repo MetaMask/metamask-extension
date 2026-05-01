@@ -1560,9 +1560,6 @@
   "clearActivity": {
     "message": "Limpar dados de atividades e nonce"
   },
-  "clearActivityButton": {
-    "message": "Limpar dados da aba de atividades"
-  },
   "clearActivityDescription": {
     "message": "Redefine o nonce da conta e apaga os dados da guia de atividades da sua carteira. Somente a conta e a rede atuais serão afetadas. Seus saldos e transações recebidas não serão alterados."
   },
@@ -3911,9 +3908,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Trancando a MetaMask..."
-  },
-  "lockTimeInvalid": {
-    "message": "O tempo de bloqueio deve ser um número entre 0 e 10080"
   },
   "logOut": {
     "message": "Sair"
@@ -8185,12 +8179,6 @@
   },
   "smartAccount": {
     "message": "Conta inteligente"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Permite que dapps (aplicativos descentralizados) solicitem recursos de conta inteligente para contas padrão. Isso não afetará contas que já são contas inteligentes."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Solicitações de conta inteligente vindas de dapps"
   },
   "smartAccountLabel": {
     "message": "Conta inteligente"

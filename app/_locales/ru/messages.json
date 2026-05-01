@@ -1560,9 +1560,6 @@
   "clearActivity": {
     "message": "Очистить данные о действиях и одноразовых номерах"
   },
-  "clearActivityButton": {
-    "message": "Очистить данные вкладки активности"
-  },
   "clearActivityDescription": {
     "message": "Выполняется сброс одноразового кода счета и удалению данных со вкладки «Активность» в вашем кошельке. Это затронет только текущий счет и сеть. Ваши балансы и входящие транзакции не изменятся."
   },
@@ -3911,9 +3908,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Блокировка MetaMask..."
-  },
-  "lockTimeInvalid": {
-    "message": "Время блокировки будет числом от 0 до 10080"
   },
   "logOut": {
     "message": "Выйти"
@@ -8185,12 +8179,6 @@
   },
   "smartAccount": {
     "message": "Смарт-счет"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Разрешите dapps запрашивать функции смарт-счетов для стандартных счетов. Это не повлияет на счета, которые уже являются смарт-счетами."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Запросы на создание смарт-счетов от dapps"
   },
   "smartAccountLabel": {
     "message": "Смарт-счет"
