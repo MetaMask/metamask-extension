@@ -90,7 +90,7 @@ const A_SPENDER = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
 describe('Tron activity', function (this: Suite) {
   this.timeout(180_000);
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Activity tab renders the empty-state ("Nothing to see yet. Swap your first token today.") despite mockTronGetTrc20Transactions being hit with the trc20ApproveTx fixture; same data-propagation regression as TRC20 rendering in assets.spec.ts — Tron tx history is fetched but never reaches the activity list selector .transaction-status-label--confirmed.
   it.skip('Approve transaction is rendered with Approve label and amount', async function () {
     await withFixtures(
       {
@@ -127,7 +127,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Activity tab renders the empty-state ("Nothing to see yet. Swap your first token today.") despite mockTronGetTransactions being hit with the trxSendTx fixture; same Tron activity propagation regression as the Approve test — confirmed via test-failure-screenshot-1.png that the trxSendTx is fetched (network log shows /v1/accounts/.../transactions request) but no row renders.
   it.skip('Send transaction is rendered with Send label and -amount', async function () {
     await withFixtures(
       {
@@ -164,7 +164,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Activity tab renders the empty-state ("Nothing to see yet. Swap your first token today.") despite mockTronGetTransactions being hit with the trxReceiveTx fixture; same Tron activity propagation regression as Send/Approve tests.
   it.skip('Receive transaction is rendered with Receive label and +amount', async function () {
     await withFixtures(
       {
@@ -201,7 +201,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression as Send/Receive — empty-state renders even though the swapTx fixture is delivered to /v1/accounts/.../transactions. Once the regression is fixed, additional verification needed: TriggerSmartContract→"Swap TRX to USDT" mapping (uses the _meta hint in the swap fixture).
   it.skip('Swap transaction is rendered with Swap A to B label and -srcAmount', async function () {
     await withFixtures(
       {
@@ -240,7 +240,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression as Send/Receive — bridge fixture not rendered. After the regression is fixed, also needs cross-chain detection mapping (destChain "eip155:1") to render "Bridge USDT" + .transaction-status-label--confirmed selector used by checkCompletedBridgeTransactionActivity.
   it.skip('Bridge transaction is rendered with Bridge label and -srcAmount', async function () {
     await withFixtures(
       {
@@ -277,7 +277,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression — freezeV2Tx (FreezeBalanceV2Contract) fixture is delivered but no activity row renders. Once unblocked, also verify FreezeBalanceV2Contract→"Staking deposit" label mapping.
   it.skip('Staking deposit is rendered with Staking deposit label and -amount', async function () {
     await withFixtures(
       {
@@ -310,7 +310,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression — unfreezeV2Tx (UnfreezeBalanceV2Contract) fixture is delivered but no activity row renders. Once unblocked, also verify UnfreezeBalanceV2Contract→"Staking withdrawal" label mapping.
   it.skip('Staking withdrawal is rendered with Staking withdrawal label and +amount', async function () {
     await withFixtures(
       {
@@ -343,7 +343,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression — Pending trxSendTx is delivered but the activity tab shows the empty-state instead of any .transaction-status-label--pending row.
   it.skip('Pending status: shows pending counter', async function () {
     await withFixtures(
       {
@@ -374,7 +374,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression — Confirmed trxSendTx is delivered but no .transaction-status-label--confirmed renders (verified via Send/Approve/Receive failing identically with empty-state screenshot).
   it.skip('Confirmed status: shows confirmed counter', async function () {
     await withFixtures(
       {
@@ -405,7 +405,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression — Failed trxSendTx (OUT_OF_ENERGY contractRet) is delivered but no .transaction-status-label--failed row renders.
   it.skip('Failed status: shows failed counter', async function () {
     await withFixtures(
       {
@@ -436,7 +436,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): double-blocked. (1) Tron activity propagation regression (no rows render). (2) NetworkFilter is EVM-gated — sort-by-popover-toggle is disabled when chainId is not in FEATURED_NETWORK_CHAIN_IDS, so [data-testid="network-filter-current__button"] is never rendered for Tron (same finding as assets.spec.ts filter tests). Needs product/UX decision before enabling.
   it.skip('Current network filter shows only Tron transactions', async function () {
     await withFixtures(
       {
@@ -467,7 +467,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): double-blocked. (1) Tron activity propagation regression (no rows render). (2) NetworkFilter EVM-gating — [data-testid="network-filter-all__button"] is never rendered for Tron (sort-by-popover-toggle disabled for non-FEATURED chain ids). Same finding as assets.spec.ts; needs product/UX decision before enabling.
   it.skip('All networks filter shows other-chain transactions alongside Tron', async function () {
     await withFixtures(
       {
@@ -509,7 +509,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression — checkConfirmedTxNumberDisplayedInActivity(1) times out before the details page is ever opened. Once activity rows render, also re-verify the TronTransactionDetailsPage selectors (title h1, [data-testid="transaction-base-fee"], hash link to tronscan.org/#/transaction/<txID>, .name__value rows for from/to addresses).
   it.skip('Transaction details show Title / Time / Status / TXID / From / To / Amount / Network fee / View details', async function () {
     const tx = trxSendTx({
       amountSun: 1_000_000,
