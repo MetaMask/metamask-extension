@@ -1472,6 +1472,13 @@
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 1
     },
+    "ui/pages/settings-v2/debug-tab/developer-options-tab/developer-options-tab.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 11,
+      "React: componentWill* lifecycle deprecations": 1
+    },
+    "ui/pages/settings-v2/debug-tab/developer-options-tab/developer-options-toggle-row-component.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1
+    },
     "ui/pages/settings-v2/developer-tools-tab/developer-tools-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
@@ -1524,13 +1531,6 @@
     "ui/pages/settings-v2/transactions-tab/transactions-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1
-    },
-    "ui/pages/settings/developer-options-tab/developer-options-tab.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 11,
-      "React: componentWill* lifecycle deprecations": 1
-    },
-    "ui/pages/settings/developer-options-tab/developer-options-toggle-row-component.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings/networks-tab/networks-form/networks-form.test.js": {
       "React: Act warnings (component updates not wrapped)": 1,
