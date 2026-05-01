@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "एक कस्टम नेटवर्क जोड़ें"
   },
-  "addAHardwareWallet": {
-    "message": "हार्डवेयर वॉलेट जोड़ें"
-  },
   "addANetwork": {
     "message": "एक नेटवर्क जोड़ें"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "एक URL जोड़ें"
+  },
+  "addAWallet": {
+    "message": "एक वॉलेट जोड़ें"
   },
   "addAccount": {
     "message": "अकाउंट जोड़ें"
@@ -1089,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "सबसे कम लागत"
   },
+  "bridgeMalicious": {
+    "message": "बुरी नीयत वाला"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "बुरी नीयत वाला टोकन"
+  },
   "bridgeMarketClosedAction": {
     "message": "मार्केट बंद"
   },
@@ -1109,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "कोई MM फीस नहीं"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "कीमत की कोई जानकारी नहीं"
   },
   "bridgePoints": {
     "message": "अनुमानित पॉइंट्स",
@@ -1205,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "डेस्टिनेशन चेन पर प्राप्त कर रहे हैं"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "संदिग्ध एयरड्रॉप"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "कंसन्ट्रेटेड सप्लाई"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "संदिग्ध व्यवहार"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "इन्फ्लेटेड ट्रेडर काउंट"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "नकली वॉल्यूम"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "भारी बॉट एक्टिविटी"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "अनडिस्क्लोज्ड सप्लाई"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "हाई बाई फीस"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "हाई सैल फीस"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "हाई ट्रांसफर फीस"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "हनीपॉट रिस्क"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "धोखेबाज़"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "किसी सेंसिटिव एसेट की नकल करता है"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "संभावित धोखेबाज़"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "संभावित धोखेबाज़"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "अभद्र कंटेंट"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "आर्टिफीसियल वॉल्यूम"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "कम लॉक्ड लिक्विडिटी"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "क्रिएटर की रेप्युटेशन कम है"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "जाना-माना गलत इरादे वाला"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "संदिग्ध मेटाडेटा"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "कीमत में संभावित हेरफेर"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "रगपुल रिस्क"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "सैंक्शन्ड क्रिएटर"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "गलत इरादे वाले कॉन्ट्रैक्ट जैसा दिखता है"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "लॉन्च के समय बॉट एक्टिविटी"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "स्पैम टेक्स्ट"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "संदिग्ध कोड"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "टोकन बैकडोर"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "बेचा न जा सकने वाला टोकन"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "अस्थिर कीमत"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "वॉश ट्रेडिंग"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "एक डेस्टिनेशन अकाउंट चुनें"
   },
@@ -1260,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "$1 को $2 से स्वैप किया जा रहा है",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "संदिग्ध"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "संदिग्ध टोकन"
   },
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
@@ -1448,9 +1559,6 @@
   },
   "clearActivity": {
     "message": "एक्टिविटी और nonce डेटा हटाएं"
-  },
-  "clearActivityButton": {
-    "message": "एक्टिविटी टैब डेटा हटाएं"
   },
   "clearActivityDescription": {
     "message": "अकाउंट के nonce को रीसेट करता है और आपके वॉलेट में एक्टिविटी टैब से डेटा मिटा देता है। केवल मौजूदा अकाउंट और नेटवर्क प्रभावित होंगे। आपका बैलेंस और आने वाले ट्रांसेक्शन नहीं बदलेंगे।"
@@ -1732,6 +1840,9 @@
   },
   "connect": {
     "message": "कनेक्ट करें"
+  },
+  "connectAHardwareWallet": {
+    "message": "किसी hardware wallet को कनेक्ट करें"
   },
   "connectAccounts": {
     "message": "खातों को कनेक्ट करें"
@@ -3086,6 +3197,10 @@
     "message": "शुरु करने की तारीख",
     "description": "Label for the start date of a permission"
   },
+  "gatorPermissionsStatusExpired": {
+    "message": "एक्सपायर हो गया",
+    "description": "Tag label for a gator permission that has expired"
+  },
   "gatorPermissionsStreamRate": {
     "message": "स्ट्रीम रेट",
     "description": "Label for the stream rate of a permission"
@@ -3365,6 +3480,9 @@
   "importAWallet": {
     "message": "एक वॉलेट इंपोर्ट करें"
   },
+  "importAWalletDescription": {
+    "message": "12, 18 या 24 शब्दों के सीड फ्रेज़ का इस्तेमाल करना"
+  },
   "importAccountError": {
     "message": "अकाउंट इम्पोर्ट करने में गड़बड़ी।"
   },
@@ -3395,6 +3513,9 @@
   },
   "importAnAccount": {
     "message": "एक खाता इम्पोर्ट करें"
+  },
+  "importAnAccountDescription": {
+    "message": "एक प्राइवेट की (key) के द्वारा"
   },
   "importNFT": {
     "message": "NFT आयात करें"
@@ -3783,9 +3904,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask लॉक हो रहा है..."
-  },
-  "lockTimeInvalid": {
-    "message": "लॉक का समय 0 और 10080 के बीच की कोई संख्या होनी चाहिए"
   },
   "logOut": {
     "message": "लॉग आउट करें"
@@ -4994,9 +5112,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "उपयोग की शर्तों"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "हम मूलभूत उत्पाद उपयोग संबंधी डेटा एकत्र करेंगे, जैसे सामान्य लोकेशन, क्लिक और व्यूज़। कोई अन्य जानकारी स्टोर नहीं की जाएगी।"
   },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "हम बेसिक प्रोडक्ट यूसेज डेटा इकट्ठा करेंगे। हम इस जानकारी को ऑन-चेन डेटा से जोड़ सकते हैं।"
@@ -8060,12 +8175,6 @@
   },
   "smartAccount": {
     "message": "स्मार्ट अकाउंट"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "dapps को स्टैंडर्ड अकाउंट के लिए स्मार्ट अकाउंट फ़ीचर रिक्वेस्ट करने दें। इससे उन अकाउंट पर कोई असर नहीं पड़ेगा जो पहले से ही स्मार्ट अकाउंट हैं।"
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "dapps से स्मार्ट अकाउंट रिक्वेस्ट"
   },
   "smartAccountLabel": {
     "message": "स्मार्ट अकाउंट"

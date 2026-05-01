@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "添加自定义网络"
   },
-  "addAHardwareWallet": {
-    "message": "添加硬件钱包"
-  },
   "addANetwork": {
     "message": "添加网络"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "添加 URL"
+  },
+  "addAWallet": {
+    "message": "添加钱包"
   },
   "addAccount": {
     "message": "添加账户"
@@ -1089,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "最低成本"
   },
+  "bridgeMalicious": {
+    "message": "恶意"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "恶意代币"
+  },
   "bridgeMarketClosedAction": {
     "message": "已休市"
   },
@@ -1109,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "无 MM 费用"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "无价格信息"
   },
   "bridgePoints": {
     "message": "预计积分",
@@ -1205,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "正在目标链上接收"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "可疑空投"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "供应集中"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "可疑行为"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "交易者数量虚增"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "虚假成交量"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "大量机器人活动"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "未公开供应量"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "高额购买费"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "高额卖出费"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "高额转账费"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "蜜罐风险"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "冒充者"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "冒充敏感资产"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "疑似冒充者"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "可能为冒充者"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "不当内容"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "虚假交易量"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "低锁定流动性"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "创建者信誉低"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "已知恶意"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "可疑元数据"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "可能的价格操纵"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "跑路风险"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "受制裁的创建者"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "类似恶意合约"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "上线时机器人活动"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "垃圾信息"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "可疑代码"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "代币后门"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "不可售代币"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "价格不稳定"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "刷单交易"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "选择一个目标账户"
   },
@@ -1260,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "正在用 $1 兑换 $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "可疑"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "可疑代币"
   },
   "bridgeTo": {
     "message": "桥接至"
@@ -1448,9 +1559,6 @@
   },
   "clearActivity": {
     "message": "清除活动和 nonce 数据"
-  },
-  "clearActivityButton": {
-    "message": "清除活动选项卡数据"
   },
   "clearActivityDescription": {
     "message": "重设账户的 nonce，并删除钱包中的活动选项卡数据。只有当前账户和网络会受到影响。您的余额和待入账的交易不会改变。"
@@ -1732,6 +1840,9 @@
   },
   "connect": {
     "message": "连接"
+  },
+  "connectAHardwareWallet": {
+    "message": "连接硬件钱包"
   },
   "connectAccounts": {
     "message": "连接账户"
@@ -3086,6 +3197,10 @@
     "message": "开始日期",
     "description": "Label for the start date of a permission"
   },
+  "gatorPermissionsStatusExpired": {
+    "message": "已过期",
+    "description": "Tag label for a gator permission that has expired"
+  },
   "gatorPermissionsStreamRate": {
     "message": "资金流速率",
     "description": "Label for the stream rate of a permission"
@@ -3365,6 +3480,9 @@
   "importAWallet": {
     "message": "导入钱包"
   },
+  "importAWalletDescription": {
+    "message": "使用 12、18 或 24 个单词的助记词"
+  },
   "importAccountError": {
     "message": "导入账户时出错。"
   },
@@ -3395,6 +3513,9 @@
   },
   "importAnAccount": {
     "message": "导入账户"
+  },
+  "importAnAccountDescription": {
+    "message": "通过私钥"
   },
   "importNFT": {
     "message": "导入NFT"
@@ -3783,9 +3904,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "正在锁定 MetaMask……"
-  },
-  "lockTimeInvalid": {
-    "message": "锁定时间必须是 0 到 10080 之间的数字"
   },
   "logOut": {
     "message": "退出登录"
@@ -4994,9 +5112,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "使用条款"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "我们将收集基本的产品使用数据，例如大致位置、点击次数和浏览次数。不会存储其他任何信息。"
   },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "我们将收集基本的产品使用数据，并可能会将这些信息与链上数据关联。"
@@ -8060,12 +8175,6 @@
   },
   "smartAccount": {
     "message": "智能账户"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "让 dapp 为标准账户请求智能账户功能。这不会影响已经是智能账户的账户。"
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "来自 dapp 的智能账户请求"
   },
   "smartAccountLabel": {
     "message": "智能账户"

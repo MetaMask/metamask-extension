@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Tambahkan jaringan khusus"
   },
-  "addAHardwareWallet": {
-    "message": "Tambahkan dompet perangkat keras"
-  },
   "addANetwork": {
     "message": "Tambahkan jaringan"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "Tambahkan URL"
+  },
+  "addAWallet": {
+    "message": "Tambahkan dompet"
   },
   "addAccount": {
     "message": "Tambah akun"
@@ -1089,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "Biaya terendah"
   },
+  "bridgeMalicious": {
+    "message": "Berbahaya"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Token berbahaya"
+  },
   "bridgeMarketClosedAction": {
     "message": "Pasar tutup"
   },
@@ -1109,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "Tidak ada biaya MM"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "Tidak ada informasi harga"
   },
   "bridgePoints": {
     "message": "Estimasi poin",
@@ -1205,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "Menerima pada chain tujuan"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Airdrop mencurigakan"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Pasokan terkonsentrasi"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Perilaku mencurigakan"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Jumlah trader yang digembungkan"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Volume palsu"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Aktivitas bot yang tinggi"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Pasokan yang tidak diungkapkan"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "Biaya pembelian tinggi"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "Biaya penjualan tinggi"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "Biaya transfer tinggi"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Risiko honeypot"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Peniru"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Menyamar sebagai aset sensitif"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Seperti peniru"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Kemungkinan peniru"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Konten yang tidak pantas"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Volume buatan"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Likuiditas terkunci rendah"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "Pembuatnya memiliki reputasi rendah"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Dikenal berbahaya"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Metadata mencurigakan"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Kemungkinan manipulasi harga"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Risiko rugpull"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Pembuat yang disetujui"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Menyerupai kontrak berbahaya"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Aktivitas bot saat peluncuran"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Teks spam"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Kode mencurigakan"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Pintu belakang token"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Token yang tidak dapat dijual"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Harga tidak stabil"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Perdagangan terselubung"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Pilih akun tujuan"
   },
@@ -1260,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "Menukar $1 dengan $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "Mencurigakan"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Token mencurigakan"
   },
   "bridgeTo": {
     "message": "Bridge ke"
@@ -1448,9 +1559,6 @@
   },
   "clearActivity": {
     "message": "Hapus aktivitas dan data nonce"
-  },
-  "clearActivityButton": {
-    "message": "Hapus data tab aktivitas"
   },
   "clearActivityDescription": {
     "message": "Mereset nonce akun dan menghapus data dari tab aktivitas di dompet Anda. Hanya akun dan jaringan saat ini yang akan terpengaruh. Saldo dan transaksi masuk tidak akan berubah."
@@ -1732,6 +1840,9 @@
   },
   "connect": {
     "message": "Hubungkan"
+  },
+  "connectAHardwareWallet": {
+    "message": "Hubungkan dompet perangkat keras"
   },
   "connectAccounts": {
     "message": "Hubungkan akun"
@@ -3086,6 +3197,14 @@
     "message": "Tanggal mulai",
     "description": "Label for the start date of a permission"
   },
+  "gatorPermissionsStatusExpired": {
+    "message": "Kedaluwarsa",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Dicabut",
+    "description": "Tag label for a gator permission that has been revoked"
+  },
   "gatorPermissionsStreamRate": {
     "message": "Tarif streaming",
     "description": "Label for the stream rate of a permission"
@@ -3365,6 +3484,9 @@
   "importAWallet": {
     "message": "Impor dompet"
   },
+  "importAWalletDescription": {
+    "message": "Menggunakan seed phrase yang terdiri dari 12, 18, atau 24 kata"
+  },
   "importAccountError": {
     "message": "Terjadi kesalahan saat mengimpor akun."
   },
@@ -3395,6 +3517,9 @@
   },
   "importAnAccount": {
     "message": "Impor akun"
+  },
+  "importAnAccountDescription": {
+    "message": "Melalui kunci pribadi"
   },
   "importNFT": {
     "message": "Impor NFT"
@@ -3783,9 +3908,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Mengunci MetaMask..."
-  },
-  "lockTimeInvalid": {
-    "message": "Waktu kunci harus berupa angka antara 0 dan 10080"
   },
   "logOut": {
     "message": "Keluar"
@@ -4994,9 +5116,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Ketentuan penggunaan"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Kami akan mengumpulkan data penggunaan produk dasar seperti lokasi umum, klik, dan tampilan. Tidak ada informasi lain yang akan disimpan."
   },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Kami akan mengumpulkan data penggunaan produk dasar. Kami mungkin akan menghubungkan informasi ini dengan data on-chain."
@@ -8064,12 +8183,6 @@
   },
   "smartAccount": {
     "message": "Akun cerdas"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Izinkan dapp meminta fitur akun cerdas untuk akun standar. Ini tidak akan memengaruhi akun yang sudah menjadi akun cerdas."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Permintaan akun cerdas dari dapp"
   },
   "smartAccountLabel": {
     "message": "Akun Cerdas"

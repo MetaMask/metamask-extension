@@ -137,6 +137,15 @@ describe('CustomAmount', () => {
     const amountElement = screen.getByTestId('custom-amount-input');
     expect(amountElement).toHaveStyle({ fontSize: '64px' });
   });
+
+  it('counts decimal separators as half a character when calculating input width', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmount amountFiat="1.33" />, store);
+
+    const amountElement = screen.getByTestId('custom-amount-input');
+    expect(amountElement).toHaveStyle({ width: '3.5ch' });
+  });
 });
 
 describe('CustomAmountSkeleton', () => {

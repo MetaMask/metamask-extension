@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Добавить пользовательскую сеть"
   },
-  "addAHardwareWallet": {
-    "message": "Добавить аппаратный кошелек"
-  },
   "addANetwork": {
     "message": "Добавить сеть"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "Добавить URL"
+  },
+  "addAWallet": {
+    "message": "Добавить кошелек"
   },
   "addAccount": {
     "message": "Добавить аккаунт"
@@ -1089,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "Самая низкая стоимость"
   },
+  "bridgeMalicious": {
+    "message": "Вредоносный"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Вредоносный токен"
+  },
   "bridgeMarketClosedAction": {
     "message": "Рынок закрыт"
   },
@@ -1109,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "Без комиссии MM"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "Нет информации о цене"
   },
   "bridgePoints": {
     "message": "Прим. баллов",
@@ -1205,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "Получение товара в блокчейне назначения"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Подозрительный аирдроп"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Концентрированное предложение"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Подозрительное поведение"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Завышенное количество трейдеров"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Поддельный объем"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Высокая активность ботов"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Скрытое предложение"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "Высокая комиссия за покупку"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "Высокая комиссия за продажу"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "Высокая комиссия за перевод"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Риск ловушки"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Самозванец"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Выдает себя за чувствительный актив"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Вероятный самозванец"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Возможный самозванец"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Неприемлемый контент"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Искусственный объем"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Низкая заблокированная ликвидность"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "У создателя низкая репутация"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Известный вредоносный"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Подозрительные метаданные"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Возможная манипуляция ценой"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Риск экзит-скама (rugpull)"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Создатель под санкциями"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Похож на вредоносный контракт"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Активность ботов при запуске"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Спам-текст"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Подозрительный код"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Бэкдор в токене"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Непродаваемый токен"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Нестабильная цена"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Фиктивный трейдинг"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Выберите целевой счет"
   },
@@ -1260,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "Обменивается $1 на $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "Подозрительный"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Подозрительный токен"
   },
   "bridgeTo": {
     "message": "Мост к"
@@ -1448,9 +1559,6 @@
   },
   "clearActivity": {
     "message": "Очистить данные о действиях и одноразовых номерах"
-  },
-  "clearActivityButton": {
-    "message": "Очистить данные вкладки активности"
   },
   "clearActivityDescription": {
     "message": "Выполняется сброс одноразового кода счета и удалению данных со вкладки «Активность» в вашем кошельке. Это затронет только текущий счет и сеть. Ваши балансы и входящие транзакции не изменятся."
@@ -1732,6 +1840,9 @@
   },
   "connect": {
     "message": "Подключиться"
+  },
+  "connectAHardwareWallet": {
+    "message": "Подключить аппаратный кошелек"
   },
   "connectAccounts": {
     "message": "Подключить счета"
@@ -3086,6 +3197,14 @@
     "message": "Дата начала",
     "description": "Label for the start date of a permission"
   },
+  "gatorPermissionsStatusExpired": {
+    "message": "Просрочено",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Отозван",
+    "description": "Tag label for a gator permission that has been revoked"
+  },
   "gatorPermissionsStreamRate": {
     "message": "Скорость потока",
     "description": "Label for the stream rate of a permission"
@@ -3365,6 +3484,9 @@
   "importAWallet": {
     "message": "Импортировать кошелек"
   },
+  "importAWalletDescription": {
+    "message": "Используя секретную фразу из 12, 18 или 24 слов"
+  },
   "importAccountError": {
     "message": "Ошибка импорта счета."
   },
@@ -3395,6 +3517,9 @@
   },
   "importAnAccount": {
     "message": "Импортировать счет"
+  },
+  "importAnAccountDescription": {
+    "message": "С помощью закрытого ключа"
   },
   "importNFT": {
     "message": "Импорт NFT"
@@ -3783,9 +3908,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Блокировка MetaMask..."
-  },
-  "lockTimeInvalid": {
-    "message": "Время блокировки будет числом от 0 до 10080"
   },
   "logOut": {
     "message": "Выйти"
@@ -4994,9 +5116,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Условиями использования"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Мы будем собирать основные данные об использовании продукта, такие как общее местоположение, клики и просмотры. Никакая другая информация не будет сохраняться."
   },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Мы будем собирать основные данные об использовании продукта. Мы можем связать эту информацию с данными, хранящимися ончейн."
@@ -8060,12 +8179,6 @@
   },
   "smartAccount": {
     "message": "Смарт-счет"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Разрешите dapps запрашивать функции смарт-счетов для стандартных счетов. Это не повлияет на счета, которые уже являются смарт-счетами."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Запросы на создание смарт-счетов от dapps"
   },
   "smartAccountLabel": {
     "message": "Смарт-счет"

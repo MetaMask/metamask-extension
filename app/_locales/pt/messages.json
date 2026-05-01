@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Adicionar uma rede personalizada"
   },
-  "addAHardwareWallet": {
-    "message": "Adicionar uma carteira de hardware"
-  },
   "addANetwork": {
     "message": "Adicionar uma rede"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "Adicionar um URL"
+  },
+  "addAWallet": {
+    "message": "Adicionar uma carteira"
   },
   "addAccount": {
     "message": "Adicionar conta"
@@ -1089,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "Custo mais baixo"
   },
+  "bridgeMalicious": {
+    "message": "Malicioso"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Token malicioso"
+  },
   "bridgeMarketClosedAction": {
     "message": "Mercado fechado"
   },
@@ -1109,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "Sem taxa da MM"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "Sem informações de preço"
   },
   "bridgePoints": {
     "message": "Est. de pontos",
@@ -1205,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "Recebendo na cadeia de destino"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Airdrop (distribuição de tokens) suspeito"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Oferta concentrada"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Comportamento suspeito"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Número inflado de traders"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Volume falso"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Atividade intensa de bots"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Oferta não divulgada"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "Taxa de compra elevada"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "Taxa de venda elevada"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "Taxa de transferência elevada"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Risco de armadilha (honeypot)"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Impostor"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Alega ser um ativo sensível"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Provável impostor"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Possível impostor"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Conteúdo impróprio"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Volume artificial"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Baixa liquidez bloqueada"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "O criador tem baixa reputação"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Conhecido como malicioso"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Metadados suspeitos"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Possível manipulação de preços"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Risco de golpe (rug pull)"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Criador sancionado"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Assemelha-se a um contrato malicioso"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Atividade de bots no lançamento"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Texto de spam"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Código suspeito"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Backdoor de token"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Token não vendável"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Preço instável"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Negociação simulada"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Selecione uma conta de destino"
   },
@@ -1260,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "Realizando swap de $1 para $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "Suspeito"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Token suspeito"
   },
   "bridgeTo": {
     "message": "Fazer ponte para"
@@ -1448,9 +1559,6 @@
   },
   "clearActivity": {
     "message": "Limpar dados de atividades e nonce"
-  },
-  "clearActivityButton": {
-    "message": "Limpar dados da aba de atividades"
   },
   "clearActivityDescription": {
     "message": "Redefine o nonce da conta e apaga os dados da guia de atividades da sua carteira. Somente a conta e a rede atuais serão afetadas. Seus saldos e transações recebidas não serão alterados."
@@ -1732,6 +1840,9 @@
   },
   "connect": {
     "message": "Conectar"
+  },
+  "connectAHardwareWallet": {
+    "message": "Conectar uma carteira de hardware"
   },
   "connectAccounts": {
     "message": "Conectar contas"
@@ -3086,6 +3197,14 @@
     "message": "Data de início",
     "description": "Label for the start date of a permission"
   },
+  "gatorPermissionsStatusExpired": {
+    "message": "Expirada",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Revogada",
+    "description": "Tag label for a gator permission that has been revoked"
+  },
   "gatorPermissionsStreamRate": {
     "message": "Taxa de fluxo",
     "description": "Label for the stream rate of a permission"
@@ -3365,6 +3484,9 @@
   "importAWallet": {
     "message": "Importar uma carteira"
   },
+  "importAWalletDescription": {
+    "message": "Usando uma frase semente de 12, 18 ou 24 palavras"
+  },
   "importAccountError": {
     "message": "Erro de importação de conta."
   },
@@ -3395,6 +3517,9 @@
   },
   "importAnAccount": {
     "message": "Importar uma conta"
+  },
+  "importAnAccountDescription": {
+    "message": "Por meio de uma chave privada"
   },
   "importNFT": {
     "message": "Importar NFT"
@@ -3783,9 +3908,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Trancando a MetaMask..."
-  },
-  "lockTimeInvalid": {
-    "message": "O tempo de bloqueio deve ser um número entre 0 e 10080"
   },
   "logOut": {
     "message": "Sair"
@@ -4994,9 +5116,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Termos de uso"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Coletaremos dados básicos de uso do produto, como localização aproximada, cliques e visualizações. Nenhuma outra informação será armazenada."
   },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Coletaremos dados básicos de uso do produto. Podemos associar essas informações a dados na rede."
@@ -8060,12 +8179,6 @@
   },
   "smartAccount": {
     "message": "Conta inteligente"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Permite que dapps (aplicativos descentralizados) solicitem recursos de conta inteligente para contas padrão. Isso não afetará contas que já são contas inteligentes."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Solicitações de conta inteligente vindas de dapps"
   },
   "smartAccountLabel": {
     "message": "Conta inteligente"

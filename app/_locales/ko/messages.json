@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "사용자 지정 네트워크 추가"
   },
-  "addAHardwareWallet": {
-    "message": "하드웨어 지갑 추가"
-  },
   "addANetwork": {
     "message": "네트워크 추가"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "URL 추가"
+  },
+  "addAWallet": {
+    "message": "지갑 추가"
   },
   "addAccount": {
     "message": "계정 추가"
@@ -1089,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "최저 비용"
   },
+  "bridgeMalicious": {
+    "message": "악성"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "악성 토큰"
+  },
   "bridgeMarketClosedAction": {
     "message": "시장 마감"
   },
@@ -1109,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "MM 수수료 없음"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "가격 정보 없음"
   },
   "bridgePoints": {
     "message": "예상 포인트",
@@ -1205,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "대상 체인에서 받기"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "의심스러운 에어드롭"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "집중된 공급량"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "의심스러운 행동"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "트레이더 수 부풀림"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "허위 거래량"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "봇 활동률 높음"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "공급량 비공개"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "구매 수수료 높음"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "매도 수수료 높음"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "전송 수수료 높음"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "허니팟 위험"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "사칭 항목"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "민감한 자산 사칭"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "사칭 가능성 높음"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "사칭 가능성 있음"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "부적절한 콘텐츠"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "인위적인 거래량"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "잠금 유동성 낮음"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "크리에이터 평판 저조"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "악성으로 알려짐"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "의심스러운 메타데이터"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "가격 조작 가능성 있음"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "러그풀 위험"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "제재 대상 크리에이터"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "악성 계약과 유사"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "출시 시점에 봇 활동"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "스팸 텍스트"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "의심스러운 코드"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "토큰 백도어"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "판매 불가능한 토큰"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "불안정한 가격"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "워시 거래"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "대상 계정 선택"
   },
@@ -1260,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "$1을(를) $2(으)로 스왑 중",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "의심됨"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "의심스러운 토큰"
   },
   "bridgeTo": {
     "message": "브릿지 대상:"
@@ -1448,9 +1559,6 @@
   },
   "clearActivity": {
     "message": "활동 및 논스 데이터 지우기"
-  },
-  "clearActivityButton": {
-    "message": "활동 탭 데이터 지우기"
   },
   "clearActivityDescription": {
     "message": "이는 계정의 논스를 초기화하고 지갑의 활동 탭에 있는 데이터를 지웁니다. 이렇게 하면 현재 계정과 네트워크만 변경될 뿐 잔액과 입금 트랜잭션에는 영향을 미치지 않습니다."
@@ -1732,6 +1840,9 @@
   },
   "connect": {
     "message": "연결"
+  },
+  "connectAHardwareWallet": {
+    "message": "하드웨어 지갑 연결"
   },
   "connectAccounts": {
     "message": "계정 연결"
@@ -3086,6 +3197,14 @@
     "message": "시작 날짜",
     "description": "Label for the start date of a permission"
   },
+  "gatorPermissionsStatusExpired": {
+    "message": "만료됨",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "취소됨",
+    "description": "Tag label for a gator permission that has been revoked"
+  },
   "gatorPermissionsStreamRate": {
     "message": "스트림 속도",
     "description": "Label for the stream rate of a permission"
@@ -3365,6 +3484,9 @@
   "importAWallet": {
     "message": "지갑 가져오기"
   },
+  "importAWalletDescription": {
+    "message": "12, 18, 24단어 시드구문 사용"
+  },
   "importAccountError": {
     "message": "계정 가져오기 오류"
   },
@@ -3395,6 +3517,9 @@
   },
   "importAnAccount": {
     "message": "계정 가져오기"
+  },
+  "importAnAccountDescription": {
+    "message": "개인 키를 통해"
   },
   "importNFT": {
     "message": "NFT 가져오기"
@@ -3783,9 +3908,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask 잠그는 중..."
-  },
-  "lockTimeInvalid": {
-    "message": "잠금 시간은 반드시 0에서 10080 사이여야 합니다"
   },
   "logOut": {
     "message": "로그아웃"
@@ -4994,9 +5116,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "이용약관"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "일반적인 위치, 클릭수, 조회수와 같은 기본적인 제품 사용 데이터를 수집합니다. 다른 정보는 저장하지 않습니다."
   },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "기본적인 제품 사용 데이터를 수집합니다. 이 정보를 온체인 데이터와 연관시킬 수 있습니다."
@@ -8064,12 +8183,6 @@
   },
   "smartAccount": {
     "message": "스마트 계정"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "디앱이 일반 계정에 스마트 계정 기능을 요청하도록 허용합니다. 이미 스마트 계정인 계정에는 영향을 미치지 않습니다."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "디앱의 스마트 계정 요청"
   },
   "smartAccountLabel": {
     "message": "스마트 계정"

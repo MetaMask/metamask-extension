@@ -22,6 +22,10 @@
   max-height: 70vh;
 }
 
+.network-manager__tab-content--page {
+  max-height: none;
+}
+
 .network-manager__networks-button-icon {
   justify-content: center;
   display: flex;

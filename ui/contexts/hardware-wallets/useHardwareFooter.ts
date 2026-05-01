@@ -15,7 +15,12 @@ import {
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
-import { ConnectionStatus, type EnsureDeviceReadyOptions } from './types';
+import {
+  ConnectionStatus,
+  HardwareConnectionPermissionState,
+  HardwareWalletType,
+  type EnsureDeviceReadyOptions,
+} from './types';
 import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
 
 type UseHardwareFooterArgs = {
@@ -23,6 +28,21 @@ type UseHardwareFooterArgs = {
   currentConfirmationId?: string;
   onUserRejectedHardwareWalletError: () => Promise<void>;
 };
+
+/**
+ * Returns true when the transport is established (`Connected`) or when a full
+ * readiness probe has succeeded (`Ready`). `Connected` alone is enough to show
+ * the primary "Confirm" CTA: `ensureDeviceReady` still runs on submit before signing.
+ *
+ * @param status - Current `ConnectionStatus` from hardware wallet context.
+ */
+export function isHardwareConnectionReadyForConfirmFooter(
+  status: ConnectionStatus,
+): boolean {
+  return (
+    status === ConnectionStatus.Ready || status === ConnectionStatus.Connected
+  );
+}
 
 export type SubmitPreflightCheckOptions = {
   /**
@@ -53,7 +73,11 @@ export const useHardwareFooter = ({
   const inE2e =
     process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
   const { connectionState } = useHardwareWalletState();
-  const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
+  const {
+    isHardwareWalletAccount,
+    walletType,
+    hardwareConnectionPermissionState,
+  } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { showErrorModal } = useHardwareWalletError();
   const [hasPreflightSucceeded, setHasPreflightSucceeded] = useState(false);
@@ -109,12 +133,26 @@ export const useHardwareFooter = ({
       return true;
     }
 
-    return ConnectionStatus.Ready === connectionState.status;
+    // QR wallets don't need a physical device connection.
+    // Camera permission is the only prerequisite.
+    // When already granted, skip the "Connect QR"
+    // step and let the Confirm button run the preflight inline.
+    if (
+      walletType === HardwareWalletType.Qr &&
+      hardwareConnectionPermissionState ===
+        HardwareConnectionPermissionState.Granted
+    ) {
+      return true;
+    }
+
+    return isHardwareConnectionReadyForConfirmFooter(connectionState.status);
   }, [
     connectionState.status,
+    hardwareConnectionPermissionState,
     hasPreflightSucceeded,
     inE2e,
     isHardwareWalletAccount,
+    walletType,
   ]);
 
   const onSubmitPreflightCheck = useCallback(

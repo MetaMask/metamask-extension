@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "カスタムネットワークを追加"
   },
-  "addAHardwareWallet": {
-    "message": "ハードウェアウォレットを追加"
-  },
   "addANetwork": {
     "message": "ネットワークを追加"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "URLを追加"
+  },
+  "addAWallet": {
+    "message": "ウォレットを追加"
   },
   "addAccount": {
     "message": "アカウントを追加"
@@ -1089,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "最低コスト"
   },
+  "bridgeMalicious": {
+    "message": "悪意のある"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "悪質なトークン"
+  },
   "bridgeMarketClosedAction": {
     "message": "市場が取引時間外です"
   },
@@ -1109,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "MM手数料なし"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "価格情報なし"
   },
   "bridgePoints": {
     "message": "推定ポイント数",
@@ -1205,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "ブリッジ先のチェーンで受取中"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "不審なエアドロップ"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "供給の集中"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "不審な動作"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "水増しされたトレーダー数"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "偽の出来高"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "多くのボットアクティビティ"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "開示されていない供給"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "高い購入手数料"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "高い売却手数料"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "高い送金手数料"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "ハニーポットのリスク"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "なりすまし"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "機密の資産になりすまします"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "なりすましの可能性が高い"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "なりすましの可能性"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "不適切なコンテンツ"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "人為的な出来高"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "ロックされた流動性が低い"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "クリエイターの評判が低い"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "既知の悪意"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "不審なメタデータ"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "価格操作の可能性"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "ラグプルのリスク"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "制裁対象のクリエイター"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "悪意のあるコントラクトと類似"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "ローンチ時のボットアクティビティ"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "スパムテキスト"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "不審なコード"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "トークンバックドア"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "売却不可能なトークン"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "不安定な価格"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "ウオッシュトレード"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "送金先アカウントを選択します"
   },
@@ -1260,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "$1を$2にスワップしています",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "不審"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "不審なトークン"
   },
   "bridgeTo": {
     "message": "ブリッジ先:"
@@ -1448,9 +1559,6 @@
   },
   "clearActivity": {
     "message": "アクティビティとナンスデータを消去"
-  },
-  "clearActivityButton": {
-    "message": "アクティビティタブのデータを消去"
   },
   "clearActivityDescription": {
     "message": "アカウントのナンスがリセットされ、ウォレットのアクティビティタブからデータが消去されます。現在のアカウントとネットワークだけが影響を受けます。残高と受信トランザクションへの変更はありません。"
@@ -1732,6 +1840,9 @@
   },
   "connect": {
     "message": "接続"
+  },
+  "connectAHardwareWallet": {
+    "message": "ハードウェアウォレットの接続"
   },
   "connectAccounts": {
     "message": "アカウントの接続"
@@ -3086,6 +3197,10 @@
     "message": "開始日",
     "description": "Label for the start date of a permission"
   },
+  "gatorPermissionsStatusExpired": {
+    "message": "期限切れ",
+    "description": "Tag label for a gator permission that has expired"
+  },
   "gatorPermissionsStreamRate": {
     "message": "流入量",
     "description": "Label for the stream rate of a permission"
@@ -3365,6 +3480,9 @@
   "importAWallet": {
     "message": "ウォレットをインポート"
   },
+  "importAWalletDescription": {
+    "message": "12、18、または24単語のシードフレーズを使用"
+  },
   "importAccountError": {
     "message": "アカウントのインポート中にエラーが発生しました。"
   },
@@ -3395,6 +3513,9 @@
   },
   "importAnAccount": {
     "message": "アカウントのインポート"
+  },
+  "importAnAccountDescription": {
+    "message": "秘密鍵を使用"
   },
   "importNFT": {
     "message": "NFTをインポート"
@@ -3783,9 +3904,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMaskをロックしています…"
-  },
-  "lockTimeInvalid": {
-    "message": "ロック時間は0～10080の間の数字で設定する必要があります"
   },
   "logOut": {
     "message": "ログアウト"
@@ -4994,9 +5112,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "利用規約"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "当社は、おおまかな位置情報、クリック、閲覧内容など、製品の基本的な使用状況データを収集します。他の情報は一切保管されません。"
   },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "当社は製品の基本的な使用状況データを収集します。この情報はオンチェーンデータと関連付けられる場合があります。"
@@ -8060,12 +8175,6 @@
   },
   "smartAccount": {
     "message": "スマートアカウント"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "DAppによる、スタンダードアカウントに対するスマートアカウント機能のリクエストを許可します。これにより、すでにスマートアカウントのアカウントに影響はありません。"
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "DAppからのスマートアカウントリクエスト"
   },
   "smartAccountLabel": {
     "message": "スマートアカウント"

@@ -7,6 +7,7 @@ import { withFixtures } from '../../helpers';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import HomePage from '../../page-objects/pages/home/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -35,6 +36,9 @@ describe('Add Custom network', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
+        const assetListPage = new AssetListPage(driver);
+        const originalFilterLabel =
+          await assetListPage.getNetworksFilterLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -59,11 +63,13 @@ describe('Add Custom network', function (this: Suite) {
         await addRpcUrlModal.saveAddRpcUrl();
         await addEditNetworkModal.addExplorerUrl('https://test.com');
         await addEditNetworkModal.saveEditedNetwork();
+        await selectNetworkDialog.checkAddNetworkMessageIsDisplayed('Gnosis');
+        await selectNetworkDialog.clickCloseButton();
 
         // Validate the network was added
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
-        await homepage.checkAddNetworkMessageIsDisplayed('Gnosis');
+        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
       },
     );
   });
@@ -91,6 +97,9 @@ describe('Add Custom network', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
+        const assetListPage = new AssetListPage(driver);
+        const originalFilterLabel =
+          await assetListPage.getNetworksFilterLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -179,11 +188,14 @@ describe('Add Custom network', function (this: Suite) {
           true,
         );
         await addEditNetworkModal.saveEditedNetwork();
+        await selectNetworkDialog.checkAddNetworkMessageIsDisplayed(
+          'Collision network',
+        );
+        await selectNetworkDialog.clickCloseButton();
 
         // Validate the network was added
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
-        await homepage.checkAddNetworkMessageIsDisplayed('Collision network');
       },
     );
   });

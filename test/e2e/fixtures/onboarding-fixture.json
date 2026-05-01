@@ -86,7 +86,14 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
-    "AssetsController": {},
+    "AssetsController": {
+      "assetPreferences": {},
+      "assetsBalance": {},
+      "assetsInfo": {},
+      "assetsPrice": {},
+      "customAssets": {},
+      "selectedCurrency": "usd"
+    },
     "AuthenticationController": {
       "isSignedIn": false
     },
@@ -587,6 +594,9 @@
       "completedOnboarding": false,
       "firstTimeFlowType": null,
       "seedPhraseBackedUp": null
+    },
+    "PasskeyController": {
+      "passkeyRecord": null
     },
     "PPOMController": {
       "storageMetadata": [],

@@ -1,4 +1,8 @@
-import { QuoteStreamCompleteReason } from '@metamask/bridge-controller';
+import {
+  QuoteStreamCompleteReason,
+  TokenFeatureType,
+} from '@metamask/bridge-controller';
+import { type BridgeAlert } from '../prepare/types';
 
 export const getQuoteStreamReasonString = (
   reason: QuoteStreamCompleteReason,
