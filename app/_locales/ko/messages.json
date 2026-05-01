@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "하드웨어 지갑"
   },
-  "addIPFSGateway": {
-    "message": "선호하는 IPFS 게이트웨이를 추가하세요"
-  },
   "addMemo": {
     "message": "메모 추가"
   },
@@ -1545,9 +1542,6 @@
     "message": "기본 설정과 구성을 사용할 경우, MetaMask는 Infura를 기본 원격 프로시저 호출(RPC) 제공업체로 사용하여 가능한 가장 안정적이고 공개성이 낮은 방식으로 이더리움 데이터에 접근할 수 있도록 합니다. 일부 제한된 경우에는 사용자에게 최상의 사용 경험을 제공하기 위해 다른 RPC 제공업체를 사용할 수 있습니다. 직접 RPC를 선택할 수도 있지만, 어떤 RPC를 사용하든 트랜잭션을 수행하려면 본인의 IP 주소와 이더리움 지갑 주소가 해당 RPC로 전송된다는 점을 유의하세요. Infura가 EVM 계정 데이터를 처리하는 방식에 대해 더 알고 싶다면 $1 내용을 확인하시고, Solana 계정에 대한 정보는 $2의 내용을 참고하세요.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "여기를 클릭하세요"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "하드웨어 지갑에 연결하려면 Google Chrome에서 MetaMask를 사용해야 합니다."
   },
@@ -2216,12 +2210,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "이메일 등을 통해 제품 업데이트, 팁, 뉴스를 받아보세요. 당사는 알림 내용을 개선하기 위해 상호작용을 사용할 수 있습니다."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "확인"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "마케팅 목적의 데이터 수집을 비활성화했습니다. 이는 이 장치에만 적용됩니다. 다른 장치에서 MetaMask를 사용하면 해당 장치에서도 데이터 수집을 비활성화해야 합니다."
   },
   "dataUnavailable": {
     "message": "데이터 사용 불가"
@@ -7170,12 +7158,6 @@
   "securityChangePassword": {
     "message": "비밀번호 변경"
   },
-  "securityChangePasswordDescription": {
-    "message": "장치에서 MetaMask 앱의 잠금을 해제하려면 강력한 비밀번호를 설정하세요. 이 비밀번호를 잊어버릴 경우, 지갑을 다시 가져오려면 비밀복구구문이 필요합니다."
-  },
-  "securityChangePasswordTitle": {
-    "message": "비밀번호"
-  },
   "securityChangePasswordToastError": {
     "message": "비밀번호를 변경할 수 없습니다. 다시 시도하세요."
   },
@@ -7187,16 +7169,6 @@
   },
   "securityDescription": {
     "message": "안전하지 않은 네트워크에 가입할 가능성을 줄이고 계정을 보호하세요"
-  },
-  "securityLoginWithSocial": {
-    "message": "$1(으)로 로그인",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "비밀복구구문 백업 완료"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "비밀복구구문 백업"
   },
   "securityMessageLinkForNetworks": {
     "message": "네트워크 사기 및 보안 위험"
@@ -7219,14 +7191,8 @@
     "message": "$1 복구",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "비밀복구구문을 백업해 두면 지갑 접근 권한을 잃지 않을 수 있습니다. 본인만 접근할 수 있고 절대 잊지 않을 안전한 장소에 보관하세요."
-  },
   "securitySrpLabel": {
     "message": "비밀복구구문"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "복구 방법 관리"
   },
   "seeAllPermissions": {
     "message": "모든 권한 보기",
@@ -8204,9 +8170,6 @@
   },
   "smartContractAddressWarning": {
     "message": "수신자 주소가 직접 토큰 전송을 지원하지 않을 수 있습니다. 이 경우 자금이 손실될 수 있습니다. 이 계약이 전송되는 토큰을 받을 수 있다는 확신이 있을 때만 계속하세요."
-  },
-  "smartContracts": {
-    "message": "스마트 계약"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "스마트 스왑 자금 부족"
@@ -9230,9 +9193,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "토큰이 이미 추가되었습니다."
-  },
-  "tokenAutoDetection": {
-    "message": "토큰 자동 감지"
   },
   "tokenContractAddress": {
     "message": "토큰 계약 주소"
