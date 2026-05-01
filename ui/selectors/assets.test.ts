@@ -678,6 +678,46 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
       });
     });
   });
+
+  describe('when account is undefined and selectedAccountGroup is null', () => {
+    it('should return null without crashing (deeplink guard)', () => {
+      const mockStateNoGroup = cloneDeep(mockState);
+      mockStateNoGroup.metamask.selectedAccountGroup =
+        null as unknown as string;
+      mockStateNoGroup.metamask.internalAccounts.selectedAccount =
+        '5132883f-598e-482c-a02b-84eeaa352f5b';
+
+      const result = getTokenByAccountAndAddressAndChainId(
+        mockStateNoGroup,
+        undefined,
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      );
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('when account is undefined and no account in the group matches the non-EVM chainId', () => {
+    it('should return null without crashing', () => {
+      const mockStateNoMatchingAccount = cloneDeep(mockState);
+      mockStateNoMatchingAccount.metamask.internalAccounts.selectedAccount =
+        '5132883f-598e-482c-a02b-84eeaa352f5b';
+      // Override the Solana account's scopes so it no longer matches the queried chain
+      mockStateNoMatchingAccount.metamask.internalAccounts.accounts[
+        '5132883f-598e-482c-a02b-84eeaa352f5b'
+      ].scopes = [EthScope.Eoa] as unknown as SolScope[];
+
+      const result = getTokenByAccountAndAddressAndChainId(
+        mockStateNoMatchingAccount,
+        undefined,
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      );
+
+      expect(result).toBeNull();
+    });
+  });
 });
 
 describe('getMultichainNativeAssetType', () => {
