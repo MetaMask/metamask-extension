@@ -82,7 +82,7 @@ export const getTitle = ({
   t: ReturnType<typeof useI18nContext>;
 }) => {
   if (status === HardwareWalletSignatureStatus.Submitted) {
-    return t('transactionSubmitted');
+    return t('bridgeHwAllSetTitle');
   }
 
   if (status === HardwareWalletSignatureStatus.Rejected) {
@@ -97,11 +97,14 @@ export const getTitle = ({
     return t('bridgeHwDeviceDisconnected');
   }
 
-  const signatureStep =
-    status === HardwareWalletSignatureStatus.AwaitingFirstSignature ? 1 : 2;
-  const signatureCount = needsTwoConfirmations ? ` (${signatureStep}/2)` : '';
+  if (
+    needsTwoConfirmations &&
+    status === HardwareWalletSignatureStatus.AwaitingFinalSignature
+  ) {
+    return t('bridgeHwAlmostThereTitle');
+  }
 
-  return `${t('swapConfirmWithHwWallet')}${signatureCount}`;
+  return t('swapConfirmWithHwWallet');
 };
 
 export const getFinalStepLabel = ({

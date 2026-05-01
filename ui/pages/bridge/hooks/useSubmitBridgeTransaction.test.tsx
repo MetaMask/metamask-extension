@@ -360,12 +360,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        replace: true,
-        state: {
-          stayOnHomePage: true,
-        },
-      });
+      expect(mockUseNavigate).not.toHaveBeenCalled();
       expect(submitTxSpy).toHaveBeenCalledTimes(1);
       expect(onHardwareWalletSubmitted).toHaveBeenCalledTimes(1);
     });

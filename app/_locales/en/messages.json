@@ -1127,6 +1127,14 @@
     "message": "Reconnect your device to continue",
     "description": "Description shown when a hardware wallet device disconnects during signing."
   },
+  "bridgeHwAlmostThereTitle": {
+    "message": "Almost there! Confirm on your device again",
+    "description": "Title shown when the user has signed all but the final signature on their hardware wallet."
+  },
+  "bridgeHwAllSetTitle": {
+    "message": "You're all set",
+    "description": "Title shown when all hardware wallet signatures have been confirmed and the transaction is submitted."
+  },
   "bridgeLowestCost": {
     "message": "Lowest cost"
   },

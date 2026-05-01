@@ -23,6 +23,9 @@ import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
 import HardwareWalletSignatures from '.';
 
 jest.mock('../hooks/useSubmitBridgeTransaction');
+jest.mock('../../../app/toast-listener/shared', () => ({
+  showSuccessToast: jest.fn(),
+}));
 jest.mock('./generic-hardware-wallet-animation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
@@ -135,7 +138,7 @@ describe('HardwareWalletSignatures', () => {
       expect.any(Function),
     );
 
-    expect(getByText('Confirm with your hardware wallet (1/2)')).toBeDefined();
+    expect(getByText('Confirm with your hardware wallet')).toBeDefined();
 
     await act(async () => {
       capturedCallback?.([
@@ -150,7 +153,9 @@ describe('HardwareWalletSignatures', () => {
       ]);
     });
 
-    expect(getByText('Confirm with your hardware wallet (2/2)')).toBeDefined();
+    expect(
+      getByText('Almost there! Confirm on your device again'),
+    ).toBeDefined();
 
     jest.restoreAllMocks();
   });
@@ -237,7 +242,7 @@ describe('HardwareWalletSignatures', () => {
     };
     const { getByText } = renderWithQuote(quote);
 
-    expect(getByText('Confirm with your hardware wallet (1/2)')).toBeDefined();
+    expect(getByText('Confirm with your hardware wallet')).toBeDefined();
 
     await act(async () => {
       capturedCallback?.([
@@ -250,12 +255,14 @@ describe('HardwareWalletSignatures', () => {
       ]);
     });
 
-    expect(getByText('Confirm with your hardware wallet (2/2)')).toBeDefined();
+    expect(
+      getByText('Almost there! Confirm on your device again'),
+    ).toBeDefined();
 
     jest.restoreAllMocks();
   });
 
-  it('shows "Transaction submitted" once the bridge submission callback fires', async () => {
+  it('shows "You\'re all set" once the bridge submission callback fires', async () => {
     const onHardwareWalletSubmittedCallbacks: (() => void)[] = [];
     mockUseSubmitBridgeTransaction.mockImplementation((options) => {
       if (options?.onHardwareWalletSubmitted) {
@@ -272,16 +279,16 @@ describe('HardwareWalletSignatures', () => {
     const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
     const { getByText } = renderWithQuote(quote);
 
-    expect(getByText('Confirm with your hardware wallet (1/2)')).toBeDefined();
+    expect(getByText('Confirm with your hardware wallet')).toBeDefined();
 
     await act(async () => {
       onHardwareWalletSubmittedCallbacks[0]?.();
     });
 
-    expect(getByText('Transaction submitted')).toBeDefined();
+    expect(getByText("You're all set")).toBeDefined();
   });
 
-  it('stays at "Transaction submitted" when a late BridgeStatusController:stateChange event arrives after onHardwareWalletSubmitted', async () => {
+  it('stays at "You\'re all set" when a late BridgeStatusController:stateChange event arrives after onHardwareWalletSubmitted', async () => {
     let capturedCallback:
       | ((
           data: [
@@ -330,7 +337,7 @@ describe('HardwareWalletSignatures', () => {
       onHardwareWalletSubmittedCallbacks[0]?.();
     });
 
-    expect(getByText('Transaction submitted')).toBeDefined();
+    expect(getByText("You're all set")).toBeDefined();
 
     // Late BSC stateChange event arrives after submission — should NOT revert state
     await act(async () => {
@@ -346,7 +353,7 @@ describe('HardwareWalletSignatures', () => {
       ]);
     });
 
-    expect(getByText('Transaction submitted')).toBeDefined();
+    expect(getByText("You're all set")).toBeDefined();
 
     jest.restoreAllMocks();
   });
@@ -404,9 +411,7 @@ describe('HardwareWalletSignatures', () => {
       store,
     );
 
-    expect(
-      getByText('Scan QR code below and sign on your device (1/2)'),
-    ).toBeDefined();
+    expect(getByText('Confirm with your hardware wallet')).toBeDefined();
     expect(getByText('Approve 11 USDC')).toBeDefined();
     expect(getByText('Send 11 USDC')).toBeDefined();
     expect(
@@ -463,7 +468,7 @@ describe('HardwareWalletSignatures', () => {
       expect(getByRole('button', { name: 'Try again' })).toBeDefined();
     });
 
-    it('does not transition out of "Transaction submitted" when an error appears afterwards', async () => {
+    it('does not transition out of "You\'re all set" when an error appears afterwards', async () => {
       const onHardwareWalletSubmittedCallbacks: (() => void)[] = [];
       mockUseSubmitBridgeTransaction.mockImplementation((options) => {
         if (options?.onHardwareWalletSubmitted) {
@@ -484,7 +489,7 @@ describe('HardwareWalletSignatures', () => {
         onHardwareWalletSubmittedCallbacks[0]?.();
       });
 
-      expect(getByText('Transaction submitted')).toBeDefined();
+      expect(getByText("You're all set")).toBeDefined();
 
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: {
@@ -499,7 +504,7 @@ describe('HardwareWalletSignatures', () => {
 
       rerender(<HardwareWalletSignatures />);
 
-      expect(getByText('Transaction submitted')).toBeDefined();
+      expect(getByText("You're all set")).toBeDefined();
     });
   });
 });

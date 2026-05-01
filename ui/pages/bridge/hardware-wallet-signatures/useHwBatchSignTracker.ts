@@ -39,7 +39,7 @@ export function useHwBatchSignTracker(
   dispatchRef.current = dispatchSignatureEvent;
 
   useEffect(() => {
-    if (!fromAddress || !hardwareWalletUsed || !needsTwoConfirmations) {
+    if (!fromAddress || !hardwareWalletUsed) {
       return undefined;
     }
 
@@ -83,8 +83,24 @@ export function useHwBatchSignTracker(
                 type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
               });
             } else if (TRADE_TYPES.has(type as TransactionType)) {
-              console.log('[HW-Batch] trade signed', type);
+              console.log('[HW-Batch] trade signed → TransactionSubmitted');
+              dispatchRef.current({
+                type: HardwareWalletSignatureEvent.TransactionSubmitted,
+              });
             }
+          } else if (status === 'failed') {
+            if (isDeviceDisconnectedRef.current) {
+              console.log(
+                '[HW-Batch] skipping transactionStatusUpdated failed (device disconnected)',
+              );
+              return;
+            }
+            console.log(
+              '[HW-Batch] transactionStatusUpdated failed → TransactionRejected',
+            );
+            dispatchRef.current({
+              type: HardwareWalletSignatureEvent.TransactionRejected,
+            });
           }
         },
       );
@@ -127,6 +143,58 @@ export function useHwBatchSignTracker(
         },
       );
       unsubscribes.push(unsub2);
+
+      const unsub3 = await subscribeToMessengerEvent<
+        [{ transactionMeta: TransactionMeta }]
+      >(
+        'TransactionController:transactionFinished',
+        ([{ transactionMeta }]) => {
+          if (cancelled) {
+            return;
+          }
+
+          const { status, type } = transactionMeta;
+
+          console.log(
+            '[HW-Batch] transactionFinished',
+            JSON.stringify({
+              id: transactionMeta.id,
+              status,
+              type,
+              from: transactionMeta.txParams.from,
+              batchId: transactionMeta.batchId,
+            }),
+          );
+
+          if (!matchesTx(transactionMeta, targetFrom)) {
+            return;
+          }
+
+          if (isDeviceDisconnectedRef.current) {
+            console.log(
+              '[HW-Batch] skipping transactionFinished (device disconnected)',
+            );
+            return;
+          }
+
+          if (status === 'rejected') {
+            console.log(
+              '[HW-Batch] transactionFinished rejected → TransactionRejected',
+            );
+            dispatchRef.current({
+              type: HardwareWalletSignatureEvent.TransactionRejected,
+            });
+          } else if (status === 'failed') {
+            console.log(
+              '[HW-Batch] transactionFinished failed → TransactionFailed',
+            );
+            dispatchRef.current({
+              type: HardwareWalletSignatureEvent.TransactionFailed,
+            });
+          }
+        },
+      );
+      unsubscribes.push(unsub3);
     };
 
     subscribeAll().catch((err: unknown) => {
@@ -142,10 +210,5 @@ export function useHwBatchSignTracker(
         );
       }
     };
-  }, [
-    fromAddress,
-    hardwareWalletUsed,
-    needsTwoConfirmations,
-    isDeviceDisconnectedRef,
-  ]);
+  }, [fromAddress, hardwareWalletUsed, isDeviceDisconnectedRef]);
 }

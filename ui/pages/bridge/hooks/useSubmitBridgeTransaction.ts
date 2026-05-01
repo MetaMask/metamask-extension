@@ -208,10 +208,6 @@ export default function useSubmitBridgeTransaction({
       onHardwareWalletSubmitted?.();
 
       if (submitOnHardwareWalletSigningPage) {
-        navigate(to, {
-          state: { stayOnHomePage: true },
-          replace: true,
-        });
         return;
       }
     }
