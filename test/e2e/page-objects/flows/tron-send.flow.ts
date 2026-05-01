@@ -20,6 +20,11 @@ export async function landOnTronSendScreen({
 
   const home = new NonEvmHomepage(driver);
   await home.checkPageIsLoaded();
+  // Wait for the live TRX balance to land on the homepage before navigating to
+  // Send. Without this gate, Send opens with the cached "0 TRX available" and
+  // every amount renders "Insufficient funds", leaving the Continue button
+  // disabled. The local Tron node is seeded with 6.072 TRX in profiles.ts.
+  await home.checkExpectedTokenBalanceIsDisplayed('6.072', 'TRX');
   await home.clickOnSendButton();
 
   const sendPage = new SendPage(driver);
