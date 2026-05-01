@@ -643,6 +643,34 @@ class AssetListPage {
   }
 
   /**
+   * Asserts the asset list contains exactly the given asset names by token-name
+   * cell, and no others. Used by chain-scoped views to prove nothing extra is
+   * rendered.
+   *
+   * @param symbols - Token name texts to require, in any order.
+   */
+  async checkOnlyAssetsArePresent(symbols: string[]): Promise<void> {
+    console.log(
+      `Checking only these assets are present: ${symbols.join(', ')}`,
+    );
+    for (const symbol of symbols) {
+      await this.driver.waitForSelector({
+        css: this.tokenName,
+        text: symbol,
+      });
+    }
+    await this.checkTokenItemNumber(symbols.length);
+  }
+
+  async checkAssetIsAbsent(symbol: string): Promise<void> {
+    console.log(`Checking asset is absent: ${symbol}`);
+    await this.driver.assertElementNotPresent({
+      css: this.tokenName,
+      text: symbol,
+    });
+  }
+
+  /**
    * Waits until the token at the given 1-based position matches the expected
    * name. Uses findElements + index because each token-list-button lives in
    * its own wrapper, so :nth-child cannot address position across siblings.
