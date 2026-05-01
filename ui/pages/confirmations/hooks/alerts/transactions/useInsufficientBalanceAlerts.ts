@@ -11,6 +11,7 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getUseTransactionSimulations } from '../../../../../selectors';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 import { useHasInsufficientBalance } from '../../useHasInsufficientBalance';
@@ -27,6 +28,10 @@ export function useInsufficientBalanceAlerts({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { selectedGasFeeToken, gasFeeTokens, excludeNativeTokenForFee } =
     currentConfirmation ?? {};
+  // Gasless flows (Perps Withdraw via HyperLiquid -> Relay) don't use the
+  // user's native balance for gas, so suppress the "insufficient balance"
+  // alert even when native balance is low.
+  const isIgnoredType = isPerpsWithdrawTransaction(currentConfirmation);
   const { hasInsufficientBalance, nativeCurrency } =
     useHasInsufficientBalance();
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
@@ -81,7 +86,8 @@ export function useInsufficientBalanceAlerts({
     isSimulationComplete &&
     hasNoGasFeeTokenSelected &&
     shouldCheckGaslessConditions &&
-    !isSponsoredTransaction;
+    !isSponsoredTransaction &&
+    !isIgnoredType;
 
   return useMemo(() => {
     if (!showAlert) {

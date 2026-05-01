@@ -1,18 +1,22 @@
 import type {
   BenchmarkResults,
   ThresholdConfig,
+  ThresholdViolation,
 } from '../../shared/constants/benchmarks';
 import {
   BENCHMARK_PERSONA,
   DEFAULT_RELATIVE_THRESHOLDS,
+  THRESHOLD_SEVERITY,
 } from '../../shared/constants/benchmarks';
 import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 
 import {
+  applyGatingPolicy,
   compareMetric,
   compareBenchmarkEntries,
   formatDeltaPercent,
   COMPARISON_SEVERITY,
+  type BenchmarkEntryComparison,
 } from './comparison-utils';
 
 describe('benchmark-comparison', () => {
@@ -343,6 +347,152 @@ describe('benchmark-comparison', () => {
         { uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 } },
       );
       expect(comparison.relativeMetrics).toHaveLength(0);
+    });
+  });
+
+  describe('applyGatingPolicy', () => {
+    const violation = (
+      metricId: string,
+      severity: ThresholdViolation['severity'],
+    ): ThresholdViolation => ({
+      metricId,
+      percentile: 'p75',
+      value: 1000,
+      threshold: 800,
+      severity,
+    });
+
+    const baseComparison = (
+      benchmarkName: string,
+      violations: ThresholdViolation[],
+    ): BenchmarkEntryComparison => ({
+      benchmarkName,
+      relativeMetrics: [],
+      absoluteViolations: violations,
+      hasRegression: false,
+      hasWarning: violations.some(
+        (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+      ),
+      absoluteFailed: violations.some(
+        (v) => v.severity === THRESHOLD_SEVERITY.Fail,
+      ),
+    });
+
+    it('preserves Fail severity when metric is allowlisted', () => {
+      const input = baseComparison('startupStandardHome', [
+        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
+      ]);
+      const allow = new Set(['startupStandardHome.uiStartup']);
+
+      const result = applyGatingPolicy(input, allow);
+
+      expect(result.absoluteViolations[0].severity).toBe(
+        THRESHOLD_SEVERITY.Fail,
+      );
+      expect(result.absoluteFailed).toBe(true);
+    });
+
+    it('downgrades Fail to Warn when metric is not allowlisted', () => {
+      const input = baseComparison('startupPowerUserHome', [
+        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
+      ]);
+      const allow = new Set(['startupStandardHome.uiStartup']);
+
+      const result = applyGatingPolicy(input, allow);
+
+      expect(result.absoluteViolations[0].severity).toBe(
+        THRESHOLD_SEVERITY.Warn,
+      );
+      expect(result.absoluteFailed).toBe(false);
+      expect(result.hasWarning).toBe(true);
+    });
+
+    it('downgrades only non-allowlisted entries in mixed input', () => {
+      const input = baseComparison('startupStandardHome', [
+        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
+        violation('domContentLoaded', THRESHOLD_SEVERITY.Fail),
+      ]);
+      const allow = new Set(['startupStandardHome.uiStartup']);
+
+      const result = applyGatingPolicy(input, allow);
+
+      const byMetric = Object.fromEntries(
+        result.absoluteViolations.map((v) => [v.metricId, v.severity]),
+      );
+      expect(byMetric.uiStartup).toBe(THRESHOLD_SEVERITY.Fail);
+      expect(byMetric.domContentLoaded).toBe(THRESHOLD_SEVERITY.Warn);
+      expect(result.absoluteFailed).toBe(true);
+    });
+
+    it('never modifies Warn-severity violations', () => {
+      const input = baseComparison('startupPowerUserHome', [
+        violation('uiStartup', THRESHOLD_SEVERITY.Warn),
+      ]);
+      const allow = new Set<string>();
+
+      const result = applyGatingPolicy(input, allow);
+
+      expect(result.absoluteViolations[0].severity).toBe(
+        THRESHOLD_SEVERITY.Warn,
+      );
+      expect(result.absoluteFailed).toBe(false);
+    });
+
+    it('downgrades all fails when allowlist is empty', () => {
+      const input = baseComparison('startupStandardHome', [
+        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
+        violation('load', THRESHOLD_SEVERITY.Fail),
+      ]);
+
+      const result = applyGatingPolicy(input, new Set());
+
+      expect(
+        result.absoluteViolations.every(
+          (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+        ),
+      ).toBe(true);
+      expect(result.absoluteFailed).toBe(false);
+      expect(result.hasWarning).toBe(true);
+    });
+
+    it('does not mutate the input comparison', () => {
+      const input = baseComparison('startupPowerUserHome', [
+        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
+      ]);
+      const inputViolationsBefore = input.absoluteViolations.slice();
+      const inputSeverityBefore = input.absoluteViolations[0].severity;
+
+      applyGatingPolicy(input, new Set());
+
+      expect(input.absoluteViolations).toStrictEqual(inputViolationsBefore);
+      expect(input.absoluteViolations[0].severity).toBe(inputSeverityBefore);
+      expect(input.absoluteFailed).toBe(true);
+    });
+
+    it('preserves hasWarning derived from relativeMetrics', () => {
+      const input: BenchmarkEntryComparison = {
+        benchmarkName: 'startupStandardHome',
+        relativeMetrics: [
+          {
+            metric: 'uiStartup',
+            percentile: 'p75',
+            current: 1100,
+            baseline: 1000,
+            delta: 100,
+            deltaPercent: 0.1,
+            severity: COMPARISON_SEVERITY.Warn.value,
+            indication: COMPARISON_SEVERITY.Warn.icon,
+          },
+        ],
+        absoluteViolations: [],
+        hasRegression: false,
+        hasWarning: true,
+        absoluteFailed: false,
+      };
+
+      const result = applyGatingPolicy(input, new Set());
+
+      expect(result.hasWarning).toBe(true);
     });
   });
 

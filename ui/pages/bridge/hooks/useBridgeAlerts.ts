@@ -1,4 +1,4 @@
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import {
   type BridgeAppState,
@@ -6,9 +6,11 @@ import {
   getBridgeUnavailableQuoteReason,
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
+  getInsufficientNativeReserveError,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
+import { setFromTokenInputValue } from '../../../ducks/bridge/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BannerAlertSeverity } from '../../../components/component-library';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
@@ -26,11 +28,15 @@ import { useAssetSecurityData } from './useAssetSecurityData';
  */
 export const useBridgeAlerts = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
   const formattedPriceImpactPercentage = useSelector(
     getFormattedPriceImpactPercentage,
   );
   const formattedPriceImpactFiat = useSelector(getFormattedPriceImpactFiat);
+  const insufficientNativeReserveError = useSelector(
+    getInsufficientNativeReserveError,
+  );
 
   const {
     isNoQuotesAvailable,
@@ -210,6 +216,39 @@ export const useBridgeAlerts = () => {
       });
     }
 
+    if (
+      !isInsufficientBalance &&
+      !isInsufficientGasForQuote &&
+      insufficientNativeReserveError &&
+      insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
+        '0'
+    ) {
+      categorizeAlert({
+        id: 'insufficient-native-reserve',
+        isDismissable: false,
+        severity: 'warning',
+        title: t('bridgeValidationInsufficientNativeReserveTitle', [ticker]),
+        description: t('bridgeValidationInsufficientNativeReserveMessage', [
+          insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount,
+          insufficientNativeReserveError.maxSwappableNativeBalance,
+          ticker,
+        ]),
+        isConfirmationAlert: false,
+        bannerAlertProps: {
+          severity: BannerAlertSeverity.Warning,
+          actionButtonLabel: t('bridgeUseMaxAmountAllowedWithReserve', [
+            ticker,
+          ]),
+          actionButtonOnClick: () =>
+            dispatch(
+              setFromTokenInputValue(
+                insufficientNativeReserveError.maxSwappableNativeBalance,
+              ),
+            ),
+        },
+      });
+    }
+
     if (isPriceImpactWarning) {
       categorizeAlert({
         id: 'price-impact',
@@ -266,6 +305,8 @@ export const useBridgeAlerts = () => {
     isPriceImpactWarning,
     isStockMarketClosed,
     isSwap,
+    insufficientNativeReserveError,
+    dispatch,
     openBuyCryptoInPdapp,
     ticker,
     toToken,
