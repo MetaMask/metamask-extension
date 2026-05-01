@@ -2054,10 +2054,12 @@ export function getIsBridgeChain(state, overrideChainId) {
 // only bridgeConfig should invalidate consumers of bridge feature flags.
 const getBridgeFeatureFlags = createDeepEqualSelector(
   [(state) => getRemoteFeatureFlags(state).bridgeConfig],
-  (bridgeConfig) =>
-    selectBridgeFeatureFlags({
+  (bridgeConfig) => {
+    const validatedFlags = selectBridgeFeatureFlags({
       remoteFeatureFlags: { bridgeConfig },
-    }),
+    });
+    return validatedFlags;
+  },
 );
 
 export const getIsBridgeEnabled = createSelector(

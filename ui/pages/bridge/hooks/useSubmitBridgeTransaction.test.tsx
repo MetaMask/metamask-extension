@@ -65,6 +65,39 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
+const MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID = {
+  '0x1': {
+    blockExplorerUrls: ['https://etherscan.io'],
+    chainId: '0x1',
+    defaultBlockExplorerUrlIndex: 0,
+    defaultRpcEndpointIndex: 0,
+    name: 'Ethereum',
+    nativeCurrency: 'ETH',
+    rpcEndpoints: [
+      {
+        networkClientId: 'mainnet',
+        type: 'infura',
+        url: 'https://mainnet.infura.io/v3/infuraProjectId',
+      },
+    ],
+  },
+  '0xa4b1': {
+    blockExplorerUrls: ['https://explorer.arbitrum.io'],
+    chainId: '0xa4b1',
+    defaultBlockExplorerUrlIndex: 0,
+    defaultRpcEndpointIndex: 0,
+    name: 'Arbitrum',
+    nativeCurrency: 'ETH',
+    rpcEndpoints: [
+      {
+        networkClientId: '3725601d-f497-43aa-9afa-97c26e9033a3',
+        type: 'custom',
+        url: 'https://arbitrum-mainnet.infura.io/v3/infuraProjectId',
+      },
+    ],
+  },
+};
+
 jest.mock('../../../../shared/lib/selectors/networks', () => {
   const original = jest.requireActual(
     '../../../../shared/lib/selectors/networks',
@@ -72,38 +105,9 @@ jest.mock('../../../../shared/lib/selectors/networks', () => {
   return {
     ...original,
     getSelectedNetworkClientId: () => 'mainnet',
-    getNetworkConfigurationsByChainId: jest.fn(() => ({
-      '0x1': {
-        blockExplorerUrls: ['https://etherscan.io'],
-        chainId: '0x1',
-        defaultBlockExplorerUrlIndex: 0,
-        defaultRpcEndpointIndex: 0,
-        name: 'Ethereum',
-        nativeCurrency: 'ETH',
-        rpcEndpoints: [
-          {
-            networkClientId: 'mainnet',
-            type: 'infura',
-            url: 'https://mainnet.infura.io/v3/infuraProjectId',
-          },
-        ],
-      },
-      '0xa4b1': {
-        blockExplorerUrls: ['https://explorer.arbitrum.io'],
-        chainId: '0xa4b1',
-        defaultBlockExplorerUrlIndex: 0,
-        defaultRpcEndpointIndex: 0,
-        name: 'Arbitrum',
-        nativeCurrency: 'ETH',
-        rpcEndpoints: [
-          {
-            networkClientId: '3725601d-f497-43aa-9afa-97c26e9033a3',
-            type: 'custom',
-            url: 'https://arbitrum-mainnet.infura.io/v3/infuraProjectId',
-          },
-        ],
-      },
-    })),
+    getNetworkConfigurationsByChainId: jest.fn(
+      () => MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID,
+    ),
   };
 });
 

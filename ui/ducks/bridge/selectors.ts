@@ -879,24 +879,10 @@ const _getBaseValidationErrors = createDeepEqualSelector(
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
-    let minimumBalanceToKeep =
+    const minimumBalanceToKeep =
       srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
         : '0';
-
-    // Monad requires >= 10 MON native reserve for 7702 sponsored txs.
-    // Without this balance the relay rejects the tx on-chain.
-    const MONAD_MIN_RESERVE = '10';
-    const srcHexChainId = srcChainId
-      ? getMaybeHexChainId(String(srcChainId))
-      : undefined;
-    if (
-      srcHexChainId === CHAIN_IDS.MONAD &&
-      quoteRequest.gasIncluded7702 &&
-      !isHardwareWalletAccount
-    ) {
-      minimumBalanceToKeep = MONAD_MIN_RESERVE;
-    }
 
     const isInsufficientNativeReserve = Boolean(insufficientNativeReserveError);
 
@@ -919,7 +905,6 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           validatedSrcAmount &&
           fromToken &&
           !isGasless &&
-          !insufficientNativeReserveError &&
           (isNativeAddress(fromToken.assetId)
             ? new BigNumber(nativeBalance)
                 .sub(minimumBalanceToKeep)
@@ -1008,12 +993,12 @@ export const getWarningLabels = (
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isInsufficientBalance,
+        isInsufficientNativeReserve,
     isPriceImpactWarning,
     isPriceImpactError,
     isTxAlertPresent,
     isStockMarketClosed,
     isQuoteExpired,
-    isInsufficientNativeReserve,
   } = getValidationErrors(state, currentTimeInMs);
   const warnings: QuoteWarning[] = [];
   isEstimatedReturnLow && warnings.push('low_return');
@@ -1021,9 +1006,6 @@ export const getWarningLabels = (
   isInsufficientGasBalance && warnings.push('insufficient_gas_balance');
   isInsufficientGasForQuote &&
     warnings.push('insufficient_gas_for_selected_quote');
-  // @ts-expect-error: insufficient_native_reserve is not a valid QuoteWarning yet
-  isInsufficientNativeReserve &&
-    warnings.push('insufficient_native_reserve');
   isInsufficientBalance && warnings.push('insufficient_balance');
   isPriceImpactWarning && warnings.push('price_impact');
   isPriceImpactError && warnings.push('price_impact');
@@ -1032,6 +1014,9 @@ export const getWarningLabels = (
   isStockMarketClosed && warnings.push('market_closed');
   // @ts-expect-error: quote_expired is not a valid QuoteWarning yet
   isQuoteExpired && warnings.push('quote_expired');
+    isInsufficientNativeReserve &&
+      // @ts-expect-error: market_closed is not a valid QuoteWarning yet
+      warnings.push('insufficient_native_reserve');
   return warnings;
 };
 
