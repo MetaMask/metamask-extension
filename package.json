@@ -290,7 +290,7 @@
     "protobufjs": "7.5.5",
     "postcss-loader/jiti": "npm:npm-empty-package@1.0.0",
     "@metamask/snaps-controllers": "^20.0.3",
-    "@metamask/perps-controller": "^4.0.0"
+    "@metamask/perps-controller": "^5.0.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -395,7 +395,7 @@
     "@metamask/permission-controller": "^12.2.1",
     "@metamask/permission-log-controller": "^5.0.0",
     "@metamask/permissions-kernel-snap": "^1.1.0",
-    "@metamask/perps-controller": "^4.0.0",
+    "@metamask/perps-controller": "^5.0.0",
     "@metamask/phishing-controller": "^17.1.1",
     "@metamask/polling-controller": "^16.0.2",
     "@metamask/post-message-stream": "^10.0.0",
@@ -807,12 +807,6 @@
     "yargs": "^17.7.2",
     "yargs-parser": "^21.1.1",
     "yazl": "^3.3.1"
-  },
-  "previewBuilds": {
-    "@metamask/perps-controller": {
-      "type": "non-breaking",
-      "previewVersion": "4.0.0-preview-56dd1249f"
-    }
   },
   "engines": {
     "node": ">=24.13.0",
