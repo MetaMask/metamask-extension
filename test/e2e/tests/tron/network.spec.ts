@@ -4,6 +4,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import { TRON_CHAIN_ID, mockTronFeatureFlags } from './mocks/common-tron';
 
@@ -16,6 +17,29 @@ async function mockTronFlagsOnly(mockServer: Mockttp) {
 
 describe('Tron network presence', function (this: Suite) {
   this.timeout(120_000);
+
+  async function checkTronInTabFilter(
+    driver: Driver,
+    navigateToTab: (home: HomePage) => Promise<void>,
+  ): Promise<void> {
+    const home = new HomePage(driver);
+    await navigateToTab(home);
+    const networkManager = new NetworkManager(driver);
+    await networkManager.openNetworkManager();
+    await networkManager.selectTab('Popular');
+    await networkManager.checkNetworkIsListed('Tron');
+    await networkManager.closeNetworkManager();
+  }
+
+  const TAB_CASES: {
+    name: string;
+    navigate: (home: HomePage) => Promise<void>;
+  }[] = [
+    { name: 'Tokens', navigate: (home) => home.goToTokensTab() },
+    { name: 'DeFi', navigate: (home) => home.goToDeFiTab() },
+    { name: 'NFTs', navigate: (home) => home.goToNftTab() },
+    { name: 'Activity', navigate: (home) => home.goToActivityList() },
+  ];
 
   it('shows Tron on the Manage Networks popup', async function () {
     await withFixtures(
@@ -97,28 +121,7 @@ describe('Tron network presence', function (this: Suite) {
     );
   });
 
-  async function checkTronInTabFilter(
-    driver: Driver,
-    tabTestId: string | null,
-  ): Promise<void> {
-    if (tabTestId) {
-      await driver.clickElement(`[data-testid="${tabTestId}"]`);
-    }
-    const networkManager = new NetworkManager(driver);
-    await networkManager.openNetworkManager();
-    await networkManager.selectTab('Popular');
-    await networkManager.checkNetworkIsListed('Tron');
-    await networkManager.closeNetworkManager();
-  }
-
-  const TAB_CASES: { name: string; testId: string | null }[] = [
-    { name: 'Tokens', testId: null }, // default tab on home view
-    { name: 'DeFi', testId: 'account-overview__defi-tab' },
-    { name: 'NFTs', testId: 'account-overview__nfts-tab' },
-    { name: 'Activity', testId: 'account-overview__activity-tab' },
-  ];
-
-  for (const { name, testId } of TAB_CASES) {
+  for (const { name, navigate } of TAB_CASES) {
     it(`shows Tron in the ${name} tab network selector`, async function () {
       await withFixtures(
         {
@@ -128,7 +131,7 @@ describe('Tron network presence', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           await login(driver);
-          await checkTronInTabFilter(driver, testId);
+          await checkTronInTabFilter(driver, navigate);
         },
       );
     });
