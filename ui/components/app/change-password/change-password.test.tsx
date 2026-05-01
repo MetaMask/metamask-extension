@@ -32,7 +32,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('../../../store/actions', () => ({
-  ...jest.requireActual('../../../../store/actions'),
+  ...jest.requireActual('../../../store/actions'),
   changePassword: (_newPwd: string, _currentPwd: string) => {
     return mockChangePassword(_newPwd, _currentPwd);
   },
@@ -42,7 +42,7 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock('../../../selectors', () => ({
-  ...jest.requireActual('../../../../selectors'),
+  ...jest.requireActual('../../../selectors'),
   getIsSocialLoginFlow: jest.fn().mockReturnValue(false),
 }));
 

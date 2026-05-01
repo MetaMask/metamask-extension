@@ -12,8 +12,8 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import { Box, Text } from '../../../components/component-library';
-import ToggleButton from '../../../components/ui/toggle-button';
+import { Box, Text } from '../../component-library';
+import ToggleButton from '../../ui/toggle-button';
 import {
   Display,
   FlexDirection,

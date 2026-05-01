@@ -3,14 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { capitalize } from 'lodash';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../components/component-library';
-import { SrpList } from '../../../components/multichain/multi-srp/srp-list/srp-list';
+import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
+import { SrpList } from '../../multichain/multi-srp/srp-list/srp-list';
 import {
   TextVariant,
   TextColor,
@@ -33,7 +27,7 @@ import {
   getSocialLoginEmail,
   getSocialLoginType,
 } from '../../../selectors';
-import Card from '../../../components/ui/card';
+import Card from '../../ui/card';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
 
 export const RevealSrpList = () => {

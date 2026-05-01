@@ -22,7 +22,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-} from '../../../components/component-library';
+} from '../../component-library';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

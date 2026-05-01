@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CONSENSYS_PRIVACY_LINK } from '../../../../shared/lib/ui-utils';
-import ClearMetametricsData from '../../../components/app/clear-metametrics-data';
+import ClearMetametricsData from '../clear-metametrics-data';
 import {
   Box,
   ButtonPrimary,
@@ -11,7 +11,7 @@ import {
   PolymorphicComponentPropWithRef,
   PolymorphicRef,
   Text,
-} from '../../../components/component-library';
+} from '../../component-library';
 import {
   BlockSize,
   Display,
@@ -29,7 +29,7 @@ import {
   getLatestMetricsEventTimestamp,
 } from '../../../selectors';
 import { openDeleteMetaMetricsDataModal } from '../../../ducks/app/app';
-import DataDeletionErrorModal from '../../../components/app/data-deletion-error-modal';
+import DataDeletionErrorModal from '../data-deletion-error-modal';
 import { formatDate } from '../../../helpers/utils/util';
 import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
 
