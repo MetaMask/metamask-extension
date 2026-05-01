@@ -223,6 +223,106 @@ export async function mockTronGetAccount(
     }));
 }
 
+export type TronAccountSnapshot = {
+  trxSun: number;
+  trc20: Partial<Record<TronSwapSymbol, string>>;
+};
+
+/**
+ * Creates stateful account/balance mocks that flip from `before` to `after`
+ * once the wallet posts a broadcast transaction. Replaces mockTronGetAccount
+ * and mockBroadTransaction for swap tests that assert balance deltas.
+ *
+ * @param mockServer - The Mockttp server
+ * @param opts - before/after snapshots
+ */
+export async function createStatefulTronAccountMock(
+  mockServer: Mockttp,
+  { before, after }: { before: TronAccountSnapshot; after?: TronAccountSnapshot },
+): Promise<MockedEndpoint[]> {
+  let broadcasted = false;
+  const current = (): TronAccountSnapshot =>
+    broadcasted && after ? after : before;
+
+  // Build the TRC20 array from a snapshot, using canonical addresses
+  const buildTrc20Array = (snapshot: TronAccountSnapshot) => {
+    const entries: Record<string, string>[] = [];
+    for (const [symbol, rawAmount] of Object.entries(snapshot.trc20)) {
+      const address =
+        TRON_SWAP_TOKEN_REGISTRY[symbol as TronSwapSymbol]?.address;
+      if (address && address !== '0x0000000000000000000000000000000000000000') {
+        entries.push({ [address]: rawAmount as string });
+      }
+    }
+    return entries;
+  };
+
+  const buildAccountJson = (snapshot: TronAccountSnapshot) => ({
+    data: [
+      {
+        owner_permission: {
+          keys: [{ address: TRON_ACCOUNT_ADDRESS, weight: 1 }],
+          threshold: 1,
+          permission_name: 'owner',
+        },
+        account_resource: {
+          energy_window_optimized: true,
+          latest_consume_time_for_energy: 1764149628000,
+          energy_window_size: 28800000,
+        },
+        active_permission: [
+          {
+            operations:
+              '7fff1fc0033ec30f000000000000000000000000000000000000000000000000',
+            keys: [{ address: TRON_ACCOUNT_ADDRESS, weight: 1 }],
+            threshold: 1,
+            id: 2,
+            type: 'Active',
+            permission_name: 'active',
+          },
+        ],
+        address: '4100dd57a0a3ee58392689f79c0bedcf44d3b6c255',
+        create_time: 1763374065000,
+        latest_opration_time: 1764149628000,
+        free_asset_net_usageV2: [{ value: 0, key: '1005074' }],
+        assetV2: [{ value: 33333333, key: '1005074' }],
+        frozenV2: [{}, { amount: 20000000, type: 'ENERGY' }, { type: 'TRON_POWER' }],
+        balance: snapshot.trxSun,
+        trc20: buildTrc20Array(snapshot),
+        latest_consume_free_time: 1764149628000,
+        net_window_size: 28800000,
+        net_window_optimized: true,
+      },
+    ],
+    success: true,
+    meta: { at: Date.now(), page_size: 1 },
+  });
+
+  const broadcastEndpoint = await mockServer
+    .forPost(tronInfuraUrl('/wallet/broadcasttransaction'))
+    .thenCallback(() => {
+      broadcasted = true;
+      return {
+        statusCode: 200,
+        json: {
+          code: 'TRANSACTION_EXPIRATION_ERROR',
+          txid: '6db783c4142b3749a4b598db4644155455c9206e2eca4b31efbd48e46773d9d5',
+          message: TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
+        },
+      };
+    });
+
+  const accountEndpoint = await mockServer
+    .forGet(tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}`))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: buildAccountJson(current()),
+    }));
+
+  return [broadcastEndpoint, accountEndpoint];
+}
+
 export async function mockTronGetAccountResource(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
