@@ -88,7 +88,7 @@ describe('Tron assets', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock pending UI sync
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): TRX (6.072) renders, but TRC10 (GasFreeTransferSolution) and all TRC20 rows (Tether, HTX DAO, USDD, SEED) never appear despite mockTronAssets and tronInfura getaccount mocks being hit; same balance-propagation regression as swap.spec.ts.
   it.skip('Lists TRX, TRC10, TRC20 with name, symbol, amount, fiat for portfolio account', async function () {
     await withFixtures(
       {
@@ -124,7 +124,7 @@ describe('Tron assets', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock pending UI sync
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Tron asset list does not expose the EVM "popular networks" NetworkFilter popover — NetworkFilterComponent disables sort-by-popover-toggle when chainId is not in FEATURED_NETWORK_CHAIN_IDS, so [data-testid="network-filter-current__button"] is never rendered. Needs product/UX decision before enabling.
   it.skip('Current network filter shows only Tron assets', async function () {
     await withFixtures(
       {
@@ -159,7 +159,7 @@ describe('Tron assets', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock pending UI sync
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Tron asset list does not expose the EVM NetworkFilter popover — [data-testid="network-filter-all__button"] is never rendered (sort-by-popover-toggle is disabled for non-FEATURED chain ids). Needs product/UX decision before enabling.
   it.skip('All networks filter shows other chains alongside Tron', async function () {
     await withFixtures(
       {
@@ -188,8 +188,7 @@ describe('Tron assets', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock pending UI sync
-  it.skip('TRX asset details: header, chart, action buttons, daily resource, sections', async function () {
+  it('TRX asset details: header, chart, action buttons, daily resource, sections', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
@@ -223,7 +222,7 @@ describe('Tron assets', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): unblock pending UI sync
+  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Tether (USDT) row never appears in the Tron asset list, so clickOnAsset('Tether') fails and the details page never loads — same TRC20 non-rendering regression as the listing test (mockTronAssets returns USDT but the row is missing).
   it.skip('USDT asset details: header, chart, action buttons, sections — no daily resource', async function () {
     await withFixtures(
       {
@@ -255,7 +254,7 @@ describe('Tron assets', function (this: Suite) {
         await details.checkAllStandardSections();
         await driver.assertElementNotPresent({
           text: 'Daily resource',
-          tag: 'p',
+          tag: 'h4',
         });
       },
     );

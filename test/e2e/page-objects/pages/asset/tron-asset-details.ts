@@ -48,7 +48,7 @@ class TronAssetDetailsPage {
   }
 
   async checkDailyResourcesSection(): Promise<void> {
-    await this.driver.waitForSelector({ text: 'Daily resource', tag: 'p' });
+    await this.driver.waitForSelector({ text: 'Daily resource', tag: 'h4' });
     await this.driver.waitForSelector({ text: 'Energy', tag: 'p' });
     await this.driver.waitForSelector({ text: 'Bandwidth', tag: 'p' });
   }
