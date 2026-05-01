@@ -74,6 +74,25 @@ describe('watchAssetHandler', () => {
     expect(mockEnd).toHaveBeenCalledWith();
   });
 
+  it('should return invalidParams when params are missing', async () => {
+    const req = {
+      origin: 'testOrigin',
+    };
+
+    const res = {
+      result: false,
+    };
+
+    await watchAssetHandler.implementation(req, res, null, mockEnd, {
+      handleWatchAssetRequest: mockHandleWatchAssetRequest,
+    });
+
+    expect(mockHandleWatchAssetRequest).not.toHaveBeenCalled();
+    expect(mockEnd).toHaveBeenCalledWith(
+      rpcErrors.invalidParams({ message: 'Missing parameters.' }),
+    );
+  });
+
   it('should throw when type is ERC721 and tokenId type is invalid', async () => {
     const req = {
       params: {
