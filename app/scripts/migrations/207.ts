@@ -1,6 +1,7 @@
-import { hasProperty, isObject } from '@metamask/utils';
+import { getErrorMessage, hasProperty, isObject } from '@metamask/utils';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import type { Migrate } from './types';
+import { captureException } from '../../../shared/lib/sentry';
 
 export const version = 207;
 
@@ -55,16 +56,23 @@ function defaultAssetsController() {
  */
 export const migrate = (async (versionedData, changedControllers) => {
   versionedData.meta.version = version;
+  try {
+    const { data } = versionedData;
+    const addressToId = buildAddressToIdMap(data);
+    const ac = ensureAssetsController(data);
 
-  const { data } = versionedData;
-  const addressToId = buildAddressToIdMap(data);
-  const ac = ensureAssetsController(data);
+    const evmChanged = migrateEvmTokens(data, ac, addressToId);
+    const nonEvmChanged = migrateNonEvmAssets(data, ac);
 
-  const evmChanged = migrateEvmTokens(data, ac, addressToId);
-  const nonEvmChanged = migrateNonEvmAssets(data, ac);
-
-  if (evmChanged || nonEvmChanged) {
-    changedControllers.add('AssetsController');
+    if (evmChanged || nonEvmChanged) {
+      changedControllers.add('AssetsController');
+    }
+  } catch (error) {
+    captureException(
+      new Error(
+        `Migration #${version} - migrate old AssetsControllers state to new unified AssetsController state failed: ${getErrorMessage(error)}`,
+      ),
+    );
   }
 }) satisfies Migrate;
 
@@ -142,7 +150,7 @@ function buildAddressToIdMap(
  * @param hexChainId - The hex-encoded EVM chain ID.
  */
 function hexChainIdToCaip2(hexChainId: string): string | null {
-  const decimal = parseInt(hexChainId, 16);
+  const decimal = Number.parseInt(hexChainId, 16);
   if (!Number.isFinite(decimal)) {
     return null;
   }
@@ -394,9 +402,7 @@ function migrateEvmTokens(
       const accountId = addressToId[accountAddress];
       const chainBalances =
         (isObject(tokenBalances[accountAddress]) &&
-          (tokenBalances[accountAddress][hexChainId] as
-            | Record<string, string>
-            | undefined)) ||
+          tokenBalances[accountAddress][hexChainId]) ||
         {};
 
       for (const token of tokens) {
