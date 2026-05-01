@@ -24,7 +24,6 @@ import { createSelector } from 'reselect';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-import { EthMethod } from '@metamask/keyring-api';
 import {
   CaipAssetType,
   parseCaipAssetType,
@@ -83,7 +82,6 @@ import {
   getSelectedInternalAccount,
 } from '../../selectors/accounts';
 import {
-  getUseExternalServices,
   getGasFeesSponsoredNetworkEnabled,
   isHardwareWallet,
 } from '../../selectors';

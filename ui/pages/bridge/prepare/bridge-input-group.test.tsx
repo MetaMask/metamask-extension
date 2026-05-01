@@ -484,6 +484,8 @@ describe('BridgeInputGroup', () => {
                 rwaData: undefined,
                 symbol: 'SOL',
                 tokenFiatAmount: 210.8493,
+                isVerified: undefined,
+                securityData: undefined,
               },
               {
                 accountType: 'solana:data-account',
@@ -498,9 +500,11 @@ describe('BridgeInputGroup', () => {
                 rwaData: undefined,
                 symbol: 'USDC',
                 tokenFiatAmount: 2.04284978478,
+                isVerified: undefined,
+                securityData: undefined,
               },
             ],
-            chainIds: new Set(['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']),
+            fetchTokens: expect.any(Function),
           }),
         ]);
         expect(mockUseTokenSearchResults.mock.lastCall).toStrictEqual([

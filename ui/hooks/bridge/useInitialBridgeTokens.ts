@@ -1,30 +1,52 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { type CaipChainId } from '@metamask/utils';
 import { BridgeClientId } from '@metamask/bridge-controller';
+import { uniqBy } from 'lodash';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getBearerToken } from '../../store/actions';
-import { BridgeToken } from '../../ducks/bridge/types';
 import { fetchPopularTokens } from '../../pages/bridge/utils/tokens';
 import { getUseExternalServices } from '../../selectors';
 import { useAsyncResult } from '../useAsync';
+import { getFromAccount , BridgeAppState, getFromChains } from '../../ducks/bridge/selectors';
+import { getBridgeSortedAssets } from '../../ducks/bridge/asset-selectors';
+import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
+import { toBridgeToken } from '../../ducks/bridge/utils';
 
 /**
- * Fetches the popular tokens list from the bridge api
+ * Builds the params for the fetchPopularTokens function
  *
- * @param params
- * @param params.chainIds - enabled src/dest chainIds to return tokens for
- * @param params.assetsToInclude - the assets to show at the top of the list
+ * @param chainIds - enabled src/dest chainIds to return tokens for
  */
-export const useInitialBridgeTokens = ({
-  assetsToInclude,
-  chainIds,
-}: {
-  chainIds: Set<CaipChainId>;
-  assetsToInclude: BridgeToken[];
-}) => {
-  const abortControllerRef = useRef<AbortController | null>(null);
+export const useInitialBridgeTokens = (chainIds?: Set<CaipChainId>) => {
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
+
+  const fromChains = useSelector(getFromChains);
+  const fromAccount = useSelector(getFromAccount);
+  const groupId = useSelector((state: BridgeAppState) =>
+    getAccountGroupsByAddress(state, [fromAccount?.address]),
+  )[0]?.id;
+  const fromChainIds = useMemo(
+    () => new Set(fromChains.map((chain) => chain.chainId)),
+    [fromChains],
+  );
+  const chainIdsToUse = chainIds ?? fromChainIds;
+  const assetsWithBalance = useSelector((state: BridgeAppState) =>
+    getBridgeSortedAssets(state, groupId),
+  );
+
+  const assetsToInclude = useMemo(
+    () =>
+      uniqBy(
+        assetsWithBalance.filter((token) => {
+          const matchesChainIdFilter = chainIdsToUse.has(token.chainId);
+
+          return matchesChainIdFilter;
+        }),
+        (a) => a.assetId?.toLowerCase(),
+      ),
+    [chainIdsToUse, assetsWithBalance],
+  );
 
   const { value: jwt } = useAsyncResult(async () => {
     if (!isExternalServicesEnabled) {
@@ -41,33 +63,27 @@ export const useInitialBridgeTokens = ({
     return assetsToInclude.map(({ assetId }) => assetId).join('|');
   }, [assetsToInclude]);
 
-  const { value: tokenList, pending: isTokenListLoading } =
-    useAsyncResult(async () => {
+  const fetchTokens = useCallback(
+    async (signal?: AbortSignal) => {
       if (!jwt || !isExternalServicesEnabled) {
         return assetsToInclude;
       }
-      abortControllerRef.current?.abort('Asset balances changed');
-      abortControllerRef.current = new AbortController();
       const response = await fetchPopularTokens({
         jwt,
-        chainIds: Array.from(chainIds),
+        chainIds: Array.from(chainIdsToUse),
         assetsWithBalances: assetsToInclude,
         clientId: BridgeClientId.EXTENSION,
         clientVersion: process.env.METAMASK_VERSION,
-        signal: abortControllerRef.current?.signal,
+        signal,
         bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       });
       return response;
-    }, [assetsToIncludeId, chainIds, jwt, isExternalServicesEnabled]);
-
-  useEffect(() => {
-    return () => {
-      abortControllerRef.current?.abort('Page unmounted');
-    };
-  }, []);
+    },
+    [assetsToIncludeId, chainIdsToUse, jwt, isExternalServicesEnabled],
+  );
 
   return {
-    tokenList,
-    isTokenListLoading,
+    assetsToInclude: assetsToInclude.map((token) => toBridgeToken(token)),
+    fetchTokens,
   };
 };

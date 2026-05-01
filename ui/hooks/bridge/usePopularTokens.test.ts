@@ -8,16 +8,13 @@ import {
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { usePopularTokens } from './usePopularTokens';
 
-jest.mock('../../pages/bridge/utils/tokens', () => ({
-  ...jest.requireActual('../../pages/bridge/utils/tokens'),
-  fetchPopularTokens: jest.fn().mockResolvedValue([]),
-}));
-
-jest.mock('../../store/actions', () => ({
-  getBearerToken: jest.fn().mockResolvedValue('mock-jwt'),
-}));
+const mockFetchPopularTokens = jest.fn().mockResolvedValue([]);// }));
 
 describe('usePopularTokens', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('does not crash when accountAddress is an external address with no matching account group', () => {
     const mockStoreState = createBridgeMockStore({
       featureFlagOverrides: {
@@ -39,15 +36,16 @@ describe('usePopularTokens', () => {
     const { result } = renderHookWithProvider(
       () =>
         usePopularTokens({
+          fetchTokens: mockFetchPopularTokens,
           assetsToInclude: [],
           accountGroupId: undefined,
-          chainIds: new Set([formatChainIdToCaip(CHAIN_IDS.MAINNET)]),
         }),
       mockStoreState,
     );
 
     expect(result.current.popularTokensList).toEqual([]);
     expect(result.current.isLoading).toBe(true);
+    expect(mockFetchPopularTokens).toHaveBeenCalledTimes(1);
   });
 
   it('returns owned assets when accountAddress belongs to a known account group', () => {
@@ -75,9 +73,9 @@ describe('usePopularTokens', () => {
     const { result } = renderHookWithProvider(
       () =>
         usePopularTokens({
+          fetchTokens: mockFetchPopularTokens,
           assetsToInclude: [],
           accountGroupId,
-          chainIds: new Set([formatChainIdToCaip(CHAIN_IDS.MAINNET)]),
         }),
       mockStoreState,
     );
@@ -87,5 +85,6 @@ describe('usePopularTokens', () => {
     // popularTokensList falls back to assetsToInclude while token list loads
     expect(result.current.popularTokensList).toEqual([]);
     expect(result.current.isLoading).toBe(true);
+    expect(mockFetchPopularTokens).toHaveBeenCalledTimes(1);
   });
 });

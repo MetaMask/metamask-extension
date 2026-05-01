@@ -404,9 +404,7 @@ exports[`BridgeInputGroup should render popular tokens 2`] = `
         "tokenFiatAmount": 0.0000030290553678041743,
       },
     ],
-    "chainIds": Set {
-      "eip155:1",
-    },
+    "fetchTokens": [Function],
   },
 ]
 `;

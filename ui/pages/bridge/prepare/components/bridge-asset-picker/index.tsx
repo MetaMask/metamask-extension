@@ -106,26 +106,6 @@ export const BridgeAssetPicker = ({
     return new Set(chainIdsList);
   }, [chainIdsList]);
 
-  const assetsToInclude = useMemo(
-    () =>
-      uniqBy(
-        assetsWithBalance.filter((token) => {
-          const matchesChainIdFilter = chainIdsSet.has(token.chainId);
-
-          return matchesChainIdFilter;
-        }),
-        (a) => a.assetId?.toLowerCase(),
-      ).map((token) => toBridgeToken(token)),
-    [chainIdsSet, assetsWithBalance],
-  );
-
-  const { popularTokensList, isLoading: isPopularTokensLoading } =
-    usePopularTokens({
-      assetsToInclude,
-      accountGroupId: accountGroup?.id,
-      chainIds: chainIdsSet,
-    });
-
   const selectedNetworkName = selectedChainId
     ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[selectedChainId]
     : t('allNetworks');
@@ -278,12 +258,9 @@ export const BridgeAssetPicker = ({
             {!isNetworkPickerOpen && (
               <BridgeAssetList
                 accountGroupId={accountGroup?.id}
-                assetsToInclude={assetsToInclude}
                 chainIds={chainIdsSet}
                 searchQuery={searchQuery.trim()}
                 selectedAssetId={selectedAsset.assetId}
-                popularTokensList={popularTokensList}
-                isPopularTokensLoading={isPopularTokensLoading}
                 onAssetChange={(asset: BridgeToken) => {
                   if (isStockToken(asset) && !isTokenTradingOpen(asset)) {
                     closeFromMarketCloseRef.current = true;

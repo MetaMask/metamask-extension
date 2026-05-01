@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   formatChainIdToCaip,
@@ -12,9 +12,7 @@ import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
-  type BridgeAppState,
   getBip44DefaultPairsConfig,
-  getFromAccount,
   getFromChain,
   getFromChains,
   getLastSelectedChainId,
@@ -24,14 +22,10 @@ import {
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
+import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
-import { getBridgeSortedAssets } from '../../ducks/bridge/asset-selectors';
-import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { useInitialBridgeTokens } from './useInitialBridgeTokens';
-import {
-  BridgeNavigationOptions,
-  useBridgeNavigation,
-} from './useBridgeNavigation';
+import { type BridgeNavigationOptions, useBridgeNavigation } from './useBridgeNavigation';
 
 /**
  * This hook is the entrypoint for the bridge experience
@@ -58,21 +52,13 @@ const useBridging = () => {
   );
 
   // Pre-fetch the popular tokens list
-  const fromAccount = useSelector(getFromAccount);
-  const groupId = useSelector((state: BridgeAppState) =>
-    getAccountGroupsByAddress(state, [fromAccount?.address]),
-  )[0]?.id;
-  const chainIds = useMemo(
-    () => new Set(fromChains.map((chain) => chain.chainId)),
-    [fromChains],
-  );
-  const assetsToInclude = useSelector((state: BridgeAppState) =>
-    getBridgeSortedAssets(state, groupId),
-  );
-  useInitialBridgeTokens({
-    assetsToInclude,
-    chainIds,
-  });
+  const { fetchTokens } = useInitialBridgeTokens();
+  useEffect(() => {
+    fetchTokens();
+    return () => {
+      clearAllBridgeCacheItems();
+    };
+  }, [fetchTokens]);
 
   /**
    * Navigates to the bridge page
