@@ -54,10 +54,7 @@ describe('PerpsWithdrawBalance', () => {
 
     expect(
       screen.getByText(
-        new RegExp(
-          `${messages.perpsAvailableBalance.message}\\$456\\.78`,
-          'u',
-        ),
+        new RegExp(`${messages.perpsAvailableBalance.message}\\$456\\.78`, 'u'),
       ),
     ).toBeInTheDocument();
   });

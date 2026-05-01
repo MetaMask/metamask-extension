@@ -86,7 +86,9 @@ describe('Confirmations Pay Feature Flags', () => {
           default: {
             enabled: true,
             tokens: {
-              eip155: ['eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831'],
+              eip155: [
+                'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+              ],
             },
           },
         },
@@ -115,7 +117,9 @@ describe('Confirmations Pay Feature Flags', () => {
           overrides: {
             perpsWithdraw: {
               tokens: {
-                eip155: ['eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831'],
+                eip155: [
+                  'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+                ],
               },
             },
           },
