@@ -12,7 +12,7 @@ describe('apiClient getBearerToken', () => {
     submitRequestToBackgroundMock.mockReset();
   });
 
-  it('deduplicates concurrent getBearerToken calls into one messengerCall', async () => {
+  it('deduplicates concurrent getBearerToken calls into one background request', async () => {
     let resolveCall: (value: string) => void;
     const pending = new Promise<string>((resolve) => {
       resolveCall = resolve;
@@ -27,10 +27,7 @@ describe('apiClient getBearerToken', () => {
     const p2 = apiClient.getBearerToken();
 
     expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith('messengerCall', [
-      'AuthenticationController:getBearerToken',
-      [],
-    ]);
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith('getBearerToken');
 
     resolveCall!('jwt');
     await expect(Promise.all([p1, p2])).resolves.toEqual(['jwt', 'jwt']);

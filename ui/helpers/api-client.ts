@@ -6,15 +6,12 @@ type QueryClient = NonNullable<
   Parameters<typeof createApiPlatformClient>[0]['queryClient']
 >;
 
-const GET_BEARER_TOKEN_ACTION = 'AuthenticationController:getBearerToken';
-
 let inFlightGetBearerToken: Promise<string | undefined> | null = null;
 
 function getBearerTokenSingleFlight(): Promise<string | undefined> {
   if (!inFlightGetBearerToken) {
     inFlightGetBearerToken = submitRequestToBackground<string | undefined>(
-      'messengerCall',
-      [GET_BEARER_TOKEN_ACTION, []],
+      'getBearerToken',
     ).finally(() => {
       inFlightGetBearerToken = null;
     });
