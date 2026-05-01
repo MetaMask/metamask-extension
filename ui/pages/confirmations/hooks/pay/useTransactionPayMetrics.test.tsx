@@ -5,8 +5,8 @@ import configureStore from 'redux-mock-store';
 import React from 'react';
 import {
   TransactionPayQuote,
-  TransactionPayRequiredToken,
   TransactionPayStrategy,
+  TransactionPayTotals,
 } from '@metamask/transaction-pay-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { Json } from '@metamask/utils';
@@ -16,8 +16,8 @@ import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import { useTransactionPayMetrics } from './useTransactionPayMetrics';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
+  useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
-  useTransactionPayRequiredTokens,
   useTransactionPayTotals,
 } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -32,7 +32,6 @@ jest.mock('../../../../store/actions', () => ({
 const TRANSACTION_ID_MOCK = 'transaction-id-mock';
 const CHAIN_ID_MOCK = '0x1';
 const TOKEN_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
-const TOKEN_AMOUNT_MOCK = '1.23';
 
 const PAY_TOKEN_MOCK = {
   address: TOKEN_ADDRESS_MOCK,
@@ -45,13 +44,45 @@ const PAY_TOKEN_MOCK = {
   symbol: 'TST',
 };
 
+const NATIVE_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
+
 const QUOTE_MOCK = {
   dust: {
     fiat: '0.6',
     usd: '0.5',
   },
+  request: {
+    targetTokenAddress: '0xabcdef1234567890abcdef1234567890abcdef12',
+  },
   strategy: TransactionPayStrategy.Bridge,
-} as TransactionPayQuote<Json>;
+} as unknown as TransactionPayQuote<Json>;
+
+const GAS_QUOTE_MOCK = {
+  dust: {
+    fiat: '0.1',
+    usd: '0.1',
+  },
+  request: {
+    targetTokenAddress: NATIVE_TOKEN_ADDRESS,
+  },
+  strategy: TransactionPayStrategy.Bridge,
+} as unknown as TransactionPayQuote<Json>;
+
+const TOTALS_MOCK: TransactionPayTotals = {
+  estimatedDuration: 60,
+  fees: {
+    metaMask: { fiat: '0.50', usd: '0.50' },
+    provider: { fiat: '0.25', usd: '0.25' },
+    sourceNetwork: {
+      estimate: { fiat: '0.10', usd: '0.10', human: '0.001', raw: '1000000' },
+      max: { fiat: '0.20', usd: '0.20', human: '0.002', raw: '2000000' },
+    },
+    targetNetwork: { fiat: '0.05', usd: '0.05' },
+  },
+  sourceAmount: { fiat: '100', usd: '100', human: '50', raw: '50000000' },
+  targetAmount: { fiat: '99', usd: '99' },
+  total: { fiat: '100.85', usd: '100.85' },
+};
 
 const mockStore = configureStore([]);
 
@@ -88,11 +119,11 @@ function createWrapper(type: string = TransactionType.perpsDeposit) {
 
 describe('useTransactionPayMetrics', () => {
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
+  const useTransactionPayPrimaryRequiredTokenMock = jest.mocked(
+    useTransactionPayPrimaryRequiredToken,
+  );
   const useTransactionPayQuotesMock = jest.mocked(useTransactionPayQuotes);
   const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
-  const useTransactionPayRequiredTokensMock = jest.mocked(
-    useTransactionPayRequiredTokens,
-  );
   const useTransactionPayAvailableTokensMock = jest.mocked(
     useTransactionPayAvailableTokens,
   );
@@ -100,18 +131,15 @@ describe('useTransactionPayMetrics', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
+    useTransactionPayPrimaryRequiredTokenMock.mockReturnValue(undefined);
+
     useTransactionPayTokenMock.mockReturnValue({
       payToken: undefined,
       setPayToken: jest.fn(),
     });
 
-    useTransactionPayRequiredTokensMock.mockReturnValue([
-      {
-        amountHuman: TOKEN_AMOUNT_MOCK,
-      } as TransactionPayRequiredToken,
-    ]);
-
     useTransactionPayQuotesMock.mockReturnValue([]);
+    useTransactionPayTotalsMock.mockReturnValue(undefined);
 
     useTransactionPayAvailableTokensMock.mockReturnValue([
       {},
@@ -120,8 +148,6 @@ describe('useTransactionPayMetrics', () => {
       {},
       {},
     ] as Asset[]);
-
-    useTransactionPayTotalsMock.mockReturnValue(undefined);
   });
 
   it('does not upsert fragment when no pay token is selected', () => {
@@ -146,26 +172,19 @@ describe('useTransactionPayMetrics', () => {
       TRANSACTION_ID_MOCK,
       {
         properties: expect.objectContaining({
-          mm_pay: true,
-          mm_pay_token_selected: 'TST',
-          mm_pay_chain_selected: CHAIN_ID_MOCK,
           mm_pay_payment_token_list_size: 5,
+          mm_pay_token_presented: 'TST',
+          mm_pay_chain_presented: CHAIN_ID_MOCK,
         }),
       },
     );
   });
 
-  it('includes mm_pay_strategy when quotes use Bridge strategy', () => {
+  it('sets mm_pay_quote_loaded to false initially', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: PAY_TOKEN_MOCK,
       setPayToken: jest.fn(),
     } as ReturnType<typeof useTransactionPayToken>);
-
-    useTransactionPayQuotesMock.mockReturnValue([
-      QUOTE_MOCK,
-      QUOTE_MOCK,
-      QUOTE_MOCK,
-    ]);
 
     renderHook(() => useTransactionPayMetrics(), {
       wrapper: createWrapper(),
@@ -175,24 +194,181 @@ describe('useTransactionPayMetrics', () => {
       TRANSACTION_ID_MOCK,
       {
         properties: expect.objectContaining({
-          mm_pay: true,
-          mm_pay_strategy: 'mm_swaps_bridge',
-          mm_pay_transaction_step_total: 4,
+          mm_pay_quote_loaded: false,
         }),
       },
     );
   });
 
-  it('includes mm_pay_strategy as relay when quotes use Relay strategy', () => {
-    const relayQuote = {
-      ...QUOTE_MOCK,
-      strategy: TransactionPayStrategy.Relay,
-    } as TransactionPayQuote<Json>;
-
+  it('sets mm_pay_quote_loaded to true when quotes are available', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: PAY_TOKEN_MOCK,
       setPayToken: jest.fn(),
     } as ReturnType<typeof useTransactionPayToken>);
+
+    useTransactionPayQuotesMock.mockReturnValue([QUOTE_MOCK]);
+
+    renderHook(() => useTransactionPayMetrics(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+      TRANSACTION_ID_MOCK,
+      {
+        properties: expect.objectContaining({
+          mm_pay_quote_loaded: true,
+        }),
+      },
+    );
+  });
+
+  it('updates mm_pay_quote_loaded from false to true when quotes arrive after initial render', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: PAY_TOKEN_MOCK,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
+
+    useTransactionPayQuotesMock.mockReturnValue([]);
+
+    const { rerender } = renderHook(() => useTransactionPayMetrics(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenLastCalledWith(
+      TRANSACTION_ID_MOCK,
+      {
+        properties: expect.objectContaining({
+          mm_pay_quote_loaded: false,
+        }),
+      },
+    );
+
+    useTransactionPayQuotesMock.mockReturnValue([QUOTE_MOCK]);
+    rerender();
+
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenLastCalledWith(
+      TRANSACTION_ID_MOCK,
+      {
+        properties: expect.objectContaining({
+          mm_pay_quote_loaded: true,
+        }),
+      },
+    );
+  });
+
+  it('does not set mm_pay_quote_requested (managed by useTransactionCustomAmount)', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: PAY_TOKEN_MOCK,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
+
+    renderHook(() => useTransactionPayMetrics(), {
+      wrapper: createWrapper(),
+    });
+
+    const call = jest.mocked(upsertTransactionUIMetricsFragment).mock.calls[0];
+    const { properties } = call[1] as { properties: Record<string, unknown> };
+
+    expect(properties).not.toHaveProperty('mm_pay_quote_requested');
+  });
+
+  it('sets mm_pay_token_selected from payToken symbol', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: PAY_TOKEN_MOCK,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
+
+    renderHook(() => useTransactionPayMetrics(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+      TRANSACTION_ID_MOCK,
+      {
+        properties: expect.objectContaining({
+          mm_pay_token_selected: 'TST',
+        }),
+      },
+    );
+  });
+
+  it('sets mm_pay_transaction_step_total and mm_pay_transaction_step based on quotes length', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: PAY_TOKEN_MOCK,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
+
+    useTransactionPayQuotesMock.mockReturnValue([QUOTE_MOCK, GAS_QUOTE_MOCK]);
+
+    renderHook(() => useTransactionPayMetrics(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+      TRANSACTION_ID_MOCK,
+      {
+        properties: expect.objectContaining({
+          mm_pay_transaction_step_total: 3,
+          mm_pay_transaction_step: 3,
+        }),
+      },
+    );
+  });
+
+  it('sets mm_pay_dust_usd from the non-gas quote', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: PAY_TOKEN_MOCK,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
+
+    useTransactionPayQuotesMock.mockReturnValue([QUOTE_MOCK, GAS_QUOTE_MOCK]);
+
+    renderHook(() => useTransactionPayMetrics(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+      TRANSACTION_ID_MOCK,
+      {
+        properties: expect.objectContaining({
+          mm_pay_dust_usd: '0.5',
+        }),
+      },
+    );
+  });
+
+  it('sets mm_pay_strategy to mm_swaps_bridge for Bridge quotes', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: PAY_TOKEN_MOCK,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
+
+    useTransactionPayQuotesMock.mockReturnValue([QUOTE_MOCK]);
+
+    renderHook(() => useTransactionPayMetrics(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+      TRANSACTION_ID_MOCK,
+      {
+        properties: expect.objectContaining({
+          mm_pay_strategy: 'mm_swaps_bridge',
+        }),
+      },
+    );
+  });
+
+  it('sets mm_pay_strategy to relay for Relay quotes', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: PAY_TOKEN_MOCK,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
+
+    const relayQuote = {
+      ...QUOTE_MOCK,
+      strategy: TransactionPayStrategy.Relay,
+    } as TransactionPayQuote<Json>;
 
     useTransactionPayQuotesMock.mockReturnValue([relayQuote]);
 
@@ -210,83 +386,14 @@ describe('useTransactionPayMetrics', () => {
     );
   });
 
-  it('includes custom_amount use case and sending value for perpsDeposit transactions', () => {
+  it('sets mm_pay_network_fee_usd and mm_pay_provider_fee_usd from totals', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: PAY_TOKEN_MOCK,
       setPayToken: jest.fn(),
     } as ReturnType<typeof useTransactionPayToken>);
-
-    renderHook(() => useTransactionPayMetrics(), {
-      wrapper: createWrapper(TransactionType.perpsDeposit),
-    });
-
-    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
-      TRANSACTION_ID_MOCK,
-      {
-        properties: expect.objectContaining({
-          mm_pay_use_case: 'custom_amount',
-          simulation_sending_assets_total_value: expect.any(Number),
-        }),
-      },
-    );
-  });
-
-  it('includes custom_amount use case and sending value for perpsWithdraw transactions', () => {
-    useTransactionPayTokenMock.mockReturnValue({
-      payToken: PAY_TOKEN_MOCK,
-      setPayToken: jest.fn(),
-    } as ReturnType<typeof useTransactionPayToken>);
-
-    renderHook(() => useTransactionPayMetrics(), {
-      wrapper: createWrapper(TransactionType.perpsWithdraw),
-    });
-
-    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
-      TRANSACTION_ID_MOCK,
-      {
-        properties: expect.objectContaining({
-          mm_pay_use_case: 'custom_amount',
-          simulation_sending_assets_total_value: expect.any(Number),
-        }),
-      },
-    );
-  });
-
-  it('does not include custom_amount use case for non-perpsDeposit transactions', () => {
-    useTransactionPayTokenMock.mockReturnValue({
-      payToken: PAY_TOKEN_MOCK,
-      setPayToken: jest.fn(),
-    } as ReturnType<typeof useTransactionPayToken>);
-
-    renderHook(() => useTransactionPayMetrics(), {
-      wrapper: createWrapper(TransactionType.musdConversion),
-    });
-
-    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
-      TRANSACTION_ID_MOCK,
-      {
-        properties: expect.not.objectContaining({
-          mm_pay_use_case: 'custom_amount',
-        }),
-      },
-    );
-  });
-
-  it('includes fee properties when totals are available', () => {
-    useTransactionPayTokenMock.mockReturnValue({
-      payToken: PAY_TOKEN_MOCK,
-      setPayToken: jest.fn(),
-    } as ReturnType<typeof useTransactionPayToken>);
-
-    useTransactionPayTotalsMock.mockReturnValue({
-      fees: {
-        sourceNetwork: { estimate: { usd: '1.5', fiat: '1.6' } },
-        targetNetwork: { usd: '2.5', fiat: '2.6' },
-        provider: { usd: '0.5', fiat: '0.6' },
-      },
-    } as unknown as ReturnType<typeof useTransactionPayTotals>);
 
     useTransactionPayQuotesMock.mockReturnValue([QUOTE_MOCK]);
+    useTransactionPayTotalsMock.mockReturnValue(TOTALS_MOCK);
 
     renderHook(() => useTransactionPayMetrics(), {
       wrapper: createWrapper(),
@@ -296,10 +403,80 @@ describe('useTransactionPayMetrics', () => {
       TRANSACTION_ID_MOCK,
       {
         properties: expect.objectContaining({
-          mm_pay_network_fee_usd: '4',
-          mm_pay_provider_fee_usd: '0.5',
+          mm_pay_network_fee_usd: '0.15',
+          mm_pay_provider_fee_usd: '0.25',
         }),
       },
+    );
+  });
+
+  it('sets simulation_sending_assets_total_value for perpsDeposit transactions', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: PAY_TOKEN_MOCK,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
+
+    useTransactionPayPrimaryRequiredTokenMock.mockReturnValue({
+      amountHuman: '42.5',
+    } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
+
+    renderHook(() => useTransactionPayMetrics(), {
+      wrapper: createWrapper(TransactionType.perpsDeposit),
+    });
+
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+      TRANSACTION_ID_MOCK,
+      {
+        properties: expect.objectContaining({
+          simulation_sending_assets_total_value: 42.5,
+        }),
+      },
+    );
+  });
+
+  it('sets simulation_sending_assets_total_value for musdConversion transactions', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: PAY_TOKEN_MOCK,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
+
+    useTransactionPayPrimaryRequiredTokenMock.mockReturnValue({
+      amountHuman: '100',
+    } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
+
+    renderHook(() => useTransactionPayMetrics(), {
+      wrapper: createWrapper(TransactionType.musdConversion),
+    });
+
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+      TRANSACTION_ID_MOCK,
+      {
+        properties: expect.objectContaining({
+          simulation_sending_assets_total_value: 100,
+        }),
+      },
+    );
+  });
+
+  it('does not set simulation_sending_assets_total_value for non-pay transaction types', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: PAY_TOKEN_MOCK,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
+
+    useTransactionPayPrimaryRequiredTokenMock.mockReturnValue({
+      amountHuman: '50',
+    } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
+
+    renderHook(() => useTransactionPayMetrics(), {
+      wrapper: createWrapper(TransactionType.contractInteraction),
+    });
+
+    const call = jest.mocked(upsertTransactionUIMetricsFragment).mock.calls[0];
+    const { properties } = call[1] as { properties: Record<string, unknown> };
+
+    expect(properties).not.toHaveProperty(
+      'simulation_sending_assets_total_value',
     );
   });
 });
