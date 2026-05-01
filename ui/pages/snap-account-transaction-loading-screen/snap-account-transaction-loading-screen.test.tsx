@@ -129,9 +129,7 @@ describe('<SnapAccountTransactionLoadingScreen />', () => {
     const { context, mockTrackEvent } = createMockMetaMetricsContext();
     renderWithProvider(
       <MetaMetricsContext.Provider value={context}>
-        <SnapAccountTransactionLoadingScreen
-          internalAccount={buildAccount()}
-        />
+        <SnapAccountTransactionLoadingScreen internalAccount={buildAccount()} />
       </MetaMetricsContext.Provider>,
       buildStore(),
     );
