@@ -2,47 +2,9 @@
 /**
  * @file node.ts — Tron local node seeder
  *
- * ## Why Docker stays (audit 2026-04-30, tronbox@4.7.0)
- *
- * Goal: replace `docker run tronbox/tre` with a node-spawned process using the
- * `tronbox` npm package, so contributors do not need Docker installed locally.
- *
- * ### Audit findings
- *
- * The `tronbox` npm package (latest = 4.7.0, audited via `yarn npm info tronbox`)
- * is a **smart-contract development framework** (compile, migrate, deploy, test,
- * console, flatten, unbox, help, version).  It does **not** ship a `tre`
- * subcommand or any equivalent that boots a local Tron node.
- *
- * TRE (TronBox Runtime Environment) is a **separate Docker image**:
- * https://hub.docker.com/r/tronbox/tre
- *
- * The tronbox repository itself documents this explicitly — the test suite for
- * TRE interactions contains the comment:
- *   "The following tests require TronBox >= 3.0.0 and
- *    TronBox Runtime Environment (https://hub.docker.com/r/tronbox/tre)"
- * (see tronprotocol/tronbox: test/tre/test/tre.js)
- *
- * The official TronBox documentation at https://tronbox.io/docs/ states:
- *   "When using this network on TronBox, you need to use Docker to pull the image."
- *
- * The `bin` entry in the npm package manifest is:
- *   { "tronbox": "build/tronbox.js" }
- * which resolves to the framework CLI only — no `tronbox tre` command exists.
- *
- * ### What would unblock migration
- *
- * Migration to a Docker-free approach would become possible if either:
- * 1. The tronbox npm package adds a `tre` (or equivalent) subcommand that
- *    starts the full TRE node natively without Docker, OR
- * 2. A standalone npm package is published that wraps the `tronbox/tre` Docker
- *    image's Java-based Tron node as a native binary (e.g. via a prebuilt binary
- *    distribution, similar to how `hardhat` bundles its own EVM).
- *
- * Until either of those upstream changes lands, Docker is the only supported
- * way to run TRE locally and in CI.  The existing `execSync('docker run …')` /
- * `execSync('docker rm -f …')` calls in `start()` and `quit()` are intentionally
- * left unchanged.
+ * Tronbox runs via Docker: `start()` and `quit()` shell out to
+ * `docker run tronbox/tre` and `docker rm -f` respectively. Docker is a hard
+ * prerequisite for running these E2E seeders locally and in CI.
  */
 import { execSync } from 'child_process';
 import bs58 from 'bs58';
