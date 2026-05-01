@@ -28,6 +28,12 @@ jest.mock('react-router-dom', () => {
 });
 
 const mockDispatch = jest.fn((...args: unknown[]) => jest.fn()(...args));
+const mockFetchTokens = jest.fn();
+const mockClearAllBridgeCacheItems = jest.fn();
+
+jest.mock('../../pages/bridge/utils/cache', () => ({
+  clearAllBridgeCacheItems:() => mockClearAllBridgeCacheItems(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -49,7 +55,6 @@ const renderUseBridging = (mockStoreState: object, pathname?: string) =>
 
 describe('useBridging', () => {
   beforeAll(() => {
-    jest.clearAllMocks();
     Object.defineProperty(global, 'platform', {
       value: {
         openTab: jest.fn(),
@@ -58,18 +63,16 @@ describe('useBridging', () => {
   });
 
   beforeEach(() => {
+    jest.clearAllMocks();
     useInitialBridgeTokensSpy = jest
       .spyOn(useInitialBridgeTokensUtils, 'useInitialBridgeTokens')
-      .mockReturnValue({
-        tokenList: [],
-        isTokenListLoading: false,
+      .mockReturnValueOnce({
+        assetsToInclude: [],
+        fetchTokens: mockFetchTokens,
       });
   });
 
   describe('extensionConfig.support=true, chain=1', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
@@ -159,7 +162,7 @@ describe('useBridging', () => {
           .spyOn(bridgeActions, 'resetBridgeController')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
-        const { result } = renderUseBridging(
+        const { result, unmount } = renderUseBridging(
           createBridgeMockStore({
             metamaskStateOverrides: {
               useExternalServices: true,
@@ -234,17 +237,9 @@ describe('useBridging', () => {
           },
         );
         expect(openTabSpy).not.toHaveBeenCalled();
-        const popularTokensArgs = useInitialBridgeTokensSpy.mock.lastCall[0];
-        expect(popularTokensArgs.chainIds).toStrictEqual(
-          new Set([
-            'eip155:10',
-            'eip155:1',
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-            'bip122:000000000019d6689c085ae165831e93',
-            'eip155:56',
-          ]),
-        );
-        expect(popularTokensArgs.assetsToInclude).toHaveLength(9);
+        expect(mockFetchTokens).toHaveBeenCalledTimes(1);
+        unmount();
+        expect(mockClearAllBridgeCacheItems).toHaveBeenCalledTimes(1);
       },
     );
 
@@ -393,7 +388,7 @@ describe('useBridging', () => {
           .spyOn(bridgeSelectors, 'getLastSelectedChainId')
           .mockReturnValueOnce(formatChainIdToCaip(CHAIN_IDS.MAINNET));
 
-        const { result } = renderUseBridging(
+        const { result, unmount } = renderUseBridging(
           createBridgeMockStore({
             metamaskStateOverrides: {
               useExternalServices: true,
@@ -468,16 +463,9 @@ describe('useBridging', () => {
           },
         });
         expect(openTabSpy).not.toHaveBeenCalled();
-        const popularTokensArgs = useInitialBridgeTokensSpy.mock.lastCall[0];
-        expect(popularTokensArgs.chainIds).toStrictEqual(
-          new Set([
-            'eip155:10',
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-            'bip122:000000000019d6689c085ae165831e93',
-            'eip155:56',
-          ]),
-        );
-        expect(popularTokensArgs.assetsToInclude).toHaveLength(6);
+        expect(mockFetchTokens).toHaveBeenCalledTimes(1);
+        unmount();
+        expect(mockClearAllBridgeCacheItems).toHaveBeenCalledTimes(1);
       },
     );
   });

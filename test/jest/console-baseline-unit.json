@@ -413,16 +413,20 @@
       "React: State updates on unmounted components": 1
     },
     "ui/components/multichain/account-overview/account-overview-eth.test.tsx": {
+      "Reselect: Input stability warnings": 1,
       "React: Act warnings (component updates not wrapped)": 1,
       "React: State updates on unmounted components": 1,
       "Reselect: Identity function warnings": 2
     },
     "ui/components/multichain/account-overview/account-overview-non-evm.test.tsx": {
+      "Reselect: Input stability warnings": 1,
       "React: Act warnings (component updates not wrapped)": 6,
       "React: State updates on unmounted components": 1,
       "Reselect: Identity function warnings": 2
     },
     "ui/components/multichain/account-overview/account-overview-unknown.test.tsx": {
+      "Reselect: Input stability warnings": 1,
+      "React: Act warnings (component updates not wrapped)": 1,
       "MetaMask: Background connection not initialized": 3
     },
     "ui/components/multichain/activity-list-item/activity-list-item.test.js": {
@@ -539,11 +543,12 @@
     "ui/helpers/utils/tags.test.ts": {
       "Reselect: Input stability warnings": 1
     },
-    "ui/hooks/bridge/useBridging.test.ts": {
-      "Reselect: Input stability warnings": 1
+    "ui/hooks/bridge/useInitialBridgeTokens.test.ts": {
+       "Reselect: Input stability warnings": 1,
+       "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/hooks/bridge/usePopularTokens.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 12,
+      "React: Act warnings (component updates not wrapped)": 2,
       "Reselect: Input stability warnings": 1
     },
     "ui/hooks/bridge/useTokenSearchResults.test.ts": {
@@ -661,7 +666,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/index.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 6,
+      "React: Act warnings (component updates not wrapped)": 5,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1
     },
@@ -676,7 +681,6 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/prepare/components/bridge-alert-banner-list.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 44,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
@@ -1052,9 +1056,6 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/rows/account-flow-row/account-flow-row.test.tsx": {
-      "Reselect: Identity function warnings": 3
-    },
-    "ui/pages/confirmations/components/rows/bridge-fee-row/bridge-fee-row.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/rows/claimable-bonus-row/claimable-bonus-row.test.tsx": {

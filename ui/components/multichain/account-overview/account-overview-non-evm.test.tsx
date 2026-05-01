@@ -9,12 +9,6 @@ import {
   AccountOverviewNonEvmProps,
 } from './account-overview-non-evm';
 
-jest.mock('../../../hooks/bridge/useBridging', () =>
-  jest.fn().mockReturnValue({
-    openBridgeExperience: jest.fn(),
-  }),
-);
-
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),

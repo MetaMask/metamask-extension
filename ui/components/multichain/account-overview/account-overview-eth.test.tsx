@@ -9,12 +9,6 @@ import {
   AccountOverviewEthProps,
 } from './account-overview-eth';
 
-jest.mock('../../../hooks/bridge/useBridging', () =>
-  jest.fn().mockReturnValue({
-    openBridgeExperience: jest.fn(),
-  }),
-);
-
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
