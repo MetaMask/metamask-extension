@@ -106,6 +106,7 @@ export const getNetworkConfigurationsByCaipChainId = ({
   multichainNetworkConfigurationsByChainId,
   networkConfigurationsByChainId,
   internalAccounts,
+  snaps,
 }: {
   multichainNetworkConfigurationsByChainId: Record<
     CaipChainId,
@@ -113,6 +114,7 @@ export const getNetworkConfigurationsByCaipChainId = ({
   >;
   networkConfigurationsByChainId: Record<string, InternalNetworkConfiguration>;
   internalAccounts: AccountsControllerState['internalAccounts'];
+  snaps: Record<string, { enabled: boolean }>;
 }) => {
   const caipFormattedEvmNetworkConfigurations: Record<
     string,
@@ -137,7 +139,10 @@ export const getNetworkConfigurationsByCaipChainId = ({
             return scope === caipChainId;
           });
 
-          const isSnapEnabled = account.metadata.snap?.enabled;
+          const snapId = account.metadata.snap?.id;
+          const isSnapEnabled = snapId
+            ? Boolean(snaps[snapId]?.enabled)
+            : false;
 
           return Boolean(matchesScope && isSnapEnabled);
         },
@@ -166,10 +171,14 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
   (state: {
     metamask: { internalAccounts: AccountsControllerState['internalAccounts'] };
   }) => state.metamask.internalAccounts,
+  (state: {
+    metamask: { snaps: Record<string, { enabled: boolean }> };
+  }) => state.metamask.snaps,
   (
     networkConfigurationsByChainId,
     multichainNetworkConfigurationsByChainId,
     internalAccounts,
+    snaps,
   ) => {
     // We have this logic here to filter out non EVM test networks
     // to properly handle this we should use the selector from
@@ -219,6 +228,7 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
       },
       networkConfigurationsByChainId,
       internalAccounts,
+      snaps,
     });
   },
 );

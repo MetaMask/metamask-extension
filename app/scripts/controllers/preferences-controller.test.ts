@@ -73,7 +73,6 @@ const setupController = ({
     messenger: accountsControllerMessenger,
     events: [
       'KeyringController:stateChange',
-      'SnapController:stateChange',
       'SnapKeyring:accountAssetListUpdated',
       'SnapKeyring:accountBalancesUpdated',
       'SnapKeyring:accountTransactionsUpdated',

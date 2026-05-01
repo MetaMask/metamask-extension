@@ -72,6 +72,11 @@ export type PermissionBackgroundApiOptions = {
       multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
     };
   };
+  snapController: {
+    state: {
+      snaps: Record<string, { enabled: boolean }>;
+    };
+  };
 };
 
 export function getPermissionBackgroundApiMethods({
@@ -80,6 +85,7 @@ export function getPermissionBackgroundApiMethods({
   accountsController,
   networkController,
   multichainNetworkController,
+  snapController,
 }: PermissionBackgroundApiOptions) {
   // Returns the CAIP-25 caveat or undefined if it does not exist
   const getCaip25Caveat = (
@@ -138,6 +144,7 @@ export function getPermissionBackgroundApiMethods({
           multichainNetworkController.state
             .multichainNetworkConfigurationsByChainId,
         internalAccounts: accountsController.state.internalAccounts,
+        snaps: snapController.state.snaps,
       }),
     );
 

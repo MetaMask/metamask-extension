@@ -1247,6 +1247,7 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
         ...baseState,
         networkConfigurationsByChainId: networks,
         multichainNetworkConfigurationsByChainId: {},
+        snaps: {},
       } as unknown as BalanceCalculationState['metamask'],
     };
   };
@@ -1286,6 +1287,9 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
         ...baseState,
         networkConfigurationsByChainId: {},
         multichainNetworkConfigurationsByChainId: multichainNetworks,
+        snaps: {
+          'npm:@metamask/solana-wallet-snap': { enabled: true },
+        },
       } as unknown as BalanceCalculationState['metamask'],
     };
   };

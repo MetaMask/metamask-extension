@@ -3515,6 +3515,7 @@ export default class MetamaskController extends EventEmitter {
         accountsController,
         networkController,
         multichainNetworkController,
+        snapController: this.snapController,
       }),
 
       // Snaps
