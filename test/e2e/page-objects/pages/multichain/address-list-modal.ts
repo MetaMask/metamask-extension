@@ -90,6 +90,29 @@ class AddressListModal {
   async goBack(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.backButton);
   }
+
+  async checkQrPopupShowsAddress(expected: string): Promise<void> {
+    console.log(`Verify QR popup shows full Tron address ${expected}`);
+    await this.driver.waitForSelector({
+      css: '[data-testid="address-copy-button-text"]',
+      text: expected,
+    });
+  }
+
+  async checkViewOnTronscanButton(): Promise<void> {
+    console.log('Verify "View on Tronscan" button is shown in QR popup');
+    await this.driver.waitForSelector({
+      tag: 'button',
+      text: 'View on Tronscan',
+    });
+  }
+
+  async clickQrCopyAddressLink(): Promise<void> {
+    console.log('Click copy address link in QR popup');
+    await this.driver.clickElement({
+      testId: 'address-copy-button-text',
+    });
+  }
 }
 
 export default AddressListModal;
