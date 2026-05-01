@@ -16,7 +16,10 @@ import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
-import type { NetworkControllerStateChangeEvent } from '@metamask/network-controller';
+import type {
+  NetworkControllerNetworkAddedEvent,
+  NetworkControllerStateChangeEvent,
+} from '@metamask/network-controller';
 import type {
   BackendWebSocketServiceActions,
   BackendWebSocketServiceEvents,
@@ -64,7 +67,8 @@ type CoreAssetsControllerEvents =
   | ClientControllerStateChangeEvent
   | NetworkEnablementControllerEvents
   | KeyringControllerLockEvent
-  | KeyringControllerUnlockEvent;
+  | KeyringControllerUnlockEvent
+  | NetworkControllerNetworkAddedEvent;
 
 /**
  * NetworkController:getState action for RpcDataSource.
@@ -241,6 +245,7 @@ export function getAssetsControllerMessenger(
       'KeyringController:lock',
       'KeyringController:unlock',
       'NetworkController:stateChange',
+      'NetworkController:networkAdded',
       'BackendWebSocketService:connectionStateChanged',
       'AccountsController:accountBalancesUpdated',
       'PermissionController:stateChange',
