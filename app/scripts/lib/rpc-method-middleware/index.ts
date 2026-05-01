@@ -21,8 +21,14 @@ const onError = (error: unknown) => {
   }
 };
 
-// The primary home of RPC method implementations for the injected 1193 provider API. MUST be subsequent
-// to our permissioning logic in the EIP-1193 JSON-RPC middleware pipeline.
+/**
+ * The primary home of RPC method implementations for the injected EIP-1193
+ * provider API. The returned middleware MUST be placed _after_ our
+ * permissioning logic in the EIP-1193 JSON-RPC middleware pipeline.
+ *
+ * @param hooks - The hooks required by the EIP-1193 method handlers.
+ * @returns A JSON-RPC middleware that handles EIP-1193 methods.
+ */
 export const createEip1193MethodMiddleware = (
   hooks: HandlerHooks & Eip1193OnlyHooks,
 ) =>
@@ -35,8 +41,14 @@ export const createEip1193MethodMiddleware = (
     onError,
   });
 
-// A collection of RPC method implementations that, for legacy reasons, MAY precede
-// our permissioning logic in the EIP-1193 JSON-RPC middleware pipeline.
+/**
+ * A collection of RPC method implementations that, for legacy reasons, MAY
+ * precede our permissioning logic in the EIP-1193 JSON-RPC middleware
+ * pipeline.
+ *
+ * @param hooks - The hooks required by the `eth_accounts` handler.
+ * @returns A JSON-RPC middleware that handles `eth_accounts`.
+ */
 export const createEthAccountsMethodMiddleware = (hooks: EthAccountsHooks) =>
   createMethodMiddleware({
     handlers: {
@@ -46,18 +58,39 @@ export const createEthAccountsMethodMiddleware = (hooks: EthAccountsHooks) =>
     onError,
   });
 
-export type MultichainMethodMiddlewareHooks = HandlerHooks &
-  MultichainHandlerHooks;
-
-// The primary home of RPC method implementations for the MultiChain API.
-export const createMultichainMethodMiddleware = (
-  hooks: MultichainMethodMiddlewareHooks,
+/**
+ * Handles methods specific to the MultiChain API (e.g., `wallet_createSession`,
+ * `wallet_invokeMethod`).
+ *
+ * The `wallet_invokeMethod` handler unwraps the inner request, mutates `req`
+ * in place, and forwards it via `next()`. The unwrapped request is intended
+ * to be handled by {@link createMultichainMethodMiddleware}, which must be
+ * pushed onto the engine immediately after the middleware returned here.
+ *
+ * @param hooks - The hooks required by the MultiChain API method handlers.
+ * @returns A JSON-RPC middleware that handles MultiChain API methods.
+ */
+export const createMultichainApiMethodMiddleware = (
+  hooks: MultichainHandlerHooks,
 ) =>
   createMethodMiddleware({
-    handlers: {
-      ...localHandlers,
-      ...multichainMethodHandlers,
-    },
+    handlers: { ...multichainMethodHandlers },
+    hooks,
+    onError,
+  });
+
+/**
+ * Handles unrestricted RPC methods in the MultiChain pipeline (e.g.,
+ * `wallet_addEthereumChain`, `wallet_watchAsset`). The returned middleware
+ * MUST be placed immediately after {@link createMultichainApiMethodMiddleware}
+ * so that requests unwrapped by `wallet_invokeMethod` reach these handlers.
+ *
+ * @param hooks - The hooks required by the unrestricted RPC method handlers.
+ * @returns A JSON-RPC middleware that handles unrestricted RPC methods.
+ */
+export const createMultichainMethodMiddleware = (hooks: HandlerHooks) =>
+  createMethodMiddleware({
+    handlers: { ...localHandlers },
     hooks,
     onError,
   });

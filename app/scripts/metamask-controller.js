@@ -264,6 +264,7 @@ import {
   createEthAccountsMethodMiddleware,
   createEip1193MethodMiddleware,
   createUnsupportedMethodMiddleware,
+  createMultichainApiMethodMiddleware,
   createMultichainMethodMiddleware,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
@@ -8199,9 +8200,12 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(multichainMethodCallValidatorMiddleware);
 
+    // Handles MultiChain API methods (e.g., `wallet_invokeMethod`,
+    // `wallet_createSession`). The `wallet_invokeMethod` handler unwraps inner
+    // requests and forwards them via `next()`, where they are picked up by
+    // `createMultichainMethodMiddleware` below.
     engine.push(
-      createMultichainMethodMiddleware({
-        ...this.setupCommonMiddlewareHooks(origin),
+      createMultichainApiMethodMiddleware({
         findNetworkClientIdByChainId:
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
@@ -8261,6 +8265,12 @@ export default class MetamaskController extends EventEmitter {
         sortAccountIdsByLastSelected:
           this.sortAccountIdsByLastSelected.bind(this),
       }),
+    );
+
+    // Handles unrestricted RPC methods (e.g., `wallet_addEthereumChain`,
+    // `wallet_watchAsset`) that are unwrapped from `wallet_invokeMethod`.
+    engine.push(
+      createMultichainMethodMiddleware(this.setupCommonMiddlewareHooks(origin)),
     );
 
     engine.push(
