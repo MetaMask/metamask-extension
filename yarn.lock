@@ -8406,7 +8406,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-pay-controller@npm:^19.2.2":
+"@metamask/transaction-pay-controller@npm:19.2.2":
   version: 19.2.2
   resolution: "@metamask/transaction-pay-controller@npm:19.2.2"
   dependencies:
@@ -8432,6 +8432,35 @@ __metadata:
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
   checksum: 10/8b6e47ee9b738c6e6979b0bb59d387abf70b437cdf6dd534f1ee4607acdeae9e5060a94909c39b6210962cec1754c5c615b9980e970ddc8bbabe613ff250e8b5
+  languageName: node
+  linkType: hard
+
+"@metamask/transaction-pay-controller@patch:@metamask/transaction-pay-controller@npm%3A19.2.2#~/.yarn/patches/@metamask-transaction-pay-controller-npm-19.2.2-9506c14289.patch":
+  version: 19.2.2
+  resolution: "@metamask/transaction-pay-controller@patch:@metamask/transaction-pay-controller@npm%3A19.2.2#~/.yarn/patches/@metamask-transaction-pay-controller-npm-19.2.2-9506c14289.patch::version=19.2.2&hash=e46b59"
+  dependencies:
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/assets-controller": "npm:^6.0.0"
+    "@metamask/assets-controllers": "npm:^104.2.0"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/bridge-controller": "npm:^70.1.1"
+    "@metamask/bridge-status-controller": "npm:^70.0.5"
+    "@metamask/controller-utils": "npm:^11.20.0"
+    "@metamask/gas-fee-controller": "npm:^26.1.1"
+    "@metamask/messenger": "npm:^1.1.1"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/network-controller": "npm:^30.0.1"
+    "@metamask/ramps-controller": "npm:^13.2.0"
+    "@metamask/remote-feature-flag-controller": "npm:^4.2.0"
+    "@metamask/transaction-controller": "npm:^64.3.0"
+    "@metamask/utils": "npm:^11.9.0"
+    bignumber.js: "npm:^9.1.2"
+    bn.js: "npm:^5.2.1"
+    immer: "npm:^9.0.6"
+    lodash: "npm:^4.17.21"
+  checksum: 10/7563e5613233f37af202c82a99cdbbd27f06ca4e400255417db20901636f119a79f21bb16f3e1d47d66eabc98522871611c49e77c0f9cd128606ab1b89a16ce3
   languageName: node
   linkType: hard
 
@@ -34160,7 +34189,7 @@ __metadata:
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.4.2"
     "@metamask/transaction-controller": "npm:^64.3.0"
-    "@metamask/transaction-pay-controller": "npm:^19.2.2"
+    "@metamask/transaction-pay-controller": "patch:@metamask/transaction-pay-controller@npm%3A19.2.2#~/.yarn/patches/@metamask-transaction-pay-controller-npm-19.2.2-9506c14289.patch"
     "@metamask/tron-wallet-snap": "npm:^1.25.3"
     "@metamask/user-operation-controller": "npm:^41.2.0"
     "@metamask/utils": "npm:^11.11.0"
