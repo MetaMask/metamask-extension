@@ -52,7 +52,13 @@ const createMockedHandler = () => {
   };
   const response = {};
   const handler = (request) =>
-    switchEthereumChainHandler.implementation(request, response, next, end, mocks);
+    switchEthereumChainHandler.implementation(
+      request,
+      response,
+      next,
+      end,
+      mocks,
+    );
 
   return {
     mocks,
@@ -203,7 +209,8 @@ describe('switchEthereumChainHandler', () => {
   it('calls `switchChain` with `autoApprove: true` if the origin is a Snap', async () => {
     const { mocks } = createMockedHandler();
 
-    const switchEthereumChainImplementation = switchEthereumChainHandler.implementation;
+    const switchEthereumChainImplementation =
+      switchEthereumChainHandler.implementation;
     await switchEthereumChainImplementation(
       {
         origin: 'npm:foo-snap',

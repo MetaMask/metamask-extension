@@ -122,7 +122,8 @@ async function requestPermissionsImplementation(
     };
   }
 
-  let grantedPermissions: Awaited<ReturnType<RequestPermissionsForOrigin>>[0] = {};
+  let grantedPermissions: Awaited<ReturnType<RequestPermissionsForOrigin>>[0] =
+    {};
 
   const [frozenGrantedPermissions] =
     await requestPermissionsForOrigin(requestedPermissions);

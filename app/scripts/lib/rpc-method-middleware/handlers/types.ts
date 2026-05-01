@@ -1,6 +1,4 @@
-import type {
-  NonEmptyArray,
-} from '@metamask/utils';
+import type { NonEmptyArray } from '@metamask/utils';
 import type {
   RequestedPermissions,
   GenericPermissionController,
