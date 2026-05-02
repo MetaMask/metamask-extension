@@ -2998,6 +2998,8 @@ export default class MetamaskController extends EventEmitter {
       // passkey management
       generatePasskeyRegistrationOptions:
         this.generatePasskeyRegistrationOptions.bind(this),
+      generatePasskeyPostRegistrationAuthenticationOptions:
+        this.generatePasskeyPostRegistrationAuthenticationOptions.bind(this),
       generatePasskeyAuthenticationOptions:
         this.generatePasskeyAuthenticationOptions.bind(this),
       protectVaultKeyWithPasskey: this.protectVaultKeyWithPasskey.bind(this),
@@ -4471,14 +4473,34 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * After `navigator.credentials.create()`, returns `get()` options for the
+   * post-registration assertion required by {@link protectVaultKeyWithPasskey}.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyRegistrationResponse} registrationResponse - Registration response from the UI.
+   * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialRequestOptionsJSON>}
+   */
+  async generatePasskeyPostRegistrationAuthenticationOptions(
+    registrationResponse,
+  ) {
+    return this.passkeyController.generatePostRegistrationAuthenticationOptions(
+      { registrationResponse },
+    );
+  }
+
+  /**
    * Wraps the vault encryption key with a passkey after WebAuthn registration in the UI.
    * If `completedOnboarding`, `password` is required and verified first.
    *
    * @param {import('@metamask/passkey-controller').PasskeyRegistrationResponse} registrationResponse - Registration response from the UI.
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - Post-registration `get()` response from the UI.
    * @param {string} [password] - Wallet password when onboarding is complete (step-up).
    * @returns {Promise<void>}
    */
-  async protectVaultKeyWithPasskey(registrationResponse, password) {
+  async protectVaultKeyWithPasskey(
+    registrationResponse,
+    authenticationResponse,
+    password,
+  ) {
     const { completedOnboarding } = this.onboardingController.state;
     if (completedOnboarding) {
       // password is required when onboarding is complete
@@ -4492,6 +4514,7 @@ export default class MetamaskController extends EventEmitter {
     const vaultKey = await this.keyringController.exportEncryptionKey();
     await this.passkeyController.protectVaultKeyWithPasskey({
       registrationResponse,
+      authenticationResponse,
       vaultKey,
     });
   }

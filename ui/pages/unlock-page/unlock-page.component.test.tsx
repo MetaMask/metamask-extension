@@ -168,6 +168,25 @@ describe('UnlockPage component (passkey UI)', () => {
     expect(getByTestId('unlock-password')).toBeInTheDocument();
   });
 
+  it('returns to passkey-first view when fingerprint is clicked from password mode', async () => {
+    const props = buildProps({ passkeyAutoUnlockSuppressed: true });
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPage {...props} />,
+      mockStore,
+      '/unlock',
+    );
+
+    fireEvent.click(getByTestId('unlock-use-password-button'));
+    expect(getByTestId('unlock-password')).toBeInTheDocument();
+
+    fireEvent.click(getByTestId('unlock-with-passkey'));
+
+    await waitFor(() => {
+      expect(getByTestId('unlock-passkey-button')).toBeInTheDocument();
+    });
+  });
+
   it('cancels an in-flight passkey ceremony when the component unmounts', () => {
     const cancelSpy = jest.spyOn(passkeyCeremony, 'cancelPasskeyCeremony');
     const props = buildProps();

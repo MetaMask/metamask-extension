@@ -15,7 +15,6 @@ import reduceMetamask, {
   getGasEstimateTypeByChainId,
   getGasFeeEstimates,
   getGasFeeEstimatesByChainId,
-  getIsPasskeyRegistered,
   getIsNetworkBusyByChainId,
   getPasskeyAutoUnlockSuppressed,
   getNativeCurrency,

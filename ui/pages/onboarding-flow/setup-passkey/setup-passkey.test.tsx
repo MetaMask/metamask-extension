@@ -16,8 +16,7 @@ import { UPDATE_METAMASK_STATE } from '../../../store/actionConstants';
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
-  generatePasskeyAuthenticationOptions,
-  verifyPasskeyEnrollment,
+  generatePasskeyPostRegistrationAuthenticationOptions,
   forceUpdateMetamaskState,
 } from '../../../store/actions';
 import {
@@ -101,11 +100,12 @@ jest.mock('../../../store/actions', () => {
       extensions: { prf: { eval: { first: 'AQ' } } },
     }),
     protectVaultKeyWithPasskey: jest.fn().mockResolvedValue(undefined),
-    generatePasskeyAuthenticationOptions: jest.fn().mockResolvedValue({
-      challenge: 'AQ',
-      allowCredentials: [],
-    }),
-    verifyPasskeyEnrollment: jest.fn().mockResolvedValue(undefined),
+    generatePasskeyPostRegistrationAuthenticationOptions: jest
+      .fn()
+      .mockResolvedValue({
+        challenge: 'post-reg-challenge',
+        allowCredentials: [],
+      }),
     forceUpdateMetamaskState: jest.fn().mockResolvedValue(undefined),
   };
 });
@@ -148,8 +148,9 @@ describe('SetupPasskey', () => {
     jest.mocked(startPasskeyAuthentication).mockClear();
     jest.mocked(protectVaultKeyWithPasskey).mockClear();
     jest.mocked(generatePasskeyRegistrationOptions).mockClear();
-    jest.mocked(generatePasskeyAuthenticationOptions).mockClear();
-    jest.mocked(verifyPasskeyEnrollment).mockClear();
+    jest
+      .mocked(generatePasskeyPostRegistrationAuthenticationOptions)
+      .mockClear();
     jest.mocked(forceUpdateMetamaskState).mockReset();
     jest.mocked(forceUpdateMetamaskState).mockResolvedValue(undefined);
     jest.mocked(startPasskeyRegistration).mockResolvedValue({
@@ -176,7 +177,7 @@ describe('SetupPasskey', () => {
       screen.getByTestId('passkey-maybe-later-button'),
     ).toBeInTheDocument();
     expect(
-      screen.queryByTestId('passkey-registration-error'),
+      screen.queryByTestId('passkey-enrollment-error'),
     ).not.toBeInTheDocument();
   });
 
@@ -315,12 +316,12 @@ describe('SetupPasskey', () => {
         expect(screen.getByTestId('passkey-setup-steps')).toBeInTheDocument();
       });
       await waitFor(() => {
-        expect(protectVaultKeyWithPasskey).toHaveBeenCalled();
+        expect(
+          generatePasskeyPostRegistrationAuthenticationOptions,
+        ).toHaveBeenCalled();
       });
       await waitFor(() => {
-        expect(verifyPasskeyEnrollment).toHaveBeenCalledWith(
-          mockAuthenticationResponse,
-        );
+        expect(protectVaultKeyWithPasskey).toHaveBeenCalled();
       });
       expect(forceUpdateMetamaskState).toHaveBeenCalled();
       await waitFor(
@@ -353,7 +354,7 @@ describe('SetupPasskey', () => {
       });
       expect(mockUseNavigate).not.toHaveBeenCalled();
       expect(
-        screen.queryByTestId('passkey-registration-error'),
+        screen.queryByTestId('passkey-enrollment-error'),
       ).not.toBeInTheDocument();
       await waitFor(() => {
         expect(getByTestId('passkey-set-up-button')).toBeInTheDocument();
@@ -361,7 +362,7 @@ describe('SetupPasskey', () => {
       expect(screen.queryByTestId('passkey-setup-steps')).not.toBeInTheDocument();
     });
 
-    it('shows primary actions again when the user cancels passkey verification', async () => {
+    it('shows primary actions again when the user cancels post-registration authentication', async () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
       const { getByTestId } = renderWithProvider(<SetupPasskey />, mockStore);
 
@@ -374,7 +375,7 @@ describe('SetupPasskey', () => {
       fireEvent.click(getByTestId('passkey-set-up-button'));
 
       await waitFor(() => {
-        expect(verifyPasskeyEnrollment).not.toHaveBeenCalled();
+        expect(startPasskeyRegistration).toHaveBeenCalled();
       });
       expect(mockUseNavigate).not.toHaveBeenCalled();
       await waitFor(() => {
@@ -382,34 +383,23 @@ describe('SetupPasskey', () => {
       });
     });
 
-    it('uses verify-only flow when passkey is already registered', async () => {
+    it('redirects away when passkey is already registered', async () => {
       jest.spyOn(BrowserRuntimeUtils, 'getBrowserName').mockReturnValue('chrome');
       const mockStore = buildMockStore(FirstTimeFlowType.create, {
         passkeyRecord: testPasskeyRecord,
       });
-      const { getByTestId } = renderWithProvider(<SetupPasskey />, mockStore);
+      renderWithProvider(<SetupPasskey />, mockStore);
 
-      expect(
-        screen.getByText(messages.passkeySetupStepVerify.message),
-      ).toBeInTheDocument();
-
-      fireEvent.click(getByTestId('passkey-set-up-button'));
+      expect(screen.queryByTestId('passkey-set-up-button')).not.toBeInTheDocument();
 
       await waitFor(() => {
-        expect(startPasskeyRegistration).not.toHaveBeenCalled();
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          ONBOARDING_REVIEW_SRP_ROUTE,
+          { replace: true },
+        );
       });
-      await waitFor(() => {
-        expect(verifyPasskeyEnrollment).toHaveBeenCalled();
-      });
-      await waitFor(
-        () => {
-          expect(mockUseNavigate).toHaveBeenCalledWith(
-            ONBOARDING_REVIEW_SRP_ROUTE,
-            { replace: true },
-          );
-        },
-        { timeout: 4000 },
-      );
+
+      expect(startPasskeyRegistration).not.toHaveBeenCalled();
     });
 
     it('shows an inline error when protecting the vault key with the passkey fails', async () => {
@@ -424,7 +414,7 @@ describe('SetupPasskey', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId('passkey-registration-error'),
+          screen.getByTestId('passkey-enrollment-error'),
         ).toHaveTextContent(
           messages.passkeyErrorRegistrationVerificationFailed.message,
         );
@@ -432,11 +422,11 @@ describe('SetupPasskey', () => {
       expect(mockUseNavigate).not.toHaveBeenCalled();
     });
 
-    it('shows verification error when verifyPasskeyEnrollment fails', async () => {
+    it('shows registration error when protectVaultKeyWithPasskey fails after post-registration auth', async () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
       const { getByTestId } = renderWithProvider(<SetupPasskey />, mockStore);
 
-      jest.mocked(verifyPasskeyEnrollment).mockRejectedValueOnce({
+      jest.mocked(protectVaultKeyWithPasskey).mockRejectedValueOnce({
         code: PasskeyControllerErrorCode.AuthenticationVerificationFailed,
       });
 
@@ -444,7 +434,7 @@ describe('SetupPasskey', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId('passkey-verification-error'),
+          screen.getByTestId('passkey-enrollment-error'),
         ).toHaveTextContent(
           messages.passkeyErrorAuthenticationVerificationFailed.message,
         );

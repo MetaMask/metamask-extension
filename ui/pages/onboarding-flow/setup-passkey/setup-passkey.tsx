@@ -45,20 +45,18 @@ import {
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
-  generatePasskeyAuthenticationOptions,
-  verifyPasskeyEnrollment,
+  generatePasskeyPostRegistrationAuthenticationOptions,
   forceUpdateMetamaskState,
 } from '../../../store/actions';
-import { StatusIcon } from '../../../components/ui/icon/status-icon';
 
-/** Brief pause after verify succeeds so the completion icon is visible before navigation. */
-const PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS = 1500;
+/** Pause after enrollment succeeds so step completion is visible before navigation. */
+const PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS = 1000;
 
-type SetupPhase = 'idle' | 'inProgress';
+type PasskeyEnrollmentStepStatus = 'pending' | 'inProgress' | 'complete';
 
-type PasskeyStepIndicatorStatus = 'complete' | 'loading' | 'pending';
-
-const STEP_INDICATOR_WRAP = 'flex size-11 shrink-0 items-center justify-center';
+/** Default row status before enrollment starts or after the user silently dismisses WebAuthn. */
+const DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE: PasskeyEnrollmentStepStatus =
+  'pending';
 
 function getPasskeyStepRowProps(isActive: boolean) {
   if (isActive) {
@@ -74,30 +72,39 @@ function getPasskeyStepRowProps(isActive: boolean) {
   };
 }
 
-function renderPasskeyStepIndicator(status: PasskeyStepIndicatorStatus) {
-  if (status === 'complete') {
+function renderPasskeyStepIndicator(phase: PasskeyEnrollmentStepStatus) {
+  if (phase === 'complete') {
     return (
       <Box
-        className={STEP_INDICATOR_WRAP}
+        className="flex size-11 shrink-0 items-center justify-center"
         data-testid="passkey-step-indicator-complete"
       >
-        <StatusIcon state="success" />
+        <Icon
+          name={IconName.Check}
+          color={IconColor.SuccessDefault}
+          size={IconSize.Lg}
+        />
       </Box>
     );
   }
-  if (status === 'loading') {
+  if (phase === 'inProgress') {
     return (
       <Box
-        className={STEP_INDICATOR_WRAP}
-        data-testid="passkey-step-indicator-loading"
+        className="flex size-11 shrink-0 items-center justify-center"
+        data-testid="passkey-step-indicator-in-progress"
       >
-        <StatusIcon state="loading" />
+        <Icon
+          name={IconName.Loading}
+          color={IconColor.IconDefault}
+          size={IconSize.Lg}
+          className="animate-spin"
+        />
       </Box>
     );
   }
   return (
     <Box
-      className={STEP_INDICATOR_WRAP}
+      className="flex size-11 shrink-0 items-center justify-center"
       data-testid="passkey-step-indicator-pending"
     >
       <Icon
@@ -111,8 +118,9 @@ function renderPasskeyStepIndicator(status: PasskeyStepIndicatorStatus) {
 
 /**
  * Passkey enrollment uses the vault encryption key from the background.
- * Onboarding runs registration then an authentication ceremony so the assertion is verified
- * (registration may omit attestation).
+ * Runs WebAuthn `create()`, post-registration `get()`, then protects the vault key.
+ * If a passkey is already enrolled (`passkeyRecord` present), redirect away — this route is
+ * only for users who still need to enroll.
  */
 export default function SetupPasskey() {
   const navigate = useNavigate();
@@ -123,27 +131,12 @@ export default function SetupPasskey() {
     getIsParticipateInMetaMetricsSet,
   );
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
-  const isMountedRef = useRef(true);
-  const [phase, setPhase] = useState<SetupPhase>('idle');
-  const [registrationStepComplete, setRegistrationStepComplete] =
-    useState(false);
-  const [verificationStepComplete, setVerificationStepComplete] =
-    useState(false);
-  const [isRegisteringPasskey, setIsRegisteringPasskey] = useState(false);
-  const [isVerifyingPasskey, setIsVerifyingPasskey] = useState(false);
-  const [registrationError, setRegistrationError] = useState<string | null>(
-    null,
-  );
-  const [verificationError, setVerificationError] = useState<string | null>(
-    null,
-  );
-
-  useEffect(() => {
-    isMountedRef.current = true;
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
+  const [isEnrollmentInProgress, setIsEnrollmentInProgress] = useState(false);
+  const [registerStepPhase, setRegisterStepPhase] =
+    useState<PasskeyEnrollmentStepStatus>(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
+  const [verifyStepPhase, setVerifyStepPhase] =
+    useState<PasskeyEnrollmentStepStatus>(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
+  const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
 
   const goToNextStep = useCallback(() => {
     const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
@@ -166,124 +159,93 @@ export default function SetupPasskey() {
     navigate(nextRoute, { replace: true });
   }, [firstTimeFlowType, navigate, isParticipateInMetaMetricsSet]);
 
+  useEffect(() => {
+    if (!isPasskeyRegistered) {
+      return;
+    }
+    // During an in-flight enrollment, completion navigates after PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS.
+    if (isEnrollmentInProgress) {
+      return;
+    }
+    goToNextStep();
+  }, [isPasskeyRegistered, isEnrollmentInProgress, goToNextStep]);
+
   const handleMaybeLater = () => {
     goToNextStep();
   };
 
-  const handleStepRegisterPasskey = useCallback(async (): Promise<boolean> => {
-    if (isPasskeyRegistered) {
-      setRegistrationStepComplete(true);
-      return true;
-    }
+  const handleSetupPasskey = useCallback(async () => {
+    setEnrollmentError(null);
+    setRegisterStepPhase('inProgress');
+    setVerifyStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
+    setIsEnrollmentInProgress(true);
 
-    setRegistrationStepComplete(false);
-    setIsRegisteringPasskey(true);
     try {
-      const options = await generatePasskeyRegistrationOptions();
-      const registrationResponse = await startPasskeyRegistration(options);
-      await protectVaultKeyWithPasskey(registrationResponse);
-      await forceUpdateMetamaskState(dispatch);
-      setRegistrationStepComplete(true);
-      return true;
-    } catch (error) {
-      if (isPasskeyCeremonySilentError(error)) {
-        log.debug(
-          'Onboarding passkey registration cancelled or timed out',
-          error,
-        );
-        setPhase('idle');
-        return false;
-      }
+      // create passkey
+      const registrationOptions = await generatePasskeyRegistrationOptions();
+      const registrationResponse = await startPasskeyRegistration(registrationOptions);
+      setRegisterStepPhase('complete');
+      setVerifyStepPhase('inProgress');
 
-      log.error('Onboarding passkey registration failed', error);
-      setRegistrationError(
-        translatePasskeyError(error, t) ?? t('passkeyErrorRegistrationFailed'),
+      // verify passkey
+      const postRegAuthOptions = await generatePasskeyPostRegistrationAuthenticationOptions(
+        registrationResponse,
       );
-      setPhase('idle');
-      return false;
-    } finally {
-      setIsRegisteringPasskey(false);
-    }
-  }, [isPasskeyRegistered, dispatch, t]);
+      const postRegAuthenticationResponse = await startPasskeyAuthentication(postRegAuthOptions);
 
-  const handleStepVerifyPasskey = useCallback(async () => {
-    setIsVerifyingPasskey(true);
-    try {
-      const authOptions = await generatePasskeyAuthenticationOptions();
-      const authenticationResponse =
-        await startPasskeyAuthentication(authOptions);
-      await verifyPasskeyEnrollment(authenticationResponse);
+      // enroll passkey
+      await protectVaultKeyWithPasskey(
+        registrationResponse,
+        postRegAuthenticationResponse,
+      );
       await forceUpdateMetamaskState(dispatch);
-      setIsVerifyingPasskey(false);
-      setVerificationStepComplete(true);
+      setVerifyStepPhase('complete');
+
+      // wait for success display
       await new Promise((resolve) => {
         setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
       });
-      if (isMountedRef.current) {
-        goToNextStep();
-      }
+      goToNextStep();
     } catch (error) {
+      // handle error
       if (isPasskeyCeremonySilentError(error)) {
         log.debug(
-          'Onboarding passkey verification cancelled or timed out',
+          'Onboarding passkey enrollment ceremony cancelled or timed out',
           error,
         );
-        setPhase('idle');
+        setRegisterStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
+        setVerifyStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
         return;
       }
 
-      log.error('Onboarding passkey verification failed', error);
-      setVerificationError(
-        translatePasskeyError(error, t) ??
-          t('passkeyErrorAuthenticationVerificationFailed'),
+      log.error('Onboarding passkey registration failed', error);
+      setEnrollmentError(
+        translatePasskeyError(error, t) ?? t('passkeyErrorRegistrationFailed'),
       );
-      setPhase('idle');
     } finally {
-      setIsVerifyingPasskey(false);
+      setIsEnrollmentInProgress(false);
+      setRegisterStepPhase((prev) =>
+        prev === 'inProgress' ? 'pending' : prev,
+      );
+      setVerifyStepPhase((prev) =>
+        prev === 'inProgress' ? 'pending' : prev,
+      );
     }
   }, [dispatch, t, goToNextStep]);
 
-  const handleSetupPasskey = useCallback(async () => {
-    setRegistrationError(null);
-    setVerificationError(null);
-    setVerificationStepComplete(false);
-    setPhase('inProgress');
-
-    const shouldContinue = await handleStepRegisterPasskey();
-    if (!shouldContinue) {
-      return;
-    }
-
-    await handleStepVerifyPasskey();
-  }, [handleStepRegisterPasskey, handleStepVerifyPasskey]);
-
-  const primaryLabel = isPasskeyRegistered
-    ? t('passkeySetupStepVerify')
-    : t('setUpPasskey');
-
-  let registerIndicatorStatus: PasskeyStepIndicatorStatus = 'pending';
-  if (registrationStepComplete) {
-    registerIndicatorStatus = 'complete';
-  } else if (isRegisteringPasskey) {
-    registerIndicatorStatus = 'loading';
-  }
-
-  let verifyIndicatorStatus: PasskeyStepIndicatorStatus = 'pending';
-  if (verificationStepComplete) {
-    verifyIndicatorStatus = 'complete';
-  } else if (isVerifyingPasskey) {
-    verifyIndicatorStatus = 'loading';
-  }
-
   const registerStepTextColor =
-    registrationStepComplete || isRegisteringPasskey
-      ? TextColor.TextDefault
-      : TextColor.TextAlternative;
+    registerStepPhase === 'pending'
+      ? TextColor.TextAlternative
+      : TextColor.TextDefault;
 
   const verifyStepTextColor =
-    isVerifyingPasskey || verificationStepComplete
-      ? TextColor.TextDefault
-      : TextColor.TextAlternative;
+    verifyStepPhase === 'pending'
+      ? TextColor.TextAlternative
+      : TextColor.TextDefault;
+
+  if (isPasskeyRegistered && !isEnrollmentInProgress) {
+    return null;
+  }
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4} className="h-full">
@@ -312,21 +274,22 @@ export default function SetupPasskey() {
         {t('passkeyDescription')}
       </Text>
 
-      {phase === 'inProgress' ? (
+      {isEnrollmentInProgress ? (
         <Box
           flexDirection={BoxFlexDirection.Column}
           gap={2}
           className="w-full"
           data-testid="passkey-setup-steps"
+          aria-busy={true}
         >
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
             gap={3}
             padding={3}
-            {...getPasskeyStepRowProps(isRegisteringPasskey)}
+            {...getPasskeyStepRowProps(registerStepPhase === 'inProgress')}
           >
-            {renderPasskeyStepIndicator(registerIndicatorStatus)}
+            {renderPasskeyStepIndicator(registerStepPhase)}
             <Text
               variant={TextVariant.BodyMd}
               fontWeight={FontWeight.Regular}
@@ -340,11 +303,9 @@ export default function SetupPasskey() {
             alignItems={BoxAlignItems.Center}
             gap={3}
             padding={3}
-            {...getPasskeyStepRowProps(
-              isVerifyingPasskey || verificationStepComplete,
-            )}
+            {...getPasskeyStepRowProps(verifyStepPhase !== 'pending')}
           >
-            {renderPasskeyStepIndicator(verifyIndicatorStatus)}
+            {renderPasskeyStepIndicator(verifyStepPhase)}
             <Text
               variant={TextVariant.BodyMd}
               fontWeight={FontWeight.Regular}
@@ -356,29 +317,18 @@ export default function SetupPasskey() {
         </Box>
       ) : null}
 
-      {registrationError ? (
+      {enrollmentError ? (
         <Text
           variant={TextVariant.BodySm}
           color={TextColor.ErrorDefault}
           textAlign={TextAlign.Center}
-          data-testid="passkey-registration-error"
+          data-testid="passkey-enrollment-error"
         >
-          {registrationError}
+          {enrollmentError}
         </Text>
       ) : null}
 
-      {verificationError ? (
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.ErrorDefault}
-          textAlign={TextAlign.Center}
-          data-testid="passkey-verification-error"
-        >
-          {verificationError}
-        </Text>
-      ) : null}
-
-      {phase === 'idle' ? (
+      {isEnrollmentInProgress ? null : (
         <Box
           flexDirection={BoxFlexDirection.Column}
           gap={4}
@@ -389,10 +339,10 @@ export default function SetupPasskey() {
             size={ButtonSize.Lg}
             className="w-full"
             data-testid="passkey-set-up-button"
-            aria-label={primaryLabel}
+            aria-label={t('setUpPasskey')}
             onClick={handleSetupPasskey}
           >
-            {primaryLabel}
+            {t('setUpPasskey')}
           </Button>
           <Button
             variant={ButtonVariant.Tertiary}
@@ -404,7 +354,7 @@ export default function SetupPasskey() {
             {t('maybeLater')}
           </Button>
         </Box>
-      ) : null}
+      )}
     </Box>
   );
 }
