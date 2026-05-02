@@ -21,6 +21,44 @@ jest.mock('../../utils/transaction-pay', () => ({
 
 const NATIVE_TOKEN_ADDRESS = getNativeTokenAddress('0x1');
 
+function createMockPaymentToken(
+  overrides: Partial<TransactionPaymentToken> = {},
+): TransactionPaymentToken {
+  return {
+    address: NATIVE_TOKEN_ADDRESS,
+    chainId: '0x123',
+    balanceFiat: '100.00',
+    balanceHuman: '50',
+    balanceRaw: '50000000000000000000',
+    balanceUsd: '100.00',
+    decimals: 18,
+    symbol: 'ETH',
+    ...overrides,
+  };
+}
+
+function createMockRequiredToken(
+  overrides: Partial<TransactionPayRequiredToken> = {},
+): TransactionPayRequiredToken {
+  return {
+    address: NATIVE_TOKEN_ADDRESS,
+    chainId: '0x123',
+    allowUnderMinimum: false,
+    amountFiat: '10.00',
+    amountHuman: '5',
+    amountRaw: '5000000000000000000',
+    amountUsd: '10.00',
+    balanceFiat: '100.00',
+    balanceHuman: '50',
+    balanceRaw: '50000000000000000000',
+    balanceUsd: '100.00',
+    decimals: 18,
+    skipIfBalance: false,
+    symbol: 'ETH',
+    ...overrides,
+  };
+}
+
 const SEND_TOKEN_MOCK: Asset = {
   accountType: 'eip155:eoa',
   address: NATIVE_TOKEN_ADDRESS,
@@ -68,15 +106,8 @@ describe('useTransactionPayAvailableTokens', () => {
   });
 
   it('calls getAvailableTokens with tokens and transaction pay context', () => {
-    const payToken = {
-      address: NATIVE_TOKEN_ADDRESS,
-      chainId: '0x123',
-    } as TransactionPaymentToken;
-    const requiredToken = {
-      address: NATIVE_TOKEN_ADDRESS,
-      chainId: '0x123',
-      skipIfBalance: false,
-    } as TransactionPayRequiredToken;
+    const payToken = createMockPaymentToken();
+    const requiredToken = createMockRequiredToken({ skipIfBalance: false });
 
     useTransactionPayTokenMock.mockReturnValue({
       isNative: true,
