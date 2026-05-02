@@ -26,28 +26,20 @@ import Mascot from '../../../../components/ui/mascot';
 import Spinner from '../../../../components/ui/spinner';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  startPasskeyRegistration,
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
 } from '../../../../../shared/lib/passkey';
-import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
-import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../../shared/constants/app';
 import {
   changePassword,
   changePasswordWithPasskeyVerification,
   checkIsSeedlessPasswordOutdated,
-  protectVaultKeyWithPasskey,
   forceUpdateMetamaskState,
   generatePasskeyAuthenticationOptions,
-  generatePasskeyRegistrationOptions,
   removePasskeyWithPasswordVerification,
   verifyPassword,
 } from '../../../../store/actions';
 import PasswordForm from '../../../../components/app/password-form/password-form';
-import {
-  SECURITY_REGISTER_PASSKEY_ROUTE,
-  SECURITY_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import { toast, ToastContent } from '../../../../components/ui/toast/toast';
 import {
   getIsPasskeyFeatureAvailable,
@@ -62,7 +54,6 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { SECOND } from '../../../../../shared/constants/time';
-import ToggleButton from '../../../../components/ui/toggle-button';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -90,8 +81,10 @@ const ChangePassword = ({
   const isPasskeyActive = isPasskeyRegistered && isPasskeyFeatureAvailable;
   const animationEventEmitter = useRef(new EventEmitter());
   const autoPasskeyPromptStartedRef = useRef(false);
-  /** After first passkey auth or password verify, do not show the full-screen passkey gate again (e.g. biometrics toggle). */
+  /** After first passkey auth or password verify, do not show the full-screen passkey gate again. */
   const initialPasskeyGateDoneRef = useRef(false);
+  /** User cancelled or failed WebAuthn; next successful password check removes passkey. */
+  const passkeyVerificationFailedRef = useRef(false);
 
   const shouldSkipCurrentPasswordStep = isPasskeyActive;
 
@@ -112,9 +105,6 @@ const ChangePassword = ({
   const [newPassword, setNewPassword] = useState('');
   const [showChangePasswordWarning, setShowChangePasswordWarning] =
     useState(false);
-  const [enableBiometrics, setEnableBiometrics] = useState(
-    () => isPasskeyActive,
-  );
   const [passkeyAuthenticationResponse, setPasskeyAuthenticationResponse] =
     useState<PasskeyAuthenticationResponse | null>(null);
 
@@ -140,7 +130,13 @@ const ChangePassword = ({
 
   const handleSubmitCurrentPassword = async () => {
     try {
-      await verifyPassword(currentPassword);
+      if (passkeyVerificationFailedRef.current) {
+        await removePasskeyWithPasswordVerification(currentPassword);
+        passkeyVerificationFailedRef.current = false;
+        await forceUpdateMetamaskState(dispatch);
+      } else {
+        await verifyPassword(currentPassword);
+      }
       setIsIncorrectPasswordError(false);
       initialPasskeyGateDoneRef.current = true;
       setStep(ChangePasswordSteps.ChangePassword);
@@ -150,67 +146,25 @@ const ChangePassword = ({
   };
 
   const onChangePassword = async () => {
+    let changedPasswordWithPasskeyVerification = false;
     try {
       setShowChangePasswordWarning(false);
       setStep(ChangePasswordSteps.ChangePasswordLoading);
 
       if (isSocialLoginFlow) {
         await dispatch(changePassword(newPassword, currentPassword));
-      } else if (enableBiometrics && isPasskeyRegistered) {
-        // authenticate with passkey
-        let authenticationResponse = passkeyAuthenticationResponse;
-        if (!authenticationResponse) {
-          const authOptions = await generatePasskeyAuthenticationOptions();
-          authenticationResponse =
-            await startPasskeyAuthentication(authOptions);
-        }
-
-        // change password with passkey verification
-        await dispatch(
-          changePasswordWithPasskeyVerification(
-            newPassword,
-            authenticationResponse,
-          ),
-        );
-        setPasskeyAuthenticationResponse(null);
-        await forceUpdateMetamaskState(dispatch);
       } else if (
-        !enableBiometrics &&
         isPasskeyRegistered &&
         passkeyAuthenticationResponse !== null
       ) {
+        changedPasswordWithPasskeyVerification = true;
         await dispatch(
           changePasswordWithPasskeyVerification(
             newPassword,
             passkeyAuthenticationResponse,
           ),
         );
-        await removePasskeyWithPasswordVerification(newPassword);
         setPasskeyAuthenticationResponse(null);
-        await forceUpdateMetamaskState(dispatch);
-      } else if (enableBiometrics && !isPasskeyRegistered) {
-        await dispatch(changePassword(newPassword, currentPassword));
-
-        if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
-          trackEvent({
-            category: MetaMetricsEventCategory.Settings,
-            event: MetaMetricsEventName.PasswordChanged,
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              biometrics_enabled: true,
-            },
-          });
-          global.platform?.openExtensionInBrowser?.(
-            SECURITY_REGISTER_PASSKEY_ROUTE,
-            'from=change-password',
-          );
-          return;
-        }
-
-        const regOptions = await generatePasskeyRegistrationOptions();
-        const registrationResponse = await startPasskeyRegistration(regOptions);
-        await protectVaultKeyWithPasskey(registrationResponse, newPassword);
         await forceUpdateMetamaskState(dispatch);
       } else {
         await dispatch(changePassword(newPassword, currentPassword));
@@ -223,7 +177,9 @@ const ChangePassword = ({
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          biometrics_enabled: Boolean(enableBiometrics && !isSocialLoginFlow),
+          biometrics_enabled: Boolean(
+            changedPasswordWithPasskeyVerification && !isSocialLoginFlow,
+          ),
         },
       });
 
@@ -290,7 +246,6 @@ const ChangePassword = ({
   useEffect(() => {
     if (
       !isPasskeyActive ||
-      !enableBiometrics ||
       step !== ChangePasswordSteps.ChangePassword ||
       Boolean(currentPassword) ||
       passkeyAuthenticationResponse !== null ||
@@ -316,6 +271,7 @@ const ChangePassword = ({
         if (!cancelled) {
           autoPasskeyPromptStartedRef.current = false;
           initialPasskeyGateDoneRef.current = false;
+          passkeyVerificationFailedRef.current = true;
           setPasskeyAuthenticationResponse(null);
           setCurrentPassword('');
           setStep(ChangePasswordSteps.VerifyCurrentPassword);
@@ -334,13 +290,7 @@ const ChangePassword = ({
       autoPasskeyPromptStartedRef.current = false;
       setIsAwaitingPasskeyVerification(false);
     };
-  }, [
-    isPasskeyActive,
-    enableBiometrics,
-    step,
-    currentPassword,
-    passkeyAuthenticationResponse,
-  ]);
+  }, [isPasskeyActive, step, currentPassword, passkeyAuthenticationResponse]);
 
   const hasPasskeyAssertionForSave =
     isPasskeyRegistered && passkeyAuthenticationResponse !== null;
@@ -353,7 +303,6 @@ const ChangePassword = ({
     !initialPasskeyGateDoneRef.current &&
     isPasskeyActive &&
     !currentPassword &&
-    enableBiometrics &&
     passkeyAuthenticationResponse === null;
 
   const isPasskeyVerificationLayout =
@@ -491,7 +440,6 @@ const ChangePassword = ({
                     confirmPwdInputTestId="change-password-confirm-input"
                   />
                   {!isSocialLoginFlow &&
-                  !enableBiometrics &&
                   !hasPasskeyAssertionForSave &&
                   !currentPassword ? (
                     <Box marginTop={6}>
@@ -512,39 +460,6 @@ const ChangePassword = ({
                       />
                     </Box>
                   ) : null}
-                  {isSocialLoginFlow || !isPasskeyFeatureAvailable ? null : (
-                    <Box
-                      flexDirection={BoxFlexDirection.Column}
-                      gap={1}
-                      marginTop={6}
-                      paddingVertical={3}
-                    >
-                      <Box
-                        flexDirection={BoxFlexDirection.Row}
-                        justifyContent={BoxJustifyContent.Between}
-                        alignItems={BoxAlignItems.Center}
-                      >
-                        <Text
-                          variant={TextVariant.BodyMd}
-                          fontWeight={FontWeight.Medium}
-                        >
-                          {t('unlockWithPasskey')}
-                        </Text>
-                        <ToggleButton
-                          value={enableBiometrics}
-                          onToggle={(current) => setEnableBiometrics(!current)}
-                          dataTestId="change-password-enable-biometrics"
-                          containerStyle={{ width: '40px' }}
-                        />
-                      </Box>
-                      <Text
-                        variant={TextVariant.BodyMd}
-                        color={TextColor.TextAlternative}
-                      >
-                        {t('passkeyDescription')}
-                      </Text>
-                    </Box>
-                  )}
                   <Box
                     className="create-password__terms-container"
                     flexDirection={BoxFlexDirection.Row}

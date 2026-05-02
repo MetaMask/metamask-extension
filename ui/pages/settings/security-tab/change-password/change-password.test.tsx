@@ -25,6 +25,9 @@ const mockChangePasswordWithPasskeyVerification = jest.fn(
   (_newPassword: string, _authenticationResponse: unknown) => Promise.resolve(),
 );
 const mockForceUpdateMetamaskState = jest.fn(() => Promise.resolve());
+const mockRemovePasskeyWithPasswordVerification = jest.fn(() =>
+  Promise.resolve(),
+);
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -58,6 +61,8 @@ jest.mock('../../../../store/actions', () => ({
       authenticationResponse,
     ),
   forceUpdateMetamaskState: async () => mockForceUpdateMetamaskState(),
+  removePasskeyWithPasswordVerification: (password: string) =>
+    mockRemovePasskeyWithPasswordVerification(password),
 }));
 
 jest.mock('../../../../../shared/lib/passkey', () => ({
@@ -145,6 +150,28 @@ describe('ChangePassword', () => {
       expect(getByTestId('change-password-input')).toBeInTheDocument();
       expect(getByTestId('change-password-confirm-input')).toBeInTheDocument();
       expect(getByTestId('change-password-button')).toBeInTheDocument();
+    });
+  });
+
+  describe('Passkey feature without enrollment', () => {
+    beforeEach(() => {
+      (selectors.getIsPasskeyRegistered as jest.Mock).mockReturnValue(false);
+      (selectors.getIsPasskeyFeatureAvailable as jest.Mock).mockReturnValue(
+        true,
+      );
+    });
+
+    it('does not show the passkey biometrics toggle on change password', async () => {
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
+      );
+
+      await advanceToChangePasswordStep(getByTestId);
+
+      expect(
+        queryByTestId('change-password-enable-biometrics'),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -358,6 +385,37 @@ describe('ChangePassword', () => {
         expect(
           getByTestId('verify-current-password-input'),
         ).toBeInTheDocument();
+      });
+    });
+
+    it('removes passkey after successful password verification on passkey failure fallback', async () => {
+      (startPasskeyAuthentication as jest.Mock).mockRejectedValueOnce(
+        new Error('cancelled'),
+      );
+
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(
+          getByTestId('verify-current-password-input'),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.change(getByTestId('verify-current-password-input'), {
+        target: { value: mockPassword },
+      });
+      fireEvent.click(getByTestId('verify-current-password-button'));
+
+      await waitFor(() => {
+        expect(mockRemovePasskeyWithPasswordVerification).toHaveBeenCalledWith(
+          mockPassword,
+        );
+        expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
+        expect(mockVerifyPassword).not.toHaveBeenCalled();
+      });
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
       });
     });
 
