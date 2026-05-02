@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
@@ -9,6 +9,7 @@ import {
   ButtonSize,
   Checkbox,
   Text,
+  TextButton,
   TextVariant,
   TextColor,
   BoxFlexDirection,
@@ -39,7 +40,10 @@ import {
   verifyPassword,
 } from '../../../../store/actions';
 import PasswordForm from '../../../../components/app/password-form/password-form';
-import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  SECURITY_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { toast, ToastContent } from '../../../../components/ui/toast/toast';
 import {
   getIsPasskeyFeatureAvailable,
@@ -54,6 +58,8 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { SECOND } from '../../../../../shared/constants/time';
+import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../../shared/constants/app';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -80,22 +86,15 @@ const ChangePassword = ({
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const isPasskeyActive = isPasskeyRegistered && isPasskeyFeatureAvailable;
   const animationEventEmitter = useRef(new EventEmitter());
-  const autoPasskeyPromptStartedRef = useRef(false);
-  /** After first passkey auth or password verify, do not show the full-screen passkey gate again. */
-  const initialPasskeyGateDoneRef = useRef(false);
-  /** User cancelled or failed WebAuthn; next successful password check removes passkey. */
-  const passkeyVerificationFailedRef = useRef(false);
-
-  const shouldSkipCurrentPasswordStep = isPasskeyActive;
 
   const [step, setStep] = useState(() =>
-    shouldSkipCurrentPasswordStep
+    isPasskeyActive
       ? ChangePasswordSteps.ChangePassword
       : ChangePasswordSteps.VerifyCurrentPassword,
   );
 
   const [isAwaitingPasskeyVerification, setIsAwaitingPasskeyVerification] =
-    useState(shouldSkipCurrentPasswordStep);
+    useState(isPasskeyActive);
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
@@ -107,6 +106,18 @@ const ChangePassword = ({
     useState(false);
   const [passkeyAuthenticationResponse, setPasskeyAuthenticationResponse] =
     useState<PasskeyAuthenticationResponse | null>(null);
+  const passkeyAutoSuccessLockRef = useRef(false);
+
+  const isSidePanel =
+    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+
+  const openChangePasswordInFullScreen = useCallback(() => {
+    cancelPasskeyCeremony();
+    globalThis.platform?.openExtensionInBrowser?.(
+      SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+      'from=sidepanel',
+    );
+  }, []);
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -130,15 +141,8 @@ const ChangePassword = ({
 
   const handleSubmitCurrentPassword = async () => {
     try {
-      if (passkeyVerificationFailedRef.current) {
-        await removePasskeyWithPasswordVerification(currentPassword);
-        passkeyVerificationFailedRef.current = false;
-        await forceUpdateMetamaskState(dispatch);
-      } else {
-        await verifyPassword(currentPassword);
-      }
+      await verifyPassword(currentPassword);
       setIsIncorrectPasswordError(false);
-      initialPasskeyGateDoneRef.current = true;
       setStep(ChangePasswordSteps.ChangePassword);
     } catch (error) {
       setIsIncorrectPasswordError(true);
@@ -168,6 +172,10 @@ const ChangePassword = ({
         await forceUpdateMetamaskState(dispatch);
       } else {
         await dispatch(changePassword(newPassword, currentPassword));
+        if (isPasskeyActive) {
+          await removePasskeyWithPasswordVerification(newPassword);
+          await forceUpdateMetamaskState(dispatch);
+        }
       }
 
       // Track password changed event
@@ -249,13 +257,11 @@ const ChangePassword = ({
       step !== ChangePasswordSteps.ChangePassword ||
       Boolean(currentPassword) ||
       passkeyAuthenticationResponse !== null ||
-      autoPasskeyPromptStartedRef.current ||
-      initialPasskeyGateDoneRef.current
+      passkeyAutoSuccessLockRef.current
     ) {
       return;
     }
 
-    autoPasskeyPromptStartedRef.current = true;
     let cancelled = false;
 
     (async () => {
@@ -264,14 +270,12 @@ const ChangePassword = ({
         const authOptions = await generatePasskeyAuthenticationOptions();
         const response = await startPasskeyAuthentication(authOptions);
         if (!cancelled) {
-          initialPasskeyGateDoneRef.current = true;
+          passkeyAutoSuccessLockRef.current = true;
           setPasskeyAuthenticationResponse(response);
         }
       } catch {
         if (!cancelled) {
-          autoPasskeyPromptStartedRef.current = false;
-          initialPasskeyGateDoneRef.current = false;
-          passkeyVerificationFailedRef.current = true;
+          passkeyAutoSuccessLockRef.current = false;
           setPasskeyAuthenticationResponse(null);
           setCurrentPassword('');
           setStep(ChangePasswordSteps.VerifyCurrentPassword);
@@ -286,8 +290,6 @@ const ChangePassword = ({
     return () => {
       cancelled = true;
       cancelPasskeyCeremony();
-      // Allow a follow-up effect run (e.g. React Strict Mode remount) to start WebAuthn again.
-      autoPasskeyPromptStartedRef.current = false;
       setIsAwaitingPasskeyVerification(false);
     };
   }, [isPasskeyActive, step, currentPassword, passkeyAuthenticationResponse]);
@@ -300,10 +302,11 @@ const ChangePassword = ({
 
   /** Passkey-first flow: hide new-password UI until WebAuthn succeeds (or user falls back). */
   const isPasskeyFirstGateActive =
-    !initialPasskeyGateDoneRef.current &&
     isPasskeyActive &&
+    step === ChangePasswordSteps.ChangePassword &&
     !currentPassword &&
-    passkeyAuthenticationResponse === null;
+    passkeyAuthenticationResponse === null &&
+    isAwaitingPasskeyVerification;
 
   const isPasskeyVerificationLayout =
     step === ChangePasswordSteps.ChangePassword && isPasskeyFirstGateActive;
@@ -364,6 +367,17 @@ const ChangePassword = ({
             >
               {t('continue')}
             </Button>
+            {isSidePanel ? (
+              <TextButton
+                type="button"
+                data-testid="change-password-passkey-fallback-open-full-screen"
+                color={TextColor.PrimaryDefault}
+                className="w-full text-center"
+                onClick={openChangePasswordInFullScreen}
+              >
+                {t('passkeyTroubleshoot')}
+              </TextButton>
+            ) : null}
           </form>
         </Box>
       )}
@@ -421,6 +435,17 @@ const ChangePassword = ({
                 >
                   {t('changePasswordPasskeyVerifyingDescription')}
                 </Text>
+                {isSidePanel && isAwaitingPasskeyVerification ? (
+                  <TextButton
+                    type="button"
+                    data-testid="change-password-passkey-verifying-open-full-screen"
+                    color={TextColor.PrimaryDefault}
+                    className="w-full text-center"
+                    onClick={openChangePasswordInFullScreen}
+                  >
+                    {t('passkeyTroubleshoot')}
+                  </TextButton>
+                ) : null}
               </Box>
             ) : (
               <>

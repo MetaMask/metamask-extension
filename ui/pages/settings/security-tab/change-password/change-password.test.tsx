@@ -4,10 +4,22 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
-import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  SECURITY_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+} from '../../../../helpers/constants/routes';
 import * as selectors from '../../../../selectors';
 import { startPasskeyAuthentication } from '../../../../../shared/lib/passkey';
+import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../../shared/constants/app';
 import ChangePassword from './change-password';
+
+jest.mock('../../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual<
+    typeof import('../../../../../shared/lib/environment-type')
+  >('../../../../../shared/lib/environment-type'),
+  getEnvironmentType: jest.fn(),
+}));
 
 const mockUseNavigate = jest.fn();
 const mockChangePassword = jest
@@ -85,6 +97,7 @@ describe('ChangePassword', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.mocked(getEnvironmentType).mockReturnValue('popup');
     (selectors.getIsSocialLoginFlow as jest.Mock).mockReturnValue(false);
     (selectors.getIsPasskeyRegistered as jest.Mock).mockReturnValue(false);
     (selectors.getIsPasskeyFeatureAvailable as jest.Mock).mockReturnValue(
@@ -109,6 +122,26 @@ describe('ChangePassword', () => {
   }
 
   describe('Step 1: verify current password', () => {
+    it('shows open in full tab on verify current password in the side panel', () => {
+      jest.mocked(getEnvironmentType).mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      expect(
+        getByTestId('change-password-passkey-fallback-open-full-screen'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not show open in full tab on verify current password outside the side panel', () => {
+      jest.mocked(getEnvironmentType).mockReturnValue('popup');
+
+      const { queryByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      expect(
+        queryByTestId('change-password-passkey-fallback-open-full-screen'),
+      ).not.toBeInTheDocument();
+    });
+
     it('renders the current password input', () => {
       const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
 
@@ -388,7 +421,88 @@ describe('ChangePassword', () => {
       });
     });
 
-    it('removes passkey after successful password verification on passkey failure fallback', async () => {
+    it('shows open in full tab after passkey failure in the side panel', async () => {
+      jest.mocked(getEnvironmentType).mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+      const openExtensionInBrowser = jest.fn();
+      globalThis.platform = { openExtensionInBrowser } as unknown as typeof globalThis.platform;
+
+      (startPasskeyAuthentication as jest.Mock).mockRejectedValueOnce(
+        new Error('cancelled'),
+      );
+
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(
+          getByTestId('change-password-passkey-fallback-open-full-screen'),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.click(
+        getByTestId('change-password-passkey-fallback-open-full-screen'),
+      );
+
+      expect(openExtensionInBrowser).toHaveBeenCalledWith(
+        SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+        'from=sidepanel',
+      );
+    });
+
+    it('does not show open in full tab after passkey failure outside the side panel', async () => {
+      jest.mocked(getEnvironmentType).mockReturnValue('popup');
+      (startPasskeyAuthentication as jest.Mock).mockRejectedValueOnce(
+        new Error('cancelled'),
+      );
+
+      const { queryByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('verify-current-password-input'),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        queryByTestId('change-password-passkey-fallback-open-full-screen'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows open in full tab while passkey verification runs in the side panel', async () => {
+      jest.mocked(getEnvironmentType).mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+      let resolveAuth: (value: unknown) => void;
+      (startPasskeyAuthentication as jest.Mock).mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveAuth = resolve;
+          }),
+      );
+
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(
+          getByTestId('change-password-passkey-verifying-open-full-screen'),
+        ).toBeInTheDocument();
+      });
+
+      resolveAuth!({
+        id: 'mock-credential',
+        rawId: 'mock-credential',
+        type: 'public-key',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'AA',
+        },
+        clientExtensionResults: {},
+      });
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+    });
+
+    it('removes passkey only after successful password change on passkey failure fallback', async () => {
       (startPasskeyAuthentication as jest.Mock).mockRejectedValueOnce(
         new Error('cancelled'),
       );
@@ -407,15 +521,31 @@ describe('ChangePassword', () => {
       fireEvent.click(getByTestId('verify-current-password-button'));
 
       await waitFor(() => {
-        expect(mockRemovePasskeyWithPasswordVerification).toHaveBeenCalledWith(
-          mockPassword,
-        );
-        expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
-        expect(mockVerifyPassword).not.toHaveBeenCalled();
+        expect(mockVerifyPassword).toHaveBeenCalledWith(mockPassword);
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
       });
 
+      expect(mockRemovePasskeyWithPasswordVerification).not.toHaveBeenCalled();
+
+      fireEvent.change(getByTestId('change-password-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.change(getByTestId('change-password-confirm-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.click(getByTestId('change-password-terms'));
+      fireEvent.click(getByTestId('change-password-button'));
+
       await waitFor(() => {
-        expect(getByTestId('change-password-input')).toBeInTheDocument();
+        expect(mockChangePassword).toHaveBeenCalledWith(
+          mockNewPassword,
+          mockPassword,
+        );
+        expect(mockRemovePasskeyWithPasswordVerification).toHaveBeenCalledWith(
+          mockNewPassword,
+        );
+        expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
+        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
       });
     });
 
