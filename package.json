@@ -162,7 +162,6 @@
   },
   "resolutions": {
     "@metamask/bridge-controller": "70.2.0",
-    "@metamask/bridge-status-controller": "71.0.0",
     "@metamask/messenger": "1.1.1",
     "@metamask/network-controller": "30.0.1",
     "follow-redirects": "^1.16.0",
