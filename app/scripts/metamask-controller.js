@@ -5072,7 +5072,7 @@ export default class MetamaskController extends EventEmitter {
           ),
         });
 
-      const [newAccountAddress] = await this.keyringController.withKeyring(
+      const [newAccountAddress] = await this.keyringController.withKeyringV2(
         { id },
         async ({ keyring }) => keyring.getAccounts(),
       );
@@ -5360,7 +5360,7 @@ export default class MetamaskController extends EventEmitter {
     // walk through all the keyrings and import the solana accounts for the HD keyrings
     for (const { metadata } of keyrings) {
       // check if the keyring is an HD keyring
-      const isHdKeyring = await this.keyringController.withKeyring(
+      const isHdKeyring = await this.keyringController.withKeyringV2(
         { id: metadata.id },
         async ({ keyring }) => {
           return keyring.type === KeyringTypes.hd;
@@ -5371,43 +5371,6 @@ export default class MetamaskController extends EventEmitter {
         await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         await this.discoverAndCreateAccounts(metadata.id);
       }
-    }
-  }
-
-  /**
-   * Adds Snap account to the keyring.
-   *
-   * @param {string} keyringId - The ID of the keyring to add the account to.
-   * @param {object} client - The Snap client instance.
-   * @param {object} options - The options to pass to the createAccount method.
-   */
-  async _addSnapAccount(keyringId, client, options = {}) {
-    let entropySource = keyringId;
-    try {
-      if (!entropySource) {
-        // Get the entropy source from the first HD keyring
-        const id = await this.keyringController.withKeyring(
-          { type: KeyringTypes.hd },
-          async ({ metadata }) => {
-            return metadata.id;
-          },
-        );
-        entropySource = id;
-      }
-
-      return await client.createAccount(
-        { ...options, entropySource },
-        {
-          displayConfirmation: false,
-          displayAccountNameSuggestion: false,
-          setSelectedAccount: false,
-        },
-      );
-    } catch (e) {
-      // Do not block the onboarding flow if this fails
-      log.warn(`Failed to add Snap account. Error: ${e}`);
-      captureException(e);
-      return null;
     }
   }
 
@@ -5732,7 +5695,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {HardwareKeyringType} Keyring hardware type
    */
   async getHardwareTypeForMetric(address) {
-    return await this.keyringController.withKeyring(
+    return await this.keyringController.withKeyringV2(
       { address },
       ({ keyring }) => KEYRING_DEVICE_PROPERTY_MAP[keyring.type],
     );
@@ -5791,7 +5754,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'ledger' | 'lattice' | string | undefined}
    */
   async getDeviceModel(address) {
-    return this.keyringController.withKeyring(
+    return this.keyringController.withKeyringV2(
       { address },
       async ({ keyring }) => {
         switch (keyring.type) {
@@ -6375,7 +6338,7 @@ export default class MetamaskController extends EventEmitter {
     if (this.onboardingController.getIsSocialLoginFlow()) {
       // Use withKeyring to get keyring metadata for an address
       const { id: keyringId, privateKey: privateKeyFromKeyring } =
-        await this.keyringController.withKeyring(
+        await this.keyringController.withKeyringV2(
           { address: importedAccountAddress },
           async ({ keyring, metadata }) => {
             const privateKey = await keyring.exportAccount(
@@ -9780,7 +9743,7 @@ export default class MetamaskController extends EventEmitter {
         );
     }
 
-    return this.keyringController.withKeyring(
+    return this.keyringController.withKeyringV2(
       { type: keyringType },
       async ({ keyring }) => {
         if (options.hdPath && keyring.setHdPath) {
