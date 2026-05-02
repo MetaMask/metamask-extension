@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Text } from '@metamask/design-system-react';
@@ -6,6 +12,7 @@ import type { Transaction } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
+import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
 import { TabEmptyState } from '../../ui/tab-empty-state';
 import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
@@ -39,6 +46,7 @@ import { useTransactionsQuery } from './hooks';
 
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 36;
+const EVM_PAGINATION_ROOT_MARGIN = '300px 0px';
 
 type Props = {
   filter?: ActivityListFilter;
@@ -161,8 +169,15 @@ export const ActivityList = ({ filter }: Props) => {
   });
 
   const virtualItems = virtualizer.getVirtualItems();
-  const lastVirtualItemIndex =
-    virtualItems.length > 0 ? virtualItems[virtualItems.length - 1].index : -1;
+  const lastCompletedEvmItemIndex = useMemo(() => {
+    for (let index = flattenedItems.length - 1; index >= 0; index -= 1) {
+      if (flattenedItems[index]?.type === 'completed') {
+        return index;
+      }
+    }
+
+    return -1;
+  }, [flattenedItems]);
 
   useEffect(() => {
     if (scrollContainerRef?.current) {
@@ -170,23 +185,36 @@ export const ActivityList = ({ filter }: Props) => {
     }
   }, [scrollContainerRef, virtualizer]);
 
-  // Fetch more items when scrolling near the end
-  useEffect(() => {
-    if (
-      lastVirtualItemIndex >= 0 &&
-      lastVirtualItemIndex >= flattenedItems.length - 5 &&
-      hasNextPage &&
-      !isFetchingNextPage
-    ) {
-      fetchNextPage();
-    }
-  }, [
-    lastVirtualItemIndex,
-    hasNextPage,
-    fetchNextPage,
-    flattenedItems.length,
-    isFetchingNextPage,
-  ]);
+  const { ref: lastCompletedEvmItemRef } = useIntersectionObserver({
+    root: scrollContainerRef?.current ?? null,
+    rootMargin: EVM_PAGINATION_ROOT_MARGIN,
+    // The list mixes EVM API rows with local and non-EVM rows; paginate from the
+    // last loaded EVM API row so long non-EVM tails do not hide missing EVM data.
+    onChange: (isIntersecting) => {
+      if (isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+  });
+  const lastObservedCompletedEvmItemRef = useRef<HTMLDivElement | null>(null);
+
+  const observeLastCompletedEvmItem = useCallback(
+    (node: HTMLDivElement | null, isLastCompletedEvmItem: boolean) => {
+      virtualizer.measureElement(node);
+
+      if (isLastCompletedEvmItem) {
+        lastObservedCompletedEvmItemRef.current = node;
+        lastCompletedEvmItemRef(node);
+      } else if (
+        node &&
+        lastObservedCompletedEvmItemRef.current === node
+      ) {
+        lastObservedCompletedEvmItemRef.current = null;
+        lastCompletedEvmItemRef(null);
+      }
+    },
+    [lastCompletedEvmItemRef, virtualizer],
+  );
 
   const earliestNonceByChain = useEarliestNonceByChain(localTransactions);
 
@@ -261,13 +289,17 @@ export const ActivityList = ({ filter }: Props) => {
               const item = flattenedItems[virtualItem.index];
               const translateY =
                 virtualItem.start - virtualizer.options.scrollMargin;
+              const isLastCompletedEvmItem =
+                virtualItem.index === lastCompletedEvmItemIndex;
 
               return (
                 <div
                   key={String(virtualItem.key)}
                   className="absolute top-0 left-0 w-full"
                   data-index={virtualItem.index}
-                  ref={virtualizer.measureElement}
+                  ref={(node) =>
+                    observeLastCompletedEvmItem(node, isLastCompletedEvmItem)
+                  }
                   style={{
                     transform: `translateY(${translateY}px)`,
                   }}
