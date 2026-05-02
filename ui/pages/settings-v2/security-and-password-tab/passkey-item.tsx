@@ -42,7 +42,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { SECURITY_ITEMS } from '../search-config';
 
-const passkeySettingsToastDurationMs = 5 * SECOND;
+const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
 const PasskeyItem = () => {
   const t = useI18nContext() as (key: string) => string;
@@ -63,7 +63,6 @@ const PasskeyItem = () => {
   }, []);
 
   const openSecurityAndPasswordInFullScreen = useCallback(() => {
-    cancelPasskeyCeremony();
     global.platform?.openExtensionInBrowser?.(SECURITY_AND_PASSWORD_ROUTE);
   }, []);
 
@@ -93,7 +92,7 @@ const PasskeyItem = () => {
       await forceUpdateMetamaskState(dispatch);
 
       toast.success(<ToastContent title={t('passkeyTurnedOff')} />, {
-        duration: passkeySettingsToastDurationMs,
+        duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
       });
 
       trackEvent({
@@ -124,7 +123,7 @@ const PasskeyItem = () => {
               t('passkeyErrorVerificationFailed')
             }
           />,
-          { duration: passkeySettingsToastDurationMs },
+          { duration: PASSKEY_SETTINGS_TOAST_DURATION_MS },
         );
       }
       navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE, { replace: true });

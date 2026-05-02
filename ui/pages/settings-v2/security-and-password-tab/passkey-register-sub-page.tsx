@@ -2,7 +2,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from 'react';
 import log from 'loglevel';
@@ -33,7 +32,6 @@ import {
   FormTextFieldSize,
   TextFieldType,
 } from '../../../components/component-library';
-import { StatusIcon } from '../../../components/ui/icon/status-icon';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -46,8 +44,7 @@ import {
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
-  generatePasskeyAuthenticationOptions,
-  verifyPasskeyEnrollment,
+  generatePasskeyPostRegistrationAuthenticationOptions,
   forceUpdateMetamaskState,
   verifyPassword,
 } from '../../../store/actions';
@@ -60,17 +57,16 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getIsPasskeyRegistered } from '../../../selectors';
 
-const passkeySettingsToastDurationMs = 5 * SECOND;
+const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
 /** Brief pause after verify succeeds so the completion icon is visible before navigation. */
-const PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS = 1500;
+const PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS = 500;
 
-type SetupPhase = 'idle' | 'inProgress';
+type PasskeyEnrollmentStepStatus = 'pending' | 'inProgress' | 'complete';
 
-type PasskeyStepIndicatorStatus = 'complete' | 'loading' | 'pending';
-
-/** Matches StatusIcon `size-6`; avoids oversized row height from empty padding. */
-const STEP_INDICATOR_WRAP = 'flex size-6 shrink-0 items-center justify-center';
+/** Default row status before enrollment starts or after the user silently dismisses WebAuthn. */
+const DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS: PasskeyEnrollmentStepStatus =
+  'pending';
 
 const PasskeyRegisterSteps = {
   /** Shown when opening from side panel in a full tab so users see context before the password step. */
@@ -96,36 +92,45 @@ function getPasskeyStepRowProps(isActive: boolean) {
   };
 }
 
-function renderPasskeyStepIndicator(status: PasskeyStepIndicatorStatus) {
+function renderPasskeyStepIndicator(status: PasskeyEnrollmentStepStatus) {
   if (status === 'complete') {
     return (
       <Box
-        className={STEP_INDICATOR_WRAP}
-        data-testid="register-passkey-step-indicator-complete"
+        className="flex size-11 shrink-0 items-center justify-center"
+        data-testid="passkey-step-indicator-complete"
       >
-        <StatusIcon state="success" />
+        <Icon
+          name={IconName.Check}
+          color={IconColor.SuccessDefault}
+          size={IconSize.Lg}
+        />
       </Box>
     );
   }
-  if (status === 'loading') {
+  if (status === 'inProgress') {
     return (
       <Box
-        className={STEP_INDICATOR_WRAP}
-        data-testid="register-passkey-step-indicator-loading"
+        className="flex size-11 shrink-0 items-center justify-center"
+        data-testid="passkey-step-indicator-in-progress"
       >
-        <StatusIcon state="loading" />
+        <Icon
+          name={IconName.Loading}
+          color={IconColor.IconDefault}
+          size={IconSize.Lg}
+          className="animate-spin"
+        />
       </Box>
     );
   }
   return (
     <Box
-      className={STEP_INDICATOR_WRAP}
-      data-testid="register-passkey-step-indicator-pending"
+      className="flex size-11 shrink-0 items-center justify-center"
+      data-testid="passkey-step-indicator-pending"
     >
       <Icon
         name={IconName.FullCircle}
         color={IconColor.IconMuted}
-        size={IconSize.Md}
+        size={IconSize.Lg}
       />
     </Box>
   );
@@ -138,44 +143,25 @@ export default function PasskeyRegisterSubPage() {
   const t = useI18nContext() as (key: string) => string;
   const { trackEvent } = useContext(MetaMetricsContext);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
-  const isMountedRef = useRef(true);
 
-  const fromChangePassword =
-    new URLSearchParams(location.search).get('from') === 'change-password';
   const fromSidepanel =
     new URLSearchParams(location.search).get('from') === 'sidepanel';
 
   const [step, setStep] = useState<
     (typeof PasskeyRegisterSteps)[keyof typeof PasskeyRegisterSteps]
   >(() =>
-    !fromChangePassword && fromSidepanel
-      ? PasskeyRegisterSteps.Intro
-      : PasskeyRegisterSteps.VerifyPassword,
+    fromSidepanel ? PasskeyRegisterSteps.Intro : PasskeyRegisterSteps.VerifyPassword,
   );
   const [walletPassword, setWalletPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
     useState(false);
   const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
-  const [phase, setPhase] = useState<SetupPhase>('idle');
-  const [registrationStepComplete, setRegistrationStepComplete] =
-    useState(false);
-  const [verificationStepComplete, setVerificationStepComplete] =
-    useState(false);
-  const [isRegisteringPasskey, setIsRegisteringPasskey] = useState(false);
-  const [isVerifyingPasskey, setIsVerifyingPasskey] = useState(false);
-  const [registrationError, setRegistrationError] = useState<string | null>(
-    null,
-  );
-  const [verificationError, setVerificationError] = useState<string | null>(
-    null,
-  );
-
-  useEffect(() => {
-    isMountedRef.current = true;
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
+  const [isEnrollmentInProgress, setIsEnrollmentInProgress] = useState(false);
+  const [registerStepStatus, setRegisterStepStatus] =
+    useState<PasskeyEnrollmentStepStatus>(DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS);
+  const [verifyStepStatus, setVerifyStepStatus] =
+    useState<PasskeyEnrollmentStepStatus>(DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS);
+  const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
 
   useEffect(
     () => () => {
@@ -185,8 +171,8 @@ export default function PasskeyRegisterSubPage() {
   );
 
   useEffect(() => {
-    // Only redirect when a passkey already exists before enrollment UI. After
-    // registration, `passkeyRecord` is set before verify; do not redirect until verify completes.
+    // Only redirect when a passkey already exists before enrollment UI. During
+    // in-flight enrollment, `passkeyRecord` may be set mid-flow; do not redirect from RegisterPasskey.
     if (
       isPasskeyRegistered &&
       (step === PasskeyRegisterSteps.Intro ||
@@ -201,61 +187,48 @@ export default function PasskeyRegisterSubPage() {
     navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
   }, [navigate]);
 
-  const handleStepRegisterPasskey = useCallback(async (): Promise<boolean> => {
+  const beginPasskeyCeremonyFlow = useCallback(async () => {
+    setEnrollmentError(null);
+    setRegisterStepStatus('inProgress');
+    setVerifyStepStatus(DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS);
+    setIsEnrollmentInProgress(true);
+
     if (isPasskeyRegistered) {
-      setRegistrationStepComplete(true);
-      return true;
+      goToSettings();
+      return;
     }
 
-    setRegistrationStepComplete(false);
-    setIsRegisteringPasskey(true);
+    let registrationSucceeded = false;
+
     try {
-      const options = await generatePasskeyRegistrationOptions();
-      const registrationResponse = await startPasskeyRegistration(options);
-      await protectVaultKeyWithPasskey(registrationResponse, walletPassword);
-      await forceUpdateMetamaskState(dispatch);
-      setRegistrationStepComplete(true);
-      return true;
-    } catch (error) {
-      if (isPasskeyCeremonySilentError(error)) {
-        log.debug(
-          'Settings passkey registration cancelled or timed out',
-          error,
+      const registrationOptions = await generatePasskeyRegistrationOptions();
+      const registrationResponse =
+        await startPasskeyRegistration(registrationOptions);
+      setRegisterStepStatus('complete');
+      setVerifyStepStatus('inProgress');
+      registrationSucceeded = true;
+
+      const postRegAuthOptions =
+        await generatePasskeyPostRegistrationAuthenticationOptions(
+          registrationResponse,
         );
-        setPhase('idle');
-        return false;
-      }
+      const postRegAuthenticationResponse =
+        await startPasskeyAuthentication(postRegAuthOptions);
 
-      log.error('Settings passkey registration failed', error);
-      setRegistrationError(
-        translatePasskeyError(error, t) ?? t('passkeyErrorRegistrationFailed'),
+      await protectVaultKeyWithPasskey(
+        registrationResponse,
+        postRegAuthenticationResponse,
+        walletPassword,
       );
-      setPhase('idle');
-      return false;
-    } finally {
-      setIsRegisteringPasskey(false);
-    }
-  }, [isPasskeyRegistered, dispatch, t, walletPassword]);
-
-  const handleStepVerifyPasskey = useCallback(async () => {
-    setIsVerifyingPasskey(true);
-    try {
-      const authOptions = await generatePasskeyAuthenticationOptions();
-      const authenticationResponse =
-        await startPasskeyAuthentication(authOptions);
-      await verifyPasskeyEnrollment(authenticationResponse);
       await forceUpdateMetamaskState(dispatch);
-      setIsVerifyingPasskey(false);
-      setVerificationStepComplete(true);
+      setVerifyStepStatus('complete');
       setWalletPassword('');
+
       await new Promise((resolve) => {
         setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
       });
-      if (!isMountedRef.current) {
-        return;
-      }
       toast.success(<ToastContent title={t('passkeyTurnedOn')} />, {
-        duration: passkeySettingsToastDurationMs,
+        duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
       });
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
@@ -270,47 +243,49 @@ export default function PasskeyRegisterSubPage() {
     } catch (error) {
       if (isPasskeyCeremonySilentError(error)) {
         log.debug(
-          'Settings passkey verification cancelled or timed out',
+          'Settings passkey enrollment ceremony cancelled or timed out',
           error,
         );
-        setPhase('idle');
+        setRegisterStepStatus(DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS);
+        setVerifyStepStatus(DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS);
         return;
       }
 
-      log.error('Settings passkey verification failed', error);
-      setVerificationError(
+      log.error('Settings passkey enrollment failed', error);
+      setEnrollmentError(
         translatePasskeyError(error, t) ??
-          t('passkeyErrorAuthenticationVerificationFailed'),
+          (registrationSucceeded
+            ? t('passkeyErrorAuthenticationVerificationFailed')
+            : t('passkeyErrorRegistrationFailed')),
       );
-      setPhase('idle');
     } finally {
-      setIsVerifyingPasskey(false);
+      setIsEnrollmentInProgress(false);
+      setRegisterStepStatus((prev) =>
+        prev === 'inProgress' ? 'pending' : prev,
+      );
+      setVerifyStepStatus((prev) =>
+        prev === 'inProgress' ? 'pending' : prev,
+      );
     }
-  }, [dispatch, goToSettings, t, trackEvent]);
+  }, [
+    dispatch,
+    goToSettings,
+    isPasskeyRegistered,
+    t,
+    trackEvent,
+    walletPassword,
+  ]);
 
-  const beginPasskeyCeremonyFlow = useCallback(async () => {
-    setRegistrationError(null);
-    setVerificationError(null);
-    setVerificationStepComplete(false);
-    setPhase('inProgress');
-
-    const shouldContinue = await handleStepRegisterPasskey();
-    if (!shouldContinue) {
-      return;
-    }
-
-    await handleStepVerifyPasskey();
-  }, [handleStepRegisterPasskey, handleStepVerifyPasskey]);
-
-  const handleSubmitCurrentPassword = async () => {
+  const handleSubmitCurrentPassword = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
     setIsVerifyingPassword(true);
     setIsIncorrectPasswordError(false);
     try {
       await verifyPassword(walletPassword);
       setStep(PasskeyRegisterSteps.RegisterPasskey);
-      beginPasskeyCeremonyFlow().catch((error) => {
-        log.error('Passkey ceremony flow failed unexpectedly', error);
-      });
+      await beginPasskeyCeremonyFlow();
     } catch {
       setIsIncorrectPasswordError(true);
     } finally {
@@ -318,29 +293,15 @@ export default function PasskeyRegisterSubPage() {
     }
   };
 
-  let registerIndicatorStatus: PasskeyStepIndicatorStatus = 'pending';
-  if (registrationStepComplete) {
-    registerIndicatorStatus = 'complete';
-  } else if (isRegisteringPasskey) {
-    registerIndicatorStatus = 'loading';
-  }
-
-  let verifyIndicatorStatus: PasskeyStepIndicatorStatus = 'pending';
-  if (verificationStepComplete) {
-    verifyIndicatorStatus = 'complete';
-  } else if (isVerifyingPasskey) {
-    verifyIndicatorStatus = 'loading';
-  }
-
   const registerStepTextColor =
-    registrationStepComplete || isRegisteringPasskey
-      ? TextColor.TextDefault
-      : TextColor.TextAlternative;
+    registerStepStatus === 'pending'
+      ? TextColor.TextAlternative
+      : TextColor.TextDefault;
 
   const verifyStepTextColor =
-    isVerifyingPasskey || verificationStepComplete
-      ? TextColor.TextDefault
-      : TextColor.TextAlternative;
+    verifyStepStatus === 'pending'
+      ? TextColor.TextAlternative
+      : TextColor.TextDefault;
 
   return (
     <Box
@@ -383,31 +344,6 @@ export default function PasskeyRegisterSubPage() {
         </Box>
       )}
 
-      {fromChangePassword && (
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-          padding={3}
-          className="shrink-0 rounded-lg"
-          style={{ backgroundColor: 'var(--color-success-muted)' }}
-          data-testid="register-passkey-password-changed-banner"
-        >
-          <Icon
-            name={IconName.Confirmation}
-            size={IconSize.Sm}
-            color={IconColor.SuccessDefault}
-          />
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.TextDefault}
-          >
-            {t('passwordChangedRecently')}
-          </Text>
-        </Box>
-      )}
-
       {step === PasskeyRegisterSteps.VerifyPassword && (
         <Box
           flexDirection={BoxFlexDirection.Column}
@@ -416,12 +352,7 @@ export default function PasskeyRegisterSubPage() {
           asChild
           className="min-h-0 shrink-0"
         >
-          <form
-            onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-              e.preventDefault();
-              handleSubmitCurrentPassword();
-            }}
-          >
+          <form onSubmit={handleSubmitCurrentPassword}>
             <FormTextField
               id="register-passkey-current-password"
               label={t('enterPasswordCurrent')}
@@ -475,21 +406,22 @@ export default function PasskeyRegisterSubPage() {
             {t('passkeyDescription')}
           </Text>
 
-          {phase === 'inProgress' ? (
+          {isEnrollmentInProgress ? (
             <Box
               flexDirection={BoxFlexDirection.Column}
               gap={2}
               className="w-full"
-              data-testid="register-passkey-setup-steps"
+              data-testid="passkey-setup-steps"
+              aria-busy={true}
             >
               <Box
                 flexDirection={BoxFlexDirection.Row}
                 alignItems={BoxAlignItems.Center}
                 gap={3}
-                padding={4}
-                {...getPasskeyStepRowProps(isRegisteringPasskey)}
+                padding={3}
+                {...getPasskeyStepRowProps(registerStepStatus === 'inProgress')}
               >
-                {renderPasskeyStepIndicator(registerIndicatorStatus)}
+                {renderPasskeyStepIndicator(registerStepStatus)}
                 <Text
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Regular}
@@ -502,12 +434,10 @@ export default function PasskeyRegisterSubPage() {
                 flexDirection={BoxFlexDirection.Row}
                 alignItems={BoxAlignItems.Center}
                 gap={3}
-                padding={4}
-                {...getPasskeyStepRowProps(
-                  isVerifyingPasskey || verificationStepComplete,
-                )}
+                padding={3}
+                {...getPasskeyStepRowProps(verifyStepStatus !== 'pending')}
               >
-                {renderPasskeyStepIndicator(verifyIndicatorStatus)}
+                {renderPasskeyStepIndicator(verifyStepStatus)}
                 <Text
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Regular}
@@ -519,44 +449,29 @@ export default function PasskeyRegisterSubPage() {
             </Box>
           ) : null}
 
-          {registrationError ? (
+          {enrollmentError ? (
             <Text
               variant={TextVariant.BodySm}
               color={TextColor.ErrorDefault}
               textAlign={TextAlign.Center}
-              data-testid="register-passkey-registration-error"
+              data-testid="passkey-enrollment-error"
             >
-              {registrationError}
+              {enrollmentError}
             </Text>
           ) : null}
 
-          {verificationError ? (
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.ErrorDefault}
-              textAlign={TextAlign.Center}
-              data-testid="register-passkey-verification-error"
-            >
-              {verificationError}
-            </Text>
-          ) : null}
-
-          {phase === 'idle' ? (
+          {isEnrollmentInProgress ? null : (
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               className="w-full shrink-0"
               data-testid="register-passkey-set-up-button"
               aria-label={t('setUpPasskey')}
-              onClick={() => {
-                beginPasskeyCeremonyFlow().catch((error) => {
-                  log.error('Passkey ceremony flow failed unexpectedly', error);
-                });
-              }}
+              onClick={beginPasskeyCeremonyFlow}
             >
               {t('setUpPasskey')}
             </Button>
-          ) : null}
+          )}
         </>
       )}
     </Box>

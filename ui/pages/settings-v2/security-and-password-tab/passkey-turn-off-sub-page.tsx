@@ -35,7 +35,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getIsPasskeyRegistered } from '../../../selectors';
 
-const passkeySettingsToastDurationMs = 5 * SECOND;
+const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
 const PasskeyTurnOffSteps = {
   VerifyPassword: 1,
@@ -96,7 +96,7 @@ export default function PasskeyTurnOffSubPage() {
       setWalletPassword('');
       await forceUpdateMetamaskState(dispatch);
       toast.success(<ToastContent title={t('passkeyTurnedOff')} />, {
-        duration: passkeySettingsToastDurationMs,
+        duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
       });
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
@@ -109,7 +109,7 @@ export default function PasskeyTurnOffSubPage() {
       goToSettings();
     } catch {
       toast.error(<ToastContent title={t('turnOffPasskeyFailed')} />, {
-        duration: passkeySettingsToastDurationMs,
+        duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
       });
       goToSettings();
     } finally {
