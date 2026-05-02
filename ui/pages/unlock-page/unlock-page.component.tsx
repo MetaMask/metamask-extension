@@ -27,12 +27,6 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
-  ButtonIcon,
-  ButtonIconVariant,
-  IconName,
-  ButtonIconSize,
-  IconColor,
-  IconSize,
 } from '@metamask/design-system-react';
 import {
   FormTextField,
@@ -47,7 +41,6 @@ import Mascot from '../../components/ui/mascot';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
-  UNLOCK_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
@@ -63,16 +56,8 @@ import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { captureException } from '../../../shared/lib/sentry';
-import {
-  startPasskeyAuthentication,
-  cancelPasskeyCeremony,
-  isPasskeyCeremonySilentError,
-  translatePasskeyError,
-} from '../../../shared/lib/passkey';
-import { getEnvironmentType } from '../../../shared/lib/environment-type';
-import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
-import { generatePasskeyAuthenticationOptions } from '../../store/actions';
 import { getCaretCoordinates } from './unlock-page.util';
+import { UnlockPasskeyIconButton, UnlockPasskeySection } from './passkey';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
 import { MetamaskWordmarkLogo } from './metamask-wordmark-logo';
@@ -104,7 +89,6 @@ type UnlockPageProps = {
 type UnlockPageState = {
   password: string;
   error: string | null;
-  passkeyError: string | null;
   showResetPasswordModal: boolean;
   isLocked: boolean;
   isSubmitting: boolean;
@@ -112,7 +96,6 @@ type UnlockPageState = {
   showLoginErrorModal: boolean;
   showConnectionsRemovedModal: boolean;
   isPasswordUnlockMode: boolean;
-  passkeyInProgress: boolean;
 };
 
 type UnlockPageContext = {
@@ -239,8 +222,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     showLoginErrorModal: false,
     showConnectionsRemovedModal: false,
     isPasswordUnlockMode: true,
-    passkeyError: null,
-    passkeyInProgress: false,
   };
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -282,10 +263,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     }
   }
 
-  componentWillUnmount() {
-    cancelPasskeyCeremony();
-  }
-
   async componentDidMount() {
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     if (isOnboardingCompleted) {
@@ -306,13 +283,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       this.props.firstTimeFlowType === null
     ) {
       this.props.navigate(DEFAULT_ROUTE, { replace: true });
-      return;
-    }
-
-    // Auto WebAuthn when the unlock screen loads and a passkey is registered,
-    // unless background passkeyAutoUnlockSuppressed is set (cross-surface).
-    if (this.props.isPasskeyActive) {
-      this.maybeAutoPasskeyUnlock();
     }
   }
 
@@ -571,67 +541,8 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     );
   };
 
-  handlePasskeyUnlock = async () => {
-    if (
-      this.state.isLocked ||
-      this.state.isSubmitting ||
-      this.state.passkeyInProgress
-    ) {
-      return;
-    }
-    if (!this.props.isPasskeyActive) {
-      return;
-    }
-    this.setState({
-      passkeyError: null,
-      passkeyInProgress: true,
-      isPasswordUnlockMode: false,
-    });
-
-    const { t } = this.context as UnlockPageContext;
-    try {
-      const authOptions = await generatePasskeyAuthenticationOptions();
-      const authenticationResponse =
-        await startPasskeyAuthentication(authOptions);
-
-      await this.props.onUnlockWithPasskey(authenticationResponse);
-
-      (this.context as UnlockPageContext).trackEvent?.({
-        category: MetaMetricsEventCategory.Navigation,
-        event: MetaMetricsEventName.AppUnlocked,
-        properties: { method: 'passkey' },
-      });
-    } catch (err) {
-      if (isPasskeyCeremonySilentError(err)) {
-        this.setState({
-          passkeyError: null,
-        });
-      } else {
-        this.setState({
-          passkeyError:
-            translatePasskeyError(err, t) ?? t('passkeyUnlockFailed'),
-        });
-      }
-    } finally {
-      this.setState({ passkeyInProgress: false });
-    }
-  };
-
-  maybeAutoPasskeyUnlock = async () => {
-    const { passkeyAutoUnlockSuppressed } = this.props;
-
-    if (!this.props.isPasskeyActive) {
-      return;
-    }
-    if (passkeyAutoUnlockSuppressed) {
-      return;
-    }
-    await this.handlePasskeyUnlock();
-  };
-
-  openUnlockInFullScreen = () => {
-    cancelPasskeyCeremony();
-    globalThis.platform.openExtensionInBrowser(UNLOCK_ROUTE, 'from=sidepanel');
+  setPasswordUnlockMode = (isPasswordUnlockMode: boolean) => {
+    this.setState({ isPasswordUnlockMode, error: null });
   };
 
   onForgotPasswordOrLoginWithDiffMethods = async () => {
@@ -696,37 +607,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     this.props.navigate(DEFAULT_ROUTE, { replace: true });
   };
 
-  handleUsePasswordUnlockMode = () => {
-    cancelPasskeyCeremony();
-    this.setState({
-      isPasswordUnlockMode: true,
-      error: null,
-    });
-  };
-
-  renderPasskeyUnlockIcon = () => {
-    const { t } = this.context as UnlockPageContext;
-    const { isLocked, isSubmitting, passkeyInProgress } = this.state;
-    return (
-      <ButtonIcon
-        variant={ButtonIconVariant.Filled}
-        ariaLabel={t('unlockWithPasskey')}
-        data-testid="unlock-with-passkey"
-        iconName={IconName.Fingerprint}
-        size={ButtonIconSize.Lg}
-        color={IconColor.IconAlternative}
-        iconProps={{
-          color: IconColor.IconAlternative,
-          size: IconSize.Lg,
-        }}
-        className="flex self-start mb-4 h-12 w-12 rounded-lg"
-        disabled={isLocked || isSubmitting || passkeyInProgress}
-        onClick={this.handlePasskeyUnlock}
-        type="button"
-      />
-    );
-  };
-
   renderLogoSection = (isRehydrationFlow: boolean) => {
     const { t } = this.context as UnlockPageContext;
     return (
@@ -757,9 +637,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     const {
       password,
       error,
-      passkeyError,
       isLocked,
-      passkeyInProgress,
       isSubmitting,
       showResetPasswordModal,
       showLoginErrorModal,
@@ -807,7 +685,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
           data-testid="unlock-page"
           asChild
         >
-          {/* password unlock form */}
           {showPasswordUnlockForm ? (
             <form onSubmit={this.handleSubmit}>
               <Box
@@ -835,7 +712,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                   gap={2}
                   className="w-full"
                 >
-                  {/* Password input */}
                   <FormTextField
                     id="password"
                     placeholder={
@@ -865,10 +741,13 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                     width={BlockSize.Full}
                     marginBottom={4}
                   />
-                  {/* Passkey unlock icon */}
-                  {this.props.isPasskeyActive && this.renderPasskeyUnlockIcon()}
+                  {this.props.isPasskeyActive ? (
+                    <UnlockPasskeyIconButton
+                      disabled={isLocked || isSubmitting}
+                      onClick={() => this.setPasswordUnlockMode(false)}
+                    />
+                  ) : null}
                 </Box>
-                {/* Unlock button */}
                 <Button
                   variant={ButtonVariant.Primary}
                   size={ButtonSize.Lg}
@@ -938,72 +817,17 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
               </Box>
             </form>
           ) : (
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              className="w-full"
-              alignItems={BoxAlignItems.Center}
-              gap={4}
-            >
-              {this.renderLogoSection(isRehydrationFlow)}
-              {/* passkey error message */}
-              {passkeyError && (
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.ErrorDefault}
-                  textAlign={TextAlign.Center}
-                  data-testid="unlock-passkey-error-banner"
-                  className="w-full"
-                >
-                  {passkeyError}
-                </Text>
-              )}
-              {/* Passkey primary action + sidepanel troubleshoot (tight group vs "Use password" below) */}
-              <Box
-                flexDirection={BoxFlexDirection.Column}
-                alignItems={BoxAlignItems.Center}
-                gap={2}
-                className="w-full"
-              >
-                <Button
-                  variant={ButtonVariant.Primary}
-                  size={ButtonSize.Lg}
-                  className="w-full"
-                  type="button"
-                  isLoading={this.state.passkeyInProgress}
-                  data-testid="unlock-passkey-button"
-                  disabled={isLocked || isSubmitting || passkeyInProgress}
-                  onClick={this.handlePasskeyUnlock}
-                  aria-busy={this.state.passkeyInProgress}
-                >
-                  {t('unlockWithPasskey')}
-                </Button>
-                {getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL &&
-                this.props.isPasskeyActive &&
-                this.state.passkeyInProgress ? (
-                  <TextButton
-                    type="button"
-                    data-testid="unlock-passkey-troubleshoot-button"
-                    color={TextColor.PrimaryDefault}
-                    className="w-full text-center"
-                    onClick={this.openUnlockInFullScreen}
-                  >
-                    {t('passkeyTroubleshoot')}
-                  </TextButton>
-                ) : null}
-              </Box>
-
-              {/* use password button */}
-              <Button
-                variant={ButtonVariant.Tertiary}
-                data-testid="unlock-use-password-button"
-                key="import-account"
-                type="button"
-                onClick={this.handleUsePasswordUnlockMode}
-                className="w-full"
-              >
-                {t('usePassword')}
-              </Button>
-            </Box>
+            <UnlockPasskeySection
+              logoSection={this.renderLogoSection(isRehydrationFlow)}
+              isPasskeyActive={this.props.isPasskeyActive}
+              passkeyAutoUnlockSuppressed={
+                this.props.passkeyAutoUnlockSuppressed
+              }
+              isLocked={isLocked}
+              isPasswordInProgress={isSubmitting}
+              onUnlockWithPasskey={this.props.onUnlockWithPasskey}
+              onUsePassword={() => this.setPasswordUnlockMode(true)}
+            />
           )}
         </Box>
         {!isRehydrationFlow && (
