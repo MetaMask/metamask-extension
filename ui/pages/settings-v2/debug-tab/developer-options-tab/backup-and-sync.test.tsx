@@ -1,15 +1,15 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/identity/useAccountSyncing';
-import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { useDeleteAccountSyncingDataFromUserStorage } from '../../../../hooks/identity/useAccountSyncing';
+import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import {
   BackupAndSyncDevSettings,
   useDeleteAccountSyncDataProps,
 } from './backup-and-sync';
 
-jest.mock('../../../hooks/identity/useAccountSyncing');
+jest.mock('../../../../hooks/identity/useAccountSyncing');
 
 describe('BackupAndSyncDevSettings', () => {
   const mockDispatchDeleteAccountSyncingData = jest.fn();

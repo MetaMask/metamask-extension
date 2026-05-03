@@ -1057,6 +1057,24 @@ export const getIsSolanaSwap = createSelector(
   },
 );
 
+/**
+ * Returns true when the RWA feature flag is enabled, at least one of the
+ * selected tokens is an RWA token, and both tokens are on the same chain
+ * (cross-chain pairs use bridge default slippage, not AUTO mode).
+ */
+export const getIsRWASwap = createSelector(
+  [getFromToken, getToToken, getIsRWATokensEnabled],
+  (fromToken, toToken, isRWAEnabled) => {
+    if (!isRWAEnabled || !fromToken?.chainId || !toToken?.chainId) {
+      return false;
+    }
+    return (
+      !isCrossChain(fromToken.chainId, toToken.chainId) &&
+      (Boolean(fromToken.rwaData) || Boolean(toToken.rwaData))
+    );
+  },
+);
+
 export const getHardwareWalletName = (state: BridgeAppState) => {
   const type = getHardwareWalletType(state);
   switch (type) {
