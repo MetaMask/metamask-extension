@@ -157,14 +157,12 @@ describe('Tron Send', function (this: Suite) {
 
   // ── TRX total send (Max) ────────────────────────────────────────────────────
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): the unified send flow hides the "Max" ButtonLink for non-EVM native sends (`!isNonEvmNativeSendType` guards it in ui/pages/confirmations/components/send/amount/amount.tsx). Native TRX has no Max button to click — this test as written cannot pass. Either drop it or convert it to a manual fill-amount equal-to-balance scenario once the snap exposes a "send-all minus fee" API.
-  it.skip('sends total TRX balance via Max button', async function () {
+  it('sends total TRX balance via manual full-amount entry', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
-          'anvil',
           {
             type: 'tron',
             options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
@@ -175,11 +173,8 @@ describe('Tron Send', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         const sendPage = await landOnTronSendScreen({ driver, symbol: 'TRX' });
         await sendPage.fillRecipient(TRON_RECIPIENT_ADDRESS);
-        await sendPage.clickMaxButton();
-
-        const amountValue = await sendPage.getAmountInputValue();
-        // Max for TRX reserves fee from the total balance
-        console.log(`Max TRX amount set to: ${amountValue}`);
+        // Seeded TRX balance is 6.072392; reserve ~0.5 TRX for fee buffer.
+        await sendPage.fillAmount('5.572392');
         await sendPage.pressContinueButton();
 
         const snapConfirmation = new SnapTransactionConfirmation(driver);
@@ -187,6 +182,8 @@ describe('Tron Send', function (this: Suite) {
         await snapConfirmation.clickFooterConfirmButton();
 
         const activityList = new ActivityListPage(driver);
+        await activityList.checkPendingTxNumberDisplayedInActivity(1);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkNoFailedTransactions();
       },
     );
