@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 class SendPage {
@@ -227,6 +228,13 @@ class SendPage {
     }
     console.log('Continue button enabled');
     return true;
+  }
+
+  async checkContinueButtonIsDisabled(): Promise<void> {
+    console.log('Checking that Continue button is disabled');
+    const button = await this.driver.findElement(this.continueButton);
+    const disabled = await button.getAttribute('disabled');
+    assert.notStrictEqual(disabled, null, 'Continue button should be disabled');
   }
 
   async pressContinueButton(): Promise<void> {

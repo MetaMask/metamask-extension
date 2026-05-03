@@ -73,14 +73,12 @@ describe('Tron Send', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): the amount input filters non-numeric chars at onChange (regex /^\d*\.?\d*$/) so "abc" never reaches state and "Invalid value" is never rendered. Test needs a different invalid-amount trigger (e.g. negative, or rely on snap onAmountInput response).
-  it.skip('shows invalid amount error when a non-numeric amount is entered', async function () {
+  it('blocks Continue when amount is empty', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
-          'anvil',
           {
             type: 'tron',
             options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
@@ -91,8 +89,8 @@ describe('Tron Send', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         const sendPage = await landOnTronSendScreen({ driver, symbol: 'TRX' });
         await sendPage.fillRecipient(TRON_RECIPIENT_ADDRESS);
-        await sendPage.fillAmount('abc');
-        await sendPage.checkInvalidAmountError();
+        // Leave amount empty — Continue must remain disabled until a value is entered
+        await sendPage.checkContinueButtonIsDisabled();
       },
     );
   });
