@@ -220,8 +220,7 @@ describe('Tron assets', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Tether (USDT) row never appears in the Tron asset list, so clickOnAsset('Tether') fails and the details page never loads — same TRC20 non-rendering regression as the listing test (mockTronAssets returns USDT but the row is missing).
-  it.skip('USDT asset details: header, chart, action buttons, sections — no daily resource', async function () {
+  it('USDT asset details: header, chart, action buttons, sections — no daily resource', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
@@ -229,7 +228,6 @@ describe('Tron assets', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
-          'anvil',
           {
             type: 'tron',
             options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
