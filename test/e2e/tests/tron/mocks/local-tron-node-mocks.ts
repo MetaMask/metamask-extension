@@ -26,7 +26,10 @@ const TRON_PROVIDER_BASE_URLS = [
 ];
 
 function tronProviderUrl(path: string): RegExp {
-  return new RegExp(`^(${TRON_PROVIDER_BASE_URLS.join('|')})${path}$`, 'u');
+  return new RegExp(
+    `^(${TRON_PROVIDER_BASE_URLS.join('|')})${path}(\\?[^#]*)?$`,
+    'u',
+  );
 }
 
 async function proxyPost(

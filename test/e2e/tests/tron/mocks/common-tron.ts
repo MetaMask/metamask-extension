@@ -63,7 +63,7 @@ const TRON_INFURA_BASE_URL = 'https://tron-mainnet\\.infura\\.io/v3/[^/]+';
  * @returns A RegExp that matches the full URL with any project ID
  */
 function tronInfuraUrl(path: string): RegExp {
-  return new RegExp(`^${TRON_INFURA_BASE_URL}${path}$`, 'u');
+  return new RegExp(`^${TRON_INFURA_BASE_URL}${path}(\\?[^#]*)?$`, 'u');
 }
 
 // BIP44 Stage 2 feature flags - enables automatic multichain account creation
