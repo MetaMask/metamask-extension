@@ -88,8 +88,7 @@ describe('Tron assets', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): TRX (6.072) renders, but TRC10 (GasFreeTransferSolution) and all TRC20 rows (Tether, HTX DAO, USDD, SEED) never appear despite mockTronAssets and tronInfura getaccount mocks being hit; same balance-propagation regression as swap.spec.ts.
-  it.skip('Lists TRX, TRC10, TRC20 with name, symbol, amount, fiat for portfolio account', async function () {
+  it('Lists TRX, TRC10, TRC20 with name, symbol, amount, fiat for portfolio account', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
@@ -97,7 +96,6 @@ describe('Tron assets', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
-          'anvil',
           {
             type: 'tron',
             options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
