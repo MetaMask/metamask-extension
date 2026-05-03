@@ -191,14 +191,12 @@ describe('Tron Send', function (this: Suite) {
 
   // ── USDT partial send ───────────────────────────────────────────────────────
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): the snap's pre-broadcast simulation against the local Tron node returns "Transaction error. Exception thrown in contract code." for the dynamically deployed USDT TRC20 contract (see test/e2e/seeder/tron/node.ts deployTrc20Token / buildPermissiveTrc20Bytecode). Continue stays disabled and SnapTransactionConfirmation never opens. Likely the permissive bytecode does not implement TRC20 transfer semantics expected by the snap simulation. Fix by either (a) deploying a real TRC20 transfer-capable contract in the seeder, or (b) intercepting /wallet/triggerconstantcontract for the USDT address with a successful canned response.
-  it.skip('sends part of USDT balance and shows it pending then confirmed', async function () {
+  it('sends part of USDT balance and shows it pending then confirmed', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
-          'anvil',
           {
             type: 'tron',
             options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
@@ -230,14 +228,12 @@ describe('Tron Send', function (this: Suite) {
 
   // ── USDT total send (Max) ───────────────────────────────────────────────────
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): same root cause as the USDT partial-send test — the snap's simulation against the dynamically deployed permissive TRC20 contract returns "Transaction error. Exception thrown in contract code." so Continue never enables and SnapTransactionConfirmation never opens. Unblocks together with the USDT partial-send test.
-  it.skip('sends total USDT balance via Max button — full USDT balance', async function () {
+  it('sends total USDT balance via manual full-amount entry', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
-          'anvil',
           {
             type: 'tron',
             options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
@@ -251,12 +247,9 @@ describe('Tron Send', function (this: Suite) {
           symbol: 'USDT',
         });
         await sendPage.fillRecipient(TRON_RECIPIENT_ADDRESS);
-        await sendPage.clickMaxButton();
-
-        const amountValue = await sendPage.getAmountInputValue();
-        // USDT has 6 decimals; seeded balance is 2804595 raw = 2.804595 USDT
-        // For TRC20 there is no fee buffer taken from USDT itself (fee is paid in TRX)
-        console.log(`Max USDT amount set to: ${amountValue}`);
+        // Seeded USDT balance is 2_804_595 raw = 2.804595 USDT.
+        // TRC20 has no fee buffer (fee paid in TRX).
+        await sendPage.fillAmount('2.804595');
         await sendPage.pressContinueButton();
 
         const snapConfirmation = new SnapTransactionConfirmation(driver);
@@ -264,6 +257,8 @@ describe('Tron Send', function (this: Suite) {
         await snapConfirmation.clickFooterConfirmButton();
 
         const activityList = new ActivityListPage(driver);
+        await activityList.checkPendingTxNumberDisplayedInActivity(1);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkNoFailedTransactions();
       },
     );
