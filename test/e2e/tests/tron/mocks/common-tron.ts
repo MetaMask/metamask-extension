@@ -905,7 +905,7 @@ export async function mockTronSpotPrices(
     'tron:2494104990/slip44:195': null,
     [gasFreeAssetId]: {
       id: 'gas-free-transfer-solution',
-      price: 0.001,
+      price: 0.000_000_001,
       marketCap: 1_000_000,
       allTimeHigh: 0.01,
       allTimeLow: 0.0001,
@@ -926,7 +926,7 @@ export async function mockTronSpotPrices(
     },
     [seedAssetId]: {
       id: 'seed',
-      price: 0.0001,
+      price: 0.000_000_001,
       marketCap: 100_000,
       allTimeHigh: 0.001,
       allTimeLow: 0.00001,
