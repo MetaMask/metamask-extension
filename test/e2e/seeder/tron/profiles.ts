@@ -66,3 +66,16 @@ export function createTronDappUsdtNodeOptions(
     },
   };
 }
+
+export function createTronLowTrxOptions(address: string): TronLocalNodeOptions {
+  return {
+    initialBalances: {
+      [address]: 1, // 1 sun = 1e-6 TRX
+    },
+    trc20Balances: {
+      [address]: {
+        USDT: '2000000', // 2 USDT (6 decimals)
+      },
+    },
+  };
+}
