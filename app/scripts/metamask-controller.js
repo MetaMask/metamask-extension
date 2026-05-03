@@ -4676,7 +4676,10 @@ export default class MetamaskController extends EventEmitter {
         this.passkeyController.removePasskey();
         throw new PasskeyControllerError(
           PasskeyControllerErrorMessage.VaultKeyRenewalFailed,
-          { code: PasskeyControllerErrorCode.VaultKeyRenewalFailed },
+          {
+            code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
+            cause: err instanceof Error ? err : new Error(String(err)),
+          },
         );
       }
     } catch (error) {

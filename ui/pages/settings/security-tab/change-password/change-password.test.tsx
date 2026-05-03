@@ -1,15 +1,31 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
+import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import * as selectors from '../../../../selectors';
 import { startPasskeyAuthentication } from '../../../../../shared/lib/passkey';
+import { toast } from '../../../../components/ui/toast/toast';
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../../shared/constants/app';
 import ChangePassword from './change-password';
+
+jest.mock('../../../../components/ui/toast/toast', () => {
+  const actual = jest.requireActual<
+    typeof import('../../../../components/ui/toast/toast')
+  >('../../../../components/ui/toast/toast');
+  return {
+    ...actual,
+    toast: {
+      ...actual.toast,
+      error: jest.fn(),
+      success: jest.fn(),
+    },
+  };
+});
 
 jest.mock('../../../../../shared/lib/environment-type', () => ({
   ...jest.requireActual<
@@ -42,7 +58,23 @@ jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
   return {
     ...actual,
-    useDispatch: () => jest.fn(),
+    /**
+     * Thunk middleware is not wired in these tests; mocked action creators often
+     * return a Promise directly. Forward it so `await dispatch(promise)` rejects
+     * into the component `catch` like production.
+     */
+    useDispatch: () =>
+      jest.fn((action: unknown) => {
+        if (
+          action !== null &&
+          typeof action === 'object' &&
+          'then' in action &&
+          typeof (action as { then: unknown }).then === 'function'
+        ) {
+          return action;
+        }
+        return undefined;
+      }),
   };
 });
 
@@ -561,6 +593,46 @@ describe('ChangePassword', () => {
         expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
         expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
       });
+    });
+
+    it('shows a dedicated success toast and refreshes state when passkey vault renewal fails after password change', async () => {
+      mockChangePasswordWithPasskeyVerification.mockRejectedValueOnce({
+        data: {
+          cause: {
+            name: 'PasskeyControllerError',
+            code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+
+      fireEvent.change(getByTestId('change-password-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.change(getByTestId('change-password-confirm-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.click(getByTestId('change-password-terms'));
+      fireEvent.click(getByTestId('change-password-button'));
+
+      await waitFor(() => {
+        expect(jest.mocked(toast.success)).toHaveBeenCalled();
+      });
+
+      const toastSuccess = jest.mocked(toast.success);
+      const firstArg = toastSuccess.mock.calls[0][0] as {
+        props: { title: string };
+      };
+      expect(firstArg.props.title).toBe(
+        messages.securityChangePasswordToastPasskeyRenewalFailed.message,
+      );
+      expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
     });
   });
 });

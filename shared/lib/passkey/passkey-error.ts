@@ -22,7 +22,31 @@ const PASSKEY_ERROR_CODE_TO_I18N_KEY: Record<PasskeyCode, string> = {
   [PasskeyControllerErrorCode.VaultKeyDecryptionFailed]:
     'passkeyErrorVaultKeyDecryptionFailed',
   [PasskeyControllerErrorCode.VaultKeyMismatch]: 'passkeyErrorVaultKeyMismatch',
+  [PasskeyControllerErrorCode.VaultKeyRenewalFailed]:
+    'passkeyErrorVaultKeyRenewalFailed',
 };
+
+/**
+ * Reads the stable passkey controller `code` from a thrown value (direct or MetaRPC-wrapped).
+ *
+ * @param error - Thrown value from background or in-page passkey flows.
+ * @returns The string code, or `null` if none is present.
+ */
+export function getPasskeyControllerErrorCode(error: unknown): string | null {
+  if (error === null || typeof error !== 'object') {
+    return null;
+  }
+  const err = error as { code?: unknown; data?: unknown };
+  const causeCode = getCauseCode(err.data);
+
+  if (typeof err.code === 'string') {
+    return err.code;
+  }
+  if (typeof causeCode === 'string') {
+    return causeCode;
+  }
+  return null;
+}
 
 function translatePasskeyCode(
   code: string,
@@ -68,22 +92,9 @@ export function translatePasskeyError(
   error: unknown,
   t: (key: string) => string,
 ): string | null {
-  if (error === null || typeof error !== 'object') {
-    return null;
-  }
-  const err = error as { code?: unknown; data?: unknown };
-  const causeCode = getCauseCode(err.data);
-  let code: string | null = null;
-
-  if (typeof err.code === 'string') {
-    code = err.code;
-  } else if (typeof causeCode === 'string') {
-    code = causeCode;
-  }
-
+  const code = getPasskeyControllerErrorCode(error);
   if (code === null) {
     return null;
   }
-
   return translatePasskeyCode(code, t);
 }

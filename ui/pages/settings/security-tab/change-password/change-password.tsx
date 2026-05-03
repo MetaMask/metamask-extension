@@ -8,7 +8,10 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
+import {
+  type PasskeyAuthenticationResponse,
+  PasskeyControllerErrorCode,
+} from '@metamask/passkey-controller';
 import {
   Box,
   Button,
@@ -36,6 +39,7 @@ import {
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
 } from '../../../../../shared/lib/passkey';
+import { getPasskeyControllerErrorCode } from '../../../../../shared/lib/passkey/passkey-error';
 import {
   changePassword,
   changePasswordWithPasskeyVerification,
@@ -156,7 +160,7 @@ const ChangePassword = ({
   };
 
   const onChangePassword = async () => {
-    let isPasskeyVerificationUsed = false;
+    let isPasskeyRenewalSuccessful = false;
     try {
       setShowChangePasswordWarning(false);
       setStep(ChangePasswordSteps.ChangePasswordLoading);
@@ -167,13 +171,21 @@ const ChangePassword = ({
         isPasskeyRegistered &&
         passkeyAuthenticationResponse !== null
       ) {
-        isPasskeyVerificationUsed = true;
-        await dispatch(
-          changePasswordWithPasskeyVerification(
-            newPassword,
-            passkeyAuthenticationResponse,
-          ),
-        );
+        try {
+          await dispatch(
+            changePasswordWithPasskeyVerification(
+              newPassword,
+              passkeyAuthenticationResponse,
+            ),
+          )
+          isPasskeyRenewalSuccessful = true;
+        } catch (error) {
+          const passkeyCode = getPasskeyControllerErrorCode(error);
+          // strictly treat vault key renewal failure as a password change success
+          if (passkeyCode !== PasskeyControllerErrorCode.VaultKeyRenewalFailed) {
+            throw error;
+          }
+        }
         setPasskeyAuthenticationResponse(null);
         await forceUpdateMetamaskState(dispatch);
       } else {
@@ -191,14 +203,18 @@ const ChangePassword = ({
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          biometrics_enabled: isPasskeyVerificationUsed,
+          biometrics_enabled: isPasskeyRenewalSuccessful,
         },
       });
 
       // upon successful password change, go back to the settings page
       navigate(redirectRoute);
+      const messageKey =
+        passkeyAuthenticationResponse && !isPasskeyRenewalSuccessful
+          ? 'securityChangePasswordToastPasskeyRenewalFailed'
+          : 'securityChangePasswordToastSuccess';
       toast.success(
-        <ToastContent title={t('securityChangePasswordToastSuccess')} />,
+        <ToastContent title={t(messageKey)} />,
         { duration: autoHideToastDelay },
       );
     } catch (error) {

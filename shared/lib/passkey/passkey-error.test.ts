@@ -1,7 +1,10 @@
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { JsonRpcError } from '@metamask/rpc-errors';
 
-import { translatePasskeyError } from './passkey-error';
+import {
+  getPasskeyControllerErrorCode,
+  translatePasskeyError,
+} from './passkey-error';
 
 describe('translatePasskeyError', () => {
   const t = (key: string) => `t:${key}`;
@@ -106,5 +109,54 @@ describe('translatePasskeyError', () => {
     expect(
       translatePasskeyError(new Error('x'), t) ?? t('passkeyUnlockFailed'),
     ).toBe('t:passkeyUnlockFailed');
+  });
+
+  it('maps vault key renewal failed code', () => {
+    expect(
+      translatePasskeyError(
+        { code: PasskeyControllerErrorCode.VaultKeyRenewalFailed },
+        t,
+      ),
+    ).toBe('t:passkeyErrorVaultKeyRenewalFailed');
+  });
+});
+
+describe('getPasskeyControllerErrorCode', () => {
+  it('reads root string code', () => {
+    expect(
+      getPasskeyControllerErrorCode({
+        code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
+      }),
+    ).toBe(PasskeyControllerErrorCode.VaultKeyRenewalFailed);
+  });
+
+  it('reads MetaRPC-style data.cause.code', () => {
+    const err = new JsonRpcError(-32603, 'internal error', {
+      cause: {
+        name: 'PasskeyControllerError',
+        code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
+      },
+    });
+    expect(getPasskeyControllerErrorCode(err)).toBe(
+      PasskeyControllerErrorCode.VaultKeyRenewalFailed,
+    );
+  });
+
+  it('prefers root string code over data.cause.code', () => {
+    expect(
+      getPasskeyControllerErrorCode({
+        code: PasskeyControllerErrorCode.NotEnrolled,
+        data: {
+          cause: {
+            code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
+          },
+        },
+      }),
+    ).toBe(PasskeyControllerErrorCode.NotEnrolled);
+  });
+
+  it('returns null for non-objects', () => {
+    expect(getPasskeyControllerErrorCode(null)).toBeNull();
+    expect(getPasskeyControllerErrorCode('x')).toBeNull();
   });
 });

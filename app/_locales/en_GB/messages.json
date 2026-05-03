@@ -5349,6 +5349,10 @@
     "message": "Biometrics don't match your current wallet lock. Set up biometrics again in Settings.",
     "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
   },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "Your password was updated, but biometric unlock couldn't be turned on.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
+  },
   "passkeyTroubleshoot": {
     "message": "Having trouble with biometrics?",
     "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
@@ -7327,6 +7331,10 @@
   },
   "securityChangePasswordToastSuccess": {
     "message": "New password saved"
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "New password saved, but biometric unlock couldn't be turned on.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied."
   },
   "securityDefaultSettingsSocialLogin": {
     "message": "Security & privacy"
