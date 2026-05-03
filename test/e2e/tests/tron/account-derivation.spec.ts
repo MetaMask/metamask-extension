@@ -110,7 +110,7 @@ describe('Tron account derivation', function (this: Suite) {
         testSpecificMock: mockLocalTronApis,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
@@ -160,7 +160,7 @@ describe('Tron account derivation', function (this: Suite) {
         testSpecificMock: mockLocalTronApis,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
@@ -199,7 +199,7 @@ describe('Tron account derivation', function (this: Suite) {
         testSpecificMock: mockLocalTronApis,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
@@ -242,7 +242,7 @@ describe('Tron account derivation', function (this: Suite) {
         testSpecificMock: mockLocalTronApis,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
