@@ -90,8 +90,7 @@ const A_SPENDER = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
 describe('Tron activity', function (this: Suite) {
   this.timeout(180_000);
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Activity tab renders the empty-state ("Nothing to see yet. Swap your first token today.") despite mockTronGetTrc20Transactions being hit with the trc20ApproveTx fixture; same data-propagation regression as TRC20 rendering in assets.spec.ts — Tron tx history is fetched but never reaches the activity list selector .transaction-status-label--confirmed.
-  it.skip('Approve transaction is rendered with Approve label and amount', async function () {
+  it('Approve transaction is rendered with Approve label and amount', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -127,8 +126,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Activity tab renders the empty-state ("Nothing to see yet. Swap your first token today.") despite mockTronGetTransactions being hit with the trxSendTx fixture; same Tron activity propagation regression as the Approve test — confirmed via test-failure-screenshot-1.png that the trxSendTx is fetched (network log shows /v1/accounts/.../transactions request) but no row renders.
-  it.skip('Send transaction is rendered with Send label and -amount', async function () {
+  it('Send transaction is rendered with Send label and -amount', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -164,8 +162,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Activity tab renders the empty-state ("Nothing to see yet. Swap your first token today.") despite mockTronGetTransactions being hit with the trxReceiveTx fixture; same Tron activity propagation regression as Send/Approve tests.
-  it.skip('Receive transaction is rendered with Receive label and +amount', async function () {
+  it('Receive transaction is rendered with Receive label and +amount', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -201,8 +198,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression as Send/Receive — empty-state renders even though the swapTx fixture is delivered to /v1/accounts/.../transactions. Once the regression is fixed, additional verification needed: TriggerSmartContract→"Swap TRX to USDT" mapping (uses the _meta hint in the swap fixture).
-  it.skip('Swap transaction is rendered with Swap A to B label and -srcAmount', async function () {
+  it('Swap transaction is rendered with Swap A to B label and -srcAmount', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -240,8 +236,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression as Send/Receive — bridge fixture not rendered. After the regression is fixed, also needs cross-chain detection mapping (destChain "eip155:1") to render "Bridge USDT" + .transaction-status-label--confirmed selector used by checkCompletedBridgeTransactionActivity.
-  it.skip('Bridge transaction is rendered with Bridge label and -srcAmount', async function () {
+  it('Bridge transaction is rendered with Bridge label and -srcAmount', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -277,8 +272,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression — freezeV2Tx (FreezeBalanceV2Contract) fixture is delivered but no activity row renders. Once unblocked, also verify FreezeBalanceV2Contract→"Staking deposit" label mapping.
-  it.skip('Staking deposit is rendered with Staking deposit label and -amount', async function () {
+  it('Staking deposit is rendered with Staking deposit label and -amount', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -310,8 +304,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression — unfreezeV2Tx (UnfreezeBalanceV2Contract) fixture is delivered but no activity row renders. Once unblocked, also verify UnfreezeBalanceV2Contract→"Staking withdrawal" label mapping.
-  it.skip('Staking withdrawal is rendered with Staking withdrawal label and +amount', async function () {
+  it('Staking withdrawal is rendered with Staking withdrawal label and +amount', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
