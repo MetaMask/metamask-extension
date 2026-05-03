@@ -14,6 +14,7 @@ import { InputProps, InputType, InputComponent } from './input.types';
 /**
  * @deprecated This component is deprecated and will be removed in a future release.
  * Please use the Input component from @metamask/design-system-react instead.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#input-component | Migration Guide}
  * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-input--docs | Storybook Documentation}
  * @see {@link https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components/Input | Component Source}
  */
