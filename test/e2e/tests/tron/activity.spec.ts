@@ -90,7 +90,7 @@ const A_SPENDER = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
 describe('Tron activity', function (this: Suite) {
   this.timeout(180_000);
 
-  it('Approve transaction is rendered with Approve label and amount', async function () {
+  it('Approve transaction is rendered as Interaction', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -118,7 +118,7 @@ describe('Tron activity', function (this: Suite) {
         const activity = await landOnTronActivity(driver);
         await activity.checkConfirmedTxNumberDisplayedInActivity(1);
         await activity.checkTxAction({
-          action: 'Approve USDT',
+          action: 'Interaction',
           txIndex: 1,
           confirmedTx: 1,
         });
@@ -153,7 +153,7 @@ describe('Tron activity', function (this: Suite) {
         const activity = await landOnTronActivity(driver);
         await activity.checkConfirmedTxNumberDisplayedInActivity(1);
         await activity.checkTxAction({
-          action: 'Send TRX',
+          action: 'Sent',
           txIndex: 1,
           confirmedTx: 1,
         });
@@ -189,7 +189,7 @@ describe('Tron activity', function (this: Suite) {
         const activity = await landOnTronActivity(driver);
         await activity.checkConfirmedTxNumberDisplayedInActivity(1);
         await activity.checkTxAction({
-          action: 'Receive TRX',
+          action: 'Received',
           txIndex: 1,
           confirmedTx: 1,
         });
@@ -236,7 +236,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  it('Bridge transaction is rendered with Bridge label and -srcAmount', async function () {
+  it('Bridge transaction is rendered as Interaction without bridge history', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -264,7 +264,7 @@ describe('Tron activity', function (this: Suite) {
         const activity = await landOnTronActivity(driver);
         await activity.checkCompletedBridgeTransactionActivity(1);
         await activity.checkTxAction({
-          action: 'Bridge USDT',
+          action: 'Interaction',
           txIndex: 1,
           confirmedTx: 1,
         });
