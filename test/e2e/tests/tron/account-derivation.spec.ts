@@ -184,19 +184,12 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  // TODO(tron-e2e): test calls accountList.openMultichainAccountMenu directly
-  // without first opening the multichain accounts page, so the lookup for
-  // [data-testid="multichain-account-cell-end-accessory"][aria-label="Account 1 options"]
-  // times out at 10s. Needs an `await homepage.headerNavbar.openAccountMenu();
-  // await accountList.checkPageIsLoaded();` before openMultichainAccountMenu.
-  // eslint-disable-next-line mocha/no-skipped-tests -- multichain page not opened before menu lookup
-  it.skip('Shows Account 1 QR popup with address, copy link, and View on Tronscan', async function () {
+  it('Shows Account 1 QR popup with address, copy link, and View on Tronscan', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
-          'anvil',
           {
             type: 'tron',
             options: createEmptyTronNodeOptions(TRON_ACCOUNT_ADDRESS),
@@ -211,8 +204,12 @@ describe('Tron account derivation', function (this: Suite) {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Tron');
 
+        const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
         const addressList = new AddressListModal(driver);
+        await homepage.headerNavbar.openAccountMenu();
+        await accountList.checkPageIsLoaded();
+
         await accountList.openMultichainAccountMenu({
           accountLabel: 'Account 1',
         });
