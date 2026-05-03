@@ -19,11 +19,11 @@ type PasskeyIconContext = {
 };
 
 export class UnlockPasskeyIconButton extends Component<UnlockPasskeyIconButtonProps> {
-  static contextTypes = {
+  static readonly contextTypes = {
     t: PropTypes.func,
   };
 
-  static propTypes = {
+  static readonly propTypes = {
     disabled: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired,
   };

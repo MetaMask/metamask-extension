@@ -55,12 +55,12 @@ export class UnlockPasskeySection extends Component<
   UnlockPasskeySectionProps,
   UnlockPasskeySectionState
 > {
-  static contextTypes = {
+  static readonly contextTypes = {
     trackEvent: PropTypes.func,
     t: PropTypes.func,
   };
 
-  static propTypes = {
+  static readonly propTypes = {
     logoSection: PropTypes.node.isRequired,
     isPasskeyActive: PropTypes.bool.isRequired,
     passkeyAutoUnlockSuppressed: PropTypes.bool.isRequired,

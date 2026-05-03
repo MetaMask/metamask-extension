@@ -999,6 +999,11 @@ export function tryUnlockMetamask(
   };
 }
 
+/**
+ * Tries to unlock the metamask with the passkey.
+ * @param authenticationResponse - The authentication response from the passkey.
+ * @returns A promise that resolves when the unlock is successful or rejected when it fails.
+ */
 export function tryUnlockMetamaskWithPasskey(
   authenticationResponse: PasskeyAuthenticationResponse,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
