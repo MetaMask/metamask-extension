@@ -426,45 +426,12 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): double-blocked. (1) Tron activity propagation regression (no rows render). (2) NetworkFilter is EVM-gated — sort-by-popover-toggle is disabled when chainId is not in FEATURED_NETWORK_CHAIN_IDS, so [data-testid="network-filter-current__button"] is never rendered for Tron (same finding as assets.spec.ts filter tests). Needs product/UX decision before enabling.
-  it.skip('Current network filter shows only Tron transactions', async function () {
+  it('Current network filter shows only Tron transactions', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
-          'anvil',
-          {
-            type: 'tron',
-            options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
-          },
-        ],
-        testSpecificMock: buildActivityMocks({
-          trxTransactions: [
-            trxSendTx({
-              amountSun: 1_000_000,
-              to: A_RECIPIENT,
-              status: 'Confirmed',
-            }),
-          ],
-          trc20Transactions: [],
-        }),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activity = await landOnTronActivity(driver);
-        await activity.checkConfirmedTxNumberDisplayedInActivity(1);
-      },
-    );
-  });
-
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): double-blocked. (1) Tron activity propagation regression (no rows render). (2) NetworkFilter EVM-gating — [data-testid="network-filter-all__button"] is never rendered for Tron (sort-by-popover-toggle disabled for non-FEATURED chain ids). Same finding as assets.spec.ts; needs product/UX decision before enabling.
-  it.skip('All networks filter shows other-chain transactions alongside Tron', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        localNodeOptions: [
-          'anvil',
           {
             type: 'tron',
             options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
@@ -484,8 +451,38 @@ describe('Tron activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         const activity = await landOnTronActivity(driver);
         const assetList = new AssetListPage(driver);
-        await assetList.openNetworksFilter();
-        await driver.clickElement('[data-testid="network-filter-all__button"]');
+        await assetList.selectOnlyTronInNetworkFilter();
+        await activity.checkConfirmedTxNumberDisplayedInActivity(1);
+      },
+    );
+  });
+
+  it('All networks filter shows other-chain transactions alongside Tron', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        localNodeOptions: [
+          {
+            type: 'tron',
+            options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
+          },
+        ],
+        testSpecificMock: buildActivityMocks({
+          trxTransactions: [
+            trxSendTx({
+              amountSun: 1_000_000,
+              to: A_RECIPIENT,
+              status: 'Confirmed',
+            }),
+          ],
+          trc20Transactions: [],
+        }),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        const activity = await landOnTronActivity(driver);
+        const assetList = new AssetListPage(driver);
+        await assetList.selectAllNetworksInNetworkFilter();
         await driver.waitUntil(
           async () => {
             const items = await driver.findElements(

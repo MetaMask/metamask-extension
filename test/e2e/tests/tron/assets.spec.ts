@@ -123,8 +123,7 @@ describe('Tron assets', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Tron asset list does not expose the EVM "popular networks" NetworkFilter popover — NetworkFilterComponent disables sort-by-popover-toggle when chainId is not in FEATURED_NETWORK_CHAIN_IDS, so [data-testid="network-filter-current__button"] is never rendered. Needs product/UX decision before enabling.
-  it.skip('Current network filter shows only Tron assets', async function () {
+  it('Current network filter shows only Tron assets', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
@@ -132,7 +131,6 @@ describe('Tron assets', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
-          'anvil',
           {
             type: 'tron',
             options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
@@ -157,8 +155,7 @@ describe('Tron assets', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): Tron asset list does not expose the EVM NetworkFilter popover — [data-testid="network-filter-all__button"] is never rendered (sort-by-popover-toggle is disabled for non-FEATURED chain ids). Needs product/UX decision before enabling.
-  it.skip('All networks filter shows other chains alongside Tron', async function () {
+  it('All networks filter shows other chains alongside Tron', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
@@ -166,7 +163,6 @@ describe('Tron assets', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
-          'anvil',
           {
             type: 'tron',
             options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
@@ -177,8 +173,7 @@ describe('Tron assets', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await landOnTronHome(driver);
         const assetList = new AssetListPage(driver);
-        await assetList.openNetworksFilter();
-        await driver.clickElement('[data-testid="network-filter-all__button"]');
+        await assetList.selectAllNetworksInNetworkFilter();
         await assetList.checkTokenExistsInList('Tron');
         await assetList.checkTokenExistsInList('Tether');
         await assetList.checkTokenExistsInList('Ethereum');
