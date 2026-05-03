@@ -24,7 +24,9 @@ class TronAssetDetailsPage {
   }
 
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.sendButton);
+    // Use a section title that is rendered for every Tron asset (including
+    // view-only assets like Staked TRX which have no action buttons).
+    await this.driver.waitForSelector({ text: 'Your balance' });
   }
 
   async checkActionButtons(options: {
@@ -32,14 +34,20 @@ class TronAssetDetailsPage {
     send?: boolean;
     receive?: boolean;
   }): Promise<void> {
-    if (options.send) {
+    if (options.send === true) {
       await this.driver.waitForSelector(this.sendButton);
+    } else if (options.send === false) {
+      await this.driver.assertElementNotPresent(this.sendButton);
     }
-    if (options.swap) {
+    if (options.swap === true) {
       await this.driver.waitForSelector(this.swapButton);
+    } else if (options.swap === false) {
+      await this.driver.assertElementNotPresent(this.swapButton);
     }
-    if (options.receive) {
+    if (options.receive === true) {
       await this.driver.waitForSelector(this.receiveButton);
+    } else if (options.receive === false) {
+      await this.driver.assertElementNotPresent(this.receiveButton);
     }
   }
 

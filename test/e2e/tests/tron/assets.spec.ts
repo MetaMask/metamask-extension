@@ -11,6 +11,7 @@ import { TronNode } from '../../seeder/tron/node';
 import {
   createEmptyTronNodeOptions,
   createTronPortfolioNodeOptions,
+  createTronStakedAccountOptions,
 } from '../../seeder/tron/profiles';
 import {
   TRON_ACCOUNT_ADDRESS,
@@ -252,6 +253,62 @@ describe('Tron assets', function (this: Suite) {
           text: 'Daily resource',
           tag: 'h4',
         });
+      },
+    );
+  });
+
+  it('Staked TRX entry is shown alongside TRX for an account that staked', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .build(),
+        title: this.test?.fullTitle(),
+        localNodeOptions: [
+          {
+            type: 'tron',
+            options: createTronStakedAccountOptions(TRON_ACCOUNT_ADDRESS),
+          },
+        ],
+        testSpecificMock: mockLocalTronApis,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await landOnTronHome(driver);
+        const assetList = new AssetListPage(driver);
+        await assetList.checkTokenExistsInList('Tron');
+        await assetList.checkTokenExistsInList('Staked TRX');
+        await assetList.clickOnAsset('Staked TRX');
+        const details = new TronAssetDetailsPage(driver);
+        await details.checkPageIsLoaded();
+        await details.checkActionButtons({
+          swap: false,
+          send: false,
+          receive: false,
+        });
+      },
+    );
+  });
+
+  it('Staked TRX entry is absent for an account that has not staked', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .build(),
+        title: this.test?.fullTitle(),
+        localNodeOptions: [
+          {
+            type: 'tron',
+            options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
+          },
+        ],
+        testSpecificMock: mockLocalTronApis,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await landOnTronHome(driver);
+        const assetList = new AssetListPage(driver);
+        await assetList.checkTokenExistsInList('Tron');
+        await assetList.checkAssetIsAbsent('Staked TRX');
       },
     );
   });
