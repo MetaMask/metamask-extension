@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
@@ -227,21 +228,12 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  // TODO(tron-e2e): Receive page does not render
-  // [data-testid="address-copy-button-text"] containing the full base58
-  // address — `waitForSelector({ css: '[data-testid="address-copy-button-text"]',
-  // text: <address> })` times out at 10s. Likely the Receive page now uses a
-  // different testid (e.g. address-receive-text) or splits the address text
-  // across multiple nodes. Need to inspect the rendered DOM and update the
-  // selector / structure of the assertions.
-  // eslint-disable-next-line mocha/no-skipped-tests -- selector mismatch on Receive page
-  it.skip('Shows Account 1 Tron address on the Receive page and copies it', async function () {
+  it('Shows Account 1 Tron address on the Receive page and copies it', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
-          'anvil',
           {
             type: 'tron',
             options: createEmptyTronNodeOptions(TRON_ACCOUNT_ADDRESS),
@@ -260,12 +252,13 @@ describe('Tron account derivation', function (this: Suite) {
         await homepage.checkPageIsLoaded({ amount: '0 TRX' });
         await homepage.clickOnReceiveButton();
 
-        await driver.waitForSelector({
-          text: EXPECTED_TRON_ADDRESSES_BY_INDEX[0],
-          css: '[data-testid="address-copy-button-text"]',
-        });
-        await driver.clickElement('[data-testid="address-copy-button-text"]');
-        await driver.waitForSelector({ text: 'Address copied' });
+        const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[0];
+        const copyButton = await driver.findElement(
+          '[data-testid="address-copy-button-text"]',
+        );
+        const clipboardText = await copyButton.getAttribute('data-clipboard-text');
+        assert.strictEqual(clipboardText, expected);
+        await copyButton.click();
       },
     );
   });
