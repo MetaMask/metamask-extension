@@ -149,15 +149,10 @@ describe('Tron Send', function (this: Suite) {
         await snapConfirmation.clickFooterConfirmButton();
 
         const activityList = new ActivityListPage(driver);
-        // The snap tracks the submitted transaction locally and renders it
-        // immediately; the broadcast reaches the local node so no failed tx
-        // should appear. Confirmed-status assertions were intentionally
-        // dropped: tronGrid history is mocked to "empty" by
-        // proxyTronBlockchainCalls (createEmptyTronGridTransactionsResponse),
-        // so the UI never observes a "Confirmed" state for the broadcast and
-        // checkConfirmedTxNumberDisplayedInActivity times out at 10s.
-        await activityList.checkNoFailedTransactions();
+        await activityList.checkPendingTxNumberDisplayedInActivity(1);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkTxAmountInActivity('-1 TRX', 1);
+        await activityList.checkNoFailedTransactions();
       },
     );
   });
