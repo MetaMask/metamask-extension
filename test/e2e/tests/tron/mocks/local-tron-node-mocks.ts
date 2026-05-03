@@ -142,7 +142,65 @@ export async function proxyTronBlockchainCalls(
   await proxyPostPath('/wallet/getblock');
   await proxyPostPath('/wallet/getaccountresource');
   await proxyPostPath('/wallet/triggersmartcontract');
-  await proxyPostPath('/wallet/triggerconstantcontract');
+
+  const usdtAddress =
+    typeof localNode === 'string'
+      ? undefined
+      : localNode.trc20Tokens?.USDT?.address;
+
+  endpoints.push(
+    await mockServer
+      .forPost(tronProviderUrl('/wallet/triggerconstantcontract'))
+      .always()
+      .thenCallback(async (req) => {
+        const body = await req.body.getText();
+        const parsed = body
+          ? (JSON.parse(body) as { contract_address?: string })
+          : {};
+        if (
+          usdtAddress &&
+          parsed.contract_address &&
+          parsed.contract_address.toLowerCase() === usdtAddress.toLowerCase()
+        ) {
+          return {
+            statusCode: 200,
+            json: {
+              result: { result: true },
+              energy_used: 14000,
+              constant_result: [
+                '0000000000000000000000000000000000000000000000000000000000000001',
+              ],
+              transaction: {
+                txID: '0'.repeat(64),
+                raw_data: {
+                  contract: [
+                    {
+                      parameter: {
+                        value: {
+                          data: '',
+                          owner_address: '',
+                          contract_address: usdtAddress,
+                        },
+                        type_url:
+                          'type.googleapis.com/protocol.TriggerSmartContract',
+                      },
+                      type: 'TriggerSmartContract',
+                    },
+                  ],
+                  ref_block_bytes: '0000',
+                  ref_block_hash: '0000000000000000',
+                  expiration: Date.now() + 60_000,
+                  timestamp: Date.now(),
+                },
+                raw_data_hex: '',
+                visible: false,
+              },
+            },
+          };
+        }
+        return proxyPost(localNodeUrl, '/wallet/triggerconstantcontract', body);
+      }),
+  );
 
   // Custom broadcast handler: proxies to the local node AND captures the
   // transaction so subsequent history polls can replay it as Pending then
