@@ -145,22 +145,12 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  // TODO(tron-e2e): test calls accountList.openMultichainAccountMenu directly
-  // without first navigating to the multichain accounts page, so the lookup for
-  // [data-testid="multichain-account-cell-end-accessory"][aria-label="Account 1 options"]
-  // times out at 10s. Needs an `await homepage.headerNavbar.openAccountMenu();
-  // await accountList.checkPageIsLoaded();` before openMultichainAccountMenu,
-  // plus a re-think of what the "quick-copy popup" surface actually is in the
-  // current UI (the original test description references a popup that may no
-  // longer be reachable from the multichain accounts row menu).
-  // eslint-disable-next-line mocha/no-skipped-tests -- multichain page not opened before menu lookup
-  it.skip('Shows Account 1 Tron address on the quick-copy popup and copies it', async function () {
+  it('Shows Account 1 Tron address on the quick-copy popup and copies it', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
-          'anvil',
           {
             type: 'tron',
             options: createEmptyTronNodeOptions(TRON_ACCOUNT_ADDRESS),
@@ -175,21 +165,19 @@ describe('Tron account derivation', function (this: Suite) {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Tron');
 
+        const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
-        await accountList.openMultichainAccountMenu({
-          accountLabel: 'Account 1',
-        });
+        await homepage.headerNavbar.openAccountMenu();
+        await accountList.checkPageIsLoaded();
 
-        const popup = '[data-testid="network-group-with-copy-icon"]';
-        const addressContainer = '[data-testid="default-address-container"]';
-        await driver.waitForSelector(popup);
+        const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[0];
         await driver.waitForSelector({
-          css: addressContainer,
-          text: shortenAddress(EXPECTED_TRON_ADDRESSES_BY_INDEX[0]),
+          css: '[data-testid="default-address-container"]',
+          text: shortenAddress(expected),
         });
-        await driver.clickElement(popup);
+        await driver.clickElement('[data-testid="network-group-with-copy-icon"]');
         await driver.waitForSelector({
-          css: addressContainer,
+          css: '[data-testid="default-address-container"]',
           text: 'address copied',
         });
       },
