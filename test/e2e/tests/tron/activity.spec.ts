@@ -499,8 +499,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression — checkConfirmedTxNumberDisplayedInActivity(1) times out before the details page is ever opened. Once activity rows render, also re-verify the TronTransactionDetailsPage selectors (title h1, [data-testid="transaction-base-fee"], hash link to tronscan.org/#/transaction/<txID>, .name__value rows for from/to addresses).
-  it.skip('Transaction details show Title / Time / Status / TXID / From / To / Amount / Network fee / View details', async function () {
+  it('Transaction details show Title / Time / Status / TXID / From / To / Amount / Network fee / View details', async function () {
     const tx = trxSendTx({
       amountSun: 1_000_000,
       to: A_RECIPIENT,
