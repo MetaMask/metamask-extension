@@ -143,8 +143,7 @@ describe('Tron assets', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await landOnTronHome(driver);
         const assetList = new AssetListPage(driver);
-        await assetList.openNetworksFilter();
-        await assetList.clickCurrentNetworkOption();
+        await assetList.selectOnlyTronInNetworkFilter();
         await assetList.checkOnlyAssetsArePresent([
           'Tron',
           'GasFreeTransferSolution',
