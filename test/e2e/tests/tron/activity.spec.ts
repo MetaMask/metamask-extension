@@ -336,8 +336,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression — Pending trxSendTx is delivered but the activity tab shows the empty-state instead of any .transaction-status-label--pending row.
-  it.skip('Pending status: shows pending counter', async function () {
+  it('Pending status: shows pending counter', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -367,8 +366,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression — Confirmed trxSendTx is delivered but no .transaction-status-label--confirmed renders (verified via Send/Approve/Receive failing identically with empty-state screenshot).
-  it.skip('Confirmed status: shows confirmed counter', async function () {
+  it('Confirmed status: shows confirmed counter', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -398,8 +396,7 @@ describe('Tron activity', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): blocked by the same Tron activity propagation regression — Failed trxSendTx (OUT_OF_ENERGY contractRet) is delivered but no .transaction-status-label--failed row renders.
-  it.skip('Failed status: shows failed counter', async function () {
+  it('Failed status: shows failed counter', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
