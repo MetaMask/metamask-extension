@@ -3049,7 +3049,6 @@ export default class MetamaskController extends EventEmitter {
         this.generatePasskeyAuthenticationOptions.bind(this),
       protectVaultKeyWithPasskey: this.protectVaultKeyWithPasskey.bind(this),
       unlockWithPasskey: this.unlockWithPasskey.bind(this),
-      verifyPasskeyEnrollment: this.verifyPasskeyEnrollment.bind(this),
       removePasskeyWithPasskeyVerification:
         this.removePasskeyWithPasskeyVerification.bind(this),
       removePasskeyWithPasswordVerification:
@@ -4583,28 +4582,6 @@ export default class MetamaskController extends EventEmitter {
       authenticationResponse,
     );
     await this.submitEncryptionKey(vaultKey);
-  }
-
-  /**
-   * Verifies a passkey authentication assertion without unlocking the vault.
-   * Used during onboarding after registration so the assertion is validated (registration may omit attestation).
-   *
-   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - Wire response from the UI.
-   * @returns {Promise<void>}
-   */
-  async verifyPasskeyEnrollment(authenticationResponse) {
-    if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
-      );
-    }
-    const verified = await this.passkeyController.verifyPasskeyAuthentication(
-      authenticationResponse,
-    );
-    if (!verified) {
-      throw new Error('Passkey authentication verification failed');
-    }
   }
 
   /**
