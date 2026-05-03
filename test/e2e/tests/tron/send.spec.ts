@@ -6,7 +6,10 @@ import { Driver } from '../../webdriver/driver';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import { TronNode } from '../../seeder/tron/node';
-import { createTronPortfolioNodeOptions } from '../../seeder/tron/profiles';
+import {
+  createTronPortfolioNodeOptions,
+  createTronLowTrxOptions,
+} from '../../seeder/tron/profiles';
 import { landOnTronSendScreen } from '../../page-objects/flows/tron-send.flow';
 import {
   TRON_ACCOUNT_ADDRESS,
@@ -95,26 +98,23 @@ describe('Tron Send', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- TODO(tron-e2e): the snap's onAmountInput never returns InsufficientBalanceToCoverFee for native TRX in this fixture: amounts > balance are caught earlier by validateTokenBalance ("Insufficient funds"), and amounts ≤ balance (including the full 6.072392 TRX) leave the form valid because the local Tron node's free bandwidth covers the basic transfer (no TRX fee actually required). To surface "Insufficient balance to cover fees" we'd need to either deplete the account's free bandwidth in the seeder, or trigger a TRC20 path where energy must be paid in TRX.
-  it.skip('shows insufficient fee error when sending more TRX than balance minus fee', async function () {
+  it('blocks USDT send when TRX balance cannot cover energy fee', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
-          'anvil',
           {
             type: 'tron',
-            options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
+            options: createTronLowTrxOptions(TRON_ACCOUNT_ADDRESS),
           },
         ],
         testSpecificMock: buildSendMocks,
       },
       async ({ driver }: { driver: Driver }) => {
-        const sendPage = await landOnTronSendScreen({ driver, symbol: 'TRX' });
+        const sendPage = await landOnTronSendScreen({ driver, symbol: 'USDT' });
         await sendPage.fillRecipient(TRON_RECIPIENT_ADDRESS);
-        // TRX balance is ~6.072 TRX; sending more triggers insufficient fee
-        await sendPage.fillAmount('999');
+        await sendPage.fillAmount('1');
         await sendPage.checkInsufficientFeeError();
       },
     );
