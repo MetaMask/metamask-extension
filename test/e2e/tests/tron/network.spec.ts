@@ -85,8 +85,7 @@ describe('Tron network presence', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- pending show-test-networks toggle behaviour confirmed in Task 2
-  it.skip('shows Tron Nile when test networks are enabled', async function () {
+  it('shows Tron Nile when test networks are enabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -103,8 +102,7 @@ describe('Tron network presence', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- pending show-test-networks toggle behaviour confirmed in Task 2
-  it.skip('shows Tron Shasta when test networks are enabled', async function () {
+  it('shows Tron Shasta when test networks are enabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
