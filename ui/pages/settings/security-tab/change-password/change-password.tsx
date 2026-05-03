@@ -1,5 +1,11 @@
 import EventEmitter from 'events';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
@@ -64,8 +70,9 @@ import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
   VerifyCurrentPassword: 1,
-  ChangePassword: 2,
-  ChangePasswordLoading: 3,
+  VerifyPasskey: 2,
+  ChangePassword: 3,
+  ChangePasswordLoading: 4,
 };
 
 const autoHideToastDelay = 5 * SECOND;
@@ -89,11 +96,11 @@ const ChangePassword = ({
 
   const [step, setStep] = useState(() =>
     isPasskeyActive
-      ? ChangePasswordSteps.ChangePassword
+      ? ChangePasswordSteps.VerifyPasskey
       : ChangePasswordSteps.VerifyCurrentPassword,
   );
 
-  const [isAwaitingPasskeyVerification, setIsAwaitingPasskeyVerification] =
+  const [isVerifyingPasskey, setIsVerifyingPasskey] =
     useState(isPasskeyActive);
 
   const [currentPassword, setCurrentPassword] = useState('');
@@ -106,7 +113,6 @@ const ChangePassword = ({
     useState(false);
   const [passkeyAuthenticationResponse, setPasskeyAuthenticationResponse] =
     useState<PasskeyAuthenticationResponse | null>(null);
-  const passkeyAutoSuccessLockRef = useRef(false);
 
   const isSidePanel =
     getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
@@ -150,7 +156,7 @@ const ChangePassword = ({
   };
 
   const onChangePassword = async () => {
-    let changedPasswordWithPasskeyVerification = false;
+    let isPasskeyVerificationUsed = false;
     try {
       setShowChangePasswordWarning(false);
       setStep(ChangePasswordSteps.ChangePasswordLoading);
@@ -161,7 +167,7 @@ const ChangePassword = ({
         isPasskeyRegistered &&
         passkeyAuthenticationResponse !== null
       ) {
-        changedPasswordWithPasskeyVerification = true;
+        isPasskeyVerificationUsed = true;
         await dispatch(
           changePasswordWithPasskeyVerification(
             newPassword,
@@ -172,7 +178,7 @@ const ChangePassword = ({
         await forceUpdateMetamaskState(dispatch);
       } else {
         await dispatch(changePassword(newPassword, currentPassword));
-        if (isPasskeyActive) {
+        if (isPasskeyRegistered) {
           await removePasskeyWithPasswordVerification(newPassword);
           await forceUpdateMetamaskState(dispatch);
         }
@@ -185,9 +191,7 @@ const ChangePassword = ({
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          biometrics_enabled: Boolean(
-            changedPasswordWithPasskeyVerification && !isSocialLoginFlow,
-          ),
+          biometrics_enabled: isPasskeyVerificationUsed,
         },
       });
 
@@ -250,76 +254,58 @@ const ChangePassword = ({
     [],
   );
 
-  // When a passkey is already enrolled, verify with WebAuthn first — no "current password" step.
+  // When a passkey is already enrolled, verify with WebAuthn on the dedicated step before new password.
   useEffect(() => {
     if (
       !isPasskeyActive ||
-      step !== ChangePasswordSteps.ChangePassword ||
-      Boolean(currentPassword) ||
-      passkeyAuthenticationResponse !== null ||
-      passkeyAutoSuccessLockRef.current
+      step !== ChangePasswordSteps.VerifyPasskey ||
+      passkeyAuthenticationResponse !== null
     ) {
       return;
     }
 
-    let cancelled = false;
+    let aborted = false;
 
     (async () => {
-      setIsAwaitingPasskeyVerification(true);
+      setIsVerifyingPasskey(true);
       try {
         const authOptions = await generatePasskeyAuthenticationOptions();
         const response = await startPasskeyAuthentication(authOptions);
-        if (!cancelled) {
-          passkeyAutoSuccessLockRef.current = true;
-          setPasskeyAuthenticationResponse(response);
+        if (aborted) {
+          return;
         }
+        setPasskeyAuthenticationResponse(response);
+        setStep(ChangePasswordSteps.ChangePassword);
+        setIsVerifyingPasskey(false);
       } catch {
-        if (!cancelled) {
-          passkeyAutoSuccessLockRef.current = false;
-          setPasskeyAuthenticationResponse(null);
-          setCurrentPassword('');
-          setStep(ChangePasswordSteps.VerifyCurrentPassword);
+        if (aborted) {
+          return;
         }
-      } finally {
-        if (!cancelled) {
-          setIsAwaitingPasskeyVerification(false);
-        }
+        setPasskeyAuthenticationResponse(null);
+        setCurrentPassword('');
+        setStep(ChangePasswordSteps.VerifyCurrentPassword);
+        setIsVerifyingPasskey(false);
       }
-    })();
+    })().catch(() => {
+      /* Errors are handled in try/catch above */
+    });
 
     return () => {
-      cancelled = true;
+      aborted = true;
       cancelPasskeyCeremony();
-      setIsAwaitingPasskeyVerification(false);
+      setIsVerifyingPasskey(false);
     };
-  }, [isPasskeyActive, step, currentPassword, passkeyAuthenticationResponse]);
+  }, [isPasskeyActive, passkeyAuthenticationResponse, step]);
 
-  const hasPasskeyAssertionForSave =
-    isPasskeyRegistered && passkeyAuthenticationResponse !== null;
-
-  const hasCurrentVerification =
-    isSocialLoginFlow || Boolean(currentPassword) || hasPasskeyAssertionForSave;
-
-  /** Passkey-first flow: hide new-password UI until WebAuthn succeeds (or user falls back). */
-  const isPasskeyFirstGateActive =
-    isPasskeyActive &&
-    step === ChangePasswordSteps.ChangePassword &&
-    !currentPassword &&
-    passkeyAuthenticationResponse === null &&
-    isAwaitingPasskeyVerification;
-
-  const isPasskeyVerificationLayout =
-    step === ChangePasswordSteps.ChangePassword && isPasskeyFirstGateActive;
+  const handleUseVerifyPassword = useCallback(() => {
+    cancelPasskeyCeremony();
+    setIsVerifyingPasskey(false);
+    setPasskeyAuthenticationResponse(null);
+    setStep(ChangePasswordSteps.VerifyCurrentPassword);
+  }, []);
 
   return (
-    <Box
-      padding={4}
-      className={
-        isPasskeyVerificationLayout
-          ? 'change-password flex h-full min-h-0 flex-1 flex-col'
-          : 'change-password'
-      }
-    >
+    <Box padding={4} className="change-password">
       {step === ChangePasswordSteps.VerifyCurrentPassword && (
         <Box
           flexDirection={BoxFlexDirection.Column}
@@ -367,43 +353,67 @@ const ChangePassword = ({
             >
               {t('continue')}
             </Button>
-            {isSidePanel ? (
-              <TextButton
-                type="button"
-                data-testid="change-password-passkey-fallback-open-full-screen"
-                color={TextColor.PrimaryDefault}
-                className="w-full text-center"
-                onClick={openChangePasswordInFullScreen}
-              >
-                {t('passkeyTroubleshoot')}
-              </TextButton>
-            ) : null}
           </form>
+        </Box>
+      )}
+
+      {step === ChangePasswordSteps.VerifyPasskey && (
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+          marginTop={12}
+          gap={4}
+          data-testid="change-password-passkey-verifying"
+        >
+          <Spinner className="change-password__spinner" />
+          <Text
+            variant={TextVariant.BodyLg}
+            fontWeight={FontWeight.Medium}
+            className="text-center"
+          >
+            {t('changePasswordPasskeyVerifyingTitle')}
+          </Text>
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            className="text-center"
+          >
+            {t('changePasswordPasskeyVerifyingDescription')}
+          </Text>
+          {isSidePanel && isVerifyingPasskey ? (
+            <TextButton
+              type="button"
+              data-testid="change-password-passkey-verifying-open-full-screen"
+              color={TextColor.PrimaryDefault}
+              className="w-full text-center"
+              onClick={openChangePasswordInFullScreen}
+            >
+              {t('passkeyTroubleshoot')}
+            </TextButton>
+          ) : null}
+          <TextButton
+            type="button"
+            data-testid="change-password-verify-passkey-use-password"
+            color={TextColor.PrimaryDefault}
+            className="mt-6 w-full text-center"
+            onClick={handleUseVerifyPassword}
+          >
+            {t('usePassword')}
+          </TextButton>
         </Box>
       )}
 
       {step === ChangePasswordSteps.ChangePassword && (
         <Box
           flexDirection={BoxFlexDirection.Column}
-          gap={isPasskeyVerificationLayout ? 0 : 6}
-          justifyContent={
-            isPasskeyVerificationLayout
-              ? BoxJustifyContent.Center
-              : BoxJustifyContent.Between
-          }
-          className={
-            isPasskeyVerificationLayout
-              ? 'flex h-full min-h-0 flex-1 flex-col'
-              : 'h-full'
-          }
+          gap={6}
+          justifyContent={BoxJustifyContent.Between}
+          className="h-full"
           asChild
         >
           <form
             onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
               e.preventDefault();
-              if (isPasskeyFirstGateActive) {
-                return;
-              }
               if (isSocialLoginFlow) {
                 setShowChangePasswordWarning(true);
               } else {
@@ -411,122 +421,56 @@ const ChangePassword = ({
               }
             }}
           >
-            {isPasskeyVerificationLayout ? (
-              <Box
-                flexDirection={BoxFlexDirection.Column}
-                alignItems={BoxAlignItems.Center}
-                justifyContent={BoxJustifyContent.Center}
-                gap={4}
-                className="flex min-h-0 flex-1 flex-col px-2"
-                data-testid="change-password-passkey-verifying"
+            <Box>
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+                className="mb-4"
               >
-                <Spinner className="change-password__spinner" />
-                <Text
-                  variant={TextVariant.BodyLg}
-                  fontWeight={FontWeight.Medium}
-                  className="text-center"
-                >
-                  {t('changePasswordPasskeyVerifyingTitle')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
-                  className="text-center"
-                >
-                  {t('changePasswordPasskeyVerifyingDescription')}
-                </Text>
-                {isSidePanel && isAwaitingPasskeyVerification ? (
-                  <TextButton
-                    type="button"
-                    data-testid="change-password-passkey-verifying-open-full-screen"
-                    color={TextColor.PrimaryDefault}
-                    className="w-full text-center"
-                    onClick={openChangePasswordInFullScreen}
-                  >
-                    {t('passkeyTroubleshoot')}
-                  </TextButton>
-                ) : null}
-              </Box>
-            ) : (
-              <>
-                <Box>
-                  <Text
-                    variant={TextVariant.BodyMd}
-                    color={TextColor.TextAlternative}
-                    className="mb-4"
-                  >
-                    {isSocialLoginFlow
-                      ? t('changePasswordDetailsSocial')
-                      : t('createPasswordDetails')}
-                  </Text>
-                  <PasswordForm
-                    onChange={(password) => setNewPassword(password)}
-                    pwdInputTestId="change-password-input"
-                    confirmPwdInputTestId="change-password-confirm-input"
-                  />
-                  {!isSocialLoginFlow &&
-                  !hasPasskeyAssertionForSave &&
-                  !currentPassword ? (
-                    <Box marginTop={6}>
-                      <FormTextField
-                        id="change-password-current-for-save"
-                        label={t('enterPasswordCurrent')}
-                        textFieldProps={{ type: TextFieldType.Password }}
-                        size={FormTextFieldSize.Lg}
-                        labelProps={{ marginBottom: 1 }}
-                        inputProps={{
-                          'data-testid':
-                            'change-password-current-wallet-password-input',
-                        }}
-                        value={currentPassword}
-                        onChange={(e) => {
-                          setCurrentPassword(e.target.value);
-                        }}
-                      />
-                    </Box>
-                  ) : null}
-                  <Box
-                    className="create-password__terms-container"
-                    flexDirection={BoxFlexDirection.Row}
-                    alignItems={BoxAlignItems.Center}
-                    justifyContent={BoxJustifyContent.Between}
-                    marginTop={6}
-                  >
-                    <Checkbox
-                      id="change-password-terms"
-                      data-testid="change-password-terms"
-                      isSelected={termsChecked}
-                      onChange={() => {
-                        toggle();
-                      }}
-                      label={
-                        <>
-                          {isSocialLoginFlow
-                            ? t('passwordTermsWarningSocial')
-                            : t('passwordTermsWarning')}
-                          &nbsp;
-                          {createPasswordLink}
-                        </>
-                      }
-                      className="items-start flex"
-                    />
-                  </Box>
-                </Box>
-                <Button
-                  type="submit"
-                  disabled={
-                    !newPassword ||
-                    !termsChecked ||
-                    isAwaitingPasskeyVerification ||
-                    !hasCurrentVerification
+                {isSocialLoginFlow
+                  ? t('changePasswordDetailsSocial')
+                  : t('createPasswordDetails')}
+              </Text>
+              <PasswordForm
+                onChange={(password) => setNewPassword(password)}
+                pwdInputTestId="change-password-input"
+                confirmPwdInputTestId="change-password-confirm-input"
+              />
+              <Box
+                className="create-password__terms-container"
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                justifyContent={BoxJustifyContent.Between}
+                marginTop={6}
+              >
+                <Checkbox
+                  id="change-password-terms"
+                  data-testid="change-password-terms"
+                  isSelected={termsChecked}
+                  onChange={toggle}
+                  label={
+                    <>
+                      {isSocialLoginFlow
+                        ? t('passwordTermsWarningSocial')
+                        : t('passwordTermsWarning')}
+                      &nbsp;
+                      {createPasswordLink}
+                    </>
                   }
-                  data-testid="change-password-button"
-                  className="w-full"
-                >
-                  {t('save')}
-                </Button>
-              </>
-            )}
+                  className="items-start flex"
+                />
+              </Box>
+            </Box>
+            <Button
+              type="submit"
+              disabled={
+                (!currentPassword && !passkeyAuthenticationResponse)  || !newPassword || !termsChecked
+              }
+              data-testid="change-password-button"
+              className="w-full"
+            >
+              {t('save')}
+            </Button>
           </form>
         </Box>
       )}

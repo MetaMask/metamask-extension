@@ -4,10 +4,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
-import {
-  SECURITY_ROUTE,
-  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import * as selectors from '../../../../selectors';
 import { startPasskeyAuthentication } from '../../../../../shared/lib/passkey';
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
@@ -37,8 +34,8 @@ const mockChangePasswordWithPasskeyVerification = jest.fn(
   (_newPassword: string, _authenticationResponse: unknown) => Promise.resolve(),
 );
 const mockForceUpdateMetamaskState = jest.fn(() => Promise.resolve());
-const mockRemovePasskeyWithPasswordVerification = jest.fn(() =>
-  Promise.resolve(),
+const mockRemovePasskeyWithPasswordVerification = jest.fn(
+  (_password: string) => Promise.resolve(),
 );
 
 jest.mock('react-redux', () => {
@@ -122,26 +119,6 @@ describe('ChangePassword', () => {
   }
 
   describe('Step 1: verify current password', () => {
-    it('shows open in full tab on verify current password in the side panel', () => {
-      jest.mocked(getEnvironmentType).mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
-
-      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
-
-      expect(
-        getByTestId('change-password-passkey-fallback-open-full-screen'),
-      ).toBeInTheDocument();
-    });
-
-    it('does not show open in full tab on verify current password outside the side panel', () => {
-      jest.mocked(getEnvironmentType).mockReturnValue('popup');
-
-      const { queryByTestId } = renderWithProvider(<ChangePassword />, mockStore);
-
-      expect(
-        queryByTestId('change-password-passkey-fallback-open-full-screen'),
-      ).not.toBeInTheDocument();
-    });
-
     it('renders the current password input', () => {
       const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
 
@@ -376,6 +353,44 @@ describe('ChangePassword', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('advances to verify current password when choosing use password on verify passkey step', async () => {
+      let resolveAuth: ((value: unknown) => void) | undefined;
+      (startPasskeyAuthentication as jest.Mock).mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveAuth = resolve;
+          }),
+      );
+
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(
+          getByTestId('change-password-verify-passkey-use-password'),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.click(getByTestId('change-password-verify-passkey-use-password'));
+
+      await waitFor(() => {
+        expect(
+          getByTestId('verify-current-password-input'),
+        ).toBeInTheDocument();
+      });
+
+      resolveAuth?.({
+        id: 'mock-credential',
+        rawId: 'mock-credential',
+        type: 'public-key',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'AA',
+        },
+        clientExtensionResults: {},
+      });
+    });
+
     it('shows a loader and biometrics confirmation copy while passkey verification runs', () => {
       const { getByTestId, getByText } = renderWithProvider(
         <ChangePassword />,
@@ -421,33 +436,6 @@ describe('ChangePassword', () => {
       });
     });
 
-    it('shows open in full tab after passkey failure in the side panel', async () => {
-      jest.mocked(getEnvironmentType).mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
-      const openExtensionInBrowser = jest.fn();
-      globalThis.platform = { openExtensionInBrowser } as unknown as typeof globalThis.platform;
-
-      (startPasskeyAuthentication as jest.Mock).mockRejectedValueOnce(
-        new Error('cancelled'),
-      );
-
-      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
-
-      await waitFor(() => {
-        expect(
-          getByTestId('change-password-passkey-fallback-open-full-screen'),
-        ).toBeInTheDocument();
-      });
-
-      fireEvent.click(
-        getByTestId('change-password-passkey-fallback-open-full-screen'),
-      );
-
-      expect(openExtensionInBrowser).toHaveBeenCalledWith(
-        SECURITY_PASSWORD_CHANGE_V2_ROUTE,
-        'from=sidepanel',
-      );
-    });
-
     it('does not show open in full tab after passkey failure outside the side panel', async () => {
       jest.mocked(getEnvironmentType).mockReturnValue('popup');
       (startPasskeyAuthentication as jest.Mock).mockRejectedValueOnce(
@@ -469,7 +457,7 @@ describe('ChangePassword', () => {
 
     it('shows open in full tab while passkey verification runs in the side panel', async () => {
       jest.mocked(getEnvironmentType).mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
-      let resolveAuth: (value: unknown) => void;
+      let resolveAuth: ((value: unknown) => void) | undefined;
       (startPasskeyAuthentication as jest.Mock).mockImplementation(
         () =>
           new Promise((resolve) => {
@@ -485,7 +473,7 @@ describe('ChangePassword', () => {
         ).toBeInTheDocument();
       });
 
-      resolveAuth!({
+      resolveAuth?.({
         id: 'mock-credential',
         rawId: 'mock-credential',
         type: 'public-key',

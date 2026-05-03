@@ -1540,8 +1540,7 @@
       "React: State updates on unmounted components": 1
     },
     "ui/pages/settings/security-tab/change-password/change-password.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 2,
-      "React: componentWill* lifecycle deprecations": 1
+      "React: Act warnings (component updates not wrapped)": 4
     },
     "ui/pages/settings/security-tab/metametrics-toggle/metametrics-toggle.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
