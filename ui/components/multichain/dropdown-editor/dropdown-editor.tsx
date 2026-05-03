@@ -206,7 +206,7 @@ export const DropdownEditor = <Item,>({
           className="dropdown-editor__item-placeholder py-3"
           placeholder={placeholder}
           value=""
-          isReadOnly
+          isReadonly
           tabIndex={-1}
         />
       )}
