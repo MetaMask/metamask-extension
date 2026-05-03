@@ -17,7 +17,7 @@ export const SETTINGS_ROUTE = '/settings';
 export const LEGACY_SETTINGS_V2_ROUTE = '/settings-v2';
 export const SETTINGS_V2_ROUTE = SETTINGS_ROUTE;
 export const ASSETS_ROUTE = '/settings/assets';
-export const CURRENCY_ROUTE = '/settings/assets/currency';
+export const CURRENCY_ROUTE = '/settings/preferences-and-display/currency';
 export const TRANSACTIONS_ROUTE = '/settings/transactions';
 export const PREFERENCES_AND_DISPLAY_ROUTE =
   '/settings/preferences-and-display';
@@ -177,6 +177,11 @@ export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
 export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
 export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
+
+// Window during which reopening the extension resumes the last Perps screen
+// instead of landing on the wallet home. Keeps the cap short so stale sessions
+// do not hijack the user's home view after a long break.
+export const PERPS_REOPEN_TTL_MS = 5 * 60 * 1000;
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';

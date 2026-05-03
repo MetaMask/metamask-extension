@@ -3,12 +3,6 @@ name: Get workflow and job requirements
 on:
   workflow_call:
     outputs:
-      needs-locales:
-        description: Whether locales-only checks are needed
-        value: ${{ jobs.detect-changes.outputs.needs-locales }}
-      skip-everything:
-        description: Whether everything should be skipped
-        value: ${{ jobs.detect-changes.outputs.skip-everything }}
       builds-from-run:
         description: The github.run_id to get builds from
         value: ${{ jobs.detect-changes.outputs.builds-from-run }}
@@ -18,12 +12,24 @@ on:
       skip-builds:
         description: Whether builds were skipped without hash verification (blocks merge)
         value: ${{ jobs.detect-changes.outputs.skip-builds }}
+      needs-locales:
+        description: Whether locales-only checks are needed
+        value: ${{ jobs.detect-changes.outputs.needs-locales }}
+      just-repository-health-checks:
+        description: Whether repository health checks are needed
+        value: ${{ jobs.detect-changes.outputs.just-repository-health-checks }}
+      skip-everything:
+        description: Whether everything should be skipped
+        value: ${{ jobs.detect-changes.outputs.skip-everything }}
       needs-lint:
         description: Whether lint job is needed
         value: ${{ jobs.detect-changes.outputs.needs-lint }}
       needs-unit-and-integration:
         description: Whether unit and integration tests are needed
         value: ${{ jobs.detect-changes.outputs.needs-unit-and-integration }}
+      needs-storybook:
+        description: Whether storybook tests are needed
+        value: ${{ jobs.detect-changes.outputs.needs-storybook }}
       needs-releases:
         description: Whether releases job is needed
         value: ${{ jobs.detect-changes.outputs.needs-releases }}
@@ -33,9 +39,6 @@ on:
       needs-e2e:
         description: Whether E2E tests are needed
         value: ${{ jobs.detect-changes.outputs.needs-e2e }}
-      just-repository-health-checks:
-        description: Whether repository health checks are needed
-        value: ${{ jobs.detect-changes.outputs.just-repository-health-checks }}
 
 env:
   # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
@@ -61,17 +64,18 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
-      needs-locales: ${{ steps.set-needs-locales.outputs.needs-locales || 'false' }}
-      skip-everything: ${{ steps.set-skip-everything.outputs.skip-everything || 'false' }}
       builds-from-run: ${{ steps.find-reusable-builds.outputs.builds-from-run || env.RUN_ID }}
       builds-from-sha: ${{ steps.find-reusable-builds.outputs.builds-from-sha || env.HEAD_COMMIT_HASH }}
       skip-builds: ${{ steps.build-overrides.outputs.skip == 'true' && steps.find-reusable-builds.outputs.builds-from-run != '' && 'true' || 'false' }}
+      needs-locales: ${{ steps.set-needs-locales.outputs.needs-locales || 'false' }}
+      just-repository-health-checks: ${{ steps.set-just-repository-health-checks.outputs.just-repository-health-checks || 'false' }}
+      skip-everything: ${{ steps.set-skip-everything.outputs.skip-everything || 'false' }}
       needs-lint: ${{ steps.set-needs-lint.outputs.needs-lint || 'false' }}
       needs-unit-and-integration: ${{ steps.set-needs-unit-and-integration.outputs.needs-unit-and-integration || 'false' }}
+      needs-storybook: ${{ steps.set-needs-storybook.outputs.needs-storybook || 'false' }}
       needs-releases: ${{ steps.set-needs-releases.outputs.needs-releases || 'false' }}
       needs-benchmarks: ${{ steps.set-needs-benchmarks.outputs.needs-benchmarks || 'false' }}
       needs-e2e: ${{ steps.set-needs-e2e.outputs.needs-e2e || 'false' }}
-      just-repository-health-checks: ${{ steps.set-just-repository-health-checks.outputs.just-repository-health-checks || 'false' }}
     steps:
       - name: Check pull request merge queue status
         id: check-skip-merge-queue
@@ -88,19 +92,77 @@ jobs:
         run: git fetch --depth=1 origin "${HEAD_COMMIT_HASH}"
 
       # Do this before we use dorny/paths-filter, which might checkout other commits
-      - name: Check skip-e2e tag
-        id: skip-e2e-tag
+      - name: Check E2E overrides (skip / force)
+        id: e2e-override
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
-        run: |
-          echo "SKIP=false" >> "$GITHUB_OUTPUT"
+        uses: actions/github-script@v8
+        with:
+          script: |
+            core.setOutput('skip', 'false');
+            core.setOutput('force', 'false');
 
-          # Ignore the [skip-e2e] tag for cross-repo PRs (untrusted commit messages)
-          if [[ "$IS_CROSS_REPO_PR" != "true" ]] && { [[ "$EVENT_NAME" == "pull_request" ]] || [[ "$EVENT_NAME" == "merge_group" ]] || [[ "$BRANCH" == trigger-ci-* ]]; }; then
-            if git show --format='%B' --no-patch "${HEAD_COMMIT_HASH}" | grep --fixed-strings --quiet '[skip-e2e]'; then
-              echo "SKIP=true" >> "$GITHUB_OUTPUT"
-              echo "-> SKIP=true due to [skip-e2e] tag in last commit message"
-            fi
-          fi
+            // Ignore overrides for cross-repo PRs (untrusted commit messages/labels)
+            if (process.env.IS_CROSS_REPO_PR === 'true') {
+              core.info('-> cross-repo PR, E2E overrides ignored');
+              return;
+            }
+
+            const eventName = process.env.EVENT_NAME;
+            const branch = process.env.BRANCH;
+            if (eventName !== 'pull_request' && eventName !== 'merge_group' && !branch.startsWith('trigger-ci-')) {
+              core.info('-> event/branch not eligible for E2E overrides');
+              return;
+            }
+
+            // Check commit message for tags.
+            // In merge_group events the squash commit message includes the PR
+            // description, so [skip-e2e]/[force-e2e] tags would leak through.
+            // Only check commit messages for non-merge-queue events.
+            let msg = '';
+            if (eventName !== 'merge_group') {
+              const result = await exec.getExecOutput(
+                'git', ['show', '--format=%B', '--no-patch', process.env.HEAD_COMMIT_HASH],
+                { silent: true },
+              );
+              msg = result.stdout;
+            }
+
+            // Check PR labels.
+            // For merge_group events, extract the PR number from the branch name
+            // (format: gh-readonly-queue/<base>/pr-<number>-<sha>) and fetch labels
+            // via the API so that labels carry through to the merge queue.
+            let labels = [];
+            if (context.payload.pull_request) {
+              labels = context.payload.pull_request.labels.map(l => l.name);
+            } else if (eventName === 'merge_group') {
+              const match = branch.match(/\/pr-(\d+)-/);
+              if (!match) {
+                core.warning(`Merge queue branch '${branch}' did not match expected pattern — cannot fetch PR labels`);
+              } else {
+                const { data: pr } = await github.rest.pulls.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: parseInt(match[1]),
+                });
+                labels = pr.labels.map(l => l.name);
+                core.info(`-> merge queue: resolved PR #${match[1]}, labels: [${labels.join(', ')}]`);
+              }
+            }
+
+            // force-e2e takes priority over skip-e2e
+            if (msg.includes('[force-e2e]') || labels.includes('force-e2e')) {
+              core.setOutput('force', 'true');
+              core.info('-> force=true due to [force-e2e] tag or force-e2e label');
+              return;
+            }
+
+            if (msg.includes('[skip-e2e]') || labels.includes('skip-e2e')) {
+              core.setOutput('skip', 'true');
+              core.info('-> skip=true due to [skip-e2e] tag or skip-e2e label');
+              return;
+            }
+
+            core.info('-> no E2E overrides found');
 
       # Compute a content hash of all build-affecting source files.
       # Used to detect when builds can be reused from a prior run.
@@ -148,6 +210,8 @@ jobs:
             ]);
             // Also exclude any top-level .eslintrc*.js variant.
             const eslintPattern = /^\.eslintrc(\.[a-z.-]+)?\.js$/;
+            // Colocated test/story/snapshot files never affect production builds.
+            const testFilePattern = /\.test\.[jt]sx?$|\.stories\.[jt]sx?$|\.snap$/;
 
             const { stdout: tree } = await exec.getExecOutput(
               'git', ['ls-tree', '-r', 'HEAD'],
@@ -161,6 +225,7 @@ jobs:
               if (excludedDirs.some(d => path.startsWith(d))) return false;
               if (excludedFiles.has(path)) return false;
               if (eslintPattern.test(path)) return false;
+              if (testFilePattern.test(path)) return false;
               return true;
             }).join('\n') + '\n';
 
@@ -228,6 +293,10 @@ jobs:
         if: ${{ steps.compute-build-hash.outputs.build-hash }}
         run: |
           NAMES=$(grep -oP '(?<=build-name: )\S+' .github/workflows/main.yml | jq -Rsc 'split("\n") | map(select(length > 0))')
+          if [[ "$NAMES" == "[]" || -z "$NAMES" ]]; then
+            echo "::error::No build-name entries found in main.yml — cannot verify artifact completeness"
+            exit 1
+          fi
           echo "names=$NAMES" >> "$GITHUB_OUTPUT"
           echo "-> Required build artifacts: $NAMES"
 
@@ -236,7 +305,14 @@ jobs:
       # Skipped on main, stable, and release/* branches (too high-risk to skip builds).
       - name: Find reusable builds from prior run
         id: find-reusable-builds
-        if: ${{ env.IS_RUN_EVERYTHING_BRANCH != 'true' && !startsWith(github.head_ref || github.ref_name, 'release/') && steps.compute-build-hash.outputs.build-hash && steps.check-skip-merge-queue.outputs.up-to-date != 'true' && steps.build-overrides.outputs.force != 'true' }}
+        if: >-
+          ${{
+            env.IS_RUN_EVERYTHING_BRANCH != 'true' &&
+            !startsWith(env.BRANCH, 'release/') &&
+            steps.compute-build-hash.outputs.build-hash &&
+            steps.check-skip-merge-queue.outputs.up-to-date != 'true' &&
+            steps.build-overrides.outputs.force != 'true'
+          }}
         uses: actions/github-script@v8
         env:
           BUILD_HASH: ${{ steps.compute-build-hash.outputs.build-hash }}
@@ -414,7 +490,10 @@ jobs:
           # At this point we already know the *only* changed file is package.json.
           # Emit true only if the diff is exactly a single "version" line replacement.
           export GH_PAGER=cat
-          DIFF="$(gh pr diff "${PR_NUMBER}" || true)"
+          if ! DIFF="$(gh pr diff "${PR_NUMBER}")"; then
+            echo "WARNING: Failed to fetch PR diff — cannot detect version-only changes" >&2
+            exit 0
+          fi
           CHANGES="$(printf '%s\n' "$DIFF" | grep -E '^[+-]' | grep -vE '^(\+\+\+|---)' || true)"
           CHANGES_COUNT="$(printf '%s\n' "$CHANGES" | sed '/^$/d' | wc -l | tr -d ' ')"
 
@@ -439,19 +518,82 @@ jobs:
           }}
         run: echo "skip-everything=true" >> "$GITHUB_OUTPUT"
 
-      # This is very simple right now (and equivalent to !skip-everything)
       - name: Compute needs-lint flag
         id: set-needs-lint
         if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
         run: echo "needs-lint=true" >> "$GITHUB_OUTPUT"
 
-      # May be split into two later, but can't easily be split right now
+      # Uses the build-reuse 2x2 matrix: skip only when builds are reused AND
+      # no unit/integration test files changed. Always runs on main/stable.
       - name: Compute needs-unit-and-integration flag
         id: set-needs-unit-and-integration
         if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
-        run: echo "needs-unit-and-integration=true" >> "$GITHUB_OUTPUT"
+        env:
+          BUILDS_REUSED: ${{ steps.find-reusable-builds.outputs.builds-from-run != '' }}
+          FILTER_UNIT_INTEGRATION_COUNT: ${{ steps.filter.outputs.unit_integration_test_files_count }}
+        run: |
+          echo "=== Unit/integration skip decision ==="
+          echo "  Run-everything branch: $IS_RUN_EVERYTHING_BRANCH"
+          echo "  Builds reused: $BUILDS_REUSED"
+          echo "  Unit/integration test files changed: $FILTER_UNIT_INTEGRATION_COUNT"
 
-      # This is very simple right now, but is built to have future complexity
+          NEEDS=true
+          REASON=""
+
+          # On main/stable, always run all tests (safety net)
+          if [[ "$IS_RUN_EVERYTHING_BRANCH" == "true" ]]; then
+            REASON="run-everything branch"
+
+          # Build-reuse 2x2 matrix: builds reused AND no test files changed
+          elif [[ "$BUILDS_REUSED" == "true" && "$FILTER_UNIT_INTEGRATION_COUNT" == "0" ]]; then
+            NEEDS=false
+            REASON="builds reused and no unit/integration test files changed (2x2 matrix)"
+          fi
+
+          echo "needs-unit-and-integration=$NEEDS" >> "$GITHUB_OUTPUT"
+          if [[ "$NEEDS" == "true" ]]; then
+            # ${REASON:+ ($REASON)} = if REASON is non-empty, append " (reason)"; otherwise nothing.
+            echo "-> needs-unit-and-integration=true${REASON:+ ($REASON)}"
+          else
+            echo "-> needs-unit-and-integration=false (reason: $REASON)"
+          fi
+
+      # Uses the build-reuse 2x2 matrix: skip only when builds are reused AND
+      # no storybook files changed. Storybook config (.storybook/**), story files
+      # (*.stories.*), and snapshots (*.snap) are excluded from the build hash,
+      # so a storybook-only PR has builds reused but still needs storybook tests.
+      - name: Compute needs-storybook flag
+        id: set-needs-storybook
+        if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
+        env:
+          BUILDS_REUSED: ${{ steps.find-reusable-builds.outputs.builds-from-run != '' }}
+          FILTER_STORYBOOK_COUNT: ${{ steps.filter.outputs.storybook_files_count }}
+        run: |
+          echo "=== Storybook skip decision ==="
+          echo "  Run-everything branch: $IS_RUN_EVERYTHING_BRANCH"
+          echo "  Builds reused: $BUILDS_REUSED"
+          echo "  Storybook files changed: $FILTER_STORYBOOK_COUNT"
+
+          NEEDS=true
+          REASON=""
+
+          # On main/stable, always run all tests (safety net)
+          if [[ "$IS_RUN_EVERYTHING_BRANCH" == "true" ]]; then
+            REASON="run-everything branch"
+
+          # Build-reuse 2x2 matrix: builds reused AND no storybook files changed
+          elif [[ "$BUILDS_REUSED" == "true" && "$FILTER_STORYBOOK_COUNT" == "0" ]]; then
+            NEEDS=false
+            REASON="builds reused and no storybook files changed (2x2 matrix)"
+          fi
+
+          echo "needs-storybook=$NEEDS" >> "$GITHUB_OUTPUT"
+          if [[ "$NEEDS" == "true" ]]; then
+            echo "-> needs-storybook=true${REASON:+ ($REASON)}"
+          else
+            echo "-> needs-storybook=false (reason: $REASON)"
+          fi
+
       - name: Compute needs-releases flag
         id: set-needs-releases
         # Skip on cross-repo PRs — releases need secrets not available to external contributors.
@@ -464,7 +606,9 @@ jobs:
           }}
         run: echo "needs-releases=true" >> "$GITHUB_OUTPUT"
 
-      # This is very simple right now, but is built to have future complexity
+      # Benchmarks measure build output performance — reused builds produce
+      # identical results, so running them is pointless. This absorbs the
+      # inline builds-from-run == github.run_id gate from main.yml.
       - name: Compute needs-benchmarks flag
         id: set-needs-benchmarks
         # Skip on cross-repo PRs — benchmarks need secrets not available to external contributors.
@@ -475,33 +619,81 @@ jobs:
             env.EVENT_NAME != 'merge_group' &&
             steps.set-skip-everything.outputs.skip-everything != 'true'
           }}
-        run: echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
+        env:
+          BUILDS_REUSED: ${{ steps.find-reusable-builds.outputs.builds-from-run != '' }}
+        run: |
+          echo "=== Benchmarks skip decision ==="
+          echo "  Builds reused: $BUILDS_REUSED"
+
+          if [[ "$BUILDS_REUSED" == "true" ]]; then
+            echo "-> needs-benchmarks=false (builds reused — identical output)"
+          else
+            echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
+            echo "-> needs-benchmarks=true (fresh builds)"
+          fi
 
       - name: Compute needs-e2e flag
         id: set-needs-e2e
         if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
         env:
-          SKIP_E2E: ${{ steps.skip-e2e-tag.outputs.SKIP }}
+          SKIP_E2E: ${{ steps.e2e-override.outputs.skip }}
+          FORCE_E2E: ${{ steps.e2e-override.outputs.force }}
+          BUILDS_REUSED: ${{ steps.find-reusable-builds.outputs.builds-from-run != '' }}
+          FILTER_E2E_TEST_FILES_COUNT: ${{ steps.filter.outputs.e2e_test_files_count }}
           FILTER_NON_E2E_RELATED_FILES_COUNT: ${{ steps.filter.outputs.non_e2e_related_files_count }}
+          FILTER_BUILD_AFFECTING_CI_COUNT: ${{ steps.filter.outputs.build_affecting_ci_files_count }}
           FILTER_ALL_CHANGES_COUNT: ${{ steps.filter.outputs.all_changes_count }}
         run: |
-          # Default to running E2E tests
-          echo "needs-e2e=true" >> "$GITHUB_OUTPUT"
+          echo "=== E2E skip decision ==="
+          echo "  Run-everything branch: $IS_RUN_EVERYTHING_BRANCH"
+          echo "  Manual skip (skip-e2e tag/label): $SKIP_E2E"
+          echo "  Manual force (force-e2e tag/label): $FORCE_E2E"
+          echo "  Builds reused: $BUILDS_REUSED"
+          echo "  E2E test files changed: $FILTER_E2E_TEST_FILES_COUNT"
+          echo "  Non-E2E-related files: $FILTER_NON_E2E_RELATED_FILES_COUNT / $FILTER_ALL_CHANGES_COUNT total"
+          echo "  Build-affecting CI files changed: $FILTER_BUILD_AFFECTING_CI_COUNT"
 
-          # Only consider skipping for PRs, merge-queue events, or trigger-ci-* branches
-          if [[ "$SKIP_E2E" == "true" || "$EVENT_NAME" == "pull_request" || "$EVENT_NAME" == "merge_group" ]]; then
+          # On main/stable, always run all tests (safety net)
+          if [[ "$IS_RUN_EVERYTHING_BRANCH" == "true" ]]; then
+            echo "needs-e2e=true" >> "$GITHUB_OUTPUT"
+            echo "-> needs-e2e=true (run-everything branch)"
+            exit 0
+          fi
 
-            # Skip if [skip-e2e] tag found
-            if [[ "$SKIP_E2E" == "true" ]]; then
-              echo "needs-e2e=false" >> "$GITHUB_OUTPUT"
-              echo "-> Skipping E2E tests due to 'skip-e2e' tag"
+          # 0. Manual force: [force-e2e] tag or force-e2e label — overrides all skip conditions
+          if [[ "$FORCE_E2E" == "true" ]]; then
+            echo "needs-e2e=true" >> "$GITHUB_OUTPUT"
+            echo "-> needs-e2e=true (manual force via [force-e2e] tag or force-e2e label)"
+            exit 0
+          fi
 
-            # Skip E2E only if ALL changed files are in non_e2e_related_files filter
-            elif [[ "$FILTER_NON_E2E_RELATED_FILES_COUNT" == "$FILTER_ALL_CHANGES_COUNT" ]]; then
-              echo "needs-e2e=false" >> "$GITHUB_OUTPUT"
-              echo "-> Skipping E2E tests - only non_e2e_related_files changes found"
+          NEEDS_E2E=true
+          REASON=""
 
-            else
-              echo "-> Running E2E tests - found changes outside non_e2e_related_files filter"
-            fi
+          # 1. Manual skip: [skip-e2e] tag or skip-e2e label
+          if [[ "$SKIP_E2E" == "true" ]]; then
+            NEEDS_E2E=false
+            REASON="manual override ([skip-e2e] tag or skip-e2e label)"
+
+          # 2. Build-reuse 2x2 matrix: builds reused AND no E2E test files changed
+          elif [[ "$BUILDS_REUSED" == "true" && "$FILTER_E2E_TEST_FILES_COUNT" == "0" ]]; then
+            NEEDS_E2E=false
+            REASON="builds reused and no E2E test files changed (2x2 matrix)"
+
+          # 3. Existing filter: ALL changed files are non-E2E-related AND none
+          #    are build-affecting CI files (e.g. run-build.yml is under .github/
+          #    so it matches non_e2e_related_files, but it affects build output)
+          elif [[ -n "$FILTER_ALL_CHANGES_COUNT" \
+              && "$FILTER_ALL_CHANGES_COUNT" != "0" \
+              && "$FILTER_NON_E2E_RELATED_FILES_COUNT" == "$FILTER_ALL_CHANGES_COUNT" \
+              && "$FILTER_BUILD_AFFECTING_CI_COUNT" == "0" ]]; then
+            NEEDS_E2E=false
+            REASON="all changed files match non_e2e_related_files filter"
+          fi
+
+          echo "needs-e2e=$NEEDS_E2E" >> "$GITHUB_OUTPUT"
+          if [[ "$NEEDS_E2E" == "true" ]]; then
+            echo "-> needs-e2e=true (no skip conditions met)"
+          else
+            echo "-> needs-e2e=false (reason: $REASON)"
           fi

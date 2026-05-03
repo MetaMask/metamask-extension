@@ -1028,7 +1028,7 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByTestId('perps-candle-period-more'));
       fireEvent.click(screen.getByTestId('perps-candle-period-modal-1M'));
 
-      expect(screen.getByText('1M')).toBeInTheDocument();
+      expect(screen.getByText('1m')).toBeInTheDocument();
       expect(screen.getByTestId('perps-candle-period-more')).toHaveClass(
         'bg-muted',
       );

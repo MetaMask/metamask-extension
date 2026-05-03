@@ -1,7 +1,7 @@
 # Filter rules for determining `main` workflow requirements
 # Used with dorny/paths-filter action
 #
-# Each filter creates two outputs:
+# Each filter produces two outputs:
 # - {filter_name}: 'true'/'false' if any changed files match any filter rules
 # - {filter_name}_count: number of matching files
 #
@@ -16,39 +16,113 @@ documentation_files: &documentation_files
 
 # LOW LEVEL TEST FILES
 test_files: &test_files
-  - '**/*.test.{js,ts,tsx,jsx}'
-  - '**/*.stories.*'
   - '**/*.snap'
-  - 'test/jest/**/*'
-  - 'test/unit-global/**/*'
-  - 'test/lib/**/*'
-  - 'test/stub/**/*'
+  - '**/*.stories.*'
+  - '**/*.test.{js,ts,tsx,jsx}'
+  - 'test/env.js'
   - 'test/integration/**/*'
+  - 'test/jest/**/*'
+  - 'test/lib/**/*'
+  - 'test/mocks/**/*'
+  - 'test/release-testing-ai-analyzer/**/*'
+  - 'test/setup.js'
+  - 'test/stub/**/*'
+  - 'test/unit-global/**/*'
 
 # CONFIG FILES
 config_files: &config_files
+  - '.depcheckrc.yml'
+  - '.editorconfig'
   - '.eslint*'
+  - '.git-blame-ignore-revs'
+  - '.gitattributes'
+  - '.madgerc'
+  - '.mocharc.js'
+  - '.prettierignore'
+  - '.prettierrc*'
+  - 'codecov.yml'
+  - 'coverage.json'
+  - 'crowdin.yml'
   - 'eslint.config.js'
   - 'oxfmt.config.mts'
+  - 'privacy-snapshot.json'
+  - 'sonar-project.properties'
   - 'stylelint.config.js'
   - 'tailwind.config.js'
-  - '.prettierrc*'
-  - '.prettierignore'
-  - 'sonar-project.properties'
-  - 'codecov.yml'
 
 # DEVELOPMENT TOOLS
 dev_tools: &dev_tools
+  - 'development/attributions-check.sh'
   - 'development/fitness-functions/**/*'
-  - 'development/ts-migration-dashboard/**/*'
   - 'development/generate-attributions/**/*'
+  - 'development/generate-attributions.sh'
+  - 'development/gource-viz.sh'
+  - 'development/lint-baseline.mts'
+  - 'development/lint-changed.mts'
+  - 'development/metamaskbot-build-announce/**/*'
+  - 'development/sentry-publish.js'
+  - 'development/sentry-upload-artifacts.sh'
+  - 'development/shellcheck.sh'
+  - 'development/sourcemap-validator.js'
+  - 'development/ts-migration-dashboard/**/*'
 
-# ALL FILTERED FILES - non E2E related files
+# CI / GITHUB FILES — workflow and repo config that doesn't affect the extension build.
+# If a CI-only PR does need E2E, use [force-e2e] tag or force-e2e label.
+ci_files: &ci_files
+  - '.github/**'
+
+# AI / EDITOR CONFIG — agent instructions and IDE settings, no runtime impact.
+editor_and_agent_files: &editor_and_agent_files
+  - '.agents/**'
+  - '.claude/**'
+  - '.cursor/**'
+  - '.devcontainer/**'
+  - '.husky/**'
+  - '.storybook/**'
+  - '.vscode/**'
+
+# NON-E2E FILES — union of all file types that, when a PR touches ONLY
+# these, allow E2E tests to be skipped safely.
 non_e2e_related_files:
   - *documentation_files
   - *test_files
   - *config_files
   - *dev_tools
+  - *ci_files
+  - *editor_and_agent_files
+
+# Storybook files — stories, config, and snapshots that affect storybook tests
+storybook_files:
+  - '**/*.stories.*'
+  - '**/*.snap'
+  - '.storybook/**'
+
+# E2E test files — changes require running E2E even when builds are reused
+e2e_test_files:
+  - 'test/e2e/**'
+
+# Build-affecting CI files — these live under .github/ (which is in ci_files
+# and therefore non_e2e_related_files) but they DO affect build output, so a
+# PR touching only these must NOT skip E2E via the non_e2e_related_files gate.
+#
+# NOTE: main.yml also contains build-command values that affect the build hash,
+# but it is NOT listed here because it changes very frequently (~weekly) for
+# non-build reasons (job reordering, adding CI gates, etc.). The risk is
+# accepted: if someone changes a build-command line in main.yml without
+# touching any other build-affecting file, E2E could be skipped via the
+# "all files match non_e2e_related_files" gate in the "Compute needs-e2e
+# flag" step of get-requirements.yml. In practice this is safe because the
+# "builds reused + no E2E test files" gate in the same step would only fire
+# if builds are reused — and a build-command change busts the build hash,
+# forcing fresh builds.
+build_affecting_ci_files:
+  - '.github/workflows/run-build.yml'
+
+# Unit/integration test files — changes require running unit/integration even when builds are reused
+unit_integration_test_files:
+  - *test_files
+  - 'jest.config.js'
+  - 'jest.integration.config.js'
 
 # ALL CHANGED FILES
 all_changes:

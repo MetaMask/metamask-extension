@@ -999,6 +999,11 @@ export function tryUnlockMetamask(
   };
 }
 
+/**
+ * Tries to unlock the metamask with the passkey.
+ * @param authenticationResponse - The authentication response from the passkey.
+ * @returns A promise that resolves when the unlock is successful or rejected when it fails.
+ */
 export function tryUnlockMetamaskWithPasskey(
   authenticationResponse: PasskeyAuthenticationResponse,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -4454,6 +4459,24 @@ export async function setDefaultHomeActiveTabName(
   } catch {
     // noop
   }
+}
+
+export function setLastVisitedPerpsRoute(
+  path: string | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    // Fire-and-forget: this write is a pure navigation hint for the next
+    // home mount. Swallow errors without a warning toast — users should
+    // never see UI noise for an internal persistence operation. We also
+    // skip `forceUpdateMetamaskState` because the field is memory-only
+    // (persist:false) and every Perps route change would otherwise pull
+    // the entire background state.
+    try {
+      await submitRequestToBackground('setLastVisitedRoute', ['perps', path]);
+    } catch (error) {
+      log.error('[setLastVisitedPerpsRoute] error', error);
+    }
+  };
 }
 
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {

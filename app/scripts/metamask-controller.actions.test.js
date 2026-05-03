@@ -1406,6 +1406,57 @@ describe('MetaMaskController', function () {
       });
     });
 
+    describe('#verifyPasskeyEnrollment', function () {
+      it('throws when passkey is not registered', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(false);
+
+        await expect(
+          metamaskController.verifyPasskeyEnrollment(authenticationResponse),
+        ).rejects.toMatchObject({
+          name: 'PasskeyControllerError',
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        });
+      });
+
+      it('throws when passkey authentication verification fails', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'verifyPasskeyAuthentication',
+          )
+          .mockResolvedValue(false);
+
+        await expect(
+          metamaskController.verifyPasskeyEnrollment(authenticationResponse),
+        ).rejects.toThrow('Passkey authentication verification failed');
+      });
+
+      it('resolves when verification succeeds', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        const verifyPasskeyAuthenticationSpy = jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'verifyPasskeyAuthentication',
+          )
+          .mockResolvedValue(true);
+
+        await metamaskController.verifyPasskeyEnrollment(
+          authenticationResponse,
+        );
+
+        expect(verifyPasskeyAuthenticationSpy).toHaveBeenCalledWith(
+          authenticationResponse,
+        );
+      });
+    });
+
     describe('#removePasskeyWithPasskeyVerification', function () {
       it('throws when passkey is not registered', async function () {
         jest
@@ -1725,6 +1776,7 @@ describe('MetaMaskController', function () {
             generatePasskeyAuthenticationOptions: expect.any(Function),
             protectVaultKeyWithPasskey: expect.any(Function),
             unlockWithPasskey: expect.any(Function),
+            verifyPasskeyEnrollment: expect.any(Function),
             removePasskeyWithPasskeyVerification: expect.any(Function),
             removePasskeyWithPasswordVerification: expect.any(Function),
             changePasswordWithPasskeyVerification: expect.any(Function),
