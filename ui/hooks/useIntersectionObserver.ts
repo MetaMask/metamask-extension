@@ -9,7 +9,6 @@ type UseIntersectionObserverOptions = {
   root?: Element | Document | null;
   rootMargin?: string;
   threshold?: number | number[];
-  freezeOnceVisible?: boolean;
   onChange?: (
     isIntersecting: boolean,
     entry: IntersectionObserverEntry,
@@ -44,7 +43,6 @@ export function useIntersectionObserver({
   threshold = 0,
   root = null,
   rootMargin = '0%',
-  freezeOnceVisible = false,
   initialIsIntersecting = false,
   onChange,
 }: UseIntersectionObserverOptions = {}): IntersectionReturn {
@@ -55,7 +53,6 @@ export function useIntersectionObserver({
   }));
   const callbackRef = useRef(onChange);
   const thresholdRef = useRef(threshold);
-  const frozen = Boolean(state.entry?.isIntersecting && freezeOnceVisible);
   const thresholdKey = Array.isArray(threshold)
     ? threshold.join(',')
     : String(threshold);
@@ -64,7 +61,7 @@ export function useIntersectionObserver({
   thresholdRef.current = threshold;
 
   useEffect(() => {
-    if (!ref || !('IntersectionObserver' in globalThis) || frozen) {
+    if (!ref || !('IntersectionObserver' in globalThis)) {
       return undefined;
     }
 
@@ -86,22 +83,13 @@ export function useIntersectionObserver({
     return () => {
       observer.disconnect();
     };
-  }, [ref, thresholdKey, root, rootMargin, frozen]);
-
-  const prevRef = useRef<Element | null>(null);
+  }, [ref, thresholdKey, root, rootMargin]);
 
   useEffect(() => {
-    if (
-      !ref &&
-      state.entry?.target &&
-      !freezeOnceVisible &&
-      !frozen &&
-      prevRef.current !== state.entry.target
-    ) {
-      prevRef.current = state.entry.target;
+    if (!ref && state.entry?.target) {
       setState({ isIntersecting: initialIsIntersecting, entry: undefined });
     }
-  }, [ref, state.entry, freezeOnceVisible, frozen, initialIsIntersecting]);
+  }, [ref, state.entry, initialIsIntersecting]);
 
   const result = useMemo(
     () =>

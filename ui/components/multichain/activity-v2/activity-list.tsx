@@ -185,6 +185,7 @@ export const ActivityList = ({ filter }: Props) => {
     }
   }, [scrollContainerRef, virtualizer]);
 
+  // Fetch more items when the last completed EVM transaction comes into view
   const { ref: lastCompletedEvmItemRef } = useIntersectionObserver({
     root: scrollContainerRef?.current ?? null,
     rootMargin: EVM_PAGINATION_ROOT_MARGIN,
