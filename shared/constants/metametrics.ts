@@ -591,6 +591,52 @@ export type MetaMetricsUserTraits = {
    * The operating system (normalized).
    */
   os?: Os;
+  /**
+   * Total BIP44 account groups across all keyring types — what users perceive
+   * as "accounts" in the Account Management UI.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_account_groups?: number;
+  /**
+   * Number of accounts added via raw private key (Simple Key Pair keyring).
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_imported_accounts?: number;
+  /**
+   * Number of account groups from Ledger hardware wallet.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_ledger_accounts?: number;
+  /**
+   * Number of account groups from Trezor hardware wallet.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_trezor_accounts?: number;
+  /**
+   * Number of account groups from Lattice (GridPlus) hardware wallet.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_lattice_accounts?: number;
+  /**
+   * Number of account groups from QR-based hardware wallets (OneKey, Keystone,
+   * AirGap Vault, CoolWallet, DCent, Ngrave, imToken, Keycard Shell).
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_qr_hardware_accounts?: number;
+  /**
+   * Total number of hardware wallet accounts across all hardware wallet types
+   * (Ledger, Trezor, Lattice, QR-based). Combined with number_of_hd_entropies
+   * and number_of_imported_accounts, gives the total number of wallets.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_hardware_wallets?: number;
 };
 
 export enum MetaMetricsUserTrait {
@@ -725,6 +771,38 @@ export enum MetaMetricsUserTrait {
    * The operating system (normalized).
    */
   Os = 'os',
+  /**
+   * Total BIP44 account groups across all keyring types — what users perceive
+   * as "accounts" in the Account Management UI.
+   */
+  NumberOfAccountGroups = 'number_of_account_groups',
+  /**
+   * Number of accounts added via raw private key (Simple Key Pair keyring).
+   */
+  NumberOfImportedAccounts = 'number_of_imported_accounts',
+  /**
+   * Number of account groups from Ledger hardware wallet.
+   */
+  NumberOfLedgerAccounts = 'number_of_ledger_accounts',
+  /**
+   * Number of account groups from Trezor hardware wallet.
+   */
+  NumberOfTrezorAccounts = 'number_of_trezor_accounts',
+  /**
+   * Number of account groups from Lattice (GridPlus) hardware wallet.
+   */
+  NumberOfLatticeAccounts = 'number_of_lattice_accounts',
+  /**
+   * Number of account groups from QR-based hardware wallets (OneKey, Keystone,
+   * AirGap Vault, CoolWallet, DCent, Ngrave, imToken, Keycard Shell).
+   */
+  NumberOfQrHardwareAccounts = 'number_of_qr_hardware_accounts',
+  /**
+   * Total number of hardware wallet accounts across all hardware wallet types
+   * (Ledger, Trezor, Lattice, QR-based). Combined with number_of_hd_entropies
+   * and number_of_imported_accounts, gives the total number of wallets.
+   */
+  NumberOfHardwareWallets = 'number_of_hardware_wallets',
 }
 
 /**

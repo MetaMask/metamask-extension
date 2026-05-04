@@ -2,6 +2,7 @@ import type { Provider } from '@metamask/network-controller';
 import type { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
 import type { Hex } from 'viem';
 import {
   PaymentType,
@@ -16,6 +17,9 @@ import type { HardwareKeyringType } from '../constants/hardware-wallets';
 import type { SnapAndHardwareMessenger } from '../../app/scripts/lib/snap-keyring/metrics';
 import { ShieldMetricsSourceEnum } from '../constants/subscriptions';
 import type { ScanAddressResponse } from '../lib/trust-signals';
+
+// TODO: Replace with direct `TransactionData` import once exported from @metamask/transaction-pay-controller
+type TransactionData = TransactionPayControllerState['transactionData'][string];
 
 export type TransactionMetricsRequest = {
   getTransactionUIMetricsFragment: (
@@ -48,6 +52,8 @@ export type TransactionMetricsRequest = {
     standard?: TokenStandard;
   }>;
   getTransaction: (transactionId: string) => TransactionMeta;
+  getTransactionPayData: (transactionId: string) => TransactionData | undefined;
+  getAllTransactions: () => TransactionMeta[];
   provider: Provider;
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973

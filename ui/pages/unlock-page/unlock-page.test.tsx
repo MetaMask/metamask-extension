@@ -178,7 +178,9 @@ describe('Unlock Page', () => {
     } as unknown as string);
 
     expect(mockUseNavigate).toHaveBeenCalledTimes(1);
-    expect(mockUseNavigate).toHaveBeenCalledWith(intendedPath);
+    expect(mockUseNavigate).toHaveBeenCalledWith(intendedPath, {
+      replace: true,
+    });
   });
 
   it('changes password, submits, and redirects to the specified route (from location.state)', async () => {
@@ -207,7 +209,12 @@ describe('Unlock Page', () => {
 
     expect(mockTryUnlockMetamask).toHaveBeenCalledTimes(1);
     expect(mockUseNavigate).toHaveBeenCalledTimes(1);
-    expect(mockUseNavigate).toHaveBeenCalledWith(intendedPath + intendedSearch);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      intendedPath + intendedSearch,
+      {
+        replace: true,
+      },
+    );
   });
 
   it('should show login error modal when authentication error is thrown', async () => {

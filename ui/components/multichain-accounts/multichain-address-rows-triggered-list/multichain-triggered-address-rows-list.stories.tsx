@@ -517,11 +517,7 @@ export const ClickTriggerMode: Story = {
     (Story) => {
       const state = createMockState();
       state.metamask.accountTree.wallets[WALLET_ID].groups[GROUP_ID].accounts =
-        [
-          accounts.ethereum.id,
-          accounts.solana.id,
-          accounts.bitcoin.id,
-        ];
+        [accounts.ethereum.id, accounts.solana.id, accounts.bitcoin.id];
       return (
         <Provider store={mockStore(state)}>
           <div style={{ width: '400px', padding: '16px' }}>
