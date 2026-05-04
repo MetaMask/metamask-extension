@@ -3,6 +3,7 @@ import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-sto
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CROSS_CHAIN_SWAP_ROUTE } from '../../helpers/constants/routes';
+import * as bridgeSelectors from '../../ducks/bridge/selectors';
 
 import { useBridgeRedirectQueryString } from './useBridgeRedirectQueryString';
 
@@ -213,5 +214,76 @@ describe('useBridgeRedirectQueryString', () => {
     const params = new URLSearchParams(queryString as string);
     // 0.000000000000000001 ETH * 10^18 = 1 wei
     expect(params.get('amount')).toBe('1');
+  });
+
+  it('omits from param when fromToken has no assetId', () => {
+    const storeState = createBridgeMockStore({
+      bridgeSliceOverrides: {
+        fromToken: {
+          assetId: 'eip155:1/slip44:60',
+          chainId: 'eip155:1',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+        fromTokenInputValue: '1',
+      },
+    });
+
+    jest
+      .spyOn(bridgeSelectors, 'getFromToken')
+      .mockReturnValue({ chainId: 'eip155:1', decimals: 18 } as never);
+
+    const { result } = renderHook(storeState);
+    const queryString = result.current();
+
+    const params = new URLSearchParams(queryString ?? '');
+    expect(params.has('from')).toBe(false);
+
+    jest.restoreAllMocks();
+  });
+
+  it('omits to param when toToken has no assetId', () => {
+    const storeState = createBridgeMockStore({
+      bridgeSliceOverrides: {
+        fromToken: {
+          assetId: 'eip155:1/slip44:60',
+          chainId: 'eip155:1',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+        fromTokenInputValue: '1',
+      },
+    });
+
+    jest
+      .spyOn(bridgeSelectors, 'getToToken')
+      .mockReturnValue({ chainId: 'eip155:10' } as never);
+
+    const { result } = renderHook(storeState);
+    const queryString = result.current();
+
+    const params = new URLSearchParams(queryString as string);
+    expect(params.get('from')).toBe('eip155:1/slip44:60');
+    expect(params.has('to')).toBe(false);
+
+    jest.restoreAllMocks();
+  });
+
+  it('returns null on bridge route when all params are empty', () => {
+    const storeState = createBridgeMockStore({
+      bridgeSliceOverrides: {
+        fromTokenInputValue: null,
+      },
+    });
+
+    jest.spyOn(bridgeSelectors, 'getFromToken').mockReturnValue({} as never);
+    jest.spyOn(bridgeSelectors, 'getToToken').mockReturnValue({} as never);
+
+    const { result } = renderHook(storeState);
+    const queryString = result.current();
+
+    expect(queryString).toBeNull();
+
+    jest.restoreAllMocks();
   });
 });
