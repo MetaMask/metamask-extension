@@ -82,9 +82,10 @@ function buildStateForAddresses(
   };
 }
 
-function buildRemoteFeatureFlagState(
-  flag?: { enabled?: boolean; slippage?: number },
-): RemoteFeatureFlagControllerState {
+function buildRemoteFeatureFlagState(flag?: {
+  enabled?: boolean;
+  slippage?: number;
+}): RemoteFeatureFlagControllerState {
   return {
     cacheTimestamp: 0,
     remoteFeatureFlags: flag
