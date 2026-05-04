@@ -127,6 +127,9 @@ describe('EditMarginModalContent', () => {
     expect(
       screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
     ).toHaveTextContent('--');
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-price-value'),
+    ).toHaveTextContent('--');
   });
 
   it('formats zero liquidation price distance as unavailable', () => {
@@ -142,6 +145,9 @@ describe('EditMarginModalContent', () => {
 
     expect(
       screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
+    ).toHaveTextContent('--');
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-price-value'),
     ).toHaveTextContent('--');
   });
 

@@ -137,7 +137,11 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
       anchorLiquidationPrice <= 0
     ) {
       return (
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          data-testid="perps-edit-margin-liquidation-price-value"
+        >
           --
         </Text>
       );
