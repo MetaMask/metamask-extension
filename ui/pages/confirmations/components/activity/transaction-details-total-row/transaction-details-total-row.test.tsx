@@ -100,27 +100,4 @@ describe('TransactionDetailsTotalRow', () => {
     expect(getByText('$100.00')).toBeInTheDocument();
     expect(queryByText('$150.75')).not.toBeInTheDocument();
   });
-
-  it('renders "Total" label and uses totalFiat for non-perpsWithdraw transactions', () => {
-    const { getByText, queryByText } = render({
-      totalFiat: '150.75',
-      targetFiat: '100',
-      type: TransactionType.perpsDeposit,
-    });
-    expect(getByText(messages.total.message)).toBeInTheDocument();
-    expect(queryByText(messages.receivedTotal.message)).not.toBeInTheDocument();
-    expect(getByText('$150.75')).toBeInTheDocument();
-  });
-
-  it('renders "Received total" label and uses targetFiat for perpsWithdraw transactions', () => {
-    const { getByText, queryByText } = render({
-      totalFiat: '150.75',
-      targetFiat: '100',
-      type: TransactionType.perpsWithdraw,
-    });
-    expect(getByText(messages.receivedTotal.message)).toBeInTheDocument();
-    expect(queryByText(messages.total.message)).not.toBeInTheDocument();
-    expect(getByText('$100.00')).toBeInTheDocument();
-    expect(queryByText('$150.75')).not.toBeInTheDocument();
-  });
 });
