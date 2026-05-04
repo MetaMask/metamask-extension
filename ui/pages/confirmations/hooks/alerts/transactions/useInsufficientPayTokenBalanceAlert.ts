@@ -44,8 +44,8 @@ export function useInsufficientPayTokenBalanceAlert({
 
   const sourceChainId = (
     isPostQuote
-      ? currentConfirmation?.chainId ?? '0x0'
-      : payToken?.chainId ?? '0x0'
+      ? (currentConfirmation?.chainId ?? '0x0')
+      : (payToken?.chainId ?? '0x0')
   ) as Hex;
 
   const networkConfigurationsByChainId = useSelector(
