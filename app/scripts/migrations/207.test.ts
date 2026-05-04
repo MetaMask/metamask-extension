@@ -66,7 +66,7 @@ describe(`migration #${VERSION}`, () => {
     expect(versionedData.meta.version).toBe(VERSION);
 
     const { allTokens } = versionedData.data.TokensController as {
-      allTokens: Record<string, Record<string, typeof MUSD_TOKEN[]>>;
+      allTokens: Record<string, Record<string, (typeof MUSD_TOKEN)[]>>;
     };
 
     for (const chainId of ['0x1', '0xe708', '0x8f']) {
@@ -80,7 +80,10 @@ describe(`migration #${VERSION}`, () => {
   it('preserves existing tokens and appends mUSD', async () => {
     const oldStorage = makeStorage(
       { '0x1': { [ACCOUNT_1]: [OTHER_TOKEN], [ACCOUNT_2]: [] } },
-      { [ACCOUNT_1]: makeEvmAccount(ACCOUNT_1), [ACCOUNT_2]: makeEvmAccount(ACCOUNT_2) },
+      {
+        [ACCOUNT_1]: makeEvmAccount(ACCOUNT_1),
+        [ACCOUNT_2]: makeEvmAccount(ACCOUNT_2),
+      },
     );
 
     const versionedData = cloneDeep(oldStorage);
@@ -92,7 +95,10 @@ describe(`migration #${VERSION}`, () => {
       allTokens: Record<string, Record<string, unknown[]>>;
     };
 
-    expect(allTokens['0x1'][ACCOUNT_1]).toStrictEqual([OTHER_TOKEN, MUSD_TOKEN]);
+    expect(allTokens['0x1'][ACCOUNT_1]).toStrictEqual([
+      OTHER_TOKEN,
+      MUSD_TOKEN,
+    ]);
     expect(allTokens['0x1'][ACCOUNT_2]).toStrictEqual([MUSD_TOKEN]);
     expect(allTokens['0xe708'][ACCOUNT_1]).toStrictEqual([MUSD_TOKEN]);
     expect(allTokens['0x8f'][ACCOUNT_2]).toStrictEqual([MUSD_TOKEN]);
@@ -120,7 +126,10 @@ describe(`migration #${VERSION}`, () => {
     };
 
     expect(allTokens['0x1'][ACCOUNT_1]).toStrictEqual([MUSD_TOKEN]);
-    expect(allTokens['0xe708'][ACCOUNT_1]).toStrictEqual([OTHER_TOKEN, MUSD_TOKEN]);
+    expect(allTokens['0xe708'][ACCOUNT_1]).toStrictEqual([
+      OTHER_TOKEN,
+      MUSD_TOKEN,
+    ]);
     expect(allTokens['0x8f'][ACCOUNT_1]).toStrictEqual([MUSD_TOKEN]);
 
     // Nothing changed
