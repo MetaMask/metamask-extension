@@ -114,7 +114,12 @@ export class SelfInjectPlugin {
    */
   updateAsset(compilation: Compilation, file: string, asset: Source): Source {
     const { ConcatSource, RawSource } = sources;
-    const { map, source } = asset.sourceAndMap();
+    const { map, source: rawSource } = asset.sourceAndMap();
+    // `source` from `sourceAndMap()` is `string | Buffer`; normalize to a
+    // string so it can be used in template-literal interpolation and passed
+    // to `escapeJs(string)`.
+    const source =
+      typeof rawSource === 'string' ? rawSource : rawSource.toString();
 
     let sourceMappingURLComment = '';
     // emit a separate source map file (if this asset already has one)
