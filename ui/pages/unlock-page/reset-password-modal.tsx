@@ -58,8 +58,6 @@ export default function ResetPasswordModal({
   const handleResetWalletConfirm = async () => {
     onClose();
 
-    console.log('getEnvironmentType()', getEnvironmentType());
-
     await dispatch(resetWalletAction());
 
     if (isPopupOrSidePanel) {

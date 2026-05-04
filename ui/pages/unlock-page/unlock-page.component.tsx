@@ -573,7 +573,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         {showLoginErrorModal && (
           <LoginErrorModal
             loginError={LOGIN_ERROR.RESET_WALLET}
-            onDone={() => this.setState({ showLoginErrorModal: false })}
+            onClose={() => this.setState({ showLoginErrorModal: false })}
           />
         )}
         {showConnectionsRemovedModal && (
