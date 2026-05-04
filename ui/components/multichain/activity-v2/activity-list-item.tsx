@@ -40,12 +40,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
       ? TransactionStatus.failed
       : TransactionStatus.confirmed;
 
-  const isProtected =
-    transactionStatus === TransactionStatus.failed &&
-    isProtectedByEnforcedSimulations({
-      errorMessage: transaction.error?.message,
-      data: transaction.txParams?.data,
-    });
+  const isProtected = isProtectedByEnforcedSimulations(transaction);
 
   const failureMessage =
     transactionStatus === TransactionStatus.failed

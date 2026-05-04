@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { TransactionStatus } from '@metamask/transaction-controller';
 import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { isProtectedByEnforcedSimulations } from '../../../pages/confirmations/utils/confirm';
@@ -33,13 +32,9 @@ const mapStateToProps = (state, ownProps) => {
   const networkConfiguration = getNetworkConfigurationsByChainId(state);
   const isCustomNetwork = getIsCustomNetwork(state);
 
-  const primaryTransaction = transactionGroup?.primaryTransaction;
-  const isProtected =
-    primaryTransaction?.status === TransactionStatus.failed &&
-    isProtectedByEnforcedSimulations({
-      errorMessage: primaryTransaction?.error?.message,
-      data: primaryTransaction?.txParams?.data,
-    });
+  const isProtected = isProtectedByEnforcedSimulations(
+    transactionGroup?.primaryTransaction,
+  );
 
   return {
     rpcPrefs,

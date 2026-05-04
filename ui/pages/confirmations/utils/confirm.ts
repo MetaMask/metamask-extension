@@ -1,4 +1,8 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
@@ -14,10 +18,8 @@ export const SIGNATURE_TRANSACTION_TYPES = [
 ];
 
 // DelegationFramework caveat enforcers revert with `Error(string)` messages of
-// the form `<EnforcerName>:<reason>` (Solidity convention). The TC may prefix
-// `Transaction failed on-chain: ` to that message, so match anywhere in the
-// string rather than only at the start.
-const CAVEAT_ENFORCER_REVERT_PATTERN = /(?:^|\s)[A-Z][A-Za-z0-9]*Enforcer:/u;
+// the form `<EnforcerName>:<reason>` (Solidity convention).
+const CAVEAT_ENFORCER_REVERT_PATTERN = /^[A-Z][A-Za-z0-9]*Enforcer:/u;
 
 const REDEEM_DELEGATIONS_SELECTOR = '0xcef6d209';
 
@@ -132,28 +134,28 @@ export const stripProtocol = (urlString: string): string => {
  * Detect whether a transaction was reverted on-chain by an enforced-simulations
  * caveat enforcer (the DelegationFramework "protection" mechanism).
  *
- * Returns true when `data` is a `redeemDelegations` call AND `errorMessage`
- * matches the Solidity `<EnforcerName>:<reason>` revert format. The error
- * message check tolerates an optional `Transaction failed on-chain: ` prefix
- * injected by `OnChainFailureError`.
+ * Returns true when the transaction failed AND its `txParams.data` is a
+ * `redeemDelegations` call AND its decoded receipt revert reason matches the
+ * Solidity `<EnforcerName>:<reason>` revert format.
  *
- * @param options - The options object.
- * @param options.errorMessage - `transactionMeta.error.message` (or any string carrying the receipt revert reason).
- * @param options.data - `transactionMeta.txParams.data` for the failed transaction.
+ * @param transactionMeta - The transaction metadata. May be undefined.
  * @returns Whether the transaction was reverted by an enforced-simulations caveat enforcer.
  */
-export function isProtectedByEnforcedSimulations({
-  errorMessage,
-  data,
-}: {
-  errorMessage?: string;
-  data?: string;
-}): boolean {
+export function isProtectedByEnforcedSimulations(
+  transactionMeta?: TransactionMeta,
+): boolean {
+  if (!transactionMeta || transactionMeta.status !== TransactionStatus.failed) {
+    return false;
+  }
+
+  const data = transactionMeta.txParams?.data;
+  const revertMessage = transactionMeta.revert?.receipt?.message;
+
   if (
     !data ||
     !data.toLowerCase().startsWith(REDEEM_DELEGATIONS_SELECTOR) ||
-    !errorMessage ||
-    !CAVEAT_ENFORCER_REVERT_PATTERN.test(errorMessage)
+    !revertMessage ||
+    !CAVEAT_ENFORCER_REVERT_PATTERN.test(revertMessage)
   ) {
     return false;
   }
