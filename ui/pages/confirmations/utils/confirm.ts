@@ -128,6 +128,20 @@ export const stripProtocol = (urlString: string): string => {
   return urlString.replace(/^\w+:\/\//u, '');
 };
 
+/**
+ * Detect whether a transaction was reverted on-chain by an enforced-simulations
+ * caveat enforcer (the DelegationFramework "protection" mechanism).
+ *
+ * Returns true when `data` is a `redeemDelegations` call AND `errorMessage`
+ * matches the Solidity `<EnforcerName>:<reason>` revert format. The error
+ * message check tolerates an optional `Transaction failed on-chain: ` prefix
+ * injected by `OnChainFailureError`.
+ *
+ * @param options - The options object.
+ * @param options.errorMessage - `transactionMeta.error.message` (or any string carrying the receipt revert reason).
+ * @param options.data - `transactionMeta.txParams.data` for the failed transaction.
+ * @returns Whether the transaction was reverted by an enforced-simulations caveat enforcer.
+ */
 export function isProtectedByEnforcedSimulations({
   errorMessage,
   data,

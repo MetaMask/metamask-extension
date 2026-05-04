@@ -90,11 +90,18 @@ export function filterLocalNotInApi(
   });
 }
 
-// Enrich API view models with richer fields from matching local TransactionMeta
-// entries. The Accounts API doesn't return on-chain revert reasons or full
-// `txParams.data`, so when the wallet originated the transaction we overlay the
-// local copy's `error`, `revert`, and `txParams.data` onto the view model.
-// Mirrors `filterLocalNotInApi`'s hash-based pairing.
+/**
+ * Overlay richer local TransactionController fields onto matching API view
+ * models. The Accounts API doesn't return on-chain revert reasons or full
+ * `txParams.data`, so when the wallet originated the transaction we copy the
+ * local `TransactionMeta`'s `error`, `revert`, and `txParams.data` onto the
+ * API view model. Pairing is by hash, mirroring `filterLocalNotInApi`.
+ *
+ * @param apiTransactions - View models built from the Accounts API response.
+ * @param localGroups - Local transaction groups from the TransactionController.
+ * @returns The API view models, with local fields overlaid where a matching
+ * local entry exists. Entries without a local match are returned unchanged.
+ */
 export function enrichApiWithLocal(
   apiTransactions: TransactionViewModel[],
   localGroups: TransactionGroup[],
