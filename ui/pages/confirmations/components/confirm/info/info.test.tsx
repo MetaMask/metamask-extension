@@ -209,6 +209,7 @@ describe('Info', () => {
         currentConfirmation: undefined as never,
         isScrollToBottomCompleted: true,
         setIsScrollToBottomCompleted: jest.fn(),
+        goBackTo: undefined,
       };
     });
 

@@ -7,12 +7,13 @@
  * 2. Historical baseline from extension_benchmark_stats — informational delta
  *
  * Usage:
- * yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts \
+ * node development/metamaskbot-build-announce/compare-benchmarks.ts \
  * --current <path-to-benchmark-json-directory>
  *
  * Exit codes:
- * 0 — all benchmarks within constant fail limits
- * 1 — at least one benchmark exceeded a constant fail limit
+ * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold
+ * 1 — at least one allowlisted metric exceeded its fail threshold;
+ * non-allowlisted breaches are degraded to warnings and do not block
  * 2 — usage error or fatal crash
  */
 
@@ -26,16 +27,19 @@ import type {
   ComparisonKey,
   BenchmarkResults,
 } from '../../shared/constants/benchmarks';
-import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/constants';
+import { GATED_METRICS } from '../../test/e2e/benchmarks/utils/gated-metrics';
+import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import type { HistoricalBaselineReference } from './historical-comparison';
 import {
+  applyGatingPolicy,
   compareBenchmarkEntries,
   formatDeltaPercent,
+  scaleThresholdsForBrowser,
   COMPARISON_SEVERITY,
   type BenchmarkEntryComparison,
 } from './comparison-utils';
-import { resolveBaselineFromArtifactName } from './utils';
+import { parseArtifactName, resolveBaselineFromArtifactName } from './utils';
 
 type LoadedBenchmark = {
   name: string;
@@ -85,15 +89,29 @@ export function runComparison(
   let anyFailed = false;
 
   for (const { name, data } of benchmarks) {
-    for (const [entryName, results] of Object.entries(data)) {
-      const thresholdConfig = THRESHOLD_REGISTRY[entryName];
+    const parsed = parseArtifactName(name);
 
-      if (!thresholdConfig) {
+    for (const [entryName, results] of Object.entries(data)) {
+      if (!results.p75 || !results.p95) {
         console.warn(
-          `No threshold config for benchmark "${entryName}" in file "${name}". Add an entry to THRESHOLD_REGISTRY in constants.ts.`,
+          `Skipping "${entryName}" in "${name}": missing p75/p95 (benchmark likely failed).`,
         );
         continue;
       }
+
+      const baseThresholdConfig = THRESHOLD_REGISTRY[entryName];
+
+      if (!baseThresholdConfig) {
+        console.warn(
+          `No threshold config for benchmark "${entryName}" in file "${name}". Add an entry to THRESHOLD_REGISTRY in thresholds.ts.`,
+        );
+        continue;
+      }
+
+      const thresholdConfig = scaleThresholdsForBrowser(
+        baseThresholdConfig,
+        parsed?.browser,
+      );
 
       const baselineMetrics = resolveBaselineFromArtifactName(
         baseline,
@@ -101,12 +119,17 @@ export function runComparison(
         name,
       );
 
-      const comparison = compareBenchmarkEntries(
+      const rawComparison = compareBenchmarkEntries(
         entryName,
         results,
         thresholdConfig,
         baselineMetrics,
       );
+      const comparison = applyGatingPolicy(rawComparison, GATED_METRICS);
+
+      if (parsed) {
+        comparison.source = `${parsed.browser}-${parsed.buildType}`;
+      }
 
       comparisons.push(comparison);
 
@@ -186,6 +209,8 @@ export function buildMetricLines(
     let displayIcon: string = COMPARISON_SEVERITY.Pass.icon;
     let hasIssue = false;
     const details: string[] = [];
+    const formatValue = (value: number): string =>
+      metric === 'cls' ? value.toFixed(3) : `${value.toFixed(0)}ms`;
 
     for (const pKey of percentiles) {
       const key = `${metric}:${pKey}`;
@@ -223,7 +248,7 @@ export function buildMetricLines(
 
         if (isIssue) {
           const delta = formatDeltaPercent(rel.deltaPercent);
-          details.push(`${pKey}: ${rel.current.toFixed(0)}ms (${delta})`);
+          details.push(`${pKey}: ${formatValue(rel.current)} (${delta})`);
           hasIssue = true;
           displayIcon = updateDisplayIcon(icon, displayIcon);
         }
@@ -235,7 +260,7 @@ export function buildMetricLines(
           icon = violationIcon(violation.severity);
           isIssue = true;
           details.push(
-            `${pKey}: ${violation.value.toFixed(0)}ms (no baseline)`,
+            `${pKey}: ${formatValue(violation.value)} (no baseline)`,
           );
           hasIssue = true;
           displayIcon = updateDisplayIcon(icon, displayIcon);
@@ -252,8 +277,16 @@ export function buildMetricLines(
   });
 }
 
+function formatName(comparison: BenchmarkEntryComparison): string {
+  const source = comparison.source ? ` [${comparison.source}]` : '';
+  return `${comparison.benchmarkName}${source}`;
+}
+
 /**
  * Prints a human-readable report of the comparison results.
+ *
+ * Output groups entries by severity (FAIL → WARN → PASS) and includes
+ * browser/buildType source labels for disambiguation.
  *
  * @param result - Comparison results.
  * @param result.comparisons
@@ -264,36 +297,70 @@ export function printReport(result: {
   anyFailed: boolean;
 }): void {
   console.log('\n═══════════════════════════════════════');
-  console.log('  Performance Benchmark Comparison');
-  console.log('═══════════════════════════════════════\n');
+  console.log('  Performance Benchmark Quality Gate');
+  console.log('═══════════════════════════════════════');
 
-  for (const comparison of result.comparisons) {
-    const status = comparison.absoluteFailed ? 'FAIL' : 'PASS';
-    console.log(`\n${status}  ${comparison.benchmarkName}\n`);
+  // Pre-compute metric lines to avoid duplicate work
+  const withLines = result.comparisons.map((c) => ({
+    comparison: c,
+    lines: buildMetricLines(c),
+  }));
 
-    const lines = buildMetricLines(comparison);
+  const failed = withLines.filter((w) => w.comparison.absoluteFailed);
+  const warned = withLines.filter(
+    (w) =>
+      !w.comparison.absoluteFailed &&
+      (w.comparison.absoluteViolations.some(
+        (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+      ) ||
+        w.lines.some((l) => l.hasIssue)),
+  );
+  const passed = withLines.filter(
+    (w) =>
+      !w.comparison.absoluteFailed &&
+      !w.comparison.absoluteViolations.some(
+        (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+      ) &&
+      !w.lines.some((l) => l.hasIssue),
+  );
 
-    if (lines.length === 0) {
-      console.log('    (no historical baseline data)');
-    } else {
-      const issueLines = lines.filter((line) => line.hasIssue);
-      if (issueLines.length === 0) {
-        console.log(`${COMPARISON_SEVERITY.Pass.icon} [Show logs]`);
-      } else {
-        for (const line of issueLines) {
-          const details = line.details ? ` | ${line.details}` : '';
-          console.log(`${line.icon} ${line.metric}${details}`);
-        }
-      }
+  // Show failed entries with details
+  for (const { comparison, lines } of failed) {
+    console.log(`\nFAIL  ${formatName(comparison)}`);
+    for (const line of lines.filter((l) => l.hasIssue)) {
+      const details = line.details ? ` | ${line.details}` : '';
+      console.log(`      ${line.icon} ${line.metric}${details}`);
     }
   }
 
-  const failCount = result.comparisons.filter((c) => c.absoluteFailed).length;
-  const warnCount = result.comparisons.filter(
-    (c) =>
-      !c.absoluteFailed &&
-      c.absoluteViolations.some((v) => v.severity === THRESHOLD_SEVERITY.Warn),
-  ).length;
+  // Show warned entries with details
+  for (const { comparison, lines } of warned) {
+    console.log(`\nWARN  ${formatName(comparison)}`);
+    for (const line of lines.filter((l) => l.hasIssue)) {
+      const details = line.details ? ` | ${line.details}` : '';
+      console.log(`      ${line.icon} ${line.metric}${details}`);
+    }
+  }
+
+  // Show passing entries grouped by benchmark name
+  if (passed.length > 0) {
+    const grouped = new Map<string, string[]>();
+    for (const { comparison } of passed) {
+      const list = grouped.get(comparison.benchmarkName) ?? [];
+      list.push(comparison.source ?? '');
+      grouped.set(comparison.benchmarkName, list);
+    }
+
+    console.log(`\nPASS  ${passed.length} benchmarks within thresholds`);
+    for (const [name, sources] of grouped) {
+      const filtered = sources.filter(Boolean);
+      const suffix = filtered.length > 0 ? `: ${filtered.join(', ')}` : '';
+      console.log(`      ${name}${suffix}`);
+    }
+  }
+
+  const failCount = failed.length;
+  const warnCount = warned.length;
 
   console.log('\n───────────────────────────────────────');
   console.log(
@@ -324,8 +391,8 @@ async function main(): Promise<void> {
 
   const benchmarks = await loadCurrentBenchmarks(values.current);
   if (benchmarks.length === 0) {
-    console.warn('No benchmark JSON files found in', values.current);
-    process.exit(0);
+    console.error('No benchmark JSON files found in', values.current);
+    process.exit(1);
   }
 
   const baseline = await loadBaseline();

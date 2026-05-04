@@ -25,6 +25,10 @@ import {
 import type { Preferences } from '../app/scripts/controllers/preferences-controller';
 import type ExtensionPlatform from '../app/scripts/platforms/extension';
 import type { ExtensionLazyListener } from '../app/scripts/lib/extension-lazy-listener/extension-lazy-listener';
+import type {
+  LongTaskMetrics,
+  LongTaskMetricsWithTBT,
+} from '../ui/helpers/utils/performance-observers';
 
 declare class MessageSender {
   documentId?: string;
@@ -289,6 +293,11 @@ type StateHooks = {
    */
   reloadExtension?: () => void;
 
+  // Long Task / TBT metrics for E2E benchmarks
+  getLongTaskMetrics?: (reset?: boolean) => LongTaskMetrics;
+  getLongTaskMetricsWithTBT?: (reset?: boolean) => LongTaskMetricsWithTBT;
+  resetLongTaskMetrics?: () => void;
+
   /**
    * Initialize Core Web Vitals observers (INP, LCP, CLS).
    *
@@ -314,6 +323,16 @@ type StateHooks = {
    * Useful for clearing metrics between benchmark runs.
    */
   resetWebVitalsMetrics?: () => void;
+
+  // Agentic dev hooks (METAMASK_DEBUG only) — expose internals for CDP automation.
+  // Typed as `unknown` because these are untyped debug-only entry points consumed
+  // by CDP automation scripts that perform their own runtime checks.
+  store?: unknown;
+  submitRequestToBackground?: (
+    method: string,
+    args?: unknown[],
+  ) => Promise<unknown>;
+  getPerpsStreamManager?: () => unknown;
 };
 
 export declare global {

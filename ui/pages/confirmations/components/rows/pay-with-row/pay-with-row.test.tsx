@@ -279,6 +279,18 @@ describe('PayWithRow', () => {
       expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
     });
 
+    it('formats balance in USD regardless of user currency', () => {
+      const store = mockStore(getMockState());
+      renderWithProvider(
+        <PayWithRow variant={ConfirmInfoRowSize.Small} />,
+        store,
+      );
+
+      expect(useFiatFormatterMock).toHaveBeenCalledWith({
+        overrideCurrency: 'usd',
+      });
+    });
+
     it('renders balance display', () => {
       const store = mockStore(getMockState());
       renderWithProvider(

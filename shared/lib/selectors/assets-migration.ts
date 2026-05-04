@@ -47,7 +47,7 @@ import { createDeepEqualSelector } from './selector-creators';
 // TokensController
 // allTokens: DONE
 // allIgnoredTokens: DONE
-// allDetectedTokens: TODO (This state should be removed)
+// allDetectedTokens: DONE (Not being used)
 //
 // TokenBalancesController
 // tokenBalances: DONE
@@ -350,7 +350,7 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
       }
 
       const accountAddress = internalAccount.address as Hex;
-      result[accountAddress] = {};
+      result[accountAddress] ??= {};
 
       for (const [assetId, assetBalance] of Object.entries(chainIdBalances)) {
         const metadata = assetsInfo[assetId];

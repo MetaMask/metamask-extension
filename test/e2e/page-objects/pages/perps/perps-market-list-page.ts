@@ -12,10 +12,6 @@ export class PerpsMarketListPage {
     testId: 'perps-explore-markets-row',
   };
 
-  /** Toast close button; dismissing it avoids ElementClickInterceptedError when it overlaps the explore row. */
-  private readonly toastCloseButton =
-    '.toasts-container__banner-base button[aria-label="Close"]';
-
   private readonly filterSelectButton = { testId: 'filter-select-button' };
 
   private readonly filterSortRow = { testId: 'market-list-filter-sort-row' };
@@ -66,7 +62,6 @@ export class PerpsMarketListPage {
    */
   async navigateToMarketList(): Promise<void> {
     await this.driver.waitForSelector(this.exploreMarketsRow);
-    await this.driver.clickElementSafe(this.toastCloseButton, 1500);
     await this.driver.clickElementUsingMouseMove(this.exploreMarketsRow);
     await this.checkPageIsLoaded();
   }

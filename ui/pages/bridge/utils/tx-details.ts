@@ -128,17 +128,17 @@ export const getBridgeAmountReceivedFormatted = ({
  * @returns Whether the bridge history item is delayed
  */
 export const getIsDelayed = (
-  status: StatusTypes,
+  status: string,
   bridgeHistoryItem?: BridgeHistoryItem,
 ) => {
   const tenMinutesInMs = 10 * MINUTE;
   return Boolean(
     status === StatusTypes.PENDING &&
-      bridgeHistoryItem?.startTime &&
-      Date.now() >
-        bridgeHistoryItem.startTime +
-          tenMinutesInMs +
-          bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
+    bridgeHistoryItem?.startTime &&
+    Date.now() >
+      bridgeHistoryItem.startTime +
+        tenMinutesInMs +
+        bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
   );
 };
 

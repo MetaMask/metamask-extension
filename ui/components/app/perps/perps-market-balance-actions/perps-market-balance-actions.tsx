@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   Button,
@@ -13,14 +13,24 @@ import {
   BoxJustifyContent,
   TextAlign,
 } from '@metamask/design-system-react';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
+import { getTradeableBalance } from '../../../../hooks/perps/getTradeableBalance';
 import {
   invokePerpsBalanceAction,
   type PerpsBalanceActionHandler,
 } from '../perps-balance-dropdown';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 
 type PerpsMarketBalanceActionsProps = {
   /** Whether to show the action buttons (Add funds, Withdraw) */
@@ -43,33 +53,61 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   onLearnMore,
 }) => {
   const t = useI18nContext();
+  const { track } = usePerpsEventTracking();
   const { formatCurrency } = useFormatters();
   const { account } = usePerpsLiveAccount();
   const { isEligible } = usePerpsEligibility();
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   // Use account data or defaults
   const totalBalance = account?.totalBalance ?? '0';
-  const unrealizedPnl = account?.unrealizedPnl ?? '0';
-  const availableBalance = account?.availableBalance ?? '0';
+  // "available" label on perps home reflects the order-entry (tradeable)
+  // balance: for HyperLiquid unified accounts this folds unreserved spot USDC
+  // on top of the withdrawable perps balance.
+  const availableBalance = getTradeableBalance(account);
 
-  // Account value = totalBalance + unrealizedPnl (includes open position PnL)
-  const accountValue = parseFloat(totalBalance) + parseFloat(unrealizedPnl);
+  // totalBalance is HL accountValue (perps equity, already includes unrealizedPnl) + spot
+  const accountValue = parseFloat(totalBalance);
   const isBalanceEmpty = accountValue === 0;
 
   const handleAddFunds = useCallback(() => {
     if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
       return;
     }
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     invokePerpsBalanceAction(onAddFunds);
-  }, [isEligible, onAddFunds]);
+  }, [isEligible, onAddFunds, track]);
 
   const handleWithdraw = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.WITHDRAW,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     invokePerpsBalanceAction(onWithdraw);
-  }, [onWithdraw]);
+  }, [onWithdraw, track]);
 
   const handleLearnMore = useCallback(() => {
     onLearnMore?.();
   }, [onLearnMore]);
+
+  const geoBlockModal = (
+    <PerpsGeoBlockModal
+      isOpen={isGeoBlockModalOpen}
+      onClose={() => setIsGeoBlockModalOpen(false)}
+    />
+  );
 
   // Empty state - no balance
   if (isBalanceEmpty) {
@@ -126,8 +164,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             size={ButtonSize.Lg}
             isLoading={isAddFundsLoading}
             onClick={handleAddFunds}
-            disabled={!isEligible || isAddFundsLoading}
-            title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+            disabled={isAddFundsLoading}
             style={{ width: '100%' }}
             data-testid="perps-balance-actions-add-funds-empty"
           >
@@ -144,6 +181,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             {t('perpsLearnMore')}
           </Button>
         </Box>
+        {geoBlockModal}
       </Box>
     );
   }
@@ -193,8 +231,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             size={ButtonSize.Lg}
             isLoading={isAddFundsLoading}
             onClick={handleAddFunds}
-            disabled={!isEligible || isAddFundsLoading}
-            title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+            disabled={isAddFundsLoading}
             style={{ flex: 1 }}
             data-testid="perps-balance-actions-add-funds"
           >
@@ -202,6 +239,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           </Button>
         </Box>
       )}
+      {geoBlockModal}
     </Box>
   );
 };

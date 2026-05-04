@@ -11,11 +11,9 @@ import {
   setHideZeroBalanceTokens,
   setShowNativeTokenAsMainBalancePreference,
 } from '../../../store/actions';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { DisplayNftMediaToggleItem } from '../shared/display-nft-media-item';
 import { AutodetectNftsToggleItem } from '../shared/autodetect-nfts-item';
 import { ASSET_ITEMS } from '../search-config';
-import { LocalCurrencyItem } from './local-currency-item';
 
 const ShowNetworkTokenToggleItem = createToggleItem({
   name: 'ShowNetworkTokenToggleItem',
@@ -24,13 +22,7 @@ const ShowNetworkTokenToggleItem = createToggleItem({
   action: setShowNativeTokenAsMainBalancePreference,
   dataTestId: 'show-native-token-as-main-balance',
   containerDataTestId: 'show-native-token-as-main-balance-toggle',
-  trackEvent: {
-    event: MetaMetricsEventName.SettingsUpdated,
-    properties: (newValue) => ({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      show_native_token_as_main_balance: newValue,
-    }),
-  },
+  trackEventProperty: 'show_native_token_as_main_balance',
 });
 
 const HideZeroBalanceTokensToggleItem = createToggleItem({
@@ -39,13 +31,7 @@ const HideZeroBalanceTokensToggleItem = createToggleItem({
   selector: getShouldHideZeroBalanceTokens,
   action: setHideZeroBalanceTokens,
   dataTestId: 'toggle-zero-balance-button',
-  trackEvent: {
-    event: MetaMetricsEventName.SettingsUpdated,
-    properties: (newValue) => ({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      hide_zero_balance_tokens: newValue,
-    }),
-  },
+  trackEventProperty: 'hide_zero_balance_tokens',
 });
 
 const AutodetectTokensToggleItem = createToggleItem({
@@ -60,12 +46,10 @@ const AutodetectTokensToggleItem = createToggleItem({
 
 /** Registry of setting items for the Assets page. Add new items here */
 const ASSET_SETTING_ITEMS: SettingItemConfig[] = [
-  { id: 'local-currency', component: LocalCurrencyItem },
   { id: 'show-network-token', component: ShowNetworkTokenToggleItem },
   {
     id: 'hide-zero-balance-tokens',
     component: HideZeroBalanceTokensToggleItem,
-    hasDividerBefore: true,
   },
   {
     id: 'display-nft-media',

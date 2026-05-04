@@ -24,14 +24,14 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
               class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--width-full mm-box--color-text-default"
             >
               <div
-                class="mm-box multichain-account-list-item items-center mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+                class="p-4 bg-transparent multichain-account-list-item flex items-center"
                 data-testid="account-item"
               >
                 <div
-                  class="mm-box flex w-full gap-2 items-center"
+                  class="flex w-full gap-2 items-center"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--sm:display-none"
+                    class="flex sm:hidden"
                     data-testid="account-list-item-badge"
                   >
                     <button
@@ -91,7 +91,7 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                     </button>
                   </div>
                   <div
-                    class="mm-box mm-box--display-none mm-box--sm:display-flex"
+                    class="hidden sm:flex"
                   >
                     <div
                       class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
@@ -138,25 +138,26 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                     </div>
                   </div>
                   <div
-                    class="mm-box multichain-account-list-item__content mm-box--display-flex mm-box--flex-direction-column"
+                    class="flex-col multichain-account-list-item__content flex"
                   >
                     <div
-                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                      class="flex-col flex"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+                        class="justify-between flex"
                       >
                         <div
-                          class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+                          class="gap-2 items-center multichain-account-list-item__account-name flex me-2"
                         >
                           <button
-                            class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
+                            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate multichain-account-list-item__account-name__button p-0 bg-transparent w-full text-left"
+                            type="button"
                           >
                             Account 1
                           </button>
                         </div>
                         <div
-                          class="mm-box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-end mm-box--align-items-center mm-box--color-text-default"
+                          class="flex-row items-center justify-end multichain-account-list-item__asset flex overflow-hidden"
                         >
                           <div
                             class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -179,20 +180,20 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                       </div>
                     </div>
                     <div
-                      class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+                      class="justify-between flex"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        class="items-center flex"
                       >
                         <p
-                          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                          class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
                           data-testid="account-list-address"
                         >
                           0x0DCD5...3E7bc
                         </p>
                       </div>
                       <div
-                        class="mm-box network-indicator"
+                        class="network-indicator"
                       >
                         <div
                           class="mm-box"
@@ -285,7 +286,7 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                   </div>
                 </div>
                 <div
-                  class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+                  class="items-center justify-center flex"
                 />
               </div>
             </span>
@@ -335,14 +336,14 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
               class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--width-full mm-box--color-text-default"
             >
               <div
-                class="mm-box multichain-account-list-item items-center mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+                class="p-4 bg-transparent multichain-account-list-item flex items-center"
                 data-testid="account-item"
               >
                 <div
-                  class="mm-box flex w-full gap-2 items-center"
+                  class="flex w-full gap-2 items-center"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--sm:display-none"
+                    class="flex sm:hidden"
                     data-testid="account-list-item-badge"
                   >
                     <button
@@ -402,7 +403,7 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                     </button>
                   </div>
                   <div
-                    class="mm-box mm-box--display-none mm-box--sm:display-flex"
+                    class="hidden sm:flex"
                   >
                     <div
                       class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
@@ -449,25 +450,26 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                     </div>
                   </div>
                   <div
-                    class="mm-box multichain-account-list-item__content mm-box--display-flex mm-box--flex-direction-column"
+                    class="flex-col multichain-account-list-item__content flex"
                   >
                     <div
-                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                      class="flex-col flex"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+                        class="justify-between flex"
                       >
                         <div
-                          class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+                          class="gap-2 items-center multichain-account-list-item__account-name flex me-2"
                         >
                           <button
-                            class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
+                            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate multichain-account-list-item__account-name__button p-0 bg-transparent w-full text-left"
+                            type="button"
                           >
                             Account 1
                           </button>
                         </div>
                         <div
-                          class="mm-box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-end mm-box--align-items-center mm-box--color-text-default"
+                          class="flex-row items-center justify-end multichain-account-list-item__asset flex overflow-hidden"
                         >
                           <div
                             class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -490,20 +492,20 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                       </div>
                     </div>
                     <div
-                      class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+                      class="justify-between flex"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        class="items-center flex"
                       >
                         <p
-                          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                          class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
                           data-testid="account-list-address"
                         >
                           0x0DCD5...3E7bc
                         </p>
                       </div>
                       <div
-                        class="mm-box network-indicator"
+                        class="network-indicator"
                       >
                         <div
                           class="mm-box"
@@ -596,7 +598,7 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                   </div>
                 </div>
                 <div
-                  class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+                  class="items-center justify-center flex"
                 />
               </div>
             </span>

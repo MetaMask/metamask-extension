@@ -226,6 +226,7 @@ export const CHAIN_IDS = {
   TEMPO_TESTNET: '0xa5bf',
   TEMPO_MAINNET: '0x1079',
   STABLE_MAINNET: '0x3dc',
+  MANTLE: '0x1388',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -399,6 +400,7 @@ export const CHILIZ_DISPLAY_NAME = 'Chiliz';
 export const TEMPO_TESTNET_DISPLAY_NAME = 'Tempo Testnet Moderato';
 export const TEMPO_MAINNET_DISPLAY_NAME = 'Tempo';
 export const STABLE_DISPLAY_NAME = 'Stable';
+export const MANTLE_DISPLAY_NAME = 'Mantle';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -495,6 +497,7 @@ export const CURRENCY_SYMBOLS = {
   TEMPO_MAINNET: 'USD',
   CHILIZ: 'CHZ',
   STABLE: 'USDT0',
+  MANTLE: 'MNT',
 } as const;
 
 // Non-EVM currency symbols
@@ -626,6 +629,7 @@ export const LIGHT_LINK_IMAGE_URL = './images/lightlink.svg';
 export const GSYS_IMAGE_URL = './images/genesys.svg';
 export const MANTA_PACIFIC_MAINNET_IMAGE_URL = './images/manta.svg';
 export const MANTLE_MAINNET_IMAGE_URL = './images/mantle.svg';
+export const MANTLE_NATIVE_TOKEN_IMAGE_URL = './images/mantle-native.svg';
 export const MOONBEAM_IMAGE_URL = './images/moonbeam.svg';
 export const MOONRIVER_IMAGE_URL = './images/moonriver.svg';
 export const MOONBEAM_TOKEN_IMAGE_URL = './images/moonbeam-token.svg';
@@ -732,6 +736,7 @@ export const TEMPO_MAINNET_IMAGE_URL = './images/tempo.svg';
 export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
 export const STABLE_IMAGE_URL = './images/stable.svg';
 export const STABLE_NATIVE_TOKEN_IMAGE_URL = './images/stable-native.svg';
+export const TEMPO_NATIVE_TOKEN_IMAGE_URL = './images/tempo-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -917,6 +922,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_MAINNET_DISPLAY_NAME,
   [CHAIN_IDS.STABLE_MAINNET]: STABLE_DISPLAY_NAME,
+  [CHAIN_IDS.MANTLE]: MANTLE_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -1312,6 +1318,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.MONAD]: MONAD_IMAGE_URL,
   [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
   [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
+  [CHAIN_IDS.MANTLE]: MANTLE_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MOONRIVER]: MOONRIVER_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MOONBEAM]: MOONBEAM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_IMAGE_URL,
@@ -1371,6 +1378,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CHZ]: CHILIZ_IMAGE_URL,
   [CHAIN_IDS.STABLE_MAINNET]: STABLE_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_NATIVE_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
@@ -1716,6 +1725,21 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://megaeth.blockscout.com/'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.TEMPO_MAINNET,
+    name: TEMPO_MAINNET_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.TEMPO_MAINNET,
+    rpcEndpoints: [
+      {
+        url: `https://rpc.tempo.xyz/`,
+        failoverUrls: [],
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://explore.tempo.xyz/'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];

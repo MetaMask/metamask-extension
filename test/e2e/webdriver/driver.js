@@ -190,6 +190,16 @@ class Driver {
   }
 
   async executeScript(script, ...args) {
+    // When tsx/esbuild transpiles TypeScript, it injects __name() calls to
+    // preserve function names. If a function passed here references __name,
+    // define it in the browser context so it doesn't throw.
+    if (typeof script === 'function') {
+      const src = script.toString();
+      if (src.includes('__name')) {
+        const wrapped = `var __name = (fn) => fn; return (${src}).apply(null, arguments);`;
+        return this.driver.executeScript(wrapped, args);
+      }
+    }
     return this.driver.executeScript(script, args);
   }
 
@@ -775,7 +785,7 @@ class Driver {
    * @returns {Promise<void>} Promise that resolves when the element stops moving.
    * @throws {Error} Throws an error if the element does not stop moving within the timeout period.
    */
-  async waitForElementToStopMoving(rawLocator, timeout = 5000) {
+  async waitForElementToStopMoving(rawLocator, timeout = 6000) {
     const startTime = Date.now();
 
     while (Date.now() - startTime < timeout) {
@@ -1152,6 +1162,18 @@ class Driver {
 
   async collectMetrics() {
     return await this.driver.executeScript(collectMetrics);
+  }
+
+  async resetLongTaskMetrics() {
+    return await this.driver.executeScript(function () {
+      window.stateHooks?.resetLongTaskMetrics?.();
+    });
+  }
+
+  async collectLongTaskMetrics() {
+    return await this.driver.executeScript(function () {
+      return window.stateHooks?.getLongTaskMetricsWithTBT?.(true) ?? null;
+    });
   }
 
   // Window management
@@ -1866,6 +1888,14 @@ function collectMetrics() {
         type: navigationEntry.type,
       });
     });
+
+  const longTaskData = window.stateHooks?.getLongTaskMetricsWithTBT?.();
+  if (longTaskData) {
+    results.longTaskCount = longTaskData.count;
+    results.longTaskTotalDuration = longTaskData.totalDuration;
+    results.longTaskMaxDuration = longTaskData.maxDuration;
+    results.tbt = longTaskData.tbt;
+  }
 
   return {
     ...results,

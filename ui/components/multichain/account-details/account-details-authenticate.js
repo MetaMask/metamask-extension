@@ -2,19 +2,19 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Display,
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
+  BoxFlexDirection,
+  Button,
+  ButtonVariant,
+} from '@metamask/design-system-react';
+import {
   FontWeight,
-  Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { exportAccount, hideWarning } from '../../../store/actions';
-import {
-  BannerAlert,
-  Box,
-  ButtonPrimary,
-  ButtonSecondary,
-} from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 
 export const AccountDetailsAuthenticate = ({
@@ -72,16 +72,25 @@ export const AccountDetailsAuthenticate = ({
       />
       <BannerAlert
         marginTop={6}
-        severity={Severity.Danger}
+        severity={BannerAlertSeverity.Danger}
         description={t('privateKeyWarning')}
       />
-      <Box display={Display.Flex} marginTop={6} gap={2}>
-        <ButtonSecondary onClick={onCancel} block>
+      <Box flexDirection={BoxFlexDirection.Row} marginTop={6} gap={2}>
+        <Button
+          variant={ButtonVariant.Secondary}
+          onClick={onCancel}
+          isFullWidth
+        >
           {t('cancel')}
-        </ButtonSecondary>
-        <ButtonPrimary onClick={onSubmit} disabled={password === ''} block>
+        </Button>
+        <Button
+          variant={ButtonVariant.Primary}
+          onClick={onSubmit}
+          disabled={password === ''}
+          isFullWidth
+        >
           {t('confirm')}
-        </ButtonPrimary>
+        </Button>
       </Box>
     </>
   );

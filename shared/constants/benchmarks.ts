@@ -71,6 +71,7 @@ export type TimerStatistics = {
   p99: number;
   samples: number;
   outliers: number;
+  trimmedCount?: number;
   dataQuality: 'good' | 'poor' | 'unreliable';
 };
 
@@ -108,6 +109,8 @@ export type BenchmarkResults = {
   stdDev: StatisticalResult;
   p75: StatisticalResult;
   p95: StatisticalResult;
+  trimmedCount?: StatisticalResult;
+  outliers?: StatisticalResult;
   webVitals?: WebVitalsSummary;
 };
 
@@ -165,6 +168,14 @@ export type ThresholdViolation = {
   value: number;
   threshold: number;
   severity: ThresholdSeverity;
+  /**
+   * Multiplicative factor applied to the base threshold because the observed
+   * CV for this metric fell in the adaptive-widening band (25% ≤ CV ≤ 50%).
+   * Undefined when no CV adjustment was applied. The `threshold` field above
+   * already carries the fully-adjusted (CI × CV) effective value; this factor
+   * lets downstream consumers recover the pre-widening threshold if needed.
+   */
+  cvAdjustment?: number;
 };
 
 /**
@@ -181,7 +192,6 @@ export type HistoricalBaselineMetrics = Omit<
 export type RelativeThresholds = {
   regressionPercent: number;
   warnPercent: number;
-  improvementPercent: number;
 };
 
 /**
@@ -192,7 +202,6 @@ export type RelativeThresholds = {
 export const DEFAULT_RELATIVE_THRESHOLDS: RelativeThresholds = {
   regressionPercent: 0.1,
   warnPercent: 0.05,
-  improvementPercent: 0.1,
 };
 
 export const BENCHMARK_PLATFORMS = {
@@ -201,7 +210,6 @@ export const BENCHMARK_PLATFORMS = {
 } as const;
 
 export const BENCHMARK_BUILD_TYPES = {
-  BROWSERIFY: 'browserify',
   WEBPACK: 'webpack',
 } as const;
 
@@ -213,8 +221,46 @@ export const ALL_BENCHMARK_COMBOS: readonly string[] = Object.values(
   ),
 );
 
-export const ENTRY_BENCHMARK_PLATFORMS: readonly (typeof BENCHMARK_PLATFORMS)[keyof typeof BENCHMARK_PLATFORMS][] =
-  [BENCHMARK_PLATFORMS.CHROME];
+export const DEFAULT_BENCHMARK_ITERATIONS = 5;
 
-export const ENTRY_BENCHMARK_BUILD_TYPES: readonly (typeof BENCHMARK_BUILD_TYPES)[keyof typeof BENCHMARK_BUILD_TYPES][] =
-  [BENCHMARK_BUILD_TYPES.BROWSERIFY];
+export const DEFAULT_BENCHMARK_BROWSER_LOADS = 10;
+export const DEFAULT_BENCHMARK_PAGE_LOADS = 10;
+
+export const DEFAULT_BENCHMARK_LOAD_MATRIX_SAMPLE_COUNT =
+  DEFAULT_BENCHMARK_BROWSER_LOADS * DEFAULT_BENCHMARK_PAGE_LOADS;
+
+export type BenchmarkAnnounceSamples = {
+  sampleQuantity: number;
+};
+
+export type BenchmarkAnnounceSection = {
+  title: string;
+  announceSamples: BenchmarkAnnounceSamples;
+};
+
+export const BENCHMARK_ANNOUNCE_SECTIONS = {
+  interaction: {
+    title: 'Interaction Benchmarks',
+    announceSamples: {
+      sampleQuantity: DEFAULT_BENCHMARK_ITERATIONS,
+    },
+  },
+  startup: {
+    title: 'Startup Benchmarks',
+    announceSamples: {
+      sampleQuantity: DEFAULT_BENCHMARK_LOAD_MATRIX_SAMPLE_COUNT,
+    },
+  },
+  userJourney: {
+    title: 'User Journey Benchmarks',
+    announceSamples: {
+      sampleQuantity: DEFAULT_BENCHMARK_ITERATIONS,
+    },
+  },
+  dappPageLoad: {
+    title: 'Dapp Page Load Benchmarks',
+    announceSamples: {
+      sampleQuantity: DEFAULT_BENCHMARK_LOAD_MATRIX_SAMPLE_COUNT,
+    },
+  },
+} as const satisfies Record<string, BenchmarkAnnounceSection>;

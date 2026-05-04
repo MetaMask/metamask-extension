@@ -430,11 +430,11 @@ const ClaimsForm = ({
   const hasAnyDraftData = useMemo(() => {
     return Boolean(
       chainId ||
-        email ||
-        impactedWalletAddress ||
-        impactedTransactionHash ||
-        reimbursementWalletAddress ||
-        caseDescription,
+      email ||
+      impactedWalletAddress ||
+      impactedTransactionHash ||
+      reimbursementWalletAddress ||
+      caseDescription,
     );
   }, [
     chainId,
@@ -559,7 +559,7 @@ const ClaimsForm = ({
 
   return (
     <Box
-      className="submit-claim-page flex flex-col pt-4 px-4 pb-4"
+      className="submit-claim-page flex flex-col pt-4 px-4 pb-4 overflow-y-auto"
       data-testid="submit-claim-page"
       gap={4}
     >

@@ -1,5 +1,9 @@
 export { usePerpsOrderForm } from './usePerpsOrderForm';
 export { usePerpsEligibility } from './usePerpsEligibility';
+export { usePerpsMeasurement } from './usePerpsMeasurement';
+export { usePerpsLifecycleBreadcrumbs } from './usePerpsLifecycleBreadcrumbs';
+export { usePerpsMarketInfo } from './usePerpsMarketInfo';
+export { usePerpsOrderFees } from './usePerpsOrderFees';
 export type {
   UsePerpsOrderFormOptions,
   UsePerpsOrderFormReturn,
@@ -17,6 +21,8 @@ export type {
   UsePerpsTransactionHistoryResult,
 } from './usePerpsTransactionHistory';
 
+export { usePerpsMarketFills } from './usePerpsMarketFills';
+
 export { usePerpsMarginCalculations } from './usePerpsMarginCalculations';
 export type {
   UsePerpsMarginCalculationsParams,
@@ -24,6 +30,11 @@ export type {
   MarginRiskAssessment,
 } from './usePerpsMarginCalculations';
 
+export { usePerpsEventTracking } from './usePerpsEventTracking';
+export type {
+  PerpsTrackEventFn,
+  UsePerpsEventTrackingDeclarativeOptions,
+} from './usePerpsEventTracking';
 export {
   estimateLiquidationPrice,
   liquidationDistancePercent,

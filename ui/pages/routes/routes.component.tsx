@@ -50,10 +50,12 @@ import {
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
+  CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
+  NETWORKS_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
@@ -105,7 +107,6 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
-import { isInteractiveUI } from '../../../shared/lib/environment-type';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -114,7 +115,7 @@ import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-im
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 
-import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
+import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-modal/DeprecatedNetworkModal';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
@@ -126,6 +127,7 @@ import MultichainAccountIntroModalContainer from '../../components/app/modals/mu
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
+import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-wallet-type';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
 import { LegacyLayout } from '../../layouts/legacy-layout';
@@ -135,7 +137,9 @@ import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import { Toaster } from '../../components/ui/toast/toast';
-import { ToastListener } from '../../components/ui/toast/toast-listener';
+import { ToastListener } from '../../app/toast-listener/toast-listener';
+import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
+import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -150,6 +154,7 @@ const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
 const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
+const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
 );
@@ -188,27 +193,19 @@ const Asset = mmLazy(() => import('../asset/index.js'));
 const DeFiPage = mmLazy(() => import('../defi/index.ts'));
 const PermissionsPage = mmLazy(
   () =>
-    import(
-      '../../components/multichain/pages/permissions-page/permissions-page.js'
-    ),
+    import('../../components/multichain/pages/permissions-page/permissions-page.js'),
 );
 const GatorPermissionsPage = mmLazy(
   () =>
-    import(
-      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
-    ),
+    import('../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'),
 );
 const GatorPermissionsTokenTransferPermissionsPage = mmLazy(
   () =>
-    import(
-      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
-    ),
+    import('../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'),
 );
 const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
-    import(
-      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
-    ),
+    import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
 const Home = mmLazy(() => import('../home/index.js'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
@@ -301,6 +298,10 @@ export const routeConfig = [
         element: <ImportSrpPage />,
       },
       {
+        path: NETWORKS_ROUTE,
+        element: <NetworksPage />,
+      },
+      {
         path: `${SETTINGS_ROUTE}/*`,
         element: <SettingsV2 />,
       },
@@ -389,6 +390,10 @@ export const routeConfig = [
         element: <AddWalletPage />,
       },
       {
+        path: CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
+        element: <ChooseNewWalletTypePage />,
+      },
+      {
         path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
         element: <MultichainAccountDetailsPage />,
       },
@@ -427,10 +432,11 @@ export const routeConfig = [
             path: SNAPS_ROUTE,
             element: <SnapList />,
           },
-          {
+          createRouteWithMessenger({
             path: SNAPS_VIEW_ROUTE,
+            capabilities: SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES,
             element: <SnapView />,
-          },
+          }),
           {
             path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
             element: <CrossChainSwapTxDetails />,
@@ -691,7 +697,7 @@ export default function Routes() {
       dir={textDirection}
     >
       <ConfirmationHandler />
-      {isInteractiveUI() && <ToastListener />}
+      <ToastListener />
 
       <QRHardwarePopover />
       <Modal />
@@ -734,7 +740,7 @@ export default function Routes() {
       {isUnlocked ? <Alerts /> : null}
       <ToastMaster />
 
-      <Toaster />
+      {isUnlocked ? <Toaster /> : null}
       <Modals />
     </div>
   );

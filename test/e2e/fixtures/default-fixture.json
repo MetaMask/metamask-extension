@@ -71,6 +71,9 @@
     },
     "AccountTreeController": {
       "accountGroupsMetadata": {},
+      "accountTree": {
+        "wallets": {}
+      },
       "accountWalletsMetadata": {},
       "hasAccountTreeSyncingSyncedAtLeastOnce": true,
       "selectedAccountGroup": "entropy:01KMMTZZ3ZEF3008S2RXXR2CXS/0"
@@ -171,7 +174,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 202,
+      "currentMigrationVersion": 206,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -192,7 +195,8 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
-      "newPrivacyPolicyToastClickedOrClosed": null,
+      "newPrivacyPolicyToastClickedOrClosed": true,
+      "newPrivacyPolicyToastShownDate": 1770282512702,
       "nftsDetectionNoticeDismissed": false,
       "outdatedBrowserWarningLastShown": null,
       "pendingShieldCohort": null,
@@ -355,7 +359,31 @@
       }
     },
     "MultichainAssetsRatesController": {
-      "conversionRates": {}
+      "conversionRates": {
+        "bip122:000000000019d6689c085ae165831e93/slip44:0": {
+          "conversionTime": 1776106420,
+          "currency": "swift:0/iso4217:USD",
+          "expirationTime": 1776106480,
+          "marketData": {
+            "allTimeHigh": "126080",
+            "allTimeLow": "67.81",
+            "circulatingSupply": "19975290",
+            "fungible": true,
+            "marketCap": "1836592437357",
+            "pricePercentChange": {
+              "P14D": 4.795747124043681,
+              "P1D": 1.6980683447716627,
+              "P1Y": -1.0484081200296924,
+              "P200D": -14.088182161660676,
+              "P30D": 2.1388997840239408,
+              "P7D": -1.6285705945180806,
+              "PT1H": -0.09840133404969334
+            },
+            "totalVolume": "45216146754"
+          },
+          "rate": "106763"
+        }
+      }
     },
     "MultichainBalancesController": {
       "balances": {
@@ -811,6 +839,9 @@
       "firstTimeFlowType": "import",
       "seedPhraseBackedUp": null
     },
+    "PasskeyController": {
+      "passkeyRecord": null
+    },
     "PPOMController": {
       "storageMetadata": [],
       "versionInfo": []
@@ -914,6 +945,7 @@
         "hyperliquid": {}
       },
       "securityAlertsEnabled": true,
+      "showSidePanelMigrationToast": false,
       "snapRegistryList": {},
       "snapsAddSnapAccountModalDismissed": false,
       "theme": "os",
@@ -980,9 +1012,12 @@
         "http://localhost:3000": "mainnet",
         "http://localhost:8000": "mainnet",
         "https://alpha.mycactus.io": "mainnet",
+        "https://app-beta.signer.cubist.dev": "mainnet",
+        "https://app-gamma.signer.cubist.dev": "mainnet",
         "https://app.bitgo-test.com": "mainnet",
         "https://app.bitgo.com": "mainnet",
         "https://app.metamask.io": "mainnet",
+        "https://app.signer.cubist.dev": "mainnet",
         "https://apps-portal.safe.global": "mainnet",
         "https://console.dev.mpcvault.com": "mainnet",
         "https://console.fireblocks.io": "mainnet",
@@ -1072,6 +1107,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 202
+    "version": 206
   }
 }

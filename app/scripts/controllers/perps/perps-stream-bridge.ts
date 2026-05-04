@@ -1,8 +1,21 @@
 import type {
   PerpsController,
+  PerpsControllerState,
   CandlePeriod,
   TimeDuration,
 } from '@metamask/perps-controller';
+import type { Patch } from 'immer';
+
+// Defined locally to avoid a value import from @metamask/perps-controller,
+// which transitively pulls in the Hyperliquid SDK (ESM-only) and breaks Jest.
+const WebSocketConnectionState = {
+  Connected: 'connected',
+  Connecting: 'connecting',
+  Disconnected: 'disconnected',
+  Disconnecting: 'disconnecting',
+} as const;
+type WebSocketConnectionState =
+  (typeof WebSocketConnectionState)[keyof typeof WebSocketConnectionState];
 
 type EmitFn = (
   channel: string,
@@ -12,18 +25,40 @@ type EmitFn = (
 
 type ActivateStreamingParams = {
   priceSymbols?: string[];
+  includeMarketData?: boolean;
   orderBookSymbol?: string;
   candle?: { symbol: string; interval: CandlePeriod; duration?: TimeDuration };
 };
 
+type StateChangeListener = (
+  callback: (state: PerpsControllerState, patches: Patch[]) => void,
+) => () => void;
+
+type ConnectivityChangeListener = (
+  callback: (state: { connectivityStatus: string }) => void,
+) => () => void;
+
 type PerpsStreamBridgeOptions = {
   controller: PerpsController;
+  onControllerStateChange: StateChangeListener;
+  onConnectivityChange: ConnectivityChangeListener;
   perpsInit: (...args: unknown[]) => Promise<unknown>;
   perpsDisconnect: (...args: unknown[]) => Promise<unknown>;
   perpsToggleTestnet: (...args: unknown[]) => Promise<unknown>;
   isConnectionAlive: () => boolean;
   emit: EmitFn;
 };
+
+const REST_HYDRATION_STAGGER_MS = 200;
+
+// Deferred candle-teardown window. A quick deactivate → activate round-trip
+// (e.g. React re-mount) within this window cancels the teardown, avoiding a
+// needless unsubscribe/resubscribe burst on HyperLiquid.
+//
+// Kept 30 ms longer than the UI-layer CONNECT_DEBOUNCE_MS (120 ms) in
+// ui/providers/perps/CandleStreamChannel.ts so a UI resubscribe debounced
+// by 120 ms still arrives before the bridge commits the teardown.
+const CANDLE_TEARDOWN_DEFER_MS = 150;
 
 /**
  * Per-connection bridge between the background PerpsController's WebSocket
@@ -49,6 +84,10 @@ export class PerpsStreamBridge {
 
   readonly #controller: PerpsController;
 
+  readonly #onControllerStateChange: StateChangeListener;
+
+  readonly #onConnectivityChange: ConnectivityChangeListener;
+
   readonly #perpsInit: PerpsStreamBridgeOptions['perpsInit'];
 
   readonly #perpsDisconnect: PerpsStreamBridgeOptions['perpsDisconnect'];
@@ -63,10 +102,48 @@ export class PerpsStreamBridge {
 
   readonly #dynamicUnsubs: Record<string, () => void> = {};
 
+  readonly #pendingCandleTeardowns = new Map<
+    string,
+    ReturnType<typeof setTimeout>
+  >();
+
+  /**
+   * Concurrent-activation guard for candle streams. The synchronous
+   * `#dynamicUnsubs[key]` check only trips after `#activateCandleStream` has
+   * run, which happens *after* `await #initAndActivate()`. Without this map,
+   * two callers for the same {symbol, interval} arriving before init resolves
+   * both pass the early-return and each issue a `subscribeToCandles` (and its
+   * backing `candleSnapshot` REST hit) — exactly the rate-limit burst this
+   * PR is trying to eliminate on cold init / reconnect / rapid market switch.
+   */
+  readonly #pendingCandleActivations = new Map<string, Promise<void>>();
+
   #activated = false;
+
+  /**
+   * Bumped by destroy(); any candle activation that captured a prior generation
+   * and was awaiting init when destroy() ran will see the mismatch and refuse
+   * to subscribe. A counter (rather than a boolean) means the flag self-resets
+   * on the next init — so perpsDisconnect/perpsToggleTestnet followed by a
+   * fresh perpsInit does not permanently suppress candle subscribes.
+   */
+  #destroyGeneration = 0;
+
+  #wasDisconnected = false;
+
+  #isHydrating = false;
+
+  /** Bumped on each hydration start and on destroy() so stale #finally blocks cannot clear #isHydrating. */
+  #hydrationSeq = 0;
+
+  #lastMarketCacheKey: string | null = null;
+
+  #wasDeviceOffline = false;
 
   constructor(options: PerpsStreamBridgeOptions) {
     this.#controller = options.controller;
+    this.#onControllerStateChange = options.onControllerStateChange;
+    this.#onConnectivityChange = options.onConnectivityChange;
     this.#perpsInit = options.perpsInit;
     this.#perpsDisconnect = options.perpsDisconnect;
     this.#perpsToggleTestnet = options.perpsToggleTestnet;
@@ -89,6 +166,23 @@ export class PerpsStreamBridge {
         if (!this.#activated && this.#isConnectionAlive()) {
           this.#activate();
         }
+        // Prime the controller's per-provider market/user caches so a
+        // subsequent popup cold-mount can hydrate the UI synchronously from
+        // `state.metamask.cachedMarketDataByProvider`/`cachedUserDataByProvider`
+        // and skip the loading skeleton. The controller throttles repeat
+        // calls (preloadGuardMs), so this is cheap to invoke on every init.
+        // Wrap in `Promise.resolve` so a sync throw, an async rejection,
+        // or a sync return all funnel into the same `.catch` — the
+        // controller method may be sync or async, and either failure mode
+        // would otherwise escape as an unhandled rejection in MV3.
+        Promise.resolve()
+          .then(() => this.#controller.startMarketDataPreload())
+          .catch((error) => {
+            console.debug(
+              '[PerpsStreamBridge] startMarketDataPreload failed',
+              error,
+            );
+          });
         return result;
       },
       perpsDisconnect: async (...args: unknown[]) => {
@@ -107,14 +201,18 @@ export class PerpsStreamBridge {
         if (this.#isConnectionAlive()) {
           this.#activateStreaming(params);
         }
-        return 'ok';
       },
-      perpsActivatePriceStream: async ({ symbols }: { symbols: string[] }) => {
+      perpsActivatePriceStream: async ({
+        symbols,
+        includeMarketData,
+      }: {
+        symbols: string[];
+        includeMarketData?: boolean;
+      }) => {
         await this.#initAndActivate();
         if (this.#isConnectionAlive()) {
-          this.#activatePriceStream(symbols);
+          this.#activatePriceStream(symbols, includeMarketData);
         }
-        return 'ok';
       },
       perpsDeactivatePriceStream: () => {
         this.#tearDownChannel('prices');
@@ -124,7 +222,6 @@ export class PerpsStreamBridge {
         if (this.#isConnectionAlive()) {
           this.#activateOrderBookStream(symbol);
         }
-        return 'ok';
       },
       perpsDeactivateOrderBookStream: () => {
         this.#tearDownChannel('orderBook');
@@ -138,11 +235,52 @@ export class PerpsStreamBridge {
         interval: CandlePeriod;
         duration?: TimeDuration;
       }) => {
-        await this.#initAndActivate();
-        if (this.#isConnectionAlive()) {
-          this.#activateCandleStream({ symbol, interval, duration });
+        const key = this.#candleSubscriptionKey(symbol, interval);
+
+        const pendingTimer = this.#pendingCandleTeardowns.get(key);
+        if (pendingTimer !== undefined) {
+          clearTimeout(pendingTimer);
+          this.#pendingCandleTeardowns.delete(key);
         }
-        return 'ok';
+
+        if (this.#dynamicUnsubs[key]) {
+          return;
+        }
+
+        const existing = this.#pendingCandleActivations.get(key);
+        if (existing !== undefined) {
+          await existing;
+          return;
+        }
+
+        const generationAtStart = this.#destroyGeneration;
+        const activation = (async () => {
+          await this.#initAndActivate();
+          // destroy() may have fired during the await; never subscribe after
+          // the bridge has been torn down (the subscribe would leak past the
+          // point where static/dynamic unsubs are cleared). Using a generation
+          // counter rather than a latched boolean lets later init cycles
+          // re-enable subscribes without needing an explicit reset.
+          if (this.#destroyGeneration !== generationAtStart) {
+            return;
+          }
+          // Another caller may have raced us through activation; re-check
+          // before issuing the subscribe so we never double-subscribe.
+          if (this.#dynamicUnsubs[key]) {
+            return;
+          }
+          if (this.#isConnectionAlive()) {
+            this.#activateCandleStream({ symbol, interval, duration });
+          }
+        })();
+        this.#pendingCandleActivations.set(key, activation);
+        try {
+          await activation;
+        } finally {
+          if (this.#pendingCandleActivations.get(key) === activation) {
+            this.#pendingCandleActivations.delete(key);
+          }
+        }
       },
       perpsDeactivateCandleStream: ({
         symbol,
@@ -154,7 +292,34 @@ export class PerpsStreamBridge {
         if (!symbol || !interval) {
           return;
         }
-        this.#tearDownDynamicKey(this.#candleSubscriptionKey(symbol, interval));
+        const key = this.#candleSubscriptionKey(symbol, interval);
+
+        const existing = this.#pendingCandleTeardowns.get(key);
+        if (existing !== undefined) {
+          clearTimeout(existing);
+        }
+
+        this.#pendingCandleTeardowns.set(
+          key,
+          setTimeout(() => {
+            this.#pendingCandleTeardowns.delete(key);
+            this.#tearDownDynamicKey(key);
+          }, CANDLE_TEARDOWN_DEFER_MS),
+        );
+      },
+      perpsCheckHealth: () => {
+        if (!this.#activated) {
+          return;
+        }
+        const state = this.#controller.getWebSocketConnectionState();
+        if (state === WebSocketConnectionState.Disconnected) {
+          this.#controller.reconnect().catch((err) => {
+            console.debug(
+              '[PerpsStreamBridge] health-check reconnect failed',
+              err,
+            );
+          });
+        }
       },
     };
   }
@@ -164,6 +329,8 @@ export class PerpsStreamBridge {
   }
 
   destroy(): void {
+    this.#destroyGeneration += 1;
+
     for (const unsub of this.#staticUnsubs) {
       this.#callAndClearUnsub(unsub);
     }
@@ -173,6 +340,11 @@ export class PerpsStreamBridge {
 
     this.#activated = false;
     this.#viewActive = false;
+    this.#wasDisconnected = false;
+    this.#hydrationSeq += 1;
+    this.#isHydrating = false;
+    this.#lastMarketCacheKey = null;
+    this.#wasDeviceOffline = false;
   }
 
   async #initAndActivate(): Promise<void> {
@@ -211,6 +383,28 @@ export class PerpsStreamBridge {
           callback: (data: unknown) => this.#emit('fills', data),
         }),
       );
+
+      this.#staticUnsubs.push(
+        this.#controller.subscribeToConnectionState(
+          (state: WebSocketConnectionState) => {
+            this.#handleConnectionStateChange(state);
+          },
+        ),
+      );
+
+      this.#staticUnsubs.push(
+        this.#onControllerStateChange(
+          (state: PerpsControllerState, _patches: Patch[]) => {
+            this.#handleMarketDataPreload(state);
+          },
+        ),
+      );
+
+      this.#staticUnsubs.push(
+        this.#onConnectivityChange((state: { connectivityStatus: string }) => {
+          this.#handleConnectivityChange(state.connectivityStatus);
+        }),
+      );
     } catch (error) {
       this.#activated = false;
       for (const unsub of this.#staticUnsubs) {
@@ -221,18 +415,128 @@ export class PerpsStreamBridge {
     }
   }
 
+  #handleConnectionStateChange(state: WebSocketConnectionState): void {
+    this.#emit('connectionState', { state });
+
+    if (state === WebSocketConnectionState.Disconnected) {
+      this.#wasDisconnected = true;
+      return;
+    }
+
+    if (state === WebSocketConnectionState.Connected && this.#wasDisconnected) {
+      this.#wasDisconnected = false;
+      this.#hydrateAfterReconnect();
+    }
+  }
+
+  /**
+   * Triggers a health check when the device transitions from offline to online.
+   * @param status
+   */
+  #handleConnectivityChange(status: string): void {
+    const isOffline = status === 'offline';
+    const wasOffline = this.#wasDeviceOffline;
+    this.#wasDeviceOffline = isOffline;
+
+    if (wasOffline && !isOffline) {
+      const wsState = this.#controller.getWebSocketConnectionState();
+      if (wsState === WebSocketConnectionState.Disconnected) {
+        this.#controller.reconnect().catch((err) => {
+          console.debug(
+            '[PerpsStreamBridge] connectivity-change reconnect failed',
+            err,
+          );
+        });
+      }
+    }
+  }
+
+  /**
+   * Reacts to controller state changes by checking if the cached market data
+   * has been updated (e.g. by the background preloader after HIP-3 config
+   * arrives from LaunchDarkly). Pushes updated data to the UI via the
+   * existing 'markets' channel so the stream manager stays in sync.
+   *
+   * Note that this is only supports a single provider (non aggregated), meaning that if we added another provider outside of hyperliquid, we'd need to update this cache
+   * @param state
+   */
+  #handleMarketDataPreload(state: PerpsControllerState): void {
+    const provider = state.activeProvider ?? 'hyperliquid';
+    const isTestnet = state.isTestnet ?? false;
+    const cacheKey = `${provider}:${isTestnet ? 'testnet' : 'mainnet'}`;
+    const entry = state.cachedMarketDataByProvider?.[cacheKey];
+
+    if (!entry?.data || entry.data.length === 0) {
+      return;
+    }
+
+    const snapshotKey = `${cacheKey}:${entry.timestamp}`;
+    if (snapshotKey === this.#lastMarketCacheKey) {
+      return;
+    }
+    this.#lastMarketCacheKey = snapshotKey;
+    this.#emit('markets', entry.data);
+  }
+
+  /**
+   * Fetches fresh data via REST after a WebSocket reconnection so the UI
+   * doesn't show stale values while waiting for the first stream push.
+   * Market data is fetched first (highest UI priority), then user data
+   * after a short stagger to reduce burst pressure on the rate limiter.
+   */
+  async #hydrateAfterReconnect(): Promise<void> {
+    if (this.#isHydrating || !this.#isConnectionAlive()) {
+      return;
+    }
+    this.#isHydrating = true;
+    this.#hydrationSeq += 1;
+    const hydrationToken = this.#hydrationSeq;
+
+    try {
+      const marketsResult = await this.#controller
+        .getMarketDataWithPrices()
+        .catch(() => null);
+
+      if (marketsResult) {
+        this.#emit('markets', marketsResult);
+      }
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, REST_HYDRATION_STAGGER_MS),
+      );
+
+      const [positionsResult, ordersResult, accountResult] =
+        await Promise.allSettled([
+          this.#controller.getPositions({ skipCache: true }),
+          this.#controller.getOpenOrders(),
+          this.#controller.getAccountState(),
+        ]);
+
+      if (positionsResult.status === 'fulfilled' && positionsResult.value) {
+        this.#emit('positions', positionsResult.value);
+      }
+      if (ordersResult.status === 'fulfilled' && ordersResult.value) {
+        this.#emit('orders', ordersResult.value);
+      }
+      if (accountResult.status === 'fulfilled') {
+        this.#emit('account', accountResult.value ?? null);
+      }
+    } catch (err) {
+      console.debug('[PerpsStreamBridge] post-reconnect hydration failed', err);
+    } finally {
+      if (hydrationToken === this.#hydrationSeq) {
+        this.#isHydrating = false;
+      }
+    }
+  }
+
   #activateStreaming(params: ActivateStreamingParams): void {
-    const { priceSymbols, orderBookSymbol, candle } = params;
+    const { priceSymbols, includeMarketData, orderBookSymbol, candle } = params;
 
     this.#tearDownAllDynamic();
 
     if (priceSymbols?.length) {
-      this.#addDynamicSubscription('prices', () =>
-        this.#controller.subscribeToPrices({
-          symbols: priceSymbols,
-          callback: (data: unknown) => this.#emit('prices', data),
-        }),
-      );
+      this.#subscribeToPriceStream(priceSymbols, includeMarketData);
     }
 
     if (orderBookSymbol) {
@@ -262,16 +566,24 @@ export class PerpsStreamBridge {
     }
   }
 
-  #activatePriceStream(symbols: string[]): void {
+  #activatePriceStream(symbols: string[], includeMarketData?: boolean): void {
     this.#tearDownChannel('prices');
     if (symbols.length) {
-      this.#addDynamicSubscription('prices', () =>
-        this.#controller.subscribeToPrices({
-          symbols,
-          callback: (data: unknown) => this.#emit('prices', data),
-        }),
-      );
+      this.#subscribeToPriceStream(symbols, includeMarketData);
     }
+  }
+
+  #subscribeToPriceStream(
+    symbols: string[],
+    includeMarketData?: boolean,
+  ): void {
+    this.#addDynamicSubscription('prices', () =>
+      this.#controller.subscribeToPrices({
+        symbols,
+        includeMarketData,
+        callback: (data: unknown) => this.#emit('prices', data),
+      }),
+    );
   }
 
   #activateOrderBookStream(symbol: string): void {
@@ -328,6 +640,15 @@ export class PerpsStreamBridge {
   }
 
   #tearDownAllDynamic(): void {
+    for (const handle of this.#pendingCandleTeardowns.values()) {
+      clearTimeout(handle);
+    }
+    this.#pendingCandleTeardowns.clear();
+    // In-flight activations cannot be aborted, but dropping the map means the
+    // next perpsActivateCandleStream after teardown issues a fresh activation
+    // instead of awaiting an obsolete promise from the pre-teardown session.
+    this.#pendingCandleActivations.clear();
+
     for (const unsub of Object.values(this.#dynamicUnsubs)) {
       this.#callAndClearUnsub(unsub);
     }

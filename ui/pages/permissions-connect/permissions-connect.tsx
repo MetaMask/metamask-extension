@@ -231,7 +231,7 @@ function PermissionsConnect() {
     | undefined;
   const isRequestingAccounts = Boolean(
     permissions?.[Caip25EndowmentPermissionName] &&
-      !isRequestApprovalPermittedChains,
+    !isRequestApprovalPermittedChains,
   );
 
   const targetSubjectMetadataFromSelector = useSelector((state) =>
@@ -637,8 +637,16 @@ function PermissionsConnect() {
     (metadata as Record<string, string>)?.origin,
   );
 
+  const cancelFromTrustSignalGate = useCallback(
+    () => cancelPermissionsRequest(permissionsRequestId || ''),
+    [cancelPermissionsRequest, permissionsRequestId],
+  );
+
   return (
-    <ConnectionTrustSignalGate origin={origin}>
+    <ConnectionTrustSignalGate
+      origin={origin}
+      onCancel={cancelFromTrustSignalGate}
+    >
       <div className="permissions-connect">
         {!hideTopBar &&
           permissionsRequestId &&

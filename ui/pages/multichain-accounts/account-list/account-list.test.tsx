@@ -6,6 +6,7 @@ import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useA
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import { CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { AccountList } from './account-list';
 
 const mockUseNavigate = jest.fn();
@@ -33,6 +34,7 @@ mockUseAccountsOperationsLoadingStates.mockReturnValue({
 const searchContainerTestId = 'multichain-account-list-search';
 const searchClearButtonTestId = 'text-field-search-clear-button';
 const walletHeaderTestId = 'multichain-account-tree-wallet-header';
+const addWalletButtonTestId = 'account-list-add-wallet-button';
 
 describe('AccountList', () => {
   beforeEach(() => {
@@ -74,10 +76,9 @@ describe('AccountList', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
-  it('opens the add wallet modal when the add wallet button is clicked', () => {
+  it('navigates to choose wallet type page when add wallet button is clicked', () => {
     renderComponent();
 
-    // First, let's verify the button is rendered by looking for it with role
     const addWalletButton = screen.getByRole('button', {
       name: messages.addWallet.message,
     });
@@ -85,16 +86,9 @@ describe('AccountList', () => {
 
     fireEvent.click(addWalletButton);
 
-    // The modal renders with portal, so we need to look for modal content
-    expect(
-      screen.getByText(messages.importAWallet.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.importAnAccount.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.addAHardwareWallet.message),
-    ).toBeInTheDocument();
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
+    );
   });
 
   it('displays the search field with correct placeholder', () => {
@@ -186,39 +180,51 @@ describe('AccountList', () => {
         loadingMessage: messages.syncing.message,
       });
 
-      const { getAllByText } = renderComponent();
+      renderComponent();
 
-      expect(getAllByText(messages.syncing.message)[0]).toBeInTheDocument();
-    });
-
-    it('prioritizes syncing message over local loading', async () => {
-      mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountTreeSyncingInProgress: true,
-        areAnyOperationsLoading: true,
-        loadingMessage: messages.syncing.message,
-      });
-
-      const { getAllByText } = renderComponent();
-
-      fireEvent.click(getAllByText(messages.syncing.message)[0]);
-
-      // Should still show syncing message, not creating account message
-      expect(getAllByText(messages.syncing.message)[0]).toBeInTheDocument();
-    });
-
-    it('shows spinner when any loading state is active', async () => {
-      mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountTreeSyncingInProgress: true,
-        areAnyOperationsLoading: true,
-        loadingMessage: messages.syncing.message,
-      });
-
-      const { getAllByText } = renderComponent();
-
-      // When account syncing is in progress, should show spinner
+      const addWalletButton = screen.getByTestId(addWalletButtonTestId);
+      expect(addWalletButton).toBeDisabled();
       expect(
-        getAllByText(messages.syncing.message).length,
-      ).toBeGreaterThanOrEqual(1);
+        within(addWalletButton).getByText(messages.syncing.message),
+      ).toBeInTheDocument();
+    });
+
+    it('prioritizes syncing message over local loading', () => {
+      mockUseAccountsOperationsLoadingStates.mockReturnValue({
+        isAccountTreeSyncingInProgress: true,
+        areAnyOperationsLoading: true,
+        loadingMessage: messages.syncing.message,
+      });
+
+      renderComponent();
+
+      fireEvent.click(screen.getByTestId(addWalletButtonTestId));
+
+      const addWalletButton = screen.getByTestId(addWalletButtonTestId);
+      expect(
+        within(addWalletButton).getByText(messages.syncing.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows spinner when any loading state is active', () => {
+      mockUseAccountsOperationsLoadingStates.mockReturnValue({
+        isAccountTreeSyncingInProgress: true,
+        areAnyOperationsLoading: true,
+        loadingMessage: messages.syncing.message,
+      });
+
+      renderComponent();
+
+      const addWalletButton = screen.getByTestId(addWalletButtonTestId);
+      expect(addWalletButton).toBeDisabled();
+      expect(
+        within(addWalletButton).getByText(messages.syncing.message),
+      ).toBeInTheDocument();
+      expect(
+        addWalletButton.querySelector(
+          '.add-multichain-account__icon-box__icon-loading',
+        ),
+      ).toBeInTheDocument();
     });
 
     it('shows default add wallet text when no loading states are active', () => {
@@ -227,11 +233,13 @@ describe('AccountList', () => {
         areAnyOperationsLoading: false,
         loadingMessage: '',
       });
-      const { getAllByText } = renderComponent();
+      renderComponent();
 
+      const addWalletButton = screen.getByTestId(addWalletButtonTestId);
+      expect(addWalletButton).not.toBeDisabled();
       expect(
-        getAllByText(messages.addWallet.message).length,
-      ).toBeGreaterThanOrEqual(1);
+        within(addWalletButton).getByText(messages.addWallet.message),
+      ).toBeInTheDocument();
     });
 
     it('handles loading state transitions correctly', () => {
@@ -242,11 +250,13 @@ describe('AccountList', () => {
         loadingMessage: undefined,
       });
 
-      const { getAllByText, rerender } = renderComponent();
+      const { rerender } = renderComponent();
 
+      let addWalletButton = screen.getByTestId(addWalletButtonTestId);
+      expect(addWalletButton).not.toBeDisabled();
       expect(
-        getAllByText(messages.addWallet.message).length,
-      ).toBeGreaterThanOrEqual(1);
+        within(addWalletButton).getByText(messages.addWallet.message),
+      ).toBeInTheDocument();
 
       // Simulate account syncing starting
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
@@ -257,9 +267,11 @@ describe('AccountList', () => {
 
       rerender(<AccountList />);
 
+      addWalletButton = screen.getByTestId(addWalletButtonTestId);
+      expect(addWalletButton).toBeDisabled();
       expect(
-        getAllByText(messages.syncing.message).length,
-      ).toBeGreaterThanOrEqual(1);
+        within(addWalletButton).getByText(messages.syncing.message),
+      ).toBeInTheDocument();
 
       // Simulate syncing completing
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
@@ -270,9 +282,11 @@ describe('AccountList', () => {
 
       rerender(<AccountList />);
 
+      addWalletButton = screen.getByTestId(addWalletButtonTestId);
+      expect(addWalletButton).not.toBeDisabled();
       expect(
-        getAllByText(messages.addWallet.message).length,
-      ).toBeGreaterThanOrEqual(1);
+        within(addWalletButton).getByText(messages.addWallet.message),
+      ).toBeInTheDocument();
     });
   });
 });

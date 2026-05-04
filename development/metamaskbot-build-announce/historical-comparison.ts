@@ -4,12 +4,13 @@
  * Retrieves benchmark data from MetaMask/extension_benchmark_stats
  * and aggregates it into a mean-of-means reference for PR comment comparisons.
  */
-import mean from 'lodash/mean';
+import { calculateMean } from '../../test/e2e/benchmarks/utils/statistics';
 import { STAT_KEY } from '../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
   HistoricalBaselineMetrics,
 } from '../../shared/constants/benchmarks';
+import { EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL } from './utils';
 
 type NestedPresetEntry = Record<string, Partial<BenchmarkResults>>;
 
@@ -39,9 +40,9 @@ export type HistoricalBaselineResult = {
  */
 export async function fetchHistoricalPerformanceDataFromMain(): Promise<HistoricalBaselineResult | null> {
   try {
-    const STATS_PERFORMANCE_DATA_URL =
-      'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';
-    const response = await fetch(STATS_PERFORMANCE_DATA_URL);
+    const response = await fetch(
+      EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL,
+    );
     if (!response.ok) {
       return null;
     }
@@ -140,7 +141,7 @@ function buildMetricBaselines(
     if (values.mean.length === 0) {
       continue;
     }
-    const meanVal = mean(values.mean);
+    const meanVal = calculateMean(values.mean);
     if (Number.isNaN(meanVal)) {
       continue;
     }
@@ -152,9 +153,11 @@ function buildMetricBaselines(
     }
     result[metric] = {
       mean: meanVal,
-      ...(values.stdDev?.length ? { stdDev: mean(values.stdDev) } : {}),
-      p75: values.p75.length > 0 ? mean(values.p75) : meanVal,
-      p95: values.p95.length > 0 ? mean(values.p95) : meanVal,
+      ...(values.stdDev?.length
+        ? { stdDev: calculateMean(values.stdDev) }
+        : {}),
+      p75: values.p75.length > 0 ? calculateMean(values.p75) : meanVal,
+      p95: values.p95.length > 0 ? calculateMean(values.p95) : meanVal,
     };
   }
   return result;

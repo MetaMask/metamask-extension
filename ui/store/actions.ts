@@ -97,6 +97,7 @@ import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
@@ -180,7 +181,6 @@ import {
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
-import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import {
   ClaimSubmitToastType,
@@ -205,6 +205,7 @@ import {
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
+import { getIsSidePanelFeatureEnabled } from '../../shared/lib/environment';
 import { PendingRedirectRoute } from '../../shared/lib/pending-redirect-state';
 import { keyringTypeToHardwareWalletType } from '../contexts/hardware-wallets/utils';
 import * as actionConstants from './actionConstants';
@@ -213,6 +214,7 @@ import {
   generateActionId,
   submitRequestToBackground,
 } from './background-connection';
+import { getStatePatches } from './patch-store-substream-connection';
 import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
@@ -1107,7 +1109,6 @@ export function importMnemonicToVault(
       .then(async (result) => {
         dispatch(hideLoadingIndication());
         dispatch(hideWarning());
-        dispatch(setShowNewSrpAddedToast(true));
         return result;
       })
       .catch((err) => {
@@ -2172,24 +2173,6 @@ export function enableSnap(
   };
 }
 
-export function updateSnap(
-  origin: string,
-  snap: { [snapId: string]: { version: string } },
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch, getState) => {
-    await submitRequestToBackground('updateSnap', [origin, snap]);
-    await forceUpdateMetamaskState(dispatch);
-
-    const state = getState();
-
-    const approval = getFirstSnapInstallOrUpdateRequest(state);
-
-    return approval?.metadata.id;
-  };
-}
-
 export async function getPhishingResult(website: string) {
   return await submitRequestToBackground('getPhishingResult', [website]);
 }
@@ -2283,7 +2266,7 @@ export function deleteExpiredNotifications(): ThunkAction<
 
         return Boolean(
           notification.readDate &&
-            new Date(notification.readDate) < expirationTime,
+          new Date(notification.readDate) < expirationTime,
         );
       })
       .map(({ id }) => id);
@@ -3477,7 +3460,6 @@ export async function checkAndUpdateSingleNftOwnershipStatus(
 ) {
   await submitRequestToBackground('checkAndUpdateSingleNftOwnershipStatus', [
     nft,
-    false,
     networkClientId,
   ]);
 }
@@ -3640,15 +3622,6 @@ export function createCancelTransaction(
       const { id } = currentNetworkTxList[currentNetworkTxList.length - 1];
       return id;
     } catch (err) {
-      if (err?.message?.includes('Previous transaction is already confirmed')) {
-        dispatch(
-          showModal({
-            name: 'TRANSACTION_ALREADY_CONFIRMED',
-            originalTransactionId: txId,
-          }),
-        );
-      }
-
       dispatch(displayWarning(err));
       throw err;
     }
@@ -3677,7 +3650,9 @@ export function createSpeedUpTransaction(
 
       await forceUpdateMetamaskState(dispatch);
 
-      const currentNetworkTxList = getCurrentNetworkTransactions(newState);
+      const currentNetworkTxList = getCurrentNetworkTransactions({
+        metamask: newState,
+      });
       const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
 
       return newTx;
@@ -3689,6 +3664,7 @@ export function createSpeedUpTransaction(
 }
 export function addNetwork(
   networkConfiguration: AddNetworkFields | UpdateNetworkFields,
+  options: { setActive?: boolean } = {},
 ): ThunkAction<
   Promise<NetworkConfiguration>,
   MetaMaskReduxState,
@@ -3700,6 +3676,7 @@ export function addNetwork(
     try {
       return await submitRequestToBackground('addNetwork', [
         networkConfiguration,
+        options,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -4327,6 +4304,24 @@ export async function setDefaultHomeActiveTabName(
   }
 }
 
+export function setLastVisitedPerpsRoute(
+  path: string | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    // Fire-and-forget: this write is a pure navigation hint for the next
+    // home mount. Swallow errors without a warning toast — users should
+    // never see UI noise for an internal persistence operation. We also
+    // skip `forceUpdateMetamaskState` because the field is memory-only
+    // (persist:false) and every Perps route change would otherwise pull
+    // the entire background state.
+    try {
+      await submitRequestToBackground('setLastVisitedRoute', ['perps', path]);
+    } catch (error) {
+      log.error('[setLastVisitedPerpsRoute] error', error);
+    }
+  };
+}
+
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
   return setPreference('showNativeTokenAsMainBalance', value);
 }
@@ -4422,6 +4417,75 @@ export function setShowMultiRpcModal(value: boolean) {
 
 export function setUseSidePanelAsDefault(value: boolean) {
   return setPreference('useSidePanelAsDefault', value);
+}
+
+/**
+ * Switches the default MetaMask view between popup and side panel from the
+ * current extension UI context (popup or side panel), when the side panel
+ * feature is enabled.
+ */
+export function toggleDefaultView(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    if (!getIsSidePanelFeatureEnabled()) {
+      return;
+    }
+
+    const currentEnvironment = getEnvironmentType();
+    const isSidepanel = currentEnvironment === ENVIRONMENT_TYPE_SIDEPANEL;
+    const isPopup = currentEnvironment === ENVIRONMENT_TYPE_POPUP;
+
+    try {
+      if (isSidepanel) {
+        await dispatch(setUseSidePanelAsDefault(false));
+        window.close();
+        return;
+      }
+
+      if (isPopup) {
+        const browserWithSidePanel = browser as typeof browser & {
+          sidePanel?: {
+            open: (options: { windowId: number }) => Promise<void>;
+          };
+        };
+
+        if (!browserWithSidePanel?.sidePanel?.open) {
+          return;
+        }
+
+        const tabs = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+
+        if (tabs && tabs.length > 0 && tabs[0].windowId) {
+          await browserWithSidePanel.sidePanel.open({
+            windowId: tabs[0].windowId,
+          });
+          await new Promise((resolve) => setTimeout(resolve, 500));
+
+          const contexts = await chrome.runtime.getContexts({
+            contextTypes: ['SIDE_PANEL' as chrome.runtime.ContextType],
+          });
+
+          if (!contexts || contexts.length === 0) {
+            return;
+          }
+
+          await dispatch(setUseSidePanelAsDefault(true));
+          window.close();
+        }
+      }
+    } catch (error) {
+      log.error('Error toggling default view:', error);
+    }
+  };
 }
 
 export function setShowDefaultAddress(value: boolean) {
@@ -4579,8 +4643,7 @@ export async function forceUpdateMetamaskState(
   let pendingPatches: Patch[] | undefined;
 
   try {
-    pendingPatches =
-      await submitRequestToBackground<Patch[]>('getStatePatches');
+    pendingPatches = await getStatePatches();
   } catch (error) {
     dispatch(displayWarning(error));
     throw error;
@@ -5728,24 +5791,6 @@ export function setEditedNetwork(
   return { type: actionConstants.SET_EDIT_NETWORK, payload };
 }
 
-export function setNewNftAddedMessage(
-  newNftAddedMessage: string,
-): PayloadAction<string> {
-  return {
-    type: actionConstants.SET_NEW_NFT_ADDED_MESSAGE,
-    payload: newNftAddedMessage,
-  };
-}
-
-export function setRemoveNftMessage(
-  removeNftMessage: string,
-): PayloadAction<string> {
-  return {
-    type: actionConstants.SET_REMOVE_NFT_MESSAGE,
-    payload: removeNftMessage,
-  };
-}
-
 export function setNewTokensImported(
   newTokensImported: string,
 ): PayloadAction<string> {
@@ -6076,6 +6121,15 @@ export async function getLedgerPublicKey(
   hdPath: string,
 ): Promise<GetPublicKeyResponse> {
   return await submitRequestToBackground('getLedgerPublicKey', [hdPath]);
+}
+
+/**
+ * Fetch the features/capabilities of the connected Trezor device.
+ *
+ * @returns The Trezor device features response including model, capabilities, and session info
+ */
+export async function getTrezorFeatures(): Promise<TrezorGetFeaturesResponse> {
+  return await submitRequestToBackground('getTrezorFeatures');
 }
 
 /**
@@ -8143,4 +8197,13 @@ export function removeDeferredDeepLink(): ThunkAction<
       logErrorWithMessage(error);
     }
   };
+}
+
+export async function perpsToggleTestnet(): Promise<void> {
+  log.debug(`background.perpsToggleTestnet`);
+  try {
+    await submitRequestToBackground<void>('perpsToggleTestnet');
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
 }
