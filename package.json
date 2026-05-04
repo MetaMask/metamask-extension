@@ -161,8 +161,8 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/bridge-controller": "70.2.0",
-    "@metamask/bridge-status-controller": "71.0.0",
+    "@metamask/bridge-controller": "71.0.0",
+    "@metamask/bridge-status-controller": "npm:@metamask-previews/bridge-status-controller@71.1.0-preview-60ee344a5",
     "@metamask/messenger": "1.1.1",
     "@metamask/network-controller": "30.0.1",
     "follow-redirects": "^1.16.0",
@@ -517,6 +517,12 @@
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
     "xml2js": "^0.6.2"
+  },
+  "previewBuilds": {
+    "@metamask/bridge-status-controller": {
+      "type": "non-breaking",
+      "previewVersion": "71.1.0-preview-60ee344a5"
+    }
   },
   "devDependencies": {
     "@actions/core": "^3.0.1",
