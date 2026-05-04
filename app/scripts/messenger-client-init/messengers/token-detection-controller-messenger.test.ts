@@ -8,9 +8,15 @@ import {
 describe('getTokenDetectionControllerMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
     const controllerMessenger = getTokenDetectionControllerMessenger(messenger);
 
     expect(controllerMessenger).toBeInstanceOf(Messenger);
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        events: expect.arrayContaining(['NetworkController:networkAdded']),
+      }),
+    );
   });
 });
 

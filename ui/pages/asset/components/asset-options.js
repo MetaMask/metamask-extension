@@ -27,6 +27,7 @@ const AssetOptions = ({
   onViewTokenDetails,
   token,
   isNativeAsset,
+  canRemove,
 }) => {
   const t = useContext(I18nContext);
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -96,7 +97,7 @@ const AssetOptions = ({
                 : [t('blockExplorerAssetAction')],
             )}
           </MenuItem>
-          {!isNativeAsset && (
+          {canRemove && (
             <MenuItem
               iconNameLegacy={IconName.Trash}
               data-testid="asset-options__hide"
@@ -129,12 +130,11 @@ const isNotFunc = (p) => {
 
 AssetOptions.propTypes = {
   isNativeAsset: PropTypes.bool,
+  canRemove: PropTypes.bool,
   onClickBlockExplorer: PropTypes.func.isRequired,
   onRemove: (props) => {
-    if (props.isNativeAsset === false && isNotFunc(props.onRemove)) {
-      throw new Error(
-        'When isNativeAsset is true, onRemove is a required prop',
-      );
+    if (props.canRemove === true && isNotFunc(props.onRemove)) {
+      throw new Error('When canRemove is true, onRemove is a required prop');
     }
   },
   onViewTokenDetails: PropTypes.func,

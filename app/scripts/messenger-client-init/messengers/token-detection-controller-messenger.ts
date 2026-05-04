@@ -4,6 +4,7 @@ import type {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetNetworkConfigurationByNetworkClientId,
   NetworkControllerGetStateAction,
+  NetworkControllerNetworkAddedEvent,
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
@@ -51,6 +52,7 @@ type AllowedActions =
 type AllowedEvents =
   | AccountsControllerSelectedEvmAccountChangeEvent
   | NetworkControllerNetworkDidChangeEvent
+  | NetworkControllerNetworkAddedEvent
   | TokenListStateChange
   | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent
@@ -102,6 +104,7 @@ export function getTokenDetectionControllerMessenger(
       'KeyringController:lock',
       'KeyringController:unlock',
       'NetworkController:networkDidChange',
+      'NetworkController:networkAdded',
       'TokenListController:stateChange',
       'PreferencesController:stateChange',
       'TransactionController:transactionConfirmed',

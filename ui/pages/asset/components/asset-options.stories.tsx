@@ -22,6 +22,7 @@ type Story = StoryObj<typeof AssetOptions>;
 export const Default: Story = {
   args: {
     isNativeAsset: false,
+    canRemove: true,
     token: {
       address: '0x6b175474e89094c44da98b954eedeac495271d0f',
       symbol: 'DAI',
@@ -31,5 +32,28 @@ export const Default: Story = {
     onRemove: () => console.log('Token removed'),
     onClickBlockExplorer: () => console.log('Block explorer clicked'),
     onViewTokenDetails: () => console.log('Token details clicked'),
+  },
+};
+
+export const NonRemovable: Story = {
+  args: {
+    isNativeAsset: false,
+    canRemove: false,
+    token: {
+      address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      symbol: 'DAI',
+      decimals: 18,
+      chainId: '0x1',
+    },
+    onClickBlockExplorer: () => console.log('Block explorer clicked'),
+    onViewTokenDetails: () => console.log('Token details clicked'),
+  },
+};
+
+export const NativeAsset: Story = {
+  args: {
+    isNativeAsset: true,
+    canRemove: false,
+    onClickBlockExplorer: () => console.log('Block explorer clicked'),
   },
 };
