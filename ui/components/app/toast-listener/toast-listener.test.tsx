@@ -10,11 +10,11 @@ jest.mock('react-redux', () => ({
   useSelector: (selector: unknown) => mockUseSelector(selector),
 }));
 
-jest.mock('../../../shared/lib/selectors/smart-transactions', () => ({
+jest.mock('../../../../shared/lib/selectors/smart-transactions', () => ({
   getExtensionSkipTransactionStatusPage: jest.fn(),
 }));
 
-jest.mock('../../../shared/lib/environment-type', () => ({
+jest.mock('../../../../shared/lib/environment-type', () => ({
   isInteractiveUI: () => mockIsInteractiveUI(),
 }));
 

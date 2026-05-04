@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getExtensionSkipTransactionStatusPage } from '../../../shared/lib/selectors/smart-transactions';
-import { isInteractiveUI } from '../../../shared/lib/environment-type';
+import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
+import { isInteractiveUI } from '../../../../shared/lib/environment-type';
 import { useSmartTransactionToasts } from './useSmartTransactionToasts';
 
 const ToastListenerInner = () => {

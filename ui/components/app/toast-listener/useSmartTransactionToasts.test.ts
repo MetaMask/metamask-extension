@@ -22,12 +22,12 @@ jest.mock('react-redux', () => ({
   useSelector: (selector: unknown) => mockUseSelector(selector),
 }));
 
-jest.mock('../../store/actions', () => ({
+jest.mock('../../../store/actions', () => ({
   resolvePendingApproval: (...args: [string, boolean]) =>
     mockResolvePendingApproval(...args),
 }));
 
-jest.mock('../../selectors/toast', () => ({
+jest.mock('../../../selectors/toast', () => ({
   selectSmartTransactions: jest.fn(),
 }));
 
