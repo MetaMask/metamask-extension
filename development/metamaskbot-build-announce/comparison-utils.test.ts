@@ -15,6 +15,7 @@ import {
   compareMetric,
   compareBenchmarkEntries,
   formatDeltaPercent,
+  scaleThresholdsForBrowser,
   COMPARISON_SEVERITY,
   type BenchmarkEntryComparison,
 } from './comparison-utils';
@@ -508,6 +509,44 @@ describe('benchmark-comparison', () => {
     it('formats zero as 0.0%', () => {
       expect(formatDeltaPercent(0)).toBe('0.0%');
     });
+  });
+});
+
+describe('scaleThresholdsForBrowser', () => {
+  const baseConfig: ThresholdConfig = {
+    someMetric: {
+      p75: { warn: 1000, fail: 1200 },
+      p95: { warn: 1100, fail: 1400 },
+      ciMultiplier: 1.5,
+    },
+    cls: {
+      p75: { warn: 0.1, fail: 0.25 },
+      ciMultiplier: 1, // CI_MULTIPLIER.NONE — unitless
+    },
+  };
+
+  it('returns config unchanged when no browser is provided', () => {
+    expect(scaleThresholdsForBrowser(baseConfig)).toBe(baseConfig);
+  });
+
+  it('returns config unchanged for chrome (no multiplier entry)', () => {
+    expect(scaleThresholdsForBrowser(baseConfig, 'chrome')).toBe(baseConfig);
+  });
+
+  it('scales p75/p95 for timed metrics on firefox', () => {
+    const scaled = scaleThresholdsForBrowser(baseConfig, 'firefox');
+    expect(scaled.someMetric.p75).toStrictEqual({ warn: 2000, fail: 2400 });
+    expect(scaled.someMetric.p95).toStrictEqual({ warn: 2200, fail: 2800 });
+  });
+
+  it('does not scale unitless metrics (ciMultiplier === 1) on firefox', () => {
+    const scaled = scaleThresholdsForBrowser(baseConfig, 'firefox');
+    expect(scaled.cls.p75).toStrictEqual({ warn: 0.1, fail: 0.25 });
+  });
+
+  it('preserves ciMultiplier on scaled metrics', () => {
+    const scaled = scaleThresholdsForBrowser(baseConfig, 'firefox');
+    expect(scaled.someMetric.ciMultiplier).toBe(1.5);
   });
 });
 
