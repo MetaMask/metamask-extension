@@ -237,7 +237,7 @@ For the full process of creating a remote feature flag (LaunchDarkly setup, code
 
 1. Look up the flag's current production value from the [client-config API](https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod). If the flag is not yet in production, set `inProd: false` and `productionDefault` to the intended default.
 2. Add an entry to `test/e2e/feature-flags/feature-flag-registry.ts` in alphabetical order.
-3. If you access the flag via a constant (e.g. `remoteFeatureFlags[MY_CONSTANT]`), also add the constant mapping to [`.github/scripts/known-feature-flag-constants.ts`](./.github/scripts/known-feature-flag-constants.ts) so the CI check can resolve it.
+3. If you access the flag via a constant (e.g. `remoteFeatureFlags[MY_CONSTANT]`), also add the constant mapping to [`.github/scripts/known-feature-flag-constants.mts`](./.github/scripts/known-feature-flag-constants.mts) so the CI check can resolve it.
 
 ##### Override flags in E2E tests
 
@@ -273,7 +273,9 @@ Running the full workflow on GitHub Actions can take 30 minutes or more, but the
 - **Automatic build reuse** — CI automatically detects when a PR's build-affecting source files haven't changed compared to a prior run (on the same branch or the base branch). When a match is found, it reuses the existing build artifacts instead of rebuilding, saving ~12 minutes for the browserify builds, and ~4 minutes for the webpack builds. This happens transparently with no action needed from you.
   - `[force-builds]` in the last commit message, or a `force-builds` label on the PR — Forces fresh builds even when CI would otherwise reuse prior artifacts. Useful when you need to verify that builds work after changing only non-code files (CI configs, docs, etc.), or if the automatic system is making a mistake.
   - `[skip-builds]` in the last commit message, or a `skip-builds` label on the PR — Reuses builds from the most recent prior run **without** verifying the source hash. This is the fastest option for iterating on tests or non-build changes, but it **blocks merging** — you must remove the tag/label and push again before the PR can enter the merge queue.
-- `[skip-e2e]` in the last commit message - Skips the E2E test suite
+- **Automatic E2E skipping** — CI automatically skips E2E tests when the PR's changes don't require them (e.g., docs-only, CI-only, or test-only changes with reused builds). You can override this in both directions:
+  - `[skip-e2e]` in the last commit message, or a `skip-e2e` label on the PR — Forces E2E tests to be skipped regardless of what files changed.
+  - `[force-e2e]` in the last commit message, or a `force-e2e` label on the PR — Forces E2E tests to run even when CI would otherwise skip them. Useful for CI-only PRs that modify E2E workflow files.
 - `[skip-unit]` in the last commit message _(command not working yet, coming soon)_ - Skips the unit test suite
 - `trigger-ci-*` as the branch name - This allows you to run the CI workflow without attaching it to a PR. This is useful if you need to test some things that you know will never be merged. Please clean up after yourself when you're done, and delete the branch.
 

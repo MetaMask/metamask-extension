@@ -15,7 +15,9 @@ import reduceMetamask, {
   getGasEstimateTypeByChainId,
   getGasFeeEstimates,
   getGasFeeEstimatesByChainId,
+  getIsPasskeyRegistered,
   getIsNetworkBusyByChainId,
+  getPasskeyAutoUnlockSuppressed,
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
@@ -770,6 +772,52 @@ describe('MetaMask Reducers', () => {
       };
       const tokens = getTokensByChainId(stateWithNoTokens, '0x1');
       expect(tokens).toStrictEqual([]);
+    });
+  });
+
+  describe('passkey selectors', () => {
+    describe('getIsPasskeyRegistered', () => {
+      it('returns true when a passkey record exists', () => {
+        const state = {
+          metamask: {
+            passkeyRecord: { credentialId: 'credential-id' },
+          },
+        };
+
+        expect(getIsPasskeyRegistered(state)).toBe(true);
+      });
+
+      it('returns false when no passkey record exists', () => {
+        const state = {
+          metamask: {
+            passkeyRecord: null,
+          },
+        };
+
+        expect(getIsPasskeyRegistered(state)).toBe(false);
+      });
+    });
+
+    describe('getPasskeyAutoUnlockSuppressed', () => {
+      it('returns true when passkey auto unlock is suppressed', () => {
+        const state = {
+          metamask: {
+            passkeyAutoUnlockSuppressed: true,
+          },
+        };
+
+        expect(getPasskeyAutoUnlockSuppressed(state)).toBe(true);
+      });
+
+      it('returns false when passkey auto unlock is not suppressed', () => {
+        const state = {
+          metamask: {
+            passkeyAutoUnlockSuppressed: false,
+          },
+        };
+
+        expect(getPasskeyAutoUnlockSuppressed(state)).toBe(false);
+      });
     });
   });
 });

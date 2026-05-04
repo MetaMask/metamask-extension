@@ -319,6 +319,7 @@ describe('Multiple Standard Dapp Connections', function () {
           .withPermissionControllerConnectedToTestDapp({
             scopes: SOLANA_PERMISSIONS,
           })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
@@ -448,6 +449,7 @@ describe('Multiple Standard Dapp Connections', function () {
           .withPermissionControllerConnectedToTestDapp({
             scopes: SOLANA_PERMISSIONS,
           })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },

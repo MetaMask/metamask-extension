@@ -60,7 +60,7 @@ exports[`DeveloperToolsTab snapshot matches snapshot 1`] = `
             Shows network tokens as local currency on test networks. If you've been asked to turn this feature on, you might be getting scammed. For testing purposes only. 
             <a
               class="font-medium text-primary-default"
-              href="https://support.metamask.io/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/"
+              href="https://support.metamask.io/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/?utm_source=extension"
               rel="noopener noreferrer"
               target="_blank"
             >

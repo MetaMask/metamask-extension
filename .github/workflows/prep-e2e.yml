@@ -29,7 +29,7 @@ jobs:
       - name: Get changed files with git diff
         # On branch `stable`, there's no reason to do a diff
         if: ${{ (github.head_ref || github.ref_name) != 'stable' }}
-        run: yarn tsx .github/scripts/git-diff-default-branch.ts
+        run: yarn tsx .github/scripts/git-diff-default-branch.mts
 
       - name: Upload changed files artifact
         # On branch `stable`, there's no reason to do a diff
@@ -40,7 +40,7 @@ jobs:
           path: ./changed-files/
 
       - name: Run E2E Page Object Usage Validation
-        run: yarn tsx .github/scripts/validate-e2e-page-object-usage.ts
+        run: yarn tsx .github/scripts/validate-e2e-page-object-usage.mts
 
       - name: Get last completed main workflow
         id: get-last-completed-main-workflow

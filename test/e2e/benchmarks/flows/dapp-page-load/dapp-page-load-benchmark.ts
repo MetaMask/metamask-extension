@@ -1,5 +1,4 @@
 import { promises as fs } from 'fs';
-import http from 'node:http';
 import { execSync, spawn, ChildProcess } from 'child_process';
 import path from 'path';
 import { chromium, type BrowserContext, Browser } from '@playwright/test';
@@ -123,47 +122,6 @@ export class PageLoadBenchmark {
   }
 
   /**
-   * Polls until the test dapp responds over HTTP. `yarn dapp` can take several seconds on CI
-   * (cold start); a fixed short delay caused net::ERR_CONNECTION_REFUSED in page-load benchmarks.
-   */
-  private async awaitDappServerListening(): Promise<void> {
-    const timeoutMs = process.env.CI ? 120_000 : 30_000;
-    const intervalMs = 500;
-    const deadline = Date.now() + timeoutMs;
-
-    while (Date.now() < deadline) {
-      if (typeof this.dappServerProcess?.exitCode === 'number') {
-        throw new Error(
-          `Dapp server process exited with code ${this.dappServerProcess.exitCode} before ${DAPP_URL} became ready`,
-        );
-      }
-
-      const connected = await new Promise<boolean>((resolve) => {
-        const request = http.get(DAPP_URL, { timeout: 3000 }, (response) => {
-          response.resume();
-          resolve(true);
-        });
-        request.on('error', () => resolve(false));
-        request.on('timeout', () => {
-          request.destroy();
-          resolve(false);
-        });
-      });
-
-      if (connected) {
-        console.log(`Dapp server ready at ${DAPP_URL}`);
-        return;
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, intervalMs));
-    }
-
-    throw new Error(
-      `Timed out after ${timeoutMs}ms waiting for dapp at ${DAPP_URL} (yarn dapp did not accept connections)`,
-    );
-  }
-
-  /**
    * Starts the static dapp server in the background.
    * The server runs on port 8080 and serves the test dapp for benchmarking.
    */
@@ -201,7 +159,13 @@ export class PageLoadBenchmark {
         }
       });
 
-      await this.awaitDappServerListening();
+      // Give the server a moment to start up, otherwise benchmark may try to access page
+      // while it's not yet ready to be served.
+      return new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 500);
+      });
     } catch (e) {
       console.log('ERROR starting dapp server:', e);
       throw e;

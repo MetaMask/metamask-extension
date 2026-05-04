@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import {
@@ -15,6 +17,13 @@ import {
   type Manifest,
   type Browser,
 } from '../../helpers';
+import {
+  createBundleSizeCategoryAssets,
+  createBundleSizeSummary,
+  getBundlePartSizes,
+  type BundleSizeAssetStat,
+  type BundleSizeDebugEntrypoint,
+} from './stats';
 import { schema } from './schema';
 import type { ManifestPluginOptions } from './types';
 import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip';
@@ -27,9 +36,44 @@ export type EntryDescriptionNormalized = { import?: string[] } & Omit<
   EntryOptions,
   'name'
 >;
+type CollectedBundleSizeStats = {
+  partSizes: ReturnType<typeof getBundlePartSizes>;
+  debugEntrypoints?: Record<string, BundleSizeDebugEntrypoint>;
+  timestamp: number;
+};
 
 const NAME = 'ManifestPlugin';
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
+
+function isJavaScriptAsset(assetName: string): boolean {
+  return (
+    assetName.endsWith('.js') ||
+    assetName.endsWith('.mjs') ||
+    assetName.endsWith('.cjs')
+  );
+}
+
+function getAssetStats(compilation: Compilation, assetNames: Iterable<string>) {
+  const stats: BundleSizeAssetStat[] = [];
+  for (const assetName of assetNames) {
+    if (!isJavaScriptAsset(assetName)) continue;
+    const asset = compilation.getAsset(assetName)!;
+    stats.push({ name: assetName, size: asset.source.size() });
+  }
+  return stats;
+}
+
+function emitJsonAsset(
+  compilation: Compilation,
+  assetPath: string,
+  value: unknown,
+): void {
+  const source = new RawSource(JSON.stringify(value, null, 2));
+  compilation.emitAsset(assetPath, source, {
+    javascriptModule: false,
+    contentType: 'application/json',
+  });
+}
 
 /**
  * A webpack plugin that generates extension manifests for browsers and organizes
@@ -116,6 +160,107 @@ export class ManifestPlugin<Z extends boolean> {
         },
       );
     });
+  }
+
+  /**
+   * Returns the emitted zip size for a browser build.
+   *
+   * @param compilation - The active compilation.
+   * @param browser - The browser whose zip asset should be measured.
+   * @returns The emitted zip size, if zip output is enabled.
+   */
+  private getBundleZipSize(
+    compilation: Compilation,
+    browser: Browser,
+  ): number | undefined {
+    if (this.options.zip !== true) {
+      return undefined;
+    }
+
+    const { outFilePath } = (this.options as ManifestPluginOptions<true>)
+      .zipOptions;
+    const zipAssetPath = outFilePath.replaceAll('[browser]', browser);
+    return compilation.getAsset(zipAssetPath)!.source.size();
+  }
+
+  /**
+   * Collects bundle-size stats from the pre-fanout compilation assets.
+   *
+   * @param compilation - The active compilation.
+   * @returns The collected bundle-size stats when reporting is enabled.
+   */
+  private collectBundleSizeStats(
+    compilation: Compilation,
+  ): CollectedBundleSizeStats | undefined {
+    const statsOptions = this.options.stats;
+
+    if (!statsOptions) {
+      return;
+    }
+
+    const categoryAssets = createBundleSizeCategoryAssets();
+    const assetSizes = new Map<string, number>();
+    const debugEntrypoints:
+      | Record<string, BundleSizeDebugEntrypoint>
+      | undefined = statsOptions.debug ? {} : undefined;
+
+    for (const [name, entry] of compilation.entrypoints) {
+      const category = statsOptions.classifyEntrypoint(name);
+
+      if (!category) {
+        continue;
+      }
+
+      const initialFiles = getAssetStats(compilation, entry.getFiles());
+      const asyncFiles = [
+        ...entry.getEntrypointChunk().getAllAsyncChunks(),
+      ].flatMap((chunk) => getAssetStats(compilation, chunk.files));
+
+      if (debugEntrypoints) {
+        debugEntrypoints[name] = { category, initialFiles, asyncFiles };
+      }
+
+      for (const file of [...initialFiles, ...asyncFiles]) {
+        categoryAssets[category].add(file.name);
+        assetSizes.set(file.name, file.size);
+      }
+    }
+
+    return {
+      partSizes: getBundlePartSizes(categoryAssets, assetSizes),
+      debugEntrypoints,
+      timestamp: Date.now(),
+    };
+  }
+
+  /**
+   * Emits browser-scoped bundle-size summary and debug assets.
+   *
+   * @param compilation - The active compilation.
+   * @param bundleSizeStats - The collected bundle-size stats to emit.
+   */
+  private emitBundleSizeStatsAssets(
+    compilation: Compilation,
+    bundleSizeStats: CollectedBundleSizeStats | undefined,
+  ): void {
+    if (this.options.stats && bundleSizeStats) {
+      const { outFile } = this.options.stats;
+      for (const browser of this.options.browsers) {
+        const statsFile = outFile.replaceAll('[browser]', browser);
+        const zip = this.getBundleZipSize(compilation, browser);
+        const { partSizes, timestamp, debugEntrypoints } = bundleSizeStats;
+        const summary = createBundleSizeSummary(partSizes, { zip, timestamp });
+        emitJsonAsset(compilation, statsFile, summary);
+
+        if (debugEntrypoints) {
+          emitJsonAsset(
+            compilation,
+            statsFile.replace(/\.json$/u, '.debug.json'),
+            { entrypoints: debugEntrypoints },
+          );
+        }
+      }
+    }
   }
 
   /**
@@ -654,14 +799,18 @@ export class ManifestPlugin<Z extends boolean> {
         tapOptions,
         async (assets: Assets) => {
           this.resolveEntrypoints(compilation);
+          const bundleSizeStats = this.collectBundleSizeStats(compilation);
           await this.zipAndMoveAssets(compilation, assets, options);
+          this.emitBundleSizeStatsAssets(compilation, bundleSizeStats);
         },
       );
     } else {
       const options = this.options as ManifestPluginOptions<false>;
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
         this.resolveEntrypoints(compilation);
+        const bundleSizeStats = this.collectBundleSizeStats(compilation);
         this.moveAssets(compilation, assets, options);
+        this.emitBundleSizeStatsAssets(compilation, bundleSizeStats);
       });
     }
   }

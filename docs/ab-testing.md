@@ -18,7 +18,8 @@ Use this order every time:
    register an `ABTestAnalyticsMapping` in background-safe shared code used by
    `shared/lib/ab-testing/ab-test-analytics.ts`.
 5. If the feature uses a custom tracking path that bypasses shared MetaMetrics
-   enrichment, attach `active_ab_tests` manually on that event.
+   enrichment, attach `active_ab_tests` manually with
+   `createActiveABTestAssignment`.
 6. Update targeted tests, the E2E feature-flag registry, and local override
    guidance when needed.
 
@@ -44,7 +45,8 @@ An A/B test is ready when all of these are true:
 - The feature reads assignment through `useABTest`
 - The variants object includes a `control` variant
 - Shared MetaMetrics events are registered for auto-enrichment when needed
-- Custom tracker events attach `active_ab_tests` manually when active
+- Custom tracker events attach `active_ab_tests` manually with
+  `createActiveABTestAssignment` when active
 - Relevant tests were added or updated when behavior or analytics wiring changed
 - The E2E feature-flag registry includes the production default value
 
@@ -141,17 +143,15 @@ trackEvent({
 ### 4. Handle bypass paths manually
 
 If an event bypasses the shared MetaMetrics enrichment path, add
-`active_ab_tests` yourself. Do not copy this pattern for `trackEvent(...)`
-calls that already flow through shared enrichment.
+`active_ab_tests` yourself with `createActiveABTestAssignment`. Do not copy
+this pattern for `trackEvent(...)` calls that already flow through shared
+enrichment.
 
 ```typescript
+import { createActiveABTestAssignment } from '../../../../shared/lib/ab-testing/active-ab-test-assignment';
+
 const activeABTests = isActive
-  ? [
-      {
-        key: FEATURE_AB_TEST_KEY,
-        value: variantName,
-      },
-    ]
+  ? [createActiveABTestAssignment(FEATURE_AB_TEST_KEY, variantName)]
   : undefined;
 
 sendCustomAnalyticsPayload({
@@ -210,7 +210,8 @@ Events are auto-enriched when:
 - and the event name is registered in background-safe shared analytics mapping
   code
 
-If an event bypasses that shared path, attach `active_ab_tests` manually.
+If an event bypasses that shared path, attach `active_ab_tests` manually with
+`createActiveABTestAssignment`.
 
 ### 3. Do not add new `ab_tests` payloads
 
@@ -219,13 +220,19 @@ If an event bypasses that shared path, attach `active_ab_tests` manually.
 Use this shape instead:
 
 ```typescript
-type ActiveABTest = Array<{ key: string; value: string }>;
+type ActiveABTest = Array<{
+  key: string;
+  value: string;
+  key_value_pair: string;
+}>;
 ```
 
 Correct:
 
 ```typescript
-active_ab_tests: [{ key: FEATURE_AB_TEST_KEY, value: variantName }];
+active_ab_tests: [
+  createActiveABTestAssignment(FEATURE_AB_TEST_KEY, variantName),
+];
 ```
 
 Incorrect:
@@ -350,6 +357,7 @@ Helpful existing files:
 
 - `ui/hooks/useABTest.ts`
 - `ui/hooks/useABTest.test.ts`
+- `shared/lib/ab-testing/active-ab-test-assignment.ts`
 - `shared/lib/ab-testing/resolve-ab-test-assignment.ts`
 - `shared/lib/ab-testing/ab-test-analytics.ts`
 - `app/scripts/controllers/metametrics-controller.ts`
@@ -362,7 +370,7 @@ No. Not when you use `useABTest`.
 
 **Do I manually attach `active_ab_tests` to every event?**  
 No. Register shared-path events for auto-enrichment. Add `active_ab_tests`
-manually only for bypass paths.
+manually only for bypass paths, and use `createActiveABTestAssignment`.
 
 **What is the fallback variant?**  
 `control`.
@@ -372,7 +380,8 @@ When the hook is using the fallback because the assignment is missing, invalid,
 or unresolved.
 
 **Do I need a per-test analytics schema key?**  
-No. Use the shared `active_ab_tests` array of `{ key, value }`.
+No. Use the shared `active_ab_tests` array of
+`{ key, value, key_value_pair }`.
 
 **Can multiple tests enrich the same event?**  
 Yes. Multiple assignments can be included in the same `active_ab_tests` array.
