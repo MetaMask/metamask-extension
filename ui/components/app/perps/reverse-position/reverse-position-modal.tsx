@@ -55,6 +55,17 @@ export type ReversePositionModalProps = {
   sizeDecimals?: number;
 };
 
+function toFlipPositionPayload(pos: Position): Position {
+  if (typeof pos.leverage === 'object' && pos.leverage !== null) {
+    return pos;
+  }
+  const value = typeof pos.leverage === 'number' ? pos.leverage : 1;
+  return {
+    ...pos,
+    leverage: { type: 'cross', value },
+  };
+}
+
 export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   isOpen,
   onClose,
@@ -88,16 +99,12 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const direction = getPositionDirection(position.size);
-  const isCurrentlyLong = direction === 'long';
-  const directionLabel = isCurrentlyLong
-    ? `${t('perpsLong')} → ${t('perpsShort')}`
-    : `${t('perpsShort')} → ${t('perpsLong')}`;
+  const directionLabel =
+    direction === 'long'
+      ? `${t('perpsLong')} → ${t('perpsShort')}`
+      : `${t('perpsShort')} → ${t('perpsLong')}`;
   const sizeNum = Math.abs(parseFloat(position.size));
   const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${position.symbol}`;
-  const leverageValue =
-    typeof position.leverage === 'object'
-      ? position.leverage?.value
-      : position.leverage;
 
   const {
     feeRate,
@@ -117,7 +124,10 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   const shouldShowFeePlaceholder =
     isFeeLoading || hasFeeError || estimatedFees === undefined;
 
-  const flipSize = sizeNum * 2;
+  const positionForFlip = useMemo(
+    () => toFlipPositionPayload(position),
+    [position],
+  );
 
   const handleSave = useCallback(async () => {
     if (!isEligible) {
@@ -131,26 +141,15 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_IN_PROGRESS });
 
     try {
-      // TODO(perps): revert to perpsFlipPosition once @metamask/perps-controller
-      // TradingService.flipPosition forwards currentPrice to placeOrder
-      // (regression introduced in 3.2.0, MetaMask/core#8515).
-      const orderResult = await submitRequestToBackground<{
+      const flipResult = await submitRequestToBackground<{
         success: boolean;
         error?: string;
-      }>('perpsPlaceOrder', [
-        {
-          symbol: position.symbol,
-          isBuy: !isCurrentlyLong,
-          size: flipSize.toString(),
-          orderType: 'market',
-          currentPrice,
-          leverage: leverageValue,
-        },
+      }>('perpsFlipPosition', [
+        { symbol: position.symbol, position: positionForFlip },
       ]);
-      if (orderResult?.success !== true) {
-        throw new Error(orderResult?.error || 'Failed to flip position');
+      if (flipResult?.success !== true) {
+        throw new Error(flipResult?.error || 'Failed to flip position');
       }
-
       const streamManager = getPerpsStreamManager();
       const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
         'perpsGetPositions',
@@ -178,12 +177,9 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     }
   }, [
     isEligible,
-    flipSize,
-    isCurrentlyLong,
-    currentPrice,
-    leverageValue,
     onClose,
     position.symbol,
+    positionForFlip,
     replacePerpsToastByKey,
     track,
     t,
