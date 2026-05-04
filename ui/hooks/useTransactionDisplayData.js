@@ -521,8 +521,8 @@ export function useTransactionDisplayData(transactionGroup) {
       if (metamaskPay?.targetFiat) {
         primaryDisplayValue = metamaskPay.targetFiat;
         secondaryDisplayValue = metamaskPayFiatFormatter(
-        Number(metamaskPay.targetFiat),
-      );
+          Number(metamaskPay.targetFiat),
+        );
       }
     }
   } else {
