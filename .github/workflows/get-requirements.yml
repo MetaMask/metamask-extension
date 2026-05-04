@@ -292,10 +292,14 @@ jobs:
         id: extract-build-names
         if: ${{ steps.compute-build-hash.outputs.build-hash }}
         run: |
-          NAMES=$(grep -oP '(?<=build-name: )\S+' .github/workflows/main.yml | jq -Rsc 'split("\n") | map(select(length > 0))')
-          if [[ "$NAMES" == "[]" || -z "$NAMES" ]]; then
-            echo "::error::No build-name entries found in main.yml — cannot verify artifact completeness"
-            exit 1
+          set +e
+          RAW=$(grep -oP '(?<=build-name: )\S+' .github/workflows/main.yml)
+          set -e
+          if [[ -z "$RAW" ]]; then
+            NAMES='[]'
+            echo '::notice::No build-name entries in main.yml — no run-build artifact reuse (slim workflow)'
+          else
+            NAMES=$(printf '%s\n' "$RAW" | jq -Rsc 'split("\n") | map(select(length > 0))')
           fi
           echo "names=$NAMES" >> "$GITHUB_OUTPUT"
           echo "-> Required build artifacts: $NAMES"
@@ -325,8 +329,14 @@ jobs:
             const buildHash = process.env.BUILD_HASH;
             const currentRunId = parseInt(process.env.RUN_ID, 10);
             const branch = process.env.BRANCH;
-            const required = JSON.parse(process.env.REQUIRED_BUILD_NAMES);
+            const required = JSON.parse(process.env.REQUIRED_BUILD_NAMES || '[]');
             const skipBuilds = process.env.SKIP_BUILDS === 'true';
+            if (!Array.isArray(required) || required.length === 0) {
+              core.info(
+                'No run-build jobs in main.yml (empty artifact list). Skipping reusable build lookup.',
+              );
+              return;
+            }
             core.info(`Expecting ${required.length} build artifacts`);
             if (skipBuilds) {
               core.warning('[skip-builds] active — ignoring hash, finding most recent run with all artifacts');
