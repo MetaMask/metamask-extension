@@ -5291,11 +5291,9 @@
   "passkeyDescription": {
     "message": "Use Face ID or your fingerprint to unlock MetaMask on this device instead of entering your password. This creates a secure passkey stored on your device."
   },
-  "passkeySetupStepRegister": {
-    "message": "Register biometrics"
-  },
-  "passkeySetupStepVerify": {
-    "message": "Verify biometrics"
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "Biometrics are already set up for this wallet.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
   },
   "passkeyErrorAuthenticationVerificationFailed": {
     "message": "We couldn't verify your biometrics. Try again.",
@@ -5312,10 +5310,6 @@
   "passkeyErrorNoRegistrationCeremony": {
     "message": "Biometrics setup session expired. Try again from the beginning.",
     "description": "Shown when passkey registration verification runs without an active registration ceremony."
-  },
-  "passkeyErrorAlreadyEnrolled": {
-    "message": "Biometrics are already set up for this wallet.",
-    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
   },
   "passkeyErrorNotEnrolled": {
     "message": "Biometrics aren't set up for this wallet. Turn on biometrics in Settings.",
@@ -5336,6 +5330,12 @@
   "passkeyErrorVaultKeyMismatch": {
     "message": "Biometrics don't match your current wallet lock. Set up biometrics again in Settings.",
     "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
+  },
+  "passkeySetupStepRegister": {
+    "message": "Register biometrics"
+  },
+  "passkeySetupStepVerify": {
+    "message": "Verify biometrics"
   },
   "passkeyTroubleshoot": {
     "message": "Having trouble with biometrics?",

@@ -343,7 +343,9 @@ describe('SetupPasskey', () => {
       await waitFor(() => {
         expect(getByTestId('passkey-set-up-button')).toBeInTheDocument();
       });
-      expect(screen.queryByTestId('passkey-setup-steps')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('passkey-setup-steps'),
+      ).not.toBeInTheDocument();
     });
 
     it('shows primary actions again when the user cancels post-registration authentication', async () => {
@@ -368,13 +370,17 @@ describe('SetupPasskey', () => {
     });
 
     it('redirects away when passkey is already registered', async () => {
-      jest.spyOn(BrowserRuntimeUtils, 'getBrowserName').mockReturnValue('chrome');
+      jest
+        .spyOn(BrowserRuntimeUtils, 'getBrowserName')
+        .mockReturnValue('chrome');
       const mockStore = buildMockStore(FirstTimeFlowType.create, {
         passkeyRecord: testPasskeyRecord,
       });
       renderWithProvider(<SetupPasskey />, mockStore);
 
-      expect(screen.queryByTestId('passkey-set-up-button')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('passkey-set-up-button'),
+      ).not.toBeInTheDocument();
 
       await waitFor(() => {
         expect(mockUseNavigate).toHaveBeenCalledWith(
