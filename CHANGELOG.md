@@ -7,6 +7,72 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.30.0]
+
+### Uncategorized
+
+- Developer-options-tab into settings-v2/debug-tab (#42254)
+- Align AssetsControllerInit tests with simplified init (#42231)
+- Enforces performance quality gate that blocks PRs that introduce performance regressions, and defines an allowlist of gated (#42166)
+  metrics.
+- Enable ASSETS_UNIFIED_STATE_ENABLED for dev builds (#42157)
+- chore: sync stable into release/13.29.0 (#42124)
+- No user-facing changes. Benchmark infrastructure only (outlier trimming, warm-up exclusion, PowerUser iteration rebalance, (#41961)
+  trimmedCount Sentry tag).
+- Added UTM parameters to extension links for improved analytics tracking (#40745)
+
+### Added
+
+- Add Tempo chain to the additional networks list (#42270)
+- Added editable USD input for close-position amount in perpetuals trading (#42261)
+- Added auto slippage support for RWA tokens (#42289)
+- Reopening the extension within 5 minutes of closing it on a Perps screen now returns the user to that screen instead of the (#42009)
+  wallet home.
+- Make Perps Withdraw to any token submission work (#42259)
+- Swap/Bridge to warn user if native balance will go below a minimum threshold. (#42113)
+- Updated Perps Withdraw activity rows to show the destination token and amount, and tailored the Transaction Details modal (#42263)
+  as well
+- Update metrics to track wallet composition (number of accounts, number of hardware wallets etc) (#41918)
+- Migrate prettier to oxfmt (#40697)
+- Filter malicious non-evm activity transactions (#42176)
+- Added Clear buttons for Take Profit and Stop Loss inputs in the perps order entry screen (#42156)
+- Updated perps balance to use unified accounts from perps controller (#42101)
+- Consume swap token warnings (#41495)
+- Add QR hardware wallet camera permission handling and recovery flow (#41612)
+- Add new Page for choosing wallet type for new wallet onboarding (#42048)
+- Advanced Permissions now show either expired or revoked status in Dapp Connections (#41985)
+- Added support for ENS v2 (#42079)
+- Added a Developer Options entry to trigger the new Perps Withdraw confirmation UI (#42043)
+- feat: Create `LegacyBackgroundApiService` and init (#41786)
+
+### Fixed
+
+- Fixed a perps bug where a position-level TP/SL appeared in the orders list of the market detail page instead of the auto-close (#42292)
+  section.
+- Fixed the modify menu popover width on the perps market detail page (#42281)
+- Fixed a bug that caused Perps TP/SL RoE signs to disappear or default incorrectly in the Auto close modal (#42284)
+- Fixed a bug where Ledger users could not complete swaps on networks without Ledger plugin support (e.g. Monad), which previously (#41948)
+  surfaced as a misleading "blind signing is not enabled" error.
+- Fixed a bug where NFT details showed placeholder description text when no description metadata was available. (#42236)
+- Updated perps stop-loss inputs to default initial unsigned percentages to negative RoE, normalize leading-zero values, (#42232)
+  preserve intentional positive edits, and block liquidation-unsafe
+  stop-loss trigger prices.
+- Fixed a memory leak that would degrade performance over time when using Firefox (#42203)
+- Fix bug related to improper deposit tracking (#41913)
+- Replace unlock redirect history entry (#42184)
+- Fixed EIP-712 Permit confirmation parsing to prevent decoy spending cap values from being displayed. (#42197)
+- Fixed hardware wallet detection in the pay alert so Ledger and other hardware wallets are correctly identified during mUSD (#42117)
+  conversion
+- Added header icons to the Add Margin, Decrease Margin, Reverse Position, and Close Position modals in Perpetuals (#42147)
+- Prevent invalid bridge tx hashes from being persisted in txHistory (#41981)
+- Fixed confirmation footer showing "Connect Ledger" when a Ledger transport was already connected; the primary action now shows (#42138)
+  "Confirm" in that state.
+- Fixed Perps deposit confirmation and activity UI by correcting amount input alignment, showing the send icon in activity, (#41838)
+  and restoring percentage buttons for native payment assets.
+- Fixed a crash that could occur when account ordering briefly contained invalid entries during hardware wallet or multichain (#41834)
+  account sync.
+- Null (internal decimal behavior, no user-facing feature flag — matches #41920 / #41993 precedent). (#41993)
+
 ## [13.29.0]
 
 ### Added
@@ -2222,7 +2288,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.29.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.30.0...HEAD
+[13.30.0]: https://github.com/MetaMask/metamask-extension/compare/v13.29.0...v13.30.0
 [13.29.0]: https://github.com/MetaMask/metamask-extension/compare/v13.28.0...v13.29.0
 [13.28.0]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...v13.28.0
 [13.27.0]: https://github.com/MetaMask/metamask-extension/compare/v13.26.0...v13.27.0
