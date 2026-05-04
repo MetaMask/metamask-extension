@@ -52,6 +52,7 @@ import {
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   HardwareWalletType,
+  handleContinueWithPermissionCheck,
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
   isRetryableHardwareWalletError,
@@ -105,6 +106,12 @@ function shouldShowQrCameraBlockedVariant(
  * Renders the appropriate `CameraAccessErrorContent` variant for QR camera
  * permission errors (blocked vs. needed).
  *
+ * Clicking Continue checks the live permission state before acting:
+ * - If granted: retries camera access directly (works in any context).
+ * - If prompt + side panel: redirects to fullscreen for native prompt.
+ * - If prompt + fullscreen/popup: retries (browser will show native prompt).
+ * - If denied: does nothing (user must change settings first).
+ *
  * @param params - Render parameters.
  * @param params.errorCode - The hardware wallet error code.
  * @param params.onRetry - Callback invoked when the user clicks Continue.
@@ -126,6 +133,8 @@ function renderQrCameraFlowContent({
     });
   };
 
+  const handleContinue = () => handleContinueWithPermissionCheck(onRetry);
+
   if (shouldShowQrCameraBlockedVariant(errorCode)) {
     return (
       <CameraAccessErrorContent
@@ -133,7 +142,7 @@ function renderQrCameraFlowContent({
         isFirefox={isFirefoxBrowser()}
         mozExtensionDisplay={getMozExtensionOriginForDisplay()}
         onOpenSettings={handleOpenSettings}
-        onContinue={onRetry}
+        onContinue={handleContinue}
         continueLoading={isLoading}
         rootPaddingHorizontal={0}
         rootPaddingBottom={0}
@@ -144,7 +153,7 @@ function renderQrCameraFlowContent({
   return (
     <CameraAccessErrorContent
       variant={CameraAccessErrorContentVariant.Needed}
-      onContinue={onRetry}
+      onContinue={handleContinue}
       continueLoading={isLoading}
       rootPaddingHorizontal={0}
       rootPaddingBottom={0}

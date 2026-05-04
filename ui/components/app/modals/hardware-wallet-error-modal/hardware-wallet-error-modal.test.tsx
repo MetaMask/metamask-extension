@@ -15,6 +15,10 @@ import {
   type HardwareWalletError as HardwareWalletErrorType,
 } from '@metamask/hw-wallet-sdk';
 import { getMockContractInteractionConfirmState } from '../../../../../test/data/confirmations/helper';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+} from '../../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
@@ -27,6 +31,11 @@ import {
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 
 const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../../shared/lib/environment-type', () => ({
+  getEnvironmentType: jest.fn(() => 'fullscreen'),
+}));
+const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
 
 jest.mock('../../../../../shared/lib/browser-runtime.utils', () => {
   const actual = jest.requireActual<
@@ -62,11 +71,14 @@ const mockEnsureDeviceReady = jest.fn();
 const mockClearError = jest.fn();
 const mockSetConnectionReady = jest.fn();
 const mockUseHardwareWalletConfig = jest.fn();
+const mockHandleContinueWithPermissionCheck = jest.fn();
 jest.mock('../../../../contexts/hardware-wallets', () => {
   const actual = jest.requireActual('../../../../contexts/hardware-wallets');
 
   return {
     ...actual,
+    handleContinueWithPermissionCheck: (...args: unknown[]) =>
+      mockHandleContinueWithPermissionCheck(...args),
     useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
     useHardwareWalletActions: () => ({
       ensureDeviceReady: mockEnsureDeviceReady,
@@ -143,10 +155,16 @@ describe('HardwareWalletErrorModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockEnsureDeviceReady.mockResolvedValue(true);
+    mockHandleContinueWithPermissionCheck.mockImplementation(
+      async (onRetry: () => Promise<void>) => {
+        await onRetry();
+      },
+    );
     mockUseHardwareWalletConfig.mockReturnValue({
       walletType: HardwareWalletType.Ledger,
     });
     mockIsFirefoxBrowser.mockReturnValue(false);
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
     mockGetChromiumExtensionCameraSiteSettingsUrl.mockReturnValue(
       'chrome://settings/content/siteDetails?site=chrome-extension%3A%2F%2Fmock%2F',
     );
@@ -511,6 +529,68 @@ describe('HardwareWalletErrorModal', () => {
       );
 
       expect(getByTestId('qr-camera-firefox-instructions')).toBeInTheDocument();
+    });
+
+    describe('Continue button delegates to handleContinueWithPermissionCheck', () => {
+      it('calls handleContinueWithPermissionCheck for needed variant', async () => {
+        const error = createTestError(
+          ErrorCode.PermissionCameraPromptDismissed,
+          'Prompt dismissed',
+          'Prompt dismissed.',
+        );
+
+        const { getByTestId } = renderWithMetrics(
+          <HardwareWalletErrorModal error={error} />,
+        );
+
+        await act(async () => {
+          fireEvent.click(getByTestId('qr-camera-access-needed-continue'));
+        });
+
+        expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledTimes(1);
+        expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledWith(
+          expect.any(Function),
+        );
+      });
+
+      it('calls handleContinueWithPermissionCheck for blocked variant', async () => {
+        const error = createTestError(
+          ErrorCode.PermissionCameraDenied,
+          'Camera denied',
+          'Camera access denied.',
+        );
+
+        const { getByTestId } = renderWithMetrics(
+          <HardwareWalletErrorModal error={error} />,
+        );
+
+        await act(async () => {
+          fireEvent.click(getByTestId('qr-camera-blocked-continue'));
+        });
+
+        expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledTimes(1);
+        expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledWith(
+          expect.any(Function),
+        );
+      });
+
+      it('wires onRetry callback to handleRetry (which calls ensureDeviceReady)', async () => {
+        const error = createTestError(
+          ErrorCode.PermissionCameraPromptDismissed,
+          'Prompt dismissed',
+          'Prompt dismissed.',
+        );
+
+        const { getByTestId } = renderWithMetrics(
+          <HardwareWalletErrorModal error={error} />,
+        );
+
+        await act(async () => {
+          fireEvent.click(getByTestId('qr-camera-access-needed-continue'));
+        });
+
+        expect(mockEnsureDeviceReady).toHaveBeenCalledTimes(1);
+      });
     });
   });
 

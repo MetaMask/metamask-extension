@@ -2,6 +2,12 @@ import {
   LEDGER_USB_VENDOR_ID,
   TREZOR_USB_VENDOR_IDS,
 } from '../../../shared/constants/hardware-wallets';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { CameraPermissionState } from './constants';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
 import {
@@ -26,7 +32,15 @@ import {
   subscribeToWebHidEvents,
   subscribeToWebUsbEvents,
   subscribeToHardwareWalletEvents,
+  isRestrictedCameraEnvironment,
+  redirectToFullscreen,
+  handleContinueWithPermissionCheck,
 } from './webConnectionUtils';
+
+jest.mock('../../../shared/lib/environment-type', () => ({
+  getEnvironmentType: jest.fn(() => 'fullscreen'),
+}));
+const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
 
 // Default device identifiers for testing
 const DEFAULT_LEDGER_VENDOR_ID = Number(LEDGER_USB_VENDOR_ID);
@@ -1621,6 +1635,164 @@ describe('webConnectionUtils', () => {
       const result = await checkWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(HardwareConnectionPermissionState.Prompt);
+    });
+  });
+
+  describe('camera environment and fullscreen redirect utilities', () => {
+    describe('isRestrictedCameraEnvironment', () => {
+      it('returns true for side panel', () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+        expect(isRestrictedCameraEnvironment()).toBe(true);
+      });
+
+      it('returns false for popup', () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+        expect(isRestrictedCameraEnvironment()).toBe(false);
+      });
+
+      it('returns false for fullscreen', () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+        expect(isRestrictedCameraEnvironment()).toBe(false);
+      });
+    });
+
+    describe('redirectToFullscreen', () => {
+      let mockOpenExtensionInBrowser: jest.Mock;
+      let originalLocation: Location;
+
+      beforeEach(() => {
+        mockOpenExtensionInBrowser = jest.fn();
+        (globalThis as Record<string, unknown>).platform = {
+          ...globalThis.platform,
+          openExtensionInBrowser: mockOpenExtensionInBrowser,
+        };
+        originalLocation = globalThis.location;
+      });
+
+      afterEach(() => {
+        Object.defineProperty(globalThis, 'location', {
+          value: originalLocation,
+          writable: true,
+        });
+      });
+
+      it('opens fullscreen with current hash route', () => {
+        Object.defineProperty(globalThis, 'location', {
+          value: {
+            href: 'chrome-extension://id/home.html#/confirm-transaction/42',
+          },
+          writable: true,
+        });
+
+        redirectToFullscreen();
+
+        expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
+          '/confirm-transaction/42',
+        );
+      });
+
+      it('passes null when there is no hash', () => {
+        Object.defineProperty(globalThis, 'location', {
+          value: { href: 'chrome-extension://id/home.html' },
+          writable: true,
+        });
+
+        redirectToFullscreen();
+
+        expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(null);
+      });
+    });
+
+    describe('handleContinueWithPermissionCheck', () => {
+      let mockOpenExtensionInBrowser: jest.Mock;
+      let onRetry: jest.Mock;
+
+      beforeEach(() => {
+        mockOpenExtensionInBrowser = jest.fn();
+        (globalThis as Record<string, unknown>).platform = {
+          ...globalThis.platform,
+          openExtensionInBrowser: mockOpenExtensionInBrowser,
+        };
+        onRetry = jest.fn().mockResolvedValue(undefined);
+        Object.defineProperty(globalThis, 'location', {
+          value: {
+            href: 'chrome-extension://id/home.html#/confirm-transaction/1',
+          },
+          writable: true,
+        });
+      });
+
+      it('calls onRetry when permission is granted (any environment)', async () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+        getMockedPermissions().query.mockResolvedValue({
+          state: CameraPermissionState.Granted,
+        } as unknown as PermissionStatus);
+
+        await handleContinueWithPermissionCheck(onRetry);
+
+        expect(onRetry).toHaveBeenCalledTimes(1);
+        expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
+      });
+
+      it('redirects to fullscreen when permission is prompt and in side panel', async () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+        getMockedPermissions().query.mockResolvedValue({
+          state: CameraPermissionState.Prompt,
+        } as unknown as PermissionStatus);
+
+        await handleContinueWithPermissionCheck(onRetry);
+
+        expect(mockOpenExtensionInBrowser).toHaveBeenCalledTimes(1);
+        expect(onRetry).not.toHaveBeenCalled();
+      });
+
+      it('calls onRetry when permission is prompt and in popup (popup can show native prompt)', async () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+        getMockedPermissions().query.mockResolvedValue({
+          state: CameraPermissionState.Prompt,
+        } as unknown as PermissionStatus);
+
+        await handleContinueWithPermissionCheck(onRetry);
+
+        expect(onRetry).toHaveBeenCalledTimes(1);
+        expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
+      });
+
+      it('calls onRetry when permission is prompt and in fullscreen', async () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+        getMockedPermissions().query.mockResolvedValue({
+          state: CameraPermissionState.Prompt,
+        } as unknown as PermissionStatus);
+
+        await handleContinueWithPermissionCheck(onRetry);
+
+        expect(onRetry).toHaveBeenCalledTimes(1);
+        expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
+      });
+
+      it('does nothing when permission is denied', async () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+        getMockedPermissions().query.mockResolvedValue({
+          state: CameraPermissionState.Denied,
+        } as unknown as PermissionStatus);
+
+        await handleContinueWithPermissionCheck(onRetry);
+
+        expect(onRetry).not.toHaveBeenCalled();
+        expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
+      });
+
+      it('falls through to onRetry when permission check throws', async () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+        getMockedPermissions().query.mockRejectedValue(
+          new Error('Not supported'),
+        );
+
+        await handleContinueWithPermissionCheck(onRetry);
+
+        expect(onRetry).toHaveBeenCalledTimes(1);
+        expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
+      });
     });
   });
 });
