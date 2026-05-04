@@ -119,13 +119,13 @@ export const createCaip27DriverTransport = (
           ]) => {
             const extensionPort = chrome.runtime.connect(e);
 
-            const listener = ({
+            function listener({
               type,
               data,
             }: {
               type: string;
               data: JsonRpcResponse<Json>;
-            }) => {
+            }) {
               if (type !== 'caip-348') {
                 return;
               }
@@ -137,7 +137,7 @@ export const createCaip27DriverTransport = (
                 window[g] = data;
                 extensionPort.onMessage.removeListener(listener);
               }
-            };
+            }
 
             extensionPort.onMessage.addListener(listener);
             const msg = {
@@ -205,13 +205,13 @@ export const createMultichainDriverTransport = (
           ]) => {
             const extensionPort = chrome.runtime.connect(e);
 
-            const listener = ({
+            function listener({
               type,
               data,
             }: {
               type: string;
               data: JsonRpcResponse<Json>;
-            }) => {
+            }) {
               if (type !== 'caip-348') {
                 return;
               }
@@ -223,7 +223,7 @@ export const createMultichainDriverTransport = (
                 window[g] = data;
                 extensionPort.onMessage.removeListener(listener);
               }
-            };
+            }
 
             extensionPort.onMessage.addListener(listener);
             const msg = {
