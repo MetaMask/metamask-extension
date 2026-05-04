@@ -1,9 +1,11 @@
+import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { navigateDeepLinkToDestination } from '../../page-objects/flows/deep-link.flow';
+import { mockGetPopularTokens } from '../bridge/bridge-test-utils';
 import {
   bytesToB64,
   generateECDSAKeyPair,
@@ -27,8 +29,11 @@ describe('Deep Link - /swap Route', function () {
         await getConfig({
           title: this.test?.fullTitle(),
           deepLinkPublicKey,
+          additionalMocks: async (server: Mockttp) => {
+            await mockGetPopularTokens(server);
+          },
         }),
-        async ({ driver }: { driver: Driver }) => {
+        async ({ driver, }: { driver: Driver }) => {
           // ensure the background is ready to process deep links (by waiting
           // for the UI to load)
           console.log('Navigating to initial page');
