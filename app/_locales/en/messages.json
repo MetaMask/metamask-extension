@@ -9560,7 +9560,7 @@
     "message": "Transaction failed"
   },
   "transactionProtectedByEnforcedSimulations": {
-    "message": "This transaction was protected by enforced simulations. The on-chain protection prevented an unexpected change to your balances and reverted the transaction. No funds were lost.",
+    "message": "This transaction was protected. We canceled it to prevent unexpected fund loss.",
     "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
   },
   "transactionFee": {

@@ -7,7 +7,12 @@ import { Button, ButtonSize } from '@metamask/design-system-react';
 import {
   BannerAlert,
   BannerAlertSeverity,
+  Text,
 } from '../../component-library';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionBreakdown from '../transaction-breakdown';
@@ -174,6 +179,17 @@ export default class TransactionListItemDetails extends PureComponent {
     return (
       <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
+          {isProtectedByEnforcedSimulations && (
+            <BannerAlert
+              severity={BannerAlertSeverity.Info}
+              marginBottom={4}
+              data-testid="transaction-protected-by-enforced-simulations"
+            >
+              <Text variant={TextVariant.bodySm}>
+                {t('transactionProtectedByEnforcedSimulations')}
+              </Text>
+            </BannerAlert>
+          )}
           <div className="transaction-list-item-details__operations">
             <div className="flex gap-2">
               {showSpeedUp && (
@@ -214,7 +230,16 @@ export default class TransactionListItemDetails extends PureComponent {
             >
               <div>{t('status')}</div>
               <div>
-                <TransactionStatus />
+                {isProtectedByEnforcedSimulations ? (
+                  <Text
+                    color={TextColor.successDefault}
+                    data-testid="transaction-protected-status-pill"
+                  >
+                    {t('cancelled')}
+                  </Text>
+                ) : (
+                  <TransactionStatus />
+                )}
               </div>
             </div>
             <div className="transaction-list-item-details__tx-hash gap-1">
@@ -246,15 +271,6 @@ export default class TransactionListItemDetails extends PureComponent {
             </div>
           </div>
           <div className="transaction-list-item-details__body">
-            {isProtectedByEnforcedSimulations && (
-              <BannerAlert
-                severity={BannerAlertSeverity.Info}
-                marginBottom={4}
-                data-testid="transaction-protected-by-enforced-simulations"
-              >
-                {t('transactionProtectedByEnforcedSimulations')}
-              </BannerAlert>
-            )}
             <div className="transaction-list-item-details__sender-to-recipient-header">
               <div>{t('from')}</div>
               <div>{t('to')}</div>

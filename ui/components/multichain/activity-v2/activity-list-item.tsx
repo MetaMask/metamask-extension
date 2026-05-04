@@ -6,6 +6,7 @@ import TransactionStatusLabel from '../../app/transaction-status-label/transacti
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { selectTransactionByHash } from '../../../selectors/transactionController';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
@@ -13,12 +14,18 @@ import { getPrimaryAmount } from './helpers';
 import { useGetTitle, useFiatAmount } from './hooks';
 import { ActivityTxIcon } from './activity-tx-icon';
 
+// DelegationFramework caveat enforcers revert with `Error(string)` messages of
+// the form `<EnforcerName>:<reason>` (Solidity convention). Detect any such
+// message generically rather than hard-coding the list of enforcer names.
+const CAVEAT_ENFORCER_REVERT_PATTERN = /^[A-Z][A-Za-z0-9]*Enforcer:/u;
+
 type Props = {
   transaction: TransactionViewModel;
   onClick?: () => void;
 };
 
 export const ActivityListItem = ({ transaction, onClick }: Props) => {
+  const t = useI18nContext();
   const { formatTokenAmount, formatCurrencyWithMinThreshold } = useFormatters();
   const currentCurrency = useSelector(getCurrentCurrency);
   const title = useGetTitle(transaction);
@@ -41,10 +48,15 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
     selectTransactionByHash(state, transaction.hash),
   );
 
+  const receiptRevertMessage = localTransactionMeta?.revert?.receipt?.message;
+  const isProtectedByEnforcedSimulations =
+    transactionStatus === TransactionStatus.failed &&
+    typeof receiptRevertMessage === 'string' &&
+    CAVEAT_ENFORCER_REVERT_PATTERN.test(receiptRevertMessage);
+
   const failureMessage =
     transactionStatus === TransactionStatus.failed
-      ? localTransactionMeta?.error?.message ??
-        localTransactionMeta?.revert?.receipt?.message
+      ? localTransactionMeta?.error?.message ?? receiptRevertMessage
       : undefined;
   const failureError = failureMessage ? { message: failureMessage } : undefined;
 
@@ -70,11 +82,20 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
             {title}
           </Text>
           <div className="text-s-body-sm font-medium">
-            <TransactionStatusLabel
-              status={transactionStatus}
-              error={failureError}
-              statusOnly
-            />
+            {isProtectedByEnforcedSimulations ? (
+              <Text
+                className="text-success-default"
+                data-testid="activity-list-item-protected-status"
+              >
+                {t('cancelled')}
+              </Text>
+            ) : (
+              <TransactionStatusLabel
+                status={transactionStatus}
+                error={failureError}
+                statusOnly
+              />
+            )}
           </div>
         </div>
 

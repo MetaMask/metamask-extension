@@ -185,10 +185,10 @@ const TransactionDetailsWrapper = ({
       isEarliestNonce={false}
       onCancel={noop}
       transactionStatus={() => {
+        const primary = syntheticGroup.primaryTransaction;
         const failureMessage =
           displayedStatusKey === 'failed'
-            ? localTransactionMeta?.error?.message ??
-              localTransactionMeta?.revert?.receipt?.message
+            ? primary.error?.message ?? primary.revert?.receipt?.message
             : undefined;
         return (
           <TransactionStatusLabel
