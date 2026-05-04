@@ -9,9 +9,7 @@ import { BridgeToken } from '../../ducks/bridge/types';
 import { toBridgeToken } from '../../ducks/bridge/utils';
 import { type BridgeAppState } from '../../ducks/bridge/selectors';
 import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
-import {
-  fetchTokensBySearchQuery,
-} from '../../pages/bridge/utils/tokens';
+import { fetchTokensBySearchQuery } from '../../pages/bridge/utils/tokens';
 import { getBearerToken } from '../../store/actions';
 import { useAsyncResult } from '../useAsync';
 
