@@ -7,6 +7,7 @@ import { BridgeClientId } from '@metamask/bridge-controller';
 import { trace } from '../../../shared/lib/trace';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { accountSupports7702 } from '../lib/account-supports-7702';
+import { captureException } from '../../../shared/lib/sentry';
 import { MessengerClientInitFunction } from './types';
 
 /**
@@ -24,6 +25,9 @@ export const BridgeStatusControllerInit: MessengerClientInitFunction<
 > = ({ controllerMessenger, persistedState, getMessengerClient }) => {
   const transactionController = getMessengerClient('TransactionController');
   const keyringController = getMessengerClient('KeyringController');
+  const remoteFeatureFlagController = getMessengerClient(
+    'RemoteFeatureFlagController',
+  );
 
   const messengerClient = new BridgeStatusController({
     messenger: controllerMessenger,
@@ -61,6 +65,11 @@ export const BridgeStatusControllerInit: MessengerClientInitFunction<
 
     // @ts-expect-error: `trace` function type does not match the expected type.
     traceFn: (...args) => trace(...args),
+    onQuoteStatusUpdateError: (error: Error) => captureException(error),
+    isQuoteStatusUpdateEnabled: () => {
+      const { remoteFeatureFlags } = remoteFeatureFlagController.state;
+      return remoteFeatureFlags.bridgeQuoteStatusUpdateEnabled === true;
+    },
   });
 
   return {

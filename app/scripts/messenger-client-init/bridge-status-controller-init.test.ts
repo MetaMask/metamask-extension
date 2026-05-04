@@ -4,6 +4,7 @@ import {
 } from '@metamask/bridge-status-controller';
 import { TransactionController } from '@metamask/transaction-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
+import { captureException } from '../../../shared/lib/sentry';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest, MessengerClientName } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -11,6 +12,7 @@ import { getBridgeStatusControllerMessenger } from './messengers';
 import { BridgeStatusControllerInit } from './bridge-status-controller-init';
 
 jest.mock('@metamask/bridge-status-controller');
+jest.mock('../../../shared/lib/sentry');
 
 function getInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<BridgeStatusControllerMessenger>
@@ -47,6 +49,8 @@ describe('BridgeStatusControllerInit', () => {
       addTransactionBatchFn: expect.any(Function),
       fetchFn: expect.any(Function),
       traceFn: expect.any(Function),
+      onQuoteStatusUpdateError: expect.any(Function),
+      isQuoteStatusUpdateEnabled: expect.any(Function),
     });
   });
 
@@ -79,6 +83,9 @@ describe('BridgeStatusControllerInit', () => {
         }
         if (name === 'KeyringController') {
           return { getKeyringForAccount: mockGetKeyringForAccount };
+        }
+        if (name === 'RemoteFeatureFlagController') {
+          return { state: { remoteFeatureFlags: {} } };
         }
         return undefined;
       }) as unknown as MessengerClientInitRequest<BridgeStatusControllerMessenger>['getMessengerClient']);
@@ -134,6 +141,67 @@ describe('BridgeStatusControllerInit', () => {
           disable7702: false,
         }),
       );
+    });
+  });
+
+  describe('onQuoteStatusUpdateError', () => {
+    function getOnQuoteStatusUpdateError() {
+      BridgeStatusControllerInit(getInitRequestMock());
+      const controllerMock = jest.mocked(BridgeStatusController);
+      const { onQuoteStatusUpdateError } =
+        controllerMock.mock.calls[controllerMock.mock.calls.length - 1][0];
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return onQuoteStatusUpdateError!;
+    }
+
+    it('calls captureException with the error', () => {
+      const onQuoteStatusUpdateError = getOnQuoteStatusUpdateError();
+      const error = new Error('bridge quote status update failed');
+      onQuoteStatusUpdateError(error);
+      expect(captureException).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe('isQuoteStatusUpdateEnabled', () => {
+    function getIsQuoteStatusUpdateEnabled(
+      bridgeQuoteStatusUpdateEnabled: unknown,
+    ) {
+      const requestMock = getInitRequestMock();
+      requestMock.getMessengerClient.mockImplementation(((
+        name: MessengerClientName,
+      ) => {
+        if (name === 'RemoteFeatureFlagController') {
+          return {
+            state: {
+              remoteFeatureFlags: { bridgeQuoteStatusUpdateEnabled },
+            },
+          };
+        }
+        return undefined;
+      }) as unknown as MessengerClientInitRequest<BridgeStatusControllerMessenger>['getMessengerClient']);
+
+      BridgeStatusControllerInit(requestMock);
+      const controllerMock = jest.mocked(BridgeStatusController);
+      const { isQuoteStatusUpdateEnabled } =
+        controllerMock.mock.calls[controllerMock.mock.calls.length - 1][0];
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return isQuoteStatusUpdateEnabled!;
+    }
+
+    it('returns true when the remote feature flag is enabled', () => {
+      const isQuoteStatusUpdateEnabled = getIsQuoteStatusUpdateEnabled(true);
+      expect(isQuoteStatusUpdateEnabled()).toBe(true);
+    });
+
+    it('returns false when the remote feature flag is disabled', () => {
+      const isQuoteStatusUpdateEnabled = getIsQuoteStatusUpdateEnabled(false);
+      expect(isQuoteStatusUpdateEnabled()).toBe(false);
+    });
+
+    it('returns false when the remote feature flag is not set', () => {
+      const isQuoteStatusUpdateEnabled =
+        getIsQuoteStatusUpdateEnabled(undefined);
+      expect(isQuoteStatusUpdateEnabled()).toBe(false);
     });
   });
 });
