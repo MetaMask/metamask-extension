@@ -4,6 +4,10 @@ import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Button, ButtonSize } from '@metamask/design-system-react';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+} from '../../component-library';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionBreakdown from '../transaction-breakdown';
@@ -51,6 +55,7 @@ export default class TransactionListItemDetails extends PureComponent {
     chainId: PropTypes.string,
     networkConfiguration: PropTypes.object,
     isHardwareWalletAccount: PropTypes.bool,
+    isProtectedByEnforcedSimulations: PropTypes.bool,
   };
 
   state = {
@@ -158,6 +163,7 @@ export default class TransactionListItemDetails extends PureComponent {
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
       isHardwareWalletAccount,
+      isProtectedByEnforcedSimulations,
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -240,6 +246,15 @@ export default class TransactionListItemDetails extends PureComponent {
             </div>
           </div>
           <div className="transaction-list-item-details__body">
+            {isProtectedByEnforcedSimulations && (
+              <BannerAlert
+                severity={BannerAlertSeverity.Info}
+                marginBottom={4}
+                data-testid="transaction-protected-by-enforced-simulations"
+              >
+                {t('transactionProtectedByEnforcedSimulations')}
+              </BannerAlert>
+            )}
             <div className="transaction-list-item-details__sender-to-recipient-header">
               <div>{t('from')}</div>
               <div>{t('to')}</div>

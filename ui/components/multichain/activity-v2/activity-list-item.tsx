@@ -7,6 +7,7 @@ import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
+import { selectTransactionByHash } from '../../../selectors/transactionController';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
 import { getPrimaryAmount } from './helpers';
 import { useGetTitle, useFiatAmount } from './hooks';
@@ -36,6 +37,17 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
       ? TransactionStatus.failed
       : TransactionStatus.confirmed;
 
+  const localTransactionMeta = useSelector((state) =>
+    selectTransactionByHash(state, transaction.hash),
+  );
+
+  const failureMessage =
+    transactionStatus === TransactionStatus.failed
+      ? localTransactionMeta?.error?.message ??
+        localTransactionMeta?.revert?.receipt?.message
+      : undefined;
+  const failureError = failureMessage ? { message: failureMessage } : undefined;
+
   return (
     <Box
       className="px-4 py-3 bg-background-default cursor-pointer hover:bg-hover activity-list-item"
@@ -58,7 +70,11 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
             {title}
           </Text>
           <div className="text-s-body-sm font-medium">
-            <TransactionStatusLabel status={transactionStatus} statusOnly />
+            <TransactionStatusLabel
+              status={transactionStatus}
+              error={failureError}
+              statusOnly
+            />
           </div>
         </div>
 
