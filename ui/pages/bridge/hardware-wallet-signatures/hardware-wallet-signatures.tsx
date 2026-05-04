@@ -4,12 +4,8 @@ import React, {
   useEffect,
   useReducer,
   useRef,
-  useState,
 } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import isEqual from 'lodash/isEqual';
-import type { SerializedUR } from '@metamask/eth-qr-keyring';
-import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import { useSelector } from 'react-redux';
 
 import {
   Box,
@@ -24,47 +20,27 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-import {
-  isHardwareWallet,
-  getHardwareWalletType,
-} from '../../../selectors/selectors';
-import { getActiveQrCodeScanRequest } from '../../../selectors';
-import Reader from '../../../components/app/qr-hardware-popover/qr-hardware-sign-request/reader';
+import { isHardwareWallet } from '../../../selectors/selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import {
-  ConnectionStatus,
-  ErrorCode,
-  getHardwareWalletErrorCode,
-  isUserRejectedHardwareWalletError,
-  useHardwareWalletState,
-  useHardwareWalletActions,
-} from '../../../contexts/hardware-wallets';
-import {
-  getBridgeQuotes,
-  getFromToken,
-  getToToken,
-} from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
-import {
-  cancelQrCodeScan,
-  cancelTx,
-  completeQrCodeScan,
-  rejectPendingApproval,
-} from '../../../store/actions';
-import { showSuccessToast } from '../../../app/toast-listener/shared';
+import Reader from '../../../components/app/qr-hardware-popover/qr-hardware-sign-request/reader';
 
-import { type MetaMaskReduxDispatch } from '../../../store/store';
-import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
-import { useHwBatchSignTracker } from './useHwBatchSignTracker';
+import { useHwSwapQuoteData } from '../../../hooks/swap/hardware-wallets/useHwSwapQuoteData';
+import { useHwSwapSubmission } from '../../../hooks/swap/hardware-wallets/useHwSwapSubmission';
+import { useHwSwapConnectionMonitoring } from '../../../hooks/swap/hardware-wallets/useHwSwapConnectionMonitoring';
+import { useHwSwapConfirmationMonitoring } from '../../../hooks/swap/hardware-wallets/useHwSwapConfirmationMonitoring';
+import { useHwSwapQrState } from '../../../hooks/swap/hardware-wallets/useHwSwapQrState';
+import { useHwSwapNavigation } from '../../../hooks/swap/hardware-wallets/useHwSwapNavigation';
 import {
-  HardwareWalletSignatureEvent,
-  HardwareWalletSignatureStatus,
-  getInitialHardwareWalletSignaturesState,
-  hardwareWalletSignaturesReducer,
-} from './hardware-wallet-signatures-state-machine';
+  ConnectionStatus,
+  useHardwareWalletState,
+} from '../../../contexts/hardware-wallets';
+import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
+import SignatureStatusIcon from './signature-status-icon';
+import QrSignatureCode from './qr-signature-code';
+import GenericHardwareWalletAnimation from './generic-hardware-wallet-animation';
 import {
   SignatureStepStatus,
   getFinalStepLabel,
@@ -73,115 +49,42 @@ import {
   getStepStatus,
   getTitle,
   getTransactionField,
-  isQrHardwareSignRequest,
 } from './hardware-wallet-signatures.utils';
-import GenericHardwareWalletAnimation from './generic-hardware-wallet-animation';
-import QrSignatureCode from './qr-signature-code';
-import SignatureStatusIcon from './signature-status-icon';
-import type { BridgeStatusState } from './types';
+import {
+  HardwareWalletSignatureEvent,
+  HardwareWalletSignatureStatus,
+  getInitialHardwareWalletSignaturesState,
+  hardwareWalletSignaturesReducer,
+} from './hardware-wallet-signatures-state-machine';
+import { useHwBatchSignTracker } from './useHwBatchSignTracker';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function HardwareWalletSignatures() {
   const t = useI18nContext();
-  const { activeQuote } = useSelector(getBridgeQuotes, shallowEqual);
-  const fromToken = useSelector(getFromToken, isEqual);
-  const toToken = useSelector(getToToken, isEqual);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
-  const hardwareWalletType = useSelector(getHardwareWalletType);
-  const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
-  const { connectionState } = useHardwareWalletState();
-  const { ensureDeviceReady } = useHardwareWalletActions();
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  // The background's debounced `sendUpdate` can clear the quotes list when an
-  // in-flight quote response races with `stopPollingForQuotes`, making
-  // `activeQuote` null. Once the signing flow starts we latch the quote data
-  // so the step UI survives these transient Redux state changes.
-  const lockedQuoteRef = useRef(activeQuote);
-  if (activeQuote && !lockedQuoteRef.current) {
-    lockedQuoteRef.current = activeQuote;
-  }
-  const lockedQuote = lockedQuoteRef.current;
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const { navigateToBridgePage } = useBridgeNavigation();
+
+  const { lockedQuote, fromToken, toToken, hardwareWalletType } =
+    useHwSwapQuoteData();
   const needsTwoConfirmations = Boolean(lockedQuote?.approval);
   const fromAmount = lockedQuote?.sentAmount?.amount;
-  const { trackEvent } = useContext(MetaMetricsContext);
-  const { navigateToBridgePage, navigateToDefaultRoute } =
-    useBridgeNavigation();
+
   const [signatureState, dispatchSignatureEvent] = useReducer(
     hardwareWalletSignaturesReducer,
     needsTwoConfirmations,
     getInitialHardwareWalletSignaturesState,
   );
-  const hasStartedSubmission = useRef(false);
+
   const hasTrackedPageView = useRef(false);
-  const quoteRequestIdRef = useRef<string | undefined>();
-  const handledConnectionErrorRef = useRef<unknown>(null);
-  const isDeviceDisconnectedRef = useRef(false);
-  const hasNavigatedAfterSubmission = useRef(false);
-  const [isReadingQrSignature, setIsReadingQrSignature] = useState(false);
-  const isQrHardwareWallet =
-    hardwareWalletType === HardwareKeyringType.qr ||
-    isQrHardwareSignRequest(activeQrCodeScanRequest);
-  const qrSignRequest =
-    isQrHardwareWallet && isQrHardwareSignRequest(activeQrCodeScanRequest)
-      ? activeQrCodeScanRequest
-      : undefined;
-  const currentQrRequestId = qrSignRequest?.request.requestId;
-  const confirmationTxData = useSelector(
-    (state: BridgeStatusState) => state.confirmTransaction?.txData,
-  );
+  const retryGenerationRef = useRef(0);
+  const { connectionState } = useHardwareWalletState();
 
-  const previousTxIdRef = useRef<string | undefined>();
-  useEffect(() => {
-    const currentId = confirmationTxData?.id;
-    const previousId = previousTxIdRef.current;
-
-    console.log(
-      '[HW-Batch] confirmationTxData effect',
-      JSON.stringify({
-        currentId: currentId ?? null,
-        previousId: previousId ?? null,
-        hardwareWalletUsed,
-        needsTwoConfirmations,
-        signatureState: signatureState.status,
-      }),
-    );
-
-    if (
-      hardwareWalletUsed &&
-      (signatureState.status ===
-        HardwareWalletSignatureStatus.AwaitingFirstSignature ||
-        signatureState.status ===
-          HardwareWalletSignatureStatus.AwaitingFinalSignature) &&
-      previousId &&
-      !currentId
-    ) {
-      console.log(
-        '[HW-Batch] confirmationTxData cleared while signing → TransactionRejected',
-        { previousId },
-      );
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionRejected,
-      });
-    }
-
-    previousTxIdRef.current = currentId;
-  }, [
-    hardwareWalletUsed,
-    needsTwoConfirmations,
-    confirmationTxData?.id,
-    signatureState.status,
-  ]);
-  // `onHardwareWalletSubmitted` from `useSubmitBridgeTransaction` fires once,
-  // after BOTH the approval (when needed) and the trade have been signed and
-  // submitted, so we can transition straight to Submitted here. The mid-flow
-  // AwaitingFirstSignature -> AwaitingFinalSignature transition is driven by
-  // the `BridgeStatusController:stateChange` subscription effect below.
   const handleHardwareWalletSubmitted = useCallback(() => {
     dispatchSignatureEvent({
       type: HardwareWalletSignatureEvent.TransactionSubmitted,
     });
-  }, []);
+  }, [dispatchSignatureEvent]);
+
   const handleHardwareWalletRejected = useCallback(() => {
     console.log(
       '[HW-Batch] handleHardwareWalletRejected, current state:',
@@ -191,28 +94,66 @@ export default function HardwareWalletSignatures() {
       type: HardwareWalletSignatureEvent.TransactionRejected,
     });
   }, [dispatchSignatureEvent, signatureState.status]);
+
   const handleHardwareWalletFailed = useCallback(() => {
     dispatchSignatureEvent({
       type: HardwareWalletSignatureEvent.TransactionFailed,
     });
-  }, []);
+  }, [dispatchSignatureEvent]);
+
   const { submitBridgeTransaction } = useSubmitBridgeTransaction({
     submitOnHardwareWalletSigningPage: true,
     onHardwareWalletSubmitted: handleHardwareWalletSubmitted,
     onHardwareWalletRejected: handleHardwareWalletRejected,
     onHardwareWalletFailed: handleHardwareWalletFailed,
   });
-  const submitActiveQuote = useCallback(async () => {
-    if (!lockedQuote) {
-      return;
-    }
 
-    await submitBridgeTransaction(lockedQuote);
-  }, [lockedQuote, submitBridgeTransaction]);
+  const fromAddress = getTransactionField(lockedQuote?.trade, 'from');
 
-  useEffect(() => {
-    setIsReadingQrSignature(false);
-  }, [currentQrRequestId]);
+  const { retrySubmission, hasStartedSubmission } = useHwSwapSubmission({
+    lockedQuote,
+    needsTwoConfirmations,
+    signatureState,
+    dispatchSignatureEvent,
+    submitBridgeTransaction,
+  });
+
+  const { isDeviceDisconnectedRef, resetConnectionError } =
+    useHwSwapConnectionMonitoring({
+      signatureState,
+      dispatchSignatureEvent,
+    });
+
+  const { confirmationTxData } = useHwSwapConfirmationMonitoring({
+    hardwareWalletUsed,
+    signatureState,
+    dispatchSignatureEvent,
+    retryGenerationRef,
+    isDeviceDisconnectedRef,
+  });
+
+  const {
+    isReadingQrSignature,
+    setIsReadingQrSignature,
+    qrSignRequest,
+    showInlineQrSigning,
+    activeQrStep,
+    handleQrScanSuccess,
+    handleQrSignatureCancel,
+  } = useHwSwapQrState({
+    signatureState,
+    confirmationTxData,
+  });
+
+  useHwSwapNavigation({ signatureState });
+
+  useHwBatchSignTracker(
+    fromAddress,
+    hardwareWalletUsed,
+    needsTwoConfirmations,
+    dispatchSignatureEvent,
+    retryGenerationRef,
+  );
 
   useEffect(() => {
     if (hasTrackedPageView.current || !lockedQuote) {
@@ -259,192 +200,6 @@ export default function HardwareWalletSignatures() {
     trackEvent,
   ]);
 
-  useEffect(() => {
-    const currentId = confirmationTxData?.id;
-    const previousId = previousTxIdRef.current;
-
-    console.log(
-      '[HW-Batch] confirmationTxData effect',
-      JSON.stringify({
-        currentId: currentId ?? null,
-        previousId: previousId ?? null,
-        hardwareWalletUsed,
-        needsTwoConfirmations,
-        signatureState: signatureState.status,
-      }),
-    );
-
-    if (
-      hardwareWalletUsed &&
-      (signatureState.status ===
-        HardwareWalletSignatureStatus.AwaitingFirstSignature ||
-        signatureState.status ===
-          HardwareWalletSignatureStatus.AwaitingFinalSignature) &&
-      previousId &&
-      !currentId
-    ) {
-      console.log(
-        '[HW-Batch] confirmationTxData cleared while signing → TransactionRejected',
-        { previousId },
-      );
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionRejected,
-      });
-    }
-
-    previousTxIdRef.current = currentId;
-  }, [
-    hardwareWalletUsed,
-    needsTwoConfirmations,
-    confirmationTxData?.id,
-    signatureState.status,
-  ]);
-
-  useEffect(() => {
-    const requestId = lockedQuote?.quote.requestId;
-
-    if (!requestId || quoteRequestIdRef.current === requestId) {
-      return;
-    }
-
-    quoteRequestIdRef.current = requestId;
-    hasStartedSubmission.current = false;
-    dispatchSignatureEvent({
-      type: HardwareWalletSignatureEvent.Reset,
-      needsTwoConfirmations,
-    });
-  }, [lockedQuote?.quote.requestId, needsTwoConfirmations]);
-
-  useEffect(() => {
-    if (hasStartedSubmission.current || !lockedQuote) {
-      return;
-    }
-
-    hasStartedSubmission.current = true;
-    submitActiveQuote().catch(() => {
-      hasStartedSubmission.current = false;
-    });
-  }, [lockedQuote, submitActiveQuote]);
-
-  const fromAddress = getTransactionField(lockedQuote?.trade, 'from');
-
-  useHwBatchSignTracker(
-    fromAddress,
-    hardwareWalletUsed,
-    needsTwoConfirmations,
-    dispatchSignatureEvent,
-    isDeviceDisconnectedRef,
-  );
-
-  useEffect(() => {
-    if (
-      signatureState.status !== HardwareWalletSignatureStatus.Submitted ||
-      hasNavigatedAfterSubmission.current
-    ) {
-      return;
-    }
-
-    hasNavigatedAfterSubmission.current = true;
-
-    const toastId = `bridge-hw-submitted-${Date.now()}`;
-    const timer = setTimeout(async () => {
-      showSuccessToast(toastId);
-      await navigateToDefaultRoute();
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [signatureState.status, navigateToDefaultRoute]);
-
-  useEffect(() => {
-    const connectionError =
-      connectionState.status === ConnectionStatus.ErrorState
-        ? String(connectionState.error)
-        : undefined;
-    console.log(
-      '[HW-Batch] connectionState changed',
-      JSON.stringify({
-        status: connectionState.status,
-        error: connectionError,
-      }),
-      'signatureState:',
-      signatureState.status,
-    );
-
-    if (
-      signatureState.status !==
-        HardwareWalletSignatureStatus.AwaitingFirstSignature &&
-      signatureState.status !==
-        HardwareWalletSignatureStatus.AwaitingFinalSignature
-    ) {
-      return;
-    }
-
-    if (connectionState.status === ConnectionStatus.Disconnected) {
-      if (handledConnectionErrorRef.current === 'disconnected') {
-        return;
-      }
-      handledConnectionErrorRef.current = 'disconnected';
-      isDeviceDisconnectedRef.current = true;
-      console.log(
-        '[HW-Batch] device disconnected (status) → DeviceDisconnected',
-      );
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.DeviceDisconnected,
-      });
-      return;
-    }
-
-    if (connectionState.status !== ConnectionStatus.ErrorState) {
-      handledConnectionErrorRef.current = null;
-      return;
-    }
-
-    if (handledConnectionErrorRef.current === connectionState.error) {
-      return;
-    }
-
-    handledConnectionErrorRef.current = connectionState.error;
-
-    const errorCode = getHardwareWalletErrorCode(connectionState.error);
-    console.log(
-      '[HW-Batch] connection error',
-      JSON.stringify({
-        errorCode,
-        errorMessage:
-          connectionState.error instanceof Error
-            ? connectionState.error.message
-            : String(connectionState.error),
-        connectionStatus: connectionState.status,
-      }),
-    );
-
-    if (
-      errorCode === ErrorCode.ConnectionClosed ||
-      errorCode === ErrorCode.DeviceDisconnected
-    ) {
-      isDeviceDisconnectedRef.current = true;
-      console.log(
-        '[HW-Batch] device disconnected (error) → DeviceDisconnected',
-      );
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.DeviceDisconnected,
-      });
-      return;
-    }
-
-    dispatchSignatureEvent({
-      type: isUserRejectedHardwareWalletError(connectionState.error)
-        ? HardwareWalletSignatureEvent.TransactionRejected
-        : HardwareWalletSignatureEvent.TransactionFailed,
-    });
-    console.log(
-      '[HW-Batch] connection error result',
-      isUserRejectedHardwareWalletError(connectionState.error)
-        ? 'TransactionRejected'
-        : 'TransactionFailed',
-    );
-  }, [connectionState, signatureState.status]);
-
   const toAddress = getTransactionField(lockedQuote?.trade, 'to');
   const spenderAddress = getTransactionField(lockedQuote?.approval, 'to');
   const firstStepStatus = getStepStatus(
@@ -487,12 +242,6 @@ export default function HardwareWalletSignatures() {
     needsTwoConfirmations,
     t,
   });
-  const showInlineQrSigning =
-    Boolean(qrSignRequest) &&
-    (signatureState.status ===
-      HardwareWalletSignatureStatus.AwaitingFirstSignature ||
-      signatureState.status ===
-        HardwareWalletSignatureStatus.AwaitingFinalSignature);
   const getQrTitle = () => {
     if (
       needsTwoConfirmations &&
@@ -504,50 +253,60 @@ export default function HardwareWalletSignatures() {
     return t('swapConfirmWithHwWallet');
   };
   const displayedTitle = showInlineQrSigning ? getQrTitle() : title;
-  const activeQrStep =
-    showInlineQrSigning && !isReadingQrSignature
-      ? signatureState.status
-      : undefined;
-  const handleQrScanSuccess = useCallback(
-    (response: SerializedUR) => dispatch(completeQrCodeScan(response)),
-    [dispatch],
-  );
-  const handleQrSignatureCancel = useCallback(() => {
-    if (confirmationTxData?.id) {
-      dispatch(
-        rejectPendingApproval(
-          confirmationTxData.id,
-          serializeError(providerErrors.userRejectedRequest()),
-        ),
-      );
-      dispatch(cancelTx(confirmationTxData as Parameters<typeof cancelTx>[0]));
-    }
 
-    if (qrSignRequest) {
-      dispatch(cancelQrCodeScan());
-    }
-  }, [dispatch, qrSignRequest, confirmationTxData]);
   const handleRetry = useCallback(async () => {
-    handledConnectionErrorRef.current = null;
-    isDeviceDisconnectedRef.current = false;
-
+    console.log(
+      '[HW-Batch] handleRetry',
+      JSON.stringify({
+        state: signatureState.status,
+        connection: connectionState.status,
+        retryGeneration: retryGenerationRef.current,
+      }),
+    );
     if (signatureState.status === HardwareWalletSignatureStatus.Disconnected) {
-      const ready = await ensureDeviceReady();
-      if (!ready) {
+      const canRetry =
+        connectionState.status === ConnectionStatus.Connected ||
+        connectionState.status === ConnectionStatus.Ready ||
+        connectionState.status === ConnectionStatus.AwaitingConfirmation;
+      if (!canRetry) {
+        console.log(
+          '[HW-Batch] handleRetry: cannot retry, device not connected',
+        );
         return;
       }
-      dispatchSignatureEvent({ type: HardwareWalletSignatureEvent.Retry });
+      retryGenerationRef.current += 1;
+      resetConnectionError();
+      dispatchSignatureEvent({
+        type: HardwareWalletSignatureEvent.Reset,
+        needsTwoConfirmations,
+      });
+      console.log(
+        '[HW-Batch] handleRetry: calling retrySubmission (disconnected path)',
+      );
+      await retrySubmission();
+      console.log(
+        '[HW-Batch] handleRetry: retrySubmission completed (disconnected path)',
+      );
       return;
     }
 
+    retryGenerationRef.current += 1;
     dispatchSignatureEvent({ type: HardwareWalletSignatureEvent.Retry });
-    hasStartedSubmission.current = true;
-    await submitActiveQuote();
+    console.log(
+      '[HW-Batch] handleRetry: calling retrySubmission (rejected/failed path)',
+    );
+    await retrySubmission();
+    console.log(
+      '[HW-Batch] handleRetry: retrySubmission completed (rejected/failed path)',
+    );
   }, [
+    connectionState.status,
     dispatchSignatureEvent,
-    ensureDeviceReady,
+    needsTwoConfirmations,
+    resetConnectionError,
+    retryGenerationRef,
+    retrySubmission,
     signatureState.status,
-    submitActiveQuote,
   ]);
   const handleCancel = useCallback(() => {
     handleQrSignatureCancel();

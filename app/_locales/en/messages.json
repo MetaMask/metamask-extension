@@ -1120,7 +1120,7 @@
     "description": "Title shown after a hardware-wallet bridge transaction is rejected on the device."
   },
   "bridgeHwDeviceDisconnected": {
-    "message": "Device disconnected",
+    "message": "Reconnect your device and try again",
     "description": "Title shown when a hardware wallet device disconnects during signing."
   },
   "bridgeHwReconnectDevice": {
@@ -3355,7 +3355,7 @@
     "message": "Continue"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Reconnect"
+    "message": "Reconnect and try again"
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Ensure your hardware wallet is properly connected via USB"

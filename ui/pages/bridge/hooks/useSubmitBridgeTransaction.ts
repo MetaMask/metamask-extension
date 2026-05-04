@@ -25,9 +25,11 @@ import {
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import {
+  ConnectionStatus,
   useHardwareWalletActions,
   useHardwareWalletConfig,
-} from '../../../contexts/hardware-wallets/HardwareWalletContext';
+  useHardwareWalletState,
+} from '../../../contexts/hardware-wallets';
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -96,15 +98,28 @@ export default function useSubmitBridgeTransaction({
   const enableMissingNetwork = useEnableMissingNetwork();
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
+  const { connectionState } = useHardwareWalletState();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
+    options?: { skipDeviceReady?: boolean; rpcTimeoutMs?: number },
   ) => {
+    console.log('[HW-Batch] submitBridgeTransaction called', {
+      skipDeviceReady: options?.skipDeviceReady,
+      rpcTimeoutMs: options?.rpcTimeoutMs,
+      isHardwareWalletAccount,
+      connectionStatus: connectionState.status,
+      hasFromAccount: Boolean(fromAccount),
+    });
     setIsSubmitting(true);
 
     try {
-      if (isHardwareWalletAccount) {
+      if (
+        isHardwareWalletAccount &&
+        !options?.skipDeviceReady &&
+        connectionState.status !== ConnectionStatus.Ready
+      ) {
         const isDeviceReady = await ensureDeviceReady();
         if (!isDeviceReady) {
           throw new Error('Hardware wallet device is not ready');
@@ -127,11 +142,13 @@ export default function useSubmitBridgeTransaction({
           formatChainIdToCaip(quoteResponse.quote.destChainId),
         );
       }
-    } catch {
+    } catch (e) {
+      console.log('[HW-Batch] submitBridgeTransaction pre-flight catch', e);
       setIsSubmitting(false);
       return;
     }
 
+    console.log('[HW-Batch] submitBridgeTransaction pre-flight passed');
     const intentData = quoteResponse.quote.intent;
 
     if (hardwareWalletUsed && intentData) {
@@ -151,6 +168,7 @@ export default function useSubmitBridgeTransaction({
     }
 
     let submissionSucceeded = false;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     try {
       if (intentData) {
@@ -162,7 +180,10 @@ export default function useSubmitBridgeTransaction({
           }),
         );
       } else {
-        await dispatch(
+        console.log(
+          '[HW-Batch] submitBridgeTransaction: dispatching submitBridgeTx RPC...',
+        );
+        const rpcPromise = dispatch(
           submitBridgeTx(
             fromAccount.address,
             quoteResponse,
@@ -177,9 +198,29 @@ export default function useSubmitBridgeTransaction({
             toToken?.securityData?.type ?? null,
           ),
         );
+
+        if (options?.rpcTimeoutMs) {
+          const timeoutPromise = new Promise<never>((_, reject) => {
+            timeoutId = setTimeout(() => {
+              reject(new Error('Bridge transaction RPC timed out'));
+            }, options.rpcTimeoutMs);
+          });
+          await Promise.race([rpcPromise, timeoutPromise]);
+        } else {
+          await rpcPromise;
+        }
       }
       submissionSucceeded = true;
+      console.log('[HW-Batch] submitBridgeTransaction RPC succeeded');
     } catch (e) {
+      console.log(
+        '[HW-Batch] submitBridgeTransaction caught error',
+        e,
+        'isHW:',
+        hardwareWalletUsed,
+        'isRejection:',
+        isHardwareWalletUserRejection(e),
+      );
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
@@ -196,6 +237,9 @@ export default function useSubmitBridgeTransaction({
         return;
       }
     } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
       setIsSubmitting(false);
     }
 

@@ -12,6 +12,12 @@ const APPROVAL_TYPES = new Set([
 const TRADE_TYPES = new Set([TransactionType.bridge, TransactionType.swap]);
 const ALL_BATCH_TYPES = new Set([...APPROVAL_TYPES, ...TRADE_TYPES]);
 
+type HwBatchSignTrackerAction =
+  | { type: HardwareWalletSignatureEvent.FirstSignatureSubmitted }
+  | { type: HardwareWalletSignatureEvent.TransactionSubmitted }
+  | { type: HardwareWalletSignatureEvent.TransactionRejected }
+  | { type: HardwareWalletSignatureEvent.TransactionFailed };
+
 function matchesTx(
   transactionMeta: TransactionMeta,
   targetFrom: string | undefined,
@@ -26,17 +32,35 @@ function matchesTx(
   return ALL_BATCH_TYPES.has(transactionMeta.type as TransactionType);
 }
 
+function isFromCurrentBatch(
+  transactionMeta: TransactionMeta,
+  currentBatchId: string | null | undefined,
+  staleBatchIds: Set<string>,
+): boolean {
+  const batchId = transactionMeta.batchId ?? 'batch-unknown';
+  if (currentBatchId === undefined) {
+    return true;
+  }
+  if (currentBatchId === null) {
+    return !staleBatchIds.has(batchId);
+  }
+  return batchId === currentBatchId;
+}
+
 export function useHwBatchSignTracker(
   fromAddress: string | undefined,
   hardwareWalletUsed: boolean | undefined,
-  needsTwoConfirmations: boolean | undefined,
-  dispatchSignatureEvent: (event: {
-    type: HardwareWalletSignatureEvent;
-  }) => void,
-  isDeviceDisconnectedRef: React.RefObject<boolean>,
+  _needsTwoConfirmations: boolean | undefined,
+  dispatchSignatureEvent: React.Dispatch<HwBatchSignTrackerAction>,
+  retryGenerationRef?: React.RefObject<number>,
 ) {
   const dispatchRef = useRef(dispatchSignatureEvent);
   dispatchRef.current = dispatchSignatureEvent;
+
+  const currentBatchIdRef = useRef<string | null | undefined>();
+  const staleBatchIdsRef = useRef<Set<string>>(new Set());
+  const seenBatchIdsRef = useRef<Set<string>>(new Set());
+  const lastSeenGenerationRef = useRef(retryGenerationRef?.current ?? 0);
 
   useEffect(() => {
     if (!fromAddress || !hardwareWalletUsed) {
@@ -47,6 +71,20 @@ export function useHwBatchSignTracker(
     const targetFrom = fromAddress.toLowerCase();
     const unsubscribes: (() => Promise<void>)[] = [];
 
+    const checkGeneration = () => {
+      if (
+        retryGenerationRef &&
+        retryGenerationRef.current !== lastSeenGenerationRef.current
+      ) {
+        lastSeenGenerationRef.current = retryGenerationRef.current ?? 0;
+        for (const id of seenBatchIdsRef.current) {
+          staleBatchIdsRef.current.add(id);
+        }
+        seenBatchIdsRef.current = new Set();
+        currentBatchIdRef.current = null;
+      }
+    };
+
     const subscribeAll = async () => {
       const unsub1 = await subscribeToMessengerEvent<
         [{ transactionMeta: TransactionMeta }]
@@ -56,6 +94,8 @@ export function useHwBatchSignTracker(
           if (cancelled) {
             return;
           }
+
+          checkGeneration();
 
           const { status, type } = transactionMeta;
 
@@ -74,7 +114,35 @@ export function useHwBatchSignTracker(
             return;
           }
 
+          const batchId = transactionMeta.batchId ?? 'batch-unknown';
+          seenBatchIdsRef.current.add(batchId);
+
           if (status === 'signed') {
+            if (currentBatchIdRef.current === undefined) {
+              currentBatchIdRef.current = batchId;
+            } else if (currentBatchIdRef.current === null) {
+              if (staleBatchIdsRef.current.has(batchId)) {
+                console.log(
+                  '[HW-Batch] skipping stale signed event after retry',
+                  JSON.stringify({
+                    eventBatchId: batchId,
+                    staleBatchIds: [...staleBatchIdsRef.current],
+                  }),
+                );
+                return;
+              }
+              currentBatchIdRef.current = batchId;
+            } else if (batchId !== currentBatchIdRef.current) {
+              console.log(
+                '[HW-Batch] skipping signed event from stale batch',
+                JSON.stringify({
+                  eventBatchId: batchId,
+                  currentBatchId: currentBatchIdRef.current,
+                }),
+              );
+              return;
+            }
+
             if (APPROVAL_TYPES.has(type as TransactionType)) {
               console.log(
                 '[HW-Batch] approval signed → FirstSignatureSubmitted',
@@ -89,9 +157,20 @@ export function useHwBatchSignTracker(
               });
             }
           } else if (status === 'failed') {
-            if (isDeviceDisconnectedRef.current) {
+            if (
+              currentBatchIdRef.current !== null &&
+              !isFromCurrentBatch(
+                transactionMeta,
+                currentBatchIdRef.current,
+                staleBatchIdsRef.current,
+              )
+            ) {
               console.log(
-                '[HW-Batch] skipping transactionStatusUpdated failed (device disconnected)',
+                '[HW-Batch] skipping transactionStatusUpdated failed from stale batch',
+                JSON.stringify({
+                  eventBatchId: transactionMeta.batchId,
+                  currentBatchId: currentBatchIdRef.current,
+                }),
               );
               return;
             }
@@ -115,6 +194,8 @@ export function useHwBatchSignTracker(
             return;
           }
 
+          checkGeneration();
+
           console.log(
             '[HW-Batch] transactionRejected',
             JSON.stringify({
@@ -129,9 +210,23 @@ export function useHwBatchSignTracker(
             return;
           }
 
-          if (isDeviceDisconnectedRef.current) {
+          const batchId = transactionMeta.batchId ?? 'batch-unknown';
+          seenBatchIdsRef.current.add(batchId);
+
+          if (
+            currentBatchIdRef.current !== null &&
+            !isFromCurrentBatch(
+              transactionMeta,
+              currentBatchIdRef.current,
+              staleBatchIdsRef.current,
+            )
+          ) {
             console.log(
-              '[HW-Batch] skipping transactionRejected (device disconnected)',
+              '[HW-Batch] skipping transactionRejected from stale batch',
+              JSON.stringify({
+                eventBatchId: transactionMeta.batchId,
+                currentBatchId: currentBatchIdRef.current,
+              }),
             );
             return;
           }
@@ -153,6 +248,8 @@ export function useHwBatchSignTracker(
             return;
           }
 
+          checkGeneration();
+
           const { status, type } = transactionMeta;
 
           console.log(
@@ -170,9 +267,23 @@ export function useHwBatchSignTracker(
             return;
           }
 
-          if (isDeviceDisconnectedRef.current) {
+          const batchId = transactionMeta.batchId ?? 'batch-unknown';
+          seenBatchIdsRef.current.add(batchId);
+
+          if (
+            currentBatchIdRef.current !== null &&
+            !isFromCurrentBatch(
+              transactionMeta,
+              currentBatchIdRef.current,
+              staleBatchIdsRef.current,
+            )
+          ) {
             console.log(
-              '[HW-Batch] skipping transactionFinished (device disconnected)',
+              '[HW-Batch] skipping transactionFinished from stale batch',
+              JSON.stringify({
+                eventBatchId: transactionMeta.batchId,
+                currentBatchId: currentBatchIdRef.current,
+              }),
             );
             return;
           }
@@ -204,11 +315,11 @@ export function useHwBatchSignTracker(
     return () => {
       cancelled = true;
       for (const unsub of unsubscribes) {
-        unsub.catch(
+        unsub().catch(
           // eslint-disable-next-line no-empty-function
           () => {},
         );
       }
     };
-  }, [fromAddress, hardwareWalletUsed, isDeviceDisconnectedRef]);
+  }, [fromAddress, hardwareWalletUsed, retryGenerationRef]);
 }
