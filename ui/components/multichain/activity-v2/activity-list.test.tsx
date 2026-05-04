@@ -26,8 +26,7 @@ jest.mock('../../../selectors/activity', () => ({
     mockSelectLocalTransactions(...args),
 }));
 
-jest.mock('./hooks', () => ({
-  ...jest.requireActual('./hooks'),
+jest.mock('./useTransactionsQuery', () => ({
   useTransactionsQuery: (...args: unknown[]) =>
     mockUseTransactionsQuery(...args),
 }));
