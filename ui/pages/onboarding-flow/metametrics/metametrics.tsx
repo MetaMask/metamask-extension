@@ -131,8 +131,6 @@ export default function OnboardingMetametrics() {
   );
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-  // Check if the PNA25 feature is enabled
-  const isPna25Enabled = process.env.EXTENSION_UX_PNA25;
   const [
     isParticipateInMetaMetricsChecked,
     setIsParticipateInMetaMetricsChecked,
@@ -181,14 +179,11 @@ export default function OnboardingMetametrics() {
     try {
       // Set pna25Acknowledged to true for all new users who complete onboarding
       // This indicates they saw the updated policy during onboarding
-      // Only set if feature flag is enabled, as the banner only shows when flag is enabled
-      if (isPna25Enabled) {
-        try {
-          await dispatch(setPna25Acknowledged(true, true));
-        } catch (error) {
-          // Log error but don't block onboarding if state update fails
-          log.error('Error setting pna25Acknowledged:', error);
-        }
+      try {
+        await dispatch(setPna25Acknowledged(true, true));
+      } catch (error) {
+        // Log error but don't block onboarding if state update fails
+        log.error('Error setting pna25Acknowledged:', error);
       }
 
       if (isParticipateInMetaMetricsChecked) {
@@ -279,11 +274,7 @@ export default function OnboardingMetametrics() {
             {t('onboardingMetametricCheckboxTitleOne')}
           </Text>
         }
-        description={
-          isPna25Enabled
-            ? t('onboardingMetametricCheckboxDescriptionOneUpdated')
-            : t('onboardingMetametricCheckboxDescriptionOne')
-        }
+        description={t('onboardingMetametricCheckboxDescriptionOneUpdated')}
       />
 
       <MetametricsCheckboxOption

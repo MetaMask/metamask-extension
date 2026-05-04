@@ -10,6 +10,7 @@ import {
   ASSETS_ROUTE,
   CURRENCY_ROUTE,
   DEFAULT_ROUTE,
+  PREFERENCES_AND_DISPLAY_ROUTE,
   SETTINGS_V2_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
@@ -167,7 +168,9 @@ describe('SettingsV2', () => {
       fireEvent.click(backButton);
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith(ASSETS_ROUTE);
+        expect(mockNavigate).toHaveBeenCalledWith(
+          PREFERENCES_AND_DISPLAY_ROUTE,
+        );
       });
     });
   });

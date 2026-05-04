@@ -127,7 +127,7 @@ jobs:
           path: ./changed-files/
 
       # if the changed-files artifact does not exist, we get the diff
-      - run: yarn tsx .github/scripts/git-diff-default-branch.ts
+      - run: yarn tsx .github/scripts/git-diff-default-branch.mts
         if: ${{ steps.download-changed-files.outcome == 'failure' }}
 
       - name: Download test-runs-for-splitting
@@ -161,7 +161,7 @@ jobs:
       # results in the artifact, causing them to be re-run in attempt N+2.
       - name: Merge previous test results (on re-run)
         if: ${{ !cancelled() && github.run_attempt > 1 && steps.download-previous-results.outcome == 'success' }}
-        run: yarn tsx .github/scripts/merge-test-results.ts ./previous-test-results/test/test-results/e2e ./test/test-results/e2e
+        run: yarn tsx .github/scripts/merge-test-results.mts ./previous-test-results/test/test-results/e2e ./test/test-results/e2e
 
       - name: Upload test artifacts
         if: ${{ !cancelled() }}
