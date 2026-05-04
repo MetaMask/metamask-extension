@@ -117,6 +117,8 @@ function shouldShowQrCameraBlockedVariant(
  * @param params.errorCode - The hardware wallet error code.
  * @param params.onRetry - Callback invoked when the user clicks Continue.
  * @param params.isLoading - Whether the retry action is in progress.
+ * @param params.redirectQueryString - Optional query string forwarded to the
+ * fullscreen tab for restoring Swap / Bridge form parameters.
  * @returns The camera-access error content element.
  */
 function renderQrCameraFlowContent({
