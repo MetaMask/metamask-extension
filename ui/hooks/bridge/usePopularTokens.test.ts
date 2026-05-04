@@ -8,7 +8,7 @@ import {
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { usePopularTokens } from './usePopularTokens';
 
-const mockFetchPopularTokens = jest.fn().mockResolvedValue([]); // }));
+const mockFetchPopularTokens = jest.fn().mockResolvedValue([]);
 
 describe('usePopularTokens', () => {
   beforeEach(() => {

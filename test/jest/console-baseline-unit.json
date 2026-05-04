@@ -678,7 +678,6 @@
     },
     "ui/pages/bridge/prepare/components/bridge-alert-banner-list.test.tsx": {
       "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
@@ -694,7 +693,6 @@
     },
     "ui/pages/bridge/prepare/prepare-bridge-page.test.tsx": {
       "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: Warning: A component is changing": 2,
       "µWebSockets: Compatibility warnings": 1,

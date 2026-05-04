@@ -14,7 +14,6 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
-import { uniqBy } from 'lodash';
 import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
@@ -41,10 +40,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { getAccountGroupsByAddress } from '../../../../../selectors/multichain-accounts/account-tree';
 import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
-import { getBridgeSortedAssets } from '../../../../../ducks/bridge/asset-selectors';
-import { usePopularTokens } from '../../../../../hooks/bridge/usePopularTokens';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
-import { toBridgeToken } from '../../../../../ducks/bridge/utils';
 import { MarketClosedModal } from '../../../../../components/app/assets/market-closed-modal';
 import { useRWAToken } from '../../../hooks/useRWAToken';
 import { NetworkPicker } from './network-picker';
@@ -76,9 +72,6 @@ export const BridgeAssetPicker = ({
   >) => {
   const [accountGroup] = useSelector((state: BridgeAppState) =>
     getAccountGroupsByAddress(state, [accountAddress]),
-  );
-  const assetsWithBalance = useSelector((state: BridgeAppState) =>
-    getBridgeSortedAssets(state, accountGroup?.id),
   );
 
   const t = useI18nContext();

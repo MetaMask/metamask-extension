@@ -11,7 +11,6 @@ import { type BridgeAppState } from '../../ducks/bridge/selectors';
 import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
 import {
   fetchTokensBySearchQuery,
-  MinimalAsset,
 } from '../../pages/bridge/utils/tokens';
 import { getBearerToken } from '../../store/actions';
 import { useAsyncResult } from '../useAsync';
