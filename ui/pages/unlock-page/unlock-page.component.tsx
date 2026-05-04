@@ -823,7 +823,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
               passkeyAutoUnlockSuppressed={
                 this.props.passkeyAutoUnlockSuppressed
               }
-              isLocked={isLocked}
               isPasswordInProgress={isSubmitting}
               onUnlockWithPasskey={this.props.onUnlockWithPasskey}
               onUsePassword={() => this.setPasswordUnlockMode(true)}
