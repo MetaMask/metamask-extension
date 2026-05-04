@@ -46,6 +46,12 @@ const enterAmount = (value: string) => {
   fireEvent.change(amountInput, { target: { value } });
 };
 
+const enterLimitPrice = (value: string) => {
+  const limitContainer = screen.getByTestId('limit-price-input');
+  const limitInput = limitContainer.querySelector('input') as HTMLInputElement;
+  fireEvent.change(limitInput, { target: { value } });
+};
+
 jest.mock('@metamask/perps-controller', () => ({
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
@@ -545,6 +551,31 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+    });
+
+    it('disables submit and shows minimum order size for below-minimum market orders', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('9');
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent('Order size must be at least $10');
+    });
+
+    it('disables submit and shows minimum order size for below-minimum limit orders', () => {
+      mockSearchParams.set('orderType', 'limit');
+      mockSearchParams.set('direction', 'long');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('9');
+      enterLimitPrice('1000');
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent('Order size must be at least $10');
     });
 
     it('disables submit button and shows add funds label when balance is zero', () => {

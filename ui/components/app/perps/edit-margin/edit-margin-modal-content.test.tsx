@@ -92,15 +92,15 @@ describe('EditMarginModalContent', () => {
     expect(screen.getByText(/available/iu)).toBeInTheDocument();
   });
 
-  it('formats sub-1% liquidation distance with one decimal place', () => {
+  it('formats sub-1% liquidation distance with whole percent precision', () => {
     renderWithProvider(<EditMarginModalContent {...defaultProps} />, mockStore);
 
     expect(
       screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
-    ).toHaveTextContent('0.2%');
+    ).toHaveTextContent('0%');
   });
 
-  it('formats very small liquidation distance with a minimum threshold', () => {
+  it('formats very small liquidation distance with whole percent precision', () => {
     mockUsePerpsMarginCalculations.mockReturnValue({
       ...mockMarginCalculations,
       anchorLiquidationDistance: 0.05,
@@ -110,7 +110,7 @@ describe('EditMarginModalContent', () => {
 
     expect(
       screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
-    ).toHaveTextContent('<0.1%');
+    ).toHaveTextContent('0%');
   });
 
   it('formats negative liquidation price distance as unavailable', () => {

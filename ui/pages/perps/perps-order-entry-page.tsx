@@ -574,13 +574,12 @@ const PerpsOrderEntryPage: React.FC = () => {
     return marginRequired > availableBalance;
   }, [orderFormState, orderMode, availableBalance]);
 
-  // For new market orders and modify-with-amount paths, require an amount
-  // meeting the $10 market-order minimum so submit stays disabled (and the
-  // button advertises the minimum) while the user has not entered a valid
+  // For new orders and modify-with-amount paths, require an amount meeting the
+  // $10 minimum so submit stays disabled while the user has not entered a valid
   // size. Modify with empty amount is the TP/SL-only update path and is
   // intentionally exempt — it does not call perpsPlaceOrder.
   const isBelowMinOrderSize = useMemo(() => {
-    if (!orderFormState || orderType !== 'market') {
+    if (!orderFormState) {
       return false;
     }
     if (orderMode !== 'new' && orderMode !== 'modify') {
@@ -592,7 +591,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
     const amount = Number.parseFloat(rawAmount) || 0;
     return amount < PERPS_MIN_MARKET_ORDER_USD;
-  }, [orderFormState, orderMode, orderType]);
+  }, [orderFormState, orderMode]);
 
   const isSubmitDisabled =
     !selectedAddress ||
