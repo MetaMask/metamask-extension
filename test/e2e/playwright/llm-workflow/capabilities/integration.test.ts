@@ -1,19 +1,9 @@
-/* eslint-disable import-x/extensions */
-import {
-  getToolHandler,
-  hasToolHandler,
-  setSessionManager,
-} from '@metamask/client-mcp-core';
-/* eslint-enable import-x/extensions */
-import type { WorkflowContext } from '@metamask/client-mcp-core';
-import { metaMaskSessionManager as sessionManager } from '../mcp-server/metamask-provider';
+import { toolRegistry } from '@metamask/client-mcp-core';
+import type { ToolContext, WorkflowContext } from '@metamask/client-mcp-core';
+import { metaMaskSessionManager as sessionManager } from '../metamask-provider';
 import { createMetaMaskE2EContext, createMetaMaskProdContext } from './factory';
 
 describe('Capability Integration', () => {
-  beforeAll(() => {
-    setSessionManager(sessionManager);
-  });
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -35,7 +25,6 @@ describe('Capability Integration', () => {
 
       expect(context.config.extensionName).toBe('MetaMask');
       expect(context.config.environment).toBe('e2e');
-      expect(context.config.toolPrefix).toBe('mm');
     });
   });
 
@@ -76,47 +65,47 @@ describe('Capability Integration', () => {
   });
 
   describe('Tool registry', () => {
-    it('provides handlers for all mm_* tools', () => {
+    it('provides handlers for all core tools', () => {
       const expectedTools = [
-        // mm_build is registered by @metamask/client-mcp-core and will be used
+        // build is registered by @metamask/client-mcp-core and will be used
         // for mobile client support. No MetaMask Extension implementation needed.
-        'mm_build',
-        'mm_launch',
-        'mm_cleanup',
-        'mm_get_state',
-        'mm_navigate',
-        'mm_wait_for_notification',
-        'mm_switch_to_tab',
-        'mm_close_tab',
-        'mm_list_testids',
-        'mm_accessibility_snapshot',
-        'mm_describe_screen',
-        'mm_screenshot',
-        'mm_click',
-        'mm_type',
-        'mm_wait_for',
-        'mm_knowledge_last',
-        'mm_knowledge_search',
-        'mm_knowledge_summarize',
-        'mm_knowledge_sessions',
-        'mm_seed_contract',
-        'mm_seed_contracts',
-        'mm_get_contract_address',
-        'mm_list_contracts',
-        'mm_run_steps',
-        'mm_set_context',
-        'mm_get_context',
+        'build',
+        'launch',
+        'cleanup',
+        'get_state',
+        'navigate',
+        'wait_for_notification',
+        'switch_to_tab',
+        'close_tab',
+        'list_testids',
+        'accessibility_snapshot',
+        'describe_screen',
+        'screenshot',
+        'click',
+        'type',
+        'wait_for',
+        'knowledge_last',
+        'knowledge_search',
+        'knowledge_summarize',
+        'knowledge_sessions',
+        'seed_contract',
+        'seed_contracts',
+        'get_contract_address',
+        'list_contracts',
+        'run_steps',
+        'set_context',
+        'get_context',
       ];
 
       for (const toolName of expectedTools) {
-        expect(hasToolHandler(toolName)).toBe(true);
-        expect(getToolHandler(toolName)).toBeDefined();
+        expect(toolRegistry.has(toolName)).toBe(true);
+        expect(toolRegistry.get(toolName)).toBeDefined();
       }
     });
 
     it('returns undefined for unknown tools', () => {
-      expect(hasToolHandler('unknown_tool')).toBe(false);
-      expect(getToolHandler('unknown_tool')).toBeUndefined();
+      expect(toolRegistry.has('unknown_tool')).toBe(false);
+      expect(toolRegistry.get('unknown_tool')).toBeUndefined();
     });
   });
 
@@ -126,13 +115,13 @@ describe('Capability Integration', () => {
         undefined as unknown as WorkflowContext,
       );
 
-      const handler = getToolHandler('mm_knowledge_sessions');
+      const handler = toolRegistry.get('knowledge_sessions');
       expect(handler).toBeDefined();
       if (!handler) {
         throw new Error('Handler not found');
       }
 
-      const result = await handler({ limit: 5 }, {});
+      const result = await handler({ limit: 5 }, {} as ToolContext);
 
       expect(result).toBeDefined();
       expect(typeof result.ok).toBe('boolean');

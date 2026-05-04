@@ -125,6 +125,11 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
         import('./preferences-and-display-tab/account-identicon-sub-page.tsx'),
     ),
   },
+  [CURRENCY_ROUTE]: {
+    labelKey: 'localCurrency',
+    parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
+    component: mmLazy(() => import('./assets-tab/currency-sub-page.tsx')),
+  },
 
   // --- Notifications tab ---
   [NOTIFICATIONS_SETTINGS_ROUTE]: {
@@ -252,11 +257,6 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     component: mmLazy(() => import('./assets-tab/index.ts')),
     isTab: true,
     iconName: IconName.Coin,
-  },
-  [CURRENCY_ROUTE]: {
-    labelKey: 'localCurrency',
-    parentPath: ASSETS_ROUTE,
-    component: mmLazy(() => import('./assets-tab/currency-sub-page.tsx')),
   },
 
   // --- Transactions tab ---
