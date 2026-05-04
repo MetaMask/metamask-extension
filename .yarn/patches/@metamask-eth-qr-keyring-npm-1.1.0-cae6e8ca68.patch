@@ -1,0 +1,26 @@
+diff --git a/dist/device.cjs b/dist/device.cjs
+index 4b1ea7572e1eafe36e2dc6e6c013a230a91db0b3..065f62d38f8963f4dd1ef931b33bcf0b2b11d789 100644
+--- a/dist/device.cjs
++++ b/dist/device.cjs
+@@ -201,7 +201,7 @@ class Device {
+         const messageToSign = transaction.getMessageToSign();
+         const rawTransaction = Buffer.from(Array.isArray(messageToSign) ? rlp_1.RLP.encode(messageToSign) : messageToSign);
+         const requestId = (0, uuid_1.v4)();
+-        const ethSignRequestUR = bc_ur_registry_eth_1.EthSignRequest.constructETHRequest(rawTransaction, dataType, this.pathFromAddress(address), __classPrivateFieldGet(this, _Device_pairedDevice, "f").xfp, requestId, Number(transaction.common.chainId())).toUR();
++        const ethSignRequestUR = bc_ur_registry_eth_1.EthSignRequest.constructETHRequest(rawTransaction, dataType, this.pathFromAddress(address), __classPrivateFieldGet(this, _Device_pairedDevice, "f").xfp, requestId, Number(transaction.common.chainId()), address).toUR();
+         const { r, s, v } = await __classPrivateFieldGet(this, _Device_instances, "m", _Device_requestSignature).call(this, {
+             requestId,
+             payload: {
+diff --git a/dist/device.mjs b/dist/device.mjs
+index 834ce8d6626d042265ba905d202781b962cb27a2..60bbdfb814dc6cd35f2e1ca5de8d339e274b9bb3 100644
+--- a/dist/device.mjs
++++ b/dist/device.mjs
+@@ -202,7 +202,7 @@ export class Device {
+         const messageToSign = transaction.getMessageToSign();
+         const rawTransaction = Buffer.from(Array.isArray(messageToSign) ? RLP.encode(messageToSign) : messageToSign);
+         const requestId = uuidv4();
+-        const ethSignRequestUR = EthSignRequest.constructETHRequest(rawTransaction, dataType, this.pathFromAddress(address), __classPrivateFieldGet(this, _Device_pairedDevice, "f").xfp, requestId, Number(transaction.common.chainId())).toUR();
++        const ethSignRequestUR = EthSignRequest.constructETHRequest(rawTransaction, dataType, this.pathFromAddress(address), __classPrivateFieldGet(this, _Device_pairedDevice, "f").xfp, requestId, Number(transaction.common.chainId()), address).toUR();
+         const { r, s, v } = await __classPrivateFieldGet(this, _Device_instances, "m", _Device_requestSignature).call(this, {
+             requestId,
+             payload: {
