@@ -3,28 +3,28 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Button,
+  ButtonSize,
   ButtonVariant,
   Icon,
   IconName,
   IconSize,
   Text,
-} from '../../../components/component-library';
+} from '../../../../components/component-library';
 import {
   AlignItems,
   Display,
   FlexDirection,
   IconColor,
   JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { trace, TraceName } from '../../../../shared/lib/trace';
-import { ButtonSize } from '../../../components/component-library/button/button.types';
+} from '../../../../helpers/constants/design-system';
+import { trace, TraceName } from '../../../../../shared/lib/trace';
 
 import {
   forceUpdateMetamaskState,
   setCurrentLocale,
-} from '../../../store/actions';
-import { FALLBACK_LOCALE, fetchLocale } from '../../../../shared/lib/i18n';
-import { getCurrentLocale } from '../../../ducks/locale/locale';
+} from '../../../../store/actions';
+import { FALLBACK_LOCALE, fetchLocale } from '../../../../../shared/lib/i18n';
+import { getCurrentLocale } from '../../../../ducks/locale/locale';
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
