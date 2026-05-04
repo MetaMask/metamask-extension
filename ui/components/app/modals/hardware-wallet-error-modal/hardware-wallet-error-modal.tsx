@@ -59,7 +59,7 @@ import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../../../contexts/hardware-wallets';
-import { useBridgeRedirectQueryString } from '../../../../hooks/bridge/useBridgeRedirectQueryString';
+import { useBridgeRedirectQueryString } from '../../../../contexts/hardware-wallets/useBridgeRedirectQueryString';
 import {
   getChromiumExtensionCameraSiteSettingsUrl,
   getMozExtensionOriginForDisplay,
