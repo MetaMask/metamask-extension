@@ -15,16 +15,13 @@ class AddEditNetworkModal {
 
   private readonly addExplorerUrlTitle = {
     text: 'Add a block explorer URL',
-    tag: 'p',
+    tag: 'h4',
   };
 
   private readonly addRpcUrlButton = {
     text: 'Add RPC URL',
     tag: 'button',
   };
-
-  private readonly backButton =
-    '[data-testid="settings-v2-header-back-button"]';
 
   private readonly chainIdInputField = {
     testId: 'network-form-chain-id',
@@ -47,7 +44,8 @@ class AddEditNetworkModal {
     '[data-testid="test-add-rpc-drop-down"]';
 
   private readonly editModalSaveButton = {
-    testId: 'page-container-footer-next',
+    text: 'Save',
+    tag: 'button',
   };
 
   private readonly explorerUrlInputDropDownButton = {
@@ -67,8 +65,8 @@ class AddEditNetworkModal {
       await this.driver.waitForMultipleSelectors([
         this.networkNameInputField,
         this.editModalRpcDropDownButton,
+        this.editModalSaveButton,
       ]);
-      await this.driver.waitForSelector(this.editModalSaveButton);
     } catch (e) {
       console.log(
         'Timeout while waiting for add/edit network dialog to be loaded',
@@ -149,11 +147,6 @@ class AddEditNetworkModal {
   async saveEditedNetwork(): Promise<void> {
     console.log('Save and close edit network modal');
     await this.driver.clickElementAndWaitToDisappear(this.editModalSaveButton);
-  }
-
-  async clickBackButton(): Promise<void> {
-    console.log('Click back button in add/edit network modal');
-    await this.driver.clickElementAndWaitToDisappear(this.backButton);
   }
 
   /**
@@ -249,7 +242,9 @@ class AddEditNetworkModal {
   async checkSaveButtonIsEnabled(): Promise<boolean> {
     console.log('Check if save button is enabled on add/edit network modal');
     try {
-      await this.driver.findClickableElement(this.editModalSaveButton);
+      await this.driver.findClickableElement(this.editModalSaveButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Save button not enabled', e);
       return false;
