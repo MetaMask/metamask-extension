@@ -86,14 +86,16 @@ export const PerpsView: React.FC = () => {
   const [isCancelAllPending, setIsCancelAllPending] = useState(false);
   const [batchActionError, setBatchActionError] = useState<string | null>(null);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
+  const isMainnetPostQuoteWithdrawEnabled =
+    isPerpsWithdrawPostQuoteEnabled && !isTestnet;
   const triggerWithdraw = useCallback(() => {
-    if (isPerpsWithdrawPostQuoteEnabled) {
+    if (isMainnetPostQuoteWithdrawEnabled) {
       return triggerWithdrawConfirmation();
     }
 
     return triggerWithdrawNavigation();
   }, [
-    isPerpsWithdrawPostQuoteEnabled,
+    isMainnetPostQuoteWithdrawEnabled,
     triggerWithdrawConfirmation,
     triggerWithdrawNavigation,
   ]);

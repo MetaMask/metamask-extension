@@ -117,12 +117,13 @@ const mockStore = configureStore({
 
 function getStoreWithRemoteFeatureFlags(
   remoteFeatureFlags: Record<string, unknown>,
+  { isTestnet = false }: { isTestnet?: boolean } = {},
 ) {
   return configureStore({
     metamask: {
       ...mockState.metamask,
       remoteFeatureFlags,
-      isTestnet: false,
+      isTestnet,
       isFirstTimeUser: { testnet: false, mainnet: false },
       watchlistMarkets: {
         testnet: [],
@@ -194,6 +195,27 @@ describe('PerpsView', () => {
 
       expect(mockTriggerWithdrawConfirmation).toHaveBeenCalledTimes(1);
       expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('navigates to the standalone Perps withdraw page on testnet even when post-quote withdraw is enabled', () => {
+      const store = getStoreWithRemoteFeatureFlags(
+        {
+          [confirmationsPayPostQuoteFlag]: {
+            overrides: {
+              perpsWithdraw: { enabled: true },
+            },
+          },
+        },
+        { isTestnet: true },
+      );
+
+      renderWithProvider(<PerpsView />, store);
+
+      fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
+      fireEvent.click(screen.getByTestId('perps-balance-dropdown-withdraw'));
+
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_WITHDRAW_ROUTE);
+      expect(mockTriggerWithdrawConfirmation).not.toHaveBeenCalled();
     });
   });
 
