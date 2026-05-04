@@ -175,9 +175,6 @@
   "addACustomNetwork": {
     "message": "Cuir líonra saincheaptha leis"
   },
-  "addAHardwareWallet": {
-    "message": "Cuir sparán crua-earraí leis"
-  },
   "addANetwork": {
     "message": "Cuir líonra leis"
   },
@@ -1092,9 +1089,6 @@
   },
   "clearActivity": {
     "message": "Glan sonraí gníomhaíochta agus neamhghníomhaíochta"
-  },
-  "clearActivityButton": {
-    "message": "Glan sonraí an chluaisín gníomhaíochta"
   },
   "clearActivityDescription": {
     "message": "Athshocraíonn sé seo neamh-uair an chuntais agus scriosann sé sonraí ón táb gníomhaíochta i do sparán. Ní bheidh tionchar ach ar an gcuntas reatha agus ar an líonra. Ní athróidh d’iarmhéideanna ná d’idirbhearta isteach."
@@ -2990,9 +2984,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Ag Glasáil MetaMask..."
   },
-  "lockTimeInvalid": {
-    "message": "Ní mór don am glasála a bheith ina uimhir idir 0 agus 10080"
-  },
   "loginErrorConnectButton": {
     "message": "Déan iarracht arís"
   },
@@ -3881,9 +3872,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Téarmaí Úsáide"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."

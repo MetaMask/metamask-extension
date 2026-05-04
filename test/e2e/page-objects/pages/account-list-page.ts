@@ -65,7 +65,7 @@ class AccountListPage {
     '[data-testid="multichain-account-menu-popover-add-watch-only-account"]';
 
   private readonly addHardwareWalletButton =
-    '[data-testid="add-wallet-modal-hardware-wallet"]';
+    '[data-testid="choose-wallet-type-hardware-wallet"]';
 
   private readonly addImportedAccountButton =
     '[data-testid="multichain-account-menu-popover-add-imported-account"]';
@@ -76,7 +76,7 @@ class AccountListPage {
   };
 
   private readonly addSnapAccountButton =
-    '[data-testid="add-wallet-modal-snap-account"]';
+    '[data-testid="choose-wallet-type-snap-account"]';
 
   private readonly walletDetailsButton = {
     text: 'Details',
@@ -86,6 +86,8 @@ class AccountListPage {
   private readonly closeAccountModalButton =
     'header button[aria-label="Close"]';
 
+  private readonly chooseWalletTypeBackButton = '[data-testid="back-button"]';
+
   private readonly closeMultichainAccountsPageButton =
     '.multichain-page-header button[aria-label="Back"]';
 
@@ -93,10 +95,10 @@ class AccountListPage {
     '[data-testid="account-list-add-wallet-button"]';
 
   private readonly importWalletFromMultichainWalletModalButton =
-    '[data-testid="add-wallet-modal-import-wallet"]';
+    '[data-testid="choose-wallet-type-import-wallet"]';
 
   private readonly importAccountFromMultichainWalletModalButton =
-    '[data-testid="add-wallet-modal-import-account"]';
+    '[data-testid="choose-wallet-type-import-account"]';
 
   private readonly multichainAccountMenuItem =
     '.multichain-account-cell-menu-item';
@@ -334,6 +336,7 @@ class AccountListPage {
         await this.driver.clickElementAndWaitToDisappear(
           this.importAccountConfirmButton,
         );
+        await this.closeChooseWalletTypePage();
       }
       return;
     }
@@ -536,6 +539,11 @@ class AccountListPage {
     );
   }
 
+  async closeChooseWalletTypePage(): Promise<void> {
+    console.log(`Navigate back from choose wallet type page`);
+    await this.driver.clickElement(this.chooseWalletTypeBackButton);
+  }
+
   async closeMultichainAccountsPage(): Promise<void> {
     console.log(`Close multichain accounts page`);
     await this.driver.clickElementAndWaitToDisappear(
@@ -577,6 +585,7 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.importAccountConfirmButton,
     );
+    await this.closeChooseWalletTypePage();
   }
 
   async isBtcAccountCreationButtonEnabled(): Promise<boolean> {
@@ -1086,7 +1095,7 @@ class AccountListPage {
         } is equal to ${expectedNumberOfAccounts}? ${isValid}`,
       );
       return isValid;
-    }, 20000);
+    });
   }
 
   /**

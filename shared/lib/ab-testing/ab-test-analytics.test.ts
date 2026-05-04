@@ -6,6 +6,7 @@ import {
   getRemoteFeatureFlagsWithManifestOverrides,
   hasABTestAnalyticsMappingForEvent,
 } from './ab-test-analytics';
+import { createActiveABTestAssignment } from './active-ab-test-assignment';
 
 const TEST_BADGE_FLAG_KEY = 'testTEST338AbtestAttentionBadge';
 const TEST_QUICK_AMOUNTS_FLAG_KEY = 'testTEST4135AbtestQuickAmounts';
@@ -75,10 +76,7 @@ describe('ab-test-analytics', () => {
       expect(result.properties).toStrictEqual({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         active_ab_tests: [
-          {
-            key: TEST_BADGE_FLAG_KEY,
-            value: 'withBadge',
-          },
+          createActiveABTestAssignment(TEST_BADGE_FLAG_KEY, 'withBadge'),
         ],
       });
     });
@@ -94,14 +92,8 @@ describe('ab-test-analytics', () => {
       );
 
       expect(result.properties?.active_ab_tests).toStrictEqual([
-        {
-          key: TEST_QUICK_AMOUNTS_FLAG_KEY,
-          value: 'treatment',
-        },
-        {
-          key: TEST_LAYOUT_FLAG_KEY,
-          value: 'control',
-        },
+        createActiveABTestAssignment(TEST_QUICK_AMOUNTS_FLAG_KEY, 'treatment'),
+        createActiveABTestAssignment(TEST_LAYOUT_FLAG_KEY, 'control'),
       ]);
     });
 
@@ -119,6 +111,28 @@ describe('ab-test-analytics', () => {
       ).toStrictEqual(event);
     });
 
+    it('normalizes existing active_ab_tests when the event is not allowlisted', () => {
+      const result = enrichWithABTests(
+        createEvent('Unrelated Event', {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          active_ab_tests: [
+            {
+              key: TEST_BADGE_FLAG_KEY,
+              value: 'withBadge',
+            },
+          ],
+        }),
+        {
+          [TEST_BADGE_FLAG_KEY]: 'control',
+        },
+        TEST_ANALYTICS_MAPPINGS,
+      );
+
+      expect(result.properties?.active_ab_tests).toStrictEqual([
+        createActiveABTestAssignment(TEST_BADGE_FLAG_KEY, 'withBadge'),
+      ]);
+    });
+
     it('ignores missing and invalid flag values', () => {
       const event = createEvent('Unified SwapBridge Page Viewed');
 
@@ -134,7 +148,7 @@ describe('ab-test-analytics', () => {
       ).toStrictEqual(event);
     });
 
-    it('merges with existing active_ab_tests and preserves explicit payload values', () => {
+    it('merges with existing active_ab_tests, normalizes them, and preserves explicit payload values', () => {
       const result = enrichWithABTests(
         createEvent('Unified SwapBridge Page Viewed', {
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -142,6 +156,8 @@ describe('ab-test-analytics', () => {
             {
               key: TEST_QUICK_AMOUNTS_FLAG_KEY,
               value: 'manual-value',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_value_pair: 'incorrect=value',
             },
           ],
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -159,14 +175,11 @@ describe('ab-test-analytics', () => {
         quote_count: 3,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         active_ab_tests: [
-          {
-            key: TEST_QUICK_AMOUNTS_FLAG_KEY,
-            value: 'manual-value',
-          },
-          {
-            key: TEST_LAYOUT_FLAG_KEY,
-            value: 'treatment',
-          },
+          createActiveABTestAssignment(
+            TEST_QUICK_AMOUNTS_FLAG_KEY,
+            'manual-value',
+          ),
+          createActiveABTestAssignment(TEST_LAYOUT_FLAG_KEY, 'treatment'),
         ],
       });
     });
@@ -197,10 +210,7 @@ describe('ab-test-analytics', () => {
         button_type: 'card',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         active_ab_tests: [
-          {
-            key: TEST_BADGE_FLAG_KEY,
-            value: 'control',
-          },
+          createActiveABTestAssignment(TEST_BADGE_FLAG_KEY, 'control'),
         ],
       });
       expect(result.sensitiveProperties).toStrictEqual({

@@ -28,6 +28,7 @@ import {
 } from '../../../ducks/perps';
 
 import { usePerpsEligibility } from '../../../hooks/perps';
+import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
 import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
@@ -206,7 +207,7 @@ export const PerpsView: React.FC = () => {
   const isLoading =
     positionsLoading || ordersLoading || marketsLoading || accountLoading;
   const hasPerpBalance = Boolean(
-    account && Number.parseFloat(account.availableBalance) > 0,
+    account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
 
   usePerpsMeasurement('PerpsTabLoaded', !isLoading);

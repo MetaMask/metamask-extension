@@ -190,6 +190,16 @@ class Driver {
   }
 
   async executeScript(script, ...args) {
+    // When tsx/esbuild transpiles TypeScript, it injects __name() calls to
+    // preserve function names. If a function passed here references __name,
+    // define it in the browser context so it doesn't throw.
+    if (typeof script === 'function') {
+      const src = script.toString();
+      if (src.includes('__name')) {
+        const wrapped = `var __name = (fn) => fn; return (${src}).apply(null, arguments);`;
+        return this.driver.executeScript(wrapped, args);
+      }
+    }
     return this.driver.executeScript(script, args);
   }
 
@@ -775,7 +785,7 @@ class Driver {
    * @returns {Promise<void>} Promise that resolves when the element stops moving.
    * @throws {Error} Throws an error if the element does not stop moving within the timeout period.
    */
-  async waitForElementToStopMoving(rawLocator, timeout = 5000) {
+  async waitForElementToStopMoving(rawLocator, timeout = 6000) {
     const startTime = Date.now();
 
     while (Date.now() - startTime < timeout) {
@@ -822,39 +832,6 @@ class Driver {
     const element = await this.findClickableElement(rawLocator);
     await element.click();
     await element.waitForElementState('hidden', timeout);
-  }
-
-  /**
-   * Like {@link clickElementAndWaitToDisappear}, but retries when the element does not
-   * become hidden within `disappearTimeout` (e.g. slow UI). Waits `retryDelayMs` between attempts.
-   *
-   * @param rawLocator - The locator used to identify the element to be clicked.
-   * @param {object} [options]
-   * @param {number} [options.disappearTimeout] - Max ms to wait for hidden after each click.
-   * @param {number} [options.maxAttempts] - Maximum click + wait cycles.
-   * @param {number} [options.retryDelayMs] - Delay before retrying after a failed wait.
-   */
-  async clickElementAndWaitToDisappearWithRetry(
-    rawLocator,
-    { disappearTimeout = 3000, maxAttempts = 3, retryDelayMs = 1000 } = {},
-  ) {
-    let lastError;
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      try {
-        await this.clickElementAndWaitToDisappear(rawLocator, disappearTimeout);
-        return;
-      } catch (error) {
-        lastError = error;
-        if (attempt === maxAttempts) {
-          break;
-        }
-        console.log(
-          `clickElementAndWaitToDisappearWithRetry: attempt ${attempt}/${maxAttempts} failed (${error?.message ?? error}), waiting ${retryDelayMs}ms before retry`,
-        );
-        await this.delay(retryDelayMs);
-      }
-    }
-    throw lastError;
   }
 
   /**

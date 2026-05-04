@@ -279,6 +279,116 @@ describe('AutoCloseSection', () => {
     });
   });
 
+  describe('clear buttons', () => {
+    it('shows TP clear button when takeProfitPrice is set', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice="50000"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('tp-clear-button')).toBeInTheDocument();
+    });
+
+    it('does not show TP clear button when takeProfitPrice is empty', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice=""
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('tp-clear-button')).not.toBeInTheDocument();
+    });
+
+    it('calls onTakeProfitPriceChange with empty string when TP clear is clicked', () => {
+      const onTakeProfitPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice="50000"
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('tp-clear-button'));
+
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('');
+    });
+
+    it('shows SL clear button when stopLossPrice is set', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          stopLossPrice="40000"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('sl-clear-button')).toBeInTheDocument();
+    });
+
+    it('does not show SL clear button when stopLossPrice is empty', () => {
+      renderWithProvider(
+        <AutoCloseSection {...defaultProps} enabled={true} stopLossPrice="" />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('sl-clear-button')).not.toBeInTheDocument();
+    });
+
+    it('calls onStopLossPriceChange with empty string when SL clear is clicked', () => {
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          stopLossPrice="40000"
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('sl-clear-button'));
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('');
+    });
+
+    it('shows TP pnl row when takeProfitPrice has whitespace-only value (no clear button)', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice="   "
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('tp-clear-button')).not.toBeInTheDocument();
+    });
+
+    it('shows SL pnl row when stopLossPrice has whitespace-only value (no clear button)', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          stopLossPrice="   "
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('sl-clear-button')).not.toBeInTheDocument();
+    });
+  });
+
   describe('percentage calculation (RoE: priceChange% * leverage)', () => {
     it('calculates RoE% for long TP position', () => {
       // (49500 - 45000) / 45000 * 10 * 100 = 100%
@@ -383,7 +493,7 @@ describe('AutoCloseSection', () => {
       expect(onTakeProfitPriceChange).toHaveBeenCalledWith('45450');
     });
 
-    it('updates price when RoE% is entered for SL (long)', () => {
+    it('defaults unsigned SL RoE% input to negative for long positions', () => {
       // -10% RoE at leverage=10: priceChange = -10/(10*100) = -1% -> 45000 * 0.99 = 44550
       // Negative RoE = loss direction = SL below entry for long
       const onStopLossPriceChange = jest.fn();
@@ -403,10 +513,60 @@ describe('AutoCloseSection', () => {
       const input = container.querySelector('input');
       expect(input).not.toBeNull();
       fireEvent.change(input as HTMLInputElement, {
-        target: { value: '-10' },
+        target: { value: '10' },
       });
 
       expect(onStopLossPriceChange).toHaveBeenCalledWith('44550');
+    });
+
+    it('normalizes leading-zero SL RoE% input before defaulting to negative', () => {
+      // -11% RoE at leverage=10: priceChange = -11/(10*100) = -1.1% -> 45000 * 0.989 = 44505
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={45000}
+          leverage={10}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '011' },
+      });
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('44505');
+    });
+
+    it('preserves an explicit positive SL RoE% input', () => {
+      // +10% RoE at leverage=10: priceChange = 1% -> 45000 * 1.01 = 45450
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={45000}
+          leverage={10}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '+10' },
+      });
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('45450');
     });
 
     it('uses limit price as baseline when typing SL % on a limit order', () => {
@@ -646,6 +806,42 @@ describe('AutoCloseSection', () => {
 
       expect(screen.getByTestId('sl-validation-error')).toHaveTextContent(
         /below.*current/iu,
+      );
+    });
+
+    it('shows SL liquidation error when long SL is below liquidation price', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={50000}
+          liquidationPrice={45000}
+          stopLossPrice="44000"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('sl-validation-error')).toHaveTextContent(
+        /above.*liquidation/iu,
+      );
+    });
+
+    it('shows SL liquidation error when short SL is above liquidation price', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="short"
+          currentPrice={50000}
+          liquidationPrice={55000}
+          stopLossPrice="56000"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('sl-validation-error')).toHaveTextContent(
+        /below.*liquidation/iu,
       );
     });
 

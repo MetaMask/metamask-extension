@@ -14,15 +14,13 @@ describe('hash builder', () => {
     expect(result.sensitiveProperties).toStrictEqual({});
   });
 
-  it('omits hash when feature flag is off', async () => {
+  it('omits hash when pna25 is not acknowledged', async () => {
     const result = await getHashMetricsProperties(
       createBuilderRequest({
         transactionMeta: { id: '1', hash: '0xabc', status: 'failed' } as any,
         transactionMetricsRequest: {
           ...createBuilderRequest().transactionMetricsRequest,
-          getFeatureFlags: jest
-            .fn()
-            .mockReturnValue({ extensionUxPna25: false }),
+          getPna25Acknowledged: jest.fn().mockReturnValue(false),
         } as never,
       }),
     );

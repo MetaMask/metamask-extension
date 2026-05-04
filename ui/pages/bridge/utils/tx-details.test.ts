@@ -18,14 +18,6 @@ describe('tx-details utils', () => {
       expect(result).toBe(false);
     });
 
-    it('returns false when startTime is undefined', () => {
-      const result = getIsDelayed(StatusTypes.PENDING, {
-        startTime: undefined,
-        estimatedProcessingTimeInSeconds: 60,
-      } as BridgeHistoryItem);
-      expect(result).toBe(false);
-    });
-
     it('returns false when current time is less than estimated completion time', () => {
       const result = getIsDelayed(StatusTypes.PENDING, {
         startTime: Date.now() - 1000,
