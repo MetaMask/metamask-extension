@@ -149,14 +149,18 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-storybook == 'true' }}
     uses: ./.github/workflows/test-storybook.yml
 
   validate-lavamoat-policies:
     needs:
       - get-requirements
       - prep-deps
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    # LavaMoat policies are deterministic: same inputs (yarn.lock, source code,
+    # build scripts, policy files) → same output. All these inputs are covered
+    # by the build-source hash, so when builds are reused the policies are
+    # guaranteed to be valid — re-validating is redundant.
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     uses: ./.github/workflows/validate-lavamoat-policies.yml
 
   build-dist-browserify:
@@ -381,7 +385,7 @@ jobs:
     secrets: inherit
 
   run-benchmarks:
-    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
+    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
     permissions:
       contents: read
       id-token: write
