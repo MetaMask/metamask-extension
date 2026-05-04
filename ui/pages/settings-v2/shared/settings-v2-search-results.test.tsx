@@ -13,10 +13,10 @@ const createMockStore = () => configureMockStore([thunk])(mockState);
 const mockItems: SettingsV2SearchResult[] = [
   {
     settingId: 'local-currency',
-    tabLabelKey: 'assets',
+    tabLabelKey: 'preferencesAndDisplay',
     titleKey: 'localCurrency',
-    tabRoute: '/settings-v2/assets',
-    iconName: 'Coin',
+    tabRoute: '/settings-v2/preferences-and-display',
+    iconName: 'Customize',
   },
   {
     settingId: 'theme',
@@ -36,7 +36,7 @@ describe('SettingsV2SearchResults', () => {
 
     expect(
       screen.getByText(
-        `${messages.assets.message} > ${messages.localCurrency.message}`,
+        `${messages.preferencesAndDisplay.message} > ${messages.localCurrency.message}`,
       ),
     ).toBeInTheDocument();
     expect(

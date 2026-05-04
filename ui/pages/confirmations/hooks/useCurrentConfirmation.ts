@@ -6,10 +6,10 @@ import { useParams } from 'react-router-dom';
 import {
   ApprovalsMetaMaskState,
   getUnapprovedTransaction,
-  oldestPendingConfirmationSelector,
-  selectPendingApproval,
+  firstPendingConfirmationSelector,
+  internalSelectPendingApproval,
 } from '../../../selectors';
-import { selectUnapprovedMessage } from '../../../selectors/signatures';
+import { internalSelectUnapprovedMessage } from '../../../selectors/signatures';
 import {
   shouldUseRedesignForSignatures,
   shouldUseRedesignForTransactions,
@@ -26,22 +26,26 @@ import {
  */
 const useCurrentConfirmation = (providedConfirmationId?: string) => {
   const { id: paramsConfirmationId } = useParams<{ id: string }>();
-  const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
+  const oldestPendingApproval = useSelector(firstPendingConfirmationSelector);
   const confirmationId =
     providedConfirmationId ?? paramsConfirmationId ?? oldestPendingApproval?.id;
+  const confirmationIdForSelectors = confirmationId ?? '';
 
   const pendingApproval = useSelector((state) =>
-    selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
+    internalSelectPendingApproval(
+      state as ApprovalsMetaMaskState,
+      confirmationIdForSelectors,
+    ),
   );
 
   const transactionMetadata = useSelector((state) =>
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getUnapprovedTransaction as any)(state, confirmationId),
+    (getUnapprovedTransaction as any)(state, confirmationIdForSelectors),
   ) as TransactionMeta | undefined;
 
   const signatureMessage = useSelector((state) =>
-    selectUnapprovedMessage(state, confirmationId),
+    internalSelectUnapprovedMessage(state, confirmationIdForSelectors),
   );
 
   const useRedesignedForSignatures = shouldUseRedesignForSignatures({

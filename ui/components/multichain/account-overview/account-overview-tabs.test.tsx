@@ -42,6 +42,10 @@ jest.mock('../../app/assets/defi-list/defi-tab', () => ({
   default: () => null,
 }));
 
+jest.mock('../../app/perps/perps-tab', () => ({
+  PerpsTab: () => <div data-testid="perps-tab-mock">PerpsTab</div>,
+}));
+
 describe('AccountOverviewTabs - event metrics', () => {
   const mockTrackEvent = jest.fn();
   const mockMetaMetricsContext = {
