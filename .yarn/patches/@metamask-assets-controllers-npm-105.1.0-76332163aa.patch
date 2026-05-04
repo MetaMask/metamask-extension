@@ -11,15 +11,6 @@ index b4daef707e79f8e871ec767474a5e985cd0de3af..da30a44c165d69f22ac10603d7a3e4d1
  Object.defineProperty(exports, "__esModule", { value: true });
  exports.TokensController = exports.getDefaultTokensState = void 0;
  const contracts_1 = require("@ethersproject/contracts");
-@@ -65,7 +65,7 @@ const MUSD_ADDRESS = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
-  */
- const MUSD_TOKEN = {
-     address: MUSD_ADDRESS,
--    decimals: 6,
-+    decimals: 18,
-     symbol: 'mUSD',
-     name: 'MetaMask USD',
- };
 @@ -770,9 +770,18 @@ async function _TokensController_detectIsERC721(tokenAddress, networkClientId) {
          !(0, controller_utils_1.isValidHexAddress)(accountAddress)) {
          return;
