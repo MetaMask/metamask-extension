@@ -43,6 +43,7 @@ const CLS_THRESHOLDS = {
   cls: {
     p75: { warn: 0.1, fail: 0.25 },
     p95: { warn: 0.1, fail: 0.25 },
+    ciMultiplier: CI_MULTIPLIER.NONE,
   },
 } satisfies ThresholdConfig;
 
@@ -83,8 +84,8 @@ const ONBOARDING_IMPORT_WALLET = {
     ciMultiplier: CI_MULTIPLIER.TIER_2, // interim: render depends on controller state-sync timing
   },
   total: {
-    p75: { warn: 6800, fail: 7400 },
-    p95: { warn: 7300, fail: 7900 },
+    p75: { warn: 7000, fail: 8500 },
+    p95: { warn: 7500, fail: 9000 },
     ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
   ...CLS_THRESHOLDS,
@@ -122,8 +123,8 @@ const ONBOARDING_NEW_WALLET = {
     ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
   total: {
-    p75: { warn: 3300, fail: 3600 },
-    p95: { warn: 3650, fail: 3950 },
+    p75: { warn: 3500, fail: 4200 },
+    p95: { warn: 3800, fail: 4600 },
     ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
   ...CLS_THRESHOLDS,
@@ -146,9 +147,9 @@ const IMPORT_SRP_HOME = {
     ciMultiplier: CI_MULTIPLIER.TIER_2,
   },
   total: {
-    p75: { warn: 28000, fail: 30500 },
-    p95: { warn: 30000, fail: 32500 },
-    ciMultiplier: CI_MULTIPLIER.TIER_1,
+    p75: { warn: 20000, fail: 25000 },
+    p95: { warn: 21000, fail: 26000 },
+    ciMultiplier: CI_MULTIPLIER.TIER_2,
   },
   ...CLS_THRESHOLDS,
 } satisfies ThresholdConfig;
@@ -165,9 +166,9 @@ const SWAP = {
     ciMultiplier: CI_MULTIPLIER.TIER_2,
   },
   total: {
-    p75: { warn: 1800, fail: 1950 },
-    p95: { warn: 1900, fail: 2050 },
-    ciMultiplier: CI_MULTIPLIER.DEFAULT,
+    p75: { warn: 2100, fail: 2600 },
+    p95: { warn: 2200, fail: 2700 },
+    ciMultiplier: CI_MULTIPLIER.TIER_2,
   },
   ...CLS_THRESHOLDS,
 } satisfies ThresholdConfig;

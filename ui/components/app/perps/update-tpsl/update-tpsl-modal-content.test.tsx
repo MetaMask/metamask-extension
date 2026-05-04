@@ -157,6 +157,37 @@ describe('UpdateTPSLModalContent', () => {
       ).toBeInTheDocument();
     });
 
+    it('auto-focuses the TP trigger price input on mount', () => {
+      renderTpslModalContent();
+
+      const input = screen.getByTestId(
+        'perps-update-tpsl-tp-price-input',
+      ) as HTMLInputElement;
+      expect(input).toHaveFocus();
+    });
+
+    it('selects existing TP price value on focus', () => {
+      renderTpslModalContent();
+
+      const input = screen.getByTestId(
+        'perps-update-tpsl-tp-price-input',
+      ) as HTMLInputElement;
+      const selectSpy = jest.spyOn(input, 'select');
+      fireEvent.focus(input);
+      expect(selectSpy).toHaveBeenCalled();
+    });
+
+    it('selects existing SL price value on focus', () => {
+      renderTpslModalContent();
+
+      const input = screen.getByTestId(
+        'perps-update-tpsl-sl-price-input',
+      ) as HTMLInputElement;
+      const selectSpy = jest.spyOn(input, 'select');
+      fireEvent.focus(input);
+      expect(selectSpy).toHaveBeenCalled();
+    });
+
     it('renders four text inputs (TP price, TP %, SL price, SL %)', () => {
       renderTpslModalContent();
 
@@ -164,6 +195,36 @@ describe('UpdateTPSLModalContent', () => {
       const percentInputs = screen.getAllByPlaceholderText('0');
       expect(priceInputs).toHaveLength(2);
       expect(percentInputs).toHaveLength(2);
+    });
+
+    it('keeps the TP percent value selected after focus switches to the raw value', async () => {
+      renderTpslModalContent();
+
+      const tpPercentInput = screen.getAllByPlaceholderText(
+        '0',
+      )[0] as HTMLInputElement;
+      fireEvent.focus(tpPercentInput);
+
+      await waitFor(() => {
+        expect(tpPercentInput.value.length).toBeGreaterThan(0);
+        expect(tpPercentInput.selectionStart).toBe(0);
+        expect(tpPercentInput.selectionEnd).toBe(tpPercentInput.value.length);
+      });
+    });
+
+    it('keeps the SL percent value selected after focus switches to the raw value', async () => {
+      renderTpslModalContent();
+
+      const slPercentInput = screen.getAllByPlaceholderText(
+        '0',
+      )[1] as HTMLInputElement;
+      fireEvent.focus(slPercentInput);
+
+      await waitFor(() => {
+        expect(slPercentInput.value.length).toBeGreaterThan(0);
+        expect(slPercentInput.selectionStart).toBe(0);
+        expect(slPercentInput.selectionEnd).toBe(slPercentInput.value.length);
+      });
     });
   });
 
@@ -268,9 +329,13 @@ describe('UpdateTPSLModalContent', () => {
       const tpInput = screen.getAllByPlaceholderText(
         '0.00',
       )[0] as HTMLInputElement;
+      const tpPercentInput = screen.getByTestId(
+        'perps-update-tpsl-tp-percent-input',
+      ) as HTMLInputElement;
       const numValue = parseFloat(tpInput.value.replace(/,/gu, ''));
       expect(numValue).toBeGreaterThan(0);
       expect(numValue).toBeCloseTo(3087.5, 0);
+      expect(tpPercentInput.value).toBe('+25');
     });
 
     it('sets SL price correctly for a -25% RoE preset on a long position', () => {
@@ -463,6 +528,32 @@ describe('UpdateTPSLModalContent', () => {
       expect(numValue).toBeCloseTo(96.425, 0);
     });
 
+    it('preserves the positive sign after blurring an explicit positive SL RoE%', () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const slPercentInput = screen.getByTestId(
+        'perps-update-tpsl-sl-percent-input',
+      ) as HTMLInputElement;
+      fireEvent.focus(slPercentInput);
+      fireEvent.change(slPercentInput, { target: { value: '+15' } });
+      fireEvent.blur(slPercentInput);
+
+      expect(slPercentInput.value).toMatch(/^\+/u);
+    });
+
+    it('preserves the negative sign after blurring an explicit negative TP RoE%', () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const tpPercentInput = screen.getByTestId(
+        'perps-update-tpsl-tp-percent-input',
+      ) as HTMLInputElement;
+      fireEvent.focus(tpPercentInput);
+      fireEvent.change(tpPercentInput, { target: { value: '-15' } });
+      fireEvent.blur(tpPercentInput);
+
+      expect(tpPercentInput.value).toMatch(/^-/u);
+    });
+
     it('defaults unsigned SL RoE% input to negative', () => {
       // SOL: entry=95, leverage=10, defaulted -10% signed RoE -> 95 * 0.99 = 94.05
       renderTpslModalContent({ position: positionWithoutTPSL });
@@ -562,7 +653,7 @@ describe('UpdateTPSLModalContent', () => {
     it('shows raw input while SL percent is focused and formatted value after blur', () => {
       // SOL: entry=95, leverage=10. Typing +10 (SL above entry for lock-in-profit scenario)
       // -> price = 95*(1+10/1000) = 95.95 -> blur shows priceToPercent("95.95") for long
-      // -> (95.95-95)/95*10*100 = 10 -> "10" (positive, no sign)
+      // -> (95.95-95)/95*10*100 = 10 -> "+10"
       renderTpslModalContent({ position: positionWithoutTPSL });
 
       const slPercentInput = screen.getAllByPlaceholderText('0')[1];
@@ -574,8 +665,8 @@ describe('UpdateTPSLModalContent', () => {
       fireEvent.blur(slPercentInput);
 
       const blurredValue = (slPercentInput as HTMLInputElement).value;
-      // After blur, shows signed RoE: positive percent stays positive (no sign prefix)
-      expect(blurredValue).toMatch(/^-?\d+(\.\d+)?$/u);
+      // After blur, shows signed RoE: positive percent keeps the explicit profit sign.
+      expect(blurredValue).toMatch(/^\+\d+(\.\d+)?$/u);
     });
 
     it('normalizes leading-zero SL percent input before defaulting to negative', () => {
@@ -637,7 +728,7 @@ describe('UpdateTPSLModalContent', () => {
       // price = 95 * (1 + 25/1000) = 95 * 1.025 = 97.375 -> formatted as "97.38"
       // priceToPercent('97.38', long): (97.38-95)/95 * 10 * 100 = 25.05 -> "25.05"
       const blurredValue = (tpPercentInput as HTMLInputElement).value;
-      expect(blurredValue).toMatch(/^-?\d+(\.\d+)?$/u);
+      expect(blurredValue).toMatch(/^[+-]?\d+(\.\d+)?$/u);
     });
   });
 
@@ -756,6 +847,52 @@ describe('UpdateTPSLModalContent', () => {
       } finally {
         jest.useRealTimers();
       }
+    });
+  });
+
+  describe('keyboard submission', () => {
+    it('submits TP/SL update when Enter is pressed on the TP price input', async () => {
+      renderTpslModalContent();
+
+      const input = screen.getByTestId(
+        'perps-update-tpsl-tp-price-input',
+      ) as HTMLInputElement;
+
+      fireEvent.keyDown(input, { key: 'Enter' });
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdatePositionTPSL',
+          [
+            {
+              symbol: positionWithTPSL.symbol,
+              takeProfitPrice: '3200.00',
+              stopLossPrice: '2600.00',
+            },
+          ],
+        );
+      });
+    });
+
+    it('does not submit when Enter is pressed with invalid TP/SL', async () => {
+      renderTpslModalContent();
+
+      const tpInput = screen.getByTestId(
+        'perps-update-tpsl-tp-price-input',
+      ) as HTMLInputElement;
+      // For a long position, TP must be above entry (2850); set it below.
+      fireEvent.change(tpInput, { target: { value: '100' } });
+
+      fireEvent.keyDown(tpInput, { key: 'Enter' });
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsUpdatePositionTPSL',
+        expect.anything(),
+      );
     });
   });
 

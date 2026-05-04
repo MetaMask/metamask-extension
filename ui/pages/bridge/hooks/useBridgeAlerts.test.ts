@@ -8,6 +8,7 @@ import {
   getBridgeUnavailableQuoteReason,
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
+  getInsufficientNativeReserveError,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
@@ -33,6 +34,7 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
   getActiveQuotePriceData: jest.fn(),
   getFormattedPriceImpactPercentage: jest.fn(),
   getFormattedPriceImpactFiat: jest.fn(),
+  getInsufficientNativeReserveError: jest.fn(),
   getBridgeQuotes: jest.fn(),
 }));
 
@@ -105,6 +107,7 @@ describe('useBridgeAlerts', () => {
     jest.mocked(getActiveQuotePriceData).mockReturnValue(null as never);
     jest.mocked(getFormattedPriceImpactPercentage).mockReturnValue('7.0%');
     jest.mocked(getFormattedPriceImpactFiat).mockReturnValue(null as never);
+    jest.mocked(getInsufficientNativeReserveError).mockReturnValue(undefined);
     jest.mocked(getBridgeQuotes).mockReturnValue({
       isLoading: false,
       activeQuote: null,
@@ -443,6 +446,100 @@ describe('useBridgeAlerts', () => {
       expect(
         result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
       ).not.toContain('price-data-unavailable');
+    });
+  });
+
+  describe('insufficient-native-reserve alert', () => {
+    it('adds insufficient-native-reserve to bannerAlerts when insufficientNativeReserveError is present', () => {
+      jest.mocked(getBridgeQuotes).mockReturnValue({
+        isLoading: false,
+        activeQuote: MOCK_BRIDGE_QUOTE,
+      } as never);
+      jest.mocked(getActiveQuotePriceData).mockReturnValue({
+        priceImpact: 0.05,
+      } as never);
+
+      jest.mocked(getInsufficientNativeReserveError).mockReturnValue({
+        minimumNativeBalanceToBeKeptInAccount: '10',
+        maxSwappableNativeBalance: '5',
+      });
+
+      const { result } = renderHook();
+
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).toContain('insufficient-native-reserve');
+
+      expect(
+        result.current.alertsById['insufficient-native-reserve'],
+      ).toStrictEqual(
+        expect.objectContaining({
+          id: 'insufficient-native-reserve',
+          severity: 'warning',
+          title: 'bridgeValidationInsufficientNativeReserveTitle:ETH',
+          description:
+            'bridgeValidationInsufficientNativeReserveMessage:10,5,ETH',
+          isConfirmationAlert: false,
+          bannerAlertProps: expect.objectContaining({
+            severity: BannerAlertSeverity.Warning,
+            actionButtonLabel: 'bridgeUseMaxAmountAllowedWithReserve:ETH',
+          }),
+        }),
+      );
+    });
+
+    it('adds insufficient-native-reserve to bannerAlerts when insufficientNativeReserveError is present even when a quote is loading', () => {
+      jest.mocked(getBridgeQuotes).mockReturnValue({
+        isLoading: true,
+        activeQuote: MOCK_BRIDGE_QUOTE,
+      } as never);
+      jest.mocked(getActiveQuotePriceData).mockReturnValue({
+        priceImpact: 0.05,
+      } as never);
+
+      jest.mocked(getInsufficientNativeReserveError).mockReturnValue({
+        minimumNativeBalanceToBeKeptInAccount: '10',
+        maxSwappableNativeBalance: '5',
+      });
+
+      const { result } = renderHook();
+
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).toContain('insufficient-native-reserve');
+
+      expect(
+        result.current.alertsById['insufficient-native-reserve'],
+      ).toStrictEqual(
+        expect.objectContaining({
+          id: 'insufficient-native-reserve',
+          severity: 'warning',
+          title: 'bridgeValidationInsufficientNativeReserveTitle:ETH',
+          description:
+            'bridgeValidationInsufficientNativeReserveMessage:10,5,ETH',
+          isConfirmationAlert: false,
+          bannerAlertProps: expect.objectContaining({
+            severity: BannerAlertSeverity.Warning,
+            actionButtonLabel: 'bridgeUseMaxAmountAllowedWithReserve:ETH',
+          }),
+        }),
+      );
+    });
+
+    it('does not add insufficient-native-reserve when insufficientNativeReserveError is undefined', () => {
+      jest.mocked(getBridgeQuotes).mockReturnValue({
+        isLoading: false,
+        activeQuote: MOCK_BRIDGE_QUOTE,
+      } as never);
+      jest.mocked(getActiveQuotePriceData).mockReturnValue({
+        priceImpact: 0.05,
+      } as never);
+      jest.mocked(getInsufficientNativeReserveError).mockReturnValue(undefined);
+      const { result } = renderHook();
+
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('insufficient-native-reserve');
     });
   });
 

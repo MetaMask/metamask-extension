@@ -3582,7 +3582,10 @@ describe('MetaMaskController', () => {
         expect(metamaskController.activeControllerConnections).toBe(0);
       });
 
-      it('disconnects perps only after the final controller connection closes', async () => {
+      it('defers the perps disconnect until after the grace window when the last controller connection closes', async () => {
+        jest.useFakeTimers({
+          doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'],
+        });
         jest
           .spyOn(environment, 'getIsPerpsIncludedInBuild')
           .mockReturnValue(true);
@@ -3615,13 +3618,124 @@ describe('MetaMaskController', () => {
         firstStream.testStream.end();
         await waitForAllPromises();
 
+        // One connection still open → no grace timer, no disconnect.
         expect(perpsDisconnect).not.toHaveBeenCalled();
+        expect(metamaskController.perpsDisconnectTimer).toBeNull();
 
         await secondStream.onStreamEndPromise;
         secondStream.testStream.end();
         await waitForAllPromises();
 
+        // Final connection closed → grace timer armed, still no disconnect.
+        expect(perpsDisconnect).not.toHaveBeenCalled();
+        expect(metamaskController.perpsDisconnectTimer).not.toBeNull();
+
+        jest.advanceTimersByTime(60 * 1000);
+        await waitForAllPromises();
+
         expect(perpsDisconnect).toHaveBeenCalledTimes(1);
+        expect(metamaskController.perpsDisconnectTimer).toBeNull();
+
+        jest.useRealTimers();
+      });
+
+      it('cancels the deferred perps disconnect when a UI reconnects within the grace window', async () => {
+        jest.useFakeTimers({
+          doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'],
+        });
+        jest
+          .spyOn(environment, 'getIsPerpsIncludedInBuild')
+          .mockReturnValue(true);
+        const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
+
+        metamaskController.messengerClientsByName.PerpsController = {};
+        jest
+          .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
+          .mockImplementation(perpsDisconnect);
+        jest
+          .spyOn(
+            metamaskController.messengerClientApi,
+            'perpsGetConnectionState',
+          )
+          .mockReturnValue('connected');
+
+        const firstStream = createTestStream();
+        metamaskController.setupTrustedCommunication(
+          firstStream.testStream,
+          {},
+        );
+
+        await firstStream.onStreamEndPromise;
+        firstStream.testStream.end();
+        await waitForAllPromises();
+
+        expect(metamaskController.perpsDisconnectTimer).not.toBeNull();
+
+        // UI reopens before the grace window expires — timer must clear
+        // and the WS must stay live.
+        jest.advanceTimersByTime(30 * 1000);
+        const reopened = createTestStream();
+        metamaskController.setupTrustedCommunication(reopened.testStream, {});
+        await waitForAllPromises();
+
+        expect(metamaskController.perpsDisconnectTimer).toBeNull();
+
+        jest.advanceTimersByTime(60 * 1000);
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).not.toHaveBeenCalled();
+
+        await reopened.onStreamEndPromise;
+        reopened.testStream.end();
+        await waitForAllPromises();
+        jest.advanceTimersByTime(60 * 1000);
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).toHaveBeenCalledTimes(1);
+
+        jest.useRealTimers();
+      });
+
+      it('bypasses the grace window and disconnects perps immediately on wallet lock', async () => {
+        jest.useFakeTimers({
+          doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'],
+        });
+        jest
+          .spyOn(environment, 'getIsPerpsIncludedInBuild')
+          .mockReturnValue(true);
+        const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
+
+        metamaskController.messengerClientsByName.PerpsController = {};
+        jest
+          .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
+          .mockImplementation(perpsDisconnect);
+        jest
+          .spyOn(
+            metamaskController.messengerClientApi,
+            'perpsGetConnectionState',
+          )
+          .mockReturnValue('connected');
+
+        const firstStream = createTestStream();
+        metamaskController.setupTrustedCommunication(
+          firstStream.testStream,
+          {},
+        );
+
+        await firstStream.onStreamEndPromise;
+        firstStream.testStream.end();
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).not.toHaveBeenCalled();
+        expect(metamaskController.perpsDisconnectTimer).not.toBeNull();
+
+        metamaskController._onLock();
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).toHaveBeenCalledTimes(1);
+        expect(metamaskController.perpsDisconnectTimer).toBeNull();
+
+        jest.useRealTimers();
       });
 
       // this test could be improved by testing for actual behavior of handlers,
