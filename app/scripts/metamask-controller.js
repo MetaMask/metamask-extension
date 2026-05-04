@@ -3697,8 +3697,10 @@ export default class MetamaskController extends EventEmitter {
         authenticationController,
       ),
       performSeedlessOnboardingProfilePair: async () => {
-        const accessTokens = await authenticationController.getBearerToken();
-        await this.oauthService.pairPendingSocialLoginProfiles(accessTokens);
+        const bearerToken = await authenticationController.getBearerToken();
+        await this.seedlessOnboardingController.pairProfileServiceWithSocialLogin(
+          bearerToken,
+        );
       },
       performSignOut: authenticationController.performSignOut.bind(
         authenticationController,

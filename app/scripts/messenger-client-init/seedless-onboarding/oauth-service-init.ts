@@ -1,5 +1,7 @@
-import browser from 'webextension-polyfill';
-import { Env as ProfileSyncEnv, getEnvUrls } from '@metamask/profile-sync-controller/sdk';
+import {
+  Env as ProfileSyncEnv,
+  getEnvUrls,
+} from '@metamask/profile-sync-controller/sdk';
 import { MessengerClientInitFunction } from '../types';
 import { OAuthService } from '../../services/oauth/oauth-service';
 import {
@@ -10,9 +12,6 @@ import {
 import { webAuthenticatorFactory } from '../../services/oauth/web-authenticator-factory';
 import { OAuthServiceMessenger } from '../../services/oauth/types';
 import { MetaMetricsController } from '../../controllers/metametrics-controller';
-
-const PENDING_PROFILE_PAIRING_TOKENS_SESSION_KEY =
-  'pendingSocialLoginProfileJwt';
 
 export const OAuthServiceInit: MessengerClientInitFunction<
   OAuthService,
@@ -57,33 +56,6 @@ export const OAuthServiceInit: MessengerClientInitFunction<
 
     getParticipateInMetaMetrics: () =>
       metaMetricsController.state.participateInMetaMetrics,
-
-    storePendingSocialLoginProfileJwt: async (jwt: string) => {
-      const {
-        [PENDING_PROFILE_PAIRING_TOKENS_SESSION_KEY]: pendingJwts = [],
-      } = await browser.storage.session.get(
-        PENDING_PROFILE_PAIRING_TOKENS_SESSION_KEY,
-      );
-
-      await browser.storage.session.set({
-        [PENDING_PROFILE_PAIRING_TOKENS_SESSION_KEY]: [...pendingJwts, jwt],
-      });
-    },
-
-    getPendingSocialLoginProfileJwt: async () => {
-      const { [PENDING_PROFILE_PAIRING_TOKENS_SESSION_KEY]: jwts = [] } =
-        await browser.storage.session.get(
-          PENDING_PROFILE_PAIRING_TOKENS_SESSION_KEY,
-        );
-
-      return jwts;
-    },
-
-    clearPendingSocialLoginProfileJwt: async () => {
-      await browser.storage.session.remove(
-        PENDING_PROFILE_PAIRING_TOKENS_SESSION_KEY,
-      );
-    },
   });
 
   return {

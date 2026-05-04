@@ -10,7 +10,7 @@ import {
   isReleaseCandidateBuild,
 } from './config';
 
-function getProfileSyncEnv(): ProfileSyncEnv {
+export function getProfileSyncEnv(): ProfileSyncEnv {
   if (isProductionBuild() || isReleaseCandidateBuild()) {
     return ProfileSyncEnv.PRD;
   }

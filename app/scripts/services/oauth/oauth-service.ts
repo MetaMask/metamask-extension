@@ -32,7 +32,6 @@ import { loadOAuthConfig } from './config';
 
 const AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH =
   '/api/v1/oauth/marketing_opt_in_status';
-const AUTH_SERVER_PROFILE_PAIR_PATH = '/api/v2/profile/pair';
 
 const MESSENGER_EXPOSED_METHODS = [
   'startOAuthLogin',
@@ -65,12 +64,6 @@ export class OAuthService {
 
   #getParticipateInMetaMetrics: OAuthServiceOptions['getParticipateInMetaMetrics'];
 
-  #storePendingSocialLoginProfileJwt: OAuthServiceOptions['storePendingSocialLoginProfileJwt'];
-
-  #getPendingSocialLoginProfileJwt: OAuthServiceOptions['getPendingSocialLoginProfileJwt'];
-
-  #clearPendingSocialLoginProfileJwt: OAuthServiceOptions['clearPendingSocialLoginProfileJwt'];
-
   constructor({
     messenger,
     env,
@@ -80,9 +73,6 @@ export class OAuthService {
     trackEvent,
     addEventBeforeMetricsOptIn,
     getParticipateInMetaMetrics,
-    storePendingSocialLoginProfileJwt,
-    getPendingSocialLoginProfileJwt,
-    clearPendingSocialLoginProfileJwt,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
 
@@ -97,12 +87,6 @@ export class OAuthService {
     this.#trackEvent = trackEvent;
     this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
     this.#getParticipateInMetaMetrics = getParticipateInMetaMetrics;
-    this.#storePendingSocialLoginProfileJwt =
-      storePendingSocialLoginProfileJwt ?? (async () => undefined);
-    this.#getPendingSocialLoginProfileJwt =
-      getPendingSocialLoginProfileJwt ?? (async () => []);
-    this.#clearPendingSocialLoginProfileJwt =
-      clearPendingSocialLoginProfileJwt ?? (async () => undefined);
 
     this.#messenger.registerMethodActionHandlers(
       this,
@@ -245,41 +229,6 @@ export class OAuthService {
   }
 
   /**
-   * Pair all pending social login profiles with the signed-in SRP profile.
-   *
-   * @param bearerToken - Authenticated bearer token for the SRP profile.
-   */
-  async pairPendingSocialLoginProfiles(bearerToken: string): Promise<void> {
-    const pendingProfileJwts = await this.#getPendingSocialLoginProfileJwt();
-
-    if (pendingProfileJwts.length === 0) {
-      return;
-    }
-
-    const response = await fetch(
-      `${this.#env.telegramAuthenticationServerUrl}${AUTH_SERVER_PROFILE_PAIR_PATH}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${bearerToken}`,
-        },
-        body: JSON.stringify({
-          jwts: pendingProfileJwts,
-        }),
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to pair Telegram profile: ${response.status} ${response.statusText}`,
-      );
-    }
-
-    await this.#clearPendingSocialLoginProfileJwt();
-  }
-
-  /**
    * Handle the OAuth login for the given social login type.
    *
    * For Google login, we will use the `PKCE` flow to get the Authorization Code.
@@ -409,7 +358,8 @@ export class OAuthService {
     const { authConnection } = loginHandler;
 
     const authCode =
-      authConnection === AuthConnection.Google || authConnection === AuthConnection.Telegram
+      authConnection === AuthConnection.Google ||
+      authConnection === AuthConnection.Telegram
         ? this.#getRedirectUrlAuthCode(redirectUrl)
         : null;
 
@@ -452,16 +402,10 @@ export class OAuthService {
     const idToken = authTokenData.id_token;
     const userInfo = await loginHandler.getUserInfo(idToken);
 
-    if (authTokenData.profile_pairing_token) {
-      await this.#storePendingSocialLoginProfileJwt(
-        authTokenData.profile_pairing_token,
-      );
-    }
-
     return {
       authConnectionId,
       groupedAuthConnectionId,
-      userId: userInfo.sub || userInfo.email,
+      userId: userInfo.sub || userInfo.email || '',
       idTokens: [idToken],
       authConnection: loginHandler.authConnection,
       socialLoginEmail: userInfo.email,
