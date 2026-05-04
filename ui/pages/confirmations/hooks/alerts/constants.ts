@@ -6,6 +6,7 @@ export enum AlertsName {
   InsufficientPayTokenBalance = 'insufficientPayTokenBalance',
   InsufficientPayTokenNative = 'insufficientPayTokenNative',
   InsufficientPayTokenFees = 'insufficientPayTokenFees',
+  InsufficientPerpsBalance = 'insufficientPerpsBalance',
   NetworkBusy = 'networkBusy',
   NoGasPrice = 'noGasPrice',
   NoPayTokenQuotes = 'noPayTokenQuotes',

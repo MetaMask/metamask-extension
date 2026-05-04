@@ -16,6 +16,7 @@ import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
   useIsTransactionPayLoading,
   useTransactionPayIsMaxAmount,
+  useTransactionPayIsPostQuote,
   useTransactionPayRequiredTokens,
   useTransactionPayTotals,
 } from '../../pay/useTransactionPayData';
@@ -63,9 +64,10 @@ const NATIVE_TOKEN_MOCK = {
 function runHook(
   props: Parameters<typeof useInsufficientPayTokenBalanceAlert>[0] = {},
   transactionType?: TransactionType,
+  chainId = CHAIN_IDS.MAINNET,
 ) {
   const contractInteraction = genUnapprovedContractInteractionConfirmation({
-    chainId: CHAIN_IDS.MAINNET,
+    chainId,
   }) as TransactionMeta;
   contractInteraction.type = transactionType ?? contractInteraction.type;
 
@@ -84,6 +86,9 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
   const useTransactionPayIsMaxAmountMock = jest.mocked(
     useTransactionPayIsMaxAmount,
   );
+  const useTransactionPayIsPostQuoteMock = jest.mocked(
+    useTransactionPayIsPostQuote,
+  );
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
@@ -97,6 +102,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
     useTransactionPayRequiredTokensMock.mockReturnValue([REQUIRED_TOKEN_MOCK]);
     useTransactionPayTotalsMock.mockReturnValue(TOTALS_MOCK);
     useTransactionPayIsMaxAmountMock.mockReturnValue(false);
+    useTransactionPayIsPostQuoteMock.mockReturnValue(false);
     useIsTransactionPayLoadingMock.mockReturnValue(false);
 
     useTransactionPayTokenMock.mockReturnValue({
@@ -241,7 +247,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       expect(result.current).toStrictEqual([]);
     });
 
-    it('returns alert for perps withdraw if source amount exceeds pay token balance', () => {
+    it('returns no alert for perps withdraw if source amount exceeds receive token balance', () => {
       useTransactionPayTokenMock.mockReturnValue({
         payToken: {
           ...PAY_TOKEN_MOCK,
@@ -253,16 +259,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
 
       const { result } = runHook({}, TransactionType.perpsWithdraw);
 
-      expect(result.current).toStrictEqual([
-        {
-          key: AlertsName.InsufficientPayTokenFees,
-          field: RowAlertKey.EstimatedFee,
-          isBlocking: true,
-          reason: 'Insufficient funds',
-          message: 'Add less or use a different token.',
-          severity: Severity.Danger,
-        },
-      ]);
+      expect(result.current).toStrictEqual([]);
     });
   });
 
@@ -343,6 +340,45 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
           message: expect.stringContaining('Not enough'),
           severity: Severity.Danger,
         },
+      ]);
+    });
+
+    it('uses transaction chain as source chain for post-quote native fee checks', () => {
+      useTransactionPayIsPostQuoteMock.mockReturnValue(true);
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: '0x89',
+        symbol: 'POL',
+        decimals: 18,
+        balance: '0.0001',
+        balanceRaw: '100000000000000',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          chainId: CHAIN_IDS.ARBITRUM,
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHook(
+        {},
+        TransactionType.perpsWithdraw,
+        '0x89' as Hex,
+      );
+
+      expect(useTokenWithBalanceMock).toHaveBeenCalledWith(
+        expect.any(String),
+        '0x89',
+      );
+      expect(result.current).toStrictEqual([
+        expect.objectContaining({
+          key: AlertsName.InsufficientPayTokenNative,
+          isBlocking: true,
+        }),
       ]);
     });
 
