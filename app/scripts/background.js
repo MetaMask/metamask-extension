@@ -2095,12 +2095,20 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
   const { participateInMetaMetrics, metaMetricsId } =
     controller.metaMetricsController.state;
 
+  if (participateInMetaMetrics === false) {
+    // We can skip tracking completely if they've already explicitly opted out
+    return;
+  }
+
   // Track immediately only once consent is active and the controller has a
   // persisted MetaMetrics ID. Otherwise keep the event buffered for the opt-in
   // flush path so it is not dropped.
-  if (participateInMetaMetrics && metaMetricsId) {
+  if (participateInMetaMetrics === true && metaMetricsId) {
     controller.metaMetricsController.trackEvent(appInstalledEvent);
   } else {
+    // participateInMetaMetrics is either `null` (not opted in or out yet) or
+    // `true` (opted in, but for some reason we don't have a MetaMetrics ID yet),
+    // so we queue the metrics event for possible submission later.
     controller.metaMetricsController.addEventBeforeMetricsOptIn(
       appInstalledEvent,
     );
