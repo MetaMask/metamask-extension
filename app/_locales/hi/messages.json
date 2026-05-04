@@ -4905,10 +4905,6 @@
   "onboardingMetametricsTitle": {
     "message": "MetaMask को बेहतर बनाने में मदद करें"
   },
-  "onboardingOptionIcon": {
-    "message": "$1 आइकन",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "$1 के साथ साइन इन करें",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -6971,11 +6967,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "अपने अकाउंट और सीक्रेट रिकवरी फ्रेज़ को रिकवर करने के लिए अपने $1 लॉगिन और MetaMask पासवर्ड का उपयोग करें।",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 रिकवरी",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpDescription": {
     "message": "अपने सीक्रेट रिकवरी फ्रेज़ का बैकअप लें ताकि आप अपने वॉलेट तक कभी पहुँच न खोएँ। इसे किसी सुरक्षित स्थान पर रखें, जहां केवल आप ही पहुंच सकें और जिसे आप भूलें नहीं।"

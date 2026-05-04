@@ -30,10 +30,7 @@ export async function exchangeJwtBearerForOidcAccessToken(
 
   const body = new URLSearchParams();
   body.set('grant_type', 'urn:ietf:params:oauth:grant-type:jwt-bearer');
-  body.set(
-    'client_id',
-    getOidcClientId(profileSyncEnv, Platform.EXTENSION),
-  );
+  body.set('client_id', getOidcClientId(profileSyncEnv, Platform.EXTENSION));
   body.set('assertion', jwtToken);
 
   const response = await fetch(oidcTokenUrl, {

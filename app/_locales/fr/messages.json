@@ -4905,10 +4905,6 @@
   "onboardingMetametricsTitle": {
     "message": "Aidez-nous à améliorer MetaMask"
   },
-  "onboardingOptionIcon": {
-    "message": "Icône $1",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Se connecter avec $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -6971,11 +6967,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Utilisez votre identifiant $1 et votre mot de passe MetaMask pour récupérer votre compte et vos phrases secrètes de récupération.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "RÉCUPÉRATION $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpDescription": {
     "message": "Sauvegardez votre phrase secrète de récupération pour ne jamais perdre l’accès à votre portefeuille. Veillez à la conserver dans un endroit sûr auquel personne d’autre que vous ne peut y accéder et que vous ne risquez pas d’oublier."

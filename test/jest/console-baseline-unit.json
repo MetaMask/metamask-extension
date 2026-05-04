@@ -1485,7 +1485,7 @@
       "error: Warning: Encountered two children with": 1
     },
     "ui/pages/onboarding-flow/welcome/welcome.test.tsx": {
-      "MetaMask: Background connection not initialized": 14,
+      "MetaMask: Background connection not initialized": 18,
       "React: State updates on unmounted components": 1
     },
     "ui/pages/permissions-connect/connect-page/connect-page.test.tsx": {

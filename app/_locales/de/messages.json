@@ -4905,10 +4905,6 @@
   "onboardingMetametricsTitle": {
     "message": "Helfen Sie dabei, MetaMask zu verbessern"
   },
-  "onboardingOptionIcon": {
-    "message": "$1-Symbol",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Mit $1 anmelden",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -6971,11 +6967,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Verwenden Sie Ihre $1-Anmeldung und Ihr MetaMask-Passwort, um Ihr Konto und Ihre geheimen Wiederherstellungsphrasen wiederherzustellen.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 WIEDERHERSTELLUNG",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpDescription": {
     "message": "Sichern Sie Ihre geheime Wiederherstellungsphrase, damit Sie nie den Zugriff auf Ihre Wallet verlieren. Bewahren Sie sie an einem sicheren Ort auf, auf den nur Sie Zugriff haben und den Sie nie vergessen werden."
