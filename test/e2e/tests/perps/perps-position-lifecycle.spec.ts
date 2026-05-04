@@ -378,8 +378,12 @@ describe('Perps Position Lifecycle', function (this: Suite) {
 
   // ─── Reverse position flows ────────────────────────────────────────────────
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
-  it('reverses an ETH long position to short via Modify menu', async function () {
+  // Skipped: broken by @metamask/perps-controller v4.0.0 (commit 447247748c).
+  // TradingService.flipPosition() no longer passes entryPrice as currentPrice, so
+  // validateOrder() fails with ORDER_PRICE_REQUIRED inside the background service worker.
+  // Requires an upstream fix in @metamask/perps-controller to resolve.
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('reverses an ETH long position to short via Modify menu', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligible(this.test?.fullTitle()),
@@ -473,7 +477,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
   });
 
   // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
-  it('reverses a BTC short position to long', async function () {
+  it.skip('reverses a BTC short position to long', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligible(this.test?.fullTitle()),
