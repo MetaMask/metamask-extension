@@ -7,6 +7,8 @@ import {
 } from '@metamask/transaction-controller';
 import React, { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { RevertReason } from '../revert-reason/revert-reason';
+import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferences';
 import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import InlineAlert from '../../../../components/app/alert-system/inline-alert';
 import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
@@ -425,6 +427,13 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const { chainId, id: transactionId, simulationData } = transaction;
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const loading = !simulationData || balanceChangesResult.pending;
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+  const simulationRevert = transaction.revert?.simulation;
+  const showSimulationRevert = Boolean(
+    showAdvancedDetails && simulationRevert?.message,
+  );
 
   const hasStaticData =
     staticRows?.length > 0 &&
@@ -484,6 +493,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
         {error.code === SimulationErrorCode.Reverted && (
           <ErrorContent error={error} />
         )}
+        {showSimulationRevert && simulationRevert && (
+          <RevertReason
+            revert={simulationRevert}
+            data-testid="simulation-details-revert-reason"
+          />
+        )}
       </SimulationDetailsLayout>
     );
   }
@@ -495,8 +510,15 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
       <SimulationDetailsLayout
         isTransactionsRedesign={isTransactionsRedesign}
         transactionId={transactionId}
-        inHeader={<EmptyContent />}
-      />
+        inHeader={showSimulationRevert ? undefined : <EmptyContent />}
+      >
+        {showSimulationRevert && simulationRevert && (
+          <RevertReason
+            revert={simulationRevert}
+            data-testid="simulation-details-revert-reason"
+          />
+        )}
+      </SimulationDetailsLayout>
     );
   }
 
@@ -573,6 +595,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           balanceChanges={incoming}
           testId="simulation-rows-incoming"
         />
+        {showSimulationRevert && simulationRevert && (
+          <RevertReason
+            revert={simulationRevert}
+            data-testid="simulation-details-revert-reason"
+          />
+        )}
       </Box>
     </SimulationDetailsLayout>
   );

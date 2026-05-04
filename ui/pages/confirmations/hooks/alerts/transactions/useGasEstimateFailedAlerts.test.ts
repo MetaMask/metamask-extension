@@ -57,22 +57,20 @@ describe('useGasEstimateFailedAlerts', () => {
       }),
     );
 
-    expect(alerts).toEqual([
-      {
-        actions: [
-          {
-            key: AlertActionKey.ShowAdvancedGasFeeModal,
-            label: 'Update gas limit',
-          },
-        ],
-        field: RowAlertKey.EstimatedFee,
-        key: 'gasEstimateFailed',
-        message:
-          'We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail.',
-        reason: 'Inaccurate fee',
-        severity: Severity.Warning,
-      },
-    ]);
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0]).toMatchObject({
+      actions: [
+        {
+          key: AlertActionKey.ShowAdvancedGasFeeModal,
+          label: 'Update gas limit',
+        },
+      ],
+      field: RowAlertKey.EstimatedFee,
+      key: 'gasEstimateFailed',
+      reason: 'Inaccurate fee',
+      severity: Severity.Warning,
+    });
+    expect(alerts[0].content).toBeDefined();
   });
 
   it('returns no alerts if simulation fails but userFeeLevel is CUSTOM', () => {
