@@ -488,67 +488,7 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/bundle-size
           path: test-artifacts/chrome
 
-  prep-e2e:
-    needs:
-      - get-requirements
-      - prep-deps
-    if: >-
-      ${{
-        needs.get-requirements.outputs.needs-e2e == 'true' &&
-        needs.get-requirements.outputs.e2e-single-mode != 'true'
-      }}
-    uses: ./.github/workflows/prep-e2e.yml
-
-  e2e-chrome:
-    needs:
-      - get-requirements
-      - prep-e2e
-      - build-test-browserify
-      - build-dist-browserify
-      - build-test-flask-browserify
-      - build-test-webpack
-      - build-dist-webpack
-      - build-test-flask-webpack
-    uses: ./.github/workflows/e2e-chrome.yml
-    # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
-    if: >-
-      ${{
-        !cancelled() &&
-        needs.get-requirements.outputs.needs-e2e == 'true' &&
-        needs.get-requirements.outputs.e2e-single-mode != 'true' &&
-        !contains(needs.*.result, 'failure')
-      }}
-    with:
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
-    secrets: inherit
-
-  e2e-firefox:
-    needs:
-      - get-requirements
-      - prep-e2e
-      - build-dist-mv2-browserify
-      - build-test-mv2-browserify
-      - build-test-flask-mv2-browserify
-      - build-dist-mv2-webpack
-      - build-test-mv2-webpack
-      - build-test-flask-mv2-webpack
-    uses: ./.github/workflows/e2e-firefox.yml
-    # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
-    if: >-
-      ${{
-        !cancelled() &&
-        needs.get-requirements.outputs.needs-e2e == 'true' &&
-        needs.get-requirements.outputs.e2e-single-mode != 'true' &&
-        !contains(needs.*.result, 'failure')
-      }}
-    with:
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
-    secrets:
-      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-
-  # Opt-in via [e2e-single] in the commit message (see get-requirements.yml). Builds and runs one Chrome spec in the reusable E2E container.
+  # Sole E2E path when needs-e2e is true (prep-e2e, e2e-chrome, and e2e-firefox jobs were removed from this workflow).
   e2e-chrome-single-spec:
     needs:
       - get-requirements
@@ -557,7 +497,6 @@ jobs:
       ${{
         !cancelled() &&
         needs.get-requirements.outputs.needs-e2e == 'true' &&
-        needs.get-requirements.outputs.e2e-single-mode == 'true' &&
         !contains(needs.*.result, 'failure')
       }}
     with:
@@ -725,7 +664,7 @@ jobs:
     # named here. A failing job can cause downstream jobs to be `skipped`, which can hide the true failure unless
     # the upstream job is also included.
     #
-    # For instance, if prep-e2e fails, e2e-chrome and e2e-firefox are skipped, so we need the direct result of prep-e2e.
+    # For instance, if a build job fails, downstream jobs may be skipped, so include the build job in `needs`.
     #
     # Jobs intentionally excluded:
     # - Publish jobs (not required for CI pass)
@@ -762,9 +701,6 @@ jobs:
       - run-benchmarks
       - run-tests
       - bundle-size
-      - prep-e2e
-      - e2e-chrome
-      - e2e-firefox
       - e2e-chrome-single-spec
       - build-storybook
       - build-ts-migration-dashboard
