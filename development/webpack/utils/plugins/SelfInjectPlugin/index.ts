@@ -152,9 +152,7 @@ export class SelfInjectPlugin {
     // (only first-line column offsets shift).
     newSource.add(
       this.escapeJs(
-        `document.currentScript.dataset.loaded='1';` +
-          source +
-          sourceMappingURLComment,
+        `document.currentScript.dataset.loaded='1';${source}${sourceMappingURLComment}`,
       ),
     );
     newSource.add(`+`);

@@ -341,7 +341,7 @@ function makeSelfInjecting(filePath) {
   // line so source-map line numbers for the original source remain aligned
   // (only first-line column offsets shift).
   const textContent = JSON.stringify(
-    `document.currentScript.dataset.loaded='1';` + fileContents,
+    `document.currentScript.dataset.loaded='1';${fileContents}`,
   );
   // If the synchronous injection did not execute, fall back to a asynchronous injection strategy
   // that loads the same source via a `Blob` URL assigned to `script.src`.
