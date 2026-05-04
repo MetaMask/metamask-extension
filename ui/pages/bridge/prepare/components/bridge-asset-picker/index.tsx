@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  ButtonIconSize,
   Icon,
   IconColor,
   IconName,
@@ -24,6 +23,7 @@ import {
   ModalContent,
   ModalBody,
   ModalHeader,
+  ButtonIconSize,
   PickerNetwork,
   TextField,
   ModalContentSize,

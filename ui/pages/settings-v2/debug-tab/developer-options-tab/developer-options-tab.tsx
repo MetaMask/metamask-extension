@@ -10,7 +10,7 @@ import {
   IconName,
   IconSize,
   Text,
-} from '../../../components/component-library';
+} from '../../../../components/component-library';
 import {
   IconColor,
   TextColor,
@@ -18,27 +18,27 @@ import {
   FlexDirection,
   JustifyContent,
   AlignItems,
-} from '../../../helpers/constants/design-system';
-import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
+} from '../../../../helpers/constants/design-system';
+import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
-} from '../../../helpers/utils/settings-search';
+} from '../../../../helpers/utils/settings-search';
 
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   perpsToggleTestnet,
   resetOnboarding,
   resetViewedNotifications,
   setServiceWorkerKeepAlivePreference,
-} from '../../../store/actions';
-import { selectPerpsIsTestnet } from '../../../selectors/perps-controller';
+} from '../../../../store/actions';
+import { selectPerpsIsTestnet } from '../../../../selectors/perps-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { getRemoteFeatureFlags } from '../../../selectors';
-import { ConfirmationsDeveloperOptions } from '../../confirmations/components/developer/confirmations-developer-options';
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
+import { getRemoteFeatureFlags } from '../../../../selectors';
+import { ConfirmationsDeveloperOptions } from '../../../confirmations/components/developer/confirmations-developer-options';
 import ToggleRow from './developer-options-toggle-row-component';
 import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
