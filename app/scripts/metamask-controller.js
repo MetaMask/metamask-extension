@@ -139,6 +139,7 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
+import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
@@ -4675,9 +4676,9 @@ export default class MetamaskController extends EventEmitter {
         );
         this.passkeyController.removePasskey();
         throw new PasskeyControllerError(
-          PasskeyControllerErrorMessage.VaultKeyRenewalFailed,
+          'Passkey vault key protection renewal failed after password change',
           {
-            code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
+            code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
             cause: err instanceof Error ? err : new Error(String(err)),
           },
         );

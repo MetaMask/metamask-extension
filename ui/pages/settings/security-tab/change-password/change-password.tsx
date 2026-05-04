@@ -3,15 +3,14 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from 'react';
+import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import {
-  type PasskeyAuthenticationResponse,
-  PasskeyControllerErrorCode,
-} from '@metamask/passkey-controller';
+import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   Box,
   Button,
@@ -34,12 +33,18 @@ import {
 import { isBeta, isFlask } from '../../../../../shared/lib/build-types';
 import Mascot from '../../../../components/ui/mascot';
 import Spinner from '../../../../components/ui/spinner';
+import ToggleButton from '../../../../components/ui/toggle-button';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
+  isPasskeyCeremonySilentError,
+  translatePasskeyError,
 } from '../../../../../shared/lib/passkey';
-import { getPasskeyControllerErrorCode } from '../../../../../shared/lib/passkey/passkey-error';
+import {
+  ExtensionPasskeyErrorCode,
+  getPasskeyControllerErrorCode,
+} from '../../../../../shared/lib/passkey/passkey-error';
 import {
   changePassword,
   changePasswordWithPasskeyVerification,
@@ -117,17 +122,8 @@ const ChangePassword = ({
     useState(false);
   const [passkeyAuthenticationResponse, setPasskeyAuthenticationResponse] =
     useState<PasskeyAuthenticationResponse | null>(null);
-
-  const isSidePanel =
-    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
-
-  const openChangePasswordInFullScreen = useCallback(() => {
-    cancelPasskeyCeremony();
-    globalThis.platform?.openExtensionInBrowser?.(
-      SECURITY_PASSWORD_CHANGE_V2_ROUTE,
-      'from=sidepanel',
-    );
-  }, []);
+  const [isPasskeyRenewalEnabled, setIsPasskeyRenewalEnabled] =
+    useState(false);
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -161,28 +157,31 @@ const ChangePassword = ({
 
   const onChangePassword = async () => {
     let isPasskeyRenewalSuccessful = false;
+    const attemptedPasskeyRenewal =
+      isPasskeyRegistered &&
+      isPasskeyFeatureAvailable &&
+      isPasskeyRenewalEnabled &&
+      passkeyAuthenticationResponse !== null;
+
     try {
       setShowChangePasswordWarning(false);
       setStep(ChangePasswordSteps.ChangePasswordLoading);
 
       if (isSocialLoginFlow) {
         await dispatch(changePassword(newPassword, currentPassword));
-      } else if (
-        isPasskeyRegistered &&
-        passkeyAuthenticationResponse !== null
-      ) {
+      } else if (attemptedPasskeyRenewal) {
         try {
           await dispatch(
             changePasswordWithPasskeyVerification(
               newPassword,
               passkeyAuthenticationResponse,
             ),
-          )
+          );
           isPasskeyRenewalSuccessful = true;
         } catch (error) {
           const passkeyCode = getPasskeyControllerErrorCode(error);
           // strictly treat vault key renewal failure as a password change success
-          if (passkeyCode !== PasskeyControllerErrorCode.VaultKeyRenewalFailed) {
+          if (passkeyCode !== ExtensionPasskeyErrorCode.VaultKeyRenewalFailed) {
             throw error;
           }
         }
@@ -210,7 +209,7 @@ const ChangePassword = ({
       // upon successful password change, go back to the settings page
       navigate(redirectRoute);
       const messageKey =
-        passkeyAuthenticationResponse && !isPasskeyRenewalSuccessful
+        attemptedPasskeyRenewal && !isPasskeyRenewalSuccessful
           ? 'securityChangePasswordToastPasskeyRenewalFailed'
           : 'securityChangePasswordToastSuccess';
       toast.success(
@@ -270,6 +269,45 @@ const ChangePassword = ({
     [],
   );
 
+  const performPasskeyAuthentication = useCallback(async () => {
+    setIsVerifyingPasskey(true);
+    try {
+      const authOptions = await generatePasskeyAuthenticationOptions();
+      const response = await startPasskeyAuthentication(authOptions);
+      return response;
+    } catch (error: unknown) {
+      if (isPasskeyCeremonySilentError(error)) {
+        log.debug(
+          'Passkey authentication from change-password toggle cancelled or timed out',
+          error,
+        );
+      } else {
+        toast.error(
+          <ToastContent
+            title={
+              translatePasskeyError(error, t as (key: string) => string) ??
+              t('passkeyErrorVerificationFailed')
+            }
+          />,
+          { duration: autoHideToastDelay },
+        );
+      }
+      return null;
+    } finally {
+      setIsVerifyingPasskey(false);
+    }
+  }, [t]);
+
+  const isSidePanel =
+    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+
+  const openChangePasswordInFullScreen = useCallback(() => {
+    globalThis.platform?.openExtensionInBrowser?.(
+      SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+      'from=sidepanel',
+    );
+  }, []);
+
   // When a passkey is already enrolled, verify with WebAuthn on the dedicated step before new password.
   useEffect(() => {
     if (
@@ -283,35 +321,42 @@ const ChangePassword = ({
     let aborted = false;
 
     (async () => {
-      setIsVerifyingPasskey(true);
       try {
-        const authOptions = await generatePasskeyAuthenticationOptions();
-        const response = await startPasskeyAuthentication(authOptions);
+        const response = await performPasskeyAuthentication();
         if (aborted) {
           return;
         }
         setPasskeyAuthenticationResponse(response);
-        setStep(ChangePasswordSteps.ChangePassword);
-        setIsVerifyingPasskey(false);
+        setIsPasskeyRenewalEnabled(Boolean(response));
+        setCurrentPassword('');
+
+        if (response) {
+          setStep(ChangePasswordSteps.ChangePassword);
+        } else {
+          setStep(ChangePasswordSteps.VerifyCurrentPassword);
+        }
       } catch {
         if (aborted) {
           return;
         }
         setPasskeyAuthenticationResponse(null);
+        setIsPasskeyRenewalEnabled(false);
         setCurrentPassword('');
         setStep(ChangePasswordSteps.VerifyCurrentPassword);
-        setIsVerifyingPasskey(false);
       }
-    })().catch(() => {
-      /* Errors are handled in try/catch above */
-    });
+    })();
 
     return () => {
       aborted = true;
       cancelPasskeyCeremony();
       setIsVerifyingPasskey(false);
     };
-  }, [isPasskeyActive, passkeyAuthenticationResponse, step]);
+  }, [
+    isPasskeyActive,
+    passkeyAuthenticationResponse,
+    step,
+    performPasskeyAuthentication,
+  ]);
 
   const handleUseVerifyPassword = useCallback(() => {
     cancelPasskeyCeremony();
@@ -319,6 +364,35 @@ const ChangePassword = ({
     setPasskeyAuthenticationResponse(null);
     setStep(ChangePasswordSteps.VerifyCurrentPassword);
   }, []);
+
+  const handlePasskeyToggle = useCallback(
+    async (wasPasskeyRenewalEnabled: boolean) => {
+      if (!isPasskeyActive || isVerifyingPasskey) {
+        return;
+      }
+
+      const willEnablePasskeyRenewal = !wasPasskeyRenewalEnabled;
+      if (!willEnablePasskeyRenewal) {
+        setIsPasskeyRenewalEnabled(false);
+        return;
+      }
+
+      if (passkeyAuthenticationResponse !== null) {
+        setIsPasskeyRenewalEnabled(true);
+        return;
+      }
+
+      const response = await performPasskeyAuthentication();
+      setPasskeyAuthenticationResponse(response);
+      setIsPasskeyRenewalEnabled(Boolean(response));
+    },
+    [
+      isPasskeyActive,
+      isVerifyingPasskey,
+      passkeyAuthenticationResponse,
+      performPasskeyAuthentication,
+    ],
+  );
 
   return (
     <Box padding={4} className="change-password">
@@ -452,6 +526,42 @@ const ChangePassword = ({
                 pwdInputTestId="change-password-input"
                 confirmPwdInputTestId="change-password-confirm-input"
               />
+              {isPasskeyActive ? (
+                <Box
+                  marginTop={6}
+                  marginBottom={12}
+                  flexDirection={BoxFlexDirection.Column}
+                  gap={1}
+                >
+                  <Box
+                    flexDirection={BoxFlexDirection.Row}
+                    justifyContent={BoxJustifyContent.Between}
+                    alignItems={BoxAlignItems.Center}
+                  >
+                    <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+                      {t('unlockWithPasskey')}
+                    </Text>
+                    <ToggleButton
+                      value={isPasskeyRenewalEnabled}
+                      onToggle={handlePasskeyToggle}
+                      dataTestId="change-password-enable-passkey"
+                      containerStyle={{ width: '40px' }}
+                      disabled={isVerifyingPasskey}
+                    />
+                  </Box>
+                  {isSidePanel && isVerifyingPasskey ? (
+                    <TextButton
+                      type="button"
+                      data-testid="change-password-passkey-toggle-open-full-screen"
+                      color={TextColor.PrimaryDefault}
+                      className="mt-2 flex w-full justify-start text-left"
+                      onClick={openChangePasswordInFullScreen}
+                    >
+                      {t('passkeyTroubleshoot')}
+                    </TextButton>
+                  ) : null}
+                </Box>
+              ) : null}
               <Box
                 className="create-password__terms-container"
                 flexDirection={BoxFlexDirection.Row}
@@ -480,7 +590,10 @@ const ChangePassword = ({
             <Button
               type="submit"
               disabled={
-                (!currentPassword && !passkeyAuthenticationResponse)  || !newPassword || !termsChecked
+                (!passkeyAuthenticationResponse && !currentPassword) ||
+                !newPassword ||
+                !termsChecked ||
+                isVerifyingPasskey
               }
               data-testid="change-password-button"
               className="w-full"

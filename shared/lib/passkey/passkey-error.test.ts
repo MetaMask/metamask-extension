@@ -2,6 +2,7 @@ import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { JsonRpcError } from '@metamask/rpc-errors';
 
 import {
+  ExtensionPasskeyErrorCode,
   getPasskeyControllerErrorCode,
   translatePasskeyError,
 } from './passkey-error';
@@ -111,10 +112,10 @@ describe('translatePasskeyError', () => {
     ).toBe('t:passkeyUnlockFailed');
   });
 
-  it('maps vault key renewal failed code', () => {
+  it('maps extension vault key renewal failed code', () => {
     expect(
       translatePasskeyError(
-        { code: PasskeyControllerErrorCode.VaultKeyRenewalFailed },
+        { code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed },
         t,
       ),
     ).toBe('t:passkeyErrorVaultKeyRenewalFailed');
@@ -122,23 +123,23 @@ describe('translatePasskeyError', () => {
 });
 
 describe('getPasskeyControllerErrorCode', () => {
-  it('reads root string code', () => {
+  it('reads root string code for extension vault key renewal', () => {
     expect(
       getPasskeyControllerErrorCode({
-        code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
+        code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
       }),
-    ).toBe(PasskeyControllerErrorCode.VaultKeyRenewalFailed);
+    ).toBe(ExtensionPasskeyErrorCode.VaultKeyRenewalFailed);
   });
 
-  it('reads MetaRPC-style data.cause.code', () => {
+  it('reads MetaRPC-style data.cause.code for extension vault key renewal', () => {
     const err = new JsonRpcError(-32603, 'internal error', {
       cause: {
         name: 'PasskeyControllerError',
-        code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
+        code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
       },
     });
     expect(getPasskeyControllerErrorCode(err)).toBe(
-      PasskeyControllerErrorCode.VaultKeyRenewalFailed,
+      ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
     );
   });
 
@@ -148,7 +149,7 @@ describe('getPasskeyControllerErrorCode', () => {
         code: PasskeyControllerErrorCode.NotEnrolled,
         data: {
           cause: {
-            code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
+            code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
           },
         },
       }),

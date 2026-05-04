@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
+import { ExtensionPasskeyErrorCode } from '../../../../../shared/lib/passkey/passkey-error';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -203,7 +203,7 @@ describe('ChangePassword', () => {
       );
     });
 
-    it('does not show the passkey biometrics toggle on change password', async () => {
+    it('does not show the passkey unlock toggle on change password', async () => {
       const { getByTestId, queryByTestId } = renderWithProvider(
         <ChangePassword />,
         mockStore,
@@ -212,7 +212,7 @@ describe('ChangePassword', () => {
       await advanceToChangePasswordStep(getByTestId);
 
       expect(
-        queryByTestId('change-password-enable-biometrics'),
+        queryByTestId('change-password-enable-passkey'),
       ).not.toBeInTheDocument();
     });
   });
@@ -423,7 +423,7 @@ describe('ChangePassword', () => {
       });
     });
 
-    it('shows a loader and biometrics confirmation copy while passkey verification runs', () => {
+    it('shows a loader and passkey confirmation copy while passkey verification runs', () => {
       const { getByTestId, getByText } = renderWithProvider(
         <ChangePassword />,
         mockStore,
@@ -451,6 +451,132 @@ describe('ChangePassword', () => {
       });
       await waitFor(() => {
         expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+    });
+
+    it('shows unlock with passkey toggle when passkey assertion is cached, defaulting renewal on', async () => {
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+
+      const toggle = getByTestId('change-password-enable-passkey');
+      expect(toggle).toBeInTheDocument();
+      await waitFor(() => {
+        expect(toggle.closest('label')).toHaveClass('toggle-button--on');
+      });
+    });
+
+    it('turning renewal off does not trigger another passkey ceremony', async () => {
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+
+      const authCallsAfterVerify = (startPasskeyAuthentication as jest.Mock).mock
+        .calls.length;
+
+      const toggle = getByTestId('change-password-enable-passkey');
+      await waitFor(() => {
+        expect(toggle.closest('label')).toHaveClass('toggle-button--on');
+      });
+
+      fireEvent.click(toggle);
+
+      await waitFor(() => {
+        expect(toggle.closest('label')).toHaveClass('toggle-button--off');
+      });
+
+      expect(jest.mocked(startPasskeyAuthentication).mock.calls.length).toBe(
+        authCallsAfterVerify,
+      );
+    });
+
+    it('turning renewal back on with a cached assertion does not trigger another passkey ceremony', async () => {
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+
+      const authCallsAfterVerify = (startPasskeyAuthentication as jest.Mock).mock
+        .calls.length;
+
+      const toggle = getByTestId('change-password-enable-passkey');
+      await waitFor(() => {
+        expect(toggle.closest('label')).toHaveClass('toggle-button--on');
+      });
+
+      fireEvent.click(toggle);
+
+      await waitFor(() => {
+        expect(toggle.closest('label')).toHaveClass('toggle-button--off');
+      });
+
+      fireEvent.click(toggle);
+
+      await waitFor(() => {
+        expect(toggle.closest('label')).toHaveClass('toggle-button--on');
+      });
+
+      expect(jest.mocked(startPasskeyAuthentication).mock.calls.length).toBe(
+        authCallsAfterVerify,
+      );
+    });
+
+    it('shows unlock with passkey toggle after passkey failure fallback reaches new password', async () => {
+      (startPasskeyAuthentication as jest.Mock).mockRejectedValueOnce(
+        new Error('cancelled'),
+      );
+
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(getByTestId('verify-current-password-input')).toBeInTheDocument();
+      });
+
+      fireEvent.change(getByTestId('verify-current-password-input'), {
+        target: { value: mockPassword },
+      });
+      fireEvent.click(getByTestId('verify-current-password-button'));
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-enable-passkey')).toBeInTheDocument();
+      });
+    });
+
+    it('runs passkey authentication when turning unlock with passkey on with no cached assertion', async () => {
+      (startPasskeyAuthentication as jest.Mock).mockRejectedValueOnce(
+        new Error('cancelled'),
+      );
+
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(getByTestId('verify-current-password-input')).toBeInTheDocument();
+      });
+
+      fireEvent.change(getByTestId('verify-current-password-input'), {
+        target: { value: mockPassword },
+      });
+      fireEvent.click(getByTestId('verify-current-password-button'));
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-enable-passkey')).toBeInTheDocument();
+      });
+
+      const authCallsBeforeToggle = (startPasskeyAuthentication as jest.Mock).mock.calls
+        .length;
+
+      (startPasskeyAuthentication as jest.Mock).mockResolvedValue(mockAssertion);
+      fireEvent.click(getByTestId('change-password-enable-passkey'));
+
+      await waitFor(() => {
+        expect(
+          jest.mocked(startPasskeyAuthentication).mock.calls.length,
+        ).toBeGreaterThan(authCallsBeforeToggle);
       });
     });
 
@@ -522,6 +648,65 @@ describe('ChangePassword', () => {
       });
     });
 
+    it('with renewal disabled after enabling toggle, saves with password and does not call passkey password change', async () => {
+      (startPasskeyAuthentication as jest.Mock).mockRejectedValueOnce(
+        new Error('cancelled'),
+      );
+
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(getByTestId('verify-current-password-input')).toBeInTheDocument();
+      });
+
+      fireEvent.change(getByTestId('verify-current-password-input'), {
+        target: { value: mockPassword },
+      });
+      fireEvent.click(getByTestId('verify-current-password-button'));
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-enable-passkey')).toBeInTheDocument();
+      });
+
+      (startPasskeyAuthentication as jest.Mock).mockResolvedValue(mockAssertion);
+      fireEvent.click(getByTestId('change-password-enable-passkey'));
+
+      await waitFor(() => {
+        expect(
+          getByTestId('change-password-enable-passkey').closest('label'),
+        ).toHaveClass('toggle-button--on');
+      });
+
+      fireEvent.click(getByTestId('change-password-enable-passkey'));
+
+      await waitFor(() => {
+        expect(
+          getByTestId('change-password-enable-passkey').closest('label'),
+        ).toHaveClass('toggle-button--off');
+      });
+
+      fireEvent.change(getByTestId('change-password-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.change(getByTestId('change-password-confirm-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.click(getByTestId('change-password-terms'));
+      fireEvent.click(getByTestId('change-password-button'));
+
+      await waitFor(() => {
+        expect(mockChangePassword).toHaveBeenCalledWith(
+          mockNewPassword,
+          mockPassword,
+        );
+        expect(mockRemovePasskeyWithPasswordVerification).toHaveBeenCalledWith(
+          mockNewPassword,
+        );
+        expect(mockChangePasswordWithPasskeyVerification).not.toHaveBeenCalled();
+        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+      });
+    });
+
     it('removes passkey only after successful password change on passkey failure fallback', async () => {
       (startPasskeyAuthentication as jest.Mock).mockRejectedValueOnce(
         new Error('cancelled'),
@@ -569,7 +754,7 @@ describe('ChangePassword', () => {
       });
     });
 
-    it('saves with passkey verification when biometrics stay enabled', async () => {
+    it('saves with passkey verification when passkey unlock stays enabled', async () => {
       const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
 
       await waitFor(() => {
@@ -600,7 +785,7 @@ describe('ChangePassword', () => {
         data: {
           cause: {
             name: 'PasskeyControllerError',
-            code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
+            code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
           },
         },
       });
