@@ -112,13 +112,6 @@ describe('PasskeyTurnOffSubPage', () => {
 
     await waitFor(() => {
       expect(mockVerifyPassword).toHaveBeenCalledWith('test-password');
-    });
-
-    expect(getByTestId('turn-off-passkey-description')).toBeInTheDocument();
-
-    fireEvent.click(getByTestId('turn-off-passkey-confirm-button'));
-
-    await waitFor(() => {
       expect(mockRemovePasskeyWithPasswordVerification).toHaveBeenCalledWith(
         'test-password',
       );
@@ -152,14 +145,10 @@ describe('PasskeyTurnOffSubPage', () => {
     fireEvent.click(getByTestId('turn-off-passkey-verify-continue-button'));
 
     await waitFor(() => {
-      expect(
-        getByTestId('turn-off-passkey-confirm-button'),
-      ).toBeInTheDocument();
-    });
-
-    fireEvent.click(getByTestId('turn-off-passkey-confirm-button'));
-
-    await waitFor(() => {
+      expect(mockVerifyPassword).toHaveBeenCalledWith('test-password');
+      expect(mockRemovePasskeyWithPasswordVerification).toHaveBeenCalledWith(
+        'test-password',
+      );
       expect(mockToastError).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate).toHaveBeenCalledWith(
         SECURITY_AND_PASSWORD_ROUTE,

@@ -5369,9 +5369,6 @@
   "turnOffPasskey": {
     "message": "Turn off biometrics"
   },
-  "turnOffPasskeyDescription": {
-    "message": "Use your MetaMask password to unlock MetaMask on this device instead of Face ID or your fingerprint."
-  },
   "turnOffPasskeyFailed": {
     "message": "We couldn't turn off biometrics. Try again."
   },
