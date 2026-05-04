@@ -1,4 +1,7 @@
-import { StaticAssetsController } from '../controllers/static-assets-controller';
+import {
+  StaticAssetsController,
+  StaticAssetsControllerMessenger,
+} from '../controllers/static-assets-controller';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -6,7 +9,6 @@ import {
   getStaticAssetsControllerInitMessenger,
   getStaticAssetsControllerMessenger,
   StaticAssetsControllerInitMessenger,
-  StaticAssetsControllerMessenger,
 } from './messengers';
 import { StaticAssetsControllerInit } from './static-assets-controller-init';
 

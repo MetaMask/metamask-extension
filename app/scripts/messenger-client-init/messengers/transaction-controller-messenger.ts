@@ -13,6 +13,7 @@ import {
 } from '@metamask/bridge-status-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import {
+  KeyringControllerGetStateAction,
   KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
@@ -120,6 +121,7 @@ type InitMessengerActions =
   | DelegationControllerSignDelegationAction
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
+  | KeyringControllerGetStateAction
   | KeyringControllerSignEip7702AuthorizationAction
   | KeyringControllerSignTypedMessageAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
@@ -199,6 +201,7 @@ export function getTransactionControllerInitMessenger(
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',
+      'KeyringController:getState',
       'KeyringController:signEip7702Authorization',
       'KeyringController:signTypedMessage',
       'NetworkController:findNetworkClientIdByChainId',
