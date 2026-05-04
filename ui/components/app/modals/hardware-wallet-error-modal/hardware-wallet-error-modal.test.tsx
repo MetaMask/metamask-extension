@@ -15,9 +15,7 @@ import {
   type HardwareWalletError as HardwareWalletErrorType,
 } from '@metamask/hw-wallet-sdk';
 import { getMockContractInteractionConfirmState } from '../../../../../test/data/confirmations/helper';
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-} from '../../../../../shared/constants/app';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -550,6 +548,7 @@ describe('HardwareWalletErrorModal', () => {
         expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledTimes(1);
         expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledWith(
           expect.any(Function),
+          null,
         );
       });
 
@@ -571,6 +570,7 @@ describe('HardwareWalletErrorModal', () => {
         expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledTimes(1);
         expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledWith(
           expect.any(Function),
+          null,
         );
       });
 

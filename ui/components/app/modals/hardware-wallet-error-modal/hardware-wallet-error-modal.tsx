@@ -59,6 +59,7 @@ import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../../../contexts/hardware-wallets';
+import { useBridgeRedirectQueryString } from '../../../../hooks/bridge/useBridgeRedirectQueryString';
 import {
   getChromiumExtensionCameraSiteSettingsUrl,
   getMozExtensionOriginForDisplay,
@@ -122,10 +123,12 @@ function renderQrCameraFlowContent({
   errorCode,
   onRetry,
   isLoading,
+  redirectQueryString,
 }: {
   errorCode: ErrorCode | undefined;
   onRetry: () => Promise<void>;
   isLoading: boolean;
+  redirectQueryString?: string | null;
 }): React.JSX.Element {
   const handleOpenSettings = () => {
     globalThis.platform.openTab({
@@ -133,7 +136,8 @@ function renderQrCameraFlowContent({
     });
   };
 
-  const handleContinue = () => handleContinueWithPermissionCheck(onRetry);
+  const handleContinue = () =>
+    handleContinueWithPermissionCheck(onRetry, redirectQueryString);
 
   if (shouldShowQrCameraBlockedVariant(errorCode)) {
     return (
@@ -196,6 +200,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
     const { ensureDeviceReady, clearError, setConnectionReady } =
       useHardwareWalletActions();
+    const getRedirectQueryString = useBridgeRedirectQueryString();
 
     // Prefer `walletType` from error metadata first (e.g. signature flows where the signing
     // account may differ from the selected account). Read both top-level `metadata` and RPC-style
@@ -547,6 +552,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                   errorCode: error.code,
                   onRetry: handleRetry,
                   isLoading,
+                  redirectQueryString: getRedirectQueryString(),
                 })}
               {!isQrCameraFlow && standardErrorContent ? (
                 <>

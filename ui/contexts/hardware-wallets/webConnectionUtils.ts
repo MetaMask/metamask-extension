@@ -545,14 +545,19 @@ export function isRestrictedCameraEnvironment(): boolean {
  * Opens the current page in a fullscreen tab, preserving the hash route so
  * the user lands on the exact same confirmation / transaction screen.
  *
- * Transaction parameters are not transferred via URL — they live in background
- * controller state which is shared across all extension contexts.
+ * For most flows (e.g. Send) transaction parameters live in background
+ * controller state and survive the context switch automatically. Flows whose
+ * form data is stored in UI-only Redux (e.g. Swap / Bridge) must supply a
+ * `queryString` so the fullscreen tab can restore the values via deep-link
+ * query parameters.
+ *
+ * @param queryString - Optional query string appended to the fullscreen URL.
  */
-export function redirectToFullscreen(): void {
+export function redirectToFullscreen(queryString?: string | null): void {
   const currentUrl = new URL(globalThis.location.href);
   const currentHash = currentUrl.hash;
   const currentRoute = currentHash ? currentHash.substring(1) : null;
-  globalThis.platform.openExtensionInBrowser(currentRoute);
+  globalThis.platform.openExtensionInBrowser(currentRoute, queryString ?? null);
 }
 
 /**
@@ -560,9 +565,13 @@ export function redirectToFullscreen(): void {
  * based on the current camera permission state and the extension environment.
  *
  * @param onRetry - The default retry handler (e.g. calls `ensureDeviceReady`).
+ * @param redirectQueryString - Optional query string forwarded to the
+ * fullscreen tab so flows with UI-only state (Swap / Bridge) can restore
+ * their form parameters via deep-link query params.
  */
 export async function handleContinueWithPermissionCheck(
   onRetry: () => Promise<void>,
+  redirectQueryString?: string | null,
 ): Promise<void> {
   let permissionState: PermissionState;
   try {
@@ -579,11 +588,10 @@ export async function handleContinueWithPermissionCheck(
 
   if (permissionState === CameraPermissionState.Prompt) {
     if (isRestrictedCameraEnvironment()) {
-      redirectToFullscreen();
+      redirectToFullscreen(redirectQueryString);
     } else {
       await onRetry();
     }
-    return;
   }
 
   // Permission is still denied — user hasn't changed settings yet.
