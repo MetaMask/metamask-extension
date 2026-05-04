@@ -151,6 +151,25 @@ describe('EditMarginModalContent', () => {
     ).toHaveTextContent('--');
   });
 
+  it('formats unavailable liquidation price distance as unavailable', () => {
+    mockUsePerpsMarginCalculations.mockReturnValue({
+      ...mockMarginCalculations,
+      anchorLiquidationPrice: null,
+      anchorLiquidationDistance: 0,
+      estimatedLiquidationPrice: null,
+      estimatedLiquidationDistance: null,
+    });
+
+    renderWithProvider(<EditMarginModalContent {...defaultProps} />, mockStore);
+
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
+    ).toHaveTextContent('--');
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-price-value'),
+    ).toHaveTextContent('--');
+  });
+
   describe('auto-focus and select-all', () => {
     it('auto-focuses the margin amount input on mount', () => {
       renderWithProvider(

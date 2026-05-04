@@ -215,11 +215,11 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         return '--';
       }
 
-      if (
-        liquidationPrice !== undefined &&
-        liquidationPrice !== null &&
-        liquidationPrice <= 0
-      ) {
+      if (liquidationPrice === undefined || liquidationPrice === null) {
+        return '--';
+      }
+
+      if (liquidationPrice <= 0) {
         return '--';
       }
 
