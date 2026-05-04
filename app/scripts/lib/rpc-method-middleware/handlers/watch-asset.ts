@@ -15,8 +15,10 @@ export type HandleWatchAssetRequest = (
 
 type WatchAssetParams = { options: { tokenId: string }; type: string };
 
+type RequestExtras = Partial<{ origin: string; networkClientId: string }>;
+
 export type WatchAssetRequest = JsonRpcRequest<WatchAssetParams> &
-  Partial<{ origin: string; networkClientId: string }>;
+  RequestExtras;
 
 export type WatchAssetHooks = {
   handleWatchAssetRequest: HandleWatchAssetRequest;
@@ -27,7 +29,7 @@ type WatchAssetConstraint = MethodHandler<
   never,
   WatchAssetParams,
   true,
-  Partial<{ origin: string; networkClientId: string }>
+  RequestExtras
 >;
 
 export const watchAssetHandler = {

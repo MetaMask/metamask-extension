@@ -3,11 +3,7 @@ import { rpcErrors } from '@metamask/rpc-errors';
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import { PendingJsonRpcResponse } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import {
-  HandleWatchAssetRequest,
-  watchAssetHandler,
-  WatchAssetRequest,
-} from './watch-asset';
+import { HandleWatchAssetRequest, watchAssetHandler } from './watch-asset';
 
 describe('watchAssetHandler', () => {
   let mockEnd: jest.MockedFunction<JsonRpcEngineEndCallback>;
@@ -96,7 +92,7 @@ describe('watchAssetHandler', () => {
       jsonrpc: '2.0' as const,
       method: MESSAGE_TYPE.WATCH_ASSET,
       origin: 'testOrigin',
-    } as WatchAssetRequest;
+    };
 
     const res = {
       id: '1',
@@ -125,13 +121,14 @@ describe('watchAssetHandler', () => {
       },
       origin: 'testOrigin',
       networkClientId: 'networkClientId1',
-    } as unknown as WatchAssetRequest;
+    };
 
     const res = {
       id: '1',
       jsonrpc: '2.0' as const,
     } as PendingJsonRpcResponse<true>;
 
+    // @ts-expect-error: Destructive testing
     await watchAssetHandler.implementation(req, res, () => undefined, mockEnd, {
       handleWatchAssetRequest: mockHandleWatchAssetRequest,
     });
