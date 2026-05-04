@@ -224,9 +224,9 @@ jest.mock('../../permissions-connect/connect-page/utils', () => ({
 
 jest.mock('../../../../shared/lib/multichain/scope-utils', () => ({
   getCaip25AccountFromAccountGroupAndScope: jest.fn(() => ['eip155:1:0x123']),
-  getCaip25AccountIdsFromAccountGroupAndScope: jest.fn(
-    () => ['eip155:1:0x123'],
-  ),
+  getCaip25AccountIdsFromAccountGroupAndScope: jest.fn(() => [
+    'eip155:1:0x123',
+  ]),
 }));
 
 const mockGetCaip25CaveatValueFromPermissions = jest.requireMock(
@@ -1591,8 +1591,7 @@ describe('MultichainConnectPage', () => {
       );
 
       mockGetAllScopesFromCaip25CaveatValue.mockImplementation(
-        (value: unknown) =>
-          value === existingCaveatValue ? ['eip155:1'] : [],
+        (value: unknown) => (value === existingCaveatValue ? ['eip155:1'] : []),
       );
       mockGetAllNamespacesFromCaip25CaveatValue.mockReturnValue([]);
 
@@ -1662,9 +1661,7 @@ describe('MultichainConnectPage', () => {
       // Should render without throwing even when no account groups are
       // available. Header text from the page is still present.
       const { getByText } = render();
-      expect(
-        getByText(messages.connectionDescription.message),
-      ).toBeDefined();
+      expect(getByText(messages.connectionDescription.message)).toBeDefined();
     });
 
     it('defaults to the first supported account group when no specific accounts are requested', () => {
@@ -1672,7 +1669,8 @@ describe('MultichainConnectPage', () => {
       // into the `requestedCaipAccountIds.length === 0` branch and selects the
       // first supportedAccountGroup as the default.
       const firstGroup =
-        DEFAULT_USE_ACCOUNT_GROUPS_FOR_PERMISSIONS_RESULT.supportedAccountGroups[0];
+        DEFAULT_USE_ACCOUNT_GROUPS_FOR_PERMISSIONS_RESULT
+          .supportedAccountGroups[0];
       mockUseAccountGroupsForPermissions.mockImplementation(() => ({
         ...DEFAULT_USE_ACCOUNT_GROUPS_FOR_PERMISSIONS_RESULT,
         connectedAccountGroups: [],
@@ -1689,9 +1687,7 @@ describe('MultichainConnectPage', () => {
       const caipPermission = jest.requireMock(
         '@metamask/chain-agnostic-permission',
       );
-      caipPermission.getCaipAccountIdsFromCaip25CaveatValue.mockReturnValue(
-        [],
-      );
+      caipPermission.getCaipAccountIdsFromCaip25CaveatValue.mockReturnValue([]);
 
       render();
 
@@ -1722,9 +1718,7 @@ describe('MultichainConnectPage', () => {
       // Should render the page successfully using the
       // selectedAndRequestedAccountGroups path.
       const { getByText } = render();
-      expect(
-        getByText(messages.connectionDescription.message),
-      ).toBeDefined();
+      expect(getByText(messages.connectionDescription.message)).toBeDefined();
     });
 
     it('invokes handleAccountGroupIdsSelected (filters supportedAccountGroups by the selected ids) when the edit accounts modal is submitted', () => {
