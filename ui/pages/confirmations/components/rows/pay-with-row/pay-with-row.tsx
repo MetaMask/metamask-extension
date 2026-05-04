@@ -113,7 +113,12 @@ export function PayWithRow({
   }, []);
 
   const firstRequiredToken = requiredTokens?.[0];
-  const displayToken = payToken ?? firstRequiredToken;
+  // For perps withdraw the required token (ARBITRUM_USDC, set on the
+  // placeholder `transfer(USDC, 0)` tx) is NOT a sensible fallback for the
+  // "Receive" pill — it flashes the wrong token before
+  // `useAutomaticTransactionPayToken` resolves the user's last-used / default
+  // destination. Show a skeleton instead until `payToken` lands.
+  const displayToken = payToken ?? (isPerpsWithdraw ? undefined : firstRequiredToken);
 
   const balanceUsdFormatted = useMemo(
     () =>
@@ -122,6 +127,9 @@ export function PayWithRow({
   );
 
   if (!displayToken?.chainId) {
+    if (isPerpsWithdraw) {
+      return <PayWithRowSkeleton />;
+    }
     return null;
   }
 

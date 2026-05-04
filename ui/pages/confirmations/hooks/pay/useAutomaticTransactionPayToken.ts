@@ -1,8 +1,11 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { getHardwareWalletType } from '../../../../selectors';
+import { isPerpsWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
 import { Asset } from '../../types/send';
+import { useConfirmContext } from '../../context/confirm';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -15,10 +18,17 @@ export function useAutomaticTransactionPayToken({
   disable?: boolean;
   preferredToken?: SetPayTokenRequest;
 } = {}) {
-  const isUpdated = useRef(false);
-  const { setPayToken } = useTransactionPayToken();
+  // Track which transactionId we already auto-selected for so navigating away
+  // and back to the same confirmation doesn't dispatch again, but a new
+  // confirmation gets a fresh selection. Mirrors mobile's per-id guard.
+  const isUpdated = useRef<string | undefined>(undefined);
+  const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
   const tokens = useTransactionPayAvailableTokens();
+
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const transactionId = currentConfirmation?.id;
+  const isWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   const tokensWithBalance = useMemo(
     () => tokens.filter((t) => !t.disabled),
@@ -36,13 +46,24 @@ export function useAutomaticTransactionPayToken({
     [requiredTokens],
   );
 
-  useEffect(() => {
-    if (disable || isUpdated.current) {
+  // `useLayoutEffect` so the dispatch lands before the browser paints the
+  // first frame. Without this, perpsWithdraw briefly shows the required token
+  // (USDC) and then flashes to the auto-picked highest-balance token (e.g.
+  // ETH) on the next commit. Layout effects + Redux's batched updates collapse
+  // both renders into a single paint.
+  useLayoutEffect(() => {
+    if (
+      disable ||
+      payToken ||
+      !transactionId ||
+      isUpdated.current === transactionId
+    ) {
       return;
     }
 
     const automaticToken = getBestToken({
       isHardwareWallet,
+      isWithdraw,
       targetToken,
       tokens: tokensWithBalance,
       preferredToken,
@@ -57,25 +78,30 @@ export function useAutomaticTransactionPayToken({
       chainId: automaticToken.chainId,
     });
 
-    isUpdated.current = true;
+    isUpdated.current = transactionId;
   }, [
     disable,
     isHardwareWallet,
+    isWithdraw,
+    payToken,
     preferredToken,
     requiredTokens,
     setPayToken,
     targetToken,
     tokensWithBalance,
+    transactionId,
   ]);
 }
 
 function getBestToken({
   isHardwareWallet,
+  isWithdraw,
   preferredToken,
   targetToken,
   tokens,
 }: {
   isHardwareWallet: boolean;
+  isWithdraw: boolean;
   preferredToken?: SetPayTokenRequest;
   targetToken?: { address: Hex; chainId: Hex };
   tokens: Asset[];
@@ -89,6 +115,15 @@ function getBestToken({
 
   if (isHardwareWallet) {
     return targetTokenFallback;
+  }
+
+  // For withdraws the preferred token is the DESTINATION (where funds arrive),
+  // not the source — the user usually has no wallet balance of it. Honour the
+  // explicit selection regardless of `availableTokens`. Mirrors mobile's
+  // `isWithdraw && lastWithdrawToken` branch in
+  // `useAutomaticTransactionPayToken`.
+  if (isWithdraw && preferredToken) {
+    return preferredToken;
   }
 
   if (preferredToken) {
