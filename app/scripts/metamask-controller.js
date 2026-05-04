@@ -3527,16 +3527,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:enableSnap',
       ),
-      updateSnap: (origin, requestedSnaps) => {
-        // We deliberately do not await this promise as that would mean waiting for the update to complete
-        // Instead we return null to signal to the UI that it is safe to redirect to the update flow
-        this.controllerMessenger.call(
-          'SnapController:installSnaps',
-          origin,
-          requestedSnaps,
-        );
-        return null;
-      },
       removeSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:removeSnap',

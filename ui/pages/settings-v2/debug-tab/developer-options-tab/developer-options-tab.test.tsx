@@ -2,8 +2,8 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import mockState from '../../../../../test/data/mock-state.json';
 import DeveloperOptionsTab from '.';
 
 const mockSetServiceWorkerKeepAlivePreference = jest.fn().mockReturnValue({
@@ -29,18 +29,18 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
-jest.mock('../../../store/actions.ts', () => ({
+jest.mock('../../../../store/actions.ts', () => ({
   setServiceWorkerKeepAlivePreference: () =>
     mockSetServiceWorkerKeepAlivePreference,
   perpsToggleTestnet: () => mockPerpsToggleTestnet(),
 }));
 
-jest.mock('../../../selectors', () => ({
-  ...jest.requireActual('../../../selectors'),
+jest.mock('../../../../selectors', () => ({
+  ...jest.requireActual('../../../../selectors'),
   getRemoteFeatureFlags: jest.fn(() => mockRemoteFeatureFlags),
 }));
 
-jest.mock('../../../selectors/perps-controller', () => ({
+jest.mock('../../../../selectors/perps-controller', () => ({
   selectPerpsIsTestnet: jest.fn(() => false),
 }));
 
