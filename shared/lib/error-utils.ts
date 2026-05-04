@@ -1,7 +1,11 @@
 import { memoize, escape as lodashEscape } from 'lodash';
 import type { ErrorLike } from '../constants/errors';
 import type { I18NMessageDict } from './i18n';
-import { fetchLocale, loadRelativeTimeFormatLocaleData } from './i18n';
+import {
+  fetchLocale,
+  getMessage,
+  loadRelativeTimeFormatLocaleData,
+} from './i18n';
 import getFirstPreferredLangCode from './get-first-preferred-lang-code';
 import { switchDirectionForPreferredLocale } from './switch-direction';
 
@@ -14,6 +18,10 @@ const defaultLocale = 'en';
 export type LocaleContext = {
   preferredLocale: string;
   t: (key: string) => string | undefined;
+  /** Current locale messages; used with {@link getMessage} for substituted strings. */
+  localeMessages: I18NMessageDict;
+  /** English fallback messages; used with {@link getMessage} for substituted strings. */
+  enLocaleMessages: I18NMessageDict;
 };
 
 const _setupLocale = async (
@@ -94,7 +102,7 @@ export function getErrorHtmlBase(errorBody: string): string {
  * Does not throw.
  *
  * @param currentLocale - The current locale
- * @returns A promise that resolves to an object containing the preferred locale and a translation function.
+ * @returns A promise that resolves to an object containing the preferred locale, translation function, and message dicts for getMessage when needed.
  */
 export async function maybeGetLocaleContext(
   currentLocale?: string,
@@ -105,10 +113,20 @@ export async function maybeGetLocaleContext(
     const response = await setupLocale(preferredLocale);
     const { currentLocaleMessages, enLocaleMessages } = response;
     const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
-    return { preferredLocale, t };
+    return {
+      preferredLocale,
+      t,
+      localeMessages: currentLocaleMessages,
+      enLocaleMessages,
+    };
   } catch (error) {
     console.error('Error setting up locale:', error);
-    return { preferredLocale: preferredLocale ?? 'en', t: (value) => value };
+    return {
+      preferredLocale: preferredLocale ?? 'en',
+      t: (value) => value,
+      localeMessages: {},
+      enLocaleMessages: {},
+    };
   }
 }
 
@@ -119,6 +137,7 @@ export async function maybeGetLocaleContext(
  * @param error - The error object to log.
  * @param localeContext - The MetaMask state containing the current locale and translation function.
  * @param supportLink - The support link to include in the footer.
+ * @param hasBackup - Whether a vault backup exists in IndexedDB.
  * @returns The HTML string for the critical error message.
  */
 export function getErrorHtml(
@@ -126,9 +145,11 @@ export function getErrorHtml(
   error: ErrorLike | undefined,
   localeContext: LocaleContext,
   supportLink?: string,
+  hasBackup = false,
 ): string {
   switchDirectionForPreferredLocale(localeContext.preferredLocale);
-  const { t } = localeContext;
+  const { t, preferredLocale, localeMessages, enLocaleMessages } =
+    localeContext;
 
   const legalText = `
     <span>${lodashEscape(t('errorLegalTextSummary'))}</span>
@@ -137,17 +158,62 @@ export function getErrorHtml(
     <span>${lodashEscape(t('errorLegalTextNoPersonalInfo'))}</span>
 `;
 
-  const footer = supportLink
-    ? `
-      <p class="critical-error__footer">
-        <span>${lodashEscape(t('stillGettingMessage'))}</span>
-        <a
+  const supportPromptPart = supportLink
+    ? `<span>${lodashEscape(t('stillGettingMessage'))}</span>`
+    : '';
+  const supportLinkPart = supportLink
+    ? `<a
           href="${lodashEscape(supportLink)}"
           class="critical-error__link"
           target="_blank"
-          rel="noopener noreferrer">
-            ${lodashEscape(t('errorPageContactSupport'))}
-        </a>
+          rel="noopener noreferrer">${lodashEscape(t('errorPageContactSupport'))}</a>`
+    : '';
+  const supportPart = supportLink
+    ? `${supportPromptPart} ${supportLinkPart}`.trim()
+    : '';
+
+  const restorePart = hasBackup
+    ? `<a
+          id="critical-error-restore-link"
+          class="critical-error__link"
+          href="#">${lodashEscape(t('criticalErrorAttemptRecovery'))}</a>`
+    : '';
+
+  let footerContent: string;
+  if (supportPart && restorePart) {
+    const footerSubstitutions = [
+      supportPromptPart.trim(),
+      supportLinkPart.trim(),
+      restorePart.trim(),
+    ];
+    const hardcodedFooter = `${footerSubstitutions[0]} ${footerSubstitutions[1]} or ${footerSubstitutions[2]}`;
+    let withSubstitutions: string | null | undefined;
+    try {
+      withSubstitutions =
+        (getMessage(
+          preferredLocale,
+          localeMessages,
+          'criticalErrorFooter',
+          footerSubstitutions,
+        ) as string | null) ||
+        (getMessage(
+          'en',
+          enLocaleMessages,
+          'criticalErrorFooter',
+          footerSubstitutions,
+        ) as string | null);
+    } catch {
+      withSubstitutions = null;
+    }
+    footerContent = withSubstitutions || hardcodedFooter;
+  } else {
+    footerContent = (supportPart || restorePart || '').trim();
+  }
+
+  const footer = footerContent
+    ? `
+      <p class="critical-error__footer">
+        ${footerContent}
       </p>
     `
     : '';

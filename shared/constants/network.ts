@@ -1727,6 +1727,21 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     blockExplorerUrls: ['https://megaeth.blockscout.com/'],
     defaultBlockExplorerUrlIndex: 0,
   },
+  {
+    chainId: CHAIN_IDS.TEMPO_MAINNET,
+    name: TEMPO_MAINNET_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.TEMPO_MAINNET,
+    rpcEndpoints: [
+      {
+        url: `https://rpc.tempo.xyz/`,
+        failoverUrls: [],
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://explore.tempo.xyz/'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
 ];
 
 export const FEATURED_NETWORK_CHAIN_IDS = [

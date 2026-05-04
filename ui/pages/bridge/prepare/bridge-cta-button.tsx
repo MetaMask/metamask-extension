@@ -22,6 +22,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import {
   ConnectionStatus,
+  HardwareWalletType,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
@@ -58,6 +59,7 @@ export const BridgeCTAButton = ({
     isInsufficientBalance,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
+    isInsufficientNativeReserve,
     isStockMarketClosed: isMarketClosed,
     isQuoteExpired,
   } = useSelector(
@@ -83,10 +85,16 @@ export const BridgeCTAButton = ({
     if (!isHardwareWalletAccount) {
       return true;
     }
+    // QR wallets don't need a physical device connection before showing the
+    // primary CTA. Submitting still runs ensureDeviceReady, which handles
+    // camera permission before signing.
+    if (walletType === HardwareWalletType.Qr) {
+      return true;
+    }
     return [ConnectionStatus.Connected, ConnectionStatus.Ready].includes(
       connectionState.status,
     );
-  }, [connectionState.status, isHardwareWalletAccount]);
+  }, [connectionState.status, isHardwareWalletAccount, walletType]);
 
   /**
    * Defines the behavior of the CTA button based on the current state
@@ -123,7 +131,8 @@ export const BridgeCTAButton = ({
     if (
       isInsufficientBalance ||
       isInsufficientGasForQuote ||
-      isInsufficientGasBalance
+      isInsufficientGasBalance ||
+      isInsufficientNativeReserve
     ) {
       return {
         disabled: true,
@@ -175,6 +184,7 @@ export const BridgeCTAButton = ({
     isInsufficientBalance,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
+    isInsufficientNativeReserve,
     isSubmitting,
     isTxSubmittable,
     onFetchNewQuotes,
