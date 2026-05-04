@@ -79,11 +79,11 @@ async function getProviderStateImplementation(
   res: PendingJsonRpcResponse<ProviderStateHandlerResult>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  { getProviderState: _getProviderState }: GetProviderStateHooks,
+  { getProviderState }: GetProviderStateHooks,
 ): Promise<void> {
   const isInitializingStreamProvider = req.params?.isInitializingStreamProvider;
   res.result = {
-    ...(await _getProviderState(req.origin, { isInitializingStreamProvider })),
+    ...(await getProviderState(req.origin, { isInitializingStreamProvider })),
   };
   return end();
 }

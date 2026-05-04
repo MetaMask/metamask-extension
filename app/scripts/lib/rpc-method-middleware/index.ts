@@ -51,9 +51,7 @@ export const createEip1193MethodMiddleware = (
  */
 export const createEthAccountsMethodMiddleware = (hooks: EthAccountsHooks) =>
   createMethodMiddleware({
-    handlers: {
-      ...ethAccountsHandler,
-    },
+    handlers: ethAccountsHandler,
     hooks,
     onError,
   });
@@ -74,7 +72,7 @@ export const createMultichainApiMethodMiddleware = (
   hooks: MultichainHandlerHooks,
 ) =>
   createMethodMiddleware({
-    handlers: { ...multichainMethodHandlers },
+    handlers: multichainMethodHandlers,
     hooks,
     onError,
   });
@@ -92,7 +90,7 @@ export const createMultichainApiMethodMiddleware = (
  */
 export const createMultichainInvokedMethodMiddleware = (hooks: HandlerHooks) =>
   createMethodMiddleware({
-    handlers: { ...localHandlers },
+    handlers: localHandlers,
     hooks,
     onError,
   });
