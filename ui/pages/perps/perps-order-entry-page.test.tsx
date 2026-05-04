@@ -15,7 +15,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import mockState from '../../../test/data/mock-state.json';
-import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { enLocale as messages, tEn } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -51,6 +51,8 @@ const enterLimitPrice = (value: string) => {
   const limitInput = limitContainer.querySelector('input') as HTMLInputElement;
   fireEvent.change(limitInput, { target: { value } });
 };
+
+const minimumOrderSizeMessage = tEn('perpsMinOrderSize', ['$10']);
 
 jest.mock('@metamask/perps-controller', () => ({
   PERPS_ERROR_CODES: {
@@ -561,7 +563,7 @@ describe('PerpsOrderEntryPage', () => {
 
       const submitButton = screen.getByTestId('submit-order-button');
       expect(submitButton).toBeDisabled();
-      expect(submitButton).toHaveTextContent('Order size must be at least $10');
+      expect(submitButton).toHaveTextContent(minimumOrderSizeMessage);
     });
 
     it('disables submit and shows minimum order size for below-minimum limit orders', () => {
@@ -575,7 +577,7 @@ describe('PerpsOrderEntryPage', () => {
 
       const submitButton = screen.getByTestId('submit-order-button');
       expect(submitButton).toBeDisabled();
-      expect(submitButton).toHaveTextContent('Order size must be at least $10');
+      expect(submitButton).toHaveTextContent(minimumOrderSizeMessage);
     });
 
     it('disables submit button and shows add funds label when balance is zero', () => {
