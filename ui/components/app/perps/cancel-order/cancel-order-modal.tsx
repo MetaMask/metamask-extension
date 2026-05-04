@@ -28,11 +28,8 @@ import {
   ModalBody,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentLocale } from '../../../../ducks/locale/locale';
-import {
-  formatPerpsFiatMinimal,
-  formatPerpsFiatUniversal,
-} from '../utils/formatPerpsDisplayPrice';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import {
@@ -69,6 +66,7 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
   order,
 }) => {
   const t = useI18nContext();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const currentLocale = useSelector(getCurrentLocale);
   const { replacePerpsToastByKey } = usePerpsToast();
   const { isEligible } = usePerpsEligibility();
@@ -102,17 +100,17 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
 
   const formattedPrice = useMemo(() => {
     const price = parseFloat(order.price) || 0;
-    return formatPerpsFiatUniversal(price);
-  }, [order.price]);
+    return formatCurrencyWithMinThreshold(price, 'USD');
+  }, [order.price, formatCurrencyWithMinThreshold]);
 
   const orderValueUsd = useMemo(() => {
     const size = parseFloat(order.size) || 0;
     const price = parseFloat(order.price) || 0;
     if (size > 0 && price > 0) {
-      return formatPerpsFiatMinimal(size * price);
+      return formatCurrencyWithMinThreshold(size * price, 'USD');
     }
     return null;
-  }, [order.size, order.price]);
+  }, [order.size, order.price, formatCurrencyWithMinThreshold]);
 
   const modalTitle = useMemo(() => {
     const orderTypeLabel = formatOrderType(order.orderType);

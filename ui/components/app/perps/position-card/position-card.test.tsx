@@ -8,6 +8,11 @@ import { PositionCard } from './position-card';
 
 jest.mock('../../../../hooks/useFormatters', () => ({
   useFormatters: () => ({
+    formatCurrencyWithMinThreshold: (value: number, _currency: string) =>
+      `$${value.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
     formatPercentWithMinThreshold: (value: number) =>
       `${(value * 100).toFixed(2)}%`,
   }),
@@ -100,7 +105,7 @@ describe('PositionCard', () => {
     const position = createMockPosition({ positionValue: '7125.00' });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
-    expect(screen.getByText('$7,125')).toBeInTheDocument();
+    expect(screen.getByText('$7,125.00')).toBeInTheDocument();
   });
 
   it('displays positive P&L with + prefix', () => {

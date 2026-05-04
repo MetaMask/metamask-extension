@@ -113,7 +113,7 @@ describe('OrderEntry', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
-        'Open long BTC',
+        'Open Long BTC',
       );
     });
 
@@ -124,7 +124,7 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
-        'Open short BTC',
+        'Open Short BTC',
       );
     });
 
@@ -135,7 +135,7 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
-        'Open long BRENTOIL',
+        'Open Long BRENTOIL',
       );
       expect(
         screen.getByTestId('order-entry-submit-button'),

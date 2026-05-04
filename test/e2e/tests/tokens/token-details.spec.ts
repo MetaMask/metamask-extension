@@ -13,7 +13,6 @@ import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
   mockHistoricalPrices,
-  mockHistoricalPricesV3,
   mockSpotPrices,
 } from './utils/mocks';
 
@@ -87,10 +86,7 @@ describe('Token Details', function () {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
-              price:
-                process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
-                  ? ethConversionInUsd
-                  : 1,
+              price: 10000,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
@@ -143,13 +139,11 @@ describe('Token Details', function () {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
-              price:
-                process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true' ? 1700 : 1,
+              price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
           }),
-          await mockHistoricalPricesV3(mockServer, 'eip155:1', 'slip44:60'),
         ],
       },
       async ({ driver }: { driver: Driver }) => {

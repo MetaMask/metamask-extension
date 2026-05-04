@@ -39,7 +39,6 @@ describe('getTransactionBreakdownData', () => {
         txReceipt: { gasUsed: '0x5208' } as TransactionMeta['txReceipt'],
       } as TransactionMeta,
       isTokenApprove: false,
-      isHardwareWalletAccount: false,
     });
 
     expect(result.isGasFeeSponsored).toBe(true);
@@ -54,7 +53,6 @@ describe('getTransactionBreakdownData', () => {
         isGasFeeSponsored: true,
       } as TransactionMeta,
       isTokenApprove: false,
-      isHardwareWalletAccount: false,
     });
 
     expect(result.isGasFeeSponsored).toBe(false);
@@ -69,7 +67,6 @@ describe('getTransactionBreakdownData', () => {
         isGasFeeSponsored: true,
       } as TransactionMeta,
       isTokenApprove: false,
-      isHardwareWalletAccount: false,
     });
 
     expect(result.isGasFeeSponsored).toBe(false);
@@ -85,7 +82,6 @@ describe('getTransactionBreakdownData', () => {
         txReceipt: { gasUsed: '0x5208' } as TransactionMeta['txReceipt'],
       } as TransactionMeta,
       isTokenApprove: false,
-      isHardwareWalletAccount: false,
     });
 
     expect(result.isGasFeeSponsored).toBe(true);
@@ -99,7 +95,6 @@ describe('getTransactionBreakdownData', () => {
         isGasFeeSponsored: undefined,
       } as TransactionMeta,
       isTokenApprove: false,
-      isHardwareWalletAccount: false,
     });
 
     expect(result.isGasFeeSponsored).toBeFalsy();

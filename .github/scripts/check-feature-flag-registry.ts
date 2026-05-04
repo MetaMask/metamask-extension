@@ -6,7 +6,6 @@ import * as path from 'path';
 import { context, getOctokit } from '@actions/github';
 import { getRegisteredFlagNames } from '../../test/e2e/feature-flags';
 import { buildKnownFlagConstants } from './known-feature-flag-constants';
-import { getPrDiff } from './shared/get-pr-diff';
 
 const REGISTRY_DIR = 'test/e2e/feature-flags/';
 const SCANNABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx']);
@@ -100,7 +99,7 @@ async function main(): Promise<void> {
   const registeredFlags = new Set(getRegisteredFlagNames());
   console.log(`Registry contains ${registeredFlags.size} flags`);
 
-  const diff = getPrDiff({ baseBranch, directories: SCAN_DIRECTORIES });
+  const diff = getDiff(baseBranch);
   if (!diff.trim()) {
     console.log('No relevant diff found. Nothing to check.');
     process.exit(0);
@@ -110,7 +109,7 @@ async function main(): Promise<void> {
   const fileCount = [...fileChanges.values()].filter((c) => c.length > 0).length;
   console.log(`Found changes in ${fileCount} file(s)\n`);
 
-  logRegistryChanges(diff);
+  logRegistryChanges(baseBranch);
 
   // --- Collect flag references from added lines ---
   const allReferences: FlagReference[] = [];
@@ -228,6 +227,25 @@ async function main(): Promise<void> {
   if (sortedUnregistered.length > 0) {
     process.exit(1);
   }
+}
+
+function getDiff(baseBranch: string): string {
+  const candidates: string[][] = [
+    ['git', 'diff', `origin/${baseBranch}...HEAD`, '--', ...SCAN_DIRECTORIES],
+    ['git', 'diff', `origin/${baseBranch}..HEAD`, '--', ...SCAN_DIRECTORIES],
+    ['git', 'diff', `${baseBranch}...HEAD`, '--', ...SCAN_DIRECTORIES],
+    ['git', 'diff', `${baseBranch}..HEAD`, '--', ...SCAN_DIRECTORIES],
+  ];
+  let lastError: unknown;
+  for (const [cmd, ...args] of candidates) {
+    try {
+      return execFileSync(cmd, args, { encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 });
+    } catch (error) { lastError = error; }
+  }
+  console.error(`Could not compute diff against base branch "${baseBranch}".`);
+  console.error('Ensure the base branch is fetched (e.g. git fetch origin <base> --depth=1).');
+  console.error('Last error:', lastError);
+  process.exit(1);
 }
 
 type DiffResult = {
@@ -637,20 +655,18 @@ function stripStringLiterals(line: string): string { return processStrings(line,
 function maskStringLiterals(line: string): string { return processStrings(line, 'mask'); }
 
 /** Logs which flags were added/removed in the registry (informational only). */
-function logRegistryChanges(fullDiff: string): void {
+function logRegistryChanges(baseBranch: string): void {
   const registryFile = 'test/e2e/feature-flags/feature-flag-registry.ts';
-
-  // Extract the registry file section from the already-fetched diff
-  const sections = fullDiff.split(/^diff --git /mu);
+  const candidates: string[][] = [
+    ['git', 'diff', `origin/${baseBranch}...HEAD`, '--', registryFile],
+    ['git', 'diff', `${baseBranch}...HEAD`, '--', registryFile],
+  ];
   let registryDiff = '';
-  for (const section of sections) {
-    if (
-      section.includes(`a/${registryFile}`) ||
-      section.includes(`b/${registryFile}`)
-    ) {
-      registryDiff = `diff --git ${section}`;
+  for (const [cmd, ...args] of candidates) {
+    try {
+      registryDiff = execFileSync(cmd, args, { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 });
       break;
-    }
+    } catch { /* try next */ }
   }
 
   if (!registryDiff.trim()) {

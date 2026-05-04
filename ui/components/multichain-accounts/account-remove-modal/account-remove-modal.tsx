@@ -1,25 +1,26 @@
 import React from 'react';
+
 import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
-  FontWeight,
-  Text,
-  TextVariant,
-} from '@metamask/design-system-react';
-
-import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  FontWeight,
+  JustifyContent,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import { AddressCopyButton } from '../../multichain';
 
@@ -47,15 +48,16 @@ export const AccountRemoveModal = ({
         <ModalHeader onClose={onClose}>{t('removeAccount')}</ModalHeader>
         <ModalBody>
           <Box
-            flexDirection={BoxFlexDirection.Column}
-            alignItems={BoxAlignItems.Center}
-            justifyContent={BoxJustifyContent.Center}
+            display={Display.Flex}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+            flexDirection={FlexDirection.Column}
           >
             <PreferredAvatar address={accountAddress} />
             <Text
-              variant={TextVariant.BodyLg}
-              fontWeight={FontWeight.Medium}
-              className="mt-2 mb-2"
+              variant={TextVariant.bodyLgMedium}
+              marginTop={2}
+              marginBottom={2}
             >
               {accountName}
             </Text>
@@ -66,10 +68,10 @@ export const AccountRemoveModal = ({
             marginTop={6}
             marginBottom={2}
           >
-            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Bold}>
+            <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Bold}>
               {t('removeAccountModalBannerTitle')}
             </Text>
-            <Text variant={TextVariant.BodyMd}>
+            <Text variant={TextVariant.bodyMd}>
               {t('removeAccountModalBannerDescription')}
             </Text>
           </BannerAlert>

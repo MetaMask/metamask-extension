@@ -741,19 +741,23 @@ export const useHandleSubscriptionSupportAction = () => {
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
   const handleClickContactSupport = useCallback(() => {
-    const url = new URL(SUPPORT_LINK as string);
-    url.searchParams.append('metamask_version', version);
+    let supportLinkWithUserId = SUPPORT_LINK as string;
+    const queryParams = new URLSearchParams();
+    queryParams.append('metamask_version', version);
     if (profileId) {
-      url.searchParams.append('metamask_profile_id', profileId);
+      queryParams.append('metamask_profile_id', profileId);
     }
     if (metaMetricsId) {
-      url.searchParams.append('metamask_metametrics_id', metaMetricsId);
+      queryParams.append('metamask_metametrics_id', metaMetricsId);
     }
     if (shieldCustomerId) {
-      url.searchParams.append('shield_id', shieldCustomerId);
+      queryParams.append('shield_id', shieldCustomerId);
     }
 
-    const supportLinkWithUserId = url.toString();
+    const queryString = queryParams.toString();
+    if (queryString) {
+      supportLinkWithUserId += `?${queryString}`;
+    }
 
     openWindow(supportLinkWithUserId);
   }, [version, profileId, metaMetricsId, shieldCustomerId]);

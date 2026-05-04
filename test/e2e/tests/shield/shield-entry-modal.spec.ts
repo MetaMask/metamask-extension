@@ -69,7 +69,7 @@ describe('Shield Entry Modal', function () {
         },
       },
       async ({ driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

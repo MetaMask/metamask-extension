@@ -22,7 +22,6 @@ type ButtonState = {
 const BUTTON_TEXT_BY_TYPE: Partial<Record<TransactionType, string>> = {
   [TransactionType.musdConversion]: 'musdConvert',
   [TransactionType.perpsDeposit]: 'addFunds',
-  [TransactionType.perpsWithdraw]: 'perpsWithdraw',
 };
 
 function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
@@ -56,17 +55,9 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     const isLoadingState = isGaslessLoading || isPayLoading;
     const i18nKey =
       (transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ?? 'confirm';
-    const defaultButtonText = t(i18nKey);
+    const buttonText = t(i18nKey);
 
-    const hasBlockingAlerts = blockingAlerts.length > 0;
-    const isDisabled = hasBlockingAlerts || !hasAmount;
-
-    const firstAlert = blockingAlerts[0];
-    const alertText =
-      firstAlert?.reason ?? (firstAlert?.message as string | undefined);
-
-    const buttonText =
-      hasBlockingAlerts && alertText ? alertText : defaultButtonText;
+    const isDisabled = blockingAlerts.length > 0 || !hasAmount;
 
     return {
       buttonText,

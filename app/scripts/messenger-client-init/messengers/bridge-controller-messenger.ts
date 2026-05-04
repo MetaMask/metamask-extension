@@ -37,7 +37,6 @@ export function getBridgeControllerMessenger(
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:getState',
       'AuthenticationController:getBearerToken',
-      'AssetsController:getExchangeRatesForBridge',
     ],
   });
   return controllerMessenger;

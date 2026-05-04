@@ -174,7 +174,6 @@ describe('Send ETH', function () {
           },
           fixtures: new FixtureBuilderV2()
             .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
-            .withEnabledNetworks({ eip155: { '0x1': true } })
             .withSnapsPrivacyWarningAlreadyShown()
             .build(),
           title: this.test?.fullTitle(),

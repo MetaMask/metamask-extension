@@ -14,10 +14,6 @@ import type {
   CaipAssetId,
   Hex,
 } from '@metamask/utils';
-import {
-  SUPPORT_CONFIG as SUPPORT_CONFIG_BASE,
-  FEEDBACK_CONFIG as FEEDBACK_CONFIG_BASE,
-} from '../../../../shared/constants/perps';
 
 /**
  * Perps feature constants
@@ -494,20 +490,10 @@ export const LEARN_MORE_CONFIG = {
   CtaKey: 'perps.learn_more.cta',
 } as const;
 
-/**
- * Support and feedback configuration
- * Extends the real constants with mock-specific properties for testing
- */
-export const SUPPORT_CONFIG = {
-  ...SUPPORT_CONFIG_BASE,
-  TitleKey: 'perps.support.title',
-  DescriptionKey: 'perps.support.description',
-} as const;
-
-export const FEEDBACK_CONFIG = {
-  ...FEEDBACK_CONFIG_BASE,
-  TitleKey: 'perps.feedback.title',
-} as const;
+export {
+  SUPPORT_CONFIG,
+  FEEDBACK_CONFIG,
+} from '../../../../shared/constants/perps';
 
 /**
  * Support article URLs
@@ -515,7 +501,7 @@ export const FEEDBACK_CONFIG = {
  */
 export const PERPS_SUPPORT_ARTICLES_URLS = {
   AdlUrl:
-    'https://support.metamask.io/manage-crypto/trade/perps/leverage-and-liquidation/?utm_source=extension#what-is-auto-deleveraging-adl',
+    'https://support.metamask.io/manage-crypto/trade/perps/leverage-and-liquidation/#what-is-auto-deleveraging-adl',
 } as const;
 
 /**

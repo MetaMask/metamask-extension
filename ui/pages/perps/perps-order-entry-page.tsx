@@ -50,7 +50,10 @@ import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   usePerpsLivePositions,
   usePerpsLiveAccount,
@@ -235,8 +238,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const { trigger: triggerDeposit, isLoading: isDepositLoading } =
     usePerpsDepositConfirmation();
   const { formatPercentWithMinThreshold } = useFormatters();
-  const { replacePerpsToastByKey, hidePerpsToast, setPendingOrder } =
-    usePerpsToast();
+  const { replacePerpsToastByKey, hidePerpsToast } = usePerpsToast();
 
   const { positions: allPositions } = usePerpsLivePositions();
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
@@ -258,7 +260,9 @@ const PerpsOrderEntryPage: React.FC = () => {
       ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]:
-        account !== null && Number.parseFloat(account.availableBalance) > 0,
+        account && Number.parseFloat(account.availableBalance) > 0
+          ? 'yes'
+          : 'no',
     },
     resetKey: decodedSymbol,
   });
@@ -547,7 +551,6 @@ const PerpsOrderEntryPage: React.FC = () => {
     isDepositLoading ||
     isOrderPending ||
     (orderMode === 'new' && isLoadingAccount) ||
-    hasNoAvailableBalance ||
     (isPrimaryTradeAction &&
       (isLimitPriceInvalid ||
         isLimitPriceUnfavorable ||
@@ -625,23 +628,27 @@ const PerpsOrderEntryPage: React.FC = () => {
       perpsToastDescription?: string,
       extraState?: Partial<PerpsToastRouteState>,
     ) => {
-      if (perpsToastKey) {
-        replacePerpsToastByKey({
-          key: perpsToastKey,
-          ...(perpsToastDescription
-            ? { description: perpsToastDescription }
-            : {}),
-        });
-        if (extraState?.pendingOrderSymbol) {
-          setPendingOrder({
-            symbol: extraState.pendingOrderSymbol,
-            filledDescription: extraState.pendingOrderFilledDescription,
-          });
-        }
+      if (!decodedSymbol) {
+        return;
       }
-      navigate(-1);
+
+      const marketDetailPath = `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(
+        decodedSymbol,
+      )}`;
+
+      if (!perpsToastKey) {
+        navigate(marketDetailPath);
+        return;
+      }
+
+      const toastRouteState: PerpsToastRouteState = {
+        perpsToastKey,
+        ...(perpsToastDescription ? { perpsToastDescription } : {}),
+        ...extraState,
+      };
+      navigate(marketDetailPath, { state: toastRouteState });
     },
-    [navigate, replacePerpsToastByKey, setPendingOrder],
+    [navigate, decodedSymbol],
   );
 
   const getTradeActionToastDescription = useCallback(() => {
@@ -665,10 +672,8 @@ const PerpsOrderEntryPage: React.FC = () => {
       return undefined;
     }
 
-    const rawAmount = formattedPositionSize.endsWith(` ${displayAssetSymbol}`)
-      ? formattedPositionSize
-          .slice(0, -` ${displayAssetSymbol}`.length)
-          .trimEnd()
+    const rawAmount = formattedPositionSize.endsWith(` ${rawAssetSymbol}`)
+      ? formattedPositionSize.slice(0, -` ${rawAssetSymbol}`.length).trimEnd()
       : formattedPositionSize;
 
     if (!rawAmount) {

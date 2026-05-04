@@ -2,18 +2,14 @@
  * useMusdGeoBlocking Hook
  *
  * Hook for managing geo-blocking checks for the mUSD conversion feature.
- *
- * Delegates the actual network fetch, TTL caching, and concurrent-request
- * deduplication to the background `GeolocationController`. Multiple hook
- * instances mounting at the same time share a single in-flight request; the
- * controller's service handles that transparently.
+ * Uses the Ramps geolocation API to detect user's country.
  */
 
 import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { selectMusdBlockedRegions } from '../../selectors/musd';
 import { isGeoBlocked } from '../../components/app/musd/utils';
-import { submitRequestToBackground } from '../../store/background-connection';
+import { GEOLOCATION_API_ENDPOINT } from '../../components/app/musd/constants';
 
 // ============================================================================
 // Types
@@ -32,15 +28,36 @@ export type UseMusdGeoBlockingResult = {
   blockedRegions: string[];
   /** Message to display if blocked */
   blockedMessage: string | null;
-  /** Manually refresh geolocation (bypasses the controller's TTL cache) */
+  /** Manually refresh geolocation */
   refreshGeolocation: () => Promise<void>;
 };
 
+// ============================================================================
+// Cache
+// ============================================================================
+
+const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
+
+export const geoLocationCache = {
+  location: null as string | null,
+  timestamp: null as number | null,
+};
+
 /**
- * Sentinel value returned by the GeolocationController when the location is
- * not yet determined or the API returned an invalid response.
+ * Read the cached geolocation if it exists and hasn't expired.
+ * Used both for synchronous useState initialization (avoids a loading
+ * flash on remount) and inside fetchGeolocation.
  */
-const UNKNOWN_LOCATION = 'UNKNOWN';
+export function getCachedLocation(): string | null {
+  if (
+    geoLocationCache.location &&
+    geoLocationCache.timestamp &&
+    Date.now() - geoLocationCache.timestamp < CACHE_DURATION_MS
+  ) {
+    return geoLocationCache.location;
+  }
+  return null;
+}
 
 // ============================================================================
 // Hook Implementation
@@ -55,53 +72,59 @@ const UNKNOWN_LOCATION = 'UNKNOWN';
 export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
   const blockedRegions = useSelector(selectMusdBlockedRegions);
 
-  const [userCountry, setUserCountry] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [userCountry, setUserCountry] = useState<string | null>(
+    getCachedLocation,
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(
+    () => getCachedLocation() === null,
+  );
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * Request geolocation from the background GeolocationController.
+   * Fetch geolocation from API.
    *
-   * The controller (and its underlying API service) handle TTL caching and
-   * in-flight request deduplication, so concurrent calls from multiple hook
-   * instances collapse into a single network request.
-   *
-   * @param method - Background API method to invoke. `getGeolocation`
-   * respects the controller's cache; `refreshGeolocation` bypasses it.
-   * @param options.isCancelled - When this returns true, state updates are
-   * skipped (e.g. after the hook unmounts while the request is in flight).
+   * Accepts an optional AbortSignal so the caller (e.g. a useEffect cleanup)
+   * can cancel an in-flight request when the component unmounts.
    */
   const fetchGeolocation = useCallback(
-    async (
-      method: 'getGeolocation' | 'refreshGeolocation',
-      options: { isCancelled: () => boolean },
-    ): Promise<string | null> => {
-      const shouldCommit = () => !options.isCancelled();
-
-      if (!shouldCommit()) {
-        return null;
+    async (signal?: AbortSignal): Promise<void> => {
+      const cached = getCachedLocation();
+      if (cached !== null) {
+        setUserCountry(cached);
+        setIsLoading(false);
+        return;
       }
 
       setIsLoading(true);
       setError(null);
 
       try {
-        const location = await submitRequestToBackground<string>(method);
-        const resolved = location === UNKNOWN_LOCATION ? null : location;
-        if (shouldCommit()) {
-          setUserCountry(resolved);
+        const response = await fetch(GEOLOCATION_API_ENDPOINT, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
+          signal,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Geolocation API error: ${response.status}`);
         }
-        return resolved;
+
+        const data: string = await response.text();
+
+        geoLocationCache.location = data;
+        geoLocationCache.timestamp = Date.now();
+        setUserCountry(data);
       } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
         const errorMessage =
           err instanceof Error ? err.message : 'Failed to fetch geolocation';
-        if (shouldCommit()) {
-          setError(errorMessage);
-          setUserCountry(null);
-        }
-        return null;
+        setError(errorMessage);
       } finally {
-        if (shouldCommit()) {
+        if (!signal?.aborted) {
           setIsLoading(false);
         }
       }
@@ -109,24 +132,11 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
     [],
   );
 
-  // Fetch geolocation on mount. The controller dedupes concurrent callers,
-  // so mounting multiple consumers at once only triggers one network request.
+  // Fetch geolocation on mount; abort on unmount
   useEffect(() => {
-    let cancelled = false;
-
-    fetchGeolocation('getGeolocation', {
-      isCancelled: () => cancelled,
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [fetchGeolocation]);
-
-  const refreshGeolocation = useCallback(async (): Promise<void> => {
-    await fetchGeolocation('refreshGeolocation', {
-      isCancelled: () => false,
-    });
+    const controller = new AbortController();
+    fetchGeolocation(controller.signal);
+    return () => controller.abort();
   }, [fetchGeolocation]);
 
   /**
@@ -134,8 +144,8 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
    * While the geolocation fetch is still in progress we report `false` so that
    * consumers don't treat an unknown-yet country as a confirmed block.
    * The fail-closed semantics are preserved: when the fetch *completes* with an
-   * error or an UNKNOWN result (userCountry stays `null`, isLoading becomes
-   * `false`), isGeoBlocked still returns `true`.
+   * error (userCountry stays `null`, isLoading becomes `false`), isGeoBlocked
+   * still returns `true`.
    */
   const isBlocked = !isLoading && isGeoBlocked(userCountry, blockedRegions);
 
@@ -153,8 +163,17 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
     error,
     blockedRegions,
     blockedMessage,
-    refreshGeolocation,
+    refreshGeolocation: fetchGeolocation,
   };
+}
+
+/**
+ * Clear the geolocation cache
+ * Useful for testing or when user changes network/VPN
+ */
+export function clearGeoLocationCache(): void {
+  geoLocationCache.location = null;
+  geoLocationCache.timestamp = null;
 }
 
 export default useMusdGeoBlocking;

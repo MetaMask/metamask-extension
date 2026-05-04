@@ -29,9 +29,10 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
+  ButtonBase,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
-import type { PriceUpdate } from '@metamask/perps-controller';
+import type { Position, PriceUpdate } from '@metamask/perps-controller';
 import {
   formatFundingRate,
   formatPerpsFiat,
@@ -43,13 +44,14 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../shared/constants/perps-events';
+import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
+  PERPS_ACTIVITY_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   usePerpsLivePositions,
@@ -60,6 +62,7 @@ import {
 } from '../../hooks/perps/stream';
 import {
   usePerpsEligibility,
+  usePerpsMarketFills,
   usePerpsEventTracking,
   usePerpsMarketInfo,
 } from '../../hooks/perps';
@@ -67,7 +70,7 @@ import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
 import { OrderCard } from '../../components/app/perps/order-card';
-import { PerpsMarketRecentActivity } from '../../components/app/perps/perps-market-recent-activity';
+import { TransactionCard } from '../../components/app/perps/transaction-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
   PerpsCandlestickChart,
@@ -91,6 +94,7 @@ import {
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
+import { transformFillsToTransactions } from '../../components/app/perps/utils/transactionTransforms';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import { Skeleton } from '../../components/component-library/skeleton';
@@ -102,6 +106,7 @@ import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import { CancelOrderModal } from '../../components/app/perps/cancel-order';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
+import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import type { Order } from '../../components/app/perps/types';
 import {
   PERPS_TOAST_KEYS,
@@ -258,8 +263,6 @@ const parsePerpsToastRouteState = (
  */
 const PerpsMarketDetailPage: React.FC = () => {
   const t = useI18nContext();
-  const theme = useTheme();
-  const isDark = theme === 'dark';
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -275,8 +278,7 @@ const PerpsMarketDetailPage: React.FC = () => {
     formatPercentWithMinThreshold,
   } = useFormatters();
   const fundingCountdown = useFundingCountdown();
-  const { replacePerpsToastByKey, pendingOrder, setPendingOrder } =
-    usePerpsToast();
+  const { replacePerpsToastByKey } = usePerpsToast();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   useEffect(() => {
@@ -313,14 +315,11 @@ const PerpsMarketDetailPage: React.FC = () => {
       return;
     }
 
-    // Primary: read from shared toast context (set by order entry via navigate(-1) flow).
-    // Fallback: read from location.state for any remaining route-state-based navigation.
     const routeState = location.state as Record<string, unknown> | null;
     const pendingSymbol =
-      pendingOrder?.symbol ??
-      (typeof routeState?.pendingOrderSymbol === 'string'
+      typeof routeState?.pendingOrderSymbol === 'string'
         ? routeState.pendingOrderSymbol
-        : null);
+        : null;
 
     if (!pendingSymbol) {
       return;
@@ -331,30 +330,23 @@ const PerpsMarketDetailPage: React.FC = () => {
       orderFilledToastShownRef.current = true;
 
       const filledDescription =
-        pendingOrder?.filledDescription ??
-        (typeof routeState?.pendingOrderFilledDescription === 'string'
+        typeof routeState?.pendingOrderFilledDescription === 'string'
           ? routeState.pendingOrderFilledDescription
-          : undefined);
+          : undefined;
 
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.ORDER_FILLED,
         ...(filledDescription ? { description: filledDescription } : {}),
       });
-
-      setPendingOrder(null);
     }
-  }, [
-    location.state,
-    allPositions,
-    replacePerpsToastByKey,
-    pendingOrder,
-    setPendingOrder,
-  ]);
+  }, [location.state, allPositions, replacePerpsToastByKey]);
 
   const { orders: allOrders } = usePerpsLiveOrders();
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
+  const { trigger: triggerDeposit, isLoading: isDepositLoading } =
+    usePerpsDepositConfirmation();
 
   // Safely decode the symbol from URL
   const decodedSymbol = useMemo(() => {
@@ -377,7 +369,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
       }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
-      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance ? 'yes' : 'no',
     },
     resetKey: decodedSymbol,
   });
@@ -446,6 +438,8 @@ const PerpsMarketDetailPage: React.FC = () => {
       (pos) => pos.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol, allPositions]);
+  const hasNoAvailableBalance =
+    !position && !isLoadingAccount && !hasPerpBalance;
 
   // Ref to track current position - avoids stale data in callbacks
   // This follows mobile's pattern (currentPositionRef) to ensure we always
@@ -463,8 +457,8 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [position]);
 
   // Filter and sort open orders for this market, then normalize for display.
-  // Normalization adds synthetic TP/SL rows for parent orders when no matching
-  // real trigger exists; full-position TP/SL also appear in this Orders list.
+  // Normalization adds synthetic TP/SL rows for parent orders and filters out
+  // full-position TP/SL (those stay on the position card / auto-close section).
   const orders = useMemo(() => {
     if (!decodedSymbol) {
       return [];
@@ -502,9 +496,21 @@ const PerpsMarketDetailPage: React.FC = () => {
     throttleMs: 1000,
   });
 
+  // Fetch market-specific fills (WebSocket + REST) for Recent Activity
+  const { fills: marketFills, isInitialLoading: fillsLoading } =
+    usePerpsMarketFills({
+      symbol: decodedSymbol ?? '',
+      throttleMs: 0,
+    });
+
+  const recentActivityTransactions = useMemo(() => {
+    const transactions = transformFillsToTransactions(marketFills);
+    return transactions.slice(0, PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT);
+  }, [marketFills]);
+
   usePerpsMeasurement(
     'PerpsMarketDetailLoaded',
-    !marketsLoading && !isCandleLoading,
+    !marketsLoading && !isCandleLoading && !fillsLoading,
   );
 
   // OHLCV bar state: the candle currently hovered by crosshair (null = no hover)
@@ -581,8 +587,7 @@ const PerpsMarketDetailPage: React.FC = () => {
       lines.push({
         price: chartCurrentPrice,
         label: '',
-        // Matches mobile `background.muted`: dark=#ffffff0a (~4%), light=#b4b4b528 (~16%)
-        color: isDark ? '#ffffff0a' : '#b4b4b528',
+        color: 'rgba(255, 255, 255, 0.3)',
         lineStyle: 2,
         lineWidth: 2,
       });
@@ -590,55 +595,40 @@ const PerpsMarketDetailPage: React.FC = () => {
 
     // Position-specific lines (only when user has an open position)
     if (position) {
-      // Take Profit line — matches mobile `success.default`
+      // Take Profit line (green/lime, dashed)
       if (position.takeProfitPrice) {
         const tpPrice = parsePerpsDisplayPrice(position.takeProfitPrice);
         if (!isNaN(tpPrice) && tpPrice > 0) {
           lines.push({
             price: tpPrice,
             label: 'TP',
-            color: isDark ? brandColor.lime100 : brandColor.lime500,
+            color: brandColor.lime100,
             lineStyle: 2,
           });
         }
       }
 
-      // Entry price line — matches mobile `text.muted`
+      // Entry price line (gray, dashed)
       if (position.entryPrice) {
         const entryPrice = parsePerpsDisplayPrice(position.entryPrice);
         if (!isNaN(entryPrice) && entryPrice > 0) {
           lines.push({
             price: entryPrice,
             label: 'Entry',
-            color: isDark ? brandColor.grey600 : brandColor.grey200,
+            color: 'rgba(255, 255, 255, 0.5)',
             lineStyle: 2,
           });
         }
       }
 
-      // Stop Loss line — matches mobile `background.alternative`
-      // Intentionally subtle: SL is a reference marker, not a danger indicator like Liq.
+      // Stop Loss line (red, dashed)
       if (position.stopLossPrice) {
         const slPrice = parsePerpsDisplayPrice(position.stopLossPrice);
         if (!isNaN(slPrice) && slPrice > 0) {
           lines.push({
             price: slPrice,
             label: 'SL',
-            color: isDark ? brandColor.grey1000 : brandColor.grey050,
-            lineStyle: 2,
-          });
-        }
-      }
-
-      // Liquidation price line — matches mobile `error.default`
-      // Same as down candles so traders immediately recognise the danger level.
-      if (position.liquidationPrice) {
-        const liqPrice = parsePerpsDisplayPrice(position.liquidationPrice);
-        if (!isNaN(liqPrice) && liqPrice > 0) {
-          lines.push({
-            price: liqPrice,
-            label: 'Liq',
-            color: isDark ? brandColor.red300 : brandColor.red500,
+            color: brandColor.red300,
             lineStyle: 2,
           });
         }
@@ -646,7 +636,7 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
 
     return lines;
-  }, [position, chartCurrentPrice, isDark]);
+  }, [position, chartCurrentPrice]);
 
   // Handle candle period change
   //
@@ -697,7 +687,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, []);
 
   const handleBackClick = useCallback(() => {
-    navigate(-1);
+    navigate(DEFAULT_ROUTE);
   }, [navigate]);
 
   const buildOrderEntryUrl = useCallback(
@@ -741,6 +731,35 @@ const PerpsMarketDetailPage: React.FC = () => {
       track,
     ],
   );
+
+  const handleAddFunds = useCallback(() => {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
+    if (!selectedAddress || isDepositLoading) {
+      return;
+    }
+
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+      ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
+    });
+
+    triggerDeposit();
+  }, [
+    decodedSymbol,
+    isDepositLoading,
+    isEligible,
+    selectedAddress,
+    track,
+    triggerDeposit,
+  ]);
 
   const handleClosePosition = useCallback(() => {
     if (!isEligible) {
@@ -799,24 +818,9 @@ const PerpsMarketDetailPage: React.FC = () => {
         PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
     });
     setIsModifyMenuOpen(false);
-    if (position.leverage?.type === 'cross') {
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.INCREASE_POSITION_CROSS_MARGIN_BLOCKED,
-        description: t('perpsCrossMarginNotSupportedDescription'),
-      });
-      return;
-    }
     const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
     navigate(buildOrderEntryUrl(direction, 'modify'));
-  }, [
-    position,
-    decodedSymbol,
-    navigate,
-    buildOrderEntryUrl,
-    track,
-    replacePerpsToastByKey,
-    t,
-  ]);
+  }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
 
   const handleReduceExposure = useCallback(() => {
     if (!isEligible) {
@@ -985,11 +989,51 @@ const PerpsMarketDetailPage: React.FC = () => {
         height={250}
         selectedPeriod={selectedPeriod}
         candleData={candleData}
-        currentPrice={currentPrice}
         priceLines={chartPriceLines}
         onNeedMoreHistory={fetchMoreHistory}
         // onCrosshairMove={setHoveredCandle}
       />
+    );
+  };
+
+  const renderRecentActivityContent = () => {
+    if (fillsLoading && recentActivityTransactions.length === 0) {
+      return (
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          className="overflow-hidden rounded-xl"
+        >
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-[72px] w-full rounded-none" />
+          ))}
+        </Box>
+      );
+    }
+
+    if (recentActivityTransactions.length === 0) {
+      return (
+        <Box paddingBottom={4}>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsNoTransactions')}
+          </Text>
+        </Box>
+      );
+    }
+
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        className="overflow-hidden rounded-xl"
+      >
+        {recentActivityTransactions.map((transaction, index) => (
+          <TransactionCard
+            key={transaction.id}
+            transaction={transaction}
+            variant="muted"
+            showTopBorder={index > 0}
+          />
+        ))}
+      </Box>
     );
   };
 
@@ -1028,7 +1072,9 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         {/* Header Content: symbol-USD, price + change */}
         <Box flexDirection={BoxFlexDirection.Column}>
-          <Text variant={TextVariant.HeadingMd}>{displayName}-USD</Text>
+          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+            {displayName}-USD
+          </Text>
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Baseline}
@@ -1042,8 +1088,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               {displayPrice}
             </Text>
             <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
+              variant={TextVariant.BodyXs}
               color={getChangeColor(displayChange)}
               data-testid="perps-market-detail-change"
             >
@@ -1061,7 +1106,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               ? t('perpsRemoveFromFavorites')
               : t('perpsAddToFavorites')
           }
-          className="p-2 cursor-pointer transition-transform hover:scale-110"
+          className="p-2 cursor-pointer"
           onClick={handleFavoriteClick}
         >
           <Icon
@@ -1143,7 +1188,7 @@ const PerpsMarketDetailPage: React.FC = () => {
       <>
         {/* Position Section */}
         {position && (
-          <Box paddingLeft={4} paddingRight={4}>
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
             <Box paddingBottom={2}>
               <Text
                 variant={TextVariant.HeadingSm}
@@ -1231,7 +1276,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     data-testid="perps-position-size-value"
                   >
                     {showSizeInFiat && Boolean(position.entryPrice)
-                      ? formatPerpsFiatMinimal(
+                      ? formatPerpsFiatUniversal(
                           Math.abs(parseFloat(position.size)) *
                             parsePerpsDisplayPrice(position.entryPrice),
                         )
@@ -1489,7 +1534,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         {/* Orders Section - shown regardless of position, but only if there are orders */}
         {orders.length > 0 && (
-          <Box paddingLeft={4} paddingRight={4}>
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
             <Box paddingBottom={2}>
               <Text
                 variant={TextVariant.HeadingSm}
@@ -1572,7 +1617,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   >
                     <Icon
                       name={IconName.Info}
-                      size={IconSize.Xs}
+                      size={IconSize.Sm}
                       color={IconColor.IconAlternative}
                     />
                   </Tooltip>
@@ -1612,7 +1657,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   >
                     <Icon
                       name={IconName.Info}
-                      size={IconSize.Xs}
+                      size={IconSize.Sm}
                       color={IconColor.IconAlternative}
                     />
                   </Tooltip>
@@ -1668,7 +1713,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                 >
                   <Icon
                     name={IconName.Info}
-                    size={IconSize.Xs}
+                    size={IconSize.Sm}
                     color={IconColor.IconAlternative}
                   />
                 </Tooltip>
@@ -1688,7 +1733,35 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         {/* Recent Activity Section - always visible */}
         <Box paddingLeft={4} paddingRight={4}>
-          <PerpsMarketRecentActivity symbol={decodedSymbol} />
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+            alignItems={BoxAlignItems.Center}
+            paddingTop={4}
+            paddingBottom={2}
+          >
+            <Text
+              variant={TextVariant.HeadingSm}
+              fontWeight={FontWeight.Medium}
+            >
+              {t('perpsRecentActivity')}
+            </Text>
+            {recentActivityTransactions.length > 0 && (
+              <ButtonBase
+                onClick={() => navigate(PERPS_ACTIVITY_ROUTE)}
+                className="bg-transparent hover:bg-transparent active:bg-transparent p-0 min-w-0 h-auto"
+                data-testid="perps-market-detail-view-all-activity"
+              >
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsSeeAll')}
+                </Text>
+              </ButtonBase>
+            )}
+          </Box>
+          {renderRecentActivityContent()}
 
           {/* Learn Section */}
           <Box
@@ -1843,7 +1916,20 @@ const PerpsMarketDetailPage: React.FC = () => {
         )}
 
         {/* Without Position: Show Long and Short buttons */}
-        {!position && (
+        {!position && hasNoAvailableBalance && (
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            onClick={handleAddFunds}
+            disabled={!selectedAddress || isDepositLoading}
+            className="w-full"
+            data-testid="perps-add-funds-cta-button"
+          >
+            {t('addFunds')}
+          </Button>
+        )}
+
+        {!position && !hasNoAvailableBalance && (
           <Box
             flexDirection={BoxFlexDirection.Row}
             gap={3}

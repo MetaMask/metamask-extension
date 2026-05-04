@@ -17,7 +17,6 @@ import {
 } from '@metamask/design-system-react';
 import {
   formatPerpsFiat,
-  formatPnl,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
 import {
@@ -576,7 +575,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                           }
                           asChild
                         >
-                          <span>{formatPnl(unrealizedPnl)}</span>
+                          <span>
+                            {`${unrealizedPnl >= 0 ? '+' : '-'}${formatFiat(
+                              Math.abs(unrealizedPnl),
+                            )}`}
+                          </span>
                         </Text>,
                       ])}
                     </Text>

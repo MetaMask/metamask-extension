@@ -97,22 +97,21 @@ function determineTransactionTypeAndContractInteraction(
     type as TransactionType,
   );
 
-  const directTypeMappings: Record<string, string> = {
-    swapAndSend: 'swap_and_send',
-    cancel: 'cancel',
-    deployContract: 'deploy_contract',
-    gasPayment: 'gas_payment',
-    batch: 'batch',
-    shieldSubscriptionApprove: 'shield_subscription_approve',
-    musdConversion: 'musd_conversion',
-    musdClaim: 'musd_claim',
-    perpsDeposit: 'perps_deposit',
-    perpsWithdraw: 'perps_withdraw',
-  };
+  const directTypeMappings = [
+    'swapAndSend',
+    'cancel',
+    'deployContract',
+    'gasPayment',
+    'batch',
+    'shieldSubscriptionApprove',
+    'musdConversion',
+    'musdClaim',
+    'perpsDeposit',
+  ];
 
-  if (type in directTypeMappings) {
+  if (directTypeMappings.includes(type)) {
     return {
-      transactionType: directTypeMappings[type],
+      transactionType: type,
       isContractInteraction,
     };
   }

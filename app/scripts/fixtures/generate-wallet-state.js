@@ -4,9 +4,12 @@ import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { cloneDeep } from 'lodash';
 import { hexToDecimal } from '../../../shared/lib/conversion.utils';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
-import { E2E_SRP, WALLET_PASSWORD } from '../../../test/e2e/constants';
-import defaultFixtureJson from '../../../test/e2e/fixtures/default-fixture.json';
-import FixtureBuilderV2 from '../../../test/e2e/fixtures/fixture-builder-v2';
+import { WALLET_PASSWORD } from '../../../test/e2e/constants';
+import {
+  E2E_SRP,
+  defaultFixture,
+} from '../../../test/e2e/fixtures/default-fixture';
+import FixtureBuilder from '../../../test/e2e/fixtures/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { normalizeSafeAddress } from '../lib/multichain/address';
 import { getRootMessenger } from '../lib/messenger';
@@ -26,10 +29,10 @@ let FIXTURES_CONFIG = {};
  *
  * @param {object} withState - The fixture configuration state
  * @param {boolean} fromTest - Whether this is being called from a test
- * @returns {Promise<FixtureBuilderV2>} The generated fixture builder
+ * @returns {Promise<FixtureBuilder>} The generated FixtureBuilder object
  */
 export async function generateWalletState(withState, fromTest) {
-  const fixtureBuilder = new FixtureBuilderV2();
+  const fixtureBuilder = new FixtureBuilder({ inputChainId: '0xaa36a7' });
 
   if (withState) {
     FIXTURES_CONFIG = withState;
@@ -114,7 +117,7 @@ function generateKeyringControllerState(vault) {
   console.log('Generating KeyringController state');
 
   return {
-    ...defaultFixtureJson.data.KeyringController,
+    ...defaultFixture().data.KeyringController,
     vault,
   };
 }
@@ -227,7 +230,7 @@ function generateNetworkControllerState() {
   console.log('Generating NetworkController state');
 
   const defaultNetworkState = {
-    ...defaultFixtureJson.data.NetworkController,
+    ...defaultFixture().data.NetworkController,
     networkConfigurations: {},
     networksMetadata: {
       sepolia: {

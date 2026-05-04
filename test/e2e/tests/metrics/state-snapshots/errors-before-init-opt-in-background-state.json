@@ -69,7 +69,6 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
-    "AssetsController": "object",
     "AuthenticationController": {},
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
@@ -155,7 +154,9 @@
       },
       "nativeAssetIdentifiers": "object"
     },
-    "NetworkOrderController": { "orderedNetworkList": "object" },
+    "NetworkOrderController": {
+      "orderedNetworkList": "object"
+    },
     "NftController": {
       "allNftContracts": "object",
       "allNfts": "object",
