@@ -32,7 +32,6 @@ export const PerpsWithdrawInfo = () => {
       balanceUsdOverride={balanceUsdOverride}
       currency={PERPS_CURRENCY}
       hidePayTokenAmount
-
     >
       <PerpsWithdrawBalance />
     </CustomAmountInfo>
