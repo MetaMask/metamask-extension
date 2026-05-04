@@ -1,5 +1,8 @@
 import { act } from '@testing-library/react-hooks';
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -40,19 +43,20 @@ const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
 
 const MOCK_NETWORK_CLIENT_ID = 'arbitrum-mainnet';
 const MOCK_TX_ID = 'withdraw-tx-id';
+const MOCK_TX_META = {
+  id: MOCK_TX_ID,
+} as Partial<TransactionMeta> as TransactionMeta;
 
 describe('usePerpsWithdrawConfirmation', () => {
   const navigateToTransactionMock = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
-    findNetworkClientIdByChainIdMock.mockResolvedValue(
-      MOCK_NETWORK_CLIENT_ID as never,
-    );
-    addTransactionMock.mockResolvedValue({ id: MOCK_TX_ID } as never);
+    findNetworkClientIdByChainIdMock.mockResolvedValue(MOCK_NETWORK_CLIENT_ID);
+    addTransactionMock.mockResolvedValue(MOCK_TX_META);
     useConfirmationNavigationMock.mockReturnValue({
       navigateToTransaction: navigateToTransactionMock,
-    } as never);
+    } as ReturnType<typeof useConfirmationNavigation>);
   });
 
   it('creates a perpsWithdraw transaction and navigates to custom amount confirmation', async () => {
@@ -151,7 +155,7 @@ describe('usePerpsWithdrawConfirmation', () => {
   });
 
   it('returns null and logs when transaction creation fails', async () => {
-    addTransactionMock.mockRejectedValueOnce(new Error('tx failed') as never);
+    addTransactionMock.mockRejectedValueOnce(new Error('tx failed'));
     const consoleErrorSpy = jest
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);

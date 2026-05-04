@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { AccountState } from '@metamask/perps-controller';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
@@ -17,10 +18,10 @@ import { AlertsName } from '../constants';
 
 type PerpsAccountState = {
   metamask: {
-    accountState?: {
-      availableBalance?: string;
-      availableToTradeBalance?: string;
-    } | null;
+    accountState?: Pick<
+      AccountState,
+      'availableBalance' | 'availableToTradeBalance'
+    > | null;
   };
 };
 

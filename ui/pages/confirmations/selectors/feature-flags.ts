@@ -45,19 +45,14 @@ export const selectIsMetaMaskPayDappsEnabled = createSelector(
   (flag): boolean => flag?.enabled ?? false,
 );
 
-const selectPayPostQuoteConfig = createSelector(
-  [
-    selectConfirmationsPayPostQuoteFlag,
-    (_state, transactionType?: string) => transactionType,
-  ],
-  (flag, transactionType): PayPostQuoteConfig => {
+const selectPerpsWithdrawPostQuoteConfig = createSelector(
+  selectConfirmationsPayPostQuoteFlag,
+  (flag): PayPostQuoteConfig => {
     const defaultConfig: PayPostQuoteConfig = {
       enabled: flag?.default?.enabled ?? false,
       tokens: flag?.default?.tokens,
     };
-    const overrideConfig = transactionType
-      ? flag?.overrides?.[transactionType]
-      : undefined;
+    const overrideConfig = flag?.overrides?.[TransactionType.perpsWithdraw];
 
     if (!overrideConfig) {
       return defaultConfig;
@@ -71,6 +66,6 @@ const selectPayPostQuoteConfig = createSelector(
 );
 
 export const selectIsPerpsWithdrawPostQuoteEnabled = createSelector(
-  (state) => selectPayPostQuoteConfig(state, TransactionType.perpsWithdraw),
+  selectPerpsWithdrawPostQuoteConfig,
   (config): boolean => config.enabled === true,
 );

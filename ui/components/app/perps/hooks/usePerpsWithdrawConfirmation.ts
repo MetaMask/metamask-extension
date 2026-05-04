@@ -35,10 +35,7 @@ export type PerpsWithdrawConfirmationResult = {
 };
 
 function generateZeroUsdcTransferData(recipient: Hex): Hex {
-  return erc20Interface.encodeFunctionData('transfer', [
-    recipient,
-    '0x0',
-  ]) as Hex;
+  return erc20Interface.encodeFunctionData('transfer', [recipient, 0]) as Hex;
 }
 
 /**
@@ -62,7 +59,7 @@ export function usePerpsWithdrawConfirmation(
   const isInFlightRef = useRef(false);
 
   const trigger = useCallback(async () => {
-    if (isInFlightRef.current || isLoading) {
+    if (isInFlightRef.current) {
       return null;
     }
 
@@ -96,7 +93,7 @@ export function usePerpsWithdrawConfirmation(
         const goBackTo = location.pathname + location.search;
         navigateToTransaction(txMeta.id, {
           loader: ConfirmationLoader.CustomAmount,
-          ...(goBackTo && goBackTo !== '/' ? { goBackTo } : {}),
+          ...(goBackTo === '/' ? {} : { goBackTo }),
         });
       }
 
@@ -111,7 +108,6 @@ export function usePerpsWithdrawConfirmation(
       setIsLoading(false);
     }
   }, [
-    isLoading,
     location.pathname,
     location.search,
     navigateOnCreate,

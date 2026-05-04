@@ -64,7 +64,7 @@ const NATIVE_TOKEN_MOCK = {
 function runHook(
   props: Parameters<typeof useInsufficientPayTokenBalanceAlert>[0] = {},
   transactionType?: TransactionType,
-  chainId = CHAIN_IDS.MAINNET,
+  chainId: Hex = CHAIN_IDS.MAINNET,
 ) {
   const contractInteraction = genUnapprovedContractInteractionConfirmation({
     chainId,
