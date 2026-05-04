@@ -361,7 +361,7 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
-        'Close Long',
+        'Close long',
       );
     });
 
@@ -377,7 +377,7 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
-        'Close Short',
+        'Close short',
       );
     });
 
