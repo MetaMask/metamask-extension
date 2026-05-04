@@ -12,6 +12,7 @@ import {
 import { webAuthenticatorFactory } from '../../services/oauth/web-authenticator-factory';
 import { OAuthServiceMessenger } from '../../services/oauth/types';
 import { MetaMetricsController } from '../../controllers/metametrics-controller';
+import ExtensionPlatform from '../../platforms/extension';
 
 export const OAuthServiceInit: MessengerClientInitFunction<
   OAuthService,
@@ -38,6 +39,7 @@ export const OAuthServiceInit: MessengerClientInitFunction<
       telegramAuthenticationServerUrl: getEnvUrls(profileSyncEnv).authApiUrl,
     },
     webAuthenticator: webAuthenticatorFactory(),
+    platform: new ExtensionPlatform(),
 
     bufferedTrace: metaMetricsController.bufferedTrace.bind(
       metaMetricsController,

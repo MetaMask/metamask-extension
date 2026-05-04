@@ -15,6 +15,7 @@ import {
   MetaMetricsEventOptions,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import ExtensionPlatform from '../../platforms/extension';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import {
@@ -54,6 +55,8 @@ export class OAuthService {
 
   #webAuthenticator: WebAuthenticator;
 
+  #platform: ExtensionPlatform;
+
   #bufferedTrace: OAuthServiceOptions['bufferedTrace'];
 
   #bufferedEndTrace: OAuthServiceOptions['bufferedEndTrace'];
@@ -68,6 +71,7 @@ export class OAuthService {
     messenger,
     env,
     webAuthenticator,
+    platform,
     bufferedTrace,
     bufferedEndTrace,
     trackEvent,
@@ -82,6 +86,7 @@ export class OAuthService {
       ...oauthConfig,
     };
     this.#webAuthenticator = webAuthenticator;
+    this.#platform = platform;
     this.#bufferedTrace = bufferedTrace;
     this.#bufferedEndTrace = bufferedEndTrace;
     this.#trackEvent = trackEvent;
@@ -470,82 +475,76 @@ export class OAuthService {
    * @param extensionRedirectURL
    * @param loginHandler
    */
-  #launchTabAuthFlow(
+  async #launchTabAuthFlow(
     authUrl: string,
     extensionRedirectURL: string,
     loginHandler: BaseLoginHandler,
   ): Promise<string> {
-    return new Promise((resolve, reject) => {
-      /* eslint-disable @typescript-eslint/no-explicit-any */
-      const chromeTabs = (globalThis as any)?.chrome?.tabs;
+    try {
+      const redirectUrl = await this.#platform
+        .openTab({ url: authUrl, active: true })
+        .then(
+          (openedTab) =>
+            new Promise((resolve, reject) => {
+              const platform = this.#platform;
 
-      let createdTabId: number | undefined;
-      const cleanup = (): void => {
-        try {
-          chromeTabs.onUpdated.removeListener(onUpdated);
-          chromeTabs.onRemoved.removeListener(onRemoved);
-        } catch {
-          // ignore — listeners may already be detached
-        }
-      };
+              function cleanup(): void {
+                platform.removeTabUpdatedListener(onUpdated);
+                platform.removeTabRemovedListener(onRemoved);
+              }
 
-      const rejectNoRedirect = (): void => {
-        cleanup();
-        reject(new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR));
-      };
+              function finish(callback: () => void): void {
+                cleanup();
+                if (openedTab.id !== undefined) {
+                  platform.closeTab(openedTab.id).catch(() => undefined);
+                }
+                callback();
+              }
 
-      const finish = (callback: () => void): void => {
-        cleanup();
-        if (createdTabId !== undefined) {
-          try {
-            chromeTabs.remove(createdTabId);
-          } catch {
-            // ignore
-          }
-        }
-        callback();
-      };
+              function onUpdated(
+                tabId: number,
+                changeInfo: { url?: string; pendingUrl?: string },
+                tab?: { url?: string },
+              ): void {
+                if (tabId !== openedTab.id) {
+                  return;
+                }
+                const candidateUrl =
+                  changeInfo?.url || changeInfo?.pendingUrl || tab?.url;
+                if (!candidateUrl?.startsWith(extensionRedirectURL)) {
+                  return;
+                }
+                try {
+                  loginHandler.validateState(candidateUrl);
+                  finish(() => resolve(candidateUrl));
+                } catch (error) {
+                  finish(() => reject(error));
+                }
+              }
 
-      function onUpdated(
-        tabId: number,
-        changeInfo: chrome.tabs.TabChangeInfo,
-        tab: chrome.tabs.Tab,
-      ): void {
-        if (tabId !== createdTabId) {
-          return;
-        }
-        const candidateUrl =
-          changeInfo?.url || changeInfo?.pendingUrl || tab?.url;
-        if (!candidateUrl?.startsWith(extensionRedirectURL)) {
-          return;
-        }
-        try {
-          loginHandler.validateState(candidateUrl);
-          finish(() => resolve(candidateUrl));
-        } catch (error) {
-          reject(error);
-        }
+              function onRemoved(tabId: number): void {
+                if (tabId !== openedTab.id) {
+                  return;
+                }
+                cleanup();
+              }
+
+              platform.addTabUpdatedListener(onUpdated);
+              platform.addTabRemovedListener(onRemoved);
+            }),
+        );
+
+      if (!redirectUrl || typeof redirectUrl !== 'string') {
+        throw new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR);
       }
-
-      function onRemoved(tabId: number): void {
-        if (tabId !== createdTabId) {
-          return;
-        }
-        rejectNoRedirect();
-      }
-
-      chromeTabs.onUpdated.addListener(onUpdated);
-      chromeTabs.onRemoved.addListener(onRemoved);
-
-      try {
-        chromeTabs.create({ url: authUrl, active: true }, (tab) => {
-          createdTabId = tab?.id;
-        });
-      } catch (err) {
-        cleanup();
-        reject(err);
-      }
-    });
+      return redirectUrl;
+    } catch (error) {
+      log.error(
+        `Failed to launch tab auth flow for ${loginHandler.authConnection}`,
+        error,
+      );
+      throw error;
+    }
   }
 
   async setMarketingConsent(

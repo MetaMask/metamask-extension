@@ -14,6 +14,7 @@ import type {
   EndTraceRequest,
 } from '../../../../shared/lib/trace';
 import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
+import ExtensionPlatform from '../../platforms/extension';
 import { OAuthServiceMethodActions } from './oauth-service-method-action-types';
 
 export const SERVICE_NAME = 'OAuthService';
@@ -156,6 +157,11 @@ export type OAuthServiceOptions = {
    * The WebAuthenticator to use for the OAuth login.
    */
   webAuthenticator: WebAuthenticator;
+
+  /**
+   * The extension platform abstraction for browser tab lifecycle handling.
+   */
+  platform: ExtensionPlatform;
 
   /**
    * Buffered trace methods that handle consent checking

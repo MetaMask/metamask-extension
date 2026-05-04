@@ -8,6 +8,7 @@ import {
 } from '@metamask/messenger';
 import { OAuthErrorMessages } from '../../../../shared/lib/error';
 import { ENVIRONMENT } from '../../../../development/build/constants';
+import ExtensionPlatform from '../../platforms/extension';
 import { OAuthServiceMessenger, WebAuthenticator } from './types';
 import { OAuthService } from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
@@ -23,6 +24,8 @@ const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
 const MOCK_USER_ID = 'user-id';
 const MOCK_REDIRECT_URI = 'https://mocked-redirect-uri';
+const MOCK_TELEGRAM_AUTHENTICATION_SERVER_URL =
+  'https://mocked-telegram-authentication-server';
 const MOCK_JWT_TOKEN =
   'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN3bmFtOTA5QGdtYWlsLmNvbSIsInN1YiI6InN3bmFtOTA5QGdtYWlsLmNvbSIsImlzcyI6Im1ldGFtYXNrIiwiYXVkIjoibWV0YW1hc2siLCJpYXQiOjE3NDUyMDc1NjYsImVhdCI6MTc0NTIwNzg2NiwiZXhwIjoxNzQ1MjA3ODY2fQ.nXRRLB7fglRll7tMzFFCU0u7Pu6EddqEYf_DMyRgOENQ6tJ8OLtVknNf83_5a67kl_YKHFO-0PEjvJviPID6xg';
 const MOCK_NONCE = 'mocked-nonce';
@@ -33,13 +36,17 @@ const MOCK_STATE = JSON.stringify({
   nonce: MOCK_NONCE,
 });
 
+jest.mock('../../platforms/extension');
+
 function getOAuthLoginEnvs(): {
   googleClientId: string;
   appleClientId: string;
+  telegramAuthenticationServerUrl: string;
 } {
   return {
     googleClientId: DEFAULT_GOOGLE_CLIENT_ID,
     appleClientId: DEFAULT_APPLE_CLIENT_ID,
+    telegramAuthenticationServerUrl: MOCK_TELEGRAM_AUTHENTICATION_SERVER_URL,
   };
 }
 
@@ -75,6 +82,7 @@ const mockBufferedEndTrace = jest.fn();
 const mockTrackEvent = jest.fn();
 const mockAddEventBeforeMetricsOptIn = jest.fn();
 const mockGetParticipateInMetaMetrics = jest.fn().mockReturnValue(true);
+const mockPlatform = new ExtensionPlatform();
 
 describe('OAuthService - startOAuthLogin', () => {
   beforeAll(() => {
@@ -113,6 +121,7 @@ describe('OAuthService - startOAuthLogin', () => {
       messenger,
       env: oauthEnv,
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
@@ -149,6 +158,7 @@ describe('OAuthService - startOAuthLogin', () => {
       messenger,
       env: oauthEnv,
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
@@ -176,6 +186,93 @@ describe('OAuthService - startOAuthLogin', () => {
     );
   });
 
+  it('should start the OAuth login process with `Telegram` using extension platform tabs', async () => {
+    const messenger = getMessenger();
+    const oauthEnv = getOAuthLoginEnvs();
+    const redirectUrl = `${MOCK_REDIRECT_URI}?code=mocked-code&state=${MOCK_NONCE}`;
+
+    jest.spyOn(global, 'fetch').mockImplementation(
+      jest.fn((input) => {
+        const url = String(input);
+
+        if (url.includes('/api/v2/telegram/login/verify')) {
+          return Promise.resolve({
+            json: jest.fn().mockResolvedValue({
+              token: MOCK_JWT_TOKEN,
+            }),
+            status: 200,
+            ok: true,
+          });
+        }
+
+        if (url.includes('/oauth2/token')) {
+          return Promise.resolve({
+            json: jest.fn().mockResolvedValue({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              access_token: 'mocked-oidc-access-token',
+            }),
+            status: 200,
+            ok: true,
+          });
+        }
+
+        if (url.includes('/api/v1/oauth/mint')) {
+          return Promise.resolve({
+            json: jest.fn().mockResolvedValue({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              id_token: MOCK_JWT_TOKEN,
+            }),
+            status: 200,
+            ok: true,
+          });
+        }
+
+        throw new Error(`Unexpected fetch URL: ${url}`);
+      }) as jest.Mock,
+    );
+
+    // @ts-expect-error - mock platform
+    jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({ id: 1 });
+    jest.spyOn(mockPlatform, 'closeTab').mockResolvedValue(undefined);
+    jest
+      .spyOn(mockPlatform, 'addTabUpdatedListener')
+      .mockImplementation(async (fn) => {
+        await Promise.resolve();
+        await fn(1, { url: redirectUrl }, { url: redirectUrl });
+      });
+    jest
+      .spyOn(mockPlatform, 'addTabRemovedListener')
+      .mockImplementation(jest.fn());
+
+    const oauthService = new OAuthService({
+      messenger,
+      env: oauthEnv,
+      webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+    });
+
+    const result = await oauthService.startOAuthLogin(AuthConnection.Telegram);
+
+    expect(result).toMatchObject({
+      authConnection: AuthConnection.Telegram,
+      idTokens: [MOCK_JWT_TOKEN],
+      socialLoginEmail: 'swnam909@gmail.com',
+      profilePairingToken: 'mocked-oidc-access-token',
+    });
+    expect(mockPlatform.openTab).toHaveBeenCalledWith({
+      active: true,
+      url: expect.stringContaining(
+        `${MOCK_TELEGRAM_AUTHENTICATION_SERVER_URL}/api/v2/telegram/login/initiate`,
+      ),
+    });
+    expect(mockPlatform.closeTab).toHaveBeenCalledWith(1);
+  });
+
   it('should throw an error if the state validation fails - google', async () => {
     const messenger = getMessenger();
 
@@ -188,6 +285,7 @@ describe('OAuthService - startOAuthLogin', () => {
         ...mockWebAuthenticator,
         generateNonce: jest.fn().mockReturnValue(Math.random().toString()),
       },
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
@@ -211,6 +309,7 @@ describe('OAuthService - startOAuthLogin', () => {
         messenger,
         env: oauthEnv,
         webAuthenticator: mockWebAuthenticator,
+        platform: mockPlatform,
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
@@ -273,6 +372,7 @@ describe('OAuthService - getNewRefreshToken', () => {
       messenger,
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
@@ -337,6 +437,7 @@ describe('OAuthService - getNewRefreshToken', () => {
       messenger,
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
@@ -381,6 +482,7 @@ describe('OAuthService - getNewRefreshToken', () => {
         messenger,
         env: oauthEnv,
         webAuthenticator: mockWebAuthenticator,
+        platform: mockPlatform,
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
@@ -428,6 +530,7 @@ describe('OAuthService - renewRefreshToken', () => {
       messenger,
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
@@ -484,6 +587,7 @@ describe('OAuthService - renewRefreshToken', () => {
       messenger,
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
@@ -522,6 +626,7 @@ describe('OAuthService - revokeRefreshToken', () => {
       messenger,
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
@@ -573,6 +678,7 @@ describe('OAuthService - revokeRefreshToken', () => {
       messenger,
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
@@ -615,6 +721,7 @@ describe('OAuthService - revokeRefreshToken', () => {
         messenger,
         env: getOAuthLoginEnvs(),
         webAuthenticator: mockWebAuthenticator,
+        platform: mockPlatform,
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
