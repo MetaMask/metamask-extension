@@ -9,6 +9,8 @@ import {
   nullable,
   optional,
   intersection,
+  array,
+  enums,
 } from '@metamask/superstruct';
 import { CaipAssetTypeStruct, type CaipChainId } from '@metamask/utils';
 import { getClientHeaders } from '@metamask/bridge-controller';
@@ -30,8 +32,38 @@ const MinimalAssetSchema = type({
   decimals: number(),
 });
 
+export enum BridgeAssetSecurityDataType {
+  INFO = 'Info',
+  BENIGN = 'Benign',
+  VERIFIED = 'Verified',
+  WARNING = 'Warning',
+  SPAM = 'Spam',
+  MALICIOUS = 'Malicious',
+}
+
+export const BridgeAssetSecurityData = type({
+  isVerified: optional(boolean()),
+  securityData: optional(
+    type({
+      type: enums(Object.values(BridgeAssetSecurityDataType)),
+      metadata: optional(
+        type({
+          features: array(
+            type({
+              featureId: string(),
+              type: enums(Object.values(BridgeAssetSecurityDataType)),
+              description: string(),
+            }),
+          ),
+        }),
+      ),
+    }),
+  ),
+});
+
 const BridgeAssetV2Schema = intersection([
   MinimalAssetSchema,
+  BridgeAssetSecurityData,
   type({
     /**
      * URL for token icon
@@ -43,7 +75,6 @@ const BridgeAssetV2Schema = intersection([
         isSource: nullable(optional(boolean())),
       }),
     ),
-    isVerified: optional(boolean()),
   }),
 ]);
 

@@ -9,6 +9,7 @@ import {
   isWebUsbAvailable,
   isCameraAvailable,
   openCameraVideoStream,
+  queryCameraPermissionWithStatus,
   stopMediaStreamTracks,
   checkHardwareWalletPermission,
   checkWebHidPermission,
@@ -378,6 +379,27 @@ describe('webConnectionUtils', () => {
       const result = await checkHardwareWalletPermission(HardwareWalletType.Qr);
 
       expect(result).toBe(HardwareConnectionPermissionState.Granted);
+    });
+  });
+
+  describe('queryCameraPermissionWithStatus', () => {
+    it('returns state and permissionStatus when supported', async () => {
+      const permissionStatus = { state: 'denied' as PermissionState };
+      getMockedPermissions().query.mockResolvedValue(permissionStatus);
+
+      await expect(queryCameraPermissionWithStatus()).resolves.toStrictEqual({
+        state: 'denied',
+        permissionStatus,
+      });
+    });
+
+    it('falls back to prompt when query throws', async () => {
+      getMockedPermissions().query.mockRejectedValue(new Error('unsupported'));
+
+      await expect(queryCameraPermissionWithStatus()).resolves.toStrictEqual({
+        state: 'prompt',
+        permissionStatus: null,
+      });
     });
   });
 

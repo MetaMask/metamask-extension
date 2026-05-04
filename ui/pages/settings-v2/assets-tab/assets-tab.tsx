@@ -14,7 +14,6 @@ import {
 import { DisplayNftMediaToggleItem } from '../shared/display-nft-media-item';
 import { AutodetectNftsToggleItem } from '../shared/autodetect-nfts-item';
 import { ASSET_ITEMS } from '../search-config';
-import { LocalCurrencyItem } from './local-currency-item';
 
 const ShowNetworkTokenToggleItem = createToggleItem({
   name: 'ShowNetworkTokenToggleItem',
@@ -47,12 +46,10 @@ const AutodetectTokensToggleItem = createToggleItem({
 
 /** Registry of setting items for the Assets page. Add new items here */
 const ASSET_SETTING_ITEMS: SettingItemConfig[] = [
-  { id: 'local-currency', component: LocalCurrencyItem },
   { id: 'show-network-token', component: ShowNetworkTokenToggleItem },
   {
     id: 'hide-zero-balance-tokens',
     component: HideZeroBalanceTokensToggleItem,
-    hasDividerBefore: true,
   },
   {
     id: 'display-nft-media',
