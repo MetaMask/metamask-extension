@@ -8,15 +8,12 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import {
   DEFAULT_ROUTE,
-  RESTORE_VAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   tryUnlockMetamask,
-  markPasswordForgotten,
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
   resetOnboarding,
-  resetWallet,
   getIsSeedlessOnboardingUserAuthenticated,
 } from '../../store/actions';
 import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
@@ -51,12 +48,10 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
     tryUnlockMetamask: (password: string) =>
       dispatch(tryUnlockMetamask(password)),
-    markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
     checkIsSeedlessPasswordOutdated: () =>
       dispatch(checkIsSeedlessPasswordOutdated()),
-    resetWallet: () => dispatch(resetWallet()),
     getIsSeedlessOnboardingUserAuthenticated: () =>
       dispatch(getIsSeedlessOnboardingUserAuthenticated()),
   };
@@ -68,7 +63,6 @@ const mergeProps = (
   ownProps: OwnProps,
 ) => {
   const {
-    markPasswordForgotten: propsMarkPasswordForgotten,
     tryUnlockMetamask: propsTryUnlockMetamask,
     ...restDispatchProps
   } = dispatchProps;
@@ -80,15 +74,6 @@ const mergeProps = (
   } = ownProps;
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-
-  const onImport = async () => {
-    await propsMarkPasswordForgotten();
-    navigate(RESTORE_VAULT_ROUTE, { replace: true });
-
-    if (isPopup) {
-      global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
-    }
-  };
 
   const onSubmit = async (password: string) => {
     await propsTryUnlockMetamask(password);
@@ -106,7 +91,6 @@ const mergeProps = (
     ...stateProps,
     ...restDispatchProps,
     ...restOwnProps,
-    onRestore: onImport,
     onSubmit: ownPropsSubmit || onSubmit,
     navigate,
     location,

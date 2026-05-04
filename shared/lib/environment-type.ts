@@ -33,6 +33,7 @@ const getEnvironmentTypeMemo = memoize((url: string) => {
  * - `fullscreen` refers to the main browser window
  * - `notification` refers to the popup that appears in its own window when taking action outside of metamask
  * - `background` refers to the background page
+ * - `sidepanel` refers to the side panel
  *
  * NOTE: This should only be called on internal URLs.
  *

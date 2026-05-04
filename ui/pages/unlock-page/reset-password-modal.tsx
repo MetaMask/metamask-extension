@@ -26,8 +26,8 @@ import {
   ModalOverlay,
 } from '../../components/component-library';
 import { getIsSocialLoginFlow } from '../../selectors';
-import { resetWallet as resetWalletAction } from '../../store/actions';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { markPasswordForgotten, resetWallet as resetWalletAction } from '../../store/actions';
+import { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -36,28 +36,57 @@ import {
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { useBoolean } from '../../hooks/useBoolean';
+import { ENVIRONMENT_TYPE_POPUP, ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ResetPasswordModal({
   onClose,
-  onRestore,
 }: {
   onClose: () => void;
-  onRestore: () => void;
 }) {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const { value: resetWallet, toggle: handleResetWallet } = useBoolean();
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
+  const isPopupOrSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP || getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
 
   const handleResetWalletConfirm = async () => {
     onClose();
+
+    console.log('getEnvironmentType()', getEnvironmentType());
+
     await dispatch(resetWalletAction());
-    navigate(DEFAULT_ROUTE, { replace: true });
+
+    if (isPopupOrSidePanel) {
+      global.platform.openExtensionInBrowser?.(DEFAULT_ROUTE);
+    } else {
+      navigate(DEFAULT_ROUTE, { replace: true });
+    }
+  };
+
+  const handleRestoreWallet = async () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Accounts,
+      event: MetaMetricsEventName.ResetWallet,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: isSocialLoginFlow ? 'social' : 'metamask',
+      },
+    });
+
+    await dispatch(markPasswordForgotten());
+
+    navigate(RESTORE_VAULT_ROUTE, { replace: true });
+
+    if (isPopupOrSidePanel) {
+      global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
+    }
   };
 
   const handleContactSupportTrackEvent = () => {
@@ -161,7 +190,7 @@ export default function ResetPasswordModal({
           <Button
             data-testid="reset-password-modal-button"
             variant={ButtonVariant.Primary}
-            onClick={onRestore}
+            onClick={handleRestoreWallet}
             size={ButtonSize.Lg}
             className="w-full"
           >
@@ -224,7 +253,7 @@ export default function ResetPasswordModal({
           <Button
             data-testid="reset-password-modal-button"
             variant={ButtonVariant.Primary}
-            onClick={onRestore}
+            onClick={handleRestoreWallet}
             size={ButtonSize.Lg}
             className="w-full"
           >
@@ -297,7 +326,7 @@ export default function ResetPasswordModal({
   };
 
   const restoreContent = () =>
-    isSocialLoginEnabled ? socialLoginContent() : srpLoginContent();
+    isSocialLoginFlow ? socialLoginContent() : srpLoginContent();
 
   return (
     <Modal
