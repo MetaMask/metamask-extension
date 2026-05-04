@@ -502,7 +502,8 @@ jobs:
     with:
       test-suite-name: e2e-chrome-single-spec
       build-artifact: ''
-      build-command: yarn build:test:webpack
+      # Same as run-build.yml for webpack: emit development/.webpack/launch.js before lavamoat reads it.
+      build-command: yarn webpack:tsc && yarn build:test:webpack
       test-command: yarn test:e2e:single test/e2e/tests/critical-errors/critical-errors.spec.ts --browser chrome --debug false
       builds-from-run: ${{ github.run_id }}
       test-timeout-minutes: 90
