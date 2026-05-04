@@ -9,6 +9,7 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { usePerpsLiveAccount } from '../../../../../hooks/perps/stream';
+import { getTradeableBalance } from '../../../../../hooks/perps/getTradeableBalance';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionCustomAmount } from '../../transactions/useTransactionCustomAmount';
 import { AlertsName } from '../constants';
@@ -28,7 +29,12 @@ export function usePerpsWithdrawInsufficientBalanceAlert(): Alert[] {
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
-  const availableBalance = new BigNumber(account?.availableBalance ?? '0');
+  // HyperLiquid Unified Account mode keeps USDC collateral in the spot
+  // clearinghouse, so `availableBalance` reads $0 — would false-positive the
+  // insufficient-balance alert and block legitimate withdrawals. Use the
+  // unified `availableToTradeBalance` via `getTradeableBalance`. Mirrors mobile
+  // fix in metamask-mobile#29492.
+  const availableBalance = new BigNumber(getTradeableBalance(account));
   const enteredAmount = new BigNumber(amountFiat || '0');
 
   const exceedsBalance =

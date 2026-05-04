@@ -51,6 +51,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useFormatters } from '../../hooks/useFormatters';
 import { usePerpsEventTracking } from '../../hooks/perps';
 import { usePerpsLiveAccount } from '../../hooks/perps/stream';
+import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
@@ -94,7 +95,12 @@ const PerpsWithdrawPage: React.FC = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const availableBalance = account?.availableBalance ?? '0';
+  // HyperLiquid Unified Account mode keeps USDC collateral in the spot
+  // clearinghouse, so the perps-only `availableBalance` reads $0. Use the
+  // unified `availableToTradeBalance` (perps withdrawable + unreserved spot
+  // USDC) and fall back to `availableBalance` for Standard / non-HL providers.
+  // Mirrors mobile fix in metamask-mobile#29492.
+  const availableBalance = getTradeableBalance(account);
   const availableNum = parseFloat(availableBalance) || 0;
 
   const usdcAssetId = useMemo(

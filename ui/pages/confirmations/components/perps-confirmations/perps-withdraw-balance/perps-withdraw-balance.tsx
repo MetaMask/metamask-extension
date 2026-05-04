@@ -12,16 +12,22 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../hooks/useFormatters';
 import { usePerpsLiveAccount } from '../../../../../hooks/perps/stream';
+import { getTradeableBalance } from '../../../../../hooks/perps/getTradeableBalance';
 
 export const PerpsWithdrawBalance = () => {
   const t = useI18nContext();
   const { formatCurrency } = useFormatters();
   const { account } = usePerpsLiveAccount();
 
+  // HyperLiquid Unified Account mode keeps USDC collateral in the spot
+  // clearinghouse, so the perps-only `availableBalance` reads $0. Use the
+  // unified `availableToTradeBalance` (perps withdrawable + unreserved spot
+  // USDC) and fall back to `availableBalance` for Standard / non-HL providers.
+  // Mirrors mobile fix in metamask-mobile#29492.
   const balanceFormatted = useMemo(() => {
-    const value = parseFloat(account?.availableBalance ?? '0') || 0;
+    const value = parseFloat(getTradeableBalance(account)) || 0;
     return formatCurrency(value, 'USD');
-  }, [account?.availableBalance, formatCurrency]);
+  }, [account, formatCurrency]);
 
   return (
     <Box
