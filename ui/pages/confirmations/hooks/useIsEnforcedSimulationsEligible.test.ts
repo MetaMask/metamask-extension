@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention, camelcase */
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
@@ -13,9 +14,11 @@ const getIsEnforcedSimulationsEligibleMock = jest.mocked(
 
 function runHook({
   eligible = true,
+  enabled = true,
   addressSecurityAlertResponses = {},
 }: {
   eligible?: boolean;
+  enabled?: boolean;
   addressSecurityAlertResponses?: Record<string, unknown>;
 } = {}) {
   getIsEnforcedSimulationsEligibleMock.mockReturnValue(eligible);
@@ -30,6 +33,9 @@ function runHook({
     {
       metamask: {
         addressSecurityAlertResponses,
+        remoteFeatureFlags: {
+          confirmations_enforced_simulations: { enabled },
+        },
       },
     },
   );
@@ -56,7 +62,6 @@ describe('useIsEnforcedSimulationsEligible', () => {
   });
 
   it('passes transaction meta and state to eligibility function', () => {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const alertResponses = { someKey: { result_type: 'Benign' } };
 
     runHook({
@@ -71,5 +76,10 @@ describe('useIsEnforcedSimulationsEligible', () => {
         eip7702SupportedChains: [],
       },
     );
+  });
+
+  it('returns false and skips the eligibility check when the flag is disabled', () => {
+    expect(runHook({ enabled: false })).toBe(false);
+    expect(getIsEnforcedSimulationsEligibleMock).not.toHaveBeenCalled();
   });
 });

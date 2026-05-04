@@ -3,6 +3,7 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { Hex } from '@metamask/utils';
 import {
   CachedScanAddressResponse,
@@ -11,7 +12,56 @@ import {
   ResultType,
 } from '../trust-signals';
 
-const DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE = 10;
+/**
+ * Default slippage percentage to apply when the
+ * `confirmations_enforced_simulations` remote feature flag does not
+ * provide a `slippage` value.
+ */
+export const DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE = 10;
+
+const ENFORCED_SIMULATIONS_FEATURE_FLAG = 'confirmations_enforced_simulations';
+
+/**
+ * Shape of the `confirmations_enforced_simulations` remote feature flag
+ * value. Both fields are optional; consumers fall back to safe defaults
+ * (disabled / {@link DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE}) when absent.
+ */
+export type EnforcedSimulationsFeatureFlag = {
+  enabled?: boolean;
+  slippage?: number;
+};
+
+type RemoteFlagsWithEnforcedSimulations = {
+  /* eslint-disable-next-line @typescript-eslint/naming-convention */
+  confirmations_enforced_simulations?: EnforcedSimulationsFeatureFlag;
+};
+
+function getEnforcedSimulationsFlag(
+  remoteFeatureFlags: RemoteFeatureFlagControllerState['remoteFeatureFlags'],
+): EnforcedSimulationsFeatureFlag | undefined {
+  return (remoteFeatureFlags as RemoteFlagsWithEnforcedSimulations)?.[
+    ENFORCED_SIMULATIONS_FEATURE_FLAG
+  ];
+}
+
+/**
+ * Reads the `slippage` field from the `confirmations_enforced_simulations`
+ * remote feature flag. Falls back to
+ * {@link DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE} when the flag or field is
+ * absent.
+ *
+ * @param state - The remote feature flag controller state.
+ * @param state.remoteFeatureFlags - The remote feature flags object.
+ * @returns The slippage percentage to apply.
+ */
+export function getEnforcedSimulationsSlippage({
+  remoteFeatureFlags,
+}: RemoteFeatureFlagControllerState): number {
+  return (
+    getEnforcedSimulationsFlag(remoteFeatureFlags)?.slippage ??
+    DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE
+  );
+}
 
 /**
  * State required by the enforced simulations trust signal check.
@@ -22,44 +72,29 @@ export type EnforcedSimulationsState = {
 };
 
 /**
- * Returns the default slippage percentage for enforced simulations.
- *
- * @returns The slippage percentage.
- */
-export function getEnforcedSimulationsSlippage(): number {
-  return DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE;
-}
-
-/**
  * Determines whether a transaction is eligible for enforced simulations.
  *
- * When state is provided and the chain supports trust signals, also
- * requires that at least one recipient address is loaded and not trusted.
- * If the chain is unsupported by trust signals, the transaction remains
- * eligible since we cannot verify trust. When state is omitted (e.g.
- * background hook), only the base eligibility checks are applied.
+ * When the chain supports trust signals, also requires that at least one
+ * recipient address is loaded and not trusted. If the chain is
+ * unsupported by trust signals, the transaction remains eligible since
+ * we cannot verify trust.
  *
  * @param transactionMeta - The transaction metadata.
- * @param state - Optional trust signal state. When provided, the trust
- * signal for the recipient must be loaded and not trusted.
+ * @param state - Trust signal state and EIP-7702 supported chains.
  * @returns Whether the transaction is eligible for enforced simulations.
  */
 export function isEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
-  state?: EnforcedSimulationsState,
+  state: EnforcedSimulationsState,
 ): boolean {
   const { chainId, origin, simulationData } = transactionMeta;
-
-  if (!process.env.ENABLE_ENFORCED_SIMULATIONS) {
-    return false;
-  }
 
   if (!origin || origin === ORIGIN_METAMASK) {
     return false;
   }
 
   if (
-    !state?.eip7702SupportedChains?.some(
+    !state.eip7702SupportedChains?.some(
       (supported) => supported.toLowerCase() === chainId?.toLowerCase(),
     )
   ) {
@@ -77,7 +112,7 @@ export function isEnforcedSimulationsEligible(
     return true;
   }
 
-  if (state && isTrusted(transactionMeta, state)) {
+  if (isTrusted(transactionMeta, state)) {
     return false;
   }
 
