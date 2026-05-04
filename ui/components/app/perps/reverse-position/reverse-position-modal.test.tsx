@@ -4,17 +4,11 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import {
-  PERPS_EVENT_PROPERTY,
-  PERPS_EVENT_VALUE,
-} from '../../../../../shared/constants/perps-events';
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { mockPositions } from '../mocks';
 import { ReversePositionModal } from './reverse-position-modal';
 
 const mockUsePerpsOrderFees = jest.fn();
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
-const mockTrack = jest.fn();
 
 jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
   usePerpsOrderFees: () => mockUsePerpsOrderFees(),
@@ -22,7 +16,7 @@ jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
 
 jest.mock('../../../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
-  usePerpsEventTracking: () => ({ track: mockTrack }),
+  usePerpsEventTracking: () => ({ track: jest.fn() }),
 }));
 
 jest.mock('../../../../hooks/useFormatters', () => ({
@@ -373,53 +367,6 @@ describe('ReversePositionModal', () => {
         expect(pushPositionsWithOverrides).toHaveBeenCalledWith(mockPositions);
       });
     });
-
-    it('emits flip-long-to-short PerpsTradeTransaction analytics on success', async () => {
-      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
-
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
-
-      await waitFor(() => {
-        expect(mockTrack).toHaveBeenCalledWith(
-          MetaMetricsEventName.PerpsTradeTransaction,
-          expect.objectContaining({
-            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-            [PERPS_EVENT_PROPERTY.ACTION]:
-              PERPS_EVENT_VALUE.TRADE_ACTION.FLIP_LONG_TO_SHORT,
-            [PERPS_EVENT_PROPERTY.DIRECTION]: PERPS_EVENT_VALUE.DIRECTION.SHORT,
-            [PERPS_EVENT_PROPERTY.ORDER_TYPE]: 'market',
-            [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
-          }),
-        );
-      });
-    });
-
-    it('emits flip-short-to-long PerpsTradeTransaction analytics on success', async () => {
-      renderWithProvider(
-        <ReversePositionModal
-          {...defaultProps}
-          position={shortPosition}
-          currentPrice={45000}
-        />,
-        mockStore,
-      );
-
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
-
-      await waitFor(() => {
-        expect(mockTrack).toHaveBeenCalledWith(
-          MetaMetricsEventName.PerpsTradeTransaction,
-          expect.objectContaining({
-            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-            [PERPS_EVENT_PROPERTY.ACTION]:
-              PERPS_EVENT_VALUE.TRADE_ACTION.FLIP_SHORT_TO_LONG,
-            [PERPS_EVENT_PROPERTY.DIRECTION]: PERPS_EVENT_VALUE.DIRECTION.LONG,
-            [PERPS_EVENT_PROPERTY.ORDER_TYPE]: 'market',
-            [PERPS_EVENT_PROPERTY.ASSET]: 'BTC',
-          }),
-        );
-      });
-    });
   });
 
   describe('flip fails', () => {
@@ -496,35 +443,6 @@ describe('ReversePositionModal', () => {
       });
       expect(onClose).not.toHaveBeenCalled();
     });
-
-    it('emits flip PerpsTradeTransaction analytics with failed status on returned failure', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsPlaceOrder') {
-          return Promise.resolve({
-            success: false,
-            error: 'Insufficient margin',
-          });
-        }
-        return Promise.resolve(undefined);
-      });
-
-      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
-
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
-
-      await waitFor(() => {
-        expect(mockTrack).toHaveBeenCalledWith(
-          MetaMetricsEventName.PerpsTradeTransaction,
-          expect.objectContaining({
-            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-            [PERPS_EVENT_PROPERTY.ACTION]:
-              PERPS_EVENT_VALUE.TRADE_ACTION.FLIP_LONG_TO_SHORT,
-            [PERPS_EVENT_PROPERTY.ORDER_TYPE]: 'market',
-            [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
-          }),
-        );
-      });
-    });
   });
 
   describe('exception handling', () => {
@@ -544,30 +462,6 @@ describe('ReversePositionModal', () => {
         expect(
           screen.getByText(messages.perpsNetworkError.message),
         ).toBeInTheDocument();
-      });
-    });
-
-    it('emits flip PerpsTradeTransaction analytics with failed status on thrown exception', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsPlaceOrder') {
-          return Promise.reject(new Error('Network error'));
-        }
-        return Promise.resolve(undefined);
-      });
-
-      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
-
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
-
-      await waitFor(() => {
-        expect(mockTrack).toHaveBeenCalledWith(
-          MetaMetricsEventName.PerpsTradeTransaction,
-          expect.objectContaining({
-            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-            [PERPS_EVENT_PROPERTY.ACTION]:
-              PERPS_EVENT_VALUE.TRADE_ACTION.FLIP_LONG_TO_SHORT,
-          }),
-        );
       });
     });
   });
