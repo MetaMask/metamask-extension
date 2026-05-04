@@ -9,13 +9,13 @@ import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
-type HandleWatchAssetRequest = (
+export type HandleWatchAssetRequest = (
   options: Record<string, string | Record<string, string>>,
 ) => Promise<void>;
 
 type WatchAssetParams = { options: { tokenId: string }; type: string };
 
-type WatchAssetRequest = JsonRpcRequest<WatchAssetParams> &
+export type WatchAssetRequest = JsonRpcRequest<WatchAssetParams> &
   Partial<{ origin: string; networkClientId: string }>;
 
 export type WatchAssetHooks = {
@@ -62,7 +62,7 @@ async function watchAssetImplementation(
   try {
     const { params, origin, networkClientId } = req;
     if (!params) {
-      return end(rpcErrors.invalidParams({ message: 'Missing parameters.' }));
+      return end(rpcErrors.invalidParams());
     }
     const { options: asset, type } = params;
 
