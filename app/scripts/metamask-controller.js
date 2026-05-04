@@ -3698,9 +3698,14 @@ export default class MetamaskController extends EventEmitter {
       ),
       performSeedlessOnboardingProfilePair: async () => {
         const bearerToken = await authenticationController.getBearerToken();
-        await this.seedlessOnboardingController.pairProfileServiceWithSocialLogin(
-          bearerToken,
-        );
+        // we're doing this async to avoid blocking others
+        this.seedlessOnboardingController
+          .pairProfileServiceWithSocialLogin(bearerToken)
+          .catch((error) => {
+            this.controllerMessenger?.captureException?.(
+              createSentryError(TraceName.OnboardingProfilePairingError, error),
+            );
+          });
       },
       performSignOut: authenticationController.performSignOut.bind(
         authenticationController,

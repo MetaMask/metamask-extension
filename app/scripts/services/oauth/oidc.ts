@@ -4,28 +4,12 @@ import {
   getEnvUrls,
   getOidcClientId,
 } from '@metamask/profile-sync-controller/sdk';
-import {
-  isDevOrTestBuild,
-  isProductionBuild,
-  isReleaseCandidateBuild,
-} from './config';
-
-export function getProfileSyncEnv(): ProfileSyncEnv {
-  if (isProductionBuild() || isReleaseCandidateBuild()) {
-    return ProfileSyncEnv.PRD;
-  }
-
-  if (isDevOrTestBuild()) {
-    return ProfileSyncEnv.DEV;
-  }
-
-  return ProfileSyncEnv.UAT;
-}
+import { loadAuthenticationConfig } from 'shared/lib/authentication';
 
 export async function exchangeJwtBearerForOidcAccessToken(
   jwtToken: string,
 ): Promise<string> {
-  const profileSyncEnv = getProfileSyncEnv();
+  const profileSyncEnv = loadAuthenticationConfig();
   const oidcTokenUrl = `${getEnvUrls(profileSyncEnv).oidcApiUrl}/oauth2/token`;
 
   const body = new URLSearchParams();

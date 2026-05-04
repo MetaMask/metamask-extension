@@ -9,7 +9,7 @@ import { MessengerClientInitFunction } from '../types';
 import { encryptorFactory } from '../../lib/encryptor-factory';
 import { isDevOrTestBuild } from '../../services/oauth/config';
 import { SeedlessOnboardingControllerInitMessenger } from '../messengers/seedless-onboarding';
-import { getProfileSyncEnv } from '../../services/oauth/oidc';
+import { loadAuthenticationConfig } from 'shared/lib/authentication';
 
 const AUTH_SERVER_PROFILE_PAIR_PATH = '/api/v2/profile/pair';
 
@@ -29,7 +29,7 @@ export const SeedlessOnboardingControllerInit: MessengerClientInitFunction<
 
   const network = loadWeb3AuthNetwork();
 
-  const profileSyncEnv = getProfileSyncEnv();
+  const env = loadAuthenticationConfig();
 
   const messengerClient = new SeedlessOnboardingController<
     CryptoKey | EncryptionKey
@@ -38,8 +38,8 @@ export const SeedlessOnboardingControllerInit: MessengerClientInitFunction<
     state: persistedState.SeedlessOnboardingController,
     network,
     passwordOutdatedCacheTTL: 15_000, // 15 seconds
-    profilePairingEndpoint: `${getEnvUrls(profileSyncEnv).authApiUrl}${AUTH_SERVER_PROFILE_PAIR_PATH}`,
-    fetchFunction: fetch,
+    profilePairingEndpoint: `${getEnvUrls(env).authApiUrl}${AUTH_SERVER_PROFILE_PAIR_PATH}`,
+    fetchFunction: fetch.bind(globalThis),
 
     // This is a temporary workaround to allow the OAuthService to be used
     // in the seedless onboarding controller. Ideally the controller calls the
