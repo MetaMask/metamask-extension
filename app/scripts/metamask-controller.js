@@ -88,6 +88,7 @@ import {
   isObject,
   isJsonRpcRequest,
   isJsonRpcNotification,
+  createDeferredPromise,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -6993,14 +6994,15 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {*} connectionStream - The duplex stream to connect to.
    * @param {MessageSender} sender - The sender of the messages on this stream
+   * @returns {Promise<void>} Resolves when the UI starts sending patches or
+   * when the patch-store substream closes first (so callers can run cleanup in `finally`).
    */
   setupTrustedCommunication(connectionStream, sender) {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
     // connect features
-    const { initializePatchStore } = this.setupPatchStoreConnection(
-      mux.createStream('patch-store'),
-    );
+    const { initializePatchStore, patchesPromise } =
+      this.setupPatchStoreConnection(mux.createStream('patch-store'));
     this.setupControllerConnection(mux.createStream('controller'), {
       initializePatchStore,
     });
@@ -7009,6 +7011,7 @@ export default class MetamaskController extends EventEmitter {
       sender,
       SubjectType.Internal,
     );
+    return patchesPromise;
   }
 
   /**
@@ -7109,12 +7112,25 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {Substream} outStream - The substream that patch store messages are
    * sent through.
-   * @returns {{ initializePatchStore: () => void }} Callbacks to call. The only
-   * one is `initializePatchStore`.
+   * @returns {{ initializePatchStore: () => void, patchesPromise: Promise<void> }}
+   * `patchesPromise` settles when the UI starts sending patches or when this
+   * substream closes first.
    */
   setupPatchStoreConnection(outStream) {
     const patchStore = new PatchStore(this.memStore);
     let isUiReady = false;
+
+    let isPromiseResolved = false;
+    const { promise: patchesPromise, resolve: resolvePromise } =
+      createDeferredPromise();
+
+    const onStartSendingPatchesOrStreamClosed = () => {
+      if (isPromiseResolved) {
+        return;
+      }
+      isPromiseResolved = true;
+      resolvePromise();
+    };
 
     const handleUpdate = () => {
       if (!isStreamWritable(outStream)) {
@@ -7143,6 +7159,7 @@ export default class MetamaskController extends EventEmitter {
     };
 
     const handleStartSendingPatches = () => {
+      onStartSendingPatchesOrStreamClosed(); //  UI invoking 'startSendingPatches' is a signal that UI<>Background connection is established and we won't need to listen for critical-error messages anymore.
       isUiReady = true;
       handleUpdate();
     };
@@ -7203,12 +7220,13 @@ export default class MetamaskController extends EventEmitter {
     this.on('update', handleUpdate);
 
     onStreamClosed(outStream, () => {
+      onStartSendingPatchesOrStreamClosed(); //  Early close: settle patchesPromise so setupTrustedCommunication's finally still runs and we won't need to listen for critical-error messages anymore.
       outStream.removeListener('data', handleIncomingMessage);
       this.removeListener('update', handleUpdate);
       patchStore.destroy();
     });
 
-    return { initializePatchStore };
+    return { initializePatchStore, patchesPromise };
   }
 
   /**
