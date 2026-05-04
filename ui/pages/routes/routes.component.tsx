@@ -138,6 +138,8 @@ import RequireBasicFunctionality from '../../helpers/higher-order-components/req
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../app/toast-listener/toast-listener';
+import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
+import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -430,10 +432,11 @@ export const routeConfig = [
             path: SNAPS_ROUTE,
             element: <SnapList />,
           },
-          {
+          createRouteWithMessenger({
             path: SNAPS_VIEW_ROUTE,
+            capabilities: SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES,
             element: <SnapView />,
-          },
+          }),
           {
             path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
             element: <CrossChainSwapTxDetails />,

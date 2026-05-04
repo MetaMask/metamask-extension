@@ -2173,24 +2173,6 @@ export function enableSnap(
   };
 }
 
-export function updateSnap(
-  origin: string,
-  snap: { [snapId: string]: { version: string } },
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch, getState) => {
-    await submitRequestToBackground('updateSnap', [origin, snap]);
-    await forceUpdateMetamaskState(dispatch);
-
-    const state = getState();
-
-    const approval = getFirstSnapInstallOrUpdateRequest(state);
-
-    return approval?.metadata.id;
-  };
-}
-
 export async function getPhishingResult(website: string) {
   return await submitRequestToBackground('getPhishingResult', [website]);
 }
