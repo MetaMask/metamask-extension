@@ -53,6 +53,18 @@ function setAccountBalance(availableBalance: string | undefined) {
   });
 }
 
+function setAccount(account: {
+  availableBalance?: string;
+  availableToTradeBalance?: string;
+}) {
+  mockUsePerpsLiveAccount.mockReturnValue({
+    account: account as Awaited<
+      ReturnType<typeof usePerpsLiveAccount>
+    >['account'],
+    isInitialLoading: false,
+  });
+}
+
 function setEnteredAmount(amountFiat: string) {
   mockUseTransactionCustomAmount.mockReturnValue({
     amountFiat,
@@ -122,5 +134,23 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
       getMockConfirmState(),
     );
     expect(result.current).toStrictEqual([]);
+  });
+
+  it('uses `availableToTradeBalance` over `availableBalance` for the threshold', () => {
+    // Unified mode: `availableBalance` is $0 (perps clearinghouse) but the
+    // user actually has $50 of unreserved spot USDC in
+    // `availableToTradeBalance`. Withdrawing $40 must NOT trigger the alert.
+    // Mirrors metamask-mobile#29492.
+    setAccount({ availableBalance: '0', availableToTradeBalance: '50' });
+    setEnteredAmount('40');
+    const { result } = runHook(buildPerpsWithdrawState());
+    expect(result.current).toStrictEqual([]);
+  });
+
+  it('alerts when entered amount exceeds `availableToTradeBalance`', () => {
+    setAccount({ availableBalance: '0', availableToTradeBalance: '50' });
+    setEnteredAmount('51');
+    const { result } = runHook(buildPerpsWithdrawState());
+    expect(result.current).toStrictEqual([EXPECTED_ALERT]);
   });
 });

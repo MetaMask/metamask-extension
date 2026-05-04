@@ -109,10 +109,12 @@ const mockUsePerpsEligibility = usePerpsEligibility as jest.MockedFunction<
   typeof usePerpsEligibility
 >;
 
+const mockUsePerpsLiveAccount = jest.fn(() => ({
+  account: { availableBalance: '100' },
+}));
+
 jest.mock('../../hooks/perps/stream', () => ({
-  usePerpsLiveAccount: () => ({
-    account: { availableBalance: '100' },
-  }),
+  usePerpsLiveAccount: () => mockUsePerpsLiveAccount(),
 }));
 
 jest.mock('../../store/background-connection', () => ({
@@ -215,6 +217,9 @@ describe('PerpsWithdrawPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsLiveAccount.mockReturnValue({
+      account: { availableBalance: '100' },
+    });
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
     mockSubmit.mockImplementation((method: string) => {
@@ -497,6 +502,28 @@ describe('PerpsWithdrawPage', () => {
     await user.click(screen.getByTestId('perps-withdraw-percentage-50'));
     expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveValue(
       '50.00',
+    );
+  });
+
+  it('uses `availableToTradeBalance` over `availableBalance` for the Max action', async () => {
+    // HyperLiquid Unified Account mode: `availableBalance` reads $0 because
+    // USDC sits in the spot clearinghouse. `availableToTradeBalance` is the
+    // unified value (perps withdrawable + unreserved spot USDC) and must take
+    // precedence. Mirrors metamask-mobile#29492.
+    mockUsePerpsLiveAccount.mockReturnValue({
+      account: {
+        availableBalance: '0',
+        availableToTradeBalance: '41.13',
+      } as never,
+    });
+    const user = userEvent.setup();
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    await user.click(screen.getByTestId('perps-withdraw-percentage-max'));
+    expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveValue(
+      '41.13',
     );
   });
 
