@@ -13,6 +13,14 @@ export const SIGNATURE_TRANSACTION_TYPES = [
   TransactionType.signTypedData,
 ];
 
+// DelegationFramework caveat enforcers revert with `Error(string)` messages of
+// the form `<EnforcerName>:<reason>` (Solidity convention). The TC may prefix
+// `Transaction failed on-chain: ` to that message, so match anywhere in the
+// string rather than only at the start.
+const CAVEAT_ENFORCER_REVERT_PATTERN = /(?:^|\s)[A-Z][A-Za-z0-9]*Enforcer:/u;
+
+const REDEEM_DELEGATIONS_SELECTOR = '0xcef6d209';
+
 export const isSignatureTransactionType = (request?: Record<string, unknown>) =>
   request &&
   SIGNATURE_TRANSACTION_TYPES.includes(request.type as TransactionType);
@@ -119,3 +127,22 @@ export const toPunycodeURL = (urlString: string): string | undefined => {
 export const stripProtocol = (urlString: string): string => {
   return urlString.replace(/^\w+:\/\//u, '');
 };
+
+export function isProtectedByEnforcedSimulations({
+  errorMessage,
+  data,
+}: {
+  errorMessage?: string;
+  data?: string;
+}): boolean {
+  if (
+    !data ||
+    !data.toLowerCase().startsWith(REDEEM_DELEGATIONS_SELECTOR) ||
+    !errorMessage ||
+    !CAVEAT_ENFORCER_REVERT_PATTERN.test(errorMessage)
+  ) {
+    return false;
+  }
+
+  return true;
+}

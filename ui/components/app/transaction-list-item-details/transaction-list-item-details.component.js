@@ -9,10 +9,7 @@ import {
   BannerAlertSeverity,
   Text,
 } from '../../component-library';
-import {
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionBreakdown from '../transaction-breakdown';
@@ -182,7 +179,7 @@ export default class TransactionListItemDetails extends PureComponent {
           {isProtectedByEnforcedSimulations && (
             <BannerAlert
               severity={BannerAlertSeverity.Info}
-              marginBottom={4}
+              marginInline={4}
               data-testid="transaction-protected-by-enforced-simulations"
             >
               <Text variant={TextVariant.bodySm}>
@@ -231,12 +228,12 @@ export default class TransactionListItemDetails extends PureComponent {
               <div>{t('status')}</div>
               <div>
                 {isProtectedByEnforcedSimulations ? (
-                  <Text
-                    color={TextColor.successDefault}
+                  <span
+                    className="transaction-status-label transaction-status-label--confirmed"
                     data-testid="transaction-protected-status-pill"
                   >
                     {t('cancelled')}
-                  </Text>
+                  </span>
                 ) : (
                   <TransactionStatus />
                 )}

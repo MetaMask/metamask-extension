@@ -3,6 +3,7 @@ import { compose } from 'redux';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
+import { isProtectedByEnforcedSimulations } from '../../../pages/confirmations/utils/confirm';
 import {
   getAccountName,
   getAddressBook,
@@ -14,11 +15,6 @@ import {
 import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { tryReverseResolveAddress } from '../../../store/actions';
 import TransactionListItemDetails from './transaction-list-item-details.component';
-
-// DelegationFramework caveat enforcers revert with `Error(string)` messages of
-// the form `<EnforcerName>:<reason>` (Solidity convention). Detect any such
-// message generically rather than hard-coding the list of enforcer names.
-const CAVEAT_ENFORCER_REVERT_PATTERN = /^[A-Z][A-Za-z0-9]*Enforcer:/u;
 
 const mapStateToProps = (state, ownProps) => {
   const { senderAddress, transactionGroup } = ownProps;
@@ -38,11 +34,12 @@ const mapStateToProps = (state, ownProps) => {
   const isCustomNetwork = getIsCustomNetwork(state);
 
   const primaryTransaction = transactionGroup?.primaryTransaction;
-  const receiptRevertMessage = primaryTransaction?.revert?.receipt?.message;
-  const isProtectedByEnforcedSimulations =
+  const isProtected =
     primaryTransaction?.status === TransactionStatus.failed &&
-    typeof receiptRevertMessage === 'string' &&
-    CAVEAT_ENFORCER_REVERT_PATTERN.test(receiptRevertMessage);
+    isProtectedByEnforcedSimulations({
+      errorMessage: primaryTransaction?.error?.message,
+      data: primaryTransaction?.txParams?.data,
+    });
 
   return {
     rpcPrefs,
@@ -51,7 +48,7 @@ const mapStateToProps = (state, ownProps) => {
     isCustomNetwork,
     blockExplorerLinkText: getBlockExplorerLinkText(state),
     isHardwareWalletAccount: isHardwareWallet(state),
-    isProtectedByEnforcedSimulations,
+    isProtectedByEnforcedSimulations: isProtected,
   };
 };
 

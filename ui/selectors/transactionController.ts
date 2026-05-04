@@ -60,14 +60,3 @@ export const selectUnapprovedTransactionById = createSelector(
       : undefined,
 );
 
-export const selectTransactionByHash = (
-  state: unknown,
-  hash: string | undefined,
-): TransactionMeta | undefined => {
-  if (!hash) {
-    return undefined;
-  }
-  const transactions = selectTransactions(state as TransactionState);
-  const lower = hash.toLowerCase();
-  return transactions.find((tx) => tx.hash?.toLowerCase() === lower);
-};

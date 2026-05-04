@@ -9,6 +9,7 @@ import { SignatureRequestType } from '../types/confirm';
 import {
   isOrderSignatureRequest,
   isPermitSignatureRequest,
+  isProtectedByEnforcedSimulations,
   isSignatureTransactionType,
   parseSanitizeTypedDataMessage,
   isValidASCIIURL,
@@ -142,6 +143,92 @@ describe('confirm util', () => {
       expect(stripProtocol('http://localhost:8545')).toStrictEqual(
         'localhost:8545',
       );
+    });
+  });
+
+  describe('isProtectedByEnforcedSimulations', () => {
+    const REDEEM_DELEGATIONS_DATA = '0xcef6d20900000000';
+
+    it('returns true when error message matches an enforcer prefix and data has the redeemDelegations selector', () => {
+      expect(
+        isProtectedByEnforcedSimulations({
+          errorMessage: 'NativeBalanceChangeEnforcer:hasnt-decreased-enough',
+          data: REDEEM_DELEGATIONS_DATA,
+        }),
+      ).toBe(true);
+    });
+
+    it('returns true when error message has TC on-chain prefix before the enforcer', () => {
+      expect(
+        isProtectedByEnforcedSimulations({
+          errorMessage:
+            'Transaction failed on-chain: ERC20BalanceChangeEnforcer:balance-out-of-range',
+          data: REDEEM_DELEGATIONS_DATA,
+        }),
+      ).toBe(true);
+    });
+
+    it('returns true regardless of the enforcer name (generic match)', () => {
+      expect(
+        isProtectedByEnforcedSimulations({
+          errorMessage: 'SomeNewEnforcer:reason',
+          data: REDEEM_DELEGATIONS_DATA,
+        }),
+      ).toBe(true);
+    });
+
+    it('matches the redeemDelegations selector case-insensitively', () => {
+      expect(
+        isProtectedByEnforcedSimulations({
+          errorMessage: 'NativeBalanceChangeEnforcer:reason',
+          data: '0xCEF6D20900000000',
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false when the data does not start with the redeemDelegations selector', () => {
+      expect(
+        isProtectedByEnforcedSimulations({
+          errorMessage: 'NativeBalanceChangeEnforcer:reason',
+          data: '0xa9059cbb00000000',
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false when error message lacks an enforcer prefix', () => {
+      expect(
+        isProtectedByEnforcedSimulations({
+          errorMessage: 'Transaction failed on-chain: insufficient funds',
+          data: REDEEM_DELEGATIONS_DATA,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false when errorMessage is undefined', () => {
+      expect(
+        isProtectedByEnforcedSimulations({
+          errorMessage: undefined,
+          data: REDEEM_DELEGATIONS_DATA,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false when data is undefined', () => {
+      expect(
+        isProtectedByEnforcedSimulations({
+          errorMessage: 'NativeBalanceChangeEnforcer:reason',
+          data: undefined,
+        }),
+      ).toBe(false);
+    });
+
+    it('does not match a string starting with a lowercase letter', () => {
+      expect(
+        isProtectedByEnforcedSimulations({
+          errorMessage: 'nativeBalanceChangeEnforcer:reason',
+          data: REDEEM_DELEGATIONS_DATA,
+        }),
+      ).toBe(false);
     });
   });
 });

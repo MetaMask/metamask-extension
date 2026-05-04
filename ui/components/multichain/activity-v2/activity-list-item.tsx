@@ -3,21 +3,17 @@ import { useSelector } from 'react-redux';
 import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
+import Tooltip from '../../ui/tooltip';
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
-import { selectTransactionByHash } from '../../../selectors/transactionController';
+import { isProtectedByEnforcedSimulations } from '../../../pages/confirmations/utils/confirm';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
 import { getPrimaryAmount } from './helpers';
 import { useGetTitle, useFiatAmount } from './hooks';
 import { ActivityTxIcon } from './activity-tx-icon';
-
-// DelegationFramework caveat enforcers revert with `Error(string)` messages of
-// the form `<EnforcerName>:<reason>` (Solidity convention). Detect any such
-// message generically rather than hard-coding the list of enforcer names.
-const CAVEAT_ENFORCER_REVERT_PATTERN = /^[A-Z][A-Za-z0-9]*Enforcer:/u;
 
 type Props = {
   transaction: TransactionViewModel;
@@ -44,19 +40,16 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
       ? TransactionStatus.failed
       : TransactionStatus.confirmed;
 
-  const localTransactionMeta = useSelector((state) =>
-    selectTransactionByHash(state, transaction.hash),
-  );
-
-  const receiptRevertMessage = localTransactionMeta?.revert?.receipt?.message;
-  const isProtectedByEnforcedSimulations =
+  const isProtected =
     transactionStatus === TransactionStatus.failed &&
-    typeof receiptRevertMessage === 'string' &&
-    CAVEAT_ENFORCER_REVERT_PATTERN.test(receiptRevertMessage);
+    isProtectedByEnforcedSimulations({
+      errorMessage: transaction.error?.message,
+      data: transaction.txParams?.data,
+    });
 
   const failureMessage =
     transactionStatus === TransactionStatus.failed
-      ? localTransactionMeta?.error?.message ?? receiptRevertMessage
+      ? transaction.error?.message
       : undefined;
   const failureError = failureMessage ? { message: failureMessage } : undefined;
 
@@ -82,13 +75,18 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
             {title}
           </Text>
           <div className="text-s-body-sm font-medium">
-            {isProtectedByEnforcedSimulations ? (
-              <Text
-                className="text-success-default"
-                data-testid="activity-list-item-protected-status"
+            {isProtected ? (
+              <Tooltip
+                position="top"
+                title={t('transactionProtectedByEnforcedSimulations')}
               >
-                {t('cancelled')}
-              </Text>
+                <span
+                  className="text-success-default"
+                  data-testid="activity-list-item-protected-status"
+                >
+                  {t('cancelled')}
+                </span>
+              </Tooltip>
             ) : (
               <TransactionStatusLabel
                 status={transactionStatus}

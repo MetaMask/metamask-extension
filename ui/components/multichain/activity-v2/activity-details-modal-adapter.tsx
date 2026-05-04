@@ -1,9 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
 import { Hex } from 'viem';
 import type {
@@ -18,7 +15,6 @@ import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import LegacyTransactionListItemDetails from '../../app/transaction-list-item-details';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { getSelectedAddress } from '../../../selectors/selectors';
-import { selectTransactionByHash } from '../../../selectors/transactionController';
 import { formatUnits } from '../../../../shared/lib/unit';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { useGetTitle } from './hooks';
@@ -31,7 +27,6 @@ const noop = () => {};
 function buildSyntheticTransactionGroup(
   transaction: TransactionViewModel,
   selectedAddress?: string,
-  localTransactionMeta?: TransactionMeta,
 ): TransactionGroup {
   const rawNonce = transaction.txParams?.nonce;
   const nonce =
@@ -71,12 +66,6 @@ function buildSyntheticTransactionGroup(
     sourceTokenAddress,
     sourceTokenAmount,
     destinationTokenSymbol,
-    // Surface local TransactionController fields (revert reasons, error) onto
-    // the synthetic primary transaction so legacy details components — e.g.
-    // the "protected by enforced simulations" banner — can read them. The
-    // Accounts API view model doesn't carry these fields.
-    revert: localTransactionMeta?.revert ?? transaction.revert,
-    error: localTransactionMeta?.error ?? transaction.error,
   };
 
   return {
@@ -103,17 +92,9 @@ const TransactionDetailsWrapper = ({
   onClose: () => void;
 }) => {
   const selectedAddress = useSelector(getSelectedAddress);
-  const localTransactionMeta = useSelector((state) =>
-    selectTransactionByHash(state, transaction.hash),
-  );
   const syntheticGroup = useMemo(
-    () =>
-      buildSyntheticTransactionGroup(
-        transaction,
-        selectedAddress,
-        localTransactionMeta,
-      ),
-    [transaction, selectedAddress, localTransactionMeta],
+    () => buildSyntheticTransactionGroup(transaction, selectedAddress),
+    [transaction, selectedAddress],
   );
   const displayData = useTransactionDisplayData(syntheticGroup);
   const title = useGetTitle(transaction);
@@ -184,22 +165,15 @@ const TransactionDetailsWrapper = ({
       showSpeedUp={false}
       isEarliestNonce={false}
       onCancel={noop}
-      transactionStatus={() => {
-        const primary = syntheticGroup.primaryTransaction;
-        const failureMessage =
-          displayedStatusKey === 'failed'
-            ? primary.error?.message ?? primary.revert?.receipt?.message
-            : undefined;
-        return (
-          <TransactionStatusLabel
-            isEarliestNonce={false}
-            error={failureMessage ? { message: failureMessage } : undefined}
-            date={date}
-            status={displayedStatusKey}
-            statusOnly
-          />
-        );
-      }}
+      transactionStatus={() => (
+        <TransactionStatusLabel
+          isEarliestNonce={false}
+          error={syntheticGroup.primaryTransaction.error}
+          date={date}
+          status={displayedStatusKey}
+          statusOnly
+        />
+      )}
       chainId={chainId}
     />
   );

@@ -90,6 +90,41 @@ export function filterLocalNotInApi(
   });
 }
 
+// Enrich API view models with richer fields from matching local TransactionMeta
+// entries. The Accounts API doesn't return on-chain revert reasons or full
+// `txParams.data`, so when the wallet originated the transaction we overlay the
+// local copy's `error`, `revert`, and `txParams.data` onto the view model.
+// Mirrors `filterLocalNotInApi`'s hash-based pairing.
+export function enrichApiWithLocal(
+  apiTransactions: TransactionViewModel[],
+  localGroups: TransactionGroup[],
+): TransactionViewModel[] {
+  const localByHash = new Map<string, TransactionGroup['primaryTransaction']>();
+  for (const group of localGroups) {
+    const hash = group.primaryTransaction.hash?.toLowerCase();
+    if (hash) {
+      localByHash.set(hash, group.primaryTransaction);
+    }
+  }
+
+  return apiTransactions.map((tx) => {
+    const hash = tx.hash?.toLowerCase();
+    const local = hash ? localByHash.get(hash) : undefined;
+    if (!local) {
+      return tx;
+    }
+    return {
+      ...tx,
+      ...(local.error ? { error: local.error } : {}),
+      ...(local.revert ? { revert: local.revert } : {}),
+      txParams: {
+        ...tx.txParams,
+        ...(local.txParams?.data ? { data: local.txParams.data } : {}),
+      },
+    };
+  });
+}
+
 type MergedItem =
   | { type: 'local'; group: TransactionGroup; time: number; nonce: number }
   | { type: 'completed'; tx: TransactionViewModel; time: number; nonce: number }
