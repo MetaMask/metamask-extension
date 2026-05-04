@@ -52,9 +52,11 @@ export async function enforceSimulations({
   const from = txParams.from as Hex;
   const chainIdDecimal = hexToNumber(chainId);
   const delegationEnvironment = getDeleGatorEnvironment(chainIdDecimal);
-  const slippage = getEnforcedSimulationsSlippage(
-    messenger.call('RemoteFeatureFlagController:getState'),
+
+  const remoteFeatureFlagState = messenger.call(
+    'RemoteFeatureFlagController:getState',
   );
+  const slippage = getEnforcedSimulationsSlippage(remoteFeatureFlagState);
 
   const caveats = generateCaveats(
     from,

@@ -31,17 +31,52 @@ export type EnforcedSimulationsFeatureFlag = {
   slippage?: number;
 };
 
+/**
+ * State required by the enforced simulations trust signal check.
+ */
+export type EnforcedSimulationsState = {
+  addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
+  eip7702SupportedChains: Hex[];
+};
+
 type RemoteFlagsWithEnforcedSimulations = {
   /* eslint-disable-next-line @typescript-eslint/naming-convention */
   confirmations_enforced_simulations?: EnforcedSimulationsFeatureFlag;
 };
 
-function getEnforcedSimulationsFlag(
-  remoteFeatureFlags: RemoteFeatureFlagControllerState['remoteFeatureFlags'],
-): EnforcedSimulationsFeatureFlag | undefined {
+type FeatureFlagSource = Pick<
+  RemoteFeatureFlagControllerState,
+  'remoteFeatureFlags'
+>;
+
+/**
+ * Reads the `confirmations_enforced_simulations` remote feature flag
+ * value, returning `undefined` when the flag is absent.
+ *
+ * @param source - An object holding the remote feature flags.
+ * @param source.remoteFeatureFlags - The remote feature flags object.
+ * @returns The flag value or `undefined`.
+ */
+export function getEnforcedSimulationsFlag({
+  remoteFeatureFlags,
+}: FeatureFlagSource): EnforcedSimulationsFeatureFlag | undefined {
   return (remoteFeatureFlags as RemoteFlagsWithEnforcedSimulations)?.[
     ENFORCED_SIMULATIONS_FEATURE_FLAG
   ];
+}
+
+/**
+ * Reads the `enabled` field from the `confirmations_enforced_simulations`
+ * remote feature flag. Defaults to `false` when the flag or field is
+ * absent.
+ *
+ * @param source - An object holding the remote feature flags.
+ * @returns Whether enforced simulations are enabled.
+ */
+export function getIsEnforcedSimulationsEnabled(
+  source: FeatureFlagSource,
+): boolean {
+  return getEnforcedSimulationsFlag(source)?.enabled ?? false;
 }
 
 /**
@@ -50,26 +85,17 @@ function getEnforcedSimulationsFlag(
  * {@link DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE} when the flag or field is
  * absent.
  *
- * @param state - The remote feature flag controller state.
- * @param state.remoteFeatureFlags - The remote feature flags object.
+ * @param source - An object holding the remote feature flags.
  * @returns The slippage percentage to apply.
  */
-export function getEnforcedSimulationsSlippage({
-  remoteFeatureFlags,
-}: RemoteFeatureFlagControllerState): number {
+export function getEnforcedSimulationsSlippage(
+  source: FeatureFlagSource,
+): number {
   return (
-    getEnforcedSimulationsFlag(remoteFeatureFlags)?.slippage ??
+    getEnforcedSimulationsFlag(source)?.slippage ??
     DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE
   );
 }
-
-/**
- * State required by the enforced simulations trust signal check.
- */
-export type EnforcedSimulationsState = {
-  addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
-  eip7702SupportedChains: Hex[];
-};
 
 /**
  * Determines whether a transaction is eligible for enforced simulations.

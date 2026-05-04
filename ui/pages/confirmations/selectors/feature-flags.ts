@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import {
-  DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE,
-  EnforcedSimulationsFeatureFlag,
+  getEnforcedSimulationsSlippage,
+  getIsEnforcedSimulationsEnabled,
 } from '../../../../shared/lib/transaction/enforced-simulations';
 import { getRemoteFeatureFlags } from '../../../selectors/remote-feature-flags';
 
@@ -26,24 +26,14 @@ export const selectIsMetaMaskPayDappsEnabled = createSelector(
   (flag): boolean => flag?.enabled ?? false,
 );
 
-const selectConfirmationsEnforcedSimulationsFlag = createSelector(
-  getRemoteFeatureFlags,
-  (flags) =>
-    /* eslint-disable @typescript-eslint/naming-convention */
-    (
-      flags as unknown as {
-        confirmations_enforced_simulations?: EnforcedSimulationsFeatureFlag;
-      }
-    ).confirmations_enforced_simulations,
-  /* eslint-enable @typescript-eslint/naming-convention */
-);
-
 export const selectIsEnforcedSimulationsEnabled = createSelector(
-  selectConfirmationsEnforcedSimulationsFlag,
-  (flag): boolean => flag?.enabled ?? false,
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags): boolean =>
+    getIsEnforcedSimulationsEnabled({ remoteFeatureFlags }),
 );
 
 export const selectEnforcedSimulationsSlippage = createSelector(
-  selectConfirmationsEnforcedSimulationsFlag,
-  (flag): number => flag?.slippage ?? DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE,
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags): number =>
+    getEnforcedSimulationsSlippage({ remoteFeatureFlags }),
 );

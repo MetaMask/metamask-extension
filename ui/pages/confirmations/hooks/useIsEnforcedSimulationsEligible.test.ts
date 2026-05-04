@@ -6,7 +6,12 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../test/d
 import { isEnforcedSimulationsEligible } from '../../../../shared/lib/transaction/enforced-simulations';
 import { useIsEnforcedSimulationsEligible } from './useIsEnforcedSimulationsEligible';
 
-jest.mock('../../../../shared/lib/transaction/enforced-simulations');
+jest.mock('../../../../shared/lib/transaction/enforced-simulations', () => ({
+  ...jest.requireActual(
+    '../../../../shared/lib/transaction/enforced-simulations',
+  ),
+  isEnforcedSimulationsEligible: jest.fn(),
+}));
 
 const getIsEnforcedSimulationsEligibleMock = jest.mocked(
   isEnforcedSimulationsEligible,
