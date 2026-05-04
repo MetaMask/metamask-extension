@@ -7,15 +7,15 @@ import {
   IconName,
   IconSize,
   Text,
-} from '../../../components/component-library';
+} from '../../../../components/component-library';
 import {
   IconColor,
   Display,
   FlexDirection,
   JustifyContent,
   AlignItems,
-} from '../../../helpers/constants/design-system';
-import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/identity/useAccountSyncing';
+} from '../../../../helpers/constants/design-system';
+import { useDeleteAccountSyncingDataFromUserStorage } from '../../../../hooks/identity/useAccountSyncing';
 
 type DeleteSyncedDataProps = {
   onDelete: () => Promise<void>;

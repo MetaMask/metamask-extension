@@ -17,7 +17,7 @@ import {
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { setCurrentCurrency } from '../../../store/actions';
-import { ASSETS_ROUTE } from '../../../helpers/constants/routes';
+import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   MetaMetricsEventCategory,
@@ -50,7 +50,7 @@ const CurrencySubPage = () => {
       },
     });
     dispatch(setCurrentCurrency(value));
-    navigate(ASSETS_ROUTE);
+    navigate(PREFERENCES_AND_DISPLAY_ROUTE);
   };
 
   return (

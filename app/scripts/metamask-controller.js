@@ -792,6 +792,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountTrackerController =
       messengerClientsByName.AccountTrackerController;
     this.txController = messengerClientsByName.TransactionController;
+    this.txPayController = messengerClientsByName.TransactionPayController;
     this.smartTransactionsController =
       messengerClientsByName.SmartTransactionsController;
     this.bridgeController = messengerClientsByName.BridgeController;
@@ -3526,16 +3527,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:enableSnap',
       ),
-      updateSnap: (origin, requestedSnaps) => {
-        // We deliberately do not await this promise as that would mean waiting for the update to complete
-        // Instead we return null to signal to the UI that it is safe to redirect to the update flow
-        this.controllerMessenger.call(
-          'SnapController:installSnaps',
-          origin,
-          requestedSnaps,
-        );
-        return null;
-      },
       removeSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:removeSnap',
@@ -8762,6 +8753,9 @@ export default class MetamaskController extends EventEmitter {
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTransaction: (id) =>
         this.txController.state.transactions.find((tx) => tx.id === id),
+      getTransactionPayData: (id) =>
+        this.txPayController?.state?.transactionData?.[id],
+      getAllTransactions: () => this.txController.state.transactions,
       getIsSmartTransaction: (chainId) => {
         return getIsSmartTransaction(this._getMetaMaskState(), chainId);
       },
