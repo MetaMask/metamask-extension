@@ -6,6 +6,14 @@ import { add0x, parseCaipChainId, KnownCaipNamespace } from '@metamask/utils';
 import type { RegistryNetworkConfig } from '@metamask/config-registry-controller';
 import { getRemoteFeatureFlags } from '../remote-feature-flags';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
+import {
+  AddNetworkCustomRpcEndpointFields,
+  InfuraRpcEndpoint,
+} from 'node_modules/@metamask/network-controller/dist/NetworkController.d.cts';
+import {
+  InfuraNetworkType,
+  isInfuraNetworkType,
+} from '@metamask/controller-utils';
 
 /** Default empty controller state shape for selectFeaturedNetworks. */
 const EMPTY_REGISTRY_CONTROLLER_STATE = {
@@ -73,8 +81,6 @@ export const getIsConfigRegistryApiEnabled = createSelector(
   (remoteFeatureFlags) => Boolean(remoteFeatureFlags?.configRegistryApiEnabled),
 );
 
-type Hex = `0x${string}`;
-
 /**
  * Returns true if url is a non-empty string and uses an allowed scheme (https).
  * Rejects empty, non-strings, and non-https URLs to avoid unsafe add-network data.
@@ -127,7 +133,7 @@ function registryConfigToAddNetworkFields(
   if (Number.isNaN(parsed) || parsed < 0) {
     return null;
   }
-  const hexChainId = add0x(parsed.toString(16)) as Hex;
+  const hexChainId = add0x(parsed.toString(16));
 
   const defaultRpc = config.rpcProviders?.default;
   if (!defaultRpc || !isAllowedRpcUrl(defaultRpc.url)) {
@@ -139,16 +145,24 @@ function registryConfigToAddNetworkFields(
     : [];
   const nativeCurrency = config.assets?.native?.symbol ?? 'ETH';
 
+  const rpcEndpoint: AddNetworkCustomRpcEndpointFields | InfuraRpcEndpoint =
+    defaultRpc.type === 'infura' &&
+    isInfuraNetworkType(defaultRpc.networkClientId)
+      ? {
+          type: RpcEndpointType.Infura,
+          networkClientId: defaultRpc.networkClientId as InfuraNetworkType,
+          url: defaultRpc.url as InfuraRpcEndpoint['url'],
+        }
+      : {
+          type: RpcEndpointType.Custom,
+          url: defaultRpc.url,
+        };
+
   const result: FeaturedNetworkForAdditionalList = {
     chainId: hexChainId,
     name: config.name,
     nativeCurrency,
-    rpcEndpoints: [
-      {
-        url: defaultRpc.url,
-        type: RpcEndpointType.Custom,
-      },
-    ],
+    rpcEndpoints: [rpcEndpoint],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: blockExplorerUrls as `https://${string}`[],
     defaultBlockExplorerUrlIndex: blockExplorerUrls.length > 0 ? 0 : undefined,
