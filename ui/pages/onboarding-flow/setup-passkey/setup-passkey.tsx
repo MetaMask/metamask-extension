@@ -153,7 +153,7 @@ export default function SetupPasskey() {
           : ONBOARDING_METAMETRICS;
       }
     } else {
-      nextRoute = ONBOARDING_METAMETRICS;
+      nextRoute = ONBOARDING_COMPLETION_ROUTE;
     }
 
     navigate(nextRoute, { replace: true });
