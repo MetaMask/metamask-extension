@@ -1,0 +1,89 @@
+diff --git a/dist/TokensController.cjs b/dist/TokensController.cjs
+index b4daef707e79f8e871ec767474a5e985cd0de3af..da30a44c165d69f22ac10603d7a3e4d12fa82c91 100644
+--- a/dist/TokensController.cjs
++++ b/dist/TokensController.cjs
+@@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _TokensController_instances, _TokensController_mutex, _TokensController_selectedAccountId, _TokensController_provider, _TokensController_abortController, _TokensController_handleOnAccountRemoved, _TokensController_onNetworkAdded, _TokensController_onNetworkStateChange, _TokensController_onSelectedAccountChange, _TokensController_fetchTokenMetadata, _TokensController_detectIsERC721, _TokensController_getProvider, _TokensController_createEthersContract, _TokensController_generateRandomId, _TokensController_getNewAllTokensState, _TokensController_getAddressOrSelectedAddress, _TokensController_requestApproval, _TokensController_seedMusdForAccount, _TokensController_seedMusdForAllAccounts, _TokensController_seedMusdFromExistingState, _TokensController_getSelectedAccount, _TokensController_getSelectedAddress;
++var _TokensController_instances, _TokensController_mutex, _TokensController_selectedAccountId, _TokensController_provider, _TokensController_abortController, _TokensController_handleOnAccountRemoved, _TokensController_onNetworkAdded, _TokensController_onNetworkStateChange, _TokensController_onSelectedAccountChange, _TokensController_fetchTokenMetadata, _TokensController_detectIsERC721, _TokensController_getProvider, _TokensController_createEthersContract, _TokensController_generateRandomId, _TokensController_getNewAllTokensState, _TokensController_getAddressOrSelectedAddress, _TokensController_requestApproval, _TokensController_seedMusdForAccount, _TokensController_getConfiguredMusdChainIds, _TokensController_seedMusdForAllAccounts, _TokensController_seedMusdFromExistingState, _TokensController_getSelectedAccount, _TokensController_getSelectedAddress;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.TokensController = exports.getDefaultTokensState = void 0;
+ const contracts_1 = require("@ethersproject/contracts");
+@@ -65,7 +65,7 @@ const MUSD_ADDRESS = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+  */
+ const MUSD_TOKEN = {
+     address: MUSD_ADDRESS,
+-    decimals: 6,
++    decimals: 18,
+     symbol: 'mUSD',
+     name: 'MetaMask USD',
+ };
+@@ -770,9 +770,18 @@ async function _TokensController_detectIsERC721(tokenAddress, networkClientId) {
+         !(0, controller_utils_1.isValidHexAddress)(accountAddress)) {
+         return;
+     }
++    // Only seed for chains that are actually configured in NetworkController.
++    // The `NetworkController:networkAdded` subscriber re-runs seeding when a
++    // supported chain is added later, so this preserves correctness without
++    // emitting state changes for chainIds downstream subscribers (e.g.
++    // TokenRatesController) cannot resolve.
++    const configuredChainIds = __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getConfiguredMusdChainIds).call(this);
++    if (configuredChainIds.length === 0) {
++        return;
++    }
+     this.update((state) => {
+         var _a;
+-        for (const chainId of MUSD_SUPPORTED_CHAIN_IDS) {
++        for (const chainId of configuredChainIds) {
+             (_a = state.allTokens)[chainId] ?? (_a[chainId] = {});
+             const accountTokens = state.allTokens[chainId][accountAddress] ?? [];
+             const alreadyPresent = accountTokens.some((token) => token.address.toLowerCase() === MUSD_ADDRESS);
+@@ -784,6 +793,24 @@ async function _TokensController_detectIsERC721(tokenAddress, networkClientId) {
+             }
+         }
+     });
++}, _TokensController_getConfiguredMusdChainIds = function _TokensController_getConfiguredMusdChainIds() {
++    let networkConfigurationsByChainId;
++    try {
++        ({ networkConfigurationsByChainId } = this.messenger.call('NetworkController:getState'));
++    }
++    catch {
++        return [];
++    }
++    if (!networkConfigurationsByChainId) {
++        return [];
++    }
++    const configured = [];
++    for (const chainId of MUSD_SUPPORTED_CHAIN_IDS) {
++        if (networkConfigurationsByChainId[chainId]) {
++            configured.push(chainId);
++        }
++    }
++    return configured;
+ }, _TokensController_seedMusdForAllAccounts = function _TokensController_seedMusdForAllAccounts() {
+     const accounts = this.messenger.call('AccountsController:listAccounts');
+     for (const account of accounts) {
+diff --git a/dist/TokensController.d.cts b/dist/TokensController.d.cts
+index 0ffba2d93fcf78df4b9eea907f1c4b62c8de7a71..1f58b8b528f977bac54d8b210b0f6615b1d281d7 100644
+--- a/dist/TokensController.d.cts
++++ b/dist/TokensController.d.cts
+@@ -4,7 +4,7 @@ import type { ControllerGetStateAction, ControllerStateChangeEvent } from "@meta
+ import { BaseController } from "@metamask/base-controller";
+ import type { KeyringControllerAccountRemovedEvent, KeyringControllerUnlockEvent } from "@metamask/keyring-controller";
+ import type { Messenger } from "@metamask/messenger";
+-import type { NetworkClientId, NetworkControllerGetNetworkClientByIdAction, NetworkControllerNetworkAddedEvent, NetworkControllerNetworkDidChangeEvent, NetworkControllerStateChangeEvent, Provider } from "@metamask/network-controller";
++import type { NetworkClientId, NetworkControllerGetNetworkClientByIdAction, NetworkControllerGetStateAction, NetworkControllerNetworkAddedEvent, NetworkControllerNetworkDidChangeEvent, NetworkControllerStateChangeEvent, Provider } from "@metamask/network-controller";
+ import type { Hex, Json } from "@metamask/utils";
+ import { TokenRwaData } from "./token-service.cjs";
+ import type { TokenListStateChange } from "./TokenListController.cjs";
+@@ -46,7 +46,7 @@ export type TokensControllerActions = TokensControllerGetStateAction | TokensCon
+ /**
+  * The external actions available to the {@link TokensController}.
+  */
+-export type AllowedActions = ApprovalControllerAddRequestAction | NetworkControllerGetNetworkClientByIdAction | AccountsControllerGetAccountAction | AccountsControllerGetSelectedAccountAction | AccountsControllerListAccountsAction;
++export type AllowedActions = ApprovalControllerAddRequestAction | NetworkControllerGetNetworkClientByIdAction | NetworkControllerGetStateAction | AccountsControllerGetAccountAction | AccountsControllerGetSelectedAccountAction | AccountsControllerListAccountsAction;
+ export type TokensControllerStateChangeEvent = ControllerStateChangeEvent<typeof controllerName, TokensControllerState>;
+ export type TokensControllerEvents = TokensControllerStateChangeEvent;
+ export type AllowedEvents = NetworkControllerStateChangeEvent | NetworkControllerNetworkDidChangeEvent | NetworkControllerNetworkAddedEvent | TokenListStateChange | AccountsControllerAccountAddedEvent | AccountsControllerSelectedEvmAccountChangeEvent | KeyringControllerAccountRemovedEvent | KeyringControllerUnlockEvent;

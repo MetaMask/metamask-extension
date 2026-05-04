@@ -1,4 +1,4 @@
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType, type KeyringAccountType } from '@metamask/keyring-api';
 import { hasProperty, isObject } from '@metamask/utils';
 import type { Migrate } from './types';
 
@@ -25,6 +25,14 @@ const MUSD_CHAIN_IDS = ['0x1', '0xe708', '0x8f'];
  * Seed mUSD (`0xaca92e438df0b2401ff60da7e4337b687a2435da`) into
  * `TokensController.allTokens` for every EVM account on Ethereum mainnet
  * (`0x1`), Linea (`0xe708`), and Monad mainnet (`0x8f`).
+ *
+ * Only chains that are present in
+ * `NetworkController.networkConfigurationsByChainId` are seeded. This avoids
+ * writing token entries for chains the user has never configured, which would
+ * otherwise produce "No network configuration found" errors from
+ * `TokenRatesController` and other downstream subscribers. Newly added
+ * networks are seeded at runtime by `TokensController` via its
+ * `NetworkController:networkAdded` subscriber.
  *
  * EVM account addresses are sourced from `AccountsController` so that even
  * users who have never tracked any ERC-20 tokens (empty `allTokens`) receive
@@ -71,13 +79,20 @@ export const migrate = (async (versionedData, changedControllers) => {
         isObject(account) &&
         hasProperty(account, 'type') &&
         typeof account.type === 'string' &&
-        isEvmAccountType(account.type) &&
+        isEvmAccountType(account.type as KeyringAccountType) &&
         hasProperty(account, 'address') &&
         typeof account.address === 'string',
     )
     .map((account) => (account as { address: string }).address);
 
   if (evmAccountAddresses.length === 0) {
+    return;
+  }
+
+  // ── Determine which mUSD chains are currently configured ───────────────────
+  const configuredChainIds = getConfiguredMusdChainIds(versionedData.data);
+
+  if (configuredChainIds.length === 0) {
     return;
   }
 
@@ -103,7 +118,7 @@ export const migrate = (async (versionedData, changedControllers) => {
   // ── Seed mUSD ───────────────────────────────────────────────────────────────
   let mutated = false;
 
-  for (const chainId of MUSD_CHAIN_IDS) {
+  for (const chainId of configuredChainIds) {
     if (!isObject(allTokens[chainId])) {
       allTokens[chainId] = {};
     }
@@ -136,3 +151,34 @@ export const migrate = (async (versionedData, changedControllers) => {
     changedControllers.add('TokensController');
   }
 }) satisfies Migrate;
+
+/**
+ * Returns the subset of `MUSD_CHAIN_IDS` that are present in
+ * `NetworkController.networkConfigurationsByChainId`.
+ *
+ * @param data - The `data` object from versioned MetaMask state.
+ */
+function getConfiguredMusdChainIds(data: Record<string, unknown>): string[] {
+  if (
+    !hasProperty(data, 'NetworkController') ||
+    !isObject(data.NetworkController)
+  ) {
+    return [];
+  }
+
+  const { NetworkController } = data;
+
+  if (
+    !hasProperty(NetworkController, 'networkConfigurationsByChainId') ||
+    !isObject(NetworkController.networkConfigurationsByChainId)
+  ) {
+    return [];
+  }
+
+  const networkConfigurationsByChainId =
+    NetworkController.networkConfigurationsByChainId;
+
+  return MUSD_CHAIN_IDS.filter((chainId) =>
+    hasProperty(networkConfigurationsByChainId, chainId),
+  );
+}

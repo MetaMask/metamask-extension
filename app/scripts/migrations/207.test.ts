@@ -32,6 +32,15 @@ function makeEvmAccount(address: string) {
   };
 }
 
+/** Stub NetworkController state with the given chains configured. */
+function makeNetworkController(chainIds: string[]) {
+  const networkConfigurationsByChainId: Record<string, unknown> = {};
+  for (const chainId of chainIds) {
+    networkConfigurationsByChainId[chainId] = { chainId };
+  }
+  return { networkConfigurationsByChainId };
+}
+
 /** Build a base storage object with common AccountsController + TokensController state. */
 function makeStorage(
   allTokens: Record<string, Record<string, unknown[]>>,
@@ -39,6 +48,7 @@ function makeStorage(
     [ACCOUNT_1]: makeEvmAccount(ACCOUNT_1),
     [ACCOUNT_2]: makeEvmAccount(ACCOUNT_2),
   },
+  configuredChainIds: string[] = ['0x1', '0xe708', '0x8f'],
 ) {
   return {
     meta: { version: OLD_VERSION },
@@ -49,6 +59,7 @@ function makeStorage(
           selectedAccount: ACCOUNT_1,
         },
       },
+      NetworkController: makeNetworkController(configuredChainIds),
       TokensController: { allTokens },
     },
   };
@@ -165,6 +176,73 @@ describe(`migration #${VERSION}`, () => {
     expect(changedControllers).toStrictEqual(new Set([]));
   });
 
+  it('only seeds chains that are present in NetworkController.networkConfigurationsByChainId', async () => {
+    const oldStorage = makeStorage(
+      {},
+      { [ACCOUNT_1]: makeEvmAccount(ACCOUNT_1) },
+      ['0x1', '0xe708'],
+    );
+
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+
+    await migrate(versionedData, changedControllers);
+
+    const { allTokens } = versionedData.data.TokensController as {
+      allTokens: Record<string, Record<string, unknown[]>>;
+    };
+
+    expect(allTokens['0x1'][ACCOUNT_1]).toStrictEqual([MUSD_TOKEN]);
+    expect(allTokens['0xe708'][ACCOUNT_1]).toStrictEqual([MUSD_TOKEN]);
+    expect(allTokens['0x8f']).toBeUndefined();
+    expect(changedControllers).toStrictEqual(new Set(['TokensController']));
+  });
+
+  it('does nothing when no mUSD chains are configured in NetworkController', async () => {
+    const oldStorage = makeStorage(
+      {},
+      { [ACCOUNT_1]: makeEvmAccount(ACCOUNT_1) },
+      ['0x89'],
+    );
+
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+
+    await migrate(versionedData, changedControllers);
+
+    expect(versionedData.meta.version).toBe(VERSION);
+    expect(
+      (versionedData.data.TokensController as { allTokens: unknown }).allTokens,
+    ).toStrictEqual({});
+    expect(changedControllers.size).toBe(0);
+  });
+
+  it('does nothing when NetworkController is missing', async () => {
+    const oldStorage = {
+      meta: { version: OLD_VERSION },
+      data: {
+        AccountsController: {
+          internalAccounts: {
+            accounts: { [ACCOUNT_1]: makeEvmAccount(ACCOUNT_1) },
+            selectedAccount: ACCOUNT_1,
+          },
+        },
+        TokensController: { allTokens: {} },
+      },
+    };
+
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+
+    await migrate(versionedData, changedControllers);
+
+    expect(versionedData.meta.version).toBe(VERSION);
+    expect(
+      (versionedData.data.TokensController as { allTokens: unknown }).allTokens,
+    ).toStrictEqual({});
+    expect(changedControllers.size).toBe(0);
+  });
+
   it('does nothing when AccountsController is missing', async () => {
     const oldStorage = {
       meta: { version: OLD_VERSION },
@@ -214,6 +292,7 @@ describe(`migration #${VERSION}`, () => {
             selectedAccount: ACCOUNT_1,
           },
         },
+        NetworkController: makeNetworkController(['0x1', '0xe708', '0x8f']),
       },
     };
 
@@ -237,6 +316,7 @@ describe(`migration #${VERSION}`, () => {
             selectedAccount: ACCOUNT_1,
           },
         },
+        NetworkController: makeNetworkController(['0x1', '0xe708', '0x8f']),
         TokensController: { allTokens: 'not-an-object' },
       },
     };
