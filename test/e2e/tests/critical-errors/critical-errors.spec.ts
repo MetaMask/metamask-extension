@@ -128,51 +128,62 @@ describe('Critical errors', function (this: Suite) {
     );
   });
 
-  it('shows critical error screen when background takes over 16 seconds to sync state, and allows user to restore accounts', async function () {
-    this.timeout(120_000);
-    await withFixtures(
-      {
-        ...getConfig(this.test?.fullTitle(), {
-          additionalIgnoredErrors: ['Background state sync timeout'],
-          additionalManifestFlags: {
-            testing: {
-              simulateBackgroundStateSyncHang: true,
+  // Debug-only: run the flaky sync-state-hang test 10 times consecutively (each
+  // with its own withFixtures so state is fully reset). Other tests in this
+  // suite are skipped via mocha's exclusive `it.only`. Revert before merge.
+  for (let i = 1; i <= 10; i += 1) {
+    // eslint-disable-next-line mocha/no-exclusive-tests
+    it.only(`[DEBUG-08c5ca run ${i}/10] shows critical error screen when background takes over 16 seconds to sync state, and allows user to restore accounts`, async function () {
+      this.timeout(120_000);
+      await withFixtures(
+        {
+          ...getConfig(this.test?.fullTitle(), {
+            additionalIgnoredErrors: ['Background state sync timeout'],
+            additionalManifestFlags: {
+              testing: {
+                simulateBackgroundStateSyncHang: true,
+              },
             },
-          },
-        }),
-        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
-      },
-      async ({ driver }) => {
-        const initialFirstAddress = await onboardThenTriggerTimeOutFlow(driver);
+          }),
+          testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+        },
+        async ({ driver }) => {
+          const initialFirstAddress =
+            await onboardThenTriggerTimeOutFlow(driver);
 
-        const criticalErrorPage = new CriticalErrorPage(driver);
-        await criticalErrorPage.checkPageIsLoaded();
-        await criticalErrorPage.validateTroubleStartingDescription();
-        await criticalErrorPage.validateErrorMessage(
-          'Background state sync timeout',
-        );
+          const criticalErrorPage = new CriticalErrorPage(driver);
+          await criticalErrorPage.checkPageIsLoaded();
+          await criticalErrorPage.validateTroubleStartingDescription();
+          await criticalErrorPage.validateErrorMessage(
+            'Background state sync timeout',
+          );
 
-        await criticalErrorPage.clickAttemptRecoveryLink({ confirm: true });
+          await criticalErrorPage.clickAttemptRecoveryLink({ confirm: true });
 
-        await completeVaultRecoveryOnboardingFlow({
-          driver,
-          password: WALLET_PASSWORD,
-        });
+          await completeVaultRecoveryOnboardingFlow({
+            driver,
+            password: WALLET_PASSWORD,
+          });
 
-        // After restoring from backup, multichain account sync may hang in
-        // CI. Skip the sync check — we only need to read the existing address.
-        const restoredFirstAddress = await getFirstAddress(driver, undefined, {
-          waitForSync: false,
-        });
+          // After restoring from backup, multichain account sync may hang in
+          // CI. Skip the sync check — we only need to read the existing address.
+          const restoredFirstAddress = await getFirstAddress(
+            driver,
+            undefined,
+            {
+              waitForSync: false,
+            },
+          );
 
-        assert.equal(
-          restoredFirstAddress,
-          initialFirstAddress,
-          'Restored address should match the original address',
-        );
-      },
-    );
-  });
+          assert.equal(
+            restoredFirstAddress,
+            initialFirstAddress,
+            'Restored address should match the original address',
+          );
+        },
+      );
+    });
+  }
 
   it('does NOT show critical error screen when background is a "little" slow to respond', async function () {
     // we can skip this test in MV2, since we don't need lazy listeners there

@@ -1,0 +1,37 @@
+# Optional manual path: one build plus one E2E spec (Chrome).
+# For PR CI without opening Actions, put [e2e-single] in the commit message instead
+# (see get-requirements.yml and job e2e-chrome-single-spec in main.yml).
+# Use this workflow when you need a different spec path or toolchain than main.yml provides.
+name: E2E debug single spec
+
+on:
+  workflow_dispatch:
+    inputs:
+      build-toolchain:
+        description: Use webpack to mirror test-e2e-chrome-webpack, or browserify for test-e2e-chrome-browserify.
+        type: choice
+        options:
+          - webpack
+          - browserify
+        default: webpack
+      e2e-spec-path:
+        description: Spec path relative to repo root (passed to yarn test:e2e:single).
+        type: string
+        default: test/e2e/tests/critical-errors/critical-errors.spec.ts
+      test-timeout-minutes:
+        description: Timeout in minutes for the E2E test step (build uses the job container default).
+        type: number
+        default: 90
+
+jobs:
+  e2e-debug-single-spec-chrome:
+    uses: ./.github/workflows/run-e2e.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+    with:
+      test-suite-name: e2e-debug-single-spec-chrome
+      build-artifact: ''
+      build-command: ${{ inputs.build-toolchain == 'webpack' && 'yarn build:test:webpack' || 'yarn build:test' }}
+      test-command: yarn test:e2e:single ${{ inputs.e2e-spec-path }} --browser chrome --debug false
+      builds-from-run: ${{ github.run_id }}
+      test-timeout-minutes: ${{ fromJSON(inputs.test-timeout-minutes) }}

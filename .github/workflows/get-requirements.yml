@@ -33,6 +33,9 @@ on:
       needs-e2e:
         description: Whether E2E tests are needed
         value: ${{ jobs.detect-changes.outputs.needs-e2e }}
+      e2e-single-mode:
+        description: When true, main.yml runs one Chrome E2E spec instead of the full Chrome and Firefox matrices (see Check e2e-single tag step).
+        value: ${{ jobs.detect-changes.outputs.e2e-single-mode }}
       just-repository-health-checks:
         description: Whether repository health checks are needed
         value: ${{ jobs.detect-changes.outputs.just-repository-health-checks }}
@@ -74,6 +77,7 @@ jobs:
       needs-releases: ${{ steps.set-needs-releases.outputs.needs-releases || 'false' }}
       needs-benchmarks: ${{ steps.set-needs-benchmarks.outputs.needs-benchmarks || 'false' }}
       needs-e2e: ${{ steps.set-needs-e2e.outputs.needs-e2e || 'false' }}
+      e2e-single-mode: ${{ steps.e2e-single-tag.outputs.e2e-single-mode || 'false' }}
       just-repository-health-checks: ${{ steps.set-just-repository-health-checks.outputs.just-repository-health-checks || 'false' }}
     steps:
       - name: Check pull request merge queue status
@@ -102,6 +106,31 @@ jobs:
             if git show --format='%B' --no-patch "${HEAD_COMMIT_HASH}" | grep --fixed-strings --quiet '[skip-e2e]'; then
               echo "SKIP=true" >> "$GITHUB_OUTPUT"
               echo "-> SKIP=true due to [skip-e2e] tag in last commit message"
+            fi
+          fi
+
+      # Opt-in fast path: one Chrome spec via main.yml (not the full E2E matrices).
+      # Same trust rules as [skip-e2e]: ignored on fork PRs, never on schedule or main/stable/release.
+      - name: Check e2e-single tag
+        id: e2e-single-tag
+        if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
+        run: |
+          echo "e2e-single-mode=false" >> "$GITHUB_OUTPUT"
+
+          if [[ "$EVENT_NAME" == "schedule" ]]; then
+            echo "-> e2e-single-mode stays false (schedule)"
+            exit 0
+          fi
+          if [[ "$IS_RUN_EVERYTHING_BRANCH" == "true" ]] || [[ "$BRANCH" =~ ^release/ ]]; then
+            echo "-> e2e-single-mode stays false (main, stable, or release branch)"
+            exit 0
+          fi
+
+          # Ignore the [e2e-single] tag for cross-repo fork PRs (untrusted commit messages)
+          if [[ "$IS_CROSS_REPO_PR" != "true" ]] && { [[ "$EVENT_NAME" == "pull_request" ]] || [[ "$EVENT_NAME" == "merge_group" ]] || [[ "$BRANCH" == trigger-ci-* ]]; }; then
+            if git show --format='%B' --no-patch "${HEAD_COMMIT_HASH}" | grep --fixed-strings --quiet '[e2e-single]'; then
+              echo "e2e-single-mode=true" >> "$GITHUB_OUTPUT"
+              echo "-> e2e-single-mode=true due to [e2e-single] tag in commit message"
             fi
           fi
 

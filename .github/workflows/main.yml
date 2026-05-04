@@ -485,7 +485,11 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
-    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
+    if: >-
+      ${{
+        needs.get-requirements.outputs.needs-e2e == 'true' &&
+        needs.get-requirements.outputs.e2e-single-mode != 'true'
+      }}
     uses: ./.github/workflows/prep-e2e.yml
 
   e2e-chrome:
@@ -500,7 +504,13 @@ jobs:
       - build-test-flask-webpack
     uses: ./.github/workflows/e2e-chrome.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
-    if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
+    if: >-
+      ${{
+        !cancelled() &&
+        needs.get-requirements.outputs.needs-e2e == 'true' &&
+        needs.get-requirements.outputs.e2e-single-mode != 'true' &&
+        !contains(needs.*.result, 'failure')
+      }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
       use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
@@ -518,10 +528,38 @@ jobs:
       - build-test-flask-mv2-webpack
     uses: ./.github/workflows/e2e-firefox.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
-    if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
+    if: >-
+      ${{
+        !cancelled() &&
+        needs.get-requirements.outputs.needs-e2e == 'true' &&
+        needs.get-requirements.outputs.e2e-single-mode != 'true' &&
+        !contains(needs.*.result, 'failure')
+      }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
       use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+
+  # Opt-in via [e2e-single] in the commit message (see get-requirements.yml). Builds and runs one Chrome spec in the reusable E2E container.
+  e2e-chrome-single-spec:
+    needs:
+      - get-requirements
+    uses: ./.github/workflows/run-e2e.yml
+    if: >-
+      ${{
+        !cancelled() &&
+        needs.get-requirements.outputs.needs-e2e == 'true' &&
+        needs.get-requirements.outputs.e2e-single-mode == 'true' &&
+        !contains(needs.*.result, 'failure')
+      }}
+    with:
+      test-suite-name: e2e-chrome-single-spec
+      build-artifact: ''
+      build-command: yarn build:test:webpack
+      test-command: yarn test:e2e:single test/e2e/tests/critical-errors/critical-errors.spec.ts --browser chrome --debug false
+      builds-from-run: ${{ github.run_id }}
+      test-timeout-minutes: 90
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
@@ -709,6 +747,7 @@ jobs:
       - prep-e2e
       - e2e-chrome
       - e2e-firefox
+      - e2e-chrome-single-spec
       - build-storybook
       - build-ts-migration-dashboard
       - trigger-regression-validation

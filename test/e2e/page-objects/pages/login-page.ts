@@ -42,6 +42,34 @@ class LoginPage {
   }
 
   async checkPageIsLoaded(): Promise<void> {
+    // #region agent log
+    try {
+      const [url, title, handles, body] = await Promise.all([
+        this.driver.driver.getCurrentUrl().catch(() => 'err'),
+        this.driver.driver.getTitle().catch(() => 'err'),
+        this.driver.driver.getAllWindowHandles().catch(() => [] as string[]),
+        this.driver
+          .executeScript(
+            `return (document.body && document.body.innerText) ? document.body.innerText.slice(0, 500) : '';`,
+          )
+          .catch(() => 'err'),
+      ]);
+      console.log(
+        '[DEBUG-08c5ca] login-page.ts checkPageIsLoaded:entry',
+        JSON.stringify({
+          url,
+          title,
+          handleCount: Array.isArray(handles) ? handles.length : -1,
+          body,
+        }),
+      );
+    } catch (e) {
+      console.log(
+        '[DEBUG-08c5ca] login-page.ts checkPageIsLoaded:entry ERROR',
+        String(e),
+      );
+    }
+    // #endregion
     try {
       await this.driver.waitForMultipleSelectors([
         this.forgotPasswordButton,

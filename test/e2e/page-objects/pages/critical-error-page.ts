@@ -2,6 +2,39 @@ import { until } from 'selenium-webdriver';
 import { Driver, PAGES } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
 
+// #region agent log
+const DEBUG_TAG = '[DEBUG-08c5ca]';
+async function logCheckpoint(
+  location: string,
+  label: string,
+  driver: Driver,
+): Promise<void> {
+  try {
+    const [url, title, handles, body] = await Promise.all([
+      driver.driver.getCurrentUrl().catch(() => 'err'),
+      driver.driver.getTitle().catch(() => 'err'),
+      driver.driver.getAllWindowHandles().catch(() => [] as string[]),
+      driver
+        .executeScript(
+          `return (document.body && document.body.innerText) ? document.body.innerText.slice(0, 500) : '';`,
+        )
+        .catch(() => 'err'),
+    ]);
+    console.log(
+      `${DEBUG_TAG} ${location} ${label}`,
+      JSON.stringify({
+        url,
+        title,
+        handleCount: Array.isArray(handles) ? handles.length : -1,
+        body,
+      }),
+    );
+  } catch (e) {
+    console.log(`${DEBUG_TAG} ${location} ${label} ERROR`, String(e));
+  }
+}
+// #endregion
+
 class CriticalErrorPage {
   protected readonly driver: Driver;
 
@@ -121,8 +154,24 @@ class CriticalErrorPage {
         { interval: 300, timeout: 30_000 },
       );
 
+      // #region agent log
+      await logCheckpoint(
+        'critical-error-page.ts',
+        'after-criticalErrorRestore-cleared',
+        this.driver,
+      );
+      // #endregion
+
       // Now safe to close extra tabs (service worker has finished handoff / fallback).
       await this.driver.closeAllOtherTabs();
+
+      // #region agent log
+      await logCheckpoint(
+        'critical-error-page.ts',
+        'after-closeAllOtherTabs',
+        this.driver,
+      );
+      // #endregion
     } else {
       await alert.dismiss();
     }
