@@ -30,6 +30,7 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { isMusdToken } from '../../../components/app/musd/constants';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
@@ -141,6 +142,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
       optionsButton={
         <AssetOptions
           isNativeAsset={false}
+          canRemove={!isMusdToken(token?.address)}
           onRemove={() =>
             dispatch(
               showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, navigate }),
