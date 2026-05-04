@@ -17,7 +17,6 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import useBridging from './useBridging';
-import * as useInitialBridgeTokensUtils from './useInitialBridgeTokens';
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -28,12 +27,6 @@ jest.mock('react-router-dom', () => {
 });
 
 const mockDispatch = jest.fn((...args: unknown[]) => jest.fn()(...args));
-const mockFetchTokens = jest.fn();
-const mockClearAllBridgeCacheItems = jest.fn();
-
-jest.mock('../../pages/bridge/utils/cache', () => ({
-  clearAllBridgeCacheItems:() => mockClearAllBridgeCacheItems(),
-}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -42,8 +35,6 @@ jest.mock('react-redux', () => ({
     (...args: unknown[]) =>
       mockDispatch(...args),
 }));
-
-let useInitialBridgeTokensSpy: jest.SpyInstance;
 
 const resetInputFieldsSpy = jest.spyOn(bridgeActions, 'resetInputFields');
 
@@ -55,6 +46,7 @@ const renderUseBridging = (mockStoreState: object, pathname?: string) =>
 
 describe('useBridging', () => {
   beforeAll(() => {
+    jest.clearAllMocks();
     Object.defineProperty(global, 'platform', {
       value: {
         openTab: jest.fn(),
@@ -62,17 +54,10 @@ describe('useBridging', () => {
     });
   });
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    useInitialBridgeTokensSpy = jest
-      .spyOn(useInitialBridgeTokensUtils, 'useInitialBridgeTokens')
-      .mockReturnValueOnce({
-        assetsToInclude: [],
-        fetchTokens: mockFetchTokens,
-      });
-  });
-
   describe('extensionConfig.support=true, chain=1', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
@@ -162,7 +147,7 @@ describe('useBridging', () => {
           .spyOn(bridgeActions, 'resetBridgeController')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
-        const { result, unmount } = renderUseBridging(
+        const { result } = renderUseBridging(
           createBridgeMockStore({
             metamaskStateOverrides: {
               useExternalServices: true,
@@ -237,9 +222,6 @@ describe('useBridging', () => {
           },
         );
         expect(openTabSpy).not.toHaveBeenCalled();
-        expect(mockFetchTokens).toHaveBeenCalledTimes(1);
-        unmount();
-        expect(mockClearAllBridgeCacheItems).toHaveBeenCalledTimes(1);
       },
     );
 
@@ -388,7 +370,7 @@ describe('useBridging', () => {
           .spyOn(bridgeSelectors, 'getLastSelectedChainId')
           .mockReturnValueOnce(formatChainIdToCaip(CHAIN_IDS.MAINNET));
 
-        const { result, unmount } = renderUseBridging(
+        const { result } = renderUseBridging(
           createBridgeMockStore({
             metamaskStateOverrides: {
               useExternalServices: true,
@@ -463,9 +445,6 @@ describe('useBridging', () => {
           },
         });
         expect(openTabSpy).not.toHaveBeenCalled();
-        expect(mockFetchTokens).toHaveBeenCalledTimes(1);
-        unmount();
-        expect(mockClearAllBridgeCacheItems).toHaveBeenCalledTimes(1);
       },
     );
   });

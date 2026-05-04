@@ -8,7 +8,11 @@ import { getBearerToken } from '../../store/actions';
 import { fetchPopularTokens } from '../../pages/bridge/utils/tokens';
 import { getUseExternalServices } from '../../selectors';
 import { useAsyncResult } from '../useAsync';
-import { getFromAccount , BridgeAppState, getFromChains } from '../../ducks/bridge/selectors';
+import {
+  getFromAccount,
+  BridgeAppState,
+  getFromChains,
+} from '../../ducks/bridge/selectors';
 import { getBridgeSortedAssets } from '../../ducks/bridge/asset-selectors';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { toBridgeToken } from '../../ducks/bridge/utils';

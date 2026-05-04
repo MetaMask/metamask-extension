@@ -24,12 +24,6 @@ import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import AssetPage from './asset-page';
 
-jest.mock('../../../hooks/bridge/useBridging', () =>
-  jest.fn().mockReturnValue({
-    openBridgeExperience: jest.fn(),
-  }),
-);
-
 jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
   ...jest.requireActual('../../../hooks/musd/useMusdGeoBlocking'),
   useMusdGeoBlocking: () => ({

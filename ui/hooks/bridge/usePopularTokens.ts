@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { type AccountGroupId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
 import { BridgeToken } from '../../ducks/bridge/types';
@@ -34,11 +34,12 @@ export const usePopularTokens = ({
   );
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const { value: tokenList, pending: isTokenListLoading } = useAsyncResult(async () => {
-    abortControllerRef.current?.abort('Asset balances changed');
-    abortControllerRef.current = new AbortController();
-    return await fetchTokens(abortControllerRef.current?.signal);
-  }, [fetchTokens]);
+  const { value: tokenList, pending: isTokenListLoading } =
+    useAsyncResult(async () => {
+      abortControllerRef.current?.abort('ChainIds or asset balances changed');
+      abortControllerRef.current = new AbortController();
+      return await fetchTokens(abortControllerRef.current?.signal);
+    }, [fetchTokens]);
 
   const tokenListWithBalance = useMemo(() => {
     return tokenList?.map((token) =>
@@ -51,6 +52,12 @@ export const usePopularTokens = ({
       ),
     );
   }, [tokenList, ownedAssetsByAssetId]);
+
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort('Component unmounted');
+    };
+  }, []);
 
   return {
     popularTokensList:

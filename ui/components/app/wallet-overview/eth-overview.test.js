@@ -20,12 +20,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import EthOverview from './eth-overview';
 
-jest.mock('../../../hooks/bridge/useBridging', () =>
-  jest.fn().mockReturnValue({
-    openBridgeExperience: jest.fn(),
-  }),
-);
-
 // TODO: Remove this mock when multichain accounts feature flag is entirely removed.
 // TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
 jest.mock(

@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   formatChainIdToCaip,
@@ -22,10 +22,11 @@ import {
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
-import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
-import { useInitialBridgeTokens } from './useInitialBridgeTokens';
-import { type BridgeNavigationOptions, useBridgeNavigation } from './useBridgeNavigation';
+import {
+  BridgeNavigationOptions,
+  useBridgeNavigation,
+} from './useBridgeNavigation';
 
 /**
  * This hook is the entrypoint for the bridge experience
@@ -50,15 +51,6 @@ const useBridging = () => {
       ),
     [fromChains],
   );
-
-  // Pre-fetch the popular tokens list
-  const { fetchTokens } = useInitialBridgeTokens();
-  useEffect(() => {
-    fetchTokens();
-    return () => {
-      clearAllBridgeCacheItems();
-    };
-  }, [fetchTokens]);
 
   /**
    * Navigates to the bridge page
