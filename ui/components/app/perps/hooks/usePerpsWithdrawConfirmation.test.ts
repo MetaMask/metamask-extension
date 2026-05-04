@@ -1,42 +1,53 @@
-import { act } from "@testing-library/react-hooks";
-import { TransactionMeta, TransactionType } from "@metamask/transaction-controller";
-import mockState from "../../../../../test/data/mock-state.json";
-import { renderHookWithProvider } from "../../../../../test/lib/render-helpers-navigate";
-import { CHAIN_IDS } from "../../../../../shared/constants/network";
-import { addTransaction, findNetworkClientIdByChainId } from "../../../../store/actions";
-import { ARBITRUM_USDC } from "../../../../pages/confirmations/constants/perps";
+import { act } from '@testing-library/react-hooks';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import {
+  addTransaction,
+  findNetworkClientIdByChainId,
+} from '../../../../store/actions';
+import { ARBITRUM_USDC } from '../../../../pages/confirmations/constants/perps';
 import {
   ConfirmationLoader,
   useConfirmationNavigation,
-} from "../../../../pages/confirmations/hooks/useConfirmationNavigation";
-import { usePerpsWithdrawConfirmation } from "./usePerpsWithdrawConfirmation";
+} from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
+import { usePerpsWithdrawConfirmation } from './usePerpsWithdrawConfirmation';
 
-jest.mock("../../../../store/actions", () => ({
+jest.mock('../../../../store/actions', () => ({
   addTransaction: jest.fn(),
   findNetworkClientIdByChainId: jest.fn(),
 }));
 
-jest.mock("../../../../pages/confirmations/hooks/useConfirmationNavigation", () => {
-  const actual = jest.requireActual(
-    "../../../../pages/confirmations/hooks/useConfirmationNavigation",
-  );
-  return {
-    ...actual,
-    useConfirmationNavigation: jest.fn(),
-  };
-});
+jest.mock(
+  '../../../../pages/confirmations/hooks/useConfirmationNavigation',
+  () => {
+    const actual = jest.requireActual(
+      '../../../../pages/confirmations/hooks/useConfirmationNavigation',
+    );
+    return {
+      ...actual,
+      useConfirmationNavigation: jest.fn(),
+    };
+  },
+);
 
 const addTransactionMock = jest.mocked(addTransaction);
-const findNetworkClientIdByChainIdMock = jest.mocked(findNetworkClientIdByChainId);
+const findNetworkClientIdByChainIdMock = jest.mocked(
+  findNetworkClientIdByChainId,
+);
 const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
 
-const MOCK_NETWORK_CLIENT_ID = "arbitrum-mainnet";
-const MOCK_TX_ID = "withdraw-tx-id";
+const MOCK_NETWORK_CLIENT_ID = 'arbitrum-mainnet';
+const MOCK_TX_ID = 'withdraw-tx-id';
 const MOCK_TX_META = {
   id: MOCK_TX_ID,
 } as Partial<TransactionMeta> as TransactionMeta;
 
-describe("usePerpsWithdrawConfirmation", () => {
+describe('usePerpsWithdrawConfirmation', () => {
   const navigateToTransactionMock = jest.fn();
 
   beforeEach(() => {
@@ -55,19 +66,25 @@ describe("usePerpsWithdrawConfirmation", () => {
     useConfirmationNavigationMock.mockReturnValue(mockConfirmationNavigation);
   });
 
-  it("creates a perpsWithdraw transaction and navigates to custom amount confirmation", async () => {
-    const { result } = renderHookWithProvider(() => usePerpsWithdrawConfirmation(), mockState);
+  it('creates a perpsWithdraw transaction and navigates to custom amount confirmation', async () => {
+    const { result } = renderHookWithProvider(
+      () => usePerpsWithdrawConfirmation(),
+      mockState,
+    );
 
-    let triggerResult: Awaited<ReturnType<typeof result.current.trigger>> = null;
+    let triggerResult: Awaited<ReturnType<typeof result.current.trigger>> =
+      null;
     await act(async () => {
       triggerResult = await result.current.trigger();
     });
 
-    expect(findNetworkClientIdByChainIdMock).toHaveBeenCalledWith(CHAIN_IDS.ARBITRUM);
+    expect(findNetworkClientIdByChainIdMock).toHaveBeenCalledWith(
+      CHAIN_IDS.ARBITRUM,
+    );
     expect(addTransactionMock).toHaveBeenCalledWith(
       expect.objectContaining({
         to: ARBITRUM_USDC.address,
-        value: "0x0",
+        value: '0x0',
       }),
       {
         networkClientId: MOCK_NETWORK_CLIENT_ID,
@@ -80,13 +97,14 @@ describe("usePerpsWithdrawConfirmation", () => {
     expect(triggerResult).toStrictEqual({ transactionId: MOCK_TX_ID });
   });
 
-  it("does not navigate when navigateOnCreate is false", async () => {
+  it('does not navigate when navigateOnCreate is false', async () => {
     const { result } = renderHookWithProvider(
       () => usePerpsWithdrawConfirmation({ navigateOnCreate: false }),
       mockState,
     );
 
-    let triggerResult: Awaited<ReturnType<typeof result.current.trigger>> = null;
+    let triggerResult: Awaited<ReturnType<typeof result.current.trigger>> =
+      null;
     await act(async () => {
       triggerResult = await result.current.trigger();
     });
@@ -96,7 +114,7 @@ describe("usePerpsWithdrawConfirmation", () => {
     expect(triggerResult).toStrictEqual({ transactionId: MOCK_TX_ID });
   });
 
-  it("invokes onCreated with transaction id", async () => {
+  it('invokes onCreated with transaction id', async () => {
     const onCreated = jest.fn();
 
     const { result } = renderHookWithProvider(
@@ -111,14 +129,14 @@ describe("usePerpsWithdrawConfirmation", () => {
     expect(onCreated).toHaveBeenCalledWith(MOCK_TX_ID);
   });
 
-  it("returns null when there is no selected account", async () => {
+  it('returns null when there is no selected account', async () => {
     const stateWithoutSelectedAccount = {
       ...mockState,
       metamask: {
         ...mockState.metamask,
         internalAccounts: {
           ...mockState.metamask.internalAccounts,
-          selectedAccount: "",
+          selectedAccount: '',
         },
       },
     };
@@ -128,8 +146,11 @@ describe("usePerpsWithdrawConfirmation", () => {
       stateWithoutSelectedAccount,
     );
 
-    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => undefined);
-    let triggerResult: Awaited<ReturnType<typeof result.current.trigger>> = null;
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    let triggerResult: Awaited<ReturnType<typeof result.current.trigger>> =
+      null;
     await act(async () => {
       triggerResult = await result.current.trigger();
     });
@@ -140,13 +161,19 @@ describe("usePerpsWithdrawConfirmation", () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it("returns null and logs when transaction creation fails", async () => {
-    addTransactionMock.mockRejectedValueOnce(new Error("tx failed"));
-    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => undefined);
+  it('returns null and logs when transaction creation fails', async () => {
+    addTransactionMock.mockRejectedValueOnce(new Error('tx failed'));
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
 
-    const { result } = renderHookWithProvider(() => usePerpsWithdrawConfirmation(), mockState);
+    const { result } = renderHookWithProvider(
+      () => usePerpsWithdrawConfirmation(),
+      mockState,
+    );
 
-    let triggerResult: Awaited<ReturnType<typeof result.current.trigger>> = null;
+    let triggerResult: Awaited<ReturnType<typeof result.current.trigger>> =
+      null;
     await act(async () => {
       triggerResult = await result.current.trigger();
     });
