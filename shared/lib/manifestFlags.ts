@@ -106,6 +106,18 @@ export type ManifestFlags = {
      */
     simulatedSlowBackgroundLoadingTimeout?: number;
     /**
+     * Simulate background initialization hang for testing the initialization
+     * timeout error screen. Only triggers when a vault backup exists in IndexedDB,
+     * so tests can onboard first, then reload to trigger the timeout.
+     */
+    simulateBackgroundInitializationHang?: boolean;
+    /**
+     * Simulate state sync hang for testing the state sync timeout error screen.
+     * Only triggers when a vault backup exists in IndexedDB. When triggered, the
+     * background sends BACKGROUND_INITIALIZED but never calls connectWindowPostMessage.
+     */
+    simulateBackgroundStateSyncHang?: boolean;
+    /**
      * The Infura project ID to use for API requests, useful to inject into a test build that doesn't have one
      */
     infuraProjectId?: string;

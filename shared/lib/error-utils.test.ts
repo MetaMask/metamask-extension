@@ -272,5 +272,32 @@ describe('Error utils Tests', function () {
       expect(html).toContain('critical-error__details');
       expect(html).toContain('Something broke');
     });
+
+    it('includes attempt recovery link when hasBackup is true', async () => {
+      const messagesWithBackup: I18NMessageDict = {
+        ...enMessages,
+        criticalErrorFooter: { message: '$1 $2 or $3' },
+        criticalErrorAttemptRecovery: {
+          message: 'Attempt recovery',
+        },
+      };
+      jest.mocked(fetchLocale).mockResolvedValue(messagesWithBackup);
+      jest
+        .mocked(loadRelativeTimeFormatLocaleData)
+        .mockResolvedValue(undefined);
+
+      const error = new Error('Test error');
+      const localeContext = await maybeGetLocaleContext('en');
+      const html = getErrorHtml(
+        'troubleStarting',
+        error,
+        localeContext,
+        SUPPORT_LINK,
+        true,
+      );
+
+      expect(html).toContain('critical-error-restore-link');
+      expect(html).toContain('Attempt recovery');
+    });
   });
 });
