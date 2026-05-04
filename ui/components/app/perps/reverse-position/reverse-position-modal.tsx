@@ -55,17 +55,6 @@ export type ReversePositionModalProps = {
   sizeDecimals?: number;
 };
 
-function toFlipPositionPayload(pos: Position): Position {
-  if (typeof pos.leverage === 'object' && pos.leverage !== null) {
-    return pos;
-  }
-  const value = typeof pos.leverage === 'number' ? pos.leverage : 1;
-  return {
-    ...pos,
-    leverage: { type: 'cross', value },
-  };
-}
-
 export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   isOpen,
   onClose,
@@ -99,12 +88,16 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const direction = getPositionDirection(position.size);
-  const directionLabel =
-    direction === 'long'
-      ? `${t('perpsLong')} → ${t('perpsShort')}`
-      : `${t('perpsShort')} → ${t('perpsLong')}`;
+  const isCurrentlyLong = direction === 'long';
+  const directionLabel = isCurrentlyLong
+    ? `${t('perpsLong')} → ${t('perpsShort')}`
+    : `${t('perpsShort')} → ${t('perpsLong')}`;
   const sizeNum = Math.abs(parseFloat(position.size));
   const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${position.symbol}`;
+  const leverageValue =
+    typeof position.leverage === 'object'
+      ? position.leverage?.value
+      : position.leverage;
 
   const {
     feeRate,
@@ -124,10 +117,13 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   const shouldShowFeePlaceholder =
     isFeeLoading || hasFeeError || estimatedFees === undefined;
 
-  const positionForFlip = useMemo(
-    () => toFlipPositionPayload(position),
-    [position],
-  );
+  const flipSize = sizeNum * 2;
+  const flipAction = isCurrentlyLong
+    ? PERPS_EVENT_VALUE.TRADE_ACTION.FLIP_LONG_TO_SHORT
+    : PERPS_EVENT_VALUE.TRADE_ACTION.FLIP_SHORT_TO_LONG;
+  const flipDirection = isCurrentlyLong
+    ? PERPS_EVENT_VALUE.DIRECTION.SHORT
+    : PERPS_EVENT_VALUE.DIRECTION.LONG;
 
   const handleSave = useCallback(async () => {
     if (!isEligible) {
@@ -141,15 +137,37 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_IN_PROGRESS });
 
     try {
-      const flipResult = await submitRequestToBackground<{
+      // TODO(perps): revert to perpsFlipPosition once @metamask/perps-controller
+      // TradingService.flipPosition forwards currentPrice to placeOrder
+      // (regression introduced in 3.2.0, MetaMask/core#8515).
+      const orderResult = await submitRequestToBackground<{
         success: boolean;
         error?: string;
-      }>('perpsFlipPosition', [
-        { symbol: position.symbol, position: positionForFlip },
+        averagePrice?: string;
+      }>('perpsPlaceOrder', [
+        {
+          symbol: position.symbol,
+          isBuy: !isCurrentlyLong,
+          size: flipSize.toString(),
+          orderType: 'market',
+          currentPrice,
+          leverage: leverageValue,
+        },
       ]);
-      if (flipResult?.success !== true) {
-        throw new Error(flipResult?.error || 'Failed to flip position');
+      if (orderResult?.success !== true) {
+        throw new Error(orderResult?.error || 'Failed to flip position');
       }
+
+      track(MetaMetricsEventName.PerpsTradeTransaction, {
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+        [PERPS_EVENT_PROPERTY.ORDER_TYPE]: 'market',
+        [PERPS_EVENT_PROPERTY.ACTION]: flipAction,
+        [PERPS_EVENT_PROPERTY.DIRECTION]: flipDirection,
+        [PERPS_EVENT_PROPERTY.LEVERAGE]: leverageValue ?? 1,
+        [PERPS_EVENT_PROPERTY.SIZE]: sizeNum,
+      });
+
       const streamManager = getPerpsStreamManager();
       const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
         'perpsGetPositions',
@@ -162,6 +180,13 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     } catch (err) {
       const raw =
         err instanceof Error ? err.message : 'An unknown error occurred';
+      track(MetaMetricsEventName.PerpsTradeTransaction, {
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+        [PERPS_EVENT_PROPERTY.ORDER_TYPE]: 'market',
+        [PERPS_EVENT_PROPERTY.ACTION]: flipAction,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
+      });
       track(MetaMetricsEventName.PerpsError, {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
@@ -177,9 +202,15 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     }
   }, [
     isEligible,
+    flipSize,
+    flipAction,
+    flipDirection,
+    isCurrentlyLong,
+    sizeNum,
+    currentPrice,
+    leverageValue,
     onClose,
     position.symbol,
-    positionForFlip,
     replacePerpsToastByKey,
     track,
     t,
