@@ -38,7 +38,6 @@ export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;
   isPasskeyActive: boolean;
   passkeyAutoUnlockSuppressed: boolean;
-  isLocked: boolean;
   isPasswordInProgress: boolean;
   onUnlockWithPasskey: (
     authenticationResponse: PasskeyAuthenticationResponse,
@@ -64,7 +63,6 @@ export class UnlockPasskeySection extends Component<
     logoSection: PropTypes.node.isRequired,
     isPasskeyActive: PropTypes.bool.isRequired,
     passkeyAutoUnlockSuppressed: PropTypes.bool.isRequired,
-    isLocked: PropTypes.bool.isRequired,
     isPasswordInProgress: PropTypes.bool.isRequired,
     onUnlockWithPasskey: PropTypes.func.isRequired,
     onUsePassword: PropTypes.func.isRequired,
@@ -78,7 +76,10 @@ export class UnlockPasskeySection extends Component<
   /** Ensures auto WebAuthn runs at most once per section mount (e.g. first paint or after fingerprint). */
   autoUnlockStarted = false;
 
+  isMounted = false;
+
   componentDidMount() {
+    this.isMounted = true;
     const { isPasskeyActive, passkeyAutoUnlockSuppressed } = this.props;
     if (
       !isPasskeyActive ||
@@ -92,6 +93,7 @@ export class UnlockPasskeySection extends Component<
   }
 
   componentWillUnmount() {
+    this.isMounted = false;
     cancelPasskeyCeremony();
   }
 
@@ -101,18 +103,20 @@ export class UnlockPasskeySection extends Component<
   };
 
   runPasskeyUnlock = async () => {
-    const { isLocked, isPasswordInProgress, isPasskeyActive } = this.props;
-    if (isLocked || isPasswordInProgress || this.state.passkeyInProgress) {
+    const { isPasswordInProgress, isPasskeyActive } = this.props;
+    if (isPasswordInProgress || this.state.passkeyInProgress) {
       return;
     }
     if (!isPasskeyActive) {
       return;
     }
 
-    this.setState({
-      passkeyError: null,
-      passkeyInProgress: true,
-    });
+    if (this.isMounted) {
+      this.setState({
+        passkeyError: null,
+        passkeyInProgress: true,
+      });
+    }
 
     const { t, trackEvent } = this.context as PasskeySectionContext;
     try {
@@ -128,6 +132,9 @@ export class UnlockPasskeySection extends Component<
         properties: { method: 'passkey' },
       });
     } catch (err) {
+      if (!this.isMounted) {
+        return;
+      }
       if (isPasskeyCeremonySilentError(err)) {
         this.setState({
           passkeyError: null,
@@ -139,7 +146,9 @@ export class UnlockPasskeySection extends Component<
         });
       }
     } finally {
-      this.setState({ passkeyInProgress: false });
+      if (this.isMounted) {
+        this.setState({ passkeyInProgress: false });
+      }
     }
   };
 
@@ -149,8 +158,7 @@ export class UnlockPasskeySection extends Component<
   };
 
   render() {
-    const { logoSection, isPasskeyActive, isLocked, isPasswordInProgress } =
-      this.props;
+    const { logoSection, isPasskeyActive, isPasswordInProgress } = this.props;
     const { passkeyError, passkeyInProgress } = this.state;
     const { t } = this.context as PasskeySectionContext;
 
@@ -165,6 +173,7 @@ export class UnlockPasskeySection extends Component<
         className="unlock-page w-full"
         alignItems={BoxAlignItems.Center}
         gap={4}
+        padding={4}
       >
         {logoSection}
         {passkeyError ? (
@@ -191,7 +200,7 @@ export class UnlockPasskeySection extends Component<
             type="button"
             isLoading={passkeyInProgress}
             data-testid="unlock-passkey-button"
-            disabled={isLocked || isPasswordInProgress || passkeyInProgress}
+            disabled={isPasswordInProgress || passkeyInProgress}
             onClick={this.runPasskeyUnlock}
             aria-busy={passkeyInProgress}
           >
