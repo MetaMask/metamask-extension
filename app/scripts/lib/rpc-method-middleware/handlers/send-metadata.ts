@@ -17,8 +17,6 @@ export type SubjectMetadataToAdd = PermissionSubjectMetadata & {
   iconUrl?: string | null;
 };
 
-export type SendMetadataHooks = Record<string, never>;
-
 type SendMetadataConstraint = MethodHandler<
   never,
   never,
