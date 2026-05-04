@@ -9,6 +9,16 @@ import { EditMarginModalContent } from './edit-margin-modal-content';
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockMarginCalculations = {
+  maxAmount: 5000,
+  anchorLiquidationPrice: 2000,
+  estimatedLiquidationPrice: 1800,
+  anchorLiquidationDistance: 0.2,
+  estimatedLiquidationDistance: 0.3,
+  riskAssessment: { riskLevel: 'safe' },
+  isValid: true,
+};
+const mockUsePerpsMarginCalculations = jest.fn(() => mockMarginCalculations);
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
@@ -21,15 +31,8 @@ jest.mock('../../../../hooks/perps', () => ({
 }));
 
 jest.mock('../../../../hooks/perps/usePerpsMarginCalculations', () => ({
-  usePerpsMarginCalculations: () => ({
-    maxAmount: 5000,
-    anchorLiquidationPrice: 2000,
-    estimatedLiquidationPrice: 1800,
-    anchorLiquidationDistance: 0.2,
-    estimatedLiquidationDistance: 0.3,
-    riskAssessment: { riskLevel: 'safe' },
-    isValid: true,
-  }),
+  usePerpsMarginCalculations: (...args: unknown[]) =>
+    mockUsePerpsMarginCalculations(...args),
 }));
 
 jest.mock('../../../../providers/perps', () => ({
@@ -76,6 +79,7 @@ describe('EditMarginModalContent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+    mockUsePerpsMarginCalculations.mockReturnValue(mockMarginCalculations);
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
   });
 
@@ -83,6 +87,59 @@ describe('EditMarginModalContent', () => {
     renderWithProvider(<EditMarginModalContent {...defaultProps} />, mockStore);
 
     expect(screen.getByText(/available/iu)).toBeInTheDocument();
+  });
+
+  it('formats sub-1% liquidation distance with one decimal place', () => {
+    renderWithProvider(<EditMarginModalContent {...defaultProps} />, mockStore);
+
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
+    ).toHaveTextContent('0.2%');
+  });
+
+  it('formats very small liquidation distance with a minimum threshold', () => {
+    mockUsePerpsMarginCalculations.mockReturnValue({
+      ...mockMarginCalculations,
+      anchorLiquidationDistance: 0.05,
+    });
+
+    renderWithProvider(<EditMarginModalContent {...defaultProps} />, mockStore);
+
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
+    ).toHaveTextContent('<0.1%');
+  });
+
+  it('formats negative liquidation price distance with a minimum threshold', () => {
+    mockUsePerpsMarginCalculations.mockReturnValue({
+      ...mockMarginCalculations,
+      anchorLiquidationPrice: -100,
+      anchorLiquidationDistance: 0,
+      estimatedLiquidationPrice: null,
+      estimatedLiquidationDistance: null,
+    });
+
+    renderWithProvider(<EditMarginModalContent {...defaultProps} />, mockStore);
+
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
+    ).toHaveTextContent('<0.1%');
+  });
+
+  it('formats zero liquidation price distance with a minimum threshold', () => {
+    mockUsePerpsMarginCalculations.mockReturnValue({
+      ...mockMarginCalculations,
+      anchorLiquidationPrice: 0,
+      anchorLiquidationDistance: 0,
+      estimatedLiquidationPrice: null,
+      estimatedLiquidationDistance: null,
+    });
+
+    renderWithProvider(<EditMarginModalContent {...defaultProps} />, mockStore);
+
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
+    ).toHaveTextContent('<0.1%');
   });
 
   describe('geo-blocking', () => {

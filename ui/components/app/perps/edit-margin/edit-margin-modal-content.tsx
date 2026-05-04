@@ -47,6 +47,7 @@ import { PerpsSlider } from '../perps-slider';
 import { getDisplayName } from '../utils';
 
 const MARGIN_PRESETS = [25, 50, 100] as const;
+const LIQUIDATION_DISTANCE_MIN_THRESHOLD = 0.1;
 const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
   /^an unknown error occurred$/iu,
   /^failed to update margin$/iu,
@@ -207,15 +208,24 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
 
   const formatLiquidationDistance = useCallback(
     (distance: number, liquidationPrice?: number | null) => {
-      if (
-        !Number.isFinite(distance) ||
-        (liquidationPrice !== undefined &&
-          liquidationPrice !== null &&
-          liquidationPrice <= 0)
-      ) {
+      if (!Number.isFinite(distance)) {
         return '--';
       }
-      // Match mobile's adjust-margin view: liquidation distance is rounded to a whole percent.
+
+      if (
+        (distance === 0 &&
+          liquidationPrice !== undefined &&
+          liquidationPrice !== null &&
+          liquidationPrice <= 0) ||
+        (distance > 0 && distance < LIQUIDATION_DISTANCE_MIN_THRESHOLD)
+      ) {
+        return `<${LIQUIDATION_DISTANCE_MIN_THRESHOLD}%`;
+      }
+
+      if (distance > 0 && distance < 1) {
+        return `${distance.toFixed(1)}%`;
+      }
+
       return `${distance.toFixed(0)}%`;
     },
     [],
