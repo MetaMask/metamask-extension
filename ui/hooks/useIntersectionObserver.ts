@@ -27,6 +27,19 @@ type IntersectionReturn = [
   entry?: IntersectionObserverEntry;
 };
 
+function meetsThreshold(
+  entry: IntersectionObserverEntry,
+  thresholds: readonly number[],
+) {
+  for (const observerThreshold of thresholds) {
+    if (entry.intersectionRatio >= observerThreshold) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 export function useIntersectionObserver({
   threshold = 0,
   root = null,
@@ -41,38 +54,31 @@ export function useIntersectionObserver({
     entry: undefined,
   }));
   const callbackRef = useRef(onChange);
+  const thresholdRef = useRef(threshold);
   const frozen = Boolean(state.entry?.isIntersecting && freezeOnceVisible);
   const thresholdKey = Array.isArray(threshold)
     ? threshold.join(',')
     : String(threshold);
 
   callbackRef.current = onChange;
+  thresholdRef.current = threshold;
 
   useEffect(() => {
-    if (
-      !ref ||
-      typeof window === 'undefined' ||
-      !('IntersectionObserver' in window) ||
-      frozen
-    ) {
+    if (!ref || !('IntersectionObserver' in globalThis) || frozen) {
       return undefined;
     }
 
     const observer = new IntersectionObserver(
       (entries: IntersectionObserverEntry[]) => {
-        entries.forEach((entry) => {
+        for (const entry of entries) {
           const isIntersecting =
-            entry.isIntersecting &&
-            observer.thresholds.some(
-              (observerThreshold) =>
-                entry.intersectionRatio >= observerThreshold,
-            );
+            entry.isIntersecting && meetsThreshold(entry, observer.thresholds);
 
           setState({ isIntersecting, entry });
           callbackRef.current?.(isIntersecting, entry);
-        });
+        }
       },
-      { threshold, root, rootMargin },
+      { threshold: thresholdRef.current, root, rootMargin },
     );
 
     observer.observe(ref);
@@ -80,14 +86,22 @@ export function useIntersectionObserver({
     return () => {
       observer.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref, thresholdKey, root, rootMargin, frozen]);
 
+  const prevRef = useRef<Element | null>(null);
+
   useEffect(() => {
-    if (!ref && !freezeOnceVisible && !frozen) {
+    if (
+      !ref &&
+      state.entry?.target &&
+      !freezeOnceVisible &&
+      !frozen &&
+      prevRef.current !== state.entry.target
+    ) {
+      prevRef.current = state.entry.target;
       setState({ isIntersecting: initialIsIntersecting, entry: undefined });
     }
-  }, [ref, freezeOnceVisible, frozen, initialIsIntersecting]);
+  }, [ref, state.entry, freezeOnceVisible, frozen, initialIsIntersecting]);
 
   const result = useMemo(
     () =>
