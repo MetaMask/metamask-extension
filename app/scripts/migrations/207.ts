@@ -1,4 +1,7 @@
-import { isEvmAccountType, type KeyringAccountType } from '@metamask/keyring-api';
+import {
+  isEvmAccountType,
+  type KeyringAccountType,
+} from '@metamask/keyring-api';
 import { hasProperty, isObject } from '@metamask/utils';
 import type { Migrate } from './types';
 
