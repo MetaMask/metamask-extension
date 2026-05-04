@@ -1,6 +1,6 @@
 import { MetaMaskSessionManager } from './metamask-provider';
 
-jest.mock('..', () => ({
+jest.mock('.', () => ({
   MetaMaskExtensionLauncher: jest.fn().mockImplementation(() => ({
     launch: jest.fn(),
     cleanup: jest.fn(),
@@ -12,7 +12,7 @@ jest.mock('..', () => ({
   })),
 }));
 
-jest.mock('../capabilities/factory', () => ({
+jest.mock('./capabilities/factory', () => ({
   createMetaMaskE2EContext: jest.fn().mockReturnValue({
     fixture: undefined,
     chain: undefined,
@@ -24,7 +24,6 @@ jest.mock('../capabilities/factory', () => ({
     config: {
       environment: 'e2e',
       extensionName: 'MetaMask',
-      toolPrefix: 'mm',
       defaultChainId: 1337,
       defaultPassword: 'correct horse battery staple',
     },
@@ -40,7 +39,6 @@ jest.mock('../capabilities/factory', () => ({
     config: {
       environment: 'prod',
       extensionName: 'MetaMask',
-      toolPrefix: 'mm',
       defaultChainId: 1337,
       defaultPassword: 'correct horse battery staple',
     },

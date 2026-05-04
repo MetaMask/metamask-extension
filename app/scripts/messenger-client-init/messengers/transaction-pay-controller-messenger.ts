@@ -50,6 +50,7 @@ export function getTransactionPayControllerMessenger(
       'TransactionController:getGasFeeTokens',
       'TransactionController:getState',
       'TransactionController:updateTransaction',
+      'KeyringController:getState',
       'KeyringController:signTypedMessage',
     ],
     events: [
