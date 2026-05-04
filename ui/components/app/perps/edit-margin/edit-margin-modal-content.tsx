@@ -213,12 +213,14 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
       }
 
       if (
-        (distance === 0 &&
-          liquidationPrice !== undefined &&
-          liquidationPrice !== null &&
-          liquidationPrice <= 0) ||
-        (distance > 0 && distance < LIQUIDATION_DISTANCE_MIN_THRESHOLD)
+        liquidationPrice !== undefined &&
+        liquidationPrice !== null &&
+        liquidationPrice <= 0
       ) {
+        return '--';
+      }
+
+      if (distance > 0 && distance < LIQUIDATION_DISTANCE_MIN_THRESHOLD) {
         return `<${LIQUIDATION_DISTANCE_MIN_THRESHOLD}%`;
       }
 

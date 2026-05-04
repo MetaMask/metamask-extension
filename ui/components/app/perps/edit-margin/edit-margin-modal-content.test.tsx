@@ -4,12 +4,13 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockPositions, mockAccountState } from '../mocks';
+import type { UsePerpsMarginCalculationsReturn } from '../../../../hooks/perps/usePerpsMarginCalculations';
 import { EditMarginModalContent } from './edit-margin-modal-content';
 
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
-const mockMarginCalculations = {
+const mockMarginCalculations: UsePerpsMarginCalculationsReturn = {
   maxAmount: 5000,
   anchorLiquidationPrice: 2000,
   estimatedLiquidationPrice: 1800,
@@ -110,7 +111,7 @@ describe('EditMarginModalContent', () => {
     ).toHaveTextContent('<0.1%');
   });
 
-  it('formats negative liquidation price distance with a minimum threshold', () => {
+  it('formats negative liquidation price distance as unavailable', () => {
     mockUsePerpsMarginCalculations.mockReturnValue({
       ...mockMarginCalculations,
       anchorLiquidationPrice: -100,
@@ -123,10 +124,10 @@ describe('EditMarginModalContent', () => {
 
     expect(
       screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
-    ).toHaveTextContent('<0.1%');
+    ).toHaveTextContent('--');
   });
 
-  it('formats zero liquidation price distance with a minimum threshold', () => {
+  it('formats zero liquidation price distance as unavailable', () => {
     mockUsePerpsMarginCalculations.mockReturnValue({
       ...mockMarginCalculations,
       anchorLiquidationPrice: 0,
@@ -139,7 +140,7 @@ describe('EditMarginModalContent', () => {
 
     expect(
       screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
-    ).toHaveTextContent('<0.1%');
+    ).toHaveTextContent('--');
   });
 
   describe('geo-blocking', () => {
