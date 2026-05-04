@@ -40,7 +40,7 @@ describe('useBridgeRedirectQueryString', () => {
     expect(result.current()).toBeNull();
   });
 
-  it('builds query string with from, to, and amount on a bridge route', () => {
+  it('encodes from token, to token, and amount as deep-link query params', () => {
     const storeState = createBridgeMockStore({
       bridgeSliceOverrides: {
         fromToken: {
@@ -66,16 +66,16 @@ describe('useBridgeRedirectQueryString', () => {
     });
 
     const { result } = renderHook(storeState);
-    const qs = result.current();
+    const queryString = result.current();
 
-    expect(qs).not.toBeNull();
-    const params = new URLSearchParams(qs as string);
+    expect(queryString).not.toBeNull();
+    const params = new URLSearchParams(queryString as string);
     expect(params.get('from')).toBe('eip155:1/slip44:60');
     expect(params.get('to')).toBe('eip155:10/slip44:60');
     expect(params.get('amount')).toBe('1500000000000000000');
   });
 
-  it('handles fractional amounts with correct precision', () => {
+  it('converts fractional display amount to base units using token decimals', () => {
     const storeState = createBridgeMockStore({
       bridgeSliceOverrides: {
         fromToken: {
@@ -101,14 +101,15 @@ describe('useBridgeRedirectQueryString', () => {
     });
 
     const { result } = renderHook(storeState);
-    const qs = result.current();
+    const queryString = result.current();
 
-    expect(qs).not.toBeNull();
-    const params = new URLSearchParams(qs as string);
+    expect(queryString).not.toBeNull();
+    const params = new URLSearchParams(queryString as string);
+    // 100.5 USDC * 10^6 = 100500000 base units
     expect(params.get('amount')).toBe('100500000');
   });
 
-  it('returns only from token when no to token is set', () => {
+  it('includes default to token when toToken is null (selector provides fallback)', () => {
     const storeState = createBridgeMockStore({
       bridgeSliceOverrides: {
         fromToken: {
@@ -123,16 +124,17 @@ describe('useBridgeRedirectQueryString', () => {
     });
 
     const { result } = renderHook(storeState);
-    const qs = result.current();
+    const queryString = result.current();
 
-    expect(qs).not.toBeNull();
-    const params = new URLSearchParams(qs as string);
+    expect(queryString).not.toBeNull();
+    const params = new URLSearchParams(queryString as string);
     expect(params.get('from')).toBe('eip155:1/slip44:60');
+    // getToToken selector returns a default destination token even when toToken is null
     expect(params.has('to')).toBe(true);
     expect(params.get('amount')).toBe('2000000000000000000');
   });
 
-  it('returns null when no tokens or amount are set on bridge route', () => {
+  it('omits amount param when no tokens or amount are set', () => {
     const storeState = createBridgeMockStore({
       bridgeSliceOverrides: {
         fromToken: null,
@@ -142,13 +144,13 @@ describe('useBridgeRedirectQueryString', () => {
     });
 
     const { result } = renderHook(storeState);
-    const qs = result.current();
+    const queryString = result.current();
 
-    const params = new URLSearchParams(qs ?? '');
+    const params = new URLSearchParams(queryString ?? '');
     expect(params.has('amount')).toBe(false);
   });
 
-  it('omits amount when fromTokenInputValue is empty', () => {
+  it('omits amount param when fromTokenInputValue is null', () => {
     const storeState = createBridgeMockStore({
       bridgeSliceOverrides: {
         fromToken: {
@@ -162,15 +164,15 @@ describe('useBridgeRedirectQueryString', () => {
     });
 
     const { result } = renderHook(storeState);
-    const qs = result.current();
+    const queryString = result.current();
 
-    expect(qs).not.toBeNull();
-    const params = new URLSearchParams(qs as string);
+    expect(queryString).not.toBeNull();
+    const params = new URLSearchParams(queryString as string);
     expect(params.get('from')).toBe('eip155:1/slip44:60');
     expect(params.has('amount')).toBe(false);
   });
 
-  it('handles zero amount correctly', () => {
+  it('converts zero display amount to zero base units', () => {
     const storeState = createBridgeMockStore({
       bridgeSliceOverrides: {
         fromToken: {
@@ -184,14 +186,14 @@ describe('useBridgeRedirectQueryString', () => {
     });
 
     const { result } = renderHook(storeState);
-    const qs = result.current();
+    const queryString = result.current();
 
-    expect(qs).not.toBeNull();
-    const params = new URLSearchParams(qs as string);
+    expect(queryString).not.toBeNull();
+    const params = new URLSearchParams(queryString as string);
     expect(params.get('amount')).toBe('0');
   });
 
-  it('preserves full precision for very small amounts', () => {
+  it('converts smallest representable amount (1 wei) without precision loss', () => {
     const storeState = createBridgeMockStore({
       bridgeSliceOverrides: {
         fromToken: {
@@ -205,10 +207,11 @@ describe('useBridgeRedirectQueryString', () => {
     });
 
     const { result } = renderHook(storeState);
-    const qs = result.current();
+    const queryString = result.current();
 
-    expect(qs).not.toBeNull();
-    const params = new URLSearchParams(qs as string);
+    expect(queryString).not.toBeNull();
+    const params = new URLSearchParams(queryString as string);
+    // 0.000000000000000001 ETH * 10^18 = 1 wei
     expect(params.get('amount')).toBe('1');
   });
 });
