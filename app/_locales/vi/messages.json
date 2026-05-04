@@ -114,12 +114,6 @@
   "accountIdenticon": {
     "message": "Biểu tượng tài khoản"
   },
-  "accountIdenticonDescription": {
-    "message": "Chọn trong số ba kiểu biểu tượng độc đáo khác nhau để giúp bạn nhận diện tài khoản một cách nhanh chóng."
-  },
-  "accountIsntConnectedToastText": {
-    "message": "$1 không được kết nối với $2"
-  },
   "accountName": {
     "message": "Tên tài khoản"
   },
@@ -1546,12 +1540,6 @@
   "confirmFieldFrequency": {
     "message": "Tần suất"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Hạn mức ban đầu"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Hạn mức tối đa"
-  },
   "confirmFieldNeverExpires": {
     "message": "Không bao giờ hết hạn"
   },
@@ -1571,20 +1559,14 @@
     "message": "Hằng tháng"
   },
   "confirmFieldPeriodDurationSeconds": {
-    "message": "giây",
-    "description": "Unit descriptor following the numeric value, e.g. '100 seconds'"
+    "message": "$1 giây",
+    "description": "$1 is the number of seconds in the permission period (shown when the period is not a standard hour/day/week/etc.)"
   },
   "confirmFieldPeriodDurationWeekly": {
     "message": "Hằng tuần"
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Hằng năm"
-  },
-  "confirmFieldStartDate": {
-    "message": "Ngày bắt đầu"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Tốc độ thanh toán liên tục"
   },
   "confirmFieldTooltipJustification": {
     "message": "Lý do chính đáng cho yêu cầu được trang web cung cấp"
@@ -1750,9 +1732,6 @@
   },
   "connect": {
     "message": "Kết nối"
-  },
-  "connectAccount": {
-    "message": "Kết nối tài khoản"
   },
   "connectAccounts": {
     "message": "Kết nối tài khoản"
@@ -2249,9 +2228,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "trang thị trường hợp đồng vĩnh cửu"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "trang danh sách thị trường hợp đồng vĩnh cửu"
   },
   "deepLink_thePerpsPage": {
     "message": "trang hợp đồng vĩnh cửu"
@@ -3034,6 +3010,9 @@
   },
   "gasUsed": {
     "message": "Gas đã dùng"
+  },
+  "gatorNoJustificationProvided": {
+    "message": "Không có lý do nào được đưa ra cho quyền này"
   },
   "gatorPermissionAnnualFrequency": {
     "message": "Hằng năm",
@@ -4034,12 +4013,6 @@
   "mismatchedRpcUrl": {
     "message": "Theo hồ sơ của chúng tôi, giá trị RPC URL đã gửi không khớp với một nhà cung cấp đã biết cho ID chuỗi này."
   },
-  "missingSetting": {
-    "message": "Không tìm thấy chế độ cài đặt?"
-  },
-  "missingSettingRequest": {
-    "message": "Yêu cầu tại đây"
-  },
   "month": {
     "message": "tháng"
   },
@@ -4122,6 +4095,102 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 muốn sử dụng $2 Snap",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
+  "musdAssetBonusAccruing": {
+    "message": "Đang tích lũy khoản thưởng tiếp theo",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "Nhận thưởng $1",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "Thưởng hằng năm ước tính",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "Thông tin thưởng của bạn",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "Dự đoán số tiền bạn sẽ nhận được trong một năm dựa trên số dư và lãi suất hiện tại. Lãi suất có thể thay đổi.",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "Tìm hiểu thêm.",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "Tổng khoản thưởng bạn đã nhận được kể từ khi bắt đầu.",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "$1% khoản thưởng theo năm mà bạn nhận được chỉ bằng cách nắm giữ mUSD. Bạn có thể nhận thưởng hằng ngày trên Linea. $2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "Thưởng trọn đời đã nhận được",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "Không có thưởng tích lũy",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "Thưởng $1%",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "Thưởng của bạn",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "Thưởng hằng ngày",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "Được đảm bảo bằng đồng đô la Mỹ",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "Không bị khóa vốn",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "Không có phí MetaMask",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "$1% thưởng theo năm",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "Nhận ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " bằng cách chuyển đổi USDC, USDT và DAI sang mUSD.",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "Tìm hiểu thêm",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "Chuyển đổi đồng ổn định của bạn",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "Số dư",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "Vị thế của bạn",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "Giá trị",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
   },
   "musdBonusExplanation": {
     "message": "Chuyển đổi đồng ổn định của bạn sang mUSD và nhận thưởng quy đổi theo năm lên đến $1% mà bạn có thể nhận hằng ngày. $2",
@@ -4226,6 +4295,10 @@
   "musdMetaMaskUsd": {
     "message": "MetaMask USD",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "Áp dụng điều khoản."
@@ -4789,6 +4862,14 @@
   "notificationTransactionSuccessView": {
     "message": "Xem trên $1",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
+  },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "Giao dịch không thành công! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "Giao dịch đã được xác nhận!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
   },
   "notifications": {
     "message": "Thông báo"
@@ -5453,7 +5534,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Số dư Hợp đồng vĩnh cửu khả dụng: "
+    "message": "Số dư khả dụng: "
   },
   "perpsAvailableToAdd": {
     "message": "Có thể cộng"
@@ -5521,6 +5602,12 @@
   },
   "perpsContactSupport": {
     "message": "Liên hệ bộ phận hỗ trợ"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "MetaMask Hợp đồng vĩnh cửu chỉ hỗ trợ giao dịch với ký quỹ riêng biệt. Bạn cần đóng vị thế ký quỹ chéo trước khi có thể giao dịch trên MetaMask."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Không hỗ trợ ký quỹ chéo"
   },
   "perpsDateToday": {
     "message": "Hôm nay"
@@ -5803,15 +5890,12 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Đảo vị thế bán khống của bạn thành mua khống"
   },
-  "perpsSaveChanges": {
-    "message": "Lưu thay đổi",
-    "description": "Button text for saving TP/SL changes"
-  },
   "perpsSearchMarkets": {
     "message": "Tìm kiếm thị trường"
   },
   "perpsSeeAll": {
-    "message": "Xem tất cả"
+    "message": "Xem tất cả",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Dịch vụ tạm thời không khả dụng. Vui lòng thử lại sau."
@@ -6015,6 +6099,9 @@
   },
   "perpsTrades": {
     "message": "Giao dịch"
+  },
+  "perpsTriggerPrice": {
+    "message": "Giá kích hoạt"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "Đòn bẩy sẽ khuếch đại cả lợi nhuận và thua lỗ. Với đòn bẩy 40x, biến động giá 1% tương đương với lợi nhuận hoặc thua lỗ 40% trên số tiền ký quỹ của bạn."

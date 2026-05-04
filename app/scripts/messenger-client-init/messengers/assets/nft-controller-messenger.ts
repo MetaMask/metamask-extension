@@ -10,11 +10,9 @@ import {
 } from '@metamask/accounts-controller';
 import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 import {
-  AssetsContractControllerGetERC1155BalanceOfAction,
   AssetsContractControllerGetERC1155TokenURIAction,
   AssetsContractControllerGetERC721AssetNameAction,
   AssetsContractControllerGetERC721AssetSymbolAction,
-  AssetsContractControllerGetERC721OwnerOfAction,
   AssetsContractControllerGetERC721TokenURIAction,
 } from '@metamask/assets-controllers';
 import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
@@ -30,8 +28,6 @@ type Actions =
   | AssetsContractControllerGetERC721AssetNameAction
   | AssetsContractControllerGetERC721AssetSymbolAction
   | AssetsContractControllerGetERC721TokenURIAction
-  | AssetsContractControllerGetERC721OwnerOfAction
-  | AssetsContractControllerGetERC1155BalanceOfAction
   | AssetsContractControllerGetERC1155TokenURIAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | PhishingControllerBulkScanUrlsAction;
@@ -77,8 +73,6 @@ export function getNftControllerMessenger(
       'AssetsContractController:getERC721AssetName',
       'AssetsContractController:getERC721AssetSymbol',
       'AssetsContractController:getERC721TokenURI',
-      'AssetsContractController:getERC721OwnerOf',
-      'AssetsContractController:getERC1155BalanceOf',
       'AssetsContractController:getERC1155TokenURI',
       'NetworkController:findNetworkClientIdByChainId',
       'PhishingController:bulkScanUrls',

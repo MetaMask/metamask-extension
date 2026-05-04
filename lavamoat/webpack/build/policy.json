@@ -225,20 +225,6 @@
         "nock>debug": true
       }
     },
-    "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@babel/code-frame": true,
-        "@babel/core>@babel/generator": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/parser": true,
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true,
-        "nock>debug": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>globals": true
-      }
-    },
     "@babel/core>@babel/types": {
       "globals": {
         "console.warn": true,
@@ -329,7 +315,7 @@
         "process._rawDebug": true
       },
       "packages": {
-        "@lavamoat/webpack>@babel/parser": true,
+        "@babel/core>@babel/parser": true,
         "@lavamoat/webpack>@lavamoat/aa": true,
         "browserify>browser-resolve": true,
         "@lavamoat/webpack>lavamoat-core": true,
@@ -967,19 +953,6 @@
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>get-intrinsic": true
-      }
-    },
-    "postcss-discard-font-face>postcss>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "postcss-discard-font-face>postcss>chalk>ansi-styles": true,
-        "postcss-discard-font-face>postcss>chalk>escape-string-regexp": true,
-        "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi": true,
-        "postcss-discard-font-face>postcss>chalk>strip-ansi": true,
-        "postcss-discard-font-face>postcss>chalk>supports-color": true
       }
     },
     "chokidar": {
@@ -1748,17 +1721,7 @@
         "setTimeout": true
       }
     },
-    "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi": {
-      "packages": {
-        "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi>ansi-regex": true
-      }
-    },
     "chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
-      }
-    },
-    "postcss-discard-font-face>postcss>supports-color>has-flag": {
       "globals": {
         "process.argv": true
       }
@@ -2011,12 +1974,6 @@
         "value": true
       }
     },
-    "postcss-discard-font-face>postcss>js-base64": {
-      "globals": {
-        "Base64": "write",
-        "define": true
-      }
-    },
     "@babel/core>@babel/generator>jsesc": {
       "globals": {
         "Buffer": true
@@ -2086,8 +2043,8 @@
         "console.log": true
       },
       "packages": {
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/parser": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": true
+        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/traverse": true
       }
     },
     "webpack>loader-runner": {
@@ -2357,12 +2314,6 @@
         "postcss>source-map-js": true
       }
     },
-    "postcss-discard-font-face": {
-      "packages": {
-        "postcss-discard-font-face>balanced-match": true,
-        "postcss-discard-font-face>postcss": true
-      }
-    },
     "tailwindcss>postcss-js": {
       "globals": {
         "console": true
@@ -2375,6 +2326,9 @@
     "postcss-loader": {
       "builtin": {
         "module": true,
+        "node:module": true,
+        "node:path": true,
+        "node:url": true,
         "path": true,
         "url": true
       },
@@ -2413,9 +2367,6 @@
       }
     },
     "postcss-rtlcss": {
-      "globals": {
-        "SuppressedError": true
-      },
       "packages": {
         "postcss": true,
         "postcss-rtlcss>rtlcss": true
@@ -2425,21 +2376,6 @@
       "packages": {
         "stylelint>postcss-selector-parser>cssesc": true,
         "@storybook/react>util-deprecate": true
-      }
-    },
-    "postcss-discard-font-face>postcss": {
-      "builtin": {
-        "fs": true,
-        "path": true
-      },
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "postcss-discard-font-face>postcss>chalk": true,
-        "postcss-discard-font-face>postcss>js-base64": true,
-        "postcss-discard-font-face>postcss>source-map": true,
-        "postcss-discard-font-face>postcss>supports-color": true
       }
     },
     "mockttp>express>proxy-addr": {
@@ -2558,6 +2494,7 @@
         "process.versions.pnp": true
       },
       "packages": {
+        "string.prototype.matchall>es-errors": true,
         "depcheck>is-core-module": true,
         "depcheck>resolve>path-parse": true
       }
@@ -2884,11 +2821,6 @@
         "eslint>strip-ansi": true
       }
     },
-    "postcss-discard-font-face>postcss>chalk>strip-ansi": {
-      "packages": {
-        "postcss-discard-font-face>postcss>chalk>strip-ansi>ansi-regex": true
-      }
-    },
     "eslint>strip-ansi": {
       "packages": {
         "eslint>strip-ansi>ansi-regex": true
@@ -2899,14 +2831,6 @@
         "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
         "tailwindcss>sucrase>lines-and-columns": true,
         "tailwindcss>sucrase>ts-interface-checker": true
-      }
-    },
-    "postcss-discard-font-face>postcss>chalk>supports-color": {
-      "globals": {
-        "process.argv": true,
-        "process.env": true,
-        "process.platform": true,
-        "process.stdout": true
       }
     },
     "mocha>supports-color": {
@@ -2920,14 +2844,6 @@
       },
       "packages": {
         "chalk>supports-color>has-flag": true
-      }
-    },
-    "postcss-discard-font-face>postcss>supports-color": {
-      "globals": {
-        "process": true
-      },
-      "packages": {
-        "postcss-discard-font-face>postcss>supports-color>has-flag": true
       }
     },
     "tailwindcss": {

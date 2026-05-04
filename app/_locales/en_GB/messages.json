@@ -114,12 +114,6 @@
   "accountIdenticon": {
     "message": "Account icon"
   },
-  "accountIdenticonDescription": {
-    "message": "Choose from three different styles of unique icons that can help you identify accounts at a glance."
-  },
-  "accountIsntConnectedToastText": {
-    "message": "$1 isn't connected to $2"
-  },
   "accountName": {
     "message": "Account name"
   },
@@ -1546,12 +1540,6 @@
   "confirmFieldFrequency": {
     "message": "Frequency"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Initial allowance"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Max allowance"
-  },
   "confirmFieldNeverExpires": {
     "message": "Never expires"
   },
@@ -1571,20 +1559,14 @@
     "message": "Monthly"
   },
   "confirmFieldPeriodDurationSeconds": {
-    "message": "seconds",
-    "description": "Unit descriptor following the numeric value, e.g. '100 seconds'"
+    "message": "$1 seconds",
+    "description": "$1 is the number of seconds in the permission period (shown when the period is not a standard hour/day/week/etc.)"
   },
   "confirmFieldPeriodDurationWeekly": {
     "message": "Weekly"
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Yearly"
-  },
-  "confirmFieldStartDate": {
-    "message": "Start date"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Stream rate"
   },
   "confirmFieldTooltipJustification": {
     "message": "Justification for the request provided by the website"
@@ -1750,9 +1732,6 @@
   },
   "connect": {
     "message": "Connect"
-  },
-  "connectAccount": {
-    "message": "Connect account"
   },
   "connectAccounts": {
     "message": "Connect accounts"
@@ -2249,9 +2228,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "the perps market page"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "the perps market list page"
   },
   "deepLink_thePerpsPage": {
     "message": "the perps page"
@@ -3034,6 +3010,9 @@
   },
   "gasUsed": {
     "message": "Gas used"
+  },
+  "gatorNoJustificationProvided": {
+    "message": "No justification was provided for the permission"
   },
   "gatorPermissionAnnualFrequency": {
     "message": "Yearly",
@@ -4034,12 +4013,6 @@
   "mismatchedRpcUrl": {
     "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
   },
-  "missingSetting": {
-    "message": "Can't find a setting?"
-  },
-  "missingSettingRequest": {
-    "message": "Request here"
-  },
   "month": {
     "message": "month"
   },
@@ -4890,6 +4863,14 @@
     "message": "View on $1",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "Transaction failed! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "Transaction confirmed!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
+  },
   "notifications": {
     "message": "Notifications"
   },
@@ -5553,7 +5534,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Available Perps balance: "
+    "message": "Available balance: "
   },
   "perpsAvailableToAdd": {
     "message": "Available to add"
@@ -5567,6 +5548,9 @@
   "perpsAvailableToTrade": {
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
+  },
+  "perpsBasicFunctionalityOff": {
+    "message": "This feature isn't available while basic functionality is turned off."
   },
   "perpsBatchCancelFailed": {
     "message": "Failed to cancel one or more orders. Try again."
@@ -5622,6 +5606,12 @@
   "perpsContactSupport": {
     "message": "Contact support"
   },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "MetaMask Perps only support trading with isolated margin. You need to first close your cross margin position before you can trade on MetaMask."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Cross margin not supported"
+  },
   "perpsDateToday": {
     "message": "Today"
   },
@@ -5651,6 +5641,12 @@
   },
   "perpsDepositToastPendingTitle": {
     "message": "Adding funds to Perps"
+  },
+  "perpsDepositToastSubmittedDescription": {
+    "message": "Your funds are being added to Perps."
+  },
+  "perpsDepositToastSubmittedTitle": {
+    "message": "Deposit submitted"
   },
   "perpsDepositToastSuccessDescription": {
     "message": "Your funds are ready to trade."
@@ -5718,7 +5714,7 @@
     "message": "Funding payments"
   },
   "perpsFundingRate": {
-    "message": "Funding Rate"
+    "message": "Funding rate"
   },
   "perpsFundingRateTooltip": {
     "message": "An hourly fee paid between traders to keep prices in line with the market. If the rate is positive, longs pay shorts. If negative, shorts pay longs."
@@ -5812,24 +5808,24 @@
     "message": "No transactions yet"
   },
   "perpsOpenInterest": {
-    "message": "Open Interest"
+    "message": "Open interest"
   },
   "perpsOpenInterestTooltip": {
     "message": "The combined value of all open positions for this perp"
   },
   "perpsOpenLong": {
-    "message": "Open Long $1",
+    "message": "Open long $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOpenOrders": {
     "message": "Open Orders"
   },
   "perpsOpenShort": {
-    "message": "Open Short $1",
+    "message": "Open short $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOraclePrice": {
-    "message": "Oracle Price"
+    "message": "Oracle price"
   },
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
@@ -5868,7 +5864,7 @@
     "message": "Too many requests. Please wait and try again."
   },
   "perpsRecentActivity": {
-    "message": "Recent Activity"
+    "message": "Recent activity"
   },
   "perpsReduceExposure": {
     "message": "Reduce exposure"
@@ -5911,7 +5907,8 @@
     "message": "Search markets"
   },
   "perpsSeeAll": {
-    "message": "See All"
+    "message": "See all",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Service temporarily unavailable. Please try again later."
@@ -6115,6 +6112,9 @@
   },
   "perpsTrades": {
     "message": "Trades"
+  },
+  "perpsTriggerPrice": {
+    "message": "Trigger price"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "Leverage amplifies both gains and losses. With 40x leverage, a 1% price move equals a 40% gain or loss on your margin."

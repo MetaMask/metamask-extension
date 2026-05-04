@@ -292,6 +292,7 @@ describe('ConfirmTitle', () => {
       TransactionType.musdClaim,
       TransactionType.musdConversion,
       TransactionType.perpsDeposit,
+      TransactionType.perpsWithdraw,
       TransactionType.predictDeposit,
       TransactionType.predictWithdraw,
     ])('hides alert banner for %s transaction type', (type: string) => {

@@ -175,7 +175,7 @@ class BridgeQuotePage {
     await this.driver.clickElement(assetPicker);
     await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
     console.log(`Filled search input with ${token}`);
-    await this.driver.clickElement({
+    await this.driver.clickElementAndWaitToDisappear({
       css: this.tokenButton,
       text: token,
     });
@@ -193,6 +193,9 @@ class BridgeQuotePage {
     console.log(`Opening asset info icon for asset ${token}`);
     await this.driver.clickElement(assetPicker);
     await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
+    await this.driver.waitForSelector({
+      testId: `bridge-asset-info-icon-${assetId}`,
+    });
     await this.driver.clickElement(this.assetInfoIcon(assetId));
   }
 
@@ -217,7 +220,7 @@ class BridgeQuotePage {
   };
 
   waitForQuote = async () => {
-    await this.driver.waitForSelector(this.submitButton, { timeout: 30000 });
+    await this.driver.waitForSelector(this.submitButton);
   };
 
   submitQuote = async () => {
@@ -324,9 +327,7 @@ class BridgeQuotePage {
 
   async checkGasIncludedIsDisplayed(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.gasIncludedIndicator, {
-        timeout: 30000,
-      });
+      await this.driver.waitForSelector(this.gasIncludedIndicator);
     } catch (e) {
       console.log('Expected "Gas fees included" indicator is not present');
       throw e;
@@ -336,9 +337,7 @@ class BridgeQuotePage {
 
   async checkGasSponsoredIsDisplayed(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.gasSponsoredIndicator, {
-        timeout: 30000,
-      });
+      await this.driver.waitForSelector(this.gasSponsoredIndicator);
     } catch (e) {
       console.log('Expected "Gas fees sponsored" indicator is not present');
       throw e;
@@ -347,7 +346,7 @@ class BridgeQuotePage {
   }
 
   async clickMaxButton(): Promise<void> {
-    await this.driver.waitForSelector(this.maxButton, { timeout: 30000 });
+    await this.driver.waitForSelector(this.maxButton);
     await this.driver.clickElement(this.maxButton);
     console.log('Clicked Max button');
   }
@@ -364,7 +363,7 @@ class BridgeQuotePage {
     title: string,
     description: string,
   ): Promise<void> {
-    await this.driver.waitForSelector({ text: title }, { timeout: 30000 });
+    await this.driver.waitForSelector({ text: title });
     await this.driver.waitForSelector({ text: description });
   }
 

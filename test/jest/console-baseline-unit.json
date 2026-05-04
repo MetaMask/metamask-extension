@@ -14,7 +14,7 @@
       "error: Error: No metadata found for": 1
     },
     "app/scripts/lib/createRPCMethodTrackingMiddleware.test.js": {
-      "MetaMask: RPC middleware errors": 10
+      "MetaMask: RPC middleware errors": 15
     },
     "app/scripts/lib/dapp-swap/dapp-swap-middleware.test.ts": {
       "error: Error: Error fetching dapp swap": 1,
@@ -350,6 +350,9 @@
       "Reselect: Identity function warnings": 1,
       "error: Warning: React does not recognize": 1
     },
+    "ui/components/app/transaction-list-item/transaction-list-item.component.test.js": {
+      "React: PropTypes validation failures": 1
+    },
     "ui/components/app/transaction-list-item/transaction-list-item.component.unified-swap-bridge.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "error: Error: Insufficient number of substitutions": 1
@@ -515,6 +518,11 @@
     },
     "ui/components/multichain/notifications-settings-box/notifications-settings-box.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
+    },
+    "ui/components/multichain/pages/gator-permissions/components/review-permission-renderer.test.tsx": {
+      "Test errors: Uncaught Errors": 1,
+      "error: Error handled by React Router": 1,
+      "error: React Router caught the following": 1
     },
     "ui/components/multichain/pages/gator-permissions/gator-permissions-page.test.tsx": {
       "MetaMask: Background connection not initialized": 2
@@ -729,7 +737,7 @@
       "warn: No tokens found for chainId:": 1
     },
     "ui/pages/confirmations/components/activity/transaction-details-summary/transaction-details-summary.test.tsx": {
-      "warn: No tokens found for chainId:": 6
+      "warn: No tokens found for chainId:": 7
     },
     "ui/pages/confirmations/components/activity/transaction-details/transaction-details.test.tsx": {
       "warn: No tokens found for chainId:": 1
@@ -844,7 +852,7 @@
     },
     "ui/pages/confirmations/components/confirm/info/info.test.tsx": {
       "MetaMask: Background connection not initialized": 122,
-      "React: Act warnings (component updates not wrapped)": 21,
+      "React: Act warnings (component updates not wrapped)": 22,
       "Reselect: Identity function warnings": 5,
       "Reselect: Input stability warnings": 1,
       "Test errors: Uncaught Errors": 2
@@ -973,33 +981,16 @@
       "React: Act warnings (component updates not wrapped)": 2,
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-periodic-details.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 5,
-      "Reselect: Identity function warnings": 4,
-      "Test errors: Uncaught Errors": 2
-    },
-    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-revocation-details.test.tsx": {
-      "Reselect: Identity function warnings": 3
-    },
-    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-stream-details.test.tsx": {
-      "Reselect: Identity function warnings": 4,
-      "Test errors: Uncaught Errors": 2
-    },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/expiry.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/native-token-periodic-details.test.tsx": {
-      "Reselect: Identity function warnings": 3,
-      "Test errors: Uncaught Errors": 2
-    },
-    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/native-token-stream-details.test.tsx": {
-      "Reselect: Identity function warnings": 3
-    },
-    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/total-exposure.test.tsx": {
-      "Reselect: Identity function warnings": 4
+    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/permission-detail-renderer.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 8,
+      "Reselect: Identity function warnings": 4,
+      "Test errors: Uncaught Errors": 3
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/typed-sign-permission.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 6,
+      "React: Act warnings (component updates not wrapped)": 13,
       "Reselect: Identity function warnings": 4,
       "Test errors: Uncaught Errors": 6
     },
@@ -1516,10 +1507,21 @@
       "React: PropTypes validation failures": 1,
       "Reselect: Identity function warnings": 1
     },
+    "ui/pages/settings-v2/about-tab/about-info.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1
+    },
     "ui/pages/settings-v2/assets-tab/assets-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/pages/settings-v2/backup-and-sync-tab/backup-and-sync-tab.test.tsx": {
+      "MetaMask: Background connection not initialized": 1,
+      "React: componentWill* lifecycle deprecations": 1,
+      "Reselect: Input stability warnings": 1
+    },
     "ui/pages/settings-v2/developer-tools-tab/developer-tools-tab.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1
+    },
+    "ui/pages/settings-v2/experimental-tab/experimental-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings-v2/preferences-and-display-tab/account-identicon-item.test.tsx": {
@@ -1576,23 +1578,12 @@
       "Reselect: Identity function warnings": 1,
       "error: Warning: Received `true` for a": 1
     },
-    "ui/pages/settings/backup-and-sync-tab/backup-and-sync-tab.test.tsx": {
-      "MetaMask: Background connection not initialized": 1,
-      "React: componentWill* lifecycle deprecations": 1,
-      "Reselect: Input stability warnings": 1
-    },
     "ui/pages/settings/developer-options-tab/developer-options-tab.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 11,
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings/developer-options-tab/developer-options-toggle-row-component.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
-    },
-    "ui/pages/settings/experimental-tab/experimental-tab.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1
-    },
-    "ui/pages/settings/info-tab/info-tab.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/settings/networks-tab/networks-form/networks-form.test.js": {
       "React: Act warnings (component updates not wrapped)": 1,
@@ -1610,14 +1601,6 @@
       "React: PropTypes validation failures": 3,
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 1
-    },
-    "ui/pages/settings/settings-tab/settings-tab.test.js": {
-      "React: Act warnings (component updates not wrapped)": 7,
-      "React: componentWill* lifecycle deprecations": 1
-    },
-    "ui/pages/settings/settings.test.js": {
-      "React: Act warnings (component updates not wrapped)": 2,
-      "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings/transaction-shield-tab/claims-form/claims-form.test.tsx": {
       "MetaMask: Background connection not initialized": 4,

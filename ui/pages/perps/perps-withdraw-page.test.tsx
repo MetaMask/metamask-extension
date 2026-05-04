@@ -491,12 +491,12 @@ describe('PerpsWithdrawPage', () => {
 
     await user.click(screen.getByTestId('perps-withdraw-percentage-max'));
     expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveValue(
-      '100',
+      '100.00',
     );
 
     await user.click(screen.getByTestId('perps-withdraw-percentage-50'));
     expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveValue(
-      '50',
+      '50.00',
     );
   });
 

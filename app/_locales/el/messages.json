@@ -114,12 +114,6 @@
   "accountIdenticon": {
     "message": "Εικονίδιο λογαριασμού"
   },
-  "accountIdenticonDescription": {
-    "message": "Επιλέξτε ανάμεσα σε τρία διαφορετικά στυλ μοναδικών εικονιδίων που σας βοηθούν να αναγνωρίζετε τους λογαριασμούς σας με μια ματιά."
-  },
-  "accountIsntConnectedToastText": {
-    "message": "Το $1 δεν συνδέεται με το $2"
-  },
   "accountName": {
     "message": "Όνομα λογαριασμού"
   },
@@ -1546,12 +1540,6 @@
   "confirmFieldFrequency": {
     "message": "Συχνότητα"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Αρχικό όριο"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Μέγιστο όριο"
-  },
   "confirmFieldNeverExpires": {
     "message": "Δεν λήγει ποτέ"
   },
@@ -1571,20 +1559,14 @@
     "message": "Μηνιαία"
   },
   "confirmFieldPeriodDurationSeconds": {
-    "message": "δευτερόλεπτα",
-    "description": "Unit descriptor following the numeric value, e.g. '100 seconds'"
+    "message": "$1 δευτερόλεπτα",
+    "description": "$1 is the number of seconds in the permission period (shown when the period is not a standard hour/day/week/etc.)"
   },
   "confirmFieldPeriodDurationWeekly": {
     "message": "Εβδομαδιαία"
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Ετήσια"
-  },
-  "confirmFieldStartDate": {
-    "message": "Ημερομηνία έναρξης"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Ρυθμός ροής"
   },
   "confirmFieldTooltipJustification": {
     "message": "Αιτιολόγηση του αιτήματος που παρέχεται από τον ιστότοπο"
@@ -1750,9 +1732,6 @@
   },
   "connect": {
     "message": "Σύνδεση"
-  },
-  "connectAccount": {
-    "message": "Σύνδεση λογαριασμού"
   },
   "connectAccounts": {
     "message": "Σύνδεση λογαριασμών"
@@ -2249,9 +2228,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "της σελίδας αγοράς για perps"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "τη λίστα αγοράς για perps"
   },
   "deepLink_thePerpsPage": {
     "message": "η σελίδα συμβολαίων perps"
@@ -3034,6 +3010,9 @@
   },
   "gasUsed": {
     "message": "Τέλος συναλλαγής που χρησιμοποιήθηκε"
+  },
+  "gatorNoJustificationProvided": {
+    "message": "Δεν δόθηκε αιτιολόγηση για την άδεια"
   },
   "gatorPermissionAnnualFrequency": {
     "message": "Ετήσια",
@@ -4034,12 +4013,6 @@
   "mismatchedRpcUrl": {
     "message": "Σύμφωνα με τα αρχεία μας, η τιμή της διεύθυνσης URL του RPC που υποβλήθηκε δεν αντιστοιχεί με κάποιον γνωστό πάροχο για αυτό το αναγνωριστικό αλυσίδας."
   },
-  "missingSetting": {
-    "message": "Δεν βρίσκετε μια ρύθμιση;"
-  },
-  "missingSettingRequest": {
-    "message": "Υποβάλετε αίτημα εδώ"
-  },
   "month": {
     "message": "μήνας"
   },
@@ -4122,6 +4095,102 @@
   "multipleSnapConnectionWarning": {
     "message": "Το $1 θέλει να χρησιμοποιήσει $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
+  "musdAssetBonusAccruing": {
+    "message": "Σε εξέλιξη η συγκέντρωση του επόμενου μπόνους",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "Διεκδικήστε $1 μπόνους",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "Εκτιμώμενο ετήσιο μπόνους",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "Πληροφορίες για το μπόνους σας",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "Μια εκτίμηση των ετήσιων κερδών σας, με βάση το τρέχον υπόλοιπο και τον ρυθμό απόδοσης. Ο ρυθμός απόδοσης είναι μεταβλητή τιμή και ενδέχεται να αλλάξει.",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "Μάθετε περισσότερα.",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "Το συνολικό μπόνους που έχετε εξαργυρώσει από τότε που ξεκινήσατε.",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "$1% ετήσιο μπόνους που κερδίζετε απλά επειδή διατηρείτε τα mUSD. Μπορείτε να το διεκδικήσετε καθημερινά στο δίκτυο Linea. $2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "Το εφάπαξ μπόνους εξαργυρώθηκε",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "Δεν έχετε συγκεντρώσει κάποιο μπόνους",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "$1% μπόνους",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "Το μπόνους σας",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "Καθημερινό μπόνους",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "Με στήριξη από το δολάριο",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "Χωρίς δεσμεύσεις",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "Χωρίς χρεώσεις από το MetaMask",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "$1% ετήσιο μπόνους",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "Αποκτήστε ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " μετατρέποντας USDC, USDT και DAI σε mUSD.",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "Μάθε περισσότερα",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "Μετατρέψτε τα stablecoins σας",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "Υπόλοιπο",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "Η θέση σας",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "Αξία",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
   },
   "musdBonusExplanation": {
     "message": "Μετατρέψτε τα stablecoins σας σε mUSD και κερδίστε \nέως και $1% μπόνους ετησίως, το οποίο μπορείτε \nνα εξαργυρώσετε καθημερινά. $2",
@@ -4226,6 +4295,10 @@
   "musdMetaMaskUsd": {
     "message": "MetaMask USD",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "Ισχύουν όροι."
@@ -4789,6 +4862,14 @@
   "notificationTransactionSuccessView": {
     "message": "Προβολή σε $1",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
+  },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "Η συναλλαγή απέτυχε! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "Η συναλλαγή επιβεβαιώθηκε με επιτυχία!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
   },
   "notifications": {
     "message": "Ειδοποιήσεις"
@@ -5453,7 +5534,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Διαθέσιμο υπόλοιπο για Perps: "
+    "message": "Διαθέσιμο υπόλοιπο: "
   },
   "perpsAvailableToAdd": {
     "message": "Διαθέσιμο για προσθήκη"
@@ -5521,6 +5602,12 @@
   },
   "perpsContactSupport": {
     "message": "Επικοινωνήστε με την υποστήριξη"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "Τα MetaMask Perps υποστηρίζουν μόνο συναλλαγές με απομονωμένο περιθώριο (isolated margin). Πρέπει πρώτα να κλείσετε τη θέση σας με συγκεντρωτικό περιθώριο (cross margin) πριν μπορέσετε να κάνετε συναλλαγές στο MetaMask."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Η διασπορά περιθωρίου δεν υποστηρίζεται"
   },
   "perpsDateToday": {
     "message": "Σήμερα"
@@ -5618,7 +5705,7 @@
     "message": "Πληρωμές χρηματοδότησης"
   },
   "perpsFundingRate": {
-    "message": "Επιτόκιο Χρηματοδότησης"
+    "message": "Χρέωση χρηματοδότησης"
   },
   "perpsFundingRateTooltip": {
     "message": "Μια ωριαία χρέωση που καταβάλλεται μεταξύ των traders για να παραμένουν οι τιμές κοντά στην τιμή αγοράς. Αν η τιμή είναι θετική, οι θέσεις αγορών (long) πληρώνουν τις θέσεις πωλήσεων (short). Αν είναι αρνητική, οι θέσεις πωλήσεων (short) πληρώνουν τις θέσεις αγορών (long)."
@@ -5712,20 +5799,20 @@
     "message": "Δεν υπάρχουν συναλλαγές ακόμη"
   },
   "perpsOpenInterest": {
-    "message": "Ανοιχτές Θέσεις"
+    "message": "Ανοιχτό ενδιαφέρον"
   },
   "perpsOpenInterestTooltip": {
     "message": "Η συνολική αξία όλων των ανοιχτών θέσεων για αυτό το συμβόλαιο αορίστου διάρκειας"
   },
   "perpsOpenLong": {
-    "message": "Άνοιγμα θέσης αγοράς στο $1",
+    "message": "Άνοιγμα θέσης αγοράς $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOpenOrders": {
     "message": "Ανοιχτές εντολές"
   },
   "perpsOpenShort": {
-    "message": "Άνοιγμα θέσης πώλησης στο $1",
+    "message": "Άνοιγμα θέσης πώλησης $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOraclePrice": {
@@ -5803,15 +5890,12 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Αντιστρέψτε τη θέση πώλησης σε θέση αγοράς"
   },
-  "perpsSaveChanges": {
-    "message": "Αποθήκευση αλλαγών",
-    "description": "Button text for saving TP/SL changes"
-  },
   "perpsSearchMarkets": {
     "message": "Αναζήτηση αγορών"
   },
   "perpsSeeAll": {
-    "message": "Προβολή όλων"
+    "message": "Προβολή όλων",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Η υπηρεσία είναι προσωρινά μη διαθέσιμη. Προσπαθήστε ξανά αργότερα."
@@ -5880,7 +5964,7 @@
     "message": "Ενεργοποιήθηκε"
   },
   "perpsStopLoss": {
-    "message": "Περιορισμός ζημιάς",
+    "message": "Περιορισμός ζημιών",
     "description": "Label for stop loss price input"
   },
   "perpsStopLossInvalidPrice": {
@@ -5892,7 +5976,7 @@
     "description": "Loading text shown while an order is being submitted"
   },
   "perpsTakeProfit": {
-    "message": "Λήψη κέρδους",
+    "message": "Λήψη κερδών",
     "description": "Label for take profit price input"
   },
   "perpsTakeProfitInvalidPrice": {
@@ -6011,6 +6095,9 @@
   },
   "perpsTrades": {
     "message": "Συναλλαγές"
+  },
+  "perpsTriggerPrice": {
+    "message": "Τιμή ενεργοποίησης"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "Η μόχλευση ενισχύει τόσο τα κέρδη όσο και τις ζημίες. Με μόχλευση 40x, μια μεταβολή τιμής 1% ισοδυναμεί με κέρδος ή ζημία 40% στο περιθώριό σας."
