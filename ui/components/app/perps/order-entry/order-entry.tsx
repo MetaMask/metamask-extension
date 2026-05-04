@@ -327,7 +327,6 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             leverage={formState.leverage}
             asset={asset}
             currentPrice={currentPrice}
-            szDecimals={marketInfo?.szDecimals}
             onAddFunds={onAddFunds}
           />
         )}
@@ -385,7 +384,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         >
           <Button
             variant={ButtonVariant.Primary}
-            size={ButtonSize.Md}
+            size={ButtonSize.Lg}
             onClick={handleSubmit}
             className={twMerge(
               'w-full',

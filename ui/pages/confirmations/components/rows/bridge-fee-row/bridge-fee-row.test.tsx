@@ -1,17 +1,12 @@
 import React from 'react';
 import { userEvent } from '@testing-library/user-event';
 import configureMockStore from 'redux-mock-store';
-import { TransactionType } from '@metamask/transaction-controller';
 import type {
   TransactionPayQuote,
   TransactionPayTotals,
 } from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
-import {
-  getMockConfirmStateForTransaction,
-  getMockPersonalSignConfirmState,
-} from '../../../../../../test/data/confirmations/helper';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import {
   useIsTransactionPayLoading,
@@ -26,24 +21,12 @@ jest.mock('../../../hooks/pay/useTransactionPayData');
 
 const mockStore = configureMockStore([]);
 
-function render(
-  props: BridgeFeeRowProps = {},
-  state: Record<string, unknown> = getMockPersonalSignConfirmState(),
-) {
+function render(props: BridgeFeeRowProps = {}) {
+  const state = getMockPersonalSignConfirmState();
   return renderWithConfirmContextProvider(
     <BridgeFeeRow {...props} />,
     mockStore(state),
   );
-}
-
-function getPerpsWithdrawState() {
-  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
-  const withdraw = {
-    ...base,
-    type: TransactionType.perpsWithdraw,
-    origin: 'metamask',
-  };
-  return getMockConfirmStateForTransaction(withdraw);
 }
 
 describe('BridgeFeeRow', () => {
@@ -211,32 +194,5 @@ describe('BridgeFeeRow', () => {
     const feeValue = getByTestId('transaction-fee-value');
     expect(feeValue).toBeInTheDocument();
     expect(feeValue).toHaveTextContent('$1.23');
-  });
-
-  it('renders Provider Fee label for perpsWithdraw transactions', () => {
-    const { getByText, queryByText } = render({}, getPerpsWithdrawState());
-
-    expect(getByText(messages.perpsWithdrawFee.message)).toBeInTheDocument();
-    expect(
-      queryByText(messages.transactionFee.message),
-    ).not.toBeInTheDocument();
-  });
-
-  it('renders Transaction fee label for non-perpsWithdraw transactions', () => {
-    const { getByText, queryByText } = render();
-
-    expect(getByText(messages.transactionFee.message)).toBeInTheDocument();
-    expect(
-      queryByText(messages.perpsWithdrawFee.message),
-    ).not.toBeInTheDocument();
-  });
-
-  it('renders Provider Fee label on the skeleton while loading a perpsWithdraw transaction', () => {
-    useIsTransactionPayLoadingMock.mockReturnValue(true);
-
-    const { getByTestId, getByText } = render({}, getPerpsWithdrawState());
-
-    expect(getByTestId('bridge-fee-row-skeleton')).toBeInTheDocument();
-    expect(getByText(messages.perpsWithdrawFee.message)).toBeInTheDocument();
   });
 });

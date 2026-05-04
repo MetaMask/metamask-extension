@@ -89,15 +89,14 @@ const isUncategorizedHip3Market = (
  * Filter markets by market type
  *
  * Crypto markets have no marketSource (main DEX).
- * Stocks / commodities / forex are identified purely by resolved market type —
- * intentionally not gated on the allowlist so categories work even when the
- * remote feature flag has not yet loaded (the controller's own fallback already
- * limits which HIP-3 markets reach the UI).
- * "New" category shows HIP-3 assets from allowed sources that haven't been categorized yet.
+ * HIP-3 markets (stocks, commodities, forex) come from allowed DEX providers.
+ * Market type is resolved using HIP3_ASSET_MARKET_TYPES mapping first,
+ * then falls back to the market's own marketType property.
+ * "New" category shows HIP-3 assets that haven't been categorized yet.
  *
  * @param markets - Array of markets to filter
  * @param filter - Market type filter
- * @param allowedHip3Sources - Set of allowed HIP-3 market sources (used for "new" tab only)
+ * @param allowedHip3Sources - Set of allowed HIP-3 market sources from feature flag
  * @returns Filtered array of markets
  */
 const filterByType = (
@@ -113,13 +112,25 @@ const filterByType = (
       return markets.filter(isCryptoMarket);
     }
     case 'stocks': {
-      return markets.filter((m) => getResolvedMarketType(m) === 'equity');
+      return markets.filter(
+        (m) =>
+          isHip3Market(m, allowedHip3Sources) &&
+          getResolvedMarketType(m) === 'equity',
+      );
     }
     case 'commodities': {
-      return markets.filter((m) => getResolvedMarketType(m) === 'commodity');
+      return markets.filter(
+        (m) =>
+          isHip3Market(m, allowedHip3Sources) &&
+          getResolvedMarketType(m) === 'commodity',
+      );
     }
     case 'forex': {
-      return markets.filter((m) => getResolvedMarketType(m) === 'forex');
+      return markets.filter(
+        (m) =>
+          isHip3Market(m, allowedHip3Sources) &&
+          getResolvedMarketType(m) === 'forex',
+      );
     }
     case 'new': {
       return markets.filter((m) =>
@@ -181,7 +192,7 @@ export const MarketListView: React.FC = () => {
         PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
       [PERPS_EVENT_PROPERTY.SOURCE]:
         PERPS_EVENT_VALUE.SOURCE.WALLET_HOME_PERPS_TAB,
-      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance ? 'yes' : 'no',
       [PERPS_EVENT_PROPERTY.MARKET_CATEGORY_FILTER]: selectedFilter,
     },
   });

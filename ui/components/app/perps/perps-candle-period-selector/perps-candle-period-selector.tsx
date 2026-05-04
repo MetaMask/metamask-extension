@@ -62,7 +62,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Start}
+        justifyContent={BoxJustifyContent.Center}
         gap={1}
         paddingTop={2}
         paddingBottom={2}

@@ -56,22 +56,23 @@ const VisitSupportDataConsentModal: React.FC<
       shieldCustomerId?: string;
     }) => {
       onClose();
-      const url = new URL(SUPPORT_LINK as string);
-      url.searchParams.append('metamask_version', params.version);
+      let supportLinkWithUserId = SUPPORT_LINK as string;
+      const queryParams = new URLSearchParams();
+      queryParams.append('metamask_version', params.version);
       if (params.profileId) {
-        url.searchParams.append('metamask_profile_id', params.profileId);
+        queryParams.append('metamask_profile_id', params.profileId);
       }
       if (params.metaMetricsId) {
-        url.searchParams.append(
-          'metamask_metametrics_id',
-          params.metaMetricsId,
-        );
+        queryParams.append('metamask_metametrics_id', params.metaMetricsId);
       }
       if (params.shieldCustomerId) {
-        url.searchParams.append('shield_id', params.shieldCustomerId);
+        queryParams.append('shield_id', params.shieldCustomerId);
       }
 
-      const supportLinkWithUserId = url.toString();
+      const queryString = queryParams.toString();
+      if (queryString) {
+        supportLinkWithUserId += `?${queryString}`;
+      }
 
       trackEvent(
         {
@@ -92,7 +93,6 @@ const VisitSupportDataConsentModal: React.FC<
 
   const handleClickNoShare = useCallback(() => {
     onClose();
-
     trackEvent(
       {
         category: MetaMetricsEventCategory.Settings,

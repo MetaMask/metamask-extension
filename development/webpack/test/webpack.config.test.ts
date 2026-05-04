@@ -27,7 +27,9 @@ function getWebpackInstance(config: Configuration) {
 
 async function withWatching<T>(
   config: Configuration,
-  callback: (watch: (trigger?: () => void) => Promise<void>) => Promise<T>,
+  callback: (
+    waitForBuild: (trigger?: () => void) => Promise<void>,
+  ) => Promise<T>,
 ) {
   const compiler = webpack(config);
   // @ts-expect-error - Node types need to be updated.
@@ -52,16 +54,19 @@ async function withWatching<T>(
   assert(watchHandle, 'Webpack did not return a watch handle.');
   const watching = watchHandle;
 
-  const watch = (trigger: () => void = () => watching.invalidate()) => {
+  const waitForBuild = (trigger?: () => void) => {
+    if (!trigger) {
+      return build.promise;
+    }
     // @ts-expect-error - Node types need to be updated.
     build = Promise.withResolvers<void>();
     trigger();
+    watching.invalidate();
     return build.promise;
   };
 
   try {
-    await build.promise;
-    return await callback(watch);
+    return await callback(waitForBuild);
   } finally {
     await new Promise<void>((resolveClose, rejectClose) =>
       watching.close((error) => (error ? rejectClose(error) : resolveClose())),
@@ -330,7 +335,7 @@ ${Object.entries(env)
     assert.strictEqual(manifestPlugin.options.setBuildId, true);
   });
 
-  it('keeps build_id stable for same-content file saves and changes it for real edits', async () => {
+  it('keeps build_id stable for no-op watch rebuilds and changes it for real edits', async () => {
     using tempDirectory = fs.mkdtempDisposableSync(
       join(tmpdir(), 'manifest-plugin-watch-test-'),
     );
@@ -373,20 +378,15 @@ ${Object.entries(env)
           }),
         ],
       },
-      async (rebuild) => {
+      async (waitForBuild) => {
+        await waitForBuild();
         const firstBuildId = readBuildId();
         assert.ok(firstBuildId, 'expected initial build_id');
 
-        await rebuild(() =>
-          // Resave the watched source without changing its contents.
-          writeSource(fs.readFileSync(sourceFilePath)),
-        );
+        await waitForBuild(() => writeSource(fs.readFileSync(sourceFilePath)));
         const secondBuildId = readBuildId();
 
-        await rebuild(() =>
-          // Change the watched source contents to trigger a real edit rebuild.
-          writeSource('console.log("v2");\n'),
-        );
+        await waitForBuild(() => writeSource('console.log("v2");\n'));
         const thirdBuildId = readBuildId();
 
         assert.strictEqual(

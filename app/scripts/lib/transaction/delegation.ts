@@ -1,35 +1,34 @@
 import {
   AuthorizationList,
-  TransactionEnvelopeType,
+  IsAtomicBatchSupportedRequest,
+  IsAtomicBatchSupportedResult,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import type {
-  TransactionControllerIsAtomicBatchSupportedAction,
-  TransactionControllerGetNonceLockAction,
-} from '@metamask/transaction-controller';
-import { Hex, add0x, bytesToHex, createProjectLogger } from '@metamask/utils';
+import { Hex, add0x, createProjectLogger } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import type { Messenger } from '@metamask/messenger';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
+import type { TransactionControllerGetNonceLockAction } from '@metamask/transaction-controller';
 import {
-  createExactExecutionBatchTerms,
-  createExactExecutionTerms,
-  createLimitedCallsTerms,
-  ROOT_AUTHORITY,
-  ANY_BENEFICIARY,
-} from '@metamask/delegation-core';
-import {
-  ExecutionMode,
-  getDeleGatorEnvironment,
-  encodeRedeemDelegations,
   BATCH_DEFAULT_MODE,
+  Caveat,
+  ExecutionMode,
+  ExecutionStruct,
   SINGLE_DEFAULT_MODE,
-  type ExecutionStruct,
-  type Caveat,
-  type Delegation,
-  type UnsignedDelegation,
+  createCaveatBuilder,
+  getDeleGatorEnvironment,
 } from '../../../../shared/lib/delegation';
+import {
+  ANY_BENEFICIARY,
+  type Delegation,
+  encodeRedeemDelegations,
+  createDelegation,
+  type UnsignedDelegation,
+} from '../../../../shared/lib/delegation/delegation';
+import { limitedCalls } from '../../../../shared/lib/delegation/caveatBuilder/limitedCallsBuilder';
+import { exactExecutionBatch } from '../../../../shared/lib/delegation/caveatBuilder/exactExecutionBatchBuilder';
+import { exactExecution } from '../../../../shared/lib/delegation/caveatBuilder/exactExecutionBuilder';
 import { stripSingleLeadingZero } from './util';
 
 const log = createProjectLogger('transaction-delegation');
@@ -39,8 +38,7 @@ export const PRIMARY_TYPE_DELEGATION = 'Delegation';
 type DelegationMessengerActions =
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
-  | TransactionControllerGetNonceLockAction
-  | TransactionControllerIsAtomicBatchSupportedAction;
+  | TransactionControllerGetNonceLockAction;
 
 export type DelegationMessenger = Messenger<
   string,
@@ -49,7 +47,9 @@ export type DelegationMessenger = Messenger<
 >;
 
 type AuthorizationRequest = {
-  minimal?: boolean;
+  isAtomicBatchSupported?: (
+    request: IsAtomicBatchSupportedRequest,
+  ) => Promise<IsAtomicBatchSupportedResult>;
 
   upgradeContractAddress?: Hex;
 
@@ -102,10 +102,13 @@ type ConvertTransactionToRedeemDelegationsResult = {
   authorizationList?: AuthorizationList;
   data: Hex;
   to: Hex;
-  type: TransactionEnvelopeType;
 };
 
 type GetDelegationTransactionRequest = {
+  isAtomicBatchSupported: (
+    request: IsAtomicBatchSupportedRequest,
+  ) => Promise<IsAtomicBatchSupportedResult>;
+
   messenger: DelegationMessenger;
 };
 
@@ -113,7 +116,6 @@ type DelegationTransactionResult = {
   authorizationList?: AuthorizationList;
   data: Hex;
   to: Hex;
-  type: TransactionEnvelopeType;
   value: Hex;
 };
 
@@ -176,10 +178,7 @@ export async function convertTransactionToRedeemDelegations(
   return {
     authorizationList,
     data,
-    to: environment.DelegationManager,
-    type: authorizationList
-      ? TransactionEnvelopeType.setCode
-      : (transaction.txParams.type as TransactionEnvelopeType),
+    to: environment.DelegationManager as Hex,
   };
 }
 
@@ -187,18 +186,19 @@ export async function getDelegationTransaction(
   request: GetDelegationTransactionRequest,
   transaction: TransactionMeta,
 ): Promise<DelegationTransactionResult> {
-  const { authorizationList, data, to, type } =
+  const { data, to, authorizationList } =
     await convertTransactionToRedeemDelegations({
       transaction,
       messenger: request.messenger,
-      authorization: {},
+      authorization: {
+        isAtomicBatchSupported: request.isAtomicBatchSupported,
+      },
     });
 
   return {
     authorizationList,
     data,
     to,
-    type,
     value: '0x0',
   };
 }
@@ -260,37 +260,31 @@ function buildDefaultCaveats(
   environment: ReturnType<typeof getDeleGatorEnvironment>,
   executions: ExecutionStruct[],
 ): Caveat[] {
-  const caveats: Caveat[] = [
-    {
-      enforcer: environment.caveatEnforcers.LimitedCallsEnforcer,
-      terms: createLimitedCallsTerms({
-        limit: 1,
-      }),
-      args: '0x',
-    },
-  ];
+  const caveatBuilder = createCaveatBuilder(environment);
 
   if (executions.length > 1) {
-    caveats.push({
-      enforcer: environment.caveatEnforcers.ExactExecutionBatchEnforcer,
-      terms: createExactExecutionBatchTerms({
-        executions,
-      }),
-      args: '0x',
-    });
+    caveatBuilder.addCaveat(
+      exactExecutionBatch,
+      executions.map((e) => ({
+        to: e.target as string,
+        value: `0x${e.value.toString(16)}`,
+        data: e.callData as string | undefined,
+      })),
+    );
   } else {
     const execution = executions[0];
 
-    caveats.push({
-      enforcer: environment.caveatEnforcers.ExactExecutionEnforcer,
-      terms: createExactExecutionTerms({
-        execution,
-      }),
-      args: '0x',
-    });
+    caveatBuilder.addCaveat(
+      exactExecution,
+      execution.target as string,
+      `0x${execution.value.toString(16)}`,
+      execution.callData as string | undefined,
+    );
   }
 
-  return caveats;
+  caveatBuilder.addCaveat(limitedCalls, 1);
+
+  return caveatBuilder.build();
 }
 
 async function signAndWrapDelegation({
@@ -306,17 +300,11 @@ async function signAndWrapDelegation({
   delegatee?: Hex;
   delegationSignature?: Hex;
 }): Promise<Delegation[][]> {
-  const bytes = new Uint8Array(32);
-  crypto.getRandomValues(bytes);
-  const salt = bytesToHex(bytes);
-
-  const unsignedDelegation: UnsignedDelegation = {
-    delegator: transaction.txParams.from as Hex,
-    delegate: delegatee ?? ANY_BENEFICIARY,
-    authority: ROOT_AUTHORITY,
-    salt,
+  const unsignedDelegation: UnsignedDelegation = createDelegation({
+    from: transaction.txParams.from as Hex,
+    to: delegatee ?? ANY_BENEFICIARY,
     caveats,
-  };
+  });
 
   log('Signing delegation', unsignedDelegation);
 
@@ -362,22 +350,22 @@ function decodeAuthorizationSignature(signature: Hex) {
 
 async function resolveUpgradeContractAddress(
   transaction: TransactionMeta,
-  messenger: DelegationMessenger,
   authorization: AuthorizationRequest,
 ): Promise<Hex | undefined> {
   if (authorization.upgradeContractAddress) {
     return authorization.upgradeContractAddress;
   }
 
+  if (!authorization.isAtomicBatchSupported) {
+    throw new Error('Upgrade contract address not found');
+  }
+
   const { chainId, txParams } = transaction;
 
-  const atomicBatchResult = await messenger.call(
-    'TransactionController:isAtomicBatchSupported',
-    {
-      address: txParams.from as Hex,
-      chainIds: [chainId],
-    },
-  );
+  const atomicBatchResult = await authorization.isAtomicBatchSupported({
+    address: txParams.from as Hex,
+    chainIds: [chainId],
+  });
 
   const chainResult = atomicBatchResult.find(
     (r) => r.chainId.toLowerCase() === chainId.toLowerCase(),
@@ -422,16 +410,11 @@ async function buildAuthorizationList(
 ): Promise<AuthorizationList | undefined> {
   const upgradeContractAddress = await resolveUpgradeContractAddress(
     transaction,
-    messenger,
     authorization,
   );
 
   if (!upgradeContractAddress) {
     return undefined;
-  }
-
-  if (authorization.minimal) {
-    return [{ address: upgradeContractAddress }];
   }
 
   const { chainId, txParams, networkClientId } = transaction;

@@ -4,7 +4,7 @@ import {
   AccountRemoveModal,
   AccountRemoveModalProps,
 } from './account-remove-modal';
-import { Button } from '@metamask/design-system-react';
+import { Button } from '../../component-library';
 
 export default {
   title: 'Components/MultichainAccounts/AccountRemoveModal',

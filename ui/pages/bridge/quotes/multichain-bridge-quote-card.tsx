@@ -27,6 +27,7 @@ import {
   getIsStxEnabled,
   getValidationErrors,
   getPriceImpact,
+  getFormattedPriceImpactPercentage,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatNetworkFee, formatTokenAmount } from '../utils/quote';
@@ -50,7 +51,6 @@ import {
   getGasFeesSponsoredNetworkEnabled,
   isHardwareWallet,
 } from '../../../selectors/selectors';
-import { PriceImpactQuoteDetailsRow } from '../components/price-impact-quote-details-row';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
@@ -95,10 +95,8 @@ export const MultichainBridgeQuoteCard = ({
   const slippage = useSelector(getSlippage);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
   const dispatch = useDispatch();
-  const { isEstimatedReturnLow } = useSelector(
-    getValidationErrors,
-    shallowEqual,
-  );
+  const { isEstimatedReturnLow, isPriceImpactWarning, isPriceImpactError } =
+    useSelector(getValidationErrors, shallowEqual);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
   const isHardwareWalletAccount = useSelector(isHardwareWallet);
@@ -107,6 +105,7 @@ export const MultichainBridgeQuoteCard = ({
   );
 
   const priceImpact = useSelector(getPriceImpact);
+  const formattedPriceImpact = useSelector(getFormattedPriceImpactPercentage);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
@@ -393,9 +392,59 @@ export const MultichainBridgeQuoteCard = ({
           </Row>
         </Row>
 
-        <PriceImpactQuoteDetailsRow
-          onOpenPriceImpactWarningModal={onOpenPriceImpactWarningModal}
-        />
+        {/* Price Impact */}
+        <Row justifyContent={JustifyContent.spaceBetween}>
+          <Row gap={2}>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            >
+              {t('bridgePriceImpact')}
+            </Text>
+            <Tooltip
+              title={
+                isPriceImpactWarning || isPriceImpactError
+                  ? t('bridgePriceImpactWarningTitle')
+                  : t('bridgePriceImpactTooltipTitle')
+              }
+              position={PopoverPosition.TopStart}
+              offset={[-16, 16]}
+            >
+              {t('bridgePriceImpactNormalDescription')}
+            </Tooltip>
+          </Row>
+          <Row gap={1}>
+            {(isPriceImpactWarning || isPriceImpactError) && (
+              <ButtonIcon
+                iconName={
+                  isPriceImpactWarning ? IconName.Warning : IconName.Danger
+                }
+                size={ButtonIconSize.Sm}
+                color={
+                  isPriceImpactWarning
+                    ? IconColor.warningDefault
+                    : IconColor.errorDefault
+                }
+                onClick={onOpenPriceImpactWarningModal}
+                ariaLabel={t('bridgePriceImpactWarningAriaLabel')}
+                data-testid="price-impact-warning-button"
+              />
+            )}
+            <Text
+              variant={TextVariant.bodySm}
+              color={
+                // eslint-disable-next-line no-nested-ternary
+                isPriceImpactWarning
+                  ? TextColor.warningDefault
+                  : isPriceImpactError
+                    ? TextColor.errorDefault
+                    : TextColor.textAlternative
+              }
+            >
+              {formattedPriceImpact}
+            </Text>
+          </Row>
+        </Row>
 
         {/* Minimum Received */}
         {activeQuote.minToTokenAmount.amount && (

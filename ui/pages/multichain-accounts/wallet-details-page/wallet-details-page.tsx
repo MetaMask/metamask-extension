@@ -9,21 +9,20 @@ import {
 import classnames from 'clsx';
 import {
   Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxFlexDirection,
-  BoxJustifyContent,
   ButtonIcon,
   ButtonIconSize,
-  FontWeight,
   IconName,
+  SensitiveText,
   Text,
-  TextColor,
-  TextVariant as DsrTextVariant,
-} from '@metamask/design-system-react';
-import { SensitiveText } from '../../../components/component-library';
+} from '../../../components/component-library';
 import {
-  TextColor as LegacyTextColor,
+  AlignItems,
+  BackgroundColor,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -82,10 +81,10 @@ export const WalletDetailsPage = ({
   const shouldShowBackupReminder = isSRPBackedUp === false;
 
   const rowStylesProps = {
-    flexDirection: BoxFlexDirection.Row,
-    justifyContent: BoxJustifyContent.Between,
-    alignItems: BoxAlignItems.Center,
-    backgroundColor: BoxBackgroundColor.BackgroundMuted,
+    display: Display.Flex,
+    justifyContent: JustifyContent.spaceBetween,
+    alignItems: AlignItems.center,
+    backgroundColor: BackgroundColor.backgroundMuted,
   };
 
   const handleBack = () => {
@@ -143,16 +142,14 @@ export const WalletDetailsPage = ({
             {...rowStylesProps}
           >
             <Text
-              variant={DsrTextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.TextDefault}
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textDefault}
             >
               {t('walletName')}
             </Text>
             <Text
-              variant={DsrTextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.TextAlternative}
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textAlternative}
             >
               {wallet?.metadata.name}
             </Text>
@@ -164,15 +161,14 @@ export const WalletDetailsPage = ({
             {...rowStylesProps}
           >
             <Text
-              variant={DsrTextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.TextDefault}
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textDefault}
             >
               {t('balance')}
             </Text>
             <SensitiveText
               variant={TextVariant.bodyMdMedium}
-              color={LegacyTextColor.textAlternative}
+              color={TextColor.textAlternative}
               isHidden={privacyMode}
               ellipsis
             >
@@ -192,9 +188,10 @@ export const WalletDetailsPage = ({
           ) : null}
         </Box>
         <Box
-          flexDirection={BoxFlexDirection.Column}
-          backgroundColor={BoxBackgroundColor.BackgroundMuted}
-          className="rounded-xl"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          backgroundColor={BackgroundColor.backgroundMuted}
+          borderRadius={BorderRadius.XL}
         >
           {multichainAccountCells}
           {isEntropyWallet && <AddMultichainAccount walletId={walletId} />}

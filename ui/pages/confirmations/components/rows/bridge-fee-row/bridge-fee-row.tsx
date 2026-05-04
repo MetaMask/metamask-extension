@@ -1,7 +1,5 @@
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import { Text } from '../../../../../components/component-library';
 import {
@@ -21,10 +19,6 @@ import {
 } from '../../../hooks/pay/useTransactionPayData';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
-import { useConfirmContext } from '../../../context/confirm';
-import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
-
-const PROVIDER_FEE_TYPES = [TransactionType.perpsWithdraw];
 
 export type BridgeFeeRowProps = {
   variant?: ConfirmInfoRowSize;
@@ -45,11 +39,6 @@ export function BridgeFeeRow({
   const isLoading = useIsTransactionPayLoading();
   const quotes = useTransactionPayQuotes();
   const totals = useTransactionPayTotals();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-
-  const feeLabel = hasTransactionType(currentConfirmation, PROVIDER_FEE_TYPES)
-    ? t('perpsWithdrawFee')
-    : t('transactionFee');
 
   const feeTotalUsd = useMemo(() => {
     if (!totals?.fees) {
@@ -72,7 +61,7 @@ export function BridgeFeeRow({
     return (
       <ConfirmInfoRowSkeleton
         data-testid="bridge-fee-row-skeleton"
-        label={feeLabel}
+        label={t('transactionFee')}
         rowVariant={variant}
       />
     );
@@ -96,7 +85,7 @@ export function BridgeFeeRow({
   return (
     <ConfirmInfoRow
       data-testid="bridge-fee-row"
-      label={feeLabel}
+      label={t('transactionFee')}
       rowVariant={variant}
       tooltip={tooltipContent}
     >

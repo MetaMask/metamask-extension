@@ -1,8 +1,10 @@
 import { Mockttp } from 'mockttp';
+
+import { E2E_SRP } from '../../../fixtures/default-fixture';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { login } from '../../../page-objects/flows/login.flow';
 import { withFixtures } from '../../../helpers';
-import { E2E_SRP, WALLET_PASSWORD } from '../../../constants';
+import { WALLET_PASSWORD } from '../../../constants';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,

@@ -104,13 +104,11 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const [isSlPercentFocused, setIsSlPercentFocused] = useState(false);
 
   /**
-   * Convert a target price to a signed RoE% for display.
-   * Positive = profitable (above entry for long / below entry for short).
-   * Negative = at a loss.
+   * Convert a target price to a RoE% for display.
    * RoE% = ((targetPrice - entryPrice) / entryPrice) * leverage * 100
    */
   const priceToPercent = useCallback(
-    (price: string): string => {
+    (price: string, isTP: boolean): string => {
       if (!price || !entryPrice) {
         return '';
       }
@@ -122,30 +120,35 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       const diff = priceNum - entryPrice;
       const percentChange = (diff / entryPrice) * leverage * 100;
 
-      // For long: positive when price > entry (profit). For short: negate (profit when price < entry).
-      return formatRoePercent(
-        direction === 'long' ? percentChange : -percentChange,
-      );
+      // For long: TP is above entry (positive RoE%), SL is below entry (show as positive loss%)
+      // For short: TP is below entry (show as positive profit%), SL is above entry (show as positive loss%)
+      if (direction === 'long') {
+        return formatRoePercent(isTP ? percentChange : -percentChange);
+      }
+      return formatRoePercent(isTP ? -percentChange : percentChange);
     },
     [entryPrice, leverage, direction],
   );
 
   /**
-   * Convert a signed RoE% to a target price.
-   * Positive percent = profitable direction (above entry for long / below entry for short).
-   * Negative percent = loss direction.
-   * targetPrice = entryPrice * (1 + signedRoe / (leverage * 100))  [long]
-   * targetPrice = entryPrice * (1 - signedRoe / (leverage * 100))  [short]
+   * Convert a RoE% to a target price.
+   * targetPrice = entryPrice * (1 + roePercent / (leverage * 100))
    */
   const percentToPrice = useCallback(
-    (percent: number): string => {
+    (percent: number, isTP: boolean): string => {
       if (!entryPrice || percent === 0) {
         return '';
       }
 
+      // For long: TP = entry * (1 + roe/lev), SL = entry * (1 - roe/lev)
+      // For short: TP = entry * (1 - roe/lev), SL = entry * (1 + roe/lev)
       const priceChangeRatio = percent / (leverage * 100);
-      const multiplier =
-        direction === 'long' ? 1 + priceChangeRatio : 1 - priceChangeRatio;
+      let multiplier: number;
+      if (direction === 'long') {
+        multiplier = isTP ? 1 + priceChangeRatio : 1 - priceChangeRatio;
+      } else {
+        multiplier = isTP ? 1 - priceChangeRatio : 1 + priceChangeRatio;
+      }
 
       const price = entryPrice * multiplier;
       const normalizedPrice = Number.parseFloat(price.toFixed(8));
@@ -196,10 +199,10 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       if (value === '' || isSignedDecimalInput(value)) {
         setRawTpPercent(value);
         const numValue = parseFloat(value);
-        if (value === '' || value === '-' || value === '+') {
+        if (value === '' || value === '-') {
           onTakeProfitPriceChange('');
         } else if (!isNaN(numValue)) {
-          const newPrice = percentToPrice(numValue);
+          const newPrice = percentToPrice(numValue, true);
           onTakeProfitPriceChange(newPrice);
         }
       }
@@ -209,7 +212,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
 
   const handleTpPercentFocus = useCallback(() => {
     // Seed raw value from current derived percent so the cursor lands on existing content
-    const derived = priceToPercent(takeProfitPrice);
+    const derived = priceToPercent(takeProfitPrice, true);
     setRawTpPercent(derived);
     setIsTpPercentFocused(true);
   }, [priceToPercent, takeProfitPrice]);
@@ -253,10 +256,10 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       if (value === '' || isSignedDecimalInput(value)) {
         setRawSlPercent(value);
         const numValue = parseFloat(value);
-        if (value === '' || value === '-' || value === '+') {
+        if (value === '' || value === '-') {
           onStopLossPriceChange('');
         } else if (!isNaN(numValue)) {
-          const newPrice = percentToPrice(numValue);
+          const newPrice = percentToPrice(numValue, false);
           onStopLossPriceChange(newPrice);
         }
       }
@@ -265,7 +268,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   );
 
   const handleSlPercentFocus = useCallback(() => {
-    const derived = priceToPercent(stopLossPrice);
+    const derived = priceToPercent(stopLossPrice, false);
     setRawSlPercent(derived);
     setIsSlPercentFocused(true);
   }, [priceToPercent, stopLossPrice]);
@@ -277,12 +280,12 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
 
   // Calculate current RoE percentages for display (used when fields are not focused)
   const tpPercent = useMemo(
-    () => priceToPercent(takeProfitPrice),
+    () => priceToPercent(takeProfitPrice, true),
     [priceToPercent, takeProfitPrice],
   );
 
   const slPercent = useMemo(
-    () => priceToPercent(stopLossPrice),
+    () => priceToPercent(stopLossPrice, false),
     [priceToPercent, stopLossPrice],
   );
 

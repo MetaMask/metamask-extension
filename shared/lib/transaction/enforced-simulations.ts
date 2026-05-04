@@ -3,7 +3,6 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
-import { Hex } from '@metamask/utils';
 import {
   CachedScanAddressResponse,
   createCacheKey,
@@ -18,7 +17,6 @@ const DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE = 10;
  */
 export type EnforcedSimulationsState = {
   addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
-  eip7702SupportedChains: Hex[];
 };
 
 /**
@@ -48,7 +46,7 @@ export function isEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
   state?: EnforcedSimulationsState,
 ): boolean {
-  const { chainId, origin, simulationData } = transactionMeta;
+  const { delegationAddress, origin, simulationData } = transactionMeta;
 
   if (!process.env.ENABLE_ENFORCED_SIMULATIONS) {
     return false;
@@ -58,11 +56,7 @@ export function isEnforcedSimulationsEligible(
     return false;
   }
 
-  if (
-    !state?.eip7702SupportedChains?.some(
-      (supported) => supported.toLowerCase() === chainId?.toLowerCase(),
-    )
-  ) {
+  if (!delegationAddress) {
     return false;
   }
 

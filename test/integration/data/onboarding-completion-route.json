@@ -309,7 +309,6 @@
       }
     }
   },
-  "selectedCurrency": "usd",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
   "shieldEndingToastLastClickedOrClosed": null,

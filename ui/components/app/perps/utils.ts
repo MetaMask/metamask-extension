@@ -6,11 +6,7 @@ import type {
   PerpsTransaction,
   PerpsTransactionFilter,
 } from './types';
-import {
-  HYPERLIQUID_ASSET_ICONS_BASE_URL,
-  METAMASK_PERPS_ICONS_BASE_URL,
-  PERPS_CONSTANTS,
-} from './constants';
+import { HYPERLIQUID_ASSET_ICONS_BASE_URL, PERPS_CONSTANTS } from './constants';
 
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
@@ -208,38 +204,29 @@ export const getDisplaySymbol = (symbol: string): string => {
   return symbol;
 };
 
-export type AssetIconUrls = {
-  primary: string;
-  fallback: string;
-};
-
 /**
- * Generate primary and fallback icon URLs for an asset symbol.
- * Primary is the MetaMask-hosted GitHub CDN; fallback is HyperLiquid.
- * HIP-3 assets use the `hip3:{dex}_{symbol}` filename convention on the
- * MetaMask CDN (e.g., xyz:NATGAS → hip3:xyz_NATGAS.svg).
- * @param symbol
+ * Generate the icon URL for an asset symbol
+ * Handles both regular assets and HIP-3 assets (dex:symbol format)
+ *
+ * @param symbol - The symbol to generate the icon URL for
+ * @returns The icon URL
+ * @example
+ * getAssetIconUrl('BTC') => 'https://app.hyperliquid.xyz/coins/BTC.svg'
+ * getAssetIconUrl('xyz:TSLA') => 'https://app.hyperliquid.xyz/coins/xyz:TSLA.svg'
  */
-export const getAssetIconUrls = (symbol: string): AssetIconUrls | null => {
+export const getAssetIconUrl = (symbol: string): string => {
   if (!symbol) {
-    return null;
+    return '';
   }
 
+  // Check for HIP-3 asset (contains colon)
   if (symbol.includes(':')) {
     const [dex, assetSymbol] = symbol.split(':');
-    const hyperliquidFormat = `${dex.toLowerCase()}:${assetSymbol.toUpperCase()}`;
-    const metamaskFormat = `hip3:${dex.toLowerCase()}_${assetSymbol.toUpperCase()}`;
-    return {
-      primary: `${METAMASK_PERPS_ICONS_BASE_URL}${metamaskFormat}.svg`,
-      fallback: `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${hyperliquidFormat}.svg`,
-    };
+    return `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${dex.toLowerCase()}:${assetSymbol.toUpperCase()}.svg`;
   }
 
-  const upperSymbol = symbol.toUpperCase();
-  return {
-    primary: `${METAMASK_PERPS_ICONS_BASE_URL}${upperSymbol}.svg`,
-    fallback: `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${upperSymbol}.svg`,
-  };
+  // Regular asset - uppercase the symbol
+  return `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${symbol.toUpperCase()}.svg`;
 };
 
 /**
@@ -511,19 +498,15 @@ export function getPnlDisplayColor(pnl: number): TextColor {
  * non-integers with 2 decimal places ("25.50").
  *
  * @param value - The numeric percentage value to format
- * @returns The formatted percentage string (sign preserved for negative values)
+ * @returns The formatted percentage string
  * @example
  * formatRoePercent(10) => '10'
- * formatRoePercent(-25.5) => '-25.50'
+ * formatRoePercent(-25.5) => '25.50'
  * formatRoePercent(0) => '0'
  */
 export const formatRoePercent = (value: number): string => {
-  const abs = Math.abs(value);
-  const rounded = Math.round(abs * 100) / 100;
-  const formatted = Number.isInteger(rounded)
-    ? rounded.toFixed(0)
-    : rounded.toFixed(2);
-  return value < 0 && rounded !== 0 ? `-${formatted}` : formatted;
+  const rounded = Math.round(Math.abs(value) * 100) / 100;
+  return Number.isInteger(rounded) ? rounded.toFixed(0) : rounded.toFixed(2);
 };
 
 const volumeMultipliers: Record<string, number> = {

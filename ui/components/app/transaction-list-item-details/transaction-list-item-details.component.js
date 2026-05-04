@@ -50,7 +50,6 @@ export default class TransactionListItemDetails extends PureComponent {
     blockExplorerLinkText: PropTypes.object,
     chainId: PropTypes.string,
     networkConfiguration: PropTypes.object,
-    isHardwareWalletAccount: PropTypes.bool,
   };
 
   state = {
@@ -157,7 +156,6 @@ export default class TransactionListItemDetails extends PureComponent {
       showCancel,
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
-      isHardwareWalletAccount,
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -257,7 +255,6 @@ export default class TransactionListItemDetails extends PureComponent {
             </div>
             <div className="transaction-list-item-details__cards-container">
               <TransactionBreakdown
-                isHardwareWalletAccount={isHardwareWalletAccount}
                 nonce={transactionGroup.initialTransaction.txParams.nonce}
                 isTokenApprove={
                   type === TransactionType.tokenMethodApprove ||

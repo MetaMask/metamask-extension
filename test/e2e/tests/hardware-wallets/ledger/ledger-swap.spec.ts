@@ -33,10 +33,7 @@ describe.skip('Ledger Swap', function () {
           '0x1158e460913d00000',
         )) ?? console.error('localNodes is undefined or empty');
 
-        await login(driver, {
-          expectedBalance: '20',
-          waitForNonEvmAccounts: false,
-        });
+        await login(driver, { expectedBalance: '20' });
 
         const homePage = new HomePage(driver);
         await homePage.checkIfSwapButtonIsClickable();

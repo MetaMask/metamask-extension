@@ -201,9 +201,7 @@ export default class ExtensionPlatform {
     );
 
     const title = t('notificationTransactionSuccessTitle');
-    let message = Number.isNaN(nonce)
-      ? t('notificationTransactionWithoutNonceSuccessMessage')
-      : t('notificationTransactionSuccessMessage', nonce);
+    let message = t('notificationTransactionSuccessMessage', nonce);
 
     if (url.length) {
       message += ` ${t('notificationTransactionSuccessView', view)}`;
@@ -215,10 +213,11 @@ export default class ExtensionPlatform {
   async _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = t('notificationTransactionFailedTitle');
-    const errorMessageText = errorMessage || txMeta.error.message;
-    const message = Number.isNaN(nonce)
-      ? t('notificationTransactionWithoutNonceFailedMessage', errorMessageText)
-      : t('notificationTransactionFailedMessage', nonce, errorMessageText);
+    const message = t(
+      'notificationTransactionFailedMessage',
+      nonce,
+      errorMessage || txMeta.error.message,
+    );
     await this._showNotification(title, message);
   }
 

@@ -531,10 +531,6 @@ export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
             chainId as CaipChainId,
           ));
 
-    if (!accountToUse) {
-      return null;
-    }
-
     const assetsToSearch = isEvm
       ? (getSelectedAccountTokensAcrossChains(state) as Record<
           Hex,

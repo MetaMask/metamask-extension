@@ -72,14 +72,14 @@ export default class TransactionBreakdown extends PureComponent {
     return (
       <div className={classnames('transaction-breakdown', className)}>
         <div className="transaction-breakdown__title">{t('transaction')}</div>
-        {nonce !== undefined && (
-          <TransactionBreakdownRow divider title={t('nonce')}>
+        <TransactionBreakdownRow divider title={t('nonce')}>
+          {typeof nonce === 'undefined' ? null : (
             <HexToDecimal
               className="transaction-breakdown__value"
               value={nonce}
             />
-          </TransactionBreakdownRow>
-        )}
+          )}
+        </TransactionBreakdownRow>
         {sourceAmountFormatted && (
           <TransactionBreakdownRow title={t('amountSent')}>
             <span
