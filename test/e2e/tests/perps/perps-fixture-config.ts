@@ -56,9 +56,6 @@ const PERPS_GEO_BLOCKED_FLAG = {
 export function getPerpsGeoBlockConfig(title?: string) {
   return {
     fixtures: new FixtureBuilderV2()
-      .withPreferencesController({
-        useExternalServices: false,
-      })
       .withPerpsController({
         isFirstTimeUser: { mainnet: false, testnet: false },
         isEligible: false,
