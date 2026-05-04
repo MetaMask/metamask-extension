@@ -20,7 +20,11 @@ const OTHER_TOKEN = {
   symbol: 'FOO',
 };
 
-/** Minimal AccountsController entry for an EVM account. */
+/**
+ * Minimal AccountsController entry for an EVM account.
+ *
+ * @param address - The EVM account address.
+ */
 function makeEvmAccount(address: string) {
   return {
     id: address,
@@ -32,7 +36,11 @@ function makeEvmAccount(address: string) {
   };
 }
 
-/** Stub NetworkController state with the given chains configured. */
+/**
+ * Stub NetworkController state with the given chains configured.
+ *
+ * @param chainIds - Hex chain IDs to mark as configured.
+ */
 function makeNetworkController(chainIds: string[]) {
   const networkConfigurationsByChainId: Record<string, unknown> = {};
   for (const chainId of chainIds) {
@@ -41,7 +49,13 @@ function makeNetworkController(chainIds: string[]) {
   return { networkConfigurationsByChainId };
 }
 
-/** Build a base storage object with common AccountsController + TokensController state. */
+/**
+ * Build a base storage object with common AccountsController + TokensController state.
+ *
+ * @param allTokens - Initial `TokensController.allTokens` state.
+ * @param accounts - Map of `AccountsController.internalAccounts.accounts`.
+ * @param configuredChainIds - Hex chain IDs to seed in `NetworkController`.
+ */
 function makeStorage(
   allTokens: Record<string, Record<string, unknown[]>>,
   accounts: Record<string, ReturnType<typeof makeEvmAccount>> = {

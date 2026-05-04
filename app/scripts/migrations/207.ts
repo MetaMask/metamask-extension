@@ -178,8 +178,7 @@ function getConfiguredMusdChainIds(data: Record<string, unknown>): string[] {
     return [];
   }
 
-  const networkConfigurationsByChainId =
-    NetworkController.networkConfigurationsByChainId;
+  const { networkConfigurationsByChainId } = NetworkController;
 
   return MUSD_CHAIN_IDS.filter((chainId) =>
     hasProperty(networkConfigurationsByChainId, chainId),
