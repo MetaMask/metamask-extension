@@ -142,23 +142,14 @@ export class SelfInjectPlugin {
     const newSource = new ConcatSource();
     // wrapped in a new lexical scope so we don't pollute the global namespace
     newSource.add(`{`);
-    newSource.add(`console.log('SelfInject: attempting primary script injection');`);
     newSource.add(`let d=document,s=d.createElement('script');`);
-    // The primary injection strategy assigns the source to `script.textContent`
-    // and appends/removes the element from `document.documentElement`. If this
-    // throws (e.g. due to CSP/sandbox restrictions), the catch block runs the
-    // fallback `Blob` URL strategy below.
     newSource.add(`s.textContent=`);
-    // Prepend a tiny statement that, when the inner script actually executes
-    // in the page's main world, sets a `data-loaded` attribute on the script
-    // element via `document.currentScript`. The wrapper (which runs in the
-    // content script's isolated world) reads that attribute back from the
-    // shared DOM node `s` to decide whether the primary injection took
-    // effect — `window.ethereum` set by the inner script lives on the main
-    // world's window and isn't visible from the isolated world, so it can't
-    // be used as the signal here. Kept on a single line so source-map line
-    // numbers for the original source remain aligned (only first-line column
-    // offsets shift).
+    // window.ethereum set by the inner script lives on the main
+    // world's window and isn't visible from the isolated world. Because of that,
+    // we set an attribute on the script element via `document.currentScript` to
+    // indicate that the script was injected successfully.  It is kept on a single
+    // line so source-map line numbers for the original source remain aligned
+    // (only first-line column offsets shift).
     newSource.add(
       this.escapeJs(
         `document.currentScript.dataset.loaded='1';` +
@@ -177,16 +168,12 @@ export class SelfInjectPlugin {
     newSource.add(`;`);
     // add and immediately remove the script to avoid modifying the DOM.
     newSource.add(`d.documentElement.appendChild(s).remove();`);
-    // If the first injection threw and didn't result in MetaMask being
-    // available on `window.ethereum`, fall back to a second injection strategy
+    // If the synchronous injection did not execute, fall back to a asynchronous injection strategy
     // that loads the same source via a `Blob` URL assigned to `script.src`.
-    // This can succeed in environments where the first approach is blocked or
+    // This can succeed in environments where the synchronous approach is blocked or
     // stripped (e.g. some CSP/sandbox configurations that disallow inline
     // scripts but allow `blob:` script sources).
     newSource.add(`if(s.dataset.loaded!=='1'){`);
-    newSource.add(
-      `console.log('SelfInject: script was not injected successfully. Attempting fallback');`,
-    );
     newSource.add(`let s2=d.createElement('script');`);
     newSource.add(
       `let u=URL.createObjectURL(new Blob([s.textContent],{type:'text/javascript'}));`,
@@ -194,13 +181,6 @@ export class SelfInjectPlugin {
     newSource.add(`s2.src=u;`);
     newSource.add(`(d.head||d.documentElement||d).appendChild(s2);`);
     newSource.add(`URL.revokeObjectURL(u);`);
-    newSource.add(
-      `console.log('SelfInject: fallback complete. Verify window.ethereum manually');`,
-    );
-    newSource.add(`}else{`);
-    newSource.add(
-      `console.log('SelfInject: script was injected successfully');`,
-    );
     newSource.add(`}`);
     newSource.add(`}`);
 

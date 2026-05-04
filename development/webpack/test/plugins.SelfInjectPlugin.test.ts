@@ -59,19 +59,16 @@ describe('SelfInjectPlugin', () => {
         // script didn't actually execute and we run a fallback that
         // re-injects the same source via a `Blob` URL assigned to
         // `script.src` (which can succeed in environments where inline
-        // scripts are blocked but `blob:` script sources are allowed). The
-        // fallback's `s2` loads asynchronously, so we can't synchronously
-        // confirm whether it set `window.ethereum`; instead we log a
-        // "verify manually" message.
+        // scripts are blocked but `blob:` script sources are allowed).
         const flagSetter = `document.currentScript.dataset.loaded='1';`;
-        const fallback = `if(s.dataset.loaded!=='1'){console.log('SelfInject: script was not injected successfully. Attempting fallback');let s2=d.createElement('script');let u=URL.createObjectURL(new Blob([s.textContent],{type:'text/javascript'}));s2.src=u;(d.head||d.documentElement||d).appendChild(s2);URL.revokeObjectURL(u);console.log('SelfInject: fallback complete. Verify window.ethereum manually');}else{console.log('SelfInject: script was injected successfully');}`;
+        const fallback = `if(s.dataset.loaded!=='1'){let s2=d.createElement('script');let u=URL.createObjectURL(new Blob([s.textContent],{type:'text/javascript'}));s2.src=u;(d.head||d.documentElement||d).appendChild(s2);URL.revokeObjectURL(u);}`;
 
         if (map !== null && devtool === 'source-map') {
           // if we have a map and devtool is `source-map` the newSource should
           // reference the `sourceMappingURL`
           assert.strictEqual(
             newSource,
-            `{console.log('SelfInject: attempting primary script injection');let d=document,s=d.createElement('script');s.textContent="${flagSetter}${source}\\n//# sourceMappingURL=${filename}.map"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;d.documentElement.appendChild(s).remove();${fallback}}`,
+            `{let d=document,s=d.createElement('script');s.textContent="${flagSetter}${source}\\n//# sourceMappingURL=${filename}.map"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;d.documentElement.appendChild(s).remove();${fallback}}`,
           );
         } else {
           // the new source should NOT reference the new sourcemap, since it's
@@ -82,7 +79,7 @@ describe('SelfInjectPlugin', () => {
           // console.
           assert.strictEqual(
             newSource,
-            `{console.log('SelfInject: attempting primary script injection');let d=document,s=d.createElement('script');s.textContent="${flagSetter}console.log(3);"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;d.documentElement.appendChild(s).remove();${fallback}}`,
+            `{let d=document,s=d.createElement('script');s.textContent="${flagSetter}console.log(3);"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;d.documentElement.appendChild(s).remove();${fallback}}`,
           );
         }
 

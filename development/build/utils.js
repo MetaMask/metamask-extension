@@ -334,27 +334,21 @@ function getBuildName({
  */
 function makeSelfInjecting(filePath) {
   const fileContents = readFileSync(filePath, 'utf8');
-  // Prepend a tiny statement that, when the inner script actually runs in
-  // the page's main world, sets a `data-loaded` attribute on the script
-  // element via `document.currentScript`. The wrapper (which runs in the
-  // content script's isolated world) reads that attribute back from the
-  // shared DOM node `s` to decide whether the primary injection took
-  // effect. `window.ethereum` set by the inner script lives on the main
-  // world's window and isn't visible from the isolated world, so it can't
-  // be used as the signal here. Kept on the same line as the original
-  // first line so source line numbers stay aligned.
+  // window.ethereum set by the inner script lives on the main
+  // world's window and isn't visible from the isolated world. Because of that,
+  // we set an attribute on the script element via `document.currentScript` to
+  // indicate that the script was injected successfully.  It is kept on a single
+  // line so source-map line numbers for the original source remain aligned
+  // (only first-line column offsets shift).
   const textContent = JSON.stringify(
     `document.currentScript.dataset.loaded='1';` + fileContents,
   );
-  // The primary injection assigns the source to `script.textContent` and
-  // appends/removes the element from `document.documentElement`. If the
-  // inner script didn't actually execute (e.g. CSP refused inline script
-  // execution), fall back to a `Blob` URL assigned to `script.src`, which
-  // can succeed in environments where inline scripts are blocked but
-  // `blob:` script sources are allowed. The fallback's `s2` is loaded
-  // asynchronously, so we can't synchronously confirm whether it set
-  // `window.ethereum`; instead we log a "verify manually" message.
-  const js = `{console.log('SelfInject: attempting primary script injection');let d=document,s=d.createElement('script');s.textContent=${textContent};d.documentElement.appendChild(s).remove();if(s.dataset.loaded!=='1'){console.log('SelfInject: script was not injected successfully. Attempting fallback');let s2=d.createElement('script');let u=URL.createObjectURL(new Blob([s.textContent],{type:'text/javascript'}));s2.src=u;(d.head||d.documentElement||d).appendChild(s2);URL.revokeObjectURL(u);console.log('SelfInject: fallback complete. Verify window.ethereum manually');}else{console.log('SelfInject: script was injected successfully');}}`;
+  // If the synchronous injection did not execute, fall back to a asynchronous injection strategy
+  // that loads the same source via a `Blob` URL assigned to `script.src`.
+  // This can succeed in environments where the synchronous approach is blocked or
+  // stripped (e.g. some CSP/sandbox configurations that disallow inline
+  // scripts but allow `blob:` script sources).
+  const js = `{let d=document,s=d.createElement('script');s.textContent=${textContent};d.documentElement.appendChild(s).remove();if(s.dataset.loaded!=='1'){let s2=d.createElement('script');let u=URL.createObjectURL(new Blob([s.textContent],{type:'text/javascript'}));s2.src=u;(d.head||d.documentElement||d).appendChild(s2);URL.revokeObjectURL(u);}}`;
   writeFileSync(filePath, js, 'utf8');
 }
 
