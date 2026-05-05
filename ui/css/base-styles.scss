@@ -33,14 +33,21 @@ html[data-theme] {
   background-color: var(--color-background-alternative);
 }
 
-/* stylelint-disable */
-#app-content, #critical-error-content {
+#app-content,
+#critical-error-content {
   overflow-x: hidden;
   height: 100%;
   display: flex;
   flex-direction: column;
 }
-/* stylelint-enable */
+
+/* Figma export: overlay scrim, dialog top-aligned in panel. */
+/* stylelint-disable color-no-hex */
+#critical-error-content {
+  justify-content: flex-start;
+  background-color: rgb(133 139 154 / 20%);
+}
+/* stylelint-enable color-no-hex */
 
 a {
   text-decoration: none;

@@ -42,7 +42,7 @@ jest.mock('../../../shared/lib/manifestFlags', () => ({
   })),
 }));
 
-/** Shared getErrorHtml mock that optionally shows the restore link based on hasBackup param. */
+/** Shared getErrorHtml mock that ptionally shows the "Attempt recovery" button based on hasBackup param. */
 function mockGetErrorHtmlWithOptionalRestoreLink() {
   return (
     _errorKey: unknown,
@@ -54,7 +54,7 @@ function mockGetErrorHtmlWithOptionalRestoreLink() {
     <div>
       <input type="checkbox" id="critical-error-checkbox" checked />
       <button id="critical-error-button">Restart</button>
-      ${hasBackup ? '<a id="critical-error-restore-link" href="#">Attempt recovery</a>' : ''}
+      ${hasBackup ? '<button type="button" id="critical-error-restore-link">Attempt recovery</button>' : ''}
     </div>
   `;
 }

@@ -30,6 +30,9 @@ export const SMART_ACCOUNT_INFO_LINK =
 
 export const VAULT_RECOVERY_LINK = `https://support.metamask.io/configure/wallet/how-to-recover-your-secret-recovery-phrase/?utm_source=extension#step-two-locate-your-vault`;
 
+export const REINSTALL_METAMASK_RECOVERY_LINK =
+  'https://support.metamask.io/configure/wallet/how-to-restore-your-metamask-wallet-from-secret-recovery-phrase/?utm_source=extension';
+
 export const SHIELD_TERMS_OF_USE_URL =
   'https://consensys.io/transaction-shield-supplemental-terms-and-privacy-notice';
 
