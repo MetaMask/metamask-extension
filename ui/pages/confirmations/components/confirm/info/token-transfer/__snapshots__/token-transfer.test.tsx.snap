@@ -514,9 +514,9 @@ exports[`TokenTransferInfo renders correctly 1`] = `
             $0.08
           </p>
           <div
-            class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-box--margin-left-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center"
             data-testid="selected-gas-fee-token"
-            style="cursor: default; padding-inline-end: 6px; padding: 0px;"
+            style="cursor: default;"
           >
             <div
               class=""
