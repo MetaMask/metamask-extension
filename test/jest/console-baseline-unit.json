@@ -1513,6 +1513,9 @@
     "ui/pages/settings-v2/privacy-tab/third-party-apis-sub-page.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/pages/settings-v2/security-and-password-tab/reveal-srp-list/reveal-srp-list.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
     "ui/pages/settings-v2/security-and-password-tab/security-and-password-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
@@ -1539,9 +1542,6 @@
     "ui/pages/settings/security-tab/metametrics-toggle/metametrics-toggle.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "error: Error: MetaMetrics context trackEvent was": 3
-    },
-    "ui/pages/settings/security-tab/reveal-srp-list/reveal-srp-list.test.tsx": {
-      "Reselect: Identity function warnings": 1
     },
     "ui/pages/settings/security-tab/security-tab.test.js": {
       "MetaMask: Background connection not initialized": 36,
