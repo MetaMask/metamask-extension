@@ -61,8 +61,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   // All order types display the limit/trigger price with universal decimals
   // (matching market price precision: 0 for BTC, 2 for CL, 6 for CHIP).
   const orderValueUsd = useMemo(() => {
-    const price =
-      parseFloat(order.triggerPrice || order.price || '0') || 0;
+    const price = parseFloat(order.triggerPrice || order.price || '0') || 0;
     if (price > 0) {
       return formatPerpsFiatUniversal(price);
     }
