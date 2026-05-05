@@ -21,7 +21,6 @@ import {
   AlignItems,
   IconColor,
   FontWeight,
-  BlockSize,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -77,7 +76,7 @@ export const RevealSrpList = () => {
             {t('securitySocialLoginLabel', [socialLoginType])}
           </Text>
           <Card
-            className="px-3 py-4 rounded-lg"
+            className="px-4 py-3 rounded-lg"
             backgroundColor={BackgroundColor.backgroundMuted}
             border={false}
           >
@@ -126,12 +125,7 @@ export const RevealSrpList = () => {
               capitalize(socialLoginType),
             ])}
           </Text>
-          <Box
-            width={BlockSize.Full}
-            backgroundColor={BackgroundColor.backgroundMuted}
-            className="h-px"
-            marginTop={4}
-          />
+          <Box className="border-t border-muted h-px w-full" marginTop={4} />
         </Box>
       )}
       <Box
