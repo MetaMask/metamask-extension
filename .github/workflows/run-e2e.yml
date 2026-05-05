@@ -49,7 +49,8 @@ jobs:
   run-e2e:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    # Must exceed inputs.test-timeout-minutes (step timeout) plus build or setup slack.
+    timeout-minutes: ${{ inputs.test-timeout-minutes + 45 }}
     container:
       image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
       credentials:
