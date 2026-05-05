@@ -89,3 +89,8 @@ BLOCKAID_PUBLIC_KEY=
 
 ; This variable is required to run performance tests
 TEST_SRP_2=
+
+; Set to `true` to enable the new hardware wallet onboarding flow
+; (device discovery, error handling, account selection).
+; Entry points to connecting remain unchanged regardless of this flag.
+NEW_HARDWARE_WALLET_ONBOARDING='false'

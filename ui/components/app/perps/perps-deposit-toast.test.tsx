@@ -38,7 +38,7 @@ describe('PerpsDepositToast', () => {
     expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
   });
 
-  it('renders in-progress toast when deposit is in progress', () => {
+  it('renders submitted toast when mounting with deposit already in progress', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -50,9 +50,11 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(screen.getByTestId('perps-deposit-toast')).toBeInTheDocument();
     expect(
-      screen.getByText(messages.perpsDepositToastPendingTitle.message),
+      screen.getByTestId('perps-deposit-submitted-toast'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsDepositToastSubmittedTitle.message),
     ).toBeInTheDocument();
   });
 
@@ -241,5 +243,132 @@ describe('PerpsDepositToast', () => {
     expect(
       screen.queryByText(messages.perpsDepositToastPendingTitle.message),
     ).not.toBeInTheDocument();
+  });
+
+  it('renders submitted toast when a new deposit transaction ID appears', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        depositInProgress: false,
+        lastDepositTransactionId: null,
+        lastDepositResult: null,
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(
+      screen.queryByTestId('perps-deposit-submitted-toast'),
+    ).not.toBeInTheDocument();
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          depositInProgress: true,
+          lastDepositTransactionId: 'submitted-tx-1',
+          lastDepositResult: null,
+        },
+      });
+    });
+
+    expect(
+      screen.getByTestId('perps-deposit-submitted-toast'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsDepositToastSubmittedTitle.message),
+    ).toBeInTheDocument();
+  });
+
+  it('hides submitted toast after auto-hide and shows pending toast', () => {
+    jest.useFakeTimers();
+
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        depositInProgress: false,
+        lastDepositTransactionId: null,
+        lastDepositResult: null,
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          depositInProgress: true,
+          lastDepositTransactionId: 'submitted-tx-1',
+          lastDepositResult: null,
+        },
+      });
+    });
+
+    expect(
+      screen.getByTestId('perps-deposit-submitted-toast'),
+    ).toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+
+    expect(
+      screen.queryByTestId('perps-deposit-submitted-toast'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('perps-deposit-toast')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsDepositToastPendingTitle.message),
+    ).toBeInTheDocument();
+  });
+
+  it('clears submitted toast when deposit result arrives', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        depositInProgress: false,
+        lastDepositTransactionId: null,
+        lastDepositResult: null,
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          depositInProgress: true,
+          lastDepositTransactionId: 'submitted-tx-1',
+          lastDepositResult: null,
+        },
+      });
+    });
+
+    expect(
+      screen.getByTestId('perps-deposit-submitted-toast'),
+    ).toBeInTheDocument();
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          depositInProgress: false,
+          lastDepositTransactionId: 'submitted-tx-1',
+          lastDepositResult: {
+            success: true,
+            error: '',
+            timestamp: 1_700_000_000_000,
+          },
+        },
+      });
+    });
+
+    expect(
+      screen.queryByTestId('perps-deposit-submitted-toast'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsDepositToastSuccessTitle.message),
+    ).toBeInTheDocument();
   });
 });

@@ -114,12 +114,6 @@
   "accountIdenticon": {
     "message": "Hesap simgesi"
   },
-  "accountIdenticonDescription": {
-    "message": "Hesapları bir bakışta tanımanıza yardımcı olabilecek üç farklı benzersiz simge stilinden seçim yapın."
-  },
-  "accountIsntConnectedToastText": {
-    "message": "$1 şuna bağlı değil: $2"
-  },
   "accountName": {
     "message": "Hesap adı"
   },
@@ -1546,12 +1540,6 @@
   "confirmFieldFrequency": {
     "message": "Sıklık"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Başlangıç izni"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Maksimum izin"
-  },
   "confirmFieldNeverExpires": {
     "message": "Asla süresi dolmaz"
   },
@@ -1571,20 +1559,14 @@
     "message": "Aylık"
   },
   "confirmFieldPeriodDurationSeconds": {
-    "message": "saniye",
-    "description": "Unit descriptor following the numeric value, e.g. '100 seconds'"
+    "message": "$1 saniye",
+    "description": "$1 is the number of seconds in the permission period (shown when the period is not a standard hour/day/week/etc.)"
   },
   "confirmFieldPeriodDurationWeekly": {
     "message": "Haftalık"
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Yıllık"
-  },
-  "confirmFieldStartDate": {
-    "message": "Başlangıç tarihi"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Akış hızı"
   },
   "confirmFieldTooltipJustification": {
     "message": "Web sitesi tarafından taleple ilgili sağlanan gerekçe"
@@ -1750,9 +1732,6 @@
   },
   "connect": {
     "message": "Bağla"
-  },
-  "connectAccount": {
-    "message": "Hesabı bağla"
   },
   "connectAccounts": {
     "message": "Hesapları bağla"
@@ -2249,9 +2228,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "perps piyasası sayfası"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "perps piyasa listesi sayfası"
   },
   "deepLink_thePerpsPage": {
     "message": "sürekli vadeli işlem sözleşmeleri sayfası"
@@ -3034,6 +3010,9 @@
   },
   "gasUsed": {
     "message": "Kullanılan gaz"
+  },
+  "gatorNoJustificationProvided": {
+    "message": "İzin için gerekçe sağlanmadı"
   },
   "gatorPermissionAnnualFrequency": {
     "message": "Yıllık",
@@ -4034,12 +4013,6 @@
   "mismatchedRpcUrl": {
     "message": "Kayıtlarımıza göre, sunulan RPC URL adresi değeri bu zincir kimliğinin bilinen bir sağlayıcısı ile uyumlu değil."
   },
-  "missingSetting": {
-    "message": "Bir ayarı bulamıyor musun?"
-  },
-  "missingSettingRequest": {
-    "message": "Buradan talep et"
-  },
   "month": {
     "message": "ay"
   },
@@ -4122,6 +4095,102 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 $2 Snap kullanmak istiyor",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
+  "musdAssetBonusAccruing": {
+    "message": "Sonraki biriken bonus",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "$1 bonus alın",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "Tahmini yıllık bonus",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "Bonus bilgileriniz",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "Mevcut bakiyenize ve oranınıza göre bir yıl içinde kazanabileceğiniz tahmini tutar. Oran değişkendir ve farklılık gösterebilir.",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "Daha fazla bilgi edinin.",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "Başladığınızdan bu yana alınan toplam bonus.",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "mUSD tutarak kazandığınız %$1 yıllıklandırılmış bonus. Linea üzerinde günlük olarak alabilirsiniz. $2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "Toplam bonus alındı",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "Biriken bonus yok",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "%$1 bonus",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "Bonusunuz",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "Günlük bonus",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "Dolar destekli",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "Kilitleme yok",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "MetaMask ücreti yok",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "%$1 yıllıklandırılmış bonus",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "USDC, USDT ve DAI'yi mUSD'ye dönüştürerek ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " alın.",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "Daha fazla bilgi edin",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "Stabil kripto paralarınızı dönüştürün",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "Bakiye",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "Pozisyonunuz",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "Değer",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
   },
   "musdBonusExplanation": {
     "message": "Stabil kripto paralarınızı mUSD'ye dönüştürün\nve günlük olarak alabileceğiniz %$1 orana kadar\nyıllıklandırılmış bonus kazanın. $2",
@@ -4226,6 +4295,10 @@
   "musdMetaMaskUsd": {
     "message": "MetaMask USD",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "Şartlar uygulanır."
@@ -4789,6 +4862,14 @@
   "notificationTransactionSuccessView": {
     "message": "$1 üzerinde görüntüle",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
+  },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "İşlem başarısız oldu! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "İşlem onaylandı!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
   },
   "notifications": {
     "message": "Cüzdanınızın kullanımı"
@@ -5453,7 +5534,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Kullanılabilir Perps bakiyesi: "
+    "message": "Kullanılabilir bakiye: "
   },
   "perpsAvailableToAdd": {
     "message": "Eklenebilir"
@@ -5521,6 +5602,12 @@
   },
   "perpsContactSupport": {
     "message": "Destek ile iletişime geç"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "MetaMask Sürekli Vadeli İşlem Sözleşmeleri, yalnızca izole marj ile işlem yapılmasını destekler. MetaMask’te işlem yapabilmek için önce çapraz marj pozisyonunuzu kapatmanız gerekir."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Çapraz marj desteklenmiyor"
   },
   "perpsDateToday": {
     "message": "Bugün"
@@ -5618,7 +5705,7 @@
     "message": "Fonlama ödemeleri"
   },
   "perpsFundingRate": {
-    "message": "Fonlama Oranı"
+    "message": "Fonlama oranı"
   },
   "perpsFundingRateTooltip": {
     "message": "Fiyatları piyasa ile uyumlu tutmak için yatırımcılar arasında saatlik bir işlem ücreti ödenir. Oran pozitifse uzunlar kısalara ödeme yapar. Negatifse kısalar uzunlara ödeme yapar."
@@ -5651,7 +5738,7 @@
     "message": "Limit"
   },
   "perpsLimitPrice": {
-    "message": "Limit Fiyatı"
+    "message": "Limit fiyatı"
   },
   "perpsLimitPriceAboveCurrentPrice": {
     "message": "Limit fiyat, güncel fiyatın üzerinde"
@@ -5712,24 +5799,24 @@
     "message": "Henüz işlem yok"
   },
   "perpsOpenInterest": {
-    "message": "Açık Faiz"
+    "message": "Açık faiz"
   },
   "perpsOpenInterestTooltip": {
     "message": "Bu sürekli vadeli işlem sözleşmesi için açık pozisyonların birleşik değeri"
   },
   "perpsOpenLong": {
-    "message": "$1 değerinde Long pozisyon aç",
+    "message": "Long $1 açın",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOpenOrders": {
     "message": "Açık Emirler"
   },
   "perpsOpenShort": {
-    "message": "$1 değerinde Short pozisyon aç",
+    "message": "Short $1 açın",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOraclePrice": {
-    "message": "Oracle Fiyatı"
+    "message": "Oracle fiyatı"
   },
   "perpsOraclePriceTooltip": {
     "message": "Fonlama oranının hesaplanmasında kullanılan, harici fiyatların doğrulayıcılar tarafından bildirilen medyanı"
@@ -5768,7 +5855,7 @@
     "message": "Çok sayıda talepte bulunuldu. Lütfen bekleyip tekrar deneyin."
   },
   "perpsRecentActivity": {
-    "message": "Son Faaliyetler"
+    "message": "Son etkinlik"
   },
   "perpsReduceExposure": {
     "message": "Pozisyon büyüklüğünü azalt"
@@ -5803,15 +5890,12 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Short pozisyonunuzu long yönüne çevirin"
   },
-  "perpsSaveChanges": {
-    "message": "Değişiklikleri Kaydet",
-    "description": "Button text for saving TP/SL changes"
-  },
   "perpsSearchMarkets": {
     "message": "Piyasa ara"
   },
   "perpsSeeAll": {
-    "message": "Tümünü Gör"
+    "message": "Tümünü gör",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Hizmet geçici olarak kullanılamıyor. Lütfen daha sonra tekrar deneyin."
@@ -5880,7 +5964,7 @@
     "message": "Tetiklendi"
   },
   "perpsStopLoss": {
-    "message": "Zararda Durdur",
+    "message": "Zararda durdur",
     "description": "Label for stop loss price input"
   },
   "perpsStopLossInvalidPrice": {
@@ -5892,7 +5976,7 @@
     "description": "Loading text shown while an order is being submitted"
   },
   "perpsTakeProfit": {
-    "message": "Kazancı Al",
+    "message": "Kazancı al",
     "description": "Label for take profit price input"
   },
   "perpsTakeProfitInvalidPrice": {
@@ -6015,6 +6099,9 @@
   },
   "perpsTrades": {
     "message": "İşlemler"
+  },
+  "perpsTriggerPrice": {
+    "message": "Tetikleme fiyatı"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "Kaldıraç hem kazançları hem de zararları artırır. 40 kat kaldıraçla %1 oranındaki fiyat hareketi marjınızda %40 kazanç veya zarara eşittir."

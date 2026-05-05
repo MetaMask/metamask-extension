@@ -28,10 +28,8 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
-  POPUP_FILE,
-  POPUP_INIT_FILE,
-  SIDEPANEL_FILE,
 } from '../../shared/constants/app';
+import { AccountOverviewTabKey } from '../../shared/constants/app-state';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
 import {
@@ -63,6 +61,7 @@ import {
   CorruptionHandler,
   hasVault,
 } from './lib/state-corruption/state-corruption-recovery';
+import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
@@ -104,6 +103,7 @@ import { getRequestSafeReload } from './lib/safe-reload';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
+import { getIframeProperties } from './lib/getIframeProperties';
 
 /**
  * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
@@ -119,6 +119,7 @@ const lazyListener =
 const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
 const BADGE_MAX_COUNT = 9;
+const maxSeenFailedNonces = 99;
 
 const inTest = process.env.IN_TEST;
 
@@ -157,7 +158,6 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
-const POPUP_LAUNCH_FILE = isFirefox ? POPUP_FILE : POPUP_INIT_FILE;
 
 /**
  * Parses port connection info for routing decisions.
@@ -187,11 +187,13 @@ let notificationIsOpen = false;
 let uiIsTriggering = false;
 let openSidePanelCount = 0;
 let failedTxCount = 0;
+const seenFailedNonces = new Set();
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
 const senderOriginMapping = {};
 const tabOriginMapping = {};
+const frameIdMapping = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = persistenceManager.get.bind(
@@ -1031,8 +1033,7 @@ export async function loadStateFromPersistence(backup) {
     migrations,
     defaultVersion: process.env.WITH_STATE
       ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
-        require('../../test/e2e/fixtures/fixture-builder')
-          .FIXTURE_STATE_METADATA_VERSION
+        require('../../test/e2e/fixtures/default-fixture.json').meta.version
       : null,
   });
 
@@ -1201,8 +1202,10 @@ export async function loadStateFromPersistence(backup) {
  * which should only be tracked only after a user opts into metrics and connected to the dapp
  *
  * @param {string} origin - URL of visited dapp
+ * @param {string} [mainFrameOrigin] - The top-level frame origin (if sender is an iframe, this differs from origin)
+ * @param {number} [frameId] - The frame ID from chrome.runtime.MessageSender (0 = top-level, >0 = iframe)
  */
-function emitDappViewedMetricEvent(origin) {
+function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
   const { metaMetricsId } = controller.metaMetricsController.state;
   if (!shouldEmitDappViewedEvent(metaMetricsId)) {
     return;
@@ -1221,6 +1224,8 @@ function emitDappViewedMetricEvent(origin) {
     accountsState.internalAccounts.accounts,
   ).length;
 
+  const iframeProps = getIframeProperties({ frameId, origin, mainFrameOrigin });
+
   controller.metaMetricsController.trackEvent(
     {
       event: MetaMetricsEventName.DappViewed,
@@ -1232,6 +1237,7 @@ function emitDappViewedMetricEvent(origin) {
         is_first_visit: false,
         number_of_accounts: numberOfTotalAccounts,
         number_of_accounts_connected: numberOfConnectedAccounts,
+        ...iframeProps,
       },
     },
     {
@@ -1258,6 +1264,7 @@ function trackDappView(remotePort) {
   const { origin } = url;
   const tabUrl = new URL(remotePort.sender.tab.url);
   const { origin: tabOrigin } = tabUrl;
+  const { frameId } = remotePort.sender;
 
   // store the origin to corresponding tab so it can provide info for onActivated listener
   if (!Object.keys(senderOriginMapping).includes(tabId)) {
@@ -1266,6 +1273,9 @@ function trackDappView(remotePort) {
   // do the same for tab origin, which can be different to sender origin
   if (!(tabId in tabOriginMapping)) {
     tabOriginMapping[tabId] = tabOrigin;
+  }
+  if (!(tabId in frameIdMapping)) {
+    frameIdMapping[tabId] = frameId;
   }
 
   const isConnectedToDapp = controller.controllerMessenger.call(
@@ -1280,7 +1290,7 @@ function trackDappView(remotePort) {
   // - refresh the dapp
   // - open dapp in a new tab
   if (isConnectedToDapp && isTabLoaded) {
-    emitDappViewedMetricEvent(origin);
+    emitDappViewedMetricEvent(origin, tabOrigin, frameId);
   }
 }
 
@@ -1598,6 +1608,14 @@ export function setupController(
     );
   };
 
+  const hasPersistentUiOpen = () => {
+    return openPopupCount > 0 || openSidePanelCount > 0;
+  };
+
+  const isOnlyNotificationOpen = () => {
+    return notificationIsOpen && !hasPersistentUiOpen();
+  };
+
   const onCloseEnvironmentInstances = (isClientOpen, environmentType) => {
     // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
     if (isClientOpen === false) {
@@ -1693,6 +1711,11 @@ export function setupController(
 
         finished(portStream, () => {
           notificationIsOpen = false;
+          // Render any failure badge that was suppressed while the notification was open
+          if (failedTxCount > 0) {
+            setClientLandingTab(AccountOverviewTabKey.Activity);
+          }
+          updateBadge();
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
           onCloseEnvironmentInstances(
@@ -1703,6 +1726,7 @@ export function setupController(
       }
 
       if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
+        clearFailedTxBadge();
         const tabId = remotePort.sender.tab.id;
         openMetamaskTabsIDs[tabId] = true;
 
@@ -1861,48 +1885,58 @@ export function setupController(
   );
 
   controller.controllerMessenger.subscribe(
-    'TransactionController:transactionFailed',
-    onTransactionFailed,
+    'TransactionController:transactionStatusUpdated',
+    onTransactionStatusUpdated,
   );
 
-  controller.controllerMessenger.subscribe(
-    'TransactionController:transactionDropped',
-    onTransactionFailed,
-  );
-
-  function setClientOpenOptions(tab) {
-    const popup = tab ? `${POPUP_LAUNCH_FILE}?tab=${tab}` : POPUP_LAUNCH_FILE;
-    const sidepanelPath = tab ? `${SIDEPANEL_FILE}?tab=${tab}` : SIDEPANEL_FILE;
-
+  function setClientLandingTab(tab) {
     try {
-      if (isManifestV3) {
-        browser.action.setPopup({ popup });
-        browser.sidePanel?.setOptions?.({ path: sidepanelPath });
-      } else {
-        browser.browserAction.setPopup({ popup });
-      }
+      controller.appStateController.setDefaultHomeActiveTabName(tab ?? null);
     } catch (e) {
-      console.error('Error setting extension action URLs:', e);
+      console.error('Error setting landing tab:', e);
     }
   }
 
-  function onTransactionFailed() {
-    if (isClientOpenStatus()) {
+  function onTransactionStatusUpdated({ transactionMeta }) {
+    const { status, txParams, chainId } = transactionMeta ?? {};
+    if (status !== 'failed' && status !== 'dropped') {
       return;
     }
 
+    const { from, nonce } = txParams ?? {};
+    const nonceKey =
+      from && nonce !== undefined && chainId
+        ? `${chainId}:${from.toLowerCase()}:${nonce}`
+        : undefined;
+    if (nonceKey && seenFailedNonces.has(nonceKey)) {
+      return;
+    }
+
+    // Skip if a persistent UI is open, transaction status is in the Activity tab
+    if (hasPersistentUiOpen()) {
+      return;
+    }
+
+    if (nonceKey) {
+      if (seenFailedNonces.size >= maxSeenFailedNonces) {
+        seenFailedNonces.clear();
+      }
+      seenFailedNonces.add(nonceKey);
+    }
+
     failedTxCount += 1;
-    setClientOpenOptions('activity');
+
+    // Defer landing page until notification closes; close handler re-applies
+    if (!isOnlyNotificationOpen()) {
+      setClientLandingTab(AccountOverviewTabKey.Activity);
+    }
+
     updateBadge();
   }
 
   function clearFailedTxBadge() {
-    if (!failedTxCount) {
-      return;
-    }
-
+    seenFailedNonces.clear();
     failedTxCount = 0;
-    setClientOpenOptions();
     updateBadge();
   }
 
@@ -1919,7 +1953,8 @@ export function setupController(
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
-   * The number reflects the current number of pending transactions or message signatures needing user approval.
+   * Failed transactions take priority and show a red count badge.
+   * Pending approvals show the standard blue count badge.
    */
   function updateBadge() {
     const pendingApprovalCount = getPendingApprovalCount();
@@ -1927,11 +1962,12 @@ export function setupController(
     let label = '';
     let badgeColor = BADGE_COLOR_APPROVAL;
 
-    if (pendingApprovalCount) {
-      label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
-    } else if (failedTxCount) {
+    // Defer showing the failure badge until the notification closes
+    if (failedTxCount > 0 && !isOnlyNotificationOpen()) {
       label = getBadgeLabel(failedTxCount, BADGE_MAX_COUNT);
       badgeColor = BADGE_COLOR_FAILED;
+    } else if (pendingApprovalCount > 0) {
+      label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
     }
 
     try {
@@ -1954,7 +1990,9 @@ export function setupController(
     try {
       const pendingApprovalCount =
         controller.appStateController.waitingForUnlock.length +
-        controller.approvalController.getTotalApprovalCount();
+        getAttentionRequiredApprovalCount({
+          approvalController: controller.approvalController,
+        });
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);
@@ -2118,7 +2156,11 @@ function onNavigateToTab() {
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
-          emitDappViewedMetricEvent(currentOrigin);
+          emitDappViewedMetricEvent(
+            currentOrigin,
+            currentTabOrigin,
+            frameIdMapping[tabId],
+          );
         }
       }
 

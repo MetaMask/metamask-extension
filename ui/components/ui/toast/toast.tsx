@@ -32,6 +32,9 @@ export function Toaster() {
     <ToasterBase
       position="bottom-center"
       containerClassName="toast-container"
+      containerStyle={{
+        display: 'var(--toast-display, flex)',
+      }}
       toastOptions={{
         className: 'w-[360px] max-w-[360px] border border-border-muted',
         style: {

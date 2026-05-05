@@ -30,7 +30,8 @@ type JsonLike = Record<string, unknown>;
 /**
  * Returns a list of keys to ignore when comparing fixture schemas.
  * These are properties that change frequently or are impractical to include
- * (making the diff file unreadable).
+ * (making the diff file unreadable). Keep this list small: RPC fields such as
+ * `failoverUrls` are validated so unintended network config changes surface in CI.
  *
  * @returns Array of dot-separated key paths to ignore
  */
@@ -57,8 +58,16 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AppStateController.onboardingDate',
   'data.AppStateController.recoveryPhraseReminderLastShown',
   'data.AppStateController.termsOfUseLastAgreed',
+  'data.CurrencyController.currencyRates.BNB.conversionDate',
+  'data.CurrencyController.currencyRates.BNB.conversionRate',
+  'data.CurrencyController.currencyRates.BNB.usdConversionRate',
   'data.CurrencyController.currencyRates.ETH.conversionDate',
   'data.CurrencyController.currencyRates.ETH.conversionRate',
+  'data.CurrencyController.currencyRates.POL.conversionDate',
+  'data.CurrencyController.currencyRates.POL.conversionRate',
+  'data.CurrencyController.currencyRates.POL.usdConversionRate',
+  'data.MultichainAssetsRatesController.conversionRates.bip122:000000000019d6689c085ae165831e93/slip44:0.conversionTime',
+  'data.MultichainAssetsRatesController.conversionRates.bip122:000000000019d6689c085ae165831e93/slip44:0.expirationTime',
   'data.NetworkController.networkConfigurationsByChainId.0x539.lastUpdatedAt',
   'data.NotificationServicesController.metamaskNotificationsList',
   'data.PhishingController.c2DomainBlocklistLastFetched',
@@ -72,11 +81,12 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',
+  'data.AccountTracker',
+  // Base JSON fixtures use `{}`; schema diff skips this subtree—AssetsController fills at runtime.
+  'data.AssetsController',
   'data.AuthenticationController',
   'data.MetaMetricsController',
   'data.MultichainAssetsController',
-  // Token balances are fetched dynamically after unlock; pre-seeding them in the
-  // fixture prevents the "Fund your wallet" empty-state banner from appearing.
   'data.TokenBalancesController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
@@ -86,8 +96,11 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Version that changes on every release
   'data.AppMetadataController.currentAppVersion',
   // Random ids
+  'data.MultichainBalancesController',
   'data.MultichainBalancesController.balances',
   'data.MultichainTransactionsController.nonEvmTransactions',
+  // RPC `failoverUrls` are not ignored: CI may populate them from QUICKNODE_*; keep fixtures
+  // aligned via `@metamaskbot update-e2e-fixture` or a CI-equivalent env when refreshing state.
   'data.NetworkController.networkConfigurationsByChainId.0x539.rpcEndpoints[0].networkClientId',
   'data.NetworkController.networksMetadata',
   'data.NetworkController.selectedNetworkClientId',
@@ -495,7 +508,7 @@ export const formatSchemaDiff = ({
   }
 
   messages.push(
-    "\nUpdate the fixture locally and commit the change, or request an update by commenting '@metamaskbot update-e2e-fixture' on the pull request.",
+    '\nUpdate the fixture and commit the change. Options: comment `@metamaskbot update-e2e-fixture` on the pull request (CI-aligned state), or regenerate locally using the same env as CI (e.g. QUICKNODE_* and other build vars from a CI job artifact) so RPC fields such as `failoverUrls` match.',
   );
 
   return messages.join('\n\n');

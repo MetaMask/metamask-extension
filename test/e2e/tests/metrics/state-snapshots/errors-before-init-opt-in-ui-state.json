@@ -72,6 +72,7 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
+    "AssetsController": "object",
     "AuthenticationController": { "isSignedIn": "boolean" },
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
@@ -305,5 +306,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 204 }
+  "meta": { "storageKind": "split", "version": 206 }
 }
