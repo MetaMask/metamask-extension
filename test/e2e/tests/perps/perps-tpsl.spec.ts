@@ -102,9 +102,9 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
         await marketDetailPage.checkPageIsLoaded();
         await marketDetailPage.checkPositionCtaButtonsVisible();
 
-        await marketDetailPage.setStopLoss('2400.00');
+        await marketDetailPage.setStopLoss('2500.00');
 
-        await marketDetailPage.checkAutoCloseRowContains('2,400');
+        await marketDetailPage.checkAutoCloseRowContains('2,500');
 
         // Same WEBSOCKET_BLOCK_MS window as optimistic TP/SL (see TP scenario above).
         await driver.delay(3200);
@@ -121,7 +121,7 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
           pushUserFills: () =>
             pushUserFillsClosePositionSnapshot(perpsServer, {
               coin: 'ETH',
-              px: '2400.0',
+              px: '2500.0',
               sz: '2.5',
               side: 'A',
               dir: 'Close Long',

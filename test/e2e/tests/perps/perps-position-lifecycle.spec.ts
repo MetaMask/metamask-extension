@@ -40,7 +40,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
 
   // ─── Open position flows ───────────────────────────────────────────────────
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
   it('opens a long market order then closes the position', async function () {
     await withFixtures(
       {
@@ -115,7 +114,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
   it('opens a short market order then closes the position', async function () {
     await withFixtures(
       {
