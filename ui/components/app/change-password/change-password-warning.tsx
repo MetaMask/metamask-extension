@@ -15,15 +15,15 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { AlignItems } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { AlignItems } from '../../../helpers/constants/design-system';
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-} from '../../../../components/component-library';
-import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+} from '../../component-library';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

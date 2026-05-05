@@ -1,13 +1,13 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import configureStore, { MetaMaskReduxState } from '../../../../store/store';
-import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import configureStore, { MetaMaskReduxState } from '../../../store/store';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   ONBOARDING_REVIEW_SRP_ROUTE,
   REVEAL_SEED_ROUTE,
-} from '../../../../helpers/constants/routes';
-import { FirstTimeFlowType } from '../../../../../shared/constants/onboarding';
+} from '../../../helpers/constants/routes';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { RevealSrpList } from './reveal-srp-list';
 
 const mockUseNavigate = jest.fn();

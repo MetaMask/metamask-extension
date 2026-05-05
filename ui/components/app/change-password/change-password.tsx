@@ -19,28 +19,28 @@ import {
   FormTextField,
   FormTextFieldSize,
   TextFieldType,
-} from '../../../../components/component-library';
-import { isBeta, isFlask } from '../../../../../shared/lib/build-types';
-import Mascot from '../../../../components/ui/mascot';
-import Spinner from '../../../../components/ui/spinner';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+} from '../../component-library';
+import { isBeta, isFlask } from '../../../../shared/lib/build-types';
+import Mascot from '../../ui/mascot';
+import Spinner from '../../ui/spinner';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   changePassword,
   checkIsSeedlessPasswordOutdated,
   verifyPassword,
-} from '../../../../store/actions';
-import PasswordForm from '../../../../components/app/password-form/password-form';
-import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
-import { toast, ToastContent } from '../../../../components/ui/toast/toast';
-import { getIsSocialLoginFlow } from '../../../../selectors';
-import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+} from '../../../store/actions';
+import PasswordForm from '../password-form/password-form';
+import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
+import { toast, ToastContent } from '../../ui/toast/toast';
+import { getIsSocialLoginFlow } from '../../../selectors';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import { useBoolean } from '../../../../hooks/useBoolean';
-import { SECOND } from '../../../../../shared/constants/time';
+} from '../../../../shared/constants/metametrics';
+import { useBoolean } from '../../../hooks/useBoolean';
+import { SECOND } from '../../../../shared/constants/time';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
