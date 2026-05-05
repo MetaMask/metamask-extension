@@ -5680,9 +5680,6 @@
   "perpsCancelOrder": {
     "message": "Cancelar orden"
   },
-  "perpsCandleIntervals": {
-    "message": "Intervalos de velas"
-  },
   "perpsCandlePeriodDays": {
     "message": "Días"
   },
@@ -5694,9 +5691,6 @@
   },
   "perpsCloseAll": {
     "message": "Cerrar todo"
-  },
-  "perpsCloseAmount": {
-    "message": "Monto de cierre"
   },
   "perpsCloseLong": {
     "message": "Cerrar posición larga"
@@ -6282,6 +6276,10 @@
   "perpsWithdraw": {
     "message": "Retirar"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Retiro de contratos perpetuos",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Hora estimada"
   },
@@ -6329,6 +6327,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Solicitud de retiro presentada"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask realizará el canje por el token que desees. No se aplica ninguna tarifa de MetaMask al canjear a mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Tú recibes"
@@ -6454,6 +6456,10 @@
   },
   "provide": {
     "message": "Proporcionar"
+  },
+  "providerFee": {
+    "message": "Tarifa del proveedor",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Dirección pública"
@@ -6661,8 +6667,16 @@
   "receiveCrypto": {
     "message": "Recibir criptomonedas"
   },
+  "receiveToken": {
+    "message": "Token a recibir",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Recibido"
+  },
+  "receivedTotal": {
+    "message": "Total recibido",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Dirección de recepción",
@@ -9827,6 +9841,10 @@
   "willApproveAmountForSwapping": {
     "message": "Aprueba token para canjear."
   },
+  "withdrawTo": {
+    "message": "Recibir",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Retirando"
   },
@@ -9859,6 +9877,10 @@
   "youSent": {
     "message": "Usted envió",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Recibirás",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Su actividad"
