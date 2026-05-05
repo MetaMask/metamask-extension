@@ -43,8 +43,8 @@ export const ConfirmContextProvider: React.FC<{
     useState(true);
   const { currentConfirmation: currentConfirmationFromHook } =
     useCurrentConfirmation(confirmationId);
-  const currentConfirmation =
-    currentConfirmationOverride ?? currentConfirmationFromHook;
+  const currentConfirmation = (currentConfirmationOverride ??
+    currentConfirmationFromHook) as Confirmation | undefined;
 
   useSyncConfirmPath(
     currentConfirmationOverride === undefined ? currentConfirmation : undefined,
@@ -98,7 +98,9 @@ export const ConfirmContextProvider: React.FC<{
   );
 
   return (
-    <ConfirmContext.Provider value={value}>{children}</ConfirmContext.Provider>
+    <ConfirmContext.Provider value={value as ConfirmContextType}>
+      {children}
+    </ConfirmContext.Provider>
   );
 };
 
