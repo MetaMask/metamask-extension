@@ -5664,9 +5664,6 @@
   "perpsCancelOrder": {
     "message": "注文取消"
   },
-  "perpsCandleIntervals": {
-    "message": "ローソク足の間隔"
-  },
   "perpsCandlePeriodDays": {
     "message": "日"
   },
@@ -5678,9 +5675,6 @@
   },
   "perpsCloseAll": {
     "message": "すべてクローズ"
-  },
-  "perpsCloseAmount": {
-    "message": "クローズ金額"
   },
   "perpsCloseLong": {
     "message": "ロングをクローズ"
@@ -6262,6 +6256,10 @@
   "perpsWithdraw": {
     "message": "出金"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "パーペチュアルの引き出し",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "推定所要時間"
   },
@@ -6309,6 +6307,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "出金が送信されました"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMaskがユーザーに代わって希望のトークンをスワップします。mUSDへのスワップ時にMetaMaskの手数料は発生しません。",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "受け取る"
@@ -6434,6 +6436,10 @@
   },
   "provide": {
     "message": "提供"
+  },
+  "providerFee": {
+    "message": "プロバイダーの手数料",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "パブリックアドレス"
@@ -6641,8 +6647,16 @@
   "receiveCrypto": {
     "message": "仮想通貨を受け取ります"
   },
+  "receiveToken": {
+    "message": "トークンの受取",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "受け取りました"
+  },
+  "receivedTotal": {
+    "message": "受取額合計",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "受取人のアドレス",
@@ -9779,6 +9793,10 @@
   "willApproveAmountForSwapping": {
     "message": "トークンのスワップを承認"
   },
+  "withdrawTo": {
+    "message": "受取",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "引き出し中"
   },
@@ -9811,6 +9829,10 @@
   "youSent": {
     "message": "送金額:",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "受取額",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "アクティビティ"
