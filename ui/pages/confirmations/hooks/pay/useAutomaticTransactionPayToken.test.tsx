@@ -2,7 +2,6 @@ import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
-import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionPayRequiredToken } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
@@ -43,18 +42,15 @@ const STATE_MOCK = {
 function renderHookWithProvider({
   disable = false,
   preferredToken,
-  transactionType,
 }: {
   disable?: boolean;
   preferredToken?: SetPayTokenRequest;
-  transactionType?: TransactionType;
 } = {}) {
   const store = mockStore(STATE_MOCK);
 
   const confirmContextValue = {
     currentConfirmation: {
       id: TRANSACTION_ID_MOCK,
-      type: transactionType,
       txParams: { from: '0x123' },
     },
     isScrollToBottomCompleted: true,
@@ -232,52 +228,6 @@ describe('useAutomaticTransactionPayToken', () => {
     expect(setPayTokenMock).toHaveBeenCalledWith({
       address: TOKEN_ADDRESS_1_MOCK,
       chainId: CHAIN_ID_1_MOCK,
-    });
-  });
-
-  it('selects target token for perps withdraw instead of first available token', () => {
-    useTransactionPayAvailableTokensMock.mockReturnValue([
-      {
-        address: TOKEN_ADDRESS_2_MOCK,
-        chainId: CHAIN_ID_2_MOCK,
-      },
-      {
-        address: TOKEN_ADDRESS_3_MOCK,
-        chainId: CHAIN_ID_2_MOCK,
-      },
-    ] as Asset[]);
-
-    renderHookWithProvider({ transactionType: TransactionType.perpsWithdraw });
-
-    expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_1_MOCK,
-      chainId: CHAIN_ID_1_MOCK,
-    });
-  });
-
-  it('selects preferred token for perps withdraw when preferred token is available', () => {
-    useTransactionPayAvailableTokensMock.mockReturnValue([
-      {
-        address: TOKEN_ADDRESS_2_MOCK,
-        chainId: CHAIN_ID_2_MOCK,
-      },
-      {
-        address: PREFERRED_TOKEN_ADDRESS_MOCK,
-        chainId: PREFERRED_CHAIN_ID_MOCK,
-      },
-    ] as Asset[]);
-
-    renderHookWithProvider({
-      preferredToken: {
-        address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
-        chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
-      },
-      transactionType: TransactionType.perpsWithdraw,
-    });
-
-    expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: PREFERRED_TOKEN_ADDRESS_MOCK,
-      chainId: PREFERRED_CHAIN_ID_MOCK,
     });
   });
 });

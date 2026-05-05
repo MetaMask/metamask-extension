@@ -11,21 +11,12 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
-import { PERPS_WITHDRAW_ROUTE } from '../../../helpers/constants/routes';
 import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
 const mockGetPerpsStreamManager = jest.fn();
-const mockNavigate = jest.fn();
-const mockTriggerWithdrawConfirmation = jest.fn();
-const confirmationsPayPostQuoteFlag = 'confirmations_pay_post_quote';
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate,
-}));
 
 jest.mock('../../../hooks/perps/usePerpsTransactionHistory', () => ({
   usePerpsTransactionHistory: jest.fn(() => ({
@@ -88,12 +79,6 @@ jest.mock('./hooks/usePerpsTabExploreData', () => ({
   })),
 }));
 
-jest.mock('./hooks/usePerpsWithdrawConfirmation', () => ({
-  usePerpsWithdrawConfirmation: () => ({
-    trigger: mockTriggerWithdrawConfirmation,
-  }),
-}));
-
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
@@ -115,28 +100,9 @@ const mockStore = configureStore({
   },
 });
 
-function getStoreWithRemoteFeatureFlags(
-  remoteFeatureFlags: Record<string, unknown>,
-  { isTestnet = false }: { isTestnet?: boolean } = {},
-) {
-  return configureStore({
-    metamask: {
-      ...mockState.metamask,
-      remoteFeatureFlags,
-      isTestnet,
-      isFirstTimeUser: { testnet: false, mainnet: false },
-      watchlistMarkets: {
-        testnet: [],
-        mainnet: ['BTC', 'ETH'],
-      },
-    },
-  });
-}
-
 describe('PerpsView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockTriggerWithdrawConfirmation.mockResolvedValue(undefined);
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
     jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
@@ -165,57 +131,6 @@ describe('PerpsView', () => {
       clearAllOptimisticTPSL: jest.fn(),
       pushPositionsWithOverrides: jest.fn(),
       orders: { pushData: jest.fn() },
-    });
-  });
-
-  describe('withdraw routing', () => {
-    it('navigates to the standalone Perps withdraw page when post-quote withdraw is disabled', () => {
-      renderWithProvider(<PerpsView />, mockStore);
-
-      fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
-      fireEvent.click(screen.getByTestId('perps-balance-dropdown-withdraw'));
-
-      expect(mockNavigate).toHaveBeenCalledWith(PERPS_WITHDRAW_ROUTE);
-      expect(mockTriggerWithdrawConfirmation).not.toHaveBeenCalled();
-    });
-
-    it('opens the confirmations-backed withdraw flow when post-quote withdraw is enabled', () => {
-      const store = getStoreWithRemoteFeatureFlags({
-        [confirmationsPayPostQuoteFlag]: {
-          overrides: {
-            perpsWithdraw: { enabled: true },
-          },
-        },
-      });
-
-      renderWithProvider(<PerpsView />, store);
-
-      fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
-      fireEvent.click(screen.getByTestId('perps-balance-dropdown-withdraw'));
-
-      expect(mockTriggerWithdrawConfirmation).toHaveBeenCalledTimes(1);
-      expect(mockNavigate).not.toHaveBeenCalled();
-    });
-
-    it('navigates to the standalone Perps withdraw page on testnet even when post-quote withdraw is enabled', () => {
-      const store = getStoreWithRemoteFeatureFlags(
-        {
-          [confirmationsPayPostQuoteFlag]: {
-            overrides: {
-              perpsWithdraw: { enabled: true },
-            },
-          },
-        },
-        { isTestnet: true },
-      );
-
-      renderWithProvider(<PerpsView />, store);
-
-      fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
-      fireEvent.click(screen.getByTestId('perps-balance-dropdown-withdraw'));
-
-      expect(mockNavigate).toHaveBeenCalledWith(PERPS_WITHDRAW_ROUTE);
-      expect(mockTriggerWithdrawConfirmation).not.toHaveBeenCalled();
     });
   });
 

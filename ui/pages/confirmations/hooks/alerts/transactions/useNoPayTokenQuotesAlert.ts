@@ -8,7 +8,6 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
   useIsTransactionPayLoading,
-  useTransactionPayIsPostQuote,
   useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
@@ -20,18 +19,15 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
   const { payToken } = useTransactionPayToken();
   const quotes = useTransactionPayQuotes();
   const isQuotesLoading = useIsTransactionPayLoading();
-  const isPostQuote = useTransactionPayIsPostQuote();
   const sourceAmounts = useTransactionPaySourceAmounts();
   const requiredTokens = useTransactionPayRequiredTokens();
 
-  const isOptionalOnly =
-    !isPostQuote &&
-    (sourceAmounts ?? []).every(
-      (sourceAmount) =>
-        requiredTokens?.find(
-          (rt) => rt.address === sourceAmount.targetTokenAddress,
-        )?.skipIfBalance,
-    );
+  const isOptionalOnly = (sourceAmounts ?? []).every(
+    (sourceAmount) =>
+      requiredTokens?.find(
+        (rt) => rt.address === sourceAmount.targetTokenAddress,
+      )?.skipIfBalance,
+  );
 
   const showAlert =
     payToken &&

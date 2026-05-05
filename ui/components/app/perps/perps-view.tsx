@@ -36,11 +36,8 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
-import { selectIsPerpsWithdrawPostQuoteEnabled } from '../../../pages/confirmations/selectors/feature-flags';
-
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
-import { usePerpsWithdrawConfirmation } from './hooks/usePerpsWithdrawConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
 import { PerpsExploreMarkets } from './perps-explore-markets';
@@ -74,31 +71,13 @@ export const PerpsView: React.FC = () => {
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const tutorialCompleted = useSelector(selectTutorialCompleted);
-  const isPerpsWithdrawPostQuoteEnabled = useSelector(
-    selectIsPerpsWithdrawPostQuoteEnabled,
-  );
   const { isEligible } = usePerpsEligibility();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
-  const { trigger: triggerWithdrawConfirmation } =
-    usePerpsWithdrawConfirmation();
-  const { trigger: triggerWithdrawNavigation } = usePerpsWithdrawNavigation();
+  const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation();
   const [isCloseAllPending, setIsCloseAllPending] = useState(false);
   const [isCancelAllPending, setIsCancelAllPending] = useState(false);
   const [batchActionError, setBatchActionError] = useState<string | null>(null);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
-  const isMainnetPostQuoteWithdrawEnabled =
-    isPerpsWithdrawPostQuoteEnabled && !isTestnet;
-  const triggerWithdraw = useCallback(() => {
-    if (isMainnetPostQuoteWithdrawEnabled) {
-      return triggerWithdrawConfirmation();
-    }
-
-    return triggerWithdrawNavigation();
-  }, [
-    isMainnetPostQuoteWithdrawEnabled,
-    triggerWithdrawConfirmation,
-    triggerWithdrawNavigation,
-  ]);
 
   // Stream hooks must run before any effects that touch PerpsStreamManager.
   // `usePerpsStreamManager` (inside these hooks) calls `perpsInit` then `init(address)`;

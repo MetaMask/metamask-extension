@@ -1,8 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../context/confirm';
-import { selectIsPerpsWithdrawPostQuoteEnabled } from '../../selectors/feature-flags';
 import { setPostQuote } from '../../../../store/controller-actions/transaction-pay-controller';
 import { isPerpsWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
 
@@ -16,17 +14,9 @@ export function useTransactionPayPostQuote(): void {
   const isSet = useRef<string | null>(null);
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
-  const isPerpsWithdrawPostQuoteEnabled = useSelector(
-    selectIsPerpsWithdrawPostQuoteEnabled,
-  );
 
   useEffect(() => {
-    if (
-      !transactionId ||
-      isSet.current === transactionId ||
-      !isPerpsWithdraw ||
-      !isPerpsWithdrawPostQuoteEnabled
-    ) {
+    if (!transactionId || isSet.current === transactionId || !isPerpsWithdraw) {
       return;
     }
 
@@ -44,5 +34,5 @@ export function useTransactionPayPostQuote(): void {
         }
       },
     );
-  }, [isPerpsWithdraw, isPerpsWithdrawPostQuoteEnabled, transactionId]);
+  }, [isPerpsWithdraw, transactionId]);
 }

@@ -113,31 +113,6 @@ describe('useTransactionCustomAmountAlerts', () => {
     });
   });
 
-  it('sets hideResults to true when InsufficientPerpsBalance alert exists', () => {
-    useAlertsMock.mockReturnValue(
-      createMockUseAlertsReturnValue({
-        alerts: [
-          createMockAlert({
-            key: AlertsName.InsufficientPerpsBalance,
-            message: 'Insufficient funds',
-            isBlocking: true,
-            severity: Severity.Danger,
-          }),
-        ],
-        hasDangerAlerts: true,
-        hasAlerts: true,
-        hasUnconfirmedDangerAlerts: true,
-      }),
-    );
-
-    const { result } = runHook();
-
-    expect(result.current).toStrictEqual({
-      disableUpdate: false,
-      hideResults: true,
-    });
-  });
-
   it('sets hideResults to true when SigningOrSubmitting alert exists', () => {
     useAlertsMock.mockReturnValue(
       createMockUseAlertsReturnValue({

@@ -49,8 +49,3 @@ export const selectTransactionPayIsMaxAmountByTransactionId = createSelector(
     (transactionData as { isMaxAmount?: boolean } | undefined)?.isMaxAmount ??
     false,
 );
-
-export const selectTransactionPayIsPostQuoteByTransactionId = createSelector(
-  selectTransactionDataByTransactionId,
-  (transactionData) => transactionData?.isPostQuote ?? false,
-);

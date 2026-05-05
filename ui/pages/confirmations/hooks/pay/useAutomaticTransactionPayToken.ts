@@ -1,11 +1,8 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { getHardwareWalletType } from '../../../../selectors';
-import { isPerpsWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
 import { Asset } from '../../types/send';
-import { useConfirmContext } from '../../context/confirm';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -19,7 +16,6 @@ export function useAutomaticTransactionPayToken({
   preferredToken?: SetPayTokenRequest;
 } = {}) {
   const isUpdated = useRef(false);
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
   const tokens = useTransactionPayAvailableTokens();
@@ -34,7 +30,6 @@ export function useAutomaticTransactionPayToken({
     () => Boolean(hardwareWalletType),
     [hardwareWalletType],
   );
-  const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   const targetToken = useMemo(
     () => requiredTokens.find((token) => !token.allowUnderMinimum),
@@ -48,7 +43,6 @@ export function useAutomaticTransactionPayToken({
 
     const automaticToken = getBestToken({
       isHardwareWallet,
-      isPerpsWithdraw,
       targetToken,
       tokens: tokensWithBalance,
       preferredToken,
@@ -67,7 +61,6 @@ export function useAutomaticTransactionPayToken({
   }, [
     disable,
     isHardwareWallet,
-    isPerpsWithdraw,
     preferredToken,
     requiredTokens,
     setPayToken,
@@ -78,13 +71,11 @@ export function useAutomaticTransactionPayToken({
 
 function getBestToken({
   isHardwareWallet,
-  isPerpsWithdraw,
   preferredToken,
   targetToken,
   tokens,
 }: {
   isHardwareWallet: boolean;
-  isPerpsWithdraw: boolean;
   preferredToken?: SetPayTokenRequest;
   targetToken?: { address: Hex; chainId: Hex };
   tokens: Asset[];
@@ -111,10 +102,6 @@ function getBestToken({
     if (preferredTokenAvailable) {
       return preferredToken;
     }
-  }
-
-  if (isPerpsWithdraw) {
-    return targetTokenFallback;
   }
 
   if (tokens?.length) {

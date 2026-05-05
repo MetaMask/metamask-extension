@@ -3,7 +3,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { renderHook } from '@testing-library/react-hooks';
-import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../context/confirm';
 import { setPostQuote } from '../../../../store/controller-actions/transaction-pay-controller';
 import { useTransactionPayPostQuote } from './useTransactionPayPostQuote';
@@ -13,14 +12,9 @@ jest.mock('../../context/confirm', () => ({
 }));
 
 jest.mock('../../../../store/controller-actions/transaction-pay-controller');
-jest.mock('react-redux', () => ({
-  useSelector: jest.fn(),
-}));
 
 const useConfirmContextMock = jest.mocked(useConfirmContext);
 const setPostQuoteMock = jest.mocked(setPostQuote);
-const useSelectorMock = jest.mocked(useSelector);
-const confirmationsPayPostQuoteFlag = 'confirmations_pay_post_quote';
 
 function mockConfirmation(transactionMeta: Partial<TransactionMeta> | null) {
   useConfirmContextMock.mockReturnValue({
@@ -28,27 +22,10 @@ function mockConfirmation(transactionMeta: Partial<TransactionMeta> | null) {
   } as ReturnType<typeof useConfirmContext>);
 }
 
-function mockPerpsWithdrawPostQuoteEnabled(enabled: boolean) {
-  useSelectorMock.mockImplementation((selector) =>
-    selector({
-      metamask: {
-        remoteFeatureFlags: {
-          [confirmationsPayPostQuoteFlag]: {
-            overrides: {
-              perpsWithdraw: { enabled },
-            },
-          },
-        },
-      },
-    } as never),
-  );
-}
-
 describe('useTransactionPayPostQuote', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setPostQuoteMock.mockResolvedValue(undefined);
-    mockPerpsWithdrawPostQuoteEnabled(true);
   });
 
   it('calls setPostQuote with isHyperliquidSource for a perpsWithdraw transaction', () => {
@@ -69,18 +46,6 @@ describe('useTransactionPayPostQuote', () => {
     mockConfirmation({
       id: 'tx-2',
       type: TransactionType.perpsDeposit,
-    });
-
-    renderHook(() => useTransactionPayPostQuote());
-
-    expect(setPostQuoteMock).not.toHaveBeenCalled();
-  });
-
-  it('does not call setPostQuote when perpsWithdraw post-quote is disabled', () => {
-    mockPerpsWithdrawPostQuoteEnabled(false);
-    mockConfirmation({
-      id: 'tx-disabled',
-      type: TransactionType.perpsWithdraw,
     });
 
     renderHook(() => useTransactionPayPostQuote());

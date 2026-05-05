@@ -8,7 +8,6 @@ import {
   selectTransactionPaymentTokenByTransactionId,
   selectTransactionPaySourceAmountsByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
-  selectTransactionPayIsPostQuoteByTransactionId,
   TransactionPayState,
 } from './transactionPayController';
 
@@ -251,41 +250,6 @@ describe('transactionPayController selectors', () => {
       const state = createMockState();
 
       const result = selectTransactionPayIsMaxAmountByTransactionId(
-        state,
-        TRANSACTION_ID,
-      );
-
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('selectTransactionPayIsPostQuoteByTransactionId', () => {
-    it('returns true when isPostQuote is true', () => {
-      const state = createMockState({ isPostQuote: true });
-
-      const result = selectTransactionPayIsPostQuoteByTransactionId(
-        state,
-        TRANSACTION_ID,
-      );
-
-      expect(result).toBe(true);
-    });
-
-    it('returns false when isPostQuote is false', () => {
-      const state = createMockState({ isPostQuote: false });
-
-      const result = selectTransactionPayIsPostQuoteByTransactionId(
-        state,
-        TRANSACTION_ID,
-      );
-
-      expect(result).toBe(false);
-    });
-
-    it('returns false when transaction data does not exist', () => {
-      const state = createMockState();
-
-      const result = selectTransactionPayIsPostQuoteByTransactionId(
         state,
         TRANSACTION_ID,
       );
