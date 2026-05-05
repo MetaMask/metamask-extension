@@ -25,22 +25,6 @@ import {
 } from '../../../../shared/lib/passkey';
 import SetupPasskey from './setup-passkey';
 
-jest.mock('../../../components/ui/icon/status-icon', () => ({
-  StatusIcon: ({
-    state,
-    className,
-  }: {
-    state: 'loading' | 'success' | 'fail';
-    className?: string;
-  }) => (
-    <span
-      data-testid={`mock-status-icon-${state}`}
-      className={className}
-      aria-hidden
-    />
-  ),
-}));
-
 jest.mock('../../../../shared/lib/passkey', () => ({
   ...jest.requireActual<typeof import('../../../../shared/lib/passkey')>(
     '../../../../shared/lib/passkey',
