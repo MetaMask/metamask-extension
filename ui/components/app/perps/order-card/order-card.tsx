@@ -14,10 +14,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import {
-  formatPerpsFiatMinimal,
-  formatPerpsFiatUniversal,
-} from '../utils/formatPerpsDisplayPrice';
+import { formatPerpsFiatUniversal } from '../utils/formatPerpsDisplayPrice';
 import { getDisplayName } from '../utils';
 import { formatOrderLabel } from '../utils/orderUtils';
 import type { Order } from '../types';
@@ -61,25 +58,16 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     }
   }, [navigate, order, onClick]);
 
-  // Limit/market: notional (size × limit price). TP/SL: trigger level (take-profit / stop-loss price).
+  // All order types display the limit/trigger price with universal decimals
+  // (matching market price precision: 0 for BTC, 2 for CL, 6 for CHIP).
   const orderValueUsd = useMemo(() => {
-    if (isTriggerBasedOrder) {
-      const triggerLevel =
-        parseFloat(order.triggerPrice || order.price || '0') || 0;
-      if (triggerLevel > 0) {
-        // Universal range so sub-cent assets (e.g. PUMP at $0.001824) render
-        // the real trigger price instead of collapsing to "<$0.01".
-        return formatPerpsFiatUniversal(triggerLevel);
-      }
-    }
-
-    const size = parseFloat(order.size) || 0;
-    const price = parseFloat(order.price) || 0;
-    if (size > 0 && price > 0) {
-      return formatPerpsFiatMinimal(size * price);
+    const price =
+      parseFloat(order.triggerPrice || order.price || '0') || 0;
+    if (price > 0) {
+      return formatPerpsFiatUniversal(price);
     }
     return null;
-  }, [isTriggerBasedOrder, order.triggerPrice, order.size, order.price]);
+  }, [order.triggerPrice, order.price]);
 
   const baseStyles = 'cursor-pointer pt-2 pb-2 px-4';
   // Non-trigger rows keep the fixed 62 px height to match the position/token tabs.

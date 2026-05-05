@@ -171,7 +171,7 @@ describe('OrderCard', () => {
     expect(screen.getByText('2.5 ETH')).toBeInTheDocument();
   });
 
-  it('displays formatted USD value for limit orders', () => {
+  it('displays limit price with universal decimals for limit orders', () => {
     const order = createMockOrder({
       orderType: 'limit',
       size: '1.0',
@@ -179,11 +179,11 @@ describe('OrderCard', () => {
     });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    // formatPerpsFiatMinimal strips .00 for whole-dollar amounts (mobile parity)
+    // formatPerpsFiatUniversal: $1000-$10000 range, max 1 decimal, trailing zeros stripped
     expect(screen.getByText('$3,500')).toBeInTheDocument();
   });
 
-  it('keeps meaningful decimals for limit order USD values', () => {
+  it('shows correct decimals for limit price based on universal ranges', () => {
     const order = createMockOrder({
       orderType: 'limit',
       size: '1.0',
@@ -191,8 +191,20 @@ describe('OrderCard', () => {
     });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    // fiatStyleStripping preserves .10 (only .00 is stripped)
-    expect(screen.getByText('$3,500.10')).toBeInTheDocument();
+    // formatPerpsFiatUniversal: $1000-$10000 range allows max 1 decimal
+    expect(screen.getByText('$3,500.1')).toBeInTheDocument();
+  });
+
+  it('shows zero decimals for BTC-range limit price (>$10,000)', () => {
+    const order = createMockOrder({
+      orderType: 'limit',
+      size: '0.01',
+      price: '95173.00',
+    });
+    renderWithProvider(<OrderCard order={order} />, mockStore);
+
+    // formatPerpsFiatUniversal: >$10,000 range, 0 decimals
+    expect(screen.getByText('$95,173')).toBeInTheDocument();
   });
 
   it('displays TP/SL trigger price, not size × price notional', () => {
