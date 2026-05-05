@@ -72,6 +72,24 @@ function renderModal(
   );
 }
 
+function expectErrorContent({
+  loginError,
+  title,
+  description,
+  buttonText,
+}: {
+  loginError: React.ComponentProps<typeof LoginErrorModal>['loginError'];
+  title: string;
+  description: string;
+  buttonText: string;
+}) {
+  renderModal({ loginError });
+
+  expect(screen.getByText(title)).toBeInTheDocument();
+  expect(screen.getByText(description)).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: buttonText })).toBeInTheDocument();
+}
+
 describe('LoginErrorModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -85,31 +103,23 @@ describe('LoginErrorModal', () => {
   });
 
   describe('render', () => {
-    it.each([
-      [
-        LOGIN_ERROR.UNABLE_TO_CONNECT,
-        messages.loginErrorConnectTitle.message,
-        messages.loginErrorConnectDescription.message,
-        messages.loginErrorConnectButton.message,
-      ],
-      [
-        LOGIN_ERROR.SESSION_EXPIRED,
-        messages.loginErrorSessionExpiredTitle.message,
-        messages.loginErrorSessionExpiredDescription.message,
-        messages.loginErrorSessionExpiredButton.message,
-      ],
-    ])(
-      'renders the %s content',
-      (loginError, title, description, buttonText) => {
-        renderModal({ loginError });
+    it('renders the unable to connect content', () => {
+      expectErrorContent({
+        loginError: LOGIN_ERROR.UNABLE_TO_CONNECT,
+        title: messages.loginErrorConnectTitle.message,
+        description: messages.loginErrorConnectDescription.message,
+        buttonText: messages.loginErrorConnectButton.message,
+      });
+    });
 
-        expect(screen.getByText(title)).toBeInTheDocument();
-        expect(screen.getByText(description)).toBeInTheDocument();
-        expect(
-          screen.getByRole('button', { name: buttonText }),
-        ).toBeInTheDocument();
-      },
-    );
+    it('renders the session expired content', () => {
+      expectErrorContent({
+        loginError: LOGIN_ERROR.SESSION_EXPIRED,
+        title: messages.loginErrorSessionExpiredTitle.message,
+        description: messages.loginErrorSessionExpiredDescription.message,
+        buttonText: messages.loginErrorSessionExpiredButton.message,
+      });
+    });
 
     it('renders the reset wallet description with the social login type', () => {
       mockGetSocialLoginType.mockReturnValue(AuthConnection.Google);
@@ -194,24 +204,38 @@ describe('LoginErrorModal', () => {
       expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
     });
 
-    it.each(['popup', 'side panel'])(
-      'opens the extension in browser after reset from the %s',
-      async () => {
-        mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
+    it('opens the extension in browser after reset from popup', async () => {
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
 
-        renderModal();
+      renderModal();
 
-        fireEvent.click(screen.getByTestId('login-error-modal-button'));
+      fireEvent.click(screen.getByTestId('login-error-modal-button'));
 
-        await waitFor(() => {
-          expect(mockResetWallet).toHaveBeenCalledTimes(1);
-          expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
-            DEFAULT_ROUTE,
-          );
-        });
+      await waitFor(() => {
+        expect(mockResetWallet).toHaveBeenCalledTimes(1);
+        expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+          DEFAULT_ROUTE,
+        );
+      });
 
-        expect(mockNavigate).not.toHaveBeenCalled();
-      },
-    );
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('opens the extension in browser after reset from side panel', async () => {
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
+
+      renderModal();
+
+      fireEvent.click(screen.getByTestId('login-error-modal-button'));
+
+      await waitFor(() => {
+        expect(mockResetWallet).toHaveBeenCalledTimes(1);
+        expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+          DEFAULT_ROUTE,
+        );
+      });
+
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
   });
 });
