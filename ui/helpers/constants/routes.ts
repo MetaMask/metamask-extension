@@ -157,6 +157,9 @@ export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+export const BATCH_SELL_ROOT_ROUTE = '/batch-sell';
+export const BATCH_SELL_SELECT_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/select`;
+export const BATCH_SELL_CONFIRM_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/confirm`;
 
 export const DEEP_LINK_ROUTE = '/link';
 
@@ -663,6 +666,16 @@ export const ROUTES = [
     path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`,
     label: 'Review Gator Permissions',
     trackInAnalytics: false,
+  },
+  {
+    path: BATCH_SELL_SELECT_ROUTE,
+    label: 'Batch Sell Select',
+    trackInAnalytics: true,
+  },
+  {
+    path: BATCH_SELL_CONFIRM_ROUTE,
+    label: 'Batch Sell Confirm',
+    trackInAnalytics: true,
   },
   ...MUSD_ROUTE_DEFINITIONS,
 ] as const satisfies AppRoute[];

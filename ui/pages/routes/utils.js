@@ -28,6 +28,7 @@ import {
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
+  BATCH_SELL_ROOT_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -252,6 +253,20 @@ export function hideAppHeader(props) {
     ),
   );
   if (isCrossChainSwapsPage) {
+    return true;
+  }
+
+  const isBatchSellPage = Boolean(
+    matchPath(
+      {
+        path: `${BATCH_SELL_ROOT_ROUTE}`,
+        end: false,
+      },
+      location.pathname,
+    ),
+  );
+
+  if (isBatchSellPage) {
     return true;
   }
 

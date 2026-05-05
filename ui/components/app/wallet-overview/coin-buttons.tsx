@@ -74,6 +74,7 @@ import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridg
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 import { useOnClickOutside } from '../perps/hooks/useClickOutside';
+import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 
 type MoreButtonsGroupProps<TagElem extends React.ElementType = 'div'> = {
@@ -311,6 +312,8 @@ const CoinButtons = ({
 
   const { openBridgeExperience } = useBridging();
 
+  const { openBatchSellExperience } = useBatchSell();
+
   const handleMoreOptionsButtonClick = useCallback(() => {
     setIsMoreOptionsDropdownOpen((prev) => !prev);
   }, []);
@@ -448,8 +451,8 @@ const CoinButtons = ({
       },
     });
 
-    console.log('hehehe');
-  }, [trackEvent, trackingLocation, chainId]);
+    transitionForward(() => openBatchSellExperience());
+  }, [trackEvent, trackingLocation, chainId, openBatchSellExperience]);
 
   useOnClickOutside({
     containerRef,

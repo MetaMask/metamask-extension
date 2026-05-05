@@ -70,6 +70,7 @@ import {
   PERPS_WITHDRAW_ROUTE,
   CONTACTS_ROUTE,
   SETTINGS_V2_ROUTE,
+  BATCH_SELL_ROOT_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
@@ -140,6 +141,7 @@ import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
+import BatchSell from '../batch-sell';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -437,6 +439,10 @@ export const routeConfig = [
             capabilities: SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES,
             element: <SnapView />,
           }),
+          {
+            path: `${BATCH_SELL_ROOT_ROUTE}/*`,
+            element: <BatchSell />,
+          },
           {
             path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
             element: <CrossChainSwapTxDetails />,
