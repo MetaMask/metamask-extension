@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { ToastContent, showToast, type ToastStatus } from './shared';
 
 const mockToastLoading = jest.fn();
@@ -16,11 +16,11 @@ jest.mock('react-hot-toast', () => ({
   },
 }));
 
-jest.mock('../../helpers/utils/transaction-display', () => ({
+jest.mock('../../../helpers/utils/transaction-display', () => ({
   useTransactionDisplay: (status: string) => mockUseTransactionDisplay(status),
 }));
 
-jest.mock('../../components/ui/toast/toast', () => ({
+jest.mock('../../ui/toast/toast', () => ({
   ToastContent: ({ title }: { title: string }) => <div>{title}</div>,
 }));
 

@@ -4057,6 +4057,9 @@
   "maxFeeTooltip": {
     "message": "A maximum fee provided to pay for the transaction."
   },
+  "maybeLater": {
+    "message": "Maybe later"
+  },
   "medium": {
     "message": "Market"
   },
@@ -5285,6 +5288,62 @@
   },
   "participateInMetaMetricsDescription": {
     "message": "Participate in MetaMetrics to help us make MetaMask better"
+  },
+  "passkeyDescription": {
+    "message": "Use Face ID or your fingerprint to unlock MetaMask on this device instead of entering your password. This creates a secure passkey stored on your device."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "Biometrics are already set up for this wallet.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "We couldn't verify your biometrics. Try again.",
+    "description": "Shown when passkey authentication response verification fails."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "Your biometrics response was incomplete. Try again.",
+    "description": "Shown when the passkey assertion is missing required key material."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "Biometrics sign-in session expired. Try again.",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "Biometrics setup session expired. Try again from the beginning.",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "Biometrics aren't set up for this wallet. Turn on biometrics in Settings.",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "Biometrics setup failed. Try again",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "We couldn't verify your biometrics setup. Try again.",
+    "description": "Shown when passkey registration response verification fails."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "We couldn't unlock with biometrics. Try again, or set up biometrics again in Settings.",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "Biometrics don't match your current wallet lock. Set up biometrics again in Settings.",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
+  },
+  "passkeySetupStepRegister": {
+    "message": "Register biometrics"
+  },
+  "passkeySetupStepVerify": {
+    "message": "Verify biometrics"
+  },
+  "passkeyTroubleshoot": {
+    "message": "Having trouble with biometrics?",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyUnlockFailed": {
+    "message": "Biometrics unlock failed. Try your password."
   },
   "password": {
     "message": "Password"
@@ -7385,6 +7444,9 @@
   "setUp": {
     "message": "Set up",
     "description": "Action label for Smart Accounts. Used on multichain details page."
+  },
+  "setUpPasskey": {
+    "message": "Set up biometrics"
   },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
@@ -9610,6 +9672,9 @@
     "message": "Unlock to reveal",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "Unlock with biometrics"
+  },
   "unpin": {
     "message": "Unpin"
   },
@@ -9695,6 +9760,9 @@
   },
   "useNftDetectionDescriptionText": {
     "message": "Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
+  },
+  "usePassword": {
+    "message": "Use password"
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"
