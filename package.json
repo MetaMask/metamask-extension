@@ -292,7 +292,10 @@
     "@metamask/snaps-controllers": "^20.0.3",
     "@metamask/perps-controller": "^4.0.0",
     "@metamask/assets-controllers@npm:^105.0.0": "patch:@metamask/assets-controllers@npm%3A105.1.0#~/.yarn/patches/@metamask-assets-controllers-npm-105.1.0-76332163aa.patch",
-    "@metamask/assets-controllers@npm:^104.3.0": "patch:@metamask/assets-controllers@npm%3A105.1.0#~/.yarn/patches/@metamask-assets-controllers-npm-105.1.0-76332163aa.patch"
+    "@metamask/assets-controllers@npm:^104.3.0": "patch:@metamask/assets-controllers@npm%3A105.1.0#~/.yarn/patches/@metamask-assets-controllers-npm-105.1.0-76332163aa.patch",
+    "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
+    "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
+    "@metamask/permission-controller@npm:^12.3.0": "^13.0.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -368,7 +371,7 @@
     "@metamask/hw-wallet-sdk": "^0.8.0",
     "@metamask/institutional-wallet-snap": "1.5.0",
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch",
-    "@metamask/json-rpc-engine": "^10.2.3",
+    "@metamask/json-rpc-engine": "^10.3.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
     "@metamask/keyring-api": "^21.6.0",
     "@metamask/keyring-controller": "^25.1.1",
@@ -384,7 +387,7 @@
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain-account-service": "^8.0.1",
     "@metamask/multichain-api-client": "^0.10.1",
-    "@metamask/multichain-api-middleware": "^2.0.0",
+    "@metamask/multichain-api-middleware": "^3.0.0",
     "@metamask/multichain-network-controller": "^3.0.5",
     "@metamask/multichain-transactions-controller": "^7.0.4",
     "@metamask/name-controller": "^9.1.0",
@@ -394,7 +397,7 @@
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
     "@metamask/passkey-controller": "^1.0.0",
-    "@metamask/permission-controller": "^12.2.1",
+    "@metamask/permission-controller": "^13.0.0",
     "@metamask/permission-log-controller": "^5.0.0",
     "@metamask/permissions-kernel-snap": "^1.1.0",
     "@metamask/perps-controller": "^4.0.0",
