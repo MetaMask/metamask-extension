@@ -19,10 +19,13 @@ import {
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { Category, ErrorCode, Severity } from '@metamask/hw-wallet-sdk';
+import { getDefaultNetworkControllerState } from '@metamask/network-controller';
 import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { CHAIN_IDS } from '../../shared/constants/network';
+import { mockNetworkState } from '../../test/stub/networks';
 import MetaMaskController from './metamask-controller';
 
 const mockToHardwareWalletError = jest.fn();
@@ -180,6 +183,19 @@ describe('MetaMaskController', function () {
         namespace: MOCK_ANY_NAMESPACE,
         captureException: jest.fn(),
       }),
+      initState: (() => {
+        const defaultNetworkState = getDefaultNetworkControllerState();
+        return {
+          NetworkController: {
+            ...defaultNetworkState,
+            networkConfigurationsByChainId: {
+              ...defaultNetworkState.networkConfigurationsByChainId,
+              ...mockNetworkState({ chainId: CHAIN_IDS.MONAD })
+                .networkConfigurationsByChainId,
+            },
+          },
+        };
+      })(),
     });
     initializeMockMiddlewareLog();
     mockToHardwareWalletError.mockReset();

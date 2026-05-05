@@ -1481,6 +1481,7 @@ describe('MetaMaskController', () => {
           .mockReturnValue({
             allTokens: {},
             allIgnoredTokens: {},
+            allDetectedTokens: {},
           });
 
         await metamaskController.createNewVaultAndRestore(

@@ -4,18 +4,23 @@ import type {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
+  NetworkControllerNetworkAddedEvent,
   NetworkControllerNetworkDidChangeEvent,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
 import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
 import {
+  AccountsControllerAccountAddedEvent,
   AccountsControllerGetAccountAction,
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerListAccountsAction,
   AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
 import { TokenListController } from '@metamask/assets-controllers';
-import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
+import {
+  KeyringControllerAccountRemovedEvent,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
 import { PreferencesControllerStateChangeEvent } from '../../controllers/preferences-controller';
 import { RootMessenger } from '../../lib/messenger';
 
@@ -34,10 +39,12 @@ type AllowedActions =
 
 type AllowedEvents =
   | AccountsControllerSelectedEvmAccountChangeEvent
+  | AccountsControllerAccountAddedEvent
   | KeyringControllerAccountRemovedEvent
+  | KeyringControllerUnlockEvent
   | NetworkControllerNetworkDidChangeEvent
   | NetworkControllerStateChangeEvent
-  | PreferencesControllerStateChangeEvent
+  | NetworkControllerNetworkAddedEvent
   | TokenListControllerStateChangeEvent;
 
 export type TokensControllerMessenger = ReturnType<
@@ -74,10 +81,12 @@ export function getTokensControllerMessenger(
     ],
     events: [
       'AccountsController:selectedEvmAccountChange',
+      'AccountsController:accountAdded',
       'KeyringController:accountRemoved',
+      'KeyringController:unlock',
       'NetworkController:networkDidChange',
       'NetworkController:stateChange',
-      'PreferencesController:stateChange',
+      'NetworkController:networkAdded',
       'TokenListController:stateChange',
     ],
   });
