@@ -246,6 +246,10 @@ const mockLivePositions = jest.fn(() => ({
   positions: mockPositions,
   isInitialLoading: false,
 }));
+const mockLiveMarketData = jest.fn(() => ({
+  markets: [...mockCryptoMarkets, ...mockHip3Markets],
+  isInitialLoading: false,
+}));
 
 // Mock the perps stream hooks
 jest.mock('../../hooks/perps/stream', () => ({
@@ -255,10 +259,7 @@ jest.mock('../../hooks/perps/stream', () => ({
     isInitialLoading: false,
   }),
   usePerpsLiveAccount: () => mockLiveAccount(),
-  usePerpsLiveMarketData: () => ({
-    markets: [...mockCryptoMarkets, ...mockHip3Markets],
-    isInitialLoading: false,
-  }),
+  usePerpsLiveMarketData: () => mockLiveMarketData(),
   usePerpsLiveCandles: () => ({
     candleData: {
       symbol: 'ETH',
@@ -382,6 +383,10 @@ describe('PerpsMarketDetailPage', () => {
     });
     mockLivePositions.mockReturnValue({
       positions: mockPositions,
+      isInitialLoading: false,
+    });
+    mockLiveMarketData.mockReturnValue({
+      markets: [...mockCryptoMarkets, ...mockHip3Markets],
       isInitialLoading: false,
     });
     mockUsePerpsMarketFills.mockReturnValue({
@@ -556,6 +561,35 @@ describe('PerpsMarketDetailPage', () => {
 
       expect(getByTestId('perps-market-detail-price')).toBeInTheDocument();
       expect(getByText('ETH-USD')).toBeInTheDocument();
+    });
+
+    it('displays the market max leverage pill in the header', async () => {
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      expect(getByTestId('perps-market-max-leverage')).toHaveTextContent(
+        '20x',
+      );
+    });
+
+    it('omits the market max leverage pill when max leverage is unavailable', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [
+          {
+            ...mockCryptoMarkets[1],
+            maxLeverage: undefined,
+          },
+        ],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(
+        screen.queryByTestId('perps-market-max-leverage'),
+      ).not.toBeInTheDocument();
     });
 
     it('renders market detail page for BTC', async () => {
