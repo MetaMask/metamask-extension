@@ -24,6 +24,7 @@ export type DefiReferralConsentProps = {
   partnerId: string;
   partnerName: string;
   learnMoreUrl: string;
+  termsUrl: string;
 };
 
 const PartnerLink: React.FC<{ text: string; url: string }> = ({
@@ -63,6 +64,7 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
   partnerId,
   partnerName,
   learnMoreUrl,
+  termsUrl,
 }) => {
   const t = useI18nContext();
   const { value: isChecked, toggle } = useBoolean(true);
@@ -100,7 +102,13 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
           {t('defiReferralTitle', [partnerName])}
         </Text>
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {t(defiReferralSubtitle)}{' '}
+          {t(defiReferralSubtitle, [
+            <PartnerLink
+              key="defi-referral-partner-terms"
+              text="terms"
+              url={termsUrl}
+            />,
+          ])}{' '}
           <PartnerLink
             text={`${t('learnMoreUpperCase')}.`}
             url={learnMoreUrl}

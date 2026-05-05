@@ -726,10 +726,6 @@
   "assetsDescription": {
     "message": "Автоматически обнаруживайте токены в своем кошельке, отображайте NFT и получайте пакетные обновления баланса счета"
   },
-  "asterdexReferralSubtitle": {
-    "message": "Получайте 4% кэшбэка от сделок с реферальным кодом MetaMask.",
-    "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Бесплатная попытка отменить своп"
   },
@@ -3238,10 +3234,6 @@
     "message": "Подготовьте свой кошелек к использованию web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralSubtitle": {
-    "message": "Экономьте до 5% на сделках с реферальным кодом MetaMask.",
-    "description": "The subtitle of the GMX referral confirmation screen"
-  },
   "goToSite": {
     "message": "Перейти на сайт"
   },
@@ -3463,10 +3455,6 @@
   },
   "honeypotTitle": {
     "message": "Ловушка"
-  },
-  "hyperliquidReferralSubtitle": {
-    "message": "Экономьте до 4% на сделках с реферальным кодом MetaMask.",
-    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Я понимаю"

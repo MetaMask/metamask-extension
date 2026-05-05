@@ -726,10 +726,6 @@
   "assetsDescription": {
     "message": "Automatische Erkennung von Tokens in Ihrer Wallet, Anzeige von NFTs und stapelweise Aktualisierung des Kontostands"
   },
-  "asterdexReferralSubtitle": {
-    "message": "Erhalten Sie 4 % zurück auf Trades mit einem MetaMask-Empfehlungscode.",
-    "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Versuch, den Swap kostenlos zu stornieren"
   },
@@ -3238,10 +3234,6 @@
     "message": "Bereiten Sie Ihre Wallet für die Nutzung von web3 vor",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralSubtitle": {
-    "message": "Sparen Sie bis zu 5 % auf Trades mit einem MetaMask-Empfehlungscode.",
-    "description": "The subtitle of the GMX referral confirmation screen"
-  },
   "goToSite": {
     "message": "Zur Seite gehen"
   },
@@ -3463,10 +3455,6 @@
   },
   "honeypotTitle": {
     "message": "Honey Pot"
-  },
-  "hyperliquidReferralSubtitle": {
-    "message": "Sparen Sie bis zu 4 % auf Trades mit einem MetaMask-Empfehlungscode.",
-    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Ich verstehe"

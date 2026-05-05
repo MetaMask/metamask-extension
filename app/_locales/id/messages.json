@@ -726,10 +726,6 @@
   "assetsDescription": {
     "message": "Autodeteksi token di dompet Anda, tampilkan NFT, dan dapatkan pembaruan saldo akun secara batch"
   },
-  "asterdexReferralSubtitle": {
-    "message": "Dapatkan cashback 4% untuk perdagangan dengan kode rujukan MetaMask.",
-    "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Mencoba membatalkan pertukaran secara gratis"
   },
@@ -3238,10 +3234,6 @@
     "message": "Siapkan dompet Anda untuk menggunakan web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralSubtitle": {
-    "message": "Hemat hingga 5% untuk perdagangan dengan kode rujukan MetaMask.",
-    "description": "The subtitle of the GMX referral confirmation screen"
-  },
   "goToSite": {
     "message": "Buka situs"
   },
@@ -3463,10 +3455,6 @@
   },
   "honeypotTitle": {
     "message": "Honey pot"
-  },
-  "hyperliquidReferralSubtitle": {
-    "message": "Hemat hingga 4% untuk perdagangan dengan kode rujukan MetaMask.",
-    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Saya mengerti"

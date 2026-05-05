@@ -726,10 +726,6 @@
   "assetsDescription": {
     "message": "Cüzdanınızdaki tokenlar otomatik algılansın, NFT'ler gösterilsin ve toplu hesap bakiye güncellemeleri alınsın"
   },
-  "asterdexReferralSubtitle": {
-    "message": "MetaMask referans kodu ile işlemlerde %4'e varan iade alın.",
-    "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Swap işlemini ücretsiz iptal etme girişimi"
   },
@@ -3238,10 +3234,6 @@
     "message": "Cüzdanınızı web3 kullanmaya hazır hale getirin",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralSubtitle": {
-    "message": "MetaMask yönlendirme kodu ile işlemlerde %5'e varan tasarruf edin.",
-    "description": "The subtitle of the GMX referral confirmation screen"
-  },
   "goToSite": {
     "message": "Siteye git"
   },
@@ -3463,10 +3455,6 @@
   },
   "honeypotTitle": {
     "message": "Bal tuzağı"
-  },
-  "hyperliquidReferralSubtitle": {
-    "message": "MetaMask yönlendirme kodu ile işlemlerde %4'e varan tasarruf edin.",
-    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Anlıyorum"

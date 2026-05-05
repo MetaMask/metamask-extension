@@ -726,10 +726,6 @@
   "assetsDescription": {
     "message": "Detectar automáticamente tókenes en su billetera, mostrar NFT y recibir actualizaciones de saldo de cuenta por lotes"
   },
-  "asterdexReferralSubtitle": {
-    "message": "Obtén un 4 % de reembolso en operaciones con un código de recomendación de MetaMask.",
-    "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Intente cancelar el intercambio de forma gratuita"
   },
@@ -3238,10 +3234,6 @@
     "message": "Prepara tu billetera para usar web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralSubtitle": {
-    "message": "Ahorra hasta un 5 % en operaciones con un código de recomendación de MetaMask.",
-    "description": "The subtitle of the GMX referral confirmation screen"
-  },
   "goToSite": {
     "message": "Ir al sitio"
   },
@@ -3463,10 +3455,6 @@
   },
   "honeypotTitle": {
     "message": "Honeypot"
-  },
-  "hyperliquidReferralSubtitle": {
-    "message": "Ahorra hasta un 4 % en operaciones con un código de recomendación de MetaMask.",
-    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Comprendo"

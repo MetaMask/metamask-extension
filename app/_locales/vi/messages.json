@@ -726,10 +726,6 @@
   "assetsDescription": {
     "message": "Tự động phát hiện token trong ví của bạn, hiển thị NFT và nhận hàng loạt thông tin cập nhật về số dư tài khoản"
   },
-  "asterdexReferralSubtitle": {
-    "message": "Được hoàn 4% khi giao dịch với mã giới thiệu MetaMask.",
-    "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Cố gắng hủy hoán đổi miễn phí"
   },
@@ -3238,10 +3234,6 @@
     "message": "Chuẩn bị ví của bạn để sử dụng web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralSubtitle": {
-    "message": "Tiết kiệm đến 5% khi giao dịch với mã giới thiệu MetaMask.",
-    "description": "The subtitle of the GMX referral confirmation screen"
-  },
   "goToSite": {
     "message": "Đến trang web"
   },
@@ -3463,10 +3455,6 @@
   },
   "honeypotTitle": {
     "message": "Bẫy trong bẫy"
-  },
-  "hyperliquidReferralSubtitle": {
-    "message": "Tiết kiệm đến 4% khi giao dịch với mã giới thiệu MetaMask.",
-    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Tôi hiểu"

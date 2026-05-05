@@ -726,10 +726,6 @@
   "assetsDescription": {
     "message": "自动检测钱包中的代币，显示 NFT，并获取批量账户余额更新"
   },
-  "asterdexReferralSubtitle": {
-    "message": "使用 MetaMask 推荐码，交易可获得 4% 的返现。",
-    "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
   "attemptToCancelSwapForFree": {
     "message": "尝试免费取消兑换"
   },
@@ -3234,10 +3230,6 @@
     "message": "准备好钱包以便使用 Web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralSubtitle": {
-    "message": "使用 MetaMask 推荐码交易费用最高可节省 5%。",
-    "description": "The subtitle of the GMX referral confirmation screen"
-  },
   "goToSite": {
     "message": "转到网站"
   },
@@ -3459,10 +3451,6 @@
   },
   "honeypotTitle": {
     "message": "蜜罐"
-  },
-  "hyperliquidReferralSubtitle": {
-    "message": "使用 MetaMask 推荐码交易费用最高可节省 4%。",
-    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "我理解"

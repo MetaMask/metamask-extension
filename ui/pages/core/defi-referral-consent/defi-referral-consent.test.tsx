@@ -14,6 +14,7 @@ type PartnerTestCase = {
   partnerId: string;
   partnerName: string;
   learnMoreUrl: string;
+  termsUrl: string;
 };
 
 const partnerTestCases: PartnerTestCase[] = Object.values(
@@ -22,6 +23,7 @@ const partnerTestCases: PartnerTestCase[] = Object.values(
   partnerId: partner.id,
   partnerName: partner.name,
   learnMoreUrl: partner.learnMoreUrl,
+  termsUrl: partner.termsUrl,
 }));
 
 describe('DefiReferralConsent', () => {
@@ -32,13 +34,19 @@ describe('DefiReferralConsent', () => {
   // @ts-expect-error This function is missing from the Mocha type definitions
   describe.each(partnerTestCases)(
     'with $partnerName',
-    ({ partnerId, partnerName, learnMoreUrl }: PartnerTestCase) => {
+    ({
+      partnerId,
+      partnerName,
+      learnMoreUrl,
+      termsUrl,
+    }: PartnerTestCase) => {
       const props = {
         onActionComplete: jest.fn(),
         selectedAddress: '0x123',
         partnerId,
         partnerName,
         learnMoreUrl,
+        termsUrl,
       };
 
       it('renders the component with correct title and subtitle', () => {
@@ -69,12 +77,19 @@ describe('DefiReferralConsent', () => {
         );
       });
 
-      it('renders the learn more link with correct URL', () => {
+      it('renders the terms and learn more links with correct URLs', () => {
         const store = mockStore(mockState);
 
         renderWithProvider(<DefiReferralConsent {...props} />, store);
 
-        const learnMoreLink = screen.getByRole('link');
+        const termsLink = screen.getByRole('link', { name: 'terms' });
+        expect(termsLink).toHaveAttribute('href', termsUrl);
+        expect(termsLink).toHaveAttribute('target', '_blank');
+        expect(termsLink).toHaveAttribute('rel', 'noopener noreferrer');
+
+        const learnMoreLink = screen.getByRole('link', {
+          name: `${messages.learnMoreUpperCase.message}.`,
+        });
         expect(learnMoreLink).toHaveAttribute('href', learnMoreUrl);
         expect(learnMoreLink).toHaveAttribute('target', '_blank');
         expect(learnMoreLink).toHaveAttribute('rel', 'noopener noreferrer');

@@ -6150,6 +6150,7 @@ export default class MetamaskController extends EventEmitter {
             partnerId: partner.id,
             partnerName: partner.name,
             learnMoreUrl: partner.learnMoreUrl,
+            termsUrl: partner.termsUrl,
           },
           shouldShowRequest: triggerType === ReferralTriggerType.NewConnection,
         });

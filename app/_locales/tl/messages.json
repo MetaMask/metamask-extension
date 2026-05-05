@@ -726,10 +726,6 @@
   "assetsDescription": {
     "message": "I-autodetect ang mga token sa wallet mo, ipakita ang mga NFT, at kumuha ng naka-batch na mga update sa balanse ng account"
   },
-  "asterdexReferralSubtitle": {
-    "message": "Makakuha ng 4% sa mga trade na gumagamit ng referral code ng MetaMask.",
-    "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Subukang kanselahin ang swap nang libre"
   },
@@ -3238,10 +3234,6 @@
     "message": "Ihanda ang wallet mo upang magamit ang web3.",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralSubtitle": {
-    "message": "Makatipid ng hanggang 5% sa mga trade na gumagamit ng referral code ng MetaMask.",
-    "description": "The subtitle of the GMX referral confirmation screen"
-  },
   "goToSite": {
     "message": "Magpunta sa site"
   },
@@ -3463,10 +3455,6 @@
   },
   "honeypotTitle": {
     "message": "Honey pot"
-  },
-  "hyperliquidReferralSubtitle": {
-    "message": "Makatipid ng hanggang 4% sa mga trade na gumagamit ng referral code ng MetaMask.",
-    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Nauunawaan ko"

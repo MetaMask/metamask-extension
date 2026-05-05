@@ -56,6 +56,7 @@ export const HyperliquidStory = (args: { selectedAddress: string }) => {
         partnerId: HYPERLIQUID_CONFIG.id,
         partnerName: HYPERLIQUID_CONFIG.name,
         learnMoreUrl: HYPERLIQUID_CONFIG.learnMoreUrl,
+        termsUrl: HYPERLIQUID_CONFIG.termsUrl,
       }}
       state={STATE_MOCK_DEFAULT}
     >
@@ -75,6 +76,7 @@ export const GMXStory = (args: { selectedAddress: string }) => {
         partnerId: GMX_CONFIG.id,
         partnerName: GMX_CONFIG.name,
         learnMoreUrl: GMX_CONFIG.learnMoreUrl,
+        termsUrl: GMX_CONFIG.termsUrl,
       }}
       state={STATE_MOCK_DEFAULT}
     >
@@ -94,6 +96,7 @@ export const AsterdexStory = (args: { selectedAddress: string }) => {
         partnerId: ASTERDEX_CONFIG.id,
         partnerName: ASTERDEX_CONFIG.name,
         learnMoreUrl: ASTERDEX_CONFIG.learnMoreUrl,
+        termsUrl: ASTERDEX_CONFIG.termsUrl,
       }}
       state={STATE_MOCK_DEFAULT}
     >

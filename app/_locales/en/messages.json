@@ -727,8 +727,8 @@
     "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
   },
   "asterdexReferralSubtitle": {
-    "message": "Get 4% back on trades with a MetaMask referral code.",
-    "description": "The subtitle of the AsterDEX referral confirmation screen"
+    "message": "Get 5% back on trades with a MetaMask referral code. This discount applies to all future trades, as per AsterDEX's $1. MetaMask earns a fee.",
+    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
   },
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
@@ -3275,8 +3275,8 @@
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
   "gmxReferralSubtitle": {
-    "message": "Save up to 5% on trades with a MetaMask referral code.",
-    "description": "The subtitle of the GMX referral confirmation screen"
+    "message": "Save 10% in trades with a MetaMask referral code. This discount applies to all future trades, as per GMX's $1. MetaMask earns a fee.",
+    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
   },
   "goToSite": {
     "message": "Go to site"
@@ -3501,8 +3501,8 @@
     "message": "Honey pot"
   },
   "hyperliquidReferralSubtitle": {
-    "message": "Save up to 4% on trades with a MetaMask referral code.",
-    "description": "The subtitle of the Hyperliquid referral confirmation screen"
+    "message": "Save 4% on trades with a MetaMask referral code. Applies to all future trades per Hyperliquid's $1. MetaMask earns a fee.",
+    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
   },
   "iUnderstand": {
     "message": "I understand"

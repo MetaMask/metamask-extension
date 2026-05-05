@@ -726,10 +726,6 @@
   "assetsDescription": {
     "message": "अपने वॉलेट में टोकन ऑटोडिटेक्ट करें, NFT प्रदर्शित करें, और बैच अकाउंट बैलेंस संबंधी अपडेट प्राप्त करें"
   },
-  "asterdexReferralSubtitle": {
-    "message": "MetaMask रेफ़रल कोड के साथ ट्रेड पर 4% वापस पाएं।",
-    "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
   "attemptToCancelSwapForFree": {
     "message": "स्वैप को मुफ्त में कैंसिल करने की कोशिश करें"
   },
@@ -3234,10 +3230,6 @@
     "message": "web3 का उपयोग करने के लिए अपना वॉलेट तैयार करें",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralSubtitle": {
-    "message": "MetaMask रेफ़रल कोड के साथ ट्रेड पर 5% तक की बचत करें।",
-    "description": "The subtitle of the GMX referral confirmation screen"
-  },
   "goToSite": {
     "message": "साइट पर जाएं"
   },
@@ -3459,10 +3451,6 @@
   },
   "honeypotTitle": {
     "message": "हनी पॉट"
-  },
-  "hyperliquidReferralSubtitle": {
-    "message": "MetaMask रेफ़रल कोड के साथ ट्रेड पर 4% तक की बचत करें।",
-    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "मैं समझता हूं"
