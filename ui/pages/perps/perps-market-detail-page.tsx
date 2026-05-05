@@ -1039,7 +1039,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             <Text variant={TextVariant.HeadingMd}>{displayName}-USD</Text>
             {market.maxLeverage && (
               <Box
-                className="rounded-md bg-muted px-1.5"
+                className="shrink-0 rounded-md bg-background-muted px-1.5"
                 data-testid="perps-market-max-leverage"
               >
                 <Text
