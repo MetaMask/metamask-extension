@@ -11,6 +11,7 @@ import {
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   formatPerpsFiat,
+  getPercentDecimalsForPrice,
   PRICE_RANGES_MINIMAL_VIEW,
 } from '../../../../../../../shared/lib/perps-formatters';
 
@@ -132,6 +133,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       // For long: positive when price > entry (profit). For short: negate (profit when price < entry).
       return formatRoePercent(
         direction === 'long' ? percentChange : -percentChange,
+        getPercentDecimalsForPrice(entryPrice),
       );
     },
     [entryPrice, leverage, direction],

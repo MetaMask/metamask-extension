@@ -519,6 +519,24 @@ export const formatPnl = (pnl: string | number): string => {
 };
 
 /**
+ * Look up the percent display precision for a given asset reference price.
+ * Mirrors the per-range `maximumDecimals` from PRICE_RANGES_UNIVERSAL so the
+ * percent input next to a TP/SL price field uses the same precision rules as
+ * the price field itself (BTC > $10k → 0 decimals, PUMP < $0.01 → 6 decimals).
+ *
+ * @param price - Asset reference price (entry / current). Falsy or non-finite
+ * values fall back to a 2-decimal cap to preserve legacy behaviour.
+ * @returns Maximum decimals to render for the percent.
+ */
+export const getPercentDecimalsForPrice = (price?: number | null): number => {
+  if (price === undefined || price === null || !Number.isFinite(price) || price <= 0) {
+    return 2;
+  }
+  const range = PRICE_RANGES_UNIVERSAL.find((r) => r.condition(price));
+  return range?.maximumDecimals ?? 2;
+};
+
+/**
  * Formats a percentage value with sign prefix.
  *
  * @param value - Raw percentage value (e.g., 5.25 for 5.25%, not 0.0525).

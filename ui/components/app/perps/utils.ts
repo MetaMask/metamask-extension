@@ -507,22 +507,35 @@ export function getPnlDisplayColor(pnl: number): TextColor {
 
 /**
  * Format a RoE% value for display in TP/SL inputs.
- * Always returns the absolute value: integers with no decimal ("25"),
- * non-integers with 2 decimal places ("25.50").
+ * Returns the absolute value with sign preserved for negatives. Integer results
+ * collapse to no decimals; otherwise the value is rendered with up to
+ * `maxDecimals` digits (default 2 for backward compatibility).
+ *
+ * Pass an asset-specific `maxDecimals` (typically derived from
+ * `getPercentDecimalsForPrice(entryPrice)`) so the percent input mirrors the
+ * asset's price precision: BTC/XYZ100 (>$10k) collapse to 0 decimals, PUMP
+ * (<$0.01) keeps up to 6 decimals so sub-percent moves remain visible.
  *
  * @param value - The numeric percentage value to format
+ * @param maxDecimals - Maximum decimal places (default 2)
  * @returns The formatted percentage string (sign preserved for negative values)
  * @example
  * formatRoePercent(10) => '10'
  * formatRoePercent(-25.5) => '-25.50'
- * formatRoePercent(0) => '0'
+ * formatRoePercent(15.28, 0) => '15'
+ * formatRoePercent(0.000163, 6) => '0.000163'
  */
-export const formatRoePercent = (value: number): string => {
+export const formatRoePercent = (
+  value: number,
+  maxDecimals: number = 2,
+): string => {
+  const safeMax = Number.isFinite(maxDecimals) && maxDecimals >= 0 ? Math.floor(maxDecimals) : 2;
   const abs = Math.abs(value);
-  const rounded = Math.round(abs * 100) / 100;
+  const factor = 10 ** safeMax;
+  const rounded = Math.round(abs * factor) / factor;
   const formatted = Number.isInteger(rounded)
     ? rounded.toFixed(0)
-    : rounded.toFixed(2);
+    : rounded.toFixed(safeMax);
   return value < 0 && rounded !== 0 ? `-${formatted}` : formatted;
 };
 

@@ -19,6 +19,7 @@ import {
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
+  getPercentDecimalsForPrice,
   PRICE_RANGES_MINIMAL_VIEW,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
@@ -67,8 +68,14 @@ import {
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [5, 10, 25, 50];
 
-const formatSignedRoePercent = (value: number): string => {
-  const formatted = formatRoePercent(value);
+const formatSignedRoePercent = (
+  value: number,
+  referencePrice?: number,
+): string => {
+  const formatted = formatRoePercent(
+    value,
+    getPercentDecimalsForPrice(referencePrice),
+  );
   return value > 0 && formatted !== '0' ? `+${formatted}` : formatted;
 };
 
@@ -200,6 +207,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       // For long: positive when price > entry (profit). For short: negate (profit when price < entry).
       return formatSignedRoePercent(
         positionDirection === 'long' ? percentChange : -percentChange,
+        entryPriceForEdit,
       );
     },
     [entryPriceForEdit, leverageForEdit, positionDirection],
@@ -344,11 +352,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       setEditingTpPrice(newPrice);
       // Preserve the exact preset value for display — avoids round-trip drift
       // caused by the price being rounded to 2 decimal places
-      const presetStr = formatSignedRoePercent(percent);
+      const presetStr = formatSignedRoePercent(percent, entryPriceForEdit);
       setRawTpPercent(presetStr);
       setTpPresetPercent(presetStr);
     },
-    [percentToPriceForEdit],
+    [percentToPriceForEdit, entryPriceForEdit],
   );
 
   const handleSlPresetClick = useCallback(

@@ -13,6 +13,7 @@ import {
   formatPositionSize,
   formatVolume,
   formatWithSignificantDigits,
+  getPercentDecimalsForPrice,
 } from './perps-formatters';
 
 describe('perps-formatters', () => {
@@ -293,6 +294,29 @@ describe('perps-formatters', () => {
 
     it('accepts string input', () => {
       expect(formatPercentage('10')).toBe('+10.00%');
+    });
+  });
+
+  describe('getPercentDecimalsForPrice', () => {
+    it('returns 0 for high-priced assets (BTC / XYZ100, > $10k)', () => {
+      expect(getPercentDecimalsForPrice(81_500)).toBe(0);
+      expect(getPercentDecimalsForPrice(28_006)).toBe(0);
+    });
+
+    it('returns 1 for $1k–$10k assets (ETH-style)', () => {
+      expect(getPercentDecimalsForPrice(3_200)).toBe(1);
+    });
+
+    it('returns 6 for very small prices (PUMP, < $0.01)', () => {
+      expect(getPercentDecimalsForPrice(0.001834)).toBe(6);
+      expect(getPercentDecimalsForPrice(0.0000004)).toBe(6);
+    });
+
+    it('falls back to 2 for missing or invalid prices', () => {
+      expect(getPercentDecimalsForPrice(undefined)).toBe(2);
+      expect(getPercentDecimalsForPrice(null)).toBe(2);
+      expect(getPercentDecimalsForPrice(0)).toBe(2);
+      expect(getPercentDecimalsForPrice(Number.NaN)).toBe(2);
     });
   });
 

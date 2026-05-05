@@ -443,11 +443,9 @@ describe('AutoCloseSection', () => {
       expect(percentInput).toHaveValue('');
     });
 
-    it('shows non-integer RoE% with 2 decimal places', () => {
-      // (45225 - 45000) / 45000 * 10 * 100 = 50%  (exact)
-      // (45112.5 - 45000) / 45000 * 10 * 100 = 25% (exact)
-      // Test a non-integer: leverage=3, entry=45000, tp=45500
-      // (500/45000)*3*100 = 3.33
+    it('rounds RoE% to the asset price precision (>$10k → 0 decimals)', () => {
+      // entry=45000 (>$10k → maxDecimals=0), leverage=3, tp=45500
+      // (500/45000)*3*100 = 3.333... → rounds to "3"
       renderWithProvider(
         <AutoCloseSection
           {...defaultProps}
@@ -462,8 +460,28 @@ describe('AutoCloseSection', () => {
 
       const container = screen.getByTestId('tp-percent-input');
       const percentInput = container.querySelector('input');
-      // (500/45000)*3*100 = 3.333... -> toFixed(2) = "3.33"
-      expect(percentInput).toHaveValue('3.33');
+      expect(percentInput).toHaveValue('3');
+    });
+
+    it('keeps sub-percent precision for very small prices (<$0.01 → 6 decimals)', () => {
+      // entry=0.001834 (<$0.01 → maxDecimals=6), leverage=3, tp=0.001835
+      // ((0.001835 - 0.001834)/0.001834)*3*100 = 0.16357...% → "0.16"
+      // The PUMP-style asset must keep enough precision to show sub-percent moves.
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={0.001834}
+          leverage={3}
+          takeProfitPrice="0.001835"
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('tp-percent-input');
+      const percentInput = container.querySelector('input');
+      expect(percentInput).toHaveValue('0.163577');
     });
   });
 

@@ -700,5 +700,26 @@ describe('Perps Utils', () => {
       expect(formatRoePercent(-0.004)).toBe('0');
       expect(formatRoePercent(-0.001)).toBe('0');
     });
+
+    it('honours an explicit maxDecimals override (BTC-style 0 decimals)', () => {
+      expect(formatRoePercent(15.28, 0)).toBe('15');
+      expect(formatRoePercent(15.5, 0)).toBe('16');
+      expect(formatRoePercent(-32.99, 0)).toBe('-33');
+    });
+
+    it('preserves up to maxDecimals fractional digits (PUMP-style 6 decimals)', () => {
+      expect(formatRoePercent(0.000163, 6)).toBe('0.000163');
+      expect(formatRoePercent(-0.001234, 6)).toBe('-0.001234');
+    });
+
+    it('keeps integer values clean even when maxDecimals is large', () => {
+      expect(formatRoePercent(5, 6)).toBe('5');
+      expect(formatRoePercent(-100, 6)).toBe('-100');
+    });
+
+    it('treats invalid maxDecimals as the legacy 2-decimal default', () => {
+      expect(formatRoePercent(25.5, Number.NaN)).toBe('25.50');
+      expect(formatRoePercent(25.5, -1)).toBe('25.50');
+    });
   });
 });
