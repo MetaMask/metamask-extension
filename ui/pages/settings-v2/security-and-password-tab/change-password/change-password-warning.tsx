@@ -43,9 +43,7 @@ export default function ChangePasswordWarning({
       target="_blank"
       rel="noopener noreferrer"
     >
-      <span className="change-password__link-text">
-        {t('learnMoreUpperCase')}
-      </span>
+      <span className="text-primary-default">{t('learnMoreUpperCase')}</span>
     </a>
   );
 
@@ -53,7 +51,6 @@ export default function ChangePasswordWarning({
     <Modal
       isOpen
       onClose={onCancel}
-      className="change-password-warning-modal"
       data-testid="change-password-warning-modal"
     >
       <ModalOverlay />

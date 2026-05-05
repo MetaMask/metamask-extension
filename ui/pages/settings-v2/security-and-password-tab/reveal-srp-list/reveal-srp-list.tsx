@@ -65,7 +65,7 @@ export const RevealSrpList = () => {
   };
 
   return (
-    <Box className="srp-reveal-list h-full min-h-0 overflow-y-auto">
+    <Box className="overflow-y-auto">
       {isSocialLoginFlow && (
         <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
           <Text
@@ -77,7 +77,7 @@ export const RevealSrpList = () => {
             {t('securitySocialLoginLabel', [socialLoginType])}
           </Text>
           <Card
-            className="srp-reveal-list__social-login-card"
+            className="px-3 py-4 rounded-lg"
             backgroundColor={BackgroundColor.backgroundMuted}
             border={false}
           >
@@ -99,11 +99,7 @@ export const RevealSrpList = () => {
                     size={IconSize.Lg}
                   />
                 ) : (
-                  <img
-                    src={`images/icons/google.svg`}
-                    className="srp-reveal-list__social-icon"
-                    alt="Google icon"
-                  />
+                  <img src={`images/icons/google.svg`} alt="Google icon" />
                 )}
               </Box>
               <Box flexDirection={FlexDirection.Column}>
@@ -132,7 +128,8 @@ export const RevealSrpList = () => {
           </Text>
           <Box
             width={BlockSize.Full}
-            className="srp-reveal-list__divider"
+            backgroundColor={BackgroundColor.backgroundMuted}
+            className="h-px"
             marginTop={4}
           />
         </Box>
@@ -142,7 +139,6 @@ export const RevealSrpList = () => {
         paddingLeft={4}
         paddingRight={4}
         paddingBottom={0}
-        className="srp-reveal-list__srp-list"
         data-testid="select-srp-container"
       >
         <Text
