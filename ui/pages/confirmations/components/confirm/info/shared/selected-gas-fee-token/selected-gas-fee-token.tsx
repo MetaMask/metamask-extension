@@ -10,8 +10,6 @@ import {
 } from '../../../../../../../components/component-library';
 import {
   AlignItems,
-  BackgroundColor,
-  BorderRadius,
   Display,
 } from '../../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../../context/confirm';
@@ -84,21 +82,12 @@ export function SelectedGasFeeToken() {
       <Box
         data-testid="selected-gas-fee-token"
         onClick={handleClick}
-        backgroundColor={
-          hasMoreThanOneGasFeeTokenToChooseFrom
-            ? BackgroundColor.backgroundMuted
-            : BackgroundColor.transparent
-        }
-        borderRadius={BorderRadius.pill}
         display={Display.InlineFlex}
         alignItems={AlignItems.center}
-        paddingInlineStart={1}
         marginLeft={1}
         gap={1}
         style={{
           cursor: hasMoreThanOneGasFeeTokenToChooseFrom ? 'pointer' : 'default',
-          paddingInlineEnd: '6px',
-          padding: hasMoreThanOneGasFeeTokenToChooseFrom ? '4px 8px' : '0px',
         }}
       >
         <GasFeeTokenIcon
@@ -109,7 +98,7 @@ export function SelectedGasFeeToken() {
         {hasMoreThanOneGasFeeTokenToChooseFrom && (
           <Icon
             data-testid="selected-gas-fee-token-arrow"
-            name={IconName.ArrowDown}
+            name={IconName.ArrowRight}
             size={IconSize.Sm}
           />
         )}
