@@ -387,14 +387,6 @@ class FixtureBuilderV2 {
                               CUSTOM METHODS
      ==================================================================
   */
-  withSyncDisabled(): this {
-    return this.withUserStorageController({
-      isAccountSyncingEnabled: false,
-      isBackupAndSyncEnabled: false,
-      isContactSyncingEnabled: false,
-    });
-  }
-
   withAccountsControllerAdditionalAccountVault(): this {
     // Account sorting for permitted accounts (e.g. `eth_accounts`) now reads
     // `lastSelected` from the matching `AccountGroup` in `AccountTreeController`
@@ -1227,6 +1219,14 @@ class FixtureBuilderV2 {
       preferences: {
         smartTransactionsOptInStatus: false,
       },
+    });
+  }
+
+  withSyncDisabled(): this {
+    return this.withUserStorageController({
+      isAccountSyncingEnabled: false,
+      isBackupAndSyncEnabled: false,
+      isContactSyncingEnabled: false,
     });
   }
 
