@@ -343,9 +343,7 @@ describe('Error utils Tests', function () {
       );
 
       expect(html).toContain('critical-error-reinstall-link');
-      expect(html).toContain(
-        enMessages.criticalErrorReinstallMetamask.message,
-      );
+      expect(html).toContain(enMessages.criticalErrorReinstallMetamask.message);
       expect(html).toContain(REINSTALL_METAMASK_RECOVERY_LINK);
       expect(html).toContain('target="_blank"');
       expect(html).toContain('rel="noopener noreferrer"');
@@ -368,9 +366,7 @@ describe('Error utils Tests', function () {
       );
 
       expect(html).toContain('critical-error__divider');
-      expect(html).toContain(
-        enMessages.criticalErrorStillHavingIssues.message,
-      );
+      expect(html).toContain(enMessages.criticalErrorStillHavingIssues.message);
     });
   });
 });

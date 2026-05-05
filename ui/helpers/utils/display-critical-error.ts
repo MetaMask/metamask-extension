@@ -247,7 +247,7 @@ export async function displayCriticalErrorMessage(
       );
 
     // Restart button: report error and restart MetaMask
-      restartButton?.addEventListener('click', async () => {
+    restartButton?.addEventListener('click', async () => {
       const shouldReport = reportCheckbox?.checked ?? false;
       await handleRestartAction(error, shouldReport);
     });
