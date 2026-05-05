@@ -7585,25 +7585,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "@metamask/permission-controller@npm:13.0.0"
-  dependencies:
-    "@metamask/approval-controller": "npm:^9.0.1"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^11.20.0"
-    "@metamask/json-rpc-engine": "npm:^10.3.0"
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.9.0"
-    "@types/deep-freeze-strict": "npm:^1.1.0"
-    deep-freeze-strict: "npm:^1.1.1"
-    immer: "npm:^9.0.6"
-    nanoid: "npm:^3.3.8"
-  checksum: 10/e4062076f7dd7da7acf890f66ee7df1a0309bbb9d9adb221f28eefb203318c2675707754b884a0d4f49892608a8771443a97e743c2c68f7c75f123ec7fafbf49
-  languageName: node
-  linkType: hard
-
 "@metamask/permission-log-controller@npm:^5.0.0":
   version: 5.0.0
   resolution: "@metamask/permission-log-controller@npm:5.0.0"
