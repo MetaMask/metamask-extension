@@ -1669,6 +1669,45 @@ describe('MetaMaskController', function () {
         expect(renewVaultKeyProtectionSpy).not.toHaveBeenCalled();
         expect(releaseLock).toHaveBeenCalledTimes(1);
       });
+
+      it('changes password and removes passkey when vault key protection renewal is skipped', async function () {
+        const releaseLock = jest.fn();
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'verifyPasskeyAuthentication',
+          )
+          .mockResolvedValue(true);
+        jest
+          .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
+          .mockResolvedValue(releaseLock);
+        const changePasswordSpy = jest
+          .spyOn(metamaskController.keyringController, 'changePassword')
+          .mockResolvedValue();
+        const verifyPasswordSpy = jest.spyOn(metamaskController, 'verifyPassword');
+        const renewVaultKeyProtectionSpy = jest.spyOn(
+          metamaskController.passkeyController,
+          'renewVaultKeyProtection',
+        );
+        const removePasskeySpy = jest
+          .spyOn(metamaskController.passkeyController, 'removePasskey')
+          .mockReturnValue();
+
+        await metamaskController.changePasswordWithPasskeyVerification(
+          'new-password',
+          authenticationResponse,
+          { renewVaultKeyProtection: false },
+        );
+
+        expect(changePasswordSpy).toHaveBeenCalledWith('new-password');
+        expect(verifyPasswordSpy).not.toHaveBeenCalled();
+        expect(removePasskeySpy).toHaveBeenCalledTimes(1);
+        expect(renewVaultKeyProtectionSpy).not.toHaveBeenCalled();
+        expect(releaseLock).toHaveBeenCalledTimes(1);
+      });
     });
 
     describe('#changePassword', function () {

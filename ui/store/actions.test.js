@@ -346,6 +346,41 @@ describe('Actions', () => {
         background.changePasswordWithPasskeyVerification.calledOnceWith(
           newPassword,
           authenticationResponse,
+          undefined,
+        ),
+      ).toStrictEqual(true);
+    });
+
+    it('forwards renewVaultKeyProtection option to the background', async () => {
+      const store = mockStore();
+      const newPassword = 'new-password';
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+
+      background.changePasswordWithPasskeyVerification.resolves();
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.changePasswordWithPasskeyVerification(
+          newPassword,
+          authenticationResponse,
+          { renewVaultKeyProtection: false },
+        ),
+      );
+
+      expect(
+        background.changePasswordWithPasskeyVerification.calledOnceWith(
+          newPassword,
+          authenticationResponse,
+          { renewVaultKeyProtection: false },
         ),
       ).toStrictEqual(true);
     });

@@ -4614,17 +4614,21 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Changes the wallet password using a verified passkey assertion, then renews the
-   * vault key protection for the new vault encryption key. Non-social-login only.
+   * Changes the wallet password using a verified passkey assertion, then either renews
+   * vault key protection for the new encryption key or removes the passkey enrollment.
+   * Non-social-login only.
    *
-   * @param {string} newPassword
-   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse
+   * @param {string} newPassword - New wallet password.
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+   * @param {{ renewVaultKeyProtection?: boolean }} [options] - Optional flags; when `renewVaultKeyProtection` is false, passkey enrollment is removed after the password change instead of re-wrapping the vault key (default: renew).
    * @returns {Promise<void>}
    */
   async changePasswordWithPasskeyVerification(
     newPassword,
     authenticationResponse,
+    options = {},
   ) {
+    const { renewVaultKeyProtection = true } = options;
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new PasskeyControllerError(
         PasskeyControllerErrorMessage.NotEnrolled,
@@ -4642,34 +4646,42 @@ export default class MetamaskController extends EventEmitter {
 
     const releaseLock = await this.seedlessOperationMutex.acquire();
     try {
-      const vaultKeyBeforePasswordChange =
-        await this.keyringController.exportEncryptionKey();
+      let vaultKeyBeforePasswordChange;
+      if (renewVaultKeyProtection) {
+        vaultKeyBeforePasswordChange =
+          await this.keyringController.exportEncryptionKey();
+      }
 
       // change password
       await this.keyringController.changePassword(newPassword);
 
-      try {
-        // renew vault key protection
-        const vaultKeyAfterPasswordChange =
-          await this.keyringController.exportEncryptionKey();
-        await this.passkeyController.renewVaultKeyProtection({
-          authenticationResponse,
-          oldVaultKey: vaultKeyBeforePasswordChange,
-          newVaultKey: vaultKeyAfterPasswordChange,
-        });
-      } catch (err) {
-        log.error(
-          'Passkey vault key protection renewal failed after password change',
-          err,
-        );
+      if (renewVaultKeyProtection) {
+        try {
+          // renew vault key protection
+          const vaultKeyAfterPasswordChange =
+            await this.keyringController.exportEncryptionKey();
+          await this.passkeyController.renewVaultKeyProtection({
+            authenticationResponse,
+            oldVaultKey: vaultKeyBeforePasswordChange,
+            newVaultKey: vaultKeyAfterPasswordChange,
+          });
+        } catch (err) {
+          log.error(
+            'Passkey vault key protection renewal failed after password change',
+            err,
+          );
+          this.passkeyController.removePasskey();
+          throw new PasskeyControllerError(
+            'Passkey vault key protection renewal failed after password change',
+            {
+              code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+              cause: err instanceof Error ? err : new Error(String(err)),
+            },
+          );
+        }
+      } else {
+        // Passkey already verified; keyring changePassword above applied newPassword.
         this.passkeyController.removePasskey();
-        throw new PasskeyControllerError(
-          'Passkey vault key protection renewal failed after password change',
-          {
-            code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
-            cause: err instanceof Error ? err : new Error(String(err)),
-          },
-        );
       }
     } catch (error) {
       log.error('error while changing password with passkey', error);

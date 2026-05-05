@@ -47,7 +47,11 @@ const mockGeneratePasskeyAuthenticationOptions = jest.fn(() =>
   Promise.resolve({}),
 );
 const mockChangePasswordWithPasskeyVerification = jest.fn(
-  (_newPassword: string, _authenticationResponse: unknown) => Promise.resolve(),
+  (
+    _newPassword: string,
+    _authenticationResponse: unknown,
+    _options?: unknown,
+  ) => Promise.resolve(),
 );
 const mockForceUpdateMetamaskState = jest.fn(() => Promise.resolve());
 const mockRemovePasskeyWithPasswordVerification = jest.fn((_password: string) =>
@@ -96,10 +100,12 @@ jest.mock('../../../../store/actions', () => ({
   changePasswordWithPasskeyVerification: (
     newPassword: string,
     authenticationResponse: unknown,
+    options?: unknown,
   ) =>
     mockChangePasswordWithPasskeyVerification(
       newPassword,
       authenticationResponse,
+      options,
     ),
   forceUpdateMetamaskState: async () => mockForceUpdateMetamaskState(),
   removePasskeyWithPasswordVerification: (password: string) =>
@@ -665,7 +671,7 @@ describe('ChangePassword', () => {
       });
     });
 
-    it('with renewal disabled after enabling toggle, saves with password and does not call passkey password change', async () => {
+    it('with renewal disabled after enabling toggle, saves via passkey verification with renewal off', async () => {
       (startPasskeyAuthentication as jest.Mock).mockRejectedValueOnce(
         new Error('cancelled'),
       );
@@ -718,16 +724,16 @@ describe('ChangePassword', () => {
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
-        expect(mockChangePassword).toHaveBeenCalledWith(
+        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith(
           mockNewPassword,
-          mockPassword,
+          mockAssertion,
+          { renewVaultKeyProtection: false },
         );
-        expect(mockRemovePasskeyWithPasswordVerification).toHaveBeenCalledWith(
-          mockNewPassword,
-        );
+        expect(mockChangePassword).not.toHaveBeenCalled();
         expect(
-          mockChangePasswordWithPasskeyVerification,
+          mockRemovePasskeyWithPasswordVerification,
         ).not.toHaveBeenCalled();
+        expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
         expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
       });
     });
@@ -799,7 +805,50 @@ describe('ChangePassword', () => {
         expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith(
           mockNewPassword,
           mockAssertion,
+          { renewVaultKeyProtection: true },
         );
+        expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
+        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+      });
+    });
+
+    it('uses passkey verification with renewal off when passkey unlock is toggled off after initial verification', async () => {
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+
+      const toggle = getByTestId('change-password-enable-passkey');
+      await waitFor(() => {
+        expect(toggle.closest('label')).toHaveClass('toggle-button--on');
+      });
+
+      fireEvent.click(toggle);
+
+      await waitFor(() => {
+        expect(toggle.closest('label')).toHaveClass('toggle-button--off');
+      });
+
+      fireEvent.change(getByTestId('change-password-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.change(getByTestId('change-password-confirm-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.click(getByTestId('change-password-terms'));
+      fireEvent.click(getByTestId('change-password-button'));
+
+      await waitFor(() => {
+        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith(
+          mockNewPassword,
+          mockAssertion,
+          { renewVaultKeyProtection: false },
+        );
+        expect(mockChangePassword).not.toHaveBeenCalled();
+        expect(
+          mockRemovePasskeyWithPasswordVerification,
+        ).not.toHaveBeenCalled();
         expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
         expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
       });

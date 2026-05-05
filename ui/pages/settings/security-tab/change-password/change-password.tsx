@@ -155,11 +155,6 @@ const ChangePassword = ({
 
   const onChangePassword = async () => {
     let isPasskeyRenewalSuccessful = false;
-    const attemptedPasskeyRenewal =
-      isPasskeyRegistered &&
-      isPasskeyFeatureAvailable &&
-      isPasskeyRenewalEnabled &&
-      passkeyAuthenticationResponse !== null;
 
     try {
       setShowChangePasswordWarning(false);
@@ -167,16 +162,20 @@ const ChangePassword = ({
 
       if (isSocialLoginFlow) {
         await dispatch(changePassword(newPassword, currentPassword));
-      } else if (attemptedPasskeyRenewal) {
+      } else if (passkeyAuthenticationResponse) {
         try {
           await dispatch(
             changePasswordWithPasskeyVerification(
               newPassword,
               passkeyAuthenticationResponse,
+              { renewVaultKeyProtection: isPasskeyRenewalEnabled },
             ),
           );
-          isPasskeyRenewalSuccessful = true;
+          isPasskeyRenewalSuccessful = isPasskeyRenewalEnabled;
         } catch (error) {
+          if (!isPasskeyRenewalEnabled) {
+            throw error;
+          }
           const passkeyCode = getPasskeyControllerErrorCode(error);
           // strictly treat vault key renewal failure as a password change success
           if (passkeyCode !== ExtensionPasskeyErrorCode.VaultKeyRenewalFailed) {
@@ -207,7 +206,7 @@ const ChangePassword = ({
       // upon successful password change, go back to the settings page
       navigate(redirectRoute);
       const messageKey =
-        attemptedPasskeyRenewal && !isPasskeyRenewalSuccessful
+        isPasskeyRenewalEnabled && !isPasskeyRenewalSuccessful
           ? 'securityChangePasswordToastPasskeyRenewalFailed'
           : 'securityChangePasswordToastSuccess';
       toast.success(<ToastContent title={t(messageKey)} />, {
@@ -358,6 +357,7 @@ const ChangePassword = ({
     cancelPasskeyCeremony();
     setIsVerifyingPasskey(false);
     setPasskeyAuthenticationResponse(null);
+    setIsPasskeyRenewalEnabled(false);
     setStep(ChangePasswordSteps.VerifyCurrentPassword);
   }, []);
 
