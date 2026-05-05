@@ -1442,7 +1442,7 @@
       "React: DOM nesting violations": 3
     },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 5
+      "React: Act warnings (component updates not wrapped)": 6
     },
     "ui/pages/perps/perps-order-entry-page.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
