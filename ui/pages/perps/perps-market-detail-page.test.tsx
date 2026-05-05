@@ -568,9 +568,7 @@ describe('PerpsMarketDetailPage', () => {
 
       const { getByTestId } = await renderPage(store);
 
-      expect(getByTestId('perps-market-max-leverage')).toHaveTextContent(
-        '20x',
-      );
+      expect(getByTestId('perps-market-max-leverage')).toHaveTextContent('20x');
     });
 
     it('omits the market max leverage pill when max leverage is unavailable', async () => {
@@ -578,7 +576,7 @@ describe('PerpsMarketDetailPage', () => {
         markets: [
           {
             ...mockCryptoMarkets[1],
-            maxLeverage: undefined,
+            maxLeverage: '',
           },
         ],
         isInitialLoading: false,
