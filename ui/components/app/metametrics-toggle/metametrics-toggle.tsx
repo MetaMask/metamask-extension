@@ -1,30 +1,30 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   useEnableMetametrics,
   useDisableMetametrics,
-} from '../../../../hooks/useMetametrics';
-import { selectIsBackupAndSyncEnabled } from '../../../../selectors/identity/backup-and-sync';
+} from '../../../hooks/useMetametrics';
+import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsUserTrait,
-} from '../../../../../shared/constants/metametrics';
-import { Box, Text } from '../../../../components/component-library';
-import ToggleButton from '../../../../components/ui/toggle-button';
+} from '../../../../shared/constants/metametrics';
+import { Box, Text } from '../../component-library';
+import ToggleButton from '../../ui/toggle-button';
 import {
   Display,
   FlexDirection,
   JustifyContent,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '../../../helpers/constants/design-system';
 import {
   getParticipateInMetaMetrics,
   getUseExternalServices,
-} from '../../../../selectors';
+} from '../../../selectors';
 
 const MetametricsToggle = ({
   dataCollectionForMarketing,
