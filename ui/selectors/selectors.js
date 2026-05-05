@@ -51,6 +51,7 @@ import { getEnabledNetworks } from '../../shared/lib/selectors/multichain';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
 import { isWebAuthnSupported } from '../../shared/lib/passkey';
 import { getIsPasskeyFeatureEnabled } from '../../shared/lib/environment';
+import { isFirefoxBrowser } from '../../shared/lib/browser-runtime.utils';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
 // this needs to be imported before `'../pages/confirmations/confirmation/templates'`
@@ -2939,7 +2940,8 @@ export function getIsPasskeyFeatureAvailable(state) {
   return (
     getIsPasskeyFeatureEnabled() &&
     isWebAuthnSupported() &&
-    !getIsSocialLoginFlow(state)
+    !getIsSocialLoginFlow(state) &&
+    !isFirefoxBrowser()
   );
 }
 
