@@ -2375,10 +2375,6 @@
   "defiEmptyDescription": {
     "message": "Давайте в долг, занимайте и торгуйте прямо в своем кошельке."
   },
-  "defiReferralCheckboxLabel": {
-    "message": "Разрешите MetaMask добавлять реферальный код. Это действие нельзя отменить. Сайт предлагает скидки в соответствии со своими условиями. MetaMask получает комиссию.",
-    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "Попробуйте зайти еще раз позже."
   },

@@ -2375,10 +2375,6 @@
   "defiEmptyDescription": {
     "message": "Δανείστε, αποκτήστε και κάντε συναλλαγές, απευθείας στο πορτοφόλι σας."
   },
-  "defiReferralCheckboxLabel": {
-    "message": "Επιτρέψτε στο MetaMask να προσθέσει έναν κωδικό παραπομπής. Αυτό είναι μόνιμο. Ο ιστότοπος προσφέρει εκπτώσεις σύμφωνα με τους όρους του. Το MetaMask λαμβάνει προμήθεια.",
-    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "Προσπαθήστε ξανά αργότερα."
   },

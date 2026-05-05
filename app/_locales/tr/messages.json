@@ -2375,10 +2375,6 @@
   "defiEmptyDescription": {
     "message": "Doğrudan cüzdanınızda borç verin, borç alın ve işlem yapın."
   },
-  "defiReferralCheckboxLabel": {
-    "message": "MetaMask'in bir yönlendirme kodu eklemesine izin verin. Bu işlem kalıcıdır. Site, kendi koşullarına göre indirimler sunar. MetaMask bu işlemden bir ücret kazanır.",
-    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "Daha sonra tekrar ziyaret etmeyi deneyin."
   },

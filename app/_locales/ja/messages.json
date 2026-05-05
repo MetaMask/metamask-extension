@@ -2375,10 +2375,6 @@
   "defiEmptyDescription": {
     "message": "ウォレット内で貸し借りや取引ができます。"
   },
-  "defiReferralCheckboxLabel": {
-    "message": "MetaMaskに紹介コードを追加することを許可してください。これは後で変更できません。このサイトは利用規約に基づいて割引を提供し、MetaMaskは手数料を受け取ります。",
-    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "後程またアクセスしてみてください。"
   },

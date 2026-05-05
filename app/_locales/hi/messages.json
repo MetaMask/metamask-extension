@@ -2375,10 +2375,6 @@
   "defiEmptyDescription": {
     "message": "सीधे अपने वॉलेट में उधार दें, उधार लें और ट्रेड करें।"
   },
-  "defiReferralCheckboxLabel": {
-    "message": "MetaMask को रेफ़रल कोड जोड़ने की अनुमति दें। यह स्थायी है। साइट अपने नियमों के अनुसार डिस्काउंट देती है। MetaMask को एक फीस मिलता है।",
-    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "दोबारा आकर देखें।"
   },

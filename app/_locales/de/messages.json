@@ -2375,10 +2375,6 @@
   "defiEmptyDescription": {
     "message": "Leihen, borgen und handeln Sie direkt in Ihrer Wallet."
   },
-  "defiReferralCheckboxLabel": {
-    "message": "Erlauben Sie MetaMask, einen Empfehlungscode hinzuzufügen. Dieser ist dauerhaft. Die Website gewährt Rabatte gemäß ihren Bedingungen. MetaMask erhält eine Gebühr.",
-    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "Schauen Sie später nochmal vorbei."
   },

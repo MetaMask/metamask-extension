@@ -2375,10 +2375,6 @@
   "defiEmptyDescription": {
     "message": "Empreste, peça emprestado e negocie, direto na sua carteira."
   },
-  "defiReferralCheckboxLabel": {
-    "message": "Permita que a MetaMask adicione um código de indicação. Isso é permanente. O site oferece descontos conforme seus próprios termos. A MetaMask ganha uma taxa.",
-    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "Tente acessar novamente mais tarde."
   },

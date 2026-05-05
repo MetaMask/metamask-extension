@@ -2375,10 +2375,6 @@
   "defiEmptyDescription": {
     "message": "Cho vay, vay và giao dịch, ngay trong ví của bạn."
   },
-  "defiReferralCheckboxLabel": {
-    "message": "Cho phép MetaMask thêm mã giới thiệu. Hành động này là vĩnh viễn. Trang web cung cấp chiết khấu theo điều khoản của họ. MetaMask nhận được một khoản phí.",
-    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "Hãy thử truy cập lại sau."
   },

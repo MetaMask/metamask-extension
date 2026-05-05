@@ -2375,10 +2375,6 @@
   "defiEmptyDescription": {
     "message": "Magpahiram, humiram at mag-trade, sa mismong wallet mo."
   },
-  "defiReferralCheckboxLabel": {
-    "message": "Pahintulutan ang MetaMask na maglagay ng referral code. Permanente ito. Mag-aalok ng diskwento ang site batay sa kanilang mga tuntunin. May bayad ang MetaMask.",
-    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "Subukang bisitahin muli sa ibang pagkakataon."
   },

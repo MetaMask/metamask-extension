@@ -34,12 +34,7 @@ describe('DefiReferralConsent', () => {
   // @ts-expect-error This function is missing from the Mocha type definitions
   describe.each(partnerTestCases)(
     'with $partnerName',
-    ({
-      partnerId,
-      partnerName,
-      learnMoreUrl,
-      termsUrl,
-    }: PartnerTestCase) => {
+    ({ partnerId, partnerName, learnMoreUrl, termsUrl }: PartnerTestCase) => {
       const props = {
         onActionComplete: jest.fn(),
         selectedAddress: '0x123',
@@ -81,27 +76,31 @@ describe('DefiReferralConsent', () => {
 
         renderWithProvider(<DefiReferralConsent {...props} />, store);
 
-        const termsLink = screen.getByRole('link', { name: 'terms' });
-        expect(termsLink).toHaveAttribute('href', termsUrl);
-        expect(termsLink).toHaveAttribute('target', '_blank');
-        expect(termsLink).toHaveAttribute('rel', 'noopener noreferrer');
-
-        const learnMoreLink = screen.getByRole('link', {
-          name: `${messages.learnMoreUpperCase.message}.`,
+        const links = screen.getAllByRole('link', {
+          name: messages.learnMoreUpperCase.message,
         });
-        expect(learnMoreLink).toHaveAttribute('href', learnMoreUrl);
-        expect(learnMoreLink).toHaveAttribute('target', '_blank');
-        expect(learnMoreLink).toHaveAttribute('rel', 'noopener noreferrer');
+        expect(links).toHaveLength(2);
+
+        const hrefs = links.map((link) => link.getAttribute('href'));
+        expect(hrefs).toEqual(expect.arrayContaining([termsUrl, learnMoreUrl]));
+
+        links.forEach((link) => {
+          expect(link).toHaveAttribute('target', '_blank');
+          expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+        });
       });
 
-      it('renders the checkbox with default checked state', () => {
+      it('renders confirm and cancel action buttons', () => {
         const store = mockStore(mockState);
 
         renderWithProvider(<DefiReferralConsent {...props} />, store);
 
-        const checkbox = screen.getByRole('checkbox');
-        expect(checkbox).toBeInTheDocument();
-        expect(checkbox).toBeChecked();
+        expect(
+          screen.getByRole('button', { name: messages.confirm.message }),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByRole('button', { name: messages.cancel.message }),
+        ).toBeInTheDocument();
       });
 
       it('calls onActionComplete with approved=true when confirm is clicked and checkbox is checked', () => {
@@ -127,7 +126,7 @@ describe('DefiReferralConsent', () => {
         });
       });
 
-      it('calls onActionComplete with approved=false when confirm is clicked and checkbox is unchecked', () => {
+      it('calls onActionComplete with approved=false when cancel is clicked', () => {
         const store = mockStore(mockState);
         const mockOnActionComplete = jest.fn();
 
@@ -139,29 +138,15 @@ describe('DefiReferralConsent', () => {
           store,
         );
 
-        // Uncheck the checkbox first
-        const checkbox = screen.getByRole('checkbox');
-        fireEvent.click(checkbox);
-
-        const confirmButton = screen.getByRole('button', {
-          name: messages.confirm.message,
+        const cancelButton = screen.getByRole('button', {
+          name: messages.cancel.message,
         });
-        fireEvent.click(confirmButton);
+        fireEvent.click(cancelButton);
 
         expect(mockOnActionComplete).toHaveBeenCalledWith({
           approved: false,
           selectedAddress: '0x123',
         });
-      });
-
-      it('renders the checkbox label', () => {
-        const store = mockStore(mockState);
-
-        renderWithProvider(<DefiReferralConsent {...props} />, store);
-
-        expect(
-          screen.getByText(messages.defiReferralCheckboxLabel.message),
-        ).toBeInTheDocument();
       });
     },
   );

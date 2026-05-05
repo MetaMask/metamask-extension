@@ -2375,10 +2375,6 @@
   "defiEmptyDescription": {
     "message": "Prêtez, empruntez et échangez, directement depuis votre portefeuille."
   },
-  "defiReferralCheckboxLabel": {
-    "message": "Autorisez MetaMask à ajouter un code de parrainage. Cette autorisation est permanente. Le site offre des réductions selon ses conditions générales. MetaMask perçoit une commission.",
-    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "Essayez de revenir sur cette page plus tard."
   },

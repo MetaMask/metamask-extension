@@ -1,19 +1,15 @@
 import React from 'react';
 import {
   Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
   BoxFlexDirection,
   Button,
-  Checkbox,
+  ButtonVariant,
   FontWeight,
   Text,
-  TextAlign,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useBoolean } from '../../../hooks/useBoolean';
 
 export type DefiReferralConsentProps = {
   onActionComplete: (result: {
@@ -52,6 +48,7 @@ const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
 }) => {
   return (
     <img
+      className="h-[190px]"
       src={`./images/${partnerId}-referral.png`}
       alt={`${partnerName} referral`}
     />
@@ -67,11 +64,10 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
   termsUrl,
 }) => {
   const t = useI18nContext();
-  const { value: isChecked, toggle } = useBoolean(true);
 
-  const handleSubmit = () => {
+  const handleSubmit = (value: boolean) => {
     onActionComplete({
-      approved: isChecked,
+      approved: value,
       selectedAddress,
     });
   };
@@ -90,57 +86,36 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
-      className="h-full justify-between"
+      className="h-full justify-between pt-12"
     >
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Center}
-        gap={4}
-        className="mb-6"
-      >
-        <Text
-          textAlign={TextAlign.Center}
-          variant={TextVariant.HeadingMd}
-          fontWeight={FontWeight.Bold}
-        >
-          {t(defiReferralTitle)}
-        </Text>
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {t(defiReferralSubtitle, [
-            <PartnerLink
-              key="defi-referral-partner-terms"
-              text="terms"
-              url={termsUrl}
-            />,
-          ])}{' '}
-          <PartnerLink
-            text={`${t('learnMoreUpperCase')}.`}
-            url={learnMoreUrl}
-          />
-        </Text>
-      </Box>
-      <Box paddingBottom={6} paddingHorizontal={4}>
-        <PartnerImage partnerId={partnerId} partnerName={partnerName} />
-      </Box>
-      <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-        <Box
-          backgroundColor={BoxBackgroundColor.BackgroundSection}
-          padding={3}
-          className="rounded-lg"
-        >
-          <Checkbox
-            id="defi-referral-consent-checkbox"
-            isSelected={isChecked}
-            onChange={toggle}
-            label={t('defiReferralCheckboxLabel')}
-            labelProps={{
-              variant: TextVariant.BodySm,
-              color: TextColor.TextAlternative,
-            }}
-            className="items-start cursor-pointer"
-          />
+      <Box>
+        <Box flexDirection={BoxFlexDirection.Column} gap={8} className="mb-4">
+          <Box className="m-auto">
+            <PartnerImage partnerId={partnerId} partnerName={partnerName} />
+          </Box>
+          <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
+            {t(defiReferralTitle)}
+          </Text>
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            {t(defiReferralSubtitle, [
+              <PartnerLink
+                key="defi-referral-partner-terms"
+                text={t('learnMoreUpperCase')}
+                url={termsUrl}
+              />,
+            ])}{' '}
+            <PartnerLink text={t('learnMoreUpperCase')} url={learnMoreUrl} />
+          </Text>
         </Box>
-        <Button onClick={handleSubmit}>{t('confirm')}</Button>
+      </Box>
+      <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+        <Button onClick={() => handleSubmit(true)}>{t('confirm')}</Button>
+        <Button
+          variant={ButtonVariant.Tertiary}
+          onClick={() => handleSubmit(false)}
+        >
+          {t('cancel')}
+        </Button>
       </Box>
     </Box>
   );

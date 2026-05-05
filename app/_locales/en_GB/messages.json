@@ -2419,10 +2419,6 @@
   "defiEmptyDescription": {
     "message": "Lend, borrow, and trade, right in your wallet."
   },
-  "defiReferralCheckboxLabel": {
-    "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
-    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "Try visiting again later."
   },

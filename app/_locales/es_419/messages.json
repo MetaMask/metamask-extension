@@ -2375,10 +2375,6 @@
   "defiEmptyDescription": {
     "message": "Presta, pide prestado y opera, directamente desde tu billetera."
   },
-  "defiReferralCheckboxLabel": {
-    "message": "Permite que MetaMask agregue un código de recomendación. Esto es permanente. El sitio ofrece descuentos según sus términos y condiciones. MetaMask recibe una comisión.",
-    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "Vuelve a visitarnos más tarde."
   },
