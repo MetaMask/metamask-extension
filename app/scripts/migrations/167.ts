@@ -60,13 +60,5 @@ function transformState(
     userStorageControllerState.isAccountSyncingEnabled = true;
   }
 
-  // If we are using `yarn start:with-state` or running an E2E test with generateWalletState, disable all syncing
-  if (process.env.WITH_STATE || getManifestFlags().testing?.disableSync) {
-    userStorageControllerState.isBackupAndSyncEnabled = false;
-    userStorageControllerState.isAccountSyncingEnabled = false;
-    userStorageControllerState.isProfileSyncingEnabled = false;
-    userStorageControllerState.isContactSyncingEnabled = false;
-  }
-
   return state;
 }

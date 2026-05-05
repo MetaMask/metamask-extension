@@ -40,12 +40,11 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
     await withFixtures(
       {
         title: testTitle,
-        fixtures: (
-          await generateWalletState(WITH_STATE_POWER_USER, true)
-        ).build(),
+        fixtures: (await generateWalletState(WITH_STATE_POWER_USER, true))
+          .withSyncDisabled()
+          .build(),
         manifestFlags: {
           testing: {
-            disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },

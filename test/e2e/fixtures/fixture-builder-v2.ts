@@ -25,6 +25,7 @@ import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
+import type { UserStorageControllerState } from '@metamask/profile-sync-controller/user-storage';
 import {
   type NetworkMetadata,
   type NetworkState,
@@ -377,10 +378,23 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withUserStorageController(data: Partial<UserStorageControllerState>): this {
+    merge(this.fixture.data.UserStorageController, data);
+    return this;
+  }
+
   /* ==================================================================
                               CUSTOM METHODS
      ==================================================================
   */
+  withSyncDisabled(): this {
+    return this.withUserStorageController({
+      isAccountSyncingEnabled: false,
+      isBackupAndSyncEnabled: false,
+      isContactSyncingEnabled: false,
+    });
+  }
+
   withAccountsControllerAdditionalAccountVault(): this {
     // Account sorting for permitted accounts (e.g. `eth_accounts`) now reads
     // `lastSelected` from the matching `AccountGroup` in `AccountTreeController`

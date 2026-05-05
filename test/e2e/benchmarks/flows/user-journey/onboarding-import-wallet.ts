@@ -55,7 +55,6 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         title: testTitle,
         manifestFlags: {
           testing: {
-            disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
@@ -64,6 +63,7 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         extendedTimeoutMultiplier: 3,
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
+          .withSyncDisabled()
           .build(),
         testSpecificMock: async (server: Mockttp) => {
           if (shouldUseMockedRequests()) {
