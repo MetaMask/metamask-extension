@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
@@ -35,6 +36,22 @@ describe('ModalFooter', () => {
     getByText(messages.confirm.message).click();
     expect(onSubmit).toHaveBeenCalled();
     expect(getByTestId('confirm-button')).toBeDefined();
+  });
+
+  it('uses submitButtonProps.children as the submit label instead of the default confirm string', () => {
+    const onSubmit = jest.fn();
+    renderWithProvider(
+      <ModalFooter
+        onSubmit={onSubmit}
+        submitButtonProps={{
+          children: 'Confirm trade',
+        }}
+      />,
+    );
+    expect(screen.getByText('Confirm trade')).toBeInTheDocument();
+    expect(screen.queryByText(messages.confirm.message)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText('Confirm trade'));
+    expect(onSubmit).toHaveBeenCalled();
   });
   it('should render the confirm button with custom class without overriding the default class', () => {
     const onSubmit = jest.fn();

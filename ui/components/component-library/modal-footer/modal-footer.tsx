@@ -28,6 +28,19 @@ export const ModalFooter: ModalFooterComponent = React.forwardRef(
     ref?: PolymorphicRef<C>,
   ) => {
     const t = useI18nContext();
+
+    const {
+      className: cancelButtonClassName,
+      children: cancelButtonChildren,
+      ...cancelButtonPropsRest
+    } = (cancelButtonProps ?? {}) as ButtonProps<'button'>;
+
+    const {
+      className: submitButtonClassName,
+      children: submitButtonChildren,
+      ...submitButtonPropsRest
+    } = (submitButtonProps ?? {}) as ButtonProps<'button'>;
+
     return (
       <Box
         className={classnames('mm-modal-footer', className)}
@@ -51,30 +64,30 @@ export const ModalFooter: ModalFooterComponent = React.forwardRef(
           {onCancel && (
             <Button
               onClick={onCancel}
-              children={t('cancel')}
               variant={ButtonVariant.Secondary}
-              {...(cancelButtonProps as ButtonProps<'button'>)}
+              {...cancelButtonPropsRest}
               size={ButtonSize.Lg} // TODO: There is a type issue with using variant, size and spreading props after size
               className={classnames(
                 'mm-modal-footer__button',
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
                 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                cancelButtonProps?.className || '',
+                cancelButtonClassName || '',
               )}
+              children={cancelButtonChildren ?? t('cancel')}
             />
           )}
           {onSubmit && (
             <Button
               size={ButtonSize.Lg}
               onClick={onSubmit}
-              children={t('confirm')}
-              {...submitButtonProps}
+              {...submitButtonPropsRest}
               className={classnames(
                 'mm-modal-footer__button',
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
                 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                submitButtonProps?.className || '',
+                submitButtonClassName || '',
               )}
+              children={submitButtonChildren ?? t('confirm')}
             />
           )}
         </Container>
