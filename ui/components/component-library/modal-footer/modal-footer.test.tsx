@@ -1,29 +1,30 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 import { ModalFooter } from './modal-footer';
 
 describe('ModalFooter', () => {
-  it('should render ModalFooter without error', () => {
+  it('renders ModalFooter without error', () => {
     const { getByTestId } = renderWithProvider(
       <ModalFooter data-testid="modal-footer" />,
     );
     expect(getByTestId('modal-footer')).toBeDefined();
     expect(getByTestId('modal-footer')).toHaveClass('mm-modal-footer');
   });
-  it('should match snapshot', () => {
+  it('matches snapshot', () => {
     const { container } = renderWithProvider(<ModalFooter />);
     expect(container).toMatchSnapshot();
   });
-  it('should render with and additional className', () => {
+  it('renders with an additional className', () => {
     const { getByTestId } = renderWithProvider(
       <ModalFooter data-testid="modal-footer" className="test-class" />,
     );
     expect(getByTestId('modal-footer')).toHaveClass('test-class');
   });
-  it('should fire the onSubmit function when clicked and pass additional props to the confirm button', () => {
+  it('fires the onSubmit function when clicked and passes additional props to the confirm button', () => {
     const onSubmit = jest.fn();
     const { getByText, getByTestId } = renderWithProvider(
       <ModalFooter
@@ -38,8 +39,9 @@ describe('ModalFooter', () => {
     expect(getByTestId('confirm-button')).toBeDefined();
   });
 
-  it('uses submitButtonProps.children as the submit label instead of the default confirm string', () => {
+  it('uses submitButtonProps.children as the submit label instead of the default confirm string', async () => {
     const onSubmit = jest.fn();
+    const user = userEvent.setup();
     renderWithProvider(
       <ModalFooter
         onSubmit={onSubmit}
@@ -49,11 +51,13 @@ describe('ModalFooter', () => {
       />,
     );
     expect(screen.getByText('Confirm trade')).toBeInTheDocument();
-    expect(screen.queryByText(messages.confirm.message)).not.toBeInTheDocument();
-    fireEvent.click(screen.getByText('Confirm trade'));
+    expect(
+      screen.queryByText(messages.confirm.message),
+    ).not.toBeInTheDocument();
+    await user.click(screen.getByText('Confirm trade'));
     expect(onSubmit).toHaveBeenCalled();
   });
-  it('should render the confirm button with custom class without overriding the default class', () => {
+  it('renders the confirm button with custom class without overriding the default class', () => {
     const onSubmit = jest.fn();
     const { getByText } = renderWithProvider(
       <ModalFooter
@@ -67,7 +71,7 @@ describe('ModalFooter', () => {
       'mm-modal-footer__button test-class',
     );
   });
-  it('should fire the onCancel function when clicked and pass additional props to the cancel button', () => {
+  it('fires the onCancel function when clicked and passes additional props to the cancel button', () => {
     const onCancel = jest.fn();
     const { getByText, getByTestId } = renderWithProvider(
       <ModalFooter
@@ -81,7 +85,7 @@ describe('ModalFooter', () => {
     expect(onCancel).toHaveBeenCalled();
     expect(getByTestId('cancel-button')).toBeDefined();
   });
-  it('should render the cancel button with custom class without overriding the default class', () => {
+  it('renders the cancel button with custom class without overriding the default class', () => {
     const onCancel = jest.fn();
     const { getByText } = renderWithProvider(
       <ModalFooter
@@ -95,7 +99,7 @@ describe('ModalFooter', () => {
       'mm-modal-footer__button test-class',
     );
   });
-  it('should render children', () => {
+  it('renders children', () => {
     const { getByText } = renderWithProvider(
       <ModalFooter>
         <div>Test</div>
@@ -103,7 +107,7 @@ describe('ModalFooter', () => {
     );
     expect(getByText('Test')).toBeDefined();
   });
-  it('should render with containerProps', () => {
+  it('renders with containerProps', () => {
     const { getByTestId } = renderWithProvider(
       <ModalFooter
         containerProps={{
