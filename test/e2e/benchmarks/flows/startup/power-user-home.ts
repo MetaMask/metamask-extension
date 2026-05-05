@@ -63,9 +63,11 @@ async function measurePagePowerUser(
         // Confirm the number of accounts in the account list
         await new HeaderNavbar(driver).openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkNumberOfAvailableAccounts(
-          WITH_STATE_POWER_USER.withAccounts,
-        );
+
+        // Wait for Account Sync to finish.
+        // We cannot wait for a specific account to appear as Account Sync can cause
+        // a different number of accounts loaded than the one we inject with fixtures
+        await accountListPage.waitUntilSyncingIsCompleted();
         await accountListPage.checkAccountDisplayedInAccountList(
           `Account ${WITH_STATE_POWER_USER.withAccounts}`,
         );

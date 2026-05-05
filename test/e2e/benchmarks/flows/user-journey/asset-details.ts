@@ -62,9 +62,11 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkNumberOfAvailableAccounts(
-          WITH_STATE_POWER_USER.withAccounts,
-        );
+
+        // Wait for Account Sync to finish.
+        // We cannot wait for a specific account to appear as Account Sync can cause
+        // a different number of accounts loaded than the one we inject with fixtures
+        await accountListPage.waitUntilSyncingIsCompleted();
         await accountListPage.checkAccountDisplayedInAccountList(
           `Account ${WITH_STATE_POWER_USER.withAccounts}`,
         );
