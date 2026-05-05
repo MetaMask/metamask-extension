@@ -3040,11 +3040,19 @@ export default class MetamaskController extends EventEmitter {
 
       // passkey management
       generatePasskeyRegistrationOptions:
-        this.generatePasskeyRegistrationOptions.bind(this),
-      generatePasskeyPostRegistrationAuthenticationOptions:
-        this.generatePasskeyPostRegistrationAuthenticationOptions.bind(this),
+        this.passkeyController.generateRegistrationOptions.bind(
+          this.passkeyController,
+        ),
+      generatePasskeyPostRegistrationAuthenticationOptions: (
+        registrationResponse,
+      ) =>
+        this.passkeyController.generatePostRegistrationAuthenticationOptions({
+          registrationResponse,
+        }),
       generatePasskeyAuthenticationOptions:
-        this.generatePasskeyAuthenticationOptions.bind(this),
+        this.passkeyController.generateAuthenticationOptions.bind(
+          this.passkeyController,
+        ),
       protectVaultKeyWithPasskey: this.protectVaultKeyWithPasskey.bind(this),
       unlockWithPasskey: this.unlockWithPasskey.bind(this),
       removePasskeyWithPasskeyVerification:
@@ -4483,42 +4491,6 @@ export default class MetamaskController extends EventEmitter {
     } finally {
       releaseLock();
     }
-  }
-
-  /**
-   * Starts passkey registration: stores a registration session and returns creation options.
-   *
-   * @param {object} [opts] - Optional configuration.
-   * @param {boolean} [opts.prfAvailable] - Whether the client supports the
-   *   WebAuthn PRF extension. When `false`, PRF is omitted from the options.
-   * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialCreationOptionsJSON>}
-   */
-  async generatePasskeyRegistrationOptions({ prfAvailable } = {}) {
-    return this.passkeyController.generateRegistrationOptions({ prfAvailable });
-  }
-
-  /**
-   * Starts passkey authentication: stores an authentication session and returns request options.
-   *
-   * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialRequestOptionsJSON>}
-   */
-  async generatePasskeyAuthenticationOptions() {
-    return this.passkeyController.generateAuthenticationOptions();
-  }
-
-  /**
-   * After `navigator.credentials.create()`, returns `get()` options for the
-   * post-registration assertion required by {@link protectVaultKeyWithPasskey}.
-   *
-   * @param {import('@metamask/passkey-controller').PasskeyRegistrationResponse} registrationResponse - Registration response from the UI.
-   * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialRequestOptionsJSON>}
-   */
-  async generatePasskeyPostRegistrationAuthenticationOptions(
-    registrationResponse,
-  ) {
-    return this.passkeyController.generatePostRegistrationAuthenticationOptions(
-      { registrationResponse },
-    );
   }
 
   /**

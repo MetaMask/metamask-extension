@@ -142,6 +142,10 @@ describe('Actions', () => {
     background.grantPermissionsIncremental = sinon.stub();
     background.changePassword = sinon.stub();
     background.changePasswordWithPasskeyVerification = sinon.stub();
+    background.generatePasskeyRegistrationOptions = sinon.stub();
+    background.generatePasskeyAuthenticationOptions = sinon.stub();
+    background.generatePasskeyPostRegistrationAuthenticationOptions =
+      sinon.stub();
 
     // Make sure navigator.hid is defined for WebHID tests
     if (!global.navigator) {
