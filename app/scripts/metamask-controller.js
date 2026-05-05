@@ -4598,9 +4598,9 @@ export default class MetamaskController extends EventEmitter {
   async changePasswordWithPasskeyVerification(
     newPassword,
     authenticationResponse,
-    options = { renewVaultKeyProtection: true },
+    options,
   ) {
-    const { renewVaultKeyProtection = true } = options;
+    const { renewVaultKeyProtection = true } = options ?? {};
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new PasskeyControllerError(
         PasskeyControllerErrorMessage.NotEnrolled,
