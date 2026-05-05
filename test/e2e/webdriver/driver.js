@@ -785,7 +785,7 @@ class Driver {
    * @returns {Promise<void>} Promise that resolves when the element stops moving.
    * @throws {Error} Throws an error if the element does not stop moving within the timeout period.
    */
-  async waitForElementToStopMoving(rawLocator, timeout = 5000) {
+  async waitForElementToStopMoving(rawLocator, timeout = 6000) {
     const startTime = Date.now();
 
     while (Date.now() - startTime < timeout) {
