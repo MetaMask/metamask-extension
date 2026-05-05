@@ -1526,9 +1526,10 @@ export function getTokenSortConfig(state) {
 /**
  * Returns an object indicating which networks
  * tokens should be shown on in the portfolio view.
+ *
+ * Deep-equal memo: merged tokenNetworkFilter object is often a new reference for the same filter.
  */
 // @deprecated('Use `getEnabledNetworks` instead')
-// Deep-equal memo: merged tokenNetworkFilter object is often a new reference for the same filter.
 export const getTokenNetworkFilter = createDeepEqualSelector(
   getCurrentChainId,
   getPreferences,
@@ -1800,8 +1801,9 @@ export const getAnySnapUpdateAvailable = createSelector(
 
 /**
  * Return if the snap branding should show in the UI.
+ *
+ * Deep-equal memo: snap install map / inputs can change reference without changing branding flag.
  */
-// Deep-equal memo: snap install map / inputs can change reference without changing branding flag.
 export const getHideSnapBranding = createDeepEqualSelector(
   [selectInstalledSnaps, selectSnapId],
   (installedSnaps, snapId) => {
@@ -1857,8 +1859,9 @@ const selectOrigins = (_state, origins) => origins;
  * @param state - Redux state object.
  * @param origins - Object containing keys that represent subject's identification.
  * @returns Key:value object containing metadata attached to each subject key.
+ *
+ * Deep-equal memo: builds a new origins→metadata map each run; inputs can be referentially unstable.
  */
-// Deep-equal memo: builds a new origins→metadata map each run; inputs can be referentially unstable.
 export const getMultipleTargetsSubjectMetadata = createDeepEqualSelector(
   [rawStateSelector, selectOrigins],
   (state, origins) => {
@@ -2191,8 +2194,9 @@ export const getFullTxData = createDeepEqualSelector(
  * Retrieves the connected subjects for all addresses.
  *
  * @returns {AccountConnections}  The connected subjects for all addresses.
+ *
+ * Deep-equal memo: aggregates subjects + metadata into nested structures with unstable intermediate refs.
  */
-// Deep-equal memo: aggregates subjects + metadata into nested structures with unstable intermediate refs.
 export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
   getPermissionSubjects,
   getSubjectMetadata,
@@ -2278,8 +2282,9 @@ export const getSnap = createDeepEqualSelector(
  *
  * @param {object} state - The Redux state object.
  * @returns {object} An object mapping all installed snaps to their metadata, which contains the snap name and description.
+ *
+ * Deep-equal memo: reduce builds a fresh metadata map; locale/snaps inputs can be new refs.
  */
-// Deep-equal memo: reduce builds a fresh metadata map; locale/snaps inputs can be new refs.
 export const getSnapsMetadata = createDeepEqualSelector(
   getLocale,
   getSnaps,
@@ -2311,8 +2316,9 @@ export const getSnapsMetadata = createDeepEqualSelector(
  * @param {object} state - The Redux state object.
  * @param {string} snapId - The snap ID to get the metadata for.
  * @returns {object} An object containing the snap name and description.
+ *
+ * Deep-equal memo: metadata lookup + default object; parent metadata map can churn references.
  */
-// Deep-equal memo: metadata lookup + default object; parent metadata map can churn references.
 export const getSnapMetadata = createDeepEqualSelector(
   getSnapsMetadata,
   (_, snapId) => snapId,
@@ -2408,8 +2414,9 @@ export const getNotifySnaps = createDeepEqualSelector(
  *
  * @param {object} state - The Redux state object.
  * @returns {object[]} An array of notify snaps that are not preinstalled.
+ *
+ * Deep-equal memo: second filter layer; notify snap array identity can flicker.
  */
-// Deep-equal memo: second filter layer; notify snap array identity can flicker.
 export const getThirdPartyNotifySnaps = createDeepEqualSelector(
   getNotifySnaps,
   (snaps) => snaps.filter((snap) => !snap.preinstalled),
@@ -2746,9 +2753,10 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
  *   - If `PORTFOLIO_VIEW` is not enabled, the selector returns only the `currentChainId`.
  *   - Otherwise, it includes all chains from `networkConfigurations`, excluding
  *     `TEST_CHAINS`, while ensuring the `currentChainId` is included.
+ *
+ * Deep-equal memo: returns a filtered chain-id array; keys/filter allocate new refs.
  */
 // @deprecated('Use `getEnabledChainIds` instead')
-// Deep-equal memo: returns a filtered chain-id array; keys/filter allocate new refs.
 export const getAllChainsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2765,8 +2773,8 @@ export const getAllChainsToPoll = createDeepEqualSelector(
   },
 );
 
-// @deprecated('Use `getEnabledChainIds` instead')
 // Deep-equal memo: same chain-id polling derivation; unstable array identity from filters.
+// @deprecated('Use `getEnabledChainIds` instead')
 export const getChainIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2791,8 +2799,8 @@ export const getChainIdsToPoll = createDeepEqualSelector(
   },
 );
 
-// @deprecated('Use `getEnabledNetworkClientIds` instead')
 // Deep-equal memo: reduce returns new client-id array when configs are logically unchanged.
+// @deprecated('Use `getEnabledNetworkClientIds` instead')
 export const getNetworkClientIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2991,8 +2999,9 @@ export function getTokenScanCache(state) {
  * @param {string} chainId
  * @param {string[]} tokenAddresses
  * @returns {Record<string, TokenScanCacheResult>}
+ *
+ * Deep-equal memo: builds a fresh results object from cache + address list args.
  */
-// Deep-equal memo: builds a fresh results object from cache + address list args.
 export const getTokenScanResultsForAddresses = createDeepEqualSelector(
   getTokenScanCache,
   (_state, chainId) => chainId,
@@ -3636,8 +3645,9 @@ export function getSubjectsWithSnapPermission(state, snapId) {
  * @param {object} state - The current state.
  * @returns {object} A mapping of addresses to a mapping of origins to
  * connected subject info.
+ *
+ * Deep-equal memo: permitted accounts array can be a new ref with the same addresses.
  */
-// Deep-equal memo: permitted accounts array can be a new ref with the same addresses.
 export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
   getPermittedEVMAccountsForCurrentTab,
   (_state, address) => address,
