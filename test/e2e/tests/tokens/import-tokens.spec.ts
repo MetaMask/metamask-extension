@@ -1,12 +1,15 @@
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 
-import { withFixtures } from '../../helpers';
+import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import { Mockttp } from '../../mock-e2e';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { login } from '../../page-objects/flows/login.flow';
+import NetworkManager, {
+  NetworkId,
+} from '../../page-objects/pages/network-manager';
 import { getMockAssetsPrice } from './utils/mocks';
 
 const ETH_CONVERSION_RATE_USD = 1700;
@@ -607,20 +610,27 @@ describe('Import flow', function () {
 
         const assetListPage = new AssetListPage(driver);
 
+        const networkManager = new NetworkManager(driver);
+
+        // check if the Linea network is selected
+        await networkManager.openNetworkManager();
+        await driver.delay(veryLargeDelayMs);
+        await networkManager.selectNetworkByChainId(NetworkId.POLYGON);
+        await driver.delay(veryLargeDelayMs);
+
         // the token symbol is prefilled because of the mock
         await assetListPage.importCustomTokenByChain(
           '0x89',
           '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
         );
         const tokenList = new AssetListPage(driver);
-
         // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
         // ERC20 Tokens: Polygon USDT
-        await tokenList.checkTokenItemNumber(5);
+        await tokenList.checkTokenItemNumber(2);
 
-        await tokenList.checkTokenExistsInList('Ether');
-        await tokenList.checkTokenExistsInList('USDT');
+
         await tokenList.checkTokenExistsInList('POL');
+        await tokenList.checkTokenExistsInList('USDT');
       },
     );
   });
