@@ -1554,6 +1554,24 @@ class Driver {
   }
 
   /**
+   * Closes every browser tab/window except the currently focused one.
+   *
+   * @returns {Promise<void>} promise resolving after all other windows are closed
+   */
+  async closeAllOtherTabs() {
+    const handles = await this.getAllWindowHandles();
+    const current = await this.driver.getWindowHandle();
+    for (const h of handles) {
+      if (h !== current) {
+        await this.driver.switchTo().window(h);
+        await this.driver.close();
+      }
+    }
+    await this.driver.switchTo().window(current);
+    await this.getAllWindowHandles();
+  }
+
+  /**
    * Closes specific window tab identified by its window handle.
    *
    * @param {string} windowHandle - representing the unique identifier of the browser window to be closed.

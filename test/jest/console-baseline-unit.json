@@ -251,6 +251,10 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: MetaMetrics context trackEvent was": 3
     },
+    "ui/components/app/metametrics-toggle/metametrics-toggle.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "error: Error: MetaMetrics context trackEvent was": 3
+    },
     "ui/components/app/modals/confirm-delete-network/confirm-delete-network.test.js": {
       "React: PropTypes validation failures": 1,
       "error: Error: Insufficient number of substitutions": 1
@@ -293,6 +297,9 @@
     },
     "ui/components/app/qr-hardware-popover/base-reader.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 8
+    },
+    "ui/components/app/reveal-srp-list/reveal-srp-list.test.tsx": {
+      "Reselect: Identity function warnings": 1
     },
     "ui/components/app/rewards/onboarding/OnboardingIntroStep.test.tsx": {
       "error: Warning: React does not recognize": 1
@@ -1442,7 +1449,7 @@
       "React: DOM nesting violations": 3
     },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 5
+      "React: Act warnings (component updates not wrapped)": 6
     },
     "ui/pages/perps/perps-order-entry-page.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
@@ -1535,19 +1542,6 @@
     "ui/pages/settings/networks-tab/networks-form/networks-form.test.js": {
       "React: Act warnings (component updates not wrapped)": 1,
       "React: State updates on unmounted components": 1
-    },
-    "ui/pages/settings/security-tab/metametrics-toggle/metametrics-toggle.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "error: Error: MetaMetrics context trackEvent was": 3
-    },
-    "ui/pages/settings/security-tab/reveal-srp-list/reveal-srp-list.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
-    "ui/pages/settings/security-tab/security-tab.test.js": {
-      "MetaMask: Background connection not initialized": 36,
-      "React: PropTypes validation failures": 3,
-      "React: componentWill* lifecycle deprecations": 1,
-      "Reselect: Input stability warnings": 1
     },
     "ui/pages/settings/transaction-shield-tab/claims-form/claims-form.test.tsx": {
       "MetaMask: Background connection not initialized": 4,
