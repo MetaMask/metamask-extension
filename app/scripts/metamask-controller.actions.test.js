@@ -1235,8 +1235,9 @@ describe('MetaMaskController', function () {
           )
           .mockResolvedValue({ challenge: 'challenge' });
 
-        const result =
-          await metamaskController.generatePasskeyRegistrationOptions({
+        const result = await metamaskController
+          .getApi()
+          .generatePasskeyRegistrationOptions({
             prfAvailable: true,
           });
 
@@ -1256,8 +1257,9 @@ describe('MetaMaskController', function () {
           )
           .mockResolvedValue({ challenge: 'challenge' });
 
-        const result =
-          await metamaskController.generatePasskeyAuthenticationOptions();
+        const result = await metamaskController
+          .getApi()
+          .generatePasskeyAuthenticationOptions();
 
         expect(generateAuthenticationOptionsSpy).toHaveBeenCalledTimes(1);
         expect(result).toStrictEqual({ challenge: 'challenge' });
@@ -1273,8 +1275,9 @@ describe('MetaMaskController', function () {
           )
           .mockReturnValue({ challenge: 'post-reg' });
 
-        const result =
-          await metamaskController.generatePasskeyPostRegistrationAuthenticationOptions(
+        const result = await metamaskController
+          .getApi()
+          .generatePasskeyPostRegistrationAuthenticationOptions(
             registrationResponse,
           );
 
