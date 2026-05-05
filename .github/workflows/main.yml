@@ -181,7 +181,7 @@ jobs:
       build-command: yarn webpack:tsc && yarn build:test:webpack
       test-command: yarn test:e2e:single test/e2e/tests/critical-errors/critical-errors.spec.ts --browser chrome --debug false
       builds-from-run: ${{ github.run_id }}
-      test-timeout-minutes: 180
+      test-timeout-minutes: 90
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 

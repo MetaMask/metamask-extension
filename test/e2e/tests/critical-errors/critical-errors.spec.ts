@@ -82,12 +82,12 @@ describe('Critical errors', function (this: Suite) {
     );
   });
 
-  // Debug-only: run the flaky initialization-hang test 30 times consecutively (each
+  // Debug-only: run the flaky initialization-hang test 10 times consecutively (each
   // with its own withFixtures so state is fully reset). Other tests in this
   // suite are skipped via mocha's exclusive `it.only`. Revert before merge.
-  for (let i = 1; i <= 30; i += 1) {
+  for (let i = 1; i <= 10; i += 1) {
     // eslint-disable-next-line mocha/no-exclusive-tests
-    it.only(`[DEBUG-08c5ca run ${i}/30] shows critical error screen when background takes over 16 seconds to initialize, and allows user to restore accounts`, async function () {
+    it.only(`[DEBUG-08c5ca run ${i}/10] shows critical error screen when background takes over 16 seconds to initialize, and allows user to restore accounts`, async function () {
       this.timeout(120_000);
       await withFixtures(
         {
