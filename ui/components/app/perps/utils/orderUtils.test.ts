@@ -4,6 +4,7 @@ import {
   shouldDisplayOrderInMarketDetailsOrders,
   buildDisplayOrdersWithSyntheticTpsl,
   normalizeMarketDetailsOrders,
+  findFullPositionTpslPricesFromOrders,
   formatOrderLabel,
 } from './orderUtils';
 
@@ -343,6 +344,168 @@ describe('orderUtils', () => {
         orders: [limitOrder],
       });
       expect(result).toHaveLength(3);
+    });
+
+    it('excludes orphan normalTpsl trigger orders whose parent has filled', () => {
+      const orphanTp = makeOrder({
+        orderId: 'orphan-tp',
+        parentOrderId: 'filled-parent',
+        reduceOnly: true,
+        isTrigger: true,
+        isPositionTpsl: false,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+        triggerPrice: '3200.00',
+        detailedOrderType: 'Take Profit Limit',
+      });
+      const orphanSl = makeOrder({
+        orderId: 'orphan-sl',
+        parentOrderId: 'filled-parent',
+        reduceOnly: true,
+        isTrigger: true,
+        isPositionTpsl: false,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+        triggerPrice: '2800.00',
+        detailedOrderType: 'Stop Market',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const result = normalizeMarketDetailsOrders({
+        orders: [orphanTp, orphanSl],
+        existingPosition: position,
+      });
+      expect(result).toHaveLength(0);
+    });
+
+    it('keeps normalTpsl trigger orders while their parent is still open', () => {
+      const parent = makeOrder({
+        orderId: 'parent-1',
+        side: 'buy',
+        size: '1.0',
+        originalSize: '1.0',
+        reduceOnly: false,
+      });
+      const childTp = makeOrder({
+        orderId: 'child-tp',
+        parentOrderId: 'parent-1',
+        reduceOnly: true,
+        isTrigger: true,
+        isPositionTpsl: false,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+        triggerPrice: '3200.00',
+        detailedOrderType: 'Take Profit Limit',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const result = normalizeMarketDetailsOrders({
+        orders: [parent, childTp],
+        existingPosition: position,
+      });
+      expect(result.map((o) => o.orderId).sort()).toStrictEqual(
+        ['child-tp', 'parent-1'].sort(),
+      );
+    });
+  });
+
+  describe('findFullPositionTpslPricesFromOrders', () => {
+    it('returns empty object when no position', () => {
+      const order = makeOrder({
+        reduceOnly: true,
+        isTrigger: true,
+        triggerPrice: '3200.00',
+      });
+      expect(findFullPositionTpslPricesFromOrders([order])).toStrictEqual({});
+    });
+
+    it('extracts TP/SL prices from orphan triggers matching position size', () => {
+      const orphanTp = makeOrder({
+        orderId: 'orphan-tp',
+        parentOrderId: 'filled-parent',
+        reduceOnly: true,
+        isTrigger: true,
+        isPositionTpsl: false,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+        triggerPrice: '3200.00',
+        detailedOrderType: 'Take Profit Limit',
+      });
+      const orphanSl = makeOrder({
+        orderId: 'orphan-sl',
+        parentOrderId: 'filled-parent',
+        reduceOnly: true,
+        isTrigger: true,
+        isPositionTpsl: false,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+        triggerPrice: '2800.00',
+        detailedOrderType: 'Stop Market',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const result = findFullPositionTpslPricesFromOrders(
+        [orphanTp, orphanSl],
+        position,
+      );
+      expect(result).toStrictEqual({
+        takeProfitPrice: '3200.00',
+        stopLossPrice: '2800.00',
+      });
+    });
+
+    it('ignores normalTpsl triggers whose parent is still open', () => {
+      const parent = makeOrder({ orderId: 'parent-1' });
+      const child = makeOrder({
+        orderId: 'child-tp',
+        parentOrderId: 'parent-1',
+        reduceOnly: true,
+        isTrigger: true,
+        isPositionTpsl: false,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+        triggerPrice: '3200.00',
+        detailedOrderType: 'Take Profit Limit',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      expect(
+        findFullPositionTpslPricesFromOrders([parent, child], position),
+      ).toStrictEqual({
+        takeProfitPrice: undefined,
+        stopLossPrice: undefined,
+      });
+    });
+
+    it('ignores orphan triggers whose size does not match the position', () => {
+      const orphan = makeOrder({
+        orderId: 'orphan-tp',
+        parentOrderId: 'filled-parent',
+        reduceOnly: true,
+        isTrigger: true,
+        isPositionTpsl: false,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '0.5',
+        originalSize: '0.5',
+        triggerPrice: '3200.00',
+        detailedOrderType: 'Take Profit Limit',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      expect(
+        findFullPositionTpslPricesFromOrders([orphan], position),
+      ).toStrictEqual({
+        takeProfitPrice: undefined,
+        stopLossPrice: undefined,
+      });
     });
   });
 

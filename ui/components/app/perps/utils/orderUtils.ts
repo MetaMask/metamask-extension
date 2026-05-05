@@ -305,12 +305,46 @@ export const buildDisplayOrdersWithSyntheticTpsl = (
   return displayOrders;
 };
 
+const isOrphanFullPositionTpslOrder = (
+  order: Order,
+  position: Position | undefined,
+  openOrderIds: Set<string>,
+): boolean => {
+  if (!position) {
+    return false;
+  }
+  if (!order.reduceOnly || order.isTrigger !== true) {
+    return false;
+  }
+  if (order.isPositionTpsl !== false) {
+    return false;
+  }
+  if (!order.parentOrderId || openOrderIds.has(order.parentOrderId)) {
+    return false;
+  }
+  if (
+    order.symbol !== position.symbol ||
+    !isClosingSideForPosition(order, position)
+  ) {
+    return false;
+  }
+  const orderSize = getAbsoluteOrderSize(order);
+  const positionSize = getAbsolutePositionSize(position);
+  if (!orderSize || !positionSize) {
+    return false;
+  }
+  return orderSize.minus(positionSize).abs().lte(FULL_POSITION_SIZE_TOLERANCE);
+};
+
 /**
  * Normalizes orders for the Perps Market Details > Orders section.
  *
  * Composes display-order enrichment (synthetic TP/SL rows) with visibility
  * filtering: reduce-only orders associated with the full position are excluded
- * because they are surfaced in the auto-close section instead.
+ * because they are surfaced in the auto-close section instead. Also excludes
+ * orphaned `normalTpsl` triggers (parent already filled, `isPositionTpsl: false`,
+ * size matches the position) — those originate from order-entry TP/SL on a new
+ * position and become de-facto position-bound TP/SL after the parent fills.
  *
  * @param options0 - Options object
  * @param options0.orders - The orders to normalize
@@ -326,10 +360,65 @@ export const normalizeMarketDetailsOrders = ({
   existingPosition?: Position;
 }): Order[] => {
   const ordersWithSyntheticTpsl = buildDisplayOrdersWithSyntheticTpsl(orders);
+  const openOrderIds = new Set(orders.map((order) => order.orderId));
 
-  return ordersWithSyntheticTpsl.filter((order) =>
-    shouldDisplayOrderInMarketDetailsOrders(order, existingPosition),
-  );
+  return ordersWithSyntheticTpsl.filter((order) => {
+    if (!shouldDisplayOrderInMarketDetailsOrders(order, existingPosition)) {
+      return false;
+    }
+    return !isOrphanFullPositionTpslOrder(
+      order,
+      existingPosition,
+      openOrderIds,
+    );
+  });
+};
+
+/**
+ * Extracts position-bound TP/SL prices from orphaned `normalTpsl` trigger
+ * orders when the controller did not populate `position.takeProfitPrice` /
+ * `stopLossPrice`.
+ *
+ * Order-entry TP/SL on a new position is submitted with `normalTpsl` grouping;
+ * after the parent market order fills, the resulting reduce-only triggers
+ * survive as orphans flagged `isPositionTpsl: false`. The HyperLiquid provider
+ * only resolves position-bound TP/SL prices from `isPositionTpsl === true`
+ * orders, so the auto-close section sees `undefined` for these prices unless
+ * we recover them from the orphans here.
+ *
+ * @param orders - All open orders for the market.
+ * @param position - The current position (if any).
+ * @returns Effective `takeProfitPrice` / `stopLossPrice` for the auto-close
+ * section. Empty object when no orphans match.
+ */
+export const findFullPositionTpslPricesFromOrders = (
+  orders: Order[],
+  position?: Position,
+): { takeProfitPrice?: string; stopLossPrice?: string } => {
+  if (!position) {
+    return {};
+  }
+  const openOrderIds = new Set(orders.map((order) => order.orderId));
+  let takeProfitPrice: string | undefined;
+  let stopLossPrice: string | undefined;
+
+  for (const order of orders) {
+    if (!isOrphanFullPositionTpslOrder(order, position, openOrderIds)) {
+      continue;
+    }
+    const triggerPrice = order.triggerPrice ?? order.price;
+    if (!triggerPrice) {
+      continue;
+    }
+    const detailedType = (order.detailedOrderType ?? '').toLowerCase();
+    if (detailedType.includes('take profit')) {
+      takeProfitPrice ??= triggerPrice;
+    } else if (detailedType.includes('stop')) {
+      stopLossPrice ??= triggerPrice;
+    }
+  }
+
+  return { takeProfitPrice, stopLossPrice };
 };
 
 /**
