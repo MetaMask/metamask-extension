@@ -5668,9 +5668,6 @@
   "perpsCancelOrder": {
     "message": "Batalkan order"
   },
-  "perpsCandleIntervals": {
-    "message": "Interval lilin"
-  },
   "perpsCandlePeriodDays": {
     "message": "Hari"
   },
@@ -5682,9 +5679,6 @@
   },
   "perpsCloseAll": {
     "message": "Tutup semua"
-  },
-  "perpsCloseAmount": {
-    "message": "Jumlah Penutupan"
   },
   "perpsCloseLong": {
     "message": "Tutup long"
@@ -6270,6 +6264,10 @@
   "perpsWithdraw": {
     "message": "Tarik"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Penarikan perp",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Estimasi waktu"
   },
@@ -6317,6 +6315,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Penarikan dikirim"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask akan menukar token Anda ke token yang diinginkan. MetaMask tidak mengenakan biaya saat Anda menukar ke mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Anda menerima"
@@ -6442,6 +6444,10 @@
   },
   "provide": {
     "message": "Berikan"
+  },
+  "providerFee": {
+    "message": "Biaya penyedia",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Alamat publik"
@@ -6649,8 +6655,16 @@
   "receiveCrypto": {
     "message": "Terima kripto"
   },
+  "receiveToken": {
+    "message": "Terima token",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Diterima"
+  },
+  "receivedTotal": {
+    "message": "Total yang diterima",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Alamat penerima",
@@ -9787,6 +9801,10 @@
   "willApproveAmountForSwapping": {
     "message": "Menyetujui token untuk swap."
   },
+  "withdrawTo": {
+    "message": "Terima",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Penarikan"
   },
@@ -9819,6 +9837,10 @@
   "youSent": {
     "message": "Anda mengirim",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Anda akan menerima",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Aktivitas Anda"
