@@ -269,15 +269,18 @@ describe('SetupPasskey', () => {
       );
     });
 
-    it('navigates to MetaMetrics when flow type is not create or import', () => {
+    it('navigates to completion when flow type is socialCreate', () => {
       const mockStore = buildMockStore(FirstTimeFlowType.socialCreate);
       const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
 
       fireEvent.click(getByText(messages.maybeLater.message));
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_COMPLETION_ROUTE,
+        {
+          replace: true,
+        },
+      );
     });
   });
 
