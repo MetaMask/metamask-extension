@@ -6,9 +6,7 @@ import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
-import {
-  DEFAULT_ROUTE,
-} from '../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   tryUnlockMetamask,
   forceUpdateMetamaskState,
@@ -62,10 +60,8 @@ const mergeProps = (
   dispatchProps: ReturnType<typeof mapDispatchToProps>,
   ownProps: OwnProps,
 ) => {
-  const {
-    tryUnlockMetamask: propsTryUnlockMetamask,
-    ...restDispatchProps
-  } = dispatchProps;
+  const { tryUnlockMetamask: propsTryUnlockMetamask, ...restDispatchProps } =
+    dispatchProps;
   const {
     navigate,
     onSubmit: ownPropsSubmit,

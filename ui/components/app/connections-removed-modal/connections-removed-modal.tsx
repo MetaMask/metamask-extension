@@ -28,7 +28,10 @@ import {
 import { resetWallet } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { ENVIRONMENT_TYPE_POPUP, ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -41,7 +44,10 @@ export default function ConnectionsRemovedModal() {
     await dispatch(resetWallet());
 
     const envType = getEnvironmentType();
-    if (envType === ENVIRONMENT_TYPE_POPUP || envType === ENVIRONMENT_TYPE_SIDEPANEL) {
+    if (
+      envType === ENVIRONMENT_TYPE_POPUP ||
+      envType === ENVIRONMENT_TYPE_SIDEPANEL
+    ) {
       global.platform.openExtensionInBrowser?.(DEFAULT_ROUTE);
     } else {
       navigate(DEFAULT_ROUTE, { replace: true });

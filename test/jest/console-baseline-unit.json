@@ -1596,9 +1596,6 @@
     "ui/pages/trust-signals/hooks/useTrustSignalMetrics.test.ts": {
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/unlock-page/reset-password-modal.test.tsx": {
-      "React: DOM nesting violations": 1
-    },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
       "error: Error: SeedlessOnboardingController - Authentication error": 1

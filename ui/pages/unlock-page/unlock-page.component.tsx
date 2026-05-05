@@ -576,9 +576,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
             onClose={() => this.setState({ showLoginErrorModal: false })}
           />
         )}
-        {showConnectionsRemovedModal && (
-          <ConnectionsRemovedModal />
-        )}
+        {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
         <Box
           flexDirection={BoxFlexDirection.Column}
           justifyContent={BoxJustifyContent.Center}

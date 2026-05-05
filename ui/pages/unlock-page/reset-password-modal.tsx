@@ -26,8 +26,14 @@ import {
   ModalOverlay,
 } from '../../components/component-library';
 import { getIsSocialLoginFlow } from '../../selectors';
-import { markPasswordForgotten, resetWallet as resetWalletAction } from '../../store/actions';
-import { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  markPasswordForgotten,
+  resetWallet as resetWalletAction,
+} from '../../store/actions';
+import {
+  DEFAULT_ROUTE,
+  RESTORE_VAULT_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -36,7 +42,10 @@ import {
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { useBoolean } from '../../hooks/useBoolean';
-import { ENVIRONMENT_TYPE_POPUP, ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -53,7 +62,9 @@ export default function ResetPasswordModal({
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const isPopupOrSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP || getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  const isPopupOrSidePanel =
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
 
   const handleResetWalletConfirm = async () => {
     onClose();
@@ -80,10 +91,10 @@ export default function ResetPasswordModal({
 
     await dispatch(markPasswordForgotten());
 
-    navigate(RESTORE_VAULT_ROUTE, { replace: true });
-
     if (isPopupOrSidePanel) {
       global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
+    } else {
+      navigate(RESTORE_VAULT_ROUTE, { replace: true });
     }
   };
 
@@ -151,8 +162,9 @@ export default function ResetPasswordModal({
                       variant={TextVariant.BodyMd}
                       key="reset-password-step-1-biometrics"
                       color={TextColor.TextAlternative}
+                      asChild
                     >
-                      {t('forgotPasswordSocialStep1Biometrics')}
+                      <span>{t('forgotPasswordSocialStep1Biometrics')}</span>
                     </Text>,
                   ])}
                 </Text>
@@ -175,8 +187,9 @@ export default function ResetPasswordModal({
                       variant={TextVariant.BodyMd}
                       key="reset-password-step-2-srp"
                       color={TextColor.TextAlternative}
+                      asChild
                     >
-                      {t('secretRecoveryPhrase')}
+                      <span>{t('secretRecoveryPhrase')}</span>
                     </Text>,
                   ])}
                 </Text>

@@ -32,7 +32,10 @@ import {
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getSocialLoginType } from '../../../selectors';
-import { ENVIRONMENT_TYPE_POPUP, ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { resetWallet } from '../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -131,7 +134,9 @@ export default function LoginErrorModal({
   const handleConfirm = async () => {
     onClose();
 
-    const isPopupOrSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP || getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+    const isPopupOrSidePanel =
+      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
     await dispatch(resetWallet());
 
     if (isPopupOrSidePanel) {
@@ -139,7 +144,7 @@ export default function LoginErrorModal({
     } else {
       navigate(DEFAULT_ROUTE, { replace: true });
     }
-  }
+  };
 
   return (
     <Modal isOpen onClose={onClose} data-testid="login-error-modal">
