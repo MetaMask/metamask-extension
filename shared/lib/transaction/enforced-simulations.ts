@@ -50,22 +50,6 @@ type FeatureFlagSource = Pick<
 >;
 
 /**
- * Reads the `confirmations_enforced_simulations` remote feature flag
- * value, returning `undefined` when the flag is absent.
- *
- * @param source - An object holding the remote feature flags.
- * @param source.remoteFeatureFlags - The remote feature flags object.
- * @returns The flag value or `undefined`.
- */
-export function getEnforcedSimulationsFlag({
-  remoteFeatureFlags,
-}: FeatureFlagSource): EnforcedSimulationsFeatureFlag | undefined {
-  return (remoteFeatureFlags as RemoteFlagsWithEnforcedSimulations)?.[
-    ENFORCED_SIMULATIONS_FEATURE_FLAG
-  ];
-}
-
-/**
  * Reads the `enabled` field from the `confirmations_enforced_simulations`
  * remote feature flag. Defaults to `false` when the flag or field is
  * absent.
@@ -143,6 +127,14 @@ export function isEnforcedSimulationsEligible(
   }
 
   return true;
+}
+
+function getEnforcedSimulationsFlag({
+  remoteFeatureFlags,
+}: FeatureFlagSource): EnforcedSimulationsFeatureFlag | undefined {
+  return (remoteFeatureFlags as RemoteFlagsWithEnforcedSimulations)?.[
+    ENFORCED_SIMULATIONS_FEATURE_FLAG
+  ];
 }
 
 function isForceEnabled(): boolean {
