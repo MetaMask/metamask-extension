@@ -174,7 +174,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 207,
+      "currentMigrationVersion": 206,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -839,12 +839,12 @@
       "firstTimeFlowType": "import",
       "seedPhraseBackedUp": null
     },
+    "PasskeyController": {
+      "passkeyRecord": null
+    },
     "PPOMController": {
       "storageMetadata": [],
       "versionInfo": []
-    },
-    "PasskeyController": {
-      "passkeyRecord": null
     },
     "PermissionController": {},
     "PermissionLogController": {
@@ -1075,7 +1075,6 @@
       "marketData": {
         "0x1": {},
         "0x2105": {},
-        "0x279f": {},
         "0x38": {},
         "0x539": {},
         "0x89": {},
@@ -1087,48 +1086,7 @@
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
-      "allTokens": {
-        "0x1": {
-          "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": [
-            {
-              "address": "0xacA92E438df0B2401fF60dA7E4337B687a2435DA",
-              "decimals": 6,
-              "name": "MetaMask USD",
-              "symbol": "mUSD"
-            }
-          ]
-        },
-        "0x279f": {
-          "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": [
-            {
-              "address": "0xacA92E438df0B2401fF60dA7E4337B687a2435DA",
-              "decimals": 6,
-              "name": "MetaMask USD",
-              "symbol": "mUSD"
-            }
-          ]
-        },
-        "0x8f": {
-          "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": [
-            {
-              "address": "0xaca92e438df0b2401ff60da7e4337b687a2435da",
-              "decimals": 6,
-              "name": "MetaMask USD",
-              "symbol": "mUSD"
-            }
-          ]
-        },
-        "0xe708": {
-          "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": [
-            {
-              "address": "0xacA92E438df0B2401fF60dA7E4337B687a2435DA",
-              "decimals": 6,
-              "name": "MetaMask USD",
-              "symbol": "mUSD"
-            }
-          ]
-        }
-      }
+      "allTokens": {}
     },
     "TransactionController": {
       "lastFetchedBlockNumbers": {},
@@ -1149,6 +1107,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 207
+    "version": 206
   }
 }
