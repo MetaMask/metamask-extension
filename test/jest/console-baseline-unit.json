@@ -546,8 +546,12 @@
     "ui/helpers/utils/tags.test.ts": {
       "Reselect: Input stability warnings": 1
     },
+    "ui/hooks/bridge/useInitialBridgeTokens.test.ts": {
+      "React: Act warnings (component updates not wrapped)": 1,
+      "Reselect: Input stability warnings": 1
+    },
     "ui/hooks/bridge/usePopularTokens.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 16,
+      "React: Act warnings (component updates not wrapped)": 2,
       "Reselect: Input stability warnings": 1
     },
     "ui/hooks/bridge/useTokenSearchResults.test.ts": {
@@ -665,7 +669,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/index.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 4,
+      "React: Act warnings (component updates not wrapped)": 5,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1
     },
@@ -680,11 +684,8 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/prepare/components/bridge-alert-banner-list.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 44,
       "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
-      "error: Error: Insufficient number of substitutions": 2,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },
@@ -699,7 +700,6 @@
     },
     "ui/pages/bridge/prepare/prepare-bridge-page.test.tsx": {
       "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: Warning: A component is changing": 2,
       "µWebSockets: Compatibility warnings": 1,
@@ -1057,9 +1057,6 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/rows/account-flow-row/account-flow-row.test.tsx": {
-      "Reselect: Identity function warnings": 3
-    },
-    "ui/pages/confirmations/components/rows/bridge-fee-row/bridge-fee-row.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/rows/claimable-bonus-row/claimable-bonus-row.test.tsx": {
