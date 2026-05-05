@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "Carteira de hardware"
   },
-  "addIPFSGateway": {
-    "message": "Adicione seu gateway IPFS preferencial"
-  },
   "addMemo": {
     "message": "Adicionar observação"
   },
@@ -1545,9 +1542,6 @@
     "message": "Quando você utiliza nossas configurações e definições padrão, utilizamos a Infura como nosso provedor padrão de chamada de procedimento remoto (RPC) para oferecer o acesso mais confiável e privado possível aos dados Ethereum. Em alguns casos, podemos utilizar outros provedores de RPC para proporcionar a melhor experiência possível aos nossos usuários. Você pode escolher sua própria RPC, mas lembre-se de que qualquer uma delas receberá seu endereço IP e sua carteira Ethereum para realizar transações. Para saber mais sobre como a Infura trata os dados de contas EVM, leia a nossa $1 e, para contas Solana, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "clique aqui"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Você precisa usar a MetaMask no Google Chrome para se conectar com a sua carteira de hardware."
   },
@@ -2216,12 +2210,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Receba atualizações de produtos, dicas e novidades, inclusive por e-mail. Podemos usar suas interações para aprimorar o que compartilharmos."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "OK"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Você desativou a coleta de dados para fins de marketing. Isso é aplicável apenas a este dispositivo. Se você usa a MetaMask em outros dispositivos, desative-a neles também."
   },
   "dataUnavailable": {
     "message": "dados não disponíveis"
@@ -7166,12 +7154,6 @@
   "securityChangePassword": {
     "message": "Alterar senha"
   },
-  "securityChangePasswordDescription": {
-    "message": "Escolha uma senha forte para desbloquear o aplicativo MetaMask em seu dispositivo. Se você perder essa senha, precisará da sua Frase de Recuperação Secreta para importar sua carteira novamente."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Senha"
-  },
   "securityChangePasswordToastError": {
     "message": "Não foi possível alterar a senha. Tente novamente."
   },
@@ -7183,16 +7165,6 @@
   },
   "securityDescription": {
     "message": "Reduza suas chances de ingressar em redes perigosas e proteja suas contas"
-  },
-  "securityLoginWithSocial": {
-    "message": "Fazer login com $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Backup da Frase de Recuperação Secreta concluído"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Fazer backup da Frase de Recuperação Secreta"
   },
   "securityMessageLinkForNetworks": {
     "message": "golpes de rede e riscos de segurança"
@@ -7215,14 +7187,8 @@
     "message": "RECUPERAÇÃO DE $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Faça backup de sua Frase de Recuperação Secreta para nunca perder o acesso à sua carteira. Certifique-se de guardá-la em um local seguro que só você pode acessar e que você não vai esquecer."
-  },
   "securitySrpLabel": {
     "message": "FRASE DE RECUPERAÇÃO SECRETA"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Gerenciar métodos de recuperação"
   },
   "seeAllPermissions": {
     "message": "Ver todas as permissões",
@@ -8200,9 +8166,6 @@
   },
   "smartContractAddressWarning": {
     "message": "O endereço do destinatário pode não aceitar transferências diretas de tokens, o que pode resultar na perda de fundos. Prossiga apenas se tiver certeza de que este contrato pode receber sua transferência."
-  },
-  "smartContracts": {
-    "message": "Contratos inteligentes"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Fundos insuficientes para uma troca inteligente."
@@ -9226,9 +9189,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Esse token já foi adicionado."
-  },
-  "tokenAutoDetection": {
-    "message": "Detecção automática de tokens"
   },
   "tokenContractAddress": {
     "message": "Endereço de contrato do token"
