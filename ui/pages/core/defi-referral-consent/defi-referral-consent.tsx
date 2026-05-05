@@ -75,6 +75,7 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
   // If this is done inline, verify-locales will output `Forbidden use of template strings in 't' function`
   const defiReferralTitle = `${partnerId}ReferralTitle`;
   const defiReferralSubtitle = `${partnerId}ReferralSubtitle`;
+  const defiReferralConfirmText = `${partnerId}ReferralConfirmText`;
   // This is here to stop yarn verify-locales from removing these strings
   t('hyperliquidReferralTitle');
   t('gmxReferralTitle');
@@ -82,6 +83,10 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
   t('hyperliquidReferralSubtitle');
   t('gmxReferralSubtitle');
   t('asterdexReferralSubtitle');
+  t('hyperliquidReferralConfirmText');
+  t('gmxReferralConfirmText');
+  t('asterdexReferralConfirmText');
+  t('defiReferralNoThanks');
 
   return (
     <Box
@@ -109,12 +114,14 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
         </Box>
       </Box>
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-        <Button onClick={() => handleSubmit(true)}>{t('confirm')}</Button>
+        <Button onClick={() => handleSubmit(true)}>
+          {t(defiReferralConfirmText)}
+        </Button>
         <Button
           variant={ButtonVariant.Tertiary}
           onClick={() => handleSubmit(false)}
         >
-          {t('cancel')}
+          {t('defiReferralNoThanks')}
         </Button>
       </Box>
     </Box>

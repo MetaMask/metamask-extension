@@ -90,20 +90,24 @@ describe('DefiReferralConsent', () => {
         });
       });
 
-      it('renders confirm and cancel action buttons', () => {
+      it('renders partner confirm and No thanks action buttons', () => {
         const store = mockStore(mockState);
 
         renderWithProvider(<DefiReferralConsent {...props} />, store);
 
+        const confirmKey =
+          `${partnerId}ReferralConfirmText` as keyof typeof messages;
         expect(
-          screen.getByRole('button', { name: messages.confirm.message }),
+          screen.getByRole('button', { name: messages[confirmKey].message }),
         ).toBeInTheDocument();
         expect(
-          screen.getByRole('button', { name: messages.cancel.message }),
+          screen.getByRole('button', {
+            name: messages.defiReferralNoThanks.message,
+          }),
         ).toBeInTheDocument();
       });
 
-      it('calls onActionComplete with approved=true when confirm is clicked and checkbox is checked', () => {
+      it('calls onActionComplete with approved=true when confirm is clicked', () => {
         const store = mockStore(mockState);
         const mockOnActionComplete = jest.fn();
 
@@ -115,8 +119,10 @@ describe('DefiReferralConsent', () => {
           store,
         );
 
+        const confirmKey =
+          `${partnerId}ReferralConfirmText` as keyof typeof messages;
         const confirmButton = screen.getByRole('button', {
-          name: messages.confirm.message,
+          name: messages[confirmKey].message,
         });
         fireEvent.click(confirmButton);
 
@@ -139,7 +145,7 @@ describe('DefiReferralConsent', () => {
         );
 
         const cancelButton = screen.getByRole('button', {
-          name: messages.cancel.message,
+          name: messages.defiReferralNoThanks.message,
         });
         fireEvent.click(cancelButton);
 
