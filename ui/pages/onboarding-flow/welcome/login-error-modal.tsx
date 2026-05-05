@@ -43,8 +43,8 @@ type LoginErrorModalProps = {
 };
 
 /**
- * Modal component to display seedless onboarding nonrecoverable error messages.
- * Upon acknowledgement, the modal is closed and the wallet is in reset wallet flow.
+ * Modal component to display social login error messages.
+ * Upon acknowledgement, the modal is closed and the wallet is reset for the un-recoverable errors.
  * User will be redirected to the onboarding welcome page and restart the onboarding flow.
  * So that the user can re-login with the same social login method and access the same account.
  *
@@ -130,13 +130,16 @@ export default function LoginErrorModal({
   const handleConfirm = async () => {
     onClose();
 
-    const isPopupOrSidePanel = isPopupOrSidePanelEnvironment();
-    await dispatch(resetWallet());
+    // reset wallet for the un-recoverable errors
+    if (loginError === LOGIN_ERROR.RESET_WALLET) {
+      const isPopupOrSidePanel = isPopupOrSidePanelEnvironment();
+      await dispatch(resetWallet());
 
-    if (isPopupOrSidePanel) {
-      global.platform.openExtensionInBrowser?.(DEFAULT_ROUTE);
-    } else {
-      navigate(DEFAULT_ROUTE, { replace: true });
+      if (isPopupOrSidePanel) {
+        globalThis.platform.openExtensionInBrowser?.(DEFAULT_ROUTE);
+      } else {
+        navigate(DEFAULT_ROUTE, { replace: true });
+      }
     }
   };
 

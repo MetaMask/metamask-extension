@@ -71,7 +71,7 @@ describe('ResetPasswordModal', () => {
     mockIsPopupOrSidePanelEnvironment.mockReturnValue(false);
 
     // @ts-expect-error mocking platform
-    global.platform = {
+    globalThis.platform = {
       openExtensionInBrowser: jest.fn(),
     };
   });
@@ -128,7 +128,7 @@ describe('ResetPasswordModal', () => {
         });
       });
 
-      expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
+      expect(globalThis.platform.openExtensionInBrowser).not.toHaveBeenCalled();
     });
 
     it('opens the extension in full screen when restoring from popup', async () => {
@@ -140,7 +140,7 @@ describe('ResetPasswordModal', () => {
 
       await waitFor(() => {
         expect(mockMarkPasswordForgotten).toHaveBeenCalledTimes(1);
-        expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+        expect(globalThis.platform.openExtensionInBrowser).toHaveBeenCalledWith(
           RESTORE_VAULT_ROUTE,
         );
       });
@@ -157,7 +157,7 @@ describe('ResetPasswordModal', () => {
 
       await waitFor(() => {
         expect(mockMarkPasswordForgotten).toHaveBeenCalledTimes(1);
-        expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+        expect(globalThis.platform.openExtensionInBrowser).toHaveBeenCalledWith(
           RESTORE_VAULT_ROUTE,
         );
       });
@@ -223,7 +223,7 @@ describe('ResetPasswordModal', () => {
         });
       });
 
-      expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
+      expect(globalThis.platform.openExtensionInBrowser).not.toHaveBeenCalled();
     });
 
     it('opens the extension in browser after reset from popup', async () => {
@@ -236,7 +236,25 @@ describe('ResetPasswordModal', () => {
 
       await waitFor(() => {
         expect(mockResetWallet).toHaveBeenCalledTimes(1);
-        expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+        expect(globalThis.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+          DEFAULT_ROUTE,
+        );
+      });
+
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('opens the extension in browser after reset from side panel', async () => {
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
+
+      renderModal();
+
+      fireEvent.click(screen.getByTestId('reset-password-modal-button-link'));
+      fireEvent.click(screen.getByTestId('reset-password-modal-button'));
+
+      await waitFor(() => {
+        expect(mockResetWallet).toHaveBeenCalledTimes(1);
+        expect(globalThis.platform.openExtensionInBrowser).toHaveBeenCalledWith(
           DEFAULT_ROUTE,
         );
       });

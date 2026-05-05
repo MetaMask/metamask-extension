@@ -97,7 +97,7 @@ describe('LoginErrorModal', () => {
     mockGetSocialLoginType.mockReturnValue(undefined);
 
     // @ts-expect-error test platform
-    global.platform = {
+    globalThis.platform = {
       openExtensionInBrowser: jest.fn(),
     };
   });
@@ -186,10 +186,29 @@ describe('LoginErrorModal', () => {
   });
 
   describe('confirm action', () => {
-    it('closes the modal, resets the wallet, and navigates in fullscreen', async () => {
+    it('closes the modal without resetting the wallet for recoverable errors', () => {
       const onClose = jest.fn();
 
-      renderModal({ onClose });
+      renderModal({
+        onClose,
+        loginError: LOGIN_ERROR.UNABLE_TO_CONNECT,
+      });
+
+      fireEvent.click(screen.getByTestId('login-error-modal-button'));
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(mockResetWallet).not.toHaveBeenCalled();
+      expect(mockNavigate).not.toHaveBeenCalled();
+      expect(globalThis.platform.openExtensionInBrowser).not.toHaveBeenCalled();
+    });
+
+    it('closes the modal, resets the wallet, and navigates in fullscreen for reset wallet errors', async () => {
+      const onClose = jest.fn();
+
+      renderModal({
+        onClose,
+        loginError: LOGIN_ERROR.RESET_WALLET,
+      });
 
       fireEvent.click(screen.getByTestId('login-error-modal-button'));
 
@@ -201,19 +220,19 @@ describe('LoginErrorModal', () => {
         });
       });
 
-      expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
+      expect(globalThis.platform.openExtensionInBrowser).not.toHaveBeenCalled();
     });
 
-    it('opens the extension in browser after reset from popup', async () => {
+    it('opens the extension in browser after reset from popup for reset wallet errors', async () => {
       mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
 
-      renderModal();
+      renderModal({ loginError: LOGIN_ERROR.RESET_WALLET });
 
       fireEvent.click(screen.getByTestId('login-error-modal-button'));
 
       await waitFor(() => {
         expect(mockResetWallet).toHaveBeenCalledTimes(1);
-        expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+        expect(globalThis.platform.openExtensionInBrowser).toHaveBeenCalledWith(
           DEFAULT_ROUTE,
         );
       });
@@ -221,16 +240,16 @@ describe('LoginErrorModal', () => {
       expect(mockNavigate).not.toHaveBeenCalled();
     });
 
-    it('opens the extension in browser after reset from side panel', async () => {
+    it('opens the extension in browser after reset from side panel for reset wallet errors', async () => {
       mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
 
-      renderModal();
+      renderModal({ loginError: LOGIN_ERROR.RESET_WALLET });
 
       fireEvent.click(screen.getByTestId('login-error-modal-button'));
 
       await waitFor(() => {
         expect(mockResetWallet).toHaveBeenCalledTimes(1);
-        expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+        expect(globalThis.platform.openExtensionInBrowser).toHaveBeenCalledWith(
           DEFAULT_ROUTE,
         );
       });

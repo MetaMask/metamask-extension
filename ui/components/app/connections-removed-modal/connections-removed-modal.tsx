@@ -40,7 +40,7 @@ export default function ConnectionsRemovedModal() {
     await dispatch(resetWallet());
 
     if (isPopupOrSidePanelEnvironment()) {
-      global.platform.openExtensionInBrowser?.(DEFAULT_ROUTE);
+      globalThis.platform.openExtensionInBrowser?.(DEFAULT_ROUTE);
     } else {
       navigate(DEFAULT_ROUTE, { replace: true });
     }

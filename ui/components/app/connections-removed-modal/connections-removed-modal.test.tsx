@@ -43,7 +43,7 @@ describe('ConnectionsRemovedModal', () => {
     mockIsPopupOrSidePanelEnvironment.mockReturnValue(false);
 
     // @ts-expect-error test platform
-    global.platform = {
+    globalThis.platform = {
       openExtensionInBrowser: jest.fn(),
     };
   });
@@ -80,26 +80,41 @@ describe('ConnectionsRemovedModal', () => {
         });
       });
 
-      expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
+      expect(globalThis.platform.openExtensionInBrowser).not.toHaveBeenCalled();
     });
 
-    ['popup', 'side panel'].forEach((environmentLabel) => {
-      it(`opens the extension in browser when confirming from the ${environmentLabel}`, async () => {
-        mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
+    it('opens the extension in browser when confirming from popup', async () => {
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
 
-        renderModal();
+      renderModal();
 
-        fireEvent.click(screen.getByTestId('connections-removed-modal-button'));
+      fireEvent.click(screen.getByTestId('connections-removed-modal-button'));
 
-        await waitFor(() => {
-          expect(mockResetWallet).toHaveBeenCalledTimes(1);
-          expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
-            DEFAULT_ROUTE,
-          );
-        });
-
-        expect(mockNavigate).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockResetWallet).toHaveBeenCalledTimes(1);
+        expect(globalThis.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+          DEFAULT_ROUTE,
+        );
       });
+
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('opens the extension in browser when confirming from side panel', async () => {
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
+
+      renderModal();
+
+      fireEvent.click(screen.getByTestId('connections-removed-modal-button'));
+
+      await waitFor(() => {
+        expect(mockResetWallet).toHaveBeenCalledTimes(1);
+        expect(globalThis.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+          DEFAULT_ROUTE,
+        );
+      });
+
+      expect(mockNavigate).not.toHaveBeenCalled();
     });
   });
 });
