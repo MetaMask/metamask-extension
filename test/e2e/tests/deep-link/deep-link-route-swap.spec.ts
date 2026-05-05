@@ -33,7 +33,7 @@ describe('Deep Link - /swap Route', function () {
             await mockGetPopularTokens(server);
           },
         }),
-        async ({ driver, }: { driver: Driver }) => {
+        async ({ driver }: { driver: Driver }) => {
           // ensure the background is ready to process deep links (by waiting
           // for the UI to load)
           console.log('Navigating to initial page');
