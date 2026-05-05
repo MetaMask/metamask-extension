@@ -192,11 +192,6 @@ class AccountListPage {
     tag: 'button',
   };
 
-  private readonly syncingMessage = {
-    text: 'Syncing...',
-    tag: 'div',
-  };
-
   private readonly watchAccountAddressInput =
     'input#address-input[type="text"]';
 
@@ -422,10 +417,8 @@ class AccountListPage {
    */
   async waitUntilSyncingIsCompleted(): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
-    // We add a guard because the syncing message may take some time to appear and then disappear
-    await this.driver.assertElementNotPresent(this.syncingMessage, {
-      waitAtLeastGuard: 5000,
-    });
+    await this.checkAddWalletButttonIsDisplayed();
+    await this.driver.assertElementNotPresent(this.syncingMessage);
   }
 
   /**
