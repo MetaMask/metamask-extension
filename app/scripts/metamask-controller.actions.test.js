@@ -23,6 +23,7 @@ import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import MetaMaskController from './metamask-controller';
 
 const mockToHardwareWalletError = jest.fn();
@@ -1620,7 +1621,13 @@ describe('MetaMaskController', function () {
             'new-password',
             authenticationResponse,
           ),
-        ).rejects.toThrow(renewError);
+        ).rejects.toMatchObject({
+          name: 'PasskeyControllerError',
+          message:
+            'Passkey vault key protection renewal failed after password change',
+          code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+          cause: renewError,
+        });
 
         expect(removePasskeySpy).toHaveBeenCalledTimes(1);
         expect(releaseLock).toHaveBeenCalledTimes(1);
