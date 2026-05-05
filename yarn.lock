@@ -7320,22 +7320,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-middleware@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/multichain-api-middleware@npm:2.0.0"
+"@metamask/multichain-api-middleware@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/multichain-api-middleware@npm:3.0.0"
   dependencies:
+    "@metamask/accounts-controller": "npm:^37.2.0"
     "@metamask/api-specs": "npm:^0.14.0"
     "@metamask/chain-agnostic-permission": "npm:^1.5.0"
-    "@metamask/controller-utils": "npm:^11.19.0"
-    "@metamask/json-rpc-engine": "npm:^10.2.3"
-    "@metamask/network-controller": "npm:^30.0.0"
-    "@metamask/permission-controller": "npm:^12.2.1"
+    "@metamask/controller-utils": "npm:^11.20.0"
+    "@metamask/json-rpc-engine": "npm:^10.3.0"
+    "@metamask/network-controller": "npm:^30.1.0"
+    "@metamask/permission-controller": "npm:^13.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/utils": "npm:^11.9.0"
     "@open-rpc/meta-schema": "npm:^1.14.6"
     "@open-rpc/schema-utils-js": "npm:^2.0.5"
     jsonschema: "npm:^1.4.1"
-  checksum: 10/c887073833ece8daee46727a5991ff15e329557e7453b34e62f7d65add09edeaa64a14cdd4f44bb343cd2c637c1c431e7f544ee7f1db441eb4b2a9959d40a4cb
+  checksum: 10/53fad0a9a4f16d24461b654570b6081c406cbac91bcdf988ad408c3d803d276ad483408a501a88774331ec8a23ef7f65ba76d2d8a8cec5dca147a953fcfc1659
   languageName: node
   linkType: hard
 
@@ -7546,22 +7548,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^12.2.0, @metamask/permission-controller@npm:^12.2.1, @metamask/permission-controller@npm:^12.3.0":
-  version: 12.3.0
-  resolution: "@metamask/permission-controller@npm:12.3.0"
+"@metamask/permission-controller@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "@metamask/permission-controller@npm:13.0.0"
   dependencies:
     "@metamask/approval-controller": "npm:^9.0.1"
-    "@metamask/base-controller": "npm:^9.0.1"
-    "@metamask/controller-utils": "npm:^11.19.0"
-    "@metamask/json-rpc-engine": "npm:^10.2.4"
-    "@metamask/messenger": "npm:^1.0.0"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^11.20.0"
+    "@metamask/json-rpc-engine": "npm:^10.3.0"
+    "@metamask/messenger": "npm:^1.2.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.9.0"
     "@types/deep-freeze-strict": "npm:^1.1.0"
     deep-freeze-strict: "npm:^1.1.1"
     immer: "npm:^9.0.6"
     nanoid: "npm:^3.3.8"
-  checksum: 10/a5fe9f2bab8c2d41cd829cd6c1af970e71da97eac42de17071c10f90d975e9135a4e6987ed6b2f3ea2209b1c6c51b822508f800225fda2207cdc598c16ea77dd
+  checksum: 10/e4062076f7dd7da7acf890f66ee7df1a0309bbb9d9adb221f28eefb203318c2675707754b884a0d4f49892608a8771443a97e743c2c68f7c75f123ec7fafbf49
   languageName: node
   linkType: hard
 
@@ -34156,7 +34158,7 @@ __metadata:
     "@metamask/hw-wallet-sdk": "npm:^0.8.0"
     "@metamask/institutional-wallet-snap": "npm:1.5.0"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
-    "@metamask/json-rpc-engine": "npm:^10.2.3"
+    "@metamask/json-rpc-engine": "npm:^10.3.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^21.6.0"
     "@metamask/keyring-controller": "npm:^25.1.1"
@@ -34173,7 +34175,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-account-service": "npm:^8.0.1"
     "@metamask/multichain-api-client": "npm:^0.10.1"
-    "@metamask/multichain-api-middleware": "npm:^2.0.0"
+    "@metamask/multichain-api-middleware": "npm:^3.0.0"
     "@metamask/multichain-network-controller": "npm:^3.0.5"
     "@metamask/multichain-transactions-controller": "npm:^7.0.4"
     "@metamask/name-controller": "npm:^9.1.0"
@@ -34183,7 +34185,7 @@ __metadata:
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/passkey-controller": "npm:^1.0.0"
-    "@metamask/permission-controller": "npm:^12.2.1"
+    "@metamask/permission-controller": "npm:^13.0.0"
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.1.0"
     "@metamask/perps-controller": "npm:^4.0.0"
