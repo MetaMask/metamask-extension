@@ -1011,9 +1011,7 @@ export const getWarningLabels = (
   isPriceImpactWarning && warnings.push('price_impact');
   isPriceImpactError && warnings.push('price_impact');
   isTxAlertPresent && warnings.push('tx_alert');
-  // @ts-expect-error: market_closed is not a valid QuoteWarning yet
   isStockMarketClosed && warnings.push('market_closed');
-  // @ts-expect-error: quote_expired is not a valid QuoteWarning yet
   isQuoteExpired && warnings.push('quote_expired');
   isInsufficientNativeReserve &&
     // @ts-expect-error: market_closed is not a valid QuoteWarning yet
