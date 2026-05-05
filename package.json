@@ -288,7 +288,7 @@
     "postcss-loader/jiti": "npm:npm-empty-package@1.0.0",
     "@metamask/snaps-controllers": "^20.0.3",
     "@metamask/messenger@npm:^0.3.0": "^1.1.1",
-    "@metamask/perps-controller": "^4.0.0",
+    "@metamask/perps-controller": "^5.0.0",
     "@metamask/bridge-status-controller@npm:^71.1.0": "patch:@metamask/bridge-status-controller@npm%3A71.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-71.0.0-541daf6bed.patch"
   },
   "dependencies": {
@@ -394,7 +394,7 @@
     "@metamask/permission-controller": "^12.2.1",
     "@metamask/permission-log-controller": "^5.0.0",
     "@metamask/permissions-kernel-snap": "^1.1.0",
-    "@metamask/perps-controller": "^4.0.0",
+    "@metamask/perps-controller": "^5.0.0",
     "@metamask/phishing-controller": "^17.1.1",
     "@metamask/polling-controller": "^16.0.2",
     "@metamask/post-message-stream": "^10.0.0",
