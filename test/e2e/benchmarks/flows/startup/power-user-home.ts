@@ -65,7 +65,7 @@ async function measurePagePowerUser(
         const accountListPage = new AccountListPage(driver);
 
         // Wait for Account Sync to finish.
-        // We cannot wait for a specific account to appear as Account Sync can cause
+        // We cannot wait for a specific account number to appear as Account Sync can cause
         // a different number of accounts loaded than the one we inject with fixtures
         await accountListPage.waitUntilSyncingIsCompleted();
         await accountListPage.checkAccountDisplayedInAccountList(
