@@ -1687,7 +1687,10 @@ describe('MetaMaskController', function () {
         const changePasswordSpy = jest
           .spyOn(metamaskController.keyringController, 'changePassword')
           .mockResolvedValue();
-        const verifyPasswordSpy = jest.spyOn(metamaskController, 'verifyPassword');
+        const verifyPasswordSpy = jest.spyOn(
+          metamaskController,
+          'verifyPassword',
+        );
         const renewVaultKeyProtectionSpy = jest.spyOn(
           metamaskController.passkeyController,
           'renewVaultKeyProtection',

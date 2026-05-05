@@ -3,7 +3,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
 } from 'react';
@@ -160,9 +159,7 @@ const ChangePassword = ({
       setShowChangePasswordWarning(false);
       setStep(ChangePasswordSteps.ChangePasswordLoading);
 
-      if (isSocialLoginFlow) {
-        await dispatch(changePassword(newPassword, currentPassword));
-      } else if (passkeyAuthenticationResponse) {
+      if (passkeyAuthenticationResponse) {
         try {
           await dispatch(
             changePasswordWithPasskeyVerification(
@@ -186,7 +183,7 @@ const ChangePassword = ({
         await forceUpdateMetamaskState(dispatch);
       } else {
         await dispatch(changePassword(newPassword, currentPassword));
-        if (isPasskeyRegistered) {
+        if (isPasskeyRegistered && !isSocialLoginFlow) {
           await removePasskeyWithPasswordVerification(newPassword);
           await forceUpdateMetamaskState(dispatch);
         }

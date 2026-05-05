@@ -63,13 +63,13 @@ const PasskeyItem = () => {
   }, []);
 
   const openSecurityAndPasswordInFullScreen = useCallback(() => {
-    global.platform?.openExtensionInBrowser?.(SECURITY_AND_PASSWORD_ROUTE);
+    globalThis.platform?.openExtensionInBrowser?.(SECURITY_AND_PASSWORD_ROUTE);
   }, []);
 
   const registerPasskey = useCallback(() => {
     cancelPasskeyCeremony();
     if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
-      global.platform?.openExtensionInBrowser?.(
+      globalThis.platform?.openExtensionInBrowser?.(
         `${SECURITY_REGISTER_PASSKEY_ROUTE}?from=sidepanel`,
       );
       return;
