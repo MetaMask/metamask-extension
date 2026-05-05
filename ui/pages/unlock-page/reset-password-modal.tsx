@@ -42,11 +42,7 @@ import {
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { useBoolean } from '../../hooks/useBoolean';
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../shared/constants/app';
-import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { isPopupOrSidePanelEnvironment } from '../../../shared/lib/environment-type';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -62,9 +58,7 @@ export default function ResetPasswordModal({
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const isPopupOrSidePanel =
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
-    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  const isPopupOrSidePanel = isPopupOrSidePanelEnvironment();
 
   const handleResetWalletConfirm = async () => {
     onClose();

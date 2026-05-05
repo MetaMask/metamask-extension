@@ -7,16 +7,11 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } from '../../helpers/constants/routes';
 import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../shared/constants/app';
-import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { isPopupOrSidePanelEnvironment } from '../../../shared/lib/environment-type';
 import ResetPasswordModal from './reset-password-modal';
 
 const mockNavigate = jest.fn();
@@ -42,10 +37,12 @@ jest.mock('../../selectors', () => ({
 
 jest.mock('../../../shared/lib/environment-type', () => ({
   ...jest.requireActual('../../../shared/lib/environment-type'),
-  getEnvironmentType: jest.fn(),
+  isPopupOrSidePanelEnvironment: jest.fn(),
 }));
 
-const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
+const mockIsPopupOrSidePanelEnvironment = jest.mocked(
+  isPopupOrSidePanelEnvironment,
+);
 
 const buildStore = () => configureMockStore([thunk])({ metamask: {} });
 
@@ -68,7 +65,7 @@ describe('ResetPasswordModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetIsSocialLoginFlow.mockReturnValue(false);
-    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+    mockIsPopupOrSidePanelEnvironment.mockReturnValue(false);
 
     // @ts-expect-error mocking platform
     global.platform = {
@@ -132,37 +129,37 @@ describe('ResetPasswordModal', () => {
     });
 
     it('opens the extension in full screen when restoring from popup', async () => {
-      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
 
-        renderModal();
+      renderModal();
 
-        fireEvent.click(screen.getByTestId('reset-password-modal-button'));
+      fireEvent.click(screen.getByTestId('reset-password-modal-button'));
 
-        await waitFor(() => {
-          expect(mockMarkPasswordForgotten).toHaveBeenCalledTimes(1);
-          expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
-            RESTORE_VAULT_ROUTE,
-          );
-        });
+      await waitFor(() => {
+        expect(mockMarkPasswordForgotten).toHaveBeenCalledTimes(1);
+        expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+          RESTORE_VAULT_ROUTE,
+        );
+      });
 
-        expect(mockNavigate).not.toHaveBeenCalled();
+      expect(mockNavigate).not.toHaveBeenCalled();
     });
 
     it('opens the extension in full screen when restoring from side panel', async () => {
-      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
 
-        renderModal();
+      renderModal();
 
-        fireEvent.click(screen.getByTestId('reset-password-modal-button'));
+      fireEvent.click(screen.getByTestId('reset-password-modal-button'));
 
-        await waitFor(() => {
-          expect(mockMarkPasswordForgotten).toHaveBeenCalledTimes(1);
-          expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
-            RESTORE_VAULT_ROUTE,
-          );
-        });
+      await waitFor(() => {
+        expect(mockMarkPasswordForgotten).toHaveBeenCalledTimes(1);
+        expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+          RESTORE_VAULT_ROUTE,
+        );
+      });
 
-        expect(mockNavigate).not.toHaveBeenCalled();
+      expect(mockNavigate).not.toHaveBeenCalled();
     });
 
     it('tracks the social account type when social login is enabled', async () => {
@@ -227,7 +224,7 @@ describe('ResetPasswordModal', () => {
     });
 
     it('opens the extension in browser after reset from popup', async () => {
-      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
 
       renderModal();
 
