@@ -111,7 +111,7 @@ describe('Onboarding Create Password', () => {
       );
     });
 
-    it('should route to metametrics when keyring is present and imported first time flow type', () => {
+    it('should route to setup passkey when keyring is present and imported first time flow type (passkey already registered)', () => {
       const importFirstTimeFlowState = {
         ...initializedMockState,
         metamask: {
@@ -136,12 +136,13 @@ describe('Onboarding Create Password', () => {
         />,
         mockStore,
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_SETUP_PASSKEY_ROUTE,
+        { replace: true },
+      );
     });
 
-    it('should redirect to onboarding completion when user has imported SRP and set participating in metametrics', () => {
+    it('should route to setup passkey when user has imported SRP, metametrics set, and passkey already registered', () => {
       const importFirstTimeFlowState = {
         ...initializedMockState,
         metamask: {
@@ -167,7 +168,7 @@ describe('Onboarding Create Password', () => {
       );
 
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        ONBOARDING_COMPLETION_ROUTE,
+        ONBOARDING_SETUP_PASSKEY_ROUTE,
         { replace: true },
       );
     });

@@ -90,9 +90,8 @@ jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   generatePasskeyRegistrationOptions: (...args: unknown[]) =>
     mockGeneratePasskeyRegistrationOptions(...args),
-  generatePasskeyPostRegistrationAuthenticationOptions: (
-    ...args: unknown[]
-  ) => mockGeneratePasskeyPostRegistrationAuthenticationOptions(...args),
+  generatePasskeyPostRegistrationAuthenticationOptions: (...args: unknown[]) =>
+    mockGeneratePasskeyPostRegistrationAuthenticationOptions(...args),
   protectVaultKeyWithPasskey: (...args: unknown[]) =>
     mockProtectVaultKeyWithPasskey(...args),
   forceUpdateMetamaskState: (...args: unknown[]) =>
@@ -147,7 +146,9 @@ describe('PasskeyRegisterSubPage', () => {
       `${SECURITY_REGISTER_PASSKEY_ROUTE}?from=sidepanel`,
     );
 
-    expect(getByTestId('register-passkey-intro-description')).toBeInTheDocument();
+    expect(
+      getByTestId('register-passkey-intro-description'),
+    ).toBeInTheDocument();
     expect(
       getByTestId('register-passkey-intro-continue-button'),
     ).toBeInTheDocument();
@@ -281,9 +282,7 @@ describe('PasskeyRegisterSubPage', () => {
       expect(getByTestId('register-passkey-set-up-button')).toBeInTheDocument();
     });
 
-    expect(
-      queryByTestId('passkey-enrollment-error'),
-    ).not.toBeInTheDocument();
+    expect(queryByTestId('passkey-enrollment-error')).not.toBeInTheDocument();
     expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 

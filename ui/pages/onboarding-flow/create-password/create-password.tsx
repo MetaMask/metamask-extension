@@ -21,7 +21,6 @@ import {
   getSocialLoginType,
   getIsParticipateInMetaMetricsSet,
   getIsPasskeyFeatureAvailable,
-  getIsPasskeyRegistered,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -76,7 +75,6 @@ export default function CreatePassword({
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
-  const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const socialLoginType = useSelector(getSocialLoginType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
 
@@ -113,10 +111,9 @@ export default function CreatePassword({
       !newAccountCreationInProgress &&
       !isWalletResetInProgress
     ) {
-      // route to passkey setup if passkey is not registered
+      // route to passkey setup
       if (
         isPasskeyFeatureAvailable &&
-        !isPasskeyRegistered &&
         (firstTimeFlowType === FirstTimeFlowType.import ||
           firstTimeFlowType === FirstTimeFlowType.create)
       ) {
@@ -162,7 +159,6 @@ export default function CreatePassword({
     isParticipateInMetaMetricsSet,
     isWalletResetInProgress,
     isPasskeyFeatureAvailable,
-    isPasskeyRegistered,
   ]);
 
   useEffect(() => {

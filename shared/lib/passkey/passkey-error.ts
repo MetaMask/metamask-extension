@@ -1,6 +1,5 @@
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 
-
 /**
  * Stable programmatic codes for passkey-related errors thrown by the extension.
  */

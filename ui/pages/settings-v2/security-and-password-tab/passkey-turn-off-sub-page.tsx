@@ -142,9 +142,7 @@ export default function PasskeyTurnOffSubPage() {
             value={walletPassword}
             error={isIncorrectPasswordError}
             helpText={
-              isIncorrectPasswordError
-                ? t('unlockPageIncorrectPassword')
-                : null
+              isIncorrectPasswordError ? t('unlockPageIncorrectPassword') : null
             }
             onChange={(e) => {
               setWalletPassword(e.target.value);
@@ -158,9 +156,7 @@ export default function PasskeyTurnOffSubPage() {
             className="w-full"
             data-testid="turn-off-passkey-verify-continue-button"
             disabled={
-              !walletPassword ||
-              isTurnOffInProgress ||
-              isIncorrectPasswordError
+              !walletPassword || isTurnOffInProgress || isIncorrectPasswordError
             }
             isLoading={isTurnOffInProgress}
           >

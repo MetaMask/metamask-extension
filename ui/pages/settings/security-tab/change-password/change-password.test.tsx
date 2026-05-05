@@ -50,8 +50,8 @@ const mockChangePasswordWithPasskeyVerification = jest.fn(
   (_newPassword: string, _authenticationResponse: unknown) => Promise.resolve(),
 );
 const mockForceUpdateMetamaskState = jest.fn(() => Promise.resolve());
-const mockRemovePasskeyWithPasswordVerification = jest.fn(
-  (_password: string) => Promise.resolve(),
+const mockRemovePasskeyWithPasswordVerification = jest.fn((_password: string) =>
+  Promise.resolve(),
 );
 
 jest.mock('react-redux', () => {
@@ -402,7 +402,9 @@ describe('ChangePassword', () => {
         ).toBeInTheDocument();
       });
 
-      fireEvent.click(getByTestId('change-password-verify-passkey-use-password'));
+      fireEvent.click(
+        getByTestId('change-password-verify-passkey-use-password'),
+      );
 
       await waitFor(() => {
         expect(
@@ -475,8 +477,8 @@ describe('ChangePassword', () => {
         expect(getByTestId('change-password-input')).toBeInTheDocument();
       });
 
-      const authCallsAfterVerify = (startPasskeyAuthentication as jest.Mock).mock
-        .calls.length;
+      const authCallsAfterVerify = (startPasskeyAuthentication as jest.Mock)
+        .mock.calls.length;
 
       const toggle = getByTestId('change-password-enable-passkey');
       await waitFor(() => {
@@ -501,8 +503,8 @@ describe('ChangePassword', () => {
         expect(getByTestId('change-password-input')).toBeInTheDocument();
       });
 
-      const authCallsAfterVerify = (startPasskeyAuthentication as jest.Mock).mock
-        .calls.length;
+      const authCallsAfterVerify = (startPasskeyAuthentication as jest.Mock)
+        .mock.calls.length;
 
       const toggle = getByTestId('change-password-enable-passkey');
       await waitFor(() => {
@@ -534,7 +536,9 @@ describe('ChangePassword', () => {
       const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
 
       await waitFor(() => {
-        expect(getByTestId('verify-current-password-input')).toBeInTheDocument();
+        expect(
+          getByTestId('verify-current-password-input'),
+        ).toBeInTheDocument();
       });
 
       fireEvent.change(getByTestId('verify-current-password-input'), {
@@ -543,7 +547,9 @@ describe('ChangePassword', () => {
       fireEvent.click(getByTestId('verify-current-password-button'));
 
       await waitFor(() => {
-        expect(getByTestId('change-password-enable-passkey')).toBeInTheDocument();
+        expect(
+          getByTestId('change-password-enable-passkey'),
+        ).toBeInTheDocument();
       });
     });
 
@@ -555,7 +561,9 @@ describe('ChangePassword', () => {
       const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
 
       await waitFor(() => {
-        expect(getByTestId('verify-current-password-input')).toBeInTheDocument();
+        expect(
+          getByTestId('verify-current-password-input'),
+        ).toBeInTheDocument();
       });
 
       fireEvent.change(getByTestId('verify-current-password-input'), {
@@ -564,13 +572,17 @@ describe('ChangePassword', () => {
       fireEvent.click(getByTestId('verify-current-password-button'));
 
       await waitFor(() => {
-        expect(getByTestId('change-password-enable-passkey')).toBeInTheDocument();
+        expect(
+          getByTestId('change-password-enable-passkey'),
+        ).toBeInTheDocument();
       });
 
-      const authCallsBeforeToggle = (startPasskeyAuthentication as jest.Mock).mock.calls
-        .length;
+      const authCallsBeforeToggle = (startPasskeyAuthentication as jest.Mock)
+        .mock.calls.length;
 
-      (startPasskeyAuthentication as jest.Mock).mockResolvedValue(mockAssertion);
+      (startPasskeyAuthentication as jest.Mock).mockResolvedValue(
+        mockAssertion,
+      );
       fireEvent.click(getByTestId('change-password-enable-passkey'));
 
       await waitFor(() => {
@@ -600,7 +612,10 @@ describe('ChangePassword', () => {
         new Error('cancelled'),
       );
 
-      const { queryByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+      const { queryByTestId } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
+      );
 
       await waitFor(() => {
         expect(
@@ -614,7 +629,9 @@ describe('ChangePassword', () => {
     });
 
     it('shows open in full tab while passkey verification runs in the side panel', async () => {
-      jest.mocked(getEnvironmentType).mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+      jest
+        .mocked(getEnvironmentType)
+        .mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
       let resolveAuth: ((value: unknown) => void) | undefined;
       (startPasskeyAuthentication as jest.Mock).mockImplementation(
         () =>
@@ -656,7 +673,9 @@ describe('ChangePassword', () => {
       const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
 
       await waitFor(() => {
-        expect(getByTestId('verify-current-password-input')).toBeInTheDocument();
+        expect(
+          getByTestId('verify-current-password-input'),
+        ).toBeInTheDocument();
       });
 
       fireEvent.change(getByTestId('verify-current-password-input'), {
@@ -665,10 +684,14 @@ describe('ChangePassword', () => {
       fireEvent.click(getByTestId('verify-current-password-button'));
 
       await waitFor(() => {
-        expect(getByTestId('change-password-enable-passkey')).toBeInTheDocument();
+        expect(
+          getByTestId('change-password-enable-passkey'),
+        ).toBeInTheDocument();
       });
 
-      (startPasskeyAuthentication as jest.Mock).mockResolvedValue(mockAssertion);
+      (startPasskeyAuthentication as jest.Mock).mockResolvedValue(
+        mockAssertion,
+      );
       fireEvent.click(getByTestId('change-password-enable-passkey'));
 
       await waitFor(() => {
@@ -702,7 +725,9 @@ describe('ChangePassword', () => {
         expect(mockRemovePasskeyWithPasswordVerification).toHaveBeenCalledWith(
           mockNewPassword,
         );
-        expect(mockChangePasswordWithPasskeyVerification).not.toHaveBeenCalled();
+        expect(
+          mockChangePasswordWithPasskeyVerification,
+        ).not.toHaveBeenCalled();
         expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
       });
     });

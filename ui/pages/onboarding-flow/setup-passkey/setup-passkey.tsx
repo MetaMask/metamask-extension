@@ -133,9 +133,13 @@ export default function SetupPasskey() {
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const [isEnrollmentInProgress, setIsEnrollmentInProgress] = useState(false);
   const [registerStepPhase, setRegisterStepPhase] =
-    useState<PasskeyEnrollmentStepStatus>(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
+    useState<PasskeyEnrollmentStepStatus>(
+      DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE,
+    );
   const [verifyStepPhase, setVerifyStepPhase] =
-    useState<PasskeyEnrollmentStepStatus>(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
+    useState<PasskeyEnrollmentStepStatus>(
+      DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE,
+    );
   const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
 
   const goToNextStep = useCallback(() => {
@@ -183,15 +187,18 @@ export default function SetupPasskey() {
     try {
       // create passkey
       const registrationOptions = await generatePasskeyRegistrationOptions();
-      const registrationResponse = await startPasskeyRegistration(registrationOptions);
+      const registrationResponse =
+        await startPasskeyRegistration(registrationOptions);
       setRegisterStepPhase('complete');
       setVerifyStepPhase('inProgress');
 
       // verify passkey
-      const postRegAuthOptions = await generatePasskeyPostRegistrationAuthenticationOptions(
-        registrationResponse,
-      );
-      const postRegAuthenticationResponse = await startPasskeyAuthentication(postRegAuthOptions);
+      const postRegAuthOptions =
+        await generatePasskeyPostRegistrationAuthenticationOptions(
+          registrationResponse,
+        );
+      const postRegAuthenticationResponse =
+        await startPasskeyAuthentication(postRegAuthOptions);
 
       // enroll passkey
       await protectVaultKeyWithPasskey(
@@ -227,9 +234,7 @@ export default function SetupPasskey() {
       setRegisterStepPhase((prev) =>
         prev === 'inProgress' ? 'pending' : prev,
       );
-      setVerifyStepPhase((prev) =>
-        prev === 'inProgress' ? 'pending' : prev,
-      );
+      setVerifyStepPhase((prev) => (prev === 'inProgress' ? 'pending' : prev));
     }
   }, [dispatch, t, goToNextStep]);
 

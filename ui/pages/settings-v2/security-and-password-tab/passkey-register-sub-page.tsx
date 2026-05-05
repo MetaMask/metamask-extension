@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -150,7 +145,9 @@ export default function PasskeyRegisterSubPage() {
   const [step, setStep] = useState<
     (typeof PasskeyRegisterSteps)[keyof typeof PasskeyRegisterSteps]
   >(() =>
-    fromSidepanel ? PasskeyRegisterSteps.Intro : PasskeyRegisterSteps.VerifyPassword,
+    fromSidepanel
+      ? PasskeyRegisterSteps.Intro
+      : PasskeyRegisterSteps.VerifyPassword,
   );
   const [walletPassword, setWalletPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
@@ -158,9 +155,13 @@ export default function PasskeyRegisterSubPage() {
   const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
   const [isEnrollmentInProgress, setIsEnrollmentInProgress] = useState(false);
   const [registerStepStatus, setRegisterStepStatus] =
-    useState<PasskeyEnrollmentStepStatus>(DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS);
+    useState<PasskeyEnrollmentStepStatus>(
+      DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS,
+    );
   const [verifyStepStatus, setVerifyStepStatus] =
-    useState<PasskeyEnrollmentStepStatus>(DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS);
+    useState<PasskeyEnrollmentStepStatus>(
+      DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS,
+    );
   const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
 
   useEffect(
@@ -263,9 +264,7 @@ export default function PasskeyRegisterSubPage() {
       setRegisterStepStatus((prev) =>
         prev === 'inProgress' ? 'pending' : prev,
       );
-      setVerifyStepStatus((prev) =>
-        prev === 'inProgress' ? 'pending' : prev,
-      );
+      setVerifyStepStatus((prev) => (prev === 'inProgress' ? 'pending' : prev));
     }
   }, [
     dispatch,

@@ -285,15 +285,18 @@ describe('SetupPasskey', () => {
       );
     });
 
-    it('navigates to MetaMetrics when flow type is not create or import', () => {
+    it('navigates to completion when flow type is socialCreate', () => {
       const mockStore = buildMockStore(FirstTimeFlowType.socialCreate);
       const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
 
       fireEvent.click(getByText(messages.maybeLater.message));
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_COMPLETION_ROUTE,
+        {
+          replace: true,
+        },
+      );
     });
   });
 
@@ -359,7 +362,9 @@ describe('SetupPasskey', () => {
       await waitFor(() => {
         expect(getByTestId('passkey-set-up-button')).toBeInTheDocument();
       });
-      expect(screen.queryByTestId('passkey-setup-steps')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('passkey-setup-steps'),
+      ).not.toBeInTheDocument();
     });
 
     it('shows primary actions again when the user cancels post-registration authentication', async () => {
@@ -384,13 +389,17 @@ describe('SetupPasskey', () => {
     });
 
     it('redirects away when passkey is already registered', async () => {
-      jest.spyOn(BrowserRuntimeUtils, 'getBrowserName').mockReturnValue('chrome');
+      jest
+        .spyOn(BrowserRuntimeUtils, 'getBrowserName')
+        .mockReturnValue('chrome');
       const mockStore = buildMockStore(FirstTimeFlowType.create, {
         passkeyRecord: testPasskeyRecord,
       });
       renderWithProvider(<SetupPasskey />, mockStore);
 
-      expect(screen.queryByTestId('passkey-set-up-button')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('passkey-set-up-button'),
+      ).not.toBeInTheDocument();
 
       await waitFor(() => {
         expect(mockUseNavigate).toHaveBeenCalledWith(

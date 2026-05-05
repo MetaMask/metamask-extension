@@ -5299,19 +5299,13 @@
   "passkeyDescription": {
     "message": "Use Face ID or your fingerprint to unlock MetaMask on this device instead of entering your password. This creates a secure passkey stored on your device."
   },
-  "passkeySetupStepRegister": {
-    "message": "Register biometrics"
-  },
-  "passkeySetupStepVerify": {
-    "message": "Verify biometrics"
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "Biometrics are already set up for this wallet.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
   },
   "passkeyErrorAuthenticationVerificationFailed": {
     "message": "We couldn't verify your biometrics. Try again.",
     "description": "Shown when passkey authentication response verification fails."
-  },
-  "passkeyErrorVerificationFailed": {
-    "message": "We couldn't verify your biometrics. Try again or use your password.",
-    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
   },
   "passkeyErrorMissingKeyMaterial": {
     "message": "Your biometrics response was incomplete. Try again.",
@@ -5324,10 +5318,6 @@
   "passkeyErrorNoRegistrationCeremony": {
     "message": "Biometrics setup session expired. Try again from the beginning.",
     "description": "Shown when passkey registration verification runs without an active registration ceremony."
-  },
-  "passkeyErrorAlreadyEnrolled": {
-    "message": "Biometrics are already set up for this wallet.",
-    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
   },
   "passkeyErrorNotEnrolled": {
     "message": "Biometrics aren't set up for this wallet. Turn on biometrics in Settings.",
@@ -5353,24 +5343,28 @@
     "message": "Your password was updated, but biometric unlock couldn't be turned on.",
     "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
   },
+  "passkeyErrorVerificationFailed": {
+    "message": "We couldn't verify your biometrics. Try again or use your password.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
+  },
+  "passkeySetupStepRegister": {
+    "message": "Register biometrics"
+  },
+  "passkeySetupStepVerify": {
+    "message": "Verify biometrics"
+  },
   "passkeyTroubleshoot": {
     "message": "Having trouble with biometrics?",
     "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
   },
-  "passkeyUnlockFailed": {
-    "message": "Biometrics unlock failed. Try your password."
+  "passkeyTurnedOff": {
+    "message": "Biometrics turned off"
   },
   "passkeyTurnedOn": {
     "message": "Biometrics turned on"
   },
-  "passkeyTurnedOff": {
-    "message": "Biometrics turned off"
-  },
-  "turnOffPasskey": {
-    "message": "Turn off biometrics"
-  },
-  "turnOffPasskeyFailed": {
-    "message": "We couldn't turn off biometrics. Try again."
+  "passkeyUnlockFailed": {
+    "message": "Biometrics unlock failed. Try your password."
   },
   "password": {
     "message": "Password"
@@ -7326,12 +7320,12 @@
   "securityChangePasswordToastError": {
     "message": "Password couldn’t be changed. Please try again."
   },
-  "securityChangePasswordToastSuccess": {
-    "message": "New password saved"
-  },
   "securityChangePasswordToastPasskeyRenewalFailed": {
     "message": "New password saved, but biometric unlock couldn't be turned on.",
     "description": "Toast when passkey vault key renewal fails after the new password was already applied."
+  },
+  "securityChangePasswordToastSuccess": {
+    "message": "New password saved"
   },
   "securityDefaultSettingsSocialLogin": {
     "message": "Security & privacy"
@@ -9624,6 +9618,12 @@
   },
   "turnOffMetamaskNotificationsError": {
     "message": "There was an error in disabling the notifications. Please try again later."
+  },
+  "turnOffPasskey": {
+    "message": "Turn off biometrics"
+  },
+  "turnOffPasskeyFailed": {
+    "message": "We couldn't turn off biometrics. Try again."
   },
   "turnOn": {
     "message": "Turn on"

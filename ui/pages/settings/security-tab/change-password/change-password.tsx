@@ -109,8 +109,7 @@ const ChangePassword = ({
       : ChangePasswordSteps.VerifyCurrentPassword,
   );
 
-  const [isVerifyingPasskey, setIsVerifyingPasskey] =
-    useState(isPasskeyActive);
+  const [isVerifyingPasskey, setIsVerifyingPasskey] = useState(isPasskeyActive);
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
@@ -122,8 +121,7 @@ const ChangePassword = ({
     useState(false);
   const [passkeyAuthenticationResponse, setPasskeyAuthenticationResponse] =
     useState<PasskeyAuthenticationResponse | null>(null);
-  const [isPasskeyRenewalEnabled, setIsPasskeyRenewalEnabled] =
-    useState(false);
+  const [isPasskeyRenewalEnabled, setIsPasskeyRenewalEnabled] = useState(false);
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -212,10 +210,9 @@ const ChangePassword = ({
         attemptedPasskeyRenewal && !isPasskeyRenewalSuccessful
           ? 'securityChangePasswordToastPasskeyRenewalFailed'
           : 'securityChangePasswordToastSuccess';
-      toast.success(
-        <ToastContent title={t(messageKey)} />,
-        { duration: autoHideToastDelay },
-      );
+      toast.success(<ToastContent title={t(messageKey)} />, {
+        duration: autoHideToastDelay,
+      });
     } catch (error) {
       console.error(error);
       setStep(ChangePasswordSteps.ChangePassword);
@@ -298,8 +295,7 @@ const ChangePassword = ({
     }
   }, [t]);
 
-  const isSidePanel =
-    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
 
   const openChangePasswordInFullScreen = useCallback(() => {
     globalThis.platform?.openExtensionInBrowser?.(
@@ -538,7 +534,10 @@ const ChangePassword = ({
                     justifyContent={BoxJustifyContent.Between}
                     alignItems={BoxAlignItems.Center}
                   >
-                    <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      fontWeight={FontWeight.Medium}
+                    >
                       {t('unlockWithPasskey')}
                     </Text>
                     <ToggleButton
