@@ -1,0 +1,629 @@
+diff --git a/dist/TokenBalancesController.cjs b/dist/TokenBalancesController.cjs
+index 8b288ed2397b2eebe82cb8bdc8439889d52a3cca..0dc3d54835fae13809a6c2ff1eb6cd67a1afbfbf 100644
+--- a/dist/TokenBalancesController.cjs
++++ b/dist/TokenBalancesController.cjs
+@@ -22,7 +22,9 @@ const lodash_1 = require("lodash");
+ const AssetsContractController_1 = require("./AssetsContractController.cjs");
+ const api_balance_fetcher_1 = require("./multi-chain-accounts-service/api-balance-fetcher.cjs");
+ const rpc_balance_fetcher_1 = require("./rpc-service/rpc-balance-fetcher.cjs");
++const constants_1 = require("./constants.cjs");
+ const create_batch_handler_1 = require("./utils/create-batch-handler.cjs");
++const MUSD_IMPORT_CHAIN_ID_SET = new Set(constants_1.MUSD_TOKEN_DETECTION_CHAIN_IDS);
+ const CONTROLLER = 'TokenBalancesController';
+ const DEFAULT_INTERVAL_MS = 30000; // 30 seconds
+ const DEFAULT_WEBSOCKET_ACTIVE_POLLING_INTERVAL_MS = 300000; // 5 minutes
+@@ -561,7 +563,7 @@ _TokenBalancesController_platform = new WeakMap(), _TokenBalancesController_quer
+             this.messenger.call('AccountTrackerController:updateStakedBalances', stakedUpdates);
+         }
+     }
+-    await __classPrivateFieldGet(this, _TokenBalancesController_instances, "m", _TokenBalancesController_importUntrackedTokens).call(this, filteredAggregated);
++    await __classPrivateFieldGet(this, _TokenBalancesController_instances, "m", _TokenBalancesController_importUntrackedTokens).call(this, filteredAggregated, targetChains);
+ }, _TokenBalancesController_getTargetChains = function _TokenBalancesController_getTargetChains(chainIds) {
+     return chainIds?.length ? chainIds : __classPrivateFieldGet(this, _TokenBalancesController_instances, "m", _TokenBalancesController_chainIdsWithTokens).call(this);
+ }, _TokenBalancesController_getAccountsAndJwt = async function _TokenBalancesController_getAccountsAndJwt() {
+@@ -751,14 +753,17 @@ _TokenBalancesController_platform = new WeakMap(), _TokenBalancesController_quer
+ /**
+  * Import untracked tokens that have non-zero balances.
+  * This mirrors the v2 behavior where only tokens with actual balances are added.
++ * For mUSD default networks, the mUSD contract is also scheduled for import when
++ * balance is zero (Accounts API omits it like the single-call contract).
+  * Delegates to TokenDetectionController:addDetectedTokensViaPolling which handles:
+  * - Checking if useTokenDetection preference is enabled
+  * - Filtering tokens already in allTokens or allIgnoredTokens
+  * - Token metadata lookup and addition via TokensController
+  *
+  * @param balances - Array of processed balance results from fetchers
++ * @param targetChainIds - Chains included in this balance update (for mUSD zero-balance import)
+  */
+-async function _TokenBalancesController_importUntrackedTokens(balances) {
++async function _TokenBalancesController_importUntrackedTokens(balances, targetChainIds) {
+     const tokensByChain = new Map();
+     for (const balance of balances) {
+         // Skip failed fetches, native tokens, and zero balances (like v2 did)
+@@ -775,6 +780,17 @@ async function _TokenBalancesController_importUntrackedTokens(balances) {
+             tokensByChain.set(balance.chainId, existing);
+         }
+     }
++    for (const chainId of targetChainIds) {
++        if (!MUSD_IMPORT_CHAIN_ID_SET.has(chainId)) {
++            continue;
++        }
++        const existing = tokensByChain.get(chainId) ?? [];
++        if (existing.some((addr) => (0, controller_utils_1.isEqualCaseInsensitive)(addr, constants_1.MUSD_ERC20_ADDRESS_LOWER))) {
++            continue;
++        }
++        const next = [...existing, constants_1.MUSD_ERC20_ADDRESS_LOWER];
++        tokensByChain.set(chainId, next);
++    }
+     // Add detected tokens via TokenDetectionController (handles preference check,
+     // filtering of allTokens/allIgnoredTokens, and metadata lookup)
+     for (const [chainId, tokenAddresses] of tokensByChain) {
+diff --git a/dist/TokenDetectionController.cjs b/dist/TokenDetectionController.cjs
+index 33a614584c863b3e4f76e908184f3a98134f720b..35b8e1e9e4827c1b0fed22647c0e8d58adab26d1 100644
+--- a/dist/TokenDetectionController.cjs
++++ b/dist/TokenDetectionController.cjs
+@@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _TokenDetectionController_instances, _TokenDetectionController_intervalId, _TokenDetectionController_selectedAccountId, _TokenDetectionController_tokensChainsCache, _TokenDetectionController_disabled, _TokenDetectionController_isUnlocked, _TokenDetectionController_isDetectionEnabledFromPreferences, _TokenDetectionController_useTokenDetection, _TokenDetectionController_useExternalServices, _TokenDetectionController_defaultTokensSeeded, _TokenDetectionController_getBalancesInSingleCall, _TokenDetectionController_trackMetaMetricsEvent, _TokenDetectionController_registerEventListeners, _TokenDetectionController_stopPolling, _TokenDetectionController_startPolling, _TokenDetectionController_compareTokensChainsCache, _TokenDetectionController_getCorrectNetworkClientIdByChainId, _TokenDetectionController_restartTokenDetection, _TokenDetectionController_shouldDetectTokens, _TokenDetectionController_detectTokensUsingRpc, _TokenDetectionController_getSlicesOfTokensToDetect, _TokenDetectionController_getConvertedStaticMainnetTokenList, _TokenDetectionController_seedDefaultTokens, _TokenDetectionController_addDetectedTokens, _TokenDetectionController_getSelectedAccount, _TokenDetectionController_getSelectedAddress;
++var _TokenDetectionController_instances, _TokenDetectionController_intervalId, _TokenDetectionController_selectedAccountId, _TokenDetectionController_tokensChainsCache, _TokenDetectionController_disabled, _TokenDetectionController_isUnlocked, _TokenDetectionController_isDetectionEnabledFromPreferences, _TokenDetectionController_useTokenDetection, _TokenDetectionController_useExternalServices, _TokenDetectionController_getBalancesInSingleCall, _TokenDetectionController_trackMetaMetricsEvent, _TokenDetectionController_registerEventListeners, _TokenDetectionController_stopPolling, _TokenDetectionController_startPolling, _TokenDetectionController_compareTokensChainsCache, _TokenDetectionController_getCorrectNetworkClientIdByChainId, _TokenDetectionController_restartTokenDetection, _TokenDetectionController_shouldDetectTokens, _TokenDetectionController_detectTokensUsingRpc, _TokenDetectionController_getSlicesOfTokensToDetect, _TokenDetectionController_getConvertedStaticMainnetTokenList, _TokenDetectionController_buildMusdTokenListToken, _TokenDetectionController_mergeMusdIntoTokenListMap, _TokenDetectionController_applyMusdDefaultToTokensChainsCache, _TokenDetectionController_includeMusdInTokenDetectionSlice, _TokenDetectionController_addDetectedTokens, _TokenDetectionController_getSelectedAccount, _TokenDetectionController_getSelectedAddress;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.TokenDetectionController = exports.controllerName = exports.mapChainIdWithTokenListMap = exports.STATIC_MAINNET_TOKEN_LIST = void 0;
+ const contract_metadata_1 = __importDefault(require("@metamask/contract-metadata"));
+@@ -23,33 +23,6 @@ const lodash_1 = require("lodash");
+ const assetsUtil_1 = require("./assetsUtil.cjs");
+ const constants_1 = require("./constants.cjs");
+ const DEFAULT_INTERVAL = 180000;
+-/**
+- * Canonical contract address for MetaMask USD (mUSD) — same across every
+- * chain we deploy it to.
+- */
+-const MUSD_ADDRESS = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+-/**
+- * Pre-built Token entry for mUSD — used when seeding default state.
+- */
+-const MUSD_TOKEN = {
+-    address: MUSD_ADDRESS,
+-    decimals: 6,
+-    symbol: 'mUSD',
+-    name: 'MetaMask USD',
+-};
+-/**
+- * Hex chain IDs on which mUSD is deployed and should be added by default.
+- * - 0x1     — Ethereum mainnet (1)
+- * - 0xe708  — Linea (59144)
+- * - 0x8f    — Monad mainnet (143)
+- * - 0x279f  — Monad testnet (10143)
+- */
+-const MUSD_SUPPORTED_CHAIN_IDS = new Set([
+-    '0x1',
+-    '0xe708',
+-    '0x8f',
+-    '0x279f',
+-]);
+ exports.STATIC_MAINNET_TOKEN_LIST = Object.entries(contract_metadata_1.default).reduce((acc, [base, contract]) => {
+     const { logo, erc20, erc721, ...tokenMetadata } = contract;
+     return {
+@@ -62,6 +35,7 @@ exports.STATIC_MAINNET_TOKEN_LIST = Object.entries(contract_metadata_1.default).
+         },
+     };
+ }, {});
++const MUSD_TOKEN_DETECTION_CHAIN_ID_SET = new Set(constants_1.MUSD_TOKEN_DETECTION_CHAIN_IDS);
+ /**
+  * Function that takes a TokensChainsCache object and maps chainId with TokenListMap.
+  *
+@@ -132,8 +106,6 @@ class TokenDetectionController extends (0, polling_controller_1.StaticIntervalPo
+         _TokenDetectionController_isDetectionEnabledFromPreferences.set(this, void 0);
+         _TokenDetectionController_useTokenDetection.set(this, void 0);
+         _TokenDetectionController_useExternalServices.set(this, void 0);
+-        /** Tracks whether default tokens (mUSD) have been seeded for the current session. */
+-        _TokenDetectionController_defaultTokensSeeded.set(this, false);
+         _TokenDetectionController_getBalancesInSingleCall.set(this, void 0);
+         _TokenDetectionController_trackMetaMetricsEvent.set(this, void 0);
+         messenger.registerMethodActionHandlers(this, MESSENGER_EXPOSED_METHODS);
+@@ -177,9 +149,6 @@ class TokenDetectionController extends (0, polling_controller_1.StaticIntervalPo
+      */
+     async start() {
+         this.enable();
+-        // Seed mUSD as a default token via TokensController:addTokens. Runs
+-        // once per session; idempotent because addTokens dedupes on address.
+-        await __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_seedDefaultTokens).call(this);
+         await __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_startPolling).call(this);
+     }
+     /**
+@@ -259,10 +228,11 @@ class TokenDetectionController extends (0, polling_controller_1.StaticIntervalPo
+         // Refresh the token cache to ensure we have the latest token metadata
+         // This fixes a bug where the cache from construction time could be stale/empty
+         const { tokensChainsCache } = this.messenger.call('TokenListController:getState');
+-        __classPrivateFieldSet(this, _TokenDetectionController_tokensChainsCache, tokensChainsCache ?? {}, "f");
++        __classPrivateFieldSet(this, _TokenDetectionController_tokensChainsCache, __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_applyMusdDefaultToTokensChainsCache).call(this, chainId, tokensChainsCache ?? {}), "f");
++        const effectiveSlice = __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_includeMusdInTokenDetectionSlice).call(this, tokensSlice, chainId);
+         const tokensWithBalance = [];
+         const eventTokensDetails = [];
+-        for (const tokenAddress of tokensSlice) {
++        for (const tokenAddress of effectiveSlice) {
+             // Normalize addresses explicitly (don't assume input format)
+             const lowercaseTokenAddress = tokenAddress.toLowerCase();
+             const checksummedTokenAddress = (0, controller_utils_1.toChecksumHexAddress)(tokenAddress);
+@@ -326,15 +296,16 @@ class TokenDetectionController extends (0, polling_controller_1.StaticIntervalPo
+         // Refresh the token cache to ensure we have the latest token metadata
+         // This fixes a bug where the cache from construction time could be stale/empty
+         const { tokensChainsCache } = this.messenger.call('TokenListController:getState');
+-        __classPrivateFieldSet(this, _TokenDetectionController_tokensChainsCache, tokensChainsCache ?? {}, "f");
++        __classPrivateFieldSet(this, _TokenDetectionController_tokensChainsCache, __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_applyMusdDefaultToTokensChainsCache).call(this, chainId, tokensChainsCache ?? {}), "f");
+         const selectedAddress = __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_getSelectedAddress).call(this);
+         // Get current token states to filter out already tracked/ignored tokens
+         const { allTokens, allIgnoredTokens } = this.messenger.call('TokensController:getState');
+         const existingTokenAddresses = (allTokens[chainId]?.[selectedAddress] ?? []).map((token) => token.address.toLowerCase());
+         const ignoredTokenAddresses = (allIgnoredTokens[chainId]?.[selectedAddress] ?? []).map((address) => address.toLowerCase());
++        const effectiveSlice = __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_includeMusdInTokenDetectionSlice).call(this, tokensSlice, chainId);
+         const tokensWithBalance = [];
+         const eventTokensDetails = [];
+-        for (const tokenAddress of tokensSlice) {
++        for (const tokenAddress of effectiveSlice) {
+             const lowercaseTokenAddress = tokenAddress.toLowerCase();
+             const checksummedTokenAddress = (0, controller_utils_1.toChecksumHexAddress)(tokenAddress);
+             // Skip tokens already in allTokens
+@@ -380,7 +351,7 @@ class TokenDetectionController extends (0, polling_controller_1.StaticIntervalPo
+     }
+ }
+ exports.TokenDetectionController = TokenDetectionController;
+-_TokenDetectionController_intervalId = new WeakMap(), _TokenDetectionController_selectedAccountId = new WeakMap(), _TokenDetectionController_tokensChainsCache = new WeakMap(), _TokenDetectionController_disabled = new WeakMap(), _TokenDetectionController_isUnlocked = new WeakMap(), _TokenDetectionController_isDetectionEnabledFromPreferences = new WeakMap(), _TokenDetectionController_useTokenDetection = new WeakMap(), _TokenDetectionController_useExternalServices = new WeakMap(), _TokenDetectionController_defaultTokensSeeded = new WeakMap(), _TokenDetectionController_getBalancesInSingleCall = new WeakMap(), _TokenDetectionController_trackMetaMetricsEvent = new WeakMap(), _TokenDetectionController_instances = new WeakSet(), _TokenDetectionController_registerEventListeners = function _TokenDetectionController_registerEventListeners() {
++_TokenDetectionController_intervalId = new WeakMap(), _TokenDetectionController_selectedAccountId = new WeakMap(), _TokenDetectionController_tokensChainsCache = new WeakMap(), _TokenDetectionController_disabled = new WeakMap(), _TokenDetectionController_isUnlocked = new WeakMap(), _TokenDetectionController_isDetectionEnabledFromPreferences = new WeakMap(), _TokenDetectionController_useTokenDetection = new WeakMap(), _TokenDetectionController_useExternalServices = new WeakMap(), _TokenDetectionController_getBalancesInSingleCall = new WeakMap(), _TokenDetectionController_trackMetaMetricsEvent = new WeakMap(), _TokenDetectionController_instances = new WeakSet(), _TokenDetectionController_registerEventListeners = function _TokenDetectionController_registerEventListeners() {
+     this.messenger.subscribe('KeyringController:unlock', () => {
+         __classPrivateFieldSet(this, _TokenDetectionController_isUnlocked, true, "f");
+         __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_restartTokenDetection).call(this).catch(() => {
+@@ -417,13 +388,6 @@ _TokenDetectionController_intervalId = new WeakMap(), _TokenDetectionController_
+         const isSelectedAccountIdChanged = __classPrivateFieldGet(this, _TokenDetectionController_selectedAccountId, "f") !== selectedAccount.id;
+         if (isSelectedAccountIdChanged) {
+             __classPrivateFieldSet(this, _TokenDetectionController_selectedAccountId, selectedAccount.id, "f");
+-            // Re-seed mUSD for the newly selected account. addTokens only adds
+-            // tokens for the currently selected account, so we need to re-run
+-            // it whenever the active account changes.
+-            __classPrivateFieldSet(this, _TokenDetectionController_defaultTokensSeeded, false, "f");
+-            __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_seedDefaultTokens).call(this).catch(() => {
+-                // Silently handle default-token seeding errors
+-            });
+             __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_restartTokenDetection).call(this, {
+                 selectedAddress: selectedAccount.address,
+                 chainIds,
+@@ -439,19 +403,6 @@ _TokenDetectionController_intervalId = new WeakMap(), _TokenDetectionController_
+             // Silently handle token detection errors
+         });
+     });
+-    // Re-seed mUSD whenever a network is added. Covers the case where the
+-    // user adds a supported chain (e.g. Monad testnet) after the controller
+-    // has already started — the chain wasn't configured at start() time so
+-    // findNetworkClientIdByChainId would have skipped it.
+-    this.messenger.subscribe('NetworkController:networkAdded', ({ chainId }) => {
+-        if (!MUSD_SUPPORTED_CHAIN_IDS.has(chainId)) {
+-            return;
+-        }
+-        __classPrivateFieldSet(this, _TokenDetectionController_defaultTokensSeeded, false, "f");
+-        __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_seedDefaultTokens).call(this).catch(() => {
+-            // Silently handle default-token seeding errors
+-        });
+-    });
+ }, _TokenDetectionController_stopPolling = function _TokenDetectionController_stopPolling() {
+     if (__classPrivateFieldGet(this, _TokenDetectionController_intervalId, "f")) {
+         clearInterval(__classPrivateFieldGet(this, _TokenDetectionController_intervalId, "f"));
+@@ -524,7 +475,7 @@ async function _TokenDetectionController_restartTokenDetection({ selectedAddress
+     }
+     else {
+         const { tokensChainsCache } = this.messenger.call('TokenListController:getState');
+-        __classPrivateFieldSet(this, _TokenDetectionController_tokensChainsCache, tokensChainsCache ?? {}, "f");
++        __classPrivateFieldSet(this, _TokenDetectionController_tokensChainsCache, __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_applyMusdDefaultToTokensChainsCache).call(this, chainId, tokensChainsCache ?? {}), "f");
+     }
+     return true;
+ }, _TokenDetectionController_detectTokensUsingRpc = async function _TokenDetectionController_detectTokensUsingRpc(chainsToDetectUsingRpc, addressToDetect) {
+@@ -578,43 +529,63 @@ async function _TokenDetectionController_restartTokenDetection({ selectedAddress
+             iconUrl: value?.iconUrl,
+         },
+     }), {});
++    const dataWithMusd = __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_mergeMusdIntoTokenListMap).call(this, controller_utils_1.ChainId.mainnet, data);
+     return {
+         '0x1': {
+-            data,
++            data: dataWithMusd,
+             timestamp: 0,
+         },
+     };
+-}, _TokenDetectionController_seedDefaultTokens = 
+-/**
+- * Seed mUSD into `TokensController.allTokens` via the public `addTokens`
+- * action for every supported chain that is currently configured in
+- * `NetworkController`.
+- *
+- * Runs once per session (idempotent guard via `#defaultTokensSeeded`), but
+- * `addTokens` itself dedupes by contract address so re-running is safe.
+- *
+- * @returns Promise that resolves once seeding has been attempted on every
+- * supported chain.
+- */
+-async function _TokenDetectionController_seedDefaultTokens() {
+-    if (__classPrivateFieldGet(this, _TokenDetectionController_defaultTokensSeeded, "f")) {
+-        return;
++}, _TokenDetectionController_buildMusdTokenListToken = function _TokenDetectionController_buildMusdTokenListToken(chainId) {
++    const meta = constants_1.MUSD_TOKEN_METADATA_BY_CHAIN[chainId];
++    return {
++        address: constants_1.MUSD_ERC20_ADDRESS_LOWER,
++        name: meta.name,
++        symbol: meta.symbol,
++        decimals: meta.decimals,
++        aggregators: [...meta.aggregators],
++        iconUrl: (0, assetsUtil_1.formatIconUrlWithProxy)({
++            chainId,
++            tokenAddress: constants_1.MUSD_ERC20_ADDRESS_LOWER,
++        }),
++        occurrences: 999,
++    };
++}, _TokenDetectionController_mergeMusdIntoTokenListMap = function _TokenDetectionController_mergeMusdIntoTokenListMap(chainId, data) {
++    if (!MUSD_TOKEN_DETECTION_CHAIN_ID_SET.has(chainId)) {
++        return data;
+     }
+-    __classPrivateFieldSet(this, _TokenDetectionController_defaultTokensSeeded, true, "f");
+-    const { networkConfigurationsByChainId } = this.messenger.call('NetworkController:getState');
+-    for (const supportedChainId of MUSD_SUPPORTED_CHAIN_IDS) {
+-        if (!networkConfigurationsByChainId[supportedChainId]) {
+-            continue;
+-        }
+-        try {
+-            const networkClientId = this.messenger.call('NetworkController:findNetworkClientIdByChainId', supportedChainId);
+-            await this.messenger.call('TokensController:addTokens', [MUSD_TOKEN], networkClientId);
+-        }
+-        catch {
+-            // Silently handle per-chain seeding errors so one failure does not
+-            // block seeding on the remaining supported chains.
+-        }
++    return {
++        ...data,
++        [constants_1.MUSD_ERC20_ADDRESS_LOWER]: __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_buildMusdTokenListToken).call(this, chainId),
++    };
++}, _TokenDetectionController_applyMusdDefaultToTokensChainsCache = function _TokenDetectionController_applyMusdDefaultToTokensChainsCache(chainId, cache) {
++    if (!MUSD_TOKEN_DETECTION_CHAIN_ID_SET.has(chainId)) {
++        return cache;
+     }
++    const existing = cache[chainId];
++    return {
++        ...cache,
++        [chainId]: {
++            data: __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_mergeMusdIntoTokenListMap).call(this, chainId, existing?.data ?? {}),
++            timestamp: existing?.timestamp ?? 0,
++        },
++    };
++}, _TokenDetectionController_includeMusdInTokenDetectionSlice = function _TokenDetectionController_includeMusdInTokenDetectionSlice(tokensSlice, chainId) {
++    if (!MUSD_TOKEN_DETECTION_CHAIN_ID_SET.has(chainId)) {
++        return tokensSlice;
++    }
++    if (tokensSlice.some((a) => (0, controller_utils_1.isEqualCaseInsensitive)(a, constants_1.MUSD_ERC20_ADDRESS_LOWER))) {
++        return tokensSlice;
++    }
++    const listData = __classPrivateFieldGet(this, _TokenDetectionController_tokensChainsCache, "f")[chainId]?.data;
++    if (!listData) {
++        return tokensSlice;
++    }
++    const hasMusd = Object.keys(listData).some((k) => (0, controller_utils_1.isEqualCaseInsensitive)(k, constants_1.MUSD_ERC20_ADDRESS_LOWER));
++    if (!hasMusd) {
++        return tokensSlice;
++    }
++    return [...tokensSlice, constants_1.MUSD_ERC20_ADDRESS_LOWER];
+ }, _TokenDetectionController_addDetectedTokens = async function _TokenDetectionController_addDetectedTokens({ tokensSlice, selectedAddress, networkClientId, chainId, }) {
+     await (0, controller_utils_1.safelyExecute)(async () => {
+         const balances = await __classPrivateFieldGet(this, _TokenDetectionController_getBalancesInSingleCall, "f").call(this, selectedAddress, tokensSlice, networkClientId);
+@@ -634,6 +605,31 @@ async function _TokenDetectionController_seedDefaultTokens() {
+                 ...(rwaData && { rwaData }),
+             });
+         }
++        // mUSD is always in the chain token cache on supported networks, but
++        // getBalancesInSingleCall omits zero balances; still add mUSD so the wallet
++        // shows the asset (balance updates via the usual balance pipeline).
++        if (MUSD_TOKEN_DETECTION_CHAIN_ID_SET.has(chainId)) {
++            const musdInSlice = tokensSlice.some((addr) => (0, controller_utils_1.isEqualCaseInsensitive)(addr, constants_1.MUSD_ERC20_ADDRESS_LOWER));
++            const musdHasNonZeroFromRpc = Object.keys(balances).some((addr) => (0, controller_utils_1.isEqualCaseInsensitive)(addr, constants_1.MUSD_ERC20_ADDRESS_LOWER));
++            if (musdInSlice && !musdHasNonZeroFromRpc) {
++                const listData = __classPrivateFieldGet(this, _TokenDetectionController_tokensChainsCache, "f")[chainId].data;
++                const musdListToken = Object.entries(listData).find(([key]) => (0, controller_utils_1.isEqualCaseInsensitive)(key, constants_1.MUSD_ERC20_ADDRESS_LOWER))?.[1];
++                if (musdListToken) {
++                    const { decimals, symbol, aggregators, iconUrl, name, rwaData } = musdListToken;
++                    eventTokensDetails.push(`${symbol} - ${constants_1.MUSD_ERC20_ADDRESS_LOWER}`);
++                    tokensWithBalance.push({
++                        address: constants_1.MUSD_ERC20_ADDRESS_LOWER,
++                        decimals,
++                        symbol,
++                        aggregators,
++                        image: iconUrl,
++                        isERC721: false,
++                        name,
++                        ...(rwaData && { rwaData }),
++                    });
++                }
++            }
++        }
+         if (tokensWithBalance.length) {
+             __classPrivateFieldGet(this, _TokenDetectionController_trackMetaMetricsEvent, "f").call(this, {
+                 event: 'Token Detected',
+diff --git a/dist/TokenDetectionController.d.cts b/dist/TokenDetectionController.d.cts
+index 275caa8fa10401ef1aa4f1313d92c40a12e92a6b..02e67fa5f6cf0b57ca91aff45a2db24339ad6c8b 100644
+--- a/dist/TokenDetectionController.d.cts
++++ b/dist/TokenDetectionController.d.cts
+@@ -2,7 +2,7 @@ import type { AccountsControllerGetSelectedAccountAction, AccountsControllerGetA
+ import type { ControllerGetStateAction, ControllerStateChangeEvent } from "@metamask/base-controller";
+ import type { KeyringControllerGetStateAction, KeyringControllerLockEvent, KeyringControllerUnlockEvent } from "@metamask/keyring-controller";
+ import type { Messenger } from "@metamask/messenger";
+-import type { NetworkControllerFindNetworkClientIdByChainIdAction, NetworkControllerGetNetworkClientByIdAction, NetworkControllerGetNetworkConfigurationByNetworkClientId, NetworkControllerGetStateAction, NetworkControllerNetworkAddedEvent, NetworkControllerNetworkDidChangeEvent } from "@metamask/network-controller";
++import type { NetworkControllerFindNetworkClientIdByChainIdAction, NetworkControllerGetNetworkClientByIdAction, NetworkControllerGetNetworkConfigurationByNetworkClientId, NetworkControllerGetStateAction, NetworkControllerNetworkDidChangeEvent } from "@metamask/network-controller";
+ import type { PreferencesControllerGetStateAction, PreferencesControllerStateChangeEvent } from "@metamask/preferences-controller";
+ import type { AuthenticationController } from "@metamask/profile-sync-controller";
+ import type { TransactionControllerTransactionConfirmedEvent } from "@metamask/transaction-controller";
+@@ -30,7 +30,7 @@ export type TokenDetectionControllerActions = TokenDetectionControllerGetStateAc
+ export type AllowedActions = AccountsControllerGetSelectedAccountAction | AccountsControllerGetAccountAction | NetworkControllerGetNetworkClientByIdAction | NetworkControllerGetNetworkConfigurationByNetworkClientId | NetworkControllerGetStateAction | GetTokenListState | KeyringControllerGetStateAction | PreferencesControllerGetStateAction | TokensControllerGetStateAction | TokensControllerAddDetectedTokensAction | TokensControllerAddTokensAction | NetworkControllerFindNetworkClientIdByChainIdAction | AuthenticationController.AuthenticationControllerGetBearerTokenAction;
+ export type TokenDetectionControllerStateChangeEvent = ControllerStateChangeEvent<typeof controllerName, TokenDetectionState>;
+ export type TokenDetectionControllerEvents = TokenDetectionControllerStateChangeEvent;
+-export type AllowedEvents = AccountsControllerSelectedEvmAccountChangeEvent | NetworkControllerNetworkAddedEvent | NetworkControllerNetworkDidChangeEvent | TokenListStateChange | KeyringControllerLockEvent | KeyringControllerUnlockEvent | PreferencesControllerStateChangeEvent | TransactionControllerTransactionConfirmedEvent;
++export type AllowedEvents = AccountsControllerSelectedEvmAccountChangeEvent | NetworkControllerNetworkDidChangeEvent | TokenListStateChange | KeyringControllerLockEvent | KeyringControllerUnlockEvent | PreferencesControllerStateChangeEvent | TransactionControllerTransactionConfirmedEvent;
+ export type TokenDetectionControllerMessenger = Messenger<typeof controllerName, TokenDetectionControllerActions | AllowedActions, TokenDetectionControllerEvents | AllowedEvents>;
+ /** The input to start polling for the {@link TokenDetectionController} */
+ type TokenDetectionPollingInput = {
+diff --git a/dist/TokensController.cjs b/dist/TokensController.cjs
+index b4daef707e79f8e871ec767474a5e985cd0de3af..eb44f09e5250762e34c9ef3787d7eeeff8d662c2 100644
+--- a/dist/TokensController.cjs
++++ b/dist/TokensController.cjs
+@@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _TokensController_instances, _TokensController_mutex, _TokensController_selectedAccountId, _TokensController_provider, _TokensController_abortController, _TokensController_handleOnAccountRemoved, _TokensController_onNetworkAdded, _TokensController_onNetworkStateChange, _TokensController_onSelectedAccountChange, _TokensController_fetchTokenMetadata, _TokensController_detectIsERC721, _TokensController_getProvider, _TokensController_createEthersContract, _TokensController_generateRandomId, _TokensController_getNewAllTokensState, _TokensController_getAddressOrSelectedAddress, _TokensController_requestApproval, _TokensController_seedMusdForAccount, _TokensController_seedMusdForAllAccounts, _TokensController_seedMusdFromExistingState, _TokensController_getSelectedAccount, _TokensController_getSelectedAddress;
++var _TokensController_instances, _TokensController_mutex, _TokensController_selectedAccountId, _TokensController_provider, _TokensController_abortController, _TokensController_handleOnAccountRemoved, _TokensController_onNetworkStateChange, _TokensController_onSelectedAccountChange, _TokensController_fetchTokenMetadata, _TokensController_detectIsERC721, _TokensController_getProvider, _TokensController_createEthersContract, _TokensController_generateRandomId, _TokensController_getNewAllTokensState, _TokensController_getAddressOrSelectedAddress, _TokensController_requestApproval, _TokensController_getSelectedAccount, _TokensController_getSelectedAddress;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.TokensController = exports.getDefaultTokensState = void 0;
+ const contracts_1 = require("@ethersproject/contracts");
+@@ -55,31 +55,6 @@ const metadata = {
+     },
+ };
+ const controllerName = 'TokensController';
+-/**
+- * Canonical contract address for MetaMask USD (mUSD) — same across every
+- * chain we deploy it to.
+- */
+-const MUSD_ADDRESS = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+-/**
+- * Pre-built Token entry for mUSD — used when seeding default state.
+- */
+-const MUSD_TOKEN = {
+-    address: MUSD_ADDRESS,
+-    decimals: 6,
+-    symbol: 'mUSD',
+-    name: 'MetaMask USD',
+-};
+-/**
+- * Hex chain IDs on which mUSD is deployed and should be shown by default.
+- * - 0x1     — Ethereum mainnet (1)
+- * - 0xe708  — Linea (59144)
+- * - 0x8f    — Monad mainnet (143)
+- */
+-const MUSD_SUPPORTED_CHAIN_IDS = new Set([
+-    '0x1',
+-    '0xe708',
+-    '0x8f',
+-]);
+ const getDefaultTokensState = () => {
+     return {
+         allTokens: {},
+@@ -133,27 +108,6 @@ class TokensController extends base_controller_1.BaseController {
+         this.messenger.subscribe('AccountsController:selectedEvmAccountChange', __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_onSelectedAccountChange).bind(this));
+         this.messenger.subscribe('NetworkController:stateChange', __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_onNetworkStateChange).bind(this));
+         this.messenger.subscribe('KeyringController:accountRemoved', (accountAddress) => __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_handleOnAccountRemoved).call(this, accountAddress));
+-        this.messenger.subscribe('NetworkController:networkAdded', (networkConfiguration) => {
+-            __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_onNetworkAdded).call(this, networkConfiguration.chainId);
+-        });
+-        // Seed mUSD for accounts already known to AccountsController (may return
+-        // empty on first start if AccountsController hasn't loaded yet).
+-        __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_seedMusdForAllAccounts).call(this);
+-        // Also seed from existing persisted allTokens state so returning users see
+-        // mUSD immediately without waiting for KeyringController:unlock.
+-        __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_seedMusdFromExistingState).call(this);
+-        // Re-seed mUSD after unlock, because accounts may not be available during
+-        // construction (e.g. on restart before AccountsController has finished loading).
+-        this.messenger.subscribe('KeyringController:unlock', () => {
+-            __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_seedMusdForAllAccounts).call(this);
+-        });
+-        // Re-seed mUSD whenever a new account is added. This is the most reliable
+-        // trigger when AccountsController populates accounts asynchronously after
+-        // TokensController construction — it fires once per account as each one
+-        // becomes available.
+-        this.messenger.subscribe('AccountsController:accountAdded', (account) => {
+-            __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_seedMusdForAccount).call(this, account.address);
+-        });
+         this.messenger.subscribe('TokenListController:stateChange', ({ tokensChainsCache }) => {
+             const { allTokens } = this.state;
+             const selectedAddress = __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this);
+@@ -591,17 +545,11 @@ _TokensController_mutex = new WeakMap(), _TokensController_selectedAccountId = n
+         state.allIgnoredTokens = newAllIgnoredTokens;
+         state.allDetectedTokens = newAllDetectedTokens;
+     });
+-}, _TokensController_onNetworkAdded = function _TokensController_onNetworkAdded(chainId) {
+-    if (MUSD_SUPPORTED_CHAIN_IDS.has(chainId)) {
+-        __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_seedMusdForAllAccounts).call(this);
+-    }
+ }, _TokensController_onNetworkStateChange = function _TokensController_onNetworkStateChange(_, patches) {
++    // Remove state for deleted networks
+     for (const patch of patches) {
+-        if (patch.path[0] !== 'networkConfigurationsByChainId') {
+-            continue;
+-        }
+-        if (patch.op === 'remove') {
+-            // Remove state for deleted networks
++        if (patch.op === 'remove' &&
++            patch.path[0] === 'networkConfigurationsByChainId') {
+             const removedChainId = patch.path[1];
+             this.update((state) => {
+                 delete state.allTokens[removedChainId];
+@@ -609,19 +557,9 @@ _TokensController_mutex = new WeakMap(), _TokensController_selectedAccountId = n
+                 delete state.allDetectedTokens[removedChainId];
+             });
+         }
+-        else if (patch.op === 'add') {
+-            // When a new chain is added, seed mUSD if it is a supported chain.
+-            const addedChainId = patch.path[1];
+-            if (MUSD_SUPPORTED_CHAIN_IDS.has(addedChainId)) {
+-                __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_seedMusdForAllAccounts).call(this);
+-            }
+-        }
+     }
+ }, _TokensController_onSelectedAccountChange = function _TokensController_onSelectedAccountChange(selectedAccount) {
+     __classPrivateFieldSet(this, _TokensController_selectedAccountId, selectedAccount.id, "f");
+-    // Ensure mUSD is seeded for the newly active account (e.g. freshly
+-    // created account that has never been the selected account before).
+-    __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_seedMusdForAccount).call(this, selectedAccount.address);
+ }, _TokensController_fetchTokenMetadata = 
+ /**
+  * Fetch metadata for a token.
+@@ -765,40 +703,6 @@ async function _TokensController_detectIsERC721(tokenAddress, networkClientId) {
+         type: controller_utils_1.ApprovalType.WatchAsset,
+         requestData,
+     }, true);
+-}, _TokensController_seedMusdForAccount = function _TokensController_seedMusdForAccount(accountAddress) {
+-    if (!(0, utils_1.isStrictHexString)(accountAddress.toLowerCase()) ||
+-        !(0, controller_utils_1.isValidHexAddress)(accountAddress)) {
+-        return;
+-    }
+-    this.update((state) => {
+-        var _a;
+-        for (const chainId of MUSD_SUPPORTED_CHAIN_IDS) {
+-            (_a = state.allTokens)[chainId] ?? (_a[chainId] = {});
+-            const accountTokens = state.allTokens[chainId][accountAddress] ?? [];
+-            const alreadyPresent = accountTokens.some((token) => token.address.toLowerCase() === MUSD_ADDRESS);
+-            if (!alreadyPresent) {
+-                state.allTokens[chainId][accountAddress] = [
+-                    ...accountTokens,
+-                    MUSD_TOKEN,
+-                ];
+-            }
+-        }
+-    });
+-}, _TokensController_seedMusdForAllAccounts = function _TokensController_seedMusdForAllAccounts() {
+-    const accounts = this.messenger.call('AccountsController:listAccounts');
+-    for (const account of accounts) {
+-        __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_seedMusdForAccount).call(this, account.address);
+-    }
+-}, _TokensController_seedMusdFromExistingState = function _TokensController_seedMusdFromExistingState() {
+-    const addresses = new Set();
+-    for (const chainTokens of Object.values(this.state.allTokens)) {
+-        for (const address of Object.keys(chainTokens)) {
+-            addresses.add(address);
+-        }
+-    }
+-    for (const address of addresses) {
+-        __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_seedMusdForAccount).call(this, address);
+-    }
+ }, _TokensController_getSelectedAccount = function _TokensController_getSelectedAccount() {
+     return this.messenger.call('AccountsController:getSelectedAccount');
+ }, _TokensController_getSelectedAddress = function _TokensController_getSelectedAddress() {
+diff --git a/dist/TokensController.d.cts b/dist/TokensController.d.cts
+index 0ffba2d93fcf78df4b9eea907f1c4b62c8de7a71..c4c9e8fd044e3bb4e431762e2c95714ef88ca617 100644
+--- a/dist/TokensController.d.cts
++++ b/dist/TokensController.d.cts
+@@ -1,10 +1,10 @@
+-import type { AccountsControllerAccountAddedEvent, AccountsControllerGetAccountAction, AccountsControllerGetSelectedAccountAction, AccountsControllerListAccountsAction, AccountsControllerSelectedEvmAccountChangeEvent } from "@metamask/accounts-controller";
++import type { AccountsControllerGetAccountAction, AccountsControllerGetSelectedAccountAction, AccountsControllerListAccountsAction, AccountsControllerSelectedEvmAccountChangeEvent } from "@metamask/accounts-controller";
+ import type { ApprovalControllerAddRequestAction } from "@metamask/approval-controller";
+ import type { ControllerGetStateAction, ControllerStateChangeEvent } from "@metamask/base-controller";
+ import { BaseController } from "@metamask/base-controller";
+-import type { KeyringControllerAccountRemovedEvent, KeyringControllerUnlockEvent } from "@metamask/keyring-controller";
++import type { KeyringControllerAccountRemovedEvent } from "@metamask/keyring-controller";
+ import type { Messenger } from "@metamask/messenger";
+-import type { NetworkClientId, NetworkControllerGetNetworkClientByIdAction, NetworkControllerNetworkAddedEvent, NetworkControllerNetworkDidChangeEvent, NetworkControllerStateChangeEvent, Provider } from "@metamask/network-controller";
++import type { NetworkClientId, NetworkControllerGetNetworkClientByIdAction, NetworkControllerNetworkDidChangeEvent, NetworkControllerStateChangeEvent, Provider } from "@metamask/network-controller";
+ import type { Hex, Json } from "@metamask/utils";
+ import { TokenRwaData } from "./token-service.cjs";
+ import type { TokenListStateChange } from "./TokenListController.cjs";
+@@ -49,7 +49,7 @@ export type TokensControllerActions = TokensControllerGetStateAction | TokensCon
+ export type AllowedActions = ApprovalControllerAddRequestAction | NetworkControllerGetNetworkClientByIdAction | AccountsControllerGetAccountAction | AccountsControllerGetSelectedAccountAction | AccountsControllerListAccountsAction;
+ export type TokensControllerStateChangeEvent = ControllerStateChangeEvent<typeof controllerName, TokensControllerState>;
+ export type TokensControllerEvents = TokensControllerStateChangeEvent;
+-export type AllowedEvents = NetworkControllerStateChangeEvent | NetworkControllerNetworkDidChangeEvent | NetworkControllerNetworkAddedEvent | TokenListStateChange | AccountsControllerAccountAddedEvent | AccountsControllerSelectedEvmAccountChangeEvent | KeyringControllerAccountRemovedEvent | KeyringControllerUnlockEvent;
++export type AllowedEvents = NetworkControllerStateChangeEvent | NetworkControllerNetworkDidChangeEvent | TokenListStateChange | AccountsControllerSelectedEvmAccountChangeEvent | KeyringControllerAccountRemovedEvent;
+ /**
+  * The messenger of the {@link TokensController}.
+  */
+diff --git a/dist/constants.cjs b/dist/constants.cjs
+index 9ce3ddbdb6cb3fdb004694ee65c8667c63f5c0cc..5f2341666e74bde77dfcfef8e8cc17796e41fda5 100644
+--- a/dist/constants.cjs
++++ b/dist/constants.cjs
+@@ -1,6 +1,6 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.shouldIncludeNativeToken = exports.SUPPORTED_NETWORKS_ACCOUNTS_API_V4 = exports.Source = void 0;
++exports.shouldIncludeNativeToken = exports.MUSD_TOKEN_METADATA_BY_CHAIN = exports.MUSD_TOKEN_DETECTION_CHAIN_IDS = exports.MUSD_ERC20_ADDRESS_LOWER = exports.SUPPORTED_NETWORKS_ACCOUNTS_API_V4 = exports.Source = void 0;
+ const controller_utils_1 = require("@metamask/controller-utils");
+ var Source;
+ (function (Source) {
+@@ -22,6 +22,37 @@ exports.SUPPORTED_NETWORKS_ACCOUNTS_API_V4 = [
+     '0x8f', // 143
+     '0x3e7', // 999 HyperEVM
+ ];
++/** Lowercase ERC-20 address for MetaMask USD (mUSD), same contract on listed chains. */
++exports.MUSD_ERC20_ADDRESS_LOWER = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
++/**
++ * EVM chains where mUSD is always merged into the token-detection candidate list.
++ * Metadata matches `GET /v3/assets` on `tokens.api.cx.metamask.io` (assetIds CAIP-19).
++ */
++exports.MUSD_TOKEN_DETECTION_CHAIN_IDS = [
++    controller_utils_1.ChainId.mainnet,
++    controller_utils_1.ChainId['linea-mainnet'],
++    '0x8f', // Monad mainnet (eip155:143)
++];
++exports.MUSD_TOKEN_METADATA_BY_CHAIN = {
++    [controller_utils_1.ChainId.mainnet]: {
++        name: 'MetaMask USD',
++        symbol: 'MUSD',
++        decimals: 6,
++        aggregators: ['metamask', 'liFi', 'socket', 'rubic', 'rango'],
++    },
++    [controller_utils_1.ChainId['linea-mainnet']]: {
++        name: 'MetaMask USD',
++        symbol: 'MUSD',
++        decimals: 6,
++        aggregators: ['metamask', 'liFi', 'socket', 'rubic', 'squid', 'rango'],
++    },
++    '0x8f': {
++        name: 'MetaMask USD',
++        symbol: 'mUSD',
++        decimals: 6,
++        aggregators: ['dynamic'],
++    },
++};
+ /**
+  * Determines if native token fetching should be included for the given chain.
+  * Returns false for chains that return arbitrary large numbers (e.g., Tempo networks).
+diff --git a/dist/constants.d.cts b/dist/constants.d.cts
+index 05fe4f11546c9b03e570392bae01a70767f91bd0..19ed9327f825882d72c1c55e40f4759827d444b7 100644
+--- a/dist/constants.d.cts
++++ b/dist/constants.d.cts
+@@ -1,9 +1,25 @@
++import type { Hex } from "@metamask/utils";
+ export declare enum Source {
+     Custom = "custom",
+     Dapp = "dapp",
+     Detected = "detected"
+ }
+ export declare const SUPPORTED_NETWORKS_ACCOUNTS_API_V4: string[];
++/** Lowercase ERC-20 address for MetaMask USD (mUSD), same contract on listed chains. */
++export declare const MUSD_ERC20_ADDRESS_LOWER = "0xaca92e438df0b2401ff60da7e4337b687a2435da";
++/**
++ * EVM chains where mUSD is always merged into the token-detection candidate list.
++ * Metadata matches `GET /v3/assets` on `tokens.api.cx.metamask.io` (assetIds CAIP-19).
++ */
++export declare const MUSD_TOKEN_DETECTION_CHAIN_IDS: readonly Hex[];
++/** Raw `aggregators` keys from the Tokens API (same shape as token list cache). */
++export type MusdTokenDetectionMetadata = {
++    name: string;
++    symbol: string;
++    decimals: number;
++    aggregators: string[];
++};
++export declare const MUSD_TOKEN_METADATA_BY_CHAIN: Record<(typeof MUSD_TOKEN_DETECTION_CHAIN_IDS)[number], MusdTokenDetectionMetadata>;
+ /**
+  * Determines if native token fetching should be included for the given chain.
+  * Returns false for chains that return arbitrary large numbers (e.g., Tempo networks).

@@ -30,8 +30,7 @@ type AllowedActions =
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerListAccountsAction
   | ApprovalControllerAddRequestAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerGetStateAction;
+  | NetworkControllerGetNetworkClientByIdAction;
 
 type AllowedEvents =
   | AccountsControllerSelectedEvmAccountChangeEvent
@@ -72,7 +71,6 @@ export function getTokensControllerMessenger(
       'AccountsController:listAccounts',
       'ApprovalController:addRequest',
       'NetworkController:getNetworkClientById',
-      'NetworkController:getState',
     ],
     events: [
       'AccountsController:selectedEvmAccountChange',
