@@ -59,7 +59,9 @@ export const isInteractiveUI = (url = globalThis.location.href) => {
  * @param url - the URL of the window (defaults to window.location.href)
  * @returns true if the environment is a popup or side panel
  */
-export const isPopupOrSidePanelEnvironment = (url = globalThis.location.href) => {
+export const isPopupOrSidePanelEnvironment = (
+  url = globalThis.location.href,
+) => {
   const environmentType = getEnvironmentType(url);
   return (
     environmentType === ENVIRONMENT_TYPE_POPUP ||

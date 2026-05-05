@@ -62,7 +62,11 @@ function renderModal(
 
   return renderWithProvider(
     <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-      <LoginErrorModal onClose={jest.fn()} loginError={LOGIN_ERROR.GENERIC} {...props} />
+      <LoginErrorModal
+        onClose={jest.fn()}
+        loginError={LOGIN_ERROR.GENERIC}
+        {...props}
+      />
     </MetaMetricsContext.Provider>,
     buildStore(),
   );

@@ -5,7 +5,10 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { SUPPORT_LINK } from '../../helpers/constants/common';
-import { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  RESTORE_VAULT_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -249,7 +252,9 @@ describe('ResetPasswordModal', () => {
       renderModal({}, () => mockTrackEvent);
 
       fireEvent.click(
-        screen.getByText(messages.forgotPasswordModalContactSupportLink.message),
+        screen.getByText(
+          messages.forgotPasswordModalContactSupportLink.message,
+        ),
       );
 
       expect(mockTrackEvent).toHaveBeenCalledWith(

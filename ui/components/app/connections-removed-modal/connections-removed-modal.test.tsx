@@ -84,25 +84,22 @@ describe('ConnectionsRemovedModal', () => {
     });
 
     ['popup', 'side panel'].forEach((environmentLabel) => {
-      it(
-        `opens the extension in browser when confirming from the ${environmentLabel}`,
-        async () => {
-          mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
+      it(`opens the extension in browser when confirming from the ${environmentLabel}`, async () => {
+        mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
 
-          renderModal();
+        renderModal();
 
-          fireEvent.click(screen.getByTestId('connections-removed-modal-button'));
+        fireEvent.click(screen.getByTestId('connections-removed-modal-button'));
 
-          await waitFor(() => {
-            expect(mockResetWallet).toHaveBeenCalledTimes(1);
-            expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
-              DEFAULT_ROUTE,
-            );
-          });
+        await waitFor(() => {
+          expect(mockResetWallet).toHaveBeenCalledTimes(1);
+          expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+            DEFAULT_ROUTE,
+          );
+        });
 
-          expect(mockNavigate).not.toHaveBeenCalled();
-        },
-      );
+        expect(mockNavigate).not.toHaveBeenCalled();
+      });
     });
   });
 });
