@@ -672,6 +672,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
               'data-testid': 'perps-close-position-modal-submit',
               children: t('perpsClosePosition'),
               disabled: isSubmitDisabled,
+              autoFocus: true,
             }}
           />
         </ModalContent>

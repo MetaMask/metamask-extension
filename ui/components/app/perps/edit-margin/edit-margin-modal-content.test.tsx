@@ -85,6 +85,74 @@ describe('EditMarginModalContent', () => {
     expect(screen.getByText(/available/iu)).toBeInTheDocument();
   });
 
+  describe('auto-focus and select-all', () => {
+    it('auto-focuses the margin amount input on mount', () => {
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('perps-edit-margin-amount-input');
+      const input = container.querySelector('input') as HTMLInputElement;
+      expect(input).toHaveFocus();
+    });
+
+    it('selects existing margin amount on focus', () => {
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('perps-edit-margin-amount-input');
+      const input = container.querySelector('input') as HTMLInputElement;
+      fireEvent.change(input, { target: { value: '42' } });
+      const selectSpy = jest.spyOn(input, 'select');
+      fireEvent.focus(input);
+      expect(selectSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('keyboard submission', () => {
+    it('submits margin update when Enter is pressed with a valid amount', async () => {
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('perps-edit-margin-amount-input');
+      const input = container.querySelector('input') as HTMLInputElement;
+      fireEvent.change(input, { target: { value: '100' } });
+
+      fireEvent.keyDown(input, { key: 'Enter' });
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdateMargin',
+          [
+            expect.objectContaining({
+              symbol: basePosition.symbol,
+              amount: '100',
+            }),
+          ],
+        );
+      });
+    });
+
+    it('does not submit when Enter is pressed with an empty amount', () => {
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('perps-edit-margin-amount-input');
+      const input = container.querySelector('input') as HTMLInputElement;
+
+      fireEvent.keyDown(input, { key: 'Enter' });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+  });
+
   describe('geo-blocking', () => {
     it('shows geo-block modal instead of saving when user is not eligible', async () => {
       mockUsePerpsEligibility.mockReturnValue({ isEligible: false });

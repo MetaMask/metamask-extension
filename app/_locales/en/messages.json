@@ -2115,6 +2115,13 @@
   "creatorAddress": {
     "message": "Creator address"
   },
+  "criticalErrorAttemptRecovery": {
+    "message": "Attempt recovery"
+  },
+  "criticalErrorFooter": {
+    "message": "$1 $2 or $3",
+    "description": "Footer on the critical error screen. $1 is the 'Still getting this message?' text, $2 is the 'Contact support' link, $3 is the 'Attempt recovery' link. Translators may reorder the links (e.g. '$1 $3 or $2')."
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -6011,6 +6018,10 @@
   },
   "perpsMid": {
     "message": "Mid"
+  },
+  "perpsMinOrderSize": {
+    "message": "Order size must be at least $1",
+    "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as submit-button copy when the size input is empty or below the minimum."
   },
   "perpsModify": {
     "message": "Modify"

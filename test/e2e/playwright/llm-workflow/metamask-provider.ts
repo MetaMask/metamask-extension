@@ -21,19 +21,19 @@ import {
   knowledgeStore,
   MockServerCapability,
 } from '@metamask/client-mcp-core';
-import { MetaMaskExtensionLauncher } from '..';
-import {
-  createMetaMaskE2EContext,
-  createMetaMaskProdContext,
-} from '../capabilities/factory';
 import type {
   CreateMetaMaskContextOptions,
   CreateMetaMaskProdContextOptions,
-} from '../capabilities/factory';
-import type { LauncherLaunchOptions } from '../launcher-types';
-import type { AnvilSeederWrapper } from '../anvil-seeder-wrapper';
-import { MetaMaskFixtureCapability } from '../capabilities/fixture';
-import { MetaMaskContractSeedingCapability } from '../capabilities/seeding';
+} from './capabilities/factory';
+import type { LauncherLaunchOptions } from './launcher-types';
+import type { AnvilSeederWrapper } from './anvil-seeder-wrapper';
+import { MetaMaskFixtureCapability } from './capabilities/fixture';
+import { MetaMaskContractSeedingCapability } from './capabilities/seeding';
+import {
+  createMetaMaskE2EContext,
+  createMetaMaskProdContext,
+} from './capabilities/factory';
+import { MetaMaskExtensionLauncher } from '.';
 
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
@@ -100,7 +100,7 @@ export class MetaMaskSessionManager implements ISessionManager {
     if (this.hasActiveSession()) {
       throw new Error(
         `${ErrorCodes.MM_CONTEXT_SWITCH_BLOCKED}: Cannot switch context while session is active. ` +
-          `Current session: ${this.getSessionId()}. Call mm_cleanup first.`,
+          `Current session: ${this.getSessionId()}. Call mm cleanup first.`,
       );
     }
 
@@ -285,7 +285,7 @@ export class MetaMaskSessionManager implements ISessionManager {
 
     const extPrefix = `chrome-extension://${extensionId}`;
     if (url.startsWith(extPrefix)) {
-      if (url.includes('notification.html')) {
+      if (url.includes('notification.html') || url.includes('sidepanel.html')) {
         return 'notification';
       }
       return 'extension';
@@ -316,10 +316,33 @@ export class MetaMaskSessionManager implements ISessionManager {
     const chainId = this.workflowContext?.config?.defaultChainId ?? 1337;
     const extensionPage = this.activeSession.launcher.getPage();
 
-    return stateSnapshot.getState(extensionPage, {
+    const baseState = await stateSnapshot.getState(extensionPage, {
       extensionId: this.activeSession.state.extensionId,
       chainId,
     });
+
+    const activePage = this.getPage();
+    const activeRole = this.classifyPageRole(
+      activePage,
+      this.activeSession.state.extensionId,
+    );
+    const activeUrl = activePage.url();
+
+    let activeTitle: string | undefined;
+    try {
+      activeTitle = await activePage.title();
+    } catch {
+      // Non-fatal: page may have been closed while collecting metadata.
+    }
+
+    return {
+      ...baseState,
+      activeTab: {
+        role: activeRole,
+        url: activeUrl,
+        title: activeTitle,
+      },
+    };
   }
 
   setRefMap(map: Map<string, string>): void {
@@ -387,13 +410,15 @@ export class MetaMaskSessionManager implements ISessionManager {
 
     let launcher: MetaMaskExtensionLauncher | undefined;
 
+    const workflowConfig = this.workflowContext?.config;
+    const contextPorts =
+      workflowConfig !== undefined && workflowConfig.environment === 'e2e'
+        ? workflowConfig.ports
+        : undefined;
+    const resolvedFixturePort = contextPorts?.fixtureServer;
+
     try {
       if (!isProdMode && fixtureCapability) {
-        const fixturePort = input.ports?.fixtureServer;
-        if (fixturePort !== undefined && fixtureCapability.setPort) {
-          fixtureCapability.setPort(fixturePort);
-        }
-
         const fixtureState = fixtureCapability.resolveState({
           stateMode,
           fixturePreset: input.fixturePreset,
@@ -405,10 +430,6 @@ export class MetaMaskSessionManager implements ISessionManager {
       }
 
       if (chainCapability) {
-        const anvilPort = input.ports?.anvil ?? DEFAULT_ANVIL_PORT;
-        if (chainCapability.setPort) {
-          chainCapability.setPort(anvilPort);
-        }
         await chainCapability.start();
         startedCapabilities.chain = true;
       }
@@ -437,6 +458,13 @@ export class MetaMaskSessionManager implements ISessionManager {
         slowMo: input.slowMo ?? 0,
         extensionPath,
         proxyServer,
+        manifestFlags: resolvedFixturePort
+          ? {
+              testing: {
+                fixtureServerPort: resolvedFixturePort,
+              },
+            }
+          : undefined,
       };
 
       launcher = new MetaMaskExtensionLauncher(launchOptions);
@@ -464,9 +492,8 @@ export class MetaMaskSessionManager implements ISessionManager {
       chainId,
     });
     const startedAt = new Date().toISOString();
-    const resolvedAnvilPort = input.ports?.anvil ?? DEFAULT_ANVIL_PORT;
-    const resolvedFixturePort =
-      input.ports?.fixtureServer ?? DEFAULT_FIXTURE_SERVER_PORT;
+
+    const resolvedAnvilPort = contextPorts?.anvil;
 
     this.activeSession = {
       state: {
@@ -474,8 +501,9 @@ export class MetaMaskSessionManager implements ISessionManager {
         extensionId,
         startedAt,
         ports: {
-          anvil: resolvedAnvilPort,
-          fixtureServer: resolvedFixturePort,
+          // TODO - remove DEFAULT values once Types on client-mcp-core are updated.
+          anvil: resolvedAnvilPort ?? DEFAULT_ANVIL_PORT,
+          fixtureServer: resolvedFixturePort ?? DEFAULT_FIXTURE_SERVER_PORT,
         },
         stateMode,
       },
