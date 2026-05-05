@@ -4592,13 +4592,13 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {string} newPassword - New wallet password.
    * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
-   * @param {{ renewVaultKeyProtection?: boolean }} [options] - Optional flags; when `renewVaultKeyProtection` is false, passkey enrollment is removed after the password change instead of re-wrapping the vault key (default: renew).
+   * @param {{ renewVaultKeyProtection: boolean }} [options] - If `false`, removes passkey after the change instead of calling `renewVaultKeyProtection`.
    * @returns {Promise<void>}
    */
   async changePasswordWithPasskeyVerification(
     newPassword,
     authenticationResponse,
-    options = {},
+    options = { renewVaultKeyProtection: true },
   ) {
     const { renewVaultKeyProtection = true } = options;
     if (!this.passkeyController.isPasskeyEnrolled()) {

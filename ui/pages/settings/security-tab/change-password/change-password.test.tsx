@@ -100,7 +100,7 @@ jest.mock('../../../../store/actions', () => ({
   changePasswordWithPasskeyVerification: (
     newPassword: string,
     authenticationResponse: unknown,
-    options?: unknown,
+    options: { renewVaultKeyProtection: boolean },
   ) =>
     mockChangePasswordWithPasskeyVerification(
       newPassword,
@@ -738,7 +738,7 @@ describe('ChangePassword', () => {
       });
     });
 
-    it('removes passkey only after successful password change on passkey failure fallback', async () => {
+    it('removes passkey with current password before password change on passkey failure fallback', async () => {
       (startPasskeyAuthentication as jest.Mock).mockRejectedValueOnce(
         new Error('cancelled'),
       );
@@ -773,13 +773,16 @@ describe('ChangePassword', () => {
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
+        expect(mockRemovePasskeyWithPasswordVerification).toHaveBeenCalledWith(
+          mockPassword,
+        );
         expect(mockChangePassword).toHaveBeenCalledWith(
           mockNewPassword,
           mockPassword,
         );
-        expect(mockRemovePasskeyWithPasswordVerification).toHaveBeenCalledWith(
-          mockNewPassword,
-        );
+        expect(
+          mockRemovePasskeyWithPasswordVerification.mock.invocationCallOrder[0],
+        ).toBeLessThan(mockChangePassword.mock.invocationCallOrder[0]);
         expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
         expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
       });

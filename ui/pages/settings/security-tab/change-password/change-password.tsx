@@ -190,15 +190,18 @@ const ChangePassword = ({
       setShowChangePasswordWarning(false);
       setStep(ChangePasswordSteps.ChangePasswordLoading);
 
-      if (passkeyAuthenticationResponse) {
+      if (isSocialLoginFlow) {
+        await dispatch(changePassword(newPassword, currentPassword));
+      } else if (passkeyAuthenticationResponse) {
         isPasskeyRenewalSuccessful = await handleChangePasswordWithPasskey();
       } else {
-        await dispatch(changePassword(newPassword, currentPassword));
-        // if passkey is registered, since it's not verified, remove passkey
-        if (isPasskeyRegistered && !isSocialLoginFlow) {
-          await removePasskeyWithPasswordVerification(newPassword);
+        // Remove enrollment before changing the password so a failure after
+        // `changePassword` cannot leave an enrolled-but-invalid passkey on disk.
+        if (isPasskeyRegistered) {
+          await removePasskeyWithPasswordVerification(currentPassword);
           await forceUpdateMetamaskState(dispatch);
         }
+        await dispatch(changePassword(newPassword, currentPassword));
       }
 
       // Track password changed event
