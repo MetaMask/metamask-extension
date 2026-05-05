@@ -731,7 +731,7 @@
     "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
   },
   "asterdexReferralTitle": {
-    "message": "Get 5% back on AsterDex",
+    "message": "Get 5% back on AsterDEX",
     "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
