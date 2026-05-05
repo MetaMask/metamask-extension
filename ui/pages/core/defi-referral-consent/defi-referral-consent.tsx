@@ -86,7 +86,6 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
   t('hyperliquidReferralConfirmText');
   t('gmxReferralConfirmText');
   t('asterdexReferralConfirmText');
-  t('defiReferralNoThanks');
 
   return (
     <Box
@@ -105,7 +104,7 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
             {t(defiReferralSubtitle, [
               <PartnerLink
                 key="defi-referral-partner-terms"
-                text={t('learnMoreUpperCase')}
+                text={t('defiReferralTerms')}
                 url={termsUrl}
               />,
             ])}{' '}

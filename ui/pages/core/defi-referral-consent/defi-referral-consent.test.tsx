@@ -76,18 +76,19 @@ describe('DefiReferralConsent', () => {
 
         renderWithProvider(<DefiReferralConsent {...props} />, store);
 
-        const links = screen.getAllByRole('link', {
-          name: messages.learnMoreUpperCase.message,
+        const termsLink = screen.getByRole('link', {
+          name: messages.defiReferralTerms.message,
         });
-        expect(links).toHaveLength(2);
+        expect(termsLink).toHaveAttribute('href', termsUrl);
+        expect(termsLink).toHaveAttribute('target', '_blank');
+        expect(termsLink).toHaveAttribute('rel', 'noopener noreferrer');
 
-        const hrefs = links.map((link) => link.getAttribute('href'));
-        expect(hrefs).toEqual(expect.arrayContaining([termsUrl, learnMoreUrl]));
-
-        links.forEach((link) => {
-          expect(link).toHaveAttribute('target', '_blank');
-          expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+        const learnMoreLink = screen.getByRole('link', {
+          name: `${messages.learnMoreUpperCase.message}.`,
         });
+        expect(learnMoreLink).toHaveAttribute('href', learnMoreUrl);
+        expect(learnMoreLink).toHaveAttribute('target', '_blank');
+        expect(learnMoreLink).toHaveAttribute('rel', 'noopener noreferrer');
       });
 
       it('renders partner confirm and No thanks action buttons', () => {

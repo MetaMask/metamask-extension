@@ -2433,6 +2433,9 @@
     "message": "No thanks",
     "description": "Secondary button label to decline on the DeFi referral confirmation screen"
   },
+  "defiReferralTerms": {
+    "message": "terms"
+  },
   "delete": {
     "message": "Delete"
   },
