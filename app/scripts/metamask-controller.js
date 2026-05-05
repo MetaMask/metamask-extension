@@ -36,6 +36,7 @@ import {
   PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
   SubjectType,
+  createPermissionMiddleware,
 } from '@metamask/permission-controller';
 import {
   PasskeyControllerError,
@@ -98,11 +99,7 @@ import {
   multichainMethodCallValidatorMiddleware,
   MultichainSubscriptionManager,
   MultichainMiddlewareManager,
-  walletGetSession,
-  walletRevokeSession,
-  walletInvokeMethod,
   MultichainApiNotifications,
-  walletCreateSession,
 } from '@metamask/multichain-api-middleware';
 
 import {
@@ -268,8 +265,8 @@ import {
   createEthAccountsMethodMiddleware,
   createEip1193MethodMiddleware,
   createUnsupportedMethodMiddleware,
-  createMultichainMethodMiddleware,
-  makeMethodMiddlewareMaker,
+  createMultichainApiMethodMiddleware,
+  createMultichainInvokedMethodMiddleware,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createRpcBlockingMiddleware, {
@@ -7807,8 +7804,9 @@ export default class MetamaskController extends EventEmitter {
 
     if (subjectType !== SubjectType.Internal) {
       engine.push(
-        this.permissionController.createPermissionMiddleware({
+        createPermissionMiddleware({
           origin,
+          messenger: this.controllerMessenger,
         }),
       );
 
@@ -7896,10 +7894,6 @@ export default class MetamaskController extends EventEmitter {
           }
         },
 
-        updateCaveat: this.permissionController.updateCaveat.bind(
-          this.permissionController,
-          origin,
-        ),
         hasApprovalRequestsForOrigin: () =>
           this.approvalController.hasRequest({ origin }),
       }),
@@ -8223,15 +8217,13 @@ export default class MetamaskController extends EventEmitter {
     );
 
     engine.push(multichainMethodCallValidatorMiddleware);
-    const middlewareMaker = makeMethodMiddlewareMaker([
-      walletRevokeSession,
-      walletGetSession,
-      walletInvokeMethod,
-      walletCreateSession,
-    ]);
 
+    // Handles MultiChain API methods (e.g., `wallet_invokeMethod`,
+    // `wallet_createSession`). The `wallet_invokeMethod` handler unwraps inner
+    // requests and forwards them via `next()`, where they are picked up by
+    // `createMultichainInvokedMethodMiddleware` below.
     engine.push(
-      middlewareMaker({
+      createMultichainApiMethodMiddleware({
         findNetworkClientIdByChainId:
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
@@ -8314,8 +8306,13 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
+    // Handles RPC methods (e.g., `wallet_addEthereumChain`,
+    // `wallet_watchAsset`) invoked via `wallet_invokeMethod` and unwrapped by
+    // `createMultichainApiMethodMiddleware` above.
     engine.push(
-      createMultichainMethodMiddleware(this.setupCommonMiddlewareHooks(origin)),
+      createMultichainInvokedMethodMiddleware(
+        this.setupCommonMiddlewareHooks(origin),
+      ),
     );
 
     engine.push(this.metamaskMiddleware);
