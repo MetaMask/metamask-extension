@@ -395,7 +395,7 @@
     "@metamask/notification-services-controller": "^23.1.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
-    "@metamask/passkey-controller": "^1.0.0",
+    "@metamask/passkey-controller": "^2.0.0",
     "@metamask/permission-controller": "^13.0.0",
     "@metamask/permission-log-controller": "^5.0.0",
     "@metamask/permissions-kernel-snap": "^1.1.0",
