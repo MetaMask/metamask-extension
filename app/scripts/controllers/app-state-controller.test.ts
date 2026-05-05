@@ -217,6 +217,49 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setLastVisitedRoute', () => {
+    it('stores the route namespace, path, and current timestamp', async () => {
+      await withController(({ controller }) => {
+        const before = Date.now();
+        controller.setLastVisitedRoute('perps', '/perps/market/BTC');
+        const after = Date.now();
+
+        expect(controller.state.lastVisitedRoute).not.toBeNull();
+        expect(controller.state.lastVisitedRoute?.name).toBe('perps');
+        expect(controller.state.lastVisitedRoute?.path).toBe(
+          '/perps/market/BTC',
+        );
+        const { timestamp } = controller.state.lastVisitedRoute ?? {
+          timestamp: 0,
+        };
+        expect(timestamp).toBeGreaterThanOrEqual(before);
+        expect(timestamp).toBeLessThanOrEqual(after);
+      });
+    });
+
+    it('clears the stored route when passed null', async () => {
+      await withController(({ controller }) => {
+        controller.setLastVisitedRoute('perps', '/perps/trade/ETH');
+        expect(controller.state.lastVisitedRoute).not.toBeNull();
+
+        controller.setLastVisitedRoute('perps', null);
+        expect(controller.state.lastVisitedRoute).toBeNull();
+      });
+    });
+
+    it('does not clear a route stored for another namespace', async () => {
+      await withController(({ controller }) => {
+        controller.setLastVisitedRoute('bridge', '/bridge');
+
+        controller.setLastVisitedRoute('perps', null);
+
+        expect(controller.state.lastVisitedRoute).toStrictEqual(
+          expect.objectContaining({ name: 'bridge', path: '/bridge' }),
+        );
+      });
+    });
+  });
+
   describe('setConnectedStatusPopoverHasBeenShown', () => {
     it('sets connected status popover as shown', async () => {
       await withController(({ controller }) => {
@@ -823,6 +866,7 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "lastVisitedRoute": null,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1092,6 +1136,7 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "lastVisitedRoute": null,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "networkConnectionBanner": {

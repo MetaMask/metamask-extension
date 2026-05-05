@@ -3,7 +3,7 @@ import {
   CHAIN_IDS,
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
-import addEthereumChain from './add-ethereum-chain';
+import { addEthereumChainHandler } from './add-ethereum-chain';
 import EthChainUtils from './ethereum-chain-utils';
 
 jest.mock('./ethereum-chain-utils', () => ({
@@ -88,7 +88,7 @@ const createMockedHandler = () => {
   };
   const response = {};
   const handler = (request) =>
-    addEthereumChain.implementation(request, response, next, end, mocks);
+    addEthereumChainHandler.implementation(request, response, next, end, mocks);
 
   return {
     mocks,

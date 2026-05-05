@@ -7,6 +7,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.29.0]
+
+### Added
+
+- Added a cross-margin warning toast for perpetuals (#42015)
+- Added a “Deposit submitted” toast for Perps deposits, restored missing Perps deposit toasts, and suppressed generic transaction toasts during Perps deposits (#42045)
+- Added auto-connect for Trezor accounts (#41656)
+- Added fallback transactions to the Activity tab (#42066)
+- Added interactive token amount input for Perps orders (#42013)
+- Added support for API-provided transaction labels (#41857)
+- Added support for classifying take-profit and stop-loss orders (#41971)
+- Added the Tempo native token logo (#41995)
+- Added a transaction-failure badge while MetaMask is closed (#41984)
+- Added the option to hide toasts on confirmation screens (#42108)
+- Extended Perps withdraw flows with confirmation UI and activity list details (#42047)
+- Migrated native token balance to zero on Tempo chains where required (#41787)
+- Replaced the “Account isn’t connected” account-switch toast with an inline not-connected state on the Dapp Connection Control Bar, including a Connect call-to-action, grey status dot, and “Not connected” tag (#41895)
+
+### Changed
+
+- Disabled incoming-transaction detection on the extension (#42073)
+- Updated MetaMask Pay confirmation screens so blocking errors use short labels on the primary action (#41816)
+- Updated NFT refresh to use Multicall v3 (#41689)
+- Started using geolocation controller for mUSD eligibility (#41998)
+
+### Fixed
+
+- Fixed Perps deeplinks so `/perps?screen=asset&symbol=X` opens the correct market detail page; added `/perps-asset` and `/perps-markets` to align with mobile and removed extension-only `/perps/market` and `/perps/market-list` routes in favor of the shared `screen` parameter (#42085)
+- Fixed Tempo to fall back to a classic transaction when contract deployment is required (#41978)
+- Fixed a blank smart transaction confirmation page (#42060)
+- Fixed bridge quote cards incorrectly showing a “0%” price impact row when no price-impact data exists (#41905)
+- Fixed content overflow on Transaction shield pages (#41990)
+- Fixed duplicated market symbols in Perps trade toasts for HIP-3 markets, an infinite back-navigation loop between Perps order entry and market detail, and double-click back navigation after submitting a trade due to duplicate history entries (#42058)
+- Fixed failed-transaction badge behavior (#42032)
+- Fixed hardware wallet transactions showing “Paid by MetaMask” instead of the actual gas fee on the Activity total row (#41410)
+- Fixed hidden smart transaction approvals appearing in confirmation navigation (#42116)
+- Fixed missing logos for some Perps markets (HIP-3 assets such as NATGAS and OIL) (#42001)
+- Fixed missing-nonce handling in transaction notifications and history for EIP-7702 accounts (#42118)
+- Fixed Perps deposit activity summaries so the source relay step shows the send-from-network line instead of a generic “transaction” label (#41727)
+- Fixed TP/SL trigger handling so typing `+` or `-` in percent fields is accepted and prices stay on the correct side of the entry price (#41919)
+- Fixed the Long/Short submit button being enabled with no Perps balance, and restored access to the market detail page for zero-balance users (#41888)
+- Fixed the Perps chart to show the liquidation price line and render chart colors correctly in light and dark themes (#42008)
+- Fixed the Perps market detail layout, typography, icon sizing, and interaction states (#41881)
+- Fixed the back button on the Perps market detail page redirecting to wallet home instead of the previous screen (#41921)
+- Fixed the gas station still being offered when downgrading an EIP-7702 account (#41773)
+- Fixed the side panel default experience after rollout (#41819)
+- Fixed `excludeNativeTokenForFee` (Tempo) handling in the gasless-loading guard for the confirmation button (#41683)
+- Removed the nonce line from tx activity popin and from tx success/failure messages when nonce is missing (#41967)
+- Fixed perps chart x-axis and crosshair timestamps to display in the user's local timezone (#42106)
+- Fixed bug where hip3 assets weren't discoverable in search (#42170)
+- Fixed Trezor model one capability validation (#42168)
+- Restored multichain assets controller fail open logic to allow tokens through when security api fails (#42125)
+- Fixed Perps tab opening a WebSocket connection when basic functionality was turned off (#42248)
+- Removes the interactive check from the trezor preflight (#42241)
+
 ## [13.28.0]
 
 ### Added
@@ -2167,7 +2222,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.28.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.29.0...HEAD
+[13.29.0]: https://github.com/MetaMask/metamask-extension/compare/v13.28.0...v13.29.0
 [13.28.0]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...v13.28.0
 [13.27.0]: https://github.com/MetaMask/metamask-extension/compare/v13.26.0...v13.27.0
 [13.26.0]: https://github.com/MetaMask/metamask-extension/compare/v13.25.0...v13.26.0
