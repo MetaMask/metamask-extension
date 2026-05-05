@@ -77,8 +77,12 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
   };
 
   // If this is done inline, verify-locales will output `Forbidden use of template strings in 't' function`
+  const defiReferralTitle = `${partnerId}ReferralTitle`;
   const defiReferralSubtitle = `${partnerId}ReferralSubtitle`;
   // This is here to stop yarn verify-locales from removing these strings
+  t('hyperliquidReferralTitle');
+  t('gmxReferralTitle');
+  t('asterdexReferralTitle');
   t('hyperliquidReferralSubtitle');
   t('gmxReferralSubtitle');
   t('asterdexReferralSubtitle');
@@ -99,7 +103,7 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
           variant={TextVariant.HeadingMd}
           fontWeight={FontWeight.Bold}
         >
-          {t('defiReferralTitle', [partnerName])}
+          {t(defiReferralTitle)}
         </Text>
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t(defiReferralSubtitle, [

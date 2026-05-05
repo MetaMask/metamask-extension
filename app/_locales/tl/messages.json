@@ -2379,10 +2379,6 @@
     "message": "Pahintulutan ang MetaMask na maglagay ng referral code. Permanente ito. Mag-aalok ng diskwento ang site batay sa kanilang mga tuntunin. May bayad ang MetaMask.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralTitle": {
-    "message": "MetaMask x $1",
-    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
-  },
   "defiTabErrorContent": {
     "message": "Subukang bisitahin muli sa ibang pagkakataon."
   },

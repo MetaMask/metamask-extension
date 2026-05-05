@@ -2379,10 +2379,6 @@
     "message": "MetaMask가 추천인 코드를 추가하도록 허용하세요. 추가하면 변경할 수 없습니다. 사이트는 약관에 따라 할인을 제공합니다. MetaMask는 수수료를 받습니다.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralTitle": {
-    "message": "MetaMask x $1",
-    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
-  },
   "defiTabErrorContent": {
     "message": "나중에 다시 방문해 주세요."
   },

@@ -54,10 +54,9 @@ describe('DefiReferralConsent', () => {
 
         renderWithProvider(<DefiReferralConsent {...props} />, store);
 
+        const titleKey = `${partnerId}ReferralTitle` as keyof typeof messages;
         expect(
-          screen.getByText(
-            messages.defiReferralTitle.message.replace('$1', partnerName),
-          ),
+          screen.getByText(messages[titleKey].message),
         ).toBeInTheDocument();
         expect(
           screen.getByText('MetaMask referral code', { exact: false }),
