@@ -1,18 +1,15 @@
 import { MockttpServer, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import { mockSpotPrices } from '../tokens/utils/mocks';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
+import { getMockAssetsPrice } from '../tokens/utils/mocks';
+import { login } from '../../page-objects/flows/login.flow';
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
@@ -34,44 +31,36 @@ async function mockInfura(mockServer: Mockttp): Promise<void> {
       },
     }));
 }
-
-async function mockInfuraResponses(mockServer: Mockttp): Promise<void> {
-  await mockInfura(mockServer);
-  await mockSpotPrices(mockServer, {
-    'eip155:1/slip44:60': {
-      price: 1700,
-      marketCap: 382623505141,
-      pricePercentChange1d: 0,
-    },
-  });
-}
+const ETH_CONVERSION_RATE_USD = 1700;
 
 async function mockPriceApi(mockServer: Mockttp) {
-  const spotPricesMockEth = await mockServer
+  const price =
+    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
+      ? ETH_CONVERSION_RATE_USD
+      : 1;
+  await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
         'eip155:1/slip44:60': {
-          id: 'ethereum',
-          price: 1,
-          marketCap: 112500000,
-          totalVolume: 4500000,
-          dilutedMarketCap: 120000000,
+          price,
+          marketCap: 382623505141,
           pricePercentChange1d: 0,
         },
       },
     }));
-  const mockExchangeRates = await mockServer
+  await mockServer
     .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
         eth: {
           name: 'Ether',
           ticker: 'eth',
-          value: 1 / 1700,
+          value: 1 / ETH_CONVERSION_RATE_USD,
           currencyType: 'crypto',
         },
         usd: {
@@ -82,16 +71,18 @@ async function mockPriceApi(mockServer: Mockttp) {
         },
       },
     }));
-
-  return [spotPricesMockEth, mockExchangeRates];
 }
+
 describe('Settings', function () {
   it('Should match the value of token list item and account list item for eth conversion', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(1700),
+          })
           .build(),
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockPriceApi(mockServer);
@@ -100,16 +91,11 @@ describe('Settings', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '$42,500.00',
-        );
+        await login(driver, { expectedBalance: '$42,500.00' });
         await new HeaderNavbar(driver).openAccountMenu();
         await new AccountListPage(
           driver,
-        ).checkMultichainAccountBalanceDisplayed('$42,500.00');
+        ).checkMultichainAccountBalanceDisplayed({ balance: '$42,500.00' });
       },
     );
   });
@@ -117,22 +103,24 @@ describe('Settings', function () {
   it('Should match the value of token list item and account list item for fiat conversion', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
-          .withShowFiatTestnetEnabled()
-          .withEnabledNetworks({ eip155: { '0x1': true } })
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .withPreferencesController({
-            preferences: { showTestNetworks: true },
+            preferences: { showFiatInTestnets: true, showTestNetworks: true },
+          })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(1700),
           })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockPriceApi(mockServer);
-          await mockInfuraResponses(mockServer);
+          await mockInfura(mockServer);
         },
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed('42,500.00', 'USD');
         await new AssetListPage(driver).checkTokenFiatAmountIsDisplayed(
@@ -156,7 +144,7 @@ describe('Settings', function () {
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
         await settingsPage.toggleBalanceSetting();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
         await homePage.checkExpectedBalanceIsDisplayed('25', 'SepoliaETH');
       },
     );
@@ -165,15 +153,22 @@ describe('Settings', function () {
   it('Should show crypto value when price checker setting is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withShowFiatTestnetEnabled().build(),
+        fixtures: new FixtureBuilderV2()
+          .withPreferencesController({
+            preferences: { showFiatInTestnets: true },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(1700),
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockPriceApi(mockServer);
-          await mockInfuraResponses(mockServer);
+          await mockInfura(mockServer);
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
       },

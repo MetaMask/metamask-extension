@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -9,12 +9,6 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { ACCOUNT_IDENTICON_ROUTE } from '../../../helpers/constants/routes';
 import { AccountIdenticonItem } from './account-identicon-item';
-
-const mockNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate,
-}));
 
 const backgroundConnectionMock = new Proxy(
   {},
@@ -53,19 +47,17 @@ describe('AccountIdenticonItem', () => {
     expect(screen.getByText(messages.maskicons.message)).toBeInTheDocument();
   });
 
-  it('renders navigation button', () => {
+  it('renders navigation link', () => {
     renderWithProvider(<AccountIdenticonItem />, mockStore);
 
-    const button = screen.getByRole('button');
-    expect(button).toBeInTheDocument();
+    const link = screen.getByRole('link');
+    expect(link).toBeInTheDocument();
   });
 
-  it('navigates to account identicon page when clicked', () => {
+  it('links to account identicon page', () => {
     renderWithProvider(<AccountIdenticonItem />, mockStore);
 
-    const button = screen.getByRole('button');
-    fireEvent.click(button);
-
-    expect(mockNavigate).toHaveBeenCalledWith(ACCOUNT_IDENTICON_ROUTE);
+    const link = screen.getByRole('link');
+    expect(link).toHaveAttribute('href', ACCOUNT_IDENTICON_ROUTE);
   });
 });

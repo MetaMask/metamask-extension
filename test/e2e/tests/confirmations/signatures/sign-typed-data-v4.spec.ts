@@ -9,7 +9,7 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-data-confirmation';
 import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
 import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
@@ -88,7 +88,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         const accountDetailsModal = new AccountDetailsModal(driver);
         const testDapp = new TestDapp(driver);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SignTypedDataV4,
         );
@@ -133,7 +133,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         const confirmation = new SignTypedData(driver);
         const testDapp = new TestDapp(driver);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SignTypedDataV4,
         );
@@ -163,7 +163,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
     await withSignatureFixtures(
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDappIndividualRequest = new TestDappIndividualRequest(driver);
 
         await testDappIndividualRequest.request(

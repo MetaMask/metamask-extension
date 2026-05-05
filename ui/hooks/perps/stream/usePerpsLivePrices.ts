@@ -1,6 +1,8 @@
-import { useEffect, useState, useRef, useMemo } from 'react';
-import { usePerpsController } from '../../../providers/perps';
+import { useEffect, useMemo } from 'react';
 import type { PriceUpdate } from '@metamask/perps-controller';
+import type { PerpsStreamManager } from '../../../providers/perps';
+import { submitRequestToBackground } from '../../../store/background-connection';
+import { usePerpsChannel } from './usePerpsChannel';
 
 /**
  * Options for usePerpsLivePrices hook
@@ -10,6 +12,10 @@ export type UsePerpsLivePricesOptions = {
   symbols: string[];
   /** Throttle delay in milliseconds (default: 0 - no throttling) */
   throttleMs?: number;
+  /** Whether to activate the background price stream for these symbols */
+  activateStream?: boolean;
+  /** Optional passthrough for controller market data enrichment */
+  includeMarketData?: boolean;
 };
 
 /**
@@ -22,88 +28,98 @@ export type UsePerpsLivePricesReturn = {
   isInitialLoading: boolean;
 };
 
-// Stable empty object reference to prevent re-renders
-const EMPTY_PRICES: Record<string, PriceUpdate> = {};
+const EMPTY_PRICES: PriceUpdate[] = [];
+const EMPTY_PRICES_RECORD: Record<string, PriceUpdate> = {};
+
+const getPricesChannel = (sm: PerpsStreamManager) => sm.prices;
 
 /**
- * Hook for real-time price updates via stream subscription
+ * Hook for real-time price updates via background stream notifications.
  *
- * Uses the PerpsController directly for WebSocket subscriptions.
+ * Receives data pushed from the background PerpsController via
+ * perpsStreamUpdate notifications → PerpsStreamManager.handleBackgroundUpdate().
  *
  * @param options - Configuration options
  * @returns Object containing prices map and loading state
- * @example
- * ```tsx
- * function PriceDisplay() {
- *   const { prices, isInitialLoading } = usePerpsLivePrices({
- *     symbols: ['BTC', 'ETH'],
- *   });
- *
- *   if (isInitialLoading) return <Spinner />;
- *
- *   return (
- *     <div>
- *       BTC: {prices.BTC?.price}
- *       ETH: {prices.ETH?.price}
- *     </div>
- *   );
- * }
- * ```
  */
 export function usePerpsLivePrices(
   options: UsePerpsLivePricesOptions,
 ): UsePerpsLivePricesReturn {
-  const { symbols, throttleMs = 0 } = options;
-  const controller = usePerpsController();
-  const [prices, setPrices] =
-    useState<Record<string, PriceUpdate>>(EMPTY_PRICES);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const hasReceivedFirstUpdate = useRef(false);
-
-  // Memoize symbols string to avoid complex expression in dependency array
-  const symbolsKey = useMemo(() => symbols.join(','), [symbols]);
+  const {
+    symbols,
+    activateStream = false,
+    includeMarketData = false,
+  } = options;
+  const symbolsKey = useMemo(
+    () =>
+      Array.from(new Set(symbols))
+        .sort((left, right) => left.localeCompare(right))
+        .join('|'),
+    [symbols],
+  );
 
   useEffect(() => {
-    // Reset state when controller changes (account switch)
-    setPrices(EMPTY_PRICES);
-    setIsInitialLoading(true);
-    hasReceivedFirstUpdate.current = false;
-
-    if (symbols.length === 0) {
-      setPrices(EMPTY_PRICES);
-      setIsInitialLoading(false);
+    if (!activateStream || !symbolsKey) {
       return undefined;
     }
 
-    const unsubscribe = controller.subscribeToPrices({
-      symbols,
-      callback: (priceUpdates) => {
-        if (!hasReceivedFirstUpdate.current) {
-          hasReceivedFirstUpdate.current = true;
-          setIsInitialLoading(false);
-        }
+    // The background `prices` channel is currently a single shared stream.
+    // Activating here is safe because the current product flow has one active
+    // owner at a time; if we later support concurrent owners, the bridge API
+    // should move to scoped subscriptions or ref-counted teardown.
+    const activeSymbols = symbolsKey.split('|');
 
-        // Convert array to record; normalize to PriceUpdate (add timestamp/markPrice when missing, e.g. from mock PerpsMarketData)
-        const priceRecord: Record<string, PriceUpdate> = {};
-        priceUpdates.forEach((update) => {
-          const ts = (update as { timestamp?: number }).timestamp;
-          const mark = (update as { markPrice?: string }).markPrice;
-          priceRecord[update.symbol] = {
-            symbol: update.symbol,
-            price: update.price,
-            timestamp: ts ?? Date.now(),
-            markPrice: mark ?? update.price,
-          };
-        });
-        setPrices(priceRecord);
-      },
-      throttleMs,
+    submitRequestToBackground('perpsActivatePriceStream', [
+      { symbols: activeSymbols, includeMarketData },
+    ]).catch((error) => {
+      // Background readiness can lag popup mounting; keep this best-effort.
+      console.debug(
+        '[usePerpsLivePrices] perpsActivatePriceStream failed:',
+        error,
+      );
     });
 
     return () => {
-      unsubscribe();
+      submitRequestToBackground('perpsDeactivatePriceStream', []).catch(
+        (error) => {
+          // Expected when the background port closes before cleanup completes.
+          console.debug(
+            '[usePerpsLivePrices] perpsDeactivatePriceStream failed:',
+            error,
+          );
+        },
+      );
     };
-  }, [controller, symbols, symbolsKey, throttleMs]);
+  }, [activateStream, includeMarketData, symbolsKey]);
+
+  const { data: priceArray, isInitialLoading } = usePerpsChannel<PriceUpdate[]>(
+    getPricesChannel,
+    EMPTY_PRICES,
+  );
+
+  const requestedSymbols = useMemo(
+    () => (symbolsKey ? new Set(symbolsKey.split('|')) : new Set<string>()),
+    [symbolsKey],
+  );
+
+  const prices = useMemo(() => {
+    if (isInitialLoading || priceArray.length === 0) {
+      return EMPTY_PRICES_RECORD;
+    }
+
+    const priceRecord: Record<string, PriceUpdate> = {};
+    priceArray.forEach((update) => {
+      if (requestedSymbols.size === 0 || requestedSymbols.has(update.symbol)) {
+        priceRecord[update.symbol] = {
+          ...update,
+          timestamp: update.timestamp ?? Date.now(),
+          markPrice: update.markPrice,
+        };
+      }
+    });
+
+    return priceRecord;
+  }, [isInitialLoading, priceArray, requestedSymbols]);
 
   return { prices, isInitialLoading };
 }

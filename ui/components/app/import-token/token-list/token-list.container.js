@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import {
   getTokensControllerAllTokens,
   getMultiChainAssetsControllerAccountsAssets,
-} from '../../../../../shared/modules/selectors/assets-migration';
+} from '../../../../../shared/lib/selectors/assets-migration';
 import TokenList from './token-list.component';
 
 const mapStateToProps = (state) => {

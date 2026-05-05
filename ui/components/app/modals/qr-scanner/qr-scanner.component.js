@@ -5,7 +5,7 @@ import { BrowserQRCodeReader } from '@zxing/browser';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { getURL } from '../../../../helpers/utils/util';
 import WebcamUtils from '../../../../helpers/utils/webcam-utils';
@@ -178,7 +178,7 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
     (async () => {
       await checkEnvironment();
     })();
-    // only renders when component is mounted and unmounted
+    // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps -- only runs on component mount and unmount
   }, []);
 
   useEffect(() => {

@@ -26,12 +26,12 @@ import {
 } from '../../contexts/metamask-notifications/notification-storage-keys';
 
 /**
- * Internal: useState that only applies updates while mounted. Prevents
+ * useState that only applies updates while mounted. Prevents
  * "state updates on unmounted components" when async work completes after unmount.
  *
  * @param initialValue - The initial value of the state.
  */
-function useSafeState<TValue>(
+export function useSafeState<TValue>(
   initialValue: TValue,
 ): [TValue, Dispatch<SetStateAction<TValue>>] {
   const [state, setState] = useState<TValue>(initialValue);

@@ -137,6 +137,7 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
       delegationManager: mockDelegationManagerAddress,
     },
     siteOrigin: 'example.com',
+    status: 'Active',
   };
 
   const mockPermission2: PermissionInfoWithMetadata = {
@@ -154,6 +155,7 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
       delegationManager: mockDelegationManagerAddress,
     },
     siteOrigin: 'example.com',
+    status: 'Active',
   };
 
   const mockTransactionMeta1: TransactionMeta = {
@@ -352,7 +354,9 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
     });
 
     it('should skip permissions when internal account is not found', async () => {
-      mockGetMemoizedInternalAccountByAddress.mockReturnValue(undefined);
+      mockGetMemoizedInternalAccountByAddress.mockReturnValue(
+        undefined as unknown as ReturnType<typeof getInternalAccountByAddress>,
+      );
 
       const { result } = renderHook(
         () => useRevokeGatorPermissionsMultiChain(),

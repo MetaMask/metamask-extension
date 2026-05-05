@@ -15,7 +15,7 @@ const { sprintf } = require('sprintf-js');
 const lodash = require('lodash');
 const { retry } = require('../../../development/lib/retry');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
-const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
+const { isManifestV3 } = require('../../../shared/lib/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
 const {
   getServerMochaToBackground,
@@ -190,6 +190,16 @@ class Driver {
   }
 
   async executeScript(script, ...args) {
+    // When tsx/esbuild transpiles TypeScript, it injects __name() calls to
+    // preserve function names. If a function passed here references __name,
+    // define it in the browser context so it doesn't throw.
+    if (typeof script === 'function') {
+      const src = script.toString();
+      if (src.includes('__name')) {
+        const wrapped = `var __name = (fn) => fn; return (${src}).apply(null, arguments);`;
+        return this.driver.executeScript(wrapped, args);
+      }
+    }
     return this.driver.executeScript(script, args);
   }
 
@@ -775,7 +785,7 @@ class Driver {
    * @returns {Promise<void>} Promise that resolves when the element stops moving.
    * @throws {Error} Throws an error if the element does not stop moving within the timeout period.
    */
-  async waitForElementToStopMoving(rawLocator, timeout = 5000) {
+  async waitForElementToStopMoving(rawLocator, timeout = 6000) {
     const startTime = Date.now();
 
     while (Date.now() - startTime < timeout) {
@@ -1152,6 +1162,18 @@ class Driver {
 
   async collectMetrics() {
     return await this.driver.executeScript(collectMetrics);
+  }
+
+  async resetLongTaskMetrics() {
+    return await this.driver.executeScript(function () {
+      window.stateHooks?.resetLongTaskMetrics?.();
+    });
+  }
+
+  async collectLongTaskMetrics() {
+    return await this.driver.executeScript(function () {
+      return window.stateHooks?.getLongTaskMetricsWithTBT?.(true) ?? null;
+    });
   }
 
   // Window management
@@ -1532,6 +1554,24 @@ class Driver {
   }
 
   /**
+   * Closes every browser tab/window except the currently focused one.
+   *
+   * @returns {Promise<void>} promise resolving after all other windows are closed
+   */
+  async closeAllOtherTabs() {
+    const handles = await this.getAllWindowHandles();
+    const current = await this.driver.getWindowHandle();
+    for (const h of handles) {
+      if (h !== current) {
+        await this.driver.switchTo().window(h);
+        await this.driver.close();
+      }
+    }
+    await this.driver.switchTo().window(current);
+    await this.getAllWindowHandles();
+  }
+
+  /**
    * Closes specific window tab identified by its window handle.
    *
    * @param {string} windowHandle - representing the unique identifier of the browser window to be closed.
@@ -1739,6 +1779,9 @@ class Driver {
       'Event fragment with id transaction-added-',
       // Sidepanel
       'GL Context was lost',
+      // Null/empty URLs that Chrome blocks before reaching the proxy
+      'net::ERR_BLOCKED_BY_CLIENT',
+      'null is blocked',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');
@@ -1863,6 +1906,14 @@ function collectMetrics() {
         type: navigationEntry.type,
       });
     });
+
+  const longTaskData = window.stateHooks?.getLongTaskMetricsWithTBT?.();
+  if (longTaskData) {
+    results.longTaskCount = longTaskData.count;
+    results.longTaskTotalDuration = longTaskData.totalDuration;
+    results.longTaskMaxDuration = longTaskData.maxDuration;
+    results.tbt = longTaskData.tbt;
+  }
 
   return {
     ...results,

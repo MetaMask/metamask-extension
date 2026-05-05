@@ -5,58 +5,51 @@ import {
   AvatarTokenSize,
   Box,
   BoxAlignItems,
-  BoxFlexDirection,
   BoxJustifyContent,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-} from '../../../../../components/component-library';
-import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
-import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
 import { useMerklClaimAmount } from '../../../hooks/musd/useMerklClaimAmount';
+import { getAssetImageUrl } from '../../../../../../shared/lib/asset-utils';
+import { MUSD_TOKEN_ADDRESS } from '../../../../../components/app/musd/constants';
+import SendHeadingLayout from '../../confirm/info/shared/send-heading-layout/send-heading-layout';
 
-const MUSD_ICON_SRC = './images/musd-icon-no-background-2x.png';
-const MUSD_SYMBOL = 'MUSD';
+const MUSD_SYMBOL = 'mUSD';
 
 const MusdClaimHeading = () => {
+  const t = useI18nContext();
+
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
   const { displayClaimAmount, fiatDisplayValue, pending } =
     useMerklClaimAmount(transactionMeta);
 
-  const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
+  const musdTokenImageUrl = getAssetImageUrl(
+    MUSD_TOKEN_ADDRESS,
+    transactionMeta?.chainId,
+  );
 
   const TokenImage = (
-    <div style={{ position: 'relative', display: 'inline-flex' }}>
+    <Box
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
+      style={{ display: 'inline-flex' }}
+    >
       <AvatarToken
-        src={MUSD_ICON_SRC}
+        src={musdTokenImageUrl}
         name={MUSD_SYMBOL}
         size={AvatarTokenSize.Xl}
       />
-      <AvatarNetwork
-        src={networkImageUrl}
-        name={networkDisplayName}
-        size={AvatarNetworkSize.Xs}
-        backgroundColor={getAvatarNetworkColor(networkDisplayName)}
-        style={{
-          position: 'absolute',
-          right: -2,
-          bottom: -2,
-        }}
-      />
-    </div>
+    </Box>
   );
 
   const TokenValueSkeleton = (
     <Box
-      flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       gap={2}
       style={{ display: 'inline-flex' }}
@@ -70,7 +63,6 @@ const MusdClaimHeading = () => {
     <Text
       variant={TextVariant.HeadingLg}
       color={TextColor.Inherit}
-      style={{ marginTop: '12px' }}
       data-testid="musd-claim-heading-amount"
     >
       {pending
@@ -96,18 +88,10 @@ const MusdClaimHeading = () => {
       );
 
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Column}
-      justifyContent={BoxJustifyContent.Center}
-      alignItems={BoxAlignItems.Center}
-      padding={4}
-      marginBottom={2}
-      data-testid="musd-claim-heading"
-    >
-      {TokenImage}
+    <SendHeadingLayout label={t('musdClaimTitle')} image={TokenImage}>
       {TokenValue}
       {TokenFiatValue}
-    </Box>
+    </SendHeadingLayout>
   );
 };
 

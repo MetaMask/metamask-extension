@@ -26,7 +26,7 @@ import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../../../shared/modules/selectors/networks';
+} from '../../../../../../shared/lib/selectors/networks';
 import {
   getCurrentNetwork,
   getIpfsGateway,
@@ -39,10 +39,9 @@ import {
 import {
   checkAndUpdateSingleNftOwnershipStatus,
   removeAndIgnoreNft,
-  setRemoveNftMessage,
-  setNewNftAddedMessage,
   setActiveNetworkWithError,
 } from '../../../../../store/actions';
+import { toast, ToastContent } from '../../../../ui/toast/toast';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import NftOptions from '../nft-options/nft-options';
 import InfoTooltip from '../../../../ui/info-tooltip';
@@ -72,12 +71,12 @@ import {
   getConversionRate,
   getCurrentCurrency,
 } from '../../../../../ducks/metamask/metamask';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../../shared/lib/Numeric';
 // TODO: Remove restricted import
 import {
   addUrlProtocolPrefix,
   isWebUrl,
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
@@ -164,7 +163,7 @@ export function NftDetailsComponent({
 
   const hasFloorAskPrice = Boolean(
     collection?.floorAsk?.price?.amount?.usd &&
-      collection?.floorAsk?.price?.amount?.native,
+    collection?.floorAsk?.price?.amount?.native,
   );
   const hasLastSalePrice = Boolean(
     lastSale?.price?.amount?.usd && lastSale?.price?.amount?.native,
@@ -233,11 +232,19 @@ export function NftDetailsComponent({
   const onRemove = async () => {
     try {
       await dispatch(removeAndIgnoreNft(address, tokenId, nftNetworkClientId));
-      dispatch(setNewNftAddedMessage(''));
-      dispatch(setRemoveNftMessage('success'));
-    } catch (err) {
-      dispatch(setNewNftAddedMessage(''));
-      dispatch(setRemoveNftMessage('error'));
+      toast.success(
+        <ToastContent
+          dataTestId="nft-remove-success-toast"
+          title={t('removeNftMessage')}
+        />,
+      );
+    } catch {
+      toast.error(
+        <ToastContent
+          dataTestId="nft-remove-error-toast"
+          title={t('removeNftErrorMessage')}
+        />,
+      );
     } finally {
       navigate(DEFAULT_ROUTE);
     }

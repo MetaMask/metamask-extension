@@ -5,7 +5,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import * as actions from '../../../../store/actions';
 import PermissionsPage from './permissions-page';
 
@@ -109,7 +109,7 @@ let store = configureStore({
   },
 });
 
-jest.mock('../../../../../shared/modules/environment');
+jest.mock('../../../../../shared/lib/environment');
 
 describe('All Connections', () => {
   beforeEach(() => {

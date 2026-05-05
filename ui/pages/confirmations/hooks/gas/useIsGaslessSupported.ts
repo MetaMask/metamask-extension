@@ -1,5 +1,8 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { useSelector } from 'react-redux';
+import { EIP_7702_REVOKE_ADDRESS } from '../../../../../shared/lib/eip7702-utils';
 import { useAsyncResult } from '../../../../hooks/useAsync';
+import { isHardwareWallet } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { isRelaySupported } from '../../../../store/actions';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
@@ -11,6 +14,12 @@ import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmart
  * - Via 7702: Supported when the current account is upgraded, the chain supports atomic batch, relay is available, and the transaction is not a contract deployment.
  * - Via Smart Transactions: Supported when smart transactions are enabled and sendBundle is supported for the chain.
  *
+ * Hardware wallets are excluded from gasless support because they cannot sign
+ * EIP-7702 authorization lists. They fall back to the standard "user pay gas" flow.
+ *
+ * Account downgrade (revoke delegation) transactions are excluded because gasless
+ * requires an upgraded account, which conflicts with the downgrade intent.
+ *
  * @returns An object containing:
  * - `isSupported`: `true` if gasless transactions are supported via either 7702 or smart transactions with sendBundle.
  * - `isSmartTransaction`: `true` if smart transactions are enabled for the current chain.
@@ -21,6 +30,11 @@ export function useIsGaslessSupported() {
     useConfirmContext<TransactionMeta>();
 
   const { chainId } = transactionMeta ?? {};
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
+
+  const isDowngradeTransaction =
+    transactionMeta?.txParams?.authorizationList?.[0]?.address ===
+    EIP_7702_REVOKE_ADDRESS;
 
   const {
     isSmartTransaction,
@@ -29,7 +43,9 @@ export function useIsGaslessSupported() {
   } = useGaslessSupportedSmartTransactions();
 
   const shouldCheck7702Eligibility =
-    !smartTransactionPending && !isSmartTransactionAndBundleSupported;
+    !isHardwareWalletAccount &&
+    !smartTransactionPending &&
+    !isSmartTransactionAndBundleSupported;
   const { value: relaySupportsChain, pending: relayPending } =
     useAsyncResult(async () => {
       if (!shouldCheck7702Eligibility) {
@@ -40,17 +56,22 @@ export function useIsGaslessSupported() {
     }, [chainId, shouldCheck7702Eligibility]);
 
   const is7702Supported = Boolean(
+    !isHardwareWalletAccount &&
     relaySupportsChain &&
-      // contract deployments can't be delegated
-      transactionMeta?.txParams?.to !== undefined,
+    // contract deployments can't be delegated
+    transactionMeta?.txParams?.to !== undefined,
   );
 
   const isSupported = Boolean(
-    isSmartTransactionAndBundleSupported || is7702Supported,
+    !isHardwareWalletAccount &&
+    !isDowngradeTransaction &&
+    (isSmartTransactionAndBundleSupported || is7702Supported),
   );
 
   const isPending =
-    smartTransactionPending || (shouldCheck7702Eligibility && relayPending);
+    !isHardwareWalletAccount &&
+    !isDowngradeTransaction &&
+    (smartTransactionPending || (shouldCheck7702Eligibility && relayPending));
 
   return {
     isSupported,

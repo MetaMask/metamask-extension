@@ -74,7 +74,7 @@ type CreateMockStoreOverrides = {
 
 const createGeoBlockingMock = (
   overrides: Partial<
-    Pick<UseMusdGeoBlockingResult, 'isBlocked' | 'userCountry'>
+    Pick<UseMusdGeoBlockingResult, 'isBlocked' | 'userCountry' | 'isLoading'>
   >,
 ): UseMusdGeoBlockingResult => ({
   isBlocked: false,
@@ -196,6 +196,25 @@ describe('useMusdCtaVisibility', () => {
       expect(ctaState.shouldShowCta).toBe(false);
     });
 
+    it('returns shouldShowCta: false while geo-blocking check is loading', () => {
+      jest
+        .mocked(useMusdGeoBlocking)
+        .mockReturnValue(
+          createGeoBlockingMock({ isBlocked: false, isLoading: true }),
+        );
+
+      const store = createMockStore();
+      const { result } = renderHook(() => useMusdCtaVisibility(), {
+        wrapper: ({ children }) => wrapper({ children, store }),
+      });
+
+      const ctaState = result.current.shouldShowBuyGetMusdCta({
+        hasConvertibleTokens: true,
+        hasMusdBalance: false,
+      });
+      expect(ctaState.shouldShowCta).toBe(false);
+    });
+
     it('returns GET variant when user has convertible tokens', () => {
       jest
         .mocked(useMusdGeoBlocking)
@@ -302,6 +321,30 @@ describe('useMusdCtaVisibility', () => {
       expect(shouldShow).toBe(false);
     });
 
+    it('returns false while geo-blocking check is loading', () => {
+      jest
+        .mocked(useMusdGeoBlocking)
+        .mockReturnValue(
+          createGeoBlockingMock({ isBlocked: false, isLoading: true }),
+        );
+
+      const store = createMockStore();
+      const { result } = renderHook(() => useMusdCtaVisibility(), {
+        wrapper: ({ children }) => wrapper({ children, store }),
+      });
+
+      const shouldShow = result.current.shouldShowTokenListItemCta(
+        {
+          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
+          chainId: '0x1' as Hex,
+          symbol: 'USDC',
+        },
+        { hasMusdBalance: true },
+      );
+
+      expect(shouldShow).toBe(false);
+    });
+
     it('returns true for eligible tokens on supported chains when user has mUSD balance', () => {
       jest
         .mocked(useMusdGeoBlocking)
@@ -374,6 +417,27 @@ describe('useMusdCtaVisibility', () => {
         },
       });
 
+      const { result } = renderHook(() => useMusdCtaVisibility(), {
+        wrapper: ({ children }) => wrapper({ children, store }),
+      });
+
+      const shouldShow = result.current.shouldShowAssetOverviewCta({
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
+        chainId: '0x1' as Hex,
+        symbol: 'USDC',
+      });
+
+      expect(shouldShow).toBe(false);
+    });
+
+    it('returns false while geo-blocking check is loading', () => {
+      jest
+        .mocked(useMusdGeoBlocking)
+        .mockReturnValue(
+          createGeoBlockingMock({ isBlocked: false, isLoading: true }),
+        );
+
+      const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
         wrapper: ({ children }) => wrapper({ children, store }),
       });

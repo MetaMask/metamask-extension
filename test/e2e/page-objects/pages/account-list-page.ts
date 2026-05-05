@@ -65,7 +65,7 @@ class AccountListPage {
     '[data-testid="multichain-account-menu-popover-add-watch-only-account"]';
 
   private readonly addHardwareWalletButton =
-    '[data-testid="add-wallet-modal-hardware-wallet"]';
+    '[data-testid="choose-wallet-type-hardware-wallet"]';
 
   private readonly addImportedAccountButton =
     '[data-testid="multichain-account-menu-popover-add-imported-account"]';
@@ -76,7 +76,7 @@ class AccountListPage {
   };
 
   private readonly addSnapAccountButton =
-    '[data-testid="add-wallet-modal-snap-account"]';
+    '[data-testid="choose-wallet-type-snap-account"]';
 
   private readonly walletDetailsButton = {
     text: 'Details',
@@ -86,6 +86,8 @@ class AccountListPage {
   private readonly closeAccountModalButton =
     'header button[aria-label="Close"]';
 
+  private readonly chooseWalletTypeBackButton = '[data-testid="back-button"]';
+
   private readonly closeMultichainAccountsPageButton =
     '.multichain-page-header button[aria-label="Back"]';
 
@@ -93,10 +95,10 @@ class AccountListPage {
     '[data-testid="account-list-add-wallet-button"]';
 
   private readonly importWalletFromMultichainWalletModalButton =
-    '[data-testid="add-wallet-modal-import-wallet"]';
+    '[data-testid="choose-wallet-type-import-wallet"]';
 
   private readonly importAccountFromMultichainWalletModalButton =
-    '[data-testid="add-wallet-modal-import-account"]';
+    '[data-testid="choose-wallet-type-import-account"]';
 
   private readonly multichainAccountMenuItem =
     '.multichain-account-cell-menu-item';
@@ -218,7 +220,7 @@ class AccountListPage {
 
   private readonly importSrpConfirmButton = {
     text: 'Continue',
-    tag: 'button',
+    tag: 'span',
   };
 
   private readonly exportSrpButton = {
@@ -250,16 +252,13 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
+  async checkPageIsLoaded(
+    timeout: number = 10000,
+    { waitForSync = true }: { waitForSync?: boolean } = {},
+  ): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
-        [
-          {
-            css: this.addMultichainAccountButton,
-            text: 'Add account',
-          },
-          this.addMultichainWalletButton,
-        ],
+        [this.addMultichainAccountButton, this.addMultichainWalletButton],
         { timeout },
       );
     } catch (e) {
@@ -267,7 +266,9 @@ class AccountListPage {
       throw e;
     }
 
-    await this.waitUntilSyncingIsCompleted();
+    if (waitForSync) {
+      await this.waitUntilSyncingIsCompleted();
+    }
     console.log('Account list is loaded');
   }
 
@@ -334,6 +335,7 @@ class AccountListPage {
         await this.driver.clickElementAndWaitToDisappear(
           this.importAccountConfirmButton,
         );
+        await this.closeChooseWalletTypePage();
       }
       return;
     }
@@ -430,10 +432,20 @@ class AccountListPage {
   async addMultichainAccount(options?: { srpIndex?: number }): Promise<void> {
     console.log(`Adding new multichain account`);
     await this.waitUntilSyncingIsCompleted();
-    const createMultichainAccountButtons = await this.driver.findElements(
-      this.addMultichainAccountButton,
-    );
     const buttonIndex = options?.srpIndex ?? 0;
+    const expectedCount = buttonIndex + 1;
+    let createMultichainAccountButtons: Awaited<
+      ReturnType<typeof this.driver.findElements>
+    > = [];
+    await this.driver.waitUntil(
+      async () => {
+        createMultichainAccountButtons = await this.driver.findElements(
+          this.addMultichainAccountButton,
+        );
+        return createMultichainAccountButtons.length >= expectedCount;
+      },
+      { timeout: 10000, interval: 500 },
+    );
     await createMultichainAccountButtons[buttonIndex].click();
 
     // Wait for the account creation to complete by waiting for loading state to finish
@@ -526,6 +538,11 @@ class AccountListPage {
     );
   }
 
+  async closeChooseWalletTypePage(): Promise<void> {
+    console.log(`Navigate back from choose wallet type page`);
+    await this.driver.clickElement(this.chooseWalletTypeBackButton);
+  }
+
   async closeMultichainAccountsPage(): Promise<void> {
     console.log(`Close multichain accounts page`);
     await this.driver.clickElementAndWaitToDisappear(
@@ -567,6 +584,7 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.importAccountConfirmButton,
     );
+    await this.closeChooseWalletTypePage();
   }
 
   async isBtcAccountCreationButtonEnabled(): Promise<boolean> {
@@ -812,20 +830,50 @@ class AccountListPage {
   }
 
   /**
-   * Checks that the account balance is displayed on the multichain account list page.
+   * Checks that the account balance is displayed on the multichain account list page
+   * for a specific account, optionally scoped under a specific wallet.
    *
-   * @param expectedBalance - The expected balance to check.
+   * When only one wallet exists the wallet header is not rendered, so omit
+   * the `wallet` param and the lookup falls back to finding the account cell
+   * directly by account name.
+   *
+   * @param options - The wallet, account, and balance to check.
+   * @param options.balance - The expected balance to check.
+   * @param options.wallet - The wallet name. Only pass when multiple wallets are present.
+   * @param options.account - The account name (default: 'Account 1').
    */
-  async checkMultichainAccountBalanceDisplayed(
-    expectedBalance: string,
-  ): Promise<void> {
+  async checkMultichainAccountBalanceDisplayed({
+    balance,
+    wallet,
+    account = 'Account 1',
+  }: {
+    balance: string;
+    wallet?: string;
+    account?: string;
+  }): Promise<void> {
     console.log(
-      `Check that multichain account balance ${expectedBalance} is displayed in account list on accounts page`,
+      `Check that multichain account balance ${balance} is displayed for ${account}${wallet ? ` under ${wallet}` : ''}`,
     );
-    await this.driver.waitForSelector({
-      css: this.accountPageBalance,
-      text: expectedBalance,
-    });
+
+    if (wallet) {
+      // Multiple wallets: scope the search to accounts under the specified wallet header.
+      const walletHeader = await this.driver.waitForSelector({
+        css: this.walletHeader,
+        text: wallet,
+      });
+      await this.driver.findNestedElement(walletHeader, {
+        xpath: `../following-sibling::*[preceding-sibling::*[.//*[@data-testid='multichain-account-tree-wallet-header']][1]//*[@data-testid='multichain-account-tree-wallet-header' and contains(., ${quoteXPathText(wallet)})]]//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]//*[@data-testid='balance-display' and contains(text(), ${quoteXPathText(balance)})]`,
+      });
+    } else {
+      // Single wallet (no wallet header rendered): find the account cell directly.
+      const accountCell = await this.driver.waitForSelector({
+        css: this.multichainAccountListItem,
+        text: account,
+      });
+      await this.driver.findNestedElement(accountCell, {
+        xpath: `.//*[@data-testid='balance-display' and contains(text(), ${quoteXPathText(balance)})]`,
+      });
+    }
   }
 
   async checkAccountDisplayedInAccountList(
@@ -1046,7 +1094,7 @@ class AccountListPage {
         } is equal to ${expectedNumberOfAccounts}? ${isValid}`,
       );
       return isValid;
-    }, 20000);
+    });
   }
 
   /**
@@ -1098,17 +1146,20 @@ class AccountListPage {
     await new HeaderNavbar(this.driver).openSettingsPage();
     const settingsPage = new SettingsPage(this.driver);
     await settingsPage.checkPageIsLoaded();
-    await settingsPage.goToPrivacySettings();
+    await settingsPage.goToSecurityAndPasswordSettings();
 
     const privacySettings = new PrivacySettings(this.driver);
+    await privacySettings.checkSecurityAndPasswordPageIsLoaded();
     await privacySettings.openSrpList();
 
     if (srpIndex === 0) {
       throw new Error('SRP index must be > 0');
     }
 
-    const srps = await this.driver.findElements('.select-srp__container');
-    const selectedSrp = srps[srpIndex - 1];
+    const selectedSrp = await this.driver.waitForSelector({
+      css: '.select-srp__container',
+      text: `Secret Recovery Phrase ${srpIndex}`,
+    });
     const showAccountsButton = await this.driver.waitForSelector(
       `[data-testid="srp-list-show-accounts-${srpIndex - 1}"]`,
     );

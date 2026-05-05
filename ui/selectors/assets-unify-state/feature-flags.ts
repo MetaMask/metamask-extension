@@ -5,6 +5,7 @@ import {
   nullable,
   string,
   assert,
+  optional,
 } from '@metamask/superstruct';
 import {
   getRemoteFeatureFlags,
@@ -15,6 +16,7 @@ import {
   ASSETS_UNIFY_STATE_VERSION_1,
   isAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 
 /**
  * Feature flag structure for assets-unify-state feature
@@ -22,7 +24,7 @@ import {
 const AssetsUnifyStateFeatureFlag = object({
   enabled: boolean(),
   featureVersion: nullable(string()),
-  minimumVersion: nullable(string()),
+  minimumVersion: optional(nullable(string())),
 });
 
 /**
@@ -64,6 +66,9 @@ export const getAssetsUnifyStateRemoteFeatureFlag = (
 export const getIsAssetsUnifyStateEnabled = (
   state: RemoteFeatureFlagsState,
 ): boolean => {
+  if (!getIsAssetsUnifiedStateIncludedInBuild()) {
+    return false;
+  }
   const remoteFlag = getAssetsUnifyStateRemoteFeatureFlag(state);
   return isAssetsUnifyStateFeatureEnabled(
     remoteFlag,

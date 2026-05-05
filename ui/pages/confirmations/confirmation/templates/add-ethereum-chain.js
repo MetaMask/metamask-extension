@@ -17,7 +17,7 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { jsonRpcRequest } from '../../../../../shared/lib/rpc.utils';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 
 const UNRECOGNIZED_CHAIN = {

@@ -5,11 +5,26 @@ import {
 } from '@metamask/transaction-controller';
 import { useMusdConversionToastStatus } from './useMusdConversionToastStatus';
 
+jest.mock('../../contexts/metametrics', () => {
+  const React = jest.requireActual('react');
+  const trackEvent = jest.fn().mockResolvedValue(undefined);
+  return {
+    MetaMetricsContext: React.createContext({
+      trackEvent,
+      bufferedTrace: jest.fn().mockResolvedValue(undefined),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    }),
+    mockTrackEvent: trackEvent,
+  };
+});
+
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
 const { useSelector } = jest.requireMock('react-redux');
+const { mockTrackEvent } = jest.requireMock('../../contexts/metametrics');
 
 const MOCK_PAYMENT_TOKEN = {
   address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -44,15 +59,18 @@ const createNonMusdTx = (id: string, status: string) => ({
 });
 
 /**
- * The hook calls useSelector twice per render:
- * 1. getTransactions returns the full transactions list
- * 2. selectTransactionPaymentTokenByTransactionId returns the payment token
+ * The hook calls useSelector three times per render:
+ * 1. getTransactions – full transactions list
+ * 2. getMultichainNetworkConfigurationsByChainId – network config map
+ * 3. selectTransactionPaymentTokenByTransactionId – payment token
  *
- * We use a stateful mock implementation that alternates between the two
- * return values so it works correctly across re-renders.
+ * We cycle through these with modulo-3 indexing.
  */
 let mockTransactions: ReturnType<typeof createMusdConversionTx>[] = [];
 let mockPaymentToken: typeof MOCK_PAYMENT_TOKEN | undefined;
+const mockNetworkConfig: Record<string, { name: string }> = {
+  '0x1': { name: 'Ethereum Mainnet' },
+};
 let selectorCallIndex = 0;
 
 function setupMock(
@@ -65,9 +83,12 @@ function setupMock(
   useSelector.mockImplementation(() => {
     const idx = selectorCallIndex;
     selectorCallIndex += 1;
-    // Even calls (0, 2, 4...) are getTransactions, odd calls (1, 3, 5...) are paymentToken
-    if (idx % 2 === 0) {
+    const position = idx % 3;
+    if (position === 0) {
       return mockTransactions;
+    }
+    if (position === 1) {
+      return mockNetworkConfig;
     }
     return mockPaymentToken;
   });
@@ -84,6 +105,7 @@ function updateMock(
 describe('useMusdConversionToastStatus', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrackEvent.mockResolvedValue(undefined);
     selectorCallIndex = 0;
   });
 
@@ -94,6 +116,7 @@ describe('useMusdConversionToastStatus', () => {
 
     expect(result.current.toastState).toBeNull();
     expect(result.current.sourceTokenSymbol).toBeUndefined();
+    expect(result.current.activeTransactionId).toBeUndefined();
   });
 
   it('returns null toastState for non-mUSD transactions', () => {
@@ -116,6 +139,7 @@ describe('useMusdConversionToastStatus', () => {
 
     expect(result.current.toastState).toBe('in-progress');
     expect(result.current.sourceTokenSymbol).toBe('USDC');
+    expect(result.current.activeTransactionId).toBe('tx-1');
   });
 
   it('returns "in-progress" when an mUSD conversion is submitted', () => {
@@ -537,5 +561,25 @@ describe('useMusdConversionToastStatus', () => {
     rerender();
 
     expect(result.current.toastState).toBe('in-progress');
+  });
+
+  it('fires the approved analytics event when tx first appears as submitted (race condition)', () => {
+    setupMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.submitted)],
+      MOCK_PAYMENT_TOKEN,
+    );
+
+    renderHook(() => useMusdConversionToastStatus());
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          transaction_status: 'approved',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          transaction_id: 'tx-1',
+        }),
+      }),
+    );
   });
 });

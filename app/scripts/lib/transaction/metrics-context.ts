@@ -6,7 +6,7 @@ import {
   TokenStandard,
   TransactionApprovalAmountType,
 } from '../../../../shared/constants/transaction';
-import { determineTransactionAssetType } from '../../../../shared/modules/transaction.utils';
+import { determineTransactionAssetType } from '../../../../shared/lib/transaction.utils';
 import type { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import type { TransactionMetricsBuilderRequest } from './metrics-builders/types';
 
@@ -97,18 +97,22 @@ function determineTransactionTypeAndContractInteraction(
     type as TransactionType,
   );
 
-  const directTypeMappings = [
-    'swapAndSend',
-    'cancel',
-    'deployContract',
-    'gasPayment',
-    'batch',
-    'shieldSubscriptionApprove',
-  ];
+  const directTypeMappings: Record<string, string> = {
+    swapAndSend: 'swap_and_send',
+    cancel: 'cancel',
+    deployContract: 'deploy_contract',
+    gasPayment: 'gas_payment',
+    batch: 'batch',
+    shieldSubscriptionApprove: 'shield_subscription_approve',
+    musdConversion: 'musd_conversion',
+    musdClaim: 'musd_claim',
+    perpsDeposit: 'perps_deposit',
+    perpsWithdraw: 'perps_withdraw',
+  };
 
-  if (directTypeMappings.includes(type)) {
+  if (type in directTypeMappings) {
     return {
-      transactionType: type,
+      transactionType: directTypeMappings[type],
       isContractInteraction,
     };
   }

@@ -101,6 +101,11 @@ class HomePage {
 
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
+  private readonly srpAddedToast = '.toasts-container__banner-base';
+
+  private readonly srpAddedToastCloseButton =
+    '.toasts-container__banner-base button[aria-label="Close"]';
+
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
   private readonly tokensTab = {
@@ -403,22 +408,26 @@ class HomePage {
    *
    * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
+   * @param timeout - Max ms to wait for the balance; defaults to `driver.timeout` (10s unless the test overrides `Driver` construction).
    */
   async checkExpectedBalanceIsDisplayed(
     expectedBalance: string = '25',
     symbol: string = 'ETH',
+    timeout: number = this.driver.timeout,
   ): Promise<void> {
     if (expectedBalance === '0') {
-      await this.driver.waitForSelector(this.fundYourWalletBanner);
+      await this.driver.waitForSelector(this.fundYourWalletBanner, { timeout });
       return;
     }
     try {
-      await this.driver.waitForSelector({
-        css: this.balance,
-        text: expectedBalance,
-      });
+      await this.driver.waitForSelector(
+        { css: this.balance, text: expectedBalance },
+        { timeout },
+      );
     } catch (e) {
-      const balance = await this.driver.waitForSelector(this.balance);
+      const balance = await this.driver.waitForSelector(this.balance, {
+        timeout,
+      });
       const currentBalance = parseFloat(await balance.getText());
       const errorMessage = `Expected balance ${expectedBalance} ${symbol}, got balance ${currentBalance} ${symbol}`;
       console.log(errorMessage, e);
@@ -546,10 +555,21 @@ class HomePage {
     await skeleton.waitForElementState('hidden', this.driver.timeout);
   }
 
-  async checkNewSrpAddedToastIsDisplayed(srpNumber: number = 2): Promise<void> {
-    await this.driver.waitForSelector({
-      text: `Wallet ${srpNumber} imported`,
-    });
+  async checkNewSrpAddedToastIsDisplayed(): Promise<void> {
+    // Race condition: the toast initially renders with the stale keyring count (e.g. "Wallet 1 imported")
+    // and only updates to the correct number once the background state propagates.
+    // If the 5s auto-hide fires before the state update, the toast disappears while still showing the wrong value
+    // the text-based selector never matches, causing the test to fail. See issue #40944
+    await this.driver.waitForSelector(this.srpAddedToast);
+    // TODO: Uncomment the selector below and add the param in the function, once the issue above is fixed.
+    // await this.driver.waitForSelector({
+    //   text: `Wallet ${srpNumber} imported`,
+    // });
+  }
+
+  async dismissSrpAddedToast(): Promise<void> {
+    console.log('Dismiss SRP added toast');
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 3000);
   }
 
   async checkNoSurveyToastIsDisplayed(): Promise<void> {

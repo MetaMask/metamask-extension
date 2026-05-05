@@ -73,10 +73,10 @@ export const getSelectedAccountGroup = <
 >(
   state: State,
 ) => {
-  const groupId = state.accountTree.selectedAccountGroup;
+  const groupId = state.selectedAccountGroup;
   const {
     wallet: { id: walletId },
-  } = parseAccountGroupId(state.accountTree.selectedAccountGroup);
+  } = parseAccountGroupId(state.selectedAccountGroup);
   const wallet =
     state.accountTree.wallets[
       walletId as keyof typeof state.accountTree.wallets

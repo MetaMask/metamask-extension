@@ -1,5 +1,8 @@
-import React from 'react';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import React, { useState } from 'react';
+import {
+  RequestStatus,
+  formatChainIdToCaip,
+} from '@metamask/bridge-controller';
 import { act, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { CaipAssetType } from '@metamask/utils';
@@ -20,6 +23,9 @@ import * as actions from '../../../ducks/bridge/actions';
 import configureStore from '../../../store/store';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { BridgeInputGroup } from './bridge-input-group';
+
+/** Matches `data-testid` on asset rows: `bridge-asset--${caipAssetId}` */
+const BRIDGE_ASSET_ROW_TEST_ID = /^bridge-asset--/u;
 
 const mockUseVirtualizer = jest.fn();
 
@@ -107,12 +113,15 @@ jest.mock('../../../hooks/bridge/useTokenSearchResults', () => ({
 
 const ASSET_PICKER_BUTTON_TEST_ID = 'asset-picker-button';
 
-const renderBridgeInputGroup = (
-  stateOverrides: Parameters<typeof createBridgeMockStore>[0] = {},
-  props: Partial<React.ComponentProps<typeof BridgeInputGroup>> = {},
-) => {
-  const mockState = createBridgeMockStore({ ...stateOverrides });
-  return renderWithProvider(
+const InputGroup = ({
+  mockState,
+  ...props
+}: {
+  mockState: ReturnType<typeof createBridgeMockStore>;
+} & Partial<React.ComponentProps<typeof BridgeInputGroup>>) => {
+  const [isAssetPickerOpen, setIsAssetPickerOpen] = useState(false);
+
+  return (
     <BridgeInputGroup
       header={'Swap'}
       token={getFromToken(mockState)}
@@ -128,8 +137,21 @@ const renderBridgeInputGroup = (
         value: '1',
       }}
       isDestination={false}
+      isAssetPickerOpen={isAssetPickerOpen}
+      setIsAssetPickerOpen={setIsAssetPickerOpen}
       {...props}
-    />,
+    />
+  );
+};
+
+const renderBridgeInputGroup = (
+  stateOverrides: Parameters<typeof createBridgeMockStore>[0] = {},
+  props: Partial<React.ComponentProps<typeof BridgeInputGroup>> = {},
+) => {
+  const mockState = createBridgeMockStore(stateOverrides);
+
+  return renderWithProvider(
+    <InputGroup mockState={mockState} {...props} />,
     configureStore(mockState),
   );
 };
@@ -201,7 +223,7 @@ describe('BridgeInputGroup', () => {
     expect(getByTestId('bridge-asset-picker-modal')).toMatchSnapshot();
     expect(
       screen
-        .getAllByTestId('bridge-asset')
+        .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
         .map(({ textContent }) => textContent),
     ).toMatchInlineSnapshot(`
       [
@@ -215,7 +237,7 @@ describe('BridgeInputGroup', () => {
     await waitFor(() => {
       expect(
         screen
-          .getAllByTestId('bridge-asset')
+          .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
           .map(({ textContent }) => textContent),
       ).toMatchInlineSnapshot(`
               [
@@ -249,7 +271,7 @@ describe('BridgeInputGroup', () => {
     await openAssetPicker();
     expect(
       screen
-        .getAllByTestId('bridge-asset')
+        .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
         .map(({ textContent }) => textContent),
     ).toMatchInlineSnapshot(`
       [
@@ -262,7 +284,7 @@ describe('BridgeInputGroup', () => {
     await waitFor(() => {
       expect(
         screen
-          .getAllByTestId('bridge-asset')
+          .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
           .map(({ textContent }) => textContent),
       ).toMatchInlineSnapshot(`
         [
@@ -299,7 +321,7 @@ describe('BridgeInputGroup', () => {
 
     expect(
       screen
-        .getAllByTestId('bridge-asset')
+        .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
         .map(({ textContent }) => textContent),
     ).toMatchInlineSnapshot(`
         [
@@ -320,6 +342,34 @@ describe('BridgeInputGroup', () => {
     ]);
   });
 
+  it('renders a destination amount skeleton while the quote is loading', () => {
+    setupFetchMock();
+
+    const { getByTestId, queryByTestId, queryByText } = renderBridgeInputGroup(
+      {
+        bridgeStateOverrides: {
+          quotesLoadingStatus: RequestStatus.LOADING,
+        },
+      },
+      {
+        isDestination: true,
+        showAmountSkeleton: true,
+        amountFieldProps: {
+          testId: 'to-amount',
+          autoFocus: false,
+          value: '0',
+          readOnly: true,
+          disabled: true,
+          className: 'amount-input',
+        },
+      },
+    );
+
+    expect(getByTestId('to-amount-loading-skeleton')).toBeInTheDocument();
+    expect(queryByTestId('to-amount')).not.toBeInTheDocument();
+    expect(queryByText(/Calculating/u)).not.toBeInTheDocument();
+  });
+
   // @ts-expect-error - each is a valid test function
   it.each([
     [
@@ -328,7 +378,7 @@ describe('BridgeInputGroup', () => {
       undefined,
       getFromChains,
       false,
-      { expectedDefaultToken: 'ETH', expectedNetworkCount: 5 },
+      { expectedDefaultToken: 'ETH', expectedNetworkCount: 7 },
     ],
     [
       'destination',

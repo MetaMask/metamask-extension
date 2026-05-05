@@ -6,7 +6,7 @@ import { TabEmptyState } from '../../ui/tab-empty-state';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTheme } from '../../../hooks/useTheme';
 import { getUseExternalServices, getIsSwapsChain } from '../../../selectors';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ThemeType } from '../../../../shared/constants/preferences';

@@ -8,7 +8,7 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import LuxonUtils from '@date-io/luxon';
 import { ThemeProvider } from '@material-ui/core/styles';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
-import { getMemoizedInterface } from '../../../../selectors';
+import { getInterface } from '../../../../selectors';
 import { Box } from '../../../component-library';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
@@ -63,7 +63,7 @@ const SnapUIRendererComponent = ({
   const locale = useSelector(getIntlLocale);
 
   const interfaceState = useSelector(
-    (state) => getMemoizedInterface(state, interfaceId),
+    (state) => getInterface(state, interfaceId),
     // We only want to update the state if the content has changed.
     // We do this to avoid useless re-renders.
     (oldState, newState) => isEqual(oldState.content, newState.content),

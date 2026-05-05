@@ -2,13 +2,14 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { Json } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SettingsToggleItem } from '../../settings/settings-toggle-item';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
-  type MetaMetricsEventName,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import type { SettingItemProps } from '../types';
+import { SettingsToggleItem } from './settings-toggle-item';
 
 const selectAlwaysFalse = (): boolean => false;
 
@@ -17,14 +18,23 @@ export type ToggleEventConfig = {
   properties: (newValue: boolean) => Record<string, Json>;
 };
 
+type TranslateFunction = ReturnType<typeof useI18nContext>;
+
 export type ToggleItemConfig = {
   name: string;
   titleKey: string;
+  /** Simple description via i18n key */
   descriptionKey?: string;
+  /** Custom description formatter. Receives translation function for i18n. Takes precedence over descriptionKey. */
+  formatDescription?: (t: TranslateFunction) => string | React.ReactNode;
   selector: (state: MetaMaskReduxState) => boolean;
   action: (value: boolean) => unknown;
   dataTestId: string;
+  containerDataTestId?: string;
   disabledSelector?: (state: MetaMaskReduxState) => boolean;
+  // Simple metric property name for tracking Settings Updated events.
+  trackEventProperty?: string;
+  // Full tracking config for complex cases. Takes precedence over trackEventProperty.
   trackEvent?: ToggleEventConfig;
 };
 
@@ -32,7 +42,9 @@ export type ToggleItemConfig = {
  * Factory function to create a simple toggle settings item component.
  * @param config
  */
-export const createToggleItem = (config: ToggleItemConfig): React.FC => {
+export const createToggleItem = (
+  config: ToggleItemConfig,
+): React.FC<SettingItemProps> => {
   const ToggleItem = () => {
     const t = useI18nContext();
     const dispatch = useDispatch();
@@ -42,7 +54,6 @@ export const createToggleItem = (config: ToggleItemConfig): React.FC => {
 
     const handleToggle = (currentValue: boolean) => {
       const newValue = !currentValue;
-      dispatch(config.action(newValue));
 
       if (config.trackEvent) {
         trackEvent({
@@ -50,18 +61,37 @@ export const createToggleItem = (config: ToggleItemConfig): React.FC => {
           event: config.trackEvent.event,
           properties: config.trackEvent.properties(newValue),
         });
+      } else if (config.trackEventProperty) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.SettingsUpdated,
+          properties: {
+            [config.trackEventProperty]: newValue,
+          },
+        });
+      }
+
+      const result = config.action(newValue);
+      if (result !== undefined) {
+        dispatch(result);
       }
     };
+
+    let description: string | React.ReactNode;
+    if (config.formatDescription) {
+      description = config.formatDescription(t);
+    } else if (config.descriptionKey) {
+      description = t(config.descriptionKey);
+    }
 
     return (
       <SettingsToggleItem
         title={t(config.titleKey)}
-        description={
-          config.descriptionKey ? t(config.descriptionKey) : undefined
-        }
+        description={description}
         value={value}
         onToggle={handleToggle}
         dataTestId={config.dataTestId}
+        containerDataTestId={config.containerDataTestId}
         disabled={disabled}
       />
     );

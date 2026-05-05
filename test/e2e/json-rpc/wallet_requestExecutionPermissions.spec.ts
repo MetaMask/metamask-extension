@@ -3,7 +3,7 @@ import type { Mockttp } from 'mockttp';
 import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { WINDOW_TITLES } from '../constants';
 import TestDapp from '../page-objects/pages/test-dapp';
 import AdvancedPermissionsIntroduction from '../page-objects/pages/confirmations/advanced-permissions-introduction';
@@ -52,7 +52,7 @@ describe('wallet_requestExecutionPermissions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -65,9 +65,12 @@ describe('wallet_requestExecutionPermissions', function () {
               chainId: '0x539',
               to: '0x1234567890123456789012345678901234567890',
               permission: {
-                type: 'erc20-token-revocation',
+                type: 'native-token-periodic',
                 isAdjustmentAllowed: true,
-                data: {},
+                data: {
+                  periodAmount: '0x100',
+                  periodDuration: 86400,
+                },
               },
               rules: [],
             },

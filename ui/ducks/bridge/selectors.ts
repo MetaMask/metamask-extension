@@ -24,7 +24,13 @@ import { createSelector } from 'reselect';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-import { parseCaipChainId, type CaipChainId, type Hex } from '@metamask/utils';
+import {
+  CaipAssetType,
+  parseCaipAssetType,
+  parseCaipChainId,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import type {
   AccountTrackerControllerState,
   CurrencyRateState,
@@ -45,16 +51,13 @@ import {
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
 import { getHardwareWalletType } from '../../selectors/selectors';
-import {
-  ALL_ALLOWED_BRIDGE_CHAIN_IDS,
-  ALLOWED_BRIDGE_CHAIN_IDS,
-} from '../../../shared/constants/bridge';
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getCurrencyRateControllerCurrencyRates,
   getTokenRatesControllerMarketData,
-} from '../../../shared/modules/selectors/assets-migration';
+} from '../../../shared/lib/selectors/assets-migration';
 import {
   getMultichainBalances,
   getMultichainCoinRates,
@@ -66,18 +69,22 @@ import {
   HardwareKeyringNames,
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   getIsSmartTransaction,
   type SmartTransactionsMetaMaskState,
-} from '../../../shared/modules/selectors';
+} from '../../../shared/lib/selectors';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
 import {
   getInternalAccountsByScope,
   getSelectedInternalAccount,
 } from '../../selectors/accounts';
+import {
+  getGasFeesSponsoredNetworkEnabled,
+  isHardwareWallet,
+} from '../../selectors';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import {
   getAllAccountGroups,
@@ -86,7 +93,18 @@ import {
 } from '../../selectors/multichain-accounts/account-tree';
 import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
 import { type MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
-import { formatPriceImpact } from '../../pages/bridge/utils/price-impact';
+import { getIsRWATokensEnabled } from '../../selectors/rwa/feature-flags';
+import {
+  isStockRWAToken,
+  isTokenTradingOpenAt,
+} from '../../pages/bridge/hooks/useRWAToken';
+import { getQuoteStreamReasonString } from '../../pages/bridge/utils/quote-stream';
+import {
+  formatPriceImpactFiat,
+  formatPriceImpactPercentage,
+} from '../../pages/bridge/utils/price-impact';
+import { getCurrentCurrency } from '../metamask/metamask';
+import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -95,6 +113,7 @@ import {
   isNonEvmChain,
   isTronChainId,
   getMaybeHexChainId,
+  isSupportedBridgeChain,
 } from './utils';
 import type { BridgeNetwork, BridgeState } from './types';
 
@@ -166,6 +185,21 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
 const getChainRanking = (state: BridgeAppState) =>
   getBridgeFeatureFlags(state)?.chainRanking;
 
+const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
+  {
+    'eip155:143': '10',
+  };
+
+const getMinimumReserveBalanceForCaipAssetId = (
+  caipAssetId?: CaipAssetType,
+): string => {
+  if (!caipAssetId || !isNativeAddress(caipAssetId)) {
+    return '0';
+  }
+  const { chainId } = parseCaipAssetType(caipAssetId);
+  return MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN[chainId] ?? '0';
+};
+
 export const getPriceImpactThresholds = createDeepEqualSelector(
   [
     (state: BridgeAppState) =>
@@ -173,9 +207,7 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
   ],
   (priceImpactThreshold) => ({
     ...(priceImpactThreshold ?? {}),
-    // @ts-expect-error - priceImpactThreshold type has not been updated yet
     warning: priceImpactThreshold?.warning ?? 0.05,
-    // @ts-expect-error - priceImpactThreshold type has not been updated yet
     error: priceImpactThreshold?.error ?? 0.25,
   }),
 );
@@ -213,8 +245,30 @@ export const getFromChains = createDeepEqualSelector(
     hasBitcoinAccount,
     hasTronAccount,
   ) => {
+    const allChains: Record<CaipChainId, BridgeNetwork> = {
+      ...Object.fromEntries(
+        FEATURED_RPCS.filter(({ chainId }) =>
+          isSupportedBridgeChain(chainId),
+        ).map((rpc) => {
+          const caipChainId = formatChainIdToCaip(rpc.chainId);
+          return [
+            caipChainId,
+            {
+              chainId: caipChainId,
+              name: rpc.name,
+            },
+          ];
+        }),
+      ),
+      ...allBridgeableNetworks,
+    };
+
     const filteredNetworks: BridgeNetwork[] = [];
+    const seen = new Set<CaipChainId>();
     chainRanking?.forEach(({ chainId, name }) => {
+      if (seen.has(chainId)) {
+        return;
+      }
       const shouldAddSolana = isSolanaChainId(chainId)
         ? hasSolanaAccount
         : true;
@@ -222,8 +276,7 @@ export const getFromChains = createDeepEqualSelector(
         ? hasBitcoinAccount
         : true;
       const shouldAddTron = isTronChainId(chainId) ? hasTronAccount : true;
-      const matchedNetwork = allBridgeableNetworks[chainId];
-      // If all conditions are met, add the network to the list
+      const matchedNetwork = allChains[chainId];
       if (
         [
           shouldAddSolana,
@@ -232,6 +285,7 @@ export const getFromChains = createDeepEqualSelector(
           matchedNetwork,
         ].every(Boolean)
       ) {
+        seen.add(chainId);
         filteredNetworks.push({
           chainId,
           name,
@@ -299,26 +353,32 @@ export const getToChains = createDeepEqualSelector(
   [getAllBridgeableNetworks, getChainRanking],
   (allBridgeableNetworks, chainRanking) => {
     const allChains: Record<CaipChainId, BridgeNetwork> = {
-      ...allBridgeableNetworks,
       ...Object.fromEntries(
         FEATURED_RPCS.filter(({ chainId }) =>
-          ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
+          isSupportedBridgeChain(chainId),
         ).map((rpc) => {
           const caipChainId = formatChainIdToCaip(rpc.chainId);
           return [
             caipChainId,
             {
               chainId: caipChainId,
+              name: rpc.name,
             },
           ];
         }),
       ),
+      ...allBridgeableNetworks,
     };
     const filteredChains: BridgeNetwork[] = [];
+    const seen = new Set<CaipChainId>();
     chainRanking?.forEach(({ chainId, name }) => {
+      if (seen.has(chainId)) {
+        return;
+      }
       if (allChains[chainId]) {
+        seen.add(chainId);
         filteredChains.push({
-          ...allChains[chainId],
+          chainId,
           name,
         });
       }
@@ -583,10 +643,23 @@ export const getFromTokenBalanceInUsd = createSelector(
   },
 );
 
-export const getIsQuoteExpired = (
-  { metamask }: BridgeAppState,
+export const getIsStockMarketClosed = (
+  state: BridgeAppState,
   currentTimeInMs: number,
-) => selectIsQuoteExpired(metamask, {}, currentTimeInMs);
+): boolean => {
+  const isRWAEnabled = getIsRWATokensEnabled(state);
+  if (!isRWAEnabled) {
+    return false;
+  }
+  const fromToken = getFromToken(state);
+  const toToken = getToToken(state);
+  const isFromClosed =
+    isStockRWAToken(fromToken) &&
+    !isTokenTradingOpenAt(fromToken, currentTimeInMs);
+  const isToClosed =
+    isStockRWAToken(toToken) && !isTokenTradingOpenAt(toToken, currentTimeInMs);
+  return isFromClosed || isToClosed;
+};
 
 export const getBridgeQuotes = createSelector(
   [
@@ -594,11 +667,20 @@ export const getBridgeQuotes = createSelector(
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
     ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
   ],
-  (controllerStates, sortOrder, selectedQuote) =>
-    selectBridgeQuotes(controllerStates, {
+  (controllerStates, sortOrder, selectedQuote) => {
+    const quotes = selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
-    }),
+    });
+    return {
+      ...quotes,
+      activeQuote:
+        // TODO move this to controller
+        quotes.sortedQuotes.find(
+          (q) => q.quote.requestId === selectedQuote?.quote.requestId,
+        ) ?? quotes.recommendedQuote,
+    };
+  },
 );
 
 export const getValidatedFromValue = createSelector(
@@ -660,6 +742,9 @@ export const getFromAmountInCurrency = createSelector(
 
 export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
 
+export const getActiveQuotePriceData = (state: BridgeAppState) =>
+  getBridgeQuotes(state).activeQuote?.quote?.priceData;
+
 export const getPriceImpact = createSelector(
   [
     (state: BridgeAppState) =>
@@ -674,12 +759,78 @@ export const getPriceImpact = createSelector(
   },
 );
 
-export const getFormattedPriceImpact = createSelector(
+export const getFormattedPriceImpactPercentage = createSelector(
   [getPriceImpact],
-  (priceImpact) => formatPriceImpact(priceImpact),
+  (priceImpact) => formatPriceImpactPercentage(priceImpact),
 );
 
-export const getValidationErrors = createDeepEqualSelector(
+export const getFormattedPriceImpactFiat = createSelector(
+  [
+    (state: BridgeAppState) => getBridgeQuotes(state).activeQuote,
+    getCurrentCurrency,
+  ],
+  (activeQuote, currentCurrency) =>
+    formatPriceImpactFiat(activeQuote, currentCurrency),
+);
+
+// Initially for gas-sponsored networks with a native reserve balance
+// logic, such as for Monad that needs 10 MON at all times.
+export const getInsufficientNativeReserveError = createSelector(
+  [
+    getFromToken,
+    _getFromNativeBalance,
+    _getValidatedSrcAmount,
+    getGasFeesSponsoredNetworkEnabled,
+    (state: BridgeAppState) => isHardwareWallet(state as never),
+  ],
+  (
+    fromToken,
+    nativeBalance,
+    validatedSrcAmount,
+    gasFeesSponsoredNetworkEnabledMap,
+    isHardwareWalletAccount,
+  ) => {
+    const isNetworkGasSponsored =
+      !fromToken?.chainId || isNonEvmChainId(fromToken.chainId)
+        ? false
+        : !isHardwareWalletAccount &&
+          Boolean(
+            gasFeesSponsoredNetworkEnabledMap?.[
+              convertCaipToHexChainId(
+                fromToken.chainId,
+              ) as keyof typeof gasFeesSponsoredNetworkEnabledMap
+            ],
+          );
+
+    const minimumNativeBalanceToBeKeptInAccount = isNetworkGasSponsored
+      ? getMinimumReserveBalanceForCaipAssetId(fromToken?.assetId)
+      : '0';
+
+    const maxSwappableNativeBalance = BigNumber.max(
+      new BigNumber(nativeBalance ?? 0).sub(
+        minimumNativeBalanceToBeKeptInAccount,
+      ),
+      0,
+    );
+
+    return minimumNativeBalanceToBeKeptInAccount !== '0' &&
+      nativeBalance &&
+      validatedSrcAmount &&
+      fromToken &&
+      isNativeAddress(fromToken.assetId) &&
+      maxSwappableNativeBalance.lt(validatedSrcAmount)
+      ? {
+          minimumNativeBalanceToBeKeptInAccount,
+          maxSwappableNativeBalance: maxSwappableNativeBalance.toString(),
+        }
+      : undefined;
+  },
+);
+
+const getQuoteStreamComplete = (state: BridgeAppState) =>
+  state.metamask.quoteStreamComplete;
+
+const _getBaseValidationErrors = createDeepEqualSelector(
   [
     getBridgeQuotes,
     _getValidatedSrcAmount,
@@ -694,6 +845,9 @@ export const getValidationErrors = createDeepEqualSelector(
     ({ bridge: { txAlertStatus } }: BridgeAppState) => txAlertStatus,
     getPriceImpact,
     getPriceImpactThresholds,
+    (state: BridgeAppState) => isHardwareWallet(state as never),
+    getQuoteStreamComplete,
+    getInsufficientNativeReserveError,
   ],
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
@@ -708,57 +862,73 @@ export const getValidationErrors = createDeepEqualSelector(
     txAlertStatus,
     priceImpactNumber,
     { warning, error },
+    isHardwareWalletAccount,
+    quoteStreamCompleteData,
+    insufficientNativeReserveError,
   ) => {
     const { gasIncluded, gasIncluded7702, gasSponsored } =
       activeQuote?.quote ?? {};
-    const isGasless = gasIncluded7702 || gasIncluded || gasSponsored;
+    // gasIncluded7702 and gasSponsored are gated at request time via
+    // useGasIncluded7702 (returns false for HW), so the backend won't
+    // return those flags for HW accounts.
+    // gasIncluded (STX path) works for HW wallets; only 7702/sponsored
+    // need gating. We also gate 7702/sponsored here as defense-in-depth.
+    const isGasless = isHardwareWalletAccount
+      ? gasIncluded
+      : gasIncluded || gasIncluded7702 || gasSponsored;
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
-    const minimumBalanceToUse =
+
+    const minimumBalanceToKeep =
       srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
         : '0';
 
+    const isInsufficientNativeReserve = Boolean(insufficientNativeReserveError);
+
     return {
       isTxAlertPresent: Boolean(txAlert),
       isTxAlertLoading: txAlertStatus === RequestStatus.LOADING,
-      isNoQuotesAvailable: Boolean(
-        !activeQuote &&
+      isNoQuotesAvailable:
+        quoteStreamCompleteData?.hasQuotes === false ||
+        Boolean(
+          !activeQuote &&
           isValidQuoteRequest(quoteRequest) &&
           quotesLastFetchedMs &&
           !isLoading &&
           quotesRefreshCount > 0,
-      ),
+        ),
       // Shown prior to fetching quotes
       isInsufficientGasBalance: Boolean(
         nativeBalance &&
-          !activeQuote &&
-          validatedSrcAmount &&
-          fromToken &&
-          !isGasless &&
-          (isNativeAddress(fromToken.assetId)
-            ? new BigNumber(nativeBalance)
-                .sub(minimumBalanceToUse)
-                .lte(validatedSrcAmount)
-            : new BigNumber(nativeBalance).lte(0)),
+        !activeQuote &&
+        validatedSrcAmount &&
+        fromToken &&
+        !isGasless &&
+        (isNativeAddress(fromToken.assetId)
+          ? new BigNumber(nativeBalance)
+              .sub(minimumBalanceToKeep)
+              .lte(validatedSrcAmount)
+          : new BigNumber(nativeBalance).lte(0)),
       ),
+      isInsufficientNativeReserve,
       // Shown after fetching quotes
       isInsufficientGasForQuote: Boolean(
         nativeBalance &&
-          activeQuote &&
-          fromToken &&
-          fromTokenInputValue &&
-          !isGasless &&
-          (isNativeAddress(fromToken.assetId)
-            ? new BigNumber(nativeBalance)
-                .sub(activeQuote.totalNetworkFee.amount)
-                .sub(activeQuote.sentAmount.amount)
-                .sub(minimumBalanceToUse)
-                .lte(0)
-            : new BigNumber(nativeBalance).lte(
-                activeQuote.totalNetworkFee.amount,
-              )),
+        activeQuote &&
+        fromToken &&
+        fromTokenInputValue &&
+        !isGasless &&
+        (isNativeAddress(fromToken.assetId)
+          ? new BigNumber(nativeBalance)
+              .sub(activeQuote.totalNetworkFee.amount)
+              .sub(activeQuote.sentAmount.amount)
+              .sub(minimumBalanceToKeep)
+              .lte(0)
+          : new BigNumber(nativeBalance).lte(
+              activeQuote.totalNetworkFee.amount,
+            )),
       ),
       isInsufficientBalance:
         validatedSrcAmount &&
@@ -778,8 +948,8 @@ export const getValidationErrors = createDeepEqualSelector(
           : false,
       isPriceImpactWarning: Boolean(
         priceImpactNumber &&
-          priceImpactNumber > warning &&
-          priceImpactNumber <= error,
+        priceImpactNumber > warning &&
+        priceImpactNumber <= error,
       ),
       isPriceImpactError: Boolean(
         priceImpactNumber && priceImpactNumber > error,
@@ -788,31 +958,68 @@ export const getValidationErrors = createDeepEqualSelector(
   },
 );
 
-export const getWarningLabels = createSelector(
-  [getValidationErrors],
-  ({
+/**
+ * Returns all validation errors for the current bridge/swap form state.
+ * Pass `currentTimeInMs` to include stock market-closed status and quote expiration status
+ * @param state
+ * @param currentTimeInMs
+ */
+export const getValidationErrors = (
+  state: BridgeAppState,
+  currentTimeInMs?: number,
+) => ({
+  ..._getBaseValidationErrors(state),
+  isQuoteExpired: currentTimeInMs
+    ? selectIsQuoteExpired(state.metamask, {}, currentTimeInMs)
+    : false,
+  isStockMarketClosed:
+    currentTimeInMs === undefined
+      ? false
+      : getIsStockMarketClosed(state, currentTimeInMs),
+});
+
+/**
+ * Returns warning labels for metrics. Pass `currentTimeInMs` to include
+ * the market_closed warning alongside the standard QuoteWarning values.
+ * @param state
+ * @param currentTimeInMs
+ */
+export const getWarningLabels = (
+  state: BridgeAppState,
+  currentTimeInMs?: number,
+): QuoteWarning[] => {
+  const {
     isEstimatedReturnLow,
     isNoQuotesAvailable,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isInsufficientBalance,
+    isInsufficientNativeReserve,
     isPriceImpactWarning,
     isPriceImpactError,
     isTxAlertPresent,
-  }) => {
-    const warnings: QuoteWarning[] = [];
-    isEstimatedReturnLow && warnings.push('low_return');
-    isNoQuotesAvailable && warnings.push('no_quotes');
-    isInsufficientGasBalance && warnings.push('insufficient_gas_balance');
-    isInsufficientGasForQuote &&
-      warnings.push('insufficient_gas_for_selected_quote');
-    isInsufficientBalance && warnings.push('insufficient_balance');
-    isPriceImpactWarning && warnings.push('price_impact');
-    isPriceImpactError && warnings.push('price_impact');
-    isTxAlertPresent && warnings.push('tx_alert');
-    return warnings;
-  },
-);
+    isStockMarketClosed,
+    isQuoteExpired,
+  } = getValidationErrors(state, currentTimeInMs);
+  const warnings: QuoteWarning[] = [];
+  isEstimatedReturnLow && warnings.push('low_return');
+  isNoQuotesAvailable && warnings.push('no_quotes');
+  isInsufficientGasBalance && warnings.push('insufficient_gas_balance');
+  isInsufficientGasForQuote &&
+    warnings.push('insufficient_gas_for_selected_quote');
+  isInsufficientBalance && warnings.push('insufficient_balance');
+  isPriceImpactWarning && warnings.push('price_impact');
+  isPriceImpactError && warnings.push('price_impact');
+  isTxAlertPresent && warnings.push('tx_alert');
+  // @ts-expect-error: market_closed is not a valid QuoteWarning yet
+  isStockMarketClosed && warnings.push('market_closed');
+  // @ts-expect-error: quote_expired is not a valid QuoteWarning yet
+  isQuoteExpired && warnings.push('quote_expired');
+  isInsufficientNativeReserve &&
+    // @ts-expect-error: market_closed is not a valid QuoteWarning yet
+    warnings.push('insufficient_native_reserve');
+  return warnings;
+};
 
 export const getWasTxDeclined = (state: BridgeAppState): boolean => {
   return state.bridge.wasTxDeclined;
@@ -847,6 +1054,24 @@ export const getIsSolanaSwap = createSelector(
 
     // Return true if BOTH chains are Solana (Solana-to-Solana swap)
     return fromChainIsSolana && toChainIsSolana;
+  },
+);
+
+/**
+ * Returns true when the RWA feature flag is enabled, at least one of the
+ * selected tokens is an RWA token, and both tokens are on the same chain
+ * (cross-chain pairs use bridge default slippage, not AUTO mode).
+ */
+export const getIsRWASwap = createSelector(
+  [getFromToken, getToToken, getIsRWATokensEnabled],
+  (fromToken, toToken, isRWAEnabled) => {
+    if (!isRWAEnabled || !fromToken?.chainId || !toToken?.chainId) {
+      return false;
+    }
+    return (
+      !isCrossChain(fromToken.chainId, toToken.chainId) &&
+      (Boolean(fromToken.rwaData) || Boolean(toToken.rwaData))
+    );
   },
 );
 
@@ -916,4 +1141,20 @@ export const getIsGasIncluded = createSelector(
   (isStxEnabled, isGasIncludedSwapSupported) => {
     return isStxEnabled && isGasIncludedSwapSupported;
   },
+);
+
+export const getIsSrcAssetPickerOpen = (state: BridgeAppState) =>
+  state.bridge.isSrcAssetPickerOpen;
+
+export const getIsDestAssetPickerOpen = (state: BridgeAppState) =>
+  state.bridge.isDestAssetPickerOpen;
+
+export const getBridgeState = (state: BridgeAppState) => state.bridge;
+
+export const getBridgeUnavailableQuoteReason = createSelector(
+  [getQuoteStreamComplete],
+  (quoteStreamComplete) =>
+    quoteStreamComplete?.reason
+      ? getQuoteStreamReasonString(quoteStreamComplete.reason)
+      : 'noOptionsAvailableMessage',
 );

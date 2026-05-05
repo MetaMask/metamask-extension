@@ -16,6 +16,7 @@ import {
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import {
+  IconSize as LegacyIconSize,
   Modal,
   ModalBody,
   ModalContent,
@@ -23,7 +24,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../../components/component-library';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { NetworkListItem } from '../../../../components/multichain/network-list-item';
 import { getImageForChainId } from '../../../../selectors/multichain';
 import { TextVariant as DsTextVariant } from '../../../../helpers/constants/design-system';
@@ -127,7 +128,7 @@ const NetworkSelector = ({
                       setShowNetworkListMenu(false);
                     }}
                     iconSrc={getImageForChainId(chainId)}
-                    iconSize={IconSize.Sm}
+                    iconSize={LegacyIconSize.Sm}
                     focus={false}
                     chainId={chainId}
                     variant={DsTextVariant.bodyMdMedium}

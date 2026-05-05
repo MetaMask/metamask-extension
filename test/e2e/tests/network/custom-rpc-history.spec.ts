@@ -7,7 +7,7 @@ import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-networ
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import Homepage from '../../page-objects/pages/home/homepage';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 describe('Custom RPC history', function (this: Suite) {
@@ -34,7 +34,7 @@ describe('Custom RPC history', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const rpcUrl = `http://127.0.0.1:${port}`;
         const networkName = 'Secondary Local Testnet';
@@ -61,11 +61,10 @@ describe('Custom RPC history', function (this: Suite) {
         await addRpcUrlModal.fillAddRpcNameInput('test-name');
         await addRpcUrlModal.saveAddRpcUrl();
         await addEditNetworkModal.saveEditedNetwork();
-
         // Validate the network was added
-        const homepage = new Homepage(driver);
-        await homepage.checkPageIsLoaded();
-        await homepage.checkAddNetworkMessageIsDisplayed(networkName);
+        await selectNetworkDialog.checkAddNetworkMessageIsDisplayed(
+          networkName,
+        );
       },
     );
   });
@@ -77,7 +76,7 @@ describe('Custom RPC history', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Duplicate network
         const duplicateRpcUrl = 'https://mainnet.infura.io/v3/';
@@ -114,7 +113,7 @@ describe('Custom RPC history', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Duplicate network
         const duplicateChainId = '1';
@@ -184,7 +183,7 @@ describe('Custom RPC history', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
         const selectNetworkDialog = new SelectNetwork(driver);
@@ -251,7 +250,7 @@ describe('Custom RPC history', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
         const selectNetworkDialog = new SelectNetwork(driver);
@@ -262,14 +261,16 @@ describe('Custom RPC history', function (this: Suite) {
 
         // Delete network from network list
         await selectNetworkDialog.deleteNetwork('eip155:1344');
+        await selectNetworkDialog.clickCloseButton();
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
+        await homepage.closeUseNetworkNotificationModal();
 
         // Check custom network http://127.0.0.1:8545/2 is removed from network list
         // need a hard delay to avoid the background error message "network configuration not found" for removed network
         await driver.delay(2000);
-        await headerNavbar.openGlobalNetworksMenu();
+        await headerNavbar.openGlobalNetworksMenu({ isDrawerOpen: true });
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.checkNetworkOptionIsDisplayed(
           'http://127.0.0.1:8545/2',

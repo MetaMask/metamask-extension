@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import * as TransactionPayControllerActions from '../../../../store/controller-actions/transaction-pay-controller';
 import * as useTokenFiatRatesModule from '../tokens/useTokenFiatRates';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
@@ -18,6 +20,9 @@ jest.mock('../tokens/useTokenFiatRates');
 jest.mock('../pay/useTransactionPayData');
 jest.mock('../pay/useTransactionPayToken');
 jest.mock('./useUpdateTokenAmount');
+jest.mock('../../../../store/actions', () => ({
+  upsertTransactionUIMetricsFragment: jest.fn(),
+}));
 
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
@@ -54,6 +59,13 @@ function runHook({
     .mockReturnValue(
       requiredTokens as ReturnType<
         typeof useTransactionPayDataModule.useTransactionPayRequiredTokens
+      >,
+    );
+  jest
+    .mocked(useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken)
+    .mockReturnValue(
+      requiredTokens.find((t) => !t.skipIfBalance) as unknown as ReturnType<
+        typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
       >,
     );
   jest
@@ -108,13 +120,13 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.amountFiat).toBe('123.46');
     });
 
-    it('returns state amount when isMaxAmount is false', () => {
+    it('pre-populates from transaction data when user has not typed yet', () => {
       const { result } = runHook({
         isMaxAmount: false,
         requiredTokens: [{ amountUsd: '123.456', skipIfBalance: false }],
       });
 
-      expect(result.current.amountFiat).toBe('0');
+      expect(result.current.amountFiat).toBe('123.46');
     });
   });
 
@@ -399,6 +411,192 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(result.current.amountFiat).toBe('50');
+    });
+  });
+
+  describe('mm_pay_amount_input_type tracking', () => {
+    it('dispatches mm_pay_amount_input_type as manual and mm_pay_quote_requested as false when updatePendingAmount is called', () => {
+      const { result } = runHook();
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        {
+          properties: expect.objectContaining({
+            mm_pay_amount_input_type: 'manual',
+            mm_pay_quote_requested: false,
+          }),
+        },
+      );
+    });
+
+    it('dispatches mm_pay_amount_input_type as percentage when updatePendingAmountPercentage is called', () => {
+      const { result } = runHook({
+        payTokenBalanceUsd: 100,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(50);
+      });
+
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        {
+          properties: expect.objectContaining({
+            mm_pay_amount_input_type: '50%',
+          }),
+        },
+      );
+    });
+
+    it('dispatches mm_pay_quote_requested when updatePendingAmountPercentage is called', () => {
+      const { result } = runHook({
+        payTokenBalanceUsd: 100,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(25);
+      });
+
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        {
+          properties: expect.objectContaining({
+            mm_pay_quote_requested: true,
+          }),
+        },
+      );
+    });
+  });
+
+  describe('infinite loop prevention', () => {
+    it('does not trigger infinite updates when updateTokenAmount callback is recreated', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result, rerender } = runHook({
+        disableUpdate: false,
+        updateTokenAmountMock,
+      });
+
+      // User types amount
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      // Fast-forward through debounce
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      // Should have been called once
+      expect(updateTokenAmountMock).toHaveBeenCalledTimes(1);
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('50');
+
+      // Clear the mock to track new calls
+      updateTokenAmountMock.mockClear();
+
+      // Simulate callback recreation (as would happen from Redux updates)
+      // by creating a new mock and rerendering
+      const newUpdateTokenAmountMock = jest.fn();
+      jest
+        .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
+        .mockReturnValue({
+          updateTokenAmount: newUpdateTokenAmountMock,
+          isUpdating: false,
+        });
+
+      // Rerender to trigger the effect that recreates the debounced function
+      rerender();
+
+      // Fast-forward to ensure no debounced calls are pending
+      act(() => {
+        jest.advanceTimersByTime(1000);
+      });
+
+      // The new callback should NOT have been called automatically
+      // (this was the bug - callback recreation was triggering the effect)
+      expect(newUpdateTokenAmountMock).not.toHaveBeenCalled();
+    });
+
+    it('only calls updateTokenAmount when amountHuman actually changes, not when callback recreates', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result, rerender } = runHook({
+        disableUpdate: false,
+        tokenFiatRate: 2,
+        isMaxAmount: true,
+        requiredTokens: [{ amountUsd: '100', skipIfBalance: false }],
+        updateTokenAmountMock,
+      });
+
+      // Initial render - amountHuman is 50 (100 / 2)
+      // Fast-forward to clear any initial debounce calls
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      const initialCallCount = updateTokenAmountMock.mock.calls.length;
+
+      // Simulate multiple callback recreations without amountHuman changing
+      for (let i = 0; i < 5; i++) {
+        const newMock = jest.fn();
+        jest
+          .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
+          .mockReturnValue({
+            updateTokenAmount: newMock,
+            isUpdating: false,
+          });
+
+        rerender();
+
+        act(() => {
+          jest.advanceTimersByTime(500);
+        });
+
+        // Should not have triggered additional calls
+        expect(newMock).not.toHaveBeenCalled();
+      }
+
+      // Verify no additional calls were made
+      expect(updateTokenAmountMock).toHaveBeenCalledTimes(initialCallCount);
+    });
+
+    it('does not call updateTokenAmount when amountUsd changes while isMaxAmount is true', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { rerender } = runHook({
+        disableUpdate: false,
+        isMaxAmount: true,
+        tokenFiatRate: 2,
+        requiredTokens: [{ amountUsd: '100', skipIfBalance: false }],
+        updateTokenAmountMock,
+      });
+
+      // Clear any initial calls from mount
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+      updateTokenAmountMock.mockClear();
+
+      // Simulate QuoteRefresher updating amountUsd (price movement)
+      jest
+        .mocked(
+          useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken,
+        )
+        .mockReturnValue({
+          amountUsd: '100.01',
+          skipIfBalance: false,
+        } as unknown as ReturnType<
+          typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
+        >);
+
+      rerender();
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      // Must NOT call updateTokenAmount — doing so restarts the quote cycle
+      expect(updateTokenAmountMock).not.toHaveBeenCalled();
     });
   });
 });

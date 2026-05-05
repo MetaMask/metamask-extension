@@ -11,12 +11,12 @@ import {
   getCurrencyRateControllerCurrencyRates,
   getCurrencyRateControllerCurrentCurrency,
   getTokenBalancesControllerTokenBalances,
-} from '../../../shared/modules/selectors/assets-migration';
+} from '../../../shared/lib/selectors/assets-migration';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
-import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { decGWEIToHexWEI } from '../../../shared/lib/conversion.utils';
+import { stripHexPrefix } from '../../../shared/lib/hexstring-utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
@@ -25,7 +25,7 @@ import {
 import {
   getProviderConfig,
   getSelectedNetworkClientId,
-} from '../../../shared/modules/selectors/networks';
+} from '../../../shared/lib/selectors/networks';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
@@ -39,7 +39,6 @@ const initialState = {
   transactions: [],
   networkConfigurations: {},
   addressBook: [],
-  useBlockie: false,
   featureFlags: {},
   currentLocale: '',
   preferences: {
@@ -48,7 +47,6 @@ const initialState = {
     showFiatInTestnets: false,
     showTestNetworks: false,
     smartTransactionsOptInStatus: true,
-    petnamesEnabled: true,
     featureNotificationsEnabled: false,
     privacyMode: false,
     showMultiRpcModal: false,
@@ -644,4 +642,22 @@ export { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency };
  */
 export function getOpenedWithSidepanel(state) {
   return state.metamask.openedWithSidepanel;
+}
+
+/**
+ * @param {object} state - Redux root state
+ * @returns {boolean} True when `PasskeyController` has a persisted passkey (`passkeyRecord`).
+ */
+export function getIsPasskeyRegistered(state) {
+  return Boolean(state.metamask.passkeyRecord);
+}
+
+/**
+ * When true, unlock UI must not auto-start WebAuthn passkey unlock (from background).
+ *
+ * @param {object} state - Redux root state
+ * @returns {boolean}
+ */
+export function getPasskeyAutoUnlockSuppressed(state) {
+  return Boolean(state.metamask.passkeyAutoUnlockSuppressed);
 }

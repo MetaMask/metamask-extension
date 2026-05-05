@@ -2,16 +2,18 @@ import { fetchWithTimeout, retryUntil } from '@metamask/client-mcp-core';
 import type { FixtureCapability, WalletState } from '@metamask/client-mcp-core';
 
 import FixtureServerClass from '../../../fixtures/fixture-server';
-import { FIXTURE_STATE_METADATA_VERSION } from '../../../fixtures/default-fixture';
+import { FIXTURE_STATE_METADATA_VERSION } from '../../../constants';
 import {
-  FixturePresets,
+  createFixturePresets,
   buildDefaultFixture,
   buildOnboardingFixture,
 } from '../fixture-helper';
+import type { FixtureBuildOptions } from '../fixture-helper';
 import type { FixtureData } from '../launcher-types';
 
 export type MetaMaskFixtureCapabilityOptions = {
   port?: number;
+  anvilPort?: number;
   defaultPassword?: string;
   fetchWithTimeout?: (
     url: string,
@@ -23,7 +25,9 @@ export type MetaMaskFixtureCapabilityOptions = {
 export class MetaMaskFixtureCapability implements FixtureCapability {
   private server: InstanceType<typeof FixtureServerClass> | undefined;
 
-  private readonly port: number;
+  private port: number;
+
+  private readonly fixtureBuildOptions: FixtureBuildOptions;
 
   private readonly fetchWithTimeout: (
     url: string,
@@ -33,6 +37,9 @@ export class MetaMaskFixtureCapability implements FixtureCapability {
 
   constructor(options: MetaMaskFixtureCapabilityOptions = {}) {
     this.port = options.port ?? 12345;
+    this.fixtureBuildOptions = {
+      anvilPort: options.anvilPort,
+    };
     this.fetchWithTimeout = options.fetchWithTimeout ?? fetchWithTimeout;
   }
 
@@ -72,17 +79,22 @@ export class MetaMaskFixtureCapability implements FixtureCapability {
   }
 
   getDefaultState(): WalletState {
-    return buildDefaultFixture() as unknown as WalletState;
+    return buildDefaultFixture(
+      this.fixtureBuildOptions,
+    ) as unknown as WalletState;
   }
 
   getOnboardingState(): WalletState {
-    return buildOnboardingFixture() as unknown as WalletState;
+    return buildOnboardingFixture(
+      this.fixtureBuildOptions,
+    ) as unknown as WalletState;
   }
 
   resolvePreset(presetName: string): WalletState {
-    const presetFn = FixturePresets[presetName as keyof typeof FixturePresets];
+    const presets = createFixturePresets(this.fixtureBuildOptions);
+    const presetFn = presets[presetName as keyof typeof presets];
     if (!presetFn) {
-      const availablePresets = Object.keys(FixturePresets).join(', ');
+      const availablePresets = Object.keys(presets).join(', ');
       throw new Error(
         `Unknown fixture preset: ${presetName}. ` +
           `Available presets: ${availablePresets}`,

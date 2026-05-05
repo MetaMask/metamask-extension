@@ -13,6 +13,8 @@ export const MERKL_API_BASE_URL = 'https://api.merkl.xyz/v4';
 export const MERKL_DISTRIBUTOR_ADDRESS =
   '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae' as const;
 
+export const MERKL_CLAIM_METHOD_ID = '0x71ee95c0';
+
 /**
  * The chain where Merkl rewards are claimed (Linea mainnet = 0xe708 = 59144).
  * Even if a user holds mUSD on mainnet, rewards are always claimed on Linea.
@@ -142,6 +144,13 @@ export const MUSD_CONVERSION_BONUS_TERMS_OF_USE =
   'https://metamask.io/musd-bonus-terms-of-use';
 
 /**
+ * URL for the mUSD Help Center article
+ * Linked from the asset details bonus and convert sections
+ */
+export const MUSD_SUPPORT_ARTICLE_URL =
+  'https://support.metamask.io/manage-crypto/tokens/musd';
+
+/**
  * Minimum asset balance required in USD for a token to be eligible for conversion
  * Default is $0.01 (1 cent) if not configured via feature flag
  */
@@ -154,13 +163,6 @@ export const RELAY_API_ENDPOINTS = {
   QUOTE: 'https://api.relay.link/quote',
   STATUS: 'https://api.relay.link/intents/status',
 } as const;
-
-/**
- * Geolocation API endpoint for geo-blocking checks
- * Uses the Ramps geolocation API
- */
-export const GEOLOCATION_API_ENDPOINT =
-  'https://on-ramp.api.cx.metamask.io/geolocation';
 
 // ============================================================================
 // Utility Functions
@@ -179,6 +181,16 @@ export const isMusdToken = (address?: string | null): boolean => {
   }
   return address.toLowerCase() === MUSD_TOKEN_ADDRESS.toLowerCase();
 };
+
+/**
+ * Chain IDs where mUSD is Merkl-eligible (derived from {@link ELIGIBLE_TOKENS}).
+ * Used to aggregate projected bonus fiat across the same chains that earn the reward.
+ */
+export const MERKL_ELIGIBLE_MUSD_CHAIN_IDS: Hex[] = Object.entries(
+  ELIGIBLE_TOKENS,
+)
+  .filter(([, addrs]) => addrs.some((a) => isMusdToken(a)))
+  .map(([chainId]) => chainId as Hex);
 
 /**
  * Get the mUSD token address for a specific chain

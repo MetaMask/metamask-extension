@@ -9,12 +9,12 @@ import {
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { zeroAddress } from 'ethereumjs-util';
-import { type CaipChainId } from '@metamask/utils';
+import type { Hex, CaipChainId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_SCOPE_EOA } from '@metamask/keyring-utils';
-import type { SmartTransactionsNetworks } from '../../../shared/modules/selectors/feature-flags';
+import type { SmartTransactionsNetworks } from '../../../shared/lib/selectors/feature-flags';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import type { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
@@ -169,8 +169,14 @@ export const MOCK_BITCOIN_ACCOUNT = {
   },
 };
 
+export const MOCK_EXTERNAL_SOLANA_ADDRESS =
+  '8sKQHfjNhvmAw94PhfvfMcytmqW6jmxvwieYyzXCCPu';
+
 export const createBridgeMockStore = ({
-  featureFlagOverrides = { bridgeConfig: {} },
+  featureFlagOverrides = {
+    bridgeConfig: {},
+    gasFeesSponsoredNetwork: {},
+  },
   bridgeSliceOverrides = {},
   bridgeStateOverrides = {},
   bridgeStatusStateOverrides = {},
@@ -182,6 +188,7 @@ export const createBridgeMockStore = ({
       chainRanking?: { chainId: CaipChainId; name?: string }[];
     };
     smartTransactionsNetworks?: SmartTransactionsNetworks;
+    gasFeesSponsoredNetwork?: { [chainId: Hex]: boolean };
   };
   bridgeStateOverrides?: Partial<BridgeControllerState>;
   // bridgeStatusStateOverrides?: Partial<BridgeStatusState>;
@@ -225,18 +232,25 @@ export const createBridgeMockStore = ({
     }),
   );
 
+  const internalAccountsAccounts = {
+    ...(internalAccountsOverrides?.accounts ?? {}),
+    [MOCK_LEDGER_ACCOUNT.id]: MOCK_LEDGER_ACCOUNT,
+    [MOCK_SOLANA_ACCOUNT.id]: MOCK_SOLANA_ACCOUNT,
+    [MOCK_BITCOIN_ACCOUNT.id]: MOCK_BITCOIN_ACCOUNT,
+    [MOCK_EVM_ACCOUNT.id]: MOCK_EVM_ACCOUNT,
+    [MOCK_EVM_ACCOUNT_2.id]: MOCK_EVM_ACCOUNT_2,
+  };
   const internalAccounts = {
     selectedAccount:
       internalAccountsOverrides?.selectedAccount ?? MOCK_EVM_ACCOUNT.id,
-    accounts: {
-      ...(internalAccountsOverrides?.accounts ?? {}),
-      [MOCK_LEDGER_ACCOUNT.id]: MOCK_LEDGER_ACCOUNT,
-      [MOCK_SOLANA_ACCOUNT.id]: MOCK_SOLANA_ACCOUNT,
-      [MOCK_BITCOIN_ACCOUNT.id]: MOCK_BITCOIN_ACCOUNT,
-      [MOCK_EVM_ACCOUNT.id]: MOCK_EVM_ACCOUNT,
-      [MOCK_EVM_ACCOUNT_2.id]: MOCK_EVM_ACCOUNT_2,
-    },
+    accounts: internalAccountsAccounts,
   };
+  const accountIdByAddress = (
+    Object.values(internalAccountsAccounts) as { address: string; id: string }[]
+  ).reduce<Record<string, string>>(
+    (acc, account) => ({ ...acc, [account.address]: account.id }),
+    {},
+  );
   return {
     activeTab: {
       origin: 'https://github.com',
@@ -398,6 +412,9 @@ export const createBridgeMockStore = ({
         ...marketDataOverrides,
       },
       slides: [],
+      selectedAccountGroup:
+        accountTreeOverrides?.selectedAccountGroup ??
+        'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       accountTree: {
         wallets: {
           'entropy:01K2FF18CTTXJYD34R78X4N1N1': {
@@ -420,6 +437,7 @@ export const createBridgeMockStore = ({
                   entropy: {
                     groupIndex: 0,
                   },
+                  lastSelected: 0,
                 },
                 accounts: [
                   MOCK_EVM_ACCOUNT.id,
@@ -437,6 +455,7 @@ export const createBridgeMockStore = ({
                   entropy: {
                     groupIndex: 1,
                   },
+                  lastSelected: 0,
                 },
                 accounts: [MOCK_EVM_ACCOUNT_2.id],
               },
@@ -461,19 +480,18 @@ export const createBridgeMockStore = ({
                     name: 'Ledger Account 1',
                     pinned: false,
                     hidden: false,
+                    lastSelected: 0,
                   },
                   accounts: [MOCK_LEDGER_ACCOUNT.id],
                 },
             },
           },
         },
-        selectedAccountGroup:
-          accountTreeOverrides?.selectedAccountGroup ??
-          'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       },
       ...tokenData,
       ...metamaskStateOverridesWithoutAccounts,
       internalAccounts,
+      accountIdByAddress,
       accountsAssets: {
         [MOCK_SOLANA_ACCOUNT.id]: [
           getNativeAssetForChainId(ChainId.SOLANA)?.assetId,

@@ -24,7 +24,7 @@ import { Anvil } from '../../seeder/anvil';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { veryLargeDelayMs } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
 import {
   mockedSourcifyTokenSend,
@@ -53,7 +53,7 @@ describe('Send ERC20', function () {
           contractRegistry?: ContractAddressRegistry;
           localNodes?: Anvil[];
         }) => {
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
 
           const tokenAddress =
             await contractRegistry?.getContractAddress(smartContract);
@@ -77,6 +77,7 @@ describe('Send ERC20', function () {
           await confirmation.checkPageIsLoaded();
           await confirmation.clickFooterConfirmButton();
 
+          await homePage.goToActivityList();
           await activityListPage.checkTransactionActivityByText('Sent');
           await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
         },
@@ -100,7 +101,7 @@ describe('Send ERC20', function () {
           contractRegistry?: ContractAddressRegistry;
           localNodes?: Anvil[];
         }) => {
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
 
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);

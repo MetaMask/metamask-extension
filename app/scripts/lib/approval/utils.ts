@@ -6,9 +6,27 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { providerErrors } from '@metamask/rpc-errors';
 import { createProjectLogger, Json } from '@metamask/utils';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
+import {
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+} from '../../../../shared/constants/app';
 
 const log = createProjectLogger('approval-utils');
+
+export function getAttentionRequiredApprovalCount({
+  approvalController,
+}: {
+  approvalController: ApprovalController;
+}) {
+  const approvalRequestsById = approvalController.state.pendingApprovals ?? {};
+  const approvalRequests = Object.values(approvalRequestsById);
+
+  return approvalRequests.filter(
+    (approvalRequest) =>
+      approvalRequest.type !==
+      SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
+  ).length;
+}
 
 export function rejectAllApprovals({
   approvalController,
@@ -71,13 +89,13 @@ function rejectApproval({
     case ApprovalType.SnapDialogPrompt:
     case DIALOG_APPROVAL_TYPES.default:
       log('Rejecting snap dialog', { id, interfaceId, origin, type });
-      approvalController.accept(id, null);
+      approvalController.acceptRequest(id, null);
       deleteInterface?.(interfaceId);
       break;
 
     case ApprovalType.SnapDialogConfirmation:
       log('Rejecting snap confirmation', { id, interfaceId, origin, type });
-      approvalController.accept(id, false);
+      approvalController.acceptRequest(id, false);
       deleteInterface?.(interfaceId);
       break;
 
@@ -85,12 +103,12 @@ function rejectApproval({
     case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
     case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
       log('Rejecting snap account confirmation', { id, origin, type });
-      approvalController.accept(id, false);
+      approvalController.acceptRequest(id, false);
       break;
 
     default:
       log('Rejecting pending approval', { id, origin, type });
-      approvalController.reject(
+      approvalController.rejectRequest(
         id,
         providerErrors.userRejectedRequest({
           data: {

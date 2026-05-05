@@ -24,13 +24,13 @@ import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import {
   formatCaptureShieldPaymentMethodChangeEventProps,
   getSubscriptionRequestTrackingProps,
   getUserAccountTypeAndCategory,
   getUserBalanceCategory,
-} from '../../../../shared/modules/shield/metrics';
+} from '../../../../shared/lib/shield/metrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -40,18 +40,26 @@ import {
   getIsShieldSubscriptionActive,
   getIsShieldSubscriptionPaused,
   getShieldSubscription,
+  SHIELD_ERROR,
 } from '../../../../shared/lib/shield';
-import { SHIELD_ERROR } from '../../../../shared/modules/shield';
 import {
-  SubscriptionServiceAction,
-  SubscriptionServiceEvent,
   SubscriptionServiceOptions,
   SERVICE_NAME,
   ServiceName,
+  SubscriptionServiceMessenger,
 } from './types';
 
 const SUBSCRIPTION_POLL_INTERVAL = 5 * SECOND;
 const SUBSCRIPTION_POLL_TIMEOUT = 60 * SECOND;
+
+const MESSENGER_EXPOSED_METHODS = [
+  'updateSubscriptionCardPaymentMethod',
+  'updateSubscriptionCryptoPaymentMethod',
+  'startSubscriptionWithCard',
+  'handlePostTransaction',
+  'submitSubscriptionSponsorshipIntent',
+  'linkRewardToExistingSubscription',
+] as const;
 
 export class SubscriptionService {
   // Required for modular initialisation.
@@ -59,11 +67,7 @@ export class SubscriptionService {
 
   state = null;
 
-  #messenger: Messenger<
-    typeof SERVICE_NAME,
-    SubscriptionServiceAction,
-    SubscriptionServiceEvent
-  >;
+  #messenger: SubscriptionServiceMessenger;
 
   #platform: ExtensionPlatform;
 
@@ -78,16 +82,16 @@ export class SubscriptionService {
     this.#platform = platform;
     this.#webAuthenticator = webAuthenticator;
 
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:submitSubscriptionSponsorshipIntent`,
-      this.submitSubscriptionSponsorshipIntent.bind(this),
+    this.#messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 
   async updateSubscriptionCardPaymentMethod(
     params: Extract<UpdatePaymentMethodOpts, { paymentType: 'card' }>,
     currentTabId?: number,
-  ) {
+  ): Promise<Subscription[]> {
     try {
       const { paymentType } = params;
       if (paymentType !== PAYMENT_TYPES.byCard) {
@@ -144,7 +148,7 @@ export class SubscriptionService {
 
   async updateSubscriptionCryptoPaymentMethod(
     params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
-  ) {
+  ): Promise<Subscription[]> {
     try {
       const { paymentType } = params;
       if (paymentType !== PAYMENT_TYPES.byCrypto) {

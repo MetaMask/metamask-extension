@@ -8,9 +8,9 @@ import { setSeedPhraseBackedUp } from '../../../store/actions';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
-  REVEAL_SRP_LIST_ROUTE,
+  MANAGE_WALLET_RECOVERY_ROUTE,
 } from '../../../helpers/constants/routes';
-import * as BrowserRuntimeUtils from '../../../../shared/modules/browser-runtime.utils';
+import * as BrowserRuntimeUtils from '../../../../shared/lib/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import ConfirmRecoveryPhrase from './confirm-recovery-phrase';
 
@@ -274,7 +274,7 @@ describe('Confirm Recovery Phrase Component', () => {
 
     fireEvent.click(closeButton);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(REVEAL_SRP_LIST_ROUTE, {
+    expect(mockUseNavigate).toHaveBeenCalledWith(MANAGE_WALLET_RECOVERY_ROUTE, {
       replace: true,
     });
   });

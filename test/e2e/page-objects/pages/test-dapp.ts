@@ -135,6 +135,8 @@ class TestDapp {
 
   private readonly maliciousEthTransferButton = '#maliciousRawEthButton';
 
+  private readonly maliciousPermitButton = '#maliciousPermit';
+
   private readonly maliciousTradeOrderButton = '#maliciousTradeOrder';
 
   private readonly mmlogo = '#mm-logo';
@@ -781,6 +783,10 @@ class TestDapp {
     );
   }
 
+  async verifySpanText(expectedText: string): Promise<void> {
+    await this.driver.waitForSelector({ text: expectedText, tag: 'span' });
+  }
+
   async checkEthSignErrorMessage(): Promise<void> {
     console.log('Check ETH sign error message');
     await this.driver.waitForSelector(this.ethSignErrorMessage);
@@ -1025,6 +1031,11 @@ class TestDapp {
   async clickMaliciousEthTransferButton() {
     console.log('Click malicious ETH transfer button');
     await this.driver.clickElement(this.maliciousEthTransferButton);
+  }
+
+  async clickMaliciousPermitButton() {
+    console.log('Click malicious permit button');
+    await this.driver.clickElement(this.maliciousPermitButton);
   }
 
   async clickMaliciousTradeOrderButton() {

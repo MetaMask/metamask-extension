@@ -3,8 +3,11 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
+import {
+  DEFAULT_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+} from '../../helpers/constants/routes';
+import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { mockTransactions } from '../../components/app/perps/mocks';
 import PerpsActivityPage from './perps-activity-page';
@@ -21,7 +24,7 @@ jest.mock('react-router-dom', () => ({
 
 // Mock the perps feature flag selector
 jest.mock('../../selectors/perps/feature-flags', () => ({
-  getIsPerpsEnabled: jest.fn(),
+  getIsPerpsExperienceAvailable: jest.fn(),
 }));
 
 // Mock usePerpsTransactionHistory hook to avoid controller dependency
@@ -34,9 +37,10 @@ jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
   }),
 }));
 
-const mockGetIsPerpsEnabled = getIsPerpsEnabled as jest.MockedFunction<
-  typeof getIsPerpsEnabled
->;
+const mockGetIsPerpsExperienceAvailable =
+  getIsPerpsExperienceAvailable as jest.MockedFunction<
+    typeof getIsPerpsExperienceAvailable
+  >;
 
 const createMockStore = () =>
   configureStore({
@@ -48,7 +52,7 @@ const createMockStore = () =>
 describe('PerpsActivityPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetIsPerpsEnabled.mockReturnValue(true);
+    mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
   });
 
   it('renders with correct data-testid', () => {
@@ -122,17 +126,17 @@ describe('PerpsActivityPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('back button navigates to DEFAULT_ROUTE', () => {
+  it('back button navigates to previous page', () => {
     renderWithProvider(<PerpsActivityPage />, createMockStore());
 
     const backButton = screen.getByTestId('perps-activity-back-button');
     fireEvent.click(backButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 
-  it('redirects when isPerpsEnabled is false', () => {
-    mockGetIsPerpsEnabled.mockReturnValue(false);
+  it('redirects when perps experience is unavailable', () => {
+    mockGetIsPerpsExperienceAvailable.mockReturnValue(false);
 
     renderWithProvider(<PerpsActivityPage />, createMockStore());
 
@@ -177,5 +181,49 @@ describe('PerpsActivityPage', () => {
     expect(
       screen.getByTestId('perps-activity-filter-button'),
     ).toHaveTextContent('Deposits');
+  });
+
+  describe('order transaction navigation', () => {
+    it('navigates to market detail page when an order transaction is clicked', () => {
+      renderWithProvider(<PerpsActivityPage />, createMockStore());
+
+      // Switch to the Orders filter to reveal order transactions
+      fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
+      fireEvent.click(screen.getByTestId('perps-activity-filter-option-order'));
+
+      // tx-004 has type 'order' and symbol 'SOL' — click its transaction card
+      const orderCard = screen.getByTestId('transaction-card-tx-004');
+      fireEvent.click(orderCard);
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `${PERPS_MARKET_DETAIL_ROUTE}/SOL`,
+      );
+    });
+
+    it('encodes the symbol in the navigation URL', () => {
+      renderWithProvider(<PerpsActivityPage />, createMockStore());
+
+      fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
+      fireEvent.click(screen.getByTestId('perps-activity-filter-option-order'));
+
+      // tx-004 has symbol 'SOL' — encodeURIComponent('SOL') === 'SOL'
+      const orderCard = screen.getByTestId('transaction-card-tx-004');
+      fireEvent.click(orderCard);
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.stringContaining(PERPS_MARKET_DETAIL_ROUTE),
+      );
+    });
+
+    it('does not navigate when a trade transaction is clicked', () => {
+      renderWithProvider(<PerpsActivityPage />, createMockStore());
+
+      // Default filter is 'trade' — tx-001 has type 'trade'
+      const tradeCard = screen.queryByTestId('transaction-card-tx-001');
+      if (tradeCard) {
+        fireEvent.click(tradeCard);
+        expect(mockNavigate).not.toHaveBeenCalled();
+      }
+    });
   });
 });

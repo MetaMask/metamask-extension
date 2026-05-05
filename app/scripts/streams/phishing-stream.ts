@@ -2,11 +2,11 @@ import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
+// @ts-expect-error @types/readable-stream does not export pipeline
 import { pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import { ExtensionPortStream } from 'extension-port-stream';
-import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
+import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import {
   CONTENT_SCRIPT,

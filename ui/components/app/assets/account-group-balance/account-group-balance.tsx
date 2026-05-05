@@ -32,7 +32,7 @@ import {
 } from '../../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
-import { hexWEIToDecETH } from '../../../../../shared/modules/conversion.utils';
+import { hexWEIToDecETH } from '../../../../../shared/lib/conversion.utils';
 
 export type AccountGroupBalanceProps = {
   classPrefix: string;

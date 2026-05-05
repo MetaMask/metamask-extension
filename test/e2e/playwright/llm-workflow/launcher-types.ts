@@ -1,4 +1,5 @@
 import type { Page, BrowserContext } from '@playwright/test';
+import type { ManifestFlags } from '../../../../shared/lib/manifestFlags';
 
 export type StateMode = 'default' | 'onboarding' | 'custom';
 
@@ -27,19 +28,13 @@ export type LaunchOptions = {
   viewportWidth?: number;
   viewportHeight?: number;
   slowMo?: number;
-  /**
-   * Whether to automatically build the extension before launching.
-   * This option is handled by the MCP session manager (BuildCapability) and is ignored by the launcher.
-   * The launcher only validates that the extension is already built.
-   *
-   * @default true (when using MCP workflow with BuildCapability)
-   */
-  autoBuild?: boolean;
+  headless?: boolean;
   screenshotDir?: string;
   stateMode?: StateMode;
   network?: NetworkConfig;
   fixture?: FixtureData;
   proxyServer?: string;
+  manifestFlags?: Partial<ManifestFlags>;
 };
 
 export type LauncherLaunchOptions = LaunchOptions;
@@ -70,10 +65,13 @@ export type ScreenName =
   | 'onboarding-password'
   | 'onboarding-complete'
   | 'onboarding-metametrics'
+  | 'onboarding-privacy'
   | 'settings'
   | 'send'
   | 'swap'
   | 'bridge'
+  | 'connect'
+  | 'confirmation'
   | 'confirm-transaction'
   | 'confirm-signature'
   | 'notification'
@@ -89,6 +87,11 @@ export type ExtensionState = {
   networkName: string | null;
   chainId: number | null;
   balance: string | null;
+  activeTab?: {
+    role: string;
+    url: string;
+    title?: string;
+  };
 };
 
 export type LauncherContext = {

@@ -5,7 +5,7 @@ import {
   SIG_PARAMS_PARAM,
 } from '../../../../shared/lib/deep-links/constants';
 import { emptyHtmlPage } from '../../mock-e2e';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { BaseUrl } from '../../../../shared/constants/urls';
 
 /**
@@ -207,7 +207,7 @@ export const getConfig = async (options: DeepLinkTestConfigOptions = {}) => {
   } = options;
 
   return {
-    fixtures: new FixtureBuilder().build(),
+    fixtures: new FixtureBuilderV2().build(),
     title,
     manifestFlags: {
       testing: {
@@ -312,7 +312,6 @@ export const mockRewardsApi = async (server: Mockttp): Promise<void> => {
 export const REDIRECT_ROUTES = [
   { route: '/buy', expectedUrl: `${BaseUrl.Portfolio}/buy` },
   { route: '/card-onboarding', expectedUrl: `${BaseUrl.MetaMask}/card` },
-  { route: '/perps', expectedUrl: `${BaseUrl.MetaMask}/perps` },
   {
     route: '/predict',
     expectedUrl: `${BaseUrl.MetaMask}/prediction-markets`,

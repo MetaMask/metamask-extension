@@ -1,6 +1,6 @@
 import { HandlerType } from '@metamask/snaps-utils';
 import log from 'loglevel';
-import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts';
 
 export type SignRewardsMessageResult = {
@@ -10,7 +10,7 @@ export type SignRewardsMessageResult = {
 };
 
 export async function signSolanaRewardsMessage(
-  handleSnapRequest: HandleSnapRequest['handler'],
+  handleSnapRequest: SnapControllerHandleRequestAction['handler'],
   accountId: string,
   message: string,
 ): Promise<SignRewardsMessageResult> {

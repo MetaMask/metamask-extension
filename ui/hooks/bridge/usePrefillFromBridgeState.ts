@@ -1,11 +1,17 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
-  resetBridgeControllerAndCache,
+  rehydrateBridgeStore,
+  resetBridgeController,
+  resetInputFields,
   restoreQuoteRequestFromState,
   setFromToken,
+  setToToken,
 } from '../../ducks/bridge/actions';
-import { getBridgeQuotes } from '../../ducks/bridge/selectors';
+import { getBridgeQuotes, getFromChains } from '../../ducks/bridge/selectors';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 /**
@@ -19,27 +25,55 @@ export const usePrefillFromBridgeState = () => {
   const dispatch = useDispatch();
 
   const { activeQuote } = useSelector(getBridgeQuotes);
+  const fromChains = useSelector(getFromChains);
 
-  const { resetLocationState, token } = useBridgeNavigation();
+  const { resetLocationState, token, bridgeState } = useBridgeNavigation();
 
-  const shouldRehydrateFromLocationState = token;
-  const shouldRestoreInputsFromQuote = activeQuote;
+  const shouldRehydrateFromLocationState = bridgeState || token;
+  const envType = getEnvironmentType();
+  const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
+  const shouldRestoreInputsFromQuote = !bridgeState && activeQuote && isPopup;
 
   const resetControllerAndCache = () => {
-    dispatch(resetBridgeControllerAndCache());
+    dispatch(resetBridgeController());
+    dispatch(resetInputFields());
   };
 
   useEffect(() => {
     if (shouldRehydrateFromLocationState) {
-      // If token object is passed through navigation options, use it as the fromToken
-      dispatch(setFromToken(token));
+      bridgeState &&
+        dispatch(
+          rehydrateBridgeStore({
+            bridgeState,
+          }),
+        );
+
+      // If token object is passed through navigation options, use it
+      if (token) {
+        const isInitialBridgeNavigation =
+          !bridgeState?.isSrcAssetPickerOpen &&
+          !bridgeState?.isDestAssetPickerOpen;
+        const isTokenOnEnabledChain = fromChains.some(
+          (chain) =>
+            formatChainIdToCaip(chain.chainId) ===
+            formatChainIdToCaip(token.chainId),
+        );
+        const shouldSetFromToken =
+          bridgeState?.isSrcAssetPickerOpen ||
+          (isInitialBridgeNavigation && isTokenOnEnabledChain);
+        const shouldSetToToken = bridgeState?.isDestAssetPickerOpen;
+
+        if (shouldSetFromToken) {
+          dispatch(setFromToken(token));
+        } else if (shouldSetToToken) {
+          dispatch(setToToken(token));
+        }
+      }
+
       // Clear location state after using it to prevent infinite re-renders
       resetLocationState();
     } else if (shouldRestoreInputsFromQuote) {
-      dispatch(restoreQuoteRequestFromState(activeQuote.quote));
-    } else {
-      // Reset controller and cache on load if there's no restored active quote or token object
-      resetControllerAndCache();
+      dispatch(restoreQuoteRequestFromState(activeQuote));
     }
 
     // Reset controller and inputs before unloading the page

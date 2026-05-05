@@ -15,9 +15,11 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { THEME_ROUTE, LANGUAGE_ROUTE } from '../../../helpers/constants/routes';
 import type { MetaMaskReduxState } from '../../../store/store';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
+import { PREFERENCES_ITEMS } from '../search-config';
 import { AccountIdenticonItem } from './account-identicon-item';
+import { LocalCurrencyItem } from './local-currency-item';
 import { ShowDefaultAddressItem } from './show-default-address-item';
 import { THEME_LABEL_MAP } from './theme-utils';
 
@@ -25,7 +27,7 @@ const localeMap = new Map(locales.map(({ code, name }) => [code, name]));
 
 const ThemeItem = createSelectItem({
   name: 'ThemeItem',
-  titleKey: 'theme',
+  titleKey: PREFERENCES_ITEMS.theme,
   valueSelector: getTheme,
   formatValue: (theme, t) =>
     t(THEME_LABEL_MAP[theme as ThemeType] ?? THEME_LABEL_MAP[ThemeType.os]),
@@ -34,7 +36,7 @@ const ThemeItem = createSelectItem({
 
 const LanguageItem = createSelectItem({
   name: 'LanguageItem',
-  titleKey: 'language',
+  titleKey: PREFERENCES_ITEMS.language,
   valueSelector: (state: MetaMaskReduxState) => state.metamask.currentLocale,
   formatValue: (locale) => localeMap.get(locale) ?? locale,
   route: LANGUAGE_ROUTE,
@@ -42,7 +44,7 @@ const LanguageItem = createSelectItem({
 
 const ShowExtensionItem = createToggleItem({
   name: 'ShowExtensionItem',
-  titleKey: 'showExtensionInFullSizeView',
+  titleKey: PREFERENCES_ITEMS['show-extension'],
   descriptionKey: 'showExtensionInFullSizeViewDescription',
   selector: getShowExtensionInFullSizeView,
   action: setShowExtensionInFullSizeView,
@@ -64,17 +66,19 @@ const ShowExtensionItem = createToggleItem({
 
 const ManageInstitutionalWalletItem = createToggleItem({
   name: 'ManageInstitutionalWalletItem',
-  titleKey: 'manageInstitutionalWallets',
+  titleKey: PREFERENCES_ITEMS['manage-institutional-wallet'],
   descriptionKey: 'manageInstitutionalWalletsDescription',
   selector: getManageInstitutionalWallets,
   action: setManageInstitutionalWallets,
   dataTestId: 'manage-institutional-wallets',
+  trackEventProperty: 'manage_institutional_wallets',
 });
 
 /** Registry of setting items for the Preferences and Display page. Add new items here */
 const PREFERENCES_AND_DISPLAY_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'theme', component: ThemeItem },
   { id: 'language', component: LanguageItem },
+  { id: 'local-currency', component: LocalCurrencyItem },
   { id: 'account-identicon', component: AccountIdenticonItem },
   { id: 'show-default-address', component: ShowDefaultAddressItem },
   {

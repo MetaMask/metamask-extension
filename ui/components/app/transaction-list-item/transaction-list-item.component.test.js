@@ -1,6 +1,9 @@
 import { NameType } from '@metamask/name-controller';
-import { TransactionStatus } from '@metamask/transaction-controller';
-import { fireEvent } from '@testing-library/react';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { act, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
@@ -37,7 +40,12 @@ import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
+import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionListItem from '.';
+
+jest.mock('../../../hooks/useShouldShowSpeedUp', () => ({
+  useShouldShowSpeedUp: jest.fn(),
+}));
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   gasEstimateType: GasEstimateTypes.feeMarket,
@@ -106,6 +114,12 @@ jest.mock('react', () => {
 jest.mock('../../../store/actions.ts', () => ({
   tryReverseResolveAddress: jest.fn().mockReturnValue({ type: 'TYPE' }),
   abortTransactionSigning: jest.fn(),
+  getGasFeeTimeEstimate: jest.fn().mockResolvedValue({}),
+  updatePreviousGasParams: jest.fn().mockReturnValue({ type: 'TYPE' }),
+  updateTransactionGasFees: jest.fn().mockReturnValue({ type: 'TYPE' }),
+  createCancelTransaction: jest.fn().mockReturnValue({ type: 'TYPE' }),
+  createSpeedUpTransaction: jest.fn().mockReturnValue({ type: 'TYPE' }),
+  captureSingleException: jest.fn().mockReturnValue({ type: 'TYPE' }),
 }));
 
 const mockStore = configureStore();
@@ -159,6 +173,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
   return undefined;
 };
 
+const useShouldShowSpeedUpMock = jest.mocked(useShouldShowSpeedUp);
+
 describe('TransactionListItem', () => {
   beforeAll(() => {
     useGasFeeEstimates.mockImplementation(
@@ -171,6 +187,8 @@ describe('TransactionListItem', () => {
         label: null,
       })),
     );
+
+    useShouldShowSpeedUpMock.mockReturnValue(true);
   });
 
   afterAll(() => {
@@ -245,24 +263,25 @@ describe('TransactionListItem', () => {
       expect(queryByTestId('not-enough-gas__tooltip')).not.toBeInTheDocument();
     });
 
-    it(`should open the edit gas popover when cancel is clicked`, () => {
+    it(`should open the cancel/speedup modal when cancel is clicked`, async () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '2AA1EFB94E0000',
         }),
       );
-      const { getByText, queryByText } = renderWithProvider(
+      useDispatch.mockReturnValue(jest.fn());
+      const { getByText, queryByTestId } = renderWithProvider(
         <TransactionListItem transactionGroup={transactionGroup} />,
       );
       expect(
-        queryByText(messages.cancelPopoverTitle.message),
+        queryByTestId('speed-up-and-cancel-modal'),
       ).not.toBeInTheDocument();
 
       const cancelButton = getByText(messages.cancel.message);
-      fireEvent.click(cancelButton);
-      expect(
-        getByText(messages.cancelPopoverTitle.message),
-      ).toBeInTheDocument();
+      await act(async () => {
+        fireEvent.click(cancelButton);
+      });
+      expect(queryByTestId('speed-up-and-cancel-modal')).toBeInTheDocument();
     });
   });
 
@@ -368,5 +387,81 @@ describe('TransactionListItem', () => {
       '?Swap USDC to UNIFailed-2 USDC',
     );
     expect(getByText(messages.failed.message)).toBeInTheDocument();
+  });
+
+  describe('gas fee token selected', () => {
+    it('hides Cancel and Speed up when selectedGasFeeToken is set', () => {
+      const transactionGroupWithGasFeeToken = {
+        ...transactionGroup,
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          selectedGasFeeToken: '0xabc123',
+        },
+      };
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem
+          transactionGroup={transactionGroupWithGasFeeToken}
+        />,
+      );
+
+      expect(queryByTestId('cancel-button')).not.toBeInTheDocument();
+      expect(queryByTestId('speed-up-button')).not.toBeInTheDocument();
+    });
+
+    it('shows Cancel and Speed up when selectedGasFeeToken is not set and other conditions allow', () => {
+      useShouldShowSpeedUpMock.mockReturnValue(true);
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={transactionGroup} />,
+      );
+
+      expect(queryByTestId('cancel-button')).toBeInTheDocument();
+      expect(queryByTestId('speed-up-button')).toBeInTheDocument();
+    });
+  });
+
+  describe('perpsWithdraw chain badge', () => {
+    beforeEach(() => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({ balance: '2AA1EFB94E0000' }),
+      );
+      useDispatch.mockReturnValue(jest.fn());
+    });
+
+    it('renders the ChainBadge using metamaskPay.chainId (source) for perpsWithdraw', () => {
+      const perpsWithdrawGroup = {
+        ...transactionGroup,
+        initialTransaction: {
+          ...transactionGroup.initialTransaction,
+          type: TransactionType.perpsWithdraw,
+          chainId: '0x38',
+          metamaskPay: { chainId: '0x2105' },
+        },
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          type: TransactionType.perpsWithdraw,
+          chainId: '0x38',
+          metamaskPay: { chainId: '0x2105' },
+          status: TransactionStatus.confirmed,
+        },
+      };
+
+      const { getByAltText } = renderWithProvider(
+        <TransactionListItem transactionGroup={perpsWithdrawGroup} />,
+      );
+
+      expect(getByAltText('Base')).toBeInTheDocument();
+    });
   });
 });

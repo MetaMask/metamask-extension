@@ -1,12 +1,15 @@
 import { act } from 'react-dom/test-utils';
+import { AuthorizationList } from '@metamask/transaction-controller';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { EIP_7702_REVOKE_ADDRESS } from '../../../../../shared/lib/eip7702-utils';
 import { isRelaySupported } from '../../../../store/actions';
+import { isHardwareWallet } from '../../../../selectors';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
-jest.mock('../../../../../shared/modules/selectors');
+jest.mock('../../../../../shared/lib/selectors');
 jest.mock('../../../../store/controller-actions/transaction-controller');
 
 jest.mock('../../../../store/actions', () => ({
@@ -14,13 +17,20 @@ jest.mock('../../../../store/actions', () => ({
   isRelaySupported: jest.fn(),
 }));
 
+jest.mock('../../../../selectors', () => ({
+  ...jest.requireActual('../../../../selectors'),
+  isHardwareWallet: jest.fn(),
+}));
+
 jest.mock('./useGaslessSupportedSmartTransactions');
 
-async function runHook() {
+async function runHook({
+  authorizationList,
+}: { authorizationList?: AuthorizationList } = {}) {
   const { result } = renderHookWithConfirmContextProvider(
     useIsGaslessSupported,
     getMockConfirmStateForTransaction(
-      genUnapprovedContractInteractionConfirmation(),
+      genUnapprovedContractInteractionConfirmation({ authorizationList }),
     ),
   );
 
@@ -33,6 +43,7 @@ async function runHook() {
 
 describe('useIsGaslessSupported', () => {
   const isRelaySupportedMock = jest.mocked(isRelaySupported);
+  const isHardwareWalletMock = jest.mocked(isHardwareWallet);
   const useGaslessSupportedSmartTransactionsMock = jest.mocked(
     useGaslessSupportedSmartTransactions,
   );
@@ -41,6 +52,7 @@ describe('useIsGaslessSupported', () => {
     jest.resetAllMocks();
 
     isRelaySupportedMock.mockResolvedValue(false);
+    isHardwareWalletMock.mockReturnValue(false);
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: false,
@@ -149,6 +161,90 @@ describe('useIsGaslessSupported', () => {
       isSupported: false,
       isSmartTransaction: true,
       pending: true,
+    });
+  });
+
+  it('returns isSupported false for hardware wallets even when smart transactions are supported', async () => {
+    isHardwareWalletMock.mockReturnValue(true);
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+      pending: false,
+    });
+
+    const result = await runHook();
+
+    expect(result).toStrictEqual({
+      isSupported: false,
+      isSmartTransaction: true,
+      pending: false,
+    });
+  });
+
+  it('returns isSupported false for hardware wallets even when relay is supported', async () => {
+    isHardwareWalletMock.mockReturnValue(true);
+    isRelaySupportedMock.mockResolvedValue(true);
+
+    const result = await runHook();
+
+    expect(isRelaySupportedMock).not.toHaveBeenCalled();
+
+    expect(result).toStrictEqual({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+  });
+
+  describe('account downgrade transactions', () => {
+    const downgradeAuthorizationList: AuthorizationList = [
+      { address: EIP_7702_REVOKE_ADDRESS },
+    ];
+
+    it('returns isSupported false for downgrade even when relay is supported', async () => {
+      isRelaySupportedMock.mockResolvedValue(true);
+
+      const result = await runHook({
+        authorizationList: downgradeAuthorizationList,
+      });
+
+      expect(result).toStrictEqual({
+        isSupported: false,
+        isSmartTransaction: false,
+        pending: false,
+      });
+    });
+
+    it('returns isSupported false for downgrade even when smart transactions are supported', async () => {
+      useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+        isSmartTransaction: true,
+        isSupported: true,
+        pending: false,
+      });
+
+      const result = await runHook({
+        authorizationList: downgradeAuthorizationList,
+      });
+
+      expect(result).toStrictEqual({
+        isSupported: false,
+        isSmartTransaction: true,
+        pending: false,
+      });
+    });
+
+    it('still returns isSupported true for upgrade transactions with relay support', async () => {
+      isRelaySupportedMock.mockResolvedValue(true);
+
+      const result = await runHook({
+        authorizationList: [{ address: '0x1234' }],
+      });
+
+      expect(result).toStrictEqual({
+        isSupported: true,
+        isSmartTransaction: false,
+        pending: false,
+      });
     });
   });
 });

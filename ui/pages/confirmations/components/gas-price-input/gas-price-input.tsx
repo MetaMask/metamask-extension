@@ -14,7 +14,7 @@ import { useConfirmContext } from '../../context/confirm';
 import {
   hexWEIToDecGWEI,
   decGWEIToHexWEI,
-} from '../../../../../shared/modules/conversion.utils';
+} from '../../../../../shared/lib/conversion.utils';
 import { FormTextField } from '../../../../components/component-library';
 import { validateGasPrice } from '../../utils/gasValidations';
 

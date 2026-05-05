@@ -5,10 +5,7 @@ class SendPage {
 
   private readonly amountInput = { testId: 'send-amount-input' };
 
-  private readonly continueButton = {
-    text: 'Continue',
-    tag: 'button',
-  };
+  private readonly continueButton = { testId: 'send-continue-button' };
 
   private readonly header = {
     tag: 'h4',
@@ -168,6 +165,13 @@ class SendPage {
     }
     await this.fillAmount(amount);
     await this.pressContinueButton();
+  }
+
+  async editAmountByKeys(keys: string[]): Promise<void> {
+    console.log('Editing amount value by key presses');
+    for (const key of keys) {
+      await this.driver.press(this.amountInput, key);
+    }
   }
 
   async fillAmount(amount: string): Promise<void> {

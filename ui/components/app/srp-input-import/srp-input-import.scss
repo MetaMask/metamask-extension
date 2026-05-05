@@ -5,17 +5,15 @@
     min-height: 218px;
   }
 
-  &__srp-note {
-    // SRP_OVERRIDE: remove focus outline from textarea
-    .mm-textarea {
-      &:focus {
-        outline: none;
-      }
-    }
-  }
-
   &__initial-input {
-    padding: 0 0;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: transparent;
+    resize: none;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
 
     &:focus {
       outline: none;

@@ -1,7 +1,8 @@
 import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { getGaslessBridgeWith7702EnabledForChain } from '../../../../shared/modules/selectors';
+import { getGaslessBridgeWith7702EnabledForChain } from '../../../../shared/lib/selectors';
 import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
+import { isHardwareWallet } from '../../../selectors';
 import { useGasIncluded7702 } from './useGasIncluded7702';
 
 jest.mock('../../../store/actions', () => ({
@@ -12,11 +13,16 @@ jest.mock('../../../store/controller-actions/transaction-controller', () => ({
   isAtomicBatchSupported: jest.fn(),
 }));
 
-jest.mock('../../../../shared/modules/selectors');
+jest.mock('../../../../shared/lib/selectors');
 
 jest.mock('../../../ducks/bridge/selectors', () => ({
   ...jest.requireActual('../../../ducks/bridge/selectors'),
   getIsStxEnabled: jest.fn(),
+}));
+
+jest.mock('../../../selectors', () => ({
+  ...jest.requireActual('../../../selectors'),
+  isHardwareWallet: jest.fn().mockReturnValue(false),
 }));
 
 const renderUseGasIncluded7702 = (
@@ -267,6 +273,24 @@ describe('useGasIncluded7702', () => {
 
     expect(result.current).toBe(true);
     expect(mockIsRelaySupported).toHaveBeenCalledWith('0xa');
+  });
+
+  it('returns false for hardware wallet accounts even when relay is supported', () => {
+    const mockIsHardwareWallet = jest.mocked(isHardwareWallet);
+    mockIsHardwareWallet.mockReturnValue(true);
+    mockIsRelaySupported.mockResolvedValue(true);
+
+    const { result } = renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: false,
+    });
+
+    expect(result.current).toBe(false);
+    expect(mockIsRelaySupported).not.toHaveBeenCalled();
+
+    mockIsHardwareWallet.mockReturnValue(false);
   });
 
   describe('Race condition handling', () => {

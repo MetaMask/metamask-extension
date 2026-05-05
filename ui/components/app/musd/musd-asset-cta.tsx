@@ -11,7 +11,7 @@
  */
 
 import React, { useCallback, useContext } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
   Box,
@@ -36,8 +36,13 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMusdConversion } from '../../../hooks/musd';
 import { addMusdConversionDismissedCtaKey } from '../../../store/actions';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
 import { MUSD_CONVERSION_APY } from './constants';
-import { MUSD_EVENTS_CONSTANTS } from './musd-events';
+import {
+  createMusdCtaClickedEventProperties,
+  MUSD_EVENTS_CONSTANTS,
+  resolveMusdConversionCtaRedirectsTo,
+} from './musd-events';
 
 // Runtime path: app/images/ is copied to images/ in the build (see development/build/static.js)
 const MUSD_EDUCATION_COIN_IMAGE = './images/musd-icon-no-background-2x.png';
@@ -91,7 +96,13 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const { startConversionFlow } = useMusdConversion();
+  const { startConversionFlow, educationSeen } = useMusdConversion();
+  const networkConfigurationsByChainId = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+  const networkName =
+    networkConfigurationsByChainId[token.chainId as Hex]?.name ??
+    'Unknown Network';
 
   /**
    * Generate CTA key for dismissal tracking
@@ -102,23 +113,27 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
    * Handle convert button click
    */
   const handleConvert = useCallback(async () => {
-    // Track analytics event
+    const ctaDisplayText = t('musdBoostTitle', [String(MUSD_CONVERSION_APY)]);
+    const redirectsTo = resolveMusdConversionCtaRedirectsTo({
+      intent: 'conversion',
+      educationSeen,
+    });
+
     trackEvent({
       event: MetaMetricsEventName.MusdConversionCtaClicked,
       category: MetaMetricsEventCategory.Tokens,
-      properties: {
+      properties: createMusdCtaClickedEventProperties({
         location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.ASSET_OVERVIEW,
-        /* eslint-disable @typescript-eslint/naming-convention */
-        cta_type: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.TERTIARY,
-        cta_text: t('musdBoostTitle', [String(MUSD_CONVERSION_APY)]),
-        cta_click_target: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
-        chain_id: token.chainId,
-        token_symbol: token.symbol,
-        /* eslint-enable @typescript-eslint/naming-convention */
-      },
+        redirectsTo,
+        ctaType: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.TERTIARY,
+        ctaText: String(ctaDisplayText),
+        chainId: token.chainId,
+        chainName: networkName,
+        assetSymbol: token.symbol,
+        clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
+      }),
     });
 
-    // Start conversion flow with this token
     await startConversionFlow({
       preferredToken: {
         address: token.address as Hex,
@@ -126,7 +141,7 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
       },
       entryPoint: 'asset_overview',
     });
-  }, [token, trackEvent, startConversionFlow, t]);
+  }, [token, trackEvent, startConversionFlow, t, educationSeen, networkName]);
 
   /**
    * Handle dismiss button click
@@ -184,7 +199,7 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
-        backgroundColor={BoxBackgroundColor.BackgroundMuted}
+        backgroundColor={BoxBackgroundColor.Transparent}
         className="musd-asset-cta__icon"
       >
         <img src={MUSD_EDUCATION_COIN_IMAGE} alt="mUSD" />
@@ -195,10 +210,18 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
         flexDirection={BoxFlexDirection.Column}
         className="musd-asset-cta__content"
       >
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+        <Text
+          color={TextColor.TextAlternative}
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+        >
           {t('musdBoostTitle', [String(MUSD_CONVERSION_APY)])}
         </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextDefault}
+        >
           {t('musdBoostDescription', [String(MUSD_CONVERSION_APY)])}
         </Text>
       </Box>

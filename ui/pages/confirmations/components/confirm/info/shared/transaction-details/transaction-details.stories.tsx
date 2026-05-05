@@ -19,9 +19,7 @@ function getStore() {
   return configureStore(
     getMockConfirmStateForTransaction(confirmation, {
       metamask: {
-        preferences: {
-          petnamesEnabled: true,
-        },
+        preferences: {},
         userOperations: {
           [confirmation.id]: {
             userOperation: {

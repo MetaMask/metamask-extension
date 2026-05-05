@@ -9,15 +9,15 @@ import {
 import { EthAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipAccountId } from '@metamask/utils';
-import {
-  AccountsControllerListMultichainAccountsAction,
-  HandleSnapRequest,
-} from '@metamask/snaps-controllers';
+import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
-import { AccountsControllerGetSelectedMultichainAccountAction } from '@metamask/accounts-controller';
+import {
+  AccountsControllerGetSelectedMultichainAccountAction,
+  AccountsControllerListMultichainAccountsAction,
+} from '@metamask/accounts-controller';
 import {
   KeyringControllerSignPersonalMessageAction,
   KeyringControllerUnlockEvent,
@@ -27,17 +27,17 @@ import {
   RecurringInterval,
 } from '@metamask/subscription-controller';
 import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-import {
-  RewardsControllerActions,
-  RewardsControllerEvents,
-  RewardsControllerMessenger,
-} from '../../controller-init/messengers';
 import { getRootMessenger } from '../../lib/messenger';
 import {
   EstimatedPointsDto,
   EstimatePointsDto,
   SeasonDtoState,
 } from '../../../../shared/types/rewards';
+import {
+  RewardsControllerActions,
+  RewardsControllerEvents,
+  RewardsControllerMessenger,
+} from './rewards-controller.types';
 import {
   RewardsController,
   getRewardsControllerDefaultState,
@@ -74,7 +74,7 @@ import {
   RewardsDataServiceGenerateChallengeAction,
   RewardsDataServiceSiweLoginAction,
   RewardsDataServiceSiweJoinAction,
-} from './rewards-data-service-types';
+} from './rewards-data-service-method-action-types';
 
 type AllActions = MessengerActions<RewardsControllerMessenger>;
 
@@ -172,6 +172,7 @@ const MOCK_SEASON_METADATA: SeasonMetadataDto = {
   startDate: new Date('2024-01-01T00:00:00.000Z'),
   endDate: new Date('2024-12-31T23:59:59.999Z'),
   tiers: MOCK_SEASON_TIERS,
+  activityTypes: [],
 };
 
 const MOCK_SEASON_STATE: SeasonStateDto = {
@@ -230,7 +231,7 @@ async function withController<ReturnValue>(
     | RewardsDataServiceSiweLoginAction
     | RewardsDataServiceSiweJoinAction
     | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
-    | HandleSnapRequest;
+    | SnapControllerHandleRequestAction;
 
   type TestAllowedEvents =
     | KeyringControllerUnlockEvent
@@ -459,15 +460,19 @@ describe('RewardsController', () => {
       });
     });
 
-    it('should throw error if current tier is not found', async () => {
+    it('should return null tier state if current tier is not found', async () => {
       await withController({ isDisabled: false }, ({ controller }) => {
-        expect(() => {
-          controller.calculateTierStatus(
-            MOCK_SEASON_TIERS,
-            'invalid-tier',
-            100,
-          );
-        }).toThrow('Current tier invalid-tier not found in season tiers');
+        const tierStatus = controller.calculateTierStatus(
+          MOCK_SEASON_TIERS,
+          'invalid-tier',
+          100,
+        );
+
+        expect(tierStatus).toEqual({
+          currentTier: null,
+          nextTier: null,
+          nextTierPointsNeeded: null,
+        });
       });
     });
   });
@@ -2471,7 +2476,7 @@ describe('RewardsController', () => {
 
           expect(result).toBeDefined();
           expect(result?.balance.total).toBe(250);
-          expect(result?.tier.currentTier.id).toBe('tier-2');
+          expect(result?.tier.currentTier?.id).toBe('tier-2');
         },
       );
     });
@@ -2835,7 +2840,7 @@ describe('RewardsController', () => {
   describe('getGeoRewardsMetadata', () => {
     it('should return unknown location when rewards are disabled', async () => {
       await withController({ isDisabled: true }, async ({ controller }) => {
-        const result = await controller.getRewardsGeoMetadata();
+        const result = await controller.getGeoRewardsMetadata();
 
         expect(result).toEqual({
           geoLocation: 'UNKNOWN',
@@ -2855,7 +2860,7 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.getRewardsGeoMetadata();
+          const result = await controller.getGeoRewardsMetadata();
 
           expect(result).toEqual({
             geoLocation: 'US',
@@ -2863,7 +2868,7 @@ describe('RewardsController', () => {
           });
 
           // Verify caching - second call should not fetch again
-          const cachedResult = await controller.getRewardsGeoMetadata();
+          const cachedResult = await controller.getGeoRewardsMetadata();
           expect(cachedResult).toEqual(result);
         },
       );
@@ -2880,10 +2885,52 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.getRewardsGeoMetadata();
+          const result = await controller.getGeoRewardsMetadata();
 
           expect(result).toEqual({
             geoLocation: 'UK',
+            optinAllowedForGeo: false,
+          });
+        },
+      );
+    });
+
+    it('should mark GB as blocked region', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:fetchGeoLocation') {
+              return Promise.resolve('GB');
+            }
+            return undefined;
+          });
+
+          const result = await controller.getGeoRewardsMetadata();
+
+          expect(result).toEqual({
+            geoLocation: 'GB',
+            optinAllowedForGeo: false,
+          });
+        },
+      );
+    });
+
+    it('should mark GI as blocked region', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:fetchGeoLocation') {
+              return Promise.resolve('GI');
+            }
+            return undefined;
+          });
+
+          const result = await controller.getGeoRewardsMetadata();
+
+          expect(result).toEqual({
+            geoLocation: 'GI',
             optinAllowedForGeo: false,
           });
         },
@@ -3641,7 +3688,7 @@ describe('RewardsController', () => {
       });
     });
 
-    it('should force fresh check for opted-in accounts WITHOUT subscriptionId checked more than 60 minutes ago', async () => {
+    it('should use cached data for opted-in accounts WITHOUT subscriptionId regardless of staleness', async () => {
       const state: Partial<RewardsControllerState> = {
         rewardsAccounts: {
           [MOCK_CAIP_ACCOUNT]: {
@@ -3650,7 +3697,7 @@ describe('RewardsController', () => {
             subscriptionId: null, // Opted in but missing subscriptionId
             perpsFeeDiscount: null,
             lastPerpsDiscountRateFetched: null,
-            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 61, // 61 minutes ago (exceeds 60 minute threshold)
+            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 61, // 61 minutes ago
           },
         },
       };
@@ -3667,10 +3714,10 @@ describe('RewardsController', () => {
           addressToAccountMap,
         );
 
-        // Should force fresh check because opted-in but no subscriptionId and stale cache
-        expect(result.cachedOptInResults).toEqual([null]);
+        // hasOptedIn is true so stale-cache check only applies to hasOptedIn === false
+        expect(result.cachedOptInResults).toEqual([true]);
         expect(result.cachedSubscriptionIds).toEqual([null]);
-        expect(result.addressesNeedingFresh).toEqual([MOCK_ACCOUNT_ADDRESS]);
+        expect(result.addressesNeedingFresh).toEqual([]);
       });
     });
 
@@ -3740,7 +3787,7 @@ describe('RewardsController', () => {
       });
     });
 
-    it('should force fresh check for opted-in accounts WITHOUT subscriptionId and no lastFreshOptInStatusCheck', async () => {
+    it('should use cached data for opted-in accounts WITHOUT subscriptionId even without lastFreshOptInStatusCheck', async () => {
       const state: Partial<RewardsControllerState> = {
         rewardsAccounts: {
           [MOCK_CAIP_ACCOUNT]: {
@@ -3766,10 +3813,10 @@ describe('RewardsController', () => {
           addressToAccountMap,
         );
 
-        // Should force fresh check because opted-in without subscriptionId and never checked fresh
-        expect(result.cachedOptInResults).toEqual([null]);
+        // Should use cached data because only hasOptedIn === false triggers a fresh recheck
+        expect(result.cachedOptInResults).toEqual([true]);
         expect(result.cachedSubscriptionIds).toEqual([null]);
-        expect(result.addressesNeedingFresh).toEqual([MOCK_ACCOUNT_ADDRESS]);
+        expect(result.addressesNeedingFresh).toEqual([]);
       });
     });
   });
@@ -5122,7 +5169,7 @@ describe('Additional RewardsController edge cases', () => {
             return undefined;
           });
 
-          const result = await controller.getRewardsGeoMetadata();
+          const result = await controller.getGeoRewardsMetadata();
 
           expect(result).toEqual({
             geoLocation: 'UNKNOWN',
@@ -6419,7 +6466,7 @@ describe('Hardware Wallet Support for Rewards', () => {
           expect(result).toBeDefined();
           expect(result?.balance.total).toBe(250);
           expect(result?.balance.updatedAt).toBeDefined();
-          expect(result?.tier.currentTier.id).toBe('tier-2');
+          expect(result?.tier.currentTier?.id).toBe('tier-2');
           expect(result?.tier.nextTier?.id).toBe('tier-3');
           expect(result?.tier.nextTierPointsNeeded).toBe(250);
         },
@@ -6593,7 +6640,7 @@ describe('Hardware Wallet Support for Rewards', () => {
 
           expect(result).toBeDefined();
           expect(result?.balance.total).toBe(50);
-          expect(result?.tier.currentTier.id).toBe('tier-1');
+          expect(result?.tier.currentTier?.id).toBe('tier-1');
           expect(result?.tier.nextTier?.id).toBe('tier-2');
           expect(result?.tier.nextTierPointsNeeded).toBe(50); // 100 - 50
         },

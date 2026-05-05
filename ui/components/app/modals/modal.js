@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
@@ -31,8 +31,6 @@ import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-t
 import CustomizeNonceModal from './customize-nonce';
 import FadeModal from './fade-modal';
 import NewAccountModal from './new-account-modal';
-import TransactionAlreadyConfirmed from './transaction-already-confirmed';
-
 // Metamask Notifications
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
 
@@ -138,17 +136,6 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '8px',
-    },
-  },
-
-  TRANSACTION_ALREADY_CONFIRMED: {
-    disableBackdropClick: true,
-    contents: <TransactionAlreadyConfirmed />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
     },
   },
 

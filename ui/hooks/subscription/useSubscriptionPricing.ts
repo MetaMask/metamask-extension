@@ -146,7 +146,7 @@ export const useAvailableTokenBalances = (params: {
         }
         return getSubscriptionCryptoApprovalAmount({
           chainId: token.chainId as Hex,
-          paymentTokenAddress: token.address as Hex,
+          paymentTokenAddress: token.address.toLowerCase() as Hex,
           productType,
           interval: price.interval,
         });

@@ -47,6 +47,9 @@ export type SignatureRequestType = {
   decodedPermission?: DecodedPermission;
 };
 
+/**
+ * @deprecated Use {@link TransactionMeta} or {@link SignatureRequest} from the relevant controller package directly.
+ */
 export type Confirmation = SignatureRequestType | TransactionMeta;
 
 export type ConfirmMetamaskState = {

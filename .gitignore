@@ -105,3 +105,14 @@ development/.webpack
 
 # llm workflow playwright temp files
 temp-llm-workflow-*
+.mm-server
+.mm-daemon.log
+
+# git worktrees
+.worktrees
+
+# Cursor IDE internal state
+.cursor/hooks/
+
+# Local git worktrees
+.worktrees

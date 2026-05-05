@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { withFixtures } from '../../helpers';
 import { PAGES, Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 
 // Detect scuttling by prodding globals until found
 // This for loop is likely running only once, unless the first global it finds is in the exceptions list. The test is immune to changes to scuttling exceptions.
@@ -30,11 +30,13 @@ function assertScuttling() {
 function assertLockdown() {
   if (
     !(
-      Object.isFrozen(window.Object) &&
-      Object.isFrozen(window.Object.prototype) &&
-      Object.isFrozen(window.Function) &&
-      Object.isFrozen(window.Function.prototype) &&
-      Function.prototype.constructor !== window.Function // this is proof that repairIntrinsics part of lockdown worked
+      (
+        Object.isFrozen(window.Object) &&
+        Object.isFrozen(window.Object.prototype) &&
+        Object.isFrozen(window.Function) &&
+        Object.isFrozen(window.Function.prototype) &&
+        Function.prototype.constructor !== window.Function
+      ) // this is proof that repairIntrinsics part of lockdown worked
     )
   ) {
     throw Error('Lockdown is not in effect');

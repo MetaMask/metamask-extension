@@ -3,7 +3,7 @@ import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -38,7 +38,7 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
       async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress =
           await contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });

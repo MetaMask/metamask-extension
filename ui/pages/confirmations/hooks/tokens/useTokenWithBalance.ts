@@ -11,7 +11,7 @@ import {
   getNativeTokenInfo,
 } from '../../../../selectors';
 import { getTokenBalances } from '../../../../ducks/metamask/metamask';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { useTokenFiatRate } from './useTokenFiatRates';
 

@@ -5,7 +5,7 @@ import PermissionListPage from '../../page-objects/pages/permission/permission-l
 import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Revoke Permissions', function () {
   it('should disconnect when click on Disconnect button in connections page', async function () {
@@ -18,7 +18,7 @@ describe('Revoke Permissions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // open permission page
         await openPermissionsPageFlow(driver);

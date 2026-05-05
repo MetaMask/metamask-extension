@@ -12,11 +12,13 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
+import type { Position } from '@metamask/perps-controller';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { formatPnl } from '../../../../../shared/lib/perps-formatters';
+import { formatPerpsFiatMinimal } from '../utils/formatPerpsDisplayPrice';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, getPositionDirection } from '../utils';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
-import type { Position } from '@metamask/perps-controller';
 
 export type PositionCardProps = {
   position: Position;
@@ -37,14 +39,17 @@ export const PositionCard: React.FC<PositionCardProps> = ({
   onClick,
 }) => {
   const navigate = useNavigate();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
+  const { formatPercentWithMinThreshold } = useFormatters();
   const direction = getPositionDirection(position.size);
   const pnlNum = parseFloat(position.unrealizedPnl);
   const isProfit = pnlNum >= 0;
   const absSize = Math.abs(parseFloat(position.size)).toString();
   const displayName = getDisplayName(position.symbol);
-  const pnlPrefix = isProfit ? '+' : '-';
-  const formattedPnl = `${pnlPrefix}${formatCurrencyWithMinThreshold(Math.abs(pnlNum), 'USD')}`;
+  const formattedPnl = formatPnl(pnlNum);
+  const roeNum = Number.parseFloat(position.returnOnEquity);
+  const formattedRoe = Number.isNaN(roeNum)
+    ? null
+    : formatPercentWithMinThreshold(roeNum);
 
   const handleClick = useCallback(() => {
     if (onClick) {
@@ -108,17 +113,31 @@ export const PositionCard: React.FC<PositionCardProps> = ({
         gap={1}
       >
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          {formatCurrencyWithMinThreshold(
-            parseFloat(position.positionValue),
-            'USD',
-          )}
+          {formatPerpsFiatMinimal(parseFloat(position.positionValue))}
         </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Baseline}
+          gap={1}
         >
-          {formattedPnl}
-        </Text>
+          <Text
+            variant={TextVariant.BodySm}
+            color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
+          >
+            {formattedPnl}
+          </Text>
+          {formattedRoe !== null && (
+            <Text
+              variant={TextVariant.BodySm}
+              color={
+                isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault
+              }
+              data-testid={`position-card-roe-${position.symbol}`}
+            >
+              ({formattedRoe})
+            </Text>
+          )}
+        </Box>
       </Box>
     </ButtonBase>
   );

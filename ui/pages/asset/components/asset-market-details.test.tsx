@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../../../app/scripts/lib/util';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { Asset } from '../types/asset';

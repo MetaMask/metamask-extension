@@ -1,4 +1,8 @@
-import { rewriteReport, removeUrlsFromBreadCrumb } from './setupSentry';
+import {
+  removeUrlsFromBreadCrumb,
+  rewriteReport,
+  shouldCreateSpanForRequest,
+} from './setupSentry';
 
 describe('Setup Sentry', () => {
   describe('rewriteReport', () => {
@@ -7,8 +11,8 @@ describe('Setup Sentry', () => {
         message: 'This report has a test url: http://example.com',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
-      expect(rewrittenReport.message).toStrictEqual(
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
         'This report has a test url: **',
       );
     });
@@ -27,8 +31,8 @@ describe('Setup Sentry', () => {
         },
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
-      expect(rewrittenReport.exception.values).toStrictEqual([
+      rewriteReport(testReport);
+      expect(testReport.exception.values).toStrictEqual([
         {
           value: 'This report has a test url: **',
         },
@@ -44,8 +48,8 @@ describe('Setup Sentry', () => {
           'There is an ethereum address 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 in this message',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
-      expect(rewrittenReport.message).toStrictEqual(
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
         'There is an ethereum address 0x** in this message',
       );
     });
@@ -55,8 +59,8 @@ describe('Setup Sentry', () => {
         message: 'This report has an allowed url: https://codefi.network/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
-      expect(rewrittenReport.message).toStrictEqual(
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
         'This report has an allowed url: https://codefi.network/',
       );
     });
@@ -67,8 +71,8 @@ describe('Setup Sentry', () => {
           'This report has an allowed url: https://subdomain.codefi.network/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
-      expect(rewrittenReport.message).toStrictEqual(
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
         'This report has an allowed url: https://subdomain.codefi.network/',
       );
     });
@@ -79,8 +83,8 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://nodefi.network/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
-      expect(rewrittenReport.message).toStrictEqual(
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
@@ -91,8 +95,8 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://codefi.network.another.domain.com/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
-      expect(rewrittenReport.message).toStrictEqual(
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
@@ -103,8 +107,8 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://example.com/test?redirect=http://codefi.network',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
-      expect(rewrittenReport.message).toStrictEqual(
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
@@ -115,8 +119,8 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://subdomain.example.com/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
-      expect(rewrittenReport.message).toStrictEqual(
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
@@ -127,8 +131,8 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://example.%%%/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
-      expect(rewrittenReport.message).toStrictEqual(
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
@@ -139,8 +143,8 @@ describe('Setup Sentry', () => {
           'This 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 address used http://example.com on Saturday',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
-      expect(rewrittenReport.message).toStrictEqual(
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
         'This 0x** address used ** on Saturday',
       );
     });
@@ -150,8 +154,65 @@ describe('Setup Sentry', () => {
         message: 'This is a simple report',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
-      expect(rewrittenReport.message).toStrictEqual('This is a simple report');
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual('This is a simple report');
+    });
+  });
+
+  describe('shouldCreateSpanForRequest', () => {
+    it('should return false for snap manifest fetches', () => {
+      expect(
+        shouldCreateSpanForRequest(
+          'chrome-extension://abcdefg/snaps/npm:@metamask/preinstalled-example-snap/snap.manifest.json',
+        ),
+      ).toStrictEqual(false);
+      expect(
+        shouldCreateSpanForRequest(
+          'moz-extension://abcdefg/snaps/npm:@metamask/message-signing-snap/snap.manifest.json',
+        ),
+      ).toStrictEqual(false);
+    });
+
+    it('should return false for locale file fetches', () => {
+      expect(
+        shouldCreateSpanForRequest(
+          'chrome-extension://abcdefg/_locales/en/messages.json',
+        ),
+      ).toStrictEqual(false);
+      expect(
+        shouldCreateSpanForRequest(
+          'moz-extension://abcdefg/_locales/es/messages.json',
+        ),
+      ).toStrictEqual(false);
+    });
+
+    it('should return false for sentry.io domains', () => {
+      expect(
+        shouldCreateSpanForRequest('https://sentry.io/api/123'),
+      ).toStrictEqual(false);
+      expect(
+        shouldCreateSpanForRequest('https://o123.ingest.sentry.io/envelope'),
+      ).toStrictEqual(false);
+    });
+
+    it('should return true for other local extension file fetches', () => {
+      expect(
+        shouldCreateSpanForRequest(
+          'chrome-extension://abcdefg/scripts/ppom-validator.wasm',
+        ),
+      ).toStrictEqual(true);
+      expect(
+        shouldCreateSpanForRequest('chrome-extension://abcdefg/home.html'),
+      ).toStrictEqual(true);
+    });
+
+    it('should return true for external API URLs', () => {
+      expect(
+        shouldCreateSpanForRequest('https://mainnet.infura.io/v3/abc'),
+      ).toStrictEqual(true);
+      expect(
+        shouldCreateSpanForRequest('https://api.coingecko.com/v3/simple/price'),
+      ).toStrictEqual(true);
     });
   });
 

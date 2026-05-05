@@ -1,20 +1,31 @@
+import { isNonEvmChainId } from '@metamask/bridge-controller';
 import { createSelector } from 'reselect';
 import type {
   BridgeHistoryItem,
   BridgeStatusControllerState,
 } from '@metamask/bridge-status-controller';
 import { type TransactionControllerState } from '@metamask/transaction-controller';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { Numeric } from '../../../shared/lib/Numeric';
+import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import {
   getInternalAccountsFromGroupById,
   getSelectedAccountGroup,
 } from '../../selectors/multichain-accounts/account-tree';
+import { EMPTY_OBJECT } from '../../selectors/shared';
+import { selectCurrentAccountNonEvmTransactions } from '../../selectors/multichain-transactions';
+import { selectTransactionIds } from '../../selectors/toast';
 
 type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState & TransactionControllerState;
 };
+
+type BridgeHistoryItemWithOriginalTransactionId = BridgeHistoryItem & {
+  originalTransactionId?: string;
+};
+
+const normalizeBridgeHistoryLookupKey = (value: unknown) =>
+  typeof value === 'string' ? value.toLowerCase() : String(value);
 
 const selectBridgeHistory = (state: BridgeStatusAppState) =>
   state.metamask.txHistory;
@@ -22,6 +33,10 @@ const selectBridgeHistory = (state: BridgeStatusAppState) =>
 const selectBridgeHistoryForAccount = createSelector(
   [(_, selectedAddresses?: string[]) => selectedAddresses, selectBridgeHistory],
   (selectedAddresses, txHistory) => {
+    if (!txHistory) {
+      return EMPTY_OBJECT as Record<string, BridgeHistoryItem>;
+    }
+
     if (!selectedAddresses || selectedAddresses.length === 0) {
       return txHistory;
     }
@@ -61,6 +76,72 @@ export const selectBridgeHistoryForAccountGroup = createSelector(
   },
 );
 
+export const selectBridgeHistoryForToast = createSelector(
+  [
+    selectBridgeHistoryForAccountGroup,
+    selectCurrentAccountNonEvmTransactions,
+    selectTransactionIds,
+  ],
+  (bridgeHistory, nonEvmTxs, evmTxIds) => {
+    if (!bridgeHistory) {
+      return EMPTY_OBJECT as Record<string, BridgeHistoryItem>;
+    }
+
+    const nonEvmTxIds = new Set(nonEvmTxs.map((tx) => tx.id));
+
+    return Object.entries(bridgeHistory).reduce<
+      Record<string, BridgeHistoryItem>
+    >((acc, [key, item]) => {
+      if (!item.quote) {
+        return acc;
+      }
+      // Same-chain swaps are handled by their respective transaction watchers
+      if (item.quote.srcChainId === item.quote.destChainId) {
+        return acc;
+      }
+      // Only include items whose source transaction exists in transactions
+      const hasMatchingTx = isNonEvmChainId(item.quote.srcChainId)
+        ? nonEvmTxIds.has(key)
+        : evmTxIds.has(key);
+
+      if (hasMatchingTx) {
+        acc[key] = item;
+      }
+      return acc;
+    }, {});
+  },
+);
+
+export const selectNonEvmBridgeSourceTxIds = createSelector(
+  [selectBridgeHistoryForAccountGroup],
+  (bridgeHistory) => {
+    const ids = new Set<string>();
+
+    for (const [key, item] of Object.entries(bridgeHistory ?? {})) {
+      if (!item.quote) {
+        continue;
+      }
+      if (!isNonEvmChainId(item.quote.srcChainId)) {
+        continue;
+      }
+      // Same-chain non-EVM swaps are handled by the non-EVM transaction watcher
+      if (item.quote.srcChainId === item.quote.destChainId) {
+        continue;
+      }
+
+      ids.add(key);
+
+      const { originalTransactionId } = item;
+
+      if (originalTransactionId) {
+        ids.add(originalTransactionId);
+      }
+    }
+
+    return ids;
+  },
+);
+
 // eslint-disable-next-line jsdoc/require-param
 /**
  * @deprecated use selectBridgeHistoryItemForTransactionHash instead
@@ -74,6 +155,67 @@ export const selectBridgeHistoryItemForTxMetaId = createSelector(
     return bridgeHistory[txMetaId];
   },
 );
+
+const selectBridgeHistoryByOriginalTransactionId = createSelector(
+  [selectBridgeHistory],
+  (bridgeHistory) =>
+    Object.values(bridgeHistory).reduce<
+      Record<string, BridgeHistoryItemWithOriginalTransactionId>
+    >((acc, bridgeHistoryItem: BridgeHistoryItemWithOriginalTransactionId) => {
+      if (bridgeHistoryItem.originalTransactionId) {
+        acc[bridgeHistoryItem.originalTransactionId] = bridgeHistoryItem;
+      }
+      return acc;
+    }, {}),
+);
+
+const selectBridgeHistoryByApprovalTxId = createSelector(
+  [selectBridgeHistory],
+  (bridgeHistory) =>
+    Object.values(bridgeHistory).reduce<Record<string, BridgeHistoryItem>>(
+      (acc, bridgeHistoryItem) => {
+        if (bridgeHistoryItem.approvalTxId) {
+          acc[normalizeBridgeHistoryLookupKey(bridgeHistoryItem.approvalTxId)] =
+            bridgeHistoryItem;
+        }
+        return acc;
+      },
+      {},
+    ),
+);
+
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * Returns a bridge history item for a given original tx meta id.
+ * Used by intent flows where txHistory key is orderUid and tx meta id is stored separately.
+ */
+export const selectBridgeHistoryForOriginalTxMetaId = (
+  state: BridgeStatusAppState,
+  originalTxMetaId?: string,
+) => {
+  if (!originalTxMetaId) {
+    return undefined;
+  }
+
+  return selectBridgeHistoryByOriginalTransactionId(state)[originalTxMetaId];
+};
+
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * Returns a bridge history item for a given approval tx id
+ */
+export const selectBridgeHistoryForApprovalTxId = (
+  state: BridgeStatusAppState,
+  approvalTxId?: string,
+) => {
+  if (!approvalTxId) {
+    return undefined;
+  }
+
+  return selectBridgeHistoryByApprovalTxId(state)[
+    normalizeBridgeHistoryLookupKey(approvalTxId)
+  ];
+};
 
 /**
  * Returns a pending/local transaction for the given tx hash
@@ -110,6 +252,15 @@ const selectBridgeHistoryItemForTxHash = createSelector(
     // Non-EVM transactions use the tx hash as the key
     if (txHash && bridgeHistory[txHash]) {
       return bridgeHistory[txHash];
+    }
+
+    const historyItem = Object.values(bridgeHistory).find(
+      (item) =>
+        txHash &&
+        item.status.srcChain?.txHash?.toLowerCase() === txHash.toLowerCase(),
+    );
+    if (historyItem) {
+      return historyItem;
     }
 
     const txId = tx?.id;

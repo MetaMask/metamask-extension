@@ -1,10 +1,8 @@
 import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
 import { LoaderContext } from 'webpack';
-import swcLoader, {
-  type SwcLoaderOptions,
-  type SwcConfig,
-} from '../utils/loaders/swcLoader';
+import swcLoader, { type SwcLoaderOptions } from '../utils/loaders/swcLoader';
+import { type SwcConfig } from '../utils/loaders/getSwcLoader';
 import { Combination, generateCases } from './helpers';
 
 describe('swcLoader', () => {
@@ -68,6 +66,21 @@ describe('swcLoader', () => {
     );
   });
 
+  it('should stringify object source maps for inputSourceMap', async () => {
+    const { context, source, deferredPromise } = generateData();
+    const sourceMapObject = {
+      version: 3,
+      sources: ['test.ts'],
+      mappings: 'AAAA',
+    };
+
+    swcLoader.call(context, source, sourceMapObject as unknown as string);
+
+    const [err, content] = await deferredPromise;
+    assert.strictEqual(err, null);
+    assert.ok(content);
+  });
+
   it('should return an error when code is invalid', async () => {
     const { context, deferredPromise } = generateData();
     const brokenSource = 'this is not real code;';
@@ -99,10 +112,10 @@ describe('swcLoader', () => {
         // helpers caches `__HMR_READY__` on initialization, so we need to a new
         // one after we mock `process.env.__HMR_READY__`.
         delete require.cache[require.resolve('../utils/helpers')];
-        delete require.cache[require.resolve('../utils/loaders/swcLoader')];
+        delete require.cache[require.resolve('../utils/loaders/getSwcLoader')];
         const {
           getSwcLoader,
-        }: typeof import('../utils/loaders/swcLoader') = require('../utils/loaders/swcLoader');
+        }: typeof import('../utils/loaders/getSwcLoader') = require('../utils/loaders/getSwcLoader');
 
         // note: this test isn't exhaustive of all possible `swcConfig`
         // properties; it is mostly intended as sanity check.

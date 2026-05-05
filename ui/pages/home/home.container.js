@@ -16,9 +16,7 @@ import {
   getNewNetworkAdded,
   getIsSigningQRHardwareTransaction,
   getIsHardwareWalletErrorModalVisible,
-  getNewNftAddedMessage,
   getNewTokensImported,
-  getRemoveNftMessage,
   getApprovalFlows,
   getNewTokensImportedError,
   hasPendingApprovals,
@@ -29,8 +27,9 @@ import {
   getShowShieldEntryModal,
   getPendingShieldCohort,
   getPendingRedirectRoute,
+  getLastVisitedPerpsRoute,
 } from '../../selectors';
-import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
+import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
 import {
   attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
@@ -41,8 +40,6 @@ import {
   setTermsOfUseLastAgreed,
   setOutdatedBrowserWarningLastShown,
   setNewNetworkAdded,
-  setNewNftAddedMessage,
-  setRemoveNftMessage,
   setNewTokensImported,
   setActiveNetwork,
   setNewTokensImportedError,
@@ -51,6 +48,7 @@ import {
   lookupSelectedNetworks,
   setPendingShieldCohort,
   setPendingRedirectRoute,
+  setLastVisitedPerpsRoute,
 } from '../../store/actions';
 import { openBasicFunctionalityModal } from '../../ducks/app/app';
 import {
@@ -66,7 +64,7 @@ import {
 } from '../../ducks/rewards/selectors';
 import { selectShowPna25Modal } from '../../components/app/toast-master/selectors';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
@@ -85,6 +83,7 @@ import {
   setRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
 import { AppHeader } from '../../components/multichain/app-header';
+import { DappConnectionControlBar } from '../../components/multichain/dapp-connection-control-bar';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -154,8 +153,6 @@ const mapStateToProps = (state) => {
     isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
     isHardwareWalletErrorModalVisible:
       getIsHardwareWalletErrorModalVisible(state),
-    newNftAddedMessage: getNewNftAddedMessage(state),
-    removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
     newTokensImportedError: getNewTokensImportedError(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
@@ -175,6 +172,7 @@ const mapStateToProps = (state) => {
     rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
     showPna25Modal: selectShowPna25Modal(state),
     pendingRedirectRoute: getPendingRedirectRoute(state),
+    lastVisitedPerpsRoute: getLastVisitedPerpsRoute(state),
   };
 };
 
@@ -198,14 +196,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     setOutdatedBrowserWarningLastShown: (lastShown) => {
       dispatch(setOutdatedBrowserWarningLastShown(lastShown));
-    },
-    setNewNftAddedMessage: (message) => {
-      dispatch(setRemoveNftMessage(''));
-      dispatch(setNewNftAddedMessage(message));
-    },
-    setRemoveNftMessage: (message) => {
-      dispatch(setNewNftAddedMessage(''));
-      dispatch(setRemoveNftMessage(message));
     },
     setNewTokensImported: (newTokens) => {
       dispatch(setNewTokensImported(newTokens));
@@ -233,6 +223,7 @@ const mapDispatchToProps = (dispatch) => {
     setPendingShieldCohort: (cohort) =>
       dispatch(setPendingShieldCohort(cohort)),
     clearPendingRedirectRoute: () => dispatch(setPendingRedirectRoute(null)),
+    clearLastVisitedPerpsRoute: () => dispatch(setLastVisitedPerpsRoute(null)),
   };
 };
 
@@ -244,7 +235,6 @@ const HomeWithRouter = ({ match: _match, ...props }) => {
 
   return (
     <>
-      {/* Note: Consider a sticky header instead of overflow */}
       <AppHeader />
 
       <div className="flex flex-col flex-1 min-h-0">
@@ -252,6 +242,7 @@ const HomeWithRouter = ({ match: _match, ...props }) => {
           {...props}
           evaluateCohortEligibility={evaluateCohortEligibility}
         />
+        <DappConnectionControlBar />
       </div>
     </>
   );

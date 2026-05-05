@@ -54,16 +54,16 @@ if (false) {
   require('@babel/eslint-plugin');
   require('@metamask/eslint-config');
   require('@metamask/eslint-config-nodejs');
-  // eslint-disable-next-line import/no-unresolved
+  // eslint-disable-next-line import-x/no-unresolved
   require('@typescript-eslint/parser');
   require('eslint');
   require('eslint-config-prettier');
   require('eslint-import-resolver-node');
   require('eslint-import-resolver-typescript');
-  require('eslint-plugin-import');
+  require('eslint-plugin-import-x');
   require('eslint-plugin-jsdoc');
   require('eslint-plugin-n');
-  require('eslint-plugin-prettier');
+  // eslint-plugin-prettier require removed — formatting handled by oxfmt
   require('eslint-plugin-react');
   require('eslint-plugin-react-hooks');
   require('eslint-plugin-jest');

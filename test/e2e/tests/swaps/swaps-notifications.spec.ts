@@ -1,13 +1,13 @@
-import { strict as assert } from 'assert';
-import { MockedEndpoint, Mockttp } from 'mockttp';
+import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import {
   getBridgeFixtures,
   getInsufficientFundsFixtures,
   getQuoteNegativeCasesFixtures,
+  mockTokensWithSecurityData,
 } from '../bridge/bridge-test-utils';
 import {
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
@@ -15,83 +15,60 @@ import {
 } from '../bridge/constants';
 import { checkNotification } from './shared';
 
-const UNSTABLE_TOKEN_PRICE_TITLE = 'Unstable token price';
-const UNSTABLE_TOKEN_PRICE_DESCRIPTION =
-  'The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it.';
-
-const getBridgeFixturesWithTokenAlertWarning = (title?: string) => {
-  const fixtures = getBridgeFixtures(
-    title,
-    BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-    false,
-  );
-
-  return {
-    ...fixtures,
-    testSpecificMock: async (mockServer: Mockttp) => {
-      const baseMocks = fixtures.testSpecificMock
-        ? await fixtures.testSpecificMock(mockServer)
-        : [];
-
-      return [
-        ...baseMocks,
-        await mockServer
-          .forPost('https://security-alerts.api.cx.metamask.io/token/scan')
-          .always()
-          .thenJson(200, {
-            features: [
-              {
-                // This maps to "Unstable token price" in i18n.
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                feature_id: 'UNSTABLE_TOKEN_PRICE',
-                type: 'Warning',
-                description: 'Unstable price warning',
-              },
-            ],
-          }),
-      ];
-    },
-  };
+const MUSD_MALICIOUS_SECURITY_DATA = {
+  type: 'Malicious',
+  metadata: {
+    features: [
+      {
+        featureId: 'HONEYPOT',
+        type: 'Malicious',
+        description: 'Honeypot risk',
+      },
+    ],
+  },
 };
 
 describe('Swaps - notifications', function () {
-  it('shows token risk warning banner for unstable token price', async function () {
+  it('shows token risk warning banner for malicious destination token', async function () {
+    const fixtures = getBridgeFixtures({
+      title: this.test?.fullTitle(),
+      featureFlags: {
+        ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        refreshRate: 30000,
+      },
+    });
+    const originalTestSpecificMock = fixtures.testSpecificMock;
+
     await withFixtures(
-      getBridgeFixturesWithTokenAlertWarning(this.test?.fullTitle()),
-      async ({ driver, mockedEndpoint }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '$225,730.11',
-        );
+      {
+        ...fixtures,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          const baseMocks = originalTestSpecificMock
+            ? await originalTestSpecificMock(mockServer)
+            : [];
+          await mockTokensWithSecurityData(
+            mockServer,
+            MUSD_MALICIOUS_SECURITY_DATA,
+          );
+          return baseMocks;
+        },
+      },
+      async ({ driver }) => {
+        await login(driver, { expectedBalance: '$225,730.11' });
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
         const bridgeQuotePage = new BridgeQuotePage(driver);
+        // Explicitly select mUSD so the token comes from the API with securityData
         await bridgeQuotePage.enterBridgeQuote({
           amount: '1',
+          tokenTo: 'mUSD',
         });
         await bridgeQuotePage.waitForQuote();
 
-        const allSeenRequests = (
-          await Promise.all(
-            mockedEndpoint.map((endpoint: MockedEndpoint) =>
-              endpoint.getSeenRequests(),
-            ),
-          )
-        ).flat();
-        const tokenScanRequests = allSeenRequests.filter((request: Request) =>
-          request.url.includes('security-alerts.api.cx.metamask.io/token/scan'),
-        );
-        assert.ok(
-          tokenScanRequests.length > 0,
-          'Security alerts token/scan endpoint was not called',
-        );
-
+        // Banner title is bridgeTokenIsMaliciousBanner ("$1 is a malicious token.")
         await bridgeQuotePage.checkTokenRiskWarningIsDisplayed(
-          UNSTABLE_TOKEN_PRICE_TITLE,
-          UNSTABLE_TOKEN_PRICE_DESCRIPTION,
+          'malicious token',
         );
       },
     );
@@ -104,7 +81,7 @@ describe('Swaps - notifications', function () {
         this.test?.fullTitle(),
       ),
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
@@ -135,7 +112,7 @@ describe('Swaps - notifications', function () {
         ),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
@@ -154,17 +131,12 @@ describe('Swaps - notifications', function () {
 
   it('shows low slippage warning in transaction settings', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+      }),
       async ({ driver }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '$225,730.11',
-        );
+        await login(driver, { expectedBalance: '$225,730.11' });
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 

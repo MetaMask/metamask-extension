@@ -76,6 +76,9 @@ const getMockState = () => ({
       },
       selectedAccount: 'account-1',
     },
+    accountIdByAddress: {
+      [FROM_ADDRESS_MOCK]: 'account-1',
+    },
     accounts: {
       [FROM_ADDRESS_MOCK]: {
         address: FROM_ADDRESS_MOCK,
@@ -274,6 +277,18 @@ describe('PayWithRow', () => {
       );
 
       expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+    });
+
+    it('formats balance in USD regardless of user currency', () => {
+      const store = mockStore(getMockState());
+      renderWithProvider(
+        <PayWithRow variant={ConfirmInfoRowSize.Small} />,
+        store,
+      );
+
+      expect(useFiatFormatterMock).toHaveBeenCalledWith({
+        overrideCurrency: 'usd',
+      });
     });
 
     it('renders balance display', () => {

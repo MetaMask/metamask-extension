@@ -1,10 +1,9 @@
 import React, { useCallback, useContext, useMemo, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { Icon, IconName, TextColor } from '@metamask/design-system-react';
 import {
   Box,
-  Icon,
-  IconName,
   ModalFocus,
   Popover,
   PopoverPosition,
@@ -15,7 +14,6 @@ import {
   BorderRadius,
   Display,
   JustifyContent,
-  TextColor,
 } from '../../../helpers/constants/design-system';
 import {
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -93,13 +91,22 @@ export const MultichainAccountMenu = ({
   };
 
   const menuConfig = useMemo(() => {
-    const handleAccountDetailsClick = (mouseEvent: React.MouseEvent) => {
+    const handleAccountDetailsClick = (
+      mouseEvent: React.MouseEvent<HTMLDivElement>,
+    ) => {
       mouseEvent.stopPropagation();
-      const multichainAccountDetailsPageRoute = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
-      navigate(multichainAccountDetailsPageRoute);
+
+      navigate({
+        pathname: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+        search: createSearchParams({
+          accountGroupId,
+        }).toString(),
+      });
     };
 
-    const handleAccountRenameClick = (mouseEvent: React.MouseEvent) => {
+    const handleAccountRenameClick = (
+      mouseEvent: React.MouseEvent<HTMLDivElement>,
+    ) => {
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
       if (handleAccountRenameAction) {
@@ -107,7 +114,9 @@ export const MultichainAccountMenu = ({
       }
     };
 
-    const handleAccountAddressesClick = (mouseEvent: React.MouseEvent) => {
+    const handleAccountAddressesClick = (
+      mouseEvent: React.MouseEvent<HTMLDivElement>,
+    ) => {
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
       trace({
@@ -118,7 +127,9 @@ export const MultichainAccountMenu = ({
       navigate(multichainAccountAddressesPageRoute);
     };
 
-    const handleAccountPinClick = async (mouseEvent: React.MouseEvent) => {
+    const handleAccountPinClick = async (
+      mouseEvent: React.MouseEvent<HTMLDivElement>,
+    ) => {
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
 
@@ -145,7 +156,9 @@ export const MultichainAccountMenu = ({
       onToggle?.();
     };
 
-    const handleAccountHideClick = async (mouseEvent: React.MouseEvent) => {
+    const handleAccountHideClick = async (
+      mouseEvent: React.MouseEvent<HTMLDivElement>,
+    ) => {
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
 
@@ -172,7 +185,9 @@ export const MultichainAccountMenu = ({
       onToggle?.();
     };
 
-    const handleAccountRemoveClick = (mouseEvent: React.MouseEvent) => {
+    const handleAccountRemoveClick = (
+      mouseEvent: React.MouseEvent<HTMLDivElement>,
+    ) => {
       // TODO: Implement account remove click handling
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
@@ -211,7 +226,7 @@ export const MultichainAccountMenu = ({
         textKey: 'remove',
         iconName: IconName.Trash,
         onClick: handleAccountRemoveClick,
-        textColor: TextColor.errorDefault,
+        textColor: TextColor.ErrorDefault,
       });
     }
 

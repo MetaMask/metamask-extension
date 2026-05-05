@@ -16,7 +16,7 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import {
   getAllPermittedAccountsForSelectedTab,
@@ -49,10 +49,7 @@ import { NoConnectionContent } from '../connections/components/no-connection';
 import { Content, Footer, Page } from '../page';
 import { SubjectsType } from '../connections/components/connections.types';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
-import {
-  DisconnectAllModal,
-  DisconnectType,
-} from '../../disconnect-all-modal/disconnect-all-modal';
+import { DisconnectAllModal } from '../../disconnect-all-modal/disconnect-all-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
 import {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
@@ -85,7 +82,7 @@ export const ReviewPermissions = () => {
       setShowNetworkToast(showPermittedNetworkToastOpen);
       dispatch(hidePermittedNetworkToast());
     }
-  }, [showPermittedNetworkToastOpen]);
+  }, [showPermittedNetworkToastOpen, dispatch]);
 
   const requestAccountsAndChainPermissions = async () => {
     const requestId = await dispatch(
@@ -233,8 +230,6 @@ export const ReviewPermissions = () => {
           )}
           {showDisconnectAllModal ? (
             <DisconnectAllModal
-              type={DisconnectType.Account}
-              hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
                 trace({ name: TraceName.DisconnectAllModal });

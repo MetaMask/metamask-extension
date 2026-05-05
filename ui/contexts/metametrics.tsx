@@ -21,7 +21,7 @@ import { omit } from 'lodash';
 
 import { captureException, captureMessage } from '../../shared/lib/sentry';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   PATH_NAME_MAP,
@@ -37,7 +37,11 @@ import {
   type MetaMetricsEventPayload,
 } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
-import { getParticipateInMetaMetrics } from '../selectors';
+import {
+  getIsParticipateInMetaMetricsSet,
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
+} from '../selectors';
 import {
   generateActionId,
   submitRequestToBackground,
@@ -144,7 +148,15 @@ type MetaMetricsProviderProps = {
 export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const location = useLocation();
   const context = useSegmentContext();
+  const isParticipateInMetaMetricsSet = useSelector(
+    getIsParticipateInMetaMetricsSet,
+  );
   const isMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const canTrackImmediately = isMetricsEnabled && Boolean(metaMetricsId);
+  // Buffer events until we know whether or not we can submit them.
+  const canMaybeTrackLater =
+    !isParticipateInMetaMetricsSet || (isMetricsEnabled && !metaMetricsId);
 
   const onboardingParentContext = useRef<TraceParentContext>(null);
 
@@ -177,19 +189,23 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
       };
 
       if (
-        isMetricsEnabled ||
+        canTrackImmediately ||
         payload.event === MetaMetricsEventName.MetricsOptOut // We wanna track the MetricsOptOut event when user opts out of metrics and basic functionality is not "DISABLED"
       ) {
         // If metrics are enabled, track immediately
         trackMetaMetricsEvent(fullPayload as MetaMetricsEventPayload, options);
-      } else {
-        // If metrics are not enabled, buffer the event
+      } else if (canMaybeTrackLater) {
         await submitRequestToBackground('addEventBeforeMetricsOptIn', [
           { ...fullPayload, actionId: generateActionId() },
         ]);
       }
     },
-    [addContextPropsIntoEventProperties, context, isMetricsEnabled],
+    [
+      addContextPropsIntoEventProperties,
+      canMaybeTrackLater,
+      canTrackImmediately,
+      context,
+    ],
   );
 
   const bufferedTrace: UITraceMethod = useCallback((request, fn) => {

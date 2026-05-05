@@ -2,7 +2,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
+// @ts-expect-error @types/readable-stream does not export pipeline or Transform
 import { pipeline, Transform } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import { ExtensionPortStream } from 'extension-port-stream';
@@ -20,7 +20,7 @@ import {
   PHISHING_STREAM,
 } from '../constants/stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
-import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
+import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
 import { logStreamDisconnectWarning, MessageType } from './stream-utils';
 import { connectPhishingChannelToWarningSystem } from './phishing-stream';
 

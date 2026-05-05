@@ -43,24 +43,6 @@ $spacer-break-small: 16px;
     height: calc(100% - 8px);
   }
 
-  &__full-image-container {
-    @include design-system.screen-lg-min {
-      margin: 10px;
-      align-items: center;
-    }
-
-    margin: 10px;
-    align-items: center;
-  }
-
-  &__content {
-    @include design-system.screen-lg-min {
-      padding-left: 192px;
-      padding-right: 192px;
-      width: auto !important;
-    }
-  }
-
   &__addressButton {
     background-color: transparent;
     padding-right: 0;

@@ -47,6 +47,10 @@ class TransactionConfirmation extends Confirmation {
   private readonly gasFeeCloseToastMessage: RawLocator =
     '.toasts-container__banner-base button[aria-label="Close"]';
 
+  private readonly gasFeeEstimate = (amount: string): RawLocator => ({
+    text: amount,
+  });
+
   private readonly gasFeeFiatText: RawLocator =
     '[data-testid="native-currency"]';
 
@@ -81,7 +85,17 @@ class TransactionConfirmation extends Confirmation {
 
   private readonly saveButton: RawLocator = { tag: 'button', text: 'Save' };
 
+  private readonly sendAmountFiat = (amount: string): RawLocator => ({
+    text: amount,
+    css: '.text-alternative',
+  });
+
   private readonly senderAccount: RawLocator = '[data-testid="sender-address"]';
+
+  private readonly recipientAddressDisplay = (address: string): RawLocator => ({
+    css: '[data-testid="recipient-address"]',
+    text: address,
+  });
 
   private readonly siteSuggestedGasFee = (estimatedTime: string) => ({
     testId: 'gas-timing-time',
@@ -91,6 +105,9 @@ class TransactionConfirmation extends Confirmation {
   private readonly walletInitiatedHeadingTitle: RawLocator = {
     text: tEn('confirmTitleSending'),
   };
+
+  private readonly walletInitiatedBackButton =
+    '[data-testid="wallet-initiated-header-back-button"]';
 
   private readonly tokenGasFeeDropdown =
     '[data-testid="selected-gas-fee-token-arrow"]';
@@ -106,6 +123,15 @@ class TransactionConfirmation extends Confirmation {
     css: '[data-alert-key="shieldFooterCoverageIndicator"]',
     text: status,
   });
+
+  private readonly enforcedSimulationsRow: RawLocator =
+    '[data-testid="enforced-simulations-row"]';
+
+  private readonly enforcedSimulationsToggle: RawLocator =
+    '[data-testid="enforced-simulations-toggle"]';
+
+  private readonly enforcedSimulationsToggleUnchecked: RawLocator =
+    '[data-testid="enforced-simulations-toggle-input"]:not(:checked)';
 
   private readonly simulationDetailsLayout: RawLocator =
     '[data-testid="simulation-details-layout"]';
@@ -193,6 +219,17 @@ class TransactionConfirmation extends Confirmation {
     );
   }
 
+  async checkEnforcedSimulationsRowIsDisplayed(): Promise<void> {
+    console.log(`Waiting for enforced simulations toggle to finish loading.`);
+    await this.driver.waitForSelector(this.enforcedSimulationsRow);
+    await this.driver.waitForSelector(this.enforcedSimulationsToggle);
+  }
+
+  async checkEnforcedSimulationsToggleUnchecked(): Promise<void> {
+    console.log(`Checking enforced simulations toggle is unchecked.`);
+    await this.driver.waitForSelector(this.enforcedSimulationsToggleUnchecked);
+  }
+
   /**
    * Checks if the alert message is displayed on the transaction confirmation page.
    *
@@ -213,10 +250,18 @@ class TransactionConfirmation extends Confirmation {
   }
 
   async checkGasFee(amountToken: string) {
+    console.log(
+      `Checking gas fee ${amountToken} is displayed on transaction confirmation page.`,
+    );
     await this.driver.findElement({
       css: this.gasFeeText,
       text: amountToken,
     });
+  }
+
+  async checkGasFeeEstimate(amount: string): Promise<void> {
+    console.log(`Checking gas fee estimate ${amount} is displayed`);
+    await this.driver.waitForSelector(this.gasFeeEstimate(amount));
   }
 
   async checkGasFeeFiat(amountFiat: string) {
@@ -224,6 +269,16 @@ class TransactionConfirmation extends Confirmation {
       css: this.gasFeeFiatText,
       text: amountFiat,
     });
+  }
+
+  async checkGasFeeLabel(label: string): Promise<void> {
+    console.log(`Checking gas fee label is ${label}`);
+    await this.driver.waitForSelector({ text: label });
+  }
+
+  async checkInlineAlertIsDisplayed(): Promise<void> {
+    console.log('Checking if inline alert is displayed');
+    await this.driver.waitForSelector(this.inlineAlert);
   }
 
   async checkGasFeeSymbol(symbol: string) {
@@ -270,6 +325,15 @@ class TransactionConfirmation extends Confirmation {
       css: this.senderAccount,
       text: account,
     });
+  }
+
+  async checkRecipientAddressDisplayed(address: string): Promise<void> {
+    console.log(
+      `Checking recipient address ${address} is displayed on confirmation screen`,
+    );
+    await this.driver.waitForSelector(
+      this.recipientAddressDisplay(address.substring(0, 6)),
+    );
   }
 
   /**
@@ -331,6 +395,13 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  async checkSendAmountConversion(amountFiat: string) {
+    console.log(
+      `Checking send amount conversion ${amountFiat} on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector(this.sendAmountFiat(amountFiat));
+  }
+
   async checkSiteSuggestedGas(time: string) {
     console.log(
       `Check Site suggested time ${time} on transaction confirmation page.`,
@@ -354,6 +425,11 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.clickElement(this.customNonceButton);
   }
 
+  async clickEnforcedSimulationsToggle(): Promise<void> {
+    console.log(`Clicking the enforced simulations toggle.`);
+    await this.driver.clickElement(this.enforcedSimulationsToggle);
+  }
+
   async clickGasFeeTokenPill() {
     await this.driver.clickElement(this.gasFeeTokenArrow);
   }
@@ -365,6 +441,13 @@ class TransactionConfirmation extends Confirmation {
   async closeGasFeeToastMessage() {
     // the toast message automatically disappears after some seconds, so we need to use clickElementSafe to prevent race conditions
     await this.driver.clickElementSafe(this.gasFeeCloseToastMessage, 10000);
+  }
+
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking wallet-initiated back button');
+    await this.driver.clickElementAndWaitToDisappear(
+      this.walletInitiatedBackButton,
+    );
   }
 
   /**
@@ -582,7 +665,7 @@ class TransactionConfirmation extends Confirmation {
   async selectTokenFee(tokenSymbol: string): Promise<void> {
     console.log(`Select token ${tokenSymbol} to pay for the fees`);
     await this.driver.clickElement(this.tokenGasFeeDropdown);
-    await this.driver.clickElement({
+    await this.driver.clickElementAndWaitToDisappear({
       css: this.tokenGasFeeSymbol,
       text: tokenSymbol,
     });

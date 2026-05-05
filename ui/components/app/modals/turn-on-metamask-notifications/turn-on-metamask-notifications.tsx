@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { I18nContext } from '../../../../contexts/i18n';
@@ -14,7 +14,10 @@ import {
   getIsUpdatingMetamaskNotifications,
 } from '../../../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsBackupAndSyncEnabled } from '../../../../selectors/identity/backup-and-sync';
-import { useEnableNotifications } from '../../../../hooks/metamask-notifications/useNotifications';
+import {
+  useEnableNotifications,
+  useSafeState,
+} from '../../../../hooks/metamask-notifications/useNotifications';
 import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
@@ -54,7 +57,7 @@ export default function TurnOnMetamaskNotifications() {
   );
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
-  const [isLoading, setIsLoading] = useState<boolean>(
+  const [isLoading, setIsLoading] = useSafeState<boolean>(
     isUpdatingMetamaskNotifications,
   );
 
@@ -78,24 +81,21 @@ export default function TurnOnMetamaskNotifications() {
   };
 
   const handleHideModal = () => {
+    if (!isLoading) {
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationsActivationFlow,
+        event: MetaMetricsEventName.NotificationsActivated,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_profile_syncing_enabled: isBackupAndSyncEnabled,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          action_type: 'dismissed',
+        },
+      });
+    }
     hideModal();
-    setIsLoading((prevLoadingState) => {
-      if (!prevLoadingState) {
-        trackEvent({
-          category: MetaMetricsEventCategory.NotificationsActivationFlow,
-          event: MetaMetricsEventName.NotificationsActivated,
-          properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_profile_syncing_enabled: isBackupAndSyncEnabled,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            action_type: 'dismissed',
-          },
-        });
-      }
-      return prevLoadingState;
-    });
   };
 
   useEffect(() => {

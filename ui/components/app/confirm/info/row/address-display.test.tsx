@@ -45,6 +45,21 @@ describe('ConfirmInfoRowAddressDisplay', () => {
     expect(getByTestId('confirm-info-row-display-name')).toBeInTheDocument();
   });
 
+  it('does not render trust icon when name is not provided', () => {
+    const { container } = render({
+      displayState: TrustSignalDisplayState.Unknown,
+    });
+    expect(container.querySelector('[data-testid="icon"]')).toBeNull();
+  });
+
+  it('renders trust icon when name is provided', () => {
+    const { container } = render({
+      name: 'Arbiscan: Donate',
+      displayState: TrustSignalDisplayState.Verified,
+    });
+    expect(container.querySelector('svg')).toBeInTheDocument();
+  });
+
   it('renders account name for known address', () => {
     const { getByTestId } = render({
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',

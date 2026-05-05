@@ -1,5 +1,6 @@
 import path from 'path';
 import { promises as fs, existsSync } from 'fs';
+import { merge } from 'lodash';
 import { chromium, type Page, type BrowserContext } from '@playwright/test';
 import {
   ConsoleErrorBuffer,
@@ -7,6 +8,16 @@ import {
   waitForExtensionUiReady,
 } from '@metamask/client-mcp-core';
 import type { ExtensionReadinessConfig } from '@metamask/client-mcp-core';
+import type { ManifestFlags } from '../../../../shared/lib/manifestFlags';
+import {
+  CONNECT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_IMPORT_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+} from '../../../../ui/helpers/constants/routes';
+import { validateExtensionBuilt } from './validate-extension';
 import type {
   LauncherLaunchOptions,
   ScreenshotOptions,
@@ -14,9 +25,21 @@ import type {
   LauncherContext,
   NetworkConfig,
 } from './launcher-types';
+import { resolveRepoRoot } from './resolve-repo-root';
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_CHAIN_ID = 1337;
+const REPO_ROOT = resolveRepoRoot();
+
+// Routes that indicate a confirmation screen when matched against the sidepanel URL hash.
+const SIDEPANEL_CONFIRMATION_ROUTE_PREFIXES: string[] = [
+  CONNECT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_IMPORT_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+];
 const METAMASK_EXTENSION_READINESS_CONFIG: ExtensionReadinessConfig = {
   readySelectors: [
     '[data-testid="unlock-password"]',
@@ -32,6 +55,7 @@ const METAMASK_EXTENSION_READINESS_CONFIG: ExtensionReadinessConfig = {
 
 type ResolvedOptions = {
   extensionPath: string;
+  headless: boolean;
   userDataDir: string;
   viewportWidth: number;
   viewportHeight: number;
@@ -40,6 +64,7 @@ type ResolvedOptions = {
   stateMode: 'default' | 'onboarding' | 'custom';
   network: NetworkConfig;
   proxyServer?: string;
+  manifestFlags?: Partial<ManifestFlags>;
 };
 
 export function buildChromiumLaunchArgs(
@@ -75,25 +100,29 @@ export class MetaMaskExtensionLauncher {
 
   private userDataDir: string;
 
+  private manifestBackupPath?: string;
+
   private consoleErrorBuffer = new ConsoleErrorBuffer(100);
 
   constructor(options: LauncherLaunchOptions = {}) {
     this.options = {
       extensionPath:
-        options.extensionPath ?? path.join(process.cwd(), 'dist', 'chrome'),
+        options.extensionPath ?? path.join(REPO_ROOT, 'dist', 'chrome'),
+      headless: Boolean(options.headless),
       userDataDir: options.userDataDir ?? '',
       viewportWidth: options.viewportWidth ?? 1280,
       viewportHeight: options.viewportHeight ?? 800,
       slowMo: options.slowMo ?? 0,
       screenshotDir:
         options.screenshotDir ??
-        path.join(process.cwd(), 'test-artifacts', 'screenshots'),
+        path.join(REPO_ROOT, 'test-artifacts', 'screenshots'),
       stateMode: options.stateMode ?? 'default',
       network: options.network ?? {
         mode: 'localhost',
         chainId: DEFAULT_CHAIN_ID,
       },
       proxyServer: options.proxyServer,
+      manifestFlags: options.manifestFlags,
     };
     this.userDataDir = '';
 
@@ -106,7 +135,7 @@ export class MetaMaskExtensionLauncher {
   }
 
   private ensureDependenciesInstalled(): void {
-    const nodeModulesPath = path.join(process.cwd(), 'node_modules');
+    const nodeModulesPath = path.join(REPO_ROOT, 'node_modules');
     if (!existsSync(nodeModulesPath)) {
       throw new Error(
         'Dependencies not installed. The node_modules directory was not found.\n\n' +
@@ -128,10 +157,7 @@ export class MetaMaskExtensionLauncher {
           `Configuration error: network.mode '${mode}' requires a valid 'rpcUrl' to be provided.`,
         );
       }
-      try {
-        // eslint-disable-next-line no-new
-        new URL(rpcUrl);
-      } catch {
+      if (!URL.canParse(rpcUrl)) {
         throw new Error(
           `Configuration error: network.rpcUrl '${rpcUrl}' is not a valid URL. ` +
             `Expected format: http://localhost:8545 or https://eth.llamarpc.com`,
@@ -156,15 +182,49 @@ export class MetaMaskExtensionLauncher {
     }
   }
 
+  private getManifestPath(): string {
+    return path.join(this.options.extensionPath, 'manifest.json');
+  }
+
+  private async backupManifest(): Promise<void> {
+    const manifestPath = this.getManifestPath();
+    const backupPath = `${manifestPath}.backup`;
+    await fs.copyFile(manifestPath, backupPath);
+    this.manifestBackupPath = backupPath;
+  }
+
+  private async patchManifestFlags(
+    flags: Partial<ManifestFlags>,
+  ): Promise<void> {
+    const manifestPath = this.getManifestPath();
+    const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf-8'));
+    manifest._flags = merge({}, manifest._flags ?? {}, flags);
+    await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2));
+  }
+
+  private async restoreManifest(): Promise<void> {
+    if (!this.manifestBackupPath || !existsSync(this.manifestBackupPath)) {
+      return;
+    }
+    await fs.copyFile(this.manifestBackupPath, this.getManifestPath());
+    await fs.rm(this.manifestBackupPath, { force: true });
+    this.manifestBackupPath = undefined;
+  }
+
   async launch(): Promise<LauncherContext> {
     await this.validateExtensionExists();
 
     await this.ensureDirectories();
 
+    if (this.options.manifestFlags) {
+      await this.backupManifest();
+      await this.patchManifestFlags(this.options.manifestFlags);
+    }
+
     try {
       this.userDataDir =
         this.options.userDataDir ||
-        path.join(process.cwd(), `temp-llm-workflow-${Date.now()}`);
+        path.join(REPO_ROOT, `temp-llm-workflow-${Date.now()}`);
       await fs.mkdir(this.userDataDir, { recursive: true });
 
       const launchArgs = buildChromiumLaunchArgs(
@@ -173,7 +233,8 @@ export class MetaMaskExtensionLauncher {
       );
 
       this.context = await chromium.launchPersistentContext(this.userDataDir, {
-        headless: false,
+        headless: this.options.headless,
+        channel: 'chromium',
         args: launchArgs,
         ignoreHTTPSErrors: Boolean(this.options.proxyServer),
         viewport: {
@@ -204,31 +265,9 @@ export class MetaMaskExtensionLauncher {
     }
   }
 
-  /**
-   * Validates that the extension is built and ready to load.
-   * This method only validates - it does NOT build the extension.
-   * Build logic is handled by BuildCapability in the MCP workflow.
-   *
-   * @throws Error if extension is not found at the configured path
-   */
   private async validateExtensionExists(): Promise<void> {
-    const manifestPath = path.join(this.options.extensionPath, 'manifest.json');
-
-    try {
-      await fs.access(this.options.extensionPath);
-      await fs.access(manifestPath);
-      console.log('Extension build found at:', this.options.extensionPath);
-    } catch {
-      throw new Error(
-        `Extension not found at: ${this.options.extensionPath}\n\n` +
-          'The extension must be built before launching.\n\n' +
-          'Options:\n' +
-          '  1. Use mm_build tool to build the extension\n' +
-          '  2. Run "yarn build:test" manually\n' +
-          '  3. Use MCP workflow with autoBuild: true (handled by BuildCapability)\n\n' +
-          `Expected manifest at: ${manifestPath}`,
-      );
-    }
+    await validateExtensionBuilt(this.options.extensionPath);
+    console.log('Extension build found at:', this.options.extensionPath);
   }
 
   private async ensureDirectories(): Promise<void> {
@@ -380,7 +419,32 @@ export class MetaMaskExtensionLauncher {
       .filter((page) => page.url().startsWith(extensionPrefix));
   }
 
-  async waitForNotificationPage(timeoutMs: number = 10000): Promise<Page> {
+  async waitForNotificationPage(
+    headless: boolean,
+    timeoutMs: number = 10000,
+  ): Promise<Page> {
+    return headless
+      ? this.waitForSidepanelNotificationPage(timeoutMs)
+      : this.waitForPopupNotificationPage(timeoutMs);
+  }
+
+  private async throwNotifcationPageError(
+    timeoutMs: number,
+    notificationUrl: string,
+  ): Promise<never> {
+    const allPages = await this.getAllExtensionPages();
+    const pageUrls = allPages.map((p) => p.url()).join(', ');
+
+    throw new Error(
+      `Notification page did not appear within ${timeoutMs}ms. ` +
+        `Expected URL starting with: ${notificationUrl}. ` +
+        `Current extension pages: [${pageUrls}]`,
+    );
+  }
+
+  private async waitForPopupNotificationPage(
+    timeoutMs: number = 10000,
+  ): Promise<Page> {
     // Notification pages may initially open as about:blank before the extension
     // redirects them. We wait for either an existing notification page or a new
     // page event, handling the about:blank → notification.html transition.
@@ -431,37 +495,76 @@ export class MetaMaskExtensionLauncher {
         return finalCheck;
       }
 
-      const allPages = await this.getAllExtensionPages();
-      const pageUrls = allPages.map((p) => p.url()).join(', ');
-
-      throw new Error(
-        `Notification page did not appear within ${timeoutMs}ms. ` +
-          `Expected URL starting with: ${notificationUrl}. ` +
-          `Current extension pages: [${pageUrls}]`,
-      );
+      return await this.throwNotifcationPageError(timeoutMs, notificationUrl);
     }
   }
 
+  private async waitForSidepanelNotificationPage(
+    timeoutMs: number = 10000,
+  ): Promise<Page> {
+    this.ensureBrowserContext();
+    const context = this.context as BrowserContext;
+    const sidepanelUrl = `chrome-extension://${this.extensionId as string}/sidepanel.html`;
+
+    let sidepanelPage = context
+      .pages()
+      .find((page) => page.url().startsWith(sidepanelUrl));
+
+    if (!sidepanelPage) {
+      sidepanelPage = await context.newPage();
+      await sidepanelPage.goto(sidepanelUrl);
+      await sidepanelPage.waitForLoadState('domcontentloaded');
+      this.attachConsoleListeners(sidepanelPage);
+    }
+
+    try {
+      await this.waitForSidepanelConfirmation(sidepanelPage, timeoutMs);
+      return sidepanelPage;
+    } catch {
+      return await this.throwNotifcationPageError(timeoutMs, sidepanelUrl);
+    }
+  }
+
+  private async waitForSidepanelConfirmation(
+    sidepanelPage: Page,
+    timeoutMs: number,
+  ): Promise<void> {
+    if (isOnConfirmationRoute(sidepanelPage.url())) {
+      await sidepanelPage.waitForLoadState('domcontentloaded');
+      return;
+    }
+
+    await sidepanelPage.waitForURL(
+      (url) => isOnConfirmationRoute(url.toString()),
+      { timeout: timeoutMs },
+    );
+
+    await sidepanelPage.waitForLoadState('domcontentloaded');
+  }
+
   async cleanup(): Promise<void> {
-    if (this.context) {
-      try {
-        await this.context.close();
-      } catch (e) {
-        console.warn('Failed to close browser context:', e);
+    try {
+      if (this.context) {
+        try {
+          await this.context.close();
+        } catch (e) {
+          console.warn('Failed to close browser context:', e);
+        }
+        this.context = undefined;
       }
-      this.context = undefined;
-    }
 
-    if (this.userDataDir && !this.options.userDataDir) {
-      try {
-        await fs.rm(this.userDataDir, { recursive: true, force: true });
-      } catch {
-        console.warn('Failed to clean up user data directory');
+      if (this.userDataDir && !this.options.userDataDir) {
+        try {
+          await fs.rm(this.userDataDir, { recursive: true, force: true });
+        } catch {
+          console.warn('Failed to clean up user data directory');
+        }
       }
+    } finally {
+      await this.restoreManifest();
+      this.extensionPage = undefined;
+      this.extensionId = undefined;
     }
-
-    this.extensionPage = undefined;
-    this.extensionId = undefined;
   }
 }
 
@@ -471,6 +574,17 @@ export async function launchMetaMask(
   const launcher = new MetaMaskExtensionLauncher(options);
   await launcher.launch();
   return launcher;
+}
+
+function isOnConfirmationRoute(url: string): boolean {
+  const hashIndex = url.indexOf('#');
+  if (hashIndex === -1) {
+    return false;
+  }
+  const hashPath = url.substring(hashIndex + 1).split('?')[0];
+  return SIDEPANEL_CONFIRMATION_ROUTE_PREFIXES.some(
+    (prefix) => hashPath === prefix || hashPath.startsWith(`${prefix}/`),
+  );
 }
 
 export { DEFAULT_PASSWORD };

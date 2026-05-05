@@ -28,7 +28,6 @@ describe('NftItem component', () => {
       src: 'test-src',
       networkName: 'Test Network',
       networkSrc: 'test-network-src',
-      tokenId: '1',
       onClick: jest.fn(),
       nftImageURL: '',
     };

@@ -1,7 +1,6 @@
 import React from 'react';
 import { StoryObj, Meta } from '@storybook/react';
-import { TextColor } from '../../../helpers/constants/design-system';
-import { IconName } from '../../component-library';
+import { IconName, TextColor } from '@metamask/design-system-react';
 import { MultichainAccountMenuItems } from './multichain-account-menu-items';
 import { MenuItemConfig } from './multichain-account-menu-items.types';
 
@@ -115,7 +114,7 @@ export const WithCustomTextColor: Story = {
         textKey: 'remove',
         iconName: IconName.Trash,
         onClick: () => console.log('Remove clicked'),
-        textColor: TextColor.errorDefault,
+        textColor: TextColor.ErrorDefault,
       },
     ],
   },

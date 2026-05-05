@@ -29,6 +29,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 11. **WHEN asked to open a PR, use a Conventional Commits title** unless user specifies otherwise
 12. **WHEN asked to open a PR, open it as DRAFT** unless user specifies otherwise
 13. **WHEN using `.github/pull-request-template.md`, comment out non-applicable sections including the section title**
+14. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
 
 ### Comprehensive Guidelines Location
 
@@ -37,6 +38,8 @@ Read these files for detailed coding standards:
 - Controller patterns: `.cursor/rules/controller-guidelines/RULE.md`
 - Unit testing standards: `.cursor/rules/unit-testing-guidelines/RULE.md`
 - E2E testing standards: `./test/e2e/AGENTS.md`
+- E2E test creation workflow (Agent Skill): `.cursor/skills/creating-e2e-tests/SKILL.md` (symlinked from `.claude/skills/` and `.agents/skills/` — edit the `.cursor` copy only)
+- CI workflows: `.github/AGENTS.md`
 - Front-end performance:
   - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance - start here)
   - `.cursor/rules/front-end-performance-hooks-effects/RULE.md` (hooks & effects)
@@ -992,25 +995,26 @@ yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js \
 
 Find them in [](./test/e2e/AGENTS.md)
 
-### Visual Verification (MetaMask MCP / Playwright)
+### Visual Verification (MetaMask CLI / Playwright)
 
-When the user explicitly asks for visual verification of UI behavior (e.g., "verify this works", "confirm visually", "take screenshots", "click through onboarding/unlock/send flow"), you **MUST** use the MetaMask visual testing skill and MCP tools instead of only reasoning about code.
+When the user explicitly asks for visual verification of UI behavior (e.g., "verify this works", "confirm visually", "take screenshots", "click through onboarding/unlock/send flow"), you **MUST** use the MetaMask visual testing skill and `mm` cli tools instead of only reasoning about code.
 
 **Load the skill:** `/metamask-visual-testing`
 
 **Workflow:**
 
-1. Start with `mm_build` (if extension not built) then `mm_launch`
-2. Always call `mm_describe_screen` before acting to discover targets
-3. Use `mm_click`/`mm_type`/`mm_wait_for` to drive the flow
-4. Provide evidence via `mm_screenshot` and/or final `mm_describe_screen` output
-5. Always end with `mm_cleanup` (even on failure)
+0. Build if needed (`yarn build:test`), then `mm launch` (this auto-starts the daemon)
+1. **Query prior knowledge:** Run `mm knowledge-search "<flow>"` and `mm knowledge-sessions` to reuse previously discovered flows and avoid wasting tokens rediscovering known sequences.
+2. Always call `mm describe-screen` before acting to discover targets
+3. Use `mm click`/`mm type`/`mm wait-for` to drive the flow
+4. Provide evidence via `mm screenshot` and/or final `mm describe-screen` output
+5. Always end with `mm cleanup` (even on failure)
 
-**If MCP tools are unavailable or denied:** Say so explicitly and explain what's missing. Do not claim you verified without actual tool output as evidence.
+**If CLI is unavailable or denied:** Say so explicitly and explain what's missing. Do not claim you verified without actual tool output as evidence.
 
 **Skill location:** `.claude/skills/metamask-visual-testing/SKILL.md`
 
-**MCP Server docs:** `test/e2e/playwright/llm-workflow/mcp-server/README.md`
+**MM CLI architecture docs:** `test/e2e/playwright/llm-workflow/README.md`
 
 ### Integration Tests
 
@@ -1669,6 +1673,7 @@ Performance Checks (React Components):
 - **Unit Testing:** [.cursor/rules/unit-testing-guidelines/RULE.md](./.cursor/rules/unit-testing-guidelines/RULE.md)
 - **E2E Testing:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
 - **E2E Deprecated Patterns:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
+- **CI Workflows:** [.github/AGENTS.md](./.github/AGENTS.md)
 - **Front-End Performance:**
   - [Rendering Performance](.cursor/rules/front-end-performance-rendering/RULE.md) - Start here (keys, memoization, virtualization)
   - [Hooks & Effects](.cursor/rules/front-end-performance-hooks-effects/RULE.md) - useEffect best practices
@@ -1678,9 +1683,14 @@ Performance Checks (React Components):
 - **General Coding:** [.cursor/rules/coding-guidelines/RULE.md](./.cursor/rules/coding-guidelines/RULE.md)
 - **Official Guidelines:** [.github/guidelines/CODING_GUIDELINES.md](./.github/guidelines/CODING_GUIDELINES.md)
 
-### Cursor Skills
+### Non-EVM Swaps/Bridge Agent Entrypoints
 
-- **Add Non-EVM Swaps/Bridge Network:** [`.cursor/skills/add-non-evm-swaps-bridge-network/SKILL.md`](./.cursor/skills/add-non-evm-swaps-bridge-network/SKILL.md) - Checklist for adding non-EVM network support to Swaps/Bridge, including code-gated constants, UI updates, and LaunchDarkly rollout controls.
+- **Non-EVM Swaps/Bridge Standard:** [`docs/add-non-evm-swaps-bridge-network.md`](./docs/add-non-evm-swaps-bridge-network.md) - Canonical implementation and review standard for adding non-EVM bridge or swaps support with code-gate and LaunchDarkly rollout requirements.
+- **OpenAI/Codex Skill:** [`.agents/skills/add-non-evm-swaps-bridge-network/SKILL.md`](./.agents/skills/add-non-evm-swaps-bridge-network/SKILL.md) - Multi-agent skill entrypoint for the shared standard.
+- **Cursor Skill:** [`.cursor/skills/add-non-evm-swaps-bridge-network/SKILL.md`](./.cursor/skills/add-non-evm-swaps-bridge-network/SKILL.md) - Cursor skill entrypoint for the shared standard.
+- **Claude Skill:** [`.claude/skills/add-non-evm-swaps-bridge-network/SKILL.md`](./.claude/skills/add-non-evm-swaps-bridge-network/SKILL.md) - Claude skill entrypoint for the shared standard.
+- **Claude Command:** [`.claude/commands/add-non-evm-swaps-bridge-network.md`](./.claude/commands/add-non-evm-swaps-bridge-network.md) - Claude command entrypoint for the shared standard.
+- **Cursor Command:** [`.cursor/commands/add-non-evm-swaps-bridge-network.md`](./.cursor/commands/add-non-evm-swaps-bridge-network.md) - Cursor command shim to the Claude command entrypoint.
 
 ### External Resources
 

@@ -8,7 +8,7 @@ import {
   MetaMetricsEventUiCustomization,
   MetaMetricsRequestedThrough,
 } from '../../../shared/constants/metametrics';
-import { parseTypedDataMessage } from '../../../shared/modules/transaction.utils';
+import { parseTypedDataMessage } from '../../../shared/lib/transaction.utils';
 
 import {
   BlockaidResultType,
@@ -20,15 +20,16 @@ import {
   PRIMARY_TYPES_PERMIT,
 } from '../../../shared/constants/signatures';
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
-import { getErrorMessage } from '../../../shared/modules/error';
+import { getErrorMessage } from '../../../shared/lib/error';
 import {
   generateSignatureUniqueId,
   getBlockaidMetricsProps,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../ui/helpers/utils/metrics';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
+import { getIframeProperties } from './getIframeProperties';
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -257,7 +258,7 @@ export default function createRPCMethodTrackingMiddleware({
     /** @type {any} */ res,
     /** @type {Function} */ next,
   ) {
-    const { origin, method, params } = req;
+    const { origin, method, params, mainFrameOrigin, frameId } = req;
 
     const isMultichainRequest = isMultichainRequestMethod(method);
     // requestedThrough and eventCategory are currently redundant so we will want to
@@ -312,8 +313,15 @@ export default function createRPCMethodTrackingMiddleware({
     // keys for the various events in the flow.
     const eventType = EVENT_NAME_MAP[invokedMethod];
 
+    const iframeProps = getIframeProperties({
+      frameId,
+      origin,
+      mainFrameOrigin,
+    });
+
     const eventProperties = {
       api_source: requestedThrough,
+      ...iframeProps,
     };
 
     if (multichainApiRequestScope) {

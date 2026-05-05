@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import {
   AvatarAccount,
   AvatarAccountVariant,
@@ -18,17 +17,13 @@ import { ACCOUNT_IDENTICON_ROUTE } from '../../../helpers/constants/routes';
 import { getPreferences } from '../../../selectors';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { SettingsSelectItem } from '../shared';
+import { PREFERENCES_ITEMS } from '../search-config';
 import { AVATAR_LABEL_MAP } from './account-identicon-utils';
 
 export const AccountIdenticonItem = () => {
   const t = useI18nContext();
-  const navigate = useNavigate();
   const { avatarType } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedInternalAccount);
-
-  const handlePress = () => {
-    navigate(ACCOUNT_IDENTICON_ROUTE);
-  };
 
   const currentVariant: AvatarAccountVariant =
     avatarType ?? AvatarAccountVariant.Maskicon;
@@ -36,7 +31,8 @@ export const AccountIdenticonItem = () => {
 
   return (
     <SettingsSelectItem
-      label={t('accountIdenticon')}
+      label={t(PREFERENCES_ITEMS['account-identicon'])}
+      to={ACCOUNT_IDENTICON_ROUTE}
       value={
         <Box
           flexDirection={BoxFlexDirection.Row}
@@ -57,7 +53,6 @@ export const AccountIdenticonItem = () => {
           </Text>
         </Box>
       }
-      onPress={handlePress}
     />
   );
 };

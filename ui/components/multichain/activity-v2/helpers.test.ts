@@ -3,6 +3,10 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
+import {
+  MERKL_DISTRIBUTOR_ADDRESS,
+  MERKL_CLAIM_METHOD_ID,
+} from '../../app/musd/constants';
 import type {
   Token,
   TransactionGroup,
@@ -226,6 +230,69 @@ describe('matchesLocalTransaction', () => {
       matchesLocalTransaction(group, { kind: 'token', tokenAddress: '0x123' }),
     ).toBe(false);
   });
+
+  it('matches a batched send when a nested transaction targets the token contract', () => {
+    const group = makeLocalGroup({
+      time: 1000,
+      type: TransactionType.tokenMethodTransfer,
+      txParams: {
+        to: '0xUSER',
+        nonce: '0x0',
+      } as TransactionMeta['txParams'],
+      nestedTransactions: [
+        {
+          to: '0xTokenContract' as `0x${string}`,
+          data: '0xa9059cbb' as `0x${string}`,
+        },
+      ],
+    });
+    expect(
+      matchesLocalTransaction(group, {
+        kind: 'token',
+        tokenAddress: '0xtokencontract',
+      }),
+    ).toBe(true);
+  });
+
+  it('does not match a batched send when no nested transaction targets the token', () => {
+    const group = makeLocalGroup({
+      time: 1000,
+      type: TransactionType.tokenMethodTransfer,
+      txParams: {
+        to: '0xUSER',
+        nonce: '0x0',
+      } as TransactionMeta['txParams'],
+      nestedTransactions: [
+        {
+          to: '0xOtherToken' as `0x${string}`,
+          data: '0xa9059cbb' as `0x${string}`,
+        },
+      ],
+    });
+    expect(
+      matchesLocalTransaction(group, {
+        kind: 'token',
+        tokenAddress: '0xUnrelatedToken',
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false for token scope when txParams.to differs and there are no nested transactions', () => {
+    const group = makeLocalGroup({
+      time: 1000,
+      type: TransactionType.tokenMethodTransfer,
+      txParams: {
+        to: '0xUSER',
+        nonce: '0x0',
+      } as TransactionMeta['txParams'],
+    });
+    expect(
+      matchesLocalTransaction(group, {
+        kind: 'token',
+        tokenAddress: '0xSomeToken',
+      }),
+    ).toBe(false);
+  });
 });
 
 describe('matchesNonEvmTransaction', () => {
@@ -362,5 +429,61 @@ describe('resolveTransactionType', () => {
       makeApiTx({ time: Date.now(), transactionType: 'ERC_1155_TRANSFER' }),
     );
     expect(result).toBe(TransactionType.tokenMethodTransferFrom);
+  });
+
+  it('returns musdClaim for a contract interaction to the Merkl distributor with claim method', () => {
+    const result = resolveTransactionType(
+      makeApiTx({
+        time: Date.now(),
+        txParams: {
+          from: '0x0000000000000000000000000000000000000000',
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+          data: `${MERKL_CLAIM_METHOD_ID}0000000000000000`,
+        },
+      }),
+    );
+    expect(result).toBe(TransactionType.musdClaim);
+  });
+
+  it('returns contractInteraction for Merkl distributor with non-claim method', () => {
+    const result = resolveTransactionType(
+      makeApiTx({
+        time: Date.now(),
+        txParams: {
+          from: '0x0000000000000000000000000000000000000000',
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+          data: '0x12345678', // Different method ID
+        },
+      }),
+    );
+    expect(result).toBe(TransactionType.contractInteraction);
+  });
+
+  it('does not override APPROVE transactions to the Merkl distributor', () => {
+    const result = resolveTransactionType(
+      makeApiTx({
+        time: Date.now(),
+        transactionCategory: 'APPROVE',
+        txParams: {
+          from: '0x0000000000000000000000000000000000000000',
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+        },
+      }),
+    );
+    expect(result).toBe(TransactionType.tokenMethodApprove);
+  });
+
+  it('does not override SWAP transactions to the Merkl distributor', () => {
+    const result = resolveTransactionType(
+      makeApiTx({
+        time: Date.now(),
+        transactionCategory: 'SWAP',
+        txParams: {
+          from: '0x0000000000000000000000000000000000000000',
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+        },
+      }),
+    );
+    expect(result).toBe(TransactionType.swap);
   });
 });
