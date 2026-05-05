@@ -41,9 +41,6 @@ export const getTransactionDetailsMetricsProperties: TransactionMetricsBuilder =
     const finalizedExtras =
       eventName === TransactionMetaMetricsEvent.finalized
         ? {
-            ...(transactionEventPayload.error
-              ? { error: transactionEventPayload.error }
-              : {}),
             ...(transactionMeta.txReceipt?.gasUsed
               ? { gas_used: hexWEIToDecGWEI(transactionMeta.txReceipt.gasUsed) }
               : {}),
@@ -80,8 +77,16 @@ export const getTransactionDetailsMetricsProperties: TransactionMetricsBuilder =
       transactionMeta.nestedTransactions?.length,
     );
 
+    const finalizedNonSensitive =
+      eventName === TransactionMetaMetricsEvent.finalized &&
+      transactionEventPayload.error
+        ? { error: transactionEventPayload.error }
+        : {};
+
     return {
-      properties: {},
+      properties: {
+        ...finalizedNonSensitive,
+      },
       sensitiveProperties: {
         transaction_envelope_type: isEIP1559Transaction(transactionMeta)
           ? TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET
