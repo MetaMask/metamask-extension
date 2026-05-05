@@ -129,7 +129,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     [position],
   );
 
-  const handleSave = useCallback(async () => {
+  const handleConfirm = useCallback(async () => {
     if (!isEligible) {
       setIsGeoBlockModalOpen(true);
       return;
@@ -289,14 +289,14 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
           </ModalBody>
           <ModalFooter
             onCancel={onClose}
-            onSubmit={handleSave}
+            onSubmit={handleConfirm}
             cancelButtonProps={{
               'data-testid': 'perps-reverse-position-modal-cancel',
               children: t('cancel'),
               disabled: isSubmitting,
             }}
             submitButtonProps={{
-              'data-testid': 'perps-reverse-position-modal-save',
+              'data-testid': 'perps-reverse-position-modal-confirm',
               children: isSubmitting ? t('perpsSubmitting') : t('confirm'),
               disabled: isSubmitting,
             }}

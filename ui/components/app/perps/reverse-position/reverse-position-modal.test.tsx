@@ -196,7 +196,7 @@ describe('ReversePositionModal', () => {
         screen.getByTestId('perps-reverse-position-modal-cancel'),
       ).toBeInTheDocument();
       const submitButton = screen.getByTestId(
-        'perps-reverse-position-modal-save',
+        'perps-reverse-position-modal-confirm',
       );
       expect(submitButton).toBeInTheDocument();
       expect(submitButton).toHaveTextContent(messages.confirm.message);
@@ -283,7 +283,7 @@ describe('ReversePositionModal', () => {
     });
   });
 
-  describe('successful save', () => {
+  describe('successful confirm', () => {
     it('calls perpsFlipPosition once with symbol and position payload', async () => {
       const onClose = jest.fn();
 
@@ -292,7 +292,7 @@ describe('ReversePositionModal', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-confirm'));
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -332,7 +332,7 @@ describe('ReversePositionModal', () => {
 
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-confirm'));
 
       await waitFor(() => {
         expect(pushPositionsWithOverrides).toHaveBeenCalledWith(mockPositions);
@@ -349,7 +349,7 @@ describe('ReversePositionModal', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-confirm'));
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -383,7 +383,7 @@ describe('ReversePositionModal', () => {
 
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-confirm'));
 
       await waitFor(() => {
         expect(
@@ -402,7 +402,7 @@ describe('ReversePositionModal', () => {
 
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-confirm'));
 
       await waitFor(() => {
         expect(
@@ -434,7 +434,7 @@ describe('ReversePositionModal', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-confirm'));
 
       await waitFor(() => {
         expect(
@@ -456,7 +456,7 @@ describe('ReversePositionModal', () => {
 
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-confirm'));
 
       await waitFor(() => {
         expect(
@@ -474,7 +474,7 @@ describe('ReversePositionModal', () => {
 
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-confirm'));
 
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
         key: 'perpsToastReverseInProgress',
@@ -484,7 +484,7 @@ describe('ReversePositionModal', () => {
     it('emits reverse success toast after successful flip + refresh', async () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-confirm'));
 
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
@@ -506,7 +506,7 @@ describe('ReversePositionModal', () => {
 
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-confirm'));
 
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
@@ -526,7 +526,7 @@ describe('ReversePositionModal', () => {
 
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-confirm'));
 
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
@@ -569,7 +569,7 @@ describe('ReversePositionModal', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-confirm'));
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -593,12 +593,12 @@ describe('ReversePositionModal', () => {
 
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      const saveButton = screen.getByTestId(
-        'perps-reverse-position-modal-save',
+      const confirmButton = screen.getByTestId(
+        'perps-reverse-position-modal-confirm',
       );
-      expect(saveButton).toBeEnabled();
+      expect(confirmButton).toBeEnabled();
 
-      fireEvent.click(saveButton);
+      fireEvent.click(confirmButton);
 
       await waitFor(() => {
         expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
