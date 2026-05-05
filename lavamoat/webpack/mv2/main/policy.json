@@ -97,7 +97,7 @@
       "packages": {
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>@ethereumjs/rlp": true,
         "buffer": true,
-        "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography": true,
+        "@metamask/eth-qr-keyring>@metamask/keyring-sdk>ethereum-cryptography": true,
         "webpack>events": true,
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
       }
@@ -1304,7 +1304,6 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
         "buffer": true,
         "@metamask/eth-qr-keyring>hdkey": true,
         "@metamask/eth-qr-keyring>uuid": true
@@ -2589,14 +2588,6 @@
         "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
-      }
-    },
     "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/curves": {
       "globals": {
         "TextEncoder": true
@@ -2619,6 +2610,14 @@
       },
       "packages": {
         "@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/eth-qr-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/eth-qr-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@noble/hashes": {
@@ -2646,12 +2645,6 @@
       }
     },
     "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -2688,6 +2681,12 @@
     "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true
+      }
+    },
+    "@metamask/eth-qr-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
@@ -4283,16 +4282,6 @@
         "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true
-      },
-      "packages": {
-        "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/curves": true,
-        "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
-      }
-    },
     "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography": {
       "globals": {
         "TextDecoder": true,
@@ -4351,6 +4340,16 @@
       },
       "packages": {
         "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/eth-qr-keyring>@metamask/keyring-sdk>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/eth-qr-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/curves": true,
+        "@metamask/eth-qr-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/phishing-controller>ethereum-cryptography": {
