@@ -37,6 +37,7 @@ export type PermissionRenderContext = {
   /** Expiry timestamp in Unix seconds, or null if no expiry. */
   expiry: number | null;
   redeemerAddresses?: string[] | null;
+  payeeAddresses?: string[] | null;
   /** Chain ID in hex format. */
   chainId: Hex;
   /** The origin URL of the request. Only required for confirmation views. */
@@ -184,11 +185,22 @@ export type SchemaElement =
   | OriginField
   | AddressField
   | NetworkField
-  | RedeemerField;
+  | RedeemerField
+  | PayeeField;
 
 /** Displays the redeemer addresses for a permission. */
 export type RedeemerField = {
   type: 'redeemer';
+  labelKey: string;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => string[] | undefined;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
+};
+
+/** Displays the payee addresses for a permission. */
+export type PayeeField = {
+  type: 'payee';
   labelKey: string;
   testId: string;
   getValue: (ctx: PermissionRenderContext) => string[] | undefined;

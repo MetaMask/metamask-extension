@@ -34,7 +34,10 @@ import {
   assertPermissionSchemaEntry,
 } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
-import { extractRedeemerAddressesFromRules } from '../../../../../../../../shared/lib/gator-permissions';
+import {
+  extractRedeemerAddressesFromRules,
+  extractPayeeAddressesFromRules,
+} from '../../../../../../../../shared/lib/gator-permissions';
 import { translateI18nValue } from '../../../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 import type {
   AmountField,
@@ -279,6 +282,32 @@ function renderElement(
       );
     }
 
+    case 'payee': {
+      const addresses = element.getValue(ctx);
+      if (!addresses?.length) {
+        return null;
+      }
+      return (
+        <React.Fragment key={index}>
+          <ConfirmInfoRow label={t(element.labelKey)}>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.flexEnd}
+            >
+              {addresses.map((address) => (
+                <ConfirmInfoRowAddress
+                  key={address}
+                  address={address}
+                  chainId={ctx.chainId}
+                />
+              ))}
+            </Box>
+          </ConfirmInfoRow>
+        </React.Fragment>
+      );
+    }
+
     case 'network': {
       return <NetworkRow key={index} />;
     }
@@ -368,11 +397,13 @@ export const PermissionDetailRenderer: React.FC<{
   }
 
   const redeemerAddresses = extractRedeemerAddressesFromRules(rules ?? []);
+  const payeeAddresses = extractPayeeAddressesFromRules(rules ?? []);
 
   const ctx: PermissionRenderContext = {
     permission,
     expiry,
     redeemerAddresses,
+    payeeAddresses,
     chainId,
     origin,
     to,

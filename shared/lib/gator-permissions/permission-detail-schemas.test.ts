@@ -176,6 +176,22 @@ describe('permissionInfoSection field accessors', () => {
       true,
     );
   });
+
+  it('reads payeeAddresses from context for the payee field', () => {
+    const payeeEl = findElementByTestId(
+      'native-token-stream',
+      'confirmation-payee',
+    );
+    expect(payeeEl.type).toBe('payee');
+    if (payeeEl.type !== 'payee') {
+      return;
+    }
+    const addrs = ['0x0000000000000000000000000000000000000003'];
+    expect(
+      payeeEl.getValue({ ...base, payeeAddresses: addrs }),
+    ).toStrictEqual(addrs);
+    expect(payeeEl.isVisible({ ...base, payeeAddresses: addrs })).toBe(true);
+  });
 });
 
 describe('stream confirmation total exposure fields', () => {

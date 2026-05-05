@@ -40,6 +40,7 @@ import {
   extractExpiryTimestampFromRules,
   formatDecimalShiftedValue,
   extractRedeemerAddressesFromRules,
+  extractPayeeAddressesFromRules,
 } from '../../../../../../shared/lib/gator-permissions';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
@@ -382,6 +383,19 @@ function renderElement({
         />
       );
     }
+    case 'payee': {
+      const addresses = element.getValue(ctx);
+      if (!addresses?.length) {
+        return null;
+      }
+      return (
+        <ReviewRedeemerRow
+          key={rowKey}
+          addresses={addresses}
+          label={t(element.labelKey)}
+        />
+      );
+    }
 
     case 'divider':
     case 'origin':
@@ -548,6 +562,7 @@ export const ReviewPermissionRenderer: React.FC<
 
   const effectiveExpiry = extractExpiryTimestampFromRules(rules ?? []);
   const redeemerAddresses = extractRedeemerAddressesFromRules(rules ?? []);
+  const payeeAddresses = extractPayeeAddressesFromRules(rules ?? []);
 
   const ctx: PermissionRenderContext = {
     permission: {
@@ -557,6 +572,7 @@ export const ReviewPermissionRenderer: React.FC<
     },
     expiry: effectiveExpiry,
     redeemerAddresses,
+    payeeAddresses,
     chainId,
     tokenInfo: {
       symbol: tokenInfo.symbol,

@@ -5407,6 +5407,9 @@
     "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
   },
+  "payee": {
+    "message": "Payee"
+  },
   "payWith": {
     "message": "Pay with",
     "description": "Label for pay with row showing which token is used to pay transaction fees"

@@ -390,6 +390,40 @@ describe('PermissionDetailRenderer', () => {
       });
     });
 
+    it('lists payee addresses from rules when payee rules are present', async () => {
+      const payeeAddr = '0xb552685e3d2790efd64a175b00d51f02cdafee5d';
+      const permission = {
+        type: 'erc20-token-stream',
+        data: {
+          tokenAddress: '0xa0b86a33e6441b8c4c8c0e4a8e4a8e4a8e4a8e4a',
+          initialAmount: '0x1234',
+          maxAmount: '0x1234',
+          amountPerSecond: '0x1234',
+          startTime: 123456789,
+        },
+      };
+      renderWithConfirmContextProvider(
+        <PermissionDetailRenderer
+          permission={permission}
+          expiry={123456789}
+          chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-owner"
+          rules={[
+            {
+              type: 'payee',
+              data: { addresses: [payeeAddr] },
+            },
+          ]}
+        />,
+        getMockStore(),
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText(messages.payee.message)).toBeInTheDocument();
+      });
+    });
+
     it('uses the Snap-specific request-from tooltip when origin is a Snap id', async () => {
       const permission = {
         type: 'native-token-stream',

@@ -194,6 +194,30 @@ describe('ReviewPermissionRenderer', () => {
     ).toHaveLength(1);
   });
 
+  it('renders payee rows when payee rules are present', () => {
+    const payeeAddr = '0x0000000000000000000000000000000000000002';
+    renderWithProvider(
+      <ReviewPermissionRenderer
+        permissionType="native-token-stream"
+        permissionData={{
+          initialAmount: '0x6f05b59d3b20000',
+          maxAmount:
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+          amountPerSecond: '0x1',
+          startTime: 1736271776,
+        }}
+        chainId="0x1"
+        rules={[{ type: 'payee', data: { addresses: [payeeAddr] } }]}
+        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
+        tokenLoading={false}
+      />,
+      store,
+    );
+    expect(
+      screen.getAllByTestId('review-gator-permission-redeemer-address'),
+    ).toHaveLength(1);
+  });
+
   it('places /sec before (raw units) when token decimals are unknown', () => {
     renderWithProvider(
       <ReviewPermissionRenderer
