@@ -1,4 +1,7 @@
 import { Hex } from '@metamask/utils';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { TransactionType } from '@metamask/transaction-controller';
+import { waitFor } from '@testing-library/react';
 import {
   getMockConfirmStateForTransaction,
   getMockConfirmState,
@@ -11,7 +14,6 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib
 import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { HardwareDeviceNames } from '../../../../../../shared/constants/hardware-wallets';
 import { usePayHardwareAccountAlert } from './usePayHardwareAccountAlert';
 
 const HARDWARE_ACCOUNT_ID = 'hardware-account-id';
@@ -53,7 +55,26 @@ function createHardwareAccountState(keyringType: string) {
   };
 }
 
-function runHookWithTransaction(keyringType: string = 'HD Key Tree') {
+function runHookWithMusdConversion(keyringType: string = 'HD Key Tree') {
+  const transaction = {
+    ...genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS as Hex,
+    }),
+    type: TransactionType.musdConversion,
+  };
+
+  const state = getMockConfirmStateForTransaction(
+    transaction,
+    createHardwareAccountState(keyringType),
+  );
+
+  return renderHookWithConfirmContextProvider(
+    () => usePayHardwareAccountAlert(),
+    state,
+  );
+}
+
+function runHookWithContractInteraction(keyringType: string) {
   const transaction = genUnapprovedContractInteractionConfirmation({
     address: CONTRACT_INTERACTION_SENDER_ADDRESS as Hex,
   });
@@ -78,59 +99,52 @@ function runHookWithoutTransaction() {
   );
 }
 
+const EXPECTED_ALERT = {
+  key: AlertsName.PayHardwareAccount,
+  field: RowAlertKey.PayWith,
+  reason: 'Wallet not supported',
+  message: "Hardware wallets aren't supported.\nSwitch wallets to continue.",
+  severity: Severity.Danger,
+  isBlocking: true,
+};
+
 describe('usePayHardwareAccountAlert', () => {
-  it('returns alert if from address is a Ledger hardware wallet account', () => {
-    const { result } = runHookWithTransaction(HardwareDeviceNames.ledger);
+  it('returns alert for Ledger account on musdConversion', async () => {
+    const { result } = runHookWithMusdConversion(KeyringTypes.ledger);
 
-    expect(result.current).toStrictEqual([
-      {
-        key: AlertsName.PayHardwareAccount,
-        field: RowAlertKey.PayWith,
-        reason: 'Wallet not supported',
-        message:
-          "Hardware wallets aren't supported.\nSwitch wallets to continue.",
-        severity: Severity.Danger,
-        isBlocking: true,
-      },
-    ]);
+    await waitFor(() => {
+      expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+    });
   });
 
-  it('returns alert if from address is a Trezor hardware wallet account', () => {
-    const { result } = runHookWithTransaction(HardwareDeviceNames.trezor);
+  it('returns alert for Trezor account on musdConversion', async () => {
+    const { result } = runHookWithMusdConversion(KeyringTypes.trezor);
 
-    expect(result.current).toStrictEqual([
-      {
-        key: AlertsName.PayHardwareAccount,
-        field: RowAlertKey.PayWith,
-        reason: 'Wallet not supported',
-        message:
-          "Hardware wallets aren't supported.\nSwitch wallets to continue.",
-        severity: Severity.Danger,
-        isBlocking: true,
-      },
-    ]);
+    await waitFor(() => {
+      expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+    });
   });
 
-  it('returns alert if from address is a Lattice hardware wallet account', () => {
-    const { result } = runHookWithTransaction(HardwareDeviceNames.lattice);
+  it('returns alert for Lattice account on musdConversion', async () => {
+    const { result } = runHookWithMusdConversion(KeyringTypes.lattice);
 
-    expect(result.current).toStrictEqual([
-      {
-        key: AlertsName.PayHardwareAccount,
-        field: RowAlertKey.PayWith,
-        reason: 'Wallet not supported',
-        message:
-          "Hardware wallets aren't supported.\nSwitch wallets to continue.",
-        severity: Severity.Danger,
-        isBlocking: true,
-      },
-    ]);
+    await waitFor(() => {
+      expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+    });
   });
 
-  it('returns no alert if from address is not a hardware wallet account', () => {
-    const { result } = runHookWithTransaction('HD Key Tree');
+  it('returns no alert for non-hardware wallet account on musdConversion', () => {
+    const { result } = runHookWithMusdConversion('HD Key Tree');
 
     expect(result.current).toStrictEqual([]);
+  });
+
+  it('returns no alert for hardware wallet on contractInteraction', async () => {
+    const { result } = runHookWithContractInteraction(KeyringTypes.ledger);
+
+    await waitFor(() => {
+      expect(result.current).toStrictEqual([]);
+    });
   });
 
   it('returns no alert if there is no current confirmation', () => {

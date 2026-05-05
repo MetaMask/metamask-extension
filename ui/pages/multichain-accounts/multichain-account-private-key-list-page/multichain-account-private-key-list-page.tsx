@@ -6,6 +6,8 @@ import {
   type Location as RouterLocation,
 } from 'react-router-dom';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   BoxFlexDirection,
   ButtonIcon,
@@ -23,10 +25,6 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainPrivateKeyList } from '../../../components/multichain-accounts/multichain-private-key-list';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-} from '../../../components/component-library';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';

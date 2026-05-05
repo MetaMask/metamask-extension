@@ -4,12 +4,14 @@
   width: 28px;
   height: 28px;
 
-  // Higher specificity than `.mm-box.box--background-color-*` so hover fills the full 28×28 area
-  &.mm-box:hover {
+  // Match specificity of `.mm-box.mm-box--background-color-*` so hover background wins; `:hover`
+  // must not depend on `.mm-box` only so the fill covers the full control after DS migrations.
+  &:hover {
     background-color: var(--color-primary-muted);
 
+    // Design system icons are SVG with `fill: currentColor`.
     .multichain-account-cell-popover-menu-button-icon {
-      background-color: var(--color-primary-default);
+      color: var(--color-primary-default);
     }
   }
 }

@@ -242,3 +242,84 @@ export const MOCK_ACCOUNT_ID_BY_ADDRESS = {
   [MOCK_ACCOUNT_HARDWARE.address]: MOCK_ACCOUNT_HARDWARE.id,
   [MOCK_ACCOUNT_PRIVATE_KEY.address]: MOCK_ACCOUNT_PRIVATE_KEY.id,
 };
+
+type MockInternalAccountOptions = Omit<
+  InternalAccount['options'],
+  'entropy'
+> & {
+  entropy?:
+    | {
+        type: 'mnemonic';
+        id: string;
+        groupIndex: number;
+        derivationPath?: string;
+      }
+    | { type: 'private-key' }
+    | { type: 'custom' };
+};
+
+type MockInternalAccountOverrides = Omit<
+  Partial<InternalAccount>,
+  'metadata' | 'options'
+> &
+  Pick<InternalAccount, 'id'> & {
+    metadata?: Partial<InternalAccount['metadata']>;
+    options?: MockInternalAccountOptions;
+  };
+
+function normalizeOptions(
+  options?: MockInternalAccountOptions,
+): InternalAccount['options'] {
+  if (!options?.entropy) {
+    return (options ?? {}) as InternalAccount['options'];
+  }
+
+  if (options.entropy.type !== 'mnemonic') {
+    return options as InternalAccount['options'];
+  }
+
+  return {
+    ...options,
+    entropy: {
+      ...options.entropy,
+      derivationPath: options.entropy.derivationPath ?? '',
+    },
+  };
+}
+
+export function createMockInternalAccount({
+  id,
+  address,
+  metadata,
+  options,
+  ...overrides
+}: MockInternalAccountOverrides): InternalAccount {
+  const normalizedOptions = normalizeOptions(options);
+
+  return {
+    ...MOCK_ACCOUNT_EOA,
+    ...overrides,
+    id,
+    address: address ?? `${id}-address`,
+    metadata: {
+      ...MOCK_ACCOUNT_EOA.metadata,
+      ...metadata,
+      keyring: {
+        ...MOCK_ACCOUNT_EOA.metadata.keyring,
+        ...metadata?.keyring,
+      },
+    },
+    options: normalizedOptions,
+  };
+}
+
+export function createMockInternalAccounts(
+  mockAccounts: MockInternalAccountOverrides[],
+): Record<string, InternalAccount> {
+  return Object.fromEntries(
+    mockAccounts.map((mockAccount) => [
+      mockAccount.id,
+      createMockInternalAccount(mockAccount),
+    ]),
+  );
+}

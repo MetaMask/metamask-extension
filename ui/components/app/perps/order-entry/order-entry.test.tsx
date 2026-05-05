@@ -113,7 +113,7 @@ describe('OrderEntry', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
-        'Open Long BTC',
+        'Open long BTC',
       );
     });
 
@@ -124,7 +124,7 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
-        'Open Short BTC',
+        'Open short BTC',
       );
     });
 
@@ -135,7 +135,7 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
-        'Open Long BRENTOIL',
+        'Open long BRENTOIL',
       );
       expect(
         screen.getByTestId('order-entry-submit-button'),
@@ -361,7 +361,7 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
-        'Close Long',
+        'Close long',
       );
     });
 
@@ -377,7 +377,7 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
-        'Close Short',
+        'Close short',
       );
     });
 
@@ -511,6 +511,32 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+    });
+
+    it('passes the USD placeholder override to market order amount input', () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          orderType="market"
+          usdPlaceholder="min $10"
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).toHaveAttribute('placeholder', 'min $10');
+    });
+
+    it('keeps the default USD placeholder for limit orders when no override is provided', () => {
+      renderWithProvider(
+        <OrderEntry {...defaultProps} orderType="limit" />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).toHaveAttribute('placeholder', '0.00');
     });
 
     it('hides limit price input in close mode even when orderType is limit', () => {

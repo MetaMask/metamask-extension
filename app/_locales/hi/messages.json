@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "एक कस्टम नेटवर्क जोड़ें"
   },
-  "addAHardwareWallet": {
-    "message": "हार्डवेयर वॉलेट जोड़ें"
-  },
   "addANetwork": {
     "message": "एक नेटवर्क जोड़ें"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "एक URL जोड़ें"
+  },
+  "addAWallet": {
+    "message": "एक वॉलेट जोड़ें"
   },
   "addAccount": {
     "message": "अकाउंट जोड़ें"
@@ -269,9 +269,6 @@
   },
   "addHardwareWalletLabel": {
     "message": "हार्डवेयर वॉलेट"
-  },
-  "addIPFSGateway": {
-    "message": "अपना पसंदीदा IPFS गेटवे जोड़ें"
   },
   "addMemo": {
     "message": "मेमो जोड़ें"
@@ -1089,6 +1086,12 @@
   "bridgeLowestCost": {
     "message": "सबसे कम लागत"
   },
+  "bridgeMalicious": {
+    "message": "बुरी नीयत वाला"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "बुरी नीयत वाला टोकन"
+  },
   "bridgeMarketClosedAction": {
     "message": "मार्केट बंद"
   },
@@ -1109,6 +1112,9 @@
   },
   "bridgeNoMMFee": {
     "message": "कोई MM फीस नहीं"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "कीमत की कोई जानकारी नहीं"
   },
   "bridgePoints": {
     "message": "अनुमानित पॉइंट्स",
@@ -1205,6 +1211,102 @@
   "bridgeReceiveLoading": {
     "message": "डेस्टिनेशन चेन पर प्राप्त कर रहे हैं"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "संदिग्ध एयरड्रॉप"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "कंसन्ट्रेटेड सप्लाई"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "संदिग्ध व्यवहार"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "इन्फ्लेटेड ट्रेडर काउंट"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "नकली वॉल्यूम"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "भारी बॉट एक्टिविटी"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "अनडिस्क्लोज्ड सप्लाई"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "हाई बाई फीस"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "हाई सैल फीस"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "हाई ट्रांसफर फीस"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "हनीपॉट रिस्क"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "धोखेबाज़"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "किसी सेंसिटिव एसेट की नकल करता है"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "संभावित धोखेबाज़"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "संभावित धोखेबाज़"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "अभद्र कंटेंट"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "आर्टिफीसियल वॉल्यूम"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "कम लॉक्ड लिक्विडिटी"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "क्रिएटर की रेप्युटेशन कम है"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "जाना-माना गलत इरादे वाला"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "संदिग्ध मेटाडेटा"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "कीमत में संभावित हेरफेर"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "रगपुल रिस्क"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "सैंक्शन्ड क्रिएटर"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "गलत इरादे वाले कॉन्ट्रैक्ट जैसा दिखता है"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "लॉन्च के समय बॉट एक्टिविटी"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "स्पैम टेक्स्ट"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "संदिग्ध कोड"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "टोकन बैकडोर"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "बेचा न जा सकने वाला टोकन"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "अस्थिर कीमत"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "वॉश ट्रेडिंग"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "एक डेस्टिनेशन अकाउंट चुनें"
   },
@@ -1260,6 +1362,12 @@
   "bridgeStepActionSwapPending": {
     "message": "$1 को $2 से स्वैप किया जा रहा है",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "संदिग्ध"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "संदिग्ध टोकन"
   },
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
@@ -1434,9 +1542,6 @@
     "message": "जब आप हमारी डिफॉल्ट सेटिंग्स और कॉन्फ़िगरेशन का उपयोग करते हैं, तो हम Ethereum डेटा तक सबसे विश्वसनीय और निजी पहुँच प्रदान करने के लिए Infura को अपने डिफॉल्ट रिमोट प्रोसीजर कॉल (RPC) प्रदाता के रूप में उपयोग करते हैं। सीमित मामलों में, हम अपने उपयोगकर्ताओं को सर्वश्रेष्ठ अनुभव प्रदान करने के लिए अन्य RPC प्रदाताओं का उपयोग कर सकते हैं। आप अपना खुद का RPC चुन सकते हैं, लेकिन याद रखें कि कोई भी RPC ट्रांसेक्शन करने के लिए आपका आईपी ​​एड्रेस और Ethereum वॉलेट प्राप्त करेगा। EVM एकाउंट्स के लिए Infura डेटा को कैसे संभालता है, इसके बारे में अधिक जानने के लिए, हमारी $1 पढ़ें और Solana एकाउंट्स, $2 के लिए।",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "यहां क्लिक करें"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "अपने hardware wallet से कनेक्ट करने के लिए आपको Google Chrome पर MetaMask का इस्तेमाल करने की आवश्यकता है।"
   },
@@ -1448,9 +1553,6 @@
   },
   "clearActivity": {
     "message": "एक्टिविटी और nonce डेटा हटाएं"
-  },
-  "clearActivityButton": {
-    "message": "एक्टिविटी टैब डेटा हटाएं"
   },
   "clearActivityDescription": {
     "message": "अकाउंट के nonce को रीसेट करता है और आपके वॉलेट में एक्टिविटी टैब से डेटा मिटा देता है। केवल मौजूदा अकाउंट और नेटवर्क प्रभावित होंगे। आपका बैलेंस और आने वाले ट्रांसेक्शन नहीं बदलेंगे।"
@@ -1732,6 +1834,9 @@
   },
   "connect": {
     "message": "कनेक्ट करें"
+  },
+  "connectAHardwareWallet": {
+    "message": "किसी hardware wallet को कनेक्ट करें"
   },
   "connectAccounts": {
     "message": "खातों को कनेक्ट करें"
@@ -2106,12 +2211,6 @@
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "उत्पाद अपडेट, सुझाव और समाचार प्राप्त करें - ईमेल के माध्यम से भी। हम आपके इंटरैक्शन का उपयोग साझा की जाने वाली जानकारी को बेहतर बनाने के लिए कर सकते हैं।"
   },
-  "dataCollectionWarningPopoverButton": {
-    "message": "ठीक है"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "आपने हमारे मार्केटिंग उद्देश्यों के लिए डेटा संग्रहण बंद कर दिया है।  यह केवल इस डिवाइस पर लागू होता है। यदि आप अन्य डिवाइसों पर MetaMask का उपयोग करते हैं, तो वहां भी ऑप्ट आउट करना सुनिश्चित करें।"
-  },
   "dataUnavailable": {
     "message": "डेटा अनुपलब्ध है"
   },
@@ -2228,9 +2327,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "द पर्प्स मार्केट पेज"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "द पर्प्स मार्केट लिस्ट पेज"
   },
   "deepLink_thePerpsPage": {
     "message": "पर्प्स पेज"
@@ -3014,6 +3110,9 @@
   "gasUsed": {
     "message": "इस्तेमाल की गई गैस"
   },
+  "gatorNoJustificationProvided": {
+    "message": "अनुमति के लिए कोई वजह नहीं बताई गई"
+  },
   "gatorPermissionAnnualFrequency": {
     "message": "वार्षिक",
     "description": "Time period for annual recurring permissions redemption"
@@ -3085,6 +3184,10 @@
   "gatorPermissionsStartDate": {
     "message": "शुरु करने की तारीख",
     "description": "Label for the start date of a permission"
+  },
+  "gatorPermissionsStatusExpired": {
+    "message": "एक्सपायर हो गया",
+    "description": "Tag label for a gator permission that has expired"
   },
   "gatorPermissionsStreamRate": {
     "message": "स्ट्रीम रेट",
@@ -3365,6 +3468,9 @@
   "importAWallet": {
     "message": "एक वॉलेट इंपोर्ट करें"
   },
+  "importAWalletDescription": {
+    "message": "12, 18 या 24 शब्दों के सीड फ्रेज़ का इस्तेमाल करना"
+  },
   "importAccountError": {
     "message": "अकाउंट इम्पोर्ट करने में गड़बड़ी।"
   },
@@ -3395,6 +3501,9 @@
   },
   "importAnAccount": {
     "message": "एक खाता इम्पोर्ट करें"
+  },
+  "importAnAccountDescription": {
+    "message": "एक प्राइवेट की (key) के द्वारा"
   },
   "importNFT": {
     "message": "NFT आयात करें"
@@ -3784,9 +3893,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask लॉक हो रहा है..."
   },
-  "lockTimeInvalid": {
-    "message": "लॉक का समय 0 और 10080 के बीच की कोई संख्या होनी चाहिए"
-  },
   "logOut": {
     "message": "लॉग आउट करें"
   },
@@ -4096,6 +4202,102 @@
     "message": "$1 $2 Snaps का उपयोग करना चाहता है",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdAssetBonusAccruing": {
+    "message": "अगला बोनस अर्जित किया जा रहा है",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "$1 बोनस क्लेम करें",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "अनुमानित वार्षिक बोनस",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "आपकी बोनस जानकारी",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "आपके वर्तमान बैलेंस और ब्याज दर के आधार पर एक वर्ष में आपकी संभावित कमाई का अनुमान। रेट बदलता रहता है और बदल सकता है।",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "अधिक जानें।",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "आपने शुरुआत से लेकर अब तक कुल जितना बोनस क्लेम किया है।",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "mUSD होल्ड करने पर आपको मिलता है $1% सालाना बोनस। आपका बोनस Linea पर रोज़ाना क्लेम किया जा सकता है। $2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "लाइफटाइम बोनस क्लेम किया गया",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "अगला कोई बोनस अर्जित नहीं किया जा रहा है",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "$1% बोनस",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "आपका बोनस",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "दैनिक बोनस",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "डॉलर-समर्थित",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "कोई लॉकअप नहीं",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "कोई MetaMask फीस नहीं",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "$1% सालाना बोनस",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "एक ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " USDC, USDT और DAI को mUSD में कन्वर्ट करके।",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "ज़्यादा जानें",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "अपने स्टेबलकॉइन कन्वर्ट करें",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "बैलेंस",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "आपकी पोज़िशन",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "मूल्य",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
+  },
   "musdBonusExplanation": {
     "message": "अपने स्टेबलकॉइन्स को mUSD में बदलें और $1% तक वार्षिक बोनस कमाएं, जिसे आप रोज़ाना क्लेम कर सकते हैं।$2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
@@ -4199,6 +4401,10 @@
   "musdMetaMaskUsd": {
     "message": "MetaMask USD",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "नियम लागू।"
@@ -4763,6 +4969,14 @@
     "message": "$1 पर देखें",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "ट्रांसेक्शन नहीं हो पाया! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "ट्रांसेक्शन कन्फर्म हो गया!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
+  },
   "notifications": {
     "message": "अपने वॉलेट का उपयोग करना"
   },
@@ -4886,9 +5100,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "उपयोग की शर्तों"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "हम मूलभूत उत्पाद उपयोग संबंधी डेटा एकत्र करेंगे, जैसे सामान्य लोकेशन, क्लिक और व्यूज़। कोई अन्य जानकारी स्टोर नहीं की जाएगी।"
   },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "हम बेसिक प्रोडक्ट यूसेज डेटा इकट्ठा करेंगे। हम इस जानकारी को ऑन-चेन डेटा से जोड़ सकते हैं।"
@@ -5426,7 +5637,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "उपलब्ध पर्प्स बैलेंस: "
+    "message": "उपलब्ध बैलेंस: "
   },
   "perpsAvailableToAdd": {
     "message": "जोड़ने के लिए उपलब्ध है"
@@ -5472,7 +5683,7 @@
     "message": "अमाउंट क्लोज़ करें"
   },
   "perpsCloseLong": {
-    "message": "लॉन्ग क्लोज़ करें"
+    "message": "लॉन्ग को क्लोज़ करें"
   },
   "perpsClosePartialMinNotional": {
     "message": "आंशिक क्लोज़ की कीमत USD में कम से कम $1 होनी चाहिए। क्लोज़ अमाउंट बढ़ाएँ या स्लाइडर को 100% पर सेट करें।"
@@ -5481,19 +5692,25 @@
     "message": "पोज़िशन बंद करें"
   },
   "perpsCloseShort": {
-    "message": "शॉर्ट क्लोज़ करें"
+    "message": "शॉर्ट को क्लोज़ करें"
   },
   "perpsConfirmCloseLong": {
-    "message": "लॉन्ग क्लोज़ करें"
+    "message": "लॉन्ग को क्लोज़ करें"
   },
   "perpsConfirmCloseShort": {
-    "message": "शॉर्ट क्लोज़ करें"
+    "message": "शॉर्ट को क्लोज़ करें"
   },
   "perpsConnectionTimeout": {
     "message": "कनेक्शन टाइम आउट हो गया। कृपया फिर से कोशिश करें।"
   },
   "perpsContactSupport": {
     "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "MetaMask पर्प्स केवल आइसोलेटेड मार्जिन के साथ ट्रेडिंग का सपोर्ट करते हैं। MetaMask पर ट्रेड करने से पहले आपको अपनी क्रॉस मार्जिन पोज़िशन बंद करनी होगी।"
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "क्रॉस मार्जिन सपोर्टेड नहीं है"
   },
   "perpsDateToday": {
     "message": "आज"
@@ -5776,15 +5993,12 @@
   "perpsReversePositionDescriptionShort": {
     "message": "अपनी शॉर्ट पोज़िशन को लॉन्ग में बदलें"
   },
-  "perpsSaveChanges": {
-    "message": "बदलावों को सेव करें",
-    "description": "Button text for saving TP/SL changes"
-  },
   "perpsSearchMarkets": {
     "message": "मार्केट्स खोजें"
   },
   "perpsSeeAll": {
-    "message": "सभी को देखें"
+    "message": "सभी को देखें",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "सेवा अस्थायी रूप से अनुपलब्ध है। कृपया बाद में फिर से कोशिश करें।"
@@ -5984,6 +6198,9 @@
   },
   "perpsTrades": {
     "message": "ट्रेड्स"
+  },
+  "perpsTriggerPrice": {
+    "message": "ट्रिगर प्राइस"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "लीवरेज आपके लाभ और हानि दोनों को बढ़ा देता है। 40x लीवरेज के साथ, प्राइस में 1% का बदलाव आपके मार्जिन पर 40% लाभ या हानि के बराबर होता है।"
@@ -6933,12 +7150,6 @@
   "securityChangePassword": {
     "message": "पासवर्ड बदलें"
   },
-  "securityChangePasswordDescription": {
-    "message": "अपने डिवाइस पर MetaMask ऐप अनलॉक करने के लिए एक मज़बूत पासवर्ड चुनें। अगर आप यह पासवर्ड खो देते हैं, तो अपना वॉलेट फिर से इंपोर्ट करने के लिए आपको अपनी सीक्रेट रिकवरी फ्रेज़ की आवश्यकता होगी।"
-  },
-  "securityChangePasswordTitle": {
-    "message": "पासवर्ड"
-  },
   "securityChangePasswordToastError": {
     "message": "पासवर्ड बदला नहीं जा सका। कृपया फिर से प्रयास करें।"
   },
@@ -6950,16 +7161,6 @@
   },
   "securityDescription": {
     "message": "असुरक्षित नेटवर्क में शामिल होने की संभावना कम करें और अपने एकाउंट्स की सुरक्षा करें"
-  },
-  "securityLoginWithSocial": {
-    "message": "$1 के साथ लॉग इन करें",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "सीक्रेट रिकवरी फ्रेज़ का बैकअप लिया गया"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "सीक्रेट रिकवरी फ्रेज़ का बैकअप लें"
   },
   "securityMessageLinkForNetworks": {
     "message": "नेटवर्क संबंधी स्कैम और सुरक्षा जोखिम"
@@ -6982,14 +7183,8 @@
     "message": "$1 रिकवरी",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "अपने सीक्रेट रिकवरी फ्रेज़ का बैकअप लें ताकि आप अपने वॉलेट तक कभी पहुँच न खोएँ। इसे किसी सुरक्षित स्थान पर रखें, जहां केवल आप ही पहुंच सकें और जिसे आप भूलें नहीं।"
-  },
   "securitySrpLabel": {
     "message": "सीक्रेट रिकवरी फ्रेज़"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "रिकवरी विधियों को प्रबंधित करें"
   },
   "seeAllPermissions": {
     "message": "सभी अनुमतियां देखें",
@@ -7947,9 +8142,6 @@
   "smartAccount": {
     "message": "स्मार्ट अकाउंट"
   },
-  "smartAccountDappRequestsTitle": {
-    "message": "dapps से स्मार्ट अकाउंट रिक्वेस्ट"
-  },
   "smartAccountLabel": {
     "message": "स्मार्ट अकाउंट"
   },
@@ -7967,9 +8159,6 @@
   },
   "smartContractAddressWarning": {
     "message": "हो सकता है कि पाने वाले का पता सीधे टोकन ट्रांसफर को सपोर्ट न करे, जिससे फंड का नुकसान हो सकता है। तभी आगे बढ़ें जब आपको पक्का हो कि यह कॉन्ट्रैक्ट आपका ट्रांसफर प्राप्त कर सकता है।"
-  },
-  "smartContracts": {
-    "message": "स्मार्ट कॉन्ट्रैक्ट्स"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "स्मार्ट स्वैप के लिए पर्याप्त फंड नहीं है।"
@@ -8993,9 +9182,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "टोकन पहले ही जोड़ा जा चुका है।"
-  },
-  "tokenAutoDetection": {
-    "message": "टोकन ऑटो-डिटेक्शन"
   },
   "tokenContractAddress": {
     "message": "टोकन कॉन्ट्रैक्ट एड्रेस"

@@ -66,6 +66,7 @@ import {
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
+import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsMarketRecentActivity } from '../../components/app/perps/perps-market-recent-activity';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
@@ -102,7 +103,6 @@ import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import { CancelOrderModal } from '../../components/app/perps/cancel-order';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
-import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import type { Order } from '../../components/app/perps/types';
 import {
   PERPS_TOAST_KEYS,
@@ -276,7 +276,8 @@ const PerpsMarketDetailPage: React.FC = () => {
     formatPercentWithMinThreshold,
   } = useFormatters();
   const fundingCountdown = useFundingCountdown();
-  const { replacePerpsToastByKey } = usePerpsToast();
+  const { replacePerpsToastByKey, pendingOrder, setPendingOrder } =
+    usePerpsToast();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   useEffect(() => {
@@ -313,11 +314,14 @@ const PerpsMarketDetailPage: React.FC = () => {
       return;
     }
 
+    // Primary: read from shared toast context (set by order entry via navigate(-1) flow).
+    // Fallback: read from location.state for any remaining route-state-based navigation.
     const routeState = location.state as Record<string, unknown> | null;
     const pendingSymbol =
-      typeof routeState?.pendingOrderSymbol === 'string'
+      pendingOrder?.symbol ??
+      (typeof routeState?.pendingOrderSymbol === 'string'
         ? routeState.pendingOrderSymbol
-        : null;
+        : null);
 
     if (!pendingSymbol) {
       return;
@@ -328,23 +332,30 @@ const PerpsMarketDetailPage: React.FC = () => {
       orderFilledToastShownRef.current = true;
 
       const filledDescription =
-        typeof routeState?.pendingOrderFilledDescription === 'string'
+        pendingOrder?.filledDescription ??
+        (typeof routeState?.pendingOrderFilledDescription === 'string'
           ? routeState.pendingOrderFilledDescription
-          : undefined;
+          : undefined);
 
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.ORDER_FILLED,
         ...(filledDescription ? { description: filledDescription } : {}),
       });
+
+      setPendingOrder(null);
     }
-  }, [location.state, allPositions, replacePerpsToastByKey]);
+  }, [
+    location.state,
+    allPositions,
+    replacePerpsToastByKey,
+    pendingOrder,
+    setPendingOrder,
+  ]);
 
   const { orders: allOrders } = usePerpsLiveOrders();
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
-  const { trigger: triggerDeposit, isLoading: isDepositLoading } =
-    usePerpsDepositConfirmation();
 
   // Safely decode the symbol from URL
   const decodedSymbol = useMemo(() => {
@@ -355,7 +366,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [symbol]);
 
   const hasPerpBalance = Boolean(
-    account && Number.parseFloat(account.availableBalance) > 0,
+    account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
@@ -367,7 +378,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
       }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
-      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance ? 'yes' : 'no',
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
     },
     resetKey: decodedSymbol,
   });
@@ -436,8 +447,6 @@ const PerpsMarketDetailPage: React.FC = () => {
       (pos) => pos.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol, allPositions]);
-  const hasNoAvailableBalance =
-    !position && !isLoadingAccount && !hasPerpBalance;
 
   // Ref to track current position - avoids stale data in callbacks
   // This follows mobile's pattern (currentPositionRef) to ensure we always
@@ -456,7 +465,9 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Filter and sort open orders for this market, then normalize for display.
   // Normalization adds synthetic TP/SL rows for parent orders when no matching
-  // real trigger exists; full-position TP/SL also appear in this Orders list.
+  // real trigger exists. Full-position TP/SL is excluded from this list — it
+  // appears in the auto-close section above (driven by position.takeProfitPrice
+  // / stopLossPrice).
   const orders = useMemo(() => {
     if (!decodedSymbol) {
       return [];
@@ -734,35 +745,6 @@ const PerpsMarketDetailPage: React.FC = () => {
     ],
   );
 
-  const handleAddFunds = useCallback(() => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-    if (!selectedAddress || isDepositLoading) {
-      return;
-    }
-
-    track(MetaMetricsEventName.PerpsUiInteraction, {
-      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-        PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
-      ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
-    });
-
-    triggerDeposit();
-  }, [
-    decodedSymbol,
-    isDepositLoading,
-    isEligible,
-    selectedAddress,
-    track,
-    triggerDeposit,
-  ]);
-
   const handleClosePosition = useCallback(() => {
     if (!isEligible) {
       setIsGeoBlockModalOpen(true);
@@ -1006,6 +988,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         height={250}
         selectedPeriod={selectedPeriod}
         candleData={candleData}
+        currentPrice={currentPrice}
         priceLines={chartPriceLines}
         onNeedMoreHistory={fetchMoreHistory}
         // onCrosshairMove={setHoveredCandle}
@@ -1048,9 +1031,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         {/* Header Content: symbol-USD, price + change */}
         <Box flexDirection={BoxFlexDirection.Column}>
-          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-            {displayName}-USD
-          </Text>
+          <Text variant={TextVariant.HeadingMd}>{displayName}-USD</Text>
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Baseline}
@@ -1064,7 +1045,8 @@ const PerpsMarketDetailPage: React.FC = () => {
               {displayPrice}
             </Text>
             <Text
-              variant={TextVariant.BodyXs}
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
               color={getChangeColor(displayChange)}
               data-testid="perps-market-detail-change"
             >
@@ -1082,7 +1064,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               ? t('perpsRemoveFromFavorites')
               : t('perpsAddToFavorites')
           }
-          className="p-2 cursor-pointer"
+          className="p-2 cursor-pointer transition-transform hover:scale-110"
           onClick={handleFavoriteClick}
         >
           <Icon
@@ -1164,7 +1146,7 @@ const PerpsMarketDetailPage: React.FC = () => {
       <>
         {/* Position Section */}
         {position && (
-          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+          <Box paddingLeft={4} paddingRight={4}>
             <Box paddingBottom={2}>
               <Text
                 variant={TextVariant.HeadingSm}
@@ -1252,7 +1234,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     data-testid="perps-position-size-value"
                   >
                     {showSizeInFiat && Boolean(position.entryPrice)
-                      ? formatPerpsFiatUniversal(
+                      ? formatPerpsFiatMinimal(
                           Math.abs(parseFloat(position.size)) *
                             parsePerpsDisplayPrice(position.entryPrice),
                         )
@@ -1510,7 +1492,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         {/* Orders Section - shown regardless of position, but only if there are orders */}
         {orders.length > 0 && (
-          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+          <Box paddingLeft={4} paddingRight={4}>
             <Box paddingBottom={2}>
               <Text
                 variant={TextVariant.HeadingSm}
@@ -1593,7 +1575,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   >
                     <Icon
                       name={IconName.Info}
-                      size={IconSize.Sm}
+                      size={IconSize.Xs}
                       color={IconColor.IconAlternative}
                     />
                   </Tooltip>
@@ -1633,7 +1615,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   >
                     <Icon
                       name={IconName.Info}
-                      size={IconSize.Sm}
+                      size={IconSize.Xs}
                       color={IconColor.IconAlternative}
                     />
                   </Tooltip>
@@ -1689,7 +1671,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                 >
                   <Icon
                     name={IconName.Info}
-                    size={IconSize.Sm}
+                    size={IconSize.Xs}
                     color={IconColor.IconAlternative}
                   />
                 </Tooltip>
@@ -1802,8 +1784,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                 flip
                 offset={[0, 8]}
                 padding={0}
-                matchWidth
-                className="rounded-lg z-[1050]"
+                className="rounded-lg z-[1050] w-[294px]"
                 data-testid="perps-modify-menu"
               >
                 <Box flexDirection={BoxFlexDirection.Column}>
@@ -1830,6 +1811,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     onClick={handleReduceExposure}
                     data-testid="perps-modify-menu-reduce-exposure"
                   />
+                  {/* Reverse Position temporarily disabled — see TAT-XXXX
                   <PopoverMenuItem
                     icon={IconName.SwapHorizontal}
                     label={t('perpsReversePosition')}
@@ -1842,6 +1824,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     className="rounded-b-lg"
                     data-testid="perps-modify-menu-reverse-position"
                   />
+                  */}
                 </Box>
               </Popover>
             </Box>
@@ -1864,20 +1847,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         )}
 
         {/* Without Position: Show Long and Short buttons */}
-        {!position && hasNoAvailableBalance && (
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            onClick={handleAddFunds}
-            disabled={!selectedAddress || isDepositLoading}
-            className="w-full"
-            data-testid="perps-add-funds-cta-button"
-          >
-            {t('addFunds')}
-          </Button>
-        )}
-
-        {!position && !hasNoAvailableBalance && (
+        {!position && (
           <Box
             flexDirection={BoxFlexDirection.Row}
             gap={3}
@@ -1922,7 +1892,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         />
       )}
 
-      {/* Reverse position modal (from Modify menu) */}
+      {/* Reverse position modal temporarily disabled — see TAT-XXXX
       {position && isReverseModalOpen && (
         <ReversePositionModal
           isOpen={isReverseModalOpen}
@@ -1932,6 +1902,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           sizeDecimals={marketInfo?.szDecimals}
         />
       )}
+      */}
 
       {/* TP/SL update modal (from Auto Close row) */}
       {position && isTPSLModalOpen && (

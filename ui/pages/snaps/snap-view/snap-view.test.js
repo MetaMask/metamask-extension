@@ -5,6 +5,7 @@ import { waitFor, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { createMockRouteMessenger } from '../../../../test/lib/mock-route-messenger';
 import SnapView from './snap-view';
 
 jest.mock('../../../store/actions.ts', () => {
@@ -39,9 +40,18 @@ jest.mock('react-router-dom', () => {
 const mockStore = configureMockStore([thunk])(mockState);
 
 describe('SnapView', () => {
-  it('should properly display Snap View elements', async () => {
+  it('renders Snap View elements', async () => {
+    const messenger = createMockRouteMessenger();
     const { getByText, container, getByTestId, getAllByText } =
-      renderWithProvider(<SnapView />, mockStore);
+      renderWithProvider(
+        <SnapView />,
+        mockStore,
+        '/snaps/view',
+        undefined,
+        undefined,
+        undefined,
+        messenger,
+      );
 
     // Snap name & Snap authorship component
     expect(getAllByText('BIP-44 Test Snap')).toHaveLength(3);

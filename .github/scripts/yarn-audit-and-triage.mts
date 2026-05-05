@@ -347,17 +347,23 @@ function buildSummaryAndVerdict({
       );
     }
   } else if (blockReleaseCandidate) {
+    // blockReleaseCandidate is only true when at least one moderate+
+    // prod advisory exists (see main()), so blockingProdAdvisories is
+    // guaranteed non-empty here.
+    const blockingProdAdvisories = prodAdvisories.filter((a) =>
+      BLOCKING_SEVERITIES.has(a.effectiveSeverity),
+    );
     githubAnnotate(
       'error',
-      `yarn audit FAILED: ${prodAdvisories.length} production advisor${prodAdvisories.length === 1 ? 'y' : 'ies'} on release branch — RC blocked.`,
+      `yarn audit FAILED: ${blockingProdAdvisories.length} production advisor${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} (moderate+) on release branch — RC blocked.`,
     );
     verdictLines.push(
       `### yarn audit: **FAILED**`,
       '',
-      `Release branch with **${prodAdvisories.length}** production advisor${prodAdvisories.length === 1 ? 'y' : 'ies'} — release candidate blocked until resolved.`,
+      `Release branch with **${blockingProdAdvisories.length}** production advisor${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} at moderate or higher severity — release candidate blocked until resolved.`,
       '',
       '```',
-      prodAdvisories.map(formatAdvisoryTree).join('\n\n'),
+      blockingProdAdvisories.map(formatAdvisoryTree).join('\n\n'),
       '```',
       '',
     );
