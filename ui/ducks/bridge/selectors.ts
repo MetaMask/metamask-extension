@@ -893,41 +893,41 @@ const _getBaseValidationErrors = createDeepEqualSelector(
         quoteStreamCompleteData?.hasQuotes === false ||
         Boolean(
           !activeQuote &&
-            isValidQuoteRequest(quoteRequest) &&
-            quotesLastFetchedMs &&
-            !isLoading &&
-            quotesRefreshCount > 0,
+          isValidQuoteRequest(quoteRequest) &&
+          quotesLastFetchedMs &&
+          !isLoading &&
+          quotesRefreshCount > 0,
         ),
       // Shown prior to fetching quotes (native reserve error takes precedence)
       isInsufficientGasBalance: Boolean(
         nativeBalance &&
-          !activeQuote &&
-          validatedSrcAmount &&
-          fromToken &&
-          !isGasless &&
-          (isNativeAddress(fromToken.assetId)
-            ? new BigNumber(nativeBalance)
-                .sub(minimumBalanceToKeep)
-                .lte(validatedSrcAmount)
-            : new BigNumber(nativeBalance).lte(0)),
+        !activeQuote &&
+        validatedSrcAmount &&
+        fromToken &&
+        !isGasless &&
+        (isNativeAddress(fromToken.assetId)
+          ? new BigNumber(nativeBalance)
+              .sub(minimumBalanceToKeep)
+              .lte(validatedSrcAmount)
+          : new BigNumber(nativeBalance).lte(0)),
       ),
       isInsufficientNativeReserve,
       // Shown after fetching quotes
       isInsufficientGasForQuote: Boolean(
         nativeBalance &&
-          activeQuote &&
-          fromToken &&
-          fromTokenInputValue &&
-          !isGasless &&
-          (isNativeAddress(fromToken.assetId)
-            ? new BigNumber(nativeBalance)
-                .sub(activeQuote.totalNetworkFee.amount)
-                .sub(activeQuote.sentAmount.amount)
-                .sub(minimumBalanceToKeep)
-                .lte(0)
-            : new BigNumber(nativeBalance).lte(
-                activeQuote.totalNetworkFee.amount,
-              )),
+        activeQuote &&
+        fromToken &&
+        fromTokenInputValue &&
+        !isGasless &&
+        (isNativeAddress(fromToken.assetId)
+          ? new BigNumber(nativeBalance)
+              .sub(activeQuote.totalNetworkFee.amount)
+              .sub(activeQuote.sentAmount.amount)
+              .sub(minimumBalanceToKeep)
+              .lte(0)
+          : new BigNumber(nativeBalance).lte(
+              activeQuote.totalNetworkFee.amount,
+            )),
       ),
       isInsufficientBalance:
         validatedSrcAmount &&
@@ -947,8 +947,8 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           : false,
       isPriceImpactWarning: Boolean(
         priceImpactNumber &&
-          priceImpactNumber > warning &&
-          priceImpactNumber <= error,
+        priceImpactNumber > warning &&
+        priceImpactNumber <= error,
       ),
       isPriceImpactError: Boolean(
         priceImpactNumber && priceImpactNumber > error,
@@ -993,7 +993,7 @@ export const getWarningLabels = (
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isInsufficientBalance,
-        isInsufficientNativeReserve,
+    isInsufficientNativeReserve,
     isPriceImpactWarning,
     isPriceImpactError,
     isTxAlertPresent,
@@ -1014,9 +1014,9 @@ export const getWarningLabels = (
   isStockMarketClosed && warnings.push('market_closed');
   // @ts-expect-error: quote_expired is not a valid QuoteWarning yet
   isQuoteExpired && warnings.push('quote_expired');
-    isInsufficientNativeReserve &&
-      // @ts-expect-error: market_closed is not a valid QuoteWarning yet
-      warnings.push('insufficient_native_reserve');
+  isInsufficientNativeReserve &&
+    // @ts-expect-error: market_closed is not a valid QuoteWarning yet
+    warnings.push('insufficient_native_reserve');
   return warnings;
 };
 
