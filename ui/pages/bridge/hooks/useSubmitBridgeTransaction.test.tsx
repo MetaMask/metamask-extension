@@ -17,7 +17,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import * as sharedSelectors from '../../../../shared/lib/selectors';
+import * as uiSelectors from '../../../selectors';
 import * as sentry from '../../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import * as bridgeActions from '../../../ducks/bridge/actions';
@@ -107,17 +107,6 @@ jest.mock('../../../../shared/lib/selectors/networks', () => {
   };
 });
 
-jest.mock('../../../../shared/lib/selectors', () => {
-  const smartTransactions = jest.requireActual(
-    '../../../../shared/lib/selectors/smart-transactions',
-  );
-  return {
-    ...smartTransactions,
-    getHardwareWalletType: jest.fn(() => undefined),
-    isHardwareWallet: jest.fn(() => false),
-  };
-});
-
 jest.mock('../../../selectors', () => {
   const original = jest.requireActual('../../../selectors');
   return {
@@ -125,6 +114,8 @@ jest.mock('../../../selectors', () => {
     getIsBridgeEnabled: () => true,
     getIsBridgeChain: () => true,
     checkNetworkAndAccountSupports1559: () => true,
+    getHardwareWalletType: jest.fn(() => undefined),
+    isHardwareWallet: jest.fn(() => false),
   };
 });
 
@@ -168,7 +159,7 @@ const makeWrapper = (store: ReturnType<typeof makeMockStore>) => {
 
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
 const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
-const isHardwareWalletSpy = sharedSelectors.isHardwareWallet as jest.Mock;
+const isHardwareWalletSpy = uiSelectors.isHardwareWallet as jest.Mock;
 const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 const mockResetState = jest.fn();
 const resetBridgeStoreSpy = jest.spyOn(bridgeActions, 'resetInputFields');

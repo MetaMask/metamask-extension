@@ -34,7 +34,6 @@ import { decimalToHex } from '../../../../shared/lib/conversion.utils';
 import {
   getExtensionSkipTransactionStatusPage,
   getIsSmartTransaction,
-  isHardwareWallet,
   getSmartTransactionsFeatureFlagsForChain,
 } from '../../../../shared/lib/selectors';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
@@ -630,7 +629,9 @@ export function getSmartTransactionCommonParams(
     // @ts-expect-error Smart transaction selector types does not match controller state
     getExtensionSkipTransactionStatusPage(uiState);
 
-  const isHardwareWalletAccount = isHardwareWallet(uiState);
+  const { selectedAccount, accounts } = uiState.metamask.internalAccounts;
+  const keyringType = accounts[selectedAccount]?.metadata?.keyring?.type;
+  const isHardwareWalletAccount = Boolean(keyringType?.includes('Hardware'));
 
   return {
     isSmartTransaction,
