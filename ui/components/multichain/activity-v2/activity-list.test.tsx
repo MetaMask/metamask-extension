@@ -7,6 +7,7 @@ import { ActivityList } from './activity-list';
 const mockUseVirtualizer = jest.fn();
 const mockUseTransactionsQuery = jest.fn();
 const mockSelectLocalTransactions = jest.fn();
+const mockUseIntersectionObserver = jest.fn();
 
 jest.mock('@tanstack/react-virtual', () => ({
   useVirtualizer: (...args: unknown[]) => mockUseVirtualizer(...args),
@@ -18,6 +19,11 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 
 jest.mock('../../../contexts/scroll-container', () => ({
   useScrollContainer: () => ({ current: null }),
+}));
+
+jest.mock('../../../hooks/useIntersectionObserver', () => ({
+  useIntersectionObserver: (...args: unknown[]) =>
+    mockUseIntersectionObserver(...args),
 }));
 
 jest.mock('../../../selectors/activity', () => ({
@@ -132,6 +138,11 @@ function createStore({
 }
 
 describe('ActivityList', () => {
+  const getIntersectionObserverOptions = () =>
+    mockUseIntersectionObserver.mock.calls[0]?.[0] as
+      | { onChange?: (isIntersecting: boolean) => void }
+      | undefined;
+
   const enableVisibleVirtualItems = () => {
     mockUseVirtualizer.mockImplementation(({ count }: { count: number }) => ({
       getVirtualItems: () =>
@@ -143,12 +154,13 @@ describe('ActivityList', () => {
       getTotalSize: () => count * 70,
       options: { scrollMargin: 0 },
       measure: jest.fn(),
-      measureElement: jest.fn(),
+      measureElement: jest.fn((node) => node),
     }));
   };
 
   beforeEach(() => {
     mockSelectLocalTransactions.mockReturnValue([]);
+    mockUseIntersectionObserver.mockReturnValue({ ref: jest.fn() });
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [] },
       fetchNextPage: jest.fn(),
@@ -216,6 +228,153 @@ describe('ActivityList', () => {
 
     expect(screen.getByTestId('evm-item')).toBeInTheDocument();
     expect(screen.getByTestId('non-evm-item')).toBeInTheDocument();
+  });
+
+  it('fetches the next API page when the last EVM item intersects', () => {
+    const fetchNextPage = jest.fn();
+    const lastCompletedEvmItemRef = jest.fn();
+    const evmTx = {
+      chainId: 'eip155:1',
+      id: 'evm-1',
+      time: 1735689600000,
+      timestamp: 1735689600,
+      transactionCategory: 'STANDARD',
+      transactionType: 'STANDARD',
+      txParams: { from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424' },
+    };
+    const olderNonEvmTxs = Array.from({ length: 20 }, (_, index) => ({
+      chain: 'solana:mainnet',
+      id: `non-evm-${index}`,
+      timestamp: 1735689500 - index,
+    }));
+
+    mockUseIntersectionObserver.mockReturnValue({
+      ref: lastCompletedEvmItemRef,
+    });
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [{ data: [evmTx] }] },
+      fetchNextPage,
+      hasNextPage: true,
+      isFetchingNextPage: false,
+    });
+    enableVisibleVirtualItems();
+    const store = createStore({
+      nonEvmTransactions: {
+        '1': {
+          'solana:mainnet': {
+            transactions: olderNonEvmTxs,
+          },
+        },
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <ActivityList />
+      </Provider>,
+    );
+    getIntersectionObserverOptions()?.onChange?.(true);
+
+    expect(lastCompletedEvmItemRef).toHaveBeenCalledWith(
+      expect.any(HTMLDivElement),
+    );
+    expect(screen.getAllByTestId('non-evm-item')).toHaveLength(
+      olderNonEvmTxs.length,
+    );
+    expect(fetchNextPage).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not fetch the next API page when the last EVM item is outside the viewport margin', () => {
+    const fetchNextPage = jest.fn();
+    const evmTx = {
+      chainId: 'eip155:1',
+      id: 'evm-1',
+      time: 1735689600000,
+      timestamp: 1735689600,
+      transactionCategory: 'STANDARD',
+      transactionType: 'STANDARD',
+      txParams: { from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424' },
+    };
+
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [{ data: [evmTx] }] },
+      fetchNextPage,
+      hasNextPage: true,
+      isFetchingNextPage: false,
+    });
+    enableVisibleVirtualItems();
+    const store = createStore();
+
+    render(
+      <Provider store={store}>
+        <ActivityList />
+      </Provider>,
+    );
+    getIntersectionObserverOptions()?.onChange?.(false);
+
+    expect(fetchNextPage).not.toHaveBeenCalled();
+  });
+
+  it('does not fetch the next API page while a page is already being fetched', () => {
+    const fetchNextPage = jest.fn();
+    const evmTx = {
+      chainId: 'eip155:1',
+      id: 'evm-1',
+      time: 1735689600000,
+      timestamp: 1735689600,
+      transactionCategory: 'STANDARD',
+      transactionType: 'STANDARD',
+      txParams: { from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424' },
+    };
+
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [{ data: [evmTx] }] },
+      fetchNextPage,
+      hasNextPage: true,
+      isFetchingNextPage: true,
+    });
+    enableVisibleVirtualItems();
+    const store = createStore();
+
+    render(
+      <Provider store={store}>
+        <ActivityList />
+      </Provider>,
+    );
+    getIntersectionObserverOptions()?.onChange?.(true);
+
+    expect(fetchNextPage).not.toHaveBeenCalled();
+  });
+
+  it('does not fetch the next API page when there are no more API pages', () => {
+    const fetchNextPage = jest.fn();
+    const evmTx = {
+      chainId: 'eip155:1',
+      id: 'evm-1',
+      time: 1735689600000,
+      timestamp: 1735689600,
+      transactionCategory: 'STANDARD',
+      transactionType: 'STANDARD',
+      txParams: { from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424' },
+    };
+
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [{ data: [evmTx] }] },
+      fetchNextPage,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
+    enableVisibleVirtualItems();
+    const store = createStore();
+
+    render(
+      <Provider store={store}>
+        <ActivityList />
+      </Provider>,
+    );
+    getIntersectionObserverOptions()?.onChange?.(true);
+
+    expect(fetchNextPage).not.toHaveBeenCalled();
   });
 
   it('filters malicious non-evm token transactions from the activity list', () => {

@@ -1235,8 +1235,9 @@ describe('MetaMaskController', function () {
           )
           .mockResolvedValue({ challenge: 'challenge' });
 
-        const result =
-          await metamaskController.generatePasskeyRegistrationOptions({
+        const result = await metamaskController
+          .getApi()
+          .generatePasskeyRegistrationOptions({
             prfAvailable: true,
           });
 
@@ -1256,11 +1257,32 @@ describe('MetaMaskController', function () {
           )
           .mockResolvedValue({ challenge: 'challenge' });
 
-        const result =
-          await metamaskController.generatePasskeyAuthenticationOptions();
+        const result = await metamaskController
+          .getApi()
+          .generatePasskeyAuthenticationOptions();
 
         expect(generateAuthenticationOptionsSpy).toHaveBeenCalledTimes(1);
         expect(result).toStrictEqual({ challenge: 'challenge' });
+      });
+    });
+
+    describe('#generatePasskeyPostRegistrationAuthenticationOptions', function () {
+      it('delegates to passkey controller', async function () {
+        const spy = jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'generatePostRegistrationAuthenticationOptions',
+          )
+          .mockReturnValue({ challenge: 'post-reg' });
+
+        const result = await metamaskController
+          .getApi()
+          .generatePasskeyPostRegistrationAuthenticationOptions(
+            registrationResponse,
+          );
+
+        expect(spy).toHaveBeenCalledWith({ registrationResponse });
+        expect(result).toStrictEqual({ challenge: 'post-reg' });
       });
     });
 
@@ -1274,7 +1296,10 @@ describe('MetaMaskController', function () {
           });
 
         await expect(
-          metamaskController.protectVaultKeyWithPasskey(registrationResponse),
+          metamaskController.protectVaultKeyWithPasskey(
+            registrationResponse,
+            authenticationResponse,
+          ),
         ).rejects.toThrow('Password required to register passkey');
       });
 
@@ -1300,12 +1325,14 @@ describe('MetaMaskController', function () {
 
         await metamaskController.protectVaultKeyWithPasskey(
           registrationResponse,
+          authenticationResponse,
           'password',
         );
 
         expect(verifyPasswordSpy).toHaveBeenCalledWith('password');
         expect(protectVaultKeySpy).toHaveBeenCalledWith({
           registrationResponse,
+          authenticationResponse,
           vaultKey: 'vault-key',
         });
       });
@@ -1333,11 +1360,13 @@ describe('MetaMaskController', function () {
 
         await metamaskController.protectVaultKeyWithPasskey(
           registrationResponse,
+          authenticationResponse,
         );
 
         expect(verifyPasswordSpy).not.toHaveBeenCalled();
         expect(protectVaultKeySpy).toHaveBeenCalledWith({
           registrationResponse,
+          authenticationResponse,
           vaultKey: 'vault-key',
         });
       });
@@ -1694,6 +1723,8 @@ describe('MetaMaskController', function () {
         expect(api).toStrictEqual(
           expect.objectContaining({
             generatePasskeyRegistrationOptions: expect.any(Function),
+            generatePasskeyPostRegistrationAuthenticationOptions:
+              expect.any(Function),
             generatePasskeyAuthenticationOptions: expect.any(Function),
             protectVaultKeyWithPasskey: expect.any(Function),
             unlockWithPasskey: expect.any(Function),
