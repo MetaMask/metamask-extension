@@ -152,6 +152,37 @@ const ChangePassword = ({
     }
   };
 
+  const handleChangePasswordWithPasskey = async (): Promise<boolean> => {
+    if (!passkeyAuthenticationResponse) {
+      return false;
+    }
+
+    let isPasskeyRenewalSuccessful = false;
+    try {
+      await dispatch(
+        changePasswordWithPasskeyVerification(
+          newPassword,
+          passkeyAuthenticationResponse,
+          { renewVaultKeyProtection: isPasskeyRenewalEnabled },
+        ),
+      );
+      isPasskeyRenewalSuccessful = isPasskeyRenewalEnabled;
+    } catch (error) {
+      if (!isPasskeyRenewalEnabled) {
+        throw error;
+      }
+      const passkeyCode = getPasskeyControllerErrorCode(error);
+      // strictly treat vault key renewal failure as a password change success
+      if (passkeyCode !== ExtensionPasskeyErrorCode.VaultKeyRenewalFailed) {
+        throw error;
+      }
+    }
+
+    setPasskeyAuthenticationResponse(null);
+    await forceUpdateMetamaskState(dispatch);
+    return isPasskeyRenewalSuccessful;
+  };
+
   const onChangePassword = async () => {
     let isPasskeyRenewalSuccessful = false;
 
@@ -160,29 +191,10 @@ const ChangePassword = ({
       setStep(ChangePasswordSteps.ChangePasswordLoading);
 
       if (passkeyAuthenticationResponse) {
-        try {
-          await dispatch(
-            changePasswordWithPasskeyVerification(
-              newPassword,
-              passkeyAuthenticationResponse,
-              { renewVaultKeyProtection: isPasskeyRenewalEnabled },
-            ),
-          );
-          isPasskeyRenewalSuccessful = isPasskeyRenewalEnabled;
-        } catch (error) {
-          if (!isPasskeyRenewalEnabled) {
-            throw error;
-          }
-          const passkeyCode = getPasskeyControllerErrorCode(error);
-          // strictly treat vault key renewal failure as a password change success
-          if (passkeyCode !== ExtensionPasskeyErrorCode.VaultKeyRenewalFailed) {
-            throw error;
-          }
-        }
-        setPasskeyAuthenticationResponse(null);
-        await forceUpdateMetamaskState(dispatch);
+        isPasskeyRenewalSuccessful = await handleChangePasswordWithPasskey();
       } else {
         await dispatch(changePassword(newPassword, currentPassword));
+        // if passkey is registered, since it's not verified, remove passkey
         if (isPasskeyRegistered && !isSocialLoginFlow) {
           await removePasskeyWithPasswordVerification(newPassword);
           await forceUpdateMetamaskState(dispatch);
