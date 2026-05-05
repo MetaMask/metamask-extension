@@ -95,6 +95,7 @@ export enum TraceName {
   MusdConversionConfirm = 'mUSD Conversion Confirm',
   BackgroundRpc = 'Background RPC',
   MessengerCall = 'Messenger Call',
+  BatchSellModal = 'Batch Sell Modal',
 }
 
 /**

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
@@ -11,6 +11,14 @@ import {
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import {
+  ButtonBase,
+  FontWeight,
+  Text,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { ChainId } from '../../../../shared/constants/network';
 import { transitionForward } from '../../ui/transition';
 
@@ -35,12 +43,20 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  BackgroundColor,
   BlockSize,
   Display,
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Box, Icon, IconName, IconSize } from '../../component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Tag,
+  TagProps,
+} from '../../component-library';
 import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
@@ -57,7 +73,77 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
+import { useOnClickOutside } from '../perps/hooks/useClickOutside';
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
+
+type MoreButtonsGroupProps<TagElem extends React.ElementType = 'div'> = {
+  classPrefix?: string;
+  onClick: () => void;
+  modalIsOpen: boolean;
+  actions: {
+    label: string;
+    onClick: () => void;
+    testId?: string;
+    iconName: IconName;
+    tagProps?: TagProps<TagElem>;
+  }[];
+};
+
+const MoreButtonsGroup = ({
+  actions,
+  classPrefix,
+  onClick,
+  modalIsOpen,
+}: MoreButtonsGroupProps) => {
+  const t = useContext(I18nContext);
+
+  return (
+    <>
+      <IconButton
+        className={`${classPrefix}-overview__button`}
+        data-testid={`${classPrefix}-overview-more`}
+        Icon={
+          <Icon
+            name={IconName.MoreHorizontal}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
+          />
+        }
+        label={t('moreCapital')}
+        width={BlockSize.Full}
+        onClick={onClick}
+      />
+      {modalIsOpen && (
+        <Box className="flex flex-col absolute right-0 top-full z-10 mt-4 min-w-[120px] overflow-hidden rounded-lg border border-border-muted bg-background-default shadow-lg">
+          {actions.map((action) => (
+            <ButtonBase
+              key={action.label}
+              className="text-left rounded-none px-4 py-3 bg-transparent min-w-0 flex w-full items-center h-auto hover:bg-hover active:bg-pressed"
+              onClick={action.onClick}
+              data-testid={action.testId}
+            >
+              <Icon
+                name={action.iconName}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextDefault}
+                textAlign={TextAlign.Left}
+                className="pl-4 pr-2 flex-1"
+              >
+                {action.label}
+              </Text>
+              <Tag {...action.tagProps} />
+            </ButtonBase>
+          ))}
+        </Box>
+      )}
+    </>
+  );
+};
 
 const TabOpenedToast = ({ onClose }: { onClose: () => void }) => {
   const t = useContext(I18nContext);
@@ -119,6 +205,10 @@ const CoinButtons = ({
   const defaultSwapsToken = useSelector((state) =>
     getSwapsDefaultToken(state, chainId.toString()),
   );
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isMoreOptionsDropdownOpen, setIsMoreOptionsDropdownOpen] =
+    useState(false);
 
   // Pre-conditions
   if (isSwapsChain && defaultSwapsToken === undefined) {
@@ -220,6 +310,10 @@ const CoinButtons = ({
   const { openBuyCryptoInPdapp } = useRamps();
 
   const { openBridgeExperience } = useBridging();
+
+  const handleMoreOptionsButtonClick = useCallback(() => {
+    setIsMoreOptionsDropdownOpen((prev) => !prev);
+  }, []);
 
   const setCorrectChain = useCallback(async () => {
     if (currentChainId !== chainId && multichainChainId !== chainId) {
@@ -340,12 +434,37 @@ const CoinButtons = ({
     }
   }, [selectedAccountGroup, navigate, trackEvent, trackingLocation, chainId]);
 
+  const handleBatchSellOnClick = useCallback(() => {
+    trace({ name: TraceName.BatchSellModal });
+    trackEvent({
+      event: MetaMetricsEventName.NavBatchSellButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        text: 'Batch Sell',
+        location: trackingLocation,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: chainId,
+      },
+    });
+
+    console.log('hehehe');
+  }, [trackEvent, trackingLocation, chainId]);
+
+  useOnClickOutside({
+    containerRef,
+    onClickOutside: () => setIsMoreOptionsDropdownOpen(false),
+    active: isMoreOptionsDropdownOpen,
+  });
+
   return (
     <Box
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
       gap={3}
+      className="relative"
+      ref={containerRef}
     >
       <IconButton
         className={`${classPrefix}-overview__button`}
@@ -410,20 +529,34 @@ const CoinButtons = ({
           onClose={() => setShowReceiveModal(false)}
         />
       )}
-      <IconButton
-        className={`${classPrefix}-overview__button`}
-        data-testid={`${classPrefix}-overview-receive`}
-        Icon={
-          <Icon
-            name={IconName.Received}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
-          />
-        }
-        label={t('receive')}
-        width={BlockSize.Full}
-        onClick={handleReceiveOnClick}
+
+      <MoreButtonsGroup
+        onClick={handleMoreOptionsButtonClick}
+        modalIsOpen={isMoreOptionsDropdownOpen}
+        classPrefix={classPrefix}
+        actions={[
+          {
+            label: t('batchSell'),
+            onClick: handleBatchSellOnClick,
+            testId: `${classPrefix}-overview-batchSell`,
+            iconName: IconName.Received,
+            tagProps: {
+              label: t('perpsFilterNew'),
+              labelProps: {
+                color: IconColor.primaryDefault,
+              },
+              backgroundColor: BackgroundColor.primaryMuted,
+            },
+          },
+          {
+            label: t('receive'),
+            onClick: handleReceiveOnClick,
+            testId: `${classPrefix}-overview-receive`,
+            iconName: IconName.Received,
+          },
+        ]}
       />
+
       {showTabOpenedToast && (
         <TabOpenedToast onClose={() => setShowTabOpenedToast(false)} />
       )}

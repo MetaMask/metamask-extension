@@ -435,13 +435,18 @@ describe('NonEvmOverview', () => {
     });
   });
 
-  it('always show the Receive button', () => {
+  it('shows the Receive button inside the more-options dropdown', () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore(),
     );
-    const receiveButton = queryByTestId(BTC_OVERVIEW_RECEIVE);
-    expect(receiveButton).toBeInTheDocument();
+
+    // Receive moved into the "More" dropdown – it is hidden until the dropdown is opened
+    expect(queryByTestId(BTC_OVERVIEW_RECEIVE)).not.toBeInTheDocument();
+
+    fireEvent.click(queryByTestId('coin-overview-more') as HTMLElement);
+
+    expect(queryByTestId(BTC_OVERVIEW_RECEIVE)).toBeInTheDocument();
   });
 
   it('always show the Send button', () => {

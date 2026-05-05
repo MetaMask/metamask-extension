@@ -332,10 +332,15 @@ describe('EthOverview', () => {
       expect(bridgeButton).not.toBeInTheDocument();
     });
 
-    it('should always show the Receive button', () => {
+    it('should show the Receive button inside the more-options dropdown', () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
-      const receiveButton = queryByTestId(ETH_OVERVIEW_RECEIVE);
-      expect(receiveButton).toBeInTheDocument();
+
+      // Receive moved into the "More" dropdown – it is hidden until the dropdown is opened
+      expect(queryByTestId(ETH_OVERVIEW_RECEIVE)).not.toBeInTheDocument();
+
+      fireEvent.click(queryByTestId('eth-overview-more'));
+
+      expect(queryByTestId(ETH_OVERVIEW_RECEIVE)).toBeInTheDocument();
     });
 
     it('should always show the Portfolio button', () => {

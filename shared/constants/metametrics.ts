@@ -941,6 +941,7 @@ export enum MetaMetricsEventName {
   NavSendButtonClicked = 'Send Button Clicked',
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
+  NavBatchSellButtonClicked = 'Batch Sell Button Clicked',
   NftAdded = 'NFT Added',
   NftDetected = 'NFT Detected',
   NoticeUpdateDisplayed = 'Notice Update Displayed',

@@ -5,10 +5,9 @@ class TokenOverviewPage {
 
   private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
 
-  private readonly receiveButton = {
-    text: 'Receive',
-    css: '.icon-button',
-  };
+  private readonly moreButton = '[data-testid="coin-overview-more"]';
+
+  private readonly receiveButton = '[data-testid="coin-overview-receive"]';
 
   private readonly sendButton = {
     text: 'Send',
@@ -48,6 +47,8 @@ class TokenOverviewPage {
   }
 
   async clickReceive(): Promise<void> {
+    await this.driver.clickElement(this.moreButton);
+    await this.driver.waitForSelector(this.receiveButton);
     await this.driver.clickElement(this.receiveButton);
   }
 

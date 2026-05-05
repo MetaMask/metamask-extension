@@ -3,6 +3,8 @@ import HomePage from './homepage';
 class NonEvmHomepage extends HomePage {
   protected readonly buySellButton = '[data-testid="coin-overview-buy"]';
 
+  protected readonly moreButton = '[data-testid="coin-overview-more"]';
+
   protected readonly receiveButton = '[data-testid="coin-overview-receive"]';
 
   protected readonly sendButton = '[data-testid="coin-overview-send"]';
@@ -74,9 +76,11 @@ class NonEvmHomepage extends HomePage {
 
   /**
    * Checks if the receive button is enabled on a non-evm account homepage.
+   * The receive button lives inside the "More" dropdown and requires opening it first.
    */
   async checkIsReceiveButtonEnabled(): Promise<boolean> {
     try {
+      await this.driver.clickElement(this.moreButton);
       await this.driver.waitForSelector(this.receiveButton, { timeout: 5000 });
     } catch (e) {
       console.log('Receive button not enabled', e);
@@ -84,6 +88,16 @@ class NonEvmHomepage extends HomePage {
     }
     console.log('Receive button is enabled');
     return true;
+  }
+
+  /**
+   * Clicks the receive button on the non-EVM account homepage.
+   * Opens the "More" dropdown first, then clicks the receive item.
+   */
+  async clickReceiveButton(): Promise<void> {
+    await this.driver.clickElement(this.moreButton);
+    await this.driver.waitForSelector(this.receiveButton);
+    await this.driver.clickElement(this.receiveButton);
   }
 
   /**

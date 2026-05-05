@@ -8,6 +8,8 @@ class BitcoinHomepage extends HomePage {
 
   private readonly buySellButton = '[data-testid="coin-overview-buy"]';
 
+  private readonly moreButton = '[data-testid="coin-overview-more"]';
+
   private readonly receiveButton = '[data-testid="coin-overview-receive"]';
 
   protected readonly sendButton = '[data-testid="coin-overview-send"]';
@@ -19,7 +21,7 @@ class BitcoinHomepage extends HomePage {
       await this.driver.waitForMultipleSelectors([
         this.sendButton,
         this.buySellButton,
-        this.receiveButton,
+        this.moreButton,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for bitcoin homepage to be loaded', e);
@@ -81,9 +83,11 @@ class BitcoinHomepage extends HomePage {
 
   /**
    * Checks if the receive button is enabled on bitcoin account homepage.
+   * The receive button lives inside the "More" dropdown and requires opening it first.
    */
   async checkIsReceiveButtonEnabled(): Promise<boolean> {
     try {
+      await this.driver.clickElement(this.moreButton);
       await this.driver.findClickableElement(this.receiveButton, {
         timeout: 1000,
       });
@@ -93,6 +97,17 @@ class BitcoinHomepage extends HomePage {
     }
     console.log('Receive button is enabled');
     return true;
+  }
+
+  /**
+   * Clicks the receive button on bitcoin account homepage.
+   * Opens the "More" dropdown first, then clicks the receive item.
+   */
+  async clickReceiveButton(): Promise<void> {
+    console.log('Clicking receive button on Bitcoin homepage');
+    await this.driver.clickElement(this.moreButton);
+    await this.driver.waitForSelector(this.receiveButton);
+    await this.driver.clickElement(this.receiveButton);
   }
 
   /**

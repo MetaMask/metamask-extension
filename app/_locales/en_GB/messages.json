@@ -931,6 +931,9 @@
   "basicFunctionalityRequired_toggleLabel": {
     "message": "Basic functionality"
   },
+  "batchSell": {
+    "message": "Batch Sell"
+  },
   "bestQuote": {
     "message": "Best quote"
   },
