@@ -39,6 +39,7 @@ import {
 } from '../../../shared/constants/app';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
+import type { TransactionFrameContext } from '../../../shared/types/metametrics';
 import { SecurityAlertResponse } from '../lib/ppom/types';
 import {
   AccountOverviewTabKey,
@@ -138,6 +139,13 @@ export type AppStateControllerState = {
   showTestnetMessageInDropdown: boolean;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
   slides: CarouselSlide[];
+  /**
+   * Per-transaction iframe context captured at dapp request time and consumed
+   * by the transaction metrics builder. Keyed by transaction id. Cleared after
+   * terminal transaction lifecycle events. Non-persisted: lifetime is bound by
+   * the transaction's own lifecycle (or, at worst, the session).
+   */
+  transactionFrameContexts: Record<string, TransactionFrameContext>;
   snapsInstallPrivacyWarningShown?: boolean;
   surveyLinkLastClickedOrClosed: number | null;
   shieldSubscriptionError: ShieldSubscriptionError | null;
@@ -337,6 +345,7 @@ function getInitialStateOverrides() {
     currentExtensionPopupId: 0,
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
+    transactionFrameContexts: {},
     networkConnectionBanner: {
       status: 'unknown' as const,
     },
@@ -573,6 +582,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     persist: false,
     includeInDebugSnapshot: true,
     usedInUi: true,
+  },
+  transactionFrameContexts: {
+    includeInStateLogs: false,
+    persist: false,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
   },
   slides: {
     includeInStateLogs: true,
@@ -1507,6 +1522,53 @@ export class AppStateController extends BaseController<
         ] = securityAlertResponse;
       });
     }
+  }
+
+  /**
+   * Records iframe context for a transaction so the metrics builder can
+   * attach iframe properties to all lifecycle events for that transaction.
+   *
+   * No-op when neither `frameId` nor `mainFrameOrigin` is present, so
+   * non-iframe transactions never allocate state.
+   *
+   * @param transactionId - The transaction id to associate the context with.
+   * @param context - The iframe context captured from the dapp request.
+   */
+  setTransactionFrameContext(
+    transactionId: string,
+    context: TransactionFrameContext,
+  ): void {
+    const hasFrameId = typeof context.frameId === 'number';
+    const hasMainFrameOrigin = typeof context.mainFrameOrigin === 'string';
+
+    if (!hasFrameId && !hasMainFrameOrigin) {
+      return;
+    }
+
+    this.update((state) => {
+      state.transactionFrameContexts[transactionId] = {
+        ...(hasFrameId ? { frameId: context.frameId } : {}),
+        ...(hasMainFrameOrigin
+          ? { mainFrameOrigin: context.mainFrameOrigin }
+          : {}),
+      };
+    });
+  }
+
+  getTransactionFrameContext(
+    transactionId: string,
+  ): TransactionFrameContext | undefined {
+    return this.state.transactionFrameContexts[transactionId];
+  }
+
+  removeTransactionFrameContext(transactionId: string): void {
+    if (!this.state.transactionFrameContexts[transactionId]) {
+      return;
+    }
+
+    this.update((state) => {
+      delete state.transactionFrameContexts[transactionId];
+    });
   }
 
   getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse = (

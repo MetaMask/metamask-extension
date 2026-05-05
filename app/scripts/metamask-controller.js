@@ -6496,6 +6496,7 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController.addAddressSecurityAlertResponse.bind(
           this.appStateController,
         ),
+      appStateController: this.appStateController,
       getSecurityAlertsConfig: this.getSecurityAlertsConfig.bind(this),
       ...otherParams,
     };
@@ -8697,6 +8698,14 @@ export default class MetamaskController extends EventEmitter {
       },
       getSecurityAlertsEnabled: () => {
         return this.preferencesController?.state?.securityAlertsEnabled;
+      },
+      getTransactionFrameContext: (transactionId) => {
+        return this.appStateController?.getTransactionFrameContext(
+          transactionId,
+        );
+      },
+      removeTransactionFrameContext: (transactionId) => {
+        this.appStateController?.removeTransactionFrameContext(transactionId);
       },
     };
 

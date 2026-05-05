@@ -1,34 +1,27 @@
-import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
 import { getIframeProperties } from '../../getIframeProperties';
-import { consumeDappRequestFrameContext } from '../dapp-request-frame-context';
 import type { TransactionMetricsBuilder } from './types';
 
-type TransactionMetaWithFrameContext = {
-  frameId?: number;
-  frameOrigin?: string;
-  mainFrameOrigin?: string;
-  origin?: string;
-  requestId?: string;
-  actionId?: string;
-};
-
+// Reads iframe context recorded at dapp request time (via
+// `transactionMetricsRequest.getTransactionFrameContext`). Returns no
+// properties for transactions without recorded context (non-dapp txs, or
+// dapp requests that did not originate from an iframe).
 export const getIframeMetricsProperties: TransactionMetricsBuilder = ({
-  eventName,
   transactionMeta,
+  transactionMetricsRequest,
 }) => {
-  const { frameId, frameOrigin, mainFrameOrigin, origin, requestId, actionId } =
-    transactionMeta as TransactionMetaWithFrameContext;
-  const frameContextRequestId = requestId ?? actionId;
-  const frameContext =
-    eventName === TransactionMetaMetricsEvent.added
-      ? consumeDappRequestFrameContext(frameContextRequestId)
-      : undefined;
+  const frameContext = transactionMetricsRequest.getTransactionFrameContext(
+    transactionMeta.id,
+  );
+
+  if (!frameContext) {
+    return { properties: {}, sensitiveProperties: {} };
+  }
 
   return {
     properties: getIframeProperties({
-      frameId: frameId ?? frameContext?.frameId,
-      origin: frameOrigin ?? frameContext?.frameOrigin ?? origin ?? '',
-      mainFrameOrigin: mainFrameOrigin ?? frameContext?.mainFrameOrigin,
+      frameId: frameContext.frameId,
+      origin: transactionMeta.origin ?? '',
+      mainFrameOrigin: frameContext.mainFrameOrigin,
     }),
     sensitiveProperties: {},
   };

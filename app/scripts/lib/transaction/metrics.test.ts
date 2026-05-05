@@ -67,6 +67,8 @@ const createRequest = () => {
     getPna25Acknowledged: jest.fn().mockReturnValue(true),
     getAddressSecurityAlertResponse: jest.fn(),
     getSecurityAlertsEnabled: jest.fn().mockReturnValue(true),
+    getTransactionFrameContext: jest.fn(),
+    removeTransactionFrameContext: jest.fn(),
   } as unknown as TransactionMetricsRequest;
 };
 
@@ -104,12 +106,15 @@ describe('transaction metrics handlers', () => {
 
   it('tracks approved event', async () => {
     const request = createRequest();
+    (request.getTransactionFrameContext as jest.Mock).mockReturnValue({
+      frameId: 1,
+      mainFrameOrigin: 'https://top-level.example',
+    });
+
     await handleTransactionApproved(request, {
       transactionMeta: createTxMeta({
         status: TransactionStatus.approved,
         origin: 'https://iframe.example',
-        mainFrameOrigin: 'https://top-level.example',
-        frameId: 1,
       }),
     });
 
@@ -139,11 +144,13 @@ describe('transaction metrics handlers', () => {
 
   it('tracks rejected event', async () => {
     const request = createRequest();
+    (request.getTransactionFrameContext as jest.Mock).mockReturnValue({
+      frameId: 1,
+      mainFrameOrigin: 'https://top-level.example',
+    });
     const transactionMeta = createTxMeta({
       status: TransactionStatus.rejected,
       origin: 'https://iframe.example',
-      mainFrameOrigin: 'https://top-level.example',
-      frameId: 1,
     });
 
     await handleTransactionRejected(request, { transactionMeta });
@@ -158,6 +165,9 @@ describe('transaction metrics handlers', () => {
           top_level_origin: 'https://top-level.example',
         }),
       }),
+    );
+    expect(request.removeTransactionFrameContext).toHaveBeenCalledWith(
+      transactionMeta.id,
     );
   });
 

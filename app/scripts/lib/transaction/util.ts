@@ -42,13 +42,13 @@ import {
 } from '../../../../shared/lib/trust-signals';
 import { getTransactionDataRecipient } from '../../../../shared/lib/transaction.utils';
 import { accountSupports7702 } from '../account-supports-7702';
+import type { AppStateController } from '../../controllers/app-state-controller';
 import {
   getTempoEvmTransactionArgs,
   getTempoTransactionBatchArgs,
   isTempoChain,
   isTempoTransactionType,
 } from './tempo-tx-utils';
-import { setDappRequestFrameContext } from './dapp-request-frame-context';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -82,12 +82,7 @@ export type AddTransactionRequest = FinalAddTransactionRequest & {
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
   dappRequest: JsonRpcRequest;
   requestContext: MiddlewareContext;
-};
-
-type TransactionMetaWithFrameContext = TransactionMeta & {
-  frameId?: number;
-  frameOrigin?: string;
-  mainFrameOrigin?: string;
+  appStateController: AppStateController;
 };
 
 const TRANSFER_TYPES = [
@@ -104,7 +99,7 @@ type AddTransactionResult = Promise<{
 export async function addDappTransaction(
   request: AddDappTransactionRequest,
 ): Promise<string> {
-  const { dappRequest, requestContext } = request;
+  const { appStateController, dappRequest, requestContext } = request;
   const { id, method } = dappRequest;
   const actionId = String(id);
   const { frameId: requestFrameId, mainFrameOrigin: requestMainFrameOrigin } =
@@ -143,69 +138,26 @@ export async function addDappTransaction(
     },
   };
 
-  setDappRequestFrameContext({
-    requestId: actionId,
-    frameId,
-    frameOrigin: origin,
-    mainFrameOrigin,
-  });
-
   const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
     addTransactionRequest,
   );
 
-  persistDappRequestFrameContext({
-    transactionController: request.transactionController,
-    transactionMeta,
-    frameId,
-    frameOrigin: origin,
-    mainFrameOrigin,
-  });
+  // Record iframe context once we have a transaction id, so the metrics
+  // builder can attach iframe properties to every lifecycle event for this
+  // transaction. Skipped (no-op) for non-iframe requests.
+  if (transactionMeta?.id) {
+    appStateController.setTransactionFrameContext(transactionMeta.id, {
+      frameId: typeof frameId === 'number' ? frameId : undefined,
+      mainFrameOrigin:
+        typeof mainFrameOrigin === 'string' ? mainFrameOrigin : undefined,
+    });
+  }
 
   const hash = (await waitForHash()) as string;
 
   endTrace({ name: TraceName.Transaction, id: actionId });
 
   return hash;
-}
-
-function persistDappRequestFrameContext({
-  transactionController,
-  transactionMeta,
-  frameId,
-  frameOrigin,
-  mainFrameOrigin,
-}: {
-  transactionController: TransactionController;
-  transactionMeta: TransactionMeta | undefined;
-  frameId: unknown;
-  frameOrigin: unknown;
-  mainFrameOrigin: unknown;
-}) {
-  const hasFrameId = typeof frameId === 'number';
-  const hasFrameOrigin = typeof frameOrigin === 'string';
-  const hasMainFrameOrigin = typeof mainFrameOrigin === 'string';
-
-  if (
-    !transactionMeta ||
-    (!hasFrameId && !hasFrameOrigin && !hasMainFrameOrigin)
-  ) {
-    return;
-  }
-
-  const updatedTransactionMeta: TransactionMetaWithFrameContext = {
-    ...transactionMeta,
-    ...(hasFrameId ? { frameId: frameId as number } : {}),
-    ...(hasFrameOrigin ? { frameOrigin: frameOrigin as string } : {}),
-    ...(hasMainFrameOrigin
-      ? { mainFrameOrigin: mainFrameOrigin as string }
-      : {}),
-  };
-
-  transactionController.updateTransaction(
-    updatedTransactionMeta,
-    'Add dapp request frame context',
-  );
 }
 
 async function addTransactionOnTempo(

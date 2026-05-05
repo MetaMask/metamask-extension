@@ -188,6 +188,9 @@ describe('Transaction Utils', () => {
   let userOperationController: jest.Mocked<UserOperationController>;
   let getAddressSecurityAlertResponseMock: jest.Mock;
   let addAddressSecurityAlertResponseMock: jest.Mock;
+  let appStateControllerMock: {
+    setTransactionFrameContext: jest.Mock;
+  };
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const scanAddressAndAddToCacheMock = jest.mocked(scanAddressAndAddToCache);
@@ -246,11 +249,16 @@ describe('Transaction Utils', () => {
     request.getSecurityAlertResponse = getAddressSecurityAlertResponseMock;
     request.addSecurityAlertResponse = addAddressSecurityAlertResponseMock;
 
+    appStateControllerMock = {
+      setTransactionFrameContext: jest.fn(),
+    };
+
     dappRequest = {
       ...request,
       dappRequest: makeDappRequest(),
       requestContext: makeRequestContext(),
-    };
+      appStateController: appStateControllerMock,
+    } as unknown as AddDappTransactionRequest;
 
     tempoDappRequest = {
       ...dappRequest,
@@ -770,7 +778,7 @@ describe('Transaction Utils', () => {
         expect(transactionHash).toStrictEqual(TRANSACTION_META_MOCK.hash);
       });
 
-      it('persists dapp request frame context on transaction metadata', async () => {
+      it('records iframe context for cross-origin iframe dapp requests', async () => {
         dappRequest.requestContext = makeRequestContext({
           frameId: 1,
           origin: 'https://iframe.example',
@@ -779,18 +787,16 @@ describe('Transaction Utils', () => {
 
         await addDappTransaction(dappRequest);
 
-        expect(transactionController.updateTransaction).toHaveBeenCalledWith(
-          {
-            ...TRANSACTION_META_MOCK,
-            frameId: 1,
-            frameOrigin: 'https://iframe.example',
-            mainFrameOrigin: 'https://top-level.example',
-          },
-          'Add dapp request frame context',
-        );
+        expect(
+          appStateControllerMock.setTransactionFrameContext,
+        ).toHaveBeenCalledWith(TRANSACTION_META_MOCK.id, {
+          frameId: 1,
+          mainFrameOrigin: 'https://top-level.example',
+        });
+        expect(transactionController.updateTransaction).not.toHaveBeenCalled();
       });
 
-      it('preserves frameId 0 for top-level dapp transactions', async () => {
+      it('records iframe context with frameId 0 for top-level dapp requests', async () => {
         dappRequest.requestContext = makeRequestContext({
           frameId: 0,
           origin: TRANSACTION_OPTIONS_MOCK.origin,
@@ -799,15 +805,25 @@ describe('Transaction Utils', () => {
 
         await addDappTransaction(dappRequest);
 
-        expect(transactionController.updateTransaction).toHaveBeenCalledWith(
-          {
-            ...TRANSACTION_META_MOCK,
-            frameId: 0,
-            frameOrigin: TRANSACTION_OPTIONS_MOCK.origin,
-            mainFrameOrigin: TRANSACTION_OPTIONS_MOCK.origin,
-          },
-          'Add dapp request frame context',
-        );
+        expect(
+          appStateControllerMock.setTransactionFrameContext,
+        ).toHaveBeenCalledWith(TRANSACTION_META_MOCK.id, {
+          frameId: 0,
+          mainFrameOrigin: TRANSACTION_OPTIONS_MOCK.origin,
+        });
+        expect(transactionController.updateTransaction).not.toHaveBeenCalled();
+      });
+
+      it('still calls setTransactionFrameContext for non-iframe dapp requests (controller no-ops them)', async () => {
+        // Defaults: no frameId, no mainFrameOrigin in middleware context.
+        await addDappTransaction(dappRequest);
+
+        expect(
+          appStateControllerMock.setTransactionFrameContext,
+        ).toHaveBeenCalledWith(TRANSACTION_META_MOCK.id, {
+          frameId: undefined,
+          mainFrameOrigin: undefined,
+        });
       });
 
       it('throws if result promise fails', async () => {

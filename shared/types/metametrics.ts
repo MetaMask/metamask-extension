@@ -17,6 +17,11 @@ import type { SnapAndHardwareMessenger } from '../../app/scripts/lib/snap-keyrin
 import { ShieldMetricsSourceEnum } from '../constants/subscriptions';
 import type { ScanAddressResponse } from '../lib/trust-signals';
 
+export type TransactionFrameContext = {
+  frameId?: number;
+  mainFrameOrigin?: string;
+};
+
 export type TransactionMetricsRequest = {
   getTransactionUIMetricsFragment: (
     transactionId: string,
@@ -69,6 +74,10 @@ export type TransactionMetricsRequest = {
     cacheKey: string,
   ) => ScanAddressResponse | undefined;
   getSecurityAlertsEnabled: () => boolean;
+  getTransactionFrameContext: (
+    transactionId: string,
+  ) => TransactionFrameContext | undefined;
+  removeTransactionFrameContext: (transactionId: string) => void;
 };
 
 export type TransactionEventPayload = {

@@ -41,6 +41,8 @@ export const createBuilderRequest = (
     getPna25Acknowledged: jest.fn().mockReturnValue(true),
     getAddressSecurityAlertResponse: jest.fn(),
     getSecurityAlertsEnabled: jest.fn().mockReturnValue(true),
+    getTransactionFrameContext: jest.fn(),
+    removeTransactionFrameContext: jest.fn(),
   } as any;
 
   return {

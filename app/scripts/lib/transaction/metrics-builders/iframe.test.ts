@@ -1,23 +1,33 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/naming-convention */
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
-import { setDappRequestFrameContext } from '../dapp-request-frame-context';
 import { getIframeMetricsProperties } from './iframe';
 import { createBuilderRequest } from './test-utils';
 
 describe('iframe builder', () => {
-  it('builds iframe properties for cross-origin iframe transactions', async () => {
-    const result = await getIframeMetricsProperties(
-      createBuilderRequest({
-        transactionMeta: {
-          ...createBuilderRequest().transactionMeta,
-          origin: 'https://iframe.example',
-          mainFrameOrigin: 'https://top-level.example',
-          frameId: 1,
-        } as any,
+  it('returns iframe properties when frame context is recorded for the transaction', async () => {
+    const baseRequest = createBuilderRequest();
+    const transactionMetricsRequest = {
+      ...baseRequest.transactionMetricsRequest,
+      getTransactionFrameContext: jest.fn().mockReturnValue({
+        frameId: 1,
+        mainFrameOrigin: 'https://top-level.example',
       }),
-    );
+    };
 
+    const result = await getIframeMetricsProperties({
+      ...baseRequest,
+      transactionMetricsRequest,
+      transactionMeta: {
+        ...baseRequest.transactionMeta,
+        id: 'tx-1',
+        origin: 'https://iframe.example',
+      } as any,
+    });
+
+    expect(
+      transactionMetricsRequest.getTransactionFrameContext,
+    ).toHaveBeenCalledWith('tx-1');
     expect(result.properties).toStrictEqual({
       is_iframe: true,
       is_cross_origin_iframe: true,
@@ -26,17 +36,25 @@ describe('iframe builder', () => {
     });
   });
 
-  it('builds top-level frame properties for non-iframe transactions', async () => {
-    const result = await getIframeMetricsProperties(
-      createBuilderRequest({
-        transactionMeta: {
-          ...createBuilderRequest().transactionMeta,
-          origin: 'https://dapp.example',
-          mainFrameOrigin: 'https://dapp.example',
-          frameId: 0,
-        } as any,
+  it('returns top-level frame properties for recorded same-origin frames', async () => {
+    const baseRequest = createBuilderRequest();
+    const transactionMetricsRequest = {
+      ...baseRequest.transactionMetricsRequest,
+      getTransactionFrameContext: jest.fn().mockReturnValue({
+        frameId: 0,
+        mainFrameOrigin: 'https://dapp.example',
       }),
-    );
+    };
+
+    const result = await getIframeMetricsProperties({
+      ...baseRequest,
+      transactionMetricsRequest,
+      transactionMeta: {
+        ...baseRequest.transactionMeta,
+        id: 'tx-2',
+        origin: 'https://dapp.example',
+      } as any,
+    });
 
     expect(result.properties).toStrictEqual({
       is_iframe: false,
@@ -46,57 +64,58 @@ describe('iframe builder', () => {
     });
   });
 
-  it('uses pending dapp request frame context for transaction added events', async () => {
-    setDappRequestFrameContext({
-      requestId: 'request-1',
-      frameId: 1,
-      frameOrigin: 'https://iframe.example',
-      mainFrameOrigin: 'https://top-level.example',
+  it('returns no properties when no frame context is recorded', async () => {
+    const baseRequest = createBuilderRequest();
+    const transactionMetricsRequest = {
+      ...baseRequest.transactionMetricsRequest,
+      getTransactionFrameContext: jest.fn().mockReturnValue(undefined),
+    };
+
+    const result = await getIframeMetricsProperties({
+      ...baseRequest,
+      transactionMetricsRequest,
+      transactionMeta: {
+        ...baseRequest.transactionMeta,
+        id: 'tx-3',
+        origin: 'https://dapp.example',
+      } as any,
     });
 
-    const result = await getIframeMetricsProperties(
-      createBuilderRequest({
-        eventName: TransactionMetaMetricsEvent.added,
-        transactionMeta: {
-          ...createBuilderRequest().transactionMeta,
-          origin: 'https://top-level.example',
-          requestId: 'request-1',
-        } as any,
-      }),
-    );
-
-    expect(result.properties).toStrictEqual({
-      is_iframe: true,
-      is_cross_origin_iframe: true,
-      iframe_origin: 'https://iframe.example',
-      top_level_origin: 'https://top-level.example',
-    });
+    expect(result.properties).toStrictEqual({});
+    expect(result.sensitiveProperties).toStrictEqual({});
   });
 
-  it('does not use pending dapp request frame context for non-added events', async () => {
-    setDappRequestFrameContext({
-      requestId: 'request-2',
-      frameId: 1,
-      frameOrigin: 'https://iframe.example',
-      mainFrameOrigin: 'https://top-level.example',
-    });
+  const eventNames: TransactionMetaMetricsEvent[] = [
+    TransactionMetaMetricsEvent.added,
+    TransactionMetaMetricsEvent.approved,
+    TransactionMetaMetricsEvent.submitted,
+    TransactionMetaMetricsEvent.finalized,
+    TransactionMetaMetricsEvent.rejected,
+  ];
 
-    const result = await getIframeMetricsProperties(
-      createBuilderRequest({
-        eventName: TransactionMetaMetricsEvent.approved,
+  eventNames.forEach((eventName) => {
+    it(`reads frame context for ${eventName} events from a single source`, async () => {
+      const baseRequest = createBuilderRequest();
+      const getTransactionFrameContext = jest.fn().mockReturnValue({
+        frameId: 1,
+        mainFrameOrigin: 'https://top-level.example',
+      });
+
+      await getIframeMetricsProperties({
+        ...baseRequest,
+        eventName,
+        transactionMetricsRequest: {
+          ...baseRequest.transactionMetricsRequest,
+          getTransactionFrameContext,
+        },
         transactionMeta: {
-          ...createBuilderRequest().transactionMeta,
+          ...baseRequest.transactionMeta,
+          id: 'tx-4',
           origin: 'https://iframe.example',
-          requestId: 'request-2',
         } as any,
-      }),
-    );
+      });
 
-    expect(result.properties).toStrictEqual({
-      is_iframe: false,
-      is_cross_origin_iframe: false,
-      iframe_origin: null,
-      top_level_origin: null,
+      expect(getTransactionFrameContext).toHaveBeenCalledWith('tx-4');
     });
   });
 });
