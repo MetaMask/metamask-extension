@@ -8,6 +8,7 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Navigate,
+  createSearchParams,
   useLocation,
   useNavigate,
   useParams,
@@ -39,6 +40,7 @@ import {
   formatPositionSize,
   PRICE_RANGES_MINIMAL_VIEW,
 } from '../../../shared/lib/perps-formatters';
+import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -699,8 +701,15 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
   }, []);
 
+  // Always return to the wallet Perps tab — not navigate(-1), so extra history
+  // entries from account-overview tab switches do not require multiple back presses.
   const handleBackClick = useCallback(() => {
-    navigate(-1);
+    navigate({
+      pathname: DEFAULT_ROUTE,
+      search: createSearchParams({
+        tab: AccountOverviewTabKey.Perps,
+      }).toString(),
+    });
   }, [navigate]);
 
   const buildOrderEntryUrl = useCallback(

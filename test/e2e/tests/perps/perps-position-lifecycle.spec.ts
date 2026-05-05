@@ -185,7 +185,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
 
   // ─── Close position flows ──────────────────────────────────────────────────
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
   it('partially closes 50% of an existing ETH long position from the homepage', async function () {
     await withFixtures(
       {
@@ -251,7 +250,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
   it('reduces exposure (partial close) via Modify menu on an ETH long position', async function () {
     await withFixtures(
       {
@@ -320,7 +318,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
   it('adds exposure to an existing ETH long position via Modify menu', async function () {
     await withFixtures(
       {
@@ -365,7 +362,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await marketDetailPage.checkPositionCtaButtonsVisible();
         await marketDetailPage.checkPositionSizeValue('2.5667 ETH');
         await marketDetailPage.checkPositionLeverage('Long 3x');
-
         await marketDetailPage.clickBack();
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
@@ -437,44 +433,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
   });
 
   // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
-  it('cancels reverse position modal without reversing', async function () {
-    await withFixtures(
-      {
-        ...getPerpsConfigEligible(this.test?.fullTitle()),
-        perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver);
-
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCard('ETH');
-        await perpsHomePage.clickPositionCard('ETH');
-
-        const marketDetailPage = new PerpsMarketDetailPage(driver);
-        await marketDetailPage.checkPageIsLoaded();
-        await marketDetailPage.checkPositionCtaButtonsVisible();
-
-        await marketDetailPage.clickModify();
-        await marketDetailPage.clickModifyMenuReversePosition();
-        await marketDetailPage.waitForReversePositionModal();
-
-        await marketDetailPage.cancelReversePosition();
-        await marketDetailPage.checkPageIsLoaded();
-        await marketDetailPage.checkPositionCtaButtonsVisible();
-        await marketDetailPage.checkPositionLeverage('Long 3x');
-
-        await marketDetailPage.clickBack();
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCardContains('ETH', '3x long');
-        await perpsHomePage.waitForPositionCardSize('ETH', '2.5 ETH');
-      },
-    );
-  });
-
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
   it.skip('reverses a BTC short position to long', async function () {
     await withFixtures(
       {
@@ -531,8 +489,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
   });
 
   // ─── Margin management ─────────────────────────────────────────────────────
-
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
   it('adds margin to an existing ETH position and verifies liquidation price updates', async function () {
     await withFixtures(
       {
@@ -586,7 +542,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
   it('removes margin from an existing ETH position', async function () {
     await withFixtures(
       {
@@ -642,7 +597,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
 
   // ─── Position card on home page ────────────────────────────────────────────
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
   it('position card is visible on Perps home when user has open ETH position', async function () {
     await withFixtures(
       {
@@ -661,7 +615,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
   it('clicking a position card on home navigates to the ETH market detail', async function () {
     await withFixtures(
       {

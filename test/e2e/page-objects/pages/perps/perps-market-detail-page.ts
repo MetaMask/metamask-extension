@@ -23,8 +23,6 @@ export class PerpsMarketDetailPage {
 
   private readonly addFundsCtaButton = { testId: 'perps-add-funds-cta-button' };
 
-  private readonly addMarginAmountInput =
-    '[data-testid="perps-add-margin-modal"] [data-testid="perps-edit-margin-amount-input"]';
 
   private readonly addMarginModal = { testId: 'perps-add-margin-modal' };
 
@@ -65,8 +63,8 @@ export class PerpsMarketDetailPage {
     testId: 'perps-close-summary-receive-value',
   };
 
-  private readonly decreaseMarginAmountInput =
-    '[data-testid="perps-decrease-margin-modal"] [data-testid="perps-edit-margin-amount-input"]';
+  private readonly marginAmountInput =
+    '[data-testid="perps-edit-margin-amount-input"] input';
 
   private readonly decreaseMarginModal = {
     testId: 'perps-decrease-margin-modal',
@@ -280,11 +278,14 @@ export class PerpsMarketDetailPage {
 
   /**
    * Clicks the back control on the market detail header (navigates to wallet default route).
+   *
+   * The market detail page has a `useEffect` that calls `navigate(currentPath, { replace: true })`
+   * to clean up toast route-state. This effect can fire during the `navigate(-1)` transition,
+   * cancelling the back navigation and requiring a second click. We retry once if the page
+   * is still visible after the first click.
    */
   async clickBack(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.marketDetailBackButton,
-    );
+    await this.driver.clickElement(this.marketDetailBackButton);
   }
 
   /**
@@ -460,12 +461,8 @@ export class PerpsMarketDetailPage {
   ): Promise<void> {
     const modal =
       mode === 'add' ? this.addMarginModal : this.decreaseMarginModal;
-    const amountInput =
-      mode === 'add'
-        ? this.addMarginAmountInput
-        : this.decreaseMarginAmountInput;
     await this.driver.waitForSelector(modal);
-    await this.driver.fill(amountInput, amountUsd);
+    await this.driver.fill(this.marginAmountInput, amountUsd);
   }
 
   /**

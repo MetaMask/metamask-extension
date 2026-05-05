@@ -29,15 +29,6 @@ export async function assertPerpsActivityShowsCloseFill({
   const marketDetailPage = new PerpsMarketDetailPage(driver);
   await marketDetailPage.clickBack();
 
-  // Detail `navigate(-1)` can land on the market list (Explore → list → asset). That screen
-  // has no `account-overview__perps-tab`; use the list header back to reach Perps home first.
-  try {
-    await driver.waitForSelector({ testId: 'market-list-view' });
-    await new PerpsMarketListPage(driver).clickBack();
-  } catch {
-    // Already past the list (e.g. opened the asset from the home position card).
-  }
-
   const perpsHomePage = new PerpsHomePage(driver);
   await perpsHomePage.navigateToPerpsHome();
   await perpsHomePage.checkPageIsLoaded();
