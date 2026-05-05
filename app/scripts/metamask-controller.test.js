@@ -1,6 +1,7 @@
 /**
  * @jest-environment node
  */
+import { Duplex } from 'stream';
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThroughStream } from 'through2';
@@ -227,7 +228,14 @@ jest.mock('./lib/rpc-method-middleware', () => ({
   createEthAccountsMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
-  createMultichainMethodMiddleware: () => (_req, _res, next, _end) => {
+  createMultichainApiMethodMiddleware: () => (req, res, next, end) => {
+    if (req.method?.startsWith('wallet_')) {
+      res.result = null;
+      return end();
+    }
+    return next();
+  },
+  createMultichainInvokedMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
   createUnsupportedMethodMiddleware: () => (_req, _res, next, _end) => {
@@ -3838,9 +3846,60 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#setupPatchStoreConnection', () => {
+      it('resolves patchesPromise when the UI sends StartSendingPatches', async () => {
+        // Duplex must not echo writes back or the handler can loop (methodNotFound, etc.).
+        const stream = new Duplex({
+          objectMode: true,
+          read(_size) {
+            this.push(null);
+          },
+          write(_chunk, _enc, cb) {
+            cb();
+          },
+        });
+
+        const { patchesPromise } =
+          metamaskController.setupPatchStoreConnection(stream);
+
+        stream.push({
+          jsonrpc: '2.0',
+          method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
+        });
+
+        await flushPromises();
+
+        await expect(patchesPromise).resolves.toBeUndefined();
+        stream.end();
+      });
+
+      it('resolves patchesPromise when the patch-store stream closes before StartSendingPatches', async () => {
+        const stream = new Duplex({
+          objectMode: true,
+          read(_size) {
+            this.push(null);
+          },
+          write(_chunk, _enc, cb) {
+            cb();
+          },
+        });
+
+        const { patchesPromise } =
+          metamaskController.setupPatchStoreConnection(stream);
+
+        stream.end();
+        await flushPromises();
+
+        await expect(patchesPromise).resolves.toBeUndefined();
+      });
+    });
+
     describe('patch store connection', () => {
+      const activeMuxes = [];
+
       function setupPatchStoreConnection({ startUISync = true } = {}) {
         const mux = new ObjectMultiplex();
+        activeMuxes.push(mux);
         mux.createStream('controller');
 
         const patchStream = mux.createStream('patch-store');
@@ -3852,6 +3911,18 @@ describe('MetaMaskController', () => {
 
         return { mux, patchStream, messages };
       }
+
+      afterEach(async () => {
+        for (const mux of activeMuxes) {
+          try {
+            mux.end();
+          } catch {
+            // ignore double-close
+          }
+        }
+        activeMuxes.length = 0;
+        await flushPromises();
+      });
 
       // Wrap `flushPromises` to reframe why we are using this function
       async function flushBufferedWrites() {

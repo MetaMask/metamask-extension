@@ -1503,6 +1503,7 @@
     },
     "@metamask/json-rpc-engine": {
       "packages": {
+        "@metamask/messenger": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
@@ -1914,6 +1915,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/json-rpc-engine": true,
+        "@metamask/messenger": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
@@ -4567,7 +4569,7 @@
         "uuid": true,
         "eth-lattice-keyring>gridplus-sdk>uuid": true,
         "viem": true,
-        "openai>zod": true
+        "eth-lattice-keyring>gridplus-sdk>zod": true
       }
     },
     "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": {
@@ -6615,7 +6617,7 @@
         "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
-    "openai>zod": {
+    "eth-lattice-keyring>gridplus-sdk>zod": {
       "globals": {
         "File": true,
         "URL": true,
