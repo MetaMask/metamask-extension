@@ -115,7 +115,10 @@ jest.mock('../../../../shared/lib/selectors/networks', () => {
         networkConfigurationsByChainId[chainId],
     ),
     selectDefaultRpcEndpointByChainId: jest.fn(
-      (_state: unknown, chainId: keyof typeof networkConfigurationsByChainId) => {
+      (
+        _state: unknown,
+        chainId: keyof typeof networkConfigurationsByChainId,
+      ) => {
         const config = networkConfigurationsByChainId[chainId];
         if (!config) {
           return undefined;
