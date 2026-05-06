@@ -11,6 +11,7 @@ import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import type { MetaMaskReduxState } from '../store/store';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import {
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
@@ -26,7 +27,6 @@ import {
   getCurrencyRates,
   getTokenScanCache,
 } from './selectors';
-import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {

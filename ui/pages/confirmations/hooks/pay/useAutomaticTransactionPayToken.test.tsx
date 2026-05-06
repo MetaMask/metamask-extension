@@ -15,8 +15,10 @@ import type { SetPayTokenRequest } from './types';
 jest.mock('./useTransactionPayToken');
 jest.mock('./useTransactionPayData');
 jest.mock('./useTransactionPayAvailableTokens');
-jest.mock('../../../../selectors', () => ({
-  getHardwareWalletType: jest.fn(() => null),
+jest.mock('../../../../selectors', () => ({}));
+jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
+  getHardwareWalletType: jest.fn(),
 }));
 
 const TOKEN_ADDRESS_1_MOCK = '0x1234567890abcdef1234567890abcdef12345678';

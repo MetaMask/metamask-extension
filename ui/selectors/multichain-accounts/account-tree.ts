@@ -29,8 +29,8 @@ import {
   getOrderedConnectedAccountsForActiveTab,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getPreferences,
 } from '../selectors';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { MergedInternalAccount } from '../selectors.types';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getInternalAccounts, getInternalAccountsObject } from '../accounts';

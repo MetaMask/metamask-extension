@@ -54,7 +54,6 @@ const APPROVAL_TEMPLATES = {
   [GMX_APPROVAL_TYPE]: defiReferralConsent,
 };
 
-
 const ALLOWED_TEMPLATE_KEYS = [
   'cancelText',
   'content',

@@ -28,6 +28,7 @@ import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/lib/selectors/networks';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
+import { getSelectedInternalAccount } from '../shared/lib/selectors/accounts';
 import {
   setupLongTaskObserver,
   setupLongTaskSentryReporting,
@@ -35,7 +36,6 @@ import {
 } from './helpers/utils/performance-observers';
 import * as actions from './store/actions';
 import configureStore from './store/store';
-import { getSelectedInternalAccount } from '../shared/lib/selectors/accounts';
 import {
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,

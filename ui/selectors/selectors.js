@@ -46,14 +46,6 @@ import {
 } from '../../shared/lib/selectors/networks-by-chain-id';
 import { getPreferences } from '../../shared/lib/selectors/preferences';
 import {
-  accountSupportsSmartTx,
-  getAccountType,
-  getAccountTypeForKeyring,
-  getCurrentKeyring,
-  getHardwareWalletType,
-  isHardwareWallet,
-} from '../../shared/lib/selectors/keyring';
-import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
   getCurrencyRateControllerCurrencyRates,
@@ -64,10 +56,6 @@ import { getEnabledNetworks } from '../../shared/lib/selectors/multichain';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
 import { isWebAuthnSupported } from '../../shared/lib/passkey';
 import { getIsPasskeyFeatureEnabled } from '../../shared/lib/environment';
-// TODO: Fix circular dependency
-// To avoid import evaluating as `undefined` due to circular dependency,
-// this needs to be imported before `'../pages/confirmations/confirmation/templates'`
-// eslint-disable-next-line import-x/order
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
@@ -185,12 +173,8 @@ import {
   DEFAULT_FEATURE_FLAG_VALUES,
 } from '../../shared/lib/feature-flags';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
-// eslint-disable-next-line import-x/order
-import {
-  getInternalAccounts,
-  getInternalAccountByAddress,
-} from './accounts';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
+import { getInternalAccounts, getInternalAccountByAddress } from './accounts';
 import { getIsSocialLoginFlow } from './first-time-flow';
 import { getHasShieldEntryModalShownOnce } from './subscription';
 import { getApprovalRequestsByType } from './approvals';
@@ -204,18 +188,6 @@ import {
   getCurrentNetworkTransactions,
 } from './transactions';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
-
-export {
-  accountSupportsSmartTx,
-  getAccountType,
-  getAccountTypeForKeyring,
-  getCurrentKeyring,
-  getHardwareWalletType,
-  getPreferences,
-  isHardwareWallet,
-  selectNetworkConfigurationByChainId,
-  selectDefaultRpcEndpointByChainId,
-};
 
 const PERMITTED_ACCOUNTS_LRU_CACHE_SIZE = 5;
 
@@ -411,7 +383,6 @@ export function getIsSigningQRHardwareTransaction(state) {
     activeQrCodeScanRequest.type === QrScanRequestType.SIGN
   );
 }
-
 
 /**
  * The function returns true if network and account details are fetched and
@@ -1257,7 +1228,6 @@ export const getNetworkConfigurationIdByChainId = createSelector(
       {},
     ),
 );
-
 
 /**
  * @type (state: RemoteFeatureFlagsState) => boolean

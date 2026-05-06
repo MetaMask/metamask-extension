@@ -80,7 +80,6 @@ type PreferencesControllerOptions = {
   messenger: PreferencesControllerMessenger;
 };
 
-
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
 export type PreferencesControllerState = Omit<
   PreferencesState,

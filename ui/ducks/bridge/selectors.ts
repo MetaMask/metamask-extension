@@ -50,7 +50,6 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
-import { getHardwareWalletType } from '../../selectors/selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
@@ -77,12 +76,13 @@ import {
 } from '../../../shared/lib/selectors';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
-import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getInternalAccountsByScope } from '../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getGasFeesSponsoredNetworkEnabled } from '../../selectors';
 import {
-  getGasFeesSponsoredNetworkEnabled,
+  getHardwareWalletType,
   isHardwareWallet,
-} from '../../selectors';
+} from '../../../shared/lib/selectors/keyring';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import {
   getAllAccountGroups,

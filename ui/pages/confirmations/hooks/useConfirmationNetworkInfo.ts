@@ -8,8 +8,8 @@ import {
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useConfirmContext } from '../context/confirm';
-import { selectNetworkConfigurationByChainId } from '../../../selectors';
 import type { NetworkConfigurationsByChainIdState } from '../../../../shared/lib/selectors/networks';
+import { selectNetworkConfigurationByChainId } from '../../../../shared/lib/selectors/networks-by-chain-id';
 
 function useConfirmationNetworkInfo() {
   const t = useI18nContext();

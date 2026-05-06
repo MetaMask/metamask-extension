@@ -22,7 +22,7 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { getPreferences } from '../../../../../../../selectors';
+import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';

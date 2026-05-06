@@ -7,8 +7,8 @@ import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
-  getPreferences,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
@@ -32,7 +32,6 @@ jest.mock('../../../ducks/metamask/metamask', () => ({
 
 jest.mock('../../../selectors', () => ({
   getSelectedAccount: jest.fn(),
-  getPreferences: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getTokensMarketData: jest.fn(),
   selectAnyEnabledNetworksAreAvailable: jest.fn(),
@@ -52,6 +51,10 @@ jest.mock('../../../hooks/useAccountTotalFiatBalance', () => ({
 
 jest.mock('../../../selectors/assets', () => ({
   getHistoricalMultichainAggregatedBalance: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/selectors/preferences', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/preferences'),
+  getPreferences: jest.fn(),
 }));
 
 const mockGetIntlLocale = jest.mocked(getIntlLocale);

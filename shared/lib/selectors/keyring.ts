@@ -11,10 +11,7 @@ export type KeyringSelectorState = {
   metamask: {
     internalAccounts: {
       selectedAccount: string;
-      accounts: Record<
-        string,
-        { metadata?: { keyring?: { type?: string } } }
-      >;
+      accounts: Record<string, { metadata?: { keyring?: { type?: string } } }>;
     };
   };
 };

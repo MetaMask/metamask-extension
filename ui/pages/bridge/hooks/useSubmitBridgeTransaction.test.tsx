@@ -17,7 +17,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import * as uiSelectors from '../../../selectors';
+import * as keyringSelectors from '../../../../shared/lib/selectors/keyring';
 import * as sentry from '../../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import * as bridgeActions from '../../../ducks/bridge/actions';
@@ -114,10 +114,13 @@ jest.mock('../../../selectors', () => {
     getIsBridgeEnabled: () => true,
     getIsBridgeChain: () => true,
     checkNetworkAndAccountSupports1559: () => true,
-    getHardwareWalletType: jest.fn(() => undefined),
-    isHardwareWallet: jest.fn(() => false),
   };
 });
+jest.mock('../../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/keyring'),
+  getHardwareWalletType: jest.fn(() => undefined),
+  isHardwareWallet: jest.fn(() => false),
+}));
 
 const middleware = [thunk];
 
@@ -159,7 +162,7 @@ const makeWrapper = (store: ReturnType<typeof makeMockStore>) => {
 
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
 const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
-const isHardwareWalletSpy = uiSelectors.isHardwareWallet as jest.Mock;
+const isHardwareWalletSpy = keyringSelectors.isHardwareWallet as jest.Mock;
 const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 const mockResetState = jest.fn();
 const resetBridgeStoreSpy = jest.spyOn(bridgeActions, 'resetInputFields');

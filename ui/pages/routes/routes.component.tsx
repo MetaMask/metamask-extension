@@ -75,12 +75,12 @@ import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   getNetworkIdentifier,
-  getPreferences,
   getUnapprovedConfirmations,
   getShowExtensionInFullSizeView,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
 } from '../../selectors';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 

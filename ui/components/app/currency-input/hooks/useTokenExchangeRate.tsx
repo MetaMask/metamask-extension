@@ -4,10 +4,10 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { getCurrentChainId } from '../../../../../shared/lib/selectors/networks';
 import type { NetworkConfigurationsByChainIdState } from '../../../../../shared/lib/selectors/networks';
+import { selectNetworkConfigurationByChainId } from '../../../../../shared/lib/selectors/networks-by-chain-id';
 import {
   getCrossChainTokenExchangeRates,
   selectConversionRateByChainId,
-  selectNetworkConfigurationByChainId,
 } from '../../../../selectors';
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';

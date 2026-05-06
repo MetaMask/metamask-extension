@@ -6,10 +6,7 @@ import {
   setSelectedAccount,
   setSelectedInternalAccount,
 } from '../../store/actions';
-import {
-  getInternalAccount,
-  getOriginOfCurrentTab,
-} from '../../selectors';
+import { getInternalAccount, getOriginOfCurrentTab } from '../../selectors';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   connectAccountFailed,

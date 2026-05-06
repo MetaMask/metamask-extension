@@ -21,9 +21,9 @@ import {
 } from '../../../selectors/assets';
 import {
   getEnabledNetworksByNamespace,
-  getPreferences,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getMultichainNetwork,

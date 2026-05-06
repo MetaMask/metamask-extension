@@ -7,10 +7,10 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
-  getPreferences,
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   selectBalanceBySelectedAccountGroup,
   selectAggregatedBalanceForSelectedAccount,
@@ -32,6 +32,7 @@ jest.mock('../../../../selectors/multichain', () => ({
   ...jest.requireActual('../../../../selectors/multichain'),
   getMultichainIsTestnet: jest.fn(),
 }));
+jest.mock('../../../../../shared/lib/selectors/preferences');
 
 describe('AccountGroupBalance', () => {
   const createMockBalance = (): AccountGroupBalanceType => ({

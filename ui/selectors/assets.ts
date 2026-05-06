@@ -75,6 +75,7 @@ import {
 } from '../../shared/lib/selectors/assets-migration';
 import { traceAsControllerCallback } from '../../shared/lib/trace';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
+import { getPreferences } from '../../shared/lib/selectors/preferences';
 import { getAccountIdByAddress } from './accounts';
 import { getMultichainBalances, RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -85,7 +86,6 @@ import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getMarketData,
   getNativeTokenCachedBalanceByChainIdSelector,
-  getPreferences,
   getSelectedAccountTokensAcrossChains,
   getTokensAcrossChainsByAccountAddressSelector,
   getEnabledNetworks,
