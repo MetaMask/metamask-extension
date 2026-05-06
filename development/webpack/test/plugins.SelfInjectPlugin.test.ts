@@ -51,24 +51,24 @@ describe('SelfInjectPlugin', () => {
         assert.strictEqual(newMap, null);
 
         // After the primary injection runs (`appendChild(s).remove()`), we
-        // check the `data-loaded` attribute that the inner script sets on
-        // `s` via `document.currentScript`. The script element is a DOM
-        // node, so attribute writes from the page's main world are visible
-        // from the content script's isolated world (whereas
-        // `window.ethereum` is not). If the flag wasn't set, the inner
-        // script didn't actually execute and we run a fallback that
-        // re-injects the same source via a `Blob` URL assigned to
-        // `script.src` (which can succeed in environments where inline
-        // scripts are blocked but `blob:` script sources are allowed).
-        const flagSetter = `document.currentScript.dataset.loaded='1';`;
-        const fallback = `if(s.dataset.loaded!=='1'){let s2=d.createElement('script');let u=URL.createObjectURL(new Blob([s.textContent],{type:'text/javascript'}));s2.src=u;(d.head||d.documentElement||d).appendChild(s2);URL.revokeObjectURL(u);}`;
+        // check the `id` attribute that the inner script sets on `s` via
+        // `document.currentScript`. The marker is appended after the
+        // original source so the original source-map positions are unchanged.
+        // If the flag wasn't set, the inner script didn't actually execute
+        // and we run a fallback that re-injects the same source via a `Blob`
+        // URL assigned to `script.src` (which can succeed in environments
+        // where inline scripts are blocked but `blob:` script sources are
+        // allowed).
+        const setup = `let d=document,c=_=>d.createElement\`script\`,s=c(),f=s=>(d.children[0].append(s),s.remove(),s);`;
+        const loadedMarker = `\\ndocument.currentScript.id=1`;
+        const fallback = `f(s).id||(c=c(),c.src=URL.createObjectURL(new Blob([s.text])),URL.revokeObjectURL(f(c).src))`;
 
         if (map !== null && devtool === 'source-map') {
           // if we have a map and devtool is `source-map` the newSource should
           // reference the `sourceMappingURL`
           assert.strictEqual(
             newSource,
-            `{let d=document,s=d.createElement('script');s.textContent="${flagSetter}${source}\\n//# sourceMappingURL=${filename}.map"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;d.documentElement.appendChild(s).remove();${fallback}}`,
+            `{${setup}s.text="${source}${loadedMarker}\\n//# sourceMappingURL=${filename}.map"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;${fallback}}`,
           );
         } else {
           // the new source should NOT reference the new sourcemap, since it's
@@ -79,7 +79,7 @@ describe('SelfInjectPlugin', () => {
           // console.
           assert.strictEqual(
             newSource,
-            `{let d=document,s=d.createElement('script');s.textContent="${flagSetter}console.log(3);"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;d.documentElement.appendChild(s).remove();${fallback}}`,
+            `{${setup}s.text="console.log(3);${loadedMarker}"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;${fallback}}`,
           );
         }
 

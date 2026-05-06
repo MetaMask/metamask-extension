@@ -48,7 +48,7 @@ const defaultOptions = {
  * Output:
  * ```js
  * // dist/main.js
- * {let d=document,c=_=>d.createElement`script`,s=c(),f=s=>(d.children[0].append(s),s.remove(),s);s.text="console.log(\"hello world\");\ndocument.currentScript.id=1\n//# sourceMappingURL=main.js.map"+`\n//# sourceURL=${(globalThis.browser||chrome).runtime.getURL("main.js")};`;f(s).id||(c=c(),c.src=URL.createObjectURL(new Blob([s.text])),URL.revokeObjectURL(f(c).src))}
+ * {let d=document,s=d.createElement('script');s.textContent="console.log(\"hello world\");\n//# sourceMappingURL=main.js.map"+`\n//# sourceURL=${(globalThis.browser||chrome).runtime.getURL("main.js")};`;d.documentElement.appendChild(s).remove()}
  * ```
  * ```json
  * // dist/main.js.map (example)
@@ -148,41 +148,38 @@ export class SelfInjectPlugin {
     // wrapped in a new lexical scope so we don't pollute the global namespace
     newSource.add(`{`);
     newSource.add(
-      `let d=document,c=_=>d.createElement\`script\`,s=c(),f=s=>s.remove(d.children[0].append(s))||s;`,
+      `let s=document.createElement('script'),f=s=>s.parentElement.appendChild(s).remove();`,
     );
-    newSource.add(`s.text=`);
-    // window.ethereum set by the inner script lives on the main
-    // world's window and isn't visible from the isolated world. Because of that,
-    // we set the `id` on the script element via `document.currentScript` to
-    // indicate that the script was injected successfully. It is appended after
-    // the original source so the source-map positions for the original source
-    // remain unchanged.
-    newSource.add(
-      this.escapeJs(
-        `${source}\ndocument.currentScript.id=1${sourceMappingURLComment}`,
-      ),
-    );
+    newSource.add(`s.textContent=`);
+    // It is kept on a single line so source-map line numbers for the original
+    // source remain aligned.
+    newSource.add(this.escapeJs(`${source}${sourceMappingURLComment}`));
     newSource.add(`+`);
     // The browser's dev tools can't map our inline javascript back to its
     // source. We add a sourceURL directive to help with that. It also helps
     // organize the Sources panel in browser dev tools by separating the inline
     // script into its own origin.
     newSource.add(
-      `\`\\n//# sourceURL=\${${this.options.sourceUrlExpression(file)}}\``,
+      `\`\\n//# sourceURL=\${${this.options.sourceUrlExpression(file)}};\``,
     );
-    newSource.add(`;`);
-    // add and immediately remove the script to avoid modifying the DOM.
-    newSource.add(`f(s)`);
-    // If the synchronous injection did not execute, fall back to an asynchronous
-    // injection strategy that loads the same source via a `Blob` URL assigned to
-    // `script.src`.
+    newSource.add(`;console.log(2);`);
+    // If the synchronous injection fails, fall back to an asynchronous injection
+    // strategy that loads the same source via a `Blob` URL assigned to `script.src`.
     // This can succeed in environments where the synchronous approach is blocked or
     // stripped (e.g. some CSP/sandbox configurations that disallow inline
     // scripts but allow `blob:` script sources).
-    newSource.add(`.id||(`);
-    newSource.add(`c=c(),c.src=URL.createObjectURL(new Blob([s.text])),`);
-    newSource.add(`URL.revokeObjectURL(f(c).src)`);
-    newSource.add(`)`);
+    newSource.add(`s.addEventListener('error', _=>{console.log('error');`);
+    newSource.add(
+      `s.src=URL.createObjectURL(new Blob([s.textContent],{type:"text/javascript"}));`,
+    );
+    newSource.add(`f(s);`);
+    newSource.add(`s.src=u;`);
+    newSource.add(`URL.revokeObjectURL(s.src);`);
+    newSource.add(`});`);
+    newSource.add(`console.log(3);`);
+    // add and immediately remove the script to avoid modifying the DOM.
+    newSource.add(`f(s);`);
+    newSource.add(`console.log(4);`);
     newSource.add(`}`);
 
     return newSource;

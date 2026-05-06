@@ -336,19 +336,20 @@ function makeSelfInjecting(filePath) {
   const fileContents = readFileSync(filePath, 'utf8');
   // window.ethereum set by the inner script lives on the main
   // world's window and isn't visible from the isolated world. Because of that,
-  // we set an attribute on the script element via `document.currentScript` to
-  // indicate that the script was injected successfully.  It is kept on a single
-  // line so source-map line numbers for the original source remain aligned
-  // (only first-line column offsets shift).
+  // we set the `id` on the script element via `document.currentScript` to
+  // indicate that the script was injected successfully. It is appended after
+  // the original source so the source-map positions for the original source
+  // remain unchanged.
   const textContent = JSON.stringify(
-    `document.currentScript.dataset.loaded='1';${fileContents}`,
+    `${fileContents}\ndocument.currentScript.id=1`,
   );
-  // If the synchronous injection did not execute, fall back to a asynchronous injection strategy
-  // that loads the same source via a `Blob` URL assigned to `script.src`.
+  // If the synchronous injection did not execute, fall back to an asynchronous
+  // injection strategy that loads the same source via a `Blob` URL assigned to
+  // `script.src`.
   // This can succeed in environments where the synchronous approach is blocked or
   // stripped (e.g. some CSP/sandbox configurations that disallow inline
   // scripts but allow `blob:` script sources).
-  const js = `{let d=document,s=d.createElement('script');s.textContent=${textContent};d.documentElement.appendChild(s).remove();if(s.dataset.loaded!=='1'){let s2=d.createElement('script');let u=URL.createObjectURL(new Blob([s.textContent],{type:'text/javascript'}));s2.src=u;(d.head||d.documentElement||d).appendChild(s2);URL.revokeObjectURL(u);}}`;
+  const js = `{let d=document,c=_=>d.createElement\`script\`,s=c(),f=s=>(d.children[0].append(s),s.remove(),s);s.text=${textContent};f(s).id||(c=c(),c.src=URL.createObjectURL(new Blob([s.text])),URL.revokeObjectURL(f(c).src))}`;
   writeFileSync(filePath, js, 'utf8');
 }
 
