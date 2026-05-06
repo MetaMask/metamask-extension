@@ -5407,9 +5407,6 @@
     "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
   },
-  "payee": {
-    "message": "Payee"
-  },
   "payWith": {
     "message": "Pay with",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -5417,6 +5414,9 @@
   "payWithModalTitle": {
     "message": "Pay with",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
+  "payee": {
+    "message": "Payee"
   },
   "pending": {
     "message": "Pending"

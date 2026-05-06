@@ -34,9 +34,7 @@ import {
   assertPermissionSchemaEntry,
 } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
-import {
-  extractAddressesFromRuleByType,
-} from '../../../../../../../../shared/lib/gator-permissions';
+import { extractAddressesFromRuleByType } from '../../../../../../../../shared/lib/gator-permissions';
 import { translateI18nValue } from '../../../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 import type {
   AmountField,

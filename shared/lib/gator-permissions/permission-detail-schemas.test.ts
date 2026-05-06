@@ -187,9 +187,9 @@ describe('permissionInfoSection field accessors', () => {
       return;
     }
     const addrs = ['0x0000000000000000000000000000000000000003'];
-    expect(
-      payeeEl.getValue({ ...base, payeeAddresses: addrs }),
-    ).toStrictEqual(addrs);
+    expect(payeeEl.getValue({ ...base, payeeAddresses: addrs })).toStrictEqual(
+      addrs,
+    );
     expect(payeeEl.isVisible({ ...base, payeeAddresses: addrs })).toBe(true);
   });
 });
