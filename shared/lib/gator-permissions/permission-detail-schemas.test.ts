@@ -164,8 +164,8 @@ describe('permissionInfoSection field accessors', () => {
       'native-token-stream',
       'confirmation-redeemer',
     );
-    expect(redeemerEl.type).toBe('redeemer');
-    if (redeemerEl.type !== 'redeemer') {
+    expect(redeemerEl.type).toBe('rule-address');
+    if (redeemerEl.type !== 'rule-address') {
       return;
     }
     const addrs = ['0x0000000000000000000000000000000000000003'];
@@ -182,8 +182,8 @@ describe('permissionInfoSection field accessors', () => {
       'native-token-stream',
       'confirmation-payee',
     );
-    expect(payeeEl.type).toBe('payee');
-    if (payeeEl.type !== 'payee') {
+    expect(payeeEl.type).toBe('rule-address');
+    if (payeeEl.type !== 'rule-address') {
       return;
     }
     const addrs = ['0x0000000000000000000000000000000000000003'];

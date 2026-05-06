@@ -253,8 +253,7 @@ function renderElement(
       );
     }
 
-    case 'redeemer':
-    case 'payee': {
+    case 'rule-address': {
       const addresses = element.getValue(ctx);
       if (!addresses?.length) {
         return null;

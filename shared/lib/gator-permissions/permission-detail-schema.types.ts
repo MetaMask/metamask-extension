@@ -185,22 +185,11 @@ export type SchemaElement =
   | OriginField
   | AddressField
   | NetworkField
-  | RedeemerField
-  | PayeeField;
+  | RuleAddressField;
 
-/** Displays the redeemer addresses for a permission. */
-export type RedeemerField = {
-  type: 'redeemer';
-  labelKey: string;
-  testId: string;
-  getValue: (ctx: PermissionRenderContext) => string[] | undefined;
-  isVisible: (ctx: PermissionRenderContext) => boolean;
-  includeInViews: FieldView[];
-};
-
-/** Displays the payee addresses for a permission. */
-export type PayeeField = {
-  type: 'payee';
+/** Displays addresses extracted from permission rules. */
+export type RuleAddressField = {
+  type: 'rule-address';
   labelKey: string;
   testId: string;
   getValue: (ctx: PermissionRenderContext) => string[] | undefined;

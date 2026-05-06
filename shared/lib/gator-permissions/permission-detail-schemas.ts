@@ -110,7 +110,7 @@ const permissionInfoSection: SchemaSection = {
     },
     { type: 'network', includeInViews: ['confirmation', 'reviewDetail'] },
     {
-      type: 'redeemer',
+      type: 'rule-address',
       labelKey: 'redeemer',
       testId: 'confirmation-redeemer',
       getValue: (ctx) => ctx.redeemerAddresses ?? undefined,
@@ -118,7 +118,7 @@ const permissionInfoSection: SchemaSection = {
       includeInViews: ['confirmation', 'reviewDetail'],
     },
     {
-      type: 'payee',
+      type: 'rule-address',
       labelKey: 'payee',
       testId: 'confirmation-payee',
       getValue: (ctx) => ctx.payeeAddresses ?? undefined,
