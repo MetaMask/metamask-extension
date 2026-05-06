@@ -718,7 +718,7 @@
     "message": "Vermögenswert-Optionen"
   },
   "assets": {
-    "message": "Vermögenswerte"
+    "message": "Assets"
   },
   "assetsDescription": {
     "message": "Automatische Erkennung von Tokens in Ihrer Wallet, Anzeige von NFTs und stapelweise Aktualisierung des Kontostands"
@@ -1546,7 +1546,7 @@
     "message": "Sie müssen MetaMask unter Google Chrome nutzen, um sich mit Ihrer Hardware-Wallet zu verbinden."
   },
   "circulatingSupply": {
-    "message": "Zirkulierende Versorgung"
+    "message": "Umlaufmenge"
   },
   "clear": {
     "message": "Löschen"
@@ -5062,7 +5062,7 @@
     "message": "Helfen Sie uns, Ihr Erlebnis zu verbessern"
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "Das IPFS-Gateway ermöglicht es, auf von Dritten gehostete Daten zuzugreifen und diese einzusehen. Sie können ein benutzerdefiniertes IPFS-Gateway hinzufügen oder weiterhin das Standard-Gateway verwenden."
+    "message": "Das IPFS-Gateway ermöglicht den Zugriff auf Daten, die von Drittanbietern gehostet werden. Sie können ein benutzerdefiniertes IPFS-Gateway hinzufügen oder weiterhin das Standard-Gateway verwenden."
   },
   "onboardingAdvancedPrivacyIPFSInvalid": {
     "message": "Bitte geben Sie eine gültige URL ein."
@@ -5087,7 +5087,7 @@
     "description": "$1 is the type of login used Google, Apple, etc."
   },
   "onboardingCreateWallet": {
-    "message": "Ein neues Wallet erstellen"
+    "message": "Eine neue Wallet erstellen"
   },
   "onboardingImportWallet": {
     "message": "Ich habe eine bestehende Wallet"
@@ -5664,9 +5664,6 @@
   "perpsCancelOrder": {
     "message": "Order stornieren"
   },
-  "perpsCandleIntervals": {
-    "message": "Kerzendiagramm-Intervalle"
-  },
   "perpsCandlePeriodDays": {
     "message": "Tage"
   },
@@ -5678,9 +5675,6 @@
   },
   "perpsCloseAll": {
     "message": "Alle schließen"
-  },
-  "perpsCloseAmount": {
-    "message": "Betrag schließen"
   },
   "perpsCloseLong": {
     "message": "Long-Position schließen"
@@ -6262,6 +6256,10 @@
   "perpsWithdraw": {
     "message": "Auszahlen"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Perps-Auszahlung",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Geschätzte Zeit"
   },
@@ -6309,6 +6307,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Auszahlung abgesendet"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask swappt den Token für Sie in den gewünschten Token um. Beim Swap in mUSD fallen keine MetaMask-Gebühren an.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Sie empfangen"
@@ -6434,6 +6436,10 @@
   },
   "provide": {
     "message": "Bereitstellen"
+  },
+  "providerFee": {
+    "message": "Anbietergebühr",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Öffentliche Adresse"
@@ -6641,8 +6647,16 @@
   "receiveCrypto": {
     "message": "Krypto empfangen"
   },
+  "receiveToken": {
+    "message": "Token empfangen",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Empfangen"
+  },
+  "receivedTotal": {
+    "message": "Insgesamt erhalten",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Empfängeradresse",
@@ -7613,7 +7627,7 @@
     "message": "Handeln Sie mit zusätzlicher Sicherheit"
   },
   "shieldEntryModalTitleB": {
-    "message": "Wir stellen vor: Transaktionsschutz"
+    "message": "Neu: Transaktionsschutz"
   },
   "shieldErrorPayerAddressAlreadyUsed": {
     "message": "Diese Adresse ist bereits mit einem anderen Konto verknüpft. Verwenden Sie eine andere Adresse, um sich anzumelden."
@@ -8083,13 +8097,13 @@
     "message": "Wir konnten das Gas nicht schätzen. Es könnte einen Fehler im Contract geben und diese Transaktion könnte fehlschlagen."
   },
   "simulationsSettingDescription": {
-    "message": "Schalten Sie diese Funktion ein, um die Saldoänderungen von Transaktionen und Unterschriften abzuschätzen, bevor Sie sie bestätigen. Dies ist keine Garantie für das endgültige Ergebnis. $1"
+    "message": "Aktivieren Sie diese Funktion, um Änderungen Ihres Kontostands durch Transaktionen und Signaturen vor der Bestätigung abzuschätzen. Dies garantiert nicht das endgültige Ergebnis. $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "Schätzen Sie die Saldoänderungen von Transaktionen ab, bevor Sie diese bestätigen. Dies ist jedoch keine Garantie für das endgültige Ergebnis Ihrer Transaktionen. $1"
   },
   "simulationsSettingSubHeader": {
-    "message": "Geschätzte Kontostandänderungen"
+    "message": "Kontostandänderungen schätzen"
   },
   "singleNetwork": {
     "message": "1 Netzwerk"
@@ -9628,7 +9642,7 @@
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
   "useTokenDetectionPrivacyDesc": {
-    "message": "Die automatische Anzeige von Token, die an Ihr Konto gesendet werden, beinhaltet die Kommunikation mit Servern von Drittanbietern, um die Bilder der Token abzurufen. Diese Server haben Zugriff auf Ihre IP-Adresse."
+    "message": "Die automatische Anzeige von Tokens, die an Ihr Konto gesendet werden, erfordert die Kommunikation mit Servern von Drittanbietern, um Token-Bilder abzurufen. Diese Server erhalten Zugriff auf Ihre IP-Adresse."
   },
   "usedByClients": {
     "message": "Verwendet von einer Reihe von Kunden"
@@ -9776,6 +9790,10 @@
   "willApproveAmountForSwapping": {
     "message": "Genehmigt Token für Swap."
   },
+  "withdrawTo": {
+    "message": "Empfangen",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Auszahlung"
   },
@@ -9808,6 +9826,10 @@
   "youSent": {
     "message": "Sie sandten",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Sie empfangen",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Ihre Aktivität"

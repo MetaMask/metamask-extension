@@ -5664,9 +5664,6 @@
   "perpsCancelOrder": {
     "message": "Emri iptal et"
   },
-  "perpsCandleIntervals": {
-    "message": "Mum aralıkları"
-  },
   "perpsCandlePeriodDays": {
     "message": "Gün"
   },
@@ -5678,9 +5675,6 @@
   },
   "perpsCloseAll": {
     "message": "Tümünü kapat"
-  },
-  "perpsCloseAmount": {
-    "message": "Kapanış Miktarı"
   },
   "perpsCloseLong": {
     "message": "Long pozisyonu kapat"
@@ -6266,6 +6260,10 @@
   "perpsWithdraw": {
     "message": "Çek"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Perps çek",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Tahmini süre"
   },
@@ -6313,6 +6311,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Çekim gönderildi"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask, sizin için istediğiniz tokena takas gerçekleştirecek. mUSD'ye takas gerçekleştirirken MetaMask ücreti uygulanmaz.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Aldığınız"
@@ -6438,6 +6440,10 @@
   },
   "provide": {
     "message": "Sun"
+  },
+  "providerFee": {
+    "message": "Sağlayıcı ücreti",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Genel adres"
@@ -6645,8 +6651,16 @@
   "receiveCrypto": {
     "message": "Kripto al"
   },
+  "receiveToken": {
+    "message": "Token al",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Alınan"
+  },
+  "receivedTotal": {
+    "message": "Alınan toplam",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Alıcı adresi",
@@ -9780,6 +9794,10 @@
   "willApproveAmountForSwapping": {
     "message": "Takas işlemi için token'i onaylar."
   },
+  "withdrawTo": {
+    "message": "Al",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Çekiliyor"
   },
@@ -9812,6 +9830,10 @@
   "youSent": {
     "message": "Gönderdiğiniz",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Elinize geçecek miktar:",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Aktiviteniz"
