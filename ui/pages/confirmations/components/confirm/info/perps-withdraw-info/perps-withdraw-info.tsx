@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
 import { useTransactionPayPostQuote } from '../../../../hooks/pay/useTransactionPayPostQuote';
+import { usePerpsWithdrawDefaultToken } from '../../../../hooks/pay/usePerpsWithdrawDefaultToken';
 import { CustomAmountInfo } from '../../../info/custom-amount-info';
 import { PerpsWithdrawBalance } from '../../../perps-confirmations/perps-withdraw-balance';
 import { PERPS_CURRENCY, ARBITRUM_USDC } from '../../../../constants/perps';
@@ -16,8 +17,8 @@ export const PerpsWithdrawInfo = () => {
 
   useTransactionPayPostQuote();
 
-  // Release-branch Unified Account bridge: source the custom-amount percentage
-  // balance from the user-visible Perps withdraw max.
+  const preferredToken = usePerpsWithdrawDefaultToken();
+
   const { account } = usePerpsLiveAccount();
   const balanceUsdOverride =
     parseFloat(
@@ -33,6 +34,7 @@ export const PerpsWithdrawInfo = () => {
       balanceUsdOverride={balanceUsdOverride}
       currency={PERPS_CURRENCY}
       hidePayTokenAmount
+      preferredToken={preferredToken}
     >
       <PerpsWithdrawBalance />
     </CustomAmountInfo>
