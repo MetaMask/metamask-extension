@@ -69,6 +69,7 @@ type AppState = {
   };
   isLoading: boolean;
   isNftStillFetchingIndication: boolean;
+  showNftDetectionEnablementToast: boolean;
   loadingMessage: string | null;
   scrollToBottom: boolean;
   warning: string | null | undefined;
@@ -128,7 +129,6 @@ type AppState = {
   isMultiRpcOnboarding: boolean;
   isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
-  showNftDetectionEnablementToast: boolean;
   showNewSrpAddedToast: number | false;
   showPasswordChangeToast: PasswordChangeToastType | null;
   showCopyAddressToast: boolean;
@@ -193,6 +193,8 @@ const initialState: AppState = {
   isLoading: false,
   // Used to show a spinner at the bottom of the page when we are still fetching nfts
   isNftStillFetchingIndication: false,
+  // Used to display a toast after the user enables the nft auto detection from the notice banner
+  showNftDetectionEnablementToast: false,
   loadingMessage: null,
   // Used to display error text
   warning: null,
@@ -237,7 +239,6 @@ const initialState: AppState = {
   isMultiRpcOnboarding: false,
   isAccessedFromDappConnectedSitePopover: false,
   errorInSettings: null,
-  showNftDetectionEnablementToast: false,
   showNewSrpAddedToast: false,
   showPasswordChangeToast: null,
   showCopyAddressToast: false,
