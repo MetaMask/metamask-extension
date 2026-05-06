@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -9,10 +9,26 @@ import {
   selectPerpsLastDepositTransactionId,
   selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
-import { toast, ToastContent } from '../../ui/toast/toast';
+import { toast } from '../../ui/toast/toast';
 
 const PERPS_DEPOSIT_TOAST_ID = 'perps-deposit-toast';
 const COMPLETION_TOAST_DURATION = 5 * SECOND;
+
+const PerpsDepositToastContent = ({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) => (
+  <div
+    className="flex min-w-0 flex-1 flex-col"
+    data-testid={PERPS_DEPOSIT_TOAST_ID}
+  >
+    <p className="text-m-body-md">{title}</p>
+    <p className="mt-1 text-m-body-sm text-text-alternative">{description}</p>
+  </div>
+);
 
 export function PerpsDepositToast() {
   const t = useI18nContext();
@@ -22,21 +38,10 @@ export function PerpsDepositToast() {
     selectPerpsLastDepositTransactionId,
   );
   const shouldShowDepositToast = useSelector(selectPerpsShouldShowDepositToast);
-  const clearDepositResultTimeoutRef = useRef<ReturnType<
-    typeof setTimeout
-  > | null>(null);
   const hasDepositResult = Boolean(lastDepositResult);
   const lastDepositResultError = lastDepositResult?.error;
   const lastDepositResultSuccess = lastDepositResult?.success;
   const lastDepositResultTimestamp = lastDepositResult?.timestamp;
-
-  useEffect(() => {
-    return () => {
-      if (clearDepositResultTimeoutRef.current) {
-        clearTimeout(clearDepositResultTimeoutRef.current);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     if (!shouldShowDepositToast) {
@@ -45,10 +50,6 @@ export function PerpsDepositToast() {
     }
 
     if (hasDepositResult) {
-      if (clearDepositResultTimeoutRef.current) {
-        clearTimeout(clearDepositResultTimeoutRef.current);
-      }
-
       const isSuccess = lastDepositResultSuccess === true;
       const title = isSuccess
         ? t('perpsDepositToastSuccessTitle')
@@ -57,11 +58,7 @@ export function PerpsDepositToast() {
         ? t('perpsDepositToastSuccessDescription')
         : lastDepositResultError || t('perpsDepositToastErrorDescription');
       const content = (
-        <ToastContent
-          dataTestId={PERPS_DEPOSIT_TOAST_ID}
-          title={title}
-          description={description}
-        />
+        <PerpsDepositToastContent title={title} description={description} />
       );
       const options = {
         id: PERPS_DEPOSIT_TOAST_ID,
@@ -74,12 +71,9 @@ export function PerpsDepositToast() {
         toast.error(content, options);
       }
 
-      clearDepositResultTimeoutRef.current = setTimeout(() => {
-        submitRequestToBackground('perpsClearDepositResult', []).catch(
-          () => undefined,
-        );
-        clearDepositResultTimeoutRef.current = null;
-      }, COMPLETION_TOAST_DURATION);
+      submitRequestToBackground('perpsClearDepositResult', []).catch(
+        () => undefined,
+      );
       return;
     }
 
@@ -89,8 +83,7 @@ export function PerpsDepositToast() {
     }
 
     toast.loading(
-      <ToastContent
-        dataTestId={PERPS_DEPOSIT_TOAST_ID}
+      <PerpsDepositToastContent
         title={t('perpsDepositToastPendingTitle')}
         description={t('perpsDepositToastPendingDescription')}
       />,

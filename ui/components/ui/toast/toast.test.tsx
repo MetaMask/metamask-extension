@@ -12,19 +12,6 @@ describe('ToastContent', () => {
     expect(screen.getByText('Transaction pending')).toBeInTheDocument();
   });
 
-  it('renders the description when provided', () => {
-    render(
-      <ToastContent
-        title="Transaction confirmed"
-        description="Your deposit is now available."
-      />,
-    );
-
-    expect(
-      screen.getByText('Your deposit is now available.'),
-    ).toBeInTheDocument();
-  });
-
   it('renders an action button when onActionClick is provided', () => {
     const onActionClick = jest.fn();
     render(

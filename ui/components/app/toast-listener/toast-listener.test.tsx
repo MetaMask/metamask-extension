@@ -15,6 +15,10 @@ jest.mock('../../../../shared/lib/selectors/smart-transactions', () => ({
   getExtensionSkipTransactionStatusPage: jest.fn(),
 }));
 
+jest.mock('../../../ducks/metamask/metamask', () => ({
+  getIsUnlocked: jest.fn(),
+}));
+
 jest.mock('../../../../shared/lib/environment-type', () => ({
   isInteractiveUI: () => mockIsInteractiveUI(),
 }));
@@ -35,11 +39,15 @@ describe('ToastListener', () => {
   function renderToastListener({
     transactionToastEnabled,
     isInteractive,
+    isUnlocked = true,
   }: {
     transactionToastEnabled: boolean;
     isInteractive: boolean;
+    isUnlocked?: boolean;
   }) {
-    mockUseSelector.mockReturnValue(transactionToastEnabled);
+    mockUseSelector
+      .mockReturnValueOnce(transactionToastEnabled)
+      .mockReturnValueOnce(isUnlocked);
     mockIsInteractiveUI.mockReturnValue(isInteractive);
     render(<ToastListener />);
   }

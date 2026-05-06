@@ -75,32 +75,24 @@ export function Toaster() {
 
 export const ToastContent = ({
   title,
-  description,
   actionText,
   onActionClick,
   dataTestId,
 }: {
   title: string;
-  description?: string;
   actionText?: string;
   dataTestId?: string;
   onActionClick?: () => void;
 }) => {
   return (
-    <div className="flex min-w-0 flex-1 flex-col" data-testid={dataTestId}>
+    <div data-testid={dataTestId}>
       <p className="text-m-body-md">{title}</p>
-
-      {description ? (
-        <p className="mt-1 text-m-body-sm text-text-alternative">
-          {description}
-        </p>
-      ) : null}
 
       {onActionClick && (
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Sm}
-          className="mt-2 self-start rounded-lg"
+          className="mt-2 rounded-lg"
           textProps={{
             variant: TextVariant.BodySm,
           }}

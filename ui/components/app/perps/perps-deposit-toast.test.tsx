@@ -27,20 +27,6 @@ jest.mock('../../ui/toast/toast', () => ({
     loading: (...args: unknown[]) => mockToastLoading(...args),
     success: (...args: unknown[]) => mockToastSuccess(...args),
   },
-  ToastContent: ({
-    title,
-    description,
-    dataTestId,
-  }: {
-    title: string;
-    description?: string;
-    dataTestId?: string;
-  }) => (
-    <div data-testid={dataTestId}>
-      <p>{title}</p>
-      {description ? <p>{description}</p> : null}
-    </div>
-  ),
 }));
 
 function buildPendingDepositTransaction(
@@ -117,7 +103,6 @@ describe('PerpsDepositToast', () => {
     expect(mockToastLoading).toHaveBeenCalledWith(
       expect.objectContaining({
         props: expect.objectContaining({
-          dataTestId: 'perps-deposit-toast',
           title: messages.perpsDepositToastPendingTitle.message,
           description: messages.perpsDepositToastPendingDescription.message,
         }),
@@ -146,9 +131,7 @@ describe('PerpsDepositToast', () => {
     expect(mockToastLoading).not.toHaveBeenCalled();
   });
 
-  it('shows a success toast and clears the deposit result after auto-hide duration', () => {
-    jest.useFakeTimers();
-
+  it('shows a success toast and clears the deposit result', () => {
     renderPerpsDepositToast({
       transactions: [
         buildPendingDepositTransaction({
@@ -167,7 +150,6 @@ describe('PerpsDepositToast', () => {
     expect(mockToastSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
         props: expect.objectContaining({
-          dataTestId: 'perps-deposit-toast',
           title: messages.perpsDepositToastSuccessTitle.message,
           description: messages.perpsDepositToastSuccessDescription.message,
         }),
@@ -177,12 +159,6 @@ describe('PerpsDepositToast', () => {
         duration: 5000,
       },
     );
-    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
-
-    act(() => {
-      jest.advanceTimersByTime(5000);
-    });
-
     expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
       'perpsClearDepositResult',
       [],
