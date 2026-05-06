@@ -204,29 +204,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@patch:@babel/core@npm%3A7.29.0#~/.yarn/patches/@babel-core-npm-7.29.0-a74bfc561b.patch":
-  version: 7.29.0
-  resolution: "@babel/core@patch:@babel/core@npm%3A7.29.0#~/.yarn/patches/@babel-core-npm-7.29.0-a74bfc561b.patch::version=7.29.0&hash=ac086b"
-  dependencies:
-    "@babel/code-frame": "npm:^7.29.0"
-    "@babel/generator": "npm:^7.29.0"
-    "@babel/helper-compilation-targets": "npm:^7.28.6"
-    "@babel/helper-module-transforms": "npm:^7.28.6"
-    "@babel/helpers": "npm:^7.28.6"
-    "@babel/parser": "npm:^7.29.0"
-    "@babel/template": "npm:^7.28.6"
-    "@babel/traverse": "npm:^7.29.0"
-    "@babel/types": "npm:^7.29.0"
-    "@jridgewell/remapping": "npm:^2.3.5"
-    convert-source-map: "npm:^2.0.0"
-    debug: "npm:^4.1.0"
-    gensync: "npm:^1.0.0-beta.2"
-    json5: "npm:^2.2.3"
-    semver: "npm:^6.3.1"
-  checksum: 10/a23526c0cfb02e0188351567971e06c047b18defb4851937907d6f189cf300088ab5aea8841987374ec050b00524f6f895549deb55b659a6d8311317ab71aa9b
-  languageName: node
-  linkType: hard
-
 "@babel/eslint-parser@npm:^7.25.9":
   version: 7.25.9
   resolution: "@babel/eslint-parser@npm:7.25.9"
@@ -34173,7 +34150,7 @@ __metadata:
     "@actions/github": "npm:^9.1.1"
     "@anthropic-ai/sdk": "npm:^0.32.1"
     "@babel/code-frame": "npm:^7.25.9"
-    "@babel/core": "patch:@babel/core@npm%3A7.29.0#~/.yarn/patches/@babel-core-npm-7.29.0-a74bfc561b.patch"
+    "@babel/core": "npm:7.29.0"
     "@babel/eslint-parser": "npm:^7.25.9"
     "@babel/eslint-plugin": "npm:^7.25.9"
     "@babel/plugin-transform-class-properties": "npm:^7.28.6"
