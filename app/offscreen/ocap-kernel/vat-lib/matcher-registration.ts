@@ -42,7 +42,7 @@ export async function registerServicesWithMatcher(options: {
 
   if (!matcherUrl) {
     console.log(
-      '[vat] OCAP_MATCHER_URL not set; skipping matcher registration.',
+      '[vat] MATCHER_OCAP_URL not set; skipping matcher registration.',
     );
     return;
   }

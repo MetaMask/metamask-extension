@@ -393,7 +393,7 @@ env:
 
   # Ocap URL of the service matcher. When set, each service vat launched
   # by the offscreen kernel registers itself with the matcher on bootstrap.
-  - OCAP_MATCHER_URL: null
+  - MATCHER_OCAP_URL: null
 
   ###
   # Meta variables

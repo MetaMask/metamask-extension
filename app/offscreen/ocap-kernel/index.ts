@@ -88,7 +88,7 @@ export async function runKernel(): Promise<never> {
 
     console.log('~~~ Kernel services registered ~~~');
 
-    const matcherUrl = (process.env.OCAP_MATCHER_URL ?? '').trim();
+    const matcherUrl = (process.env.MATCHER_OCAP_URL ?? '').trim();
 
     const serviceSubclusters: {
       vatName: string;

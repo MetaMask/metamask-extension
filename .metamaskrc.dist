@@ -96,7 +96,7 @@ BLOCKAID_PUBLIC_KEY=
 
 ; Ocap URL of the service matcher. When set, each service vat launched by
 ; the offscreen kernel registers itself with the matcher on bootstrap.
-;OCAP_MATCHER_URL=
+;MATCHER_OCAP_URL=
 
 ; This variable is required to run performance tests
 TEST_SRP_2=
