@@ -25,7 +25,7 @@ jest.mock('../../../selectors', () => ({
 }));
 jest.mock('../../../../shared/lib/selectors/keyring', () => ({
   ...jest.requireActual('../../../../shared/lib/selectors/keyring'),
-  isHardwareWallet: jest.fn(),
+  isHardwareWallet: jest.fn().mockReturnValue(false),
 }));
 
 const renderUseGasIncluded7702 = (
