@@ -10,23 +10,8 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { PartnerLink } from './partner-link';
 import { DefiReferralConsentProps } from './defi-referral-consent.types';
-
-const PartnerLink: React.FC<{ text: string; url: string }> = ({ text, url }) => {
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{
-        color: 'var(--color-primary-default)',
-        cursor: 'pointer',
-      }}
-    >
-      {text}
-    </a>
-  );
-};
 
 const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
   partnerId,
@@ -41,7 +26,9 @@ const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
   );
 };
 
-export const DefiReferralConsentTreatment: React.FC<DefiReferralConsentProps> = ({
+export const DefiReferralConsentTreatment: React.FC<
+  DefiReferralConsentProps
+> = ({
   onActionComplete,
   selectedAddress,
   partnerId,

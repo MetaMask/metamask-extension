@@ -132,9 +132,13 @@ describe('DefiReferralConsent', () => {
         const titleKey = `${partnerId}ReferralTitle` as keyof typeof messages;
         const confirmKey =
           `${partnerId}ReferralConfirmText` as keyof typeof messages;
-        expect(screen.getByText(messages[titleKey].message)).toBeInTheDocument();
         expect(
-          screen.getByRole('link', { name: messages.defiReferralTerms.message }),
+          screen.getByText(messages[titleKey].message),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByRole('link', {
+            name: messages.defiReferralTerms.message,
+          }),
         ).toHaveAttribute('href', learnMoreUrl);
         expect(
           screen.getByRole('button', { name: messages[confirmKey].message }),

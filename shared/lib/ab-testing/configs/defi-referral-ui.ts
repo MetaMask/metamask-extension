@@ -4,10 +4,10 @@ import type { ABTestAnalyticsMapping } from '../ab-test-analytics';
 export const DEFI_REFERRAL_UI_AB_TEST_KEY =
   'coreExtensionUxCeux1024AbtestReferralUi';
 
-export enum DefiReferralUIABTestVariant {
-  Control = 'control',
-  Treatment = 'treatment',
-}
+export const DefiReferralUIABTestVariant = {
+  Control: 'control',
+  Treatment: 'treatment',
+} as const;
 
 export type DefiReferralUIABTestVariants = {
   control: {
@@ -39,7 +39,10 @@ export const DEFI_REFERRAL_UI_AB_TEST_EXPOSURE_METADATA = {
 export const DEFI_REFERRAL_UI_AB_TEST_ANALYTICS_MAPPING: ABTestAnalyticsMapping =
   {
     flagKey: DEFI_REFERRAL_UI_AB_TEST_KEY,
-    validVariants: Object.values(DefiReferralUIABTestVariant),
+    validVariants: [
+      DefiReferralUIABTestVariant.Control,
+      DefiReferralUIABTestVariant.Treatment,
+    ],
     eventNames: [
       MetaMetricsEventName.ReferralViewed,
       MetaMetricsEventName.ReferralConfirmButtonClicked,

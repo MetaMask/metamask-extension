@@ -14,23 +14,8 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useBoolean } from '../../../hooks/useBoolean';
+import { PartnerLink } from './partner-link';
 import { DefiReferralConsentProps } from './defi-referral-consent.types';
-
-const PartnerLink: React.FC<{ text: string; url: string }> = ({ text, url }) => {
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{
-        color: 'var(--color-primary-default)',
-        cursor: 'pointer',
-      }}
-    >
-      {text}
-    </a>
-  );
-};
 
 const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
   partnerId,
@@ -89,7 +74,10 @@ export const DefiReferralConsentControl: React.FC<DefiReferralConsentProps> = ({
         </Text>
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t(defiReferralSubtitle)}{' '}
-          <PartnerLink text={`${t('learnMoreUpperCase')}.`} url={learnMoreUrl} />
+          <PartnerLink
+            text={`${t('learnMoreUpperCase')}.`}
+            url={learnMoreUrl}
+          />
         </Text>
       </Box>
       <Box paddingBottom={6} paddingHorizontal={4}>
