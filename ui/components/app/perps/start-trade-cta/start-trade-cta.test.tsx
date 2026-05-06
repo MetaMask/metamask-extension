@@ -1,14 +1,20 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { StartTradeCta } from './start-trade-cta';
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockSubmitRequestToBackground = jest.fn();
 
 jest.mock('../../../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
+}));
+
+jest.mock('../../../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
 }));
 
 const mockStore = configureStore({
@@ -16,11 +22,22 @@ const mockStore = configureStore({
     ...mockState.metamask,
   },
 });
+const selectedAccountId = mockState.metamask.internalAccounts
+  .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts;
+const selectedAccountAddress =
+  mockState.metamask.internalAccounts.accounts[selectedAccountId].address;
 
 describe('StartTradeCta', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+    mockSubmitRequestToBackground.mockResolvedValue([
+      {
+        address: selectedAccountAddress,
+        blocked: false,
+        checkedAt: '2026-05-05T00:00:00.000Z',
+      },
+    ]);
   });
 
   it('renders the CTA button', () => {
@@ -87,5 +104,37 @@ describe('StartTradeCta', () => {
     fireEvent.click(screen.getByTestId('start-new-trade-cta'));
     expect(onPress).not.toHaveBeenCalled();
     expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+  });
+
+  it('does not call onPress when the selected wallet is compliance blocked', async () => {
+    mockSubmitRequestToBackground.mockResolvedValue([
+      {
+        address: selectedAccountAddress,
+        blocked: true,
+        checkedAt: '2026-05-05T00:00:00.000Z',
+      },
+    ]);
+    const blockedStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: {
+          ...mockState.metamask.remoteFeatureFlags,
+          complianceEnabled: true,
+        },
+      },
+    });
+    const onPress = jest.fn();
+
+    renderWithProvider(<StartTradeCta onPress={onPress} />, blockedStore);
+
+    fireEvent.click(screen.getByTestId('start-new-trade-cta'));
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'complianceCheckWalletsCompliance',
+        [[selectedAccountAddress]],
+      );
+    });
+    expect(onPress).not.toHaveBeenCalled();
   });
 });

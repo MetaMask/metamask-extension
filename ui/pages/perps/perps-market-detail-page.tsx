@@ -104,6 +104,7 @@ import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import { CancelOrderModal } from '../../components/app/perps/cancel-order';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
+import { useComplianceGate } from '../../components/app/compliance';
 import type { Order } from '../../components/app/perps/types';
 import {
   PERPS_TOAST_KEYS,
@@ -269,6 +270,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
+  const { gate } = useComplianceGate(selectedAddress ?? '');
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
   const {
@@ -731,26 +733,31 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   const handleOpenOrder = useCallback(
     (direction: 'long' | 'short') => {
-      if (!isEligible) {
-        setIsGeoBlockModalOpen(true);
-        return;
-      }
-      if (!decodedSymbol || isLoadingAccount) {
-        return;
-      }
-      track(MetaMetricsEventName.PerpsUiInteraction, {
-        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-          PERPS_EVENT_VALUE.BUTTON_CLICKED.TRADE,
-        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-          PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
-        [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
-        [PERPS_EVENT_PROPERTY.DIRECTION]: direction,
+      gate(() => {
+        if (!isEligible) {
+          setIsGeoBlockModalOpen(true);
+          return;
+        }
+        if (!decodedSymbol || isLoadingAccount) {
+          return;
+        }
+        track(MetaMetricsEventName.PerpsUiInteraction, {
+          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+            PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+            PERPS_EVENT_VALUE.BUTTON_CLICKED.TRADE,
+          [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+            PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+          [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+          [PERPS_EVENT_PROPERTY.DIRECTION]: direction,
+        });
+        navigate(buildOrderEntryUrl(direction, 'new'));
+      }).catch((error: unknown) => {
+        console.error(error);
       });
-      navigate(buildOrderEntryUrl(direction, 'new'));
     },
     [
+      gate,
       isEligible,
       decodedSymbol,
       isLoadingAccount,
@@ -761,43 +768,55 @@ const PerpsMarketDetailPage: React.FC = () => {
   );
 
   const handleClosePosition = useCallback(() => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-    if (!position) {
-      return;
-    }
-    setIsCloseModalOpen(true);
-  }, [isEligible, position]);
+    gate(() => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (!position) {
+        return;
+      }
+      setIsCloseModalOpen(true);
+    }).catch((error: unknown) => {
+      console.error(error);
+    });
+  }, [gate, isEligible, position]);
 
   const handleOpenAddMarginModal = useCallback(() => {
-    track(MetaMetricsEventName.PerpsUiInteraction, {
-      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-        PERPS_EVENT_VALUE.BUTTON_CLICKED.ADD_MARGIN,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    gate(() => {
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          PERPS_EVENT_VALUE.BUTTON_CLICKED.ADD_MARGIN,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+          PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+      });
+      setIsModifyMenuOpen(false);
+      setIsMarginMenuOpen(false);
+      setMarginModalMode('add');
+    }).catch((error: unknown) => {
+      console.error(error);
     });
-    setIsModifyMenuOpen(false);
-    setIsMarginMenuOpen(false);
-    setMarginModalMode('add');
-  }, [track]);
+  }, [gate, track]);
 
   const handleOpenDecreaseMarginModal = useCallback(() => {
-    track(MetaMetricsEventName.PerpsUiInteraction, {
-      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-        PERPS_EVENT_VALUE.BUTTON_CLICKED.REMOVE_MARGIN,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    gate(() => {
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          PERPS_EVENT_VALUE.BUTTON_CLICKED.REMOVE_MARGIN,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+          PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+      });
+      setIsModifyMenuOpen(false);
+      setIsMarginMenuOpen(false);
+      setMarginModalMode('remove');
+    }).catch((error: unknown) => {
+      console.error(error);
     });
-    setIsModifyMenuOpen(false);
-    setIsMarginMenuOpen(false);
-    setMarginModalMode('remove');
-  }, [track]);
+  }, [gate, track]);
 
   const handleOpenReverseModal = useCallback(() => {
     setIsModifyMenuOpen(false);
@@ -805,28 +824,33 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, []);
 
   const handleAddExposure = useCallback(() => {
-    if (!position || !decodedSymbol) {
-      return;
-    }
-    track(MetaMetricsEventName.PerpsUiInteraction, {
-      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-        PERPS_EVENT_VALUE.BUTTON_CLICKED.INCREASE_EXPOSURE,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
-    });
-    setIsModifyMenuOpen(false);
-    if (position.leverage?.type === 'cross') {
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.INCREASE_POSITION_CROSS_MARGIN_BLOCKED,
-        description: t('perpsCrossMarginNotSupportedDescription'),
+    gate(() => {
+      if (!position || !decodedSymbol) {
+        return;
+      }
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          PERPS_EVENT_VALUE.BUTTON_CLICKED.INCREASE_EXPOSURE,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+          PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
       });
-      return;
-    }
-    const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
-    navigate(buildOrderEntryUrl(direction, 'modify'));
+      setIsModifyMenuOpen(false);
+      if (position.leverage?.type === 'cross') {
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.INCREASE_POSITION_CROSS_MARGIN_BLOCKED,
+          description: t('perpsCrossMarginNotSupportedDescription'),
+        });
+        return;
+      }
+      const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
+      navigate(buildOrderEntryUrl(direction, 'modify'));
+    }).catch((error: unknown) => {
+      console.error(error);
+    });
   }, [
+    gate,
     position,
     decodedSymbol,
     navigate,
@@ -837,24 +861,28 @@ const PerpsMarketDetailPage: React.FC = () => {
   ]);
 
   const handleReduceExposure = useCallback(() => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-    if (!position || !decodedSymbol) {
-      return;
-    }
-    track(MetaMetricsEventName.PerpsUiInteraction, {
-      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-        PERPS_EVENT_VALUE.BUTTON_CLICKED.REDUCE_EXPOSURE,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    gate(() => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (!position || !decodedSymbol) {
+        return;
+      }
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          PERPS_EVENT_VALUE.BUTTON_CLICKED.REDUCE_EXPOSURE,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+          PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+      });
+      setIsModifyMenuOpen(false);
+      setIsCloseModalOpen(true);
+    }).catch((error: unknown) => {
+      console.error(error);
     });
-    setIsModifyMenuOpen(false);
-    setIsCloseModalOpen(true);
-  }, [isEligible, position, decodedSymbol, track]);
+  }, [gate, isEligible, position, decodedSymbol, track]);
 
   const handleOpenMarginMenu = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -878,8 +906,12 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, []);
 
   const handleOpenTPSLModal = useCallback(() => {
-    setIsTPSLModalOpen(true);
-  }, []);
+    gate(() => {
+      setIsTPSLModalOpen(true);
+    }).catch((error: unknown) => {
+      console.error(error);
+    });
+  }, [gate]);
 
   const handleCloseTPSLModal = useCallback(() => {
     setIsTPSLModalOpen(false);
@@ -1770,11 +1802,15 @@ const PerpsMarketDetailPage: React.FC = () => {
                 variant={ButtonVariant.Secondary}
                 size={ButtonSize.Lg}
                 onClick={() => {
-                  if (!isEligible) {
-                    setIsGeoBlockModalOpen(true);
-                    return;
-                  }
-                  setIsModifyMenuOpen((prev) => !prev);
+                  gate(() => {
+                    if (!isEligible) {
+                      setIsGeoBlockModalOpen(true);
+                      return;
+                    }
+                    setIsModifyMenuOpen((prev) => !prev);
+                  }).catch((error: unknown) => {
+                    console.error(error);
+                  });
                 }}
                 className="w-full flex items-center gap-2"
                 data-testid="perps-modify-cta-button"

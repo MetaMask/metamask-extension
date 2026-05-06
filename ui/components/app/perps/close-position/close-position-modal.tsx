@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxBackgroundColor,
@@ -56,6 +57,8 @@ import {
   type PerpsToastKeyConfig,
 } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+import { useComplianceGate } from '../../compliance';
 import type { Position } from '../types';
 
 type ClosePositionParams = {
@@ -250,7 +253,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   sizeDecimals,
 }) => {
   const t = useI18nContext() as CloseToastTranslation;
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const { isEligible } = usePerpsEligibility();
+  const { gate } = useComplianceGate(selectedAccount?.address ?? '');
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   usePerpsEventTracking({
@@ -363,107 +368,110 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     if (isSubmitDisabled) {
       return;
     }
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
 
-    setIsSubmitting(true);
-    setError(null);
+      setIsSubmitting(true);
+      setError(null);
 
-    replacePerpsToastByKey(
-      getCloseInProgressToastConfig({
-        isPartialClose,
-        positionSize: position.size,
-        closeSize,
-        displayName,
-        t,
-        formatNumber,
-      }),
-    );
-
-    try {
-      onClose();
-      const result = await submitRequestToBackground<{
-        success: boolean;
-        error?: string;
-      }>('perpsClosePosition', [
-        buildCloseRequestParams({
-          symbol: position.symbol,
-          currentPrice,
+      replacePerpsToastByKey(
+        getCloseInProgressToastConfig({
           isPartialClose,
+          positionSize: position.size,
           closeSize,
+          displayName,
+          t,
+          formatNumber,
         }),
-      ]);
-      if (!result.success) {
-        const message = result.error || 'Failed to close position';
+      );
+
+      try {
+        onClose();
+        const result = await submitRequestToBackground<{
+          success: boolean;
+          error?: string;
+        }>('perpsClosePosition', [
+          buildCloseRequestParams({
+            symbol: position.symbol,
+            currentPrice,
+            isPartialClose,
+            closeSize,
+          }),
+        ]);
+        if (!result.success) {
+          const message = result.error || 'Failed to close position';
+          track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+            [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+            [PERPS_EVENT_PROPERTY.FAILURE_REASON]: message,
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+            [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+            [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
+          });
+          track(MetaMetricsEventName.PerpsError, {
+            [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+              PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+          });
+          const { errorMessage, toast } = getCloseFailureToastConfig({
+            error: new Error(message),
+            isPartialClose,
+            t,
+            formatFiat,
+          });
+          setError(errorMessage);
+          replacePerpsToastByKey(toast);
+          return;
+        }
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+          [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: closePercent,
+          [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+          [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
+        });
+        replacePerpsToastByKey(
+          getCloseSuccessToastConfig({
+            isPartialClose,
+            position,
+            t,
+            formatPercentWithMinThreshold,
+          }),
+        );
+      } catch (err) {
+        const errMessage =
+          err instanceof Error ? err.message : 'An unknown error occurred';
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
           [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: message,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errMessage,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
           [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
           [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
         });
         track(MetaMetricsEventName.PerpsError, {
-          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
-            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
         });
+
         const { errorMessage, toast } = getCloseFailureToastConfig({
-          error: new Error(message),
+          error: err,
           isPartialClose,
           t,
           formatFiat,
         });
         setError(errorMessage);
         replacePerpsToastByKey(toast);
-        return;
+      } finally {
+        setIsSubmitting(false);
       }
-      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-        [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: closePercent,
-        [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-        [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
-      });
-      replacePerpsToastByKey(
-        getCloseSuccessToastConfig({
-          isPartialClose,
-          position,
-          t,
-          formatPercentWithMinThreshold,
-        }),
-      );
-    } catch (err) {
-      const errMessage =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errMessage,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
-        [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-        [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
-      });
-      track(MetaMetricsEventName.PerpsError, {
-        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
-      });
-
-      const { errorMessage, toast } = getCloseFailureToastConfig({
-        error: err,
-        isPartialClose,
-        t,
-        formatFiat,
-      });
-      setError(errorMessage);
-      replacePerpsToastByKey(toast);
-    } finally {
-      setIsSubmitting(false);
-    }
+    });
   }, [
     isSubmitDisabled,
+    gate,
     isEligible,
     replacePerpsToastByKey,
     isPartialClose,

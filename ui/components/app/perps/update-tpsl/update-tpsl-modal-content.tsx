@@ -6,6 +6,7 @@ import React, {
   useLayoutEffect,
   useRef,
 } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -40,8 +41,10 @@ import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
+import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import { usePerpsToast } from '../perps-toast';
 import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
+import { useComplianceGate } from '../../compliance';
 import type { Position, PerpsBackgroundResult } from '../types';
 import {
   normalizeTpslPrices,
@@ -105,8 +108,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   onSubmitStateChange,
 }) => {
   const t = useI18nContext();
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const { track } = usePerpsEventTracking();
   const { isEligible } = usePerpsEligibility();
+  const { gate } = useComplianceGate(selectedAccount?.address ?? '');
   const { replacePerpsToastByKey } = usePerpsToast();
   const { feeRate: closingFeeRate } = usePerpsOrderFees({
     symbol: position.symbol,
@@ -443,119 +448,122 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   }, [editingSlPrice, formatEditPrice]);
 
   const handleSave = useCallback(async () => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-    if (!position) {
-      return;
-    }
-    setIsSaving(true);
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (!position) {
+        return;
+      }
+      setIsSaving(true);
 
-    const { takeProfitPrice: cleanTpPrice, stopLossPrice: cleanSlPrice } =
-      normalizeTpslPrices({
-        takeProfitPrice: editingTpPrice,
-        stopLossPrice: editingSlPrice,
-      });
+      const { takeProfitPrice: cleanTpPrice, stopLossPrice: cleanSlPrice } =
+        normalizeTpslPrices({
+          takeProfitPrice: editingTpPrice,
+          stopLossPrice: editingSlPrice,
+        });
 
-    try {
-      const result = await submitRequestToBackground<PerpsBackgroundResult>(
-        'perpsUpdatePositionTPSL',
-        [
-          {
-            symbol: position.symbol,
-            takeProfitPrice: cleanTpPrice,
-            stopLossPrice: cleanSlPrice,
-          },
-        ],
-      );
-      const derivedTpslType = deriveTpslType({
-        takeProfitPrice: cleanTpPrice,
-        stopLossPrice: cleanSlPrice,
-        hasExistingTpsl: Boolean(
-          position.takeProfitPrice || position.stopLossPrice,
-        ),
-      });
+      try {
+        const result = await submitRequestToBackground<PerpsBackgroundResult>(
+          'perpsUpdatePositionTPSL',
+          [
+            {
+              symbol: position.symbol,
+              takeProfitPrice: cleanTpPrice,
+              stopLossPrice: cleanSlPrice,
+            },
+          ],
+        );
+        const derivedTpslType = deriveTpslType({
+          takeProfitPrice: cleanTpPrice,
+          stopLossPrice: cleanSlPrice,
+          hasExistingTpsl: Boolean(
+            position.takeProfitPrice || position.stopLossPrice,
+          ),
+        });
 
-      if (!result.success) {
-        const failMessage = result.error || 'Failed to update TP/SL';
+        if (!result.success) {
+          const failMessage = result.error || 'Failed to update TP/SL';
+          track(MetaMetricsEventName.PerpsRiskManagement, {
+            [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+            [PERPS_EVENT_PROPERTY.FAILURE_REASON]: failMessage,
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
+            [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
+            [PERPS_EVENT_PROPERTY.SIZE]: position.size,
+          });
+          track(MetaMetricsEventName.PerpsError, {
+            [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+              PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
+          });
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+            description: failMessage,
+          });
+          return;
+        }
         track(MetaMetricsEventName.PerpsRiskManagement, {
           [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: failMessage,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
           [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
           [PERPS_EVENT_PROPERTY.SIZE]: position.size,
         });
+        const streamManager = getPerpsStreamManager();
+        streamManager.setOptimisticTPSL(
+          position.symbol,
+          cleanTpPrice,
+          cleanSlPrice,
+        );
+        const currentPositions = streamManager.positions.getCachedData();
+        const optimisticallyUpdatedPositions = currentPositions.map((p) =>
+          p.symbol === position.symbol
+            ? {
+                ...p,
+                takeProfitPrice: cleanTpPrice,
+                stopLossPrice: cleanSlPrice,
+              }
+            : p,
+        );
+        streamManager.positions.pushData(optimisticallyUpdatedPositions);
+
+        setTimeout(async () => {
+          try {
+            const freshPositions = await submitRequestToBackground<
+              PerpsPosition[]
+            >('perpsGetPositions', [{ skipCache: true }]);
+            streamManager.pushPositionsWithOverrides(freshPositions);
+          } catch (e) {
+            console.warn('[Perps] Delayed TP/SL refetch failed:', e);
+          }
+        }, 2500);
+
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
+        });
+        onClose();
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'An unknown error occurred';
         track(MetaMetricsEventName.PerpsError, {
-          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
-            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
         });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_FAILED,
-          description: failMessage,
+          description: errorMessage,
         });
-        return;
-      }
-      track(MetaMetricsEventName.PerpsRiskManagement, {
-        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-        [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
-        [PERPS_EVENT_PROPERTY.SIZE]: position.size,
-      });
-      const streamManager = getPerpsStreamManager();
-      streamManager.setOptimisticTPSL(
-        position.symbol,
-        cleanTpPrice,
-        cleanSlPrice,
-      );
-      const currentPositions = streamManager.positions.getCachedData();
-      const optimisticallyUpdatedPositions = currentPositions.map((p) =>
-        p.symbol === position.symbol
-          ? {
-              ...p,
-              takeProfitPrice: cleanTpPrice,
-              stopLossPrice: cleanSlPrice,
-            }
-          : p,
-      );
-      streamManager.positions.pushData(optimisticallyUpdatedPositions);
-
-      setTimeout(async () => {
-        try {
-          const freshPositions = await submitRequestToBackground<
-            PerpsPosition[]
-          >('perpsGetPositions', [{ skipCache: true }]);
-          streamManager.pushPositionsWithOverrides(freshPositions);
-        } catch (e) {
-          console.warn('[Perps] Delayed TP/SL refetch failed:', e);
+      } finally {
+        if (isMountedRef.current) {
+          setIsSaving(false);
         }
-      }, 2500);
-
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
-      });
-      onClose();
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'An unknown error occurred';
-      track(MetaMetricsEventName.PerpsError, {
-        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-      });
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.UPDATE_FAILED,
-        description: errorMessage,
-      });
-    } finally {
-      if (isMountedRef.current) {
-        setIsSaving(false);
       }
-    }
+    });
   }, [
     editingSlPrice,
     editingTpPrice,
+    gate,
     isEligible,
     onClose,
     position,

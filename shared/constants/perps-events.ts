@@ -58,6 +58,7 @@ export const PERPS_EVENT_VALUE = {
     FLIP_POSITION: 'flip_position',
     CREATE_TP_SL: 'create_tp_sl',
     UPDATE_TP_SL: 'update_tp_sl',
+    COMPLIANCE_BLOCK_NOTIF: 'compliance_block_notif',
   },
   INTERACTION_TYPE: {
     ORDER_TYPE_SELECTED: 'order_type_selected',

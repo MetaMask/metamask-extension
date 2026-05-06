@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   twMerge,
   TextVariant,
@@ -23,6 +24,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
+import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+import { useComplianceGate } from '../../compliance';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsControlBarSkeleton } from '../perps-skeletons';
 
@@ -71,6 +74,8 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   const { account, isInitialLoading } = usePerpsLiveAccount();
   const { formatPercentWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { gate } = useComplianceGate(selectedAccount?.address ?? '');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -96,12 +101,16 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   }, []);
 
   const handleAddFunds = useCallback(() => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-    invokePerpsBalanceAction(onAddFunds);
-  }, [isEligible, onAddFunds]);
+    gate(() => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      invokePerpsBalanceAction(onAddFunds);
+    }).catch((error: unknown) => {
+      console.error(error);
+    });
+  }, [gate, isEligible, onAddFunds]);
 
   const handleWithdraw = useCallback(() => {
     invokePerpsBalanceAction(onWithdraw);

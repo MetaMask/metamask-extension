@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -15,6 +16,8 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsEligibility } from '../../../../hooks/perps';
+import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+import { useComplianceGate } from '../../compliance';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 
 export type StartTradeCtaProps = {
@@ -32,15 +35,21 @@ export type StartTradeCtaProps = {
 export const StartTradeCta: React.FC<StartTradeCtaProps> = ({ onPress }) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { gate } = useComplianceGate(selectedAccount?.address ?? '');
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   const handleClick = useCallback(() => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-    onPress?.();
-  }, [isEligible, onPress]);
+    gate(() => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      onPress?.();
+    }).catch((error: unknown) => {
+      console.error(error);
+    });
+  }, [gate, isEligible, onPress]);
 
   return (
     <>

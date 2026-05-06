@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -42,6 +43,8 @@ import {
 } from '../../../../../shared/constants/perps-events';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+import { useComplianceGate } from '../../compliance';
 import type { Position, AccountState, PerpsBackgroundResult } from '../types';
 import { PerpsSlider } from '../perps-slider';
 import { getDisplayName } from '../utils';
@@ -97,7 +100,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   onSavingChange,
 }) => {
   const t = useI18nContext();
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const { isEligible } = usePerpsEligibility();
+  const { gate } = useComplianceGate(selectedAccount?.address ?? '');
   const { replacePerpsToastByKey } = usePerpsToast();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
@@ -249,109 +254,112 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   );
 
   const handleSaveMargin = useCallback(async () => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-    if (!isValid) {
-      return;
-    }
-
-    const rawMarginAmount = marginAmount.replaceAll(',', '');
-    const amountNum = Number.parseFloat(rawMarginAmount) || 0;
-    if (amountNum <= 0) {
-      return;
-    }
-
-    setIsSaving(true);
-    onSavingChange?.(true);
-
-    try {
-      const signedAmount =
-        marginMode === 'add' ? rawMarginAmount : `-${rawMarginAmount}`;
-
-      const result = await submitRequestToBackground<PerpsBackgroundResult>(
-        'perpsUpdateMargin',
-        [
-          {
-            symbol: position.symbol,
-            amount: signedAmount,
-          },
-        ],
-      );
-
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to update margin');
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (!isValid) {
+        return;
       }
 
-      const riskType =
-        marginMode === 'add'
-          ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
-          : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
-      track(MetaMetricsEventName.PerpsRiskManagement, {
-        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-        [PERPS_EVENT_PROPERTY.TYPE]: riskType,
-        [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
-      });
+      const rawMarginAmount = marginAmount.replaceAll(',', '');
+      const amountNum = Number.parseFloat(rawMarginAmount) || 0;
+      if (amountNum <= 0) {
+        return;
+      }
 
-      const streamManager = getPerpsStreamManager();
-      const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
-        'perpsGetPositions',
-        [{ skipCache: true }],
-      );
-      streamManager.pushPositionsWithOverrides(freshPositions);
-      const displaySymbol = getDisplayName(position.symbol);
+      setIsSaving(true);
+      onSavingChange?.(true);
 
-      replacePerpsToastByKey({
-        key:
-          marginMode === 'add'
-            ? PERPS_TOAST_KEYS.MARGIN_ADD_SUCCESS
-            : PERPS_TOAST_KEYS.MARGIN_REMOVE_SUCCESS,
-        messageParams: [`$${marginAmount}`, displaySymbol],
-      });
+      try {
+        const signedAmount =
+          marginMode === 'add' ? rawMarginAmount : `-${rawMarginAmount}`;
 
-      setMarginAmount('');
-      onClose();
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'An unknown error occurred';
-
-      const riskType =
-        marginMode === 'add'
-          ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
-          : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
-      track(MetaMetricsEventName.PerpsRiskManagement, {
-        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errorMessage,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-        [PERPS_EVENT_PROPERTY.TYPE]: riskType,
-        [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
-      });
-      track(MetaMetricsEventName.PerpsError, {
-        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-      });
-
-      const normalizedErrorMessage = errorMessage.trim();
-      const shouldUseFallbackDescription =
-        normalizedErrorMessage.length === 0 ||
-        MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
-          pattern.test(normalizedErrorMessage),
+        const result = await submitRequestToBackground<PerpsBackgroundResult>(
+          'perpsUpdateMargin',
+          [
+            {
+              symbol: position.symbol,
+              amount: signedAmount,
+            },
+          ],
         );
 
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
-        description: shouldUseFallbackDescription
-          ? t('perpsToastMarginAdjustmentFailedDescriptionFallback')
-          : normalizedErrorMessage,
-      });
-    } finally {
-      setIsSaving(false);
-      onSavingChange?.(false);
-    }
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to update margin');
+        }
+
+        const riskType =
+          marginMode === 'add'
+            ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
+            : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
+        track(MetaMetricsEventName.PerpsRiskManagement, {
+          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+          [PERPS_EVENT_PROPERTY.TYPE]: riskType,
+          [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
+        });
+
+        const streamManager = getPerpsStreamManager();
+        const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
+          'perpsGetPositions',
+          [{ skipCache: true }],
+        );
+        streamManager.pushPositionsWithOverrides(freshPositions);
+        const displaySymbol = getDisplayName(position.symbol);
+
+        replacePerpsToastByKey({
+          key:
+            marginMode === 'add'
+              ? PERPS_TOAST_KEYS.MARGIN_ADD_SUCCESS
+              : PERPS_TOAST_KEYS.MARGIN_REMOVE_SUCCESS,
+          messageParams: [`$${marginAmount}`, displaySymbol],
+        });
+
+        setMarginAmount('');
+        onClose();
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'An unknown error occurred';
+
+        const riskType =
+          marginMode === 'add'
+            ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
+            : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
+        track(MetaMetricsEventName.PerpsRiskManagement, {
+          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errorMessage,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+          [PERPS_EVENT_PROPERTY.TYPE]: riskType,
+          [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
+        });
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+        });
+
+        const normalizedErrorMessage = errorMessage.trim();
+        const shouldUseFallbackDescription =
+          normalizedErrorMessage.length === 0 ||
+          MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
+            pattern.test(normalizedErrorMessage),
+          );
+
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
+          description: shouldUseFallbackDescription
+            ? t('perpsToastMarginAdjustmentFailedDescriptionFallback')
+            : normalizedErrorMessage,
+        });
+      } finally {
+        setIsSaving(false);
+        onSavingChange?.(false);
+      }
+    });
   }, [
+    gate,
     isEligible,
     marginMode,
     marginAmount,

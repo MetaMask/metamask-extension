@@ -82,6 +82,18 @@
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
   },
+  "accessRestrictedContactSupport": {
+    "message": "Contact support"
+  },
+  "accessRestrictedDescriptionLine1": {
+    "message": "This wallet address has been flagged during compliance screening. As a result, some MetaMask services are unavailable."
+  },
+  "accessRestrictedDescriptionLine2": {
+    "message": "If you believe this is an error, contact support to request a review."
+  },
+  "accessRestrictedTitle": {
+    "message": "Access restricted"
+  },
   "accessingYourCamera": {
     "message": "Accessing your camera..."
   },
