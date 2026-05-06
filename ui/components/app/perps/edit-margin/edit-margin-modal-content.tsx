@@ -133,8 +133,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     [marginAmount],
   );
   const showLiquidationComparison = amountNumForDisplay > 0;
-  const hasValidAnchorLiquidationPrice =
-    isPerpsLiquidationPriceValid(anchorLiquidationPrice);
+  const hasValidAnchorLiquidationPrice = isPerpsLiquidationPriceValid(
+    anchorLiquidationPrice,
+  );
   const hasValidEstimatedLiquidationPrice = isPerpsLiquidationPriceValid(
     estimatedLiquidationPrice,
   );
