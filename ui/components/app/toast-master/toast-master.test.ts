@@ -1,7 +1,6 @@
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import mockState from '../../../../test/data/mock-state.json';
 import {
-  selectNewSrpAdded,
   selectShowPrivacyPolicyToast,
   selectShowInfuraSwitchToast,
 } from './selectors';
@@ -16,13 +15,6 @@ const createMockPrivacyPolicyState = (
     newPrivacyPolicyToastClickedOrClosed,
     onboardingDate,
     newPrivacyPolicyToastShownDate,
-  },
-});
-
-const createMockAppState = (showNewSrpAddedToast?: number | false) => ({
-  appState: {
-    ...mockState.appState,
-    showNewSrpAddedToast,
   },
 });
 
@@ -149,20 +141,6 @@ describe('#getShowPrivacyPolicyToast', () => {
       });
       expect(result.showPrivacyPolicyToast).toBe(false);
     });
-  });
-});
-
-describe('#getShowNewSrpAddedToast', () => {
-  it('returns the wallet number when set', () => {
-    const mockStateData = createMockAppState(2);
-    const result = selectNewSrpAdded(mockStateData);
-    expect(result).toBe(2);
-  });
-
-  it('returns false when not set', () => {
-    const mockStateData = createMockAppState(false);
-    const result = selectNewSrpAdded(mockStateData);
-    expect(result).toBe(false);
   });
 });
 
