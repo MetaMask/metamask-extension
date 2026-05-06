@@ -26,7 +26,7 @@ jest.mock('../activity-v2/activity-list', () => ({
   ActivityList: () => null,
 }));
 
-jest.mock('../activity-v2/hooks', () => ({
+jest.mock('../activity-v2/useTransactionsQuery', () => ({
   usePrefetchTransactions: () => jest.fn(),
 }));
 
