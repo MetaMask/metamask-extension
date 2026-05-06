@@ -41837,12 +41837,12 @@ __metadata:
   linkType: hard
 
 "socks@npm:^2.6.2, socks@npm:^2.8.3":
-  version: 2.8.4
-  resolution: "socks@npm:2.8.4"
+  version: 2.8.8
+  resolution: "socks@npm:2.8.8"
   dependencies:
-    ip-address: "npm:^9.0.5"
+    ip-address: "npm:^10.1.1"
     smart-buffer: "npm:^4.2.0"
-  checksum: 10/ab3af97aeb162f32c80e176c717ccf16a11a6ebb4656a62b94c0f96495ea2a1f4a8206c04b54438558485d83d0c5f61920c07a1a5d3963892a589b40cc6107dd
+  checksum: 10/2108b9bd9cd3ab3248704a8319c875681bd8219afb13ae29648810193e4f3a24432baf20364eda1cb8ec144f2e1f3eb0692ce53281f05fe29aff5385e60b9b42
   languageName: node
   linkType: hard
 
