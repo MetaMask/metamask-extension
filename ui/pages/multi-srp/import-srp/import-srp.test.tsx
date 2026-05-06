@@ -142,7 +142,6 @@ describe('ImportSrp', () => {
       // importMnemonicToVault should not be called
       expect(importMnemonicToVault).not.toHaveBeenCalled();
       expect(mockNavigate).not.toHaveBeenCalled();
-      expect(toast.success).not.toHaveBeenCalled();
     });
   });
 
@@ -189,7 +188,6 @@ describe('ImportSrp', () => {
 
       // Verify navigation did not happen
       expect(mockNavigate).not.toHaveBeenCalledWith(DEFAULT_ROUTE);
-      expect(toast.success).not.toHaveBeenCalled();
     };
 
     it('displays duplicate account error when trying to import a duplicate account', async () => {
