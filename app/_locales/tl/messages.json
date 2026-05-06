@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "Hardware wallet"
   },
-  "addIPFSGateway": {
-    "message": "Idagdag ang mas gusto mong IPFS gateway"
-  },
   "addMemo": {
     "message": "Magdagdag ng memo"
   },
@@ -1545,9 +1542,6 @@
     "message": "Kapag ginamit mo ang mga default na setting at configuration namin, ginagamit namin ang Infura bilang default na remote procedure call (RPC) provider namin para mag-alok ng pinakamaaasahan at pribadong access sa data ng Etheeum hangga’t kaya namin. Sa mga limitadong kaso, posibleng gumamit kami ng ibang RPC provider para maibigay ang pinakamagandang experience sa mga user namin. Puwede kang pumili ng sarili mong RPC, pero tandaan na matatanggap ng sinumang RPC ang IP address at Ethereum wallet mo para para makagawa ng mga transaksyon. Para matuto pa kung paano nangangasiwa ang Infura ng data para sa mga EVM account, basahin ang $1, para sa mga Solana account, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "mag-click dito"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Kailangan mong gamitin ang MetaMask sa Google Chrome para maikonekta sa iyong Wallet na Hardware."
   },
@@ -2216,12 +2210,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Tumanggap ng mga update ng produkto, tip at balita - kabilang sa pamamagitan ng email. Maaari naming gamitin ang mga interaksyon mo para mapahusay ang mga ibinabahagi namin."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Okay"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "In-off mo ang koleksyon ng data para sa layunin sa marketing. Ito ay inilalapat lamang sa device na ito. Kung gumagamit ka ng MetaMask sa ibang mga device, siguraduhing mag-opt out din doon."
   },
   "dataUnavailable": {
     "message": "hindi available ang data"
@@ -5680,9 +5668,6 @@
   "perpsCancelOrder": {
     "message": "Kanselahin ang order"
   },
-  "perpsCandleIntervals": {
-    "message": "Mga candle interval"
-  },
   "perpsCandlePeriodDays": {
     "message": "Araw"
   },
@@ -5694,9 +5679,6 @@
   },
   "perpsCloseAll": {
     "message": "Isara lahat"
-  },
-  "perpsCloseAmount": {
-    "message": "Isara ang Halaga"
   },
   "perpsCloseLong": {
     "message": "Isara ang long"
@@ -6278,6 +6260,10 @@
   "perpsWithdraw": {
     "message": "Mag-withdraw"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Mag-withdraw perps",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Tinatayang oras"
   },
@@ -6325,6 +6311,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Naisumite ang pagwi-withdraw"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "Magsu-swap ang MetaMask ng token na gusto mo para sa iyo. Walang hihinging bayad sa MetaMask kapag nag-swap ka sa mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Nakatanggap ka ng"
@@ -6450,6 +6440,10 @@
   },
   "provide": {
     "message": "Ibigay"
+  },
+  "providerFee": {
+    "message": "Bayad sa provider",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Pampublikong address"
@@ -6657,8 +6651,16 @@
   "receiveCrypto": {
     "message": "Tumanggap ng crypto"
   },
+  "receiveToken": {
+    "message": "Tumanggap ng token",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Natanggap"
+  },
+  "receivedTotal": {
+    "message": "Kabuuan ng natanggap",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Tatanggap na address",
@@ -7166,12 +7168,6 @@
   "securityChangePassword": {
     "message": "Palitan ang password"
   },
-  "securityChangePasswordDescription": {
-    "message": "Pumili ng password na mahirap hulaan para i-unlock ang MetaMask app sa iyong device. Kung mawawala mo ang password na ito, kakailanganin mo ang iyong Lihim na Parirala sa Pagbawi para muling i-import ang iyong wallet."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Password"
-  },
   "securityChangePasswordToastError": {
     "message": "Hindi mapalitan ang password. Subukang muli."
   },
@@ -7183,16 +7179,6 @@
   },
   "securityDescription": {
     "message": "Bawasan ang iyong mga tsansa ng pagsali sa mga hindi ligtas na network at protektahan ang iyong mga account"
-  },
-  "securityLoginWithSocial": {
-    "message": "Mag-log in gamit ang $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Na-back up ang Lihim na Parirala sa Pagbawi"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "I-back up ang Lihim na Parirala sa Pagbawi"
   },
   "securityMessageLinkForNetworks": {
     "message": "mga panloloko sa network at panganib sa seguridad"
@@ -7215,14 +7201,8 @@
     "message": "PAGBAWI SA $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "I-back up ang iyong Lihim na Parirala sa Pagbawi nang sa gayon ay hindi ka mawalan ng access sa iyong wallet. Tiyaking itago ito sa isang ligtas na lugar na ikaw lamang ang may access at hindi makakalimutan."
-  },
   "securitySrpLabel": {
     "message": "MGA LIHIM NA PARIRALA SA PAGBAWI"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Pamahalaan ang mga paraan ng pagbawi"
   },
   "seeAllPermissions": {
     "message": "Tingnan ang lahat ng pahintulot",
@@ -8186,9 +8166,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Mga kahilingan na smart account mula sa dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Hayaan ang dapps na hilingin ang mga feature ng smart account para sa mga standard na account. Hindi nito maaapektuhan ang mga smart account na."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Parehong address. Mas mahuhusay na feature."
   },
@@ -8200,9 +8177,6 @@
   },
   "smartContractAddressWarning": {
     "message": "Maaaring hindi sinusuportahan ng address ng tatanggap ang direktang mga paglilipat ng token, na maaaring magresulta sa pagkalugi ng pondo. Magpatuloy lamang kung tiyak ka na matatanggap ng kontratang ito ang paglilipat mo."
-  },
-  "smartContracts": {
-    "message": "Mga smart na kontrata"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Hindi sapat ang pondo para sa smart swap."
@@ -8825,12 +8799,6 @@
     "message": "Mga sinusuportahang wika",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "Sagutan ang aming survey"
-  },
-  "surveyTitle": {
-    "message": "Hubugin ang hinaharap ng MetaMask"
-  },
   "swap": {
     "message": "Mag-swap"
   },
@@ -9226,9 +9194,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Naidagdag na ang token."
-  },
-  "tokenAutoDetection": {
-    "message": "Awtomatikong pagtuklas ng token"
   },
   "tokenContractAddress": {
     "message": "Address ng kontrata ng token"
@@ -9823,6 +9788,10 @@
   "willApproveAmountForSwapping": {
     "message": "Aprubahan ang token para sa swap."
   },
+  "withdrawTo": {
+    "message": "Tumanggap",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Wini-withdraw"
   },
@@ -9855,6 +9824,10 @@
   "youSent": {
     "message": "Nagpadala ka ng",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Makakatanggap ka ng",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Iyong aktibidad"
