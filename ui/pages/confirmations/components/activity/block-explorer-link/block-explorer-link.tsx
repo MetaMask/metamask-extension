@@ -7,8 +7,10 @@ import {
   IconName,
 } from '../../../../../components/component-library';
 import { IconColor } from '../../../../../helpers/constants/design-system';
-import type { NetworkConfigurationsByChainIdState } from '../../../../../../shared/lib/selectors/networks';
-import { selectNetworkConfigurationByChainId } from '../../../../../../shared/lib/selectors/networks-by-chain-id';
+import {
+  selectNetworkConfigurationByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../../../shared/lib/selectors/networks';
 
 const HYPERLIQUID_EXPLORER_URL = 'https://app.hyperliquid.xyz/explorer';
 

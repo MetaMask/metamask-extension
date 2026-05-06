@@ -39,11 +39,9 @@ import {
   getProviderConfig,
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
-} from '../../shared/lib/selectors/networks';
-import {
   selectNetworkConfigurationByChainId,
   selectDefaultRpcEndpointByChainId,
-} from '../../shared/lib/selectors/networks-by-chain-id';
+} from '../../shared/lib/selectors/networks';
 import { getPreferences } from '../../shared/lib/selectors/preferences';
 import {
   getAccountTrackerControllerAccountsByChainId,

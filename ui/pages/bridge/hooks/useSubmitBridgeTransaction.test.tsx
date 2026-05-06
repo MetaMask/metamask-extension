@@ -69,41 +69,60 @@ jest.mock('../../../../shared/lib/selectors/networks', () => {
   const original = jest.requireActual(
     '../../../../shared/lib/selectors/networks',
   );
+  const networkConfigurationsByChainId = {
+    '0x1': {
+      blockExplorerUrls: ['https://etherscan.io'],
+      chainId: '0x1',
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      name: 'Ethereum',
+      nativeCurrency: 'ETH',
+      rpcEndpoints: [
+        {
+          networkClientId: 'mainnet',
+          type: 'infura',
+          url: 'https://mainnet.infura.io/v3/infuraProjectId',
+        },
+      ],
+    },
+    '0xa4b1': {
+      blockExplorerUrls: ['https://explorer.arbitrum.io'],
+      chainId: '0xa4b1',
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      name: 'Arbitrum',
+      nativeCurrency: 'ETH',
+      rpcEndpoints: [
+        {
+          networkClientId: '3725601d-f497-43aa-9afa-97c26e9033a3',
+          type: 'custom',
+          url: 'https://arbitrum-mainnet.infura.io/v3/infuraProjectId',
+        },
+      ],
+    },
+  };
   return {
     ...original,
     getSelectedNetworkClientId: () => 'mainnet',
-    getNetworkConfigurationsByChainId: jest.fn(() => ({
-      '0x1': {
-        blockExplorerUrls: ['https://etherscan.io'],
-        chainId: '0x1',
-        defaultBlockExplorerUrlIndex: 0,
-        defaultRpcEndpointIndex: 0,
-        name: 'Ethereum',
-        nativeCurrency: 'ETH',
-        rpcEndpoints: [
-          {
-            networkClientId: 'mainnet',
-            type: 'infura',
-            url: 'https://mainnet.infura.io/v3/infuraProjectId',
-          },
-        ],
+    getNetworkConfigurationsByChainId: jest.fn(
+      () => networkConfigurationsByChainId,
+    ),
+    // Override these too since they live in the same module — their
+    // closure-captured reference to `getNetworkConfigurationsByChainId`
+    // bypasses the mock above.
+    selectNetworkConfigurationByChainId: jest.fn(
+      (_state: unknown, chainId: keyof typeof networkConfigurationsByChainId) =>
+        networkConfigurationsByChainId[chainId],
+    ),
+    selectDefaultRpcEndpointByChainId: jest.fn(
+      (_state: unknown, chainId: keyof typeof networkConfigurationsByChainId) => {
+        const config = networkConfigurationsByChainId[chainId];
+        if (!config) {
+          return undefined;
+        }
+        return config.rpcEndpoints[config.defaultRpcEndpointIndex];
       },
-      '0xa4b1': {
-        blockExplorerUrls: ['https://explorer.arbitrum.io'],
-        chainId: '0xa4b1',
-        defaultBlockExplorerUrlIndex: 0,
-        defaultRpcEndpointIndex: 0,
-        name: 'Arbitrum',
-        nativeCurrency: 'ETH',
-        rpcEndpoints: [
-          {
-            networkClientId: '3725601d-f497-43aa-9afa-97c26e9033a3',
-            type: 'custom',
-            url: 'https://arbitrum-mainnet.infura.io/v3/infuraProjectId',
-          },
-        ],
-      },
-    })),
+    ),
   };
 });
 

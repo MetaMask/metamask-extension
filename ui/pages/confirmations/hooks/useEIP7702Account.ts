@@ -12,8 +12,10 @@ import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
 } from '../../../store/actions';
-import type { NetworkConfigurationsByChainIdState } from '../../../../shared/lib/selectors/networks';
-import { selectDefaultRpcEndpointByChainId } from '../../../../shared/lib/selectors/networks-by-chain-id';
+import {
+  selectDefaultRpcEndpointByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../shared/lib/selectors/networks';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 
 export function useEIP7702Account(

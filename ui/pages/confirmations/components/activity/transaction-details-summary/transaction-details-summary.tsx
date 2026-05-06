@@ -22,8 +22,10 @@ import { useTransactionDetails } from '../transaction-details-context';
 import { formatTransactionDateTime } from '../utils';
 import { getTransactions } from '../../../../../selectors/transactions';
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../selectors/assets';
-import type { NetworkConfigurationsByChainIdState } from '../../../../../../shared/lib/selectors/networks';
-import { selectNetworkConfigurationByChainId } from '../../../../../../shared/lib/selectors/networks-by-chain-id';
+import {
+  selectNetworkConfigurationByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../../../shared/lib/selectors/networks';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { BlockExplorerLink } from '../block-explorer-link';
 import { TransactionStatusIcon } from '../transaction-status-icon';

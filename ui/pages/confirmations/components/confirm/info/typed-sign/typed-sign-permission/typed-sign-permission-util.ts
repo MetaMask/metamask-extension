@@ -2,8 +2,10 @@
 
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import type { NetworkConfigurationsByChainIdState } from '../../../../../../../../shared/lib/selectors/networks';
-import { selectNetworkConfigurationByChainId } from '../../../../../../../../shared/lib/selectors/networks-by-chain-id';
+import {
+  selectNetworkConfigurationByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../../../../../shared/lib/selectors/networks';
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../../../selectors/assets';
 import type { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 

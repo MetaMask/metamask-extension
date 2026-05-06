@@ -37,8 +37,10 @@ import {
 import { ConfirmInfoRow } from '../../../components/app/confirm/info/row';
 import GasTiming from '../components/gas-timing/gas-timing.component';
 import { getAppIsLoading, getShouldShowFiat } from '../../../selectors';
-import type { NetworkConfigurationsByChainIdState } from '../../../../shared/lib/selectors/networks';
-import { selectNetworkConfigurationByChainId } from '../../../../shared/lib/selectors/networks-by-chain-id';
+import {
+  selectNetworkConfigurationByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../shared/lib/selectors/networks';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../shared/constants/network';
 import { ConfirmInfoSection } from '../../../components/app/confirm/info/row/section';
 import { useEIP1559TxFees } from '../components/confirm/info/hooks/useEIP1559TxFees';

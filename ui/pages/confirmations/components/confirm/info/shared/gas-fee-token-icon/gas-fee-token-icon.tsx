@@ -12,8 +12,10 @@ import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constan
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { PreferredAvatar } from '../../../../../../../components/app/preferred-avatar';
 import { selectERC20TokensByChain } from '../../../../../../../selectors';
-import type { NetworkConfigurationsByChainIdState } from '../../../../../../../../shared/lib/selectors/networks';
-import { selectNetworkConfigurationByChainId } from '../../../../../../../../shared/lib/selectors/networks-by-chain-id';
+import {
+  selectNetworkConfigurationByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../../../../../shared/lib/selectors/networks';
 import { useConfirmContext } from '../../../../../context/confirm';
 
 export enum GasFeeTokenIconSize {

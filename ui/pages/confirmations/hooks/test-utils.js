@@ -12,7 +12,7 @@ import {
 } from '../../../selectors';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
-import { selectNetworkConfigurationByChainId } from '../../../../shared/lib/selectors/networks-by-chain-id';
+import { selectNetworkConfigurationByChainId } from '../../../../shared/lib/selectors/networks';
 
 import {
   getCustomMaxFeePerGas,

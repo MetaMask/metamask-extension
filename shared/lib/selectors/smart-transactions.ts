@@ -12,8 +12,11 @@ import {
 import { getBooleanFeatureFlag } from '../remote-feature-flag-utils';
 import { isProduction } from '../environment';
 import { accountSupportsSmartTx } from './keyring';
-import { getCurrentChainId, type NetworkState } from './networks';
-import { selectDefaultRpcEndpointByChainId } from './networks-by-chain-id';
+import {
+  getCurrentChainId,
+  selectDefaultRpcEndpointByChainId,
+  type NetworkState,
+} from './networks';
 import { getPreferences } from './preferences';
 import {
   getRemoteFeatureFlags,

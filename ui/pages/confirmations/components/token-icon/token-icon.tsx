@@ -9,9 +9,11 @@ import {
   AvatarTokenSize,
   BadgeWrapper,
 } from '../../../../components/component-library';
-import type { NetworkConfigurationsByChainIdState } from '../../../../../shared/lib/selectors/networks';
+import {
+  selectNetworkConfigurationByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../../shared/lib/selectors/networks';
 import { useSendTokens } from '../../hooks/send/useSendTokens';
-import { selectNetworkConfigurationByChainId } from '../../../../../shared/lib/selectors/networks-by-chain-id';
 
 export type TokenIconSize = 'xs' | 'sm' | 'md';
 

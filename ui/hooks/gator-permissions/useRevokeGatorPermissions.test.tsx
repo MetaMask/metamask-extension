@@ -25,7 +25,7 @@ import {
   getInternalAccounts,
   getInternalAccountByAddress,
 } from '../../selectors';
-import { selectDefaultRpcEndpointByChainId } from '../../../shared/lib/selectors/networks-by-chain-id';
+import { selectDefaultRpcEndpointByChainId } from '../../../shared/lib/selectors/networks';
 import {
   addPendingRevocation,
   checkDelegationDisabled,
@@ -82,8 +82,8 @@ jest.mock('../../pages/confirmations/hooks/useConfirmationNavigation', () => ({
     navigateToId: mockNavigateToId,
   }),
 }));
-jest.mock('../../../shared/lib/selectors/networks-by-chain-id', () => ({
-  ...jest.requireActual('../../../shared/lib/selectors/networks-by-chain-id'),
+jest.mock('../../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../../shared/lib/selectors/networks'),
   selectDefaultRpcEndpointByChainId: jest.fn(),
 }));
 

@@ -10,8 +10,10 @@ import {
   getLastInteractedConfirmationInfo,
   setLastInteractedConfirmationInfo,
 } from '../../../../store/actions';
-import type { NetworkConfigurationsByChainIdState } from '../../../../../shared/lib/selectors/networks';
-import { selectNetworkConfigurationByChainId } from '../../../../../shared/lib/selectors/networks-by-chain-id';
+import {
+  selectNetworkConfigurationByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../../shared/lib/selectors/networks';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
 import { SignatureRequestType } from '../../types/confirm';

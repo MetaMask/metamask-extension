@@ -2,9 +2,11 @@ import { useMemo, useState } from 'react';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { getCurrentChainId } from '../../../../../shared/lib/selectors/networks';
-import type { NetworkConfigurationsByChainIdState } from '../../../../../shared/lib/selectors/networks';
-import { selectNetworkConfigurationByChainId } from '../../../../../shared/lib/selectors/networks-by-chain-id';
+import {
+  getCurrentChainId,
+  selectNetworkConfigurationByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../../shared/lib/selectors/networks';
 import {
   getCrossChainTokenExchangeRates,
   selectConversionRateByChainId,
