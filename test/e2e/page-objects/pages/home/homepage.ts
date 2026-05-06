@@ -104,7 +104,7 @@ class HomePage {
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
   private readonly srpAddedToastCloseButton =
-    '[data-testid="new-srp-added-toast"] + button[aria-label="Close"]';
+    '.toast-container div:has([data-testid="new-srp-added-toast"]) button[aria-label="Close"]';
 
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
