@@ -106,7 +106,9 @@ describe('ImportSrp', () => {
         />,
         { id: 'new-srp-added-toast', duration: 5000 },
       );
-      expect(toast.success).toHaveBeenCalledBefore(mockNavigate);
+      expect(
+        jest.mocked(toast.success).mock.invocationCallOrder[0],
+      ).toBeLessThan(mockNavigate.mock.invocationCallOrder[0]);
       // Verify that navigation happened after import
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
