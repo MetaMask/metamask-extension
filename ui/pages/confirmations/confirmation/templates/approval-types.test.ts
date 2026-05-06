@@ -1,5 +1,5 @@
-import { APPROVAL_TEMPLATES } from './index';
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from './approval-types';
+import { APPROVAL_TEMPLATES } from '.';
 
 describe('TEMPLATED_CONFIRMATION_APPROVAL_TYPES', () => {
   it('stays in sync with the keys of APPROVAL_TEMPLATES', () => {
