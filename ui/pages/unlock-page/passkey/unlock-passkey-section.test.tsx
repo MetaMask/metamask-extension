@@ -17,7 +17,9 @@ jest.mock('../../../../shared/lib/environment-type', () => {
   >('../../../../shared/lib/environment-type');
   return {
     ...actual,
-    getEnvironmentType: jest.fn((url?: string) => actual.getEnvironmentType(url)),
+    getEnvironmentType: jest.fn((url?: string) =>
+      actual.getEnvironmentType(url),
+    ),
   };
 });
 
@@ -199,7 +201,9 @@ describe('UnlockPasskeySection', () => {
     fireEvent.click(getByTestId('unlock-passkey-button'));
 
     await waitFor(() => {
-      expect(getByTestId('unlock-passkey-troubleshoot-button')).toBeInTheDocument();
+      expect(
+        getByTestId('unlock-passkey-troubleshoot-button'),
+      ).toBeInTheDocument();
     });
 
     fireEvent.click(getByTestId('unlock-passkey-troubleshoot-button'));
@@ -208,7 +212,9 @@ describe('UnlockPasskeySection', () => {
       expect(getByTestId('passkey-troubleshoot-modal')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('passkey-troubleshoot-open-full-screen-button'));
+    fireEvent.click(
+      getByTestId('passkey-troubleshoot-open-full-screen-button'),
+    );
 
     expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
       UNLOCK_ROUTE,

@@ -60,7 +60,11 @@ function renderPasskeyStepIndicator(status: PasskeyEnrollmentStepStatus) {
       className="flex size-11 shrink-0 items-center"
       data-testid="passkey-step-indicator-idle"
     >
-      <Icon name={IconName.FullCircle} color={IconColor.IconMuted} size={IconSize.Lg} />
+      <Icon
+        name={IconName.FullCircle}
+        color={IconColor.IconMuted}
+        size={IconSize.Lg}
+      />
     </Box>
   );
 }

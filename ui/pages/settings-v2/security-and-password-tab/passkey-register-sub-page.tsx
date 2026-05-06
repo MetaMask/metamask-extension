@@ -194,9 +194,7 @@ export default function PasskeyRegisterSubPage() {
       );
     } finally {
       setIsEnrollmentInProgress(false);
-      setRegisterStepStatus((prev) =>
-        prev === 'loading' ? 'idle' : prev,
-      );
+      setRegisterStepStatus((prev) => (prev === 'loading' ? 'idle' : prev));
       setVerifyStepStatus((prev) => (prev === 'loading' ? 'idle' : prev));
     }
   }, [
@@ -338,14 +336,16 @@ export default function PasskeyRegisterSubPage() {
             />
           ) : (
             <>
-              {enrollmentError && <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.ErrorDefault}
-                textAlign={TextAlign.Center}
-                data-testid="passkey-enrollment-error"
-              >
-                {enrollmentError}
-              </Text>}
+              {enrollmentError && (
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.ErrorDefault}
+                  textAlign={TextAlign.Center}
+                  data-testid="passkey-enrollment-error"
+                >
+                  {enrollmentError}
+                </Text>
+              )}
 
               <Button
                 variant={ButtonVariant.Primary}

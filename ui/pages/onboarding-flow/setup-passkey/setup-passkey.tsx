@@ -170,9 +170,7 @@ export default function SetupPasskey() {
       );
     } finally {
       setIsEnrollmentInProgress(false);
-      setRegisterStepPhase((prev) =>
-        prev === 'loading' ? 'idle' : prev,
-      );
+      setRegisterStepPhase((prev) => (prev === 'loading' ? 'idle' : prev));
       setVerifyStepPhase((prev) => (prev === 'loading' ? 'idle' : prev));
     }
   }, [dispatch, t, goToNextStep]);
@@ -222,7 +220,7 @@ export default function SetupPasskey() {
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
           >
-          {t('unlockWithPasskey')}
+            {t('unlockWithPasskey')}
           </Text>
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {t('passkeyDescription')}

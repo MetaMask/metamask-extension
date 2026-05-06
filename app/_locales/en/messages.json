@@ -5342,10 +5342,6 @@
     "message": "We couldn't verify your biometrics. Try again or use your password.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
   },
-  "settingUpPasskey": {
-    "message": "Setting Up Biometrics",
-    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress."
-  },
   "passkeySetupStepRegister": {
     "message": "Register Biometrics"
   },
@@ -5355,10 +5351,6 @@
   "passkeyTroubleshoot": {
     "message": "Trouble unlocking?",
     "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
-  },
-  "passkeyTroubleshootModalTitle": {
-    "message": "Trouble unlocking",
-    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
   },
   "passkeyTroubleshootModalDescription": {
     "message": "Try opening the extension in a full screen window and try again.",
@@ -5371,6 +5363,10 @@
   "passkeyTroubleshootModalStillHavingTrouble": {
     "message": "Still having trouble?",
     "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootModalTitle": {
+    "message": "Trouble unlocking",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
   },
   "passkeyTurnedOff": {
     "message": "Biometrics turned off"
@@ -7490,6 +7486,10 @@
   },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
+  },
+  "settingUpPasskey": {
+    "message": "Setting Up Biometrics",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress."
   },
   "settings": {
     "message": "Settings"

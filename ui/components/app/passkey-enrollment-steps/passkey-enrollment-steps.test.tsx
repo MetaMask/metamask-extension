@@ -45,6 +45,8 @@ describe('PasskeyEnrollmentSteps', () => {
       />,
     );
 
-    expect(screen.getAllByTestId('passkey-step-indicator-idle')).toHaveLength(2);
+    expect(screen.getAllByTestId('passkey-step-indicator-idle')).toHaveLength(
+      2,
+    );
   });
 });
