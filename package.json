@@ -662,6 +662,7 @@
     "@typescript-eslint/parser": "^8.1.0",
     "@viem/anvil": "^0.0.10",
     "@vitest/coverage-v8": "^4.1.2",
+    "@vitest/utils": "4.1.5",
     "@welldone-software/why-did-you-render": "^8.0.3",
     "addons-linter": "^9.5.0",
     "autoprefixer": "^10.4.19",
@@ -805,6 +806,7 @@
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "vinyl-sourcemaps-apply": "^0.2.1",
+    "vite": "7.2.7",
     "vitest": "^4.1.2",
     "vitest-canvas-mock": "^1.1.4",
     "wait-on": "^7.0.1",
@@ -857,7 +859,7 @@
       "react-devtools>electron#23.3.0": true,
       "sharp#0.34.2": true,
       "tsx>esbuild#0.27.7": true,
-      "vitest>vite>esbuild": false
+      "vite>esbuild#0.25.12": false
     }
   },
   "packageManager": "yarn@4.12.0",

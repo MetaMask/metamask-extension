@@ -2658,7 +2658,7 @@
         "tsx>get-tsconfig": true,
         "eslint-import-resolver-typescript>is-bun-module": true,
         "eslint-import-resolver-typescript>stable-hash": true,
-        "vitest>tinyglobby": true,
+        "vite>tinyglobby": true,
         "eslint-import-resolver-typescript>unrs-resolver": true
       }
     },
@@ -3094,7 +3094,7 @@
         "webpack-dev-server>sockjs>websocket-driver": true
       }
     },
-    "vitest>tinyglobby>fdir": {
+    "vite>tinyglobby>fdir": {
       "builtin": {
         "fs": true,
         "path": true
@@ -3103,7 +3103,7 @@
         "process.platform": true
       },
       "packages": {
-        "vitest>tinyglobby>picomatch": true
+        "vite>tinyglobby>picomatch": true
       }
     },
     "eslint>file-entry-cache": {
@@ -4074,7 +4074,7 @@
         "string.prototype.matchall>set-function-name": true
       }
     },
-    "tailwindcss>jiti": {
+    "vite>jiti": {
       "builtin": {
         "assert": true,
         "crypto": true,
@@ -4951,7 +4951,7 @@
         "process.version.slice": true
       }
     },
-    "vitest>tinyglobby>picomatch": {
+    "vite>tinyglobby>picomatch": {
       "globals": {
         "navigator": true,
         "process": true
@@ -7103,7 +7103,7 @@
         "fast-glob": true,
         "eslint>glob-parent": true,
         "del>is-glob": true,
-        "tailwindcss>jiti": true,
+        "vite>jiti": true,
         "micromatch": true,
         "chokidar>normalize-path": true,
         "tailwindcss>object-hash": true,
@@ -7403,7 +7403,7 @@
         "mockttp>express>qs": true
       }
     },
-    "vitest>tinyglobby": {
+    "vite>tinyglobby": {
       "builtin": {
         "fs.readdir": true,
         "fs.readdirSync": true,
@@ -7426,8 +7426,8 @@
         "process.platform": true
       },
       "packages": {
-        "vitest>tinyglobby>fdir": true,
-        "vitest>tinyglobby>picomatch": true
+        "vite>tinyglobby>fdir": true,
+        "vite>tinyglobby>picomatch": true
       }
     },
     "gulp>vinyl-fs>glob-stream>to-absolute-glob": {
@@ -7619,7 +7619,7 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "eslint-import-resolver-typescript>unrs-resolver>@unrs/resolver-binding-darwin-arm64": true
+        "eslint-import-resolver-typescript>unrs-resolver>@unrs/resolver-binding-linux-x64-gnu": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>unset-value": {
