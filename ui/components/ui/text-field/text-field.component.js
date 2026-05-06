@@ -118,6 +118,7 @@ const getBorderedThemeInputProps = ({
       },
     },
   },
+  variant: 'standard',
   InputProps: {
     startAdornment,
     endAdornment,

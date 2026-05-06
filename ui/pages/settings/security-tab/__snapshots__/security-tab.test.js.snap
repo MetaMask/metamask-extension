@@ -894,15 +894,16 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-item-col"
           >
             <div
-              class="MuiFormControl-root MuiTextField-root MuiFormControl-marginDense MuiFormControl-fullWidth"
+              class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root css-1z10yd4-MuiFormControl-root-MuiTextField-root"
             >
               <div
-                class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense MuiInput-marginDense"
+                class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-15qwct3-MuiInputBase-root-MuiInput-root"
               >
                 <input
                   aria-invalid="false"
-                  class="MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
+                  class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
                   dir="auto"
+                  id="mui-1"
                   type="text"
                   value="dweb.link"
                 />
