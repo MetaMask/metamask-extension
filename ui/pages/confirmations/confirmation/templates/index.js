@@ -32,7 +32,7 @@ import defiReferralConsent from './defi-referral-consent';
 // `selectors.js` (and other shared-layer consumers) can read the type list
 // without transitively pulling in this file's template implementations, which
 // import from `ui/store/actions` and would otherwise close a circular dep.
-const APPROVAL_TEMPLATES = {
+export const APPROVAL_TEMPLATES = {
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
   // Use ApprovalType from utils controller
   [ApprovalType.ResultSuccess]: success,
