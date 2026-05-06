@@ -33,7 +33,7 @@ import {
   THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
-import { CLAIMS_TAB_KEYS } from '../settings/transaction-shield-tab/types';
+import { CLAIMS_TAB_KEYS } from '../shield/transaction-shield/types';
 
 /**
  * Route definition for a Settings V2 page.
@@ -219,7 +219,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     labelKey: 'shieldTx',
     parentPath: SETTINGS_V2_ROUTE,
     component: mmLazy(
-      () => import('../settings/transaction-shield-tab/index.ts'),
+      () => import('../shield/transaction-shield/index.ts'),
     ),
     isTab: true,
     iconName: IconName.ShieldLock,
@@ -246,7 +246,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     labelKey: 'shieldClaimsListTitle',
     parentPath: TRANSACTION_SHIELD_ROUTE,
     component: mmLazy(
-      () => import('../settings/transaction-shield-tab/claims-area/index.ts'),
+      () => import('../shield/transaction-shield/claims-area/index.ts'),
     ),
   },
   [TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL]: {
