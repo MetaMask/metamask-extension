@@ -456,7 +456,8 @@ export function getGatorPermissionDisplayMetadata(
     };
   }
 
-  if (permissionType === 'erc20-token-allowance' ||
+  if (
+    permissionType === 'erc20-token-allowance' ||
     permissionType === 'native-token-allowance'
   ) {
     return {

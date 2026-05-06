@@ -599,7 +599,6 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
   ],
 };
 
-
 const erc20TokenAllowanceSchema: PermissionSchemaEntry = {
   tokenVariant: 'erc20',
   tokenResolution: {

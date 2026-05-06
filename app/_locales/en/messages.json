@@ -9431,6 +9431,9 @@
   "tokenAddress": {
     "message": "Token address"
   },
+  "tokenAllowance": {
+    "message": "Token allowance"
+  },
   "tokenAlreadyAdded": {
     "message": "Token has already been added."
   },
@@ -9484,9 +9487,6 @@
   },
   "tokenSubscription": {
     "message": "Token subscription"
-  },
-  "tokenAllowance": {
-    "message": "Token allowance"
   },
   "tokenSymbol": {
     "message": "Token symbol"
