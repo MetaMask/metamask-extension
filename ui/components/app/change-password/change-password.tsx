@@ -57,6 +57,7 @@ import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,
+  getIsEnrolledPasskeyIncompatibleWithSidepanel,
 } from '../../../selectors';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
@@ -101,15 +102,26 @@ const ChangePassword = ({
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const isPasskeyActive = isPasskeyRegistered && isPasskeyFeatureAvailable;
+  const isEnrolledPasskeyIncompatibleWithSidepanel = useSelector(
+    getIsEnrolledPasskeyIncompatibleWithSidepanel,
+  );
+  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  const mustDeferPasskeyToBrowserTab =
+    isSidePanel &&
+    isEnrolledPasskeyIncompatibleWithSidepanel &&
+    isPasskeyActive;
   const animationEventEmitter = useRef(new EventEmitter());
+  const hasDeferredPasskeyToBrowserTabRef = useRef(false);
 
   const [step, setStep] = useState(() =>
-    isPasskeyActive
+    isPasskeyActive && !mustDeferPasskeyToBrowserTab
       ? ChangePasswordSteps.VerifyPasskey
       : ChangePasswordSteps.VerifyCurrentPassword,
   );
 
-  const [isVerifyingPasskey, setIsVerifyingPasskey] = useState(isPasskeyActive);
+  const [isVerifyingPasskey, setIsVerifyingPasskey] = useState(
+    () => isPasskeyActive && !mustDeferPasskeyToBrowserTab,
+  );
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
@@ -309,8 +321,6 @@ const ChangePassword = ({
     }
   }, [t]);
 
-  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
-
   const openChangePasswordInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();
     globalThis.platform?.openExtensionInBrowser?.(
@@ -319,10 +329,22 @@ const ChangePassword = ({
     );
   }, []);
 
+  useEffect(() => {
+    if (
+      !mustDeferPasskeyToBrowserTab ||
+      hasDeferredPasskeyToBrowserTabRef.current
+    ) {
+      return;
+    }
+    hasDeferredPasskeyToBrowserTabRef.current = true;
+    openChangePasswordInFullScreen();
+  }, [mustDeferPasskeyToBrowserTab, openChangePasswordInFullScreen]);
+
   // When a passkey is already enrolled, verify with WebAuthn on the dedicated step before new password.
   useEffect(() => {
     if (
       !isPasskeyActive ||
+      mustDeferPasskeyToBrowserTab ||
       step !== ChangePasswordSteps.VerifyPasskey ||
       passkeyAuthenticationResponse !== null
     ) {
@@ -364,6 +386,7 @@ const ChangePassword = ({
     };
   }, [
     isPasskeyActive,
+    mustDeferPasskeyToBrowserTab,
     passkeyAuthenticationResponse,
     step,
     performPasskeyAuthentication,
@@ -475,7 +498,9 @@ const ChangePassword = ({
           >
             {t('changePasswordPasskeyVerifyingTitle')}
           </Text>
-          {isSidePanel && isVerifyingPasskey ? (
+          {isSidePanel &&
+          isVerifyingPasskey &&
+          !mustDeferPasskeyToBrowserTab ? (
             <TextButton
               type="button"
               data-testid="change-password-passkey-verifying-open-full-screen"
@@ -557,7 +582,9 @@ const ChangePassword = ({
                       disabled={isVerifyingPasskey}
                     />
                   </Box>
-                  {isSidePanel && isVerifyingPasskey ? (
+                  {isSidePanel &&
+                  isVerifyingPasskey &&
+                  !mustDeferPasskeyToBrowserTab ? (
                     <TextButton
                       type="button"
                       data-testid="change-password-passkey-toggle-open-full-screen"

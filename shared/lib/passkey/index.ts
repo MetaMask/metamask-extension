@@ -13,3 +13,7 @@ export {
   ExtensionPasskeyErrorCode,
   translatePasskeyError,
 } from './passkey-error';
+export {
+  normalizePasskeyAaguid,
+  isPasskeyAaguidIncompatibleWithSidepanel,
+} from './passkey-sidepanel-aaguid';

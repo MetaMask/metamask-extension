@@ -1,6 +1,8 @@
+import { GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID } from '../../shared/constants/passkey';
 import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
+  getIsEnrolledPasskeyIncompatibleWithSidepanel,
 } from './selectors';
 
 jest.mock('../../shared/lib/environment', () => ({
@@ -8,6 +10,7 @@ jest.mock('../../shared/lib/environment', () => ({
 }));
 
 jest.mock('../../shared/lib/passkey', () => ({
+  ...jest.requireActual('../../shared/lib/passkey'),
   isWebAuthnSupported: jest.fn(),
 }));
 
@@ -122,5 +125,36 @@ describe('getIsPasskeyRegistered', () => {
     };
 
     expect(getIsPasskeyRegistered(state)).toBe(false);
+  });
+});
+
+describe('getIsEnrolledPasskeyIncompatibleWithSidepanel', () => {
+  it('returns true when passkey credential AAGUID is in the incompatible set', () => {
+    const state = {
+      metamask: {
+        passkeyRecord: {
+          credential: { aaguid: GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID },
+        },
+      },
+    };
+    expect(getIsEnrolledPasskeyIncompatibleWithSidepanel(state)).toBe(true);
+  });
+
+  it('returns false when no passkey record', () => {
+    const state = { metamask: { passkeyRecord: null } };
+    expect(getIsEnrolledPasskeyIncompatibleWithSidepanel(state)).toBe(false);
+  });
+
+  it('returns false when AAGUID is unknown', () => {
+    const state = {
+      metamask: {
+        passkeyRecord: {
+          credential: {
+            aaguid: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+          },
+        },
+      },
+    };
+    expect(getIsEnrolledPasskeyIncompatibleWithSidepanel(state)).toBe(false);
   });
 });

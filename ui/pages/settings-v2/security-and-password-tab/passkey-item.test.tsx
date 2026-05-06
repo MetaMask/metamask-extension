@@ -1,11 +1,15 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
+import { GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID } from '../../../../shared/constants/passkey';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+import * as environmentType from '../../../../shared/lib/environment-type';
 import PasskeyItem from './passkey-item';
 
 jest.mock('../../../../shared/lib/environment', () => ({
@@ -41,5 +45,39 @@ describe('PasskeyItem', () => {
     expect(
       screen.getByTestId('security-passkey-settings-toggle'),
     ).toBeInTheDocument();
+  });
+
+  it('opens security and password settings in browser when disabling in sidepanel with incompatible AAGUID', () => {
+    const openExtensionInBrowser = jest.fn();
+    globalThis.platform = { openExtensionInBrowser } as never;
+
+    jest
+      .spyOn(environmentType, 'getEnvironmentType')
+      .mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+
+    const storeWithGpmPasskey = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        passkeyRecord: {
+          credential: {
+            id: 'cred-id',
+            aaguid: GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID,
+          },
+        },
+      },
+    });
+
+    renderWithProvider(<PasskeyItem />, storeWithGpmPasskey);
+
+    fireEvent.click(screen.getByTestId('security-passkey-settings-toggle'));
+
+    expect(openExtensionInBrowser).toHaveBeenCalledWith(
+      SECURITY_AND_PASSWORD_ROUTE,
+      'from=sidepanel',
+    );
+
+    delete (globalThis as { platform?: unknown }).platform;
+    jest.restoreAllMocks();
   });
 });

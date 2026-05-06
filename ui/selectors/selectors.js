@@ -49,7 +49,10 @@ import {
 } from '../../shared/lib/selectors/assets-migration';
 import { getEnabledNetworks } from '../../shared/lib/selectors/multichain';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
-import { isWebAuthnSupported } from '../../shared/lib/passkey';
+import {
+  isWebAuthnSupported,
+  isPasskeyAaguidIncompatibleWithSidepanel,
+} from '../../shared/lib/passkey';
 import { getIsPasskeyFeatureEnabled } from '../../shared/lib/environment';
 import { isFirefoxBrowser } from '../../shared/lib/browser-runtime.utils';
 // TODO: Fix circular dependency
@@ -2928,6 +2931,19 @@ export function getUsePhishDetect(state) {
  */
 export function getIsPasskeyRegistered(state) {
   return Boolean(state.metamask.passkeyRecord);
+}
+
+/**
+ * True when the enrolled passkey's AAGUID is in the sidepanel-incompatible set
+ * (defer passkey flows to a normal browser tab when also in sidepanel).
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsEnrolledPasskeyIncompatibleWithSidepanel(state) {
+  return isPasskeyAaguidIncompatibleWithSidepanel(
+    state.metamask.passkeyRecord?.credential?.aaguid,
+  );
 }
 
 /**
