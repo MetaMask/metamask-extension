@@ -3,6 +3,7 @@
  */
 
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
@@ -15,9 +16,7 @@ import {
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
-import autoprefixer from 'autoprefixer';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
-import tailwindcss from 'tailwindcss';
 import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
@@ -39,6 +38,10 @@ import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
 
+const requireWebpackConfig = createRequire(__filename);
+const tailwindPostcss = requireWebpackConfig('@tailwindcss/postcss');
+const repoRoot = join(__dirname, '../..');
+
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
 if (args.dryRun) {
@@ -59,6 +62,9 @@ const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : [];
+
+const loadTailwindPostcss = (options = {}) =>
+  tailwindPostcss({ base: repoRoot, ...options });
 
 // #region cache
 const cache = args.cache
@@ -442,8 +448,19 @@ const config = {
               postcssOptions: {
                 config: false,
                 plugins: [
-                  tailwindcss(),
-                  autoprefixer({ overrideBrowserslist: browsersListQuery }),
+                  // Webpack applies loaders right-to-left, so `sass-loader` turns
+                  // SCSS into CSS before Tailwind runs as a PostCSS plugin. In v4,
+                  // Tailwind documents `@tailwindcss/postcss` as the PostCSS
+                  // integration and no longer needs a separate `autoprefixer`
+                  // plugin; it also defaults source detection from `process.cwd()`,
+                  // so we pin `base` to the repo root to keep `@source` paths in
+                  // `ui/css/tailwind.css` stable across webpack and gulp builds.
+                  // References:
+                  // https://tailwindcss.com/docs/installation/using-postcss
+                  // https://tailwindcss.com/docs/compatibility
+                  // https://tailwindcss.com/docs/detecting-classes-in-source-files
+                  // https://webpack.js.org/api/loaders/overview/
+                  loadTailwindPostcss(),
                   rtlCss({ processEnv: false }),
                   discardFontFace(['woff2']), // keep woff2 fonts
                 ],

@@ -2,7 +2,12 @@ const path = require('path');
 const { ProvidePlugin } = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const dotenv = require('dotenv');
+const tailwindPostcss = require('@tailwindcss/postcss');
 dotenv.config({ path: path.resolve(__dirname, '../.metamaskrc') });
+
+const repoRoot = path.resolve(__dirname, '..');
+const loadTailwindPostcss = (options = {}) =>
+  tailwindPostcss({ base: repoRoot, ...options });
 
 module.exports = {
   core: {
@@ -77,8 +82,9 @@ module.exports = {
           loader: 'postcss-loader',
           options: {
             postcssOptions: {
+              // Keep Storybook aligned with the webpack/gulp Tailwind source-detection base.
               config: false,
-              plugins: ['tailwindcss', 'autoprefixer'],
+              plugins: [loadTailwindPostcss()],
             },
           },
         },

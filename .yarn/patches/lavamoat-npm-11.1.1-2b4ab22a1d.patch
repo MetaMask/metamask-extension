@@ -1,0 +1,60 @@
+diff --git a/src/resolve.js b/src/resolve.js
+index 68f86ef04b853ef501f0eb33de4f3491fd4853cb..e32a27c701000000000000000000000000000000 100644
+--- a/src/resolve.js
++++ b/src/resolve.js
+@@ -1,6 +1,7 @@
+ // @ts-check
+ const path = require('node:path')
+ const { isBuiltin, createRequire } = require('node:module')
++const { pathToFileURL } = require('node:url')
+ const resolve = require('resolve') // file extension omitted can be omitted, eg https://npmfs.com/package/yargs/17.0.1/yargs
+ // extensions we want the resolver to look for when given just the file name (it defaults to .js only)
+ const resolutionOmittedExtensions = ['.js', '.cjs', '.json']
+@@ -56,8 +57,8 @@ const pathIsWithin = (rootPath, targetPath) => {
+   )
+ }
+ 
+-const NATIVE_IGNORES_SYMLINKS = !!process.env.NODE_PRESERVE_SYMLINKS
+-const NATIVE_WITH_FALLBACK_ENABLED = !!process.env.LAVAMOAT_RESOLVE_NATIVE
++const nativeIgnoresSymlinks = () => !!process.env.NODE_PRESERVE_SYMLINKS
++const nativeWithFallbackEnabled = () => !!process.env.LAVAMOAT_RESOLVE_NATIVE
+ 
+ /**
+  * @typedef {object} ResolutionReport
+@@ -143,8 +144,8 @@ exports.makeResolver = ({ projectRoot }) => {
+       referrer,
+     }
+ 
+-    if (NATIVE_IGNORES_SYMLINKS || NATIVE_WITH_FALLBACK_ENABLED) {
+-      const refUrl = new URL(`file://${referrer}`)
++    if (nativeIgnoresSymlinks() || nativeWithFallbackEnabled()) {
++      const refUrl = pathToFileURL(referrer) // historically was: new URL(`file://${referrer}`) - which is wrong
+       resolved = createRequire(refUrl).resolve(requestedName)
+       report.via = 'native'
+       if (
+diff --git a/src/kernel.js b/src/kernel.js
+index 6e047b1d00000000000000000000000000000000..0000000000000000000000000000000000000000 100644
+--- a/src/kernel.js
++++ b/src/kernel.js
+@@ -1,7 +1,9 @@
+ /* eslint no-eval: 0 */
+ const fs = require('node:fs')
++const { createRequire } = require('node:module')
+ const path = require('node:path')
+ const resolve = require('resolve')
++const { pathToFileURL } = require('node:url')
+ const { sanitize } = require('htmlescape')
+ const {
+   generateKernel,
+@@ -80,9 +82,10 @@ function prepareModuleInitializerArgs(
+   const module = moduleObj
+   const exports = moduleObj.exports
+   const __filename = moduleData.file
+   const __dirname = path.dirname(__filename)
++  const nativeRequireForModule = createRequire(pathToFileURL(__filename))
+   require.resolve = (requestedName) => {
+-    return resolve.sync(requestedName, { basedir: __dirname })
++    return nativeRequireForModule.resolve(requestedName)
+   }
+   return [exports, require, module, __filename, __dirname]
+ }
