@@ -28,6 +28,7 @@
   ],
   "oxc.fmt.configPath": "oxfmt.config.mts",
   "tailwindCSS.classFunctions": ["classnames", "classNames"],
+  "tailwindCSS.experimental.configFile": "ui/css/tailwind.css",
   "tailwindCSS.lint.cssConflict": "error",
   "tailwindCSS.validate": true
 }

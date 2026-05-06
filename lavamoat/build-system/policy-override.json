@@ -605,6 +605,22 @@
         "document.visibilityState": true,
         "addEventListener": false
       }
+    },
+    "@tailwindcss/postcss>@tailwindcss/node>lightningcss": {
+      "packages": {
+        "@tailwindcss/postcss>@tailwindcss/node>lightningcss>lightningcss-darwin-arm64": true
+      }
+    },
+    "@tailwindcss/postcss>@tailwindcss/node>lightningcss>lightningcss-darwin-arm64": {
+      "native": true
+    },
+    "@tailwindcss/postcss>@tailwindcss/oxide": {
+      "packages":{
+        "@tailwindcss/postcss>@tailwindcss/oxide>@tailwindcss/oxide-darwin-arm64": true
+      }
+    },
+    "@tailwindcss/postcss>@tailwindcss/oxide>@tailwindcss/oxide-darwin-arm64": {
+      "native": true
     }
   }
 }

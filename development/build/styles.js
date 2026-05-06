@@ -1,18 +1,21 @@
+const { join } = require('path');
 const pify = require('pify');
 const gulp = require('gulp');
-const autoprefixer = require('autoprefixer');
 const watch = require('gulp-watch');
 const sourcemaps = require('gulp-sourcemaps');
 const rtlcss = require('postcss-rtlcss');
 const postcss = require('gulp-postcss');
-const tailwindcss = require('tailwindcss');
 const pipeline = pify(require('readable-stream').pipeline);
 const sass = require('sass-embedded');
 const gulpSass = require('gulp-sass')(sass);
 const { discardFontFace } = require('../postcss-plugins/discard-font-face');
-const tailwindConfig = require('../../tailwind.config');
+const tailwindPostcss = require('@tailwindcss/postcss');
 const { TASKS } = require('./constants');
 const { createTask } = require('./task');
+
+const repoRoot = join(__dirname, '../..');
+const loadTailwindPostcss = (options = {}) =>
+  tailwindPostcss({ base: repoRoot, ...options });
 
 // scss compilation and autoprefixing tasks
 module.exports = createStyleTasks;
@@ -77,8 +80,12 @@ async function buildScssPipeline(src, dest, devMode) {
         },
       }).on('error', gulpSass.logError),
       postcss([
-        tailwindcss(tailwindConfig),
-        autoprefixer(),
+        // Pin Tailwind's source-detection base to the repo root so the
+        // explicit @source entries in ui/css/tailwind.css resolve
+        // consistently in this gulp/PostCSS pipeline instead of depending on
+        // process.cwd(). Tailwind docs:
+        // https://tailwindcss.com/docs/detecting-classes-in-source-files
+        loadTailwindPostcss(),
         rtlcss(),
         discardFontFace(['woff2']),
       ]),

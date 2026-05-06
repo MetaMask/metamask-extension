@@ -2,7 +2,7 @@
  * @file The webpack configuration file to enable debug previewing for UI integration tests.
  */
 
-import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import {
   type Configuration,
@@ -12,13 +12,15 @@ import {
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
-import autoprefixer from 'autoprefixer';
-import tailwindcss from 'tailwindcss';
+
+const requireIntegrationConfig = createRequire(__filename);
+const tailwindPostcss = requireIntegrationConfig('@tailwindcss/postcss');
+const repoRoot = join(__dirname, '../..');
+const loadTailwindPostcss = (options = {}) =>
+  tailwindPostcss({ base: repoRoot, ...options });
 
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
-const browsersListPath = join(context, '../.browserslistrc');
-const browsersListQuery = readFileSync(browsersListPath, 'utf8');
 
 const plugins: WebpackPluginInstance[] = [
   new CopyPlugin({
@@ -72,11 +74,7 @@ const config = {
             options: {
               postcssOptions: {
                 config: false,
-                plugins: [
-                  tailwindcss(),
-                  autoprefixer({ overrideBrowserslist: browsersListQuery }),
-                  rtlCss({ processEnv: false }),
-                ],
+                plugins: [loadTailwindPostcss(), rtlCss({ processEnv: false })],
               },
             },
           },
