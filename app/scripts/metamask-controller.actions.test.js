@@ -172,7 +172,6 @@ describe('MetaMaskController', function () {
     });
     initializeMockMiddlewareLog();
     mockToHardwareWalletError.mockReset();
-
   });
 
   afterEach(function () {
@@ -250,12 +249,8 @@ describe('MetaMaskController', function () {
       const result2 = metamaskController.keyringController.state;
 
       expect(result1.keyrings).toHaveLength(2);
-      expect(result1.keyrings[0].metadata.id).toStrictEqual(
-        expect.any(String),
-      );
-      expect(result1.keyrings[1].metadata.id).toStrictEqual(
-        expect.any(String),
-      );
+      expect(result1.keyrings[0].metadata.id).toStrictEqual(expect.any(String));
+      expect(result1.keyrings[1].metadata.id).toStrictEqual(expect.any(String));
       expect(result2.keyrings[0].metadata.id).not.toBe(
         result1.keyrings[0].metadata.id,
       );

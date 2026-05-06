@@ -81,7 +81,9 @@ jest.mock('../../../hooks/musd', () => {
       }
 
       const { getAssetsBySelectedAccountGroup: selectAssets } =
-        jest.requireMock('../../../selectors/assets') as typeof import('../../../selectors/assets');
+        jest.requireMock(
+          '../../../selectors/assets',
+        ) as typeof import('../../../selectors/assets');
       const assetsByChain = selectAssets();
       const musdAddress =
         '0xacA92E438df0B2401fF60dA7E4337B687a2435DA'.toLowerCase();

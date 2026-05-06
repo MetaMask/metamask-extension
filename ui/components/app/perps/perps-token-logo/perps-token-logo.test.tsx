@@ -21,11 +21,9 @@ let mockImg: { onload?: () => void; onerror?: () => void; src: string } = {
 
 beforeEach(() => {
   mockImg = { src: '' };
-  jest
-    .spyOn(window, 'Image')
-    .mockImplementation(function imageMock() {
-      return mockImg as unknown as HTMLImageElement;
-    } as unknown as typeof Image);
+  jest.spyOn(window, 'Image').mockImplementation(function imageMock() {
+    return mockImg as unknown as HTMLImageElement;
+  } as unknown as typeof Image);
 });
 
 afterEach(() => jest.restoreAllMocks());

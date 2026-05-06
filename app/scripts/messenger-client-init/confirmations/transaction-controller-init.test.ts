@@ -179,13 +179,13 @@ describe('Transaction Controller Init', () => {
 
     const delegation7702HookMock: jest.MockedFn<PublishHook> = jest.fn();
     delegation7702HookMock.mockResolvedValue({ transactionHash: undefined });
-    jest.mocked(Delegation7702PublishHook).mockImplementation(
-      function delegation7702PublishHookMock() {
+    jest
+      .mocked(Delegation7702PublishHook)
+      .mockImplementation(function delegation7702PublishHookMock() {
         return {
           getHook: () => delegation7702HookMock,
         };
-      } as unknown as typeof Delegation7702PublishHook,
-    );
+      } as unknown as typeof Delegation7702PublishHook);
   });
 
   it('returns controller instance', () => {
@@ -532,13 +532,13 @@ describe('Transaction Controller Init', () => {
     it('records sentinel_relay submission via metrics fragment on delegation hook success', async () => {
       const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
       delegation7702HookFn.mockResolvedValue({ transactionHash: '0xdelHash' });
-      jest.mocked(Delegation7702PublishHook).mockImplementation(
-        function delegation7702PublishHookMock() {
+      jest
+        .mocked(Delegation7702PublishHook)
+        .mockImplementation(function delegation7702PublishHookMock() {
           return {
             getHook: () => delegation7702HookFn,
           };
-        } as unknown as typeof Delegation7702PublishHook,
-      );
+        } as unknown as typeof Delegation7702PublishHook);
 
       const upsertFragmentMock = jest.fn();
 
@@ -627,13 +627,13 @@ describe('Transaction Controller Init', () => {
     it('returns transaction hash even if upsertTransactionUIMetricsFragment throws on sentinel_relay path', async () => {
       const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
       delegation7702HookFn.mockResolvedValue({ transactionHash: '0xdelHash' });
-      jest.mocked(Delegation7702PublishHook).mockImplementation(
-        function delegation7702PublishHookMock() {
+      jest
+        .mocked(Delegation7702PublishHook)
+        .mockImplementation(function delegation7702PublishHookMock() {
           return {
             getHook: () => delegation7702HookFn,
           };
-        } as unknown as typeof Delegation7702PublishHook,
-      );
+        } as unknown as typeof Delegation7702PublishHook);
 
       type PHArgs = Parameters<typeof publishHook>[0];
       const result = await publishHook({

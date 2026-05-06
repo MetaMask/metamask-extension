@@ -98,7 +98,9 @@ describe('Restore vault Component', () => {
         return Promise.resolve();
       };
     }) as typeof actions.setFirstTimeFlowType);
-    jest.mocked(actions.resetWallet).mockImplementation(((restoreOnly?: boolean) => {
+    jest.mocked(actions.resetWallet).mockImplementation(((
+      restoreOnly?: boolean,
+    ) => {
       return () => {
         mockResetWallet(restoreOnly);
         return Promise.resolve();

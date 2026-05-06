@@ -75,7 +75,8 @@ vi.mock('../../app/scripts/services/oauth/web-authenticator-factory', () => ({
       getRedirectURL: () => 'https://mock-redirect-url.com',
     };
   },
-  getIdentityAPI: () => globalThis.chrome?.identity ?? globalThis.browser?.identity,
+  getIdentityAPI: () =>
+    globalThis.chrome?.identity ?? globalThis.browser?.identity,
 }));
 
 (globalThis as typeof globalThis & { self?: typeof globalThis }).self ??=
@@ -223,10 +224,7 @@ const ensurePerformanceMark = (performanceObject: unknown) => {
     mark?: (markName: string) => void;
   };
 
-  if (
-    performanceWithMark &&
-    typeof performanceWithMark.mark !== 'function'
-  ) {
+  if (performanceWithMark && typeof performanceWithMark.mark !== 'function') {
     Object.defineProperty(performanceWithMark, 'mark', {
       value: () => undefined,
       configurable: true,

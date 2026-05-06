@@ -213,8 +213,7 @@ function registerCjsMock(
 }
 
 cjsMockGlobal[cjsMockRegisterKey] = registerCjsMock;
-for (const [caller, raw, factory] of cjsMockGlobal[cjsMockPendingKey] ??
-  []) {
+for (const [caller, raw, factory] of cjsMockGlobal[cjsMockPendingKey] ?? []) {
   registerCjsMock(caller, raw, factory);
 }
 cjsMockGlobal[cjsMockPendingKey] = [];

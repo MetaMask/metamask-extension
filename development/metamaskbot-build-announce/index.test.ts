@@ -113,7 +113,7 @@ describe('start() entry point', () => {
   it('logs a warning and returns early when PR_NUMBER is not set', async () => {
     setEnv({ PR_NUMBER: undefined });
 
-    await import(".");
+    await import('.');
     await flushPromises();
 
     expect(warnSpy).toHaveBeenCalledWith(
@@ -125,7 +125,7 @@ describe('start() entry point', () => {
   it('invokes console.error when required env vars are missing', async () => {
     setEnv({ HOST_URL: undefined });
 
-    await import(".");
+    await import('.');
     await flushPromises();
 
     expect(errorSpy).toHaveBeenCalledWith(
@@ -140,7 +140,7 @@ describe('start() entry point', () => {
   it('calls postCommentWithMetamaskBot with assembled comment body', async () => {
     setEnv();
 
-    await import(".");
+    await import('.');
     await flushPromises();
 
     expect(getMocks().utils.postCommentWithMetamaskBot).toHaveBeenCalledWith(
@@ -157,7 +157,7 @@ describe('start() entry point', () => {
   it('includes test plan link when TEST_PLAN_VERSION is set', async () => {
     setEnv({ TEST_PLAN_VERSION: '99.0.0' });
 
-    await import(".");
+    await import('.');
     await flushPromises();
 
     const { commentBody } =
@@ -169,7 +169,7 @@ describe('start() entry point', () => {
   it('does not include test plan link when TEST_PLAN_VERSION is not set', async () => {
     setEnv();
 
-    await import(".");
+    await import('.');
     await flushPromises();
 
     const { commentBody } =
@@ -180,7 +180,7 @@ describe('start() entry point', () => {
   it('falls back to HEAD_COMMIT_HASH when BUILDS_FROM_SHA is empty string', async () => {
     setEnv({ BUILDS_FROM_SHA: '' });
 
-    await import(".");
+    await import('.');
     await flushPromises();
 
     const { artifacts } = getMocks();
@@ -194,7 +194,7 @@ describe('start() entry point', () => {
   it('falls back to HEAD_COMMIT_HASH when BUILDS_FROM_SHA is not set', async () => {
     setEnv({ BUILDS_FROM_SHA: undefined });
 
-    await import(".");
+    await import('.');
     await flushPromises();
 
     const { artifacts } = getMocks();
@@ -208,7 +208,7 @@ describe('start() entry point', () => {
   it('falls back to RUN_ID when BUILDS_FROM_RUN is not set', async () => {
     setEnv({ BUILDS_FROM_RUN: undefined });
 
-    await import(".");
+    await import('.');
     await flushPromises();
 
     const { artifacts } = getMocks();
@@ -223,7 +223,7 @@ describe('start() entry point', () => {
   it('uses BUILDS_FROM_RUN for artifact links when set', async () => {
     setEnv({ BUILDS_FROM_RUN: '55' });
 
-    await import(".");
+    await import('.');
     await flushPromises();
 
     const { artifacts } = getMocks();

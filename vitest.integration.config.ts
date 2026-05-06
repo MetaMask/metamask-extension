@@ -51,10 +51,8 @@ export default defineConfig({
     },
 
     alias: {
-      '@jest/globals': new URL(
-        './test/vitest/jest-globals.ts',
-        import.meta.url,
-      ).pathname,
+      '@jest/globals': new URL('./test/vitest/jest-globals.ts', import.meta.url)
+        .pathname,
     },
 
     server: {

@@ -87,10 +87,10 @@ describe('build/transforms/remove-fenced-code', () => {
           expect(streamOutput).toStrictEqual(filePrefix);
           expect(getESLintInstanceMock).toHaveBeenCalledTimes(1);
           expect(lintTextMock).toHaveBeenCalledTimes(1);
-          expect(lintTextMock).toHaveBeenCalledWith(
-            filePrefix,
-            { filePath: mockJsFileName, warnIgnored: false },
-          );
+          expect(lintTextMock).toHaveBeenCalledWith(filePrefix, {
+            filePath: mockJsFileName,
+            warnIgnored: false,
+          });
           resolve();
         });
 
@@ -125,10 +125,10 @@ describe('build/transforms/remove-fenced-code', () => {
           expect(streamOutput).toStrictEqual(filePrefix);
           expect(getESLintInstanceMock).toHaveBeenCalledTimes(1);
           expect(lintTextMock).toHaveBeenCalledTimes(1);
-          expect(lintTextMock).toHaveBeenCalledWith(
-            filePrefix,
-            { filePath: mockJsFileName, warnIgnored: false },
-          );
+          expect(lintTextMock).toHaveBeenCalledWith(filePrefix, {
+            filePath: mockJsFileName,
+            warnIgnored: false,
+          });
           resolve();
         });
 
@@ -239,10 +239,10 @@ describe('build/transforms/remove-fenced-code', () => {
           );
           expect(getESLintInstanceMock).toHaveBeenCalledTimes(1);
           expect(lintTextMock).toHaveBeenCalledTimes(1);
-          expect(lintTextMock).toHaveBeenCalledWith(
-            filePrefix,
-            { filePath: mockJsFileName, warnIgnored: false },
-          );
+          expect(lintTextMock).toHaveBeenCalledWith(filePrefix, {
+            filePath: mockJsFileName,
+            warnIgnored: false,
+          });
           resolve();
         });
 

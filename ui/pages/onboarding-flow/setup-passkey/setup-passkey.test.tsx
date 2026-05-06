@@ -65,10 +65,9 @@ const mockAuthenticationResponse = {
 };
 
 jest.mock('../../../store/actions', async () => {
-  const actual =
-    await jest.requireActual<typeof import('../../../store/actions')>(
-      '../../../store/actions',
-    );
+  const actual = await jest.requireActual<
+    typeof import('../../../store/actions')
+  >('../../../store/actions');
   return {
     ...actual,
     generatePasskeyRegistrationOptions: jest.fn().mockResolvedValue({
