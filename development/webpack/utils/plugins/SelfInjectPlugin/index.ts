@@ -152,12 +152,11 @@ export class SelfInjectPlugin {
     // window.ethereum set by the inner script lives on the main
     // world's window and isn't visible from the isolated world. Because of that,
     // we set an attribute on the script element via `document.currentScript` to
-    // indicate that the script was injected successfully.  It is kept on a single
-    // line so source-map line numbers for the original source remain aligned
-    // (only first-line column offsets shift).
+    // indicate that the script was injected successfully.  It is added after the
+    // original source so that the source-map line numbers remain aligned
     newSource.add(
       this.escapeJs(
-        `document.currentScript.dataset.loaded='1';${source}${sourceMappingURLComment}`,
+        `${source}\ndocument.currentScript.dataset.loaded='1';${sourceMappingURLComment}`,
       ),
     );
     newSource.add(`+`);
