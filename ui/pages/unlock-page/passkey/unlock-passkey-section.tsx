@@ -36,6 +36,7 @@ import {
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import PasskeyTroubleshootModal from './passkey-troubleshoot-modal';
 
 export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;
@@ -61,6 +62,7 @@ export const UnlockPasskeySection = ({
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
+  const [showTroubleshootModal, setShowTroubleshootModal] = useState(false);
 
   const [mountAutoUnlockEligible] = useState(
     () => isPasskeyActive && !passkeyAutoUnlockSuppressed,
@@ -194,12 +196,19 @@ export const UnlockPasskeySection = ({
             data-testid="unlock-passkey-troubleshoot-button"
             color={TextColor.PrimaryDefault}
             className="w-full text-center"
-            onClick={openUnlockInFullScreen}
+            onClick={() => setShowTroubleshootModal(true)}
           >
             {t('passkeyTroubleshoot')}
           </TextButton>
         ) : null}
       </Box>
+
+      {showTroubleshootModal ? (
+        <PasskeyTroubleshootModal
+          onClose={() => setShowTroubleshootModal(false)}
+          onOpenFullScreen={openUnlockInFullScreen}
+        />
+      ) : null}
 
       <TextButton
         type="button"

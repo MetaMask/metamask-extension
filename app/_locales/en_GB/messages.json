@@ -5356,6 +5356,22 @@
     "message": "Trouble unlocking?",
     "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
   },
+  "passkeyTroubleshootModalTitle": {
+    "message": "Trouble unlocking",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootModalDescription": {
+    "message": "Try opening the extension in a full screen window and try again.",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "Open full screen window",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "Still having trouble?",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
   "passkeyTurnedOff": {
     "message": "Biometrics turned off"
   },
