@@ -8799,12 +8799,6 @@
     "message": "Mga sinusuportahang wika",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "Sagutan ang aming survey"
-  },
-  "surveyTitle": {
-    "message": "Hubugin ang hinaharap ng MetaMask"
-  },
   "swap": {
     "message": "Mag-swap"
   },

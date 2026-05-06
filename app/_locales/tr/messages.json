@@ -8803,12 +8803,6 @@
     "message": "Desteklenen diller",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "Anketimize katılın"
-  },
-  "surveyTitle": {
-    "message": "MetaMask'in geleceğini şekillendirin"
-  },
   "swap": {
     "message": "Takas Yap"
   },

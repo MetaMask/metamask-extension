@@ -8799,12 +8799,6 @@
     "message": "Unterstützte Sprachen",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "Nehmen Sie an unserer Umfrage teil"
-  },
-  "surveyTitle": {
-    "message": "Gestalten Sie die Zukunft von MetaMask"
-  },
   "swap": {
     "message": "Swap"
   },

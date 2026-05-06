@@ -8799,12 +8799,6 @@
     "message": "Idiomas aceitos",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "Responda à nossa pesquisa"
-  },
-  "surveyTitle": {
-    "message": "Molde o futuro da MetaMask"
-  },
   "swap": {
     "message": "Trocar"
   },
