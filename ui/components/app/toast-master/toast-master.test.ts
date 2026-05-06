@@ -1,20 +1,10 @@
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
-import { SURVEY_DATE, SURVEY_GMT } from '../../../helpers/constants/survey';
 import mockState from '../../../../test/data/mock-state.json';
 import {
   selectNewSrpAdded,
   selectShowPrivacyPolicyToast,
-  selectShowSurveyToast,
-  selectShowCopyAddressToast,
   selectShowInfuraSwitchToast,
 } from './selectors';
-
-const createMockSurveyState = (surveyLinkLastClickedOrClosed?: number) => ({
-  metamask: {
-    ...mockState.metamask,
-    surveyLinkLastClickedOrClosed,
-  },
-});
 
 const createMockPrivacyPolicyState = (
   newPrivacyPolicyToastClickedOrClosed?: boolean,
@@ -29,55 +19,11 @@ const createMockPrivacyPolicyState = (
   },
 });
 
-const createMockAppState = (
-  showNewSrpAddedToast?: number | false,
-  showCopyAddressToast?: boolean,
-) => ({
+const createMockAppState = (showNewSrpAddedToast?: number | false) => ({
   appState: {
     ...mockState.appState,
     showNewSrpAddedToast,
-    showCopyAddressToast,
   },
-});
-
-describe('#getShowSurveyToast', () => {
-  const realDateNow = Date.now;
-
-  afterEach(() => {
-    Date.now = realDateNow;
-  });
-
-  it('shows the survey link when not yet seen and within time bounds', () => {
-    Date.now = () =>
-      new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
-    const mockStateData = createMockSurveyState(undefined);
-    const result = selectShowSurveyToast(mockStateData);
-    expect(result).toStrictEqual(true);
-  });
-
-  it('does not show the survey link when seen and within time bounds', () => {
-    Date.now = () =>
-      new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
-    const mockStateData = createMockSurveyState(123456789);
-    const result = selectShowSurveyToast(mockStateData);
-    expect(result).toStrictEqual(false);
-  });
-
-  it('does not show the survey link before time bounds', () => {
-    Date.now = () =>
-      new Date(`${SURVEY_DATE} 11:25:00 ${SURVEY_GMT}`).getTime();
-    const mockStateData = createMockSurveyState(undefined);
-    const result = selectShowSurveyToast(mockStateData);
-    expect(result).toStrictEqual(false);
-  });
-
-  it('does not show the survey link after time bounds', () => {
-    Date.now = () =>
-      new Date(`${SURVEY_DATE} 14:25:00 ${SURVEY_GMT}`).getTime();
-    const mockStateData = createMockSurveyState(undefined);
-    const result = selectShowSurveyToast(mockStateData);
-    expect(result).toStrictEqual(false);
-  });
 });
 
 describe('#getShowPrivacyPolicyToast', () => {
@@ -216,26 +162,6 @@ describe('#getShowNewSrpAddedToast', () => {
   it('returns false when not set', () => {
     const mockStateData = createMockAppState(false);
     const result = selectNewSrpAdded(mockStateData);
-    expect(result).toBe(false);
-  });
-});
-
-describe('#selectShowCopyAddressToast', () => {
-  it('returns true when showCopyAddressToast is true', () => {
-    const mockStateData = createMockAppState(undefined, true);
-    const result = selectShowCopyAddressToast(mockStateData);
-    expect(result).toBe(true);
-  });
-
-  it('returns false when showCopyAddressToast is false', () => {
-    const mockStateData = createMockAppState(undefined, false);
-    const result = selectShowCopyAddressToast(mockStateData);
-    expect(result).toBe(false);
-  });
-
-  it('returns false when showCopyAddressToast is undefined', () => {
-    const mockStateData = createMockAppState();
-    const result = selectShowCopyAddressToast(mockStateData);
     expect(result).toBe(false);
   });
 });

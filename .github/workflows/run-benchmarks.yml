@@ -228,7 +228,7 @@ jobs:
   # - Phase 4: continue-on-error: false + added to branch protection required checks.
   quality-gate:
     name: quality-gate
-    continue-on-error: true # Phase 2 — non-blocking, informational
+    continue-on-error: false
     needs:
       - benchmarks
       - benchmarks-page-load
@@ -248,6 +248,7 @@ jobs:
             tsconfig.json
             development/metamaskbot-build-announce
             shared/constants/benchmarks.ts
+            test/e2e/benchmarks/utils/gated-metrics.ts
             test/e2e/benchmarks/utils/thresholds.ts
             test/e2e/benchmarks/utils/statistics.ts
           sparse-checkout-cone-mode: false
@@ -257,8 +258,8 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
-      - name: Install tsx
-        run: npm install --no-save tsx
+      - name: Install tsx and runtime deps
+        run: npm install --no-save tsx @metamask/utils
         shell: bash
 
       - name: Download all benchmark artifacts
@@ -301,6 +302,7 @@ jobs:
 
   # Pushes benchmark results to extension_benchmark_stats (performance_data.json) for
   # historical comparison in PR comments. Runs on main/release branch pushes only.
+  # Skip on fork repos — only store stats on the canonical repository.
   store-benchmark-stats:
     name: store-benchmark-stats (main/release only)
     continue-on-error: true
@@ -312,7 +314,7 @@ jobs:
         !cancelled() &&
         github.event_name == 'push' &&
         (github.ref_name == 'main' || startsWith(github.ref, 'refs/heads/release/')) &&
-        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+        !github.event.repository.fork
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 10

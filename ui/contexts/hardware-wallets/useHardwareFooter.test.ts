@@ -201,7 +201,7 @@ describe('useHardwareFooter', () => {
       expect(result.current.isHardwareWalletReady).toBe(true);
     });
 
-    it('returns not ready for QR wallet when camera permission is not granted', () => {
+    it('returns ready for the QR wallet footer when camera permission has not been granted yet', () => {
       mockConnectionState.status = ConnectionStatus.Disconnected;
       (useHardwareWalletConfig as jest.Mock).mockReturnValue({
         isHardwareWalletAccount: true,
@@ -212,10 +212,10 @@ describe('useHardwareFooter', () => {
 
       const { result } = renderUseHardwareFooter();
 
-      expect(result.current.isHardwareWalletReady).toBe(false);
+      expect(result.current.isHardwareWalletReady).toBe(true);
     });
 
-    it('returns not ready for QR wallet when camera permission state is unknown', () => {
+    it('returns ready for the QR wallet footer when camera permission state is unknown', () => {
       mockConnectionState.status = ConnectionStatus.Disconnected;
       (useHardwareWalletConfig as jest.Mock).mockReturnValue({
         isHardwareWalletAccount: true,
@@ -226,7 +226,7 @@ describe('useHardwareFooter', () => {
 
       const { result } = renderUseHardwareFooter();
 
-      expect(result.current.isHardwareWalletReady).toBe(false);
+      expect(result.current.isHardwareWalletReady).toBe(true);
     });
 
     it('returns not ready for Ledger even when camera permission is granted', () => {

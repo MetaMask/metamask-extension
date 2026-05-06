@@ -119,7 +119,7 @@ const TEMPO_EXPECTED_TRANSACTIONS_FOR_VALID_CALLS_FIELD = [
 
 const TEMPO_FEE_TOKEN_MOCK = '0xtempoFeeToken';
 
-const TEMPO_VALID_CHAIN_ID = '0xa5bf' as Hex;
+const TEMPO_VALID_CHAIN_ID = '0x1079' as Hex;
 
 const TEMPO_TRANSACTION_PARAMS_MOCK = {
   type: '0x76' as const,
@@ -897,7 +897,7 @@ describe('Transaction Utils', () => {
       it('adds transaction with extra Tempo-specific params', async () => {
         await addDappTransaction({
           ...dappRequest,
-          chainId: '0xa5bf',
+          chainId: '0x1079',
         });
 
         expect(
@@ -926,7 +926,7 @@ describe('Transaction Utils', () => {
         await addDappTransaction({
           ...dappRequest,
           transactionParams: transactionParamsMockWithoutTo,
-          chainId: '0xa5bf',
+          chainId: '0x1079',
         });
 
         expect(
