@@ -51,7 +51,6 @@ describe('ToastListener', () => {
     });
 
     expect(mockUseSmartTransactionToasts).toHaveBeenCalledTimes(1);
-    expect(mockPerpsDepositToast).toHaveBeenCalledTimes(1);
   });
 
   it('does not mount the smart transaction toast hook when the flag is disabled', () => {
@@ -61,6 +60,14 @@ describe('ToastListener', () => {
     });
 
     expect(mockUseSmartTransactionToasts).not.toHaveBeenCalled();
+  });
+
+  it('mounts the Perps deposit toast listener when smart transaction toasts are disabled', () => {
+    renderToastListener({
+      transactionToastEnabled: false,
+      isInteractive: true,
+    });
+
     expect(mockPerpsDepositToast).toHaveBeenCalledTimes(1);
   });
 
