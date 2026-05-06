@@ -78,7 +78,6 @@ export const ImportSrp = () => {
 
       await dispatch(importMnemonicToVault(secretRecoveryPhrase));
 
-      navigate(DEFAULT_ROUTE);
       toast.success(
         <ToastContent
           dataTestId={newSrpAddedToastId}
@@ -89,6 +88,7 @@ export const ImportSrp = () => {
           duration: autoHideToastDelay,
         },
       );
+      navigate(DEFAULT_ROUTE);
     } catch (error) {
       switch ((error as Error)?.message) {
         case 'KeyringController - The account you are trying to import is a duplicate':

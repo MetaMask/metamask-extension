@@ -99,8 +99,6 @@ describe('ImportSrp', () => {
     await waitFor(() => {
       // Verify that importMnemonicToVault was called with the correct SRP
       expect(importMnemonicToVault).toHaveBeenCalledWith(VALID_SEED);
-      // Verify that navigation happened after import
-      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
       expect(toast.success).toHaveBeenCalledWith(
         <ToastContent
           title={messages.importWalletSuccess.message.replace('$1', '2')}
@@ -108,6 +106,9 @@ describe('ImportSrp', () => {
         />,
         { id: 'new-srp-added-toast', duration: 5000 },
       );
+      expect(toast.success).toHaveBeenCalledBefore(mockNavigate);
+      // Verify that navigation happened after import
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
   });
 
