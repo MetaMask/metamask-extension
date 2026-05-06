@@ -81,7 +81,9 @@ function ctx(
 
 describe('justification field getValue', () => {
   it('returns the no-justification i18n value when justification is an empty string', () => {
-    expect(getJustificationGetValueFromSchema()(buildMinimalContext(''))).toStrictEqual({
+    expect(
+      getJustificationGetValueFromSchema()(buildMinimalContext('')),
+    ).toStrictEqual({
       key: 'gatorNoJustificationProvided',
     });
   });
@@ -183,10 +185,7 @@ describe('stream confirmation total exposure fields', () => {
   it('requires streamTotalExposure for stream total exposure amount fields', () => {
     for (const [permissionType, data] of [
       ['native-token-stream', streamData],
-      [
-        'erc20-token-stream',
-        { ...streamData, tokenAddress: MAX_UINT256 },
-      ],
+      ['erc20-token-stream', { ...streamData, tokenAddress: MAX_UINT256 }],
     ] as const) {
       const element = findElementOfType(
         permissionType,
@@ -209,7 +208,9 @@ describe('stream confirmation total exposure fields', () => {
 
     expect(finite.isVisible(unlimitedCtx)).toBe(false);
     expect(unlimited.isVisible(unlimitedCtx)).toBe(true);
-    expect(unlimited.getValue(unlimitedCtx)).toStrictEqual({ key: 'unlimited' });
+    expect(unlimited.getValue(unlimitedCtx)).toStrictEqual({
+      key: 'unlimited',
+    });
     expect(finite.isVisible(finiteCtx)).toBe(true);
     expect(finite.getValue(finiteCtx).toFixed()).toBe('42');
     expect(unlimited.isVisible(finiteCtx)).toBe(false);
