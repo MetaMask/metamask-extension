@@ -4,10 +4,7 @@ import type { SerializedUR } from '@metamask/eth-qr-keyring';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 
 import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-import {
-  isHardwareWallet,
-  getHardwareWalletType,
-} from '../../../selectors/selectors';
+import { getHardwareWalletType } from '../../../selectors/selectors';
 import { getActiveQrCodeScanRequest } from '../../../selectors';
 import {
   cancelQrCodeScan,
@@ -19,16 +16,33 @@ import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { HardwareWalletSignatureStatus } from '../../../pages/bridge/hardware-wallet-signatures/hardware-wallet-signatures-state-machine';
 import type { HardwareWalletSignaturesState } from '../../../pages/bridge/hardware-wallet-signatures/hardware-wallet-signatures-state-machine';
 import { isQrHardwareSignRequest } from '../../../pages/bridge/hardware-wallet-signatures/hardware-wallet-signatures.utils';
-import type {
-  BridgeStatusState,
-  QrHardwareSignRequest,
-} from '../../../pages/bridge/hardware-wallet-signatures/types';
 
 type UseHardwareWalletQrStateOptions = {
   signatureState: HardwareWalletSignaturesState;
   confirmationTxData: ({ id?: string } & Record<string, unknown>) | undefined;
 };
 
+/**
+ * Manages QR hardware wallet signing state during a swap/bridge flow.
+ *
+ * Determines whether the active hardware wallet is a QR-based device and, if so, surfaces the
+ * current QR sign request for inline signing. Provides handlers for successful QR scans and
+ * for cancelling an in-progress QR signature (which also rejects the associated pending
+ * approval and cancels the transaction).
+ *
+ * @param options - Configuration for the QR state hook.
+ * @param options.signatureState - The current hardware-wallet signature state-machine state.
+ * @param options.confirmationTxData - The current confirmation transaction data (used for cancellation).
+ * @returns An object containing:
+ * - `isReadingQrSignature` — whether the user is currently scanning a QR signature.
+ * - `setIsReadingQrSignature` — setter for the reading state.
+ * - `isQrHardwareWallet` — whether the active wallet is QR-based.
+ * - `qrSignRequest` — the active QR sign request, if applicable.
+ * - `showInlineQrSigning` — whether the inline QR signing UI should be displayed.
+ * - `activeQrStep` — the signature state step to show in the QR UI, or `undefined`.
+ * - `handleQrScanSuccess` — callback to invoke when a QR scan completes successfully.
+ * - `handleQrSignatureCancel` — callback to cancel the current QR signature request.
+ */
 export function useHwSwapQrState({
   signatureState,
   confirmationTxData,

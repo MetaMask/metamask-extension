@@ -198,7 +198,7 @@ describe('useHwSwapSubmission', () => {
     expect(mockSubmitBridgeTransaction).not.toHaveBeenCalled();
   });
 
-  it('retrySubmission calls submitBridgeTransaction with skipDeviceReady', async () => {
+  it('retrySubmission calls submitBridgeTransaction with retry rpcTimeoutMs', async () => {
     const lockedQuote = createMockLockedQuote('request-1');
 
     const { result } = renderHookWithProvider(
@@ -222,7 +222,6 @@ describe('useHwSwapSubmission', () => {
     });
 
     expect(mockSubmitBridgeTransaction).toHaveBeenCalledWith(lockedQuote, {
-      skipDeviceReady: true,
       rpcTimeoutMs: 120_000,
     });
   });
@@ -342,7 +341,6 @@ describe('useHwSwapSubmission', () => {
 
       expect(mockRejectPendingApproval).not.toHaveBeenCalled();
       expect(mockSubmitBridgeTransaction).toHaveBeenCalledWith(lockedQuote, {
-        skipDeviceReady: true,
         rpcTimeoutMs: 120_000,
       });
     });

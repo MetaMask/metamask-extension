@@ -20,6 +20,22 @@ type HardwareWalletConfirmationAction = {
   type: HardwareWalletSignatureEvent.TransactionRejected;
 };
 
+/**
+ * Monitors hardware wallet transaction confirmations during a swap/bridge flow.
+ *
+ * Detects when a previously-seen confirmation transaction disappears (i.e. the
+ * user rejected it on the device) while the state machine is still awaiting a
+ * signature, and dispatches a `TransactionRejected` event accordingly. Also
+ * tracks retry generations so that a new retry cycle resets the tracking state.
+ *
+ * @param options - Configuration for the monitoring hook.
+ * @param options.hardwareWalletUsed - Whether a hardware wallet is being used for this swap.
+ * @param options.signatureState - The current hardware-wallet signature state-machine state.
+ * @param options.dispatchSignatureEvent - Dispatcher for signature state-machine events.
+ * @param options.retryGenerationRef - Optional ref whose value changes when a retry is triggered; resets internal tracking.
+ * @param options.isDeviceDisconnectedRef - Optional ref indicating whether the device has been disconnected.
+ * @returns An object containing the current `confirmationTxData` from Redux.
+ */
 export function useHwSwapConfirmationMonitoring({
   hardwareWalletUsed,
   signatureState,
@@ -46,6 +62,17 @@ export function useHwSwapConfirmationMonitoring({
     const currentId = confirmationTxData?.id;
     const previousId = previousTxIdRef.current;
 
+    console.log(
+      '[HW-Batch] useHwSwapConfirmationMonitoring effect',
+      JSON.stringify({
+        currentId: currentId ?? null,
+        previousId: previousId ?? null,
+        hardwareWalletUsed,
+        signatureState: signatureState.status,
+        isDeviceDisconnected: isDeviceDisconnectedRef?.current ?? false,
+      }),
+    );
+
     if (
       hardwareWalletUsed &&
       (signatureState.status ===
@@ -56,6 +83,13 @@ export function useHwSwapConfirmationMonitoring({
       !currentId &&
       !isDeviceDisconnectedRef?.current
     ) {
+      console.log(
+        '[HW-Batch] useHwSwapConfirmationMonitoring → TransactionRejected',
+        JSON.stringify({
+          previousId,
+          currentId: currentId ?? null,
+        }),
+      );
       dispatchSignatureEvent({
         type: HardwareWalletSignatureEvent.TransactionRejected,
       });

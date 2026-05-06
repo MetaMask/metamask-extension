@@ -23,6 +23,22 @@ type HardwareWalletConnectionAction =
   | { type: HardwareWalletSignatureEvent.TransactionFailed }
   | { type: HardwareWalletSignatureEvent.DeviceDisconnected };
 
+/**
+ * Monitors the hardware wallet connection during a swap/bridge signature flow.
+ *
+ * Watches the hardware wallet connection state and, while the signature state
+ * machine is awaiting a signature, reacts to disconnections and errors by
+ * dispatching the appropriate event (`DeviceDisconnected`,
+ * `TransactionRejected`, or `TransactionFailed`). Each error is handled only
+ * once to avoid duplicate dispatches.
+ *
+ * @param options - Configuration for the connection monitoring hook.
+ * @param options.signatureState - The current hardware-wallet signature state-machine state.
+ * @param options.dispatchSignatureEvent - Dispatcher for signature state-machine events.
+ * @returns An object containing:
+ * - `isDeviceDisconnectedRef` — a ref indicating whether the device is currently disconnected.
+ * - `resetConnectionError` — a callback to reset the handled-error tracking, optionally preserving a specific error.
+ */
 export function useHwSwapConnectionMonitoring({
   signatureState,
   dispatchSignatureEvent,
@@ -121,8 +137,8 @@ export function useHwSwapConnectionMonitoring({
     );
   }, [connectionState, signatureState.status, dispatchSignatureEvent]);
 
-  const resetConnectionError = useCallback(() => {
-    handledConnectionErrorRef.current = null;
+  const resetConnectionError = useCallback((preserveError?: unknown) => {
+    handledConnectionErrorRef.current = preserveError ?? null;
     isDeviceDisconnectedRef.current = false;
   }, []);
 
