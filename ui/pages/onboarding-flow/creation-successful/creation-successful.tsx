@@ -29,7 +29,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
   DEFAULT_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -116,7 +115,7 @@ export default function CreationSuccessful() {
       return;
     }
     if (!isInitialized || isResetWalletInProgress) {
-      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+      navigate(DEFAULT_ROUTE, { replace: true });
     }
   }, [isInitialized, isFromReminder, navigate, isResetWalletInProgress]);
 
