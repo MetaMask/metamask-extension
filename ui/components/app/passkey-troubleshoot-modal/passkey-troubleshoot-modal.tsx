@@ -26,13 +26,15 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
+type PasskeyTroubleshootModalProps = Readonly<{
+  onClose: () => void;
+  onOpenFullScreen: () => void;
+}>;
+
 export default function PasskeyTroubleshootModal({
   onClose,
   onOpenFullScreen,
-}: {
-  onClose: () => void;
-  onOpenFullScreen: () => void;
-}) {
+}: PasskeyTroubleshootModalProps) {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
 
@@ -106,7 +108,7 @@ export default function PasskeyTroubleshootModal({
             </Button>
             <TextButton
               color={TextColor.PrimaryDefault}
-              className="w-full text-center"
+              className="text-center"
               onClick={handleStillHavingTrouble}
               asChild
             >

@@ -74,6 +74,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useBoolean } from '../../../hooks/useBoolean';
 import { SECOND } from '../../../../shared/constants/time';
+import PasskeyTroubleshootModal from '../passkey-troubleshoot-modal';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -121,6 +122,8 @@ const ChangePassword = ({
   const [passkeyAuthenticationResponse, setPasskeyAuthenticationResponse] =
     useState<PasskeyAuthenticationResponse | null>(null);
   const [isPasskeyRenewalEnabled, setIsPasskeyRenewalEnabled] = useState(false);
+  const [showPasskeyTroubleshootModal, setShowPasskeyTroubleshootModal] =
+    useState(false);
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -309,6 +312,7 @@ const ChangePassword = ({
   const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
 
   const openChangePasswordInFullScreen = useCallback(() => {
+    cancelPasskeyCeremony();
     globalThis.platform?.openExtensionInBrowser?.(
       SECURITY_PASSWORD_CHANGE_V2_ROUTE,
       'from=sidepanel',
@@ -483,8 +487,8 @@ const ChangePassword = ({
               type="button"
               data-testid="change-password-passkey-verifying-open-full-screen"
               color={TextColor.PrimaryDefault}
-              className="w-full text-center"
-              onClick={openChangePasswordInFullScreen}
+              className="text-center"
+              onClick={() => setShowPasskeyTroubleshootModal(true)}
             >
               {t('passkeyTroubleshoot')}
             </TextButton>
@@ -493,7 +497,7 @@ const ChangePassword = ({
             type="button"
             data-testid="change-password-verify-passkey-use-password"
             color={TextColor.PrimaryDefault}
-            className="mt-6 w-full text-center"
+            className="text-center"
             onClick={handleUseVerifyPassword}
           >
             {t('usePassword')}
@@ -566,7 +570,7 @@ const ChangePassword = ({
                       data-testid="change-password-passkey-toggle-open-full-screen"
                       color={TextColor.PrimaryDefault}
                       className="mt-2 flex w-full justify-start text-left"
-                      onClick={openChangePasswordInFullScreen}
+                      onClick={() => setShowPasskeyTroubleshootModal(true)}
                     >
                       {t('passkeyTroubleshoot')}
                     </TextButton>
@@ -643,6 +647,12 @@ const ChangePassword = ({
           onCancel={() => setShowChangePasswordWarning(false)}
         />
       )}
+      {showPasskeyTroubleshootModal ? (
+        <PasskeyTroubleshootModal
+          onClose={() => setShowPasskeyTroubleshootModal(false)}
+          onOpenFullScreen={openChangePasswordInFullScreen}
+        />
+      ) : null}
     </Box>
   );
 };

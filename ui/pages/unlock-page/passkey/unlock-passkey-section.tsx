@@ -195,7 +195,7 @@ export const UnlockPasskeySection = ({
             type="button"
             data-testid="unlock-passkey-troubleshoot-button"
             color={TextColor.PrimaryDefault}
-            className="w-full text-center"
+            className="text-center"
             onClick={() => setShowTroubleshootModal(true)}
           >
             {t('passkeyTroubleshoot')}
@@ -214,7 +214,7 @@ export const UnlockPasskeySection = ({
         type="button"
         data-testid="unlock-use-password-button"
         color={TextColor.PrimaryDefault}
-        className="w-full text-center"
+        className="text-center"
         onClick={handleUsePassword}
       >
         {t('usePassword')}
