@@ -210,6 +210,65 @@ describe('useGetTitle', () => {
     expect(result.current).toBe('swapTokenToToken:USDC,USDT');
   });
 
+  it('returns swap title for CONTRACT_CALL with incomplete amounts but valid valueTransfers', () => {
+    const tx = {
+      // No amounts data - simulating dapp swap with incomplete API data
+      transactionCategory: 'CONTRACT_CALL',
+      transactionProtocol: '',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      txParams: {
+        from: selectedAddress,
+        to: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d', // Uniswap router
+      },
+      valueTransfers: [
+        {
+          transferType: 'erc20',
+          from: selectedAddress,
+          to: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
+          symbol: 'USDC',
+          amount: '100000000',
+        },
+        {
+          transferType: 'erc20',
+          from: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
+          to: selectedAddress,
+          symbol: 'WETH',
+          amount: '50000000000000000',
+        },
+      ],
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('swapTokenToToken:USDC,WETH');
+  });
+
+  it('returns contractInteraction for CONTRACT_CALL with no swap indicators', () => {
+    const tx = {
+      transactionCategory: 'CONTRACT_CALL',
+      transactionProtocol: '',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      txParams: {
+        from: selectedAddress,
+        to: '0x1234567890123456789012345678901234567890',
+      },
+      valueTransfers: [
+        {
+          transferType: 'erc20',
+          from: selectedAddress,
+          to: '0x1234567890123456789012345678901234567890',
+          symbol: 'USDC',
+          amount: '100000000',
+        },
+        // No incoming transfer - just an outgoing transfer
+      ],
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('contractInteraction');
+  });
+
   it('returns received for STANDARD incoming native transfer', () => {
     const tx = {
       amounts: {

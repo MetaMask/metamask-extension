@@ -53,6 +53,47 @@ function classifyNft(
   return null;
 }
 
+function detectSwapFromValueTransfers(
+  valueTransfers: TransactionViewModel['valueTransfers'],
+  address: string,
+): { fromSymbol: string; toSymbol: string } | null {
+  if (!valueTransfers || valueTransfers.length === 0) {
+    return null;
+  }
+
+  // Find outgoing token transfer (user sending tokens)
+  const outgoingTransfer = valueTransfers.find(
+    (vt) =>
+      (vt.transferType === 'erc20' || vt.transferType === 'normal') &&
+      vt.from?.toLowerCase() === address &&
+      vt.symbol,
+  );
+
+  // Find incoming token transfer (user receiving tokens)  
+  const incomingTransfer = valueTransfers.find(
+    (vt) =>
+      (vt.transferType === 'erc20' || vt.transferType === 'normal') &&
+      vt.to?.toLowerCase() === address &&
+      vt.symbol,
+  );
+
+  // Must have both outgoing and incoming transfers with different symbols
+  if (
+    outgoingTransfer &&
+    incomingTransfer &&
+    outgoingTransfer.symbol &&
+    incomingTransfer.symbol &&
+    outgoingTransfer.symbol !== incomingTransfer.symbol
+  ) {
+    return {
+      fromSymbol: outgoingTransfer.symbol,
+      toSymbol: incomingTransfer.symbol,
+    };
+  }
+
+  return null;
+}
+
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
   const evmAddress = useSelector(selectEvmAddress)?.toLowerCase();
@@ -246,6 +287,18 @@ export function useGetTitle(transaction: TransactionViewModel): string {
     const toSymbol = transaction.amounts?.to?.token.symbol;
     if (fromSymbol && toSymbol && fromSymbol !== toSymbol) {
       return t('swapTokenToToken', [fromSymbol, toSymbol]);
+    }
+
+    // Fallback: detect swaps from valueTransfers when amounts data is incomplete
+    const swapFromTransfers = detectSwapFromValueTransfers(
+      transaction.valueTransfers,
+      evmAddress ?? '',
+    );
+    if (swapFromTransfers) {
+      return t('swapTokenToToken', [
+        swapFromTransfers.fromSymbol,
+        swapFromTransfers.toSymbol,
+      ]);
     }
 
     if (isIncoming && transaction.amounts?.to) {
