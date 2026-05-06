@@ -13,6 +13,11 @@ import { hasTransactionType } from '../../../../../shared/lib/transactions.utils
 import { ARBITRUM_USDC } from '../../constants/perps';
 import type { SetPayTokenRequest } from './types';
 
+const ARBITRUM_USDC_FALLBACK: SetPayTokenRequest = {
+  address: ARBITRUM_USDC.address,
+  chainId: ARBITRUM_USDC.chainId,
+};
+
 /**
  * Default destination token for Perps Withdraw: last confirmed
  * `perpsWithdraw`'s `metamaskPay`, else native Arbitrum USDC.
@@ -25,7 +30,7 @@ export function usePerpsWithdrawDefaultToken(): SetPayTokenRequest {
     selectTransactions(state),
   );
 
-  const lastUsed = useMemo(() => {
+  return useMemo(() => {
     const matching = transactions.filter(
       (tx) =>
         tx.status === TransactionStatus.confirmed &&
@@ -35,7 +40,7 @@ export function usePerpsWithdrawDefaultToken(): SetPayTokenRequest {
     );
 
     if (matching.length === 0) {
-      return undefined;
+      return ARBITRUM_USDC_FALLBACK;
     }
 
     const latest = matching.reduce((acc, tx) => (tx.time > acc.time ? tx : acc));
@@ -45,13 +50,4 @@ export function usePerpsWithdrawDefaultToken(): SetPayTokenRequest {
       chainId: latest.metamaskPay?.chainId as Hex,
     };
   }, [transactions]);
-
-  if (lastUsed) {
-    return lastUsed;
-  }
-
-  return {
-    address: ARBITRUM_USDC.address,
-    chainId: ARBITRUM_USDC.chainId,
-  };
 }
