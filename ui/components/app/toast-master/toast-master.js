@@ -31,10 +31,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getCurrentNetwork,
-  getOriginOfCurrentTab,
-} from '../../../selectors';
+import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   hidePermittedNetworkToast,
