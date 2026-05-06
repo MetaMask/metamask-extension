@@ -5680,9 +5680,6 @@
   "perpsCancelOrder": {
     "message": "Hủy lệnh"
   },
-  "perpsCandleIntervals": {
-    "message": "Khoảng nến"
-  },
   "perpsCandlePeriodDays": {
     "message": "Ngày"
   },
@@ -5694,9 +5691,6 @@
   },
   "perpsCloseAll": {
     "message": "Đóng tất cả"
-  },
-  "perpsCloseAmount": {
-    "message": "Số lượng đóng"
   },
   "perpsCloseLong": {
     "message": "Đóng vị thế mua khống"
@@ -6282,6 +6276,10 @@
   "perpsWithdraw": {
     "message": "Rút tiền"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Rút tiền hợp đồng vĩnh cửu",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Thời gian ước tính"
   },
@@ -6329,6 +6327,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Yêu cầu rút tiền đã được gửi"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask sẽ hoán đổi sang token mà bạn mong muốn. Không áp dụng phí MetaMask khi bạn hoán đổi sang mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Bạn nhận được"
@@ -6454,6 +6456,10 @@
   },
   "provide": {
     "message": "Cung cấp"
+  },
+  "providerFee": {
+    "message": "Phí nhà cung cấp",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Địa chỉ công khai"
@@ -6661,8 +6667,16 @@
   "receiveCrypto": {
     "message": "Nhận tiền mã hóa"
   },
+  "receiveToken": {
+    "message": "Token nhận được",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Đã nhận"
+  },
+  "receivedTotal": {
+    "message": "Tổng số lượng nhận được",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Địa chỉ nhận",
@@ -9827,6 +9841,10 @@
   "willApproveAmountForSwapping": {
     "message": "Phê duyệt token cho hoán đổi."
   },
+  "withdrawTo": {
+    "message": "Nhận",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Đang rút tiền"
   },
@@ -9859,6 +9877,10 @@
   "youSent": {
     "message": "Bạn đã gửi",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Bạn sẽ nhận được",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Hoạt động của bạn"

@@ -4775,7 +4775,7 @@
     "message": "请谨慎行事。"
   },
   "nfts": {
-    "message": "收藏品"
+    "message": "NFT"
   },
   "nftsPreviouslyOwned": {
     "message": "先前拥有的"
@@ -5676,9 +5676,6 @@
   "perpsCancelOrder": {
     "message": "取消订单"
   },
-  "perpsCandleIntervals": {
-    "message": "K 线周期"
-  },
   "perpsCandlePeriodDays": {
     "message": "天"
   },
@@ -5690,9 +5687,6 @@
   },
   "perpsCloseAll": {
     "message": "全部平仓"
-  },
-  "perpsCloseAmount": {
-    "message": "平仓金额"
   },
   "perpsCloseLong": {
     "message": "平仓多头仓位"
@@ -6274,6 +6268,10 @@
   "perpsWithdraw": {
     "message": "提取"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "永续合约提现",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "预计时间"
   },
@@ -6321,6 +6319,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "提现已提交"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask 将为您兑换为您想要的代币。兑换至 mUSD 时，MetaMask 不收取任何费用。",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "您收到"
@@ -6446,6 +6448,10 @@
   },
   "provide": {
     "message": "提供"
+  },
+  "providerFee": {
+    "message": "服务商费用",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "公钥"
@@ -6653,8 +6659,16 @@
   "receiveCrypto": {
     "message": "接收加密货币"
   },
+  "receiveToken": {
+    "message": "收款代币",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "已收到"
+  },
+  "receivedTotal": {
+    "message": "收款总额",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "接收地址",
@@ -9819,6 +9833,10 @@
   "willApproveAmountForSwapping": {
     "message": "批准代币进行兑换。"
   },
+  "withdrawTo": {
+    "message": "收款",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "提取"
   },
@@ -9851,6 +9869,10 @@
   "youSent": {
     "message": "您发送了",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "您将收到",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "您的活动"
