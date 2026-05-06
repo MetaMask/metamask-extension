@@ -45,7 +45,7 @@ type LoginErrorModalProps = {
 /**
  * Modal component to display social login error messages.
  * Upon acknowledgement, the modal is closed and the wallet is reset for the un-recoverable errors.
- * User will be redirected to the onboarding welcome page and restart the onboarding flow.
+ * User will be redirected to the onboarding start page and restart the onboarding flow.
  * So that the user can re-login with the same social login method and access the same account.
  *
  * @param props - The component props
