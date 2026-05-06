@@ -1,8 +1,8 @@
 {
   "Accept-Ranges": "bytes",
+  "Cache-Control": "max-age=300, s-maxage=300",
   "Content-Length": "293016",
   "Content-Type": "application/json",
   "Etag": "W/\"1b1872c048777512b9788d3ef44c2054\"",
-  "Cache-Control": "max-age=300, s-maxage=300",
   "Last-Modified": "Wed, 06 May 2026 15:41:06 GMT"
 }
