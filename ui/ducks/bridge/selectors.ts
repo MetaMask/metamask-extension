@@ -345,8 +345,10 @@ export const getFromToken = createSelector(
 const getFromChainId = (state: BridgeAppState) => getFromToken(state).chainId;
 // For compatibility with old code
 export const getFromChain = createSelector(
-  [getFromChainId, getAllBridgeableNetworks],
-  (fromChainId, allBridgeableNetworks) => allBridgeableNetworks[fromChainId],
+  [getFromChainId, getAllBridgeableNetworks, getFromChains],
+  (fromChainId, allBridgeableNetworks, fromChains) =>
+    allBridgeableNetworks[fromChainId] ??
+    fromChains.find(({ chainId }) => chainId === fromChainId),
 );
 
 export const getToChains = createDeepEqualSelector(
@@ -441,12 +443,13 @@ export const getAccountGroupNameByInternalAccount = createSelector(
 
 export const getFromAccount = createSelector(
   [
-    (state: BridgeAppState) => getFromChain(state)?.chainId,
+    getFromChainId,
     (state: BridgeAppState) => state,
     getSelectedInternalAccount,
   ],
   (fromChainId, state, selectedInternalAccount) =>
-    getInternalAccountBySelectedAccountGroupAndCaip(state, fromChainId) ??
+    (fromChainId &&
+      getInternalAccountBySelectedAccountGroupAndCaip(state, fromChainId)) ??
     selectedInternalAccount,
 );
 
@@ -1011,9 +1014,7 @@ export const getWarningLabels = (
   isPriceImpactWarning && warnings.push('price_impact');
   isPriceImpactError && warnings.push('price_impact');
   isTxAlertPresent && warnings.push('tx_alert');
-  // @ts-expect-error: market_closed is not a valid QuoteWarning yet
   isStockMarketClosed && warnings.push('market_closed');
-  // @ts-expect-error: quote_expired is not a valid QuoteWarning yet
   isQuoteExpired && warnings.push('quote_expired');
   isInsufficientNativeReserve &&
     // @ts-expect-error: market_closed is not a valid QuoteWarning yet
@@ -1115,7 +1116,7 @@ const getIsGasIncludedSwapSupported = createSelector(
       isSendBundleSupportedForChain,
   ],
   (fromChainId, isSendBundleSupportedForChain) => {
-    if (isNonEvmChainId(fromChainId)) {
+    if (!fromChainId || isNonEvmChainId(fromChainId)) {
       return false;
     }
     return isSendBundleSupportedForChain;

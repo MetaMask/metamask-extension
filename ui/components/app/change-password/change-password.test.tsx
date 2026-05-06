@@ -1,22 +1,22 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { ExtensionPasskeyErrorCode } from '../../../../../shared/lib/passkey/passkey-error';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
-import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
-import * as selectors from '../../../../selectors';
-import { startPasskeyAuthentication } from '../../../../../shared/lib/passkey';
-import { toast } from '../../../../components/ui/toast/toast';
-import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
-import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../../shared/constants/app';
+import { ExtensionPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
+import { startPasskeyAuthentication } from '../../../../shared/lib/passkey';
+import { toast } from '../../ui/toast/toast';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import mockState from '../../../../test/data/mock-state.json';
+import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
+import * as selectors from '../../../selectors';
 import ChangePassword from './change-password';
 
-jest.mock('../../../../components/ui/toast/toast', () => {
-  const actual = jest.requireActual<
-    typeof import('../../../../components/ui/toast/toast')
-  >('../../../../components/ui/toast/toast');
+jest.mock('../../ui/toast/toast', () => {
+  const actual = jest.requireActual<typeof import('../../ui/toast/toast')>(
+    '../../ui/toast/toast',
+  );
   return {
     ...actual,
     toast: {
@@ -27,10 +27,10 @@ jest.mock('../../../../components/ui/toast/toast', () => {
   };
 });
 
-jest.mock('../../../../../shared/lib/environment-type', () => ({
+jest.mock('../../../../shared/lib/environment-type', () => ({
   ...jest.requireActual<
-    typeof import('../../../../../shared/lib/environment-type')
-  >('../../../../../shared/lib/environment-type'),
+    typeof import('../../../../shared/lib/environment-type')
+  >('../../../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn(),
 }));
 
@@ -87,8 +87,8 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockUseNavigate,
 }));
 
-jest.mock('../../../../store/actions', () => ({
-  ...jest.requireActual('../../../../store/actions'),
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
   changePassword: (_newPwd: string, _currentPwd: string) => {
     return mockChangePassword(_newPwd, _currentPwd);
   },
@@ -112,14 +112,14 @@ jest.mock('../../../../store/actions', () => ({
     mockRemovePasskeyWithPasswordVerification(password),
 }));
 
-jest.mock('../../../../../shared/lib/passkey', () => ({
-  ...jest.requireActual('../../../../../shared/lib/passkey'),
+jest.mock('../../../../shared/lib/passkey', () => ({
+  ...jest.requireActual('../../../../shared/lib/passkey'),
   startPasskeyAuthentication: jest.fn(),
   cancelPasskeyCeremony: jest.fn(),
 }));
 
-jest.mock('../../../../selectors', () => ({
-  ...jest.requireActual('../../../../selectors'),
+jest.mock('../../../selectors', () => ({
+  ...jest.requireActual('../../../selectors'),
   getIsSocialLoginFlow: jest.fn().mockReturnValue(false),
   getIsPasskeyRegistered: jest.fn().mockReturnValue(false),
   getIsPasskeyFeatureAvailable: jest.fn().mockReturnValue(false),

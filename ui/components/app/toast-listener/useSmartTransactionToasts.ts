@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
 import { TransactionStatus as EvmTransactionStatus } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
-import { type TransactionStatus } from '../../helpers/utils/transaction-display';
-import { resolvePendingApproval } from '../../store/actions';
-import { selectSmartTransactions } from '../../selectors/toast';
+import { type TransactionStatus } from '../../../helpers/utils/transaction-display';
+import { resolvePendingApproval } from '../../../store/actions';
+import { selectSmartTransactions } from '../../../selectors/toast';
 import {
   dismissToast,
   showFailedToast,

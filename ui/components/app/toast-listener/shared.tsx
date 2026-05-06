@@ -3,8 +3,8 @@ import { toast } from 'react-hot-toast';
 import {
   useTransactionDisplay,
   type TransactionStatus,
-} from '../../helpers/utils/transaction-display';
-import { ToastContent as ToastContentBase } from '../../components/ui/toast/toast';
+} from '../../../helpers/utils/transaction-display';
+import { ToastContent as ToastContentBase } from '../../ui/toast/toast';
 
 export type ToastStatus = 'pending' | 'success' | 'failed';
 

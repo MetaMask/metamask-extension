@@ -28,22 +28,22 @@ import {
   FormTextField,
   FormTextFieldSize,
   TextFieldType,
-} from '../../../../components/component-library';
-import { isBeta, isFlask } from '../../../../../shared/lib/build-types';
-import Mascot from '../../../../components/ui/mascot';
-import Spinner from '../../../../components/ui/spinner';
-import ToggleButton from '../../../../components/ui/toggle-button';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+} from '../../component-library';
+import { isBeta, isFlask } from '../../../../shared/lib/build-types';
+import Mascot from '../../ui/mascot';
+import Spinner from '../../ui/spinner';
+import ToggleButton from '../../ui/toggle-button';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
   translatePasskeyError,
-} from '../../../../../shared/lib/passkey';
+} from '../../../../shared/lib/passkey';
 import {
   ExtensionPasskeyErrorCode,
   getPasskeyControllerErrorCode,
-} from '../../../../../shared/lib/passkey/passkey-error';
+} from '../../../../shared/lib/passkey/passkey-error';
 import {
   changePassword,
   changePasswordWithPasskeyVerification,
@@ -52,28 +52,28 @@ import {
   generatePasskeyAuthenticationOptions,
   removePasskeyWithPasswordVerification,
   verifyPassword,
-} from '../../../../store/actions';
-import PasswordForm from '../../../../components/app/password-form/password-form';
-import {
-  SECURITY_ROUTE,
-  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
-} from '../../../../helpers/constants/routes';
-import { toast, ToastContent } from '../../../../components/ui/toast/toast';
+} from '../../../store/actions';
 import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,
-} from '../../../../selectors';
-import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+} from '../../../selectors';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+import PasswordForm from '../password-form/password-form';
+import {
+  SECURITY_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+} from '../../../helpers/constants/routes';
+import { toast, ToastContent } from '../../ui/toast/toast';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import { useBoolean } from '../../../../hooks/useBoolean';
-import { SECOND } from '../../../../../shared/constants/time';
-import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
-import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../../shared/constants/app';
+} from '../../../../shared/constants/metametrics';
+import { useBoolean } from '../../../hooks/useBoolean';
+import { SECOND } from '../../../../shared/constants/time';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {

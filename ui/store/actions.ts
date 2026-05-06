@@ -1284,14 +1284,6 @@ export function removePasskeyWithPasswordVerification(
   ]);
 }
 
-export type ChangePasswordWithPasskeyVerificationOptions = {
-  /**
-   * When false, passkey enrollment is removed after the password change instead of
-   * renewing vault key protection (user turned off “unlock with passkey” on change password).
-   */
-  renewVaultKeyProtection?: boolean;
-};
-
 /**
  * Changes wallet password using a verified passkey assertion, then either re-wraps the
  * passkey record for the new vault encryption key or removes passkey enrollment.
@@ -1299,12 +1291,13 @@ export type ChangePasswordWithPasskeyVerificationOptions = {
  *
  * @param newPassword - The new wallet password.
  * @param authenticationResponse - WebAuthn authentication response from `navigator.credentials.get`.
- * @param options - Optional; defaults to renewing vault key protection.
+ * @param options - Settings forwarded to the background handler.
+ * @param options.renewVaultKeyProtection - Whether to renew vault key protection. If `false`, removes passkey after the change instead of renewing vault key protection.
  */
 export function changePasswordWithPasskeyVerification(
   newPassword: string,
   authenticationResponse: PasskeyAuthenticationResponse,
-  options?: ChangePasswordWithPasskeyVerificationOptions,
+  options: { renewVaultKeyProtection: boolean },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
