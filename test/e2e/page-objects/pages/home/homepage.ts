@@ -555,8 +555,11 @@ class HomePage {
     await skeleton.waitForElementState('hidden', this.driver.timeout);
   }
 
-  async checkNewSrpAddedToastIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.srpAddedToast);
+  async checkNewSrpAddedToastIsDisplayed(srpNumber = 2): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.srpAddedToast,
+      text: `Wallet ${srpNumber} imported`,
+    });
   }
 
   async dismissSrpAddedToast(): Promise<void> {
