@@ -116,7 +116,7 @@ describe('useHardwareWalletRecoveryLocation', () => {
             chainId: unapprovedPersonalSignMsg.chainId,
             networkClientId: 'mainnet',
             status: SignatureRequestStatus.Unapproved,
-            time: unapprovedPersonalSignMsg.time,
+            time: Date.now(),
             type: SignatureControllerRequestType.PersonalSign,
             messageParams: {
               from: unapprovedPersonalSignMsg.msgParams?.from ?? '0x0',
