@@ -129,7 +129,6 @@ describe('Critical errors', function (this: Suite) {
   });
 
   it('shows critical error screen when background takes over 16 seconds to sync state, and allows user to restore accounts', async function () {
-    this.timeout(120_000);
     await withFixtures(
       {
         ...getConfig(this.test?.fullTitle(), {
