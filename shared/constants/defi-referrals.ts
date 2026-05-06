@@ -26,10 +26,8 @@ export type DefiReferralPartnerConfig = {
   origin: string;
   /** Full referral URL including the referral code */
   referralUrl: string;
-  /** URL for "Learn more" link in the consent UI */
+  /** URL for link in the consent UI description */
   learnMoreUrl: string;
-  /** URL for the "terms" link in the consent UI */
-  termsUrl: string;
   /** Approval type string for ApprovalController */
   approvalType: string;
   /** Connection flow prior to showing the referral screen */
@@ -49,7 +47,6 @@ export const DEFI_REFERRAL_PARTNERS: Record<
     origin: 'https://app.hyperliquid.xyz',
     referralUrl: 'https://app.hyperliquid.xyz/join/MMREFCSI',
     learnMoreUrl: 'https://hyperliquid.gitbook.io/hyperliquid-docs/referrals',
-    termsUrl: 'https://hyperliquid.gitbook.io/hyperliquid-docs/referrals',
     approvalType: 'hyperliquid_referral_consent',
     connectionFlow: 'permissions',
   },
@@ -59,7 +56,6 @@ export const DEFI_REFERRAL_PARTNERS: Record<
     origin: 'https://app.gmx.io',
     referralUrl: 'https://app.gmx.io/#/referrals/?ref=MMREFCSI2',
     learnMoreUrl: 'https://docs.gmx.io/docs/referrals/',
-    termsUrl: 'https://docs.gmx.io/docs/referrals',
     approvalType: 'gmx_referral_consent',
     connectionFlow: 'permissions',
   },
@@ -71,8 +67,6 @@ export const DEFI_REFERRAL_PARTNERS: Record<
       'https://www.asterdex.com/en/trade/pro/futures/BTCUSDT?ref=82636D',
     learnMoreUrl:
       'https://docs.asterdex.com/product/aster-perpetuals/referral-program',
-    termsUrl:
-      'https://docs.asterdex.com/stage-2-genesis/referral-bonus-and-team-boosts',
     approvalType: 'asterdex_referral_consent',
     connectionFlow: 'permissions_then_signature',
   },

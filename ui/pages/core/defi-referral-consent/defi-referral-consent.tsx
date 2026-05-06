@@ -20,7 +20,6 @@ export type DefiReferralConsentProps = {
   partnerId: string;
   partnerName: string;
   learnMoreUrl: string;
-  termsUrl: string;
 };
 
 const PartnerLink: React.FC<{ text: string; url: string }> = ({
@@ -61,7 +60,6 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
   partnerId,
   partnerName,
   learnMoreUrl,
-  termsUrl,
 }) => {
   const t = useI18nContext();
 
@@ -105,10 +103,9 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
               <PartnerLink
                 key="defi-referral-partner-terms"
                 text={t('defiReferralTerms')}
-                url={termsUrl}
+                url={learnMoreUrl}
               />,
-            ])}{' '}
-            <PartnerLink text={t('learnMoreUpperCase')} url={learnMoreUrl} />
+            ])}
           </Text>
         </Box>
       </Box>

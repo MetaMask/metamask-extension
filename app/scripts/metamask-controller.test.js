@@ -5588,8 +5588,6 @@ describe('MetaMaskController', () => {
     describe('handleDefiReferral', () => {
       const HYPERLIQUID_LEARN_MORE_URL =
         DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].learnMoreUrl;
-      const HYPERLIQUID_TERMS_URL =
-        DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].termsUrl;
       const HYPERLIQUID_ORIGIN =
         DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
       const HYPERLIQUID_NAME =
@@ -5743,7 +5741,6 @@ describe('MetaMaskController', () => {
             partnerId: DefiReferralPartner.Hyperliquid,
             partnerName: HYPERLIQUID_NAME,
             selectedAddress: mockPermittedAccount,
-            termsUrl: HYPERLIQUID_TERMS_URL,
           },
           shouldShowRequest: true, // pop-up = true because triggerType is new connection
         });
@@ -5770,7 +5767,6 @@ describe('MetaMaskController', () => {
             partnerId: DefiReferralPartner.Hyperliquid,
             partnerName: HYPERLIQUID_NAME,
             selectedAddress: mockPermittedAccount,
-            termsUrl: HYPERLIQUID_TERMS_URL,
           },
           shouldShowRequest: false, // false because triggerType is navigate to connected tab
         });

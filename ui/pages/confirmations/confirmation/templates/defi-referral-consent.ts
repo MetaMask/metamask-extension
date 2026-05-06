@@ -31,8 +31,7 @@ function getValues(
   actions: DefiReferralConsentActions,
 ) {
   const { requestData } = pendingApproval;
-  const { selectedAddress, partnerId, partnerName, learnMoreUrl, termsUrl } =
-    requestData;
+  const { selectedAddress, partnerId, partnerName, learnMoreUrl } = requestData;
 
   const onActionComplete = (result: DefiReferralConsentResult) => {
     actions.resolvePendingApproval(pendingApproval.id, {
@@ -52,7 +51,6 @@ function getValues(
           partnerId,
           partnerName,
           learnMoreUrl,
-          termsUrl,
         },
       },
     ],

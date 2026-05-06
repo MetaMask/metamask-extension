@@ -14,7 +14,6 @@ type PartnerTestCase = {
   partnerId: string;
   partnerName: string;
   learnMoreUrl: string;
-  termsUrl: string;
 };
 
 const partnerTestCases: PartnerTestCase[] = Object.values(
@@ -23,7 +22,6 @@ const partnerTestCases: PartnerTestCase[] = Object.values(
   partnerId: partner.id,
   partnerName: partner.name,
   learnMoreUrl: partner.learnMoreUrl,
-  termsUrl: partner.termsUrl,
 }));
 
 describe('DefiReferralConsent', () => {
@@ -34,14 +32,13 @@ describe('DefiReferralConsent', () => {
   // @ts-expect-error This function is missing from the Mocha type definitions
   describe.each(partnerTestCases)(
     'with $partnerName',
-    ({ partnerId, partnerName, learnMoreUrl, termsUrl }: PartnerTestCase) => {
+    ({ partnerId, partnerName, learnMoreUrl }: PartnerTestCase) => {
       const props = {
         onActionComplete: jest.fn(),
         selectedAddress: '0x123',
         partnerId,
         partnerName,
         learnMoreUrl,
-        termsUrl,
       };
 
       it('renders the component with correct title and subtitle', () => {
@@ -71,7 +68,7 @@ describe('DefiReferralConsent', () => {
         );
       });
 
-      it('renders the terms and learn more links with correct URLs', () => {
+      it('renders the terms link with correct URL', () => {
         const store = mockStore(mockState);
 
         renderWithProvider(<DefiReferralConsent {...props} />, store);
@@ -79,17 +76,9 @@ describe('DefiReferralConsent', () => {
         const termsLink = screen.getByRole('link', {
           name: messages.defiReferralTerms.message,
         });
-        expect(termsLink).toHaveAttribute('href', termsUrl);
+        expect(termsLink).toHaveAttribute('href', learnMoreUrl);
         expect(termsLink).toHaveAttribute('target', '_blank');
         expect(termsLink).toHaveAttribute('rel', 'noopener noreferrer');
-
-        const learnMoreLink = screen.getByRole('link', {
-          name: `${messages.learnMoreUpperCase.message}.`,
-        });
-        expect(learnMoreLink).toHaveAttribute('href', learnMoreUrl);
-        expect(learnMoreLink).toHaveAttribute('target', '_blank');
-        expect(learnMoreLink).toHaveAttribute('rel', 'noopener noreferrer');
-      });
 
       it('renders partner confirm and No thanks action buttons', () => {
         const store = mockStore(mockState);
