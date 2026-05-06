@@ -1113,8 +1113,8 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/confirm/confirm.test.tsx": {
-      "MetaMask: Background connection not initialized": 235,
-      "React: Act warnings (component updates not wrapped)": 3,
+      "MetaMask: Background connection not initialized": 236,
+      "React: Act warnings (component updates not wrapped)": 4,
       "Reselect: Identity function warnings": 6
     },
     "ui/pages/confirmations/confirmation/templates/create-snap-account.test.js": {
