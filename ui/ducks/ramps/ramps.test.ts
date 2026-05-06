@@ -20,6 +20,7 @@ jest.mock('../../helpers/ramps/rampApi/rampAPI');
 const mockedRampAPI = RampAPI as jest.Mocked<typeof RampAPI>;
 
 jest.mock('../../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../../shared/lib/selectors/networks'),
   getCurrentChainId: jest.fn(),
   getNetworkConfigurationsByChainId: jest.fn(),
   getSelectedNetworkClientId: jest.fn(),
