@@ -9,7 +9,7 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { getTradeableBalance } from '../../../../../hooks/perps/getTradeableBalance';
-import { usePerpsLiveAccount } from '../../../../../hooks/perps/stream';
+import { getPerpsStreamManager } from '../../../../../providers/perps';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
 import { AlertsName } from '../constants';
@@ -17,24 +17,30 @@ import { AlertsName } from '../constants';
 /**
  * Blocking alert when the entered amount exceeds the HL withdrawable balance.
  *
- * Uses `usePerpsLiveAccount` (not `selectPerpsCachedAccountState`) because the
- * Redux-backed cache (`cachedUserDataByProvider`) is only populated by an
- * explicit controller preload and is empty by default in the extension —
- * reading from it would cause a false-positive "insufficient balance" alert
- * for any amount > 0. `streamManager.initForAddress` is deduplicated at the
- * singleton level, so the per-confirmation cost of this hook is bounded to a
- * single `perpsInit` RPC per session per address.
+ * This hook is wired into `useTransactionAlerts`, which runs for every
+ * confirmation type. To avoid `usePerpsLiveAccount` triggering a `perpsInit`
+ * RPC (and an `api.hyperliquid.xyz` request) on every non-perps confirmation
+ * — sends, contract interactions, swaps, etc. — we read the account directly
+ * from the `PerpsStreamManager` singleton's cache, and only when the
+ * confirmation actually is a `perpsWithdraw`. The Perps Withdraw confirmation
+ * itself renders `PerpsWithdrawBalance`, which subscribes via
+ * `usePerpsLiveAccount` and keeps the singleton's cache fresh, so our render-
+ * time read sees up-to-date data by the time the user can enter an amount.
  */
 export function usePerpsWithdrawInsufficientBalanceAlert(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { account } = usePerpsLiveAccount();
   // `useTransactionCustomAmount` owns local state, so a second call here
   // would never see input. `amountFiat` is what the user typed in USD;
   // `amountUsd` is token-count × $1 and drifts for non-1:1 stables.
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
+
+  // Side-effect-free read from the singleton — does NOT trigger init.
+  const account = isPerpsWithdraw
+    ? getPerpsStreamManager().account.getCachedData()
+    : null;
 
   const availableBalance = new BigNumber(getTradeableBalance(account));
   const enteredAmount = new BigNumber(primaryRequiredToken?.amountFiat ?? '0');
