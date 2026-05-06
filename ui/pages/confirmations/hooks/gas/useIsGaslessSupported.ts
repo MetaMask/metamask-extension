@@ -1,5 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
+import { EIP_7702_REVOKE_ADDRESS } from '../../../../../shared/lib/eip7702-utils';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isHardwareWallet } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
@@ -16,6 +17,9 @@ import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmart
  * Hardware wallets are excluded from gasless support because they cannot sign
  * EIP-7702 authorization lists. They fall back to the standard "user pay gas" flow.
  *
+ * Account downgrade (revoke delegation) transactions are excluded because gasless
+ * requires an upgraded account, which conflicts with the downgrade intent.
+ *
  * @returns An object containing:
  * - `isSupported`: `true` if gasless transactions are supported via either 7702 or smart transactions with sendBundle.
  * - `isSmartTransaction`: `true` if smart transactions are enabled for the current chain.
@@ -27,6 +31,10 @@ export function useIsGaslessSupported() {
 
   const { chainId } = transactionMeta ?? {};
   const isHardwareWalletAccount = useSelector(isHardwareWallet);
+
+  const isDowngradeTransaction =
+    transactionMeta?.txParams?.authorizationList?.[0]?.address ===
+    EIP_7702_REVOKE_ADDRESS;
 
   const {
     isSmartTransaction,
@@ -56,11 +64,13 @@ export function useIsGaslessSupported() {
 
   const isSupported = Boolean(
     !isHardwareWalletAccount &&
+      !isDowngradeTransaction &&
       (isSmartTransactionAndBundleSupported || is7702Supported),
   );
 
   const isPending =
     !isHardwareWalletAccount &&
+    !isDowngradeTransaction &&
     (smartTransactionPending || (shouldCheck7702Eligibility && relayPending));
 
   return {

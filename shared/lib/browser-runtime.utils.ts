@@ -5,6 +5,7 @@
 import Bowser from 'bowser';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import { PLATFORM_FIREFOX } from '../constants/app';
 import {
   BROKEN_PRERENDER_BROWSER_VERSIONS,
   FIXED_PRERENDER_BROWSER_VERSIONS,
@@ -100,4 +101,16 @@ export function getBrowserName(
   }
 
   return bowser.getBrowserName();
+}
+
+/**
+ * Checks whether the current browser is Firefox.
+ *
+ * @param args - Same optional `[bowser, navigator]` accepted by {@link getBrowserName}.
+ * @returns Whether the host browser is Firefox (MV2 extension build).
+ */
+export function isFirefoxBrowser(
+  ...args: Parameters<typeof getBrowserName>
+): boolean {
+  return getBrowserName(...args) === PLATFORM_FIREFOX;
 }

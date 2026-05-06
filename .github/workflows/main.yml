@@ -79,7 +79,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v3
         id: checkout-and-setup
         with:
-          is-high-risk-environment: false
+          is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           cache-node-modules: true
           skip-allow-scripts: true
 
@@ -137,9 +137,11 @@ jobs:
       }}
     permissions:
       contents: read
-      issues: write
-      pull-requests: write
+      id-token: write # required for S3 upload of audit baseline
+      issues: write # create tracking issues for new audit advisories
+      actions: read # download audit-baseline artifact from prior push-to-main runs
     uses: ./.github/workflows/repository-health-checks.yml
+    secrets: inherit
 
   test-storybook:
     name: Test storybook
@@ -272,7 +274,6 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
-      is-high-risk-environment: false
       build-name: build-dist-webpack
       build-command: yarn webpack:lavamoat:build --zip
       bundle-analyzer: true
@@ -285,7 +286,6 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
-      is-high-risk-environment: false
       build-name: build-dist-mv2-webpack
       build-command: yarn webpack:lavamoat:build:mv2 --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -297,7 +297,6 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
-      is-high-risk-environment: false
       build-name: build-beta-webpack
       build-command: yarn webpack:lavamoat:build --type beta --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -309,7 +308,6 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
-      is-high-risk-environment: false
       build-name: build-beta-mv2-webpack
       build-command: yarn webpack:lavamoat:build:mv2 --type beta --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -321,7 +319,6 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
-      is-high-risk-environment: false
       build-name: build-flask-webpack
       build-command: yarn webpack:lavamoat:build --type flask --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -333,7 +330,6 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
-      is-high-risk-environment: false
       build-name: build-flask-mv2-webpack
       build-command: yarn webpack:lavamoat:build:mv2 --type flask --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -345,7 +341,6 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
-      is-high-risk-environment: false
       build-name: build-test-webpack
       build-command: yarn build:test:webpack --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -357,7 +352,6 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
-      is-high-risk-environment: false
       build-name: build-test-mv2-webpack
       build-command: yarn build:test:webpack:mv2 --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -369,7 +363,6 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
-      is-high-risk-environment: false
       build-name: build-test-flask-webpack
       build-command: yarn build:test:flask:webpack --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -381,7 +374,6 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
-      is-high-risk-environment: false
       build-name: build-test-flask-mv2-webpack
       build-command: yarn build:test:flask:webpack:mv2 --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -439,8 +431,8 @@ jobs:
           path: coverage
 
       - name: SonarCloud Scan
-        # This is SonarSource/sonarqube-scan-action@v7.0.0
-        uses: SonarSource/sonarqube-scan-action@a31c9398be7ace6bbfaf30c0bd5d415f843d45e9
+        # This is SonarSource/sonarqube-scan-action@v7.1.0
+        uses: SonarSource/sonarqube-scan-action@299e4b793aaa83bf2aba7c9c14bedbb485688ec4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -671,6 +663,7 @@ jobs:
     permissions:
       pull-requests: read
       statuses: write
+      checks: read
     # We list every job we want to validate in `needs`, because `needs` only contains results for jobs explicitly
     # named here. A failing job can cause downstream jobs to be `skipped`, which can hide the true failure unless
     # the upstream job is also included.

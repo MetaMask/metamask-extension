@@ -114,12 +114,6 @@
   "accountIdenticon": {
     "message": "账户 Identicon"
   },
-  "accountIdenticonDescription": {
-    "message": "从三种不同风格的独特图标中选择，助您一目了然地识别账户。"
-  },
-  "accountIsntConnectedToastText": {
-    "message": "$1 未连接到 $2"
-  },
   "accountName": {
     "message": "账户名称"
   },
@@ -628,10 +622,10 @@
     "message": "所有热门网络"
   },
   "allTimeHigh": {
-    "message": "有史以来新高"
+    "message": "历史新高"
   },
   "allTimeLow": {
-    "message": "有史以来新低"
+    "message": "历史新低"
   },
   "allTokens": {
     "message": "所有代币"
@@ -817,7 +811,7 @@
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
-    "message": "备份与同步功能使我们能够为您的自定义设置和功能存储加密数据。这将使您的 MetaMask 体验在不同设备上保持一致，并在需要重新安装 MetaMask 时恢复相关设置和功能。此操作不会备份您的私钥助记词。$1。",
+    "message": "通过备份与同步功能，我们能够为您的自定义设置和功能存储加密数据，便于您在不同设备上享受一致的 MetaMask 使用体验，并在需要重新安装 MetaMask 时恢复相关设置和功能。该功能不会备份您的私钥助记词。$1。",
     "description": "$1 is link to the backup and sync privacy policy."
   },
   "backupAndSyncEnableDescriptionUpdatePreferences": {
@@ -867,7 +861,7 @@
     "message": "基本"
   },
   "basicConfigurationDescription": {
-    "message": "MetaMask 通过互联网服务提供代币详情和燃料设置等基本功能。当您使用互联网服务时，您的 IP 地址会共享，在本例中与 MetaMask 共享。这就像您访问任何网站一样。MetaMask 暂时使用这些数据，并且绝不会出卖您的数据。您可以使用 VPN 或关闭这些服务，但这可能会影响您的 MetaMask 体验。要了解详情，请参阅我们的 $1。",
+    "message": "MetaMask 通过互联网服务提供代币详情、Gas 设置等基本功能。当您使用这些服务时，您的 IP 地址会被共享，在此插件中是共享给 MetaMask，这与您访问任何网站时的情况类似。MetaMask 仅会临时使用这些数据，且绝不会出售您的数据。您可以选择使用 VPN 或关闭这些服务，但这可能会影响您的 MetaMask 使用体验。更多信息，请参阅我们的$1。",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
@@ -1437,7 +1431,7 @@
     "message": "选择您的网络"
   },
   "chooseYourNetworkDescription": {
-    "message": "在您使用我们的默认设置和配置时，我们将 Infura 作为默认的远程过程调用（RPC）提供商，以提供我们所能实现的最可靠且私密的以太坊数据访问。在少数情况下，我们可能会使用其他 RPC 提供商，以便为用户提供最佳体验。您可以选择自己的 RPC 服务，但请谨记：任何 RPC 提供商都会接收到您的 IP 地址和以太坊钱包信息以完成交易。要详细了解 Infura 如何处理 EVM 账户数据，请参阅我们的 $1；关于 Solana 账户的相关信息，请参阅 $2。",
+    "message": "当您使用默认设置和配置时，MetaMask 会将 Infura 设为默认的远程过程调用 (RPC) 提供商，尽可能提供可靠且注重隐私的以太坊数据访问。在少数情况下，我们可能会使用其他 RPC 提供商，旨在为用户提供更佳体验。您也可以自行选择 RPC，但请注意：任何 RPC 提供商都会接收到您的 IP 地址和以太坊钱包信息，用于处理交易。要详细了解 Infura 如何处理 EVM 账户数据，请参阅我们的$1；关于 Solana 账户的相关信息，请$2。",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chooseYourNetworkDescriptionCallToAction": {
@@ -1447,7 +1441,7 @@
     "message": "您需要在 Google Chrome 上使用 MetaMask 以连接到您的硬件钱包。"
   },
   "circulatingSupply": {
-    "message": "循环供应"
+    "message": "流通量"
   },
   "clear": {
     "message": "清除"
@@ -1546,12 +1540,6 @@
   "confirmFieldFrequency": {
     "message": "频率"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "初始授权额度"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "最高授权额度"
-  },
   "confirmFieldNeverExpires": {
     "message": "永不过期"
   },
@@ -1571,20 +1559,14 @@
     "message": "每月"
   },
   "confirmFieldPeriodDurationSeconds": {
-    "message": "秒",
-    "description": "Unit descriptor following the numeric value, e.g. '100 seconds'"
+    "message": "$1 秒",
+    "description": "$1 is the number of seconds in the permission period (shown when the period is not a standard hour/day/week/etc.)"
   },
   "confirmFieldPeriodDurationWeekly": {
     "message": "每周"
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "每年"
-  },
-  "confirmFieldStartDate": {
-    "message": "开始日期"
-  },
-  "confirmFieldStreamRate": {
-    "message": "资金流速率"
   },
   "confirmFieldTooltipJustification": {
     "message": "网站提供的请求依据"
@@ -1750,9 +1732,6 @@
   },
   "connect": {
     "message": "连接"
-  },
-  "connectAccount": {
-    "message": "连接账户"
   },
   "connectAccounts": {
     "message": "连接账户"
@@ -1998,7 +1977,7 @@
     "message": "显示余额和代币价格检查器"
   },
   "currencyRateCheckToggleDescription": {
-    "message": "我们使用$1和$2的API来显示您的余额和代币价格。$3",
+    "message": "我们使用 $1 和 $2 的API来显示您的余额和代币价格。$3",
     "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
@@ -2250,9 +2229,6 @@
   "deepLink_thePerpsMarketDetailPage": {
     "message": "永续合约市场页面"
   },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "永续合约市场列表页面"
-  },
   "deepLink_thePerpsPage": {
     "message": "永续合约页面"
   },
@@ -2281,7 +2257,7 @@
     "message": "默认 RPC（远程过程调用）URL"
   },
   "defaultSettingsSubTitle": {
-    "message": "MetaMask 使用默认设置达到安全性和易用性的最佳平衡。更改这些设置以进一步保护您的隐私。"
+    "message": "MetaMask 使用默认隐私设置，兼顾安全与易用。您可以更改这些设置，更好保护隐私。"
   },
   "defaultSettingsTitle": {
     "message": "默认隐私设置"
@@ -3034,6 +3010,9 @@
   },
   "gasUsed": {
     "message": "使用的燃料"
+  },
+  "gatorNoJustificationProvided": {
+    "message": "未就该许可提供任何正当理由"
   },
   "gatorPermissionAnnualFrequency": {
     "message": "每年",
@@ -4034,12 +4013,6 @@
   "mismatchedRpcUrl": {
     "message": "根据我们的记录，所提交的RPC URL值与此链 ID 的已知提供者不匹配。"
   },
-  "missingSetting": {
-    "message": "找不到设置吗？"
-  },
-  "missingSettingRequest": {
-    "message": "在这里请求"
-  },
   "month": {
     "message": "月"
   },
@@ -4122,6 +4095,102 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 想连接 $2 个 snap。",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
+  "musdAssetBonusAccruing": {
+    "message": "下一笔奖励累积中",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "领取 $1 奖励",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "预估年度奖励",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "您的奖励信息",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "根据您当前余额及利率估算的一年预期收益。利率为浮动值，可能发生变动。",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "了解更多。",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "自您参与以来已领取的奖励总额。",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "仅需持有 mUSD 即可获得 $1% 年化奖励。您可每日在 Linea 上领取该奖励。$2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "累计已领奖励",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "无累积中的奖励",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "$1% 奖励",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "您的奖励",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "每日奖励",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "美元挂钩",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "无锁仓限制",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "无 MetaMask 手续费",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "$1% 年化奖励",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "获得 ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " 通过将 USDC、USDT 和 DAI 兑换为 mUSD。",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "了解更多。",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "兑换您的稳定币",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "余额",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "您的排名",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "值",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
   },
   "musdBonusExplanation": {
     "message": "将您的稳定币兑换为 mUSD，即可赚取高达 $1% 的年化奖励，该奖励每日可领取。$2",
@@ -4226,6 +4295,10 @@
   "musdMetaMaskUsd": {
     "message": "MetaMask USD",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "具体条款适用。"
@@ -4790,6 +4863,14 @@
     "message": "在 $1 上查看",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "交易失败！ $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "交易已确认!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
+  },
   "notifications": {
     "message": "通知"
   },
@@ -4875,7 +4956,7 @@
     "message": "帮助我们改善您的体验"
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "IPFS 网关使访问和查看第三方托管的数据成为可能。您可以添加自定义 IPFS 网关或继续使用默认网关。"
+    "message": "IPFS 网关可让您访问并查看由第三方托管的数据。您可以添加自定义 IPFS 网关或继续使用默认网关。"
   },
   "onboardingAdvancedPrivacyIPFSInvalid": {
     "message": "请输入有效的 URL"
@@ -4887,7 +4968,7 @@
     "message": "IPFS 网关 URL 有效"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
-    "message": "在您使用我们的默认设置和配置时，我们将 Infura 作为默认的远程过程调用（RPC）提供商，以提供我们所能实现的最可靠且私密的以太坊数据访问。在少数情况下，我们可能会使用其他 RPC 提供商，以便为用户提供最佳体验。您可以选择自己的 RPC 服务，但请谨记：任何 RPC 提供商都会接收到您的 IP 地址和以太坊钱包信息以完成交易。要详细了解 Infura 如何处理 EVM 账户数据，请参阅我们的 $1；关于 Solana 账户的相关信息，请参阅 $2。"
+    "message": "当您使用默认设置和配置时，MetaMask 会将 Infura 设为默认的远程过程调用 (RPC) 提供商，尽可能提供可靠且注重隐私的以太坊数据访问。在少数情况下，我们可能会使用其他 RPC 提供商，旨在为用户提供更佳体验。您也可以自行选择 RPC，但请注意：任何 RPC 提供商都会接收到您的 IP 地址和以太坊钱包信息，用于处理交易。要详细了解 Infura 如何处理 EVM 账户数据，请参阅我们的$1；关于 Solana 账户的相关信息，$2。"
   },
   "onboardingAdvancedPrivacyNetworkDescriptionCallToAction": {
     "message": "点击此处"
@@ -4918,10 +4999,10 @@
     "message": "我们将收集基本的产品使用数据，例如大致位置、点击次数和浏览次数。不会存储其他任何信息。"
   },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
-    "message": "我们将收集基本的产品使用数据。我们可能会将这些信息与链上数据关联。"
+    "message": "我们将收集基本的产品使用数据，并可能会将这些信息与链上数据关联。"
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "我们将使用此数据来了解您如何与我们的营销通信交互。我们可能会分享相关资讯（例如产品特点）。"
+    "message": "我们会使用这些数据了解您与营销内容的互动情况，并可能向您推送相关资讯（如产品功能更新）。"
   },
   "onboardingMetametricCheckboxTitleOne": {
     "message": "收集基本使用数据"
@@ -4933,7 +5014,7 @@
     "message": "继续"
   },
   "onboardingMetametricsDescription": {
-    "message": "我们希望收集基本的使用和诊断数据，以改进 MetaMask。请注意，我们绝不会出卖您在此处提供的数据。"
+    "message": "我们希望获取以下权限。您可以随时选择关闭权限或删除您的使用数据。"
   },
   "onboardingMetametricsTitle": {
     "message": "请帮助我们改进 MetaMask"
@@ -5066,10 +5147,10 @@
     "message": "输入您的新密码以保持登录 MetaMask。"
   },
   "passwordNotLongEnough": {
-    "message": "密码长度不足"
+    "message": "必须至少 8 个字符"
   },
   "passwordTermsWarning": {
-    "message": "如果我丢失此密码，MetaMask 无法重设它。"
+    "message": "如果密码丢失，MetaMask 无法重置。"
   },
   "passwordTermsWarningSocial": {
     "message": "如果我忘记该密码，我将永久失去钱包的访问权限。MetaMask 无法为我重设该密码。"
@@ -5453,7 +5534,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "可用永续合约余额： "
+    "message": "可用余额: "
   },
   "perpsAvailableToAdd": {
     "message": "可添加"
@@ -5521,6 +5602,12 @@
   },
   "perpsContactSupport": {
     "message": "联系支持团队"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "MetaMask 永续合约仅支持逐仓保证金交易。您需要先平掉全仓保证金仓位，才能在 MetaMask 进行交易。"
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "不支持全仓保证金"
   },
   "perpsDateToday": {
     "message": "今天"
@@ -5803,15 +5890,12 @@
   "perpsReversePositionDescriptionShort": {
     "message": "将您的空头仓位转为多头仓位"
   },
-  "perpsSaveChanges": {
-    "message": "保存更改",
-    "description": "Button text for saving TP/SL changes"
-  },
   "perpsSearchMarkets": {
     "message": "搜索市场"
   },
   "perpsSeeAll": {
-    "message": "查看全部"
+    "message": "查看全部",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "服务暂时不可用。请稍后再试。"
@@ -6011,6 +6095,9 @@
   },
   "perpsTrades": {
     "message": "交易"
+  },
+  "perpsTriggerPrice": {
+    "message": "触发价格"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "杠杆交易会同步放大收益和亏损。使用 40 倍杠杆时，1% 的价格波动将导致保证金产生 40% 的盈利或亏损。"
@@ -6976,7 +7063,7 @@
     "message": "安全与隐私"
   },
   "securityDescription": {
-    "message": "减少您加入不安全网络的机会并保护您的账户"
+    "message": "降低连接到不安全网络的风险，保护您的账户安全"
   },
   "securityLoginWithSocial": {
     "message": "使用 $1 登录",
@@ -6996,7 +7083,7 @@
     "description": "The security provider that is providing data"
   },
   "securitySocialLoginDefaultSettingsDescription": {
-    "message": "降低加入不安全网络的风险，保护您的账户与数据安全"
+    "message": "降低连接到不安全网络的风险，保护您的账户和数据安全"
   },
   "securitySocialLoginEnabled": {
     "message": "已启用"
@@ -7029,7 +7116,7 @@
     "message": "账户助记词由12、15、18、21或24个单词组成"
   },
   "seedPhraseReviewDetails": {
-    "message": "这是您的 $1。按正确顺序写下来，保存在安全的地方。如果他人拥有您的私钥助记词，便可获得您的钱包访问权限。切勿将其告知任何人。",
+    "message": "这是您的 $1，请按正确顺序记下并妥善保管。如果其他人获得您的私钥助记词，便可访问您的钱包。切勿将其告知任何人。",
     "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
@@ -7915,7 +8002,7 @@
     "message": "我们无法估算燃料。合约中可能存在错误，这笔交易可能会失败。"
   },
   "simulationsSettingDescription": {
-    "message": "开启此选项，以便在确认交易和签名之前预估交易余额的变化。这并不能保证交易的最终结果。$1"
+    "message": "开启后，可在您确认交易或签名前预估余额变化，但不保证最终结果。$1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "在您确认交易前估算交易的余额变化。这并不能保证您交易的最终结果。$1"
@@ -8958,7 +9045,7 @@
     "message": "同步中……"
   },
   "tapToReveal": {
-    "message": "点击以显示"
+    "message": "点击显示"
   },
   "tapToRevealNote": {
     "message": "确保没人在看您的屏幕。"
@@ -9475,7 +9562,7 @@
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
   "useTokenDetectionPrivacyDesc": {
-    "message": "要自动显示发送到您账户的代币，需要与第三方服务器通信以获取代币的图像。这些服务器将拥有您的IP地址的访问权限。"
+    "message": "要自动显示发送到您账户的代币，需要与第三方服务器通信以获取代币的图像。这些服务器将会获取您的 IP 地址。"
   },
   "usedByClients": {
     "message": "可用于各种不同的客户端"

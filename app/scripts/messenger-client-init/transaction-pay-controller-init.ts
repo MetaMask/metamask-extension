@@ -3,10 +3,7 @@ import {
   TransactionPayControllerMessenger,
   TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
-import type {
-  TransactionController,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   type DelegationMessenger,
   getDelegationTransaction,
@@ -24,20 +21,11 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
 > = (request) => {
   const { controllerMessenger, initMessenger, persistedState } = request;
 
-  const getTransactionController = () =>
-    request.getMessengerClient(
-      'TransactionController',
-    ) as TransactionController;
-
   const getDelegationTransactionCallback: (request: {
     transaction: TransactionMeta;
   }) => ReturnType<typeof getDelegationTransaction> = ({ transaction }) =>
     getDelegationTransaction(
       {
-        isAtomicBatchSupported:
-          getTransactionController().isAtomicBatchSupported.bind(
-            getTransactionController(),
-          ),
         messenger: initMessenger as DelegationMessenger,
       },
       transaction,

@@ -135,6 +135,12 @@ function normalizeSmartContracts(smartContract) {
  */
 
 /**
+ * @typedef {object} UnifiedEvmAccountsApiBalances
+ * @property {string} [mainnetNativeEthHuman] - Mainnet (eip155:1) native balance string for the default fixture account (Accounts API v5).
+ * @property {{ assetId: string, balance: string }[]} [mainnetAdditionalBalances] - Extra v5 rows for mainnet (e.g. ERC-20s).
+ */
+
+/**
  *
  * @param {object} options
  * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
@@ -163,6 +169,7 @@ async function withFixtures(options, testSuite) {
     accountActivityWebSocketSpecificMocks = [],
     perpsWebSocketSpecificMocks = [],
     extendedTimeoutMultiplier = 1,
+    unifiedEvmAccountsApiBalances,
   } = options;
 
   // Normalize localNodeOptions
@@ -347,6 +354,7 @@ async function withFixtures(options, testSuite) {
       chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
       ethConversionInUsd,
       monConversionInUsd,
+      unifiedEvmAccountsApiBalances,
     });
 
     if ((await detectPort(8000)) !== 8000) {
