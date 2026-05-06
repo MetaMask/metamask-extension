@@ -61,10 +61,10 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
-  getSelectedInternalAccount,
   getSelectedNetwork,
   getHDEntropyIndex,
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsFeatureFlagsForChain,

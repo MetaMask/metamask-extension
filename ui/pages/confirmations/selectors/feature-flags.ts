@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { getRemoteFeatureFlags } from '../../../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 
 type ConfirmationsPayDappsFlag = {
   enabled?: boolean;

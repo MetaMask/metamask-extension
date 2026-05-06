@@ -35,8 +35,8 @@ import {
 } from './helpers/utils/performance-observers';
 import * as actions from './store/actions';
 import configureStore from './store/store';
+import { getSelectedInternalAccount } from '../shared/lib/selectors/accounts';
 import {
-  getSelectedInternalAccount,
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getAllPermittedAccountsForCurrentTab,

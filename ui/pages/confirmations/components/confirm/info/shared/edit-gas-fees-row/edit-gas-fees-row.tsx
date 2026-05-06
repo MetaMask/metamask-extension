@@ -215,5 +215,5 @@ function useShowFiat(chainId: Hex): boolean {
   const isTestnet = TEST_CHAINS.includes(chainId as TestNetChainId);
   const { showFiatInTestnets } = useSelector(getPreferences);
 
-  return !isTestnet || showFiatInTestnets;
+  return !isTestnet || Boolean(showFiatInTestnets);
 }

@@ -34,7 +34,7 @@ import { MultichainNativeAssets } from '../../shared/constants/multichain/assets
 import { mockNetworkState } from '../../test/stub/networks';
 import { getProviderConfig } from '../../shared/lib/selectors/networks';
 import type { MetaMaskReduxState } from '../store/store';
-import { AccountsState } from './accounts';
+import { AccountsState } from '../../shared/lib/selectors/accounts';
 import {
   MultichainState,
   getMultichainCurrentChainId,

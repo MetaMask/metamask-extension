@@ -2,7 +2,7 @@
 
 import { createSelector } from 'reselect';
 import { isMultichainFeatureEnabled } from '../../../shared/lib/multichain-feature-flags';
-import { getRemoteFeatureFlags } from '../remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 
 /**
  * Get the state of the `bitcoinAccounts` feature flag with version check.

@@ -22,9 +22,9 @@ import {
 import {
   getEnabledNetworksByNamespace,
   getPreferences,
-  getSelectedInternalAccount,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getMultichainNetwork,
   getMultichainShouldShowFiat,

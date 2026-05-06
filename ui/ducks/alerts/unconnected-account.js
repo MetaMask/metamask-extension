@@ -9,8 +9,8 @@ import {
 import {
   getInternalAccount,
   getOriginOfCurrentTab,
-  getSelectedInternalAccount,
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   connectAccountFailed,
   connectAccountRequested,

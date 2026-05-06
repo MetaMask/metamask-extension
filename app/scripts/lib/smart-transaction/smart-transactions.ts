@@ -36,6 +36,7 @@ import {
   getIsSmartTransaction,
   getSmartTransactionsFeatureFlagsForChain,
 } from '../../../../shared/lib/selectors';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { isLegacyTransaction } from '../../../../shared/lib/transaction.utils';
 import { MessengerClientFlatState } from '../../messenger-client-init/controller-list';
@@ -629,9 +630,7 @@ export function getSmartTransactionCommonParams(
     // @ts-expect-error Smart transaction selector types does not match controller state
     getExtensionSkipTransactionStatusPage(uiState);
 
-  const { selectedAccount, accounts } = uiState.metamask.internalAccounts;
-  const keyringType = accounts[selectedAccount]?.metadata?.keyring?.type;
-  const isHardwareWalletAccount = Boolean(keyringType?.includes('Hardware'));
+  const isHardwareWalletAccount = isHardwareWallet(uiState);
 
   return {
     isSmartTransaction,

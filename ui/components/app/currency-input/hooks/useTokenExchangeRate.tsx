@@ -3,6 +3,7 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { getCurrentChainId } from '../../../../../shared/lib/selectors/networks';
+import type { NetworkConfigurationsByChainIdState } from '../../../../../shared/lib/selectors/networks';
 import {
   getCrossChainTokenExchangeRates,
   selectConversionRateByChainId,
@@ -34,8 +35,9 @@ export default function useTokenExchangeRate(
   const currentChainId = useSelector(getCurrentChainId);
   const chainId = overrideChainId ?? currentChainId;
 
-  const networkConfig = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
+  const networkConfig = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectNetworkConfigurationByChainId(state, chainId),
   );
   const nativeCurrency = networkConfig?.nativeCurrency;
 

@@ -15,6 +15,7 @@ import {
   selectERC20TokensByChain,
   selectNetworkConfigurationByChainId,
 } from '../../../../../../../selectors';
+import type { NetworkConfigurationsByChainIdState } from '../../../../../../../../shared/lib/selectors/networks';
 import { useConfirmContext } from '../../../../../context/confirm';
 
 export enum GasFeeTokenIconSize {
@@ -34,8 +35,9 @@ export function GasFeeTokenIcon({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { chainId } = currentConfirmation ?? {};
 
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
+  const networkConfiguration = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectNetworkConfigurationByChainId(state, chainId),
   );
 
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);

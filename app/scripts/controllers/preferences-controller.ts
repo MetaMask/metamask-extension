@@ -20,6 +20,7 @@ import {
 import { type DefaultAddressScope } from '../../../shared/constants/default-address';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
+import type { Preferences } from '../../../shared/types/preferences';
 import { PreferencesControllerMethodActions } from './preferences-controller-method-action-types';
 
 /**
@@ -79,33 +80,6 @@ type PreferencesControllerOptions = {
   messenger: PreferencesControllerMessenger;
 };
 
-export type Preferences = {
-  autoLockTimeLimit?: number;
-  avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
-  defaultAddressScope: DefaultAddressScope;
-  dismissSmartAccountSuggestionEnabled: boolean;
-  featureNotificationsEnabled: boolean;
-  hideZeroBalanceTokens: boolean;
-  privacyMode: boolean;
-  showConfirmationAdvancedDetails: boolean;
-  showDefaultAddress: boolean;
-  showExtensionInFullSizeView: boolean;
-  showFiatInTestnets: boolean;
-  showMultiRpcModal: boolean;
-  showNativeTokenAsMainBalance: boolean;
-  showTestNetworks: boolean;
-  skipDeepLinkInterstitial: boolean;
-  smartTransactionsOptInStatus: boolean;
-  smartTransactionsMigrationApplied: boolean;
-  tokenNetworkFilter: Record<string, boolean>;
-  tokenSortConfig: {
-    key: string;
-    order: string;
-    sortCallback: string;
-  };
-  useNativeCurrencyAsPrimaryCurrency: boolean;
-  useSidePanelAsDefault?: boolean;
-};
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
 export type PreferencesControllerState = Omit<

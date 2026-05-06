@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 import { isPerpsRemoteConfigSatisfied } from '../../../shared/lib/perps-feature-flags';
-import { getRemoteFeatureFlags } from '../remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 
 /**
  * Default HIP-3 market sources when feature flag is not configured.

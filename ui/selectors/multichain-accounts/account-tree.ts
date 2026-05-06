@@ -32,11 +32,8 @@ import {
   getPreferences,
 } from '../selectors';
 import { MergedInternalAccount } from '../selectors.types';
-import {
-  getInternalAccounts,
-  getInternalAccountsObject,
-  getSelectedInternalAccount,
-} from '../accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getInternalAccounts, getInternalAccountsObject } from '../accounts';
 
 import type { MetaMaskReduxState } from '../../store/store';
 import { getMultichainNetworkConfigurationsByChainId } from '../multichain/networks';
@@ -817,7 +814,8 @@ export const getDefaultScopeAndAddressByAccountGroupId =
   createParameterizedSelector(GROUP_LRU_CACHE_SIZE)(
     [
       getInternalAccountListSpreadByScopesByGroupId,
-      (state: MetaMaskReduxState) => getPreferences(state).defaultAddressScope,
+      (state: MetaMaskReduxState): DefaultAddressScope =>
+        getPreferences(state).defaultAddressScope ?? 'eip155',
     ],
     (
       spreadList: {

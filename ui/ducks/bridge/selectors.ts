@@ -77,15 +77,13 @@ import {
 } from '../../../shared/lib/selectors';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
-import {
-  getInternalAccountsByScope,
-  getSelectedInternalAccount,
-} from '../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getInternalAccountsByScope } from '../../selectors/accounts';
 import {
   getGasFeesSponsoredNetworkEnabled,
   isHardwareWallet,
 } from '../../selectors';
-import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import {
   getAllAccountGroups,
   getInternalAccountBySelectedAccountGroupAndCaip,

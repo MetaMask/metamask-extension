@@ -41,10 +41,8 @@ import type { AssetsControllerState } from '@metamask/assets-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
 import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
-import type {
-  Preferences,
-  PreferencesControllerState,
-} from '../../../app/scripts/controllers/preferences-controller';
+import type { Preferences } from '../../../shared/types/preferences';
+import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   ACCOUNT_2,

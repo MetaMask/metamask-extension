@@ -10,7 +10,7 @@ import { createParameterizedSelector } from '../../../shared/lib/selectors/selec
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
-} from '../remote-feature-flags';
+} from '../../../shared/lib/selectors/remote-feature-flags';
 
 export type NotificationAppState = RemoteFeatureFlagsState & {
   metamask: Partial<NotificationServicesControllerState>;

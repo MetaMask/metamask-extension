@@ -33,9 +33,9 @@ import {
   getSelectedAccount,
   getShouldShowFiat,
   getTokenExchangeRates,
-  getSelectedInternalAccount,
   getMarketData,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';

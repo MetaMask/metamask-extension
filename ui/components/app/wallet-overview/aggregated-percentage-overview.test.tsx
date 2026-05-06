@@ -8,8 +8,8 @@ import {
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getPreferences,
-  getSelectedInternalAccount,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
@@ -35,8 +35,11 @@ jest.mock('../../../selectors', () => ({
   getPreferences: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getTokensMarketData: jest.fn(),
-  getSelectedInternalAccount: jest.fn(),
   selectAnyEnabledNetworksAreAvailable: jest.fn(),
+}));
+
+jest.mock('../../../../shared/lib/selectors/accounts', () => ({
+  getSelectedInternalAccount: jest.fn(),
 }));
 
 jest.mock('../../../../shared/lib/selectors/networks', () => ({

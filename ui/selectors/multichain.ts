@@ -51,11 +51,10 @@ import {
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import {
-  AccountsState,
-  getInternalAccounts,
+  type AccountsState,
   getSelectedInternalAccount,
-  isSolanaAccount,
-} from './accounts';
+} from '../../shared/lib/selectors/accounts';
+import { getInternalAccounts, isSolanaAccount } from './accounts';
 import {
   getIsMainnet,
   getNativeCurrencyImage,

@@ -27,6 +27,11 @@ import snapPrompt from './snaps/snap-prompt/snap-prompt';
 import snapDefault from './snaps/snap-default/snap-default';
 import defiReferralConsent from './defi-referral-consent';
 
+// Keep the keys here in sync with `TEMPLATED_CONFIRMATION_APPROVAL_TYPES` in
+// `./approval-types.ts`. The list is duplicated rather than derived so that
+// `selectors.js` (and other shared-layer consumers) can read the type list
+// without transitively pulling in this file's template implementations, which
+// import from `ui/store/actions` and would otherwise close a circular dep.
 const APPROVAL_TEMPLATES = {
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
   // Use ApprovalType from utils controller
@@ -49,8 +54,6 @@ const APPROVAL_TEMPLATES = {
   [GMX_APPROVAL_TYPE]: defiReferralConsent,
 };
 
-export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =
-  Object.keys(APPROVAL_TEMPLATES);
 
 const ALLOWED_TEMPLATE_KEYS = [
   'cancelText',

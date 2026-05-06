@@ -20,7 +20,7 @@ import {
 import { setAvatarType } from '../../../store/actions';
 import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes';
 import { getPreferences } from '../../../selectors';
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AVATAR_OPTIONS } from './account-identicon-utils';
 

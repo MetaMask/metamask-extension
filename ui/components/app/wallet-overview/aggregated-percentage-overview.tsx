@@ -8,9 +8,9 @@ import {
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getPreferences,
-  getSelectedInternalAccount,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 // TODO: Remove restricted import

@@ -1,4 +1,4 @@
-import * as manifestFlags from '../../shared/lib/manifestFlags';
+import * as manifestFlags from '../manifestFlags';
 import {
   getRemoteFeatureFlags,
   RemoteFeatureFlagsState,

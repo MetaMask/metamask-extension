@@ -26,7 +26,7 @@ import {
   getCurrencyRates,
   getTokenScanCache,
 } from './selectors';
-import { getSelectedInternalAccount } from './accounts';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {

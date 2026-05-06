@@ -37,7 +37,7 @@ import { selectPerpsIsTestnet } from '../../../../selectors/perps-controller';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
-import { getRemoteFeatureFlags } from '../../../../selectors';
+import { getRemoteFeatureFlags } from '../../../../../shared/lib/selectors/remote-feature-flags';
 import { ConfirmationsDeveloperOptions } from '../../../confirmations/components/developer/confirmations-developer-options';
 import ToggleRow from './developer-options-toggle-row-component';
 import SentryTest from './sentry-test';
