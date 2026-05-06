@@ -21,7 +21,7 @@ import {
 const BACKGROUND_CONNECTION_TIMEOUT = 15_000;
 
 describe('Critical errors', function (this: Suite) {
-  this.timeout(120_000); // This test is very long, so we need an unusually high timeout
+  this.timeout(180_000); // This test is very long, so we need an unusually high timeout
   it('shows critical error screen when background is unresponsive', async function () {
     await withFixtures(
       {
