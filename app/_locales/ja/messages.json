@@ -8798,12 +8798,6 @@
     "message": "サポートされている言語",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "アンケートに回答する"
-  },
-  "surveyTitle": {
-    "message": "MetaMaskの未来を形作りましょう"
-  },
   "swap": {
     "message": "スワップ"
   },

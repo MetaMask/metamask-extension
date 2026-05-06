@@ -8806,12 +8806,6 @@
     "message": "Ngôn ngữ được hỗ trợ",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "Tham gia khảo sát của chúng tôi"
-  },
-  "surveyTitle": {
-    "message": "Định hình tương lai của MetaMask"
-  },
   "swap": {
     "message": "Hoán đổi"
   },

@@ -8925,12 +8925,6 @@
     "message": "Supported languages",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "Take our survey"
-  },
-  "surveyTitle": {
-    "message": "Shape the future of MetaMask"
-  },
   "swap": {
     "message": "Swap"
   },

@@ -8806,12 +8806,6 @@
     "message": "지원 언어",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "설문조사에 참여하세요"
-  },
-  "surveyTitle": {
-    "message": "MetaMask의 미래를 그리세요"
-  },
   "swap": {
     "message": "스왑"
   },

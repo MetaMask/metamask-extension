@@ -8798,12 +8798,6 @@
     "message": "सपोर्टेड भाषाएँ",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "हमारे सर्वे में भाग लें"
-  },
-  "surveyTitle": {
-    "message": "MetaMask के भविष्य को आकार दें"
-  },
   "swap": {
     "message": "स्वैप करें"
   },

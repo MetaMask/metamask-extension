@@ -8806,12 +8806,6 @@
     "message": "Idiomas compatibles",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "Responda a nuestra encuesta"
-  },
-  "surveyTitle": {
-    "message": "Dé forma al futuro de MetaMask"
-  },
   "swap": {
     "message": "Canjear"
   },

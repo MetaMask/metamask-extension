@@ -8798,12 +8798,6 @@
     "message": "支持的语言",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "参与我们的调查"
-  },
-  "surveyTitle": {
-    "message": "塑造MetaMask的未来"
-  },
   "swap": {
     "message": "兑换"
   },

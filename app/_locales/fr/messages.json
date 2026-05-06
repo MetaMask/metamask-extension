@@ -8802,12 +8802,6 @@
     "message": "Langues prises en charge",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "Répondez à notre sondage"
-  },
-  "surveyTitle": {
-    "message": "Façonnez l’avenir de MetaMask"
-  },
   "swap": {
     "message": "Swap"
   },
