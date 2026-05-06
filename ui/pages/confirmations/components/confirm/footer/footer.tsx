@@ -3,7 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -44,8 +44,10 @@ import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import {
   useHardwareFooter,
+  useHardwareWalletSigningBehavior,
   useHardwareWalletError,
 } from '../../../../../contexts/hardware-wallets';
+import { getAppIsLoading } from '../../../../../selectors';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
@@ -245,6 +247,7 @@ const Footer = () => {
   const currentConfirmationId = currentConfirmation?.id;
   const t = useI18nContext();
   const { isGaslessLoading } = useIsGaslessLoading();
+  const appIsLoading = useSelector(getAppIsLoading);
 
   const { from: fromAddress } = getConfirmationSender(currentConfirmation);
   const { shouldThrottleOrigin } = useOriginThrottling();
@@ -291,6 +294,8 @@ const Footer = () => {
     currentConfirmationId,
     onUserRejectedHardwareWalletError,
   });
+  const { keepConfirmationOpenDuringSigning } =
+    useHardwareWalletSigningBehavior();
 
   useEffect(() => {
     const shouldSuppressHardwareWalletErrors =
@@ -303,8 +308,15 @@ const Footer = () => {
     shouldRunHardwareWalletPreflight,
   ]);
 
+  const shouldKeepConfirmationOpenDuringSigning =
+    appIsLoading &&
+    keepConfirmationOpenDuringSigning &&
+    shouldRunHardwareWalletPreflight;
+
   const isConfirmDisabled =
-    (!isScrollToBottomCompleted && !isSignature) || isGaslessLoading;
+    (!isScrollToBottomCompleted && !isSignature) ||
+    isGaslessLoading ||
+    shouldKeepConfirmationOpenDuringSigning;
 
   const shouldShowReconnectButton =
     shouldRunHardwareWalletPreflight &&
@@ -344,11 +356,13 @@ const Footer = () => {
 
       const resolveApprovalWithHardwareWalletHandling =
         withHardwareWalletModalHandling(async () => {
-          const resolveApprovalOptions = walletType
+          const shouldWaitForHardwareResult =
+            Boolean(walletType) || shouldRunHardwareWalletPreflight;
+          const resolveApprovalOptions = shouldWaitForHardwareResult
             ? {
                 fromAddress,
                 waitForResult: true,
-                walletType,
+                ...(walletType ? { walletType } : {}),
               }
             : {
                 fromAddress,

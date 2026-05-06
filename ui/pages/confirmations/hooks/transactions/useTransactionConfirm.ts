@@ -16,6 +16,7 @@ import {
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
   useHardwareWalletError,
+  useHardwareWalletSigningBehavior,
 } from '../../../../contexts/hardware-wallets';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
@@ -23,6 +24,8 @@ import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
   const { showErrorModal } = useHardwareWalletError();
+  const { keepConfirmationOpenDuringSigning } =
+    useHardwareWalletSigningBehavior();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
   const { currentConfirmation: transactionMeta } =
@@ -104,7 +107,13 @@ export function useTransactionConfirm() {
     // navigate to shield settings page first before approving transaction to wait for subscription creation there
     handleShieldSubscriptionApprovalTransactionAfterConfirm(newTransactionMeta);
     try {
-      await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
+      await dispatch(
+        updateAndApproveTx(
+          newTransactionMeta,
+          !keepConfirmationOpenDuringSigning,
+          '',
+        ),
+      );
       onDappSwapCompleted();
       return true;
     } catch (error) {
@@ -128,6 +137,7 @@ export function useTransactionConfirm() {
     customNonceValue,
     isGaslessSupportedSTX,
     dispatch,
+    keepConfirmationOpenDuringSigning,
     showErrorModal,
     handleSmartTransaction,
     handleGasless7702,

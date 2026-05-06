@@ -22,7 +22,10 @@ import {
   attemptCloseNotificationPopup,
   updateAndApproveTx,
 } from '../../../../store/actions';
-import { useHardwareWalletError } from '../../../../contexts/hardware-wallets';
+import {
+  useHardwareWalletError,
+  useHardwareWalletSigningBehavior,
+} from '../../../../contexts/hardware-wallets';
 import * as DappSwapContext from '../../context/dapp-swap';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
@@ -43,6 +46,9 @@ jest.mock('../../../../contexts/hardware-wallets', () => ({
     dismissErrorModal: jest.fn(),
     isErrorModalVisible: false,
     setErrorModalSuppressed: jest.fn(),
+  })),
+  useHardwareWalletSigningBehavior: jest.fn(() => ({
+    keepConfirmationOpenDuringSigning: false,
   })),
   isHardwareWalletError: (...args: unknown[]) =>
     mockIsHardwareWalletError(...args),
@@ -113,6 +119,9 @@ describe('useTransactionConfirm', () => {
   const attemptCloseNotificationPopupMock = jest.mocked(
     attemptCloseNotificationPopup,
   );
+  const useHardwareWalletSigningBehaviorMock = jest.mocked(
+    useHardwareWalletSigningBehavior,
+  );
   const useHardwareWalletErrorMock = jest.mocked(useHardwareWalletError);
   const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
   const useGaslessSupportedSmartTransactionsMock = jest.mocked(
@@ -164,6 +173,9 @@ describe('useTransactionConfirm', () => {
       isErrorModalVisible: false,
       setErrorModalSuppressed: jest.fn(),
     });
+    useHardwareWalletSigningBehaviorMock.mockReturnValue({
+      keepConfirmationOpenDuringSigning: false,
+    });
   });
 
   afterEach(() => {
@@ -176,6 +188,34 @@ describe('useTransactionConfirm', () => {
     await onTransactionConfirm();
 
     expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows loading while approving a transaction configured to keep the confirmation open', async () => {
+    useHardwareWalletSigningBehaviorMock.mockReturnValue({
+      keepConfirmationOpenDuringSigning: true,
+    });
+
+    const { onTransactionConfirm } = runHook();
+
+    await onTransactionConfirm();
+
+    expect(updateAndApproveTxMock).toHaveBeenCalledWith(
+      expect.any(Object),
+      false,
+      '',
+    );
+  });
+
+  it('preserves loading behavior for transactions not configured to keep the confirmation open', async () => {
+    const { onTransactionConfirm } = runHook();
+
+    await onTransactionConfirm();
+
+    expect(updateAndApproveTxMock).toHaveBeenCalledWith(
+      expect.any(Object),
+      true,
+      '',
+    );
   });
 
   it('updates custom nonce', async () => {

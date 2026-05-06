@@ -1,5 +1,6 @@
 import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
+import { TransactionType } from '@metamask/transaction-controller';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -8,6 +9,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { ConfirmContextProvider, useConfirmContext } from '.';
 
 const mockNavigate = jest.fn();
+const mockUseHardwareWalletSigningBehavior = jest.fn();
 
 let mockWindowSearch = '';
 
@@ -45,11 +47,21 @@ jest.mock('../../hooks/useSyncConfirmPath', () => {
   };
 });
 
+jest.mock('../../../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../../../contexts/hardware-wallets'),
+  useHardwareWalletSigningBehavior: () =>
+    mockUseHardwareWalletSigningBehavior(),
+}));
+
 const middleware = [thunk];
 
-function createStore() {
+function createStore({ isLoading = false }: { isLoading?: boolean } = {}) {
   return configureMockStore(middleware)({
     ...mockState,
+    appState: {
+      ...mockState.appState,
+      isLoading,
+    },
     metamask: {
       ...mockState.metamask,
       pendingApprovals: {},
@@ -58,15 +70,26 @@ function createStore() {
 }
 
 function renderContextProvider(store: ReturnType<typeof createStore>) {
-  return renderHook(() => useConfirmContext(), {
-    wrapper: ({ children }: { children: React.ReactElement }) => (
-      <Provider store={store}>
-        <ConfirmContextProvider>
-          {children as React.ReactElement}
-        </ConfirmContextProvider>
-      </Provider>
-    ),
-  });
+  return renderHook(
+    ({ reduxStore }: { reduxStore: ReturnType<typeof createStore> }) =>
+      useConfirmContext(),
+    {
+      initialProps: { reduxStore: store },
+      wrapper: ({
+        children,
+        reduxStore,
+      }: {
+        children: React.ReactElement;
+        reduxStore: ReturnType<typeof createStore>;
+      }) => (
+        <Provider store={reduxStore}>
+          <ConfirmContextProvider>
+            {children as React.ReactElement}
+          </ConfirmContextProvider>
+        </Provider>
+      ),
+    },
+  );
 }
 
 describe('ConfirmContextProvider', () => {
@@ -74,7 +97,13 @@ describe('ConfirmContextProvider', () => {
     jest.clearAllMocks();
     mockWindowSearch = '';
     window.history.replaceState({}, '', '/');
-    mockCurrentConfirmation = { id: 'test-id', type: 'transaction' };
+    mockCurrentConfirmation = {
+      id: 'test-id',
+      type: TransactionType.simpleSend,
+    };
+    mockUseHardwareWalletSigningBehavior.mockReturnValue({
+      keepConfirmationOpenDuringSigning: false,
+    });
   });
 
   it('navigates to DEFAULT_ROUTE when confirmation disappears and no goBackTo', () => {
@@ -163,5 +192,58 @@ describe('ConfirmContextProvider', () => {
     window.history.replaceState({}, '', '/');
     rerender();
     expect(result.current.goBackTo).toBe('/asset/keep');
+  });
+
+  it('keeps the last confirmation while loading when signing behavior is configured to wait', () => {
+    mockUseHardwareWalletSigningBehavior.mockReturnValue({
+      keepConfirmationOpenDuringSigning: true,
+    });
+    const loadingStore = createStore({ isLoading: true });
+    const { result, rerender } = renderContextProvider(loadingStore);
+
+    mockCurrentConfirmation = undefined;
+    rerender({ reduxStore: loadingStore });
+
+    expect(result.current.currentConfirmation).toStrictEqual({
+      id: 'test-id',
+      type: TransactionType.simpleSend,
+    });
+    expect(mockNavigate).not.toHaveBeenCalled();
+
+    const idleStore = createStore({ isLoading: false });
+    rerender({ reduxStore: idleStore });
+
+    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      replace: true,
+    });
+  });
+
+  it('does not keep the last software wallet confirmation while loading', () => {
+    const loadingStore = createStore({ isLoading: true });
+    const { result, rerender } = renderContextProvider(loadingStore);
+
+    mockCurrentConfirmation = undefined;
+    rerender({ reduxStore: loadingStore });
+
+    expect(result.current.currentConfirmation).toBeUndefined();
+    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      replace: true,
+    });
+  });
+
+  it('does not keep the last confirmation while loading when signing behavior is configured not to wait', () => {
+    mockUseHardwareWalletSigningBehavior.mockReturnValue({
+      keepConfirmationOpenDuringSigning: false,
+    });
+    const loadingStore = createStore({ isLoading: true });
+    const { result, rerender } = renderContextProvider(loadingStore);
+
+    mockCurrentConfirmation = undefined;
+    rerender({ reduxStore: loadingStore });
+
+    expect(result.current.currentConfirmation).toBeUndefined();
+    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      replace: true,
+    });
   });
 });

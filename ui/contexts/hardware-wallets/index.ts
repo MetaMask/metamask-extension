@@ -16,6 +16,11 @@ export {
   isHardwareConnectionReadyForConfirmFooter,
 } from './useHardwareFooter';
 export type { SubmitPreflightCheckOptions } from './useHardwareFooter';
+export {
+  getHardwareWalletSigningBehavior,
+  useHardwareWalletSigningBehavior,
+} from './useHardwareWalletSigningBehavior';
+export type { HardwareWalletSigningBehavior } from './useHardwareWalletSigningBehavior';
 export { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
 export * from './errors';
 export * from './types';

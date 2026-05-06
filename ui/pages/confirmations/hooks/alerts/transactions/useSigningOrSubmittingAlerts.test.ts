@@ -147,6 +147,18 @@ describe('useSigningOrSubmittingAlerts', () => {
     expect(alerts).toEqual([EXPECTED_ALERT]);
   });
 
+  it('returns no alert if the current confirmation is signing', () => {
+    const alerts = runHook({
+      currentConfirmation: {
+        ...CONFIRMATION_MOCK,
+        status: TransactionStatus.signed,
+      },
+      transactions: [],
+    });
+
+    expect(alerts).toEqual([]);
+  });
+
   it('returns alert if approved transaction', () => {
     const alerts = runHook({
       currentConfirmation: CONFIRMATION_MOCK,

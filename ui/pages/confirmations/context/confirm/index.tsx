@@ -7,9 +7,12 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import type { TransactionType } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/confirmation.utils';
+import { useHardwareWalletSigningBehavior } from '../../../../contexts/hardware-wallets';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getIsHardwareWalletErrorModalVisible } from '../../../../selectors';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
@@ -17,6 +20,7 @@ import { useConfirmationNavigationOptions } from '../../hooks/useConfirmationNav
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { Confirmation } from '../../types/confirm';
+import { isSignatureTransactionType } from '../../utils';
 
 export type ConfirmContextType = {
   /** @deprecated Use useTransactionMetadataRequest or useSignatureRequest hooks instead. */
@@ -41,16 +45,40 @@ export const ConfirmContextProvider: React.FC<{
   const [goBackTo] = useState(goBackFromUrl);
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
+  const isLoading = useSelector(
+    (state: { appState?: { isLoading?: boolean } }) =>
+      Boolean(state.appState?.isLoading),
+  );
   const { currentConfirmation: currentConfirmationFromHook } =
     useCurrentConfirmation(confirmationId);
+  const previousConfirmation = usePrevious(currentConfirmationFromHook);
+  const { keepConfirmationOpenDuringSigning } =
+    useHardwareWalletSigningBehavior();
+  const confirmationForLoading =
+    currentConfirmationFromHook ?? previousConfirmation;
+  const isTransactionOrSignatureConfirmation = Boolean(
+    isSignatureTransactionType(confirmationForLoading) ||
+      isCorrectDeveloperTransactionType(
+        confirmationForLoading?.type as TransactionType,
+      ),
+  );
+  const shouldKeepConfirmationOpenDuringSigning =
+    isLoading &&
+    keepConfirmationOpenDuringSigning &&
+    isTransactionOrSignatureConfirmation;
   const currentConfirmation =
-    currentConfirmationOverride ?? currentConfirmationFromHook;
+    currentConfirmationOverride ??
+    currentConfirmationFromHook ??
+    (shouldKeepConfirmationOpenDuringSigning
+      ? previousConfirmation
+      : undefined);
 
   useSyncConfirmPath(
-    currentConfirmationOverride === undefined ? currentConfirmation : undefined,
+    currentConfirmationOverride === undefined
+      ? currentConfirmationFromHook
+      : undefined,
   );
   const navigate = useNavigate();
-  const previousConfirmation = usePrevious(currentConfirmation);
   const shouldNavigateHomeRef = useRef(false);
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,
@@ -65,21 +93,26 @@ export const ConfirmContextProvider: React.FC<{
     if (currentConfirmationOverride !== undefined) {
       return;
     }
-    if (previousConfirmation && !currentConfirmation) {
+    if (previousConfirmation && !currentConfirmationFromHook) {
       shouldNavigateHomeRef.current = true;
     }
 
-    if (shouldNavigateHomeRef.current && !isHardwareWalletErrorModalVisible) {
+    if (
+      shouldNavigateHomeRef.current &&
+      !isHardwareWalletErrorModalVisible &&
+      !shouldKeepConfirmationOpenDuringSigning
+    ) {
       shouldNavigateHomeRef.current = false;
       navigate(goBackTo ?? DEFAULT_ROUTE, { replace: true });
     }
   }, [
     currentConfirmationOverride,
     previousConfirmation,
-    currentConfirmation,
+    currentConfirmationFromHook,
     navigate,
     goBackTo,
     isHardwareWalletErrorModalVisible,
+    shouldKeepConfirmationOpenDuringSigning,
   ]);
 
   const value = useMemo(

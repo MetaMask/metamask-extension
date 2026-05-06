@@ -28,7 +28,7 @@ const PENDING_STATUSES = [
 export function useSigningOrSubmittingAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
-  const { type, chainId, txParams } = (currentConfirmation ?? {}) as
+  const { id, type, chainId, txParams } = (currentConfirmation ?? {}) as
     | TransactionMeta
     | Record<string, never>;
   const from = txParams?.from;
@@ -43,8 +43,13 @@ export function useSigningOrSubmittingAlerts(): Alert[] {
 
   const isValidType = isCorrectDeveloperTransactionType(type);
 
+  const otherSigningOrSubmittingTransactions =
+    signingOrSubmittingTransactions.filter(
+      (tx: TransactionMeta) => tx.id !== id,
+    );
+
   const isSigningOrSubmitting =
-    isValidType && signingOrSubmittingTransactions.length > 0;
+    isValidType && otherSigningOrSubmittingTransactions.length > 0;
 
   const payTokenChainId = payToken?.chainId;
   const isPayTokenOnDifferentChain =
@@ -57,11 +62,12 @@ export function useSigningOrSubmittingAlerts(): Alert[] {
 
     return allTransactions.some(
       (tx: TransactionMeta) =>
+        tx.id !== id &&
         tx.chainId === payTokenChainId &&
         tx.txParams?.from?.toLowerCase() === from.toLowerCase() &&
         PENDING_STATUSES.includes(tx.status),
     );
-  }, [allTransactions, payTokenChainId, isPayTokenOnDifferentChain, from]);
+  }, [allTransactions, payTokenChainId, isPayTokenOnDifferentChain, from, id]);
 
   const showAlert = isSigningOrSubmitting || hasPendingTransactionOnPayChain;
 
