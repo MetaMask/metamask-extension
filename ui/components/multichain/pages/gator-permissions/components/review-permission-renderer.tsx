@@ -37,10 +37,9 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import type { GatorTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import {
   convertTimestampToReadableDate,
+  extractAddressesFromRuleByType,
   extractExpiryTimestampFromRules,
   formatDecimalShiftedValue,
-  extractRedeemerAddressesFromRules,
-  extractPayeeAddressesFromRules,
 } from '../../../../../../shared/lib/gator-permissions';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
@@ -193,7 +192,7 @@ const ReviewNetworkRow: React.FC<{
   );
 };
 
-const RedeemerAddressItem: React.FC<{ address: string }> = ({ address }) => {
+const ReviewRuleAddressItem: React.FC<{ address: string }> = ({ address }) => {
   const { displayName, hexAddress } = useFallbackDisplayName(address);
   const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
   const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
@@ -211,7 +210,7 @@ const RedeemerAddressItem: React.FC<{ address: string }> = ({ address }) => {
         <Text
           variant={TextVariant.BodyMd}
           color={TextColor.TextAlternative}
-          data-testid="review-gator-permission-redeemer-address"
+          data-testid="review-gator-permission-rule-address"
         >
           {displayName}
         </Text>
@@ -230,7 +229,7 @@ const RedeemerAddressItem: React.FC<{ address: string }> = ({ address }) => {
   );
 };
 
-const ReviewRedeemerRow: React.FC<{
+const ReviewRuleAddressRow: React.FC<{
   addresses: string[];
   label: string;
 }> = ({ addresses, label }) => {
@@ -256,7 +255,7 @@ const ReviewRedeemerRow: React.FC<{
         gap={2}
       >
         {addresses.map((addr) => (
-          <RedeemerAddressItem key={addr} address={addr} />
+          <ReviewRuleAddressItem key={addr} address={addr} />
         ))}
       </Box>
     </Box>
@@ -370,26 +369,14 @@ function renderElement({
           networkName={extraProps.networkName}
         />
       ) : null;
-    case 'redeemer': {
-      const addresses = element.getValue(ctx);
-      if (!addresses?.length) {
-        return null;
-      }
-      return (
-        <ReviewRedeemerRow
-          key={rowKey}
-          addresses={addresses}
-          label={t(element.labelKey)}
-        />
-      );
-    }
+    case 'redeemer':
     case 'payee': {
       const addresses = element.getValue(ctx);
       if (!addresses?.length) {
         return null;
       }
       return (
-        <ReviewRedeemerRow
+        <ReviewRuleAddressRow
           key={rowKey}
           addresses={addresses}
           label={t(element.labelKey)}
@@ -561,8 +548,11 @@ export const ReviewPermissionRenderer: React.FC<
   assertPermissionSchemaEntry(permissionType, schemaEntry);
 
   const effectiveExpiry = extractExpiryTimestampFromRules(rules ?? []);
-  const redeemerAddresses = extractRedeemerAddressesFromRules(rules ?? []);
-  const payeeAddresses = extractPayeeAddressesFromRules(rules ?? []);
+  const redeemerAddresses = extractAddressesFromRuleByType(
+    rules ?? [],
+    'redeemer',
+  );
+  const payeeAddresses = extractAddressesFromRuleByType(rules ?? [], 'payee');
 
   const ctx: PermissionRenderContext = {
     permission: {

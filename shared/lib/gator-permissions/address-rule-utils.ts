@@ -1,16 +1,17 @@
-import { Rule } from '@metamask/7715-permission-types';
+import type { Rule } from '@metamask/7715-permission-types';
 
-export function extractPayeeAddressesFromRules(
+export function extractAddressesFromRuleByType(
   rules: Rule[] | null | undefined,
+  type: Rule['type'],
 ): string[] | null {
   if (!rules?.length) {
     return null;
   }
-  const payee = rules.find((rule) => rule.type === 'payee');
-  if (!payee) {
+  const ruleWithAddresses = rules.find((rule) => rule.type === type);
+  if (!ruleWithAddresses) {
     return null;
   }
-  const { addresses } = payee.data;
+  const { addresses } = ruleWithAddresses.data;
   if (!Array.isArray(addresses)) {
     return null;
   }

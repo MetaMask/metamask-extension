@@ -190,7 +190,7 @@ describe('ReviewPermissionRenderer', () => {
       screen.getByTestId('review-gator-permission-network-name'),
     ).toHaveTextContent('Ethereum Mainnet');
     expect(
-      screen.getAllByTestId('review-gator-permission-redeemer-address'),
+      screen.getAllByTestId('review-gator-permission-rule-address'),
     ).toHaveLength(1);
   });
 
@@ -213,8 +213,9 @@ describe('ReviewPermissionRenderer', () => {
       />,
       store,
     );
+    expect(screen.getByText('Payee')).toBeInTheDocument();
     expect(
-      screen.getAllByTestId('review-gator-permission-redeemer-address'),
+      screen.getAllByTestId('review-gator-permission-rule-address'),
     ).toHaveLength(1);
   });
 
