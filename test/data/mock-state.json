@@ -12,7 +12,6 @@
   "appState": {
     "confirmationExchangeRates": {},
     "nextNonce": 71,
-    "welcomeScreenSeen": false,
     "pendingTokens": {},
     "customTokenAmount": "10",
     "networkDropdownOpen": false,

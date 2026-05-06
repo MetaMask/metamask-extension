@@ -19,10 +19,7 @@ type AppState = {
   pendingTokens: {
     [address: string]: Token & { isCustom?: boolean; unlisted?: boolean };
   };
-  welcomeScreenSeen: boolean;
   confirmationExchangeRates: ContractExchangeRates;
-  shouldClose: boolean;
-  menuOpen: boolean;
   modal: {
     open: boolean;
     modalState: {
@@ -60,34 +57,21 @@ type AppState = {
   importTokensModalOpen: boolean;
   deprecatedNetworkModalOpen: boolean;
   accountDetail: {
-    subview?: string;
-    accountExport?: string;
     privateKey?: string;
   };
   isLoading: boolean;
   isNftStillFetchingIndication: boolean;
-  showNftDetectionEnablementToast: boolean;
   loadingMessage: string | null;
-  scrollToBottom: boolean;
   warning: string | null | undefined;
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  buyView: Record<string, any>;
   defaultHdPaths: {
     trezor: string;
     oneKey: string;
     ledger: string;
     lattice: string;
   };
-  networksTabSelectedRpcUrl: string | null;
   requestAccountTabs: Record<string, number>; // [url.origin]: tab.id
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
-  showTermsOfUsePopup: boolean;
   singleExceptions: {
     testKey: string | null;
   };
@@ -116,10 +100,8 @@ type AppState = {
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
   txId: string | null;
-  accountDetailsAddress: string;
   showDeleteMetaMetricsDataModal: boolean;
   showDataDeletionErrorModal: boolean;
-  snapsInstallPrivacyWarningShown: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
   isAccessedFromDappConnectedSitePopover: boolean;
@@ -149,10 +131,7 @@ const initialState: AppState = {
   isNetworkMenuOpen: false,
   nextNonce: null,
   pendingTokens: {},
-  welcomeScreenSeen: false,
   confirmationExchangeRates: {},
-  shouldClose: false,
-  menuOpen: false,
   modal: {
     open: false,
     modalState: {
@@ -186,23 +165,17 @@ const initialState: AppState = {
   isLoading: false,
   // Used to show a spinner at the bottom of the page when we are still fetching nfts
   isNftStillFetchingIndication: false,
-  // Used to display a toast after the user enables the nft auto detection from the notice banner
-  showNftDetectionEnablementToast: false,
   loadingMessage: null,
   // Used to display error text
   warning: null,
-  buyView: {},
   defaultHdPaths: {
     trezor: `m/44'/60'/0'/0`,
     oneKey: `m/44'/60'/0'/0`,
     ledger: `m/44'/60'/0'/0/0`,
     lattice: `m/44'/60'/0'/0`,
   },
-  networksTabSelectedRpcUrl: '',
   requestAccountTabs: {},
   openMetaMaskTabs: {},
-  currentWindowTab: {},
-  showTermsOfUsePopup: true,
   singleExceptions: {
     testKey: null,
   },
@@ -220,12 +193,9 @@ const initialState: AppState = {
   newTokensImportedError: '',
   onboardedInThisUISession: false,
   customTokenAmount: '',
-  scrollToBottom: true,
   txId: null,
-  accountDetailsAddress: '',
   showDeleteMetaMetricsDataModal: false,
   showDataDeletionErrorModal: false,
-  snapsInstallPrivacyWarningShown: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
   isAccessedFromDappConnectedSitePopover: false,
@@ -272,12 +242,6 @@ export default function reduceApp(
       };
     }
 
-    case actionConstants.CLOSE_WELCOME_SCREEN:
-      return {
-        ...appState,
-        welcomeScreenSeen: true,
-      };
-
     case actionConstants.SET_CONFIRMATION_EXCHANGE_RATES:
       return {
         ...appState,
@@ -287,7 +251,6 @@ export default function reduceApp(
     case actionConstants.RESET_ONBOARDING: {
       return {
         ...appState,
-        welcomeScreenSeen: false,
       };
     }
 
@@ -489,7 +452,6 @@ export default function reduceApp(
         ...appState,
         isLoading: false,
         warning: null,
-        scrollToBottom: false,
       };
 
     case actionConstants.SHOW_CONF_TX_PAGE:

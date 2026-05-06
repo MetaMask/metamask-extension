@@ -139,7 +139,6 @@ describe('App State', () => {
 
     expect(state.isLoading).toStrictEqual(false);
     expect(state.warning).toBeNull();
-    expect(state.scrollToBottom).toStrictEqual(false);
   });
 
   it('shows confirm tx page', () => {
@@ -369,17 +368,6 @@ describe('App State', () => {
     );
 
     expect(state.isNetworkMenuOpen).toStrictEqual(true);
-  });
-
-  it('close welcome screen', () => {
-    const state = reduceApp(
-      {},
-      {
-        type: actionConstants.CLOSE_WELCOME_SCREEN,
-      },
-    );
-
-    expect(state.welcomeScreenSeen).toStrictEqual(true);
   });
 
   it('sets pending tokens', () => {

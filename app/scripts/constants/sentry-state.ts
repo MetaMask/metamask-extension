@@ -402,7 +402,6 @@ export const SENTRY_UI_STATE: SentryReduxRootMask = {
     isNetworkMenuOpen: true,
     nextNonce: true,
     pendingTokens: false,
-    welcomeScreenSeen: true,
     slides: false,
     confirmationExchangeRates: true,
   },
