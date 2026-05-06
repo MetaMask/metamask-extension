@@ -726,6 +726,10 @@
   "assetsDescription": {
     "message": "I-autodetect ang mga token sa wallet mo, ipakita ang mga NFT, at kumuha ng naka-batch na mga update sa balanse ng account"
   },
+  "asterdexReferralSubtitle": {
+    "message": "Makakuha ng 4% sa mga trade na gumagamit ng referral code ng MetaMask.",
+    "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
   "attemptToCancelSwapForFree": {
     "message": "Subukang kanselahin ang swap nang libre"
   },
@@ -2375,6 +2379,14 @@
   "defiEmptyDescription": {
     "message": "Magpahiram, humiram at mag-trade, sa mismong wallet mo."
   },
+  "defiReferralCheckboxLabel": {
+    "message": "Pahintulutan ang MetaMask na maglagay ng referral code. Permanente ito. Mag-aalok ng diskwento ang site batay sa kanilang mga tuntunin. May bayad ang MetaMask.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTitle": {
+    "message": "MetaMask x $1",
+    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
+  },
   "defiTabErrorContent": {
     "message": "Subukang bisitahin muli sa ibang pagkakataon."
   },
@@ -3226,6 +3238,10 @@
     "message": "Ihanda ang wallet mo upang magamit ang web3.",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "Makatipid ng hanggang 5% sa mga trade na gumagamit ng referral code ng MetaMask.",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "Magpunta sa site"
   },
@@ -3447,6 +3463,10 @@
   },
   "honeypotTitle": {
     "message": "Honey pot"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "Makatipid ng hanggang 4% sa mga trade na gumagamit ng referral code ng MetaMask.",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Nauunawaan ko"

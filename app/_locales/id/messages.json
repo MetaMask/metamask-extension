@@ -726,6 +726,10 @@
   "assetsDescription": {
     "message": "Autodeteksi token di dompet Anda, tampilkan NFT, dan dapatkan pembaruan saldo akun secara batch"
   },
+  "asterdexReferralSubtitle": {
+    "message": "Dapatkan cashback 4% untuk perdagangan dengan kode rujukan MetaMask.",
+    "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
   "attemptToCancelSwapForFree": {
     "message": "Mencoba membatalkan pertukaran secara gratis"
   },
@@ -2375,6 +2379,14 @@
   "defiEmptyDescription": {
     "message": "Pinjamkan, pinjam, dan berdagang, langsung di dompet Anda."
   },
+  "defiReferralCheckboxLabel": {
+    "message": "Izinkan MetaMask menambahkan kode rujukan. Kode ini bersifat permanen. Situs ini menawarkan diskon sesuai ketentuan mereka. MetaMask mendapatkan komisi.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTitle": {
+    "message": "MetaMask x $1",
+    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
+  },
   "defiTabErrorContent": {
     "message": "Coba kunjungi lagi nanti."
   },
@@ -3226,6 +3238,10 @@
     "message": "Siapkan dompet Anda untuk menggunakan web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "Hemat hingga 5% untuk perdagangan dengan kode rujukan MetaMask.",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "Buka situs"
   },
@@ -3447,6 +3463,10 @@
   },
   "honeypotTitle": {
     "message": "Honey pot"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "Hemat hingga 4% untuk perdagangan dengan kode rujukan MetaMask.",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Saya mengerti"

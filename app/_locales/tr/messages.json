@@ -726,6 +726,10 @@
   "assetsDescription": {
     "message": "Cüzdanınızdaki tokenlar otomatik algılansın, NFT'ler gösterilsin ve toplu hesap bakiye güncellemeleri alınsın"
   },
+  "asterdexReferralSubtitle": {
+    "message": "MetaMask referans kodu ile işlemlerde %4'e varan iade alın.",
+    "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
   "attemptToCancelSwapForFree": {
     "message": "Swap işlemini ücretsiz iptal etme girişimi"
   },
@@ -2375,6 +2379,14 @@
   "defiEmptyDescription": {
     "message": "Doğrudan cüzdanınızda borç verin, borç alın ve işlem yapın."
   },
+  "defiReferralCheckboxLabel": {
+    "message": "MetaMask'in bir yönlendirme kodu eklemesine izin verin. Bu işlem kalıcıdır. Site, kendi koşullarına göre indirimler sunar. MetaMask bu işlemden bir ücret kazanır.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTitle": {
+    "message": "MetaMask x $1",
+    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
+  },
   "defiTabErrorContent": {
     "message": "Daha sonra tekrar ziyaret etmeyi deneyin."
   },
@@ -3226,6 +3238,10 @@
     "message": "Cüzdanınızı web3 kullanmaya hazır hale getirin",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "MetaMask yönlendirme kodu ile işlemlerde %5'e varan tasarruf edin.",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "Siteye git"
   },
@@ -3447,6 +3463,10 @@
   },
   "honeypotTitle": {
     "message": "Bal tuzağı"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "MetaMask yönlendirme kodu ile işlemlerde %4'e varan tasarruf edin.",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Anlıyorum"

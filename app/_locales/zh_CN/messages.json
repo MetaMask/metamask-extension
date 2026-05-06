@@ -726,6 +726,10 @@
   "assetsDescription": {
     "message": "自动检测钱包中的代币，显示 NFT，并获取批量账户余额更新"
   },
+  "asterdexReferralSubtitle": {
+    "message": "使用 MetaMask 推荐码，交易可获得 4% 的返现。",
+    "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
   "attemptToCancelSwapForFree": {
     "message": "尝试免费取消兑换"
   },
@@ -2375,6 +2379,14 @@
   "defiEmptyDescription": {
     "message": "借出、借入与交易，均可在您的钱包中轻松完成。"
   },
+  "defiReferralCheckboxLabel": {
+    "message": "允许 MetaMask 添加推荐码。此设置为永久有效。相关网站将根据其条款提供折扣。MetaMask 将从中收取费用。",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTitle": {
+    "message": "MetaMask x $1",
+    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
+  },
   "defiTabErrorContent": {
     "message": "请稍后再次尝试访问。"
   },
@@ -3222,6 +3234,10 @@
     "message": "准备好钱包以便使用 Web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "使用 MetaMask 推荐码交易费用最高可节省 5%。",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "转到网站"
   },
@@ -3443,6 +3459,10 @@
   },
   "honeypotTitle": {
     "message": "蜜罐"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "使用 MetaMask 推荐码交易费用最高可节省 4%。",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "我理解"

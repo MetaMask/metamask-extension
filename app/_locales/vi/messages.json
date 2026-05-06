@@ -726,6 +726,10 @@
   "assetsDescription": {
     "message": "Tự động phát hiện token trong ví của bạn, hiển thị NFT và nhận hàng loạt thông tin cập nhật về số dư tài khoản"
   },
+  "asterdexReferralSubtitle": {
+    "message": "Được hoàn 4% khi giao dịch với mã giới thiệu MetaMask.",
+    "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
   "attemptToCancelSwapForFree": {
     "message": "Cố gắng hủy hoán đổi miễn phí"
   },
@@ -2375,6 +2379,14 @@
   "defiEmptyDescription": {
     "message": "Cho vay, vay và giao dịch, ngay trong ví của bạn."
   },
+  "defiReferralCheckboxLabel": {
+    "message": "Cho phép MetaMask thêm mã giới thiệu. Hành động này là vĩnh viễn. Trang web cung cấp chiết khấu theo điều khoản của họ. MetaMask nhận được một khoản phí.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTitle": {
+    "message": "MetaMask x $1",
+    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
+  },
   "defiTabErrorContent": {
     "message": "Hãy thử truy cập lại sau."
   },
@@ -3226,6 +3238,10 @@
     "message": "Chuẩn bị ví của bạn để sử dụng web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "Tiết kiệm đến 5% khi giao dịch với mã giới thiệu MetaMask.",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "Đến trang web"
   },
@@ -3447,6 +3463,10 @@
   },
   "honeypotTitle": {
     "message": "Bẫy trong bẫy"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "Tiết kiệm đến 4% khi giao dịch với mã giới thiệu MetaMask.",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Tôi hiểu"

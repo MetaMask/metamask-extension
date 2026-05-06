@@ -726,6 +726,10 @@
   "assetsDescription": {
     "message": "ウォレットのトークンを自動検出し、NFTを表示して、アカウント残高の最新情報を一括で取得します"
   },
+  "asterdexReferralSubtitle": {
+    "message": "MetaMaskの紹介コードを使うと、取引額の4%が返ってきます。",
+    "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
   "attemptToCancelSwapForFree": {
     "message": "無料でスワップのキャンセルを試行"
   },
@@ -2375,6 +2379,14 @@
   "defiEmptyDescription": {
     "message": "ウォレット内で貸し借りや取引ができます。"
   },
+  "defiReferralCheckboxLabel": {
+    "message": "MetaMaskに紹介コードを追加することを許可してください。これは後で変更できません。このサイトは利用規約に基づいて割引を提供し、MetaMaskは手数料を受け取ります。",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTitle": {
+    "message": "MetaMask x $1",
+    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
+  },
   "defiTabErrorContent": {
     "message": "後程またアクセスしてみてください。"
   },
@@ -3222,6 +3234,10 @@
     "message": "Web3を使用できるようにウォレットを準備しましょう",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "MetaMaskの紹介コードを使うと、取引手数料が最大5%割引されます。",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "サイトに移動"
   },
@@ -3443,6 +3459,10 @@
   },
   "honeypotTitle": {
     "message": "ハニーポット"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "MetaMaskの紹介コードを使うと、取引手数料が最大4%割引されます。",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "理解しています"

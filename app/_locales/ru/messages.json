@@ -726,6 +726,10 @@
   "assetsDescription": {
     "message": "Автоматически обнаруживайте токены в своем кошельке, отображайте NFT и получайте пакетные обновления баланса счета"
   },
+  "asterdexReferralSubtitle": {
+    "message": "Получайте 4% кэшбэка от сделок с реферальным кодом MetaMask.",
+    "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
   "attemptToCancelSwapForFree": {
     "message": "Бесплатная попытка отменить своп"
   },
@@ -2375,6 +2379,14 @@
   "defiEmptyDescription": {
     "message": "Давайте в долг, занимайте и торгуйте прямо в своем кошельке."
   },
+  "defiReferralCheckboxLabel": {
+    "message": "Разрешите MetaMask добавлять реферальный код. Это действие нельзя отменить. Сайт предлагает скидки в соответствии со своими условиями. MetaMask получает комиссию.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTitle": {
+    "message": "MetaMask x $1",
+    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
+  },
   "defiTabErrorContent": {
     "message": "Попробуйте зайти еще раз позже."
   },
@@ -3226,6 +3238,10 @@
     "message": "Подготовьте свой кошелек к использованию web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "Экономьте до 5% на сделках с реферальным кодом MetaMask.",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "Перейти на сайт"
   },
@@ -3447,6 +3463,10 @@
   },
   "honeypotTitle": {
     "message": "Ловушка"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "Экономьте до 4% на сделках с реферальным кодом MetaMask.",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Я понимаю"

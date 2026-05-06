@@ -726,6 +726,10 @@
   "assetsDescription": {
     "message": "Détection automatique des jetons dans votre portefeuille, affichage des NFT et mise à jour du solde de plusieurs comptes"
   },
+  "asterdexReferralSubtitle": {
+    "message": "Obtenez 4 % de remise sur vos transactions avec un code de parrainage MetaMask.",
+    "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
   "attemptToCancelSwapForFree": {
     "message": "Tentative d’annuler gratuitement le swap"
   },
@@ -2375,6 +2379,14 @@
   "defiEmptyDescription": {
     "message": "Prêtez, empruntez et échangez, directement depuis votre portefeuille."
   },
+  "defiReferralCheckboxLabel": {
+    "message": "Autorisez MetaMask à ajouter un code de parrainage. Cette autorisation est permanente. Le site offre des réductions selon ses conditions générales. MetaMask perçoit une commission.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTitle": {
+    "message": "MetaMask x $1",
+    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
+  },
   "defiTabErrorContent": {
     "message": "Essayez de revenir sur cette page plus tard."
   },
@@ -3226,6 +3238,10 @@
     "message": "Préparez votre portefeuille pour utiliser web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "Économisez jusqu’à 5 % sur vos ordres de bourse avec un code de parrainage MetaMask.",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "Accéder au site"
   },
@@ -3447,6 +3463,10 @@
   },
   "honeypotTitle": {
     "message": "Pot de miel"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "Économisez jusqu’à 4 % sur vos ordres de bourse avec un code de parrainage MetaMask.",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Je comprends"
