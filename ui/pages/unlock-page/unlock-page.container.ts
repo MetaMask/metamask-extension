@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
+import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -9,15 +10,22 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   tryUnlockMetamask,
+  tryUnlockMetamaskWithPasskey,
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
   resetOnboarding,
   getIsSeedlessOnboardingUserAuthenticated,
 } from '../../store/actions';
-import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
+import {
+  getIsSocialLoginFlow,
+  getFirstTimeFlowType,
+  getIsPasskeyFeatureAvailable,
+  getIsPasskeyRegistered,
+} from '../../selectors';
 import {
   getCompletedOnboarding,
   getIsWalletResetInProgress,
+  getPasskeyAutoUnlockSuppressed,
 } from '../../ducks/metamask/metamask';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
@@ -33,12 +41,20 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
   const {
     metamask: { isUnlocked },
   } = state;
+  const isSocialLoginFlow = getIsSocialLoginFlow(state);
+  const isOnboardingCompleted = getCompletedOnboarding(state);
   return {
     isUnlocked,
-    isSocialLoginFlow: getIsSocialLoginFlow(state),
-    isOnboardingCompleted: getCompletedOnboarding(state),
+    isSocialLoginFlow,
+    isOnboardingCompleted,
     firstTimeFlowType: getFirstTimeFlowType(state),
     isWalletResetInProgress: getIsWalletResetInProgress(state),
+    isPasskeyActive:
+      getIsPasskeyFeatureAvailable(state) &&
+      getIsPasskeyRegistered(state) &&
+      !isSocialLoginFlow &&
+      isOnboardingCompleted,
+    passkeyAutoUnlockSuppressed: getPasskeyAutoUnlockSuppressed(state),
   };
 };
 
@@ -46,6 +62,9 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
     tryUnlockMetamask: (password: string) =>
       dispatch(tryUnlockMetamask(password)),
+    tryUnlockMetamaskWithPasskey: (
+      authenticationResponse: PasskeyAuthenticationResponse,
+    ) => dispatch(tryUnlockMetamaskWithPasskey(authenticationResponse)),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
     checkIsSeedlessPasswordOutdated: () =>
@@ -60,8 +79,11 @@ const mergeProps = (
   dispatchProps: ReturnType<typeof mapDispatchToProps>,
   ownProps: OwnProps,
 ) => {
-  const { tryUnlockMetamask: propsTryUnlockMetamask, ...restDispatchProps } =
-    dispatchProps;
+  const {
+    tryUnlockMetamask: propsTryUnlockMetamask,
+    tryUnlockMetamaskWithPasskey: propsTryUnlockMetamaskWithPasskey,
+    ...restDispatchProps
+  } = dispatchProps;
   const {
     navigate,
     onSubmit: ownPropsSubmit,
@@ -71,8 +93,7 @@ const mergeProps = (
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
-  const onSubmit = async (password: string) => {
-    await propsTryUnlockMetamask(password);
+  const navigateAfterUnlock = () => {
     // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
     let redirectTo = DEFAULT_ROUTE;
     const fromLocation = location.state?.from;
@@ -83,11 +104,24 @@ const mergeProps = (
     navigate(redirectTo, { replace: true });
   };
 
+  const onSubmit = async (password: string) => {
+    await propsTryUnlockMetamask(password);
+    navigateAfterUnlock();
+  };
+
+  const onUnlockWithPasskey = async (
+    authenticationResponse: PasskeyAuthenticationResponse,
+  ) => {
+    await propsTryUnlockMetamaskWithPasskey(authenticationResponse);
+    navigateAfterUnlock();
+  };
+
   return {
     ...stateProps,
     ...restDispatchProps,
     ...restOwnProps,
     onSubmit: ownPropsSubmit || onSubmit,
+    onUnlockWithPasskey,
     navigate,
     location,
     isPopup,
