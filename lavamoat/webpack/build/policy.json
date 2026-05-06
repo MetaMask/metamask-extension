@@ -1136,7 +1136,7 @@
         "schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
         "mocha>serialize-javascript": true,
-        "vitest>tinyglobby": true
+        "vite>tinyglobby": true
       }
     },
     "postcss-loader>cosmiconfig": {
@@ -1407,7 +1407,7 @@
         "atob": true
       }
     },
-    "vitest>vite>esbuild": {
+    "@storybook/test-runner>@storybook/core-common>esbuild": {
       "builtin": {
         "child_process.execFileSync": true,
         "child_process.spawn": true,
@@ -1602,7 +1602,7 @@
         "webpack-dev-server>sockjs>websocket-driver": true
       }
     },
-    "vitest>tinyglobby>fdir": {
+    "vite>tinyglobby>fdir": {
       "builtin": {
         "fs": true,
         "path": true
@@ -1611,7 +1611,7 @@
         "process.platform": true
       },
       "packages": {
-        "vitest>tinyglobby>picomatch": true
+        "vite>tinyglobby>picomatch": true
       }
     },
     "chokidar>braces>fill-range": {
@@ -1947,7 +1947,7 @@
         "terser-webpack-plugin": true
       }
     },
-    "tailwindcss>jiti": {
+    "vite>jiti": {
       "builtin": {
         "assert": true,
         "crypto": true,
@@ -2283,7 +2283,7 @@
         "process.version.slice": true
       }
     },
-    "vitest>tinyglobby>picomatch": {
+    "vite>tinyglobby>picomatch": {
       "globals": {
         "navigator": true,
         "process": true
@@ -2341,7 +2341,7 @@
       },
       "packages": {
         "postcss-loader>cosmiconfig": true,
-        "tailwindcss>jiti": true,
+        "vite>jiti": true,
         "postcss": true,
         "semver": true
       }
@@ -2873,7 +2873,7 @@
         "fast-glob": true,
         "eslint>glob-parent": true,
         "del>is-glob": true,
-        "tailwindcss>jiti": true,
+        "vite>jiti": true,
         "micromatch": true,
         "chokidar>normalize-path": true,
         "tailwindcss>object-hash": true,
@@ -2922,7 +2922,7 @@
       "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "@swc/core": true,
-        "vitest>vite>esbuild": true,
+        "@storybook/test-runner>@storybook/core-common>esbuild": true,
         "terser-webpack-plugin>jest-worker": true,
         "schema-utils": true,
         "mocha>serialize-javascript": true,
@@ -2962,7 +2962,7 @@
         "process.nextTick": true
       }
     },
-    "vitest>tinyglobby": {
+    "vite>tinyglobby": {
       "builtin": {
         "fs.readdir": true,
         "fs.readdirSync": true,
@@ -2985,8 +2985,8 @@
         "process.platform": true
       },
       "packages": {
-        "vitest>tinyglobby>fdir": true,
-        "vitest>tinyglobby>picomatch": true
+        "vite>tinyglobby>fdir": true,
+        "vite>tinyglobby>picomatch": true
       }
     },
     "chokidar>braces>fill-range>to-regex-range": {

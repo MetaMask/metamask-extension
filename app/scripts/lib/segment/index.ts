@@ -4,7 +4,10 @@ import { SECOND } from '../../../../shared/constants/time';
 import type { MetaMetricsUserTraits } from '../../../../shared/constants/metametrics';
 
 const SEGMENT_WRITE_KEY = process.env.SEGMENT_WRITE_KEY ?? null;
-const SEGMENT_HOST = process.env.SEGMENT_HOST || undefined;
+const SEGMENT_HOST =
+  process.env.SEGMENT_HOST && process.env.SEGMENT_HOST !== 'undefined'
+    ? process.env.SEGMENT_HOST
+    : undefined;
 
 // flushAt controls how many events are sent to segment at once. Segment will
 // hold onto a queue of events until it hits this number, then it sends them as
@@ -87,7 +90,7 @@ function createSegmentClient(
 ): SegmentClient {
   const analytics = new Analytics({
     writeKey,
-    host,
+    ...(host === undefined ? {} : { host }),
     flushAt,
     flushInterval,
   });

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Vitest setup globals are available at runtime.
 import '@testing-library/jest-dom';
 
 vi.mock('webextension-polyfill', () => ({

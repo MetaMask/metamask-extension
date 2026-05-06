@@ -82,6 +82,10 @@ jest.mock('../../../../shared/lib/passkey', () => ({
     },
     clientExtensionResults: {},
   }),
+  cancelPasskeyCeremony: jest.fn(),
+  isPasskeyCeremonySilentError: (error: unknown) =>
+    error instanceof Error && error.name === 'NotAllowedError',
+  translatePasskeyError: () => undefined,
 }));
 
 const mockVerifyPassword = jest.fn().mockResolvedValue(undefined);

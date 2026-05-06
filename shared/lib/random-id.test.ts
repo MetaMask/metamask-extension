@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Dynamic re-import is used to reseed module state in Vitest.
 import createRandomId from './random-id';
 
 describe('createRandomId', () => {

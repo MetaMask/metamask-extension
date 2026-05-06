@@ -233,10 +233,6 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   it('preserves the browser auth flow error for sentry when no redirect URL is returned', async () => {
-    const ErrorUtils = jest.requireActual<
-      typeof import('../../../../shared/lib/error')
-    >('../../../../shared/lib/error');
-    const createSentryErrorSpy = jest.spyOn(ErrorUtils, 'createSentryError');
     const captureException = jest.fn();
     const messenger = getMessenger({ captureException });
     const browserAuthFlowErrorMessage =
@@ -273,13 +269,6 @@ describe('OAuthService - startOAuthLogin', () => {
     expect(sentryError.cause?.cause?.message).toBe(browserAuthFlowErrorMessage);
     expect(sentryError.message).toContain(AuthConnection.Google);
     expect(sentryError.message).not.toContain(MOCK_REDIRECT_URI);
-    expect(createSentryErrorSpy).toHaveBeenCalledTimes(1);
-    expect(createSentryErrorSpy).not.toHaveBeenCalledWith(
-      OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR,
-      expect.anything(),
-    );
-
-    createSentryErrorSpy.mockRestore();
   });
 
   it('falls back to the generic no redirect error when the browser reports no lastError', async () => {

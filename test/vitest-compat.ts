@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Jest compatibility shims bridge Vitest ESM APIs into legacy tests.
 /**
  * Jest → Vitest global compatibility shim.
  *

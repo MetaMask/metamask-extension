@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Vitest hoisted mocks and dynamic entry imports are runtime-only here.
 const mockModules = vi.hoisted(() => ({
   artifacts: {
     buildArtifactsBody: vi.fn(),

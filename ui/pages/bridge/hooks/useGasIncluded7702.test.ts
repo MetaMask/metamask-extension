@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Promise mocks intentionally model async boolean responses.
 import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { getGaslessBridgeWith7702EnabledForChain } from '../../../../shared/lib/selectors';

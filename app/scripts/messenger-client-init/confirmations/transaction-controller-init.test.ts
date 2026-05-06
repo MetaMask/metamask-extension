@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Vitest constructor mocks intentionally omit private fields.
 import { NetworkController } from '@metamask/network-controller';
 // Mocha type definitions are conflicting with Jest
 import { it as jestIt } from '@jest/globals';
@@ -151,8 +153,8 @@ describe('Transaction Controller Init', () => {
           getHook() {
             return payHookMock;
           },
-        };
-      } as unknown as typeof TransactionPayPublishHook,
+        } as InstanceType<typeof TransactionPayPublishHook>;
+      },
     );
 
     payHookMock.mockResolvedValue({
@@ -184,8 +186,8 @@ describe('Transaction Controller Init', () => {
       .mockImplementation(function delegation7702PublishHookMock() {
         return {
           getHook: () => delegation7702HookMock,
-        };
-      } as unknown as typeof Delegation7702PublishHook);
+        } as InstanceType<typeof Delegation7702PublishHook>;
+      });
   });
 
   it('returns controller instance', () => {
@@ -537,8 +539,8 @@ describe('Transaction Controller Init', () => {
         .mockImplementation(function delegation7702PublishHookMock() {
           return {
             getHook: () => delegation7702HookFn,
-          };
-        } as unknown as typeof Delegation7702PublishHook);
+          } as InstanceType<typeof Delegation7702PublishHook>;
+        });
 
       const upsertFragmentMock = jest.fn();
 
@@ -632,8 +634,8 @@ describe('Transaction Controller Init', () => {
         .mockImplementation(function delegation7702PublishHookMock() {
           return {
             getHook: () => delegation7702HookFn,
-          };
-        } as unknown as typeof Delegation7702PublishHook);
+          } as InstanceType<typeof Delegation7702PublishHook>;
+        });
 
       type PHArgs = Parameters<typeof publishHook>[0];
       const result = await publishHook({

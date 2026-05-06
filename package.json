@@ -806,9 +806,8 @@
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "vinyl-sourcemaps-apply": "^0.2.1",
-    "vite": "7.2.7",
+    "vite": "7.3.2",
     "vitest": "^4.1.2",
-    "vitest-canvas-mock": "^1.1.4",
     "wait-on": "^7.0.1",
     "watchify": "^4.0.0",
     "web-vitals": "^4.2.4",
@@ -859,7 +858,7 @@
       "react-devtools>electron#23.3.0": true,
       "sharp#0.34.2": true,
       "tsx>esbuild#0.27.7": true,
-      "vite>esbuild#0.25.12": false
+      "vite>esbuild#0.27.7": false
     }
   },
   "packageManager": "yarn@4.12.0",

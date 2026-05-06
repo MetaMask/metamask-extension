@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/browser';
 import { forEachEnvelopeItem, parseEnvelope } from '@sentry/utils';
+import { vi } from 'vitest';
 import { tick } from '../../../test/lib/timer-helpers';
 import { makeTransport } from './sentry-make-transport';
 

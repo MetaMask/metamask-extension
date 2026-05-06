@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Mock account fixtures use string-keyed record access.
 import { act } from 'react-dom/test-utils';
 import { Hex } from '@metamask/utils';
 import { getIsSmartTransaction } from '../../../../../shared/lib/selectors';

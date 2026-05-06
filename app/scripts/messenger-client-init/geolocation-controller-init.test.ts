@@ -4,6 +4,7 @@ import {
   type GeolocationControllerMessenger,
   type GeolocationControllerState,
 } from '@metamask/geolocation-controller';
+import { vi } from 'vitest';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import { GeolocationControllerInit } from './geolocation-controller-init';

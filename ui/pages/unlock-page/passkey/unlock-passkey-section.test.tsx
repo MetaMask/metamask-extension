@@ -11,17 +11,9 @@ import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { UnlockPasskeySection } from './unlock-passkey-section';
 
-jest.mock('../../../../shared/lib/environment-type', () => {
-  const actual = jest.requireActual<
-    typeof import('../../../../shared/lib/environment-type')
-  >('../../../../shared/lib/environment-type');
-  return {
-    ...actual,
-    getEnvironmentType: jest.fn((url?: string) =>
-      actual.getEnvironmentType(url),
-    ),
-  };
-});
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  getEnvironmentType: jest.fn(() => 'fullscreen'),
+}));
 
 const getEnvironmentTypeMock = getEnvironmentType as jest.MockedFunction<
   typeof getEnvironmentType
@@ -51,12 +43,7 @@ describe('UnlockPasskeySection', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    getEnvironmentTypeMock.mockImplementation((url?: string) => {
-      const actual = jest.requireActual<
-        typeof import('../../../../shared/lib/environment-type')
-      >('../../../../shared/lib/environment-type');
-      return actual.getEnvironmentType(url);
-    });
+    getEnvironmentTypeMock.mockReturnValue('fullscreen');
     jest
       .spyOn(actionsModule, 'generatePasskeyAuthenticationOptions')
       .mockResolvedValue({

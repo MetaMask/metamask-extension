@@ -702,6 +702,7 @@ describe('MetaMaskController', () => {
 
       // These tests require isAssetsUnifyStateFeatureEnabled to return true.
       // The flag is currently hardcoded to false, so skip the entire block.
+      // eslint-disable-next-line jest/no-disabled-tests
       describe.skip('with assets-unify state enabled', () => {
         let unifyMetamaskController;
 

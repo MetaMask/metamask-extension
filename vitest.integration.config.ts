@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Vitest config imports ESM-only tooling from a CJS-typed project.
 import { defineConfig } from 'vitest/config';
 // eslint-disable-next-line import-x/no-extraneous-dependencies
 import { transformWithEsbuild } from 'vite';
@@ -48,6 +50,8 @@ export default defineConfig({
 
     coverage: {
       include: ['shared/**/*.{js,ts,tsx}', 'ui/**/*.{js,ts,tsx}'],
+      reportsDirectory: './coverage/integration',
+      reporter: ['html', 'json'],
     },
 
     alias: {
@@ -60,6 +64,7 @@ export default defineConfig({
         inline: [
           '@metamask/design-system-react',
           '@metamask/smart-transactions-controller',
+          '@ledgerhq/hw-transport',
           '@lavamoat/lavadome-react',
           '@lavamoat/lavadome-core',
         ],

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Vitest hoisted mocks are bridged through the Jest compatibility layer.
 import { cloneDeep } from 'lodash';
 
 const mockUnitTestInfuraIdInitialValue = 'unitTestInfuraId';

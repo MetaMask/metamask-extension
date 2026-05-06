@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Vitest setup installs browser-like globals for legacy tests.
 import 'fake-indexeddb/auto';
 import { Buffer as NodeBuffer } from 'node:buffer';
 import { webcrypto } from 'node:crypto';

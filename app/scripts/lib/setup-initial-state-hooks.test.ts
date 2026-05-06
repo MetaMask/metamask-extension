@@ -51,8 +51,11 @@ jest.mock('../../../shared/lib/stores/persistence-manager', () => ({
   }),
 }));
 
-const { FixtureExtensionStore } =
-  await import('../../../shared/lib/stores/fixture-extension-store');
+async function getFixtureExtensionStoreMock() {
+  const { FixtureExtensionStore } =
+    await import('../../../shared/lib/stores/fixture-extension-store.js');
+  return jest.mocked(FixtureExtensionStore);
+}
 
 /**
  * Re-imports the module with a fresh module registry so top-level code
@@ -99,7 +102,7 @@ describe('setup-initial-state-hooks', () => {
 
       await importFresh();
 
-      expect(FixtureExtensionStore).toHaveBeenCalledWith({
+      expect(await getFixtureExtensionStoreMock()).toHaveBeenCalledWith({
         initialize: true,
       });
     });
@@ -109,7 +112,7 @@ describe('setup-initial-state-hooks', () => {
 
       await importFresh();
 
-      expect(FixtureExtensionStore).toHaveBeenCalledWith({
+      expect(await getFixtureExtensionStoreMock()).toHaveBeenCalledWith({
         initialize: true,
       });
     });
@@ -119,7 +122,7 @@ describe('setup-initial-state-hooks', () => {
 
       await importFresh();
 
-      expect(FixtureExtensionStore).toHaveBeenCalledWith({
+      expect(await getFixtureExtensionStoreMock()).toHaveBeenCalledWith({
         initialize: true,
       });
     });
@@ -129,7 +132,7 @@ describe('setup-initial-state-hooks', () => {
 
       await importFresh();
 
-      expect(FixtureExtensionStore).toHaveBeenCalledWith({
+      expect(await getFixtureExtensionStoreMock()).toHaveBeenCalledWith({
         initialize: false,
       });
     });
@@ -139,7 +142,7 @@ describe('setup-initial-state-hooks', () => {
 
       await importFresh();
 
-      expect(FixtureExtensionStore).toHaveBeenCalledWith({
+      expect(await getFixtureExtensionStoreMock()).toHaveBeenCalledWith({
         initialize: false,
       });
     });

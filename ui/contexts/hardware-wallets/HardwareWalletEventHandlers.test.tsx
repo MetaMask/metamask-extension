@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Hardware wallet state unions are narrowed by assertions in these tests.
 import { renderHook } from '@testing-library/react-hooks';
 import {
   HardwareWalletError,

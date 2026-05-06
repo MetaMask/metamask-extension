@@ -61,7 +61,7 @@ function getInitRequestMock(
 
 async function importFreshAssetsControllerInit() {
   jest.resetModules();
-  return await import('./assets-controller-init');
+  return await import('./assets-controller-init.js');
 }
 
 /**

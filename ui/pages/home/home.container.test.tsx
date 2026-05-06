@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Dynamic container import uses runtime module resolution.
 import React from 'react';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Vitest transform plugins depend on Vite's ESM-only plugin types.
 import type { PluginOption } from 'vite';
 
 export function createHoistJestMockPlugin(): PluginOption {

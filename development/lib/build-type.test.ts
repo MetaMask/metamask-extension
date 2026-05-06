@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck This test intentionally uses CommonJS cache control from Vitest.
 import path from 'path';
 import { createRequire } from 'node:module';
 import { cloneDeep } from 'lodash';

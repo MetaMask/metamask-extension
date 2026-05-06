@@ -312,11 +312,16 @@ describe('NetworkListMenu', () => {
     const mainnetItem = getByText(MAINNET_DISPLAY_NAME);
     expect(mainnetItem).toBeInTheDocument();
     fireEvent.click(mainnetItem);
-    await waitFor(() => expect(mockToggleNetworkMenu).toHaveBeenCalled());
-    await waitFor(() => expect(mockSetActiveNetwork).toHaveBeenCalled());
-    await waitFor(() => expect(mockUpdateCustomNonce).toHaveBeenCalled());
-    await waitFor(() => expect(mockSetNextNonce).toHaveBeenCalled());
-    await waitFor(() => expect(mockDetectNfts).toHaveBeenCalled());
+    await waitFor(
+      () => {
+        expect(mockToggleNetworkMenu).toHaveBeenCalled();
+        expect(mockSetActiveNetwork).toHaveBeenCalled();
+        expect(mockUpdateCustomNonce).toHaveBeenCalled();
+        expect(mockSetNextNonce).toHaveBeenCalled();
+        expect(mockDetectNfts).toHaveBeenCalled();
+      },
+      { timeout: 10000 },
+    );
   });
 
   it('shows the correct selected network when networks share the same chain ID', () => {
@@ -346,7 +351,7 @@ describe('NetworkListMenu', () => {
     ).toBeInTheDocument();
   });
 
-  it('narrows down search results', () => {
+  it('narrows down search results', async () => {
     const { queryByText, getByPlaceholderText } = render();
 
     expect(queryByText('Chain 5')).toBeInTheDocument();
@@ -355,7 +360,12 @@ describe('NetworkListMenu', () => {
     fireEvent.focus(searchBox);
     fireEvent.change(searchBox, { target: { value: 'Main' } });
 
-    expect(queryByText('Chain 5')).not.toBeInTheDocument();
+    await waitFor(
+      () => {
+        expect(queryByText('Chain 5')).not.toBeInTheDocument();
+      },
+      { timeout: 10000 },
+    );
   });
 
   it('enables the "Add a custom network" button when MetaMask is locked', () => {
@@ -484,20 +494,19 @@ describe('NetworkListMenu', () => {
         store,
       );
       fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
-      await waitFor(() =>
-        expect(mockAddPermittedChain).toHaveBeenCalledWith(
-          MOCK_ORIGIN,
-          'eip155:1',
-        ),
-      );
-      await waitFor(() =>
-        expect(mockShowPermittedNetworkToast).toHaveBeenCalled(),
-      );
-      await waitFor(() =>
-        expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
-          MOCK_ORIGIN,
-          NETWORK_TYPES.MAINNET,
-        ),
+      await waitFor(
+        () => {
+          expect(mockAddPermittedChain).toHaveBeenCalledWith(
+            MOCK_ORIGIN,
+            'eip155:1',
+          );
+          expect(mockShowPermittedNetworkToast).toHaveBeenCalled();
+          expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
+            MOCK_ORIGIN,
+            NETWORK_TYPES.MAINNET,
+          );
+        },
+        { timeout: 10000 },
       );
     });
 

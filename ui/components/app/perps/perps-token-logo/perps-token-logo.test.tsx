@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Image constructor mocking uses a minimal test double.
 import React from 'react';
 import { screen, act } from '@testing-library/react';
 import { AvatarTokenSize } from '@metamask/design-system-react';

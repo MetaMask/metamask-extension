@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Vitest hoisted mock globals are provided by the test runner.
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { PermissionController } from '@metamask/permission-controller';
 import * as permissions from '../controllers/permissions';

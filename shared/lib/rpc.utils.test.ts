@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Dynamic mock import is used to keep fetch mock ordering stable.
 import { jsonRpcRequest } from './rpc.utils';
 
 jest.mock('./fetch-with-timeout', () => {

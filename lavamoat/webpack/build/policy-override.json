@@ -197,7 +197,7 @@
       "packages": {
         "postcss": true,
         "postcss-loader>cosmiconfig": true,
-        "tailwindcss>jiti": true
+        "vite>jiti": true
       }
     },
     "postcss-loader>cosmiconfig": {

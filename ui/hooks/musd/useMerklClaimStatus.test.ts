@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Vitest partial mocks use runtime globals.
 import { Interface } from '@ethersproject/abi';
 import { renderHook, act } from '@testing-library/react-hooks';
 import { TransactionStatus } from '@metamask/transaction-controller';
