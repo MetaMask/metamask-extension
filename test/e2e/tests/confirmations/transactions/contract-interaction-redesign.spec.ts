@@ -128,10 +128,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);
 
-          await login(driver, {
-            expectedBalance: '1.21M',
-            waitForNonEvmAccounts: false,
-          });
+          await login(driver, { expectedBalance: '1.21M' });
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();

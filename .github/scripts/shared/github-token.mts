@@ -23,7 +23,8 @@ export function getGitHubToken(): string {
     // gh CLI not authenticated or not installed
   }
 
-  throw new Error(
+  console.error(
     'No GitHub token found. Set GITHUB_TOKEN or GH_TOKEN, or run `gh auth login`.',
   );
+  process.exit(1);
 }

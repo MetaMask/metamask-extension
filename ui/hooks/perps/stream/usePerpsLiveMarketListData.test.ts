@@ -84,8 +84,7 @@ describe('usePerpsLiveMarketListData', () => {
       prices: {
         BTC: {
           symbol: 'BTC',
-          // Raw price string from PriceUpdate (no $ prefix, no commas)
-          price: '78337.5',
+          price: '$99,999',
           percentChange24h: '+9.9%',
           timestamp: 123,
         },
@@ -97,8 +96,7 @@ describe('usePerpsLiveMarketListData', () => {
 
     expect(result.current.markets[0]).toMatchObject({
       symbol: 'BTC',
-      // Formatted via formatPerpsFiatUniversal: $10k-$100k range → 0 decimals
-      price: '$78,338',
+      price: '$99,999',
       change24hPercent: '+9.9%',
     });
   });

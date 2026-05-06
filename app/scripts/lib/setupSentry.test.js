@@ -1,8 +1,4 @@
-import {
-  removeUrlsFromBreadCrumb,
-  rewriteReport,
-  shouldCreateSpanForRequest,
-} from './setupSentry';
+import { removeUrlsFromBreadCrumb, rewriteReport } from './setupSentry';
 
 describe('Setup Sentry', () => {
   describe('rewriteReport', () => {
@@ -156,63 +152,6 @@ describe('Setup Sentry', () => {
       };
       rewriteReport(testReport);
       expect(testReport.message).toStrictEqual('This is a simple report');
-    });
-  });
-
-  describe('shouldCreateSpanForRequest', () => {
-    it('should return false for snap manifest fetches', () => {
-      expect(
-        shouldCreateSpanForRequest(
-          'chrome-extension://abcdefg/snaps/npm:@metamask/preinstalled-example-snap/snap.manifest.json',
-        ),
-      ).toStrictEqual(false);
-      expect(
-        shouldCreateSpanForRequest(
-          'moz-extension://abcdefg/snaps/npm:@metamask/message-signing-snap/snap.manifest.json',
-        ),
-      ).toStrictEqual(false);
-    });
-
-    it('should return false for locale file fetches', () => {
-      expect(
-        shouldCreateSpanForRequest(
-          'chrome-extension://abcdefg/_locales/en/messages.json',
-        ),
-      ).toStrictEqual(false);
-      expect(
-        shouldCreateSpanForRequest(
-          'moz-extension://abcdefg/_locales/es/messages.json',
-        ),
-      ).toStrictEqual(false);
-    });
-
-    it('should return false for sentry.io domains', () => {
-      expect(
-        shouldCreateSpanForRequest('https://sentry.io/api/123'),
-      ).toStrictEqual(false);
-      expect(
-        shouldCreateSpanForRequest('https://o123.ingest.sentry.io/envelope'),
-      ).toStrictEqual(false);
-    });
-
-    it('should return true for other local extension file fetches', () => {
-      expect(
-        shouldCreateSpanForRequest(
-          'chrome-extension://abcdefg/scripts/ppom-validator.wasm',
-        ),
-      ).toStrictEqual(true);
-      expect(
-        shouldCreateSpanForRequest('chrome-extension://abcdefg/home.html'),
-      ).toStrictEqual(true);
-    });
-
-    it('should return true for external API URLs', () => {
-      expect(
-        shouldCreateSpanForRequest('https://mainnet.infura.io/v3/abc'),
-      ).toStrictEqual(true);
-      expect(
-        shouldCreateSpanForRequest('https://api.coingecko.com/v3/simple/price'),
-      ).toStrictEqual(true);
     });
   });
 

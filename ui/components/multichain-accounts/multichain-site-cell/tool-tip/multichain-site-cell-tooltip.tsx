@@ -5,17 +5,22 @@ import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  FontWeight,
-  Text,
+} from '@metamask/design-system-react';
+import {
+  AlignItems,
+  BorderStyle,
+  Display,
+  FlexDirection,
   TextAlign,
   TextColor,
   TextVariant,
-} from '@metamask/design-system-react';
+} from '../../../../helpers/constants/design-system';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  Box,
+  Text,
+} from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
@@ -64,17 +69,20 @@ const TooltipContent = React.memo<TooltipContentProps>(
 
     return (
       <Box
-        flexDirection={BoxFlexDirection.Column}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         data-test-id="site-cell-tooltip"
       >
-        <Box flexDirection={BoxFlexDirection.Column}>
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           {displayAccountGroups.map((acc) => (
             <Box
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              alignItems={AlignItems.center}
+              textAlign={TextAlign.Left}
               key={acc.id}
               padding={1}
-              paddingHorizontal={2}
+              paddingInline={2}
               gap={2}
             >
               <AvatarAccount
@@ -83,11 +91,9 @@ const TooltipContent = React.memo<TooltipContentProps>(
                 variant={avatarAccountVariant}
               />
               <Text
-                color={TextColor.OverlayInverse}
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
+                color={TextColor.overlayInverse}
+                variant={TextVariant.bodyMdMedium}
                 data-testid="accounts-list-item-connected-account-name"
-                textAlign={TextAlign.Left}
                 ellipsis
               >
                 {acc.metadata.name}
@@ -96,25 +102,25 @@ const TooltipContent = React.memo<TooltipContentProps>(
           ))}
           {displayNetworks.map((network) => (
             <Box
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              alignItems={AlignItems.center}
+              textAlign={TextAlign.Left}
               key={network.chainId}
               padding={1}
-              paddingHorizontal={2}
+              paddingInline={2}
               gap={2}
             >
               <AvatarNetwork
                 size={AvatarNetworkSize.Xs}
                 src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
                 name={network.name}
-                className="border-0"
+                borderStyle={BorderStyle.none}
               />
               <Text
-                color={TextColor.OverlayInverse}
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
+                color={TextColor.overlayInverse}
+                variant={TextVariant.bodyMdMedium}
                 data-testid="accounts-list-item-connected-account-name"
-                textAlign={TextAlign.Left}
                 ellipsis
               >
                 {network.name}
@@ -126,16 +132,15 @@ const TooltipContent = React.memo<TooltipContentProps>(
             hasMoreAccounts &&
             moreAccountsText && (
               <Box
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                paddingHorizontal={2}
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                textAlign={TextAlign.Left}
+                paddingInline={2}
               >
                 <Text
-                  color={TextColor.TextMuted}
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
+                  color={TextColor.textMuted}
+                  variant={TextVariant.bodyMdMedium}
                   data-testid="accounts-list-item-plus-more-tooltip"
-                  textAlign={TextAlign.Left}
                 >
                   {moreAccountsText}
                 </Text>
@@ -146,16 +151,15 @@ const TooltipContent = React.memo<TooltipContentProps>(
             hasMoreNetworks &&
             moreNetworksText && (
               <Box
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                paddingHorizontal={2}
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                textAlign={TextAlign.Left}
+                paddingInline={2}
               >
                 <Text
-                  color={TextColor.TextMuted}
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
+                  color={TextColor.textMuted}
+                  variant={TextVariant.bodyMdMedium}
                   data-testid="networks-list-item-plus-more-tooltip"
-                  textAlign={TextAlign.Left}
                 >
                   {moreNetworksText}
                 </Text>

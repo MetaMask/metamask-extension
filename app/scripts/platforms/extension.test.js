@@ -1,6 +1,5 @@
 import browser from 'webextension-polyfill';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { t } from '../../../shared/lib/translate';
 import ExtensionPlatform from './extension';
 
@@ -15,16 +14,7 @@ jest.mock('webextension-polyfill', () => {
     },
     notifications: {
       create: jest.fn(),
-      onClicked: {
-        hasListener: jest.fn(),
-      },
     },
-  };
-});
-
-jest.mock('@metamask/etherscan-link', () => {
-  return {
-    getBlockExplorerLink: jest.fn(),
   };
 });
 
@@ -104,54 +94,6 @@ describe('extension platform', () => {
     });
   });
 
-  describe('_showConfirmedTransaction', () => {
-    it('should show confirmed transaction with nonce', async () => {
-      const txMeta = {
-        txParams: { nonce: '0x1' },
-        error: { message: 'Error message' },
-      };
-      browser.notifications.onClicked.hasListener.mockReturnValue(true);
-      getBlockExplorerLink.mockReturnValue('http://explorer-mock');
-
-      const extensionPlatform = new ExtensionPlatform();
-      const showNotificationSpy = jest.spyOn(
-        extensionPlatform,
-        '_showNotification',
-      );
-
-      await extensionPlatform._showConfirmedTransaction(txMeta);
-
-      expect(showNotificationSpy).toHaveBeenCalledWith(
-        'Confirmed transaction',
-        'Transaction 1 confirmed! View on Explorer Mock',
-        'http://explorer-mock',
-      );
-    });
-
-    it('should show confirmed transaction without nonce', async () => {
-      const txMeta = {
-        txParams: { nonce: undefined },
-        error: { message: 'Error message' },
-      };
-      browser.notifications.onClicked.hasListener.mockReturnValue(true);
-      getBlockExplorerLink.mockReturnValue('http://explorer-mock');
-
-      const extensionPlatform = new ExtensionPlatform();
-      const showNotificationSpy = jest.spyOn(
-        extensionPlatform,
-        '_showNotification',
-      );
-
-      await extensionPlatform._showConfirmedTransaction(txMeta);
-
-      expect(showNotificationSpy).toHaveBeenCalledWith(
-        'Confirmed transaction',
-        'Transaction confirmed! View on Explorer Mock',
-        'http://explorer-mock',
-      );
-    });
-  });
-
   describe('_showFailedTransaction', () => {
     it('should show failed transaction with nonce', async () => {
       const txMeta = {
@@ -172,26 +114,7 @@ describe('extension platform', () => {
       );
     });
 
-    it('should show failed transaction without nonce', async () => {
-      const txMeta = {
-        txParams: { nonce: undefined },
-        error: { message: 'Error message' },
-      };
-      const extensionPlatform = new ExtensionPlatform();
-      const showNotificationSpy = jest.spyOn(
-        extensionPlatform,
-        '_showNotification',
-      );
-
-      await extensionPlatform._showFailedTransaction(txMeta);
-
-      expect(showNotificationSpy).toHaveBeenCalledWith(
-        'Failed transaction',
-        `Transaction failed! ${txMeta.error.message}`,
-      );
-    });
-
-    it('should show failed transaction with nonce and with errorMessage', async () => {
+    it('should show failed transaction with errorMessage', async () => {
       const errorMessage = 'Test error message';
       const txMeta = {
         txParams: { nonce: '0x1' },
@@ -208,26 +131,6 @@ describe('extension platform', () => {
       expect(showNotificationSpy).toHaveBeenCalledWith(
         'Failed transaction',
         `Transaction 1 failed! ${errorMessage}`,
-      );
-    });
-
-    it('should show failed transaction without nonce and with errorMessage', async () => {
-      const errorMessage = 'Test error message';
-      const txMeta = {
-        txParams: { nonce: undefined },
-        error: { message: 'Error message' },
-      };
-      const extensionPlatform = new ExtensionPlatform();
-      const showNotificationSpy = jest.spyOn(
-        extensionPlatform,
-        '_showNotification',
-      );
-
-      await extensionPlatform._showFailedTransaction(txMeta, errorMessage);
-
-      expect(showNotificationSpy).toHaveBeenCalledWith(
-        'Failed transaction',
-        `Transaction failed! ${errorMessage}`,
       );
     });
   });

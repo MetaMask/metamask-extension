@@ -19,7 +19,6 @@ import {
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
-  PRICE_RANGES_MINIMAL_VIEW,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -411,7 +410,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           data-testid="perps-edit-margin-available-value"
         >
           {`${formatPerpsFiat(maxAmount, {
-            ranges: PRICE_RANGES_MINIMAL_VIEW,
+            ranges: PRICE_RANGES_UNIVERSAL,
           })} USDC`}
         </Text>
       </Box>

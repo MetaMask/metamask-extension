@@ -16,8 +16,9 @@ jobs:
     steps:
       - name: Close release bug report issue
         uses: actions/github-script@v8
+        env:
+          BUG_REPORT_TOKEN: ${{ secrets.BUG_REPORT_TOKEN }}
         with:
-          github-token: ${{ secrets.BUG_REPORT_TOKEN }}
           script: |
             const branchName = context.payload.pull_request.head.ref;
             const match = branchName.match(/^release\/(\d+\.\d+\.\d+)$/);
@@ -29,6 +30,10 @@ jobs:
             const repoOwner = context.repo.owner;
             const bugReportRepo = 'MetaMask-planning';
 
+            // Use BUG_REPORT_TOKEN for cross-repo access
+            const { getOctokit } = require('@actions/github');
+            const bugReportOctokit = getOctokit(process.env.BUG_REPORT_TOKEN);
+
             // Find the open bug report issue
             const searchQuery = [
               `repo:${repoOwner}/${bugReportRepo}`,
@@ -37,7 +42,7 @@ jobs:
               'in:title',
               `v${version} Bug Report`,
             ].join(' ');
-            const result = await github.graphql(`
+            const result = await bugReportOctokit.graphql(`
               query FindBugReport($searchQuery: String!) {
                 search(query: $searchQuery, type: ISSUE, first: 1) {
                   nodes {
@@ -58,7 +63,7 @@ jobs:
             console.log(`Closing bug report issue "${issue.title}" (id: ${issue.id})`);
 
             // Close the issue
-            await github.graphql(`
+            await bugReportOctokit.graphql(`
               mutation CloseIssue($issueId: ID!) {
                 updateIssue(input: {id: $issueId, state: CLOSED}) {
                   clientMutationId

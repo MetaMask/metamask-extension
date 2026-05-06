@@ -3,12 +3,6 @@ import { NetworkController } from '@metamask/network-controller';
 import { it as jestIt } from '@jest/globals';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
-  ActionConstraint,
-  Messenger,
-  MockAnyNamespace,
-  MOCK_ANY_NAMESPACE,
-} from '@metamask/messenger';
-import {
   TransactionMeta,
   TransactionType,
   TransactionController,
@@ -20,8 +14,6 @@ import {
   PublishBatchHookTransaction,
 } from '@metamask/transaction-controller';
 import { TransactionPayPublishHook } from '@metamask/transaction-pay-controller';
-import type { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
-import type { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
 import {
   getTransactionControllerInitMessenger,
   getTransactionControllerMessenger,
@@ -73,25 +65,15 @@ function buildInitRequestMock(): jest.Mocked<
     TransactionControllerInitMessenger
   >
 > {
-  const baseControllerMessenger = new Messenger<
-    MockAnyNamespace,
-    AppStateControllerSetDefaultHomeActiveTabNameAction | ActionConstraint,
-    never
-  >({
-    namespace: MOCK_ANY_NAMESPACE,
-  });
-  baseControllerMessenger.registerActionHandler(
-    'AppStateController:setDefaultHomeActiveTabName',
-    (_defaultHomeActiveTabName: AccountOverviewTabKey | null) => undefined,
-  );
+  const baseControllerMessenger = getRootMessenger();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getTransactionControllerMessenger(
-      baseControllerMessenger as never,
+      baseControllerMessenger,
     ),
     initMessenger: getTransactionControllerInitMessenger(
-      baseControllerMessenger as never,
+      baseControllerMessenger,
     ),
   };
 
@@ -195,7 +177,7 @@ describe('Transaction Controller Init', () => {
     });
   });
 
-  describe('determines incoming transactions is disabled', () => {
+  describe('determines incoming transactions is enabled', () => {
     it('when useExternalServices is enabled in preferences and onboarding complete', () => {
       const incomingTransactionsIsEnabled = testConstructorOption(
         'incomingTransactions',
@@ -207,7 +189,7 @@ describe('Transaction Controller Init', () => {
         },
       )?.isEnabled;
 
-      expect(incomingTransactionsIsEnabled?.()).toBe(false);
+      expect(incomingTransactionsIsEnabled?.()).toBe(true);
     });
 
     it('unless enabled in preferences but onboarding incomplete', () => {

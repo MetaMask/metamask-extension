@@ -17,10 +17,6 @@ describe('confirmation.utils', () => {
       TransactionType.tokenMethodTransferFrom,
       TransactionType.tokenMethodSafeTransferFrom,
       TransactionType.simpleSend,
-      TransactionType.musdClaim,
-      TransactionType.musdConversion,
-      TransactionType.perpsDeposit,
-      TransactionType.perpsWithdraw,
     ];
 
     const unsupportedTransactionType = TransactionType.swap;

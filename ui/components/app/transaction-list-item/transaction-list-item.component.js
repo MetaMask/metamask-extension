@@ -110,9 +110,7 @@ function TransactionListItemInner({
   const hasGasFeeTokenSelected = Boolean(selectedGasFeeToken);
 
   const badgeChainId =
-    (type === TransactionType.perpsDeposit ||
-      type === TransactionType.perpsWithdraw) &&
-    metamaskPay?.chainId
+    type === TransactionType.perpsDeposit && metamaskPay?.chainId
       ? metamaskPay.chainId
       : chainId;
 
@@ -269,7 +267,6 @@ function TransactionListItemInner({
 
     return (
       <Button
-        className="whitespace-nowrap"
         data-testid="speed-up-button"
         size={ButtonSize.Sm}
         onClick={hasCancelled ? cancelTransaction : retryTransaction}

@@ -1,17 +1,13 @@
 .multichain-account-cell-popover-menu-button {
-  box-sizing: border-box;
   cursor: pointer;
   width: 28px;
   height: 28px;
 
-  // Match specificity of `.mm-box.mm-box--background-color-*` so hover background wins; `:hover`
-  // must not depend on `.mm-box` only so the fill covers the full control after DS migrations.
   &:hover {
-    background-color: var(--color-primary-muted);
+    background: var(--color-primary-muted);
 
-    // Design system icons are SVG with `fill: currentColor`.
     .multichain-account-cell-popover-menu-button-icon {
-      color: var(--color-primary-default);
+      background-color: var(--color-primary-default);
     }
   }
 }

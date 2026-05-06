@@ -66,10 +66,7 @@ describe('useIsEnforcedSimulationsEligible', () => {
 
     expect(getIsEnforcedSimulationsEligibleMock).toHaveBeenCalledWith(
       expect.objectContaining({ id: expect.any(String) }),
-      {
-        addressSecurityAlertResponses: alertResponses,
-        eip7702SupportedChains: [],
-      },
+      { addressSecurityAlertResponses: alertResponses },
     );
   });
 });

@@ -16,9 +16,7 @@ import { selectTransactions } from '../../../../shared/lib/multichain/transforma
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
 import { MINUTE } from '../../../../shared/constants/time';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
-import { getIsTransactionLabelsEnabled } from '../../../selectors/multichain/feature-flags';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
-import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { apiClient } from '../../../helpers/api-client';
 import {
@@ -27,13 +25,8 @@ import {
 } from './helpers';
 import type { ActivityListFilter } from './helpers';
 
-function getTransactionApiLanguage(locale: string) {
-  return locale.split('-')[0];
-}
-
 function useTransactionParams(caipChainId?: CaipChainId) {
   const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
-  const locale = useSelector(getIntlLocale);
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
 
   const evmNetworks = useMemo(() => {
@@ -52,16 +45,15 @@ function useTransactionParams(caipChainId?: CaipChainId) {
     () => ({
       evmAddress,
       accountAddresses,
-      lang: getTransactionApiLanguage(locale),
       networks: evmNetworks,
     }),
-    [evmAddress, accountAddresses, locale, evmNetworks],
+    [evmAddress, accountAddresses, evmNetworks],
   );
 }
 
 export function useTransactionsQuery(filter?: ActivityListFilter) {
   const useExternalServices = useSelector(getUseExternalServices);
-  const { evmAddress, accountAddresses, lang, networks } = useTransactionParams(
+  const { evmAddress, accountAddresses, networks } = useTransactionParams(
     filter?.chainId,
   );
   const internalTxHashes = useSelector(selectRequiredTransactionHashes);
@@ -80,7 +72,6 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
       accountAddresses,
       networks,
       includeTxMetadata: true,
-      lang,
     });
 
   // @ts-expect-error apiClient returns v5 types, repo still in v4
@@ -102,8 +93,7 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
 export function usePrefetchTransactions() {
   const queryClient = useQueryClient();
   const useExternalServices = useSelector(getUseExternalServices);
-  const { evmAddress, accountAddresses, lang, networks } =
-    useTransactionParams();
+  const { evmAddress, accountAddresses, networks } = useTransactionParams();
 
   const queryOptions = useMemo(
     () =>
@@ -111,9 +101,8 @@ export function usePrefetchTransactions() {
         accountAddresses,
         networks,
         includeTxMetadata: true,
-        lang,
       }),
-    [accountAddresses, lang, networks],
+    [accountAddresses, networks],
   );
 
   return useCallback(() => {
@@ -183,9 +172,6 @@ function classifyNft(
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
   const evmAddress = useSelector(selectEvmAddress)?.toLowerCase();
-  const isExtensionTransactionLabelsEnabled = useSelector(
-    getIsTransactionLabelsEnabled,
-  );
 
   const { sourceTokenSymbol, destNetwork, isBridgeTx } = useBridgeActivityData({
     transaction,
@@ -194,11 +180,6 @@ export function useGetTitle(transaction: TransactionViewModel): string {
   const resolvedType = resolveTransactionType(transaction);
   if (resolvedType === TransactionType.musdClaim) {
     return t('musdClaimTitle');
-  }
-
-  const readableLabel = transaction.readable?.trim();
-  if (isExtensionTransactionLabelsEnabled && readableLabel) {
-    return readableLabel;
   }
 
   const { transactionCategory, transactionType, transactionProtocol } =

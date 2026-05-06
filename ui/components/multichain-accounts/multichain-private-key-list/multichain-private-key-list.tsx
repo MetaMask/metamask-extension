@@ -4,11 +4,12 @@ import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Display,
   FlexDirection,
+  TextVariant,
+  TextColor,
   BlockSize,
 } from '../../../helpers/constants/design-system';
 import {
@@ -16,6 +17,7 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  Text,
   TextField,
   TextFieldSize,
   TextFieldType,
@@ -152,7 +154,7 @@ const MultichainPrivateKeyList = ({
     () => (
       <Box paddingTop={8} paddingBottom={4}>
         <Box>
-          <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
             {t('enterYourPassword')}
           </Text>
           <TextField
@@ -167,8 +169,8 @@ const MultichainPrivateKeyList = ({
           />
           {wrongPassword ? (
             <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.ErrorDefault}
+              variant={TextVariant.bodySm}
+              color={TextColor.errorDefault}
               data-testid="wrong-password-msg"
             >
               {t('wrongPassword')}

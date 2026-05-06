@@ -130,7 +130,6 @@ export function useInsufficientPayTokenBalanceAlert({
         {
           ...baseAlert,
           key: AlertsName.InsufficientPayTokenBalance,
-          reason: t('alertInsufficientPayTokenBalance'),
           message: t('alertInsufficientPayTokenBalance'),
         },
       ];
