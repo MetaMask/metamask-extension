@@ -236,9 +236,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     productionDefault: {
       versions: {
         '13.15.0': {
-          featureVersion: null,
+          featureVersion: '1',
           minimumVersion: null,
-          enabled: false,
+          enabled: true,
         },
       },
     },
