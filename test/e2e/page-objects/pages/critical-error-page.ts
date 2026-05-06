@@ -121,6 +121,14 @@ class CriticalErrorPage {
         { interval: 300, timeout: 30_000 },
       );
 
+      // TEMP DIAGNOSTIC: extra delay to verify hypothesis that the SW handoff
+      // (initBackground + handoffRestoringTabToExtension) is still in flight
+      // when we reach this point — the storage key is cleared BEFORE handoff
+      // in app/scripts/background.js initOrRestoreBackground, so the waitUntil
+      // above can return while initBackground/handoff is still running.
+      // If this delay makes the test stop being flaky, the race is confirmed.
+      await this.driver.delay(10_000);
+
       // Now safe to close extra tabs (service worker has finished handoff / fallback).
       await this.driver.closeAllOtherTabs();
     } else {
