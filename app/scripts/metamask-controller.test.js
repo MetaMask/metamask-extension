@@ -4969,7 +4969,6 @@ describe('MetaMaskController', () => {
           CHAIN_IDS.LINEA_MAINNET,
           CHAIN_IDS.BASE,
           CHAIN_IDS.ARBITRUM,
-          CHAIN_IDS.BSC,
           CHAIN_IDS.POLYGON,
           CHAIN_IDS.OPTIMISM,
           CHAIN_IDS.SEI,
@@ -4977,6 +4976,7 @@ describe('MetaMaskController', () => {
         const networksWithoutFailoverUrls = [
           CHAIN_IDS.SEPOLIA,
           CHAIN_IDS.LINEA_SEPOLIA,
+          CHAIN_IDS.BSC,
           '0x18c7', // MegaETH Testnet
           '0x279f', // Monad Testnet
           '0x539', // Localhost
