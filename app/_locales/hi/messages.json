@@ -8162,9 +8162,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "dapps से स्मार्ट अकाउंट रिक्वेस्ट"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "dapps को स्टैंडर्ड अकाउंट के लिए स्मार्ट अकाउंट फ़ीचर रिक्वेस्ट करने दें। इससे उन अकाउंट पर कोई असर नहीं पड़ेगा जो पहले से ही स्मार्ट अकाउंट हैं।"
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "वही एड्रेस। और स्मार्ट फीचर्स।"
   },
@@ -8797,12 +8794,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "सपोर्टेड भाषाएँ",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "हमारे सर्वे में भाग लें"
-  },
-  "surveyTitle": {
-    "message": "MetaMask के भविष्य को आकार दें"
   },
   "swap": {
     "message": "स्वैप करें"

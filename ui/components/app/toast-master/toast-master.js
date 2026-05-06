@@ -12,10 +12,7 @@ import { SECOND } from '../../../../shared/constants/time';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  PRIVACY_POLICY_LINK,
-  SURVEY_LINK,
-} from '../../../../shared/lib/ui-utils';
+import { PRIVACY_POLICY_LINK } from '../../../../shared/lib/ui-utils';
 import {
   BorderRadius,
   IconColor,
@@ -75,7 +72,6 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import {
   selectShowPrivacyPolicyToast,
-  selectShowSurveyToast,
   selectNewSrpAdded,
   selectShowCopyAddressToast,
   selectClaimSubmitToast,
@@ -89,7 +85,6 @@ import {
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
-  setSurveyLinkLastClickedOrClosed,
   setShowNewSrpAddedToast,
   setShowCopyAddressToast,
   setShowClaimSubmitToast,
@@ -120,7 +115,6 @@ export function ToastMaster() {
       <ToastContainer>
         {storageErrorToast}
         <SurveyToast />
-        <SurveyToastMayDelete />
         <PrivacyPolicyToast />
         <PermittedNetworkToast />
         <NewSrpAddedToast />
@@ -163,34 +157,6 @@ export function ToastMaster() {
   }
 
   return null;
-}
-
-function SurveyToastMayDelete() {
-  const t = useI18nContext();
-
-  const showSurveyToast = useSelector(selectShowSurveyToast);
-
-  return (
-    showSurveyToast && (
-      <Toast
-        key="survey-toast"
-        startAdornment={
-          <Icon name={IconName.Heart} color={IconColor.errorDefault} />
-        }
-        text={t('surveyTitle')}
-        actionText={t('surveyConversion')}
-        onActionClick={() => {
-          global.platform.openTab({
-            url: SURVEY_LINK,
-          });
-          setSurveyLinkLastClickedOrClosed(Date.now());
-        }}
-        onClose={() => {
-          setSurveyLinkLastClickedOrClosed(Date.now());
-        }}
-      />
-    )
-  );
 }
 
 function PrivacyPolicyToast() {
