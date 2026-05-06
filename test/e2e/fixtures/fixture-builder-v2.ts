@@ -308,6 +308,9 @@ class FixtureBuilderV2 {
   }
 
   withPerpsController(data: Partial<PerpsControllerState>): this {
+    if (!(this.fixture.data as Record<string, unknown>).PerpsController) {
+      (this.fixture.data as Record<string, unknown>).PerpsController = {};
+    }
     merge(
       (this.fixture.data as Record<string, unknown>).PerpsController,
       data as Record<string, unknown>,
