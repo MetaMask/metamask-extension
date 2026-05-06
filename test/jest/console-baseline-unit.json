@@ -669,8 +669,7 @@
       "MetaMask: Background connection not initialized": 1
     },
     "ui/pages/bridge/hooks/useSubmitBridgeTransaction.test.tsx": {
-      "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 1
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/bridge/index.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5,
