@@ -7980,9 +7980,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snap-simple-keyring-site@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@metamask/snap-simple-keyring-site@npm:2.0.1"
+"@metamask/snap-simple-keyring-site@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@metamask/snap-simple-keyring-site@npm:2.1.1"
   dependencies:
     "@emotion/react": "npm:^11.11.1"
     "@emotion/styled": "npm:^11.11.0"
@@ -8001,7 +8001,7 @@ __metadata:
     semver: "npm:^7.5.4"
     styled-components: "npm:5.3.9"
     webpack: "npm:^5.88.2"
-  checksum: 10/51d7a09b2a18248dfddcc8cc371c071b03ef3645a3e656fe09ec7c97bd83e39f5f2a19616a4ef2f7c7f0d34282661d4526ca8cee354136ce439406d77cb7fca8
+  checksum: 10/78ac952a967919485f500681b06e71d307ed4d1a38765a9caaab7870f82c63f4b3e67a0d22297a57728e87f9f5a83ec069c2307f34d51ce89d91571982320124
   languageName: node
   linkType: hard
 
@@ -34045,7 +34045,7 @@ __metadata:
     "@metamask/signature-controller": "npm:^39.2.0"
     "@metamask/smart-transactions-controller": "npm:^24.1.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
-    "@metamask/snap-simple-keyring-site": "npm:^2.0.1"
+    "@metamask/snap-simple-keyring-site": "npm:^2.1.1"
     "@metamask/snaps-controllers": "npm:^20.0.3"
     "@metamask/snaps-execution-environments": "npm:^11.0.2"
     "@metamask/snaps-registry": "npm:^4.0.0"
