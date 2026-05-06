@@ -86,9 +86,6 @@ describe('Inpage script injection under page CSP', function (this: Suite) {
         await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await driver.waitForSelector({
-          testId: 'inpage-injection-csp-body',
-        });
 
         await waitForProviderInjection(driver);
 
@@ -131,9 +128,6 @@ describe('Inpage script injection under page CSP', function (this: Suite) {
         await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await driver.waitForSelector({
-          testId: 'inpage-injection-csp-body',
-        });
 
         await waitForProviderInjection(driver);
 
