@@ -101,8 +101,6 @@ type AppState = {
   ledgerTransportStatus: HardwareTransportStates;
   showBasicFunctionalityModal: boolean;
   externalServicesOnboardingToggleState: boolean;
-  newNftAddedMessage: string;
-  removeNftMessage: string;
   newNetworkAddedName: string;
   editedNetwork:
     | {
@@ -217,8 +215,6 @@ const initialState: AppState = {
   smartTransactionsErrorMessageDismissed: false,
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses.unknown,
   ledgerTransportStatus: HardwareTransportStates.none,
-  newNftAddedMessage: '',
-  removeNftMessage: '',
   newNetworkAddedName: '',
   editedNetwork: undefined,
   newNetworkAddedConfigurationId: '',
