@@ -8,19 +8,12 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
-  BoxBackgroundColor,
-  BoxBorderColor,
   ButtonSize,
   ButtonVariant,
   Button,
-  FontWeight,
   TextVariant,
   TextColor,
   TextAlign,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
 } from '@metamask/design-system-react';
 import {
   FormTextField,
@@ -51,17 +44,19 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getIsPasskeyRegistered } from '../../../selectors';
+import {
+  PasskeyEnrollmentSteps,
+  type PasskeyEnrollmentStepStatus,
+} from '../../../components/app/passkey-enrollment-steps';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
 /** Brief pause after verify succeeds so the completion icon is visible before navigation. */
 const PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS = 500;
 
-type PasskeyEnrollmentStepStatus = 'pending' | 'inProgress' | 'complete';
-
 /** Default row status before enrollment starts or after the user silently dismisses WebAuthn. */
 const DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS: PasskeyEnrollmentStepStatus =
-  'pending';
+  'idle';
 
 const PasskeyRegisterSteps = {
   /** Shown when opening from side panel in a full tab so users see context before the password step. */
@@ -69,67 +64,6 @@ const PasskeyRegisterSteps = {
   VerifyPassword: 1,
   RegisterPasskey: 2,
 } as const;
-
-/**
- * @param isActive - Whether this step is the active row (primary border).
- */
-function getPasskeyStepRowProps(isActive: boolean) {
-  if (isActive) {
-    return {
-      backgroundColor: BoxBackgroundColor.BackgroundMuted,
-      borderColor: BoxBorderColor.PrimaryDefault,
-      className: 'rounded-lg border-2 border-solid',
-    };
-  }
-  return {
-    backgroundColor: BoxBackgroundColor.BackgroundMuted,
-    className: 'rounded-lg',
-  };
-}
-
-function renderPasskeyStepIndicator(status: PasskeyEnrollmentStepStatus) {
-  if (status === 'complete') {
-    return (
-      <Box
-        className="flex size-11 shrink-0 items-center justify-center"
-        data-testid="passkey-step-indicator-complete"
-      >
-        <Icon
-          name={IconName.Check}
-          color={IconColor.SuccessDefault}
-          size={IconSize.Lg}
-        />
-      </Box>
-    );
-  }
-  if (status === 'inProgress') {
-    return (
-      <Box
-        className="flex size-11 shrink-0 items-center justify-center"
-        data-testid="passkey-step-indicator-in-progress"
-      >
-        <Icon
-          name={IconName.Loading}
-          color={IconColor.IconDefault}
-          size={IconSize.Lg}
-          className="animate-spin"
-        />
-      </Box>
-    );
-  }
-  return (
-    <Box
-      className="flex size-11 shrink-0 items-center justify-center"
-      data-testid="passkey-step-indicator-pending"
-    >
-      <Icon
-        name={IconName.FullCircle}
-        color={IconColor.IconMuted}
-        size={IconSize.Lg}
-      />
-    </Box>
-  );
-}
 
 export default function PasskeyRegisterSubPage() {
   const navigate = useNavigate();
@@ -190,7 +124,7 @@ export default function PasskeyRegisterSubPage() {
 
   const beginPasskeyCeremonyFlow = useCallback(async () => {
     setEnrollmentError(null);
-    setRegisterStepStatus('inProgress');
+    setRegisterStepStatus('loading');
     setVerifyStepStatus(DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS);
     setIsEnrollmentInProgress(true);
 
@@ -205,8 +139,8 @@ export default function PasskeyRegisterSubPage() {
       const registrationOptions = await generatePasskeyRegistrationOptions();
       const registrationResponse =
         await startPasskeyRegistration(registrationOptions);
-      setRegisterStepStatus('complete');
-      setVerifyStepStatus('inProgress');
+      setRegisterStepStatus('success');
+      setVerifyStepStatus('loading');
       registrationSucceeded = true;
 
       const postRegAuthOptions =
@@ -222,7 +156,7 @@ export default function PasskeyRegisterSubPage() {
         walletPassword,
       );
       await forceUpdateMetamaskState(dispatch);
-      setVerifyStepStatus('complete');
+      setVerifyStepStatus('success');
       setWalletPassword('');
 
       await new Promise((resolve) => {
@@ -261,9 +195,9 @@ export default function PasskeyRegisterSubPage() {
     } finally {
       setIsEnrollmentInProgress(false);
       setRegisterStepStatus((prev) =>
-        prev === 'inProgress' ? 'pending' : prev,
+        prev === 'loading' ? 'idle' : prev,
       );
-      setVerifyStepStatus((prev) => (prev === 'inProgress' ? 'pending' : prev));
+      setVerifyStepStatus((prev) => (prev === 'loading' ? 'idle' : prev));
     }
   }, [
     dispatch,
@@ -290,16 +224,6 @@ export default function PasskeyRegisterSubPage() {
       setIsVerifyingPassword(false);
     }
   };
-
-  const registerStepTextColor =
-    registerStepStatus === 'pending'
-      ? TextColor.TextAlternative
-      : TextColor.TextDefault;
-
-  const verifyStepTextColor =
-    verifyStepStatus === 'pending'
-      ? TextColor.TextAlternative
-      : TextColor.TextDefault;
 
   return (
     <Box
@@ -405,70 +329,35 @@ export default function PasskeyRegisterSubPage() {
           </Text>
 
           {isEnrollmentInProgress ? (
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              gap={2}
+            <PasskeyEnrollmentSteps
+              registerStatus={registerStepStatus}
+              verifyStatus={verifyStepStatus}
+              registerLabel={t('passkeySetupStepRegister')}
+              verifyLabel={t('passkeySetupStepVerify')}
               className="w-full"
-              data-testid="passkey-setup-steps"
-              aria-busy={true}
-            >
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={3}
-                padding={3}
-                {...getPasskeyStepRowProps(registerStepStatus === 'inProgress')}
+            />
+          ) : (
+            <>
+              {enrollmentError && <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.ErrorDefault}
+                textAlign={TextAlign.Center}
+                data-testid="passkey-enrollment-error"
               >
-                {renderPasskeyStepIndicator(registerStepStatus)}
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Regular}
-                  color={registerStepTextColor}
-                >
-                  {t('passkeySetupStepRegister')}
-                </Text>
-              </Box>
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={3}
-                padding={3}
-                {...getPasskeyStepRowProps(verifyStepStatus !== 'pending')}
+                {enrollmentError}
+              </Text>}
+
+              <Button
+                variant={ButtonVariant.Primary}
+                size={ButtonSize.Lg}
+                className="w-full shrink-0"
+                data-testid="register-passkey-set-up-button"
+                aria-label={t('setUpPasskey')}
+                onClick={beginPasskeyCeremonyFlow}
               >
-                {renderPasskeyStepIndicator(verifyStepStatus)}
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Regular}
-                  color={verifyStepTextColor}
-                >
-                  {t('passkeySetupStepVerify')}
-                </Text>
-              </Box>
-            </Box>
-          ) : null}
-
-          {enrollmentError ? (
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.ErrorDefault}
-              textAlign={TextAlign.Center}
-              data-testid="passkey-enrollment-error"
-            >
-              {enrollmentError}
-            </Text>
-          ) : null}
-
-          {isEnrollmentInProgress ? null : (
-            <Button
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              className="w-full shrink-0"
-              data-testid="register-passkey-set-up-button"
-              aria-label={t('setUpPasskey')}
-              onClick={beginPasskeyCeremonyFlow}
-            >
-              {t('setUpPasskey')}
-            </Button>
+                {t('setUpPasskey')}
+              </Button>
+            </>
           )}
         </>
       )}
