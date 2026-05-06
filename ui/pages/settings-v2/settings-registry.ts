@@ -19,6 +19,8 @@ import {
   PREFERENCES_AND_DISPLAY_ROUTE,
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+  SECURITY_REGISTER_PASSKEY_ROUTE,
+  SECURITY_TURN_OFF_PASSKEY_ROUTE,
   SETTINGS_V2_ROUTE,
   SNAP_SETTINGS_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
@@ -125,6 +127,11 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
         import('./preferences-and-display-tab/account-identicon-sub-page.tsx'),
     ),
   },
+  [CURRENCY_ROUTE]: {
+    labelKey: 'localCurrency',
+    parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
+    component: mmLazy(() => import('./assets-tab/currency-sub-page.tsx')),
+  },
 
   // --- Notifications tab ---
   [NOTIFICATIONS_SETTINGS_ROUTE]: {
@@ -155,9 +162,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(
       () =>
-        import(
-          './security-and-password-tab/manage-wallet-recovery-sub-page.tsx'
-        ),
+        import('./security-and-password-tab/manage-wallet-recovery-sub-page.tsx'),
     ),
   },
   [SECURITY_PASSWORD_CHANGE_V2_ROUTE]: {
@@ -165,6 +170,20 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(
       () => import('./security-and-password-tab/password-sub-page.tsx'),
+    ),
+  },
+  [SECURITY_REGISTER_PASSKEY_ROUTE]: {
+    labelKey: 'setUpPasskey',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () => import('./security-and-password-tab/passkey-register-sub-page.tsx'),
+    ),
+  },
+  [SECURITY_TURN_OFF_PASSKEY_ROUTE]: {
+    labelKey: 'turnOffPasskey',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () => import('./security-and-password-tab/passkey-turn-off-sub-page.tsx'),
     ),
   },
 
@@ -189,7 +208,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     labelKey: 'backupAndSync',
     parentPath: SETTINGS_V2_ROUTE,
     component: mmLazy(
-      () => import('../settings/backup-and-sync-tab/backup-and-sync-tab.tsx'),
+      () => import('./backup-and-sync-tab/backup-and-sync-tab.tsx'),
     ),
     isTab: true,
     iconName: IconName.SecurityTime,
@@ -255,11 +274,6 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     isTab: true,
     iconName: IconName.Coin,
   },
-  [CURRENCY_ROUTE]: {
-    labelKey: 'localCurrency',
-    parentPath: ASSETS_ROUTE,
-    component: mmLazy(() => import('./assets-tab/currency-sub-page.tsx')),
-  },
 
   // --- Transactions tab ---
   [TRANSACTIONS_ROUTE]: {
@@ -274,9 +288,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [EXPERIMENTAL_ROUTE]: {
     labelKey: 'experimental',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(
-      () => import('../settings/experimental-tab/experimental-tab.tsx'),
-    ),
+    component: mmLazy(() => import('./experimental-tab/experimental-tab.tsx')),
     isTab: true,
     iconName: IconName.Flask,
   },

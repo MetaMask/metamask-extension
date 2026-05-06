@@ -4,8 +4,10 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import * as Util from '../../util';
-import requestEthereumAccounts from './request-accounts';
-import type { RequestEthereumAccountsOptions } from './request-accounts';
+import {
+  requestEthereumAccountsHandler,
+  type RequestEthereumAccountsHooks,
+} from './request-accounts';
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
@@ -35,7 +37,7 @@ const createMockedHandler = () => {
         '0x01': { address: '0x01' },
         '0x02': { address: '0x02' },
         '0x03': { address: '0x03' },
-      } as unknown as RequestEthereumAccountsOptions['metamaskState']['internalAccounts']['accounts'],
+      } as unknown as RequestEthereumAccountsHooks['metamaskState']['internalAccounts']['accounts'],
       selectedAccount: '',
     },
   };
@@ -51,13 +53,19 @@ const createMockedHandler = () => {
   const handler = (
     request: JsonRpcRequest<JsonRpcParams> & { origin: string },
   ) =>
-    requestEthereumAccounts.implementation(request, response, next, end, {
-      getAccounts,
-      sendMetrics,
-      metamaskState,
-      getCaip25PermissionFromLegacyPermissionsForOrigin,
-      requestPermissionsForOrigin,
-    });
+    requestEthereumAccountsHandler.implementation(
+      request,
+      response,
+      next,
+      end,
+      {
+        getAccounts,
+        sendMetrics,
+        metamaskState,
+        getCaip25PermissionFromLegacyPermissionsForOrigin,
+        requestPermissionsForOrigin,
+      },
+    );
 
   return {
     response,
@@ -161,6 +169,14 @@ describe('requestEthereumAccountsHandler', () => {
             number_of_accounts: 3,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             number_of_accounts_connected: 2,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_iframe: false,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_cross_origin_iframe: false,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            iframe_origin: null,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            top_level_origin: null,
           },
           referrer: {
             url: 'http://test.com',

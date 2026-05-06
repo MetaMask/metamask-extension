@@ -3,6 +3,11 @@ import assert from 'node:assert';
 import { join, resolve } from 'node:path';
 import { Open } from 'unzipper';
 import { sources, type Compilation } from 'webpack';
+import {
+  BUNDLE_SIZE_DEBUG_FILE,
+  BUNDLE_SIZE_SUMMARY_FILE,
+  type BundleSizeSummary,
+} from '../utils/plugins/ManifestPlugin/stats';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { createBrowserZipBuilder } from '../utils/plugins/ManifestPlugin/zip';
 import { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
@@ -17,8 +22,8 @@ import { generateCases, type Combination, mockWebpack } from './helpers';
 
 const { RawSource } = sources;
 
-const endsWithPath = (value: string, ...segments: string[]) =>
-  value.endsWith(join(...segments));
+const endsWithPath = (val: string, ...rest: string[]) =>
+  val.endsWith(join(...rest));
 
 async function readZipEntries(source: { buffer: () => Buffer }) {
   const directory = await Open.buffer(source.buffer());
@@ -428,6 +433,209 @@ describe('ManifestPlugin', () => {
 
         assert.strictEqual(manifest.build_id, 'test-full-hash');
       }
+    });
+
+    const statsFixtureContext = join(
+      __dirname,
+      'fixtures/ManifestPlugin/empty',
+    );
+    const chromeSummaryAssetPath = BUNDLE_SIZE_SUMMARY_FILE.replaceAll(
+      '[browser]',
+      'chrome',
+    );
+    const chromeDebugAssetPath = BUNDLE_SIZE_DEBUG_FILE.replaceAll(
+      '[browser]',
+      'chrome',
+    );
+    const statsEntrypointCategories = {
+      'service-worker.ts': 'background',
+      home: 'ui',
+      offscreen: 'other',
+      'scripts/contentscript.js': 'contentScripts',
+      'scripts/inpage.js': 'contentScripts',
+    } as const;
+    const classifyStatsEntrypoint = (name: string) =>
+      statsEntrypointCategories[
+        name as keyof typeof statsEntrypointCategories
+      ] ?? null;
+    const defaultStatsAssets = {
+      'runtime.js': 100,
+      'home.js': 200,
+      'home-async.js': 250,
+      'home.html': '<html></html>',
+      'home.css': 50,
+      'service-worker.js': 300,
+      'shared.js': 150,
+      'background.js': 350,
+      'offscreen.js': 140,
+      'offscreen.css': 15,
+      'scripts/contentscript.js': 400,
+      'scripts/inpage.js': 500,
+    } as const;
+    const debugStatsAssets = {
+      'runtime.js': 100,
+      'home.js': 200,
+      'home.css': 50,
+      'service-worker.js': 300,
+      'shared.js': 150,
+      'background.js': 350,
+    } as const;
+
+    function createMockEntrypoint(
+      initialFiles: string[],
+      asyncFiles: string[] = [],
+    ) {
+      return {
+        getFiles: () => initialFiles,
+        getEntrypointChunk: () => ({
+          getAllAsyncChunks: () =>
+            new Set(asyncFiles.length ? [{ files: new Set(asyncFiles) }] : []),
+        }),
+      };
+    }
+
+    const defaultStatsEntrypoints = {
+      home: createMockEntrypoint(
+        ['runtime.js', 'home.js', 'shared.js', 'home.html', 'home.css'],
+        ['home-async.js', 'home.css'],
+      ),
+      'service-worker.ts': createMockEntrypoint(
+        ['service-worker.js', 'shared.js'],
+        ['background.js'],
+      ),
+      offscreen: createMockEntrypoint([
+        'runtime.js',
+        'offscreen.js',
+        'offscreen.css',
+      ]),
+      'scripts/contentscript.js': createMockEntrypoint([
+        'scripts/contentscript.js',
+      ]),
+      'scripts/inpage.js': createMockEntrypoint(['scripts/inpage.js']),
+    };
+
+    const readJsonAsset = <T>(compilation: Compilation, assetPath: string) =>
+      JSON.parse(compilation.assets[assetPath].source().toString()) as T;
+
+    async function buildStatsAssets({
+      entrypoints = defaultStatsEntrypoints,
+      assets = defaultStatsAssets,
+      zip = false,
+      debug = false,
+      stats = true,
+    }: {
+      entrypoints?: Record<string, ReturnType<typeof createMockEntrypoint>>;
+      assets?: Record<string, number | string | Buffer>;
+      zip?: boolean;
+      debug?: boolean;
+      stats?: boolean;
+    } = {}) {
+      const files = Object.keys(assets);
+      const { compiler, compilation, promise } = mockWebpack(
+        files,
+        Object.values(assets).map((value) =>
+          typeof value === 'number' ? Buffer.alloc(value) : value,
+        ),
+        files.map(() => null),
+        false,
+      );
+      compiler.context = statsFixtureContext;
+      compilation.entrypoints = new Map(
+        Object.entries(entrypoints),
+      ) as typeof compilation.entrypoints;
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        ...getZipOptions(zip),
+        ...(stats
+          ? {
+              stats: {
+                outFile: BUNDLE_SIZE_SUMMARY_FILE,
+                classifyEntrypoint: classifyStatsEntrypoint,
+                ...(debug ? { debug: true } : {}),
+              },
+            }
+          : {}),
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      return compilation;
+    }
+
+    it('emits the bundle-size summary when stats are enabled', async () => {
+      const compilation = await buildStatsAssets({ zip: true });
+      const summary = readJsonAsset<BundleSizeSummary>(
+        compilation,
+        chromeSummaryAssetPath,
+      );
+      assert.deepStrictEqual(summary, {
+        background: 650,
+        ui: 550,
+        common: 150,
+        other: 140,
+        contentScripts: 900,
+        zip: compilation.assets['chrome/extension.zip'].size(),
+        timestamp: summary.timestamp,
+      });
+      assert.strictEqual(
+        compilation.getAsset(chromeDebugAssetPath),
+        undefined,
+        'debug artifact should not be emitted by default',
+      );
+    });
+
+    it('emits a sibling debug artifact with normalized entrypoint files', async () => {
+      const compilation = await buildStatsAssets({
+        assets: debugStatsAssets,
+        entrypoints: {
+          home: createMockEntrypoint(['runtime.js', 'home.js', 'home.css']),
+          'service-worker.ts': createMockEntrypoint(
+            ['service-worker.js', 'shared.js'],
+            ['background.js'],
+          ),
+        },
+        debug: true,
+      });
+
+      const debugArtifact = readJsonAsset<{
+        entrypoints: Record<string, unknown>;
+      }>(compilation, chromeDebugAssetPath);
+      assert.deepStrictEqual(debugArtifact, {
+        entrypoints: {
+          home: {
+            category: 'ui',
+            initialFiles: [
+              { name: 'runtime.js', size: 100 },
+              { name: 'home.js', size: 200 },
+            ],
+            asyncFiles: [],
+          },
+          'service-worker.ts': {
+            category: 'background',
+            initialFiles: [
+              { name: 'service-worker.js', size: 300 },
+              { name: 'shared.js', size: 150 },
+            ],
+            asyncFiles: [{ name: 'background.js', size: 350 }],
+          },
+        },
+      });
+    });
+
+    it('does not emit bundle-size artifacts when stats not enabled', async () => {
+      const compilation = await buildStatsAssets({ stats: false });
+
+      assert.strictEqual(
+        compilation.getAsset(chromeSummaryAssetPath),
+        undefined,
+      );
+      assert.strictEqual(compilation.getAsset(chromeDebugAssetPath), undefined);
     });
   });
 

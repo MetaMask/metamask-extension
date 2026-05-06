@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import { Text } from '../../../../../components/component-library';
 import {
@@ -19,6 +20,8 @@ import {
 } from '../../../hooks/pay/useTransactionPayData';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
+import { useConfirmContext } from '../../../context/confirm';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 
 export type BridgeFeeRowProps = {
   variant?: ConfirmInfoRowSize;
@@ -39,6 +42,11 @@ export function BridgeFeeRow({
   const isLoading = useIsTransactionPayLoading();
   const quotes = useTransactionPayQuotes();
   const totals = useTransactionPayTotals();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+
+  const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
+
+  const feeLabel = t('transactionFee');
 
   const feeTotalUsd = useMemo(() => {
     if (!totals?.fees) {
@@ -61,7 +69,7 @@ export function BridgeFeeRow({
     return (
       <ConfirmInfoRowSkeleton
         data-testid="bridge-fee-row-skeleton"
-        label={t('transactionFee')}
+        label={feeLabel}
         rowVariant={variant}
       />
     );
@@ -79,13 +87,14 @@ export function BridgeFeeRow({
       metamaskFeeFormatted: metamaskFeeUsd,
       /** Matches prior behavior: MetaMask fee was only shown for Small variant (body row). */
       includeMetamaskFee: isSmall,
+      useProviderFeeLabel: isPerpsWithdraw,
     });
   }
 
   return (
     <ConfirmInfoRow
       data-testid="bridge-fee-row"
-      label={t('transactionFee')}
+      label={feeLabel}
       rowVariant={variant}
       tooltip={tooltipContent}
     >
@@ -114,6 +123,8 @@ type RenderTooltipContentArgs = {
   formatFiat: ReturnType<typeof useFiatFormatter>;
   metamaskFeeFormatted: string;
   includeMetamaskFee: boolean;
+  /** Render the provider fee as "Provider fee" (withdraw flows) instead of "Bridge fee". */
+  useProviderFeeLabel?: boolean;
 };
 
 function renderTooltipContent({
@@ -123,12 +134,13 @@ function renderTooltipContent({
   formatFiat,
   metamaskFeeFormatted,
   includeMetamaskFee,
+  useProviderFeeLabel,
 }: RenderTooltipContentArgs): string {
   const networkFee = new BigNumber(totals.fees.sourceNetwork.estimate.usd).plus(
     totals.fees.targetNetwork.usd,
   );
 
-  const bridgeFeeUsd = new BigNumber(totals.fees.provider.usd);
+  const providerFeeUsd = new BigNumber(totals.fees.provider.usd);
 
   const lines: string[] = [];
 
@@ -139,7 +151,9 @@ function renderTooltipContent({
 
   lines.push(
     `${t('networkFee')}: ${formatFiat(networkFee.toNumber())}`,
-    `${t('bridgeFee')}: ${formatFiat(bridgeFeeUsd.toNumber())}`,
+    `${useProviderFeeLabel ? t('providerFee') : t('bridgeFee')}: ${formatFiat(
+      providerFeeUsd.toNumber(),
+    )}`,
   );
 
   if (includeMetamaskFee) {

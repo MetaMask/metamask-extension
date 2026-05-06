@@ -1,7 +1,4 @@
-import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import type { CaipChainId } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type {
@@ -10,127 +7,14 @@ import type {
 } from '../../../../shared/lib/multichain/types';
 import { selectMarketRates } from '../../../selectors/activity';
 import { selectEvmAddress } from '../../../selectors/accounts';
-import { getUseExternalServices } from '../../../selectors';
 import { parseApprovalTransactionData } from '../../../../shared/lib/transaction.utils';
-import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
-import { MINUTE } from '../../../../shared/constants/time';
-import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
-import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
+import { getIsTransactionLabelsEnabled } from '../../../selectors/multichain/feature-flags';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
-import { apiClient } from '../../../helpers/api-client';
 import {
   calculateFiatFromMarketRates,
   resolveTransactionType,
 } from './helpers';
-import type { ActivityListFilter } from './helpers';
-
-function useTransactionParams(caipChainId?: CaipChainId) {
-  const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
-  const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
-
-  const evmNetworks = useMemo(() => {
-    if (caipChainId) {
-      return caipChainId.startsWith('eip155:') ? [caipChainId] : [];
-    }
-    return enabledNetworks.filter((id: string) => id.startsWith('eip155:'));
-  }, [enabledNetworks, caipChainId]);
-
-  const accountAddresses = useMemo(
-    () => (evmAddress ? [`eip155:0:${evmAddress}`] : []),
-    [evmAddress],
-  );
-
-  return useMemo(
-    () => ({
-      evmAddress,
-      accountAddresses,
-      networks: evmNetworks,
-    }),
-    [evmAddress, accountAddresses, evmNetworks],
-  );
-}
-
-export function useTransactionsQuery(filter?: ActivityListFilter) {
-  const useExternalServices = useSelector(getUseExternalServices);
-  const { evmAddress, accountAddresses, networks } = useTransactionParams(
-    filter?.chainId,
-  );
-  const internalTxHashes = useSelector(selectRequiredTransactionHashes);
-
-  const selectFn = useMemo(
-    () =>
-      selectTransactions({
-        address: evmAddress,
-        excludedTxHashes: internalTxHashes,
-      }),
-    [evmAddress, internalTxHashes],
-  );
-
-  const queryOptions =
-    apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions({
-      accountAddresses,
-      networks,
-      includeTxMetadata: true,
-    });
-
-  // @ts-expect-error apiClient returns v5 types, repo still in v4
-  return useInfiniteQuery({
-    ...queryOptions,
-    select: selectFn,
-    enabled:
-      Boolean(useExternalServices) &&
-      networks.length > 0 &&
-      accountAddresses.length > 0,
-    retry: false,
-    keepPreviousData: true,
-    staleTime: 5 * MINUTE,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-  });
-}
-
-export function usePrefetchTransactions() {
-  const queryClient = useQueryClient();
-  const useExternalServices = useSelector(getUseExternalServices);
-  const { evmAddress, accountAddresses, networks } = useTransactionParams();
-
-  const queryOptions = useMemo(
-    () =>
-      apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions({
-        accountAddresses,
-        networks,
-        includeTxMetadata: true,
-      }),
-    [accountAddresses, networks],
-  );
-
-  return useCallback(() => {
-    if (!useExternalServices || !evmAddress) {
-      return;
-    }
-
-    const { queryKey } = queryOptions;
-    if (!queryKey || queryClient.getQueryData(queryKey)) {
-      return;
-    }
-
-    if (queryClient.isFetching({ queryKey }) > 0) {
-      return;
-    }
-
-    queryClient
-      // @ts-expect-error apiClient returns v5 types, repo still in v4
-      .prefetchInfiniteQuery({
-        ...queryOptions,
-        retry: false,
-        staleTime: 5 * MINUTE,
-      })
-      .catch(() => {
-        // Prefetch is opportunistic
-      });
-  }, [evmAddress, queryOptions, queryClient, useExternalServices]);
-}
 
 function classifyNft(
   valueTransfers: TransactionViewModel['valueTransfers'],
@@ -172,6 +56,9 @@ function classifyNft(
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
   const evmAddress = useSelector(selectEvmAddress)?.toLowerCase();
+  const isExtensionTransactionLabelsEnabled = useSelector(
+    getIsTransactionLabelsEnabled,
+  );
 
   const { sourceTokenSymbol, destNetwork, isBridgeTx } = useBridgeActivityData({
     transaction,
@@ -180,6 +67,11 @@ export function useGetTitle(transaction: TransactionViewModel): string {
   const resolvedType = resolveTransactionType(transaction);
   if (resolvedType === TransactionType.musdClaim) {
     return t('musdClaimTitle');
+  }
+
+  const readableLabel = transaction.readable?.trim();
+  if (isExtensionTransactionLabelsEnabled && readableLabel) {
+    return readableLabel;
   }
 
   const { transactionCategory, transactionType, transactionProtocol } =

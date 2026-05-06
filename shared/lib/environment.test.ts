@@ -2,7 +2,9 @@ import { ENVIRONMENT } from '../../development/build/constants';
 import {
   getEnabledAdvancedPermissions,
   getIsPerpsIncludedInBuild,
+  getIsPasskeyFeatureEnabled,
   getIsAssetsUnifiedStateIncludedInBuild,
+  getIsNewHardwareWalletOnboardingEnabled,
   isProduction,
   isGatorPermissionsRevocationFeatureEnabled,
 } from './environment';
@@ -152,5 +154,59 @@ describe('getIsPerpsIncludedInBuild', () => {
   it('returns false when PERPS_ENABLED is undefined', () => {
     delete process.env.PERPS_ENABLED;
     expect(getIsPerpsIncludedInBuild()).toBe(false);
+  });
+});
+
+describe('getIsNewHardwareWalletOnboardingEnabled', () => {
+  let originalValue: string | undefined;
+
+  beforeAll(() => {
+    originalValue = process.env.NEW_HARDWARE_WALLET_ONBOARDING;
+  });
+
+  afterAll(() => {
+    process.env.NEW_HARDWARE_WALLET_ONBOARDING = originalValue;
+  });
+
+  it('returns true when NEW_HARDWARE_WALLET_ONBOARDING is "true"', () => {
+    process.env.NEW_HARDWARE_WALLET_ONBOARDING = 'true';
+    expect(getIsNewHardwareWalletOnboardingEnabled()).toBe(true);
+  });
+
+  it('returns false when NEW_HARDWARE_WALLET_ONBOARDING is "false"', () => {
+    process.env.NEW_HARDWARE_WALLET_ONBOARDING = 'false';
+    expect(getIsNewHardwareWalletOnboardingEnabled()).toBe(false);
+  });
+
+  it('returns false when NEW_HARDWARE_WALLET_ONBOARDING is undefined', () => {
+    delete process.env.NEW_HARDWARE_WALLET_ONBOARDING;
+    expect(getIsNewHardwareWalletOnboardingEnabled()).toBe(false);
+  });
+});
+
+describe('getIsPasskeyFeatureEnabled', () => {
+  let originalValue: string | undefined;
+
+  beforeAll(() => {
+    originalValue = process.env.PASSKEY_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.PASSKEY_ENABLED = originalValue;
+  });
+
+  it('returns true when PASSKEY_ENABLED is "true"', () => {
+    process.env.PASSKEY_ENABLED = 'true';
+    expect(getIsPasskeyFeatureEnabled()).toBe(true);
+  });
+
+  it('returns false when PASSKEY_ENABLED is "false"', () => {
+    process.env.PASSKEY_ENABLED = 'false';
+    expect(getIsPasskeyFeatureEnabled()).toBe(false);
+  });
+
+  it('returns false when PASSKEY_ENABLED is undefined', () => {
+    delete process.env.PASSKEY_ENABLED;
+    expect(getIsPasskeyFeatureEnabled()).toBe(false);
   });
 });

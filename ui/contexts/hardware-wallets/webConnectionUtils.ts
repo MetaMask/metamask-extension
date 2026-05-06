@@ -2,6 +2,8 @@ import {
   LEDGER_USB_VENDOR_ID,
   TREZOR_USB_VENDOR_IDS,
 } from '../../../shared/constants/hardware-wallets';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { CameraPermissionState } from './constants';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
 
@@ -39,6 +41,28 @@ export function isCameraAvailable(): boolean {
     navigator.mediaDevices !== undefined &&
     typeof navigator.mediaDevices.getUserMedia === 'function'
   );
+}
+
+/**
+ * Query the Permissions API for `camera` and return the live `PermissionStatus` (for `change`
+ * listeners). Matches legacy QR `WebcamUtils` behavior: on unsupported APIs or thrown `query`,
+ * returns `prompt` with a null status.
+ */
+export async function queryCameraPermissionWithStatus(): Promise<{
+  state: PermissionState;
+  permissionStatus: PermissionStatus | null;
+}> {
+  try {
+    const permissionStatus = await globalThis.navigator.permissions.query({
+      name: 'camera' as PermissionName,
+    });
+    return {
+      state: permissionStatus.state,
+      permissionStatus,
+    };
+  } catch {
+    return { state: 'prompt', permissionStatus: null };
+  }
 }
 
 /** Message for the error thrown by {@link checkCameraPermission} when the probe fails. */
@@ -238,20 +262,36 @@ export async function requestHardwareWalletPermission(
 }
 
 /**
+ * Opens a temporary video stream for permission or capability checks.
+ * Call {@link stopMediaStreamTracks} when finished.
+ *
+ * @returns Stream from `getUserMedia({ video: true })`.
+ * @throws When camera APIs are unavailable or `getUserMedia` rejects (e.g. `NotAllowedError`).
+ */
+export async function openCameraVideoStream(): Promise<MediaStream> {
+  if (!isCameraAvailable()) {
+    throw new Error('Camera capture is not available in this context');
+  }
+  const { navigator } = globalThis;
+  return await navigator.mediaDevices.getUserMedia({ video: true });
+}
+
+/**
+ * Stops every track on a media stream (e.g. after a probe or permission request).
+ *
+ * @param stream - Stream returned from {@link openCameraVideoStream}.
+ */
+export function stopMediaStreamTracks(stream: MediaStream): void {
+  stream.getTracks().forEach((track) => track.stop());
+}
+
+/**
  * Request camera permission from the user.
  */
 export async function requestCameraPermission(): Promise<boolean> {
-  if (!isCameraAvailable()) {
-    return false;
-  }
-
   try {
-    const { navigator } = globalThis;
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-    });
-
-    stream.getTracks().forEach((track) => track.stop());
+    const stream = await openCameraVideoStream();
+    stopMediaStreamTracks(stream);
     return true;
   } catch {
     return false;
@@ -429,7 +469,7 @@ export function subscribeToWebHidEvents(
  * Subscribe to native WebUSB connect/disconnect events
  *
  * @param walletType - The hardware wallet type to filter events for
- * @param onConnect - Callback when a device is connected
+ * @param onConnect - Synchronous callback when a device is connected; schedule async work inside the callback and attach `.catch()` as needed (no Promise return).
  * @param onDisconnect - Callback when a device is disconnected
  * @returns Unsubscribe function to clean up event listeners
  */
@@ -491,4 +531,68 @@ export function subscribeToHardwareWalletEvents(
         // No-op cleanup
       };
   }
+}
+
+/**
+ * Returns `true` when the extension is running in an environment where the
+ * native browser camera-permission prompt cannot appear (side panel only).
+ */
+export function isRestrictedCameraEnvironment(): boolean {
+  return getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+}
+
+/**
+ * Opens the current page in a fullscreen tab, preserving the hash route so
+ * the user lands on the exact same confirmation / transaction screen.
+ *
+ * For most flows (e.g. Send) transaction parameters live in background
+ * controller state and survive the context switch automatically. Flows whose
+ * form data is stored in UI-only Redux (e.g. Swap / Bridge) must supply a
+ * `queryString` so the fullscreen tab can restore the values via deep-link
+ * query parameters.
+ *
+ * @param queryString - Optional query string appended to the fullscreen URL.
+ */
+export function redirectToFullscreen(queryString?: string | null): void {
+  const currentUrl = new URL(globalThis.location.href);
+  const currentHash = currentUrl.hash;
+  const currentRoute = currentHash ? currentHash.substring(1) : null;
+  globalThis.platform.openExtensionInBrowser(currentRoute, queryString ?? null);
+}
+
+/**
+ * Resolves the Continue action within QR recovery flow
+ * based on the current camera permission state and the extension environment.
+ *
+ * @param onRetry - The default retry handler (e.g. calls `ensureDeviceReady`).
+ * @param redirectQueryString - Optional query string forwarded to the
+ * fullscreen tab so flows with UI-only state (Swap / Bridge) can restore
+ * their form parameters via deep-link query params.
+ */
+export async function handleContinueWithPermissionCheck(
+  onRetry: () => Promise<void>,
+  redirectQueryString?: string | null,
+): Promise<void> {
+  let permissionState: PermissionState;
+  try {
+    permissionState = await checkCameraPermission();
+  } catch {
+    await onRetry();
+    return;
+  }
+
+  if (permissionState === CameraPermissionState.Granted) {
+    await onRetry();
+    return;
+  }
+
+  if (permissionState === CameraPermissionState.Prompt) {
+    if (isRestrictedCameraEnvironment()) {
+      redirectToFullscreen(redirectQueryString);
+    } else {
+      await onRetry();
+    }
+  }
+
+  // Permission is still denied — user hasn't changed settings yet.
 }

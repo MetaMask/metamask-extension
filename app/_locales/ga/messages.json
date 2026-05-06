@@ -108,12 +108,6 @@
   "accountIdenticon": {
     "message": "Deilbhín cuntais"
   },
-  "accountIdenticonDescription": {
-    "message": "Roghnaigh as trí stíl éagsúla de dheilbhíní uathúla a chabhróidh leat cuntais a aithint go tapa."
-  },
-  "accountIsntConnectedToastText": {
-    "message": "Níl $1 ceangailte le $2"
-  },
   "accountName": {
     "message": "Ainm an chuntais"
   },
@@ -180,9 +174,6 @@
   },
   "addACustomNetwork": {
     "message": "Cuir líonra saincheaptha leis"
-  },
-  "addAHardwareWallet": {
-    "message": "Cuir sparán crua-earraí leis"
   },
   "addANetwork": {
     "message": "Cuir líonra leis"
@@ -254,9 +245,6 @@
   },
   "addHardwareWalletLabel": {
     "message": "Sparán crua-earraí"
-  },
-  "addIPFSGateway": {
-    "message": "Cuir do gheata IPFS is fearr leat leis"
   },
   "addMemo": {
     "message": "Cuir meamram leis"
@@ -1084,9 +1072,6 @@
     "message": "Nuair a úsáideann tú ár socruithe agus cumraíochtaí réamhshocraithe, úsáidimid Infura mar ár soláthraí glaonna nós imeachta cianda (RPC) réamhshocraithe chun an rochtain is iontaofa agus is príobháideacha is féidir a thairiscint ar shonraí Ethereum. I gcásanna teoranta, féadfaimid soláthraithe RPC eile a úsáid chun an taithí is fearr a sholáthar dár n-úsáideoirí. Is féidir leat do RPC féin a roghnú, ach cuimhnigh go bhfaighidh aon RPC do sheoladh IP agus do sparán Ethereum chun idirbhearta a dhéanamh. Chun tuilleadh a fhoghlaim faoi mar a láimhseálann Infura sonraí do chuntais EVM, léigh ár $1, agus do chuntais Solana, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "cliceáil anseo"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Ní mór duit MetaMask a úsáid ar Google Chrome chun ceangal le do Sparán Crua-earraí."
   },
@@ -1098,9 +1083,6 @@
   },
   "clearActivity": {
     "message": "Glan sonraí gníomhaíochta agus neamhghníomhaíochta"
-  },
-  "clearActivityButton": {
-    "message": "Glan sonraí an chluaisín gníomhaíochta"
   },
   "clearActivityDescription": {
     "message": "Athshocraíonn sé seo neamh-uair an chuntais agus scriosann sé sonraí ón táb gníomhaíochta i do sparán. Ní bheidh tionchar ach ar an gcuntas reatha agus ar an líonra. Ní athróidh d’iarmhéideanna ná d’idirbhearta isteach."
@@ -1320,9 +1302,6 @@
   },
   "connect": {
     "message": "Ceangail"
-  },
-  "connectAccount": {
-    "message": "Ceangail cuntas"
   },
   "connectAccounts": {
     "message": "Ceangail cuntais"
@@ -1635,12 +1614,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Faigh nuashonruithe táirgí, leideanna agus nuacht - lena n-áirítear trí ríomhphost. Féadfaimid d’idirghníomhaíochtaí a úsáid chun feabhas a chur ar a bhfuil á roinnt againn."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Ceart go leor"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Mhúch tú bailiú sonraí chun críocha margaíochta. Ní bhaineann sé seo ach leis an ngléas seo. Má úsáideann tú MetaMask ar ghléasanna eile, déan cinnte rogha an diúltaithe a dhéanamh ansin freisin."
   },
   "dataUnavailable": {
     "message": "sonraí ar fáil"
@@ -2999,9 +2972,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Ag Glasáil MetaMask..."
   },
-  "lockTimeInvalid": {
-    "message": "Ní mór don am glasála a bheith ina uimhir idir 0 agus 10080"
-  },
   "loginErrorConnectButton": {
     "message": "Déan iarracht arís"
   },
@@ -3170,12 +3140,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "De réir ár dtaifead, ní hionann luach URL an RPC a cuireadh isteach agus soláthraí aitheanta don ID slabhra seo."
-  },
-  "missingSetting": {
-    "message": "Ní féidir leat socrú a aimsiú?"
-  },
-  "missingSettingRequest": {
-    "message": "Iarratas anseo"
   },
   "month": {
     "message": "mí"
@@ -3896,9 +3860,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Téarmaí Úsáide"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
@@ -4869,12 +4830,6 @@
   "securityChangePassword": {
     "message": "Athraigh an focal faire"
   },
-  "securityChangePasswordDescription": {
-    "message": "Roghnaigh pasfhocal láidir chun an aip MetaMask a dhíghlasáil ar do ghléas. Má chailleann tú an pasfhocal seo, beidh do Rún Aisghabhála Frása ag teastáil uait chun do sparán a ath-allmhairiú."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Pasfhocal"
-  },
   "securityChangePasswordToastError": {
     "message": "Níorbh fhéidir an focal faire a athrú. Déan iarracht arís."
   },
@@ -4886,16 +4841,6 @@
   },
   "securityDescription": {
     "message": "Laghdaigh do sheans go mbeidh tú páirteach i líonraí neamhshábháilte agus cosain do chuntais"
-  },
-  "securityLoginWithSocial": {
-    "message": "Logáil isteach le $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Frása Rúnda Aisghabhála cúltaca déanta air"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Cúltaca de Frása Rúnda Aisghabhála"
   },
   "securityMessageLinkForNetworks": {
     "message": "camscéimeanna líonra agus rioscaí slándála"
@@ -4918,14 +4863,8 @@
     "message": "AISGHNÍOMH $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Déan cúltaca de do Rún Aisghabhála Frása ionas nach gcaillfidh tú rochtain ar do sparán choíche. Bí cinnte é a stóráil in áit shábháilte nach féidir ach leatsa rochtain a fháil air agus nach ndéanfaidh tú dearmad air."
-  },
   "securitySrpLabel": {
     "message": "FRÁSAÍ AISGHABHÁLA RÚNDA"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Bainistigh modhanna aisghabhála"
   },
   "seeAllPermissions": {
     "message": "Féach ar na ceadanna uile",
@@ -5420,9 +5359,6 @@
   },
   "smartAccountUpgradeBannerTitle": {
     "message": "Athraigh go cuntas cliste"
-  },
-  "smartContracts": {
-    "message": "Conarthaí cliste"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Níl dóthain cistí ann le haghaidh malartú cliste."
@@ -6372,9 +6308,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Tá an comhartha curtha leis cheana féin."
-  },
-  "tokenAutoDetection": {
-    "message": "Uathbhrath comharthaí"
   },
   "tokenContractAddress": {
     "message": "Seoladh conartha comhartha"
