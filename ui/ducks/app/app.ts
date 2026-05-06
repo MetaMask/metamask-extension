@@ -106,7 +106,6 @@ type AppState = {
   isMultiRpcOnboarding: boolean;
   isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
-  showNewSrpAddedToast: number | false;
   showClaimSubmitToast: ClaimSubmitToastType | null;
   showInfuraSwitchToast: boolean;
   shieldEntryModal?: {
@@ -200,7 +199,6 @@ const initialState: AppState = {
   isMultiRpcOnboarding: false,
   isAccessedFromDappConnectedSitePopover: false,
   errorInSettings: null,
-  showNewSrpAddedToast: false,
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
@@ -688,12 +686,6 @@ export default function reduceApp(
           result: 'none',
         },
       };
-    case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
-      return {
-        ...appState,
-        showNewSrpAddedToast: action.payload,
-      };
-
     case actionConstants.SET_SHOW_CLAIM_SUBMIT_TOAST:
       return {
         ...appState,

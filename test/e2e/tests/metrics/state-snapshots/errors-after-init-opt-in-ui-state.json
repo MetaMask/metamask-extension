@@ -47,7 +47,6 @@
     "showInfuraSwitchToast": "boolean",
     "showIpfsModalOpen": "boolean",
     "showKeyringRemovalSnapModal": "boolean",
-    "showNewSrpAddedToast": "boolean",
     "showPermittedNetworkToastOpen": "boolean",
     "showSupportDataConsentModal": "boolean",
     "singleExceptions": "object",
