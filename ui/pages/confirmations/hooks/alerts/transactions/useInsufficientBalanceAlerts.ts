@@ -46,8 +46,7 @@ export function useInsufficientBalanceAlerts({
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
 
   const isPayPendingInput =
-    Boolean(payToken) &&
-    (!primaryRequiredToken || primaryRequiredToken?.amountRaw === '0');
+    Boolean(payToken) && primaryRequiredToken?.amountRaw === '0';
 
   const isGasFeeTokensEmpty = gasFeeTokens?.length === 0;
 

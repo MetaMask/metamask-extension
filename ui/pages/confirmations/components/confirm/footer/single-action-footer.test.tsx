@@ -11,7 +11,6 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import {
   useIsTransactionPayLoading,
   useTransactionPayPrimaryRequiredToken,
-  useTransactionPayRequiredTokens,
 } from '../../../hooks/pay/useTransactionPayData';
 import { SingleActionFooter } from './single-action-footer';
 
@@ -89,17 +88,11 @@ describe('<SingleActionFooter />', () => {
     jest.resetAllMocks();
     jest.mocked(useIsTransactionPayLoading).mockReturnValue(false);
     jest
-      .mocked(useTransactionPayRequiredTokens)
-      .mockReturnValue([
-        { amountUsd: '10.00', skipIfBalance: false } as ReturnType<
-          typeof useTransactionPayRequiredTokens
-        >[number],
-      ]);
-    jest
       .mocked(useTransactionPayPrimaryRequiredToken)
-      .mockReturnValue({ skipIfBalance: false } as ReturnType<
-        typeof useTransactionPayPrimaryRequiredToken
-      >);
+      .mockReturnValue({
+        amountUsd: '10.00',
+        skipIfBalance: false,
+      } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
   });
 
   it('renders the button', () => {
@@ -186,33 +179,18 @@ describe('<SingleActionFooter />', () => {
 
   it('disables button when amount is zero', () => {
     jest
-      .mocked(useTransactionPayRequiredTokens)
-      .mockReturnValue([
-        { amountUsd: '0', skipIfBalance: false } as ReturnType<
-          typeof useTransactionPayRequiredTokens
-        >[number],
-      ]);
-
-    const { getByTestId } = render();
-
-    expect(getByTestId('confirm-footer-button')).toBeDisabled();
-  });
-
-  it('disables button when pay is not engaged and there are no required tokens', () => {
-    jest
-      .mocked(useTransactionPayRequiredTokens)
-      .mockReturnValue(undefined as never);
-    jest
       .mocked(useTransactionPayPrimaryRequiredToken)
-      .mockReturnValue(undefined);
+      .mockReturnValue({
+        amountUsd: '0',
+        skipIfBalance: false,
+      } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
 
     const { getByTestId } = render();
 
     expect(getByTestId('confirm-footer-button')).toBeDisabled();
   });
 
-  it('shows loading instead of disabling when pay is engaged but no primary required token resolves', () => {
-    jest.mocked(useTransactionPayRequiredTokens).mockReturnValue([]);
+  it('shows loading when primary required token is not yet resolved', () => {
     jest
       .mocked(useTransactionPayPrimaryRequiredToken)
       .mockReturnValue(undefined);
@@ -224,8 +202,7 @@ describe('<SingleActionFooter />', () => {
     expect(button).toHaveAttribute('aria-busy', 'true');
   });
 
-  it('keeps blocking alert disabled state even when awaiting required token', () => {
-    jest.mocked(useTransactionPayRequiredTokens).mockReturnValue([]);
+  it('shows loading over blocking alerts when awaiting required token', () => {
     jest
       .mocked(useTransactionPayPrimaryRequiredToken)
       .mockReturnValue(undefined);
@@ -243,8 +220,8 @@ describe('<SingleActionFooter />', () => {
     });
 
     const button = getByTestId('confirm-footer-button');
-    expect(button).toBeDisabled();
-    expect(button).toHaveTextContent('Hardware wallet not supported');
+    expect(button).not.toBeDisabled();
+    expect(button).toHaveAttribute('aria-busy', 'true');
   });
 
   it('shows Add funds label for perpsDeposit transaction type', () => {

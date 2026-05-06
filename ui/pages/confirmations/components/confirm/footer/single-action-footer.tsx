@@ -10,7 +10,6 @@ import { useConfirmContext } from '../../../context/confirm';
 import {
   useIsTransactionPayLoading,
   useTransactionPayPrimaryRequiredToken,
-  useTransactionPayRequiredTokens,
 } from '../../../hooks/pay/useTransactionPayData';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
 
@@ -34,33 +33,25 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
 
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayLoading();
-  const requiredTokens = useTransactionPayRequiredTokens();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
-
-  const isPayEngaged = requiredTokens !== undefined;
-  const isAwaitingRequiredToken = isPayEngaged && !primaryRequiredToken;
 
   const blockingAlerts = useMemo(
     () => alerts.filter((a) => a.isBlocking),
     [alerts],
   );
 
-  const hasAmount = useMemo(
-    () =>
-      (requiredTokens ?? [])
-        .filter((token) => !token.skipIfBalance)
-        .reduce(
-          (acc, token) => acc.plus(new BigNumber(token.amountUsd ?? 0)),
-          new BigNumber(0),
-        )
-        .gt(0),
-    [requiredTokens],
-  );
-
   return useMemo(() => {
     const i18nKey =
       (transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ?? 'confirm';
     const defaultButtonText = t(i18nKey);
+
+    if (!primaryRequiredToken) {
+      return {
+        buttonText: defaultButtonText,
+        isDisabled: false,
+        isLoading: true,
+      };
+    }
 
     const hasBlockingAlerts = blockingAlerts.length > 0;
 
@@ -71,33 +62,20 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     const buttonText =
       hasBlockingAlerts && alertText ? alertText : defaultButtonText;
 
-    if (hasBlockingAlerts) {
-      return {
-        buttonText,
-        isDisabled: true,
-        isLoading: isGaslessLoading || isPayLoading,
-      };
-    }
-
-    if (isAwaitingRequiredToken) {
-      return {
-        buttonText: defaultButtonText,
-        isDisabled: false,
-        isLoading: true,
-      };
-    }
+    const hasAmount = new BigNumber(
+      primaryRequiredToken.amountUsd ?? 0,
+    ).gt(0);
 
     return {
       buttonText,
-      isDisabled: !hasAmount,
+      isDisabled: hasBlockingAlerts || !hasAmount,
       isLoading: isGaslessLoading || isPayLoading,
     };
   }, [
     blockingAlerts,
-    hasAmount,
-    isAwaitingRequiredToken,
     isGaslessLoading,
     isPayLoading,
+    primaryRequiredToken,
     transactionType,
     t,
   ]);

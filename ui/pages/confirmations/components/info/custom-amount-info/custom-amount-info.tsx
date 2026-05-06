@@ -102,7 +102,6 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
     const availableTokens = useTransactionPayAvailableTokens();
     const hasTokens = availableTokens.length > 0;
     const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
-    const isInputDisabled = !hasTokens;
     const isAwaitingRequiredToken = !disablePay && !primaryRequiredToken;
 
     const { disableUpdate } = useTransactionCustomAmountAlerts();
@@ -152,7 +151,6 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
           hasMax={hasMax}
           hasTokens={hasTokens}
           hidePayTokenAmount={hidePayTokenAmount}
-          isInputDisabled={isInputDisabled}
           onAmountChange={handleAmountChange}
           onPercentageClick={handlePercentageClick}
           overrideCenterContent={overrideCenterContent}
@@ -188,7 +186,6 @@ type CenterContainerProps = {
   hasMax?: boolean;
   hasTokens: boolean;
   hidePayTokenAmount?: boolean;
-  isInputDisabled: boolean;
   onAmountChange: (value: string) => void;
   onPercentageClick: (percentage: number) => void;
   overrideCenterContent?: (amountHuman: string) => ReactNode;
@@ -204,7 +201,6 @@ function CenterContainer({
   hasMax,
   hasTokens,
   hidePayTokenAmount,
-  isInputDisabled,
   onAmountChange,
   onPercentageClick,
   overrideCenterContent,
@@ -222,7 +218,7 @@ function CenterContainer({
         amountFiat={amountFiat}
         autoFocus={autoFocusAmount}
         currency={currency}
-        disabled={isInputDisabled}
+              disabled={!hasTokens}
         onChange={onAmountChange}
       />
 
@@ -238,7 +234,7 @@ function CenterContainer({
           {disablePay !== true && !hidePayTokenAmount && (
             <PayTokenAmount
               amountHuman={amountHuman}
-              disabled={isInputDisabled}
+        disabled={!hasTokens}
             />
           )}
           {children}
