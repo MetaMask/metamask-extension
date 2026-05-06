@@ -16,18 +16,21 @@ import { useNavigate } from 'react-router-dom';
 import { parseCaipAccountId } from '@metamask/utils';
 import {
   Box,
-  BoxBackgroundColor,
-  FontWeight,
+  Checkbox,
   Icon,
-  IconColor,
   IconName,
   IconSize,
   Text,
+} from '../../component-library';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+
+import {
+  BackgroundColor,
+  BlockSize,
+  IconColor,
   TextColor,
   TextVariant,
-} from '@metamask/design-system-react';
-import { Checkbox } from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+} from '../../../helpers/constants/design-system';
 import { MultichainAccountCell } from '../multichain-account-cell';
 import {
   AccountTreeWallets,
@@ -502,32 +505,27 @@ export const MultichainAccountList = ({
               const isExpanded = item.isExpanded ?? true;
               return (
                 <Box
-                  asChild
-                  backgroundColor={BoxBackgroundColor.BackgroundDefault}
-                  className="w-full"
+                  as="button"
+                  onClick={() =>
+                    toggleSectionExpanded(item.sectionKey as string)
+                  }
+                  backgroundColor={BackgroundColor.backgroundDefault}
+                  width={BlockSize.Full}
+                  className="flex px-4 py-2 justify-between items-center"
+                  data-testid={item.testId}
+                  aria-expanded={isExpanded}
                 >
-                  <button
-                    type="button"
-                    onClick={() =>
-                      toggleSectionExpanded(item.sectionKey as string)
-                    }
-                    className="flex w-full px-4 py-2 justify-between items-center"
-                    data-testid={item.testId}
-                    aria-expanded={isExpanded}
+                  <Text
+                    variant={TextVariant.bodyMdMedium}
+                    color={TextColor.textAlternative}
                   >
-                    <Text
-                      variant={TextVariant.BodyMd}
-                      fontWeight={FontWeight.Medium}
-                      color={TextColor.TextAlternative}
-                    >
-                      {item.text}
-                    </Text>
-                    <Icon
-                      name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
-                      size={IconSize.Md}
-                      color={IconColor.IconAlternative}
-                    />
-                  </button>
+                    {item.text}
+                  </Text>
+                  <Icon
+                    name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
+                    size={IconSize.Md}
+                    color={IconColor.iconAlternative}
+                  />
                 </Box>
               );
             }
@@ -535,9 +533,8 @@ export const MultichainAccountList = ({
             return (
               <Box data-testid={item.testId} className="flex px-4 py-2">
                 <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.TextAlternative}
+                  variant={TextVariant.bodyMdMedium}
+                  color={TextColor.textAlternative}
                 >
                   {item.text}
                 </Text>
@@ -548,35 +545,30 @@ export const MultichainAccountList = ({
           if (item.type === 'hidden-header') {
             return (
               <Box
-                asChild
-                backgroundColor={BoxBackgroundColor.BackgroundDefault}
-                className="w-full"
+                as="button"
+                onClick={() =>
+                  setIsHiddenAccountsExpanded(!isHiddenAccountsExpanded)
+                }
+                backgroundColor={BackgroundColor.backgroundDefault}
+                width={BlockSize.Full}
+                className="hidden-accounts-list flex px-4 py-2 justify-between items-center"
+                data-testid="multichain-account-tree-hidden-header"
               >
-                <button
-                  type="button"
-                  onClick={() =>
-                    setIsHiddenAccountsExpanded(!isHiddenAccountsExpanded)
-                  }
-                  className="hidden-accounts-list flex w-full px-4 py-2 justify-between items-center"
-                  data-testid="multichain-account-tree-hidden-header"
+                <Text
+                  variant={TextVariant.bodyMdMedium}
+                  color={TextColor.textAlternative}
                 >
-                  <Text
-                    variant={TextVariant.BodyMd}
-                    fontWeight={FontWeight.Medium}
-                    color={TextColor.TextAlternative}
-                  >
-                    {t('hidden')} ({item.count})
-                  </Text>
-                  <Icon
-                    name={
-                      isHiddenAccountsExpanded
-                        ? IconName.ArrowUp
-                        : IconName.ArrowDown
-                    }
-                    size={IconSize.Md}
-                    color={IconColor.IconAlternative}
-                  />
-                </button>
+                  {t('hidden')} ({item.count})
+                </Text>
+                <Icon
+                  name={
+                    isHiddenAccountsExpanded
+                      ? IconName.ArrowUp
+                      : IconName.ArrowDown
+                  }
+                  size={IconSize.Md}
+                  color={IconColor.iconAlternative}
+                />
               </Box>
             );
           }

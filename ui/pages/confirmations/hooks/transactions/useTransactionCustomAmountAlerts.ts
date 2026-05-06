@@ -50,12 +50,11 @@ export function useTransactionCustomAmountAlerts(): {
     };
   }
 
-  const { reason, message } = firstAlert;
   const alertMessage =
-    reason && message && reason !== message ? message : undefined;
+    (firstAlert.message as string | undefined) ?? firstAlert.reason;
 
   return {
-    ...(alertMessage ? { alertMessage } : {}),
+    alertMessage,
     hideResults,
     disableUpdate,
   };

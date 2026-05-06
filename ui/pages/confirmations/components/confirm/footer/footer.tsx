@@ -54,7 +54,6 @@ import { SingleActionFooter } from './single-action-footer';
 const SINGLE_ACTION_FOOTER_TYPES = [
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
-  TransactionType.perpsWithdraw,
 ];
 
 export type OnCancelHandler = ({

@@ -86,12 +86,6 @@ import {
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import MetaMaskController from './metamask-controller';
 
-// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
-// so these tests exercise the real feature-flag gating logic via state.
-jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () =>
-  jest.requireActual('../../shared/lib/assets-unify-state/remote-feature-flag'),
-);
-
 jest.mock('./messenger-client-init/perps-controller-init', () => ({
   PerpsControllerInit: jest.fn().mockImplementation(() => ({
     messengerClient: {
@@ -676,9 +670,7 @@ describe('MetaMaskController', () => {
         });
       });
 
-      // These tests require isAssetsUnifyStateFeatureEnabled to return true.
-      // The flag is currently hardcoded to false, so skip the entire block.
-      describe.skip('with assets-unify state enabled', () => {
+      describe('with assets-unify state enabled', () => {
         let unifyMetamaskController;
 
         beforeEach(() => {
@@ -775,7 +767,7 @@ describe('MetaMaskController', () => {
           expect(
             unifyMetamaskController.assetsController.addCustomAsset,
           ).toHaveBeenCalledWith('test-internal-account-id', expectedAssetId, {
-            address: expectedAssetId,
+            address: watchAssetTokenAddress,
             symbol: 'TST',
             name: 'Test Token',
             decimals: 4,
@@ -2903,88 +2895,6 @@ describe('MetaMaskController', () => {
           ignoreNetwork: false,
         });
       });
-
-      it('rejects matching smart transaction status page approvals when wiping activity', async () => {
-        const selectedAddressMock =
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
-
-        jest
-          .spyOn(metamaskController.accountsController, 'getSelectedAccount')
-          .mockReturnValue({ address: selectedAddressMock });
-
-        metamaskController.txController.update((state) => {
-          state.transactions = [
-            {
-              id: 'matching-tx',
-              chainId: CHAIN_IDS.MAINNET,
-              txParams: {
-                from: selectedAddressMock,
-              },
-            },
-            {
-              id: 'other-chain-tx',
-              chainId: CHAIN_IDS.LINEA_MAINNET,
-              txParams: {
-                from: selectedAddressMock,
-              },
-            },
-            {
-              id: 'other-address-tx',
-              chainId: CHAIN_IDS.MAINNET,
-              txParams: {
-                from: '0x1111111111111111111111111111111111111111',
-              },
-            },
-          ];
-        });
-
-        metamaskController.approvalController.update((state) => {
-          state.pendingApprovals = {
-            matchingApproval: {
-              id: 'matching-approval',
-              type: 'smartTransaction:showSmartTransactionStatusPage',
-              requestState: {
-                txId: 'matching-tx',
-              },
-            },
-            otherChainApproval: {
-              id: 'other-chain-approval',
-              type: 'smartTransaction:showSmartTransactionStatusPage',
-              requestState: {
-                txId: 'other-chain-tx',
-              },
-            },
-            otherAddressApproval: {
-              id: 'other-address-approval',
-              type: 'smartTransaction:showSmartTransactionStatusPage',
-              requestState: {
-                txId: 'other-address-tx',
-              },
-            },
-            otherApprovalType: {
-              id: 'other-approval-type',
-              type: 'eth_signTypedData',
-              requestState: {
-                txId: 'matching-tx',
-              },
-            },
-          };
-        });
-
-        jest.spyOn(metamaskController.approvalController, 'rejectRequest');
-
-        await metamaskController.resetAccount();
-
-        expect(
-          metamaskController.approvalController.rejectRequest,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          metamaskController.approvalController.rejectRequest,
-        ).toHaveBeenCalledWith(
-          'matching-approval',
-          new Error('Transaction activity reset'),
-        );
-      });
     });
 
     describe('#removeAccount', () => {
@@ -3241,11 +3151,10 @@ describe('MetaMaskController', () => {
         streamTest.end();
       });
 
-      it('adds a tabId, frameId, origin and networkClient to requests', async () => {
+      it('adds a tabId, origin and networkClient to requests', async () => {
         const messageSender = {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
-          frameId: 0,
         };
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
@@ -3281,10 +3190,6 @@ describe('MetaMaskController', () => {
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'tabId',
                   456,
-                );
-                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
-                  'frameId',
-                  0,
                 );
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'networkClientId',
@@ -3330,9 +3235,6 @@ describe('MetaMaskController', () => {
               setTimeout(() => {
                 expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
                   'tabId',
-                );
-                expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
-                  'frameId',
                 );
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'origin',
@@ -3457,11 +3359,10 @@ describe('MetaMaskController', () => {
         tearDownMockMiddlewareLog();
       });
 
-      it('adds a tabId, frameId and origin to requests', async () => {
+      it('adds a tabId and origin to requests', async () => {
         const messageSender = {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
-          frameId: 0,
         };
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk && chunk.method) {
@@ -3499,10 +3400,6 @@ describe('MetaMaskController', () => {
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'tabId',
                   456,
-                );
-                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
-                  'frameId',
-                  0,
                 );
                 resolve();
               });
@@ -3547,9 +3444,6 @@ describe('MetaMaskController', () => {
               setTimeout(() => {
                 expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
                   'tabId',
-                );
-                expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
-                  'frameId',
                 );
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'origin',

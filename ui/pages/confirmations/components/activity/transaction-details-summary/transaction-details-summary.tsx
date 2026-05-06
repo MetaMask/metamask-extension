@@ -28,12 +28,6 @@ import { BlockExplorerLink } from '../block-explorer-link';
 import { TransactionStatusIcon } from '../transaction-status-icon';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
-const RELAY_DEPOSIT_TYPES = [
-  TransactionType.relayDeposit,
-  TransactionType.perpsRelayDeposit,
-  TransactionType.predictRelayDeposit,
-];
-
 type TranslateFunction = (key: string, args?: string[]) => string;
 
 export function TransactionDetailsSummary() {
@@ -107,7 +101,7 @@ function TransactionSummaryLine({
 }) {
   const { type } = transactionMeta;
 
-  if (hasTransactionType(transactionMeta, RELAY_DEPOSIT_TYPES)) {
+  if (hasTransactionType(transactionMeta, [TransactionType.relayDeposit])) {
     return (
       <RelayDepositSummaryLine
         transactionMeta={transactionMeta}
@@ -126,8 +120,7 @@ function TransactionSummaryLine({
   if (
     type === TransactionType.musdClaim ||
     type === TransactionType.musdConversion ||
-    type === TransactionType.perpsDeposit ||
-    type === TransactionType.perpsWithdraw
+    type === TransactionType.perpsDeposit
   ) {
     return (
       <ReceiveSummaryLine

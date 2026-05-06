@@ -3,19 +3,20 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  ButtonIcon,
-  ButtonIconSize,
-  FontWeight,
+  TextVariant,
+  TextColor,
+  Display,
+  AlignItems,
   IconColor,
+} from '../../../helpers/constants/design-system';
+import { AccountDetailsRow } from '../account-details-row/account-details-row';
+import {
+  ButtonIcon,
   IconName,
   Text,
-  TextColor,
-  TextVariant,
-} from '@metamask/design-system-react';
-import { AccountDetailsRow } from '../account-details-row/account-details-row';
+  Box,
+  ButtonIconSize,
+} from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import { getMetaMaskHdKeyrings } from '../../../selectors';
@@ -47,16 +48,11 @@ export const AccountShowSrpRow = ({ account }: AccountShowSrpRowProps) => {
         label={t('secretRecoveryPhrase')}
         value={''}
         endAccessory={
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={1}
-          >
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
             {shouldShowBackupReminder && (
               <Text
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.ErrorDefault}
+                variant={TextVariant.bodyMdMedium}
+                color={TextColor.errorDefault}
               >
                 {t('backup')}
               </Text>
@@ -64,7 +60,7 @@ export const AccountShowSrpRow = ({ account }: AccountShowSrpRowProps) => {
             <ButtonIcon
               iconName={IconName.ArrowRight}
               ariaLabel={t('next')}
-              iconProps={{ color: IconColor.IconAlternative }}
+              color={IconColor.iconAlternative}
               size={ButtonIconSize.Md}
             />
           </Box>

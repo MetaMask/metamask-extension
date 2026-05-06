@@ -35,7 +35,7 @@ function mockGeoResult(
     error: null,
     blockedRegions: ['GB'],
     blockedMessage: null,
-    refreshGeolocation: jest.fn().mockResolvedValue(undefined),
+    refreshGeolocation: jest.fn(),
     ...overrides,
   });
 }

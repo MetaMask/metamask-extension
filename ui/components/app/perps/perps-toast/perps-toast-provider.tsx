@@ -31,11 +31,6 @@ export type PerpsToastRouteState = {
   pendingOrderFilledDescription?: string;
 };
 
-export type PerpsPendingOrder = {
-  symbol: string;
-  filledDescription?: string;
-} | null;
-
 export type PerpsToastConfig = {
   autoHideTime?: number;
   dataTestId?: string;
@@ -61,8 +56,6 @@ type PerpsToastContextValue = {
   hidePerpsToast: () => void;
   replacePerpsToast: (config: PerpsToastConfig) => void;
   replacePerpsToastByKey: (config: PerpsToastKeyConfig) => void;
-  pendingOrder: PerpsPendingOrder;
-  setPendingOrder: (order: PerpsPendingOrder) => void;
 };
 
 const DEFAULT_SUCCESS_AUTO_HIDE_TIME = 3000;
@@ -74,8 +67,6 @@ const PERPS_TOAST_CONTEXT_DEFAULT: PerpsToastContextValue = {
   hidePerpsToast: noop,
   replacePerpsToast: noop,
   replacePerpsToastByKey: noop,
-  pendingOrder: null,
-  setPendingOrder: noop,
 };
 
 export const PerpsToastContext = createContext<PerpsToastContextValue>(
@@ -103,7 +94,6 @@ type PerpsToastProviderProps = {
 export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
   const t = useI18nContext();
   const [activeToast, setActiveToast] = useState<PerpsToastState | null>(null);
-  const [pendingOrder, setPendingOrder] = useState<PerpsPendingOrder>(null);
   const toastIdRef = useRef(0);
 
   const hidePerpsToast = useCallback(() => {
@@ -155,16 +145,8 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
       hidePerpsToast,
       replacePerpsToast: upsertPerpsToast,
       replacePerpsToastByKey: upsertPerpsToastByKey,
-      pendingOrder,
-      setPendingOrder,
     }),
-    [
-      hidePerpsToast,
-      upsertPerpsToast,
-      upsertPerpsToastByKey,
-      pendingOrder,
-      setPendingOrder,
-    ],
+    [hidePerpsToast, upsertPerpsToast, upsertPerpsToastByKey],
   );
 
   return (

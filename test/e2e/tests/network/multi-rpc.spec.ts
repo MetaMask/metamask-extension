@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { NetworkStatus, RpcEndpointType } from '@metamask/network-controller';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
@@ -55,7 +54,7 @@ describe('MultiRpc:', function (this: Suite) {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true })
+        fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkController({
             networkConfigurationsByChainId: {
               '0x539': {
@@ -69,7 +68,7 @@ describe('MultiRpc:', function (this: Suite) {
                 rpcEndpoints: [
                   {
                     networkClientId: 'networkConfigurationId',
-                    type: RpcEndpointType.Custom,
+                    type: 'custom',
                     url: 'http://localhost:8545',
                   },
                 ],
@@ -88,13 +87,13 @@ describe('MultiRpc:', function (this: Suite) {
                       'https://purple-young-mansion.arbitrum-mainnet.quiknode.pro/f48c5cbfd1f5b39f0e5542d3b23c181b4085a2b5/',
                     ],
                     networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                    type: RpcEndpointType.Custom,
+                    type: 'custom',
                     url: 'https://arbitrum-mainnet.infura.io/',
                   },
                   {
                     name: 'Arbitrum mainnet 2',
                     networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb1',
-                    type: RpcEndpointType.Custom,
+                    type: 'custom',
                     url: 'https://responsive-rpc.test/',
                   },
                 ],
@@ -103,20 +102,20 @@ describe('MultiRpc:', function (this: Suite) {
             networksMetadata: {
               networkConfigurationId: {
                 EIPS: { 1559: true },
-                status: NetworkStatus.Available,
+                status: 'available',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb0': {
                 EIPS: { 1559: true },
-                status: NetworkStatus.Available,
+                status: 'available',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb1': {
                 EIPS: { 1559: true },
-                status: NetworkStatus.Available,
+                status: 'available',
               },
-              mainnet: {
-                EIPS: { 1559: true },
-                status: NetworkStatus.Available,
-              },
+            },
+            mainnet: {
+              EIPS: { 1559: true },
+              status: 'available',
             },
             selectedNetworkClientId: 'mainnet',
           })
@@ -197,58 +196,34 @@ describe('MultiRpc:', function (this: Suite) {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2()
+        fixtures: new FixtureBuilder()
           .withNetworkController({
-            networkConfigurationsByChainId: {
-              '0x539': {
-                blockExplorerUrls: ['https://etherscan.io/'],
-                chainId: '0x539',
-                defaultBlockExplorerUrlIndex: 0,
-                defaultRpcEndpointIndex: 0,
-                name: 'Localhost 8545',
-                nativeCurrency: 'ETH',
-                rpcEndpoints: [
-                  {
-                    networkClientId: 'networkConfigurationId',
-                    type: RpcEndpointType.Custom,
-                    url: 'http://localhost:8545',
-                  },
-                ],
-              },
-              '0xa4b1': {
-                blockExplorerUrls: [],
-                chainId: '0xa4b1',
-                defaultBlockExplorerUrlIndex: 0,
-                defaultRpcEndpointIndex: 0,
-                name: 'Arbitrum mainnet',
-                nativeCurrency: 'ETH',
-                rpcEndpoints: [
-                  {
-                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                    type: RpcEndpointType.Custom,
-                    url: 'https://arbitrum-mainnet.infura.io',
-                  },
-                  {
-                    name: 'Arbitrum mainnet 2',
-                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb1',
-                    type: RpcEndpointType.Custom,
-                    url: 'https://responsive-rpc.test/',
-                  },
-                ],
-              },
+            providerConfig: {
+              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
             },
-            networksMetadata: {
+            networkConfigurations: {
               networkConfigurationId: {
-                EIPS: { 1559: true },
-                status: NetworkStatus.Available,
+                chainId: '0x539',
+                nickname: 'Localhost 8545',
+                rpcUrl: 'http://localhost:8545',
+                ticker: 'ETH',
+                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
               },
               '2ce66016-8aab-47df-b27f-318c80865eb0': {
-                EIPS: { 1559: true },
-                status: NetworkStatus.Available,
+                chainId: '0xa4b1',
+                id: '2ce66016-8aab-47df-b27f-318c80865eb0',
+                nickname: 'Arbitrum mainnet',
+                rpcPrefs: {},
+                rpcUrl: 'https://arbitrum-mainnet.infura.io',
+                ticker: 'ETH',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb1': {
-                EIPS: { 1559: true },
-                status: NetworkStatus.Available,
+                chainId: '0xa4b1',
+                id: '2ce66016-8aab-47df-b27f-318c80865eb1',
+                nickname: 'Arbitrum mainnet 2',
+                rpcPrefs: {},
+                rpcUrl: 'https://responsive-rpc.test/',
+                ticker: 'ETH',
               },
             },
             selectedNetworkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
@@ -334,58 +309,34 @@ describe('MultiRpc:', function (this: Suite) {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2()
+        fixtures: new FixtureBuilder()
           .withNetworkController({
-            networkConfigurationsByChainId: {
-              '0x539': {
-                blockExplorerUrls: ['https://etherscan.io/'],
-                chainId: '0x539',
-                defaultBlockExplorerUrlIndex: 0,
-                defaultRpcEndpointIndex: 0,
-                name: 'Localhost 8545',
-                nativeCurrency: 'ETH',
-                rpcEndpoints: [
-                  {
-                    networkClientId: 'networkConfigurationId',
-                    type: RpcEndpointType.Custom,
-                    url: 'http://localhost:8545',
-                  },
-                ],
-              },
-              '0xa4b1': {
-                blockExplorerUrls: [],
-                chainId: '0xa4b1',
-                defaultBlockExplorerUrlIndex: 0,
-                defaultRpcEndpointIndex: 0,
-                name: 'Arbitrum',
-                nativeCurrency: 'ETH',
-                rpcEndpoints: [
-                  {
-                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                    type: RpcEndpointType.Custom,
-                    url: 'https://arbitrum-mainnet.infura.io',
-                  },
-                  {
-                    name: 'Arbitrum mainnet 2',
-                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb1',
-                    type: RpcEndpointType.Custom,
-                    url: 'https://responsive-rpc.test/',
-                  },
-                ],
-              },
+            providerConfig: {
+              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
             },
-            networksMetadata: {
+            networkConfigurations: {
               networkConfigurationId: {
-                EIPS: { 1559: true },
-                status: NetworkStatus.Available,
+                chainId: '0x539',
+                nickname: 'Localhost 8545',
+                rpcUrl: 'http://localhost:8545',
+                ticker: 'ETH',
+                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
               },
               '2ce66016-8aab-47df-b27f-318c80865eb0': {
-                EIPS: { 1559: true },
-                status: NetworkStatus.Available,
+                chainId: '0xa4b1',
+                id: '2ce66016-8aab-47df-b27f-318c80865eb0',
+                nickname: 'Arbitrum',
+                rpcPrefs: {},
+                rpcUrl: 'https://arbitrum-mainnet.infura.io',
+                ticker: 'ETH',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb1': {
-                EIPS: { 1559: true },
-                status: NetworkStatus.Available,
+                chainId: '0xa4b1',
+                id: '2ce66016-8aab-47df-b27f-318c80865eb1',
+                nickname: 'Arbitrum mainnet 2',
+                rpcPrefs: {},
+                rpcUrl: 'https://responsive-rpc.test/',
+                ticker: 'ETH',
               },
             },
             selectedNetworkClientId: 'networkConfigurationId',
@@ -464,8 +415,11 @@ describe('MultiRpc:', function (this: Suite) {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true })
+        fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkController({
+            providerConfig: {
+              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+            },
             networkConfigurationsByChainId: {
               '0x539': {
                 blockExplorerUrls: ['https://etherscan.io/'],
@@ -477,7 +431,7 @@ describe('MultiRpc:', function (this: Suite) {
                 rpcEndpoints: [
                   {
                     networkClientId: 'networkConfigurationId',
-                    type: RpcEndpointType.Custom,
+                    type: 'custom',
                     url: 'http://localhost:8545',
                   },
                 ],
@@ -492,13 +446,13 @@ describe('MultiRpc:', function (this: Suite) {
                 rpcEndpoints: [
                   {
                     networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                    type: RpcEndpointType.Custom,
+                    type: 'custom',
                     url: 'https://arbitrum-mainnet.infura.io/',
                   },
                   {
                     name: 'Arbitrum mainnet 2',
                     networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb1',
-                    type: RpcEndpointType.Custom,
+                    type: 'custom',
                     url: 'https://responsive-rpc.test/',
                   },
                 ],
@@ -507,15 +461,15 @@ describe('MultiRpc:', function (this: Suite) {
             networksMetadata: {
               networkConfigurationId: {
                 EIPS: { 1559: true },
-                status: NetworkStatus.Available,
+                status: 'available',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb0': {
                 EIPS: { 1559: true },
-                status: NetworkStatus.Available,
+                status: 'available',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb1': {
                 EIPS: { 1559: true },
-                status: NetworkStatus.Available,
+                status: 'available',
               },
             },
             selectedNetworkClientId: 'networkConfigurationId',

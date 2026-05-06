@@ -1,9 +1,14 @@
 import React, { useCallback, useContext, useMemo, useRef } from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon, IconName, TextColor } from '@metamask/design-system-react';
+import {
+  IconName as DesignSystemIconName,
+  TextColor as DesignSystemTextColor,
+} from '@metamask/design-system-react';
 import {
   Box,
+  Icon,
+  IconName,
   ModalFocus,
   Popover,
   PopoverPosition,
@@ -196,27 +201,31 @@ export const MultichainAccountMenu = ({
     const baseMenuItems: MenuItemConfig[] = [
       {
         textKey: 'accountDetails',
-        iconName: IconName.Details,
+        iconName: DesignSystemIconName.Details,
         onClick: handleAccountDetailsClick,
       },
       {
         textKey: 'rename',
-        iconName: IconName.Edit,
+        iconName: DesignSystemIconName.Edit,
         onClick: handleAccountRenameClick,
       },
       {
         textKey: 'addresses',
-        iconName: IconName.QrCode,
+        iconName: DesignSystemIconName.QrCode,
         onClick: handleAccountAddressesClick,
       },
       {
         textKey: isPinned ? 'unpin' : 'pinToTop',
-        iconName: isPinned ? IconName.Unpin : IconName.Pin,
+        iconName: isPinned
+          ? DesignSystemIconName.Unpin
+          : DesignSystemIconName.Pin,
         onClick: handleAccountPinClick,
       },
       {
         textKey: isHidden ? 'showAccount' : 'hideAccount',
-        iconName: isHidden ? IconName.Eye : IconName.EyeSlash,
+        iconName: isHidden
+          ? DesignSystemIconName.Eye
+          : DesignSystemIconName.EyeSlash,
         onClick: handleAccountHideClick,
       },
     ];
@@ -224,9 +233,9 @@ export const MultichainAccountMenu = ({
     if (isRemovable) {
       baseMenuItems.push({
         textKey: 'remove',
-        iconName: IconName.Trash,
+        iconName: DesignSystemIconName.Trash,
         onClick: handleAccountRemoveClick,
-        textColor: TextColor.ErrorDefault,
+        textColor: DesignSystemTextColor.ErrorDefault,
       });
     }
 

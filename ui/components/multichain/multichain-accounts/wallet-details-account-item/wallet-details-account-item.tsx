@@ -1,23 +1,22 @@
 import React, { useEffect, memo } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
-  AvatarAccountSize,
   Box,
-  BoxAlignItems,
-  BoxFlexDirection,
+  BoxProps,
   Icon,
-  IconColor,
   IconName,
   IconSize,
   Text,
+} from '../../../component-library';
+import {
+  AlignItems,
+  Display,
+  IconColor,
   TextColor,
   TextVariant,
-  type BoxProps,
-  FontWeight,
-} from '@metamask/design-system-react';
-import {
-  TextColor as LegacyTextColor,
-  TextVariant as LegacyTextVariant,
+  BlockSize,
+  TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { PreferredAvatar } from '../../../app/preferred-avatar';
 import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
@@ -28,7 +27,7 @@ export type WalletDetailsAccountItemProps = {
   onClick: (account: InternalAccount) => void;
   onBalanceUpdate: (accountId: string, balance: string) => void;
   className?: string;
-  rowStylesProps?: BoxProps;
+  rowStylesProps?: BoxProps<typeof Box>;
 };
 
 const WalletDetailsAccountItem = ({
@@ -46,63 +45,52 @@ const WalletDetailsAccountItem = ({
 
   return (
     <Box
-      asChild
       className={className}
+      as="button"
+      onClick={() => onClick(account)}
+      width={BlockSize.Full}
+      textAlign={TextAlign.Left}
       padding={4}
       marginBottom={1}
+      style={{ cursor: 'pointer', border: 'none' }}
+      data-testid={`wallet-details-account-item-${account.id}`}
       {...rowStylesProps}
     >
-      <button
-        type="button"
-        onClick={() => onClick(account)}
-        className="w-full cursor-pointer border-none bg-transparent text-left"
-        data-testid={`wallet-details-account-item-${account.id}`}
-      >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={3}
-        >
-          <PreferredAvatar
-            address={account.address}
-            size={AvatarAccountSize.Sm}
-          />
-          <Box>
-            <Text
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.TextDefault}
-            >
-              {account.metadata.name}
-            </Text>
-          </Box>
+      <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
+        <PreferredAvatar
+          address={account.address}
+          size={AvatarAccountSize.Sm}
+        />
+        <Box>
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.textDefault}
+          >
+            {account.metadata.name}
+          </Text>
         </Box>
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-        >
-          <UserPreferencedCurrencyDisplay
-            account={account}
-            value={totalFiatBalance}
-            type="PRIMARY"
-            ethNumberOfDecimals={4}
-            hideTitle
-            showFiat
-            isAggregatedFiatOverviewBalance
-            hideLabel
-            textProps={{
-              color: LegacyTextColor.textAlternative,
-              variant: LegacyTextVariant.bodyMdMedium,
-            }}
-          />
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Sm}
-            color={IconColor.IconMuted}
-          />
-        </Box>
-      </button>
+      </Box>
+      <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+        <UserPreferencedCurrencyDisplay
+          account={account}
+          value={totalFiatBalance}
+          type="PRIMARY"
+          ethNumberOfDecimals={4}
+          hideTitle
+          showFiat
+          isAggregatedFiatOverviewBalance
+          hideLabel
+          textProps={{
+            color: TextColor.textAlternative,
+            variant: TextVariant.bodyMdMedium,
+          }}
+        />
+        <Icon
+          name={IconName.ArrowRight}
+          size={IconSize.Sm}
+          color={IconColor.iconMuted}
+        />
+      </Box>
     </Box>
   );
 };

@@ -1,62 +1,28 @@
 import { useSelector } from 'react-redux';
-import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../context/confirm';
 import { getUseTransactionSimulations } from '../../../../selectors';
 import { useHasInsufficientBalance } from '../useHasInsufficientBalance';
-import { NATIVE_TOKEN_ADDRESS } from '../../../../../shared/constants/transaction';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
-
-// Chains with no native may have selectedGasFeeToken inconsistent with gasFeeTokens
-function hasWrongSelectedGasFeeToken({
-  gasFeeTokens,
-  selectedGasFeeToken,
-}: {
-  gasFeeTokens: GasFeeToken[];
-  selectedGasFeeToken?: Hex;
-}) {
-  return (
-    gasFeeTokens.length &&
-    selectedGasFeeToken &&
-    selectedGasFeeToken !== NATIVE_TOKEN_ADDRESS &&
-    !gasFeeTokens.some(
-      ({ tokenAddress }) =>
-        tokenAddress?.toLocaleLowerCase() ===
-        selectedGasFeeToken?.toLocaleLowerCase(),
-    )
-  );
-}
 
 export function useIsGaslessLoading() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { gasFeeTokens, excludeNativeTokenForFee, selectedGasFeeToken } =
-    transactionMeta ?? {};
+  const { gasFeeTokens } = transactionMeta ?? {};
 
-  const {
-    isSupported: isGaslessSupported,
-    pending: isGaslessSupportedPending,
-  } = useIsGaslessSupported();
-
+  const { isSupported: isGaslessSupported, pending } = useIsGaslessSupported();
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
 
   const { hasInsufficientBalance } = useHasInsufficientBalance();
 
-  const isGaslessSupportedFinished =
-    !isGaslessSupportedPending && isGaslessSupported;
+  const isGaslessSupportedFinished = !pending && isGaslessSupported;
 
-  const hasNoNativeTokenAvailable =
-    excludeNativeTokenForFee || hasInsufficientBalance;
-
-  const isGaslessLoading = Boolean(
+  const isGaslessLoading =
     isSimulationEnabled &&
-      hasNoNativeTokenAvailable &&
-      (isGaslessSupportedPending || isGaslessSupportedFinished) &&
-      (!gasFeeTokens ||
-        (excludeNativeTokenForFee &&
-          hasWrongSelectedGasFeeToken({ gasFeeTokens, selectedGasFeeToken }))),
-  );
+    isGaslessSupportedFinished &&
+    hasInsufficientBalance &&
+    !gasFeeTokens;
 
   return { isGaslessLoading };
 }

@@ -22,12 +22,10 @@ export const getTransactionBreakdownData = ({
   state,
   transaction,
   isTokenApprove,
-  isHardwareWalletAccount,
 }: {
   state: MetaMaskReduxState;
   transaction: TransactionMeta;
   isTokenApprove: boolean;
-  isHardwareWalletAccount: boolean;
 }) => {
   const {
     txParams: { gas, gasPrice, maxFeePerGas, value } = {},
@@ -112,7 +110,6 @@ export const getTransactionBreakdownData = ({
 
   const isGasActuallySponsored =
     isGasFeeSponsored &&
-    !isHardwareWalletAccount &&
     status !== TransactionStatus.rejected &&
     !(status === TransactionStatus.failed && !transaction.txReceipt?.gasUsed);
 

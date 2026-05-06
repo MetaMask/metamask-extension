@@ -6,15 +6,11 @@ import {
   type Location as RouterLocation,
 } from 'react-router-dom';
 import {
-  BannerAlert,
-  BannerAlertSeverity,
   Box,
   BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  TextButton,
-  TextButtonSize,
 } from '@metamask/design-system-react';
 import { AccountGroupId } from '@metamask/account-api';
 import {
@@ -22,9 +18,18 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  TextVariant,
+  AlignItems,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainPrivateKeyList } from '../../../components/multichain-accounts/multichain-private-key-list';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  ButtonLink,
+  ButtonLinkSize,
+} from '../../../components/component-library';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
@@ -60,16 +65,19 @@ export const MultichainAccountPrivateKeyListPage = ({
   }, [account, t]);
 
   const learnMoreLink = (
-    <TextButton asChild size={TextButtonSize.BodyMd}>
-      <a
-        className="items-start self-start"
-        href={ZENDESK_URLS.PRIVATE_KEY_GUIDE}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {t('learnMoreUpperCase')}
-      </a>
-    </TextButton>
+    <ButtonLink
+      size={ButtonLinkSize.Inherit}
+      textProps={{
+        variant: TextVariant.bodyMd,
+        alignItems: AlignItems.flexStart,
+      }}
+      as="a"
+      href={ZENDESK_URLS.PRIVATE_KEY_GUIDE}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {t('learnMoreUpperCase')}
+    </ButtonLink>
   );
 
   return (

@@ -1,16 +1,19 @@
 import React from 'react';
 import classnames from 'clsx';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
-  AvatarAccountSize,
+  TextColor,
+  TextVariant,
+  AlignItems,
+  BorderRadius,
+  Display,
+} from '../../../../helpers/constants/design-system';
+import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
-  BoxAlignItems,
-  BoxFlexDirection,
   Text,
-  TextColor,
-  TextVariant,
-} from '@metamask/design-system-react';
+} from '../../../component-library';
 import { PreferredAvatar } from '../../../app/preferred-avatar';
 
 export enum MultichainAvatarGroupType {
@@ -38,20 +41,16 @@ export const MultichainAvatarGroup: React.FC<MultichainAvatarGroupProps> = ({
 
   return (
     <Box
-      alignItems={BoxAlignItems.Center}
-      flexDirection={BoxFlexDirection.Row}
+      alignItems={AlignItems.center}
+      display={Display.Flex}
       className={classnames('multichain-avatar-group', className)}
       data-testid="avatar-group"
       gap={1}
     >
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        gap={1}
-      >
+      <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
         {visibleMembers.map((member, i) => {
           return (
-            <Box className="rounded-full overflow-hidden" key={i}>
+            <Box borderRadius={BorderRadius.full} key={i}>
               {type === MultichainAvatarGroupType.ACCOUNT && (
                 <PreferredAvatar
                   data-testid={`avatar-${i}`}
@@ -74,10 +73,10 @@ export const MultichainAvatarGroup: React.FC<MultichainAvatarGroupProps> = ({
       {showTag && (
         <Box
           paddingLeft={1}
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
+          display={Display.Flex}
+          alignItems={AlignItems.center}
         >
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
             {tagValue}
           </Text>
         </Box>

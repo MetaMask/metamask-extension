@@ -157,7 +157,6 @@ describe('useRevokeGatorPermissions', () => {
       delegationManager: mockDelegationManagerAddress,
     },
     siteOrigin: 'http://localhost:8000',
-    status: 'Active',
   };
 
   const mockGatorPermissions: PermissionInfoWithMetadata[] = [

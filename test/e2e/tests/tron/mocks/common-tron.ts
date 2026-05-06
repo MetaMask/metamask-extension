@@ -709,7 +709,6 @@ export async function mockTronAssets(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet('https://tokens.api.cx.metamask.io/v3/assets')
-    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: [

@@ -3,29 +3,26 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import {
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
   Button,
   ButtonIcon,
   ButtonIconSize,
   ButtonSize,
   ButtonVariant,
-  FontWeight,
   Icon,
   IconColor,
   IconName,
   IconSize,
-  Text,
-  TextColor,
-  TextVariant as DsrTextVariant,
 } from '@metamask/design-system-react';
 
 import {
+  AlignItems,
   BackgroundColor,
   BlockSize,
   BorderRadius,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { transitionBack } from '../../../components/ui/transition';
@@ -45,6 +42,8 @@ import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
+  Box,
+  Text,
   TextFieldSearch,
   TextFieldSearchSize,
 } from '../../../components/component-library';
@@ -148,7 +147,7 @@ export const AccountList = () => {
       </Header>
       <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
         <Box
-          flexDirection={BoxFlexDirection.Column}
+          flexDirection={FlexDirection.Column}
           paddingTop={1}
           paddingLeft={4}
           paddingRight={4}
@@ -179,15 +178,15 @@ export const AccountList = () => {
             />
           ) : (
             <Box
-              className="flex h-full w-full"
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Center}
-              alignItems={BoxAlignItems.Center}
+              display={Display.Flex}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+              width={BlockSize.Full}
+              height={BlockSize.Full}
             >
               <Text
-                color={TextColor.TextAlternative}
-                variant={DsrTextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodyMdMedium}
               >
                 {t('noAccountsFound')}
               </Text>
@@ -204,11 +203,7 @@ export const AccountList = () => {
           isFullWidth
           data-testid="account-list-add-wallet-button"
         >
-          <Box
-            gap={2}
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-          >
+          <Box gap={2} display={Display.Flex} alignItems={AlignItems.center}>
             {isAccountTreeSyncingInProgress && (
               <Icon
                 className="add-multichain-account__icon-box__icon-loading"
@@ -217,10 +212,7 @@ export const AccountList = () => {
                 size={IconSize.Lg}
               />
             )}
-            <Text
-              variant={DsrTextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-            >
+            <Text variant={TextVariant.bodyMdMedium}>
               {addWalletButtonLabel}
             </Text>
           </Box>

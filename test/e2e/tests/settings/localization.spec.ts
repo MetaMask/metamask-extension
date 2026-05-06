@@ -98,9 +98,6 @@ describe('Localization', function () {
           .withCurrencyController({
             currentCurrency: 'php',
           })
-          .withAssetsController({
-            selectedCurrency: 'php',
-          })
           .withPreferencesController({
             preferences: {
               showFiatInTestnets: true,

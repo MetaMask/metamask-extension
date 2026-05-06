@@ -50,8 +50,7 @@ export const WalletInitiatedHeader = () => {
 
     if (
       currentConfirmation.type === TransactionType.musdClaim ||
-      currentConfirmation.type === TransactionType.perpsDeposit ||
-      currentConfirmation.type === TransactionType.perpsWithdraw
+      currentConfirmation.type === TransactionType.perpsDeposit
     ) {
       onCancel({
         location: MetaMetricsEventLocation.Confirmation,
@@ -90,9 +89,6 @@ export const WalletInitiatedHeader = () => {
     }
     if (currentConfirmation?.type === TransactionType.perpsDeposit) {
       return t('perpsDepositFundsTitle');
-    }
-    if (currentConfirmation?.type === TransactionType.perpsWithdraw) {
-      return t('perpsWithdrawFundsTitle');
     }
     return t('review');
   };
