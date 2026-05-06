@@ -1,3 +1,4 @@
+import type { AccountState } from '@metamask/perps-controller';
 import {
   TransactionMeta,
   TransactionType,
@@ -8,17 +9,22 @@ import {
 } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { usePerpsLiveAccount } from '../../../../../hooks/perps/stream';
+import { selectPerpsCachedAccountState } from '../../../../../selectors/perps-controller';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
 import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { usePerpsWithdrawInsufficientBalanceAlert } from './usePerpsWithdrawInsufficientBalanceAlert';
 
-jest.mock('../../../../../hooks/perps/stream');
+jest.mock('../../../../../selectors/perps-controller', () => ({
+  ...jest.requireActual('../../../../../selectors/perps-controller'),
+  selectPerpsCachedAccountState: jest.fn(),
+}));
 jest.mock('../../pay/useTransactionPayData');
 
-const mockUsePerpsLiveAccount = jest.mocked(usePerpsLiveAccount);
+const mockSelectPerpsCachedAccountState = jest.mocked(
+  selectPerpsCachedAccountState,
+);
 const mockUsePrimaryRequiredToken = jest.mocked(
   useTransactionPayPrimaryRequiredToken,
 );
@@ -48,26 +54,16 @@ function runHook(state: ReturnType<typeof buildPerpsWithdrawState>) {
 }
 
 function setAccountBalance(availableBalance: string | undefined) {
-  mockUsePerpsLiveAccount.mockReturnValue({
-    account: availableBalance
-      ? ({ availableBalance } as Awaited<
-          ReturnType<typeof usePerpsLiveAccount>
-        >['account'])
-      : null,
-    isInitialLoading: false,
-  });
+  mockSelectPerpsCachedAccountState.mockReturnValue(
+    availableBalance ? ({ availableBalance } as AccountState) : null,
+  );
 }
 
 function setAccount(account: {
   availableBalance?: string;
   availableToTradeBalance?: string;
 }) {
-  mockUsePerpsLiveAccount.mockReturnValue({
-    account: account as Awaited<
-      ReturnType<typeof usePerpsLiveAccount>
-    >['account'],
-    isInitialLoading: false,
-  });
+  mockSelectPerpsCachedAccountState.mockReturnValue(account as AccountState);
 }
 
 function setEnteredAmount(amountFiat: string) {
