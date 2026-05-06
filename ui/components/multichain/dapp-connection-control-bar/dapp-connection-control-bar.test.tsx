@@ -346,7 +346,8 @@ describe('DappConnectionControlBar', () => {
 
   describe('when connected to a dapp via a non-EVM-only provider', () => {
     const SOLANA_ACCOUNT_ID = 'a8b9c0d1-2e3f-4a5b-6c7d-8e9f0a1b2c3d';
-    const SOLANA_ACCOUNT_ADDRESS = '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv';
+    const SOLANA_ACCOUNT_ADDRESS =
+      '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv';
     const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 
     const buildSolanaOnlyState = () => {
