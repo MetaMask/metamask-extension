@@ -45,7 +45,6 @@ import {
   getValidatedFromValue,
   getIsSrcAssetPickerOpen,
   getIsDestAssetPickerOpen,
-  getBridgeUnavailableQuoteReason,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,

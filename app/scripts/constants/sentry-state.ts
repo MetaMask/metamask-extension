@@ -127,7 +127,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   BridgeController: {
     assetExchangeRates: false,
     minimumBalanceForRentExemptionInLamports: false,
-    quoteRequest: {
+    quoteRequest: [{
       walletAddress: false,
       srcTokenAddress: true,
       slippage: true,
@@ -135,7 +135,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
       destChainId: true,
       destTokenAddress: true,
       srcTokenAmount: true,
-    },
+    }],
     quotes: [],
     quotesInitialLoadTime: true,
     quotesLastFetched: true,
