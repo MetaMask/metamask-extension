@@ -24,11 +24,7 @@ export const PerpsWithdrawBalance = () => {
         account?.withdrawableBalance ?? account?.spendableBalance ?? '0',
       ) || 0;
     return formatCurrency(value, 'USD');
-  }, [
-    account?.spendableBalance,
-    account?.withdrawableBalance,
-    formatCurrency,
-  ]);
+  }, [account?.spendableBalance, account?.withdrawableBalance, formatCurrency]);
 
   return (
     <Box
