@@ -729,6 +729,42 @@ describe('AutoCloseSection', () => {
       expect(onTakeProfitPriceChange).toHaveBeenLastCalledWith('45675');
     });
 
+    it('formats percentage-derived TP prices with market precision', () => {
+      const cases = [
+        { asset: 'BTC', currentPrice: 45000, expectedPrice: '45315' },
+        { asset: 'PUMP', currentPrice: 0.001958, expectedPrice: '0.001972' },
+        { asset: 'xyz:XYZ100', currentPrice: 28426, expectedPrice: '28625' },
+        { asset: 'ETH', currentPrice: 2359.6, expectedPrice: '2376.1' },
+      ];
+
+      for (const { asset, currentPrice, expectedPrice } of cases) {
+        const onTakeProfitPriceChange = jest.fn();
+        const { unmount } = renderWithProvider(
+          <AutoCloseSection
+            {...defaultProps}
+            enabled={true}
+            asset={asset}
+            currentPrice={currentPrice}
+            leverage={10}
+            onTakeProfitPriceChange={onTakeProfitPriceChange}
+          />,
+          mockStore,
+        );
+
+        const container = screen.getByTestId('tp-percent-input');
+        const input = container.querySelector('input') as HTMLInputElement;
+
+        fireEvent.focus(input);
+        fireEvent.change(input, { target: { value: '7' } });
+
+        expect(onTakeProfitPriceChange).toHaveBeenLastCalledWith(
+          expectedPrice,
+        );
+
+        unmount();
+      }
+    });
+
     it('reverts to derived formatted value when percent field is blurred', () => {
       renderWithProvider(
         <AutoCloseSection

@@ -12,6 +12,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
+  PRICE_RANGES_UNIVERSAL,
 } from '../../../../../../../shared/lib/perps-formatters';
 
 import {
@@ -153,12 +154,16 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       const priceChangeRatio = percent / (leverage * 100);
       const multiplier =
         direction === 'long' ? 1 + priceChangeRatio : 1 - priceChangeRatio;
-
       const price = entryPrice * multiplier;
-      const normalizedPrice = Number.parseFloat(price.toFixed(8));
-      return Number.isFinite(normalizedPrice) && normalizedPrice > 0
-        ? normalizedPrice.toString()
-        : '';
+
+      if (!Number.isFinite(price) || price <= 0) {
+        return '';
+      }
+
+      return formatPerpsFiat(price, { ranges: PRICE_RANGES_UNIVERSAL }).replace(
+        /[$,]/gu,
+        '',
+      );
     },
     [entryPrice, leverage, direction],
   );
