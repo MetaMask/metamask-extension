@@ -317,8 +317,23 @@ function classifyAccountAsset(
   assetId: string,
   amount: string | null,
 ): boolean {
-  const alreadyTracked = Boolean(ac.assetsBalance[accountId]?.[assetId]);
-  const alreadyCustom = ac.customAssets[accountId]?.includes(assetId) ?? false;
+  const normalizedAssetId = assetId.toLowerCase();
+  const trackedAssetsForAccount = ac.assetsBalance[accountId] ?? {};
+  const customAssetsForAccount = ac.customAssets[accountId] ?? [];
+
+  const trackedAssetIdMatch = Object.keys(trackedAssetsForAccount).find(
+    (existingAssetId) =>
+      existingAssetId === assetId ||
+      existingAssetId.toLowerCase() === normalizedAssetId,
+  );
+  const customAssetIdMatch = customAssetsForAccount.find(
+    (existingAssetId) =>
+      existingAssetId === assetId ||
+      existingAssetId.toLowerCase() === normalizedAssetId,
+  );
+
+  const alreadyTracked = Boolean(trackedAssetIdMatch);
+  const alreadyCustom = Boolean(customAssetIdMatch);
 
   if (amount !== null) {
     if (alreadyTracked) {
@@ -329,7 +344,7 @@ function classifyAccountAsset(
     // Maintain mutual exclusion: contains assetBalance, so must remove from customAssets.
     if (alreadyCustom) {
       ac.customAssets[accountId] = ac.customAssets[accountId].filter(
-        (id) => id !== assetId,
+        (id) => id.toLowerCase() !== normalizedAssetId,
       );
     }
     return true;

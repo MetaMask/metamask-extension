@@ -729,6 +729,46 @@ describe(`migration #${VERSION}`, () => {
     expect(changed.size).toBe(0);
   });
 
+  it('does not add non-EVM assets to customAssets when assetsBalance already contains the same asset with different casing', async () => {
+    const lowerCasedSolUsdcAssetId = SOL_USDC_ASSET_ID.toLowerCase();
+    const vd = cloneDeep(
+      buildBaseStorage({
+        MultichainAssetsController: {
+          accountsAssets: { [ACCOUNT_1_ID]: [SOL_USDC_ASSET_ID] },
+          assetsMetadata: {
+            [SOL_USDC_ASSET_ID]: {
+              fungible: true,
+              name: 'USD Coin',
+              symbol: 'USDC',
+              units: [{ decimals: 6 }],
+            },
+          },
+        },
+        MultichainBalancesController: { balances: {} },
+        AssetsController: {
+          assetsInfo: {},
+          assetsBalance: {
+            [ACCOUNT_1_ID]: {
+              [lowerCasedSolUsdcAssetId]: { amount: '5' },
+            },
+          },
+          customAssets: {},
+        },
+      }),
+    );
+
+    const changed = new Set<string>();
+    await migrate(vd, changed);
+
+    const ac = getAC(vd);
+    expect(ac.customAssets[ACCOUNT_1_ID] ?? []).not.toContain(
+      SOL_USDC_ASSET_ID,
+    );
+    expect(Object.keys(ac.assetsBalance[ACCOUNT_1_ID] ?? {})).toEqual([
+      lowerCasedSolUsdcAssetId,
+    ]);
+  });
+
   // ─── exclusivity between assetsBalance and customAssets ─────────────────────
 
   it('does not duplicate an asset into customAssets when already in assetsBalance', async () => {
