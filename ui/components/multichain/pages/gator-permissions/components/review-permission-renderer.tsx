@@ -90,6 +90,10 @@ function schemaElementDomKey(
   return `${sectionTestId}-${element.testId}`;
 }
 
+function stopClickPropagation(event: React.MouseEvent): void {
+  event.stopPropagation();
+}
+
 // ---------------------------------------------------------------------------
 // Custom field components (use hooks, so must be React components)
 // ---------------------------------------------------------------------------
@@ -131,10 +135,12 @@ const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
         >
           {displayName}
         </Text>
-        <CopyIcon
-          copyText={address}
-          style={{ position: 'static', right: 'auto', top: 'auto' }}
-        />
+        <span onClick={stopClickPropagation}>
+          <CopyIcon
+            copyText={address}
+            style={{ position: 'static', right: 'auto', top: 'auto' }}
+          />
+        </span>
       </Box>
       {isNicknamePopoverShown ? (
         <NicknamePopovers
@@ -214,10 +220,12 @@ const ReviewRuleAddressItem: React.FC<{ address: string }> = ({ address }) => {
         >
           {displayName}
         </Text>
-        <CopyIcon
-          copyText={address}
-          style={{ position: 'static', right: 'auto', top: 'auto' }}
-        />
+        <span onClick={stopClickPropagation}>
+          <CopyIcon
+            copyText={address}
+            style={{ position: 'static', right: 'auto', top: 'auto' }}
+          />
+        </span>
       </Box>
       {isNicknamePopoverShown ? (
         <NicknamePopovers

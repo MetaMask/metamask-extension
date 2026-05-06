@@ -1,7 +1,8 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { Settings } from 'luxon';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import type { PermissionSchemaEntry } from '../../../../../../shared/lib/gator-permissions/permission-detail-schema.types';
@@ -11,6 +12,12 @@ import { ReviewPermissionRenderer } from './review-permission-renderer';
 const store = configureStore(mockState);
 
 const TEST_REVIEW_DETAIL_DIVIDER_TYPE = '__test_review_detail_divider__';
+
+jest.mock('../../../../app/modals/nickname-popovers', () => {
+  return function mockNicknamePopovers() {
+    return <div data-testid="nickname-popovers" />;
+  };
+});
 
 describe('ReviewPermissionRenderer', () => {
   beforeAll(() => {
@@ -213,10 +220,60 @@ describe('ReviewPermissionRenderer', () => {
       />,
       store,
     );
-    expect(screen.getByText('Payee')).toBeInTheDocument();
+    expect(screen.getByText(messages.payee.message)).toBeInTheDocument();
     expect(
       screen.getAllByTestId('review-gator-permission-rule-address'),
     ).toHaveLength(1);
+  });
+
+  it('does not open nickname popover when copying a review account address', () => {
+    renderWithProvider(
+      <ReviewPermissionRenderer
+        permissionType="native-token-periodic"
+        permissionData={{
+          periodAmount: '0xde0b6b3a7640000',
+          periodDuration: 86400,
+          startTime: 1736271776,
+        }}
+        chainId="0x1"
+        rules={[]}
+        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
+        tokenLoading={false}
+        viewMode="reviewSummary"
+        permissionAccount="0xc42edfcc21ed14dda456aa0756c153f7985d8813"
+      />,
+      store,
+    );
+
+    fireEvent.click(screen.getByLabelText('copy-button'));
+
+    expect(screen.queryByTestId('nickname-popovers')).not.toBeInTheDocument();
+  });
+
+  it('does not open nickname popover when copying a rule address', () => {
+    const redeemerAddr = '0x0000000000000000000000000000000000000001';
+
+    renderWithProvider(
+      <ReviewPermissionRenderer
+        permissionType="native-token-stream"
+        permissionData={{
+          initialAmount: '0x6f05b59d3b20000',
+          maxAmount:
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+          amountPerSecond: '0x1',
+          startTime: 1736271776,
+        }}
+        chainId="0x1"
+        rules={[{ type: 'redeemer', data: { addresses: [redeemerAddr] } }]}
+        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
+        tokenLoading={false}
+      />,
+      store,
+    );
+
+    fireEvent.click(screen.getByLabelText('copy-button'));
+
+    expect(screen.queryByTestId('nickname-popovers')).not.toBeInTheDocument();
   });
 
   it('places /sec before (raw units) when token decimals are unknown', () => {
