@@ -102,8 +102,8 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
     const availableTokens = useTransactionPayAvailableTokens();
     const hasTokens = availableTokens.length > 0;
     const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
-    const isInputDisabled =
-      !hasTokens || (!disablePay && !primaryRequiredToken);
+    const isInputDisabled = !hasTokens;
+    const isAwaitingRequiredToken = !disablePay && !primaryRequiredToken;
 
     const { disableUpdate } = useTransactionCustomAmountAlerts();
 
@@ -132,7 +132,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
       [updatePendingAmountPercentage],
     );
 
-    if (!currentConfirmation) {
+    if (!currentConfirmation || isAwaitingRequiredToken) {
       return <CustomAmountInfoSkeleton />;
     }
 

@@ -9,6 +9,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import {
   useIsTransactionPayLoading,
+  useTransactionPayPrimaryRequiredToken,
   useTransactionPayRequiredTokens,
 } from '../../../hooks/pay/useTransactionPayData';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
@@ -34,6 +35,10 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayLoading();
   const requiredTokens = useTransactionPayRequiredTokens();
+  const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+
+  const isPayEngaged = requiredTokens !== undefined;
+  const isAwaitingRequiredToken = isPayEngaged && !primaryRequiredToken;
 
   const blockingAlerts = useMemo(
     () => alerts.filter((a) => a.isBlocking),
@@ -53,13 +58,11 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   );
 
   return useMemo(() => {
-    const isLoadingState = isGaslessLoading || isPayLoading;
     const i18nKey =
       (transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ?? 'confirm';
     const defaultButtonText = t(i18nKey);
 
     const hasBlockingAlerts = blockingAlerts.length > 0;
-    const isDisabled = hasBlockingAlerts || !hasAmount;
 
     const firstAlert = blockingAlerts[0];
     const alertText =
@@ -68,14 +71,31 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     const buttonText =
       hasBlockingAlerts && alertText ? alertText : defaultButtonText;
 
+    if (hasBlockingAlerts) {
+      return {
+        buttonText,
+        isDisabled: true,
+        isLoading: isGaslessLoading || isPayLoading,
+      };
+    }
+
+    if (isAwaitingRequiredToken) {
+      return {
+        buttonText: defaultButtonText,
+        isDisabled: false,
+        isLoading: true,
+      };
+    }
+
     return {
       buttonText,
-      isDisabled,
-      isLoading: isLoadingState,
+      isDisabled: !hasAmount,
+      isLoading: isGaslessLoading || isPayLoading,
     };
   }, [
     blockingAlerts,
     hasAmount,
+    isAwaitingRequiredToken,
     isGaslessLoading,
     isPayLoading,
     transactionType,

@@ -270,39 +270,36 @@ describe('CustomAmountInfo', () => {
         'true',
       );
     });
+  });
 
-    it('disables the input when pay is enabled but no primary required token is resolved', () => {
-      const { getByTestId } = render({
+  describe('awaiting required token', () => {
+    it('renders the skeleton when pay is enabled but no primary required token is resolved', () => {
+      const { getByTestId, queryByTestId } = render({
         disablePay: false,
         primaryRequiredToken: undefined,
       });
 
-      expect(getByTestId('custom-amount')).toHaveAttribute(
-        'data-disabled',
-        'true',
-      );
+      expect(getByTestId('custom-amount-info-skeleton')).toBeInTheDocument();
+      expect(queryByTestId('custom-amount-info')).not.toBeInTheDocument();
     });
 
-    it('does not disable the input when pay is disabled and no primary required token is resolved', () => {
-      const { getByTestId } = render({
+    it('does not render the skeleton when pay is disabled and no primary required token is resolved', () => {
+      const { getByTestId, queryByTestId } = render({
         disablePay: true,
         primaryRequiredToken: undefined,
       });
 
-      expect(getByTestId('custom-amount')).toHaveAttribute(
-        'data-disabled',
-        'false',
-      );
+      expect(getByTestId('custom-amount-info')).toBeInTheDocument();
+      expect(queryByTestId('custom-amount-info-skeleton')).not.toBeInTheDocument();
     });
 
-    it('does not render percentage buttons when pay is enabled but no primary required token is resolved', () => {
-      const { queryByTestId } = render({
-        hasMax: true,
+    it('renders the full UI once a primary required token is resolved', () => {
+      const { getByTestId, queryByTestId } = render({
         disablePay: false,
-        primaryRequiredToken: undefined,
       });
 
-      expect(queryByTestId('percentage-button-25')).not.toBeInTheDocument();
+      expect(getByTestId('custom-amount-info')).toBeInTheDocument();
+      expect(queryByTestId('custom-amount-info-skeleton')).not.toBeInTheDocument();
     });
   });
 
@@ -450,6 +447,11 @@ describe('CustomAmountInfo', () => {
       jest
         .mocked(useTransactionPayDataModule.useTransactionPaySourceAmounts)
         .mockReturnValue([]);
+      jest
+        .mocked(useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken)
+        .mockReturnValue({ skipIfBalance: false } as ReturnType<
+          typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
+        >);
 
       const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 
