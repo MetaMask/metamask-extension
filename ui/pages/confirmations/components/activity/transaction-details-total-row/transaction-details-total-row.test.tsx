@@ -13,7 +13,7 @@ const mockStore = configureMockStore([]);
 
 const mockState = {
   metamask: {
-    currentCurrency: 'usd',
+    currentCurrency: 'brl',
     currencyRates: {
       ETH: { conversionRate: 2000 },
     },
@@ -73,8 +73,9 @@ describe('TransactionDetailsTotalRow', () => {
   });
 
   it('renders formatted total when totalFiat is provided', () => {
-    const { queryByText } = render({ totalFiat: '150.75' });
+    const { queryByText, getByText } = render({ totalFiat: '150.75' });
     expect(queryByText('-')).not.toBeInTheDocument();
+    expect(getByText(/\$150[.,]75/u)).toBeInTheDocument();
   });
 
   it('renders "Total" label and uses totalFiat for non-perpsWithdraw transactions', () => {
