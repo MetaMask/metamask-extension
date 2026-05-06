@@ -7478,7 +7478,7 @@
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
   "setUpPasskey": {
-    "message": "Set up biometrics"
+    "message": "Set up Biometrics"
   },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
@@ -9607,10 +9607,10 @@
     "message": "There was an error in disabling the notifications. Please try again later."
   },
   "turnOffPasskey": {
-    "message": "Turn off biometrics"
+    "message": "Turn off Biometrics"
   },
   "turnOffPasskeyFailed": {
-    "message": "We couldn't turn off biometrics. Try again."
+    "message": "We couldn't turn off Biometrics. Try again."
   },
   "turnOn": {
     "message": "Turn on"
@@ -9715,7 +9715,7 @@
     "description": "Label used for Private Keys row on multichain account details page."
   },
   "unlockWithPasskey": {
-    "message": "Unlock with biometrics"
+    "message": "Unlock with Biometrics"
   },
   "unpin": {
     "message": "Unpin"
