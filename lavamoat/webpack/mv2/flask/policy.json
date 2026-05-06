@@ -870,7 +870,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/providers": true,
-        "@metamask/assets-controllers": true,
+        "@metamask/assets-controller>@metamask/assets-controllers": true,
         "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
@@ -913,13 +913,14 @@
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/assets-controllers>@metamask/keyring-api": true,
-        "@metamask/keyring-snap-client": true,
+        "@metamask/assets-controllers>@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client>@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
+        "@metamask/assets-controllers>@tanstack/query-core": true,
         "mockttp>async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
@@ -928,6 +929,15 @@
         "reselect": true,
         "@metamask/assets-controllers>single-call-balance-checker-abi": true,
         "uuid": true
+      }
+    },
+    "@metamask/assets-controller>@metamask/assets-controllers": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": {
@@ -1716,6 +1726,14 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/assets-controller>@metamask/keyring-snap-client>uuid": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client>@metamask/keyring-snap-client": {
+      "packages": {
+        "@metamask/assets-controllers>@metamask/keyring-api": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/assets-controllers>@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client>@metamask/keyring-snap-client>uuid": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": {
@@ -3202,6 +3220,19 @@
       "packages": {
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/binary": true,
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true
+      }
+    },
+    "@metamask/assets-controllers>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "document.visibilityState": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
       }
     },
     "@metamask/core-backend>@tanstack/query-core": {
@@ -6650,6 +6681,11 @@
       }
     },
     "@metamask/assets-controller>@metamask/keyring-snap-client>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client>@metamask/keyring-snap-client>uuid": {
       "globals": {
         "crypto": true
       }
