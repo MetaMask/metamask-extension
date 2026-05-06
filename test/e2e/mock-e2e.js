@@ -160,7 +160,7 @@ const privateHostMatchers = [
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH. Defaults to 3010 when ASSETS_UNIFIED_STATE_ENABLED=true, otherwise 1700.
- * @param {object | undefined} [options.unifiedEvmAccountsApiBalances] - Overrides default Accounts API v5 balances (assets-unify-state).
+ * @param {object | undefined} [options.unifiedEvmAccountsApiBalances] - Overrides default Accounts API v5 balances (assets-unify-state). See UnifiedEvmAccountsApiBalances typedef in helpers.js.
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
@@ -1355,6 +1355,11 @@ async function setupMocking(
         typeof unifiedEvmAccountsApiBalances.mainnetNativeEthHuman === 'string'
           ? unifiedEvmAccountsApiBalances.mainnetNativeEthHuman
           : null;
+      const localhostNativeOverride =
+        typeof unifiedEvmAccountsApiBalances.localhostNativeEthHuman ===
+        'string'
+          ? unifiedEvmAccountsApiBalances.localhostNativeEthHuman
+          : null;
       const defaultNativeOverride =
         typeof unifiedEvmAccountsApiBalances.nativeBalance === 'string'
           ? unifiedEvmAccountsApiBalances.nativeBalance
@@ -1375,6 +1380,8 @@ async function setupMocking(
         let nativeBalance = '25';
         if (chainRef === '1' && mainnetNativeOverride !== null) {
           nativeBalance = mainnetNativeOverride;
+        } else if (chainRef === '1337' && localhostNativeOverride !== null) {
+          nativeBalance = localhostNativeOverride;
         } else if (defaultNativeOverride !== null) {
           nativeBalance = defaultNativeOverride;
         }
