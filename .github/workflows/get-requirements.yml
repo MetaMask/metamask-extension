@@ -636,13 +636,13 @@ jobs:
             steps.set-skip-everything.outputs.skip-everything != 'true'
           }}
         env:
-          BUILDS_REUSED: ${{ steps.find-reusable-builds.outputs.builds-from-run != '' }}
+          BUILDS_FROM_BASE_BRANCH: ${{ steps.find-reusable-builds.outputs.builds-from-base-branch }}
         run: |
           echo "=== Benchmarks skip decision ==="
-          echo "  Builds reused: $BUILDS_REUSED"
+          echo "  Builds from base branch: $BUILDS_FROM_BASE_BRANCH"
 
-          if [[ "$BUILDS_REUSED" == "true" ]]; then
-            echo "-> needs-benchmarks=false (builds reused — identical output)"
+          if [[ "$BUILDS_FROM_BASE_BRANCH" == "true" ]]; then
+            echo "-> needs-benchmarks=false (builds from base branch — identical output)"
           else
             echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
             echo "-> needs-benchmarks=true (fresh builds)"
