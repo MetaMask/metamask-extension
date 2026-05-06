@@ -9,4 +9,7 @@ export {
   isPasskeyPRFSupported,
   isWebAuthnSupported,
 } from './passkey-capabilities';
-export { translatePasskeyError } from './passkey-error';
+export {
+  ExtensionPasskeyErrorCode,
+  translatePasskeyError,
+} from './passkey-error';

@@ -5668,9 +5668,6 @@
   "perpsCancelOrder": {
     "message": "Ακύρωση εντολής"
   },
-  "perpsCandleIntervals": {
-    "message": "Χρονικά διαστήματα κεριών"
-  },
   "perpsCandlePeriodDays": {
     "message": "Ημέρες"
   },
@@ -5682,9 +5679,6 @@
   },
   "perpsCloseAll": {
     "message": "Κλείσιμο όλων"
-  },
-  "perpsCloseAmount": {
-    "message": "Ποσό κλεισίματος"
   },
   "perpsCloseLong": {
     "message": "Κλείσιμο θέσης αγοράς"
@@ -6266,6 +6260,10 @@
   "perpsWithdraw": {
     "message": "Ανάληψη"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Ανάληψη από Perps",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Εκτιμώμενος χρόνος"
   },
@@ -6313,6 +6311,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Το αίτημα ανάληψης υποβλήθηκε"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "Το MetaMask θα κάνει ανταλλαγή στο token που θέλετε. Δεν υπάρχει χρέωση στο MetaMask όταν κάνετε ανταλλαγή σε mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Θα λάβετε"
@@ -6438,6 +6440,10 @@
   },
   "provide": {
     "message": "Παροχή"
+  },
+  "providerFee": {
+    "message": "Τέλη παρόχου",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Δημόσια διεύθυνση"
@@ -6645,8 +6651,16 @@
   "receiveCrypto": {
     "message": "Λάβετε κρυπτονομίσματα"
   },
+  "receiveToken": {
+    "message": "Λήψη token",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Ελήφθη"
+  },
+  "receivedTotal": {
+    "message": "Σύνολο που ελήφθη",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Διεύθυνση παραλαβής",
@@ -8152,9 +8166,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Αιτήματα έξυπνου λογαριασμού από αποκεντρωμένες εφαρμογές (dapps)"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Επιτρέψτε στις αποκεντρωμένες εφαρμογές (dapps) να ζητούν λειτουργίες έξυπνου λογαριασμού για τυπικούς λογαριασμούς. Δεν θα επηρεαστούν οι λογαριασμοί που είναι ήδη έξυπνοι λογαριασμοί."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Ίδια διεύθυνση. Πιο έξυπνες λειτουργίες."
   },
@@ -8787,12 +8798,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Υποστηριζόμενες γλώσσες",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Πάρτε μέρος στην έρευνά μας"
-  },
-  "surveyTitle": {
-    "message": "Διαμορφώστε το μέλλον του MetaMask"
   },
   "swap": {
     "message": "Ανταλλαγή"
@@ -9783,6 +9788,10 @@
   "willApproveAmountForSwapping": {
     "message": "Εγκρίνει το token για ανταλλαγή."
   },
+  "withdrawTo": {
+    "message": "Λήψη",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Ανάληψη"
   },
@@ -9815,6 +9824,10 @@
   "youSent": {
     "message": "Στείλατε",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Θα λάβετε",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Η δραστηριότητά σας"

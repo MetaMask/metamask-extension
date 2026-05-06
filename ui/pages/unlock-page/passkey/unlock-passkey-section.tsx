@@ -36,6 +36,7 @@ import {
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 
 export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;
@@ -61,6 +62,7 @@ export const UnlockPasskeySection = ({
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
+  const [showTroubleshootModal, setShowTroubleshootModal] = useState(false);
 
   const [mountAutoUnlockEligible] = useState(
     () => isPasskeyActive && !passkeyAutoUnlockSuppressed,
@@ -193,23 +195,30 @@ export const UnlockPasskeySection = ({
             type="button"
             data-testid="unlock-passkey-troubleshoot-button"
             color={TextColor.PrimaryDefault}
-            className="w-full text-center"
-            onClick={openUnlockInFullScreen}
+            className="text-center"
+            onClick={() => setShowTroubleshootModal(true)}
           >
             {t('passkeyTroubleshoot')}
           </TextButton>
         ) : null}
       </Box>
 
-      <Button
-        variant={ButtonVariant.Tertiary}
-        data-testid="unlock-use-password-button"
+      {showTroubleshootModal ? (
+        <PasskeyTroubleshootModal
+          onClose={() => setShowTroubleshootModal(false)}
+          onOpenFullScreen={openUnlockInFullScreen}
+        />
+      ) : null}
+
+      <TextButton
         type="button"
+        data-testid="unlock-use-password-button"
+        color={TextColor.PrimaryDefault}
+        className="text-center"
         onClick={handleUsePassword}
-        className="w-full"
       >
         {t('usePassword')}
-      </Button>
+      </TextButton>
     </Box>
   );
 };

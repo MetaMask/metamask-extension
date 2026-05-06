@@ -23,6 +23,7 @@ import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import MetaMaskController from './metamask-controller';
 
 const mockToHardwareWalletError = jest.fn();
@@ -1623,7 +1624,13 @@ describe('MetaMaskController', function () {
             'new-password',
             authenticationResponse,
           ),
-        ).rejects.toThrow(renewError);
+        ).rejects.toMatchObject({
+          name: 'PasskeyControllerError',
+          message:
+            'Passkey vault key protection renewal failed after password change',
+          code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+          cause: renewError,
+        });
 
         expect(removePasskeySpy).toHaveBeenCalledTimes(1);
         expect(releaseLock).toHaveBeenCalledTimes(1);
@@ -1662,6 +1669,48 @@ describe('MetaMaskController', function () {
           ),
         ).rejects.toThrow(changePasswordError);
 
+        expect(renewVaultKeyProtectionSpy).not.toHaveBeenCalled();
+        expect(releaseLock).toHaveBeenCalledTimes(1);
+      });
+
+      it('changes password and removes passkey when vault key protection renewal is skipped', async function () {
+        const releaseLock = jest.fn();
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'verifyPasskeyAuthentication',
+          )
+          .mockResolvedValue(true);
+        jest
+          .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
+          .mockResolvedValue(releaseLock);
+        const changePasswordSpy = jest
+          .spyOn(metamaskController.keyringController, 'changePassword')
+          .mockResolvedValue();
+        const verifyPasswordSpy = jest.spyOn(
+          metamaskController,
+          'verifyPassword',
+        );
+        const renewVaultKeyProtectionSpy = jest.spyOn(
+          metamaskController.passkeyController,
+          'renewVaultKeyProtection',
+        );
+        const removePasskeySpy = jest
+          .spyOn(metamaskController.passkeyController, 'removePasskey')
+          .mockReturnValue();
+
+        await metamaskController.changePasswordWithPasskeyVerification(
+          'new-password',
+          authenticationResponse,
+          { renewVaultKeyProtection: false },
+        );
+
+        expect(changePasswordSpy).toHaveBeenCalledWith('new-password');
+        expect(verifyPasswordSpy).not.toHaveBeenCalled();
+        expect(removePasskeySpy).toHaveBeenCalledTimes(1);
         expect(renewVaultKeyProtectionSpy).not.toHaveBeenCalled();
         expect(releaseLock).toHaveBeenCalledTimes(1);
       });

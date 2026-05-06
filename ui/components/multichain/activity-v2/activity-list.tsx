@@ -42,7 +42,7 @@ import { ActivityDetailsModalAdapter } from './activity-details-modal-adapter';
 import { LocalActivityListItem } from './local-activity-list-item';
 import { NonEvmActivityListItem } from './non-evm-activity-list-item';
 import { NonEvmDetailsModal } from './non-evm-details-modal';
-import { useTransactionsQuery } from './hooks';
+import { useTransactionsQuery } from './useTransactionsQuery';
 
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 36;

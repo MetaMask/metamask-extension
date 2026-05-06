@@ -5668,9 +5668,6 @@
   "perpsCancelOrder": {
     "message": "Cancelar ordem"
   },
-  "perpsCandleIntervals": {
-    "message": "Intervalos de velas"
-  },
   "perpsCandlePeriodDays": {
     "message": "Dias"
   },
@@ -5682,9 +5679,6 @@
   },
   "perpsCloseAll": {
     "message": "Encerrar tudo"
-  },
-  "perpsCloseAmount": {
-    "message": "Valor de encerramento"
   },
   "perpsCloseLong": {
     "message": "Encerrar posição long"
@@ -6266,6 +6260,10 @@
   "perpsWithdraw": {
     "message": "Sacar"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Perps sacados",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Tempo estimado"
   },
@@ -6313,6 +6311,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Saque enviado"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "A MetaMask fará a conversão para o token desejado para você. A MetaMask não aplica taxas quando você converte para mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Você recebe"
@@ -6438,6 +6440,10 @@
   },
   "provide": {
     "message": "Fornecer"
+  },
+  "providerFee": {
+    "message": "Taxa do provedor",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Endereço público"
@@ -6645,8 +6651,16 @@
   "receiveCrypto": {
     "message": "Receba criptomoedas"
   },
+  "receiveToken": {
+    "message": "Receber token",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Recebido"
+  },
+  "receivedTotal": {
+    "message": "Total recebido",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Endereço de recebimento",
@@ -8152,9 +8166,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Solicitações de conta inteligente vindas de dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Permite que dapps (aplicativos descentralizados) solicitem recursos de conta inteligente para contas padrão. Isso não afetará contas que já são contas inteligentes."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Mesmo endereço. Recursos mais inteligentes."
   },
@@ -8787,12 +8798,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Idiomas aceitos",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Responda à nossa pesquisa"
-  },
-  "surveyTitle": {
-    "message": "Molde o futuro da MetaMask"
   },
   "swap": {
     "message": "Trocar"
@@ -9783,6 +9788,10 @@
   "willApproveAmountForSwapping": {
     "message": "Aprova o token para realização de troca."
   },
+  "withdrawTo": {
+    "message": "Receber",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Sacando"
   },
@@ -9815,6 +9824,10 @@
   "youSent": {
     "message": "Você enviou",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Você receberá",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Sua atividade"
