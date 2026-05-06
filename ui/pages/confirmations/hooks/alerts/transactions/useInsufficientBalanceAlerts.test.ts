@@ -279,6 +279,22 @@ describe('useInsufficientBalanceAlerts', () => {
     expect(alerts).toEqual([]);
   });
 
+  it('returns no alerts when pay is active but no primary required token resolved', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: { address: '0xabc', chainId: '0x1' } as never,
+      setPayToken: jest.fn(),
+    });
+    useTransactionPayPrimaryRequiredTokenMock.mockReturnValue(undefined);
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: TRANSACTION_MOCK,
+      transaction: TRANSACTION_MOCK,
+    });
+
+    expect(alerts).toEqual([]);
+  });
+
   it('returns no alerts if no transaction matching confirmation', () => {
     expect(
       runHook({

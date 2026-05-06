@@ -13,6 +13,7 @@ const ALERTS_HIDE_RESULTS: string[] = [
 ];
 
 const ALERTS_DISABLE_UPDATE: string[] = [
+  AlertsName.NoRequiredToken,
   AlertsName.PayHardwareAccount,
   AlertsName.SigningOrSubmitting,
 ];

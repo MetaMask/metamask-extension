@@ -39,6 +39,7 @@ import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomatic
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
 import {
   useIsTransactionPayLoading,
+  useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
@@ -100,6 +101,9 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
     const { currentConfirmation } = useConfirmContext<TransactionMeta>();
     const availableTokens = useTransactionPayAvailableTokens();
     const hasTokens = availableTokens.length > 0;
+    const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+    const isInputDisabled =
+      !hasTokens || (!disablePay && !primaryRequiredToken);
 
     const { disableUpdate } = useTransactionCustomAmountAlerts();
 
@@ -148,6 +152,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
           hasMax={hasMax}
           hasTokens={hasTokens}
           hidePayTokenAmount={hidePayTokenAmount}
+          isInputDisabled={isInputDisabled}
           onAmountChange={handleAmountChange}
           onPercentageClick={handlePercentageClick}
           overrideCenterContent={overrideCenterContent}
@@ -183,6 +188,7 @@ type CenterContainerProps = {
   hasMax?: boolean;
   hasTokens: boolean;
   hidePayTokenAmount?: boolean;
+  isInputDisabled: boolean;
   onAmountChange: (value: string) => void;
   onPercentageClick: (percentage: number) => void;
   overrideCenterContent?: (amountHuman: string) => ReactNode;
@@ -198,6 +204,7 @@ function CenterContainer({
   hasMax,
   hasTokens,
   hidePayTokenAmount,
+  isInputDisabled,
   onAmountChange,
   onPercentageClick,
   overrideCenterContent,
@@ -215,7 +222,7 @@ function CenterContainer({
         amountFiat={amountFiat}
         autoFocus={autoFocusAmount}
         currency={currency}
-        disabled={!hasTokens}
+        disabled={isInputDisabled}
         onChange={onAmountChange}
       />
 
@@ -229,7 +236,10 @@ function CenterContainer({
           gap={3}
         >
           {disablePay !== true && !hidePayTokenAmount && (
-            <PayTokenAmount amountHuman={amountHuman} disabled={!hasTokens} />
+            <PayTokenAmount
+              amountHuman={amountHuman}
+              disabled={isInputDisabled}
+            />
           )}
           {children}
           {disablePay !== true && hasTokens && (
@@ -238,7 +248,7 @@ function CenterContainer({
         </Box>
       )}
 
-      {hasTokens && hasMax && (
+      {!isInputDisabled && hasMax && (
         <PercentageButtons onPercentageClick={onPercentageClick} />
       )}
       <AlertMessage />

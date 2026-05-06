@@ -215,4 +215,26 @@ describe('useTransactionCustomAmountAlerts', () => {
       hideResults: true,
     });
   });
+
+  it('sets disableUpdate to true when NoRequiredToken alert exists', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.NoRequiredToken,
+            message: 'Unknown target token',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current.disableUpdate).toBe(true);
+  });
 });

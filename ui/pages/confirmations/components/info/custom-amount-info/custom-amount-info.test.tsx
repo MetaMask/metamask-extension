@@ -24,8 +24,16 @@ jest.mock('../../../hooks/pay/useTransactionPayMetrics');
 jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../transactions/custom-amount/custom-amount', () => ({
-  CustomAmount: ({ amountFiat }: { amountFiat: string }) => (
-    <div data-testid="custom-amount">{amountFiat}</div>
+  CustomAmount: ({
+    amountFiat,
+    disabled,
+  }: {
+    amountFiat: string;
+    disabled?: boolean;
+  }) => (
+    <div data-testid="custom-amount" data-disabled={String(Boolean(disabled))}>
+      {amountFiat}
+    </div>
   ),
   CustomAmountSkeleton: () => <div data-testid="custom-amount-skeleton" />,
 }));
@@ -84,31 +92,47 @@ const DEFAULT_ALERTS_HOOK_RETURN: {
   disableUpdate: false,
 };
 
-function render({
-  hasMax = false,
-  disableAutomaticToken,
-  disablePay = false,
-  hidePayTokenAmount = false,
-  availableTokens = [MOCK_AVAILABLE_TOKEN],
-  customAmountHookReturn = DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
-  alertsHookReturn = DEFAULT_ALERTS_HOOK_RETURN,
-  isQuotesLoading = false,
-  hasQuotes = false,
-  sourceAmounts = [],
-  requiredTokens = [],
-}: {
-  hasMax?: boolean;
-  disableAutomaticToken?: boolean;
-  disablePay?: boolean;
-  hidePayTokenAmount?: boolean;
-  availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
-  customAmountHookReturn?: typeof DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN;
-  alertsHookReturn?: typeof DEFAULT_ALERTS_HOOK_RETURN;
-  isQuotesLoading?: boolean;
-  hasQuotes?: boolean;
-  sourceAmounts?: { targetTokenAddress: string }[];
-  requiredTokens?: { address: string; skipIfBalance: boolean }[];
-} = {}) {
+const MOCK_PRIMARY_REQUIRED_TOKEN = {
+  address: '0xrequired',
+  skipIfBalance: false,
+  decimals: 18,
+};
+
+function render(
+  options: {
+    hasMax?: boolean;
+    disableAutomaticToken?: boolean;
+    disablePay?: boolean;
+    hidePayTokenAmount?: boolean;
+    availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
+    customAmountHookReturn?: typeof DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN;
+    alertsHookReturn?: typeof DEFAULT_ALERTS_HOOK_RETURN;
+    isQuotesLoading?: boolean;
+    hasQuotes?: boolean;
+    sourceAmounts?: { targetTokenAddress: string }[];
+    requiredTokens?: { address: string; skipIfBalance: boolean }[];
+    primaryRequiredToken?: typeof MOCK_PRIMARY_REQUIRED_TOKEN | undefined;
+  } = {},
+) {
+  const {
+    hasMax = false,
+    disableAutomaticToken,
+    disablePay = false,
+    hidePayTokenAmount = false,
+    availableTokens = [MOCK_AVAILABLE_TOKEN],
+    customAmountHookReturn = DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+    alertsHookReturn = DEFAULT_ALERTS_HOOK_RETURN,
+    isQuotesLoading = false,
+    hasQuotes = false,
+    sourceAmounts = [],
+    requiredTokens = [],
+  } = options;
+  const primaryRequiredToken = Object.prototype.hasOwnProperty.call(
+    options,
+    'primaryRequiredToken',
+  )
+    ? options.primaryRequiredToken
+    : MOCK_PRIMARY_REQUIRED_TOKEN;
   jest
     .mocked(useTransactionCustomAmountModule.useTransactionCustomAmount)
     .mockReturnValue(customAmountHookReturn);
@@ -152,6 +176,13 @@ function render({
     .mockReturnValue(
       sourceAmounts as ReturnType<
         typeof useTransactionPayDataModule.useTransactionPaySourceAmounts
+      >,
+    );
+  jest
+    .mocked(useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken)
+    .mockReturnValue(
+      primaryRequiredToken as ReturnType<
+        typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
       >,
     );
 
@@ -228,6 +259,51 @@ describe('CustomAmountInfo', () => {
     });
     expect(queryByTestId('pay-token-amount')).not.toBeInTheDocument();
     expect(getByTestId('pay-with-row')).toBeInTheDocument();
+  });
+
+  describe('input disabled state', () => {
+    it('disables the input when no tokens are available', () => {
+      const { getByTestId } = render({ availableTokens: [] });
+
+      expect(getByTestId('custom-amount')).toHaveAttribute(
+        'data-disabled',
+        'true',
+      );
+    });
+
+    it('disables the input when pay is enabled but no primary required token is resolved', () => {
+      const { getByTestId } = render({
+        disablePay: false,
+        primaryRequiredToken: undefined,
+      });
+
+      expect(getByTestId('custom-amount')).toHaveAttribute(
+        'data-disabled',
+        'true',
+      );
+    });
+
+    it('does not disable the input when pay is disabled and no primary required token is resolved', () => {
+      const { getByTestId } = render({
+        disablePay: true,
+        primaryRequiredToken: undefined,
+      });
+
+      expect(getByTestId('custom-amount')).toHaveAttribute(
+        'data-disabled',
+        'false',
+      );
+    });
+
+    it('does not render percentage buttons when pay is enabled but no primary required token is resolved', () => {
+      const { queryByTestId } = render({
+        hasMax: true,
+        disablePay: false,
+        primaryRequiredToken: undefined,
+      });
+
+      expect(queryByTestId('percentage-button-25')).not.toBeInTheDocument();
+    });
   });
 
   it('renders pay with row when tokens available and disablePay is false', () => {
