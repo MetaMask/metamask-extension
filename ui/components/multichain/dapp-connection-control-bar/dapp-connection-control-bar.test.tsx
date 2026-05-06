@@ -88,7 +88,10 @@ const activeTab = {
   url: 'https://metamask.github.io/test-dapp/',
 };
 
-const makeCaip25Permission = (accounts: string[]) => ({
+const makeCaip25Permission = (
+  accounts: string[],
+  scope: string = 'eip155:0',
+) => ({
   'endowment:caip25': {
     parentCapability: 'endowment:caip25',
     caveats: [
@@ -97,7 +100,7 @@ const makeCaip25Permission = (accounts: string[]) => ({
         value: {
           requiredScopes: {},
           optionalScopes: {
-            'eip155:0': { accounts },
+            [scope]: { accounts },
           },
           isMultichainOrigin: false,
         },
@@ -338,6 +341,108 @@ describe('DappConnectionControlBar', () => {
           ]),
         );
       });
+    });
+  });
+
+  describe('when connected to a dapp via a non-EVM-only provider', () => {
+    const SOLANA_ACCOUNT_ID = 'a8b9c0d1-2e3f-4a5b-6c7d-8e9f0a1b2c3d';
+    const SOLANA_ACCOUNT_ADDRESS = '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv';
+    const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+
+    const buildSolanaOnlyState = () => {
+      const baseGroup =
+        mockState.metamask.accountTree.wallets[
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+        ].groups[GROUP_1_ID];
+
+      return {
+        metamask: {
+          ...mockState.metamask,
+          ...sharedMetamaskOverrides,
+          accountTree: {
+            ...mockState.metamask.accountTree,
+            selectedAccountGroup: GROUP_1_ID,
+            wallets: {
+              ...mockState.metamask.accountTree.wallets,
+              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+                ...mockState.metamask.accountTree.wallets[
+                  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+                ],
+                groups: {
+                  [GROUP_1_ID]: {
+                    ...baseGroup,
+                    accounts: [...baseGroup.accounts, SOLANA_ACCOUNT_ID],
+                  },
+                },
+              },
+            },
+          },
+          internalAccounts: {
+            ...mockState.metamask.internalAccounts,
+            accounts: {
+              ...mockState.metamask.internalAccounts.accounts,
+              [SOLANA_ACCOUNT_ID]: {
+                address: SOLANA_ACCOUNT_ADDRESS,
+                id: SOLANA_ACCOUNT_ID,
+                metadata: {
+                  importTime: 0,
+                  name: 'Solana Account',
+                  keyring: { type: 'Snap Keyring' },
+                  lastSelected: 3000,
+                },
+                options: {},
+                methods: [],
+                scopes: [SOLANA_SCOPE],
+                type: 'solana:data-account',
+              },
+            },
+            selectedAccount: SOLANA_ACCOUNT_ID,
+          },
+          subjects: {
+            [DAPP_ORIGIN]: {
+              permissions: makeCaip25Permission(
+                [`${SOLANA_SCOPE}:${SOLANA_ACCOUNT_ADDRESS}`],
+                SOLANA_SCOPE,
+              ),
+            },
+          },
+        },
+        activeTab,
+      };
+    };
+
+    it('renders the control bar', () => {
+      const store = configureStore(buildSolanaOnlyState());
+      const { getByTestId } = renderWithProvider(
+        <DappConnectionControlBar />,
+        store,
+      );
+      expect(getByTestId('dapp-connection-control-bar')).toBeInTheDocument();
+    });
+
+    it('does not render the network picker button (avoids showing the EVM network logo on a non-EVM connection)', () => {
+      const store = configureStore(buildSolanaOnlyState());
+      const { queryByTestId } = renderWithProvider(
+        <DappConnectionControlBar />,
+        store,
+      );
+      expect(
+        queryByTestId('dapp-connection-control-bar__network-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('still renders the permissions and disconnect buttons', () => {
+      const store = configureStore(buildSolanaOnlyState());
+      const { getByTestId } = renderWithProvider(
+        <DappConnectionControlBar />,
+        store,
+      );
+      expect(
+        getByTestId('dapp-connection-control-bar__permissions-button'),
+      ).toBeInTheDocument();
+      expect(
+        getByTestId('dapp-connection-control-bar__disconnect-button'),
+      ).toBeInTheDocument();
     });
   });
 
