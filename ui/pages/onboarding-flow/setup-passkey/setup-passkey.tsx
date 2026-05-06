@@ -6,11 +6,10 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
-  BoxBackgroundColor,
-  BoxBorderColor,
   ButtonSize,
   ButtonVariant,
   Button,
+  TextButton,
   FontWeight,
   TextVariant,
   TextColor,
@@ -57,64 +56,6 @@ type PasskeyEnrollmentStepStatus = 'pending' | 'inProgress' | 'complete';
 /** Default row status before enrollment starts or after the user silently dismisses WebAuthn. */
 const DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE: PasskeyEnrollmentStepStatus =
   'pending';
-
-function getPasskeyStepRowProps(isActive: boolean) {
-  if (isActive) {
-    return {
-      backgroundColor: BoxBackgroundColor.BackgroundMuted,
-      borderColor: BoxBorderColor.PrimaryDefault,
-      className: 'rounded-lg border-2 border-solid',
-    };
-  }
-  return {
-    backgroundColor: BoxBackgroundColor.BackgroundMuted,
-    className: 'rounded-lg',
-  };
-}
-
-function renderPasskeyStepIndicator(phase: PasskeyEnrollmentStepStatus) {
-  if (phase === 'complete') {
-    return (
-      <Box
-        className="flex size-11 shrink-0 items-center justify-center"
-        data-testid="passkey-step-indicator-complete"
-      >
-        <Icon
-          name={IconName.Check}
-          color={IconColor.SuccessDefault}
-          size={IconSize.Lg}
-        />
-      </Box>
-    );
-  }
-  if (phase === 'inProgress') {
-    return (
-      <Box
-        className="flex size-11 shrink-0 items-center justify-center"
-        data-testid="passkey-step-indicator-in-progress"
-      >
-        <Icon
-          name={IconName.Loading}
-          color={IconColor.IconDefault}
-          size={IconSize.Lg}
-          className="animate-spin"
-        />
-      </Box>
-    );
-  }
-  return (
-    <Box
-      className="flex size-11 shrink-0 items-center justify-center"
-      data-testid="passkey-step-indicator-pending"
-    >
-      <Icon
-        name={IconName.FullCircle}
-        color={IconColor.IconMuted}
-        size={IconSize.Lg}
-      />
-    </Box>
-  );
-}
 
 /**
  * Passkey enrollment uses the vault encryption key from the background.
@@ -238,15 +179,78 @@ export default function SetupPasskey() {
     }
   }, [dispatch, t, goToNextStep]);
 
-  const registerStepTextColor =
-    registerStepPhase === 'pending'
-      ? TextColor.TextAlternative
-      : TextColor.TextDefault;
+  const renderPasskeyEnrollmentStepRow = (
+    status: PasskeyEnrollmentStepStatus,
+    label: string,
+  ) => {
+    let stepTextColor: TextColor;
+    if (status === 'pending') {
+      stepTextColor = TextColor.TextAlternative;
+    } else if (status === 'complete') {
+      stepTextColor = TextColor.SuccessDefault;
+    } else {
+      stepTextColor = TextColor.TextDefault;
+    }
 
-  const verifyStepTextColor =
-    verifyStepPhase === 'pending'
-      ? TextColor.TextAlternative
-      : TextColor.TextDefault;
+    let indicator: React.ReactNode;
+    if (status === 'complete') {
+      indicator = (
+        <Box
+          className="flex size-11 shrink-0 items-center"
+          data-testid="passkey-step-indicator-complete"
+        >
+          <Icon
+            name={IconName.Confirmation}
+            color={IconColor.SuccessDefault}
+            size={IconSize.Lg}
+          />
+        </Box>
+      );
+    } else if (status === 'inProgress') {
+      indicator = (
+        <Box
+          className="flex size-11 shrink-0 items-center"
+          data-testid="passkey-step-indicator-in-progress"
+        >
+          <Icon
+            name={IconName.Loading}
+            color={IconColor.IconDefault}
+            size={IconSize.Lg}
+            className="animate-spin"
+          />
+        </Box>
+      );
+    } else {
+      indicator = (
+        <Box
+          className="flex size-11 shrink-0 items-center"
+          data-testid="passkey-step-indicator-pending"
+        >
+          <Icon
+            name={IconName.FullCircle}
+            color={IconColor.IconMuted}
+            size={IconSize.Lg}
+          />
+        </Box>
+      );
+    }
+
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+      >
+        {indicator}
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Regular}
+          color={stepTextColor}
+        >
+          {label}
+        </Text>
+      </Box>
+    );
+  };
 
   if (isPasskeyRegistered && !isEnrollmentInProgress) {
     return null;
@@ -268,97 +272,83 @@ export default function SetupPasskey() {
         />
       </Box>
 
-      <Text
-        variant={TextVariant.HeadingLg}
-        fontWeight={FontWeight.Medium}
-        color={TextColor.TextDefault}
-      >
-        {t('unlockWithPasskey')}
-      </Text>
-      <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-        {t('passkeyDescription')}
-      </Text>
-
       {isEnrollmentInProgress ? (
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          gap={2}
-          className="w-full"
-          data-testid="passkey-setup-steps"
-          aria-busy={true}
-        >
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={3}
-            padding={3}
-            {...getPasskeyStepRowProps(registerStepPhase === 'inProgress')}
+        <>
+          <Text
+            variant={TextVariant.HeadingLg}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
           >
-            {renderPasskeyStepIndicator(registerStepPhase)}
-            <Text
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Regular}
-              color={registerStepTextColor}
-            >
-              {t('passkeySetupStepRegister')}
-            </Text>
-          </Box>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={3}
-            padding={3}
-            {...getPasskeyStepRowProps(verifyStepPhase !== 'pending')}
-          >
-            {renderPasskeyStepIndicator(verifyStepPhase)}
-            <Text
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Regular}
-              color={verifyStepTextColor}
-            >
-              {t('passkeySetupStepVerify')}
-            </Text>
-          </Box>
-        </Box>
-      ) : null}
+            {t('settingUpPasskey')}
+          </Text>
 
-      {enrollmentError ? (
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.ErrorDefault}
-          textAlign={TextAlign.Center}
-          data-testid="passkey-enrollment-error"
-        >
-          {enrollmentError}
-        </Text>
-      ) : null}
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            gap={2}
+            className="w-full"
+            data-testid="passkey-setup-steps"
+            aria-busy={true}
+          >
+            {renderPasskeyEnrollmentStepRow(
+              registerStepPhase,
+              t('passkeySetupStepRegister'),
+            )}
+            {renderPasskeyEnrollmentStepRow(
+              verifyStepPhase,
+              t('passkeySetupStepVerify'),
+            )}
+          </Box>
+        </>
+      ) : (
+        <>
+          <Text
+            variant={TextVariant.HeadingLg}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
+          >
+          {t('unlockWithPasskey')}
+          </Text>
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            {t('passkeyDescription')}
+          </Text>
 
-      {isEnrollmentInProgress ? null : (
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          gap={4}
-          className="mt-auto w-full"
-        >
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            className="w-full"
-            data-testid="passkey-set-up-button"
-            aria-label={t('setUpPasskey')}
-            onClick={handleSetupPasskey}
+          {enrollmentError ? (
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.ErrorDefault}
+              textAlign={TextAlign.Center}
+              data-testid="passkey-enrollment-error"
+            >
+              {enrollmentError}
+            </Text>
+          ) : null}
+
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            gap={4}
+            className="mt-auto w-full"
           >
-            {t('setUpPasskey')}
-          </Button>
-          <Button
-            variant={ButtonVariant.Tertiary}
-            size={ButtonSize.Md}
-            className="w-full"
-            data-testid="passkey-maybe-later-button"
-            onClick={handleMaybeLater}
-          >
-            {t('maybeLater')}
-          </Button>
-        </Box>
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              className="w-full"
+              data-testid="passkey-set-up-button"
+              aria-label={t('setUpPasskey')}
+              onClick={handleSetupPasskey}
+            >
+              {t('setUpPasskey')}
+            </Button>
+            <TextButton
+              type="button"
+              className="w-full"
+              color={TextColor.PrimaryDefault}
+              data-testid="passkey-maybe-later-button"
+              onClick={handleMaybeLater}
+            >
+              {t('maybeLater')}
+            </TextButton>
+          </Box>
+        </>
       )}
     </Box>
   );

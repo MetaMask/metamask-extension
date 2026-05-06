@@ -5342,11 +5342,15 @@
     "message": "We couldn't verify your biometrics. Try again or use your password.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
   },
+  "settingUpPasskey": {
+    "message": "Setting Up Biometrics",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress."
+  },
   "passkeySetupStepRegister": {
-    "message": "Register biometrics"
+    "message": "Register Biometrics"
   },
   "passkeySetupStepVerify": {
-    "message": "Verify biometrics"
+    "message": "Validate Biometrics"
   },
   "passkeyTroubleshoot": {
     "message": "Having trouble with biometrics?",
