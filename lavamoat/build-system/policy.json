@@ -1181,6 +1181,9 @@
         "tailwindcss": true
       }
     },
+    "@tailwindcss/postcss>@tailwindcss/oxide>@tailwindcss/oxide-darwin-arm64": {
+      "native": true
+    },
     "@tailwindcss/postcss>@tailwindcss/oxide": {
       "builtin": {
         "child_process.execSync": true,
@@ -1198,6 +1201,7 @@
         "process.report.getReport": true
       },
       "packages": {
+        "@tailwindcss/postcss>@tailwindcss/oxide>@tailwindcss/oxide-darwin-arm64": true,
         "@tailwindcss/postcss>@tailwindcss/oxide>@tailwindcss/oxide-linux-x64-gnu": true
       }
     },
@@ -4576,13 +4580,17 @@
         "eslint>levn>type-check": true
       }
     },
+    "@tailwindcss/postcss>@tailwindcss/node>lightningcss>lightningcss-darwin-arm64": {
+      "native": true
+    },
     "@tailwindcss/postcss>@tailwindcss/node>lightningcss": {
       "globals": {
         "process.arch": true,
         "process.platform": true
       },
       "packages": {
-        "@tailwindcss/postcss>@tailwindcss/node>lightningcss>detect-libc": true
+        "@tailwindcss/postcss>@tailwindcss/node>lightningcss>detect-libc": true,
+        "@tailwindcss/postcss>@tailwindcss/node>lightningcss>lightningcss-darwin-arm64": true
       }
     },
     "gulp-postcss>postcss-load-config>lilconfig": {
