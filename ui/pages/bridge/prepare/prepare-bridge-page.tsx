@@ -40,6 +40,7 @@ import {
   getIsToOrFromNonEvm,
   getFromAccount,
   getIsStxEnabled,
+  getBridgeQuotesBatch,
   getIsGasIncluded,
   getValidatedFromValue,
   getIsSrcAssetPickerOpen,

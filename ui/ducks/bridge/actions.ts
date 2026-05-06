@@ -118,7 +118,7 @@ export const trackUnifiedSwapBridgeEvent = <
 
 // User actions
 export const updateQuoteRequestParams = (
-  ...[params, context]: Parameters<
+  ...[params, context, quoteRequestIndex, quoteRequestCount]: Parameters<
     BridgeController['updateBridgeQuoteRequestParams']
   >
 ) => {
@@ -128,6 +128,8 @@ export const updateQuoteRequestParams = (
         BridgeUserAction.UPDATE_QUOTE_PARAMS,
         params,
         context,
+        quoteRequestIndex,
+        quoteRequestCount,
       ),
     );
   };
