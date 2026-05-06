@@ -23,7 +23,6 @@ export class PerpsMarketDetailPage {
 
   private readonly addFundsCtaButton = { testId: 'perps-add-funds-cta-button' };
 
-
   private readonly addMarginModal = { testId: 'perps-add-margin-modal' };
 
   private readonly amountInputField = { testId: 'amount-input-field' };
