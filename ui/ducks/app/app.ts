@@ -562,11 +562,6 @@ export default function reduceApp(
         ...appState,
         isNftStillFetchingIndication: true,
       };
-    case actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST:
-      return {
-        ...appState,
-        showNftDetectionEnablementToast: action.payload,
-      };
 
     case actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION:
       return {
