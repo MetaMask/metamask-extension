@@ -198,13 +198,14 @@ export const UnlockPasskeySection = ({
             className="text-center"
             onClick={() => setShowTroubleshootModal(true)}
           >
-            {t('passkeyTroubleshoot')}
+            {t('passkeyTroubleshootUnlock')}
           </TextButton>
         ) : null}
       </Box>
 
       {showTroubleshootModal ? (
         <PasskeyTroubleshootModal
+          mode="unlock"
           onClose={() => setShowTroubleshootModal(false)}
           onOpenFullScreen={openUnlockInFullScreen}
         />

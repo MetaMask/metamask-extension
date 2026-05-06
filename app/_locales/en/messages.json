@@ -5344,10 +5344,6 @@
   "passkeySetupStepVerify": {
     "message": "Validate Biometrics"
   },
-  "passkeyTroubleshoot": {
-    "message": "Trouble unlocking?",
-    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
-  },
   "passkeyTroubleshootModalDescription": {
     "message": "Try opening the extension in a full screen window and try again.",
     "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
@@ -5360,9 +5356,21 @@
     "message": "Still having trouble?",
     "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
   },
-  "passkeyTroubleshootModalTitle": {
+  "passkeyTroubleshootUnlock": {
+    "message": "Trouble unlocking?",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootUnlockModalTitle": {
     "message": "Trouble unlocking",
     "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootVerify": {
+    "message": "Trouble verifying?",
+    "description": "Link to open passkey troubleshooting when verifying identity (not unlock), e.g. change password or security settings in the side panel."
+  },
+  "passkeyTroubleshootVerifyModalTitle": {
+    "message": "Trouble verifying?",
+    "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
   },
   "passkeyTurnedOff": {
     "message": "Biometrics turned off"

@@ -166,7 +166,7 @@ const PasskeyItem = () => {
             className="mt-2 flex w-full justify-start text-left"
             onClick={() => setShowPasskeyTroubleshootModal(true)}
           >
-            {t('passkeyTroubleshoot')}
+            {t('passkeyTroubleshootVerify')}
           </TextButton>
         ) : null}
       </>
@@ -191,6 +191,7 @@ const PasskeyItem = () => {
       />
       {showPasskeyTroubleshootModal ? (
         <PasskeyTroubleshootModal
+          mode="verify"
           onClose={() => setShowPasskeyTroubleshootModal(false)}
           onOpenFullScreen={openSecurityAndPasswordInFullScreen}
         />

@@ -483,7 +483,7 @@ const ChangePassword = ({
               className="text-center"
               onClick={() => setShowPasskeyTroubleshootModal(true)}
             >
-              {t('passkeyTroubleshoot')}
+              {t('passkeyTroubleshootVerify')}
             </TextButton>
           ) : null}
           <TextButton
@@ -565,7 +565,7 @@ const ChangePassword = ({
                       className="mt-2 flex w-full justify-start text-left"
                       onClick={() => setShowPasskeyTroubleshootModal(true)}
                     >
-                      {t('passkeyTroubleshoot')}
+                      {t('passkeyTroubleshootVerify')}
                     </TextButton>
                   ) : null}
                 </Box>
@@ -642,6 +642,7 @@ const ChangePassword = ({
       )}
       {showPasskeyTroubleshootModal ? (
         <PasskeyTroubleshootModal
+          mode="verify"
           onClose={() => setShowPasskeyTroubleshootModal(false)}
           onOpenFullScreen={openChangePasswordInFullScreen}
         />
