@@ -33,6 +33,7 @@ import {
   getCommonMocks,
   benchmarkPassThroughInterceptor,
   mockBenchmarkEndpoints,
+  userStorageHostMock,
 } from '../../mocks/performance-mocks';
 import { shouldUseMockedRequests } from '../../utils/mock-config';
 import {
@@ -66,9 +67,12 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           .build(),
         testSpecificMock: async (server: Mockttp) => {
           if (shouldUseMockedRequests()) {
-            return mockBenchmarkEndpoints(server);
+            const endpoints = await mockBenchmarkEndpoints(server);
+            await userStorageHostMock(server);
+            return endpoints;
           }
           setPassThroughInterceptor(server, benchmarkPassThroughInterceptor);
+          await userStorageHostMock(server);
           return Promise.all(getCommonMocks(server));
         },
       },
