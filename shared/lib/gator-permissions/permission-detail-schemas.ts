@@ -619,6 +619,7 @@ const erc20TokenAllowanceSchema: PermissionSchemaEntry = {
           testId: 'review-gator-permission-amount-label',
           getValue: (ctx) =>
             parseHexPermissionAmount(getData<string>(ctx, 'allowanceAmount')),
+          getTokenAddress: (ctx) => getData<Hex>(ctx, 'tokenAddress'),
           isVisible: alwaysVisible,
           includeInViews: ['confirmation', 'reviewDetail'],
         },
