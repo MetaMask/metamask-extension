@@ -475,13 +475,6 @@ const ChangePassword = ({
           >
             {t('changePasswordPasskeyVerifyingTitle')}
           </Text>
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.TextAlternative}
-            className="text-center"
-          >
-            {t('changePasswordPasskeyVerifyingDescription')}
-          </Text>
           {isSidePanel && isVerifyingPasskey ? (
             <TextButton
               type="button"

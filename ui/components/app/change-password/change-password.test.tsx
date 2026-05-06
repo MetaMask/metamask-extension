@@ -437,7 +437,7 @@ describe('ChangePassword', () => {
       });
     });
 
-    it('shows a loader and passkey confirmation copy while passkey verification runs', () => {
+    it('shows a loader and passkey verification title while passkey verification runs', () => {
       const { getByTestId, getByText } = renderWithProvider(
         <ChangePassword />,
         mockStore,
@@ -448,9 +448,6 @@ describe('ChangePassword', () => {
       ).toBeInTheDocument();
       expect(
         getByText(messages.changePasswordPasskeyVerifyingTitle.message),
-      ).toBeInTheDocument();
-      expect(
-        getByText(messages.changePasswordPasskeyVerifyingDescription.message),
       ).toBeInTheDocument();
     });
 
@@ -684,9 +681,9 @@ describe('ChangePassword', () => {
       const openExtensionInBrowser = jest.fn();
       const previousPlatform = globalThis.platform;
       globalThis.platform = {
-        ...(previousPlatform ?? {}),
+        ...previousPlatform,
         openExtensionInBrowser,
-      } as typeof globalThis.platform;
+      } as unknown as typeof globalThis.platform;
 
       let resolveAuth: ((value: unknown) => void) | undefined;
       (startPasskeyAuthentication as jest.Mock).mockImplementation(

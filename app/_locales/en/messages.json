@@ -1548,12 +1548,8 @@
   "changePasswordLoadingNote": {
     "message": "This shouldn't take long"
   },
-  "changePasswordPasskeyVerifyingDescription": {
-    "message": "Use Face ID, Touch ID, or your device screen lock when prompted.",
-    "description": "Shown under the loading state while the wallet waits for passkey or device biometrics during change password."
-  },
   "changePasswordPasskeyVerifyingTitle": {
-    "message": "Confirm with biometrics",
+    "message": "Confirm with Biometrics",
     "description": "Title shown while the wallet waits for passkey or device biometrics during change password."
   },
   "changePasswordWarning": {
@@ -5292,18 +5288,18 @@
     "message": "Participate in MetaMetrics to help us make MetaMask better"
   },
   "passkeyDescription": {
-    "message": "Use Face ID or your fingerprint to unlock MetaMask on this device instead of entering your password. This creates a secure passkey stored on your device."
+    "message": "Use Touch ID to unlock MetaMask instead of entering your password. This creates a passkey on this device only."
   },
   "passkeyErrorAlreadyEnrolled": {
     "message": "Biometrics are already set up for this wallet.",
     "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
   },
   "passkeyErrorAuthenticationVerificationFailed": {
-    "message": "We couldn't verify your biometrics. Try again.",
+    "message": "We couldn't verify your Biometrics. Try again.",
     "description": "Shown when passkey authentication response verification fails."
   },
   "passkeyErrorMissingKeyMaterial": {
-    "message": "Your biometrics response was incomplete. Try again.",
+    "message": "Your Biometrics response was incomplete. Try again.",
     "description": "Shown when the passkey assertion is missing required key material."
   },
   "passkeyErrorNoAuthenticationCeremony": {
@@ -5315,7 +5311,7 @@
     "description": "Shown when passkey registration verification runs without an active registration ceremony."
   },
   "passkeyErrorNotEnrolled": {
-    "message": "Biometrics aren't set up for this wallet. Turn on biometrics in Settings.",
+    "message": "Biometrics aren't set up for this wallet. Turn on Biometrics in Settings.",
     "description": "Shown when biometrics unlock fails because no passkey is enrolled."
   },
   "passkeyErrorRegistrationFailed": {
@@ -5323,15 +5319,15 @@
     "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages)."
   },
   "passkeyErrorRegistrationVerificationFailed": {
-    "message": "We couldn't verify your biometrics setup. Try again.",
+    "message": "We couldn't verify your Biometrics setup. Try again.",
     "description": "Shown when passkey registration response verification fails."
   },
   "passkeyErrorVaultKeyDecryptionFailed": {
-    "message": "We couldn't unlock with biometrics. Try again, or set up biometrics again in Settings.",
+    "message": "We couldn't unlock with Biometrics. Try again, or set up Biometrics again in Settings.",
     "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key."
   },
   "passkeyErrorVaultKeyMismatch": {
-    "message": "Biometrics don't match your current wallet lock. Set up biometrics again in Settings.",
+    "message": "Biometrics don't match your current wallet lock. Set up Biometrics again in Settings.",
     "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
   },
   "passkeyErrorVaultKeyRenewalFailed": {
@@ -5339,7 +5335,7 @@
     "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
   },
   "passkeyErrorVerificationFailed": {
-    "message": "We couldn't verify your biometrics. Try again or use your password.",
+    "message": "We couldn't verify your Biometrics. Try again or use your password.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
   },
   "passkeySetupStepRegister": {
@@ -7482,7 +7478,7 @@
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
   "setUpPasskey": {
-    "message": "Set up biometrics"
+    "message": "Set up Biometrics"
   },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
@@ -9611,10 +9607,10 @@
     "message": "There was an error in disabling the notifications. Please try again later."
   },
   "turnOffPasskey": {
-    "message": "Turn off biometrics"
+    "message": "Turn off Biometrics"
   },
   "turnOffPasskeyFailed": {
-    "message": "We couldn't turn off biometrics. Try again."
+    "message": "We couldn't turn off Biometrics. Try again."
   },
   "turnOn": {
     "message": "Turn on"
@@ -9719,7 +9715,7 @@
     "description": "Label used for Private Keys row on multichain account details page."
   },
   "unlockWithPasskey": {
-    "message": "Unlock with biometrics"
+    "message": "Unlock with Biometrics"
   },
   "unpin": {
     "message": "Unpin"
