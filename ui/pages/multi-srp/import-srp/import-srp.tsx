@@ -32,7 +32,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 
 const NEW_SRP_ADDED_TOAST_ID = 'new-srp-added-toast';
-const AUTO_HIDE_TOAST_DELAY = 5 * SECOND;
+const autoHideToastDelay = 5 * SECOND;
 
 export const ImportSrp = () => {
   const t = useI18nContext();
@@ -86,7 +86,7 @@ export const ImportSrp = () => {
         />,
         {
           id: NEW_SRP_ADDED_TOAST_ID,
-          duration: AUTO_HIDE_TOAST_DELAY,
+          duration: autoHideToastDelay,
         },
       );
     } catch (error) {
