@@ -388,7 +388,7 @@
   "TokensController": {
     "allDetectedTokens": {},
     "allIgnoredTokens": {},
-    "allTokens": {}
+    "allTokens": { "0x1": "object", "0x38": "object", "0xe708": "object" }
   },
   "TransactionPayController": { "transactionData": "object" },
   "TxController": {
