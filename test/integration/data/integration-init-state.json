@@ -877,12 +877,7 @@
   "selectedCurrency": "usd",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
-  "showAccountBanner": false,
-  "showBetaHeader": false,
-  "showNetworkBanner": true,
-  "showPermissionsTour": true,
   "showProductTour": false,
-  "showTestnetMessageInDropdown": true,
   "signatureSecurityAlertResponses": {},
   "slides": [],
   "smartTransactionsState": {
