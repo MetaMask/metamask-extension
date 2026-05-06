@@ -16,7 +16,6 @@ class CriticalErrorPage {
   protected readonly troubleStartingDescription =
     'This error could be intermittent, so try restarting the extension.';
 
-  // Same id as before (element is now a button).
   protected readonly restoreAccountsLink = '#critical-error-restore-link';
 
   protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';

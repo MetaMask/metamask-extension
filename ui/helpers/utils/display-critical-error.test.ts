@@ -42,7 +42,7 @@ jest.mock('../../../shared/lib/manifestFlags', () => ({
   })),
 }));
 
-/** Shared getErrorHtml mock that ptionally shows the "Attempt recovery" button based on hasBackup param. */
+/** Shared getErrorHtml mock that optionally shows the "Attempt recovery" button based on hasBackup param. */
 function mockGetErrorHtmlWithOptionalRestoreLink() {
   return (
     _errorKey: unknown,
