@@ -75,11 +75,13 @@ export function Toaster() {
 
 export const ToastContent = ({
   title,
+  description,
   actionText,
   onActionClick,
   dataTestId,
 }: {
   title: string;
+  description?: string;
   actionText?: string;
   dataTestId?: string;
   onActionClick?: () => void;
@@ -87,6 +89,12 @@ export const ToastContent = ({
   return (
     <div data-testid={dataTestId}>
       <p className="text-m-body-md">{title}</p>
+
+      {description ? (
+        <p className="mt-1 text-m-body-sm text-text-alternative">
+          {description}
+        </p>
+      ) : null}
 
       {onActionClick && (
         <Button

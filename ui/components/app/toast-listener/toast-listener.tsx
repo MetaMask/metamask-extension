@@ -2,9 +2,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
 import { isInteractiveUI } from '../../../../shared/lib/environment-type';
+import { PerpsDepositToast } from '../perps/perps-deposit-toast';
 import { useSmartTransactionToasts } from './useSmartTransactionToasts';
 
-const ToastListenerInner = () => {
+const SmartTransactionToastListener = () => {
   useSmartTransactionToasts();
 
   return null;
@@ -16,9 +17,14 @@ export function ToastListener() {
   );
   const isInteractive = isInteractiveUI();
 
-  if (!transactionToastEnabled || !isInteractive) {
+  if (!isInteractive) {
     return null;
   }
 
-  return <ToastListenerInner />;
+  return (
+    <>
+      <PerpsDepositToast />
+      {transactionToastEnabled ? <SmartTransactionToastListener /> : null}
+    </>
+  );
 }

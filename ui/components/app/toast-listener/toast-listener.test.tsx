@@ -4,6 +4,7 @@ import { ToastListener } from './toast-listener';
 
 const mockUseSelector = jest.fn();
 const mockUseSmartTransactionToasts = jest.fn();
+const mockPerpsDepositToast = jest.fn(() => null);
 const mockIsInteractiveUI = jest.fn();
 
 jest.mock('react-redux', () => ({
@@ -20,6 +21,10 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
 
 jest.mock('./useSmartTransactionToasts', () => ({
   useSmartTransactionToasts: () => mockUseSmartTransactionToasts(),
+}));
+
+jest.mock('../perps/perps-deposit-toast', () => ({
+  PerpsDepositToast: () => mockPerpsDepositToast(),
 }));
 
 describe('ToastListener', () => {
@@ -46,6 +51,7 @@ describe('ToastListener', () => {
     });
 
     expect(mockUseSmartTransactionToasts).toHaveBeenCalledTimes(1);
+    expect(mockPerpsDepositToast).toHaveBeenCalledTimes(1);
   });
 
   it('does not mount the smart transaction toast hook when the flag is disabled', () => {
@@ -55,14 +61,16 @@ describe('ToastListener', () => {
     });
 
     expect(mockUseSmartTransactionToasts).not.toHaveBeenCalled();
+    expect(mockPerpsDepositToast).toHaveBeenCalledTimes(1);
   });
 
-  it('does not mount the smart transaction toast hook in non-interactive UI', () => {
+  it('does not mount toast listeners in non-interactive UI', () => {
     renderToastListener({
       transactionToastEnabled: true,
       isInteractive: false,
     });
 
     expect(mockUseSmartTransactionToasts).not.toHaveBeenCalled();
+    expect(mockPerpsDepositToast).not.toHaveBeenCalled();
   });
 });

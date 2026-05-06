@@ -1,11 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  Icon as DsIcon,
-  IconColor as DsIconColor,
-  IconName as DsIconName,
-  IconSize as DsIconSize,
-} from '@metamask/design-system-react';
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
@@ -15,7 +9,16 @@ import {
   selectPerpsLastDepositTransactionId,
   selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
-import { Toast } from '../../multichain/toast';
+import { toast, ToastContent } from '../../ui/toast/toast';
+
+const PERPS_DEPOSIT_TOAST_ID = 'perps-deposit-toast';
+const COMPLETION_TOAST_DURATION = 5 * SECOND;
+
+const clearDepositResult = () => {
+  submitRequestToBackground('perpsClearDepositResult', []).catch(() => {
+    // Non-blocking: toast visibility is owned by react-hot-toast.
+  });
+};
 
 export function PerpsDepositToast() {
   const t = useI18nContext();
@@ -25,112 +28,110 @@ export function PerpsDepositToast() {
     selectPerpsLastDepositTransactionId,
   );
   const shouldShowDepositToast = useSelector(selectPerpsShouldShowDepositToast);
-  const [dismissedPendingTransactionId, setDismissedPendingTransactionId] =
-    useState<string | null>(null);
-  const [dismissedCompletion, setDismissedCompletion] = useState(false);
+  const lastShownPendingToastKeyRef = useRef<string | null>(null);
+  const lastShownCompletionToastKeyRef = useRef<string | null>(null);
+  const clearDepositResultTimeoutRef = useRef<ReturnType<
+    typeof setTimeout
+  > | null>(null);
 
   useEffect(() => {
-    const hasNewPendingTransaction =
-      depositInProgress &&
-      lastDepositTransactionId &&
-      lastDepositTransactionId !== dismissedPendingTransactionId;
-
-    if (!depositInProgress || hasNewPendingTransaction) {
-      setDismissedPendingTransactionId(null);
-    }
-  }, [
-    depositInProgress,
-    dismissedPendingTransactionId,
-    lastDepositTransactionId,
-  ]);
-
-  useEffect(() => {
-    setDismissedCompletion(false);
-  }, [
-    lastDepositResult?.timestamp,
-    lastDepositResult?.success,
-    lastDepositResult?.error,
-  ]);
-
-  const dismissPendingToast = useCallback(() => {
-    setDismissedPendingTransactionId(lastDepositTransactionId ?? 'pending');
-  }, [lastDepositTransactionId]);
-
-  const dismissCompletionToast = useCallback(() => {
-    setDismissedCompletion(true);
-    submitRequestToBackground('perpsClearDepositResult', []).catch(() => {
-      // Non-blocking: toast is already dismissed locally
-    });
+    return () => {
+      if (clearDepositResultTimeoutRef.current) {
+        clearTimeout(clearDepositResultTimeoutRef.current);
+      }
+    };
   }, []);
 
-  const hasDismissedPendingToast =
-    (lastDepositTransactionId ?? 'pending') === dismissedPendingTransactionId;
+  useEffect(() => {
+    if (!shouldShowDepositToast) {
+      toast.dismiss(PERPS_DEPOSIT_TOAST_ID);
+      lastShownPendingToastKeyRef.current = null;
+      return;
+    }
 
-  if (lastDepositResult && shouldShowDepositToast && !dismissedCompletion) {
-    const isSuccess = lastDepositResult.success === true;
-    return (
-      <Toast
-        key={`perps-deposit-toast-${
-          lastDepositResult.timestamp ?? lastDepositResult.error ?? 'result'
-        }`}
-        dataTestId="perps-deposit-toast"
-        className="perps-toast self-center w-full max-w-[408px]"
-        contentProps={{ className: 'items-center' }}
-        text={
-          isSuccess
-            ? t('perpsDepositToastSuccessTitle')
-            : t('perpsDepositToastErrorTitle')
-        }
-        description={
-          isSuccess
-            ? t('perpsDepositToastSuccessDescription')
-            : lastDepositResult.error || t('perpsDepositToastErrorDescription')
-        }
-        startAdornment={
-          isSuccess ? (
-            <DsIcon
-              name={DsIconName.Confirmation}
-              color={DsIconColor.SuccessDefault}
-              size={DsIconSize.Lg}
-            />
-          ) : (
-            <DsIcon
-              name={DsIconName.CircleX}
-              color={DsIconColor.ErrorDefault}
-              size={DsIconSize.Lg}
-            />
-          )
-        }
-        onClose={dismissCompletionToast}
-        autoHideTime={5 * SECOND}
-        onAutoHideToast={dismissCompletionToast}
-      />
-    );
-  }
+    if (lastDepositResult) {
+      const completionToastKey = [
+        lastDepositResult.timestamp ?? 'no-timestamp',
+        lastDepositResult.success,
+        lastDepositResult.error ?? '',
+      ].join(':');
 
-  if (!depositInProgress || hasDismissedPendingToast) {
-    return null;
-  }
-
-  return (
-    <Toast
-      key={`perps-deposit-pending-toast-${
-        lastDepositTransactionId ?? 'pending'
-      }`}
-      dataTestId="perps-deposit-toast"
-      className="perps-toast self-center w-full max-w-[408px]"
-      contentProps={{ className: 'items-center' }}
-      text={t('perpsDepositToastPendingTitle')}
-      description={t('perpsDepositToastPendingDescription')}
-      startAdornment={
-        <DsIcon
-          name={DsIconName.Loading}
-          color={DsIconColor.IconDefault}
-          size={DsIconSize.Lg}
-          style={{ animation: 'spin 1.2s linear infinite' }}
-        />
+      if (lastShownCompletionToastKeyRef.current === completionToastKey) {
+        return;
       }
-      onClose={dismissPendingToast}
-    />
-  );
+
+      if (clearDepositResultTimeoutRef.current) {
+        clearTimeout(clearDepositResultTimeoutRef.current);
+      }
+
+      lastShownCompletionToastKeyRef.current = completionToastKey;
+      lastShownPendingToastKeyRef.current = null;
+
+      const isSuccess = lastDepositResult.success === true;
+      const title = isSuccess
+        ? t('perpsDepositToastSuccessTitle')
+        : t('perpsDepositToastErrorTitle');
+      const description = isSuccess
+        ? t('perpsDepositToastSuccessDescription')
+        : lastDepositResult.error || t('perpsDepositToastErrorDescription');
+      const content = (
+        <ToastContent
+          dataTestId={PERPS_DEPOSIT_TOAST_ID}
+          title={title}
+          description={description}
+        />
+      );
+      const options = {
+        id: PERPS_DEPOSIT_TOAST_ID,
+        duration: COMPLETION_TOAST_DURATION,
+      };
+
+      if (isSuccess) {
+        toast.success(content, options);
+      } else {
+        toast.error(content, options);
+      }
+
+      clearDepositResultTimeoutRef.current = setTimeout(() => {
+        clearDepositResult();
+        clearDepositResultTimeoutRef.current = null;
+      }, COMPLETION_TOAST_DURATION);
+      return;
+    }
+
+    lastShownCompletionToastKeyRef.current = null;
+
+    if (!depositInProgress) {
+      toast.dismiss(PERPS_DEPOSIT_TOAST_ID);
+      lastShownPendingToastKeyRef.current = null;
+      return;
+    }
+
+    const pendingToastKey = lastDepositTransactionId ?? 'pending';
+
+    if (lastShownPendingToastKeyRef.current === pendingToastKey) {
+      return;
+    }
+
+    lastShownPendingToastKeyRef.current = pendingToastKey;
+    toast.loading(
+      <ToastContent
+        dataTestId={PERPS_DEPOSIT_TOAST_ID}
+        title={t('perpsDepositToastPendingTitle')}
+        description={t('perpsDepositToastPendingDescription')}
+      />,
+      {
+        id: PERPS_DEPOSIT_TOAST_ID,
+        duration: Infinity,
+      },
+    );
+  }, [
+    depositInProgress,
+    lastDepositResult,
+    lastDepositTransactionId,
+    shouldShowDepositToast,
+    t,
+  ]);
+
+  return null;
 }
